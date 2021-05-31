@@ -7,10 +7,9 @@ const StyledComponent = styled.div`
   .manual-backup_buttons {
     margin-top: 16px;
   }
-  .backup-include_mail,
+
   .backup_combobox {
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: 8px;
   }
   .inherit-title-link {
     margin-bottom: 8px;
@@ -43,6 +42,7 @@ const StyledComponent = styled.div`
 
   .input-with-folder-path {
     margin-top: 16px;
+    margin-bottom: 8px;
   }
 
   .input-with-folder-path,
@@ -63,6 +63,20 @@ const StyledScheduleComponent = styled.div`
     .drop-down_variable-size {
       width: 60px !important;
     }
+  }
+  .main_options {
+    max-width: 820px;
+  }
+
+  .max_copies {
+    width: 100%;
+    max-width: 820px;
+  }
+  .combo-button {
+    width: 100% !important;
+  }
+  .combo-button-label {
+    max-width: 100% !important;
   }
 `;
 

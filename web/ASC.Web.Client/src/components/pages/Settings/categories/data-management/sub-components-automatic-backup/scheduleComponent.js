@@ -27,42 +27,59 @@ const ScheduleComponent = ({
   //console.log("selectedWeekdayOption", selectedWeekdayOption);
   return (
     <StyledScheduleComponent>
-      <ComboBox
-        options={periodOptions}
-        selectedOption={{
-          key: 0,
-          label: selectedOption,
-        }}
-        onSelect={onSelectPeriod}
-        isDisabled={isLoadingData || isDisableOptions}
-        noBorder={false}
-        scaled={false}
-        scaledOptions={true}
-        size="content"
-        className="backup_combobox "
-      />
-      {weeklySchedule && (
+      <div className="main_options">
         <ComboBox
-          options={weekOptions}
+          options={periodOptions}
           selectedOption={{
             key: 0,
-            label: selectedWeekdayOption,
+            label: selectedOption,
           }}
-          onSelect={onSelectWeekDay}
+          onSelect={onSelectPeriod}
           isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
           scaledOptions={true}
           size="content"
-          className="backup_combobox"
+          className="backup_combobox "
         />
-      )}
-      {monthlySchedule && (
+        {weeklySchedule && (
+          <ComboBox
+            options={weekOptions}
+            selectedOption={{
+              key: 0,
+              label: selectedWeekdayOption,
+            }}
+            onSelect={onSelectWeekDay}
+            isDisabled={isLoadingData || isDisableOptions}
+            noBorder={false}
+            scaled={false}
+            scaledOptions={true}
+            size="content"
+            className="backup_combobox"
+          />
+        )}
+        {monthlySchedule && (
+          <ComboBox
+            options={monthNumberOptionsArray}
+            selectedOption={{
+              key: 0,
+              label: selectedMonthOption,
+            }}
+            onSelect={onSelectMonthNumberAndTimeOptions}
+            isDisabled={isLoadingData || isDisableOptions}
+            noBorder={false}
+            scaled={false}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            size="content"
+            className="backup_combobox"
+          />
+        )}
         <ComboBox
-          options={monthNumberOptionsArray}
+          options={timeOptionsArray}
           selectedOption={{
             key: 0,
-            label: selectedMonthOption,
+            label: selectedTimeOption,
           }}
           onSelect={onSelectMonthNumberAndTimeOptions}
           isDisabled={isLoadingData || isDisableOptions}
@@ -71,39 +88,26 @@ const ScheduleComponent = ({
           scaledOptions={true}
           dropDownMaxHeight={300}
           size="content"
-          className="backup_combobox"
+          className="backup_combobox time_options"
         />
-      )}
-      <ComboBox
-        options={timeOptionsArray}
-        selectedOption={{
-          key: 0,
-          label: selectedTimeOption,
-        }}
-        onSelect={onSelectMonthNumberAndTimeOptions}
-        isDisabled={isLoadingData || isDisableOptions}
-        noBorder={false}
-        scaled={false}
-        scaledOptions={true}
-        dropDownMaxHeight={300}
-        size="content"
-        className="backup_combobox time_options"
-      />
-      <ComboBox
-        options={maxNumberCopiesArray}
-        selectedOption={{
-          key: 0,
-          label: `${selectedMaxCopies} ${t("MaxCopies")}`,
-        }}
-        onSelect={onSelectMaxCopies}
-        isDisabled={isLoadingData || isDisableOptions}
-        noBorder={false}
-        scaled={false}
-        scaledOptions={true}
-        dropDownMaxHeight={300}
-        size="content"
-        className="backup_combobox"
-      />
+      </div>
+      <div className="maxCopiesOption">
+        <ComboBox
+          options={maxNumberCopiesArray}
+          selectedOption={{
+            key: 0,
+            label: `${selectedMaxCopies} ${t("MaxCopies")}`,
+          }}
+          onSelect={onSelectMaxCopies}
+          isDisabled={isLoadingData || isDisableOptions}
+          noBorder={false}
+          scaled={false}
+          scaledOptions={true}
+          dropDownMaxHeight={300}
+          size="content"
+          className="backup_combobox max_copies"
+        />
+      </div>
     </StyledScheduleComponent>
   );
 };
