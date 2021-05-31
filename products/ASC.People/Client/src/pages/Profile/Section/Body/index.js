@@ -179,15 +179,19 @@ class SectionBodyContent extends React.PureComponent {
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
 
   onEditProfileClick = () => {
-    this.props.avatarMax && this.props.setAvatarMax(null);
+    const { isMy, avatarMax, setAvatarMax, history, profile } = this.props;
 
-    this.props.history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/edit/${this.props.profile.userName}`
-      )
-    );
+    avatarMax && setAvatarMax(null);
+
+    const editUrl = isMy
+      ? combineUrl(AppServerConfig.proxyURL, `/my?action=edit`)
+      : combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/edit/${profile.userName}`
+        );
+
+    history.push(editUrl);
   };
 
   toggleResetAppDialogVisible = () => {
