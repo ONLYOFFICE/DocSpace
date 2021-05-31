@@ -82,13 +82,13 @@ class ThirdPartyModule extends React.Component {
     const { selectedFolder, isError } = this.state;
     const { setInterval } = this.props;
 
+    if (this.isInvalidForm()) return;
+
     saveToSessionStorage("selectedFolder", `${selectedFolder}`);
 
     SelectedFolder.getFolderPath(selectedFolder).then((folderPath) => {
       saveToSessionStorage("selectedFolderPath", `${folderPath}`);
     });
-
-    if (this.isInvalidForm()) return;
 
     isError &&
       this.setState({
@@ -135,7 +135,6 @@ class ThirdPartyModule extends React.Component {
           isPanelVisible={isPanelVisible}
           isError={isError}
           folderPath={folderPath}
-          withoutTopLevelFolder
           isThirdPartyFolders
         />
 

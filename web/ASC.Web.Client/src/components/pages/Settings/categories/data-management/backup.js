@@ -70,10 +70,11 @@ class Backup extends React.Component {
 
     getBackupProgress().then((res) => {
       if (res) {
-        this.setState({
-          downloadingProgress: res.progress,
-          link: res.link,
-        });
+        this._isMounted &&
+          this.setState({
+            downloadingProgress: res.progress,
+            link: res.link,
+          });
         if (res.progress !== 100) {
           this.timerId = setInterval(() => this.getProgress(), 5000);
         }

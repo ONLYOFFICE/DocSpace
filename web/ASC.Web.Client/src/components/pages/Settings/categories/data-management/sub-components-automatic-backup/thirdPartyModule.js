@@ -591,7 +591,6 @@ class ThirdPartyModule extends React.Component {
               isError={isError}
               onSetLoadingData={onSetLoadingData}
               isThirdPartyFolders
-              withoutTopLevelFolder
               isSavingProcess={isLoadingData}
             />
           ) : (

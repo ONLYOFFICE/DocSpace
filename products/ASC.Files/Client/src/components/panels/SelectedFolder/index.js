@@ -73,6 +73,7 @@ class SelectedFolder extends React.PureComponent {
       fullFolderPath: "",
       fullFolderPathDefault: "",
       isAvailableFolders: true,
+      certainFolders: true,
     };
     this._isMounted = false;
   }
@@ -198,7 +199,6 @@ class SelectedFolder extends React.PureComponent {
       isCommonWithoutProvider,
       onClose,
       isError,
-      withoutTopLevelFolder,
       isSavingProcess,
       isDisabled,
     } = this.props;
@@ -208,6 +208,7 @@ class SelectedFolder extends React.PureComponent {
       baseFolderPath,
       fullFolderPath,
       isAvailableFolders,
+      certainFolders,
     } = this.state;
     const zIndex = 310;
     //console.log("name", name);
@@ -243,7 +244,7 @@ class SelectedFolder extends React.PureComponent {
                       onSelect={this.onSelect}
                       needUpdate={false}
                       withoutProvider={isCommonWithoutProvider}
-                      withoutTopLevelFolder={withoutTopLevelFolder}
+                      certainFolders={certainFolders}
                     />
                   ) : (
                     <Text as="span">{t("NotAvailableFolder")}</Text>

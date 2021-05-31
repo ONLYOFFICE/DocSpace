@@ -354,7 +354,7 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = (treeNode, isExpand) => {
-    const { data: incomingDate, withoutTopLevelFolder } = this.props;
+    const { data: incomingDate, certainFolders } = this.props;
     isExpand && this.setState({ isExpand: true });
     this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
@@ -369,7 +369,7 @@ class TreeFolders extends React.Component {
         const listIds = data.listIds;
         listIds.push(itemId);
 
-        const treeData = withoutTopLevelFolder
+        const treeData = certainFolders
           ? incomingDate
           : [...this.props.treeFolders];
 

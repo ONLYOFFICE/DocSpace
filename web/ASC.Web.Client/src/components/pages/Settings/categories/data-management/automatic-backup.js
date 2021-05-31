@@ -142,10 +142,10 @@ class AutomaticBackup extends React.PureComponent {
 
         .then((selectedSchedule) => {
           if (selectedSchedule) {
-            //debugger;
+            // debugger;
             const folderId = selectedSchedule.storageParams.folderId;
             this.setState({
-              defaultSelectedFolder: [folderId],
+              defaultSelectedFolder: folderId,
               defaultStorageType: `${selectedSchedule.storageType}`,
               defaultHour: `${selectedSchedule.cronParams.hour}:00`,
               defaultPeriod: `${selectedSchedule.cronParams.period}`,
