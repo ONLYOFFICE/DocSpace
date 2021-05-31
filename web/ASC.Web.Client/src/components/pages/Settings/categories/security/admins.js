@@ -653,6 +653,11 @@ class PortalAdmins extends Component {
     return filteredAdmins;
   };
 
+  onToggleSelector = (isOpen = !this.props.selectorIsOpen) => {
+    const { toggleSelector } = this.props;
+    toggleSelector(isOpen);
+  };
+
   render() {
     const {
       t,
@@ -946,6 +951,17 @@ class PortalAdmins extends Component {
                   imageAlt="Empty Screen Admins image"
                   headerText={t("NoAdmins")}
                   descriptionText={t("NoAdminsDescription")}
+                  buttons={
+                    <>
+                      <Link
+                        type="action"
+                        isHovered={true}
+                        onClick={this.onToggleSelector}
+                      >
+                        {t("AddAdmins")}
+                      </Link>
+                    </>
+                  }
                 />
               )}
             </ToggleContentContainer>
