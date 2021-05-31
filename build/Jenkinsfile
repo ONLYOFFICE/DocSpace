@@ -98,7 +98,7 @@ pipeline {
 			}
 		}
 		stage('Notify') {
-			when { expression { return env.CHANGE_ID != '' && env.BUILD_NUMBER == '1' } }
+			when { expression { return env.CHANGE_ID != null && env.BUILD_NUMBER == '1' } }
 			agent { label 'net-core' }
 			options { skipDefaultCheckout() }
 			environment {
