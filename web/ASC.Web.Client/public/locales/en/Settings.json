@@ -143,5 +143,7 @@
   "Admins": "Admins",
   "NoAdmins": "No admins here yet",
   "NoAdminsDescription": "You can add new administrator manually",
-  "AddAdmins": "Add admins"
+  "AddAdmins": "Add admins",
+  "Select": "Select",
+  "Remove": "Remove"
 }
