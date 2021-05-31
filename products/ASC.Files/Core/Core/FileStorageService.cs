@@ -1156,7 +1156,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (!result.Any())
                 {
-                    MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(folderId.ToString()).RootElement }, new List<JsonElement>() { }); //TODO
+                    MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(JsonSerializer.Serialize(folderId)).RootElement }, new List<JsonElement>() { }); //TODO
                 }
 
 
