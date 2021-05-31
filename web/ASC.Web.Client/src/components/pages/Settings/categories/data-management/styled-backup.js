@@ -28,6 +28,7 @@ const StyledComponent = styled.div`
   }
   .radio-button_text {
     margin-right: 7px;
+    margin-left: 8px;
     font-size: 19px;
     font-weight: 600;
   }
