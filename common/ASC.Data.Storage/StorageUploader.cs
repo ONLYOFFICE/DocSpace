@@ -76,7 +76,7 @@ namespace ASC.Data.Storage
                 var migrateOperation = Queue.GetTask<MigrateOperation>(id);
                 if (migrateOperation != null) return;
 
-                migrateOperation = new MigrateOperation(ServiceProvider, CacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig);
+                migrateOperation = new MigrateOperation(ServiceProvider, CacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, TempStream);
                 Queue.QueueTask(migrateOperation);
             }
         }

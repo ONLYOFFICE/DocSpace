@@ -276,13 +276,6 @@ namespace ASC.Data.Backup.Service
             return progress;
         }
 
-        }
-
-        internal void PublishProgress(BackupProgress progress)
-        {
-            CacheBackupProgress.Publish(progress, CacheNotifyAction.InsertOrUpdate);
-        }
-
         internal static string GetBackupHash(string path)
         {
             using (var sha256 = SHA256.Create())
