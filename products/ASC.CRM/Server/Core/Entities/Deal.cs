@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 using ASC.Common.Mapping;
 using ASC.Common.Security;
@@ -45,34 +46,34 @@ namespace ASC.CRM.Core.Entities
         public Guid? LastModifedBy { get; set; }
         public DateTime? LastModifedOn { get; set; }
 
-        [DataMember(Name = "contact_id")]
+        [JsonPropertyName("contact_id")]
         public int ContactID { get; set; }
         public Contact Contact { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
 
-        [DataMember(Name = "responsible_id")]
+        [JsonPropertyName("responsible_id")]
         public Guid ResponsibleID { get; set; }
 
-        [DataMember(Name = "bid_type")]
+        [JsonPropertyName("bid_type")]
         public BidType BidType { get; set; }
 
-        [DataMember(Name = "bid_value")]
+        [JsonPropertyName("bid_value")]
         public decimal BidValue { get; set; }
 
-        [DataMember(Name = "bid_currency")]
+        [JsonPropertyName("bid_currency")]
         public string BidCurrency { get; set; }
 
-        [DataMember(Name = "per_period_value")]
+        [JsonPropertyName("per_period_value")]
         public int PerPeriodValue { get; set; }
 
-        [DataMember(Name = "deal_milestone")]
+        [JsonPropertyName("deal_milestone")]
         public int DealMilestoneID { get; set; }
 
-        [DataMember(Name = "deal_milestone_probability")]
+        [JsonPropertyName("deal_milestone_probability")]
         public int DealMilestoneProbability { get; set; }
 
-        [DataMember(Name = "actual_close_date")]
+        [JsonPropertyName("actual_close_date")]
         public DateTime ActualCloseDate { get; set; }
 
         //[DataMember(Name = "actual_close_date")]
@@ -86,7 +87,7 @@ namespace ASC.CRM.Core.Entities
         //    set { ; }
         //}
 
-        [DataMember(Name = "expected_close_date")]
+        [JsonPropertyName("expected_close_date")]
         public DateTime ExpectedCloseDate { get; set; }
 
         //private String ExpectedCloseDateStr

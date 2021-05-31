@@ -28,6 +28,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 using ASC.Common.Mapping;
 using ASC.CRM.Core.EF;
@@ -44,7 +45,7 @@ namespace ASC.CRM.Core.Entities
         public String Description { get; set; }
         public String Color { get; set; }
 
-        [DataMember(Name = "sort_order")]
+        [JsonPropertyName("sort_order")]
         public int SortOrder { get; set; }
         public int Probability { get; set; }
         public DealMilestoneStatus Status { get; set; }

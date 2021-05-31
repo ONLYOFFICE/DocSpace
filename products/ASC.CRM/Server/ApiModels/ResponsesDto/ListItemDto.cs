@@ -363,12 +363,8 @@ namespace ASC.CRM.ApiModels
             RelativeItemsCount = relativeItemsCount;
         }
 
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String Title { get; set; }
-
-
         public int RelativeItemsCount { get; set; }
-
         public static TagDto GetSample()
         {
             return new TagDto
@@ -397,7 +393,6 @@ namespace ASC.CRM.ApiModels
             SortOrder = listItem.SortOrder;
         }
 
-        [DataMember(Name = "id")]
         public int Id { get; set; }
         public String Title { get; set; }
         public String Description { get; set; }

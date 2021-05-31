@@ -28,6 +28,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 #endregion
 
@@ -38,7 +39,7 @@ namespace ASC.CRM.Core
     public class DomainObject
     {
 
-        [DataMember(Name = "id")]
+        [JsonPropertyName("id")]
         public virtual int ID
         {
             get;

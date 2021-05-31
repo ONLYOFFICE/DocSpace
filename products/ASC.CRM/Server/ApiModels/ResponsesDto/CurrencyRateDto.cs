@@ -45,8 +45,6 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-
-        [DataMember(Name = "id")]
         public int Id { get; set; }
         public String FromCurrency { get; set; }
         public String ToCurrency { get; set; }

@@ -78,8 +78,6 @@ namespace ASC.CRM.ApiModels
         {
 
         }
-
-        [DataMember(Name = "id")]
         public int Id { get; set; }
         public int EntityId { get; set; }
         public String Label { get; set; }

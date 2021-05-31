@@ -36,7 +36,6 @@ using AutoMapper;
 
 namespace ASC.CRM.Core.Entities
 {
-    [DataContract]
     public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
     {
         public string Name { get; set; }

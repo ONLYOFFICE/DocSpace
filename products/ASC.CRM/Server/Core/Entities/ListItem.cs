@@ -25,6 +25,7 @@
 
 
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 using ASC.Common.Mapping;
 using ASC.CRM.Core.EF;
@@ -50,13 +51,13 @@ namespace ASC.CRM.Core.Entities
         public string Description { get; set; }
         public string Color { get; set; }
 
-        [DataMember(Name = "sort_order")]
+        [JsonPropertyName("sort_order")]
         public int SortOrder { get; set; }
 
-        [DataMember(Name = "additional_params")]
+        [JsonPropertyName("additional_params")]
         public string AdditionalParams { get; set; }
 
-        [DataMember(Name = "list_type")]
+        [JsonPropertyName("list_type")]
         public ListType? ListType { get; set; }
     }
 }

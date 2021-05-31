@@ -86,28 +86,13 @@ namespace ASC.CRM.ApiModels
             }
         }
 
-        [DataMember(Order = 1, IsRequired = false, EmitDefaultValue = false)]
         public String Street { get; set; }
-
-        [DataMember(Order = 2, IsRequired = false, EmitDefaultValue = false)]
         public String City { get; set; }
-
-        [DataMember(Order = 3, IsRequired = false, EmitDefaultValue = false)]
         public String State { get; set; }
-
-        [DataMember(Order = 4, IsRequired = false, EmitDefaultValue = false)]
         public String Zip { get; set; }
-
-        [DataMember(Order = 5, IsRequired = false, EmitDefaultValue = false)]
         public String Country { get; set; }
-
-        [DataMember(Order = 6, IsRequired = false, EmitDefaultValue = false)]
         public int Category { get; set; }
-
-        [DataMember(Order = 7, IsRequired = false, EmitDefaultValue = false)]
         public String CategoryName { get; set; }
-
-        [DataMember(Order = 8, IsRequired = false, EmitDefaultValue = false)]
         public Boolean IsPrimary { get; set; }
 
         public static Address GetSample()
@@ -136,22 +121,11 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        [DataMember(Name = "id")]
         public int Id { get; set; }
-
-        [DataMember(Order = 1)]
         public ContactInfoType InfoType { get; set; }
-
-        [DataMember(Order = 2)]
         public int Category { get; set; }
-
-        [DataMember(Order = 3)]
         public String Data { get; set; }
-
-        [DataMember(Order = 4)]
         public String CategoryName { get; set; }
-
-        [DataMember(Order = 5)]
         public bool IsPrimary { get; set; }
 
         public static ContactInfoDto GetSample()

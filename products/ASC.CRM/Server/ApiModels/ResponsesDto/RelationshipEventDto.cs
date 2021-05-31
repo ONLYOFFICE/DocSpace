@@ -114,25 +114,16 @@ namespace ASC.CRM.ApiModels
 
         }
 
-        [DataMember(Name = "id")]
         public int Id { get; set; }
-
-
         public EmployeeWraper CreateBy { get; set; }
 
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public ApiDateTime Created { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String Content { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public HistoryCategoryBaseDto Category { get; set; }
         public ContactBaseDto Contact { get; set; }
         public EntityDto Entity { get; set; }
         public bool CanEdit { get; set; }
         public IEnumerable<FileWrapper<int>> Files { get; set; }
-
         public static RelationshipEventDto GetSample()
         {
             return new RelationshipEventDto

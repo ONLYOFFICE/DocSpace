@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.Json;
@@ -585,7 +584,6 @@ namespace ASC.CRM.Core.Dao
 
         }
 
-        [DataContract]
         internal class CrmHistoryContent
         {
             public string to;
@@ -618,14 +616,7 @@ namespace ASC.CRM.Core.Dao
                 message_id = apiResponse.GetProperty("id").GetInt32()
             };
 
-            var serializer = new DataContractJsonSerializer(typeof(CrmHistoryContent));
-
-            using (var stream = new System.IO.MemoryStream())
-            {
-                serializer.WriteObject(stream, content_struct);
-            
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+            return JsonSerializer.Serialize(content_struct);
         }
     }
 }

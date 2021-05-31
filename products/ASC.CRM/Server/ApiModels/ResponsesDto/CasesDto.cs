@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 using ASC.Api.Core;
 using ASC.Common.Mapping;
@@ -38,7 +37,6 @@ using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
-    [DataContract(Name = "case", Namespace = "")]
     public class CasesDto : IMapFrom<Cases>
     {
         public CasesDto()
@@ -46,7 +44,6 @@ namespace ASC.CRM.ApiModels
         }
 
 
-        [DataMember(Name = "id")]
         public int Id { get; set; }
         public IEnumerable<ContactBaseDto> Members { get; set; }
         public EmployeeWraper CreateBy { get; set; }

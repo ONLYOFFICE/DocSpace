@@ -40,18 +40,10 @@ namespace ASC.CRM.ApiModels
 
         }
 
-        [DataMember(Name = "id")]
         public int Id { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = true)]
         public String Title { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = true)]
         public String EntityType { get; set; }
-
-
         public IEnumerable<TaskTemplateDto> Items { get; set; }
-
         public static TaskTemplateContainerDto GetSample()
         {
             return new TaskTemplateContainerDto
@@ -74,31 +66,14 @@ namespace ASC.CRM.ApiModels
 
         }
 
-        [DataMember(Name = "id")]
         public int Id { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public int ContainerID { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String Title { get; set; }
-
-
         public String Description { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public EmployeeWraper Responsible { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public TaskCategoryDto Category { get; set; }
-
-
         public bool isNotify { get; set; }
-
-
         public long OffsetTicks { get; set; }
-
-
         public bool DeadLineIsFixed { get; set; }
 
         public static TaskTemplateDto GetSample()

@@ -34,6 +34,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -654,19 +655,19 @@ namespace ASC.Web.CRM.Classes
     [DataContract]
     public class MailTemplateTag
     {
-        [DataMember(Name = "sysname")]
+        [JsonPropertyName("sysname")]
         public String SysName { get; set; }
 
-        [DataMember(Name = "display_name")]
+        [JsonPropertyName("display_name")]
         public String DisplayName { get; set; }
 
-        [DataMember(Name = "category")]
+        [JsonPropertyName("category")]
         public String Category { get; set; }
 
-        [DataMember(Name = "is_company")]
+        [JsonPropertyName("is_company")]
         public bool isCompany { get; set; }
 
-        [DataMember(Name = "name")]
+        [JsonPropertyName("name")]
         public String Name { get; set; }
     }
 

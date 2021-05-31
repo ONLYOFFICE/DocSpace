@@ -25,21 +25,16 @@
 
 
 using System;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 using ASC.Common;
-using ASC.Core;
 using ASC.Core.Common.Settings;
-using ASC.CRM.Core;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.CRM.Classes
 {
-    [Serializable]
-    [DataContract]
     public class SMTPServerSetting
     {
         public SMTPServerSetting()
@@ -70,8 +65,6 @@ namespace ASC.Web.CRM.Classes
 
     }
 
-    [Serializable]
-    [DataContract]
     [Scope]
     public class InvoiceSetting
     {
@@ -114,8 +107,6 @@ namespace ASC.Web.CRM.Classes
         public String CompanyAddress { get; set; }
     }
 
-    [Serializable]
-    [DataContract]
     public class CrmSettings : ISettings
     {
         public CrmSettings()
@@ -128,25 +119,25 @@ namespace ASC.Web.CRM.Classes
             get { return new Guid("fdf39b9a-ec96-4eb7-aeab-63f2c608eada"); }
         }
 
-        [DataMember(Name = "SMTPServerSetting")]
+        [JsonPropertyName("SMTPServerSetting")]
         public SMTPServerSetting SMTPServerSettingOld { get; set; }
         public InvoiceSetting InvoiceSetting { get; set; }
         public Guid WebFormKey { get; set; }
 
-        [DataMember(Name = "DefaultCurrency")]
+        [JsonPropertyName("DefaultCurrency")]
         public String DefaultCurrency { get; set; }
      
-        [DataMember(Name = "ChangeContactStatusGroupAuto")]
+        [JsonPropertyName("ChangeContactStatusGroupAuto")]
         public string ChangeContactStatusGroupAutoDto { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public Boolean? ChangeContactStatusGroupAuto
         {
             get { return string.IsNullOrEmpty(ChangeContactStatusGroupAutoDto) ? null : (bool?)bool.Parse(ChangeContactStatusGroupAutoDto); }
             set { ChangeContactStatusGroupAutoDto = value.HasValue ? value.Value.ToString().ToLowerInvariant() : null; }
         }
 
-        [DataMember(Name = "AddTagToContactGroupAuto")]
+        [JsonPropertyName("AddTagToContactGroupAuto")]
         public string AddTagToContactGroupAutoDto { get; set; }
 
         [JsonIgnore]
@@ -156,13 +147,13 @@ namespace ASC.Web.CRM.Classes
             set { AddTagToContactGroupAutoDto = value.HasValue ? value.Value.ToString().ToLowerInvariant() : null; }
         }
 
-        [DataMember(Name = "WriteMailToHistoryAuto")]
+        [JsonPropertyName("WriteMailToHistoryAuto")]
         public Boolean WriteMailToHistoryAuto { get; set; }
 
-        [DataMember(Name = "IsConfiguredPortal")]
+        [JsonPropertyName("IsConfiguredPortal")]
         public bool IsConfiguredPortal { get; set; }
 
-        [DataMember(Name = "IsConfiguredSmtp")]
+        [JsonPropertyName("IsConfiguredSmtp")]
         public bool IsConfiguredSmtp { get; set; }
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
@@ -186,12 +177,9 @@ namespace ASC.Web.CRM.Classes
         }
     }
 
-
-    [Serializable]
-    [DataContract]
     public class CrmReportSampleSettings : ISettings
     {
-        [DataMember(Name = "NeedToGenerate")]
+        [JsonPropertyName("NeedToGenerate")]
         public bool NeedToGenerate { get; set; }
 
         public Guid ID

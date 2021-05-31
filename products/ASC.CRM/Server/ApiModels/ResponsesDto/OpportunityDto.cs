@@ -50,14 +50,11 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        [DataMember(Name = "id")]
         public int Id { get; set; }
         public EmployeeWraper CreateBy { get; set; }
         public ApiDateTime Created { get; set; }
         public IEnumerable<ContactBaseDto> Members { get; set; }
         public ContactBaseDto Contact { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String Title { get; set; }
         public String Description { get; set; }
         public EmployeeWraper Responsible { get; set; }

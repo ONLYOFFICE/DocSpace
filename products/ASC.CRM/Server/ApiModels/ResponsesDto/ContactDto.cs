@@ -233,7 +233,6 @@ namespace ASC.CRM.ApiModels
 
         }
 
-        [DataMember(Name = "id")]
         public int Id { get; set; }
         public String SmallFotoUrl { get; set; }
         public String MediumFotoUrl { get; set; }
