@@ -291,17 +291,22 @@ class PortalAdmins extends Component {
       setAddUsers,
       setRemoveAdmins,
       updateListAdmins,
+      setFilterParams,
       history,
     } = this.props;
 
     const { location } = history;
     const { pathname } = location;
-    let filter = Filter.getDefault();
+
+    let filter = {};
 
     if (pathname.indexOf("/admins/filter") > -1) {
       filter = Filter.getFilter(location);
       filter.page += 1;
     }
+
+    const currentFilter =
+      Object.keys(filter).length > 0 ? filter : this.props.filter;
 
     setAddUsers(this.addUsers);
     setRemoveAdmins(this.removeAdmins);
@@ -309,12 +314,14 @@ class PortalAdmins extends Component {
     if (isEmpty(admins, true)) {
       this.setIsLoading(true);
       try {
-        await updateListAdmins(filter, true);
+        await updateListAdmins(currentFilter, true);
         this.setIsLoading(false);
       } catch (error) {
         toastr.error(error);
         this.setIsLoading(false);
       }
+    } else {
+      setFilterParams(currentFilter);
     }
   }
 
@@ -358,7 +365,7 @@ class PortalAdmins extends Component {
   };
 
   addUsers = (users) => {
-    const { t, admins, setAdmins, getUsersByIds, changeAdmins } = this.props;
+    const { t, admins, changeAdmins, updateListAdmins, filter } = this.props;
 
     if (!users && users.length === 0) return;
 
@@ -377,11 +384,12 @@ class PortalAdmins extends Component {
     if (!userIds.length > 0) return;
 
     changeAdmins(userIds, fullAccessId, true).then(async () => {
-      const updatedAdmins = admins.slice();
-      const addedUsers = await getUsersByIds(userIds);
-      updatedAdmins.push(...addedUsers);
-      setAdmins(updatedAdmins);
-      toastr.success(t("AdministratorsAddedSuccessfully"));
+      try {
+        await updateListAdmins(filter, true);
+        toastr.success(t("AdministratorsAddedSuccessfully"));
+      } catch (e) {
+        console.log(e);
+      }
     });
   };
 
@@ -390,9 +398,9 @@ class PortalAdmins extends Component {
       selection,
       setSelected,
       t,
-      setAdmins,
-      admins,
       changeAdmins,
+      updateListAdmins,
+      filter,
     } = this.props;
 
     if (!selection && selection.length === 0) return;
@@ -400,17 +408,8 @@ class PortalAdmins extends Component {
       return user.id;
     });
 
-    changeAdmins(userIds, fullAccessId, false).then(() => {
-      const newAdmins = admins.filter((admin) => {
-        return selection.every((selectedAdmin) => {
-          if (selectedAdmin.id === admin.id) {
-            return false;
-          }
-          return true;
-        });
-      });
-
-      setAdmins(newAdmins);
+    changeAdmins(userIds, fullAccessId, false).then(async () => {
+      await updateListAdmins(filter, true);
       setSelected("none");
       toastr.success(t("AdministratorsRemovedSuccessfully"));
     });
@@ -988,6 +987,7 @@ export default inject(({ auth, setup }) => {
     changeAdmins: setup.changeAdmins,
     fetchPeople: setup.fetchPeople,
     updateListAdmins: setup.updateListAdmins,
+    setFilterParams: setup.setFilterParams,
     modules,
     admins,
     productId: modules[0].id,
