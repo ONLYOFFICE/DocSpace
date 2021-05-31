@@ -178,7 +178,7 @@ class SettingsSetupStore {
     }
 
     this.setAdmins(admins.items);
-    this.setTotalAdmins(admins.total);
+    this.setTotalAdmins(admins.total - 1);
     this.setFilter(filterData);
   };
 
