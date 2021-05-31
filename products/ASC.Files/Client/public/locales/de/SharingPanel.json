@@ -1,4 +1,4 @@
-﻿{
+{
   "AddGroupsForSharingButton": "Gruppen hinzufügen",
   "AddShareMessage": "Nachricht hinzufügen",
   "Comment": "Kommentieren",
@@ -7,7 +7,7 @@
   "CustomFilter": "Benutzerdefinierte Filter",
   "DenyAccess": "Zugriff verweigern",
   "Embedding": "Einbetten",
-  "EncryptedFileSharing": "Die Datei \u003Cstrong\u003E{{title}}\u003C/strong\u003E wurde freigegeben",
+  "EncryptedFileSharing": "Die Datei <strong>{{title}}</strong> wurde freigegeben",
   "ExternalLink": "Externer Link",
   "FormFilling": "Ausfüllen von Formularen",
   "InternalLink": "Interner Link",

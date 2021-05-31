@@ -1,6 +1,6 @@
-﻿{
+{
   "Confirmation": "Bestätigung",
-  "DeleteUserConfirmation": "{{userCaption}} \u003Cstrong\u003E{{user}}\u003C/strong\u003E wird gelöscht.",
+  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> wird gelöscht.",
   "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu.",
   "SuccessfullyDeleteUserInfoMessage": "Der Benutzer wurde erfolgreich gelöscht"
 }

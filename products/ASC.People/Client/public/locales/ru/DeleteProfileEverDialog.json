@@ -1,6 +1,6 @@
-﻿{
+{
   "Confirmation": "Подтверждение",
-  "DeleteUserConfirmation": "{{userCaption}} \u003Cstrong\u003E{{user}}\u003C/strong\u003E будет удален.",
+  "DeleteUserConfirmation": "{{userCaption}} <strong>{{user}}</strong> будет удален.",
   "DeleteUserDataConfirmation": "Будут удалены личные документы пользователя, доступные для других. Чтобы избежать этого, нужно перед удалением запустить процесс передачи данных.",
   "SuccessfullyDeleteUserInfoMessage": "Пользователь успешно удален"
 }

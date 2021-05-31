@@ -5,8 +5,8 @@
   "MoveToTrashOneFileNote": "Если вы удалите расшаренный файл, другие пользователи не смогут получить к нему доступ.",
   "MoveToTrashOneFileTitle": "Переместить файл в корзину?",
   "MoveToTrashOneFolderNote": "Если вы удалите расшаренную папку, другие пользователи не смогут получить к нему доступ.",
+  "MoveToTrashOneFolderTitle": "Переместить папку в корзину?",
   "UnsubscribeButton": "Отписаться",
-  "UnsubscribeTitle": "Подтверждение отписки",
   "UnsubscribeNote": "Вы действительно хотите отписаться от выделенных элементов из списка?",
-  "MoveToTrashOneFolderTitle": "Переместить папку в корзину?"
+  "UnsubscribeTitle": "Подтверждение отписки"
 }

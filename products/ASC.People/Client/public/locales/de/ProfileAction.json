@@ -1,4 +1,4 @@
-﻿{
+{
   "ActivationLink": "Aktivierungslink",
   "AddContact": "Kontakt hinzufügen",
   "AddPhoto": "Foto hinzufügen",
@@ -11,7 +11,7 @@
   "CustomCreation": "{{user}} (Erstellung)",
   "EditPhoto": "Bild bearbeiten",
   "EditUserDialogTitle": "Profil bearbeiten",
-  "EmailPopupHelper": "Die Haupt-E-Mail-Adresse wird für Benachrichtigungen und Zugriffswiederherstellung benutzt. \u003C1\u003E Sie können in dieser Domain eine neue E-Mail für den Benutzer erstellen und ein Einmalkennwort für die erste Anmeldung festlegen.\u003C/1\u003E",
+  "EmailPopupHelper": "Die Haupt-E-Mail-Adresse wird für Benachrichtigungen und Zugriffswiederherstellung benutzt. <1> Sie können in dieser Domain eine neue E-Mail für den Benutzer erstellen und ein Einmalkennwort für die erste Anmeldung festlegen.</1>",
   "FirstName": "Vorname",
   "Message": "Chat",
   "Phone": "Telefon",

@@ -35,6 +35,7 @@
   "LinkForPortalUsers": "Link for portal users",
   "MarkAsFavorite": "Mark as favorite",
   "MarkedAsFavorite": "Added to favorites",
+  "MarkRead": "Mark as read",
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> moved",
   "MoveItems": "<strong>{{qty}}</strong> elements has been moved",
@@ -59,6 +60,7 @@
   "RecentEmptyContainerDescription": "'Recent' section shows you last viewed or edited files.",
   "RemovedFromFavorites": "Removed from favorites",
   "RemoveFromFavorites": "Remove from favorites",
+  "RemoveFromList": "Remove from list",
   "Rename": "Rename",
   "SendByEmail": "Send by email",
   "Share": "Share",
@@ -79,7 +81,5 @@
   "UnblockVersion": "Unblock/Check-in",
   "UploadToFolder": "Upload to folder",
   "ViewList": "List",
-  "RemoveFromList": "Remove from list",
-  "MarkRead": "Mark as read",
   "ViewTiles": "Tiles"
 }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
@@ -61,6 +62,16 @@ namespace Frontend.Translations.Tests
                     .ToList();
 
                 TranslationFiles.Add(translationFile);
+
+                /*   Re-write by order */
+
+                //var orderedList = jsonTranslation.Properties().OrderBy(t => t.Name);
+
+                //var result = new JObject(orderedList);
+
+                //var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
+
+                //File.WriteAllText(path, sortedJsonString);
             }
 
             var javascriptFiles = (from wsPath in Workspaces

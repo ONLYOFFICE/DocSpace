@@ -1,4 +1,4 @@
-﻿{
+{
   "Birthdate": "Geburtsdatum",
   "ChangeEmailSuccess": "E-Mail wurde erfolgreich geändert",
   "ChangesApplied": "Die Änderungen wurden übernommen",
@@ -7,7 +7,7 @@
   "EditSubscriptionsBtn": "Abonnements bearbeiten",
   "EditUser": "Profil bearbeiten",
   "InviteAgainLbl": "Erneut einladen",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an \u003Cstrong\u003E{{ email }}\u003C/strong\u003E versandt.",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",
   "PhoneLbl": "Telefon",
   "Subscriptions": "Abonnements"
 }

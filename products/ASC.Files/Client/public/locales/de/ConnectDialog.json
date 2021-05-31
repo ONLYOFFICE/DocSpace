@@ -1,8 +1,8 @@
-﻿{
+{
   "Account": "Konto",
   "ConnectFolderTitle": "Ordnertitel",
   "ConnectionUrl": "Verbindungs-URL",
-  "ConnectMakeShared": "Freigeben und in den Ordner \u0022Gemeinsame Dokumente\u0022 verschieben",
+  "ConnectMakeShared": "Freigeben und in den Ordner 'Gemeinsame Dokumente' verschieben",
   "Login": "Anmeldung",
   "Reconnect": "Neu verbinden"
 }

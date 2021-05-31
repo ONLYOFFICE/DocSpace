@@ -1,9 +1,9 @@
-﻿{
+{
   "CustomNewDepartment": "{{groupCaption}} (создание)",
   "GroupAction": "Работа с группой",
-  "SelectAction": "Выбрать",
   "Members": "Участники",
   "Name": "Название",
   "SearchAddedMembers": "Поиск добавленных участников",
-  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} \u0027{{ groupName }}\u0027"
+  "SelectAction": "Выбрать",
+  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} '{{ groupName }}'"
 }
