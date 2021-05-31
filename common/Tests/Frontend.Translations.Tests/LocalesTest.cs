@@ -564,5 +564,39 @@ namespace Frontend.Translations.Tests
 
             Assert.AreEqual(0, notFoundi18nKeys.Count(), message);
         }
+
+
+        [Test]
+        public void EmptyValueKeysTest()
+        {
+            var message = $"Next files have empty keys:\r\n\r\n";
+
+            var exists = false;
+
+            var i = 0;
+
+            foreach (var module in ModuleFolders)
+            {
+                if (module.AvailableLanguages == null)
+                    continue;
+
+                foreach (var lng in module.AvailableLanguages)
+                {
+                    var emptyKeys = lng.Translations.Where(f => string.IsNullOrEmpty(f.Value)).ToList();
+
+                    if (!emptyKeys.Any())
+                        continue;
+
+                    exists = true;
+
+                    message += $"{++i}. Language '{lng.Language}' (Count: {emptyKeys.Count}). Path '{lng.Path}' " +
+                        $"Empty keys:\r\n\r\n";
+
+                    message += string.Join("\r\n", emptyKeys.Select(t => t.Key)) + "\r\n\r\n";
+                }
+            }
+
+            Assert.AreEqual(false, exists, message);
+        }
     }
 }
