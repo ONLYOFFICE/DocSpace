@@ -928,6 +928,17 @@ class PortalAdmins extends Component {
                   imageAlt="Empty Screen Filter image"
                   headerText={t("NotFoundTitle")}
                   descriptionText={t("NotFoundDescription")}
+                  buttons={
+                    <>
+                      <Link
+                        type="action"
+                        isHovered={true}
+                        onClick={this.onSearchChange.bind(this, "")}
+                      >
+                        {t("ClearButton")}
+                      </Link>
+                    </>
+                  }
                 />
               ) : (
                 <EmptyScreenContainer
@@ -935,17 +946,6 @@ class PortalAdmins extends Component {
                   imageAlt="Empty Screen Admins image"
                   headerText={t("NoAdmins")}
                   descriptionText={t("NoAdminsDescription")}
-                  buttons={
-                    <>
-                      <Link
-                        type="action"
-                        isHovered={true}
-                        onClick={this.openModal}
-                      >
-                        {t("AddAdmins")}
-                      </Link>
-                    </>
-                  }
                 />
               )}
             </ToggleContentContainer>
