@@ -66,7 +66,7 @@ namespace ASC.Core
         private TenantManager TenantManager { get; }
         private PermissionContext PermissionContext { get; }
         private UserManagerConstants UserManagerConstants { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
         private Constants Constants { get; }
 
         private Tenant tenant;
@@ -308,6 +308,51 @@ namespace ASC.Core
             }
 
             var newUser = UserService.SaveUser(Tenant.TenantId, u);
+
+            return newUser;
+        }
+
+        public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
+        {
+            if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
+            if (u.ID == Guid.Empty) PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            else PermissionContext.DemandPermissions(new UserSecurityProvider(u.ID), Constants.Action_EditUser);
+
+            if (!CoreBaseSettings.Personal)
+            {
+                if (Constants.MaxEveryoneCount <= GetUsersByGroup(Constants.GroupEveryone.ID).Length)
+                {
+                    throw new TenantQuotaException("Maximum number of users exceeded");
+                }
+
+                if (u.Status == EmployeeStatus.Active)
+                {
+                    if (isVisitor)
+                    {
+                        var maxUsers = TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).ActiveUsers;
+                        var visitors = TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Free ? 0 : Constants.CoefficientOfVisitors;
+                        if (!CoreBaseSettings.Standalone && GetUsersByGroup(Constants.GroupVisitor.ID).Length > visitors * maxUsers)
+                        {
+                            throw new TenantQuotaException("Maximum number of visitors exceeded");
+                        }
+                    }
+                    else
+                    {
+                        var q = TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId);
+                        if (q.ActiveUsers < GetUsersByGroup(Constants.GroupUser.ID).Length)
+                        {
+                            throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
+                        }
+                    }
+                }
+            }
+
+            if (u.Status == EmployeeStatus.Terminated && u.ID == TenantManager.GetCurrentTenant().OwnerId)
+            {
+                throw new InvalidOperationException("Can not disable tenant owner.");
+}
+
+            var newUser = UserService.SaveUser(TenantManager.GetCurrentTenant().TenantId, u);
 
             return newUser;
         }

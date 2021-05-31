@@ -79,6 +79,8 @@ namespace ASC.Web.Files.Classes
         [JsonPropertyName("HideTemplates")]
         public bool HideTemplatesSetting { get; set; }
 
+        [JsonPropertyName("DownloadZip")]
+        public bool DownloadTarGzSetting { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
@@ -97,7 +99,8 @@ namespace ASC.Web.Files.Classes
                 StoreForcesaveSetting = false,
                 HideRecentSetting = false,
                 HideFavoritesSetting = false,
-                HideTemplatesSetting = false
+                HideTemplatesSetting = false,
+                DownloadTarGzSetting = false
             };
         }
 
@@ -266,6 +269,17 @@ namespace ASC.Web.Files.Classes
                 SaveForCurrentUser(setting);
             }
             get { return !LoadForCurrentUser().HideTemplatesSetting; }
+        }
+
+        public bool DownloadTarGz
+        {
+            set
+            {
+                var setting = LoadForCurrentUser();
+                setting.DownloadTarGzSetting = value;
+                SaveForCurrentUser(setting);
+            }
+            get => LoadForCurrentUser().DownloadTarGzSetting;
         }
 
         private FilesSettings LoadForCurrentUser()

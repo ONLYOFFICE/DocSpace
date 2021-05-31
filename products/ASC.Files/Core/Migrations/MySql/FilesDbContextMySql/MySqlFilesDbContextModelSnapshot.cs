@@ -264,6 +264,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .HasColumnName("version_group")
                         .HasDefaultValueSql("'1'");
 
+                    b.Property<bool>("Thumb")
+                        .HasColumnType("int")
+                        .HasColumnName("thumb");
+
                     b.HasKey("TenantId", "Id", "Version")
                         .HasName("PRIMARY");
 
@@ -458,7 +462,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar(512)")
                         .HasColumnName("password")
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");
