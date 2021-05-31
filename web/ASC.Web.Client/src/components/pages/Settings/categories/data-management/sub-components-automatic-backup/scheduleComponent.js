@@ -72,7 +72,7 @@ const ScheduleComponent = ({
             scaledOptions={true}
             dropDownMaxHeight={300}
             size="content"
-            className="backup_combobox"
+            className="backup_combobox month_options"
           />
         )}
         <ComboBox
