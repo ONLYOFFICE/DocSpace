@@ -685,7 +685,7 @@ class PortalAdmins extends Component {
             <ToggleContentContainer>
               <SearchInput
                 className="filter_container"
-                placeholder="Search added employees"
+                placeholder={t("Search")}
                 onChange={this.onSearchChange}
                 onClearSearch={this.onSearchChange}
                 value={searchValue}
@@ -922,20 +922,27 @@ class PortalAdmins extends Component {
                     </RowContainer>
                   </div>
                 </>
-              ) : (
+              ) : searchValue.length > 0 ? (
                 <EmptyScreenContainer
                   imageSrc="products/people/images/empty_screen_filter.png"
                   imageAlt="Empty Screen Filter image"
                   headerText={t("NotFoundTitle")}
                   descriptionText={t("NotFoundDescription")}
+                />
+              ) : (
+                <EmptyScreenContainer
+                  imageSrc="images/people_logolarge.png"
+                  imageAlt="Empty Screen Admins image"
+                  headerText={t("NoAdmins")}
+                  descriptionText={t("NoAdminsDescription")}
                   buttons={
                     <>
                       <Link
                         type="action"
                         isHovered={true}
-                        onClick={this.onSearchChange.bind(this, "")}
+                        onClick={this.openModal}
                       >
-                        {t("ClearButton")}
+                        {t("AddAdmins")}
                       </Link>
                     </>
                   }

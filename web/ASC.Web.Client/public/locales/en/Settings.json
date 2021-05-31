@@ -137,5 +137,11 @@
   "Guest": "Guest",
   "Guests": "Guests",
 
-  "EmptyFieldError": "Empty field"
+  "EmptyFieldError": "Empty field",
+
+  "Search": "Search",
+  "Admins": "Admins",
+  "NoAdmins": "No admins here yet",
+  "NoAdminsDescription": "You can add new administrator manually",
+  "AddAdmins": "Add admins"
 }
