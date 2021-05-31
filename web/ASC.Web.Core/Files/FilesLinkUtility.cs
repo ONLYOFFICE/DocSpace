@@ -365,6 +365,18 @@ namespace ASC.Web.Core.Files
             return FileRedirectPreviewUrlString + "&" + (isFile ? FileId : FolderId) + "=" + HttpUtility.UrlEncode(enrtyId.ToString());
         }
 
+        public string FileThumbnailUrlString
+        {
+            get { return FileHandlerPath + "?" + Action + "=thumb&" + FileId + "={0}"; }
+        }
+
+        public string GetFileThumbnailUrl(object fileId, int fileVersion)
+        {
+            return string.Format(FileThumbnailUrlString, HttpUtility.UrlEncode(fileId.ToString()))
+                   + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
+        }
+
+
         public string GetInitiateUploadSessionUrl(int tenantId, object folderId, object fileId, string fileName, long contentLength, bool encrypted, SecurityContext securityContext)
         {
             var queryString = string.Format("?initiate=true&{0}={1}&fileSize={2}&tid={3}&userid={4}&culture={5}&encrypted={6}",

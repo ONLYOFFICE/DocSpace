@@ -48,6 +48,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Users
 {
+    [Transient]
     public class ResizeWorkerItem : DistributedTask
     {
         public ResizeWorkerItem(Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings) : base()
@@ -527,6 +528,15 @@ namespace ASC.Web.Core.Users
             UserManager.SaveUserPhoto(idUser, null);
             UserPhotoManagerCache.ClearCache(idUser);
         }
+
+        public void SyncPhoto(Guid userID, byte[] data)
+        {
+            data = TryParseImage(data, -1, OriginalFotoSize, out _, out int width, out int height);
+            UserManager.SaveUserPhoto(userID, data);
+            SetUserPhotoThumbnailSettings(userID, width, height);
+            UserPhotoManagerCache.ClearCache(userID);
+        }
+
 
         private string SaveOrUpdatePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
         {

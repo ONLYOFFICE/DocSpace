@@ -32,12 +32,12 @@ namespace ASC.Data.Backup
 {
     public interface IDataWriteOperator : IDisposable
     {
-        void WriteEntry(string key, string source);
+        void WriteEntry(string key, Stream stream);
     }
 
     public interface IDataReadOperator : IDisposable
     {
         Stream GetEntry(string key);
-        List<string> Entries { get; }
+        IEnumerable<string> GetEntries(string key);
     }
 }

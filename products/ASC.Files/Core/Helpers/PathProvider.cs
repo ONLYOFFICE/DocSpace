@@ -187,6 +187,11 @@ namespace ASC.Web.Files.Classes
             var fileName = string.Format("{0}{1}", Guid.NewGuid(), ext);
             var path = CrossPlatform.PathCombine("temp_stream", fileName);
 
+            if (store.IsFile(FileConstant.StorageDomainTmp, path))
+            {
+                store.Delete(FileConstant.StorageDomainTmp, path);
+            }
+
             store.Save(
                 FileConstant.StorageDomainTmp,
                 path,

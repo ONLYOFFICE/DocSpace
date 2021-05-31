@@ -10,6 +10,21 @@ cat<<EOF
 
 EOF
 
+if [ -e /etc/redis.conf ]; then
+ sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis.conf
+ sed -r "/^save\s[0-9]+/d" -i /etc/redis.conf
+ 
+ systemctl restart redis
+fi
+
+sed "/host\s*all\s*all\s*127\.0\.0\.1\/32\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
+sed "/host\s*all\s*all\s*::1\/128\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
+
+for SVC in $package_services; do
+		systemctl start $SVC	
+		systemctl enable $SVC
+done
+
 MYSQL_SERVER_HOST=${MYSQL_SERVER_HOST:-"localhost"}
 MYSQL_SERVER_DB_NAME=${MYSQL_SERVER_DB_NAME:-"${package_sysname}"}
 MYSQL_SERVER_USER=${MYSQL_SERVER_USER:-"root"}
@@ -31,29 +46,23 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 		   MYSQL="mysql --connect-expired-password -u$MYSQL_SERVER_USER -D mysql";
 		else
 		   MYSQL="mysql --connect-expired-password -u$MYSQL_SERVER_USER -p${MYSQL_TEMPORARY_ROOT_PASS} -D mysql";
+		   MYSQL_ROOT_PASS=$(echo $MYSQL_TEMPORARY_ROOT_PASS | sed -e 's/;/%/g' -e 's/=/%/g');
 		fi
 
-		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_TEMPORARY_ROOT_PASS}'" >/dev/null 2>&1 \
-		|| $MYSQL -e "UPDATE user SET plugin='mysql_native_password', authentication_string=PASSWORD('${MYSQL_TEMPORARY_ROOT_PASS}') WHERE user='${MYSQL_SERVER_USER}' and host='localhost';"		
+		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASS}'" >/dev/null 2>&1 \
+		|| $MYSQL -e "UPDATE user SET plugin='mysql_native_password', authentication_string=PASSWORD('${MYSQL_ROOT_PASS}') WHERE user='${MYSQL_SERVER_USER}' and host='localhost';"		
 
 		systemctl restart mysqld
 	fi
+elif [ "${UPDATE}" = "true" ] && [ "${MYSQL_FIRST_TIME_INSTALL}" != "true" ]; then
+	ENVIRONMENT="$(cat /etc/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
+	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
+	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
+	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 fi
-
-if [ -e /etc/redis.conf ]; then
- sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis.conf
- sed -r "/^save\s[0-9]+/d" -i /etc/redis.conf
- 
- systemctl restart redis
-fi
-
-sed "/host\s*all\s*all\s*127\.0\.0\.1\/32\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
-sed "/host\s*all\s*all\s*::1\/128\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
-
-for SVC in $package_services; do
-		systemctl start $SVC	
-		systemctl enable $SVC
-done
 
 if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	declare -x DS_PORT=8083
@@ -125,6 +134,8 @@ expect << EOF
 	
 EOF
 	DOCUMENT_SERVER_INSTALLED="true";
+elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
+	${package_manager} -y update ${package_sysname}-documentserver
 fi
 
 NGINX_ROOT_DIR="/etc/nginx"
@@ -141,16 +152,24 @@ if rpm -q "firewalld"; then
 	systemctl restart firewalld.service
 fi
 
-if [ "$APPSERVER_INSTALLED" = "false" ]; then
+if [ "$APPSERVER_INSTALLED" = "false" ] || [ "$UPDATE" = "true" ]; then
+	if [ "$APPSERVER_INSTALLED" = "false" ]; then
+		${package_manager} install -y ${package_sysname}-${product} 
+	else
+		${package_manager} -y update ${package_sysname}-${product}
+	fi
 
-	${package_manager} install -y ${package_sysname}-appserver.x86_64
-
-	if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
+	if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ] || [ "$UPDATE" = "true" ]; then
 expect << EOF
 		set timeout -1
 		log_user 1
 
-		spawn appserver-configuration.sh
+		if { "${UPDATE}" == "true" } {
+			spawn ${product}-configuration.sh -e ${ENVIRONMENT}
+		} else {
+			spawn ${product}-configuration.sh
+		}
+
 		expect -re "Database host:"
 		send "\025$MYSQL_SERVER_HOST\r"
 
@@ -161,13 +180,14 @@ expect << EOF
 		send "\025$MYSQL_SERVER_USER\r"
 
 		expect -re "Database password:"
-		send "\025$MYSQL_TEMPORARY_ROOT_PASS\r"
+		send "\025$MYSQL_ROOT_PASS\r"
 
 		expect eof	
 EOF
-	APPSERVER_INSTALLED="true";
+		APPSERVER_INSTALLED="true";
 	else 
-		bash appserver-configuration.sh
+		bash ${product}-configuration.sh
+		APPSERVER_INSTALLED="true";
 	fi
 fi
 

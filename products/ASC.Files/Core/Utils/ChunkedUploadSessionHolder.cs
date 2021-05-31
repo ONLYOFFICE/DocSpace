@@ -46,12 +46,18 @@ namespace ASC.Web.Files.Utils
         private IOptionsMonitor<ILog> Options { get; }
         private GlobalStore GlobalStore { get; }
         private SetupInfo SetupInfo { get; }
+        private TempPath TempPath { get; }
 
-        public ChunkedUploadSessionHolder(IOptionsMonitor<ILog> options, GlobalStore globalStore, SetupInfo setupInfo)
+        public ChunkedUploadSessionHolder(
+            IOptionsMonitor<ILog> options,
+            GlobalStore globalStore,
+            SetupInfo setupInfo,
+            TempPath tempPath)
         {
             Options = options;
             GlobalStore = globalStore;
             SetupInfo = setupInfo;
+            TempPath = tempPath;
 
             // clear old sessions
             try
@@ -102,7 +108,7 @@ namespace ASC.Web.Files.Utils
 
         public void Move<T>(ChunkedUploadSession<T> chunkedUploadSession, string newPath)
         {
-            CommonSessionHolder().Move(chunkedUploadSession, newPath);
+            CommonSessionHolder().Move(chunkedUploadSession, newPath, chunkedUploadSession.CheckQuota);
         }
 
         public void AbortUploadSession<T>(ChunkedUploadSession<T> uploadSession)
@@ -117,7 +123,7 @@ namespace ASC.Web.Files.Utils
 
         private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)
         {
-            return new CommonChunkedUploadSessionHolder(Options, GlobalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, SetupInfo.ChunkUploadSize);
+            return new CommonChunkedUploadSessionHolder(TempPath, Options, GlobalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, SetupInfo.ChunkUploadSize);
         }
     }
 }

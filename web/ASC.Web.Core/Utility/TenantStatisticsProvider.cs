@@ -52,6 +52,17 @@ namespace ASC.Web.Studio.UserControls.Statistics
             return UserManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
         }
 
+        public int GetVisitorsCount()
+        {
+            return UserManager.GetUsersByGroup(Constants.GroupVisitor.ID).Length;
+        }
+
+        public int GetAdminsCount()
+        {
+            return UserManager.GetUsersByGroup(Constants.GroupAdmin.ID).Length;
+        }
+
+
         public long GetUsedSize()
         {
             return GetUsedSize(TenantManager.GetCurrentTenant().TenantId);

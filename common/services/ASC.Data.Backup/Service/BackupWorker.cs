@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 
 using ASC.Common;
@@ -63,6 +64,7 @@ namespace ASC.Data.Backup.Service
         private string UpgradesPath { get; set; }
         private ICacheNotify<BackupProgress> CacheBackupProgress { get; }
         private FactoryProgressItem FactoryProgressItem { get; set; }
+        private TempPath TempPath { get; }
 
         private readonly object SynchRoot = new object();
 
@@ -70,17 +72,19 @@ namespace ASC.Data.Backup.Service
             IOptionsMonitor<ILog> options,
             ICacheNotify<BackupProgress> cacheBackupProgress,
             DistributedTaskQueueOptionsManager progressQueue,
-            FactoryProgressItem factoryProgressItem)
+            FactoryProgressItem factoryProgressItem,
+            TempPath tempPath)
         {
             Log = options.CurrentValue;
-            ProgressQueue = progressQueue.Get<BackupProgressItem>();
+            ProgressQueue = progressQueue.Get<BaseBackupProgressItem>();
             CacheBackupProgress = cacheBackupProgress;
             FactoryProgressItem = factoryProgressItem;
+            TempPath = tempPath;
         }
 
         public void Start(BackupSettings settings)
         {
-            TempFolder = PathHelper.ToRootedPath(settings.TempFolder);
+            TempFolder = TempPath.GetTempPath();
             if (!Directory.Exists(TempFolder))
             {
                 Directory.CreateDirectory(TempFolder);
@@ -272,6 +276,16 @@ namespace ASC.Data.Backup.Service
             return progress;
         }
 
+        internal static string GetBackupHash(string path)
+        {
+            using (var sha256 = SHA256.Create())
+            using (var fileStream = File.OpenRead(path))
+            {
+                fileStream.Position = 0;
+                var hash = sha256.ComputeHash(fileStream);
+                return BitConverter.ToString(hash).Replace("-", string.Empty);
+            }
+        }
     }
 
     public enum BackupProgressItemEnum
@@ -284,7 +298,7 @@ namespace ASC.Data.Backup.Service
     public static class BackupProgressItemEnumConverter
     {
         public static BackupProgressEnum Convert(this BackupProgressItemEnum backupProgressItemEnum)
-            {
+        {
             return backupProgressItemEnum switch
             {
                 BackupProgressItemEnum.Backup => BackupProgressEnum.Backup,
@@ -292,7 +306,7 @@ namespace ASC.Data.Backup.Service
                 BackupProgressItemEnum.Transfer => BackupProgressEnum.Transfer,
                 _ => BackupProgressEnum.Backup
             };
-    }
+        }
     }
 
     public abstract class BaseBackupProgressItem : DistributedTaskProgress
@@ -314,12 +328,26 @@ namespace ASC.Data.Backup.Service
         public abstract BackupProgressItemEnum BackupProgressItemEnum { get; }
 
         public abstract object Clone();
+
+        protected ILog Log { get; set; }
+
+        protected IServiceProvider ServiceProvider { get; set; }
+
+        public BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        {
+            Log = options.CurrentValue;
+            ServiceProvider = serviceProvider;
+    }
     }
 
     [Transient]
     public class BackupProgressItem : BaseBackupProgressItem
     {
         private const string ArchiveFormat = "tar.gz";
+
+        public BackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+        {
+        }
 
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Backup; }
 
@@ -334,14 +362,6 @@ namespace ASC.Data.Backup.Service
         private string CurrentRegion { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
         private int Limit { get; set; }
-        private ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; set; }
-
-        public BackupProgressItem(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
-        {
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
-        }
 
         public void Init(BackupSchedule schedule, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
         {
@@ -399,7 +419,7 @@ namespace ASC.Data.Backup.Service
                 {
                     backupTask.IgnoreModule(ModuleName.Mail);
                 }
-                backupTask.IgnoreTable("tenants_tariff");
+
                 backupTask.ProgressChanged += (sender, args) =>
                 {
                     Percentage = 0.9 * args.Progress;
@@ -428,7 +448,8 @@ namespace ASC.Data.Backup.Service
                         StoragePath = storagePath,
                         CreatedOn = DateTime.UtcNow,
                         ExpiresOn = StorageType == BackupStorageType.DataStore ? DateTime.UtcNow.AddDays(1) : DateTime.MinValue,
-                        StorageParams = JsonConvert.SerializeObject(StorageParams)
+                        StorageParams = JsonConvert.SerializeObject(StorageParams),
+                        Hash = BackupWorker.GetBackupHash(tempFile)
                     });
 
                 Percentage = 100;
@@ -481,6 +502,10 @@ namespace ASC.Data.Backup.Service
     [Transient]
     public class RestoreProgressItem : BaseBackupProgressItem
     {
+        public RestoreProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+        {
+        }
+
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Restore; }
         public BackupStorageType StorageType { get; set; }
         public string StoragePath { get; set; }
@@ -490,16 +515,7 @@ namespace ASC.Data.Backup.Service
         private string CurrentRegion { get; set; }
         private string UpgradesPath { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
-        private ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; set; }
 
-        public RestoreProgressItem(
-            IOptionsMonitor<ILog> options,
-            IServiceProvider serviceProvider)
-        {
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
-        }
         public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string currentRegion, Dictionary<string, string> configPaths)
         {
             TenantId = request.TenantId;
@@ -516,7 +532,7 @@ namespace ASC.Data.Backup.Service
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-            var (tenantManager, backupStorageFactory, notifyHelper, _, backupWorker, _, restorePortalTask, _, _) = scopeClass;
+            var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, _, restorePortalTask, _, coreBaseSettings) = scopeClass;
             Tenant tenant = null;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             try
@@ -526,6 +542,16 @@ namespace ASC.Data.Backup.Service
                 notifyHelper.SendAboutRestoreStarted(tenant, Notify);
                 var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
+
+                if (!coreBaseSettings.Standalone)
+                {
+                    var backupHash = BackupWorker.GetBackupHash(tempFile);
+                    var record = backupRepository.GetBackupRecord(backupHash, TenantId);
+                    if (record == null)
+                    {
+                        throw new Exception(BackupResource.BackupNotFound);
+                    }
+                }
 
                 Percentage = 10;
 
@@ -549,9 +575,10 @@ namespace ASC.Data.Backup.Service
 
                 if (restoreTask.Dump)
                 {
+                    AscCacheNotify.OnClearCache();
+
                     if (Notify)
                     {
-                        AscCacheNotify.OnClearCache();
                         var tenants = tenantManager.GetTenants();
                         foreach (var t in tenants)
                         {
@@ -628,6 +655,10 @@ namespace ASC.Data.Backup.Service
     [Transient]
     public class TransferProgressItem : BaseBackupProgressItem
     {
+        public TransferProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+        {
+        }
+
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Transfer; }
         public string TargetRegion { get; set; }
         public bool TransferMail { get; set; }
@@ -638,18 +669,7 @@ namespace ASC.Data.Backup.Service
         public Dictionary<string, string> ConfigPaths { get; set; }
         public string CurrentRegion { get; set; }
         public int Limit { get; set; }
-        public ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; set; }
 
-
-        public TransferProgressItem(
-            IOptionsMonitor<ILog> options,
-            IServiceProvider serviceProvider
-            )
-        {
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
-        }
         public void Init(
             string targetRegion,
             bool transferMail,
@@ -697,7 +717,7 @@ namespace ASC.Data.Backup.Service
                 transferProgressItem.RunJob();
 
                 Link = GetLink(alias, false);
-                notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify);
+                notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify, transferProgressItem.ToTenantId);
                 PublishChanges();
             }
             catch (Exception error)
@@ -728,7 +748,7 @@ namespace ASC.Data.Backup.Service
 
         private string GetLink(string alias, bool isErrorLink)
         {
-            return "http://" + alias + "." + ConfigurationProvider.Open(ConfigPaths[isErrorLink ? CurrentRegion : TargetRegion]).AppSettings.Settings["core:base-domain"].Value;
+            return "https://" + alias + "." + ConfigurationProvider.Open(ConfigPaths[isErrorLink ? CurrentRegion : TargetRegion]).AppSettings.Settings["core:base-domain"].Value;
         }
 
         public override object Clone()
@@ -815,7 +835,7 @@ namespace ASC.Data.Backup.Service
         private BackupPortalTask BackupPortalTask { get; }
         private RestorePortalTask RestorePortalTask { get; }
         private TransferPortalTask TransferPortalTask { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
 
         public BackupWorkerScope(TenantManager tenantManager,
             BackupStorageFactory backupStorageFactory,

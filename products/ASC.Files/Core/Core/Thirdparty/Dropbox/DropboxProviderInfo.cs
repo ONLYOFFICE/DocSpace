@@ -154,17 +154,18 @@ namespace ASC.Files.Thirdparty.Dropbox
     internal class DropboxStorageDisposableWrapper : IDisposable
     {
         public DropboxStorage Storage { get; private set; }
+        private TempStream TempStream { get; }
 
-
-        public DropboxStorageDisposableWrapper()
+        public DropboxStorageDisposableWrapper(TempStream tempStream)
         {
+            TempStream = tempStream;
         }
 
         public DropboxStorage CreateStorage(OAuth20Token token)
         {
             if (Storage != null && Storage.IsOpened) return Storage;
 
-            var dropboxStorage = new DropboxStorage();
+            var dropboxStorage = new DropboxStorage(TempStream);
             dropboxStorage.Open(token);
             return Storage = dropboxStorage;
         }

@@ -2,6 +2,7 @@
 
 namespace ASC.Common.Threading
 {
+    [Transient]
     public class DistributedTaskProgress : DistributedTask
     {
         public double Percentage

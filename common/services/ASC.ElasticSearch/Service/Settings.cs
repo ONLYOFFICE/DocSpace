@@ -44,8 +44,10 @@ namespace ASC.ElasticSearch.Service
             Host = cfg.Host ?? "localhost";
             Port = cfg.Port ?? 9200;
             Period = cfg.Period ?? 1;
-            MemoryLimit = cfg.MemoryLimit ?? 1 * 1024 * 1024L;
-            MaxContentLength = cfg.MaxContentLength ?? 10 * 1024 * 1024L;
+            MaxContentLength = cfg.MaxContentLength ?? 100 * 1024 * 1024L;
+            MaxFileSize = cfg.MaxFileSize ?? 10 * 1024 * 1024L;
+            Threads = cfg.Threads ?? 1;
+            HttpCompression = cfg.HttpCompression ?? true;
         }
 
         public string Host { get; set; }
@@ -56,8 +58,12 @@ namespace ASC.ElasticSearch.Service
 
         public int? Period { get; set; }
 
-        public long? MemoryLimit { get; set; }
-
         public long? MaxContentLength { get; set; }
+
+        public long? MaxFileSize { get; set; }
+
+        public int? Threads { get; set; }
+
+        public bool? HttpCompression { get; set; }
     }
 }
