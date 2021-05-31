@@ -14,8 +14,20 @@
 	<ItemGroup>
 	  <None Remove="protos\BackupProgress.proto" />
 	  <None Remove="protos\DeleteSchedule.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="BackupResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BackupResource.resx</DependentUpon>
+    </Compile>
 	</ItemGroup>
-
+  <ItemGroup>
+    <EmbeddedResource Update="BackupResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BackupResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="Google.Protobuf" Version="3.13.0" />
 	  <PackageReference Include="Grpc" Version="2.32.0" />
@@ -25,7 +37,7 @@
 	  </PackageReference>
 	  <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
-	  <PackageReference Include="SharpCompress" Version="0.26.0" />
+	  <PackageReference Include="SharpZipLib" Version="1.3.2" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />

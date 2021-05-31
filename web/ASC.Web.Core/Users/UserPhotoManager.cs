@@ -529,6 +529,15 @@ namespace ASC.Web.Core.Users
             UserPhotoManagerCache.ClearCache(idUser);
         }
 
+        public void SyncPhoto(Guid userID, byte[] data)
+        {
+            data = TryParseImage(data, -1, OriginalFotoSize, out _, out int width, out int height);
+            UserManager.SaveUserPhoto(userID, data);
+            SetUserPhotoThumbnailSettings(userID, width, height);
+            UserPhotoManagerCache.ClearCache(userID);
+        }
+
+
         private string SaveOrUpdatePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
         {
             data = TryParseImage(data, maxFileSize, size, out var imgFormat, out var width, out var height);

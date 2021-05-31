@@ -1,4 +1,5 @@
 ﻿using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -29,7 +30,7 @@ namespace ASC.Core.Common.EF
                 .Add(MySqlAddDbQuota, Provider.MySql)
                 .Add(PgSqlAddDbQuota, Provider.Postgre)
                 .HasData(
-                    new DbQuota { Tenant = -1, Name = "default", Description = null, MaxFileSize = 102400, MaxTotalSize = 10995116277760, ActiveUsers = 10000, Features = "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption", Price = decimal.Parse("0,00"), Price2 = decimal.Parse("0,00"), AvangateId = "0", Visible = false }
+                    new DbQuota { Tenant = -1, Name = "default", Description = null, MaxFileSize = 102400, MaxTotalSize = 10995116277760, ActiveUsers = 10000, Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore", Price = decimal.Parse("0,00"), Price2 = decimal.Parse("0,00"), AvangateId = "0", Visible = false }
                 );
 
             return modelBuilder;

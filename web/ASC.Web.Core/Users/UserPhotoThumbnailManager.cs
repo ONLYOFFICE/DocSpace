@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 using ASC.Core.Common.Settings;
 
@@ -70,7 +71,7 @@ namespace ASC.Web.Core.Users
             return thumbnailsData.ThumbnailList();
         }
 
-        public static Bitmap GetBitmap(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
+        public static Bitmap GetBitmap(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings, InterpolationMode interpolationMode = InterpolationMode.HighQualityBicubic)
         {
             var thumbnailBitmap = new Bitmap(size.Width, size.Height);
 
@@ -84,13 +85,14 @@ namespace ASC.Web.Core.Users
 
             using (var graphic = Graphics.FromImage(thumbnailBitmap))
             {
-                graphic.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                graphic.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                graphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                graphic.DrawImage(mainImg, rect);
+                graphic.InterpolationMode = interpolationMode;
+                graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphic.SmoothingMode = SmoothingMode.HighQuality;
+                graphic.CompositingMode = CompositingMode.SourceCopy;
+                graphic.CompositingQuality = CompositingQuality.HighQuality;
 
                 using var wrapMode = new System.Drawing.Imaging.ImageAttributes();
-                wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
+                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
                 graphic.DrawImage(mainImg, rect, 0, 0, mainImg.Width, mainImg.Height, GraphicsUnit.Pixel, wrapMode);
             }
 

@@ -35,6 +35,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -72,19 +73,21 @@ namespace ASC.Data.Storage.GoogleCloud
         private bool _lowerCasing = true;
 
         public GoogleCloudStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+            IOptionsMonitor<ILog> options) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
         }
 
         public GoogleCloudStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            IOptionsMonitor<ILog> options) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }
 
@@ -237,6 +240,22 @@ namespace ASC.Data.Storage.GoogleCloud
             return tempStream;
         }
 
+        public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+        {
+            var tempStream = TempStream.Create();
+
+            var storage = GetStorage();
+
+            await storage.DownloadObjectAsync(_bucket, MakePath(domain, path), tempStream);
+
+            if (offset > 0)
+                tempStream.Seek(offset, SeekOrigin.Begin);
+
+            tempStream.Position = 0;
+
+            return tempStream;
+        }
+
         public override Uri Save(string domain, string path, System.IO.Stream stream)
         {
             return Save(domain, path, stream, string.Empty, string.Empty);
@@ -273,7 +292,7 @@ namespace ASC.Data.Storage.GoogleCloud
                           string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
         {
 
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
 
             if (QuotaController != null)
             {
@@ -457,7 +476,7 @@ namespace ASC.Data.Storage.GoogleCloud
             }
         }
 
-        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath)
+        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
         {
             using var storage = GetStorage();
 
@@ -473,7 +492,7 @@ namespace ASC.Data.Storage.GoogleCloud
             Delete(srcdomain, srcpath);
 
             QuotaUsedDelete(srcdomain, size);
-            QuotaUsedAdd(newdomain, size);
+            QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
 
             return GetUri(newdomain, newpath);
 
@@ -515,6 +534,15 @@ namespace ASC.Data.Storage.GoogleCloud
             using var storage = GetStorage();
 
             var objects = storage.ListObjects(_bucket, MakePath(domain, path), null);
+
+            return objects.Count() > 0;
+        }
+
+        public override async Task<bool> IsFileAsync(string domain, string path)
+        {
+            var storage = GetStorage();
+
+            var objects = await storage.ListObjectsAsync(_bucket, MakePath(domain, path)).ReadPageAsync(1);
 
             return objects.Count() > 0;
         }
@@ -662,7 +690,7 @@ namespace ASC.Data.Storage.GoogleCloud
             using var storage = GetStorage();
 
             var objectKey = MakePath(domain, path);
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
 
             var uploadObjectOptions = new UploadObjectOptions
             {

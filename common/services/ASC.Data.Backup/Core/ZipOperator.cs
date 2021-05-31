@@ -24,97 +24,82 @@
 */
 
 
-using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
-using ASC.Common.Utils;
+using ASC.Common;
 
-using SharpCompress.Common;
-using SharpCompress.Readers;
-using SharpCompress.Writers;
+using ICSharpCode.SharpZipLib.GZip;
+using ICSharpCode.SharpZipLib.Tar;
 
 namespace ASC.Data.Backup
 {
     public class ZipWriteOperator : IDataWriteOperator
     {
-        private readonly IWriter writer;
+        private readonly GZipOutputStream gZipOutputStream;
+        private readonly TarOutputStream tarOutputStream;
         private readonly Stream file;
 
+        private TempStream TempStream { get; }
 
-        public ZipWriteOperator(string targetFile)
+        public ZipWriteOperator(TempStream tempStream, string targetFile)
         {
             file = new FileStream(targetFile, FileMode.Create);
-            writer = WriterFactory.Open(file, ArchiveType.Tar, CompressionType.GZip);
+            gZipOutputStream = new GZipOutputStream(file);
+            tarOutputStream = new TarOutputStream(gZipOutputStream, Encoding.UTF8);
+            TempStream = tempStream;
         }
 
-        public void WriteEntry(string key, string source)
+        public void WriteEntry(string key, Stream stream)
         {
-            writer.Write(key, source);
+            using (var buffered = TempStream.GetBuffered(stream))
+            {
+                var entry = TarEntry.CreateTarEntry(key);
+                entry.Size = buffered.Length;
+                tarOutputStream.PutNextEntry(entry);
+                buffered.Position = 0;
+                buffered.CopyTo(tarOutputStream);
+                tarOutputStream.CloseEntry();
+            }
         }
 
         public void Dispose()
         {
-            writer.Dispose();
-            file.Close();
+            tarOutputStream.Close();
+            tarOutputStream.Dispose();
         }
     }
 
     public class ZipReadOperator : IDataReadOperator
     {
         private readonly string tmpdir;
-        public List<string> Entries { get; private set; }
 
         public ZipReadOperator(string targetFile)
         {
-            tmpdir = CrossPlatform.PathCombine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
-            Entries = new List<string>();
+            tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
 
-            using var stream = File.OpenRead(targetFile);
-            var reader = ReaderFactory.Open(stream, new ReaderOptions { LookForHeader = true, LeaveStreamOpen = true });
-            while (reader.MoveToNextEntry())
+            using (var stream = File.OpenRead(targetFile))
+            using (var reader = new GZipInputStream(stream))
+            using (var tarOutputStream = TarArchive.CreateInputTarArchive(reader, Encoding.UTF8))
             {
-                if (reader.Entry.IsDirectory) continue;
-
-                if (reader.Entry.Key == "././@LongLink")
-                {
-                    string fullPath;
-                    using (var streamReader = new StreamReader(reader.OpenEntryStream()))
-                    {
-                        fullPath = streamReader.ReadToEnd().TrimEnd(char.MinValue);
-                    }
-
-                    fullPath = CrossPlatform.PathCombine(tmpdir, fullPath);
-
-                    if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-                    }
-
-                    reader.MoveToNextEntry();
-
-                    using var fileStream = File.Create(fullPath);
-                    using var entryStream = reader.OpenEntryStream();
-                    entryStream.CopyTo(fileStream);
-                }
-                else
-                {
-                    try
-                    {
-                        reader.WriteEntryToDirectory(tmpdir, new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
-                    }
-                    catch (ArgumentException)
-                    {
-                    }
-                }
-                Entries.Add(reader.Entry.Key);
+                tarOutputStream.ExtractContents(tmpdir);
             }
+
+            File.Delete(targetFile);
         }
 
         public Stream GetEntry(string key)
         {
-            var filePath = CrossPlatform.PathCombine(tmpdir, key);
+            var filePath = Path.Combine(tmpdir, key);
             return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
+        }
+
+        public IEnumerable<string> GetEntries(string key)
+        {
+            var path = Path.Combine(tmpdir, key);
+            var files = Directory.EnumerateFiles(path);
+            return files;
         }
 
         public void Dispose()
