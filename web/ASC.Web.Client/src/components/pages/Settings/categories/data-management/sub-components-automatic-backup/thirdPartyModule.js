@@ -1,15 +1,18 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import SelectedFolder from "files/SelectedFolder";
 import ScheduleComponent from "./scheduleComponent";
+
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import {
   createBackupSchedule,
   getBackupSchedule,
 } from "@appserver/common/api/portal";
-
 import toastr from "@appserver/components/toast/toastr";
 import TextInput from "@appserver/components/text-input";
+import Box from "@appserver/components/box";
+import Link from "@appserver/components/link";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 import { StyledComponent } from "../styled-backup";
 
@@ -562,9 +565,7 @@ class ThirdPartyModule extends React.Component {
     } = this.state;
     const {
       isLoadingData,
-
       weekOptions,
-
       periodOptions,
       monthNumberOptionsArray,
       timeOptionsArray,
@@ -572,6 +573,7 @@ class ThirdPartyModule extends React.Component {
       isCopyingToLocal,
       t,
       onSetLoadingData,
+      helpUrlCreatingBackup,
     } = this.props;
     //console.log("selectedFolder THRDPARTY", selectedFolder);
     // console.log("third-party module render", this.folderThirdPartyModulePath);
@@ -579,6 +581,17 @@ class ThirdPartyModule extends React.Component {
     return (
       <div className="category-item-wrapper">
         <>
+          <Box marginProp="16px 0 16px 0">
+            <Link
+              color="#316DAA"
+              target="_blank"
+              isHovered={true}
+              href={helpUrlCreatingBackup}
+            >
+              {t("LearnMore")}
+            </Link>
+          </Box>
+
           {!isLoading ? (
             <SelectedFolder
               onSelectFolder={this.onSelectFolder}
@@ -637,4 +650,9 @@ class ThirdPartyModule extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(ThirdPartyModule);
+export default inject(({ auth }) => {
+  const { helpUrlCreatingBackup } = auth.settingsStore;
+  return {
+    helpUrlCreatingBackup,
+  };
+})(withTranslation("Settings")(observer(ThirdPartyModule)));
