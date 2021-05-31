@@ -16,6 +16,7 @@ import {
 } from "../../../utils";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import { isMobile } from "react-device-detect";
 
 const HeaderContainer = styled.div`
   position: relative;
@@ -54,14 +55,37 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
+    ${(props) =>
+      !props.isTabletView
+        ? props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 40 + "px"};
+          `
+        : props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 24 + "px"};
+          `}
 
     @media ${tablet} {
+      padding-bottom: 0;
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
-          props.isArticlePinned &&
+          !isMobile &&
+          props.width &&
           css`
-            width: calc(100% - 240px);
+            width: ${props.width + 16 + "px"};
           `}
+
         position: absolute;
         top: 56px;
         z-index: 180;
