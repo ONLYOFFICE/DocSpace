@@ -17,10 +17,6 @@ import config from "../../package.json";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = { showConvertDialog: false };
-    }
     onClickLock = () => {
       const { item, lockFileAction, isAdmin } = this.props;
       const { locked, id, access } = item;
@@ -74,26 +70,23 @@ export default function withBadges(WrappedComponent) {
       }
     };
 
-    setConvertDialogVisible = () =>
-      this.setState({ showConvertDialog: !this.state.showConvertDialog });
-
-    onConvert = () => {
-      const { item, t, setSecondaryProgressBarData } = this.props;
-      setSecondaryProgressBarData({
-        icon: "file",
-        visible: true,
-        percent: 0,
-        label: t("Convert"),
-        alert: false,
-      });
-      this.setState({ showConvertDialog: false }, () =>
-        convertFile(item.id).then((convertRes) => {
-          if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
-            this.getConvertProgress(item.id);
-          }
-        })
-      );
-    };
+    // onConvert = () => {
+    //   const { item, t, setSecondaryProgressBarData } = this.props;
+    //   setSecondaryProgressBarData({
+    //     icon: "file",
+    //     visible: true,
+    //     percent: 0,
+    //     label: t("Convert"),
+    //     alert: false,
+    //   });
+    //   this.setState({ showConvertDialog: false }, () =>
+    //     convertFile(item.id).then((convertRes) => {
+    //       if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
+    //         this.getConvertProgress(item.id);
+    //       }
+    //     })
+    //   );
+    // };
 
     getConvertProgress = (fileId) => {
       const {
@@ -148,7 +141,6 @@ export default function withBadges(WrappedComponent) {
       });
     };
     render() {
-      const { showConvertDialog } = this.state;
       const {
         t,
         item,
@@ -157,6 +149,7 @@ export default function withBadges(WrappedComponent) {
         canConvert,
         onFilesClick, // from withFileAction HOC
         isAdmin,
+        setConvertDialogVisible,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -182,22 +175,13 @@ export default function withBadges(WrappedComponent) {
           onClickFavorite={this.onClickFavorite}
           onShowVersionHistory={this.onShowVersionHistory}
           onBadgeClick={this.onBadgeClick}
-          setConvertDialogVisible={this.setConvertDialogVisible}
+          setConvertDialogVisible={setConvertDialogVisible}
           onFilesClick={onFilesClick}
         />
       );
 
       return (
-        <>
-          {showConvertDialog && (
-            <ConvertDialog
-              visible={showConvertDialog}
-              onClose={this.setConvertDialogVisible}
-              onConvert={this.onConvert}
-            />
-          )}
-          <WrappedComponent badgesComponent={badgesComponent} {...this.props} />
-        </>
+        <WrappedComponent badgesComponent={badgesComponent} {...this.props} />
       );
     }
   }

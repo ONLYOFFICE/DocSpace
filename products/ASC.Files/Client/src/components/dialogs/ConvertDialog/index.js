@@ -24,7 +24,10 @@ class ConvertDialogComponent extends React.Component {
     this.setState({ hideMessage: !this.state.hideMessage });
 
   onConvert = () => this.props.convertUploadedFiles(this.props.t);
-  onClose = () => this.props.setDialogVisible(this.props.t);
+  onClose = () => {
+    setConvertDialogVisible(false);
+    //this.props.setDialogVisible(this.props.t)
+  };
 
   render() {
     const { t, visible } = this.props;
@@ -83,13 +86,18 @@ class ConvertDialogComponent extends React.Component {
 
 const ConvertDialog = withTranslation("ConvertDialog")(ConvertDialogComponent);
 
-export default inject(({ uploadDataStore, treeFoldersStore }) => {
+export default inject(({ uploadDataStore, treeFoldersStore, dialogsStore }) => {
   const { setTreeFolders } = treeFoldersStore;
-  const { setDialogVisible, convertUploadedFiles } = uploadDataStore;
+  const { convertUploadedFiles } = uploadDataStore;
+  const {
+    convertDialogVisible: visible,
+    setConvertDialogVisible,
+  } = dialogsStore;
 
   return {
     setTreeFolders,
-    setDialogVisible,
     convertUploadedFiles,
+    visible,
+    setConvertDialogVisible,
   };
 })(withRouter(observer(ConvertDialog)));

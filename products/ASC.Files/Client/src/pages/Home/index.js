@@ -217,7 +217,6 @@ class PureHome extends React.Component {
     //console.log("Home render");
     const {
       viewAs,
-      convertDialogVisible,
       fileActionId,
       firstLoad,
       isHeaderVisible,
@@ -239,10 +238,6 @@ class PureHome extends React.Component {
 
     return (
       <>
-        {convertDialogVisible && (
-          <ConvertDialog visible={convertDialogVisible} />
-        )}
-
         <MediaViewer />
         <DragTooltip />
         <PageLayout
@@ -311,7 +306,6 @@ export default inject(
     auth,
     filesStore,
     uploadDataStore,
-    dialogsStore,
     selectedFolderStore,
     treeFoldersStore,
   }) => {
@@ -353,8 +347,6 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
     } = secondaryProgressDataStore;
 
-    const { convertDialogVisible } = dialogsStore;
-
     const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
@@ -386,7 +378,6 @@ export default inject(
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
 
-      convertDialogVisible,
       selectionLength,
       isProgressFinished,
       selectionTitle,

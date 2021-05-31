@@ -19,6 +19,7 @@ class DialogsStore {
   thirdPartyDialogVisible = false;
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
+  convertDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -159,6 +160,10 @@ class DialogsStore {
 
   setUnsubscribe = (unsubscribe) => {
     this.unsubscribe = unsubscribe;
+  };
+
+  setConvertDialogVisible = (visible) => {
+    this.convertDialogVisible = visible;
   };
 }
 

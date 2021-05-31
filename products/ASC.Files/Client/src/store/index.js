@@ -38,18 +38,20 @@ const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
+
+const dialogsStore = new DialogsStore(
+  treeFoldersStore,
+  filesStore,
+  selectedFolderStore
+);
 const uploadDataStore = new UploadDataStore(
   formatsStore,
   treeFoldersStore,
   selectedFolderStore,
   filesStore,
   secondaryProgressDataStore,
-  primaryProgressDataStore
-);
-const dialogsStore = new DialogsStore(
-  treeFoldersStore,
-  filesStore,
-  selectedFolderStore
+  primaryProgressDataStore,
+  dialogsStore
 );
 const filesActionsStore = new FilesActionsStore(
   store.auth,

@@ -18,6 +18,7 @@ class UploadDataStore {
   filesStore;
   secondaryProgressDataStore;
   primaryProgressDataStore;
+  dialogsStore;
 
   files = [];
   filesSize = 0;
@@ -30,7 +31,6 @@ class UploadDataStore {
   uploaded = true;
 
   uploadPanelVisible = false;
-  convertDialogVisible = false;
 
   selectedUploadFile = [];
 
@@ -40,7 +40,8 @@ class UploadDataStore {
     selectedFolderStore,
     filesStore,
     secondaryProgressDataStore,
-    primaryProgressDataStore
+    primaryProgressDataStore,
+    dialogsStore
   ) {
     makeAutoObservable(this);
     this.formatsStore = formatsStore;
@@ -49,6 +50,7 @@ class UploadDataStore {
     this.filesStore = filesStore;
     this.secondaryProgressDataStore = secondaryProgressDataStore;
     this.primaryProgressDataStore = primaryProgressDataStore;
+    this.dialogsStore = dialogsStore;
   }
 
   selectUploadedFile = (file) => {
@@ -128,47 +130,43 @@ class UploadDataStore {
     this.setUploadData(newUploadData);
   };
 
-  setConvertDialogVisible = (convertDialogVisible) => {
-    this.convertDialogVisible = convertDialogVisible;
-  };
-
   getFilesToConvert = (files) => {
     const filesToConvert = files.filter((f) => f.action === "convert");
     return filesToConvert;
   };
 
-  setDialogVisible = (t) => {
-    this.setConvertDialogVisible(false);
-    const label = t("UploadingLabel", {
-      file: this.uploadedFiles,
-      totalFiles: this.files.length,
-    });
+  // setDialogVisible = (t) => {
+  //   this.dialogsStore.setConvertDialogVisible(false);
+  //   const label = t("UploadingLabel", {
+  //     file: this.uploadedFiles,
+  //     totalFiles: this.files.length,
+  //   });
 
-    if (this.uploadStatus === null) {
-      this.primaryProgressDataStore.setPrimaryProgressBarData({
-        icon: "upload",
-        label,
-        percent: 100,
-        visible: true,
-        alert: false,
-      });
-      this.uploadData.uploadedFiles = 0;
-      this.uploadData.percent = 0;
-      //setUploadData(uploadData);
-    } else if (!this.files.length) {
-      this.primaryProgressDataStore.clearPrimaryProgressData();
-    } else {
-      this.primaryProgressDataStore.setPrimaryProgressBarData({
-        icon: "upload",
-        label,
-        percent: this.percent,
-        visible: true,
-        alert: false,
-      });
-      this.uploadData.uploadStatus = "cancel";
-      //setUploadData(uploadData);
-    }
-  };
+  //   if (this.uploadStatus === null) {
+  //     this.primaryProgressDataStore.setPrimaryProgressBarData({
+  //       icon: "upload",
+  //       label,
+  //       percent: 100,
+  //       visible: true,
+  //       alert: false,
+  //     });
+  //     this.uploadData.uploadedFiles = 0;
+  //     this.uploadData.percent = 0;
+  //     //setUploadData(uploadData);
+  //   } else if (!this.files.length) {
+  //     this.primaryProgressDataStore.clearPrimaryProgressData();
+  //   } else {
+  //     this.primaryProgressDataStore.setPrimaryProgressBarData({
+  //       icon: "upload",
+  //       label,
+  //       percent: this.percent,
+  //       visible: true,
+  //       alert: false,
+  //     });
+  //     this.uploadData.uploadStatus = "cancel";
+  //     //setUploadData(uploadData);
+  //   }
+  // };
 
   getNewPercent = (uploadedSize, indexOfFile) => {
     const newTotalSize = sumBy(this.files, (f) => f.file.size);
@@ -204,7 +202,7 @@ class UploadDataStore {
 
   startConvertFiles = async (files, t) => {
     const total = files.length;
-    this.setConvertDialogVisible(false);
+    this.dialogsStore.setConvertDialogVisible(false);
 
     this.primaryProgressDataStore.setPrimaryProgressBarData({
       icon: "file",
@@ -286,6 +284,7 @@ class UploadDataStore {
   };
 
   startUpload = (uploadFiles, folderId, t) => {
+    debugger;
     const { canConvert } = this.formatsStore.docserviceStore;
 
     let newFiles = this.files;
@@ -297,6 +296,7 @@ class UploadDataStore {
       const parts = file.name.split(".");
       const ext = parts.length > 1 ? "." + parts.pop() : "";
       const needConvert = canConvert(ext);
+      console.log("needConvert", needConvert);
 
       newFiles.push({
         file: file,
@@ -455,7 +455,7 @@ class UploadDataStore {
     /*const filesToConvert = this.getFilesToConvert(files);
     if (filesToConvert.length > 0) {
       // Ask to convert options
-      return dispatch(setConvertDialogVisible(true));
+      return dispatch(this.dialogsStore.setConvertDialogVisible(true););
     }*/
 
     // All files has been uploaded and nothing to convert
