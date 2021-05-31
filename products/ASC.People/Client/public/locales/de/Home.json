@@ -3,6 +3,7 @@
   "ChangeToGuest": "Zu {{guestCaption}} ändern",
   "ChangeToUser": "Zu {{userCaption}} ändern",
   "EmptyGroupDescription": "Sie können neue Teammitglieder manuell oder über den Link einladen.",
+  "EmptyGroupTitle": "",
   "LblInviteAgain": "Erneut einladen",
   "LblInvited": "Eingeladen",
   "LblOther": "Sonstiges",

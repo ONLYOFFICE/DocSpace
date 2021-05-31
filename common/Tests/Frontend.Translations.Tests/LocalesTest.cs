@@ -268,7 +268,7 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, duplicates.Count, string.Join(", ", duplicates.Select(d => JObject.FromObject(d).ToString())));
         }
 
-        private static void SaveNotFoundLanguage(string existJsonPath, string notExistJsonPath)
+        public static void SaveNotFoundLanguage(string existJsonPath, string notExistJsonPath)
         {
             if (!File.Exists(existJsonPath) || File.Exists(notExistJsonPath))
                 return;
@@ -343,53 +343,70 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, incompleteList.Count, message);
         }
 
+        public static void SaveNotFoundKeys(string pathToJson, List<string> newKeys)
+        {
+            if (!File.Exists(pathToJson))
+                return;
+
+            var jsonTranslation = JObject.Parse(File.ReadAllText(pathToJson));
+
+            var properties = jsonTranslation.Properties().Select(t => t).ToList();
+
+            properties.AddRange(newKeys.Select(k => new JProperty(k, ""))); //.ForEach(p => p.Value = "");
+
+            properties = properties.OrderBy(t => t.Name).ToList();
+
+            var result = new JObject(properties);
+
+            var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
+
+            File.WriteAllText(pathToJson, sortedJsonString);
+        }
+
         [Test]
         public void NotTranslatedKeysTest()
         {
-            var groupedByLng = TranslationFiles
-                .GroupBy(t => t.Language)
-                .Select(grp => new
-                {
-                    Lng = grp.Key,
-                    Keys = grp
-                        .SelectMany(k => k.Translations)
-                        .OrderByDescending(itm => itm.Key)
-                        .ToList()
-                })
-                .ToList();
+            var message = $"Next languages are not equal 'en' by translated keys count:\r\n\r\n";
 
-            var enGroup = groupedByLng.Find(f => f.Lng == "en");
+            var exists = false;
 
-            var expectedCount = enGroup.Keys.Count;
+            var i = 0;
 
-            var otherLngs = groupedByLng.Where(g => g.Lng != "en");
-
-            var incompleteList = otherLngs
-                    .Where(lng => lng.Keys.Count != expectedCount)
-                    .Select(lng => new { Issue = $"Language '{lng.Lng}' (Count={lng.Keys.Count}). Not found keys:\r\n", lng.Lng, lng.Keys })
-                    .ToList();
-
-            var message = $"Next languages are not equal 'en' (Count= {expectedCount}) by translated keys count:\r\n\r\n";
-
-            if (incompleteList.Count > 0)
+            foreach (var module in ModuleFolders)
             {
-                var enKeys = enGroup.Keys.Select(f => f.Key);
+                if (module.AvailableLanguages == null)
+                    continue;
 
-                for (int i = 0; i < incompleteList.Count; i++)
+                var enLanguages = module.AvailableLanguages.Where(l => l.Language == "en").ToList();
+
+                var otherLanguages = module.AvailableLanguages.Where(l => l.Language != "en").ToList();
+
+                foreach (var lng in otherLanguages)
                 {
-                    var lng = incompleteList[i];
+                    var lngKeys = lng.Translations.Select(f => f.Key).ToList();
 
-                    message += $"{i}. {lng.Issue}\r\n";
+                    var enKeys = enLanguages.Where(l => l.Path == lng.Path.Replace($"\\{lng.Language}\\", "\\en\\"))
+                        .SelectMany(l => l.Translations.Select(f => f.Key))
+                        .ToList();
 
-                    var lngKeys = lng.Keys.Select(f => f.Key).ToList();
+                    var notFoundKeys = enKeys.Except(lngKeys).ToList();
 
-                    var notFoundKeys = enKeys.Except(lngKeys);
+                    if (!notFoundKeys.Any())
+                        continue;
+
+                    exists = true;
+
+                    message += $"{++i}. Language ('{lng.Language}'={notFoundKeys.Count}/'en'={enKeys.Count}). Path '{lng.Path}' " +
+                        $"Not found keys:\r\n\r\n";
 
                     message += string.Join("\r\n", notFoundKeys) + "\r\n\r\n";
+
+                    // Save empty not found keys
+                    //SaveNotFoundKeys(lng.Path, notFoundKeys);
                 }
             }
 
-            Assert.AreEqual(0, incompleteList.Count, message);
+            Assert.AreEqual(false, exists, message);
         }
 
         [Test]

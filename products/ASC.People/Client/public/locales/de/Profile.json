@@ -2,12 +2,17 @@
   "Birthdate": "Geburtsdatum",
   "ChangeEmailSuccess": "E-Mail wurde erfolgreich geändert",
   "ChangesApplied": "Die Änderungen wurden übernommen",
+  "Connect": "",
   "ContactInformation": "Kontaktdaten",
+  "Disconnect": "",
   "EditPhoto": "Bild bearbeiten",
   "EditSubscriptionsBtn": "Abonnements bearbeiten",
   "EditUser": "Profil bearbeiten",
   "InviteAgainLbl": "Erneut einladen",
+  "LoginSettings": "",
   "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",
   "PhoneLbl": "Telefon",
+  "ProviderSuccessfullyConnected": "",
+  "ProviderSuccessfullyDisconnected": "",
   "Subscriptions": "Abonnements"
 }
