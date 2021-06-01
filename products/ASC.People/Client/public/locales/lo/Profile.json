@@ -1,0 +1,18 @@
+{
+  "Birthdate": "ວັນເກີດ",
+  "ChangeEmailSuccess": "ອີເມວໄດ້ຖືກປ່ຽນແປງແລ້ວ",
+  "ChangesApplied": "ນຳໃຊ້ການປ່ຽນແປງ",
+  "Connect": "",
+  "ContactInformation": "ຂໍ້​ມູນ​ຕິດ​ຕໍ່",
+  "Disconnect": "",
+  "EditPhoto": "ແກ້ໄຂຮູບພາບ",
+  "EditSubscriptionsBtn": "ແກ້ໄຂການສະໝັກສະມາຊິກ",
+  "EditUser": "",
+  "InviteAgainLbl": "ເຊີນອີກຄັ້ງ",
+  "LoginSettings": "",
+  "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ <strong>{{ email }}</strong> ທີ່ຢູ່ອີເມວ",
+  "PhoneLbl": "ໂທລະສັບ",
+  "ProviderSuccessfullyConnected": "",
+  "ProviderSuccessfullyDisconnected": "",
+  "Subscriptions": "ການສະໝັກຮັບຂໍ້ມູນ"
+}
