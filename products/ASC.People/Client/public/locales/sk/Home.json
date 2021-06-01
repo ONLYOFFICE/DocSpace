@@ -1,0 +1,20 @@
+{
+  "Administrator": "",
+  "ChangeToGuest": "",
+  "ChangeToUser": "",
+  "EmptyGroupDescription": "",
+  "EmptyGroupTitle": "",
+  "LblInviteAgain": "",
+  "LblInvited": "",
+  "LblOther": "",
+  "LblSendEmail": "",
+  "LblSendMessage": "",
+  "LblSetActive": "",
+  "LblSetDisabled": "",
+  "MakeInvitationLink": "",
+  "MessageEmailActivationInstuctionsSentOnEmail": "",
+  "NotFoundDescription": "",
+  "NotFoundTitle": "",
+  "SuccessfullyRemovedGroup": "",
+  "UserStatus": ""
+}

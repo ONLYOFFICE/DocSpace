@@ -1,0 +1,16 @@
+{
+  "ChangePasswordSuccess": "Heslo bolo úspešne zmenené",
+  "ConfirmOwnerPortalSuccessMessage": "",
+  "ConfirmOwnerPortalTitle": "",
+  "DeleteProfileBtn": "Vymazať môj účet",
+  "DeleteProfileConfirmation": "Pozor! Idete si zmazať účet.",
+  "DeleteProfileConfirmationInfo": "Odkliknutím \"Vymazať môj účet\" súhlasíte s našou politikou Ochrany súkromia.",
+  "DeleteProfileSuccessMessage": "",
+  "DeleteProfileSuccessMessageInfo": "",
+  "EmailAndPasswordCopiedToClipboard": "E-mail a heslo boli skopírované do schránky",
+  "FirstName": "Krstné meno",
+  "InviteTitle": "",
+  "LoginRegistryButton": "Pripojiť",
+  "LoginWithAccount": "alebo sa prihláste s:",
+  "PassworResetTitle": ""
+}

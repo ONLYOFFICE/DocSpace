@@ -1,0 +1,17 @@
+{
+  "DomainIpAddress": "",
+  "EmailActivationDescription": "",
+  "EmailChangeTitle": "",
+  "EmptyEmail": "",
+  "EnterEmail": "",
+  "IncorrectDomain": "",
+  "IncorrectEmail": "",
+  "IncorrectLocalPart": "",
+  "LocalDomain": "",
+  "ManyEmails": "",
+  "MaxLengthExceeded": "",
+  "PunycodeDomain": "",
+  "PunycodeLocalPart": "",
+  "SameEmail": "",
+  "SpacesInLocalPart": ""
+}
