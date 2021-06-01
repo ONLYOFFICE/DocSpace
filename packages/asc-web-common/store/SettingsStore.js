@@ -212,7 +212,11 @@ class SettingsStore {
   };
 
   setModuleInfo = (homepage, productId) => {
-    if (this.homepage == homepage) return;
+    if (this.homepage === homepage || this.currentProductId === productId)
+      return;
+
+    console.log(`setModuleInfo('${homepage}', '${productId}')`);
+
     this.homepage = homepage;
     this.setCurrentProductId(productId);
 
@@ -223,7 +227,9 @@ class SettingsStore {
           ? homepage
           : `${homepage}/`
         : "/";
+
       console.log("SET base URL", baseUrl);
+
       baseElm[0].setAttribute("href", baseUrl);
     }
   };

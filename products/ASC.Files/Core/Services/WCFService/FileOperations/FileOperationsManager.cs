@@ -46,9 +46,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private IServiceProvider ServiceProvider { get; }
 
-        public FileOperationsManager(DistributedTaskCacheNotify distributedTaskCacheNotify, IServiceProvider serviceProvider)
+        public FileOperationsManager(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
         {
-            tasks = new DistributedTaskQueue(distributedTaskCacheNotify, "fileOperations", 10);
+            tasks = distributedTaskQueueOptionsManager.Get<FileOperation>();
             ServiceProvider = serviceProvider;
         }
 
@@ -62,9 +62,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
                 {
-                    o.SetProperty(FileOperation.PROGRESS, 100);
-                    tasks.RemoveTask(o.Id);
-                }
+                o.SetProperty(FileOperation.PROGRESS, 100);
+                tasks.RemoveTask(o.Id);
+            }
             }
 
             operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId);
@@ -179,6 +179,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             services.TryAdd<FileMoveCopyOperationScope>();
             services.TryAdd<FileOperationScope>();
             services.TryAdd<FileDownloadOperationScope>();
+            services.AddDistributedTaskQueueService<FileOperation>(10);
         }
-    }
+        }
 }

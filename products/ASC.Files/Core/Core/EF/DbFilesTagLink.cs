@@ -1,6 +1,8 @@
 ﻿using System;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -53,7 +55,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("entry_id")
                     .HasColumnType("varchar(32)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.EntryType).HasColumnName("entry_type");
 
@@ -61,7 +63,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("create_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")

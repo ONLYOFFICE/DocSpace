@@ -1682,10 +1682,10 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <returns>Shared file information</returns>
         [Delete("share")]
-        public bool RemoveSecurityInfo(BaseBatchModel<object> model)
+        public bool RemoveSecurityInfo(BaseBatchModel<JsonElement> model)
         {
-            FilesControllerHelperInt.RemoveSecurityInfo(model.FileIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList(), model.FolderIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList());
-            FilesControllerHelperString.RemoveSecurityInfo(model.FileIds.OfType<string>().ToList(), model.FolderIds.OfType<string>().ToList());
+            FilesControllerHelperInt.RemoveSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList());
+            FilesControllerHelperString.RemoveSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList());
             return true;
         }
 
@@ -1973,7 +1973,9 @@ namespace ASC.Api.Documents
                 FilesSettingsHelper.UpdateIfExist,
                 FilesSettingsHelper.Forcesave,
                 FilesSettingsHelper.StoreForcesave,
-                FilesSettingsHelper.EnableThirdParty
+                FilesSettingsHelper.EnableThirdParty,
+                FilesSettingsHelper.RecentSection,
+                FilesSettingsHelper.FavoritesSection
             };
         }
 

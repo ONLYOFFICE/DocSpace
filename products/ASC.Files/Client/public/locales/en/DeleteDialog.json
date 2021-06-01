@@ -15,5 +15,9 @@
   "MoveToTrashItemsNote": "If you delete shared items, other users won’t be able to access them.",
 
   "MoveToTrashButton": "Move to Trash",
-  "CancelButton": "Cancel"
+  "CancelButton": "Cancel",
+
+  "UnsubscribeButton": "Unsubscribe",
+  "UnsubscribeTitle": "Unsubscribe confirmation",
+  "UnsubscribeNote": "Are you sure you want to unsubscribe from the selected items from the list?"
 }

@@ -427,6 +427,15 @@ export function setShareFiles(
   });
 }
 
+export function removeShareFiles(fileIds, folderIds) {
+  const data = { fileIds, folderIds };
+  return request({
+    method: "delete",
+    url: "/files/share",
+    data,
+  });
+}
+
 export function setFileOwner(folderIds, fileIds, userId) {
   const data = { folderIds, fileIds, userId };
   return request({
@@ -707,5 +716,21 @@ export function updateFileStream(file, fileId, encrypted, forcesave) {
     method: "put",
     url: `/files/${fileId}/update`,
     data: fd,
+  });
+}
+
+export function setFavoritesSetting(set) {
+  return request({
+    method: "put",
+    url: "/files/settings/favorites",
+    data: { set },
+  });
+}
+
+export function setRecentSetting(set) {
+  return request({
+    method: "put",
+    url: "/files/displayRecent",
+    data: { set },
   });
 }
