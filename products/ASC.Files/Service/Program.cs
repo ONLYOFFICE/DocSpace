@@ -9,6 +9,7 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.ElasticSearch;
 using ASC.Feed.Aggregator;
+using ASC.Files.ThumbnailBuilder;
 using ASC.Web.Files.Core.Search;
 
 using Autofac;
@@ -74,6 +75,9 @@ namespace ASC.Files.Service
 
                     services.AddHostedService<FeedAggregatorService>();
                     diHelper.TryAdd<FeedAggregatorService>();
+
+                    services.AddHostedService<Launcher>();
+                    diHelper.TryAdd<Launcher>();
 
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
                     //diHelper.TryAdd<FileConverter>();

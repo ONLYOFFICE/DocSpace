@@ -109,8 +109,7 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 if (SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
-                    && (!CoreBaseSettings.Standalone
-                        || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Sso))
+                    && TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Sso)
                 {
                     //var settings = SettingsManager.Load<SsoSettingsV2>();
 

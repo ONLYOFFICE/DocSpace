@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
     <value>Gentile $UserName,
@@ -112,32 +112,6 @@ Puoi anche modificare i documenti offline con i nostri "editor desktop" gratuiti
 Cordiali saluti,
 il team ONLYOFFICE</value>
   </data>
-  <data name="pattern_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>$PersonalHeaderStart Collega il tuo spazio di archiviazione cloud preferito a ONLYOFFICE $PersonalHeaderEnd
-
-È da una settimana che hai creato il tuo ufficio cloud, quindi crediamo che sia il momento di svelare alcune funzioni utili che potresti non aver ancora imparato.
-
-Collega *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* o *Yandex.Disk* a ONLYOFFICE e crea un unico spazio di gestione dei documenti per tutti i tuoi documenti. Sarai in grado di modificare file esterni in ONLYOFFICE e salvarli nella memoria in cui tieni i documenti. Leggi i dettagli sulla connessione degli archivi di file su ONLYOFFICE "qui":"${__HelpLink}/tipstricks/add-resource.aspx".
-
-Puoi anche integrare gli editor ONLYOFFICE in Google Drive utilizzando la nostra "app connettore": "https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgn".
-
-Hai bisogno di più di gestione dei documenti?
-
-h3.Prova ONLYOFFICE per le aziende "nel cloud":"https://www.onlyoffice.com/cloud-office.aspx" o "sul tuo server":"https://www.onlyoffice.com/server-solutions .aspx "gratuitamente per 30 giorni e verificare le opportunità di gestione dei documenti estese insieme a un set di strumenti di business:
-
-- Gestire i documenti del team nei progetti;
-
-- Integrare i documenti con CRM e Email;
-
-- Condividi file per gruppi di utenti;
-
-- Ottimizza il tuo flusso di lavoro con gli strumenti di comunicazione del team.
-
-Interessato? Ulteriori informazioni su "ONLYOFFICE for business": "http://www.onlyoffice.com/document-management.aspx".
-
-Cordiali saluti,
-il team ONLYOFFICE</value>
-  </data>
   <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
     <value>$PersonalHeaderStart Collega il tuo archivio cloud preferito a ONLYOFFICE $PersonalHeaderEnd
 
@@ -163,20 +137,6 @@ Ti interessa? Ulteriori informazioni su "ONLYOFFICE for business":"http://www.on
 
 Cordiali saluti,
 La squadra di ONLYOFFICE</value>
-  </data>
-  <data name="pattern_personal_custom_mode_change_email" xml:space="preserve">
-    <value>Hai richiesto di cambiare il tuo indirizzo email utilizzato per accedere al portale $ {LetterLogoText}.
-
-Segui il link qui sotto per cambiare il tuo indirizzo email:
-
-$GreenButton
-
-* Nota *: questo collegamento è valido solo per 7 giorni. Si prega di completare la procedura di modifica dell'email entro tale periodo.
-
-Se non desideri modificare la tua e-mail o non hai ricevuto questa e-mail per errore, ignorala.
-
-Cordiali saluti,
-Squadra ONLYOFFICE</value>
   </data>
   <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
     <value>Salve,
@@ -250,9 +210,6 @@ La procedura di rimozione dei dati dall'utente "$FromUserName":"$FromUserLink" �
   </data>
   <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
     <value>Collega il tuo cloud storage preferito a ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_email" xml:space="preserve">
-    <value>ONLYOFFICE Personal. Richiesta di modifica dell'email</value>
   </data>
   <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
     <value>ONLYOFFICE Personal assistenza per password</value>

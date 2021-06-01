@@ -31,6 +31,7 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Files.Core;
+using ASC.Web.Studio.Core;
 //using File = ASC.Files.Core.File;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +43,7 @@ namespace ASC.Data.Backup.Storage
     {
         private int TenantId { get; set; }
         private string WebConfigPath { get; set; }
+        private SetupInfo SetupInfo { get; }
         private TenantManager TenantManager { get; set; }
         private SecurityContext SecurityContext { get; set; }
         private IDaoFactory DaoFactory { get; set; }
@@ -49,12 +51,14 @@ namespace ASC.Data.Backup.Storage
         private IServiceProvider ServiceProvider { get; }
 
         public DocumentsBackupStorage(
+            SetupInfo setupInfo,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IDaoFactory daoFactory,
             StorageFactory storageFactory,
             IServiceProvider serviceProvider)
         {
+            SetupInfo = setupInfo;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             DaoFactory = daoFactory;
@@ -146,7 +150,22 @@ namespace ASC.Data.Backup.Storage
             newFile.FolderID = folder.ID;
             newFile.ContentLength = source.Length;
 
-            var file = fileDao.SaveFile(newFile, source);
+            File<T> file = null;
+            var buffer = new byte[SetupInfo.ChunkUploadSize];
+            var chunkedUploadSession = fileDao.CreateUploadSession(newFile, source.Length);
+            chunkedUploadSession.CheckQuota = false;
+
+            var bytesRead = 0;
+
+            while ((bytesRead = source.Read(buffer, 0, (int)SetupInfo.ChunkUploadSize)) > 0)
+            {
+                using (var theMemStream = new MemoryStream())
+                {
+                    theMemStream.Write(buffer, 0, bytesRead);
+                    theMemStream.Position = 0;
+                    file = fileDao.UploadChunk(chunkedUploadSession, theMemStream, bytesRead);
+                }
+            }
 
             return file.ID;
         }

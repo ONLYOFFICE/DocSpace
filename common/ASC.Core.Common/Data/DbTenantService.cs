@@ -224,7 +224,7 @@ namespace ASC.Core.Data
                 var passwordHashs = usersQuery.Select(r => GetPasswordHash(r, passwordHash)).ToList();
 
                 q = query()
-                    .Where(r => passwordHashs.Any(p => r.UserSecurity.PwdHash == p));
+                    .Where(r => passwordHashs.Any(p => r.UserSecurity.PwdHash == p) && r.DbTenant.Status == TenantStatus.Active);
 
                 //new password
                 result = result.Concat(q.Select(FromTenantUserToTenant)).ToList();
