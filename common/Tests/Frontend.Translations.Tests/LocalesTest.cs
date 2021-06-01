@@ -670,6 +670,34 @@ namespace Frontend.Translations.Tests
                 }
             }
 
+            foreach (var lng in CommonTranslations)
+            {
+                var emptyTranslationItems = lng.Translations.Where(f => string.IsNullOrEmpty(f.Value)).ToList();
+
+                if (!emptyTranslationItems.Any())
+                    continue;
+
+                exists = true;
+
+                message += $"{++i}. Language '{lng.Language}' (Count: {emptyTranslationItems.Count}). Path '{lng.Path}' " +
+                    $"Empty keys:\r\n\r\n";
+
+                var emptyKeys = emptyTranslationItems.Select(t => t.Key).ToList();
+
+                message += string.Join("\r\n", emptyKeys) + "\r\n\r\n";
+
+                // Uncomment if new keys are available for saving
+                /*var newKeys = newTranslationFiles
+                     .Select(d => d.Value)
+                     .Where(t => t.Language == lng.Language)
+                     .SelectMany(t => t.Translations.Where(t => emptyKeys.Contains(t.Key)))
+                     .GroupBy(t => t.Key)
+                     .Select(g => g.ToList().FirstOrDefault())
+                     .ToList();
+
+                UpdateKeys(lng.Path, newKeys);*/
+            }
+
             Assert.AreEqual(false, exists, message);
         }
     }
