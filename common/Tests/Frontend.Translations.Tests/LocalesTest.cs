@@ -55,11 +55,9 @@ namespace Frontend.Translations.Tests
             {
                 var jsonTranslation = JObject.Parse(File.ReadAllText(path));
 
-                var translationFile = new TranslationFile(path);
-
-                translationFile.Translations = jsonTranslation.Properties()
+                var translationFile = new TranslationFile(path, jsonTranslation.Properties()
                     .Select(p => new TranslationItem(p.Name, (string)p.Value))
-                    .ToList();
+                    .ToList());
 
                 TranslationFiles.Add(translationFile);
 
@@ -121,10 +119,10 @@ namespace Frontend.Translations.Tests
             var list = TranslationFiles
                 .Select(t => new
                 {
-                    ModulePath = moduleWorkspaces.FirstOrDefault(m => t.Path.Contains(m)),
+                    ModulePath = moduleWorkspaces.FirstOrDefault(m => t.FilePath.Contains(m)),
                     Language = new LanguageItem
                     {
-                        Path = t.Path,
+                        Path = t.FilePath,
                         Language = t.Language,
                         Translations = t.Translations
                     },
@@ -173,10 +171,10 @@ namespace Frontend.Translations.Tests
             }
 
             CommonTranslations = TranslationFiles
-                .Where(file => file.Path.StartsWith($"{BasePath}public\\locales"))
+                .Where(file => file.FilePath.StartsWith($"{BasePath}public\\locales"))
                 .Select(t => new LanguageItem
                 {
-                    Path = t.Path,
+                    Path = t.FilePath,
                     Language = t.Language,
                     Translations = t.Translations
                 }).ToList();
@@ -284,6 +282,12 @@ namespace Frontend.Translations.Tests
                 .Select(grp => new { Lng = grp.Key, Count = grp.Count(), Files = grp.ToList() })
                 .ToList();
 
+            // Uncomment if new language is needed
+            //var newLng = "sk";
+
+            //if (!groupedByLng.Exists(t => t.Lng == newLng))
+            //    groupedByLng.Add(new { Lng = newLng, Count = 0, Files = new List<TranslationFile>() });
+
             var enGroup = groupedByLng.Find(f => f.Lng == "en");
             var expectedCount = enGroup.Count;
 
@@ -298,7 +302,7 @@ namespace Frontend.Translations.Tests
 
             if (incompleteList.Count > 0)
             {
-                var enFilePaths = enGroup.Files.Select(f => f.Path);
+                var enFilePaths = enGroup.Files.Select(f => f.FilePath);
 
                 for (int i = 0; i < incompleteList.Count; i++)
                 {
@@ -306,7 +310,7 @@ namespace Frontend.Translations.Tests
 
                     message += $"{i}. {lng.Issue}\r\n";
 
-                    var lngFilePaths = lng.Files.Select(f => f.Path).ToList();
+                    var lngFilePaths = lng.Files.Select(f => f.FilePath).ToList();
 
                     var notFoundFilePaths = enFilePaths
                         .Select(p => p.Replace("\\en\\", $"\\{lng.Lng}\\"))
@@ -316,10 +320,10 @@ namespace Frontend.Translations.Tests
 
                     /* Save empty 'EN' keys to not found files */
 
-                    //foreach (var path in notFoundFilePaths)
-                    //{
-                    //    SaveNotFoundLanguage(path.Replace($"\\{lng.Lng}\\", "\\en\\"), path);
-                    //}
+                    foreach (var path in notFoundFilePaths)
+                    {
+                        SaveNotFoundLanguage(path.Replace($"\\{lng.Lng}\\", "\\en\\"), path);
+                    }
                 }
             }
 
@@ -512,7 +516,7 @@ namespace Frontend.Translations.Tests
                 }
             }
 
-            Assert.AreEqual(0, notFoundi18nKeys.Count(), message);
+            Assert.AreEqual(0, notFoundi18nKeys.Count, message);
         }
 
         [Test]
@@ -548,10 +552,82 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, notFoundi18nKeys.Count, message);
         }
 
+        public static void UpdateKeys(string pathToJson, List<TranslationItem> newKeys)
+        {
+            if (!File.Exists(pathToJson) || !newKeys.Any())
+                return;
+
+            var jsonTranslation = JObject.Parse(File.ReadAllText(pathToJson));
+
+            var keys = newKeys.Select(k => k.Key).ToList();
+
+            var properties = jsonTranslation.Properties().ToList();
+
+            properties.ForEach(p =>
+            {
+                var newKey = newKeys.Where(k => k.Key == p.Name).FirstOrDefault();
+                if (newKey != null)
+                    p.Value = newKey.Value;
+
+            });
+
+            //.Where(t => !keys.Contains(t.Name))
+            //.ToList();
+
+            //properties.AddRange(newKeys.Select(k => new JProperty(k.Key, k.Value)));
+
+            //properties = properties.OrderBy(t => t.Name).ToList();
+
+            var result = new JObject(properties);
+
+            var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
+
+            File.WriteAllText(pathToJson, sortedJsonString);
+        }
+
+        public string GetWorkspace(string path)
+        {
+            var folderName = Directory.GetParent(Path.GetDirectoryName(path)).Name;
+
+            switch (folderName)
+            {
+                case "Client":
+                    return Workspaces.Find(w => w.Contains("ASC.Web.Client"));
+                case "Files":
+                    return Workspaces.Find(w => w.Contains("ASC.Files"));
+                case "Login":
+                    return Workspaces.Find(w => w.Contains("ASC.Web.Login"));
+                case "People":
+                    return Workspaces.Find(w => w.Contains("ASC.People"));
+                default:
+                    return Path.Combine(BasePath, "public\\locales");
+            }
+        }
 
         [Test]
         public void EmptyValueKeysTest()
         {
+            // Uncomment if new keys are available
+            /*var newTranslationsBasePath = @"D:\trans";
+
+            var translationFiles = from file in Directory.EnumerateFiles(newTranslationsBasePath, "*.json", SearchOption.AllDirectories)
+                                   select file;
+
+            var newTranslationFiles = new List<KeyValuePair<string, TranslationFile>>();
+
+            foreach (var path in translationFiles)
+            {
+                var jsonTranslation = JObject.Parse(File.ReadAllText(path));
+
+                var translationFile = new TranslationFile(path, jsonTranslation.Properties()
+                    .Select(p => new TranslationItem(p.Name, (string)p.Value))
+                    .ToList());
+
+                var wsKey = GetWorkspace(path);
+
+                newTranslationFiles.Add(new KeyValuePair<string, TranslationFile>(wsKey, translationFile));
+            }*/
+
             var message = $"Next files have empty keys:\r\n\r\n";
 
             var exists = false;
@@ -565,17 +641,32 @@ namespace Frontend.Translations.Tests
 
                 foreach (var lng in module.AvailableLanguages)
                 {
-                    var emptyKeys = lng.Translations.Where(f => string.IsNullOrEmpty(f.Value)).ToList();
+                    var emptyTranslationItems = lng.Translations.Where(f => string.IsNullOrEmpty(f.Value)).ToList();
 
-                    if (!emptyKeys.Any())
+                    if (!emptyTranslationItems.Any())
                         continue;
 
                     exists = true;
 
-                    message += $"{++i}. Language '{lng.Language}' (Count: {emptyKeys.Count}). Path '{lng.Path}' " +
+                    message += $"{++i}. Language '{lng.Language}' (Count: {emptyTranslationItems.Count}). Path '{lng.Path}' " +
                         $"Empty keys:\r\n\r\n";
 
-                    message += string.Join("\r\n", emptyKeys.Select(t => t.Key)) + "\r\n\r\n";
+                    var emptyKeys = emptyTranslationItems.Select(t => t.Key).ToList();
+
+                    message += string.Join("\r\n", emptyKeys) + "\r\n\r\n";
+
+                    // Uncomment if new keys are available for saving
+                    /*var fileName = Path.GetFileName(lng.Path);
+
+                    var newKeys = newTranslationFiles
+                         .Where(d => lng.Path.Contains(d.Key))
+                         .Select(d => d.Value)
+                         .Where(t => t.Language == lng.Language
+                                  && t.FileName == fileName)
+                         .SelectMany(t => t.Translations.Where(t => emptyKeys.Contains(t.Key)))
+                         .ToList();
+
+                    UpdateKeys(lng.Path, newKeys);*/
                 }
             }
 
