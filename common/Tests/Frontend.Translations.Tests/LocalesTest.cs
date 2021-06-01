@@ -523,7 +523,6 @@ namespace Frontend.Translations.Tests
         [Test]
         public void NotTranslatedCommonKeysTest()
         {
-            var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
             var message = $"Some i18n-keys are not found in COMMON translations: \r\nKeys: \r\n\r\n";
 
             var enLanguageKeys = CommonTranslations
@@ -534,6 +533,8 @@ namespace Frontend.Translations.Tests
                 .ToList();
 
             var otherCommonLanguages = CommonTranslations.Where(l => l.Language != "en");
+
+            var exists = false;
 
             var i = 0;
             foreach (var lng in otherCommonLanguages)
@@ -547,10 +548,13 @@ namespace Frontend.Translations.Tests
 
                 message += $"{++i}. '{lng.Language}' Keys: \r\n {string.Join("\r\n", list)} \r\n";
 
-                notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
+                exists = true;
+
+                // Save empty not found keys
+                //SaveNotFoundKeys(lng.Path, list);
             }
 
-            Assert.AreEqual(0, notFoundi18nKeys.Count, message);
+            Assert.AreEqual(false, exists, message);
         }
 
         public static void UpdateKeys(string pathToJson, List<TranslationItem> newKeys)
@@ -762,5 +766,93 @@ namespace Frontend.Translations.Tests
 
             Assert.AreEqual(false, exists, message);
         }
+
+        /*[Test]
+        public void TempTest()
+        {
+            var newTranslationsBasePath = @"D:\trans";
+
+            var translationFiles = from file in Directory.EnumerateFiles(newTranslationsBasePath, "*.json", SearchOption.AllDirectories)
+                                   select file;
+
+            var newTranslationFiles = new List<TranslationFile>();
+
+            foreach (var path in translationFiles)
+            {
+                var jsonTranslation = JObject.Parse(File.ReadAllText(path));
+
+                var translationFile = new TranslationFile(path, jsonTranslation.Properties()
+                    .Select(p => new TranslationItem(p.Name, (string)p.Value))
+                    .ToList());
+
+                newTranslationFiles.Add(translationFile);
+            }
+
+            var groupedNewTranslation = newTranslationFiles
+                    .GroupBy(t => t.Language)
+                    .Select(g => new
+                    {
+                        Language = g.Key,
+                        Translations = g.ToList().SelectMany(t => t.Translations)
+                    })
+                    .ToList();
+
+            var enCommonTranslations = CommonTranslations.Where(t => t.Language == "en").ToList();
+
+            foreach (var lng in CommonTranslations.Where(t => t.Language != "en"))
+            {
+                var emptyTranslationItems = lng.Translations.Where(f => string.IsNullOrEmpty(f.Value)).ToList();
+
+                if (!emptyTranslationItems.Any())
+                    continue;
+
+                var emptyKeys = emptyTranslationItems.Select(t => t.Key).ToList();
+
+                var enCommonKeyValues = enCommonTranslations
+                    .SelectMany(t => t.Translations)
+                    .Where(t => emptyKeys.Contains(t.Key))
+                    .ToList();
+
+                var newTranslationsKeysByOldEnContent = groupedNewTranslation
+                    .Where(t => t.Language == "en")
+                    .SelectMany(t => t.Translations)
+                    .Where(t => enCommonKeyValues.Exists(c => c.Value == t.Value))
+                    //.Select(t => new TranslationItem(enCommonKeyValues.Find(c => c.Value == t.Value).Key, t.Value))
+                    .ToList();
+
+                // Uncomment if new keys are available for saving
+
+                var newKeys = new List<TranslationItem>();
+
+                newTranslationFiles
+                    .Where(t => t.Language == lng.Language)
+                    .SelectMany(t => t.Translations)
+                    .ToList()
+                    .ForEach(t =>
+                    {
+                        var newItem = newTranslationsKeysByOldEnContent.Where(k => k.Key == t.Key).FirstOrDefault();
+
+                        if (newItem != null)
+                        {
+                            var value = t.Value;
+                            var newCommonKey = enCommonKeyValues.Find(c => c.Value == newItem.Value).Key;
+
+                            if (!newKeys.Exists(k => k.Key == newCommonKey))
+                            {
+                                newKeys.Add(new TranslationItem(newCommonKey, value));
+                            }
+                        }
+                        //if(newKeys.Exists(k => k.Key))
+                    });
+                //.Where(t => newTranslationsKeysByOldEnContent.Exists(t.Key))
+                //.GroupBy(t => t.Key)
+                //.Select(g => g.ToList().FirstOrDefault())
+                //.ToList();
+
+                if (newKeys.Any())
+                    UpdateKeys(lng.Path, newKeys);
+            }
+
+        }*/
     }
 }
