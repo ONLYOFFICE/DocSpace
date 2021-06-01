@@ -140,10 +140,10 @@ namespace ASC.ElasticSearch
                 using var scope = Container.BeginLifetimeScope();
                 var wrappers = scope.Resolve<IEnumerable<IFactoryIndexer>>();
 
-                foreach (var w in wrappers)
+                Parallel.ForEach(wrappers, w =>
                 {
                     IndexProduct(w, reindex);
-                }
+                });
 
                 Timer.Change(Period, Period);
                 IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);

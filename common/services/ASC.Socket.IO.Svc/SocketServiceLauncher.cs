@@ -41,7 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Socket.IO.Svc
 {
-    [Scope]
+    [Singletone]
     public class SocketServiceLauncher : IHostedService
     {
         //private const int PingInterval = 10000;

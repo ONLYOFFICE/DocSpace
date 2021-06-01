@@ -732,6 +732,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                         .HasColumnName("stamp")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
+
                     b.Property<int>("Tariff")
                         .HasColumnName("tariff")
                         .HasColumnType("integer");

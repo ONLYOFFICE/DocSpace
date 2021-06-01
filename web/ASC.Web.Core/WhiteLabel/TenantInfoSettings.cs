@@ -146,7 +146,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             if (tenantInfoSettings.IsDefault)
             {
-                return WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/dark_general.png");
+                return WebImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
             }
 
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");

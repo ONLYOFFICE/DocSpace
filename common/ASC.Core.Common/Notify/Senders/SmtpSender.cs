@@ -35,7 +35,6 @@ using ASC.Common.Utils;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 
-using MailKit;
 using MailKit.Security;
 
 using Microsoft.Extensions.Configuration;
@@ -287,10 +286,11 @@ namespace ASC.Core.Notify.Senders
 
             var smtpClient = new MailKit.Net.Smtp.SmtpClient
             {
-                ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-                    sslCertificatePermit || MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                 Timeout = NETWORK_TIMEOUT
             };
+
+            if (sslCertificatePermit)
+                smtpClient.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
             return smtpClient;
         }

@@ -224,13 +224,15 @@ namespace ASC.Api.Settings.Smtp
             var sslCertificatePermit = Configuration["mail.certificate-permit"] != null &&
                     Convert.ToBoolean(Configuration["mail.certificate-permit"]);
 
-            return new SmtpClient
+            var client = new SmtpClient
             {
-                ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-                    sslCertificatePermit ||
-                    MailKit.MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                 Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
             };
+
+            if (sslCertificatePermit)
+                client.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+
+            return client;
         }
 
         public virtual DistributedTask GetDistributedTask()

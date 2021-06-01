@@ -75,6 +75,15 @@ namespace ASC.Files.Core.Thirdparty
                 toFile = toFileDao.SaveFile(toFile, fromFileStream);
             }
 
+            if (fromFile.ThumbnailStatus == Thumbnail.Created)
+            {
+                using (var thumbnail = fromFileDao.GetThumbnail(fromFile))
+                {
+                    toFileDao.SaveThumbnail(toFile, thumbnail);
+                }
+                toFile.ThumbnailStatus = Thumbnail.Created;
+            }
+
             if (deleteSourceFile)
             {
                 if (fromFileShareRecords.Any())
