@@ -61,7 +61,12 @@ const StyledModules = styled.div`
 const StyledScheduleComponent = styled.div`
   .time_options {
     .drop-down_variable-size {
-      width: 60px !important;
+      width: 74px !important;
+    }
+  }
+  .month_options {
+    .drop-down_variable-size {
+      width: 46px !important;
     }
   }
   .main_options {
