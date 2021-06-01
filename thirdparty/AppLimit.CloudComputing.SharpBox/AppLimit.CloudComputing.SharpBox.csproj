@@ -35,5 +35,6 @@
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.8'">
     <Reference Include="System.Web" />
+    <Reference Include="System.Runtime.Serialization" Version="4.1.2.0" />
   </ItemGroup>
 </Project>
