@@ -2,17 +2,11 @@
   "Birthdate": "Data de naștere",
   "ChangeEmailSuccess": "Adresa e-mail a fost modificată cu succes",
   "ChangesApplied": "Modificările au fost aplicate",
-  "Connect": "",
   "ContactInformation": "Informații de contact",
-  "Disconnect": "",
   "EditPhoto": "Editare foto",
   "EditSubscriptionsBtn": "Modificare abonament",
-  "EditUser": "",
   "InviteAgainLbl": "Invită din nou",
-  "LoginSettings": "",
   "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <strong>{{ email }}</strong>",
   "PhoneLbl": "Telefon",
-  "ProviderSuccessfullyConnected": "",
-  "ProviderSuccessfullyDisconnected": "",
   "Subscriptions": "Subscripții"
 }

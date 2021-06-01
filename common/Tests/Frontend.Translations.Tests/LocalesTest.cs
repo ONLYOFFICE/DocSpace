@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -571,12 +572,21 @@ namespace Frontend.Translations.Tests
 
             });
 
-            //.Where(t => !keys.Contains(t.Name))
-            //.ToList();
+            var result = new JObject(properties);
 
-            //properties.AddRange(newKeys.Select(k => new JProperty(k.Key, k.Value)));
+            var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            //properties = properties.OrderBy(t => t.Name).ToList();
+            File.WriteAllText(pathToJson, sortedJsonString);
+        }
+
+        public static void RemoveEmptyKeys(string pathToJson, List<string> emptyKeys)
+        {
+            if (!File.Exists(pathToJson) || !emptyKeys.Any())
+                return;
+
+            var jsonTranslation = JObject.Parse(File.ReadAllText(pathToJson));
+
+            var properties = jsonTranslation.Properties().Where(p => !emptyKeys.Contains(p.Name)).ToList();
 
             var result = new JObject(properties);
 
@@ -655,6 +665,9 @@ namespace Frontend.Translations.Tests
 
                     message += string.Join("\r\n", emptyKeys) + "\r\n\r\n";
 
+                    // Uncomment if you want to remove empty keys
+                    //RemoveEmptyKeys(lng.Path, emptyKeys);
+
                     // Uncomment if new keys are available for saving
                     /*var fileName = Path.GetFileName(lng.Path);
 
@@ -686,6 +699,9 @@ namespace Frontend.Translations.Tests
 
                 message += string.Join("\r\n", emptyKeys) + "\r\n\r\n";
 
+                // Uncomment if you want to remove empty keys
+                //RemoveEmptyKeys(lng.Path, emptyKeys);
+
                 // Uncomment if new keys are available for saving
                 /*var newKeys = newTranslationFiles
                      .Select(d => d.Value)
@@ -696,6 +712,52 @@ namespace Frontend.Translations.Tests
                      .ToList();
 
                 UpdateKeys(lng.Path, newKeys);*/
+            }
+
+            Assert.AreEqual(false, exists, message);
+        }
+
+        [Test]
+        public void LanguageTranslatedPercentTest()
+        {
+            var message = $"Next languages translated less then 100%:\r\n\r\n";
+
+            var groupedByLng = TranslationFiles
+                .GroupBy(t => t.Language)
+                .Select(g => new
+                {
+                    Language = g.Key,
+                    AllTranslated = g.ToList()
+                        .SelectMany(t => t.Translations)
+                        .ToList()
+                })
+                .Select(t => new
+                {
+                    t.Language,
+                    TotalKeysCount = t.AllTranslated.LongCount(),
+                    EmptyKeysCount = t.AllTranslated
+                        .Where(t => string.IsNullOrEmpty(t.Value))
+                        .LongCount()
+                })
+                .ToList();
+
+            var i = 0;
+            var exists = false;
+
+            var expectedTotalKeysCount = groupedByLng.Where(t => t.Language == "en").Single().TotalKeysCount;
+
+            foreach (var lng in groupedByLng)
+            {
+                if (lng.EmptyKeysCount == 0 && lng.TotalKeysCount == expectedTotalKeysCount)
+                    continue;
+
+                exists = true;
+
+                var translated = lng.TotalKeysCount == expectedTotalKeysCount
+                    ? Math.Round(100f - (lng.EmptyKeysCount * 100f / expectedTotalKeysCount))
+                    : Math.Round(lng.TotalKeysCount * 100f / expectedTotalKeysCount);
+
+                message += $"{++i}. Language '{lng.Language}' translated by '{translated}%'\r\n";
             }
 
             Assert.AreEqual(false, exists, message);

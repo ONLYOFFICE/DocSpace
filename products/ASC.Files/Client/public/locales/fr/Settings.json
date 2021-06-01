@@ -1,21 +1,3 @@
 {
-  "CommonSettings": "",
-  "ConnectAccounts": "",
-  "ConnectAccountsSubTitle": "",
-  "ConnectAdminDescription": "",
-  "ConnectDescription": "",
-  "ConnectedCloud": "",
-  "ConnectMakeShared": "",
-  "ConnextOtherAccount": "",
-  "DisplayFavorites": "",
-  "DisplayNotification": "",
-  "DisplayRecent": "",
-  "DisplayTemplates": "",
-  "IntermediateVersion": "",
-  "KeepIntermediateVersion": "",
-  "OriginalCopy": "",
-  "StoringFileVersion": "",
-  "ThirdPartyBtn": "Activer les paramètres de tiers liés aux stockages pour les utilisateurs",
-  "ThirdPartySettings": "",
-  "UpdateOrCreate": ""
+  "ThirdPartyBtn": "Activer les paramètres de tiers liés aux stockages pour les utilisateurs"
 }

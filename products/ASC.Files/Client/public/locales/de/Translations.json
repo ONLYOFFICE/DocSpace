@@ -1,5 +1,4 @@
 {
-  "AddAccount": "",
   "ArchivingData": "Archivieren der Daten",
   "ConnectingAccount": "Konto wird verbunden",
   "Copy": "Kopieren",
@@ -19,6 +18,5 @@
   "Presentations": "Präsentationen",
   "Restore": "Wiederherstellen",
   "Spreadsheets": "Tabellenkalkulationen",
-  "ThirdPartyInfo": "",
   "UploadingLabel": "Dateien hochgeladen: {{file}} von {{totalFiles}}"
 }

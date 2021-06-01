@@ -1,22 +1,12 @@
 {
   "ChangeEmailTitle": "Zmeniť email",
-  "Desc": "",
   "Domain": "Doména",
   "ErrorEmail": "Neplatná e-mailová adresa",
-  "ErrorInitWizard": "",
-  "ErrorInitWizardButton": "",
-  "ErrorLicenseBody": "",
   "ErrorLicenseRead": "Na {{email}} (emailovú adresu majiteľa portálu) bol zaslaný potvrdzujúci odkaz.",
   "ErrorLicenseTitle": "Chyba načítavania",
   "ErrorParamsBody": "Boli zadané nesprávne údaje:",
-  "ErrorParamsTitle": "",
   "ErrorPassword": "Heslo nespĺňa požiadavky",
-  "ErrorUploadLicenseFile": "",
   "GeneratePassword": "Vytvoriť heslo",
   "License": "Prijať podmienky",
-  "LicenseLink": "Licenčná dohoda",
-  "PlaceholderLicense": "",
-  "Timezone": "",
-  "WelcomeTitle": "",
-  "WizardTitle": ""
+  "LicenseLink": "Licenčná dohoda"
 }

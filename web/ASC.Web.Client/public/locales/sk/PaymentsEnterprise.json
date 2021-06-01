@@ -1,21 +1,13 @@
 {
-  "AccessSubscription": "",
   "AdvantageEditor": "{{organizationName}} editory s funkciami PRO",
-  "AdvantagePrivateRooom": "",
   "AdvantageProfessionalTechSupport": "1 rok služieb profesionálnej technickej podpory",
-  "AdvantageUpdates": "",
   "AdvantageWebEditors": "Edirori mobilného webu",
   "ButtonBuyLicense": "Kúpiť teraz",
-  "ButtonUploadLicense": "",
   "ContactEmail": "S otázkami ohľadne akejkoľvek kúpy nás kontaktujte na",
   "ContactUrl": "Pre riešenie technických problémov využite",
   "ErrorLoadingLicense": "Uistite sa, že vyberáte správny súbor",
-  "ExpiryPaidLicense": "",
-  "ExpiryTrialLicense": "",
   "HeaderExpiredTrialLicense": "Platnosť bezplatného skúšobného obdobia uplynula",
-  "HeaderLicense": "",
   "PaymentsTitle": "Platby",
   "RenewalLicense": "Ak ste si už zakúpili obnovenie, odošlite licenčný súbor.",
-  "SubscriptionRenewedLicense": "",
   "SuccessLoadingLicense": "Licencia bola úspešne aktivovaná"
 }
