@@ -1,0 +1,2 @@
+src/var/www/services/ASC.Socket.IO/service appserver-socket/var/www/appserver/services/ASC.Socket.IO/
+src/var/www/services/ASC.Socket.IO.Svc/service appserver-socket/var/www/appserver/services/ASC.Socket.IO.Svc/

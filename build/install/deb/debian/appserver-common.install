@@ -1,2 +1,2 @@
-../../../config/*.json /app/onlyoffice/config
-../../../config/*.config /app/onlyoffice/config
+../../../config/*.json app/onlyoffice/config
+../../../config/*.config app/onlyoffice/config
