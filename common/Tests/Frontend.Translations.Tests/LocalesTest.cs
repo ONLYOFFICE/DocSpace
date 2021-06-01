@@ -26,7 +26,7 @@ namespace Frontend.Translations.Tests
         public List<TranslationFile> TranslationFiles { get; set; }
         public List<JavaScriptFile> JavaScriptFiles { get; set; }
         public List<ModuleFolder> ModuleFolders { get; set; }
-
+        public List<KeyValuePair<string, string>> NotTranslatedToasts { get; set; }
         public List<LanguageItem> CommonTranslations { get; set; }
 
         [SetUp]
@@ -36,7 +36,10 @@ namespace Frontend.Translations.Tests
 
             var jsonPackage = JObject.Parse(File.ReadAllText(packageJsonPath));
 
-            var moduleWorkspaces = ((JArray)jsonPackage["workspaces"]).Select(p => ((string)p).Replace("/", "\\")).ToList();
+            var moduleWorkspaces = ((JArray)jsonPackage["workspaces"])
+                .Select(p => ((string)p).Replace("/", "\\"))
+                .Where(w => !w.Contains("asc-web-components"))
+                .ToList();
 
             Workspaces = new List<string>();
 
@@ -93,9 +96,28 @@ namespace Frontend.Translations.Tests
 
             var regexp = new Regex($"({pattern1})|({pattern2})", RegexOptions.Multiline | RegexOptions.ECMAScript);
 
+            var notTranslatedToastsRegex = new Regex("(?<=toastr.info\\([\"`\'])(.*)(?=[\"\'`])" +
+                "|(?<=toastr.error\\([\"`\'])(.*)(?=[\"\'`])" +
+                "|(?<=toastr.success\\([\"`\'])(.*)(?=[\"\'`])" +
+                "|(?<=toastr.warn\\([\"`\'])(.*)(?=[\"\'`])", RegexOptions.Multiline | RegexOptions.ECMAScript);
+
+            NotTranslatedToasts = new List<KeyValuePair<string, string>>();
+
             foreach (var path in javascriptFiles)
             {
                 var jsFileText = File.ReadAllText(path);
+
+                var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
+
+                if (toastMatches.Any())
+                {
+                    foreach (var toastMatch in toastMatches)
+                    {
+                        var found = toastMatch.Value;
+                        if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
+                            NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                    }
+                }
 
                 var matches = regexp.Matches(jsFileText);
 
@@ -765,6 +787,28 @@ namespace Frontend.Translations.Tests
             }
 
             Assert.AreEqual(false, exists, message);
+        }
+
+        [Test]
+        public void NotTranslatedToastsTest()
+        {
+            var message = $"Next text not translated in toasts:\r\n\r\n";
+
+            var i = 0;
+
+            NotTranslatedToasts.GroupBy(t => t.Key)
+                .Select(g => new
+                {
+                    FilePath = g.Key,
+                    Values = g.ToList()
+                })
+                .ToList()
+                .ForEach(t =>
+                {
+                    message += $"{++i}. Path='{t.FilePath}'\r\n\r\n{string.Join("\r\n", t.Values.Select(v => v.Value))}\r\n\r\n";
+                });
+
+            Assert.AreEqual(0, NotTranslatedToasts.Count, message);
         }
 
         /*[Test]
