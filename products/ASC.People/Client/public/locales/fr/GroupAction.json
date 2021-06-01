@@ -1,0 +1,9 @@
+{
+  "CustomNewDepartment": "{{groupCaption}} (création)",
+  "GroupAction": "Action de groupe",
+  "Members": "Membres",
+  "Name": "Nom",
+  "SearchAddedMembers": "Rechercher les membres ajoutés",
+  "SelectAction": "",
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' a été sauvegardé avec succès"
+}

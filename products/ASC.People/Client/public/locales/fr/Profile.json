@@ -1,0 +1,18 @@
+{
+  "Birthdate": "Date de naissance",
+  "ChangeEmailSuccess": "L'adresse E-mail a été modifiée avec succès.",
+  "ChangesApplied": "Changements appliqués",
+  "Connect": "",
+  "ContactInformation": "Informations de contact",
+  "Disconnect": "",
+  "EditPhoto": "Modifier la photo",
+  "EditSubscriptionsBtn": "Modifier les abonnements",
+  "EditUser": "",
+  "InviteAgainLbl": "Inviter à nouveau",
+  "LoginSettings": "",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Les instructions d'activation ont été envoyées à l'adresse <strong>{{email}}</strong>",
+  "PhoneLbl": "Téléphone",
+  "ProviderSuccessfullyConnected": "",
+  "ProviderSuccessfullyDisconnected": "",
+  "Subscriptions": "Abonnements"
+}
