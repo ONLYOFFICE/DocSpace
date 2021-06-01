@@ -218,7 +218,8 @@ namespace ASC.Files.Helpers
                     };
                 }
             }
-
+            
+            if (!configuration.Document.Info.File.Encrypted && !configuration.Document.Info.File.ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.File);
 
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
@@ -614,9 +615,10 @@ namespace ASC.Files.Helpers
 
         private FolderContentWrapper<T> ToFolderContentWrapper(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
         {
-            if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
+            OrderBy orderBy = null;
+            if (Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
             {
-                sortBy = SortedByType.AZ;
+                orderBy = new OrderBy(sortBy, !ApiContext.SortDescending);
             }
 
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
@@ -629,7 +631,7 @@ namespace ASC.Files.Helpers
                                                                                ApiContext.FilterValue,
                                                                                false,
                                                                                withSubFolders,
-                                                                               new OrderBy(sortBy, !ApiContext.SortDescending)),
+                                                                               orderBy),
                                             startIndex);
         }
 

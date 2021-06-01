@@ -33,7 +33,6 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
-
 namespace ASC.Data.Backup.Storage
 {
     [Scope]
@@ -57,9 +56,13 @@ namespace ASC.Data.Backup.Storage
             return BackupContext.Backups.SingleOrDefault(b => b.Id == id);
         }
 
+        public BackupRecord GetBackupRecord(string hash, int tenant)
+        {
+            return BackupContext.Backups.SingleOrDefault(b => b.Hash == hash && b.TenantId == tenant);
+        }
+
         public List<BackupRecord> GetExpiredBackupRecords()
         {
-
             return BackupContext.Backups.Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
         }
 

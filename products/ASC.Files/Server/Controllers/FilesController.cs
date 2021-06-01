@@ -675,14 +675,14 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [AllowAnonymous]
-        [Read("file/{fileId}/openedit")]
+        [Read("file/{fileId}/openedit", Check = false)]
         public Configuration<string> OpenEdit(string fileId, int version, string doc)
         {
             return FilesControllerHelperString.OpenEdit(fileId, version, doc);
         }
 
         [AllowAnonymous]
-        [Read("file/{fileId:int}/openedit")]
+        [Read("file/{fileId:int}/openedit", Check = false)]
         public Configuration<int> OpenEdit(int fileId, int version, string doc)
         {
             return FilesControllerHelperInt.OpenEdit(fileId, version, doc);
@@ -701,7 +701,7 @@ namespace ASC.Api.Documents
         /// <param name="encrypted" visible="false"></param>
         /// <remarks>
         /// <![CDATA[
-        /// Each chunk can have different length but its important what length is multiple of <b>512</b> and greater or equal than <b>5 mb</b>. Last chunk can have any size.
+        /// Each chunk can have different length but its important what length is multiple of <b>512</b> and greater or equal than <b>10 mb</b>. Last chunk can have any size.
         /// After initial request respond with status 200 OK you must obtain value of 'location' field from the response. Send all your chunks to that location.
         /// Each chunk must be sent in strict order in which chunks appears in file.
         /// After receiving each chunk if no errors occured server will respond with current information about upload session.
@@ -1889,6 +1889,18 @@ namespace ASC.Api.Documents
             return true;
         }
 
+        [Read("favorites/{fileId}")]
+        public bool ToggleFileFavorite(string fileId, bool favorite)
+        {
+            return FileStorageService.ToggleFileFavorite(fileId, favorite);
+        }
+
+        [Read("favorites/{fileId:int}")]
+        public bool ToggleFavoriteFromForm(int fileId, bool favorite)
+        {
+            return FileStorageServiceInt.ToggleFileFavorite(fileId, favorite);
+        }
+
         /// <summary>
         /// Removing files from favorite list
         /// </summary>
@@ -2146,6 +2158,24 @@ namespace ASC.Api.Documents
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"settings/downloadtargz")]
+        public bool ChangeDownloadZipFromBody([FromBody] DisplayModel model)
+        {
+            return FileStorageService.ChangeDownloadTarGz(model.Set);
+        }
+
+        [Update(@"settings/downloadtargz")]
+        public bool ChangeDownloadZipFromForm([FromForm] DisplayModel model)
+        {
+            return FileStorageService.ChangeDownloadTarGz(model.Set);
+        }
+
+        /// <summary>
         ///  Checking document service location
         /// </summary>
         /// <param name="docServiceUrl">Document editing service Domain</param>
@@ -2163,6 +2193,27 @@ namespace ASC.Api.Documents
         public IEnumerable<string> CheckDocServiceUrlFromForm([FromForm]CheckDocServiceUrlModel model)
         {
             return CheckDocServiceUrl(model);
+        }
+
+        /// <summary>
+        /// Create thumbnails for files with the IDs specified in the request
+        /// </summary>
+        /// <short>Create thumbnails</short>
+        /// <category>Files</category>
+        /// <param name="fileIds">File IDs</param>
+        /// <visible>false</visible>
+        /// <returns></returns>
+        [Create("thumbnails")]
+        public IEnumerable<JsonElement> CreateThumbnailsFromBody([FromBody]BaseBatchModel<JsonElement> model)
+        {
+            return FileStorageService.CreateThumbnails(model.FileIds);
+        }
+
+        [Create("thumbnails")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm] BaseBatchModel<JsonElement> model)
+        {
+            return FileStorageService.CreateThumbnails(model.FileIds);
         }
 
         public IEnumerable<string> CheckDocServiceUrl(CheckDocServiceUrlModel model)

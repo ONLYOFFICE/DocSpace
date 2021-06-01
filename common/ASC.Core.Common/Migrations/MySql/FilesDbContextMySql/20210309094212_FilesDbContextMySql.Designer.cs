@@ -230,6 +230,31 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                         },
                         new
                         {
+                            Input = ".fb2",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Output = ".txt"
+                        },
+                        new
+                        {
                             Input = ".fodp",
                             Output = ".odp"
                         },

@@ -238,7 +238,7 @@ namespace ASC.Web.Files.Utils
                             var docKey = documentServiceHelper.GetDocKey(file);
 
                             fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
+                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, null, null, true, out convertedFileUrl);
                         }
                         catch (Exception exception)
                         {
@@ -375,7 +375,7 @@ namespace ASC.Web.Files.Utils
             return string.Format("fileConvertation-{0}", f.ID);
         }
 
-        private string FileJsonSerializer(EntryManager EntryManager, File<T> file, string folderTitle)
+        private string FileJsonSerializer(EntryStatusManager EntryManager, File<T> file, string folderTitle)
         {
             if (file == null) return string.Empty;
 
@@ -423,7 +423,7 @@ namespace ASC.Web.Files.Utils
         private FileUtility FileUtility { get; }
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
-        private EntryManager EntryManager { get; }
+        private EntryStatusManager EntryManager { get; }
         private FileConverter FileConverter { get; }
 
         public FileConverterQueueScope(IOptionsMonitor<ILog> options,
@@ -437,7 +437,7 @@ namespace ASC.Web.Files.Utils
             FileUtility fileUtility,
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
-            EntryManager entryManager,
+            EntryStatusManager entryManager,
             FileConverter fileConverter)
         {
             Options = options;
@@ -467,7 +467,7 @@ namespace ASC.Web.Files.Utils
             out FileUtility fileUtility,
             out DocumentServiceHelper documentServiceHelper,
             out DocumentServiceConnector documentServiceConnector,
-            out EntryManager entryManager,
+            out EntryStatusManager entryManager,
             out FileConverter fileConverter)
         {
             optionsMonitor = Options;
@@ -648,7 +648,7 @@ namespace ASC.Web.Files.Utils
             var fileUri = PathProvider.GetFileStreamUrl(file);
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
             {
@@ -680,7 +680,7 @@ namespace ASC.Web.Files.Utils
             var docKey = DocumentServiceHelper.GetDocKey(file);
 
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
             return SaveConvertedFile(file, convertUri);
         }
@@ -777,6 +777,7 @@ namespace ASC.Web.Files.Utils
             newFile.Title = newFileTitle;
             newFile.ConvertedType = null;
             newFile.Comment = string.Format(FilesCommonResource.CommentConvert, file.Title);
+            newFile.ThumbnailStatus = Thumbnail.Waiting;
 
             var req = (HttpWebRequest)WebRequest.Create(convertedFileUrl);
 

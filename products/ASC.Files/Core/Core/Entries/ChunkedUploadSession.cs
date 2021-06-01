@@ -48,6 +48,10 @@ namespace ASC.Files.Core
 
         public bool Encrypted { get; set; }
 
+        //hack for Backup bug 48873
+        [NonSerialized]
+        public bool CheckQuota = true;
+
         public ChunkedUploadSession(File<T> file, long bytesTotal) : base(bytesTotal)
         {
             File = file;

@@ -69,7 +69,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                 schema: "onlyoffice",
                 table: "tenants_quota",
                 columns: new[] { "tenant", "active_users", "avangate_id", "description", "features", "max_file_size", "max_total_size", "name", "visible" },
-                values: new object[] { -1, 10000, "0", null, "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption", 102400L, 10995116277760L, "default", false });
+                values: new object[] { -1, 10000, "0", null, "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore", 102400L, 10995116277760L, "default", false });
 
             migrationBuilder.CreateTable(
                 name: "tenants_quotarow",
@@ -97,6 +97,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                     tenant = table.Column<int>(nullable: false),
                     tariff = table.Column<int>(nullable: false),
                     stamp = table.Column<DateTime>(nullable: false),
+                    quantity = table.Column<int>(type: "int", nullable: false),
                     comment = table.Column<string>(maxLength: 255, nullable: true, defaultValueSql: "NULL"),
                     create_on = table.Column<DateTime>(nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
