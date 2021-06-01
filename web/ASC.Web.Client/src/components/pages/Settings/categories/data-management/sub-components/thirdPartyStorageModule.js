@@ -1,16 +1,25 @@
 import React from "react";
+import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-
 import { inject, observer } from "mobx-react";
+
 import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import ComboBox from "@appserver/components/combobox";
 import { getBackupStorage } from "@appserver/common/api/settings";
-import styled from "styled-components";
-import TextInput from "@appserver/components/text-input";
-import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
-import Button from "@appserver/components/button";
+import toastr from "@appserver/components/toast/toastr";
 import { startBackup } from "@appserver/common/api/portal";
+import {
+  createBackupSchedule,
+  getBackupSchedule,
+} from "@appserver/common/api/portal";
+
+import GoogleCloudStorage from "./googleCloudStorage";
+import RackspaceStorage from "./rackspaceStorage";
+import SelectelStorage from "./selectelStorage";
+import AmazonStorage from "./amazonStorage";
+import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
+import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
 
 const StyledComponent = styled.div`
   .backup_combo {
@@ -27,19 +36,75 @@ const StyledComponent = styled.div`
 
 let googleStorageId = "GoogleCloud";
 let inputValueArray;
+
+let periodFromSessionStorage = "";
+let numberPeriodFromSessionStorage = null;
+let dayFromSessionStorage = "";
+let timeFromSessionStorage = "";
+let maxCopiesFromSessionStorage = "";
+let weekdayNameFromSessionStorage = "";
+
+const settingNames = [
+  "period",
+  "day",
+  "time",
+  "maxCopies",
+  "weekdayName",
+  "numberPeriod",
+];
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
+    const {
+      t,
+      selectedWeekdayOption,
+      defaultSelectedOption,
+      defaultDay,
+      defaultHour,
+      defaultMaxCopies,
+
+      monthlySchedule,
+      weeklySchedule,
+    } = this.props;
+
     this.isSetDefaultIdStorage = false;
-    inputValueArray = [];
+
+    periodFromSessionStorage = getFromSessionStorage("period");
+    dayFromSessionStorage = getFromSessionStorage("day");
+    timeFromSessionStorage = getFromSessionStorage("time");
+    maxCopiesFromSessionStorage = getFromSessionStorage("maxCopies");
+    weekdayNameFromSessionStorage = getFromSessionStorage("weekdayName");
+    numberPeriodFromSessionStorage = getFromSessionStorage("numberPeriod");
+
+    const numberMaxCopies = maxCopiesFromSessionStorage
+      ? maxCopiesFromSessionStorage.substring(
+          0,
+          maxCopiesFromSessionStorage.indexOf(" ")
+        )
+      : "";
+
+    const monthNumber = monthlySchedule
+      ? dayFromSessionStorage || `${defaultDay}`
+      : dayFromSessionStorage || "1";
+
+    const weekdayNumber = weeklySchedule
+      ? dayFromSessionStorage || defaultDay
+      : dayFromSessionStorage || "2";
+
+    const weekdayOption = numberPeriodFromSessionStorage
+      ? numberPeriodFromSessionStorage === 2
+      : weeklySchedule || false;
+    const monthOption = numberPeriodFromSessionStorage
+      ? numberPeriodFromSessionStorage === 3
+      : monthlySchedule || false;
     this.state = {
       availableOptions: [],
       availableStorage: {},
-      selectedOption: "",
+      selectedStorage: "",
+      defaultSelectedStorage: "",
       selectedId: "",
       isLoading: false,
-      isSetDefaultStorage: true,
-      isSelectedOptionChanges: false,
+      isChanged: false,
       isError: false,
       input_1: "",
       input_2: "",
@@ -47,11 +112,33 @@ class ThirdPartyStorageModule extends React.PureComponent {
       input_4: "",
       input_5: "",
       input_6: "",
+
+      monthlySchedule: monthOption,
+      dailySchedule: false,
+      weeklySchedule: weekdayOption,
+
+      selectedOption:
+        periodFromSessionStorage ||
+        defaultSelectedOption ||
+        t("DailyPeriodSchedule"),
+      selectedWeekdayOption:
+        weekdayNameFromSessionStorage || selectedWeekdayOption,
+      selectedNumberWeekdayOption: weekdayNumber,
+      selectedTimeOption: timeFromSessionStorage || defaultHour || "12:00",
+      selectedMonthOption: monthNumber,
+      selectedMaxCopies:
+        maxCopiesFromSessionStorage || defaultMaxCopies || "10",
+      selectedNumberMaxCopies: numberMaxCopies || defaultMaxCopies || "10",
     };
     this.isFirstSet = false;
     this.firstSetId = "";
+    this._isMounted = false;
   }
   componentDidMount() {
+    this._isMounted = true;
+    const { onSetLoadingData } = this.props;
+
+    onSetLoadingData && onSetLoadingData(true);
     this.setState(
       {
         isLoading: true,
@@ -59,13 +146,18 @@ class ThirdPartyStorageModule extends React.PureComponent {
       function () {
         getBackupStorage()
           .then((storageBackup) => this.getOptions(storageBackup))
+          .then(() => this.checkChanges())
           .finally(() => {
+            onSetLoadingData && onSetLoadingData(false);
             this.setState({ isLoading: false });
           });
       }
     );
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   getOptions = (storageBackup) => {
     const {
       isManualBackup,
@@ -102,19 +194,14 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
       if (!isManualBackup && storageBackup[item].current) {
         this.isSetDefaultIdStorage = true;
+
         this.setState({
-          selectedOption: storageBackup[item].title,
-          defaultSelectedOption: storageBackup[item].title,
+          selectedStorage: storageBackup[item].title,
+          defaultSelectedStorage: storageBackup[item].title,
           selectedId: storageBackup[item].id,
           defaultSelectedId: storageBackup[item].id,
         });
       }
-
-      if (this.isSetDefaultIdStorage)
-        onSetDisableOptions && onSetDisableOptions(true);
-
-      if (!this.isSetDefaultIdStorage && isDisableOptions)
-        onSetDisableOptions && onSetDisableOptions(false);
 
       if (!this.isFirstSet && storageBackup[item].isSet) {
         this.isFirstSet = true;
@@ -124,21 +211,19 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     if (!this.isSetDefaultIdStorage && !this.isFirstSet) {
       this.setState({
-        selectedOption: availableStorage[googleStorageId].title,
-        defaultSelectedOption: availableStorage[googleStorageId].title,
+        selectedStorage: availableStorage[googleStorageId].title,
+        defaultSelectedStorage: availableStorage[googleStorageId].title,
         selectedId: availableStorage[googleStorageId].id,
         defaultSelectedId: availableStorage[googleStorageId].id,
-        isSetDefaultStorage: false,
       });
     }
 
     if (!this.isSetDefaultIdStorage && this.isFirstSet) {
       this.setState({
-        selectedOption: availableStorage[this.firstSetId].title,
-        defaultSelectedOption: availableStorage[this.firstSetId].title,
+        selectedStorage: availableStorage[this.firstSetId].title,
+        defaultSelectedStorage: availableStorage[this.firstSetId].title,
         selectedId: availableStorage[this.firstSetId].id,
         defaultSelectedId: availableStorage[this.firstSetId].id,
-        isSetDefaultStorage: false,
       });
     }
 
@@ -154,149 +239,466 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const { availableStorage, isSetDefaultStorage } = this.state;
     const { onSetDisableOptions } = this.props;
 
-    if (isSetDefaultStorage) onSetDisableOptions && onSetDisableOptions(false);
-
-    this.setState({
-      selectedOption: availableStorage[selectedStorageId].title,
-      selectedId: availableStorage[selectedStorageId].id,
-      isSelectedOptionChanges: true,
-      isSetDefaultStorage: false,
-      isError: false,
-      input_1: "",
-      input_2: "",
-      input_3: "",
-      input_4: "",
-      input_5: "",
-      input_6: "",
-    });
+    this.setState(
+      {
+        selectedStorage: availableStorage[selectedStorageId].title,
+        selectedId: availableStorage[selectedStorageId].id,
+        //isChanged: true,
+        //isSetDefaultStorage: false,
+        // isError: false,
+        // input_1: "",
+        // input_2: "",
+        // input_3: "", //в них нет необходимости
+        // input_4: "",
+        // input_5: "",
+        // input_6: "",
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
+    //if (isSetDefaultStorage) onSetDisableOptions && onSetDisableOptions(false);
   };
 
-  onChange = (event) => {
-    const { target } = event;
-    const value = target.value;
-    const name = target.name;
-    //debugger;
-    // console.log("value", value);
-    // console.log("name", name);
-
-    this.setState({ [name]: value, isSelectedOptionChanges: true });
-  };
-
-  isInvalidForm = () => {
-    const { selectedId, input_1, input_2 } = this.state;
-
-    if (!input_1) {
-      this.setState({
-        isError: true,
-      });
-      return false;
-    }
-    //debugger;
-    switch (selectedId) {
-      case "Selectel":
-        if (!input_2) {
-          this.setState({
-            isError: true,
-          });
-          return false;
-        }
-        return true;
-      case "Rackspace":
-        for (let i = 2; i <= 3; i++) {
-          if (!this.state[`input_${i}`]) {
-            this.setState({
-              isError: true,
-            });
-            return false;
-          }
-        }
-        return true;
-      case "S3":
-        for (let i = 2; i <= 6; i++) {
-          if (!this.state[`input_${i}`]) {
-            this.setState({
-              isError: true,
-            });
-            return false;
-          }
-        }
-        return true;
-      default:
-        return false;
-    }
-  };
-  fillInputValueArray = () => {
+  fillInputValueArray = (inputNumber, valuesArray) => {
+    const { isManualBackup } = this.props;
     const { selectedId, availableStorage } = this.state;
     let obj = {};
     inputValueArray = [];
+
     const selectedStorage = availableStorage[selectedId];
 
-    for (let i = 1; i <= 6; i++) {
-      if (this.state[`input_${i}`]) {
-        obj = {
-          key: selectedStorage.properties[i - 1].title,
-          value: this.state[`input_${i}`],
-        };
-        inputValueArray.push(obj);
+    for (let i = 1; i <= inputNumber; i++) {
+      obj = {
+        key: selectedStorage.properties[i - 1].name,
+        value: valuesArray[i - 1],
+      };
+      inputValueArray.push(obj);
+    }
+    isManualBackup ? this.onMakeCopy() : this.onSaveModuleSettings();
+  };
+
+  onSelectPeriod = (options) => {
+    console.log("options", options);
+
+    const key = options.key;
+    const label = options.label;
+    //debugger;
+    saveToSessionStorage("period", label);
+    saveToSessionStorage("numberPeriod", key);
+
+    this.setState({ selectedOption: label });
+    key === 1
+      ? this.setState(
+          {
+            weeklySchedule: false,
+            monthlySchedule: false,
+            dailySchedule: true,
+          },
+          function () {
+            this.checkChanges();
+          }
+        )
+      : key === 2
+      ? this.setState(
+          {
+            weeklySchedule: true,
+            monthlySchedule: false,
+            dailySchedule: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        )
+      : this.setState(
+          {
+            monthlySchedule: true,
+            weeklySchedule: false,
+            dailySchedule: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        );
+  };
+
+  onSelectWeekDay = (options) => {
+    console.log("options", options);
+
+    const key = options.key;
+    const label = options.label;
+    //debugger;
+
+    saveToSessionStorage("weekdayName", label);
+    saveToSessionStorage("day", key);
+
+    this.setState(
+      {
+        selectedNumberWeekdayOption: key,
+        selectedWeekdayOption: label,
+      },
+      function () {
+        this.checkChanges();
       }
+    );
+  };
+  onSelectMonthNumberAndTimeOptions = (options) => {
+    const key = options.key;
+    const label = options.label;
+
+    if (key <= 24) {
+      saveToSessionStorage("time", label);
+      this.setState({ selectedTimeOption: label }, function () {
+        this.checkChanges();
+      });
+    } else {
+      saveToSessionStorage("day", label);
+      this.setState(
+        {
+          selectedMonthOption: label,
+        },
+        function () {
+          this.checkChanges();
+        }
+      );
     }
   };
-  onSaveSettings = () => {
-    const { fillStorageFields } = this.props;
-    const { selectedId } = this.state;
 
-    if (!this.isInvalidForm()) return;
+  onSelectMaxCopies = (options) => {
+    const key = options.key;
+    const label = options.label;
 
-    this.fillInputValueArray();
-    this.isSetDefaultIdStorage = true;
-    this.setState({
-      isSelectedOptionChanges: false,
-      isError: false,
-    });
-    fillStorageFields(selectedId, inputValueArray);
+    saveToSessionStorage("maxCopies", label);
+
+    this.setState(
+      {
+        selectedNumberMaxCopies: key,
+        selectedMaxCopies: label,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
   };
+  checkChanges = () => {
+    const { defaultStorageType } = this.props;
+    const { isChanged } = this.state;
+
+    let changed;
+
+    if (+defaultStorageType === 5) {
+      changed = this.checkOptions();
+      isChanged !== changed &&
+        this.setState({
+          isChanged: changed,
+        });
+      return;
+    } else {
+      isChanged !== changed &&
+        this.setState({
+          isChanged: true,
+        });
+      return;
+    }
+  };
+  checkOptions = () => {
+    const {
+      selectedTimeOption,
+      dailySchedule,
+      monthlySchedule,
+      weeklySchedule,
+      selectedMonthOption,
+      selectedNumberMaxCopies,
+      selectedNumberWeekdayOption,
+      selectedId,
+      defaultSelectedId,
+    } = this.state;
+
+    const {
+      defaultHour,
+      defaultMaxCopies,
+      defaultPeriod,
+      defaultDay,
+      defaultSelectedWeekdayOption,
+    } = this.props;
+    //debugger;
+    if (selectedId !== defaultSelectedId) {
+      return true;
+    }
+    if (selectedTimeOption !== defaultHour) {
+      return true;
+    }
+    if (+selectedNumberMaxCopies !== +defaultMaxCopies) {
+      return true;
+    }
+    if (+defaultPeriod === 0 && (monthlySchedule || weeklySchedule)) {
+      return true;
+    }
+
+    if (+defaultPeriod === 1 && (monthlySchedule || dailySchedule)) {
+      return true;
+    }
+    if (+defaultPeriod === 2 && (weeklySchedule || dailySchedule)) {
+      return true;
+    }
+    if (monthlySchedule) {
+      if (+selectedMonthOption !== defaultDay) {
+        return true;
+      }
+    }
+
+    if (weeklySchedule) {
+      if (+selectedNumberWeekdayOption !== defaultSelectedWeekdayOption) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+  onSaveModuleSettings = () => {
+    const {
+      weeklySchedule,
+      selectedTimeOption,
+      monthlySchedule,
+      selectedMonthOption,
+      selectedNumberWeekdayOption,
+      selectedNumberMaxCopies,
+      isError,
+      selectedId,
+      availableStorage,
+    } = this.state;
+    const {
+      t,
+      changedDefaultOptions,
+      onSetDefaultOptions,
+      onSetLoadingData,
+    } = this.props;
+    let storageParams = [];
+
+    onSetLoadingData && onSetLoadingData(true);
+    this.setState({ isLoadingData: true }, function () {
+      let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
+
+      let day = weeklySchedule
+        ? `${selectedNumberWeekdayOption}`
+        : monthlySchedule
+        ? `${selectedMonthOption}`
+        : null;
+
+      let time = selectedTimeOption.substring(
+        0,
+        selectedTimeOption.indexOf(":")
+      );
+      let storageType = "5";
+
+      //console.log("storageFiledValue", this.storageFiledValue);
+
+      storageParams = [
+        {
+          key: "module",
+          value: selectedId,
+        },
+      ];
+
+      let obj = {};
+
+      for (let i = 0; i < inputValueArray.length; i++) {
+        obj = {
+          key: inputValueArray[i].key,
+          value: inputValueArray[i].value,
+        };
+        storageParams.push(obj);
+      }
+
+      //debugger;
+      let defaultSelectedFolder;
+      let folderId;
+      this.isSetDefaultIdStorage = true;
+
+      createBackupSchedule(
+        storageType,
+        storageParams,
+        selectedNumberMaxCopies,
+        period,
+        time,
+        day
+      )
+        .then(() => getBackupSchedule())
+        .then((selectedSchedule) => {
+          if (selectedSchedule) {
+            folderId = selectedSchedule.storageParams.folderId;
+
+            defaultSelectedFolder = folderId;
+            const defaultStorageType = `${selectedSchedule.storageType}`;
+            const defaultHour = `${selectedSchedule.cronParams.hour}:00`;
+            const defaultPeriod = `${selectedSchedule.cronParams.period}`;
+            const defaultDay = selectedSchedule.cronParams.day;
+            const defaultMaxCopies = `${selectedSchedule.backupsStored}`;
+
+            changedDefaultOptions(
+              defaultSelectedFolder,
+              defaultStorageType,
+              defaultHour,
+              defaultPeriod,
+              defaultDay,
+              defaultMaxCopies
+            );
+          }
+        })
+        .then(() => getBackupStorage())
+        .then((storageBackup) => this.getOptions(storageBackup))
+        .then(() => {
+          this._isMounted && onSetDefaultOptions();
+        })
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .catch((error) => console.log("error", error))
+        .finally(() => {
+          this._isMounted && onSetLoadingData && onSetLoadingData(false);
+          this._isMounted &&
+            this.setState({
+              isLoadingData: false,
+              isChanged: false,
+              defaultSelectedId: selectedId,
+              defaultSelectedStorage: availableStorage[selectedId].title,
+            });
+        });
+    });
+  };
+  // onCancelSettings = () => {
+  //   // перенести в каждый компонент
+  //   const {
+  //     defaultSelectedOption,
+  //     defaultSelectedId,
+  //     isSetDefaultStorage,
+  //   } = this.state;
+  //   const { onCancelModuleSettings, onSetDisableOptions } = this.props;
+
+  //   if (this.isSetDefaultIdStorage) {
+  //     this.setState({
+  //       isSetDefaultStorage: true,
+  //     });
+  //     onSetDisableOptions && onSetDisableOptions(true);
+  //   }
+
+  //   this.setState({
+  //     selectedStorage: defaultSelectedOption,
+  //     selectedId: defaultSelectedId,
+  //     isChanged: false,
+  //     input_1: "",
+  //     input_2: "",
+  //     input_3: "",
+  //     input_4: "",
+  //     input_5: "",
+  //     input_6: "",
+  //   });
+
+  //   if (this.isSetDefaultIdStorage && !isSetDefaultStorage) {
+  //     this.setState({
+  //       isSetDefaultStorage: true,
+  //     });
+  //   }
+  //   onCancelModuleSettings();
+  // };
 
   onCancelSettings = () => {
     const {
-      defaultSelectedOption,
+      onCancelModuleSettings,
+      periodOptions,
+      weekdaysOptions,
+      defaultPeriod,
+      defaultHour,
+      defaultMaxCopies,
+      defaultDay,
+      lng,
+      defaultWeekly,
+      defaultDaily,
+      defaultMonthly,
+      defaultStorageType,
+      onSetLoadingData,
+    } = this.props;
+    const {
+      monthlySchedule,
+      weeklySchedule,
+      defaultSelectedStorage,
       defaultSelectedId,
-      isSetDefaultStorage,
+      isError,
     } = this.state;
-    const { onCancelModuleSettings, onSetDisableOptions } = this.props;
 
-    if (this.isSetDefaultIdStorage) {
-      this.setState({
-        isSetDefaultStorage: true,
-      });
-      onSetDisableOptions && onSetDisableOptions(true);
-    }
+    onSetLoadingData && onSetLoadingData(true);
 
-    this.setState({
-      selectedOption: defaultSelectedOption,
-      selectedId: defaultSelectedId,
-      isSelectedOptionChanges: false,
-      input_1: "",
-      input_2: "",
-      input_3: "",
-      input_4: "",
-      input_5: "",
-      input_6: "",
+    settingNames.forEach((settingName) => {
+      saveToSessionStorage(settingName, "");
     });
 
-    if (this.isSetDefaultIdStorage && !isSetDefaultStorage) {
+    if (defaultStorageType) {
       this.setState({
-        isSetDefaultStorage: true,
+        isSetDefaultFolderPath: true,
+        selectedTimeOption: defaultHour,
+        selectedMaxCopies: defaultMaxCopies,
+        selectedNumberMaxCopies: defaultMaxCopies,
       });
-    }
-    onCancelModuleSettings();
-  };
 
+      if (
+        monthlySchedule === defaultWeekly ||
+        monthlySchedule === defaultDaily
+      ) {
+        this.setState({
+          monthlySchedule: false,
+        });
+      }
+
+      if (
+        weeklySchedule === defaultMonthly ||
+        weeklySchedule === defaultDaily
+      ) {
+        this.setState({
+          weeklySchedule: false,
+        });
+      }
+      let defaultSelectedOption;
+      let defaultSelectedWeekdayOption;
+
+      if (+defaultPeriod === 1) {
+        //Every Week option
+        //debugger;
+        const arrayIndex = lng === "en" ? defaultDay : defaultDay - 1; //selected number of week
+        defaultSelectedOption = periodOptions[1].label;
+        defaultSelectedWeekdayOption = defaultDay;
+        // defaultWeekly = true;
+        this.setState({
+          selectedOption: defaultSelectedOption,
+          weeklySchedule: true,
+          selectedWeekdayOption: weekdaysOptions[arrayIndex].label,
+          selectedNumberWeekdayOption: defaultDay,
+        });
+      } else {
+        if (+defaultPeriod === 2) {
+          //Every Month option
+          defaultSelectedOption = periodOptions[2].label;
+          this.setState({
+            selectedOption: defaultSelectedOption,
+            monthlySchedule: true,
+            selectedMonthOption: `${defaultDay}`, //selected day of month
+          });
+        } else {
+          defaultSelectedOption = periodOptions[0].label;
+          this.setState({
+            selectedOption: defaultSelectedOption,
+          });
+        }
+      }
+    }
+    this.setState({
+      isChanged: false,
+      selectedStorage: defaultSelectedStorage,
+      selectedId: defaultSelectedId,
+    });
+    onCancelModuleSettings();
+    onSetLoadingData && onSetLoadingData(false);
+  };
   onMakeCopy = () => {
     const { setInterval } = this.props;
     const { selectedId } = this.state;
-
-    if (!this.isInvalidForm()) return;
-    this.fillInputValueArray();
 
     let storageParams = [
       {
@@ -322,29 +724,33 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const {
       t,
       helpUrlCreatingBackup,
-      isChanged,
       isLoadingData,
       isCopyingToLocal,
       isManualBackup,
       maxProgress,
+      weekOptions,
+      periodOptions,
+      monthNumberOptionsArray,
+      timeOptionsArray,
+      maxNumberCopiesArray,
     } = this.props;
     const {
       availableOptions,
       availableStorage,
+      selectedStorage,
       selectedOption,
       isLoading,
       selectedId,
-      input_1,
-      input_2,
-      input_3,
-      input_4,
-      input_5,
-      input_6,
-      isSetDefaultStorage,
-      isSelectedOptionChanges,
-      isError,
+      isChanged,
+      defaultSelectedId,
+      selectedWeekdayOption,
+      selectedTimeOption,
+      selectedMonthOption,
+      selectedMaxCopies,
+      weeklySchedule,
+      monthlySchedule,
     } = this.state;
-    console.log("selectedOption", isLoadingData);
+
     return (
       <StyledComponent>
         <Box marginProp="16px 0 16px 0">
@@ -359,7 +765,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
         </Box>
         <ComboBox
           options={availableOptions}
-          selectedOption={{ key: 0, label: selectedOption }}
+          selectedOption={{ key: 0, label: selectedStorage }}
           onSelect={this.onSelect}
           isDisabled={isLoadingData || isLoading}
           noBorder={false}
@@ -369,163 +775,104 @@ class ThirdPartyStorageModule extends React.PureComponent {
           className="backup_combo"
         />
 
-        {!isSetDefaultStorage && (
-          <>
-            <TextInput
-              name="input_1"
-              className="backup_text-input"
-              scale={true}
-              value={input_1}
-              hasError={isError}
-              onChange={this.onChange}
-              isDisabled={
-                isLoadingData ||
-                isLoading ||
-                (availableStorage[selectedId] &&
-                  !availableStorage[selectedId].isSet)
-              }
-              placeholder={
-                availableStorage[selectedId] &&
-                availableStorage[selectedId].properties[0].title
-              }
-              tabIndex={1}
-            />
-
-            {selectedId !== "GoogleCloud" && (
-              <>
-                <TextInput
-                  name="input_2"
-                  className="backup_text-input"
-                  scale={true}
-                  value={input_2}
-                  hasError={isError}
-                  onChange={this.onChange}
-                  isDisabled={
-                    isLoadingData ||
-                    isLoading ||
-                    (availableStorage[selectedId] &&
-                      !availableStorage[selectedId].isSet)
-                  }
-                  placeholder={
-                    selectedId === "S3"
-                      ? t("ForcePathStyle")
-                      : availableStorage[selectedId] &&
-                        availableStorage[selectedId].properties[1].title
-                  }
-                  tabIndex={1}
-                />
-
-                {(selectedId === "Rackspace" || selectedId === "S3") && (
-                  <TextInput
-                    name="input_3"
-                    className="backup_text-input"
-                    scale={true}
-                    value={input_3}
-                    hasError={isError}
-                    onChange={this.onChange}
-                    isDisabled={
-                      isLoadingData ||
-                      isLoading ||
-                      (availableStorage[selectedId] &&
-                        !availableStorage[selectedId].isSet)
-                    }
-                    placeholder={
-                      availableStorage[selectedId] &&
-                      availableStorage[selectedId].properties[2].title
-                    }
-                    tabIndex={1}
-                  />
-                )}
-                {selectedId === "S3" && (
-                  <>
-                    <TextInput
-                      name="input_4"
-                      className="backup_text-input"
-                      scale={true}
-                      value={input_4}
-                      hasError={isError}
-                      onChange={this.onChange}
-                      isDisabled={
-                        isLoadingData ||
-                        isLoading ||
-                        (availableStorage[selectedId] &&
-                          !availableStorage[selectedId].isSet)
-                      }
-                      placeholder={t("ServiceUrl")}
-                      tabIndex={1}
-                    />
-                    <TextInput
-                      name="input_5"
-                      className="backup_text-input"
-                      scale={true}
-                      value={input_5}
-                      hasError={isError}
-                      onChange={this.onChange}
-                      isDisabled={
-                        isLoadingData ||
-                        isLoading ||
-                        (availableStorage[selectedId] &&
-                          !availableStorage[selectedId].isSet)
-                      }
-                      placeholder={t("UseHttp")}
-                      tabIndex={1}
-                    />
-                    <TextInput
-                      name="input_6"
-                      className="backup_text-input"
-                      scale={true}
-                      value={input_6}
-                      hasError={isError}
-                      onChange={this.onChange}
-                      isDisabled={
-                        isLoadingData ||
-                        isLoading ||
-                        (availableStorage[selectedId] &&
-                          !availableStorage[selectedId].isSet)
-                      }
-                      placeholder={t("SSE")}
-                      tabIndex={1}
-                    />
-                  </>
-                )}
-              </>
-            )}
-          </>
+        {selectedId === "GoogleCloud" && !isLoading && (
+          <GoogleCloudStorage
+            isLoadingData={isLoadingData}
+            isLoading={isLoading}
+            availableStorage={availableStorage}
+            isManualBackup={isManualBackup}
+            isCopyingToLocal={isCopyingToLocal}
+            maxProgress={maxProgress}
+            isChanged={isChanged}
+            isChanged={isChanged}
+            selectedId={selectedId}
+            fillInputValueArray={this.fillInputValueArray}
+            onCancelSettings={this.onCancelSettings}
+            currentStorageId={
+              this.isSetDefaultIdStorage ? defaultSelectedId : ""
+            }
+          />
         )}
-        {!isManualBackup ? (
-          (isSelectedOptionChanges || isChanged) && (
-            <SaveCancelButtons
-              className="team-template_buttons"
-              onSaveClick={this.onSaveSettings}
-              onCancelClick={this.onCancelSettings}
-              showReminder={false}
-              reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("SaveButton")}
-              cancelButtonLabel={t("CancelButton")}
-              isDisabled={isCopyingToLocal || isLoadingData || isLoading}
-            />
-          )
-        ) : (
-          <div className="manual-backup_buttons">
-            <Button
-              label={t("MakeCopy")}
-              onClick={this.onMakeCopy}
-              primary
-              isDisabled={!maxProgress}
-              size="medium"
-              tabIndex={10}
-            />
-            {!maxProgress && (
-              <Button
-                label={t("Copying")}
-                onClick={() => console.log("click")}
-                isDisabled={true}
-                size="medium"
-                style={{ marginLeft: "8px" }}
-                tabIndex={11}
-              />
-            )}
-          </div>
+
+        {selectedId === "Rackspace" && !isLoading && (
+          <RackspaceStorage
+            isLoadingData={isLoadingData}
+            isLoading={isLoading}
+            availableStorage={availableStorage}
+            isManualBackup={isManualBackup}
+            isCopyingToLocal={isCopyingToLocal}
+            maxProgress={maxProgress}
+            isChanged={isChanged}
+            isChanged={isChanged}
+            selectedId={selectedId}
+            fillInputValueArray={this.fillInputValueArray}
+            onCancelSettings={this.onCancelSettings}
+            currentStorageId={
+              this.isSetDefaultIdStorage ? defaultSelectedId : ""
+            }
+          />
+        )}
+
+        {selectedId === "Selectel" && !isLoading && (
+          <SelectelStorage
+            isLoadingData={isLoadingData}
+            isLoading={isLoading}
+            availableStorage={availableStorage}
+            isManualBackup={isManualBackup}
+            isCopyingToLocal={isCopyingToLocal}
+            maxProgress={maxProgress}
+            isChanged={isChanged}
+            isChanged={isChanged}
+            selectedId={selectedId}
+            fillInputValueArray={this.fillInputValueArray}
+            onCancelSettings={this.onCancelSettings}
+            currentStorageId={
+              this.isSetDefaultIdStorage ? defaultSelectedId : ""
+            }
+          />
+        )}
+
+        {selectedId === "S3" && !isLoading && (
+          <AmazonStorage
+            isLoadingData={isLoadingData}
+            isLoading={isLoading}
+            availableStorage={availableStorage}
+            isManualBackup={isManualBackup}
+            isCopyingToLocal={isCopyingToLocal}
+            maxProgress={maxProgress}
+            isChanged={isChanged}
+            isChanged={isChanged}
+            selectedId={selectedId}
+            fillInputValueArray={this.fillInputValueArray}
+            onCancelSettings={this.onCancelSettings}
+            currentStorageId={
+              this.isSetDefaultIdStorage ? defaultSelectedId : ""
+            }
+          />
+        )}
+
+        {!isManualBackup && (
+          <ScheduleComponent
+            weeklySchedule={weeklySchedule}
+            monthlySchedule={monthlySchedule}
+            weekOptions={weekOptions}
+            selectedOption={selectedOption}
+            selectedWeekdayOption={selectedWeekdayOption}
+            selectedTimeOption={selectedTimeOption}
+            selectedMonthOption={selectedMonthOption}
+            selectedMaxCopies={selectedMaxCopies}
+            isLoadingData={isLoadingData}
+            periodOptions={periodOptions}
+            monthNumberOptionsArray={monthNumberOptionsArray}
+            timeOptionsArray={timeOptionsArray}
+            maxNumberCopiesArray={maxNumberCopiesArray}
+            onSelectMaxCopies={this.onSelectMaxCopies}
+            onSelectMonthNumberAndTimeOptions={
+              this.onSelectMonthNumberAndTimeOptions
+            }
+            onSelectWeekDay={this.onSelectWeekDay}
+            onSelectPeriod={this.onSelectPeriod}
+          />
         )}
       </StyledComponent>
     );

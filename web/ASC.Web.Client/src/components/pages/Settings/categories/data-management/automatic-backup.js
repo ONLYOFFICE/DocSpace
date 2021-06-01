@@ -142,7 +142,6 @@ class AutomaticBackup extends React.PureComponent {
 
         .then((selectedSchedule) => {
           if (selectedSchedule) {
-            // debugger;
             const folderId = selectedSchedule.storageParams.folderId;
             this.setState({
               defaultSelectedFolder: folderId,
@@ -819,15 +818,40 @@ class AutomaticBackup extends React.PureComponent {
               {isShowThirdPartyStorage && (
                 <>
                   <ThirdPartyStorageModule
-                    fillStorageFields={this.fillStorageFields}
-                    onCancelModuleSettings={this.onCancelModuleSettings}
                     isCopyingToLocal={isCopyingToLocal}
                     isLoadingData={isLoadingData}
                     isDisableOptions={isDisableOptions}
-                    isChanged={isChanged}
-                    onSetDisableOptions={this.onSetDisableOptions}
+                    weeklySchedule={weeklySchedule}
+                    monthlySchedule={monthlySchedule}
+                    weekOptions={weekOptions}
+                    selectedWeekdayOption={selectedWeekdayOption}
+                    weekdaysOptions={this.weekdaysOptions}
+                    periodOptions={this.periodOptions}
+                    lng={this.lng}
+                    monthNumberOptionsArray={this.monthNumberOptionsArray}
+                    timeOptionsArray={this.timeOptionsArray}
+                    maxNumberCopiesArray={this.maxNumberCopiesArray}
+                    defaultStorageType={defaultStorageType}
+                    defaultSelectedFolder={defaultSelectedFolder}
+                    defaultSelectedOption={defaultSelectedOption}
+                    defaultHour={defaultHour}
+                    defaultMaxCopies={defaultMaxCopies}
+                    defaultPeriod={defaultPeriod}
+                    defaultDay={defaultDay}
+                    defaultSelectedWeekdayOption={defaultSelectedWeekdayOption}
+                    defaultWeekly={defaultWeekly}
+                    defaultDaily={defaultDaily}
+                    defaultMonthly={defaultMonthly}
+                    monthlySchedule={monthlySchedule}
+                    dailySchedule={dailySchedule}
+                    weeklySchedule={weeklySchedule}
+                    isCopyingToLocal={isCopyingToLocal}
+                    onCancelModuleSettings={this.onCancelModuleSettings}
+                    changedDefaultOptions={this.changedDefaultOptions}
+                    onSetDefaultOptions={this.onSetDefaultOptions}
+                    onSetLoadingData={this.onSetLoadingData}
                   />
-                  <ScheduleComponent
+                  {/* <ScheduleComponent
                     weeklySchedule={weeklySchedule}
                     monthlySchedule={monthlySchedule}
                     weekOptions={weekOptions}
@@ -849,7 +873,7 @@ class AutomaticBackup extends React.PureComponent {
                     }
                     onSelectWeedDay={this.onSelectWeedDay}
                     onSelectPeriod={this.onSelectPeriod}
-                  />
+                  /> */}
                 </>
               )}
             </StyledModules>

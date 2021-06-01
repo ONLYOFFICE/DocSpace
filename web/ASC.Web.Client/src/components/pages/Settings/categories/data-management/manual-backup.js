@@ -310,7 +310,7 @@ class ManualBackup extends React.Component {
       });
   };
   render() {
-    const { t, commonThirdPartyList } = this.props;
+    const { t } = this.props;
     const {
       downloadingProgress,
       link,
@@ -467,6 +467,7 @@ class ManualBackup extends React.Component {
           {isCheckedThirdPartyStorage && (
             <ThirdPartyStorageModule
               maxProgress={maxProgress}
+              isLoadingData={isLoadingData}
               isManualBackup
               setInterval={this.setInterval}
             />
