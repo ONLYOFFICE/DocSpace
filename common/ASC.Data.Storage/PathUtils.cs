@@ -86,9 +86,9 @@ namespace ASC.Data.Storage
             if (virtPath.StartsWith("~") && !Uri.IsWellFormedUriString(virtPath, UriKind.Absolute))
             {
                 var rootPath = "/";
-                if (!string.IsNullOrEmpty(WebHostEnvironment.WebRootPath) && WebHostEnvironment.WebRootPath.Length > 1)
+                if (!string.IsNullOrEmpty(WebHostEnvironment?.WebRootPath) && WebHostEnvironment?.WebRootPath.Length > 1)
                 {
-                    rootPath = WebHostEnvironment.WebRootPath.Trim('/');
+                    rootPath = WebHostEnvironment?.WebRootPath.Trim('/');
                 }
                 virtPath = virtPath.Replace("~", rootPath);
             }

@@ -326,6 +326,7 @@ namespace ASC.Web.Files.Utils
                 var u = UserManager.GetUsers(r.Subject);
                 var isgroup = false;
                 var title = u.DisplayUserName(false, DisplayUserSettingsHelper);
+                var share = r.Share;
 
                 if (u.ID == Constants.LostUser.ID)
                 {
@@ -344,13 +345,17 @@ namespace ASC.Web.Files.Utils
                         continue;
                     }
                 }
+                else if (u.IsVisitor(UserManager) && new FileShareRecord.ShareComparer().Compare(FileShare.Read, share) > 0)
+                {
+                    share = FileShare.Read;
+                }
 
                 var w = new AceWrapper
                 {
                     SubjectId = r.Subject,
                     SubjectName = title,
                     SubjectGroup = isgroup,
-                    Share = r.Share,
+                    Share = share,
                     Owner =
                             entry.RootFolderType == FolderType.USER
                                 ? entry.RootFolderCreator == r.Subject

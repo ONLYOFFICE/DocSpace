@@ -1,17 +1,10 @@
 {
-  "RecoverProcessSending": "Sending...",
-  "RecoverAccess": "Recover access",
-  "RecoverTitle": "Access recovery",
-  "RecoverTextBody": "If you are an existing user and have problems accessing this portal or you want to register as the portal new user, please contact the portal administrator using the form below.",
-  "RecoverContactEmailPlaceholder": "Contact e-mail",
-  "RecoverDescribeYourProblemPlaceholder": "Describe your problem",
-  "RecoverErrorMessage": "Required field",
-  "RecoverSendButton": "Send",
-  "Profile": "Profile",
   "AboutCompanyTitle": "About this program",
   "LogoutButton": "Sign Out",
-  "Settings": "Settings",
-  "Version": "Version",
-  "AboutShort": "About",
+  "RecoverAccess": "Recover access",
+  "RecoverContactEmailPlaceholder": "Contact email",
+  "RecoverDescribeYourProblemPlaceholder": "Describe your problem",
+  "RecoverTextBody": "If you can't log in with your existing account or want to be registered as a new user, contact the portal administrator. ",
+  "RecoverTitle": "Access recovery",
   "TurnOnDesktopVersion": "Turn on desktop version"
 }

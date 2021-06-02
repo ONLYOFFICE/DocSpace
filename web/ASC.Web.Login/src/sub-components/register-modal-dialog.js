@@ -65,11 +65,11 @@ const RegisterModalDialog = ({
           isVertical={true}
           hasError={emailErr}
           labelVisible={false}
-          errorMessage={t("RequiredFieldMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <TextInput
             hasError={emailErr}
-            placeholder={t("RegisterPlaceholder")}
+            placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"
@@ -87,9 +87,7 @@ const RegisterModalDialog = ({
         <Button
           className="modal-dialog-button"
           key="SendBtn"
-          label={
-            loading ? t("RegisterProcessSending") : t("RegisterSendButton")
-          }
+          label={loading ? t("Common:Sending") : t("RegisterSendButton")}
           size="big"
           scale={false}
           primary={true}

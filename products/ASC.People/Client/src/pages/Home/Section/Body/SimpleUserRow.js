@@ -29,7 +29,7 @@ const SimpleUserRow = ({
   updateUserStatus,
   history,
 }) => {
-  const { t } = useTranslation("Home");
+  const { t } = useTranslation(["Home", "Translations"]);
   const isRefetchPeople = true;
 
   const {
@@ -104,7 +104,7 @@ const SimpleUserRow = ({
   const onDisableClick = (e) => {
     //onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [id], isRefetchPeople)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
     //.finally(() => onLoading(false));
   };
@@ -112,7 +112,7 @@ const SimpleUserRow = ({
   const onEnableClick = (e) => {
     //onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [id], isRefetchPeople)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
     //.finally(() => onLoading(false));
   };
@@ -128,7 +128,7 @@ const SimpleUserRow = ({
   };
 
   const onDeletePersonalDataClick = (e) => {
-    toastr.success("Context action: Delete personal data"); //TODO: Implement and add translation
+    toastr.success(t("Translations:SuccessDeletePersonalData"));
   };
 
   const onInviteAgainClick = () => {
@@ -172,63 +172,63 @@ const SimpleUserRow = ({
         case "edit":
           return {
             key: option,
-            label: t("EditButton"),
+            label: t("Common:EditButton"),
             "data-id": id,
             onClick: onEditClick,
           };
         case "change-password":
           return {
             key: option,
-            label: t("PasswordChangeButton"),
+            label: t("Translations:PasswordChangeButton"),
             "data-id": id,
             onClick: toggleChangePasswordDialog,
           };
         case "change-email":
           return {
             key: option,
-            label: t("EmailChangeButton"),
+            label: t("Translations:EmailChangeButton"),
             "data-id": id,
             onClick: toggleChangeEmailDialog,
           };
         case "delete-self-profile":
           return {
             key: option,
-            label: t("DeleteSelfProfile"),
+            label: t("Translations:DeleteSelfProfile"),
             "data-id": id,
             onClick: toggleDeleteSelfProfileDialog,
           };
         case "disable":
           return {
             key: option,
-            label: t("DisableUserButton"),
+            label: t("Translations:DisableUserButton"),
             "data-id": id,
             onClick: onDisableClick,
           };
         case "enable":
           return {
             key: option,
-            label: t("EnableUserButton"),
+            label: t("Translations:EnableUserButton"),
             "data-id": id,
             onClick: onEnableClick,
           };
         case "reassign-data":
           return {
             key: option,
-            label: t("ReassignData"),
+            label: t("Translations:ReassignData"),
             "data-id": id,
             onClick: onReassignDataClick,
           };
         case "delete-personal-data":
           return {
             key: option,
-            label: t("RemoveData"),
+            label: t("Translations:RemoveData"),
             "data-id": id,
             onClick: onDeletePersonalDataClick,
           };
         case "delete-profile":
           return {
             key: option,
-            label: t("DeleteSelfProfile"),
+            label: t("Translations:DeleteSelfProfile"),
             "data-id": id,
             onClick: toggleDeleteProfileEverDialog,
           };

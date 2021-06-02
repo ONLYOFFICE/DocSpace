@@ -68,14 +68,14 @@ class PureModulesSettings extends Component {
       <ToggleContentContainer>
         <ToggleContent
           className="toggle_content"
-          label={t("People")}
+          label={t("Common:People")}
           isOpen={true}
         >
           <ProjectsContainer>
             <RadioButtonContainer>
               <Text>
                 {t("AccessRightsAccessToProduct", {
-                  product: t("People"),
+                  product: t("Common:People"),
                 })}
                 :
               </Text>
@@ -103,7 +103,7 @@ class PureModulesSettings extends Component {
             <ProjectsBody>
               <Text className="projects_margin" fontSize="12px">
                 {t("AccessRightsProductUsersCan", {
-                  category: t("People"),
+                  category: t("Common:People"),
                 })}
               </Text>
               <Text fontSize="12px">
@@ -117,4 +117,6 @@ class PureModulesSettings extends Component {
   }
 }
 
-export default withTranslation("Settings")(withRouter(PureModulesSettings));
+export default withTranslation(["Settings", "Common"])(
+  withRouter(PureModulesSettings)
+);

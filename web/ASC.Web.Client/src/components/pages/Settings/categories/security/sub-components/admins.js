@@ -110,13 +110,9 @@ class PureAdminsSettings extends Component {
     const { changeAdmins } = this.props;
     const newFilter = this.onAdminsFilter();
 
-    changeAdmins(userIds, productId, isAdmin, newFilter)
-      .catch((error) => {
-        toastr.error("accessRights onChangeAdmin", error);
-      })
-      .finally(() => {
-        this.onLoading(false);
-      });
+    changeAdmins(userIds + "", productId, isAdmin, newFilter)
+      .catch((error) => toastr.error(error)) //TODO: add translation to toast if need
+      .finally(() => this.onLoading(false));
   };
 
   onShowGroupSelector = () => {
@@ -291,15 +287,18 @@ class PureAdminsSettings extends Component {
     return [...Array(totalPages).keys()].map((item) => {
       return {
         key: item,
-        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages }),
+        label: t("Common:PageOfTotalPage", {
+          page: item + 1,
+          totalPage: totalPages,
+        }),
       };
     });
   };
 
   countItems = () => [
-    { key: 25, label: this.props.t("CountPerPage", { count: 25 }) },
-    { key: 50, label: this.props.t("CountPerPage", { count: 50 }) },
-    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) },
+    { key: 25, label: this.props.t("Common:CountPerPage", { count: 25 }) },
+    { key: 50, label: this.props.t("Common:CountPerPage", { count: 50 }) },
+    { key: 100, label: this.props.t("Common:CountPerPage", { count: 100 }) },
   ];
 
   selectedPageItem = () => {
@@ -308,7 +307,7 @@ class PureAdminsSettings extends Component {
 
     const emptyPageSelection = {
       key: 0,
-      label: t("PageOfTotalPage", { page: 1, totalPage: 1 }),
+      label: t("Common:PageOfTotalPage", { page: 1, totalPage: 1 }),
     };
 
     return pageItems.find((x) => x.key === filter.page) || emptyPageSelection;
@@ -319,7 +318,7 @@ class PureAdminsSettings extends Component {
 
     const emptyCountSelection = {
       key: 0,
-      label: t("CountPerPage", { count: 25 }),
+      label: t("Common:CountPerPage", { count: 25 }),
     };
 
     const countItems = this.countItems();
@@ -333,8 +332,12 @@ class PureAdminsSettings extends Component {
     const { t } = this.props;
 
     return [
-      { key: "firstname", label: t("ByFirstNameSorting"), default: true },
-      { key: "lastname", label: t("ByLastNameSorting"), default: true },
+      {
+        key: "firstname",
+        label: t("Common:ByFirstNameSorting"),
+        default: true,
+      },
+      { key: "lastname", label: t("Common:ByLastNameSorting"), default: true },
     ];
   };
 
@@ -372,7 +375,9 @@ class PureAdminsSettings extends Component {
               zIndex={256}
               loaderSize="16px"
               loaderColor={"#999"}
-              label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+              label={`${t("Common:LoadingProcessing")} ${t(
+                "Common:LoadingDescription"
+              )}`}
               fontSize="12px"
               fontColor={"#999"}
               className="page_loader"
@@ -397,7 +402,7 @@ class PureAdminsSettings extends Component {
                     onSelect={this.onSelect}
                     onCancel={this.onCancelSelector}
                     defaultOption={me}
-                    defaultOptionLabel={t("MeLabel")}
+                    defaultOptionLabel={t("Common:MeLabel")}
                     groupsCaption={groupsCaption}
                   />
                 </div>
@@ -418,7 +423,7 @@ class PureAdminsSettings extends Component {
                     onSelect={this.onSelectFullAdmin}
                     onCancel={this.onCancelSelector}
                     defaultOption={me}
-                    defaultOptionLabel={t("MeLabel")}
+                    defaultOptionLabel={t("Common:MeLabel")}
                     groupsCaption={groupsCaption}
                   />
                 </div>
@@ -429,8 +434,8 @@ class PureAdminsSettings extends Component {
                 getFilterData={() => []}
                 getSortData={this.getSortData}
                 onFilter={this.onFilter}
-                directionAscLabel={t("DirectionAscLabel")}
-                directionDescLabel={t("DirectionDescLabel")}
+                directionAscLabel={t("Common:DirectionAscLabel")}
+                directionDescLabel={t("Common:DirectionDescLabel")}
               />
 
               {admins.length > 0 ? (
@@ -471,7 +476,7 @@ class PureAdminsSettings extends Component {
                               <></>
                               <Text containerWidth="10%">
                                 {user.isAdmin
-                                  ? t("AccessRightsFullAccess")
+                                  ? t("Common:FullAccess")
                                   : t("PeopleAdmin")}
                               </Text>
                               {!user.isOwner ? (
@@ -503,8 +508,8 @@ class PureAdminsSettings extends Component {
                   </div>
                   <div className="wrapper">
                     <Paging
-                      previousLabel={t("PreviousPage")}
-                      nextLabel={t("NextPage")}
+                      previousLabel={t("Common:Previous")}
+                      nextLabel={t("Common:Next")}
                       openDirection="top"
                       countItems={this.countItems()}
                       pageItems={this.pageItems()}
@@ -543,7 +548,7 @@ class PureAdminsSettings extends Component {
                         color="#555f65"
                         onClick={this.onResetFilter}
                       >
-                        {t("ClearButton")}
+                        {t("Common:ClearButton")}
                       </Link>
                     </>
                   }
@@ -557,7 +562,9 @@ class PureAdminsSettings extends Component {
   }
 }
 
-const AdminsSettings = withTranslation("Settings")(PureAdminsSettings);
+const AdminsSettings = withTranslation(["Settings", "Common"])(
+  PureAdminsSettings
+);
 
 AdminsSettings.defaultProps = {
   admins: [],

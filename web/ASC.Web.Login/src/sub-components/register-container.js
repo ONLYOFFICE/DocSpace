@@ -59,9 +59,9 @@ const Register = (props) => {
     } else {
       setLoading(true);
       sendRegisterRequest(email)
-        .then(() => {
+        .then((res) => {
           setLoading(false);
-          toastr.success("Successfully sent");
+          toastr.success(res);
         })
         .catch((error) => {
           setLoading(false);

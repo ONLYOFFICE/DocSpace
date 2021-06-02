@@ -116,8 +116,8 @@ const SectionBodyContent = (props) => {
   const onMoveTo = (destFolderId, title) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
     moveDragItems(id, title, {
-      copy: t("CopyOperation"),
-      move: t("MoveToOperation"),
+      copy: t("Translations:CopyOperation"),
+      move: t("Translations:MoveToOperation"),
     }); //TODO: then catch
   };
 
@@ -188,5 +188,9 @@ export default inject(
     };
   }
 )(
-  withRouter(withTranslation("Home")(withLoader(observer(SectionBodyContent))))
+  withRouter(
+    withTranslation(["Home", "Translations"])(
+      withLoader(observer(SectionBodyContent))
+    )
+  )
 );

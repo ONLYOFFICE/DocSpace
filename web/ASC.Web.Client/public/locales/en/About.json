@@ -1,14 +1,9 @@
 {
-  "AboutCompanyTitle": "About this program",
-  "AboutCompanyVersion": "Version",
-  "AboutCompanyLicensor": "Copyright",
   "AboutCompanyAddressTitle": "address",
   "AboutCompanyEmailTitle": "email",
+  "AboutCompanyLicensor": "Copyright",
   "AboutCompanyTelTitle": "tel.",
-  "LicensedUnder": "This software is licensed under: <1>{{license}}</1>",
   "AllRightsReservedCustomMode": "<0>Ascensio System SIA.</0> <1>All rights reserved.</1>",
-  "People": "People",
-  "AboutTitle": "About",
-
+  "LicensedUnder": "This software is licensed under: <1>{{license}}</1>",
   "SourceCode": "Source code is available on"
 }

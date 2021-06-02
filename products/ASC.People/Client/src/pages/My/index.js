@@ -21,7 +21,7 @@ class My extends React.Component {
   componentDidMount() {
     const { fetchProfile, profile, location, t, setDocumentTitle } = this.props;
 
-    setDocumentTitle(t("Profile"));
+    setDocumentTitle(t("Common:Profile"));
 
     this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);

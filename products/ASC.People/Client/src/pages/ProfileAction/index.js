@@ -127,5 +127,5 @@ export default withRouter(
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-  }))(withTranslation("ProfileAction")(observer(ProfileAction)))
+  }))(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );

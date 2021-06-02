@@ -1,11 +1,8 @@
 {
-  "Actions": "Actions",
   "NewDocument": "New Document",
-  "NewSpreadsheet": "New Spreadsheet",
-  "NewPresentation": "New Presentation",
   "NewFolder": "New Folder",
+  "NewPresentation": "New Presentation",
+  "NewSpreadsheet": "New Spreadsheet",
   "UploadFiles": "Upload files",
-  "UploadFolder": "Upload folder",
-  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
-  "AddAccount": "Add account"
+  "UploadFolder": "Upload folder"
 }

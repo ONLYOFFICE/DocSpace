@@ -115,10 +115,12 @@ class GroupSelector extends React.Component {
           searchPlaceHolderLabel || t("SearchPlaceholder")
         }
         selectButtonLabel={t("AddDepartmentsButtonLabel")}
-        selectAllLabel={t("SelectAllLabel")}
+        selectAllLabel={t("Common:SelectAll")}
         emptySearchOptionsLabel={t("EmptySearchOptionsLabel")}
         emptyOptionsLabel={t("EmptyOptionsLabel")}
-        loadingLabel={t("LoadingLabel")}
+        loadingLabel={`${t("Common:LoadingProcessing")} ${t(
+          "Common:LoadingDescription"
+        )}`}
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onCancel={onCancel}
@@ -154,7 +156,9 @@ GroupSelector.defaultProps = {
   withoutAside: false,
 };
 
-const ExtendedGroupSelector = withTranslation("GroupSelector")(GroupSelector);
+const ExtendedGroupSelector = withTranslation(["GroupSelector", "Common"])(
+  GroupSelector
+);
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

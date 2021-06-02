@@ -325,25 +325,23 @@ class TreeFolders extends React.Component {
     newFilter.withSubfolders = null;
     newFilter.authorType = null;
 
-    return getFolder(folderId, newFilter)
-      .then((data) => {
-        arrayFolders = data.folders;
+    return getFolder(folderId, newFilter).then((data) => {
+      arrayFolders = data.folders;
 
-        let listIds = [];
-        for (let item of data.pathParts) {
-          listIds.push(item.toString());
-        }
+      let listIds = [];
+      for (let item of data.pathParts) {
+        listIds.push(item.toString());
+      }
 
-        const folderIndex = treeNode.props.pos;
-        let i = 0;
-        for (let item of arrayFolders) {
-          item["key"] = `${folderIndex}-${i}`;
-          i++;
-        }
+      const folderIndex = treeNode.props.pos;
+      let i = 0;
+      for (let item of arrayFolders) {
+        item["key"] = `${folderIndex}-${i}`;
+        i++;
+      }
 
-        return { folders: arrayFolders, listIds };
-      })
-      .catch((err) => toastr.error("Something went wrong", err));
+      return { folders: arrayFolders, listIds };
+    });
   };
 
   onLoadData = (treeNode, isExpand) => {
