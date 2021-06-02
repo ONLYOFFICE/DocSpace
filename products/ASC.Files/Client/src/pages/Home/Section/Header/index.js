@@ -162,7 +162,7 @@ class SectionHeaderContent extends React.Component {
 
   createFolder = () => this.onCreate();
 
-  uploadToFolder = () => toastr.info("Upload To Folder click");
+  uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
     const { t } = this.props;
@@ -217,7 +217,7 @@ class SectionHeaderContent extends React.Component {
       .catch((err) => toastr.error(err));
 
   downloadAsAction = () => this.props.setDownloadDialogVisible(true);
-  renameAction = () => toastr.info("renameAction click");
+  renameAction = () => console.log("renameAction click");
   onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
 
   onDeleteAction = () => {

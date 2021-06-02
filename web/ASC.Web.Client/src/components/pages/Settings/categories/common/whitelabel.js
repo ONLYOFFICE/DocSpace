@@ -207,11 +207,11 @@ class WhiteLabel extends React.Component {
   };
 
   onChangeLogo = () => {
-    toastr.success("Click to Change logo button");
+    console.log("Click to Change logo button");
   };
 
   onRestoreLogo = () => {
-    toastr.success("restore button action");
+    console.log("restore button action");
     this.setState({ isCanvasProcessing: false });
   };
 
@@ -445,7 +445,7 @@ class WhiteLabel extends React.Component {
               label={t("Common:SaveButton")}
               isLoading={false}
               isDisabled={false}
-              onClick={() => toastr.success("Save button action")}
+              onClick={() => console.log("Save button action")}
             />
 
             <Button

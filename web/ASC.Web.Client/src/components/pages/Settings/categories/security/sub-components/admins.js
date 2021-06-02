@@ -110,13 +110,9 @@ class PureAdminsSettings extends Component {
     const { changeAdmins } = this.props;
     const newFilter = this.onAdminsFilter();
 
-    changeAdmins(userIds, productId, isAdmin, newFilter)
-      .catch((error) => {
-        toastr.error("accessRights onChangeAdmin", error);
-      })
-      .finally(() => {
-        this.onLoading(false);
-      });
+    changeAdmins(userIds + "", productId, isAdmin, newFilter)
+      .catch((error) => toastr.error(error)) //TODO: add translation to toast if need
+      .finally(() => this.onLoading(false));
   };
 
   onShowGroupSelector = () => {
