@@ -1,7 +1,0 @@
-#!/bin/sh
-
-set -e
-
-touch /tmp/test.txt 
-
-exit 0
