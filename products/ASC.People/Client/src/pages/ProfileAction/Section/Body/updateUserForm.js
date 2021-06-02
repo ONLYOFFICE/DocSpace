@@ -550,6 +550,7 @@ class UpdateUserForm extends React.Component {
       isAdmin,
       isMy,
       isSelf,
+      language,
     } = this.props;
     const {
       guestCaption,
@@ -762,6 +763,7 @@ class UpdateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={6}
+              locale={language}
             />
             <RadioField
               labelText={`${t("Translations:Sex")}:`}
@@ -802,6 +804,7 @@ class UpdateUserForm extends React.Component {
               calendarMinDate={
                 profile.birthday ? new Date(profile.birthday) : new Date()
               }
+              locale={language}
             />
             <TextField
               labelText={`${t("Translations:Location")}:`}
@@ -922,6 +925,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => ({
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
+    language: auth.language,
     groups: peopleStore.groupsStore.groups,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsVisibleDataLossDialog:

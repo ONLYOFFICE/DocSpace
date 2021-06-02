@@ -429,6 +429,7 @@ class CreateUserForm extends React.Component {
       createdAvatar,
       croppedAvatar,
       passwordSettings,
+      language,
     } = this.props;
     const { regDateCaption, userPostCaption, groupCaption } = customNames;
 
@@ -547,6 +548,7 @@ class CreateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={5}
+              locale={language}
             />
             <RadioField
               labelText={`${t("Translations:Sex")}:`}
@@ -572,6 +574,7 @@ class CreateUserForm extends React.Component {
               calendarMinDate={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
+              locale={language}
             />
             <TextField
               labelText={`${t("Translations:Location")}:`}
@@ -666,6 +669,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => ({
     passwordSettings: auth.settingsStore.passwordSettings,
     customNames: auth.settingsStore.customNames,
+    language: auth.language,
     homepage: config.homepage,
     isEdit: peopleStore.editingFormStore.isEdit,
     groups: peopleStore.groupsStore.groups,
