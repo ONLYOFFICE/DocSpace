@@ -237,3 +237,32 @@ export function getProviderTranslation(provider, t) {
       return t("Common:SignInWithLinkedIn");
   }
 }
+
+function getLanguage(lng) {
+  try {
+    let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;
+
+    const splitted = lng.split("-");
+
+    if (splitted.length == 2 && splitted[0] == splitted[1].toLowerCase()) {
+      language = splitted[0];
+    }
+
+    return language;
+  } catch (error) {
+    console.error(error);
+  }
+
+  return lng;
+}
+
+export function loadLanguagePath(homepage, fixedNS = null) {
+  return (lng, ns) => {
+    const language = getLanguage(lng instanceof Array ? lng[0] : lng);
+
+    if (ns.length > 0 && ns[0] === "Common") {
+      return `/static/locales/${language}/Common.json`;
+    }
+    return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
+  };
+}

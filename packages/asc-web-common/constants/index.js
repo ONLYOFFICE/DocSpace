@@ -127,24 +127,6 @@ export const providersData = Object.freeze({
     icon: "/static/images/share.linkedin.react.svg",
   },
 });
-export const i18nBaseSettings = {
-  lng: localStorage.getItem(LANGUAGE) || "en",
-  supportedLngs: ["en", "ru"],
-  fallbackLng: "en",
-  load: "languageOnly",
-
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-    format: function (value, format) {
-      if (format === "lowercase") return value.toLowerCase();
-      return value;
-    },
-  },
-
-  react: {
-    useSuspense: true,
-  },
-};
 
 export const LoaderStyle = {
   title: "",
