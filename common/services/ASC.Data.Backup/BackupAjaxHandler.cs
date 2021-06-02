@@ -14,6 +14,7 @@ using ASC.MessagingSystem;
 using ASC.Notify.Cron;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Core;
+using ASC.Web.Studio.Core.Backup;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Data.Backup
@@ -29,8 +30,8 @@ namespace ASC.Data.Backup
         private SecurityContext SecurityContext { get; }
         private UserManager UserManager { get; }
         private TenantExtra TenantExtra { get; }
-        private BackupHelper BackupHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
+        private BackupFileUploadHandler BackupFileUploadHandler { get; }
         private BackupService BackupService { get; }
 
         #region backup
@@ -45,8 +46,8 @@ namespace ASC.Data.Backup
             SecurityContext securityContext,
             UserManager userManager,
             TenantExtra tenantExtra,
-            BackupHelper backupHelper,
-            ConsumerFactory consumerFactory)
+            ConsumerFactory consumerFactory,
+            BackupFileUploadHandler backupFileUploadHandler)
         {
             TenantManager = tenantManager;
             MessageService = messageService;
@@ -56,16 +57,14 @@ namespace ASC.Data.Backup
             SecurityContext = securityContext;
             UserManager = userManager;
             TenantExtra = tenantExtra;
-            BackupHelper = backupHelper;
             ConsumerFactory = consumerFactory;
+            BackupFileUploadHandler = backupFileUploadHandler;
             BackupService = backupService;
         }
 
         public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
         {
-
             DemandPermissionsBackup();
-            DemandSize();
 
             var backupRequest = new StartBackupRequest
             {
@@ -130,7 +129,6 @@ namespace ASC.Data.Backup
         public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams, bool backupMail)
         {
             DemandPermissionsBackup();
-            DemandSize();
 
             if (!SetupInfo.IsVisibleSettings("AutoBackup"))
                 throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
@@ -262,7 +260,13 @@ namespace ASC.Data.Backup
             {
                 restoreRequest.StorageType = storageType;
                 restoreRequest.FilePathOrId = storageParams["filePath"];
+
+                if (restoreRequest.StorageType == BackupStorageType.Local && !CoreBaseSettings.Standalone)
+                {
+                    restoreRequest.FilePathOrId = BackupFileUploadHandler.GetFilePath();
+                }
             }
+
             BackupService.StartRestore(restoreRequest);
         }
 
@@ -280,7 +284,8 @@ namespace ASC.Data.Backup
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (!SetupInfo.IsVisibleSettings("Restore"))
+            if (!SetupInfo.IsVisibleSettings("Restore") ||
+                (!CoreBaseSettings.Standalone && !TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Restore))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
 
@@ -291,7 +296,6 @@ namespace ASC.Data.Backup
         public void StartTransfer(string targetRegion, bool notifyUsers, bool transferMail)
         {
             DemandPermissionsTransfer();
-            DemandSize();
 
             MessageService.Send(MessageAction.StartTransferSetting);
             BackupService.StartTransfer(
@@ -326,15 +330,6 @@ namespace ASC.Data.Backup
         public string GetTmpFolder()
         {
             return BackupService.GetTmpFolder();
-        }
-
-        private void DemandSize()
-        {
-            if (BackupHelper.ExceedsMaxAvailableSize(TenantManager.GetCurrentTenant().TenantId))
-                throw new InvalidOperationException(string.Format(UserControlsCommonResource.BackupSpaceExceed,
-                    FileSizeComment.FilesSizeToString(BackupHelper.AvailableZipSize),
-                    "",
-                    ""));
         }
 
         private static void ValidateCronSettings(CronParams cronParams)

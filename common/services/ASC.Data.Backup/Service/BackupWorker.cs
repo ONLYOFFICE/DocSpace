@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 
 using ASC.Common;
@@ -63,6 +64,7 @@ namespace ASC.Data.Backup.Service
         private string UpgradesPath { get; set; }
         private ICacheNotify<BackupProgress> CacheBackupProgress { get; }
         private FactoryProgressItem FactoryProgressItem { get; set; }
+        private TempPath TempPath { get; }
 
         private readonly object SynchRoot = new object();
 
@@ -70,17 +72,19 @@ namespace ASC.Data.Backup.Service
             IOptionsMonitor<ILog> options,
             ICacheNotify<BackupProgress> cacheBackupProgress,
             DistributedTaskQueueOptionsManager progressQueue,
-            FactoryProgressItem factoryProgressItem)
+            FactoryProgressItem factoryProgressItem,
+            TempPath tempPath)
         {
             Log = options.CurrentValue;
             ProgressQueue = progressQueue.Get<BaseBackupProgressItem>();
             CacheBackupProgress = cacheBackupProgress;
             FactoryProgressItem = factoryProgressItem;
+            TempPath = tempPath;
         }
 
         public void Start(BackupSettings settings)
         {
-            TempFolder = PathHelper.ToRootedPath(settings.TempFolder);
+            TempFolder = TempPath.GetTempPath();
             if (!Directory.Exists(TempFolder))
             {
                 Directory.CreateDirectory(TempFolder);
@@ -272,6 +276,16 @@ namespace ASC.Data.Backup.Service
             return progress;
         }
 
+        internal static string GetBackupHash(string path)
+        {
+            using (var sha256 = SHA256.Create())
+            using (var fileStream = File.OpenRead(path))
+            {
+                fileStream.Position = 0;
+                var hash = sha256.ComputeHash(fileStream);
+                return BitConverter.ToString(hash).Replace("-", string.Empty);
+            }
+        }
     }
 
     public enum BackupProgressItemEnum
@@ -284,7 +298,7 @@ namespace ASC.Data.Backup.Service
     public static class BackupProgressItemEnumConverter
     {
         public static BackupProgressEnum Convert(this BackupProgressItemEnum backupProgressItemEnum)
-            {
+        {
             return backupProgressItemEnum switch
             {
                 BackupProgressItemEnum.Backup => BackupProgressEnum.Backup,
@@ -292,7 +306,7 @@ namespace ASC.Data.Backup.Service
                 BackupProgressItemEnum.Transfer => BackupProgressEnum.Transfer,
                 _ => BackupProgressEnum.Backup
             };
-    }
+        }
     }
 
     public abstract class BaseBackupProgressItem : DistributedTaskProgress
@@ -323,7 +337,7 @@ namespace ASC.Data.Backup.Service
         {
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
-        }
+    }
     }
 
     [Transient]
@@ -405,7 +419,7 @@ namespace ASC.Data.Backup.Service
                 {
                     backupTask.IgnoreModule(ModuleName.Mail);
                 }
-                backupTask.IgnoreTable("tenants_tariff");
+
                 backupTask.ProgressChanged += (sender, args) =>
                 {
                     Percentage = 0.9 * args.Progress;
@@ -434,7 +448,8 @@ namespace ASC.Data.Backup.Service
                         StoragePath = storagePath,
                         CreatedOn = DateTime.UtcNow,
                         ExpiresOn = StorageType == BackupStorageType.DataStore ? DateTime.UtcNow.AddDays(1) : DateTime.MinValue,
-                        StorageParams = JsonConvert.SerializeObject(StorageParams)
+                        StorageParams = JsonConvert.SerializeObject(StorageParams),
+                        Hash = BackupWorker.GetBackupHash(tempFile)
                     });
 
                 Percentage = 100;
@@ -517,7 +532,7 @@ namespace ASC.Data.Backup.Service
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-            var (tenantManager, backupStorageFactory, notifyHelper, _, backupWorker, _, restorePortalTask, _, _) = scopeClass;
+            var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, _, restorePortalTask, _, coreBaseSettings) = scopeClass;
             Tenant tenant = null;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             try
@@ -527,6 +542,16 @@ namespace ASC.Data.Backup.Service
                 notifyHelper.SendAboutRestoreStarted(tenant, Notify);
                 var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
+
+                if (!coreBaseSettings.Standalone)
+                {
+                    var backupHash = BackupWorker.GetBackupHash(tempFile);
+                    var record = backupRepository.GetBackupRecord(backupHash, TenantId);
+                    if (record == null)
+                    {
+                        throw new Exception(BackupResource.BackupNotFound);
+                    }
+                }
 
                 Percentage = 10;
 
@@ -550,9 +575,10 @@ namespace ASC.Data.Backup.Service
 
                 if (restoreTask.Dump)
                 {
+                    AscCacheNotify.OnClearCache();
+
                     if (Notify)
                     {
-                        AscCacheNotify.OnClearCache();
                         var tenants = tenantManager.GetTenants();
                         foreach (var t in tenants)
                         {
@@ -691,7 +717,7 @@ namespace ASC.Data.Backup.Service
                 transferProgressItem.RunJob();
 
                 Link = GetLink(alias, false);
-                notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify);
+                notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify, transferProgressItem.ToTenantId);
                 PublishChanges();
             }
             catch (Exception error)
@@ -722,7 +748,7 @@ namespace ASC.Data.Backup.Service
 
         private string GetLink(string alias, bool isErrorLink)
         {
-            return "http://" + alias + "." + ConfigurationProvider.Open(ConfigPaths[isErrorLink ? CurrentRegion : TargetRegion]).AppSettings.Settings["core:base-domain"].Value;
+            return "https://" + alias + "." + ConfigurationProvider.Open(ConfigPaths[isErrorLink ? CurrentRegion : TargetRegion]).AppSettings.Settings["core:base-domain"].Value;
         }
 
         public override object Clone()
@@ -809,7 +835,7 @@ namespace ASC.Data.Backup.Service
         private BackupPortalTask BackupPortalTask { get; }
         private RestorePortalTask RestorePortalTask { get; }
         private TransferPortalTask TransferPortalTask { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
 
         public BackupWorkerScope(TenantManager tenantManager,
             BackupStorageFactory backupStorageFactory,

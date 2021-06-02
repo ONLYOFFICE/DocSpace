@@ -53,16 +53,22 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Documents communs</value>
   </data>
   <data name="Favorites" xml:space="preserve">
     <value>Favoris</value>
+  </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Les fichiers seront convertis au fichier d'archive {0}.tar.gz{1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Les fichiers seront compressés au {0}fichier .zip{1}</value>
   </data>
   <data name="MyFiles" xml:space="preserve">
     <value>Mes documents</value>

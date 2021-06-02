@@ -89,7 +89,10 @@ const OperationsPanelComponent = (props) => {
       deleteAfter,
       isCopy,
       folderTitle,
-      translations: { copy: t("CopyOperation"), move: t("MoveToOperation") },
+      translations: {
+        copy: t("Translations:CopyOperation"),
+        move: t("Translations:MoveToOperation"),
+      },
     });
   };
 
@@ -103,7 +106,11 @@ const OperationsPanelComponent = (props) => {
         onClose={onClose}
       >
         <ModalDialog.Header>
-          {isRecycleBin ? t("Restore") : isCopy ? t("Copy") : t("Move")}
+          {isRecycleBin
+            ? t("Translations:Restore")
+            : isCopy
+            ? t("Translations:Copy")
+            : t("Translations:Move")}
         </ModalDialog.Header>
         <ModalDialog.Body>
           <TreeFolders
@@ -119,7 +126,7 @@ const OperationsPanelComponent = (props) => {
   );
 };
 
-const OperationsPanel = withTranslation("OperationsPanel")(
+const OperationsPanel = withTranslation(["OperationsPanel", "Translations"])(
   OperationsPanelComponent
 );
 

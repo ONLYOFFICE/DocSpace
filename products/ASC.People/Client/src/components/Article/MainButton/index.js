@@ -75,7 +75,11 @@ class PureArticleMainButtonContent extends React.Component {
         <Loaders.Rectangle />
       ) : (
         <>
-          <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
+          <MainButton
+            isDisabled={false}
+            isDropdown={true}
+            text={t("Common:Actions")}
+          >
             <DropDownItem
               icon={combineUrl(
                 AppServerConfig.proxyURL,
@@ -110,13 +114,13 @@ class PureArticleMainButtonContent extends React.Component {
                 AppServerConfig.proxyURL,
                 "/static/images/invitation.link.react.svg"
               )}
-              label={t("InviteLinkTitle")}
+              label={t("Translations:InviteLinkTitle")}
               onClick={this.onInvitationDialogClick}
             />
             {/* <DropDownItem
               icon="images/plane.react.svg"
-              label={t('LblInviteAgain')}
-              onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
+              label={t("SendInvitesAgain")}
+              onClick={this.onNotImplementedClick.bind(this, t("SendInvitesAgain"))}
             /> */}
             {false && (
               <DropDownItem
@@ -143,9 +147,11 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContent = withTranslation("Article")(
-  PureArticleMainButtonContent
-);
+const ArticleMainButtonContent = withTranslation([
+  "Article",
+  "Common",
+  "Translations",
+])(PureArticleMainButtonContent);
 
 export default withRouter(
   inject(({ auth }) => ({

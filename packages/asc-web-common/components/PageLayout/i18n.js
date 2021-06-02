@@ -1,19 +1,33 @@
 import i18n from "i18next";
-import en from "./locales/en/translation.json";
-import ru from "./locales/ru/translation.json";
-import { i18nBaseSettings } from "../../constants";
+import { initReactI18next } from "react-i18next";
+import Backend from "i18next-http-backend";
+import { LANGUAGE } from "../../constants";
+import { loadLanguagePath } from "../../utils";
 
-const newInstance = i18n.createInstance();
+i18n
+  .use(Backend)
+  .use(initReactI18next)
+  .init({
+    lng: localStorage.getItem(LANGUAGE) || "en",
+    fallbackLng: "en",
+    load: "all",
+    //debug: true,
 
-const resources = {
-  en: {
-    translation: en,
-  },
-  ru: {
-    translation: ru,
-  },
-};
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+      format: function (value, format) {
+        if (format === "lowercase") return value.toLowerCase();
+        return value;
+      },
+    },
 
-newInstance.init({ ...i18nBaseSettings, resources });
+    backend: {
+      loadPath: loadLanguagePath(""),
+    },
 
-export default newInstance;
+    react: {
+      useSuspense: false,
+    },
+  });
+
+export default i18n;

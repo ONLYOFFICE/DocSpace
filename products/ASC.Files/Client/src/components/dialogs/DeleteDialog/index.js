@@ -45,9 +45,9 @@ class DeleteDialogComponent extends React.Component {
     this.onClose();
     const { t, deleteAction } = this.props;
     const translations = {
-      deleteOperation: t("DeleteOperation"),
-      deleteFromTrash: t("DeleteFromTrash"),
-      deleteSelectedElem: t("DeleteSelectedElem"),
+      deleteOperation: t("Translations:DeleteOperation"),
+      deleteFromTrash: t("Translations:DeleteFromTrash"),
+      deleteSelectedElem: t("Translations:DeleteSelectedElem"),
     };
 
     const selection = this.state.selection.filter((f) => f.checked);
@@ -141,7 +141,7 @@ class DeleteDialogComponent extends React.Component {
             <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
               {foldersList.length > 0 && (
                 <Text isBold className="delete_dialog-text">
-                  {t("FoldersModule")}:
+                  {t("Translations:Folders")}:
                 </Text>
               )}
               {foldersList.map((item, index) => (
@@ -158,7 +158,7 @@ class DeleteDialogComponent extends React.Component {
 
               {filesList.length > 0 && (
                 <Text isBold className="delete_dialog-text">
-                  {t("FilesModule")}:
+                  {t("Translations:Files")}:
                 </Text>
               )}
               {filesList.map((item, index) => (
@@ -190,7 +190,7 @@ class DeleteDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             key="CancelButton"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={this.onClose}
             isLoading={isLoading}
@@ -201,7 +201,11 @@ class DeleteDialogComponent extends React.Component {
   }
 }
 
-const DeleteDialog = withTranslation("DeleteDialog")(DeleteDialogComponent);
+const DeleteDialog = withTranslation([
+  "DeleteDialog",
+  "Common",
+  "Translations",
+])(DeleteDialogComponent);
 
 export default inject(
   ({ filesStore, selectedFolderStore, dialogsStore, filesActionsStore }) => {

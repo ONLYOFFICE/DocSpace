@@ -234,8 +234,8 @@ class CustomTitles extends React.Component {
               onCancelClick={this.onCancelClick}
               showReminder={showReminder}
               reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("SaveButton")}
-              cancelButtonLabel={t("CancelButton")}
+              saveButtonLabel={t("Common:SaveButton")}
+              cancelButtonLabel={t("Common:CancelButton")}
             />
           )}
         </StyledComponent>
@@ -253,4 +253,4 @@ export default inject(({ auth, setup }) => {
     setGreetingTitle,
     restoreGreetingTitle,
   };
-})(withTranslation("Settings")(observer(CustomTitles)));
+})(withTranslation(["Settings", "Common"])(observer(CustomTitles)));

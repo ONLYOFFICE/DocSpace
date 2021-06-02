@@ -35,6 +35,7 @@ namespace ASC.Data.Backup.Storage
     {
         void SaveBackupRecord(BackupRecord backupRecord);
         BackupRecord GetBackupRecord(Guid id);
+        BackupRecord GetBackupRecord(string hash, int tenant);
         List<BackupRecord> GetExpiredBackupRecords();
         List<BackupRecord> GetScheduledBackupRecords();
         List<BackupRecord> GetBackupRecordsByTenantId(int tenantId);

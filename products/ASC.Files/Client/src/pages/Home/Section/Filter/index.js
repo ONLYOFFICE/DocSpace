@@ -105,28 +105,28 @@ class SectionFilterContent extends React.Component {
       {
         key: "filter-filterType",
         group: "filter-filterType",
-        label: t("Type"),
+        label: t("Common:Type"),
         isHeader: true,
       },
       {
         key: FilterType.FoldersOnly.toString(),
         group: "filter-filterType",
-        label: t("Folders"),
+        label: t("Translations:Folders"),
       },
       {
         key: FilterType.DocumentsOnly.toString(),
         group: "filter-filterType",
-        label: t("Documents"),
+        label: t("Common:Documents"),
       },
       {
         key: FilterType.PresentationsOnly.toString(),
         group: "filter-filterType",
-        label: t("Presentations"),
+        label: t("Translations:Presentations"),
       },
       {
         key: FilterType.SpreadsheetsOnly.toString(),
         group: "filter-filterType",
-        label: t("Spreadsheets"),
+        label: t("Translations:Spreadsheets"),
       },
       {
         key: FilterType.ImagesOnly.toString(),
@@ -155,7 +155,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "filter-author",
         group: "filter-author",
-        label: t("Author"),
+        label: t("ByAuthor"),
         isHeader: true,
       },
       {
@@ -163,8 +163,8 @@ class SectionFilterContent extends React.Component {
         group: "filter-author",
         label: usersCaption,
         isSelector: true,
-        defaultOptionLabel: t("DefaultOptionLabel"),
-        defaultSelectLabel: t("LblSelect"),
+        defaultOptionLabel: t("Common:MeLabel"),
+        defaultSelectLabel: t("Common:Select"),
         groupsCaption,
         defaultOption: user,
         selectedItem,
@@ -173,14 +173,14 @@ class SectionFilterContent extends React.Component {
         key: "group",
         group: "filter-author",
         label: groupsCaption,
-        defaultSelectLabel: t("LblSelect"),
+        defaultSelectLabel: t("Common:Select"),
         isSelector: true,
         selectedItem,
       },
       {
         key: "filter-folders",
         group: "filter-folders",
-        label: t("Folders"),
+        label: t("Translations:Folders"),
         isHeader: true,
       },
       {
@@ -202,8 +202,8 @@ class SectionFilterContent extends React.Component {
       { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
       { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
       { key: "AZ", label: t("ByTitle"), default: true },
-      { key: "Type", label: t("ByType"), default: true },
-      { key: "Size", label: t("BySize"), default: true },
+      { key: "Type", label: t("Common:Type"), default: true },
+      { key: "Size", label: t("Common:Size"), default: true },
       { key: "Author", label: t("ByAuthor"), default: true },
     ];
 
@@ -276,12 +276,12 @@ class SectionFilterContent extends React.Component {
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
         viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
-        directionAscLabel={t("DirectionAscLabel")}
-        directionDescLabel={t("DirectionDescLabel")}
-        placeholder={t("Search")}
+        directionAscLabel={t("Common:DirectionAscLabel")}
+        directionDescLabel={t("Common:DirectionDescLabel")}
+        placeholder={t("Common:Search")}
         isReady={this.state.isReady}
         {...filterColumnCount}
-        contextMenuHeader={t("AddFilter")}
+        contextMenuHeader={t("Common:AddFilter")}
         isMobile={isMobileOnly}
       />
     );
@@ -320,6 +320,10 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
   };
 })(
   withRouter(
-    withLayoutSize(withTranslation("Home")(observer(SectionFilterContent)))
+    withLayoutSize(
+      withTranslation(["Home", "Common", "Translations"])(
+        observer(SectionFilterContent)
+      )
+    )
   )
 );

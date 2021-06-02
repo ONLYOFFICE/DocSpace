@@ -71,7 +71,7 @@ const RecoverAccessModalDialog = ({
           isVertical={true}
           labelVisible={false}
           hasError={emailErr}
-          errorMessage={t("RecoverErrorMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <TextInput
             hasError={emailErr}
@@ -93,7 +93,7 @@ const RecoverAccessModalDialog = ({
           isVertical={true}
           hasError={descErr}
           labelVisible={false}
-          errorMessage={t("RecoverErrorMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <Textarea
             heightScale={width > 1024 ? false : true}
@@ -110,7 +110,7 @@ const RecoverAccessModalDialog = ({
         <Button
           className="recover-button-dialog"
           key="SendBtn"
-          label={loading ? t("RecoverProcessSending") : t("RecoverSendButton")}
+          label={loading ? t("Common:Sending") : t("Common:SendButton")}
           size="big"
           primary={true}
           onClick={onSendRecoverRequest}

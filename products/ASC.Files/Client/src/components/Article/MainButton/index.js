@@ -72,7 +72,7 @@ class PureArticleMainButtonContent extends React.Component {
       <MainButton
         isDisabled={isDisabled ? isDisabled : !canCreate}
         isDropdown={true}
-        text={t("Actions")}
+        text={t("Common:Actions")}
       >
         <DropDownItem
           className="main-button_drop-down"
@@ -143,7 +143,7 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContent = withTranslation("Article")(
+const ArticleMainButtonContent = withTranslation(["Article", "Common"])(
   PureArticleMainButtonContent
 );
 

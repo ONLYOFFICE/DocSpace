@@ -9,7 +9,7 @@ import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import stores from "./store/index";
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 import { regDesktop } from "@appserver/common/desktop";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
@@ -85,7 +85,8 @@ class FilesContent extends React.Component {
         isEncryption,
         encryptionKeys,
         setEncryptionKeys,
-        this.isEditor
+        this.isEditor,
+        this.props.t
       );
       console.log(
         "%c%s",
@@ -130,7 +131,7 @@ const Files = inject(({ auth, filesStore }) => {
       auth.setProductVersion(config.version);
     },
   };
-})(observer(FilesContent));
+})(withTranslation("Common")(observer(FilesContent)));
 
 export default () => (
   <FilesProvider {...stores}>

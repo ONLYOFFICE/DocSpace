@@ -32,13 +32,13 @@ class SharingRow extends React.Component {
     const { internalLink, t } = this.props;
 
     copy(internalLink);
-    toastr.success(t("LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
   };
 
   onCopyClick = () => {
     const { t, item } = this.props;
     const { shareLink } = item.sharedTo;
-    toastr.success(t("LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
     copy(shareLink);
   };
 
@@ -176,7 +176,7 @@ class SharingRow extends React.Component {
       <>
         {externalLinkVisible && (
           <LinkRow
-            linkText="ExternalLink"
+            linkText={t("ExternalLink")}
             options={externalLinkOptions}
             externalLinkData={externalLinkData}
             onToggleLink={onToggleLink}
@@ -186,7 +186,7 @@ class SharingRow extends React.Component {
         )}
         {internalLinkVisible && (
           <LinkRow
-            linkText="InternalLink"
+            linkText={t("InternalLink")}
             options={internalLinkData}
             {...this.props}
           />
@@ -248,7 +248,7 @@ class SharingRow extends React.Component {
                   className="sharing_panel-remove-icon"
                   //color="#A3A9AE"
                 >
-                  {t("AccessRightsFullAccess")}
+                  {t("Common:FullAccess")}
                 </Text>
               ) : (
                 !shareLink &&

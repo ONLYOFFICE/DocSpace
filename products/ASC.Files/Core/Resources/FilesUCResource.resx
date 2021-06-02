@@ -53,33 +53,39 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CorporateFiles" xml:space="preserve">
-    <value>Common Documents</value>
+    <value>Common</value>
   </data>
   <data name="Favorites" xml:space="preserve">
     <value>Favorites</value>
   </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Files will be compressed into the {0}.tar.gz file{1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Files will be compressed into the {0}.zip file{1}</value>
+  </data>
   <data name="MyFiles" xml:space="preserve">
-    <value>My Documents</value>
+    <value>My documents</value>
   </data>
   <data name="PrivacyRoom" xml:space="preserve">
     <value>Private Room</value>
   </data>
   <data name="ProjectFiles" xml:space="preserve">
-    <value>Project Documents</value>
+    <value>In projects</value>
   </data>
   <data name="Recent" xml:space="preserve">
     <value>Recent</value>
   </data>
   <data name="SharedForMe" xml:space="preserve">
-    <value>Shared with Me</value>
+    <value>Shared with me</value>
   </data>
   <data name="Trash" xml:space="preserve">
-    <value>Recycle Bin</value>
+    <value>Trash</value>
   </data>
 </root>

@@ -94,6 +94,7 @@ namespace ASC.Employee.Core.Controllers
         private CommonLinkUtility CommonLinkUtility { get; }
         private MobileDetector MobileDetector { get; }
         private ProviderManager ProviderManager { get; }
+        private Constants Constants { get; }
         private ILog Log { get; }
 
         public PeopleController(
@@ -134,7 +135,8 @@ namespace ASC.Employee.Core.Controllers
             PersonalSettingsHelper personalSettingsHelper,
             CommonLinkUtility commonLinkUtility,
             MobileDetector mobileDetector,
-            ProviderManager providerManager
+            ProviderManager providerManager,
+            Constants constants
             )
         {
             Log = option.Get("ASC.Api");
@@ -176,6 +178,7 @@ namespace ASC.Employee.Core.Controllers
             CommonLinkUtility = commonLinkUtility;
             MobileDetector = mobileDetector;
             ProviderManager = providerManager;
+            Constants = constants;
         }
 
         [Read("info")]
@@ -1313,8 +1316,11 @@ namespace ASC.Employee.Core.Controllers
                         }
                         break;
                     case EmployeeType.Visitor:
-                        UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
-                        WebItemSecurityCache.ClearCache(Tenant.TenantId);
+                        if (CoreBaseSettings.Standalone || TenantStatisticsProvider.GetVisitorsCount() < TenantExtra.GetTenantQuota().ActiveUsers * Constants.CoefficientOfVisitors)
+                        {
+                            UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
+                            WebItemSecurityCache.ClearCache(Tenant.TenantId);
+                        }
                         break;
                 }
             }
@@ -1557,6 +1563,11 @@ namespace ASC.Employee.Core.Controllers
         public void LinkAccount(LinkAccountModel model)
         {
             var profile = new LoginProfile(Signature, InstanceCrypto, model.SerializedProfile);
+
+            if (!(CoreBaseSettings.Standalone || TenantExtra.GetTenantQuota().Oauth))
+            {
+                throw new Exception("ErrorNotAllowedOption");
+            }
 
             if (string.IsNullOrEmpty(profile.AuthorizationError))
             {

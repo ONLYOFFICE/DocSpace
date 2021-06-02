@@ -240,7 +240,7 @@ const NavMenuWrapper = inject(({ auth }) => {
     isDesktop,
     language,
   };
-})(observer(withTranslation("NavMenu")(NavMenu)));
+})(observer(withTranslation(["NavMenu", "Common"])(NavMenu)));
 
 export default () => (
   <I18nextProvider i18n={i18n}>

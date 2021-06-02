@@ -11,7 +11,7 @@ import ExternalLinkIcon from "../../../../../../public/images/external.link.reac
 import Loaders from "@appserver/common/components/Loaders";
 import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { useTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile, isIOS } from "react-device-detect";
 
@@ -107,8 +107,7 @@ const ExternalLink = ({ label, href }) => (
   </Box>
 );
 
-const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
-  const { t } = useTranslation("ComingSoon");
+const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
   const { error } = match.params;
   const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
@@ -142,15 +141,15 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
   const appButtons = (
     <>
       <Badge
-        label={t("ComingSoon")}
+        label={t("Common:ComingSoon")}
         maxWidth="150px"
         borderRadius="2px"
         className="coming-soon-badge"
       />
-      <ExternalLink label={t("ViewWeb")} href={webLink} />
+      <ExternalLink label={t("Common:ViewWeb")} href={webLink} />
       {appLink && (
         <ExternalLink
-          label={t("OpenApp", {
+          label={t("Common:OpenApp", {
             title: title,
           })}
           href={appLink}
@@ -172,7 +171,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
           isBold
           isHovered
         >
-          {t("LearnMore")}...
+          {t("Common:LearnMore")}...
         </Link>
       )}
     </Text>
@@ -234,7 +233,7 @@ const ComingSoonWrapper = inject(({ auth }) => ({
   modules: auth.moduleStore.modules,
   isLoaded: auth.isLoaded,
   setCurrentProductId: auth.settingsStore.setCurrentProductId,
-}))(withRouter(ComingSoon));
+}))(withRouter(withTranslation("Common")(ComingSoon)));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

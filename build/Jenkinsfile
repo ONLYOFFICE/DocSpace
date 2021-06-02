@@ -62,7 +62,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								sh "dotnet build ASC.Web.sln && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
+								sh "git submodule update --progress --init -- products/ASC.Files/Server/DocStore && dotnet build ASC.Web.sln && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
 							}
 						}
 					}
@@ -90,7 +90,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								bat "dotnet build ASC.Web.sln && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
+								bat "git submodule update --progress --init -- products\\ASC.Files\\Server\\DocStore && dotnet build ASC.Web.sln && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
 							}
 						}
 					}
@@ -98,7 +98,7 @@ pipeline {
 			}
 		}
 		stage('Notify') {
-			when { expression { return env.CHANGE_ID != '' && env.BUILD_NUMBER == '1' } }
+			when { expression { return env.CHANGE_ID != null && env.BUILD_NUMBER == '1' } }
 			agent { label 'net-core' }
 			options { skipDefaultCheckout() }
 			environment {

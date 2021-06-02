@@ -102,7 +102,7 @@ const PhoneForm = (props) => {
         primary
         size="big"
         tabIndex={3}
-        label={isLoading ? t("LoadingProcessing") : buttonTranslation}
+        label={isLoading ? t("Common:LoadingProcessing") : buttonTranslation}
         isDisabled={isLoading}
         isLoading={isLoading}
         onClick={onSubmit}
@@ -125,4 +125,6 @@ export default inject(({ auth }) => ({
   isLoaded: auth.isLoaded,
   currentPhone: auth.userStore.mobilePhone,
   greetingTitle: auth.settingsStore.greetingSettings,
-}))(withRouter(withTranslation("Confirm")(observer(ChangePhoneForm))));
+}))(
+  withRouter(withTranslation(["Confirm", "Common"])(observer(ChangePhoneForm)))
+);
