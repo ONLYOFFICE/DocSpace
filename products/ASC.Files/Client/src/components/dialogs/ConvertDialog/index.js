@@ -12,6 +12,7 @@ const ConvertDialogComponent = (props) => {
   const {
     t,
     visible,
+    folderId,
     convertFile,
     convertItemId,
     setStoreOriginal,
@@ -33,7 +34,9 @@ const ConvertDialogComponent = (props) => {
 
   const onConvert = () => {
     onClose();
-    convertSingleFile ? convertFile(convertItemId, t) : convertUploadedFiles(t);
+    convertSingleFile
+      ? convertFile(convertItemId, t, folderId)
+      : convertUploadedFiles(t);
   };
 
   return (
@@ -105,10 +108,17 @@ const ConvertDialog = withTranslation(["ConvertDialog", "Common"])(
 );
 
 export default inject(
-  ({ uploadDataStore, treeFoldersStore, dialogsStore, settingsStore }) => {
+  ({
+    uploadDataStore,
+    treeFoldersStore,
+    dialogsStore,
+    settingsStore,
+    selectedFolderStore,
+  }) => {
     const { setTreeFolders } = treeFoldersStore;
     const { convertUploadedFiles, convertFile } = uploadDataStore;
     const { storeOriginalFiles, setStoreOriginal } = settingsStore;
+    const { id: folderId } = selectedFolderStore;
     const {
       convertDialogVisible: visible,
       setConvertDialogVisible,
@@ -117,6 +127,7 @@ export default inject(
 
     return {
       visible,
+      folderId,
       convertFile,
       convertItemId,
       setTreeFolders,

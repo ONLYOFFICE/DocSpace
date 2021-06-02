@@ -200,8 +200,7 @@ class UploadDataStore {
     return promise;
   };
 
-  convertFile = async (fileId, t) => {
-    const data = await api.files.convertFile(fileId);
+  convertFile = async (fileId, t, folderId) => {
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -214,6 +213,7 @@ class UploadDataStore {
       visible: true,
     });
 
+    const data = await api.files.convertFile(fileId);
     if (data && data[0] && data[0].progress !== 100) {
       let progress = data[0].progress;
       let error = null;
@@ -223,18 +223,17 @@ class UploadDataStore {
         progress = res && res[0] && res[0].progress;
         error = res && res[0] && res[0].error;
         if (error.length) {
-          if (error.length) {
-            setSecondaryProgressBarData({
-              icon: "file",
-              visible: true,
-              alert: true,
-            });
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-            return;
-          }
+          setSecondaryProgressBarData({
+            icon: "file",
+            visible: true,
+            alert: true,
+          });
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          //this.refreshFiles(folderId, false);
           return;
         }
         if (progress === 100) {
+          this.refreshFiles(folderId, false);
           break;
         } else {
           setSecondaryProgressBarData({
@@ -375,7 +374,7 @@ class UploadDataStore {
     }
   };
 
-  refreshFiles = (folderId) => {
+  refreshFiles = (folderId, needUpdateTree = true) => {
     const { setTreeFolders } = this.treeFoldersStore;
     if (
       this.selectedFolderStore.id === folderId &&
@@ -386,7 +385,7 @@ class UploadDataStore {
         this.filesStore.filter.clone(),
         false
       );
-    } else {
+    } else if (needUpdateTree) {
       return api.files
         .getFolder(folderId, this.filesStore.filter.clone())
         .then((data) => {
