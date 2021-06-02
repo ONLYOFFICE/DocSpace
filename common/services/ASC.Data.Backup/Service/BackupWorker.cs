@@ -343,7 +343,21 @@ namespace ASC.Data.Backup.Service
         private string StorageBasePath { get; set; }
         public bool BackupMail { get; set; }
         public Dictionary<string, string> StorageParams { get; set; }
-        public string Link { get; private set; }
+
+        private string link;
+        public string Link
+        {
+            get
+            {
+                return link ?? GetProperty<string>(nameof(link));
+            }
+            set
+            {
+                link = value;
+                SetProperty(nameof(link), value);
+            }
+        }
+
         public string TempFolder { get; set; }
         private string CurrentRegion { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
