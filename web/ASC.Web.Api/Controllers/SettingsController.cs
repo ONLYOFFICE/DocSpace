@@ -163,6 +163,7 @@ namespace ASC.Api.Settings
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
         private PaymentManager PaymentManager { get; }
+        public Constants Constants { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -223,7 +224,8 @@ namespace ASC.Api.Settings
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
             EncryptionWorker encryptionWorker,
             PasswordHasher passwordHasher,
-            PaymentManager paymentManager)
+            PaymentManager paymentManager,
+            Constants constants)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -284,6 +286,7 @@ namespace ASC.Api.Settings
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
             PaymentManager = paymentManager;
+            Constants = constants;
         }
 
         [Read("", Check = false)]
@@ -311,7 +314,7 @@ namespace ASC.Api.Settings
             {
                 if (!SettingsManager.Load<WizardSettings>().Completed)
                 {
-                    settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
+                    settings.WizardToken = CommonLinkUtility.GetToken(Tenant.TenantId, "", ConfirmType.Wizard, userId: Tenant.OwnerId);
                 }
 
                 settings.EnabledJoin =
@@ -493,7 +496,7 @@ namespace ASC.Api.Settings
                     case TenantTrustedDomainsType.Custom:
                     {
                         var address = new MailAddress(email);
-                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
@@ -638,7 +641,7 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager);
+            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager, Constants);
         }
 
         [AllowAnonymous]
@@ -2734,7 +2737,10 @@ namespace ASC.Api.Settings
         private bool SaveAuthKeys(AuthServiceModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString()))
+
+            var saveAvailable = CoreBaseSettings.Standalone || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).ThirdParty;
+            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString())
+                || !saveAvailable)
                 throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
 
             var changed = false;

@@ -195,7 +195,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public Stream GetFileStream(File<string> file)
+        public override Stream GetFileStream(File<string> file)
         {
             return GetFileStream(file, 0);
         }
@@ -423,11 +423,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return fileDao.CreateUploadSession(ConvertId(file), contentLength);
         }
 
-        public void UploadChunk(ChunkedUploadSession<string> uploadSession, Stream chunkStream, long chunkLength)
+        public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream chunkStream, long chunkLength)
         {
             var fileDao = GetFileDao(uploadSession.File);
             uploadSession.File = ConvertId(uploadSession.File);
             fileDao.UploadChunk(uploadSession, chunkStream, chunkLength);
+            return uploadSession.File;
         }
 
         public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)

@@ -452,6 +452,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
                                     }
 
+                                    if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
+                                    {
+                                        newFile.ThumbnailStatus = Thumbnail.Waiting;
+                                        fileDao.SaveThumbnail(newFile, null);
+                                    }
+
+
                                     if (Equals(toFolderId.ToString(), DaoFolderId))
                                     {
                                         needToMark.Add(newFile);
@@ -489,12 +496,22 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     newFile.ConvertedType = file.ConvertedType;
                                     newFile.Comment = FilesCommonResource.CommentOverwrite;
                                     newFile.Encrypted = file.Encrypted;
+                                    newFile.ThumbnailStatus = Thumbnail.Waiting;
 
                                     using (var stream = FileDao.GetFileStream(file))
                                     {
                                         newFile.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
 
                                         newFile = fileDao.SaveFile(newFile, stream);
+                                    }
+
+                                    if (file.ThumbnailStatus == Thumbnail.Created)
+                                    {
+                                        using (var thumbnail = FileDao.GetThumbnail(file))
+                                        {
+                                            fileDao.SaveThumbnail(newFile, thumbnail);
+                                        }
+                                        newFile.ThumbnailStatus = Thumbnail.Created;
                                     }
 
                                     needToMark.Add(newFile);

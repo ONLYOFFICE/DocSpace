@@ -322,6 +322,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                         .HasColumnName("version_group")
                         .HasColumnType("integer")
                         .HasDefaultValueSql("1");
+                    
+                    b.Property<bool>("Thumb")
+                        .HasColumnName("thumb")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id", "TenantId", "Version")
                         .HasName("files_file_pkey");
@@ -515,7 +519,7 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                         .IsRequired()
                         .HasColumnName("password")
                         .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(512);
 
                     b.Property<string>("Provider")
                         .IsRequired()

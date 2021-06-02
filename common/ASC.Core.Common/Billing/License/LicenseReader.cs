@@ -229,6 +229,8 @@ namespace ASC.Core.Billing
                 CountPortals = license.PortalCount,
                 DiscEncryption = true,
                 PrivacyRoom = true,
+                Restore = true,
+                ContentSearch = true
             };
 
             if (defaultQuota.Name != "overdue" && !defaultQuota.Trial)

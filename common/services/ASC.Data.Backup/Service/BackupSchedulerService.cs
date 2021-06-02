@@ -47,18 +47,24 @@ namespace ASC.Data.Backup.Service
         private BackupWorker BackupWorker { get; }
         private BackupRepository BackupRepository { get; }
         private Schedule Schedule { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
 
         public BackupSchedulerServiceHelper(
             IOptionsMonitor<ILog> options,
             PaymentManager paymentManager,
             BackupWorker backupWorker,
             BackupRepository backupRepository,
-            Schedule schedule)
+            Schedule schedule,
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings)
         {
             PaymentManager = paymentManager;
             BackupWorker = backupWorker;
             BackupRepository = backupRepository;
             Schedule = schedule;
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
             Log = options.CurrentValue;
         }
 
@@ -75,17 +81,24 @@ namespace ASC.Data.Backup.Service
                 }
                 try
                 {
-                    var tariff = PaymentManager.GetTariff(schedule.TenantId);
-                    if (tariff.State < TariffState.Delay)
+                    if (CoreBaseSettings.Standalone || TenantManager.GetTenantQuota(schedule.TenantId).AutoBackup)
                     {
-                        schedule.LastBackupTime = DateTime.UtcNow;
-                        BackupRepository.SaveBackupSchedule(schedule);
-                        Log.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
-                        BackupWorker.StartScheduledBackup(schedule);
+                        var tariff = PaymentManager.GetTariff(schedule.TenantId);
+                        if (tariff.State < TariffState.Delay)
+                        {
+                            schedule.LastBackupTime = DateTime.UtcNow;
+                            BackupRepository.SaveBackupSchedule(schedule);
+                            Log.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
+                            BackupWorker.StartScheduledBackup(schedule);
+                        }
+                        else
+                        {
+                            Log.DebugFormat("Skip portal {0} not paid", schedule.TenantId);
+                        }
                     }
                     else
                     {
-                        Log.DebugFormat("Skip portal {0} not paid", schedule.TenantId);
+                        Log.DebugFormat("Skip portal {0} haven't access", schedule.TenantId);
                     }
                 }
                 catch (Exception error)

@@ -19,6 +19,8 @@ namespace ASC.Data.Backup.EF.Model
 
         public string Name { get; set; }
 
+        public string Hash { get; set; }
+
         [Column("storage_type")]
         public BackupStorageType StorageType { get; set; }
 

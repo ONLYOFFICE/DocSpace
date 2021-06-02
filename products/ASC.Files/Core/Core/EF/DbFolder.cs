@@ -5,6 +5,7 @@ using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -36,13 +37,9 @@ namespace ASC.Files.Core.EF
             get => Tables.Folder;
         }
 
-        [Ignore]
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            get
-            {
-                return (a) => new[] { Title };
-            }
+            return (a) => new[] { Title };
         }
     }
     public static class DbFolderExtension

@@ -300,7 +300,7 @@ export default function withContent(WrappedContent) {
           newItems={newItems}
           showNew={showNew}
           isTrashFolder={isTrashFolder}
-          onFilesClick={this.onFilesClick}
+          onFilesClick={onFilesClick}
           {...this.props}
         />
       );

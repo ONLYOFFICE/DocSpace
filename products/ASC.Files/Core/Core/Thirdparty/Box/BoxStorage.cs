@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
+using ASC.Common;
 using ASC.FederatedLogin;
 
 using Box.V2;
@@ -49,8 +50,14 @@ namespace ASC.Files.Thirdparty.Box
         private readonly List<string> _boxFields = new List<string> { "created_at", "modified_at", "name", "parent", "size" };
 
         public bool IsOpened { get; private set; }
+        private TempStream TempStream { get; }
 
         public long MaxChunkedUploadFileSize = 250L * 1024L * 1024L;
+
+        public BoxStorage(TempStream tempStream)
+        {
+            TempStream = tempStream;
+        }
 
         public void Open(OAuth20Token token)
         {
@@ -131,7 +138,7 @@ namespace ASC.Files.Thirdparty.Box
                 return str;
             }
 
-            var tempBuffer = new FileStream(Path.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 8096, FileOptions.DeleteOnClose);
+            var tempBuffer = TempStream.Create();
             if (str != null)
             {
                 str.CopyTo(tempBuffer);

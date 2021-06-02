@@ -68,7 +68,7 @@ namespace ASC.AuditTrail
             {
                 using (var stream = new MemoryStream())
                 using (var writer = new StreamWriter(stream, Encoding.UTF8))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
                 {
                     csv.Configuration.RegisterClassMap(new BaseEventMap<TEvent>());
 
@@ -80,9 +80,7 @@ namespace ASC.AuditTrail
                     var file = FileUploader.Exec(GlobalFolderHelper.FolderMy, reportName, stream.Length, stream, true);
                     var fileUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID));
 
-                    fileUrl += string.Format("&options={{\"delimiter\":{0},\"codePage\":{1}}}",
-                                             (int)FileUtility.CsvDelimiter.Comma,
-                                             Encoding.UTF8.CodePage);
+                    fileUrl += string.Format("&options={{\"codePage\":{0}}}", Encoding.UTF8.CodePage);
                     return fileUrl;
                 }
             }

@@ -13,6 +13,7 @@
     <None Remove="proto\OneDriveCacheItem.proto" />
     <None Remove="proto\ProviderAccountCacheItem.proto" />
     <None Remove="proto\SharePointProviderCacheItem.proto" />
+    <None Remove="proto\ThumbnailRequest.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,7 @@
     <PackageReference Include="Microsoft.SharePoint.Client" Version="14.0.4762.1000" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="SharpCompress" Version="0.26.0" />
+    <PackageReference Include="SharpZipLib" Version="1.3.2" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 
@@ -45,6 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="proto\ThumbnailRequest.proto" />
     <Protobuf Include="proto\BoxCacheItem.proto" />
     <Protobuf Include="proto\DropboxCacheItem.proto" />
     <Protobuf Include="proto\GoogleDriveCacheItem.proto" />
@@ -113,6 +116,25 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\FilesCommonResource.ru.resx">
       <DependentUpon>FilesCommonResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.de.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.es.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.fr.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.it.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.resx">
+      <LastGenOutput>FilesPatternResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.ru.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\FilesJSResource.de.resx">
       <DependentUpon>FilesJSResource.resx</DependentUpon>

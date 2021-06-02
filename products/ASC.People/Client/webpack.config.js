@@ -148,6 +148,7 @@ var config = {
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
+        "./MyProfile": "./src/pages/My",
       },
       shared: {
         ...deps,

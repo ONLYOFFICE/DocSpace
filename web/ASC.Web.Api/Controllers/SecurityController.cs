@@ -60,10 +60,12 @@ namespace ASC.Web.Api.Controllers
         [Read("audit/login/last")]
         public IEnumerable<EventWrapper> GetLastLoginEvents()
         {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-            if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()) || CoreBaseSettings.Standalone && !TenantExtra.GetTenantQuota().Audit)
+            if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+            {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+            }
+
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             return LoginEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventWrapper(x));
         }
@@ -71,10 +73,12 @@ namespace ASC.Web.Api.Controllers
         [Read("audit/events/last")]
         public IEnumerable<EventWrapper> GetLastAuditEvents()
         {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-            if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()) || CoreBaseSettings.Standalone && !TenantExtra.GetTenantQuota().Audit)
+            if (!SetupInfo.IsVisibleSettings(ManagementType.AuditTrail.ToString()))
+            {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+            }
+
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             return AuditEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventWrapper(x));
         }
@@ -86,7 +90,7 @@ namespace ASC.Web.Api.Controllers
 
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
 
-            if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()) || CoreBaseSettings.Standalone && !TenantExtra.GetTenantQuota().Audit)
+            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
             var settings = SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
@@ -94,7 +98,7 @@ namespace ASC.Web.Api.Controllers
             var to = DateTime.UtcNow;
             var from = to.Subtract(TimeSpan.FromDays(settings.LoginHistoryLifeTime));
 
-            var reportName = string.Format(AuditReportResource.LoginHistoryReportName + ".csv", from.ToString("MM.dd.yyyy"), to.ToString("MM.dd.yyyy"));
+            var reportName = string.Format(AuditReportResource.LoginHistoryReportName + ".csv", from.ToShortDateString(), to.ToShortDateString());
             var events = LoginEventsRepository.Get(tenantId, from, to);
             var result = AuditReportCreator.CreateCsvReport(events, reportName);
 
@@ -109,7 +113,7 @@ namespace ASC.Web.Api.Controllers
 
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
 
-            if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()) || CoreBaseSettings.Standalone && !TenantExtra.GetTenantQuota().Audit)
+            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.AuditTrail.ToString()))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
             var settings = SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
@@ -129,6 +133,11 @@ namespace ASC.Web.Api.Controllers
         [Read("audit/settings/lifetime")]
         public TenantAuditSettings GetAuditSettings()
         {
+            if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+            }
+
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             return SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
@@ -149,6 +158,9 @@ namespace ASC.Web.Api.Controllers
 
         private TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
         {
+            if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+                throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (wrapper.settings.LoginHistoryLifeTime <= 0 || wrapper.settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)

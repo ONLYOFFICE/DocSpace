@@ -44,11 +44,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     {
         private readonly DistributedTaskQueue tasks;
 
+        private TempStream TempStream { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public FileOperationsManager(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
+        public FileOperationsManager(TempStream tempStream, DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
         {
             tasks = distributedTaskQueueOptionsManager.Get<FileOperation>();
+            TempStream = tempStream;
             ServiceProvider = serviceProvider;
         }
 
@@ -62,9 +64,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
                 {
-                o.SetProperty(FileOperation.PROGRESS, 100);
-                tasks.RemoveTask(o.Id);
-            }
+                    o.SetProperty(FileOperation.PROGRESS, 100);
+                    tasks.RemoveTask(o.Id);
+                }
             }
 
             operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId);
@@ -127,7 +129,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folders.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), tenant, headers));
             var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folders.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), tenant, headers));
-            var op = new FileDownloadOperation(ServiceProvider, op2, op1);
+            var op = new FileDownloadOperation(ServiceProvider, TempStream, op2, op1);
 
             return QueueTask(userId, op);
         }
@@ -181,5 +183,5 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             services.TryAdd<FileDownloadOperationScope>();
             services.AddDistributedTaskQueueService<FileOperation>(10);
         }
-        }
+    }
 }
