@@ -296,7 +296,8 @@ namespace ASC.Api.Settings
             var settings = new SettingsWrapper
             {
                 Culture = Tenant.GetCulture().ToString(),
-                GreetingSettings = Tenant.Name
+                GreetingSettings = Tenant.Name,
+                Personal = CoreBaseSettings.Personal
             };
 
             if (AuthContext.IsAuthenticated)
