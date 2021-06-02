@@ -82,17 +82,9 @@ class AmazonStorage extends React.Component {
   };
 
   isInvalidForm = () => {
-    const {
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    } = this.state;
+    const { bucket, region } = this.state;
 
-    if (bucket || forcePathStyle || region || serviceUrl || sse || useHttp)
-      return false;
+    if (bucket || region) return false;
 
     this.setState({
       isError: true,
@@ -203,7 +195,6 @@ class AmazonStorage extends React.Component {
           className="backup_text-input"
           scale={true}
           value={serviceUrl}
-          hasError={isError}
           onChange={this.onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.defaultServiceUrlPlaceholder || ""}
@@ -214,7 +205,6 @@ class AmazonStorage extends React.Component {
           className="backup_text-input"
           scale={true}
           value={forcePathStyle}
-          hasError={isError}
           onChange={this.onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.defaultForcePathStylePlaceholder || ""}
@@ -225,7 +215,6 @@ class AmazonStorage extends React.Component {
           className="backup_text-input"
           scale={true}
           value={useHttp}
-          hasError={isError}
           onChange={this.onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.defaultUseHttpPlaceholder || ""}
@@ -236,7 +225,6 @@ class AmazonStorage extends React.Component {
           className="backup_text-input"
           scale={true}
           value={sse}
-          hasError={isError}
           onChange={this.onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.defaultSSEPlaceholder || ""}
