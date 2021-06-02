@@ -414,7 +414,7 @@ export default inject(({ auth, setup }) => {
     getPortalTimezones,
   };
 })(
-  withTranslation(["Settings", "Common"])(
-    observer(withCultureNames(LanguageAndTimeZone))
+  withCultureNames(
+    withTranslation(["Settings", "Common"])(observer(LanguageAndTimeZone))
   )
 );
