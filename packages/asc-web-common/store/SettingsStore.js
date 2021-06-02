@@ -56,6 +56,8 @@ class SettingsStore {
   isEncryptionSupport = false;
   encryptionKeys = null;
 
+  isPersonal = true;
+
   isHeaderVisible = false;
   isTabletView = false;
   isArticlePinned =
