@@ -19,6 +19,10 @@ const StyledComponent = styled.div`
     margin-top: 16px;
     width: 100%;
     max-width: 820px;
+    .combo-button-label {
+      width: 100%;
+      max-width: 820px;
+    }
   }
   .backup_text-input {
     margin: 10px 0;
@@ -206,7 +210,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
           noBorder={false}
           scaled={true}
           scaledOptions={true}
-          dropDownMaxHeight={300}
+          dropDownMaxHeight={400}
           className="backup_combo"
         />
 
