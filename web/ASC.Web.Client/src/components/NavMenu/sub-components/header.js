@@ -218,7 +218,7 @@ const HeaderComponent = ({
                 url={link}
                 dashed={dashed}
               >
-                {id === "settings" ? i18n.t(title) : title}
+                {id === "settings" ? i18n.t("Common:Settings") : title}
               </NavItem>
             )
           )}
