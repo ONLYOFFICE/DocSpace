@@ -18,8 +18,16 @@ import FacebookButton from "@appserver/components/facebook-button";
 import EmailInput from "@appserver/components/email-input";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { combineUrl, createPasswordHash } from "@appserver/common/utils";
-import { AppServerConfig, providersData } from "@appserver/common/constants";
+import {
+  combineUrl,
+  createPasswordHash,
+  getProviderTranslation,
+} from "@appserver/common/utils";
+import {
+  AppServerConfig,
+  providersData,
+  PasswordLimitSpecialCharacters,
+} from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
 import { desktop } from "@appserver/components/utils/device";
 
@@ -182,7 +190,7 @@ class Confirm extends React.PureComponent {
       >
         <FacebookButton
           iconName={icon}
-          label={t(label)}
+          label={getProviderTranslation(label, t)}
           className="socialButton"
           $iconOptions={iconOptions}
           data-url={faceBookData.url}
@@ -213,7 +221,7 @@ class Confirm extends React.PureComponent {
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
-              label={t(label)}
+              label={getProviderTranslation(label, t)}
               className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
@@ -440,7 +448,7 @@ class Confirm extends React.PureComponent {
                 id="surname"
                 name="surname"
                 value={this.state.lastName}
-                placeholder={t("LastName")}
+                placeholder={t("Common:LastName")}
                 size="huge"
                 scale={true}
                 tabIndex={2}
@@ -456,7 +464,7 @@ class Confirm extends React.PureComponent {
                 id="email"
                 name={emailInputName}
                 value={this.state.email}
-                placeholder={t("Email")}
+                placeholder={t("Common:Email")}
                 size="huge"
                 scale={true}
                 tabIndex={3}
@@ -475,7 +483,7 @@ class Confirm extends React.PureComponent {
               inputName={passwordInputName}
               emailInputName={emailInputName}
               inputValue={this.state.password}
-              placeholder={t("InvitePassword")}
+              placeholder={t("Common:Password")}
               size="huge"
               scale={true}
               tabIndex={4}
@@ -485,20 +493,20 @@ class Confirm extends React.PureComponent {
               onChange={this.onChangePassword}
               onCopyToClipboard={this.onCopyToClipboard}
               onValidateInput={this.validatePassword}
-              clipActionResource={t("CopyEmailAndPassword")}
-              clipEmailResource={`${t("Email")}: `}
-              clipPasswordResource={`${t("InvitePassword")}: `}
-              tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
-              tooltipPasswordLength={`${t("ErrorPasswordLength", {
-                fromNumber: settings.minLength,
+              clipActionResource={t("Common:CopyEmailAndPassword")}
+              clipEmailResource={`${t("Common:Email")}: `}
+              clipPasswordResource={`${t("Common:Password")}: `}
+              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+              tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+                fromNumber: settings ? settings.minLength : 8,
                 toNumber: 30,
               })}:`}
-              tooltipPasswordDigits={t("ErrorPasswordNoDigits")}
-              tooltipPasswordCapital={t("ErrorPasswordNoUpperCase")}
+              tooltipPasswordDigits={t("Common:PasswordLimitDigits")}
+              tooltipPasswordCapital={t("Common:PasswordLimitUpperCase")}
               tooltipPasswordSpecial={`${t(
-                "ErrorPasswordNoSpecialSymbols"
-              )} (!@#$%^&*)`}
-              generatorSpecial="!@#$%^&*"
+                "Common:PasswordLimitSpecialSymbols"
+              )} (${PasswordLimitSpecialCharacters})`}
+              generatorSpecial={PasswordLimitSpecialCharacters}
               passwordSettings={settings}
               isDisabled={this.state.isLoading}
               onKeyDown={this.onKeyPress}
@@ -585,4 +593,6 @@ export default inject(({ auth }) => {
     setProviders,
     providers,
   };
-})(withRouter(withTranslation("Confirm")(observer(CreateUserForm))));
+})(
+  withRouter(withTranslation(["Confirm", "Common"])(observer(CreateUserForm)))
+);

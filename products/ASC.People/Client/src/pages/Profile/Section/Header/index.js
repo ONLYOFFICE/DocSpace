@@ -242,7 +242,7 @@ class SectionHeaderContent extends React.PureComponent {
     updateUserStatus(status, new Array(userId))
       .then(() => this.props.updateProfile(this.props.profile))
       .then(() => fetchProfile(userId))
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
   };
 
@@ -264,7 +264,7 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onDeletePersonalDataClick = () => {
-    toastr.success("Context action: Delete personal data");
+    console.log("Context action: Delete personal data");
   };
 
   toggleDeleteProfileEverDialog = () =>
@@ -315,17 +315,17 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "edit",
-            label: t("EditUserDialogTitle"),
+            label: t("EditUser"),
             onClick: this.onEditClick,
           },
           {
             key: "change-password",
-            label: t("PasswordChangeButton"),
+            label: t("Translations:PasswordChangeButton"),
             onClick: this.toggleChangePasswordDialog,
           },
           {
             key: "change-email",
-            label: t("EmailChangeButton"),
+            label: t("Translations:EmailChangeButton"),
             onClick: this.toggleChangeEmailDialog,
           },
           isMe
@@ -333,12 +333,12 @@ class SectionHeaderContent extends React.PureComponent {
               ? {}
               : {
                   key: "delete-profile",
-                  label: t("DeleteSelfProfile"),
+                  label: t("Translations:DeleteSelfProfile"),
                   onClick: this.toggleDeleteSelfProfileDialog,
                 }
             : {
                 key: "disable",
-                label: t("DisableUserButton"),
+                label: t("Translations:DisableUserButton"),
                 onClick: this.onDisableClick,
               },
         ];
@@ -346,22 +346,22 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "enable",
-            label: t("EnableUserButton"),
+            label: t("Translations:EnableUserButton"),
             onClick: this.onEnableClick,
           },
           {
             key: "reassign-data",
-            label: t("ReassignData"),
+            label: t("Translations:ReassignData"),
             onClick: this.onReassignDataClick.bind(this, user),
           },
           {
             key: "delete-personal-data",
-            label: t("RemoveData"),
+            label: t("Translations:RemoveData"),
             onClick: this.onDeletePersonalDataClick,
           },
           {
             key: "delete-profile",
-            label: t("DeleteSelfProfile"),
+            label: t("Translations:DeleteSelfProfile"),
             onClick: this.toggleDeleteProfileEverDialog,
           },
         ];
@@ -369,7 +369,7 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "edit",
-            label: t("EditButton"),
+            label: t("Common:EditButton"),
             onClick: this.onEditClick,
           },
           {
@@ -381,17 +381,17 @@ class SectionHeaderContent extends React.PureComponent {
             (user.status === EmployeeStatus.Active
               ? {
                   key: "disable",
-                  label: t("DisableUserButton"),
+                  label: t("Translations:DisableUserButton"),
                   onClick: this.onDisableClick,
                 }
               : {
                   key: "enable",
-                  label: t("EnableUserButton"),
+                  label: t("Translations:EnableUserButton"),
                   onClick: this.onEnableClick,
                 }),
           isMe && {
             key: "delete-profile",
-            label: t("DeleteSelfProfile"),
+            label: t("Translations:DeleteSelfProfile"),
             onClick: this.toggleDeleteSelfProfileDialog,
           },
         ];
@@ -439,13 +439,13 @@ class SectionHeaderContent extends React.PureComponent {
         />
         <Headline className="header-headline" type="content" truncate={true}>
           {profile.displayName}
-          {profile.isLDAP && ` (${t("LDAPLbl")})`}
+          {profile.isLDAP && ` (${t("Translations:LDAPLbl")})`}
         </Headline>
         {((isAdmin && !profile.isOwner) || isMe) && (
           <ContextMenuButton
             className="action-button"
             directionX="right"
-            title={t("Actions")}
+            title={t("Common:Actions")}
             iconName="/static/images/vertical-dots.react.svg"
             size={17}
             color="#A3A9AE"
@@ -460,13 +460,13 @@ class SectionHeaderContent extends React.PureComponent {
           onClose={this.onCloseAvatarEditor}
           onSave={this.onSaveAvatar}
           onLoadFile={this.onLoadFileAvatar}
-          headerLabel={t("editAvatar")}
-          selectNewPhotoLabel={t("selectNewPhotoLabel")}
-          orDropFileHereLabel={t("orDropFileHereLabel")}
-          unknownTypeError={t("ErrorUnknownFileImageType")}
-          maxSizeFileError={t("maxSizeFileError")}
-          unknownError={t("Error")}
-          saveButtonLabel={t("SaveButton")}
+          headerLabel={t("Common:EditAvatar")}
+          selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+          orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+          maxSizeFileError={t("Translations:maxSizeFileError")}
+          unknownError={t("Common:Error")}
+          saveButtonLabel={t("Common:SaveButton")}
         />
 
         {dialogsVisible.deleteSelfProfile && (
@@ -524,5 +524,11 @@ export default withRouter(
       updateProfile: peopleStore.targetUserStore.updateProfile,
       getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     };
-  })(observer(withTranslation("Profile")(SectionHeaderContent)))
+  })(
+    observer(
+      withTranslation(["Profile", "Common", "Translations"])(
+        SectionHeaderContent
+      )
+    )
+  )
 );

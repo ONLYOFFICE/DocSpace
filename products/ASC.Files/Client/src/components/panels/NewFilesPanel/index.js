@@ -207,7 +207,9 @@ class NewFilesPanel extends React.Component {
             ) : (
               <div key="loader" className="panel-loader-wrapper">
                 <Loader type="oval" size="16px" className="panel-loader" />
-                <Text as="span">{t("LoadingLabel")}</Text>
+                <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                  "Common:LoadingDescription"
+                )}`}</Text>
               </div>
             )}
             <StyledFooter>
@@ -220,7 +222,7 @@ class NewFilesPanel extends React.Component {
               />
               <Button
                 className="sharing_panel-button"
-                label={t("CloseButton")}
+                label={t("Common:CloseButton")}
                 size="big"
                 onClick={this.onClose}
               />
@@ -287,4 +289,8 @@ export default inject(
       updateFilesBadge,
     };
   }
-)(withRouter(withTranslation("NewFilesPanel")(observer(NewFilesPanel))));
+)(
+  withRouter(
+    withTranslation(["NewFilesPanel", "Common"])(observer(NewFilesPanel))
+  )
+);
