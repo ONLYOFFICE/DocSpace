@@ -312,7 +312,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {birthday && (
           <InfoItem>
-            <InfoItemLabel>{t("Birthdate")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
             <InfoItemValue>{birthDayDate}</InfoItemValue>
           </InfoItem>
         )}

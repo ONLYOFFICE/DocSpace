@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "A senha foi alterada com sucesso",
-  "ConfirmOwnerPortalSuccessMessage": "Proprietário portal foi alterado com sucesso. {0}Em 10 segundos você será redirecionado {1}aqui{2}",
+  "ConfirmOwnerPortalSuccessMessage": "Proprietário portal foi alterado com sucesso. Em 10 segundos você será redirecionado.",
   "ConfirmOwnerPortalTitle": "Por favor, confirme que você deseja mudar o proprietário do portal para {{newOwner}}",
   "DeleteProfileBtn": "Apagar minha conta",
   "DeleteProfileConfirmation": "Atenção! Você está prestes a apagar sua conta.",
