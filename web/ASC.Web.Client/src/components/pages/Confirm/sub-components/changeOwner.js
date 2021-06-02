@@ -56,7 +56,7 @@ class Form extends React.PureComponent {
 
   onAcceptClick = () => {
     this.setState({ showButtons: false });
-    toastr.success("Accept click");
+    toastr.success(t("ConfirmOwnerPortalSuccessMessage"));
     setTimeout(this.onRedirect, 10000);
   };
 

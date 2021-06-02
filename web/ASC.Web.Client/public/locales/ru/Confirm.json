@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Пароль был успешно изменен",
-  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
+  "ConfirmOwnerPortalSuccessMessage": "Владелец портала успешно изменен. Через 10 секунд Вы будете перенаправлены.",
   "ConfirmOwnerPortalTitle": "Пожалуйста, подтвердите, что Вы хотите изменить владельца портала на {{newOwner}}",
   "DeleteProfileBtn": "Удалить мой аккаунт",
   "DeleteProfileConfirmation": "Внимание! Вы собираетесь удалить свою учетную запись.",

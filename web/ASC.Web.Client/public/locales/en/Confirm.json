@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Password has been successfully changed",
-  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
+  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. In 10 seconds you will be redirected",
   "ConfirmOwnerPortalTitle": "Please confirm that you want to change portal owner to {{newOwner}}",
   "DeleteProfileBtn": "Delete my account",
   "DeleteProfileConfirmation": "Attention! You are about to delete your account.",
