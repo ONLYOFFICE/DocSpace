@@ -19,6 +19,7 @@ const PureSettings = ({
   isLoading,
   isLoadedSettingsTree,
   setFirstLoad,
+  tReady,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
@@ -42,7 +43,7 @@ const PureSettings = ({
         setTitle(t("CommonSettings"));
         break;
     }
-  }, [setting]);
+  }, [setting, tReady]);
 
   useEffect(() => {
     if (isLoading) {
