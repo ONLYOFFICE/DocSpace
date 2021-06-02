@@ -1,6 +1,5 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
@@ -156,36 +155,6 @@ class AmazonStorage extends React.Component {
     onCancelSettings();
   };
 
-  onMakeCopy = () => {
-    const { fillInputValueArray } = this.props;
-    const {
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    } = this.state;
-
-    if (this.isInvalidForm()) return;
-
-    const valuesArray = [
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    ];
-
-    const inputNumber = valuesArray.length;
-
-    this.setState({
-      isChangedInput: false,
-      isError: false,
-    });
-    fillInputValueArray(inputNumber, valuesArray);
-  };
   render() {
     const {
       isChangedInput,
@@ -201,8 +170,6 @@ class AmazonStorage extends React.Component {
       t,
       isLoadingData,
       isLoading,
-      isManualBackup,
-      maxProgress,
       isCopyingToLocal,
       isChanged,
     } = this.props;
@@ -276,45 +243,19 @@ class AmazonStorage extends React.Component {
           tabIndex={1}
         />
 
-        {!isManualBackup ? (
-          (isChanged || isChangedInput) && (
-            <SaveCancelButtons
-              className="team-template_buttons"
-              onSaveClick={this.onSaveSettings}
-              onCancelClick={this.onCancelSettings}
-              showReminder={false}
-              reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("SaveButton")}
-              cancelButtonLabel={t("CancelButton")}
-              isDisabled={
-                isCopyingToLocal ||
-                isLoadingData ||
-                isLoading ||
-                this.isDisabled
-              }
-            />
-          )
-        ) : (
-          <div className="manual-backup_buttons">
-            <Button
-              label={t("MakeCopy")}
-              onClick={this.onMakeCopy}
-              primary
-              isDisabled={!maxProgress || this.isDisabled}
-              size="medium"
-              tabIndex={10}
-            />
-            {!maxProgress && (
-              <Button
-                label={t("Copying")}
-                onClick={() => console.log("click")}
-                isDisabled={true}
-                size="medium"
-                style={{ marginLeft: "8px" }}
-                tabIndex={11}
-              />
-            )}
-          </div>
+        {(isChanged || isChangedInput) && (
+          <SaveCancelButtons
+            className="team-template_buttons"
+            onSaveClick={this.onSaveSettings}
+            onCancelClick={this.onCancelSettings}
+            showReminder={false}
+            reminderTest={t("YouHaveUnsavedChanges")}
+            saveButtonLabel={t("SaveButton")}
+            cancelButtonLabel={t("CancelButton")}
+            isDisabled={
+              isCopyingToLocal || isLoadingData || isLoading || this.isDisabled
+            }
+          />
         )}
       </>
     );

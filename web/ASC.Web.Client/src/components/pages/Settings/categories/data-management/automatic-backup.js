@@ -16,7 +16,7 @@ import {
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
 import SelectedFolder from "files/SelectedFolder";
-import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
+
 import Loader from "@appserver/components/loader";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
@@ -25,6 +25,7 @@ import FloatingButton from "@appserver/common/components/FloatingButton";
 import { StyledModules, StyledComponent } from "./styled-backup";
 import ThirdPartyModule from "./sub-components-automatic-backup/thirdPartyModule";
 import DocumentsModule from "./sub-components-automatic-backup/documentsModule";
+import ThirdPartyStorageModule from "./sub-components-automatic-backup/thirdPartyStorageModule";
 
 const { proxyURL } = AppServerConfig;
 

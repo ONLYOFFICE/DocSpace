@@ -7,7 +7,8 @@ import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
 import ThirdPartyModule from "./sub-components-manual-backup/thirdPartyModule";
 import DocumentsModule from "./sub-components-manual-backup/documentsModule";
-import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
+import ThirdPartyStorageModule from "./sub-components-manual-backup/thirdPartyStorageModule";
+
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
 import { StyledModules, StyledComponent } from "./styled-backup";

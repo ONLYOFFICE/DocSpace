@@ -105,13 +105,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedId: "",
       isLoading: false,
       isChanged: false,
-      isError: false,
-      input_1: "",
-      input_2: "",
-      input_3: "",
-      input_4: "",
-      input_5: "",
-      input_6: "",
 
       monthlySchedule: monthOption,
       dailySchedule: false,
@@ -159,11 +152,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
     this._isMounted = false;
   }
   getOptions = (storageBackup) => {
-    const {
-      isManualBackup,
-      onSetDisableOptions,
-      isDisableOptions,
-    } = this.props;
     this.setState({
       isLoading: true,
     });
@@ -192,7 +180,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       //debugger;
       console.log("availableStorage", availableStorage);
 
-      if (!isManualBackup && storageBackup[item].current) {
+      if (storageBackup[item].current) {
         this.isSetDefaultIdStorage = true;
 
         this.setState({
@@ -261,7 +249,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
   };
 
   fillInputValueArray = (inputNumber, valuesArray) => {
-    const { isManualBackup } = this.props;
     const { selectedId, availableStorage } = this.state;
     let obj = {};
     inputValueArray = [];
@@ -275,7 +262,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       };
       inputValueArray.push(obj);
     }
-    isManualBackup ? this.onMakeCopy() : this.onSaveModuleSettings();
+    this.onSaveModuleSettings();
   };
 
   onSelectPeriod = (options) => {
@@ -851,36 +838,32 @@ class ThirdPartyStorageModule extends React.PureComponent {
           />
         )}
 
-        {!isManualBackup && (
-          <ScheduleComponent
-            weeklySchedule={weeklySchedule}
-            monthlySchedule={monthlySchedule}
-            weekOptions={weekOptions}
-            selectedOption={selectedOption}
-            selectedWeekdayOption={selectedWeekdayOption}
-            selectedTimeOption={selectedTimeOption}
-            selectedMonthOption={selectedMonthOption}
-            selectedMaxCopies={selectedMaxCopies}
-            isLoadingData={isLoadingData}
-            periodOptions={periodOptions}
-            monthNumberOptionsArray={monthNumberOptionsArray}
-            timeOptionsArray={timeOptionsArray}
-            maxNumberCopiesArray={maxNumberCopiesArray}
-            onSelectMaxCopies={this.onSelectMaxCopies}
-            onSelectMonthNumberAndTimeOptions={
-              this.onSelectMonthNumberAndTimeOptions
-            }
-            onSelectWeekDay={this.onSelectWeekDay}
-            onSelectPeriod={this.onSelectPeriod}
-          />
-        )}
+        <ScheduleComponent
+          weeklySchedule={weeklySchedule}
+          monthlySchedule={monthlySchedule}
+          weekOptions={weekOptions}
+          selectedOption={selectedOption}
+          selectedWeekdayOption={selectedWeekdayOption}
+          selectedTimeOption={selectedTimeOption}
+          selectedMonthOption={selectedMonthOption}
+          selectedMaxCopies={selectedMaxCopies}
+          isLoadingData={isLoadingData}
+          periodOptions={periodOptions}
+          monthNumberOptionsArray={monthNumberOptionsArray}
+          timeOptionsArray={timeOptionsArray}
+          maxNumberCopiesArray={maxNumberCopiesArray}
+          onSelectMaxCopies={this.onSelectMaxCopies}
+          onSelectMonthNumberAndTimeOptions={
+            this.onSelectMonthNumberAndTimeOptions
+          }
+          onSelectWeekDay={this.onSelectWeekDay}
+          onSelectPeriod={this.onSelectPeriod}
+        />
       </StyledComponent>
     );
   }
 }
-ThirdPartyStorageModule.defaultProps = {
-  isManualBackup: false,
-};
+
 export default inject(({ auth }) => {
   const { helpUrlCreatingBackup } = auth.settingsStore;
 
