@@ -1,143 +1,138 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import Text from "@appserver/components/text";
-import RadioButtonGroup from "@appserver/components/radio-button-group";
-import Button from "@appserver/components/button";
-import toastr from "@appserver/components/toast/toastr";
-import Loader from "@appserver/components/loader";
-import { showLoader, hideLoader } from "@appserver/common/utils";
+
+import OwnerSettings from "./sub-components/owner";
+// import ModulesSettings from "./sub-components/modules";
 
 import { setDocumentTitle } from "../../../../../helpers/utils";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
 import { inject } from "mobx-react";
+import isEmpty from "lodash/isEmpty";
+import { combineUrl, showLoader, hideLoader } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
+
+const StyledArrowRightIcon = styled(ArrowRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 
 const MainContainer = styled.div`
   width: 100%;
 
-  .save-button {
-    margin-top: 32px;
+  .settings_tabs {
+    padding-bottom: 16px;
   }
 
   .page_loader {
     position: fixed;
     left: 50%;
   }
+
+  .category-item-wrapper {
+    margin-bottom: 40px;
+
+    .category-item-heading {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .category-item-subheader {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .category-item-description {
+      color: #555f65;
+      font-size: 12px;
+      max-width: 1024px;
+    }
+
+    .inherit-title-link {
+      margin-right: 7px;
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    .link-text {
+      margin: 0;
+    }
+  }
 `;
 
-const HeaderContainer = styled.div`
-  margin: 0 0 16px 0;
-`;
-
-class PureAccessPortal extends Component {
+class AccessPortal extends PureComponent {
   constructor(props) {
     super(props);
 
     const { t } = props;
-    this.state = {
-      isLoaded: false,
-      type: "none",
-      showButton: false,
-      smsDisabled: false,
-      appDisabled: false,
-    };
 
-    setDocumentTitle(t("PortalSecurity"));
+    setDocumentTitle(t("ManagementCategorySecurity"));
   }
 
   async componentDidMount() {
-    const { getTfaType, getTfaSettings } = this.props;
+    const { admins, getUpdateListAdmin } = this.props;
+
     showLoader();
-
-    const type = await getTfaType();
-    this.setState({ type: type, isLoaded: true });
-
-    const r = await getTfaSettings();
-    this.setState({ smsDisabled: r[0].avaliable, appDisabled: r[1].avaliable });
+    if (isEmpty(admins, true)) {
+      try {
+        await getUpdateListAdmin();
+      } catch (error) {
+        toastr.error(error);
+      }
+    }
 
     hideLoader();
   }
 
-  onSelectTfaType = async (e) => {
-    const { getTfaType } = this.props;
-
-    const type = await getTfaType();
-
-    if (type !== e.target.value) {
-      this.setState({ type: e.target.value, showButton: true });
-    } else {
-      this.setState({ type: e.target.value, showButton: false });
-    }
-  };
-
-  saveSettings = () => {
-    const { type } = this.state;
-    const { t, setTfaSettings, getTfaConfirmLink, history } = this.props;
-
-    setTfaSettings(type).then((res) => {
-      toastr.success(t("SuccessfullySaveSettingsMessage"));
-      if (type !== "none") {
-        getTfaConfirmLink(res).then((link) =>
-          history.push(link.replace(window.location.origin, ""))
-        );
-      }
-      this.setState({ type: type, showButton: false });
-    });
+  onClickLink = (e) => {
+    e.preventDefault();
+    const { history } = this.props;
+    history.push(e.target.pathname);
   };
 
   render() {
-    const { isLoaded, type, showButton, smsDisabled, appDisabled } = this.state;
-    const { t } = this.props;
-
-    return !isLoaded ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
+    const { t, admins } = this.props;
+    return (
       <MainContainer>
-        <HeaderContainer>
-          <Text fontSize="18px">{t("TwoFactorAuth")}</Text>
-        </HeaderContainer>
-        <RadioButtonGroup
-          fontSize="13px"
-          fontWeight="400"
-          name="group"
-          orientation="vertical"
-          options={[
-            {
-              label: t("Disabled"),
-              value: "none",
-            },
-            {
-              label: t("BySms"),
-              value: "sms",
-              disabled: !smsDisabled,
-            },
-            {
-              label: t("ByApp"),
-              value: "app",
-              disabled: !appDisabled,
-            },
-          ]}
-          selected={type}
-          onClick={this.onSelectTfaType}
-        />
-        {showButton && (
-          <Button
-            label={t("SaveButton")}
-            size="medium"
-            primary={true}
-            className="save-button"
-            onClick={this.saveSettings}
-          />
-        )}
+        <div className="category-item-wrapper">
+          <div className="category-item-heading">
+            <Link
+              className="inherit-title-link header"
+              onClick={this.onClickLink}
+              truncate={true}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/settings/security/accessportal/tfa"
+              )}
+            >
+              {t("TwoFactorAuth")}
+            </Link>
+            <StyledArrowRightIcon size="small" color="#333333" />
+          </div>
+          <Text className="category-item-description">
+            {t("TwoFactorAuthDescription")}
+          </Text>
+        </div>
       </MainContainer>
     );
   }
 }
 
-export default inject(({ auth }) => ({
-  organizationName: auth.settingsStore.organizationName,
-  getTfaType: auth.tfaStore.getTfaType,
-  getTfaSettings: auth.tfaStore.getTfaSettings,
-  setTfaSettings: auth.tfaStore.setTfaSettings,
-  getTfaConfirmLink: auth.tfaStore.getTfaConfirmLink,
-}))(withTranslation("Settings")(withRouter(PureAccessPortal)));
+export default inject(({ auth, setup }) => {
+  const { getUpdateListAdmin } = setup;
+  const { admins } = setup.security.accessRight;
+  return {
+    admins,
+    getUpdateListAdmin,
+    organizationName: auth.settingsStore.organizationName,
+  };
+})(withTranslation("Settings")(withRouter(AccessPortal)));
