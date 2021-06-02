@@ -1,0 +1,6 @@
+{
+  "DeleteGroupUsersMessage": "Os usuários deficientes que você selecionou serão excluídos.",
+  "DeleteGroupUsersMessageHeader": "Excluir os usuários do portal",
+  "DeleteGroupUsersSuccessMessage": "Os usuários foram excluídos com sucesso.",
+  "DeleteUserDataConfirmation": "Os documentos dos usuários compartilhados serão excluídos. Para evitar isto, reatribuir dados."
+}

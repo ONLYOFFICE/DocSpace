@@ -58,7 +58,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t("SendButton")}
+            label={t("Common:SendButton")}
             size="medium"
             primary={true}
             onClick={this.onDeleteSelfProfileInstructions}
@@ -67,7 +67,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             key="CloseBtn"
-            label={t("CloseButton")}
+            label={t("Common:CloseButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -78,9 +78,10 @@ class DeleteSelfProfileDialogComponent extends React.Component {
   }
 }
 
-const DeleteSelfProfileDialog = withTranslation("DeleteSelfProfileDialog")(
-  DeleteSelfProfileDialogComponent
-);
+const DeleteSelfProfileDialog = withTranslation([
+  "DeleteSelfProfileDialog",
+  "Common",
+])(DeleteSelfProfileDialogComponent);
 
 DeleteSelfProfileDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

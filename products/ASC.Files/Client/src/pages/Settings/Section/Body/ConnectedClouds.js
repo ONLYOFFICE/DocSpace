@@ -177,14 +177,14 @@ class ConnectClouds extends React.Component {
       {
         key: `${index}_change`,
         "data-provider_id": item.provider_id,
-        label: t("ThirdPartyInfo"),
+        label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
       {
         key: `${index}_delete`,
         "data-id": item.provider_id,
         "data-title": item.customer_title,
-        label: t("DeleteThirdParty"),
+        label: t("Translations:DeleteThirdParty"),
         onClick: this.onDeleteThirdParty,
       },
     ];
@@ -265,7 +265,7 @@ class ConnectClouds extends React.Component {
                 />
                 <Box className="flex-wrapper_container">
                   <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
-                    {t("AddAccount")},
+                    {t("Translations:AddAccount")},
                   </Link>
                 </Box>
               </div>
@@ -306,4 +306,8 @@ export default inject(
       homepage: config.homepage,
     };
   }
-)(withTranslation("Settings")(observer(withRouter(ConnectClouds))));
+)(
+  withTranslation(["Settings", "Translations"])(
+    observer(withRouter(ConnectClouds))
+  )
+);

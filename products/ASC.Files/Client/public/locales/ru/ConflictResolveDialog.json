@@ -1,14 +1,12 @@
 {
-  "OKButton": "ОК",
-  "CancelButton": "Отмена",
-  "ConflictResolveTitle": "Подтверждение перезаписи",
   "ConflictResolveDescription": "Файл с именем {{file}} уже существует в папке {{folder}}.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} документов с одинаковыми именами уже существуют в папке '{{folder}}'.",
   "ConflictResolveSelectAction": "Пожалуйста, выберите действие:",
-  "OverwriteTitle": "Перезаписать с обновлением версии",
-  "OverwriteDescription": "Файл будет добавлен к файлу с таким же именем как версия.",
-  "CreateTitle": "Создать копию файла",
+  "ConflictResolveTitle": "Подтверждение перезаписи",
   "CreateDescription": "В папке будет два разных файла.",
-  "SkipTitle": "Пропустить",
-  "SkipDescription": "Файл не будет скопирован. В папке назначения останется исходный файл."
+  "CreateTitle": "Создать копию файла",
+  "OverwriteDescription": "Файл будет добавлен к файлу с таким же именем как версия.",
+  "OverwriteTitle": "Перезаписать с обновлением версии",
+  "SkipDescription": "Файл не будет скопирован. В папке назначения останется исходный файл.",
+  "SkipTitle": "Пропустить"
 }

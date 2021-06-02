@@ -48,7 +48,7 @@ const SettingsContainer = ({
   onSelectLanguageHandler,
   onSelectTimezoneHandler,
 }) => {
-  const titleEmail = !emailNeeded ? <Text>{t("Email")}</Text> : null;
+  const titleEmail = !emailNeeded ? <Text>{t("Common:Email")}</Text> : null;
 
   const contentEmail = !emailNeeded ? (
     <Link
@@ -73,7 +73,7 @@ const SettingsContainer = ({
       {titleEmail}
       {contentEmail}
 
-      <Text fontSize="13px">{t("Language")}</Text>
+      <Text fontSize="13px">{t("Language")}:</Text>
       <ComboBox
         className="drop-down"
         options={languages}

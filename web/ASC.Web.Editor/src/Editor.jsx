@@ -146,7 +146,8 @@ const Editor = () => {
                   true
                 );
               });
-          }
+          },
+          i18n.t
         );
       }
 

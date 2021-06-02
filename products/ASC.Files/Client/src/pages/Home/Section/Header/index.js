@@ -162,7 +162,7 @@ class SectionHeaderContent extends React.Component {
 
   createFolder = () => this.onCreate();
 
-  uploadToFolder = () => toastr.info("Upload To Folder click");
+  uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
     const { t } = this.props;
@@ -206,18 +206,18 @@ class SectionHeaderContent extends React.Component {
       `${window.location.origin}/products/files/filter?folder=${currentFolderId}`
     );
 
-    toastr.success(t("LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
   };
 
   onMoveAction = () => this.props.setMoveToPanelVisible(true);
   onCopyAction = () => this.props.setCopyPanelVisible(true);
   downloadAction = () =>
     this.props
-      .downloadAction(this.props.t("ArchivingData"))
+      .downloadAction(this.props.t("Translations:ArchivingData"))
       .catch((err) => toastr.error(err));
 
   downloadAsAction = () => this.props.setDownloadDialogVisible(true);
-  renameAction = () => toastr.info("renameAction click");
+  renameAction = () => console.log("renameAction click");
   onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
 
   onDeleteAction = () => {
@@ -232,9 +232,9 @@ class SectionHeaderContent extends React.Component {
       setDeleteDialogVisible(true);
     } else {
       const translations = {
-        deleteOperation: t("DeleteOperation"),
-        deleteFromTrash: t("DeleteFromTrash"),
-        deleteSelectedElem: t("DeleteSelectedElem"),
+        deleteOperation: t("Translations:DeleteOperation"),
+        deleteFromTrash: t("Translations:DeleteFromTrash"),
+        deleteSelectedElem: t("Translations:DeleteSelectedElem"),
       };
 
       deleteAction(translations).catch((err) => toastr.error(err));
@@ -267,13 +267,13 @@ class SectionHeaderContent extends React.Component {
       },
       {
         key: "copy",
-        label: t("Copy"),
+        label: t("Translations:Copy"),
         onClick: this.onCopyAction,
         disabled: true,
       },
       {
         key: "download",
-        label: t("Download"),
+        label: t("Common:Download"),
         onClick: this.downloadAction,
         disabled: true,
       },
@@ -285,7 +285,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         key: "delete",
-        label: t("Delete"),
+        label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: true,
       },
@@ -328,7 +328,7 @@ class SectionHeaderContent extends React.Component {
 
     let menu = [
       {
-        label: t("LblSelect"),
+        label: t("Common:Select"),
         isDropdown: true,
         isSeparator: true,
         isSelect: true,
@@ -337,22 +337,22 @@ class SectionHeaderContent extends React.Component {
           <DropDownItem key="all" label={t("All")} data-index={0} />,
           <DropDownItem
             key={FilterType.FoldersOnly}
-            label={t("Folders")}
+            label={t("Translations:Folders")}
             data-index={1}
           />,
           <DropDownItem
             key={FilterType.DocumentsOnly}
-            label={t("Documents")}
+            label={t("Common:Documents")}
             data-index={2}
           />,
           <DropDownItem
             key={FilterType.PresentationsOnly}
-            label={t("Presentations")}
+            label={t("Translations:Presentations")}
             data-index={3}
           />,
           <DropDownItem
             key={FilterType.SpreadsheetsOnly}
-            label={t("Spreadsheets")}
+            label={t("Translations:Spreadsheets")}
             data-index={4}
           />,
           <DropDownItem
@@ -388,12 +388,12 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onOpenSharingPanel,
       },
       {
-        label: t("Download"),
+        label: t("Common:Download"),
         disabled: !selectionCount,
         onClick: this.downloadAction,
       },
       {
-        label: t("DownloadAs"),
+        label: t("Translations:DownloadAs"),
         disabled: !selectionCount || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },
@@ -408,12 +408,12 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onMoveAction,
       },
       {
-        label: t("Copy"),
+        label: t("Translations:Copy"),
         disabled: !selectionCount,
         onClick: this.onCopyAction,
       },
       {
-        label: t("Delete"),
+        label: t("Common:Delete"),
         disabled:
           !selectionCount || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
@@ -427,7 +427,7 @@ class SectionHeaderContent extends React.Component {
       });
 
       menu.splice(4, 2, {
-        label: t("Restore"),
+        label: t("Translations:Restore"),
         onClick: this.onMoveAction,
       });
 
@@ -482,8 +482,8 @@ class SectionHeaderContent extends React.Component {
                   onChange={this.onCheck}
                   menuItems={menuItems}
                   visible={isHeaderVisible}
-                  moreLabel={t("More")}
-                  closeTitle={t("CloseButton")}
+                  moreLabel={t("Common:More")}
+                  closeTitle={t("Common:CloseButton")}
                   onClose={this.onClose}
                   selected={menuItems[0].label}
                   sectionWidth={context.sectionWidth}
@@ -649,4 +649,8 @@ export default inject(
       downloadAction,
     };
   }
-)(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));
+)(
+  withTranslation(["Home", "Common", "Translations"])(
+    withRouter(observer(SectionHeaderContent))
+  )
+);

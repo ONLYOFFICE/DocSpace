@@ -543,7 +543,7 @@ PasswordInput.propTypes = {
   generatorSpecial: PropTypes.string,
   NewPasswordButtonVisible: PropTypes.bool,
   /** Set of settings for password generator and validator */
-  passwordSettings: PropTypes.object.isRequired,
+  passwordSettings: PropTypes.object,
   /** Will be triggered whenever an PasswordInput typing, return bool value */
   onValidateInput: PropTypes.func,
   /** Will be triggered if you press copy button, return formatted value */

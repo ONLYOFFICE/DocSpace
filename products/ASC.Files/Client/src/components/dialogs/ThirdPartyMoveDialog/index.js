@@ -69,7 +69,7 @@ const PureThirdPartyMoveContainer = ({
         <ModalDialog.Footer>
           <Button
             className="operation-button"
-            label={t("Move")}
+            label={t("Translations:Move")}
             size="big"
             primary
             onClick={startOperation}
@@ -77,13 +77,13 @@ const PureThirdPartyMoveContainer = ({
           <Button
             data-copy="copy"
             className="operation-button"
-            label={t("Copy")}
+            label={t("Translations:Copy")}
             size="big"
             onClick={startOperation}
           />
           <Button
             className="operation-button"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="big"
             onClick={onClose}
           />
@@ -113,5 +113,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     selection,
   };
 })(
-  withTranslation("ThirdPartyMoveDialog")(observer(PureThirdPartyMoveContainer))
+  withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(
+    observer(PureThirdPartyMoveContainer)
+  )
 );
