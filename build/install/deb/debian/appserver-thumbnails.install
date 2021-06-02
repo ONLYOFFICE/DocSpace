@@ -1,2 +1,2 @@
-src/var/www/services/ASC.Thumbnails.Svc/service appserver-thumbnails/var/www/appserver/services/ASC.Thumbnails.Svc/
-src/var/www/services/ASC.Thumbnails/service appserver-thumbnails/var/www/appserver/services/ASC.Thumbnails/
+src/var/www/services/ASC.Thumbnails.Svc/service var/www/appserver/services/ASC.Thumbnails.Svc/
+src/var/www/services/ASC.Thumbnails/service var/www/appserver/services/ASC.Thumbnails/

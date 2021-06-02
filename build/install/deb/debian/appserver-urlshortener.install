@@ -1,2 +1,2 @@
-src/var/www/services/ASC.UrlShortener/service appserver-urlshortener/var/www/appserver/services/ASC.UrlShortener/
-src/var/www/services/ASC.UrlShortener.Svc/service appserver-urlshortener/var/www/appserver/services/ASC.UrlShortener.Svc/
+src/var/www/services/ASC.UrlShortener/service var/www/appserver/services/ASC.UrlShortener/
+src/var/www/services/ASC.UrlShortener.Svc/service var/www/appserver/services/ASC.UrlShortener.Svc/

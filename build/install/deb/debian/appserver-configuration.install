@@ -1,1 +1,1 @@
-../common/appserver-configuration.sh appserver-configuration/app/scripts
+../common/appserver-configuration.sh app/onlyoffice/scripts/
