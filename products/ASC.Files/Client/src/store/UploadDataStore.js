@@ -137,7 +137,7 @@ class UploadDataStore {
 
   // setDialogVisible = (t) => {
   //   this.dialogsStore.setConvertDialogVisible(false);
-  //   const label = t("UploadingLabel", {
+  //   const label = t("Translations:UploadingLabel", {
   //     file: this.uploadedFiles,
   //     totalFiles: this.files.length,
   //   });

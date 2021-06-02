@@ -36,7 +36,7 @@ const EmptyTrashDialogComponent = (props) => {
               icon: "trash",
               visible: true,
               percent: currentProcess.progress,
-              label: t("DeleteOperation"),
+              label: t("Translations:DeleteOperation"),
               alert: false,
             };
             setSecondaryProgressBarData(newProgressData);
@@ -48,7 +48,7 @@ const EmptyTrashDialogComponent = (props) => {
                   icon: "trash",
                   visible: true,
                   percent: 100,
-                  label: t("DeleteOperation"),
+                  label: t("Translations:DeleteOperation"),
                   alert: false,
                 });
                 setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
@@ -88,7 +88,7 @@ const EmptyTrashDialogComponent = (props) => {
       icon: "trash",
       visible: true,
       percent: 0,
-      label: t("DeleteOperation"),
+      label: t("Translations:DeleteOperation"),
       alert: false,
     };
     setSecondaryProgressBarData(newProgressData);
@@ -132,7 +132,7 @@ const EmptyTrashDialogComponent = (props) => {
         <Button
           className="button-dialog"
           key="CancelButton"
-          label={t("CancelButton")}
+          label={t("Common:CancelButton")}
           size="medium"
           onClick={onClose}
           isLoading={isLoading}
@@ -142,9 +142,11 @@ const EmptyTrashDialogComponent = (props) => {
   );
 };
 
-const EmptyTrashDialog = withTranslation("EmptyTrashDialog")(
-  EmptyTrashDialogComponent
-);
+const EmptyTrashDialog = withTranslation([
+  "EmptyTrashDialog",
+  "Common",
+  "Translations",
+])(EmptyTrashDialogComponent);
 
 export default inject(
   ({ filesStore, uploadDataStore, selectedFolderStore, dialogsStore }) => {

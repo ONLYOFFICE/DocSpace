@@ -45,10 +45,9 @@ const Separator = styled.div`
 class ThirdPartyServices extends React.Component {
   constructor(props) {
     super(props);
-    const { t } = props;
-    document.title = `${t("ThirdPartyAuthorization")} – ${t(
-      "OrganizationName"
-    )}`;
+    const { t, setDocumentTitle } = props;
+
+    setDocumentTitle(`${t("ThirdPartyAuthorization")}`);
 
     this.state = {
       dialogVisible: false,
@@ -141,7 +140,7 @@ class ThirdPartyServices extends React.Component {
                 target="_blank"
                 href={urlAuthKeys}
               >
-                {t("LearnMore")}
+                {t("Common:LearnMore")}
               </Link>
             </Box>
           </Box>
@@ -203,7 +202,7 @@ ThirdPartyServices.propTypes = {
 };
 
 export default inject(({ setup, auth }) => {
-  const { settingsStore } = auth;
+  const { settingsStore, setDocumentTitle } = auth;
   const { urlAuthKeys } = settingsStore;
   const {
     getConsumers,
@@ -219,5 +218,6 @@ export default inject(({ setup, auth }) => {
     getConsumers,
     updateConsumerProps,
     setSelectedConsumer,
+    setDocumentTitle,
   };
-})(withTranslation("Settings")(observer(ThirdPartyServices)));
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyServices)));

@@ -129,15 +129,16 @@ class DownloadDialogComponent extends React.Component {
         icon: "file",
         visible: true,
         percent: 0,
-        label: t("ArchivingData"),
+        label: t("Translations:ArchivingData"),
         alert: false,
       });
       downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
           this.onClose();
-          getDownloadProgress(res[0], t("ArchivingData")).catch((err) =>
-            toastr.error(err)
-          );
+          getDownloadProgress(
+            res[0],
+            t("Translations:ArchivingData")
+          ).catch((err) => toastr.error(err));
         })
         .catch((err) => {
           setSecondaryProgressBarData({
@@ -427,7 +428,7 @@ class DownloadDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer visible={visible} onClose={this.onClose}>
-        <ModalDialog.Header>{t("DownloadAs")}</ModalDialog.Header>
+        <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("ChooseFormatText")}</Text>
           {documents.length > 0 && (
@@ -535,7 +536,7 @@ class DownloadDialogComponent extends React.Component {
           <Button
             className="button-dialog-accept"
             key="DownloadButton"
-            label={t("DownloadButton")}
+            label={t("Common:Download")}
             size="medium"
             primary
             onClick={this.onDownload}
@@ -544,7 +545,7 @@ class DownloadDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             key="CancelButton"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={this.onClose}
             //isLoading={isLoading}
@@ -555,9 +556,11 @@ class DownloadDialogComponent extends React.Component {
   }
 }
 
-const DownloadDialog = withTranslation("DownloadDialog")(
-  DownloadDialogComponent
-);
+const DownloadDialog = withTranslation([
+  "DownloadDialog",
+  "Common",
+  "Translations",
+])(DownloadDialogComponent);
 
 export default inject(
   ({

@@ -177,7 +177,7 @@ class SharingPanelComponent extends React.Component {
             return setEncryptionAccess(item).then((encryptedFile) => {
               if (!encryptedFile) return Promise.resolve();
 
-              toastr.info(t("EncryptedFileSaving"));
+              toastr.info(t("Translations:EncryptedFileSaving"));
 
               const title = item.title;
 
@@ -506,7 +506,9 @@ class SharingPanelComponent extends React.Component {
               ) : (
                 <div key="loader" className="panel-loader-wrapper">
                   <Loader type="oval" size="16px" className="panel-loader" />
-                  <Text as="span">{t("LoadingLabel")}</Text>
+                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                    "Common:LoadingDescription"
+                  )}`}</Text>
                 </div>
               )}
               {isNotifyUsers && (
@@ -530,7 +532,7 @@ class SharingPanelComponent extends React.Component {
               />
               <Button
                 className="sharing_panel-button"
-                label={t("AddButton")}
+                label={t("Common:SaveButton")}
                 size="big"
                 primary
                 onClick={this.onSaveClick}
@@ -646,22 +648,28 @@ const SharingPanel = inject(
       getFolderInfo,
     };
   }
-)(observer(withTranslation("SharingPanel")(SharingPanelComponent)));
+)(
+  observer(
+    withTranslation(["SharingPanel", "Common", "Translations"])(
+      SharingPanelComponent
+    )
+  )
+);
 
 class Panel extends React.Component {
   static convertSharingUsers = (shareDataItems) => {
-    const t = i18n.getFixedT(null, "SharingPanel");
+    const t = i18n.getFixedT(null, ["SharingPanel", "Common"]);
     let sharingSettings = [];
     for (let i = 1; i < shareDataItems.length; i++) {
       let resultAccess =
         shareDataItems[i].access === 1
-          ? t("FullAccess")
+          ? t("Common:FullAccess")
           : shareDataItems[i].access === 2
           ? t("ReadOnly")
           : shareDataItems[i].access === 3
           ? t("DenyAccess")
           : shareDataItems[i].access === 5
-          ? t("Review")
+          ? t("Common:Review")
           : shareDataItems[i].access === 6
           ? t("Comment")
           : shareDataItems[i].access === 7
