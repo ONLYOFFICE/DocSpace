@@ -116,7 +116,7 @@ class DocumentsModule extends React.Component {
     //debugger;
 
     this.setState({ isLoading: true }, function () {
-      +defaultStorageType === 0
+      defaultStorageType && +defaultStorageType === 0
         ? SelectedFolder.getFolderPath(defaultSelectedFolder)
             .then((folderPath) => {
               this.folderDocumentsModulePath = folderPath;
@@ -583,8 +583,6 @@ class DocumentsModule extends React.Component {
       onSetLoadingData,
     } = this.props;
 
-    // console.log("documents module render", this.folderDocumentsModulePath);
-    // console.log("___");
     return (
       <div className="category-item-wrapper">
         <>
@@ -622,7 +620,6 @@ class DocumentsModule extends React.Component {
             monthNumberOptionsArray={monthNumberOptionsArray}
             timeOptionsArray={timeOptionsArray}
             maxNumberCopiesArray={maxNumberCopiesArray}
-            //onClickCheckbox={onClickCheckbox}
             onSelectMaxCopies={this.onSelectMaxCopies}
             onSelectMonthNumberAndTimeOptions={
               this.onSelectMonthNumberAndTimeOptions

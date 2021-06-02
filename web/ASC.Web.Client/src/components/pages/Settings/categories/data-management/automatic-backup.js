@@ -7,7 +7,7 @@ import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import RadioButton from "@appserver/components/radio-button";
 import moment from "moment";
-import ScheduleComponent from "./sub-components-automatic-backup/scheduleComponent";
+
 import {
   deleteBackupSchedule,
   getBackupProgress,
@@ -650,10 +650,6 @@ class AutomaticBackup extends React.PureComponent {
       dailySchedule,
     } = this.state;
 
-    //console.log("commonThirdPartyList auto", this.commonThirdPartyList);
-    //console.log("this.props", this.props);
-    //console.log("__________________");
-    //console.log("selectedPermission", selectedPermission);
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -816,79 +812,42 @@ class AutomaticBackup extends React.PureComponent {
                 {t("ThirdPartyStorageNoteDescription")}
               </Text>
               {isShowThirdPartyStorage && (
-                <>
-                  <ThirdPartyStorageModule
-                    isCopyingToLocal={isCopyingToLocal}
-                    isLoadingData={isLoadingData}
-                    isDisableOptions={isDisableOptions}
-                    weeklySchedule={weeklySchedule}
-                    monthlySchedule={monthlySchedule}
-                    weekOptions={weekOptions}
-                    selectedWeekdayOption={selectedWeekdayOption}
-                    weekdaysOptions={this.weekdaysOptions}
-                    periodOptions={this.periodOptions}
-                    lng={this.lng}
-                    monthNumberOptionsArray={this.monthNumberOptionsArray}
-                    timeOptionsArray={this.timeOptionsArray}
-                    maxNumberCopiesArray={this.maxNumberCopiesArray}
-                    defaultStorageType={defaultStorageType}
-                    defaultSelectedFolder={defaultSelectedFolder}
-                    defaultSelectedOption={defaultSelectedOption}
-                    defaultHour={defaultHour}
-                    defaultMaxCopies={defaultMaxCopies}
-                    defaultPeriod={defaultPeriod}
-                    defaultDay={defaultDay}
-                    defaultSelectedWeekdayOption={defaultSelectedWeekdayOption}
-                    defaultWeekly={defaultWeekly}
-                    defaultDaily={defaultDaily}
-                    defaultMonthly={defaultMonthly}
-                    monthlySchedule={monthlySchedule}
-                    dailySchedule={dailySchedule}
-                    weeklySchedule={weeklySchedule}
-                    isCopyingToLocal={isCopyingToLocal}
-                    onCancelModuleSettings={this.onCancelModuleSettings}
-                    changedDefaultOptions={this.changedDefaultOptions}
-                    onSetDefaultOptions={this.onSetDefaultOptions}
-                    onSetLoadingData={this.onSetLoadingData}
-                  />
-                  {/* <ScheduleComponent
-                    weeklySchedule={weeklySchedule}
-                    monthlySchedule={monthlySchedule}
-                    weekOptions={weekOptions}
-                    selectedOption={selectedOption}
-                    selectedWeekdayOption={selectedWeekdayOption}
-                    selectedTimeOption={selectedTimeOption}
-                    selectedMonthOption={selectedMonthOption}
-                    selectedMaxCopies={selectedMaxCopies}
-                    isLoadingData={isLoadingData}
-                    isDisableOptions={isDisableOptions}
-                    periodOptions={this.periodOptions}
-                    monthNumberOptionsArray={this.monthNumberOptionsArray}
-                    timeOptionsArray={this.timeOptionsArray}
-                    maxNumberCopiesArray={this.maxNumberCopiesArray}
-                    onClickCheckbox={this.onClickCheckbox}
-                    onSelectMaxCopies={this.onSelectMaxCopies}
-                    onSelectMonthNumberAndTimeOptions={
-                      this.onSelectMonthNumberAndTimeOptions
-                    }
-                    onSelectWeedDay={this.onSelectWeedDay}
-                    onSelectPeriod={this.onSelectPeriod}
-                  /> */}
-                </>
+                <ThirdPartyStorageModule
+                  isCopyingToLocal={isCopyingToLocal}
+                  isLoadingData={isLoadingData}
+                  isDisableOptions={isDisableOptions}
+                  weeklySchedule={weeklySchedule}
+                  monthlySchedule={monthlySchedule}
+                  weekOptions={weekOptions}
+                  selectedWeekdayOption={selectedWeekdayOption}
+                  weekdaysOptions={this.weekdaysOptions}
+                  periodOptions={this.periodOptions}
+                  lng={this.lng}
+                  monthNumberOptionsArray={this.monthNumberOptionsArray}
+                  timeOptionsArray={this.timeOptionsArray}
+                  maxNumberCopiesArray={this.maxNumberCopiesArray}
+                  defaultStorageType={defaultStorageType}
+                  defaultSelectedFolder={defaultSelectedFolder}
+                  defaultSelectedOption={defaultSelectedOption}
+                  defaultHour={defaultHour}
+                  defaultMaxCopies={defaultMaxCopies}
+                  defaultPeriod={defaultPeriod}
+                  defaultDay={defaultDay}
+                  defaultSelectedWeekdayOption={defaultSelectedWeekdayOption}
+                  defaultWeekly={defaultWeekly}
+                  defaultDaily={defaultDaily}
+                  defaultMonthly={defaultMonthly}
+                  monthlySchedule={monthlySchedule}
+                  dailySchedule={dailySchedule}
+                  weeklySchedule={weeklySchedule}
+                  isCopyingToLocal={isCopyingToLocal}
+                  onCancelModuleSettings={this.onCancelModuleSettings}
+                  changedDefaultOptions={this.changedDefaultOptions}
+                  onSetDefaultOptions={this.onSetDefaultOptions}
+                  onSetLoadingData={this.onSetLoadingData}
+                />
               )}
             </StyledModules>
-            {/* {isChanged && !isShowThirdPartyStorage && !isShowThirdParty && (
-              <SaveCancelButtons
-                className="team-template_buttons"
-                onSaveClick={this.onSaveModuleSettings}
-                onCancelClick={this.onCancelModuleSettings}
-                showReminder={false}
-                reminderTest={t("YouHaveUnsavedChanges")}
-                saveButtonLabel={t("SaveButton")}
-                cancelButtonLabel={t("CancelButton")}
-                isDisabled={isCopyingToLocal || isLoadingData}
-              />
-            )} */}
           </>
         )}
 

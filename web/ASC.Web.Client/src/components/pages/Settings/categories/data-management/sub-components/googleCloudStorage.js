@@ -2,18 +2,8 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 
 import Button from "@appserver/components/button";
-
-import { startBackup } from "@appserver/common/api/portal";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
-import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
 import TextInput from "@appserver/components/text-input";
-import {
-  createBackupSchedule,
-  getBackupSchedule,
-} from "@appserver/common/api/portal";
-
-import toastr from "@appserver/components/toast/toastr";
-import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
