@@ -200,8 +200,19 @@ class UploadDataStore {
     return promise;
   };
 
-  convertFile = async (fileId) => {
+  convertFile = async (fileId, t) => {
     const data = await api.files.convertFile(fileId);
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "file",
+      //label: t("ConvertingLabel", { file: 0, totalFiles: total }),
+      percent: 0,
+      visible: true,
+    });
 
     if (data && data[0] && data[0].progress !== 100) {
       let progress = data[0].progress;
@@ -212,11 +223,26 @@ class UploadDataStore {
         progress = res && res[0] && res[0].progress;
         error = res && res[0] && res[0].error;
         if (error.length) {
-          console.log("Error", error);
+          if (error.length) {
+            setSecondaryProgressBarData({
+              icon: "file",
+              visible: true,
+              alert: true,
+            });
+            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            return;
+          }
           return;
         }
         if (progress === 100) {
           break;
+        } else {
+          setSecondaryProgressBarData({
+            icon: "file",
+            //label: t("ConvertingLabel", { file: index + 1, totalFiles: total }),
+            percent: progress,
+            visible: true,
+          });
         }
       }
     }
