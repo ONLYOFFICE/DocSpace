@@ -25,5 +25,6 @@
   "SocialProfiles": "Social profiles",
   "SuccessChangeUserStatus": "The user status was successfully changed",
   "SuccessSentInvitation": "The invitation was successfully sent",
+  "SuccessDeletePersonalData": "Personal data has been successfully deleted",
   "Birthdate": "Date of birth"
 }

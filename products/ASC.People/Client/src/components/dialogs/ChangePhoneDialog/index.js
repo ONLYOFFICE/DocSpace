@@ -17,9 +17,9 @@ class ChangePhoneDialogComponent extends React.Component {
 
   // TODO: add real api request for executing change phone
   onChangePhone = () => {
-    const { onClose } = this.props;
+    const { onClose, t } = this.props;
     this.setState({ isRequestRunning: true }, () => {
-      toastr.success("Context action: Change phone");
+      toastr.success(t("ChangePhoneInstructionSent"));
       this.setState({ isRequestRunning: false }, () => onClose());
     });
   };

@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Parola a fost schimbată cu succes",
-  "ConfirmOwnerPortalSuccessMessage": "Proprietarul portalului a fost schimbat cu succes. {0}Veţi fi redirecţionaţi automat după 10 secunde {1}aici{2}",
+  "ConfirmOwnerPortalSuccessMessage": "Proprietarul portalului a fost schimbat cu succes. Veţi fi redirecţionaţi automat după 10 secunde.",
   "ConfirmOwnerPortalTitle": "Confirmați dacă doriți să schimbați proprietarul portalului în {{newOwner}}",
   "DeleteProfileBtn": "Șterge contul meu",
   "DeleteProfileConfirmation": "Atenție! Dumneavoastră sunteți pe cale de a șterge contul dvs.",
