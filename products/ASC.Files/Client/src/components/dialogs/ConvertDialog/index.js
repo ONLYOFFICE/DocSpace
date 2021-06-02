@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
@@ -8,100 +8,122 @@ import Checkbox from "@appserver/components/checkbox";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
-class ConvertDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
+const ConvertDialogComponent = (props) => {
+  const {
+    t,
+    visible,
+    convertFile,
+    convertItemId,
+    setStoreOriginal,
+    storeOriginalFiles,
+    convertUploadedFiles,
+    setConvertDialogVisible,
+  } = props;
 
-    this.state = {
-      saveOriginalFormat: true,
-      hideMessage: false,
-    };
-  }
+  const convertSingleFile = !!convertItemId;
+  const [hideMessage, setHideMessage] = useState(false);
 
-  onChangeFormat = () =>
-    this.setState({ saveOriginalFormat: !this.state.saveOriginalFormat });
-  onChangeMessageVisible = () =>
-    this.setState({ hideMessage: !this.state.hideMessage });
-
-  onConvert = () => this.props.convertUploadedFiles(this.props.t);
-  onClose = () => {
+  const onChangeFormat = () =>
+    setStoreOriginal(!storeOriginalFiles, "storeOriginalFiles");
+  const onChangeMessageVisible = () => setHideMessage(!hideMessage);
+  const onClose = () => {
     setConvertDialogVisible(false);
-    //this.props.setDialogVisible(this.props.t)
+    //this.props.setDialogVisible(t)
   };
 
-  render() {
-    const { t, visible } = this.props;
-    const { saveOriginalFormat, hideMessage } = this.state;
+  const onConvert = () => {
+    onClose();
+    convertSingleFile ? convertFile(convertItemId, t) : convertUploadedFiles(t);
+  };
 
-    return (
-      <ModalDialogContainer visible={visible} onClose={this.onClose}>
-        <ModalDialog.Header>{t("ConversionTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <div className="convert_dialog_content">
-            <img
-              className="convert_dialog_image"
-              src="images/convert_alert.png"
-              alt="convert alert"
+  return (
+    <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialog.Header>
+        {
+          convertSingleFile
+            ? t("ConvertAndOpenTitle") //TODO: need translations
+            : t("UploadConvertibleDocumentTitle") //TODO: need translations
+        }
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        <div className="convert_dialog_content">
+          <img
+            className="convert_dialog_image"
+            src="images/convert_alert.png"
+            alt="convert alert"
+          />
+          <div className="convert_dialog-content">
+            <Text>
+              {
+                convertSingleFile
+                  ? t("ConversionMessage") //TODO: need translations
+                  : t("UploadConversionMessage") //TODO: need translations
+              }
+            </Text>
+            <Checkbox
+              className="convert_dialog_checkbox"
+              label={t("SaveOriginalFormatMessage")}
+              isChecked={storeOriginalFiles}
+              onChange={onChangeFormat}
             />
-            <div className="convert_dialog-content">
-              <Text>{t("ConversionMessage")}</Text>
-              <Checkbox
-                className="convert_dialog_checkbox"
-                label={t("SaveOriginalFormatMessage")}
-                isChecked={saveOriginalFormat}
-                onChange={this.onChangeFormat}
-              />
+            {!convertSingleFile && (
               <Checkbox
                 className="convert_dialog_checkbox"
                 label={t("HideMessage")}
                 isChecked={hideMessage}
-                onChange={this.onChangeMessageVisible}
+                onChange={onChangeMessageVisible}
               />
-            </div>
+            )}
           </div>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <div className="convert_dialog_footer">
-            <Button
-              className="convert_dialog_button-accept"
-              key="ContinueButton"
-              label={t("Common:ContinueButton")}
-              size="medium"
-              primary
-              onClick={this.onConvert}
-            />
-            <Button
-              className="convert_dialog_button"
-              key="CloseButton"
-              label={t("Common:CloseButton")}
-              size="medium"
-              onClick={this.onClose}
-            />
-          </div>
-        </ModalDialog.Footer>
-      </ModalDialogContainer>
-    );
+        </div>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <div className="convert_dialog_footer">
+          <Button
+            className="convert_dialog_button-accept"
+            key="ContinueButton"
+            label={t("Common:ContinueButton")}
+            size="medium"
+            primary
+            onClick={onConvert}
+          />
+          <Button
+            className="convert_dialog_button"
+            key="CloseButton"
+            label={t("Common:CloseButton")}
+            size="medium"
+            onClick={onClose}
+          />
+        </div>
+      </ModalDialog.Footer>
+    </ModalDialogContainer>
+  );
+};
+
+const ConvertDialog = withTranslation(["ConvertDialog", "Common"])(
+  ConvertDialogComponent
+);
+
+export default inject(
+  ({ uploadDataStore, treeFoldersStore, dialogsStore, settingsStore }) => {
+    const { setTreeFolders } = treeFoldersStore;
+    const { convertUploadedFiles, convertFile } = uploadDataStore;
+    const { storeOriginalFiles, setStoreOriginal } = settingsStore;
+    const {
+      convertDialogVisible: visible,
+      setConvertDialogVisible,
+      convertItemId,
+    } = dialogsStore;
+
+    return {
+      visible,
+      convertFile,
+      convertItemId,
+      setTreeFolders,
+      setStoreOriginal,
+      storeOriginalFiles,
+      convertUploadedFiles,
+      setConvertDialogVisible,
+    };
   }
-}
-
-const ConvertDialog = withTranslation([
-  "ConvertDialog",
-  "Common",
-  "setDialogVisible",
-])(ConvertDialogComponent);
-
-export default inject(({ uploadDataStore, treeFoldersStore, dialogsStore }) => {
-  const { setTreeFolders } = treeFoldersStore;
-  const { convertUploadedFiles } = uploadDataStore;
-  const {
-    convertDialogVisible: visible,
-    setConvertDialogVisible,
-  } = dialogsStore;
-
-  return {
-    setTreeFolders,
-    convertUploadedFiles,
-    visible,
-    setConvertDialogVisible,
-  };
-})(withRouter(observer(ConvertDialog)));
+)(withRouter(observer(ConvertDialog)));

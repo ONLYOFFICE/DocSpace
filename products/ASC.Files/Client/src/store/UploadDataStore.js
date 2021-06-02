@@ -22,8 +22,8 @@ class UploadDataStore {
 
   files = [];
   filesSize = 0;
-  convertFiles = [];
-  convertFilesSize = 0;
+  //convertFiles = [];
+  //convertFilesSize = 0;
   uploadStatus = null;
   uploadToFolder = null;
   uploadedFiles = 0;
@@ -187,7 +187,7 @@ class UploadDataStore {
       setTimeout(() => {
         try {
           api.files.getFileConversationProgress(fileId).then((res) => {
-            console.log(res);
+            console.log("getFileConversationProgress", res);
             resolve(res);
           });
         } catch (error) {
@@ -198,6 +198,28 @@ class UploadDataStore {
     });
 
     return promise;
+  };
+
+  convertFile = async (fileId) => {
+    const data = await api.files.convertFile(fileId);
+
+    if (data && data[0] && data[0].progress !== 100) {
+      let progress = data[0].progress;
+      let error = null;
+      while (progress < 100) {
+        const res = await this.getConversationProgress(fileId);
+
+        progress = res && res[0] && res[0].progress;
+        error = res && res[0] && res[0].error;
+        if (error.length) {
+          console.log("Error", error);
+          return;
+        }
+        if (progress === 100) {
+          break;
+        }
+      }
+    }
   };
 
   startConvertFiles = async (files, t) => {
@@ -284,7 +306,6 @@ class UploadDataStore {
   };
 
   startUpload = (uploadFiles, folderId, t) => {
-    debugger;
     const { canConvert } = this.formatsStore.docserviceStore;
 
     let newFiles = this.files;
@@ -444,7 +465,11 @@ class UploadDataStore {
     let len = files.length;
 
     while (index < len) {
+      //if (files[index].action !== "convert") {
       await this.startSessionFunc(index, t);
+      //} else {
+      //  this.dialogsStore.setConvertDialogVisible(true);
+      //}
       index++;
 
       files = this.files;
@@ -452,14 +477,15 @@ class UploadDataStore {
     }
 
     //TODO: Uncomment after fix conversation
-    /*const filesToConvert = this.getFilesToConvert(files);
-    if (filesToConvert.length > 0) {
-      // Ask to convert options
-      return dispatch(this.dialogsStore.setConvertDialogVisible(true););
-    }*/
+    // const filesToConvert = this.getFilesToConvert(files);
+    // if (filesToConvert.length > 0) {
+    //   this.dialogsStore.setConvertDialogVisible(true);
+    // }
 
     // All files has been uploaded and nothing to convert
-    this.finishUploadFiles();
+
+    const withConvertFiles = this.files.find((x) => x.action === "convert");
+    !withConvertFiles ? this.finishUploadFiles() : (this.uploaded = true);
   };
 
   startSessionFunc = (indexOfFile, t) => {

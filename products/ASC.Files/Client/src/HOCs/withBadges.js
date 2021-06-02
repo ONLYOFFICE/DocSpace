@@ -140,6 +140,12 @@ export default function withBadges(WrappedComponent) {
         }
       });
     };
+
+    setConvertDialogVisible = () => {
+      this.props.setConvertItemId(this.props.item.id);
+      this.props.setConvertDialogVisible(true);
+    };
+
     render() {
       const {
         t,
@@ -149,7 +155,6 @@ export default function withBadges(WrappedComponent) {
         canConvert,
         onFilesClick, // from withFileAction HOC
         isAdmin,
-        setConvertDialogVisible,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -175,7 +180,7 @@ export default function withBadges(WrappedComponent) {
           onClickFavorite={this.onClickFavorite}
           onShowVersionHistory={this.onShowVersionHistory}
           onBadgeClick={this.onBadgeClick}
-          setConvertDialogVisible={setConvertDialogVisible}
+          setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
         />
       );
@@ -210,7 +215,11 @@ export default function withBadges(WrappedComponent) {
       } = filesActionsStore;
       const { isTabletView } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
-      const { setNewFilesPanelVisible } = dialogsStore;
+      const {
+        setNewFilesPanelVisible,
+        setConvertDialogVisible,
+        setConvertItemId,
+      } = dialogsStore;
       const { filter, setIsLoading, fetchFiles } = filesStore;
       const { secondaryProgressDataStore } = uploadDataStore;
       const {
@@ -242,6 +251,8 @@ export default function withBadges(WrappedComponent) {
         setIsLoading,
         clearSecondaryProgressData,
         fetchFiles,
+        setConvertDialogVisible,
+        setConvertItemId,
       };
     }
   )(observer(WithBadges));
