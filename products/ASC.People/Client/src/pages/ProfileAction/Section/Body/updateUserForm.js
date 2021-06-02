@@ -754,7 +754,7 @@ class UpdateUserForm extends React.Component {
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-              labelText={`${t("Birthdate")}:`}
+              labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined

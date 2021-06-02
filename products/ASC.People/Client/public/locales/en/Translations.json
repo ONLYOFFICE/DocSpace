@@ -24,5 +24,6 @@
   "Sex": "Sex",
   "SocialProfiles": "Social profiles",
   "SuccessChangeUserStatus": "The user status was successfully changed",
-  "SuccessSentInvitation": "The invitation was successfully sent"
+  "SuccessSentInvitation": "The invitation was successfully sent",
+  "Birthdate": "Date of birth"
 }
