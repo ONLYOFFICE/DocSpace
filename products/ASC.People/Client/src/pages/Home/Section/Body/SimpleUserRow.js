@@ -128,7 +128,7 @@ const SimpleUserRow = ({
   };
 
   const onDeletePersonalDataClick = (e) => {
-    toastr.success("Context action: Delete personal data"); //TODO: Implement and add translation
+    toastr.success(t("Translations:SuccessDeletePersonalData"));
   };
 
   const onInviteAgainClick = () => {

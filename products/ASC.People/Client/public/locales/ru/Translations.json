@@ -24,5 +24,6 @@
   "Sex": "Пол",
   "SocialProfiles": "Социальные профили",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
-  "SuccessSentInvitation": "Приглашение было успешно отправлено"
+  "SuccessSentInvitation": "Приглашение было успешно отправлено",
+  "SuccessDeletePersonalData": "Персональные данные успешно удалены"
 }
