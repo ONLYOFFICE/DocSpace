@@ -264,7 +264,7 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onDeletePersonalDataClick = () => {
-    toastr.success("Context action: Delete personal data");
+    console.log("Context action: Delete personal data");
   };
 
   toggleDeleteProfileEverDialog = () =>
