@@ -13,6 +13,7 @@ using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
+using ASC.Web.CRM.Core.Search;
 using ASC.Web.CRM.Services.NotifyService;
 
 using AutoMapper;
@@ -34,7 +35,8 @@ namespace ASC.CRM.Api
                      MessageTarget messageTarget,
                      MessageService messageService,
                      NotifyClient notifyClient,
-                     IMapper mapper)
+                     IMapper mapper,
+                     FactoryIndexerCase factoryIndexerCase)
             : base(daoFactory, crmSecurity, mapper)
         {
             _apiContext = apiContext;
@@ -59,6 +61,7 @@ namespace ASC.CRM.Api
             if (taskid <= 0) throw new ArgumentException();
 
             var task = _daoFactory.GetTaskDao().GetByID(taskid);
+
             if (task == null) throw new ItemNotFoundException();
 
             if (!_crmSecurity.CanAccessTo(task))

@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
+using ASC.Common.Caching;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Web.Files.Core.Search;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.CRM
@@ -74,6 +79,29 @@ namespace ASC.CRM
                     {
                                         {"pathToConf", path}
                     });
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddMemoryCache();
+
+                    var diHelper = new DIHelper(services);
+
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                    //services.AddHostedService<ServiceLauncher>();
+                    //diHelper.TryAdd<ServiceLauncher>();
+
+                    //services.AddHostedService<FeedAggregatorService>();
+                    //diHelper.TryAdd<FeedAggregatorService>();
+
+                    //services.AddHostedService<Launcher>();
+                    //diHelper.TryAdd<Launcher>();
+
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
+                    //diHelper.TryAdd<FileConverter>();
+                    diHelper.TryAdd<FactoryIndexerFile>();
+                    diHelper.TryAdd<FactoryIndexerFolder>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

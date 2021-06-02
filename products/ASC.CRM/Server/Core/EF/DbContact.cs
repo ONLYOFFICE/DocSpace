@@ -7,6 +7,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -84,13 +85,9 @@ namespace ASC.CRM.Core.EF
             }
         }
 
-        [Ignore]
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            get
-            {
-                return (a) => new[] { Title };
-            }
+            return (a) => new[] { Title };
         }
     }
 
@@ -123,43 +120,43 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.CompanyName)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Currency)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.DisplayName)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.FirstName)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Industry)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastName)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Notes)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
 

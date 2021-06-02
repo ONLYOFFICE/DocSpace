@@ -7,6 +7,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -55,13 +56,9 @@ namespace ASC.CRM.Core.EF
             }
         }
 
-        [Ignore]
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            get
-            {
-                return (a) => new[] { Data };
-            }
+            return (a) => new[] { Data };
         }
     }
 
@@ -87,11 +84,11 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.Data)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
     }

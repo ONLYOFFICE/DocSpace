@@ -37,6 +37,7 @@ using ASC.CRM.Core.EF;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Core.Search
@@ -62,30 +63,64 @@ namespace ASC.Web.CRM.Core.Search
 
         public override void IndexAll()
         {
-            var invoiceDao = DaoFactory.GetInvoiceDao();
+            var entityDao = DaoFactory.GetInvoiceDao();
+
+            IQueryable<DbInvoice> GetBaseQuery(DateTime lastIndexed) =>
+                                entityDao.CrmDbContext.Invoices
+                                        .Where(r => r.LastModifedOn >= lastIndexed)
+                                        .Join(entityDao.CrmDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
+                                        .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active)
+                                        .Select(r => r.DbEntity);
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q = invoiceDao.CrmDbContext.Invoices
-                        .Where(r => r.LastModifedOn >= lastIndexed);
+                var q = GetBaseQuery(lastIndexed);
 
-                var count = q.GroupBy(a => a.Id).Count();
+                var count = q.Count();
                 var min = count > 0 ? q.Min(r => r.Id) : 0;
                 var max = count > 0 ? q.Max(r => r.Id) : 0;
 
                 return (count, max, min);
             }
 
-            List<DbInvoice> getData(long i, long step, DateTime lastIndexed) =>
-                    invoiceDao.CrmDbContext.Invoices
-                    .Where(r => r.LastModifedOn >= lastIndexed)
-                    .Where(r => r.Id >= i && r.Id <= i + step)
-                    .Select(r => r)
+            List<DbInvoice> getData(long start, long stop, DateTime lastIndexed) =>
+                    GetBaseQuery(lastIndexed)
+                    .Where(r => r.Id >= start && r.Id <= stop)
                     .ToList();
+
+            List<int> getIds(DateTime lastIndexed)
+            {
+                long start = 0;
+
+                var result = new List<int>();
+
+                while (true)
+                {
+                    var id = GetBaseQuery(lastIndexed)
+                                .AsNoTracking()
+                                .Where(r => r.Id >= start)
+                                .OrderBy(x => x.Id)
+                                .Skip(BaseIndexer<DbInvoice>.QueryLimit)
+                                .Select(x => x.Id)
+                                .FirstOrDefault();
+
+                    if (id != 0)
+                    {
+                        start = id;
+                        result.Add(id);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                return result;
+            }
 
             try
             {
-                foreach (var data in Indexer.IndexAll(getCount, getData))
+                foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
                 {
                     Index(data);
                 }

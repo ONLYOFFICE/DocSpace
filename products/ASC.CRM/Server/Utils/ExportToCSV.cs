@@ -83,6 +83,7 @@ namespace ASC.Web.CRM.Classes
         private readonly IAccount _author;
         private readonly IDataStore _dataStore;
         private readonly NotifyClient _notifyClient;
+        private readonly TempStream _tempStream;
         private FilterObject _filterObject;
         private readonly ILog _log;
         private int _totalCount;
@@ -101,14 +102,16 @@ namespace ASC.Web.CRM.Classes
                                    FileMarker fileMarker,
                                    IDaoFactory fileDaoFactory,
                                    FilesLinkUtility filesLinkUtility,
-                                   DisplayUserSettingsHelper displayUserSettingsHelper)
+                                   DisplayUserSettingsHelper displayUserSettingsHelper,
+                                   TempStream tempStream)
         {
             _daoFactory = daoFactory;
             _userManager = userManager;
             _fileUtility = fileUtility;
             _fileUploader = fileUploader;
-
+            _tenantManager = tenantManager;
             _tenantId = tenantManager.GetCurrentTenant().TenantId;
+            _tempStream = tempStream;
 
             _author = securityContext.CurrentAccount;
             _dataStore = global.GetStore();
@@ -249,7 +252,7 @@ namespace ASC.Web.CRM.Classes
 
         private void ExportAllData(DaoFactory daoFactory)
         {
-            using (var stream = TempStream.Create())
+            using (var stream = _tempStream.Create())
             {
                 var contactDao = daoFactory.GetContactDao();
                 var contactInfoDao = daoFactory.GetContactInfoDao();

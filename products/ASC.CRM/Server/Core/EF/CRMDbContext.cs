@@ -35,6 +35,7 @@ namespace ASC.CRM.Core.EF
         public virtual DbSet<DbTaskTemplateTask> TaskTemplateTask { get; set; }
         public virtual DbSet<DbVoipCalls> VoipCalls { get; set; }
         public virtual DbSet<DbVoipNumber> VoipNumber { get; set; }
+        public virtual DbSet<DbTenant> Tenants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,12 +46,9 @@ namespace ASC.CRM.Core.EF
                                .AddDbCase()
                                .AddDbRelationshipEvent()
                                .AddDbDeal()
-                               .AddDbTask();
-
-
-
-
-
+                               .AddDbTask()
+                               .AddDbTenant();
+            
             modelBuilder.Entity<DbCurrencyInfo>(entity =>
             {
                 entity.HasKey(e => e.Abbreviation)
@@ -58,19 +56,19 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.Abbreviation)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CultureName)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ResourceKey)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Symbol)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbCurrencyRate>(entity =>
@@ -83,19 +81,19 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.FromCurrency)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ToCurrency)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             ;
@@ -108,15 +106,15 @@ namespace ASC.CRM.Core.EF
                 entity.Property(e => e.Color)
                     .HasDefaultValueSql("'0'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbEntityContact>(entity =>
@@ -144,11 +142,11 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.Label)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Mask)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
 
@@ -163,15 +161,15 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Currency)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ExchangeRate).HasDefaultValueSql("'1.00'");
 
@@ -179,29 +177,29 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.JsonData)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Language)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Number)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PurchaseOrderNumber)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Status).HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.Terms)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbInvoiceItem>(entity =>
@@ -211,27 +209,27 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Currency)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.StockKeepingUnit)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbInvoiceLine>(entity =>
@@ -241,7 +239,7 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbInvoiceTax>(entity =>
@@ -251,19 +249,19 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbListItem>(entity =>
@@ -273,19 +271,19 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.AdditionalParams)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Color)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbOrganisationLogo>(entity =>
@@ -295,11 +293,11 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.Content)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbProjects>(entity =>
@@ -331,7 +329,7 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbTag>(entity =>
@@ -341,7 +339,7 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_bin");
+                    .UseCollation("utf8_bin");
             });
 
 
@@ -353,25 +351,25 @@ namespace ASC.CRM.Core.EF
                 entity.Property(e => e.CreateBy)
                     .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ResponsibleId)
                     .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbTaskTemplateContainer>(entity =>
@@ -382,16 +380,16 @@ namespace ASC.CRM.Core.EF
                 entity.Property(e => e.CreateBy)
                     .HasDefaultValueSql("'0'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasDefaultValueSql("'0'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbTaskTemplateTask>(entity =>
@@ -410,32 +408,32 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.Id)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.AnsweredBy)
                     .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.NumberFrom)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.NumberTo)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ParentCallId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.RecordSid)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.RecordUrl)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<DbVoipNumber>(entity =>
@@ -445,19 +443,19 @@ namespace ASC.CRM.Core.EF
 
                 entity.Property(e => e.Id)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Alias)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Number)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Settings)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             OnModelCreatingPartial(modelBuilder);

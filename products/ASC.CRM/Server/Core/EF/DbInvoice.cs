@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 
 using Nest;
 
@@ -98,13 +99,9 @@ namespace ASC.CRM.Core.EF
             }
         }
 
-        [Ignore]
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            get
-            {
-                return (a) => new[] { Description };
-            }
+            return (a) => new[] { Description };
         }
     }
 }
