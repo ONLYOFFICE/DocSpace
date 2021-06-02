@@ -441,7 +441,7 @@ namespace ASC.Data.Backup.Service
 
                 if (UserId != Guid.Empty && !IsScheduled)
                 {
-                    notifyHelper.SendAboutBackupCompleted(UserId);
+                    notifyHelper.SendAboutBackupCompleted(TenantId, UserId);
                 }
 
                 IsCompleted = true;

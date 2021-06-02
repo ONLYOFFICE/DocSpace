@@ -67,11 +67,13 @@ namespace ASC.Data.Backup
             MigrationNotify(tenant, !string.IsNullOrEmpty(targetRegion) ? Actions.MigrationPortalError : Actions.MigrationPortalServerFailure, targetRegion, resultAddress, !notifyOnlyOwner);
         }
 
-        public void SendAboutBackupCompleted(Guid userId)
+        public void SendAboutBackupCompleted(int tenantId, Guid userId)
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager) = scopeClass;
+            tenantManager.SetCurrentTenant(tenantId);
+
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             client.SendNoticeToAsync(
@@ -85,7 +87,9 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            (var userManager, var studioNotifyHelper, var studioNotifySource, var displayUserSettingsHelper) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager) = scopeClass;
+            tenantManager.SetCurrentTenant(tenant.TenantId);
+
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             var owner = userManager.GetUsers(tenant.OwnerId);
@@ -104,7 +108,9 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager) = scopeClass;
+            tenantManager.SetCurrentTenant(tenant.TenantId);
+
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             var owner = userManager.GetUsers(tenant.OwnerId);
@@ -125,7 +131,9 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, _) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, _, tenantManager) = scopeClass;
+            tenantManager.SetCurrentTenant(tenant.TenantId);
+
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             var users = userManager.GetUsers()
@@ -152,21 +160,34 @@ namespace ASC.Data.Backup
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private StudioNotifySource StudioNotifySource { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private TenantManager TenantManager { get; }
 
-        public NotifyHelperScope(UserManager userManager, StudioNotifyHelper studioNotifyHelper, StudioNotifySource studioNotifySource, DisplayUserSettingsHelper displayUserSettingsHelper)
+        public NotifyHelperScope(
+            UserManager userManager,
+            StudioNotifyHelper studioNotifyHelper,
+            StudioNotifySource studioNotifySource,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            TenantManager tenantManager)
         {
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
             StudioNotifySource = studioNotifySource;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
+            TenantManager = tenantManager;
         }
 
-        public void Deconstruct(out UserManager userManager, out StudioNotifyHelper studioNotifyHelper, out StudioNotifySource studioNotifySource, out DisplayUserSettingsHelper displayUserSettingsHelper)
+        public void Deconstruct(
+            out UserManager userManager,
+            out StudioNotifyHelper studioNotifyHelper,
+            out StudioNotifySource studioNotifySource,
+            out DisplayUserSettingsHelper displayUserSettingsHelper,
+            out TenantManager tenantManager)
         {
             userManager = UserManager;
             studioNotifyHelper = StudioNotifyHelper;
             studioNotifySource = StudioNotifySource;
             displayUserSettingsHelper = DisplayUserSettingsHelper;
+            tenantManager = TenantManager;
         }
     }
 
