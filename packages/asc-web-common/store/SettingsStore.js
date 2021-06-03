@@ -105,6 +105,11 @@ class SettingsStore {
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
 
+    if (window["AscDesktopEditor"] !== undefined || this.personal) {
+      const dp = combineUrl(proxyURL, "/products/files/");
+      this.setDefaultPage(dp);
+    }
+
     Object.keys(newSettings).map((key) => {
       if (key in this) {
         this.setValue(
@@ -123,11 +128,6 @@ class SettingsStore {
         this.setValue("hashSettings", newSettings[key]);
       }
     });
-
-    if (window["AscDesktopEditor"] !== undefined || this.personal) {
-      const dp = combineUrl(proxyURL, "/products/files/");
-      this.setDefaultPage(dp);
-    }
 
     return newSettings;
   };
