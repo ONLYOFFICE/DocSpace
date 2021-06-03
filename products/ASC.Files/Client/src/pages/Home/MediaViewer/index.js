@@ -56,7 +56,7 @@ const FilesMediaViewer = (props) => {
 
   const onDeleteMediaFile = (id) => {
     const translations = {
-      deleteOperation: t("DeleteOperation"),
+      deleteOperation: t("Translations:DeleteOperation"),
       folderRemoved: t("FolderRemoved"),
       fileRemoved: t("FileRemoved"),
     };
@@ -134,4 +134,8 @@ export default inject(
       selectedFolderId: selectedFolderStore.id,
     };
   }
-)(withRouter(withTranslation("Home")(observer(FilesMediaViewer))));
+)(
+  withRouter(
+    withTranslation(["Home", "Translations"])(observer(FilesMediaViewer))
+  )
+);

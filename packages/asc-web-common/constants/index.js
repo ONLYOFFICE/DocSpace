@@ -110,41 +110,23 @@ export const ConflictResolveType = Object.freeze({
 });
 export const providersData = Object.freeze({
   Google: {
-    label: "SignInWithGoogle",
+    label: "Google",
     icon: "/static/images/share.google.react.svg",
   },
   Facebook: {
-    label: "SignInWithFacebook",
+    label: "Facebook",
     icon: "/static/images/share.facebook.react.svg",
   },
   Twitter: {
-    label: "SignInWithTwitter",
+    label: "Twitter",
     icon: "/static/images/share.twitter.react.svg",
     iconOptions: { color: "#2AA3EF" },
   },
   LinkedIn: {
-    label: "SignInWithLinkedIn",
+    label: "LinkedIn",
     icon: "/static/images/share.linkedin.react.svg",
   },
 });
-export const i18nBaseSettings = {
-  lng: localStorage.getItem(LANGUAGE) || "en",
-  supportedLngs: ["en", "ru"],
-  fallbackLng: "en",
-  load: "languageOnly",
-
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-    format: function (value, format) {
-      if (format === "lowercase") return value.toLowerCase();
-      return value;
-    },
-  },
-
-  react: {
-    useSuspense: true,
-  },
-};
 
 export const LoaderStyle = {
   title: "",
@@ -187,3 +169,5 @@ export const FilesFormats = Object.freeze({
   PptxFormat: 9,
   CustomFormat: 10,
 });
+
+export const PasswordLimitSpecialCharacters = "!@#$%^&*";

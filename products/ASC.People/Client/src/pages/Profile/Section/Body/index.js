@@ -9,7 +9,11 @@ import Link from "@appserver/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import toastr from "studio/toastr";
 import React from "react";
-import { combineUrl, isMe } from "@appserver/common/utils";
+import {
+  combineUrl,
+  isMe,
+  getProviderTranslation,
+} from "@appserver/common/utils";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
@@ -102,17 +106,17 @@ const stringFormat = (string, data) =>
 class SectionBodyContent extends React.PureComponent {
   async componentDidMount() {
     const {
-      cultures,
-      getPortalCultures,
-      profile,
-      viewer,
+      //cultures,
+      //getPortalCultures,
+      //profile,
+      //viewer,
       isSelf,
       setProviders,
     } = this.props;
     //const isSelf = isMe(viewer, profile.userName);
-    if (isSelf && !cultures.length) {
-      getPortalCultures();
-    }
+    //if (isSelf && !cultures.length) {
+    //getPortalCultures();
+    //}
 
     if (!isSelf) return;
     try {
@@ -208,7 +212,7 @@ class SectionBodyContent extends React.PureComponent {
                 <FacebookButton
                   noHover={true}
                   iconName={icon}
-                  label={t(label)}
+                  label={getProviderTranslation(label, t)}
                   className="socialButton"
                   $iconOptions={iconOptions}
                 />
@@ -216,7 +220,7 @@ class SectionBodyContent extends React.PureComponent {
                 <SocialButton
                   noHover={true}
                   iconName={icon}
-                  label={t(label)}
+                  label={getProviderTranslation(label, t)}
                   className="socialButton"
                   $iconOptions={iconOptions}
                 />
@@ -266,7 +270,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { profile, cultures, culture, isAdmin, t, isSelf } = this.props;
+    const { profile, isAdmin, t, isSelf } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -293,8 +297,8 @@ class SectionBodyContent extends React.PureComponent {
               <Button
                 size="big"
                 scale={true}
-                label={t("EditUserDialogTitle")}
-                title={t("EditUserDialogTitle")}
+                label={t("EditUser")}
+                title={t("EditUser")}
                 onClick={this.onEditProfileClick}
               />
             </EditButtonWrapper>
@@ -305,8 +309,8 @@ class SectionBodyContent extends React.PureComponent {
           isSelf={isSelf}
           isAdmin={isAdmin}
           t={t}
-          cultures={cultures}
-          culture={culture}
+          //cultures={cultures}
+          //culture={culture}
         />
 
         {isSelf && this.oauthDataExists() && (
@@ -334,7 +338,7 @@ class SectionBodyContent extends React.PureComponent {
         )}
         {profile.notes && (
           <ToggleWrapper>
-            <ToggleContent label={t("Comments")} isOpen={true}>
+            <ToggleContent label={t("Translations:Comments")} isOpen={true}>
               <Text as="span">{profile.notes}</Text>
             </ToggleContent>
           </ToggleWrapper>
@@ -348,7 +352,10 @@ class SectionBodyContent extends React.PureComponent {
         )}
         {socialContacts && (
           <ToggleWrapper isContacts={true}>
-            <ToggleContent label={t("SocialProfiles")} isOpen={true}>
+            <ToggleContent
+              label={t("Translations:SocialProfiles")}
+              isOpen={true}
+            >
               <Text as="span">{socialContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
@@ -360,9 +367,6 @@ class SectionBodyContent extends React.PureComponent {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
-    cultures: auth.settingsStore.cultures,
-    culture: auth.settingsStore.culture,
-    getPortalCultures: auth.settingsStore.getPortalCultures,
     isAdmin: auth.isAdmin,
     profile: peopleStore.targetUserStore.targetUser,
     viewer: auth.userStore.user,
@@ -374,5 +378,9 @@ export default withRouter(
     setProviders: peopleStore.usersStore.setProviders,
     getOAuthToken: auth.settingsStore.getOAuthToken,
     getLoginLink: auth.settingsStore.getLoginLink,
-  }))(observer(withTranslation("Profile")(SectionBodyContent)))
+  }))(
+    observer(
+      withTranslation(["Profile", "Common", "Translations"])(SectionBodyContent)
+    )
+  )
 );

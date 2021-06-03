@@ -62,7 +62,7 @@ class ChangePasswordDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t("SendButton")}
+            label={t("Common:SendButton")}
             size="medium"
             primary={true}
             onClick={this.onSendPasswordChangeInstructions}
@@ -74,9 +74,10 @@ class ChangePasswordDialogComponent extends React.Component {
   }
 }
 
-const ChangePasswordDialog = withTranslation("ChangePasswordDialog")(
-  ChangePasswordDialogComponent
-);
+const ChangePasswordDialog = withTranslation([
+  "ChangePasswordDialog",
+  "Common",
+])(ChangePasswordDialogComponent);
 
 ChangePasswordDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

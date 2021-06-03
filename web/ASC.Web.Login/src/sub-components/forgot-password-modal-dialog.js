@@ -76,11 +76,11 @@ const ForgotPasswordModalDialog = (props) => {
           isVertical={true}
           hasError={emailError}
           labelVisible={false}
-          errorMessage={t("RequiredFieldMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <TextInput
             hasError={emailError}
-            placeholder={t("PasswordRecoveryPlaceholder")}
+            placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"
@@ -99,7 +99,9 @@ const ForgotPasswordModalDialog = (props) => {
         <Button
           className="modal-dialog-button"
           key="SendBtn"
-          label={isLoading ? t("LoadingProcessing") : t("SendButton")}
+          label={
+            isLoading ? t("Common:LoadingProcessing") : t("Common:SendButton")
+          }
           size="big"
           scale={false}
           primary={true}

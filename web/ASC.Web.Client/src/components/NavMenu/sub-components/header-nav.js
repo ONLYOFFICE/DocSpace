@@ -58,7 +58,7 @@ const HeaderNav = ({
   isAuthenticated,
   peopleAvailable,
 }) => {
-  const { t } = useTranslation("NavMenu");
+  const { t } = useTranslation(["NavMenu", "Common"]);
 
   const onProfileClick = useCallback(() => {
     history.push(peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL);
@@ -82,7 +82,7 @@ const HeaderNav = ({
     const currentUserActions = [
       {
         key: "ProfileBtn",
-        label: t("Profile"),
+        label: t("Common:Profile"),
         onClick: onProfileClick,
         url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
       },
