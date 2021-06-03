@@ -73,6 +73,7 @@ const FileRow = (props) => {
     isMedia,
     ext,
     name,
+    isPersonal,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -133,7 +134,11 @@ const FileRow = (props) => {
             <></>
           )}
           {item.fileId ? (
-            <ShareButton uniqueId={item.uniqueId} />
+            !isPersonal ? (
+              <ShareButton uniqueId={item.uniqueId} />
+            ) : (
+              <></>
+            )
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
               {" "}
@@ -168,7 +173,7 @@ const FileRow = (props) => {
 };
 
 export default inject(
-  ({ filesStore, formatsStore, uploadDataStore }, { item }) => {
+  ({ auth, filesStore, formatsStore, uploadDataStore }, { item }) => {
     let ext;
     let name;
     let splitted;
@@ -182,6 +187,7 @@ export default inject(
       name = splitted[0];
     }
 
+    const { personal } = auth.settingsStore;
     const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
     const {
       uploaded,
@@ -200,6 +206,7 @@ export default inject(
         : null;
 
     return {
+      isPersonal: personal,
       currentFileUploadProgress,
       uploaded,
       isMedia,
