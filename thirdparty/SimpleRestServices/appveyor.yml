@@ -1,0 +1,11 @@
+version: 1.0.{build}
+init:
+- git config --global core.autocrlf true
+build_script:
+- cd build
+- powershell -Command .\build.ps1 -VisualStudioVersion "12.0" -InstallSHFB -Verbosity minimal -Logger "${env:ProgramFiles}\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+- cd ..
+after_build:
+- cd build
+- powershell -Command .\appveyor-deploy-docs.ps1
+- cd ..
