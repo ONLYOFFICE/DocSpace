@@ -19,10 +19,7 @@ class SettingsStore {
   timezones = [];
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = combineUrl(
-    proxyURL,
-    window["AscDesktopEditor"] !== undefined ? "/products/files/" : "/"
-  );
+  defaultPage = "/";
   homepage = "";
   datePattern = "M/d/yyyy";
   datePatternJQ = "00/00/0000";
@@ -101,6 +98,10 @@ class SettingsStore {
     this[key] = value;
   };
 
+  setDefaultPage = (defaultPage) => {
+    this.defaultPage = defaultPage;
+  };
+
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
 
@@ -122,6 +123,11 @@ class SettingsStore {
         this.setValue("hashSettings", newSettings[key]);
       }
     });
+
+    if (window["AscDesktopEditor"] !== undefined || this.personal) {
+      const dp = combineUrl(proxyURL, "/products/files/");
+      this.setDefaultPage(dp);
+    }
 
     return newSettings;
   };
