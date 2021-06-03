@@ -11,6 +11,7 @@ import { inject, observer } from "mobx-react";
 const ConvertDialogComponent = (props) => {
   const {
     t,
+    tReady,
     visible,
     folderId,
     convertFile,
@@ -27,10 +28,7 @@ const ConvertDialogComponent = (props) => {
   const onChangeFormat = () =>
     setStoreOriginal(!storeOriginalFiles, "storeOriginalFiles");
   const onChangeMessageVisible = () => setHideMessage(!hideMessage);
-  const onClose = () => {
-    setConvertDialogVisible(false);
-    //this.props.setDialogVisible(t)
-  };
+  const onClose = () => setConvertDialogVisible(false);
 
   const onConvert = () => {
     onClose();
@@ -39,7 +37,7 @@ const ConvertDialogComponent = (props) => {
       : convertUploadedFiles(t);
   };
 
-  return (
+  return tReady ? (
     <ModalDialogContainer visible={visible} onClose={onClose}>
       <ModalDialog.Header>
         {convertSingleFile ? t("ConvertAndOpenTitle") : t("ConversionTitle")}
@@ -94,6 +92,8 @@ const ConvertDialogComponent = (props) => {
         </div>
       </ModalDialog.Footer>
     </ModalDialogContainer>
+  ) : (
+    <></>
   );
 };
 
