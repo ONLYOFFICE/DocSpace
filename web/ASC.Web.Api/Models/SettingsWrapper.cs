@@ -58,6 +58,8 @@ namespace ASC.Api.Settings
 
         public bool? ThirdpartyEnable { get; set; }
 
+        public bool Personal { get; set; }
+
         public string WizardToken { get; set; }
 
         public PasswordHasher PasswordHash { get; set; }
