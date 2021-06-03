@@ -139,44 +139,6 @@ class UploadDataStore {
     this.setUploadData(newUploadData);
   };
 
-  getFilesToConvert = (files) => {
-    const filesToConvert = files.filter((f) => f.action === "convert");
-    return filesToConvert;
-  };
-
-  // setDialogVisible = (t) => {
-  //   this.dialogsStore.setConvertDialogVisible(false);
-  //   const label = t("Translations:UploadingLabel", {
-  //     file: this.uploadedFiles,
-  //     totalFiles: this.files.length,
-  //   });
-
-  //   if (this.uploadStatus === null) {
-  //     this.primaryProgressDataStore.setPrimaryProgressBarData({
-  //       icon: "upload",
-  //       label,
-  //       percent: 100,
-  //       visible: true,
-  //       alert: false,
-  //     });
-  //     this.uploadData.uploadedFiles = 0;
-  //     this.uploadData.percent = 0;
-  //     //setUploadData(uploadData);
-  //   } else if (!this.files.length) {
-  //     this.primaryProgressDataStore.clearPrimaryProgressData();
-  //   } else {
-  //     this.primaryProgressDataStore.setPrimaryProgressBarData({
-  //       icon: "upload",
-  //       label,
-  //       percent: this.percent,
-  //       visible: true,
-  //       alert: false,
-  //     });
-  //     this.uploadData.uploadStatus = "cancel";
-  //     //setUploadData(uploadData);
-  //   }
-  // };
-
   getNewPercent = (uploadedSize, indexOfFile) => {
     const newTotalSize = sumBy(this.files, (f) => f.file.size);
     const totalUploadedFiles = this.files.filter((_, i) => i < indexOfFile);
@@ -253,77 +215,6 @@ class UploadDataStore {
           });
         }
       }
-    }
-  };
-
-  startConvertFiles = async (files, t) => {
-    const total = files.length;
-    this.dialogsStore.setConvertDialogVisible(false);
-
-    this.primaryProgressDataStore.setPrimaryProgressBarData({
-      icon: "file",
-      label: t("ConvertingLabel", {
-        file: 0,
-        totalFiles: total,
-      }),
-      percent: 0,
-      visible: true,
-    });
-
-    for (let index = 0; index < total; index++) {
-      const fileId = this.files[index].fileId;
-
-      const data = await convertFile(fileId);
-
-      if (data && data[0] && data[0].progress !== 100) {
-        let progress = data[0].progress;
-        let error = null;
-        while (progress < 100) {
-          const res = await this.getConversationProgress(fileId);
-
-          progress = res && res[0] && res[0].progress;
-          error = res && res[0] && res[0].error;
-          if (error.length) {
-            this.primaryProgressDataStore.setPrimaryProgressBarData({
-              icon: "file",
-              visible: true,
-              alert: true,
-            });
-            return;
-          }
-          if (progress === 100) {
-            break;
-          } else {
-            //TODO: calculate local progress
-            // const percent = (progress) + (index / total) * 100;
-            // dispatch(
-            //   this.primaryProgressDataStore.setPrimaryProgressBarData({
-            //     icon: "file",
-            //     label: t("ConvertingLabel", {
-            //       file: index + 1,
-            //       totalFiles: total,
-            //     }),
-            //     percent: newPercent,
-            //     visible: true,
-            //   })
-            // );
-          }
-
-          //setTimeout(() => { console.log("Wait for a second...") }, 1000);
-        }
-      }
-
-      const newPercent = (index + 1 / total) * 100;
-
-      this.primaryProgressDataStore.setPrimaryProgressBarData({
-        icon: "file",
-        label: t("ConvertingLabel", {
-          file: index + 1,
-          totalFiles: total,
-        }),
-        percent: newPercent,
-        visible: true,
-      });
     }
   };
 
