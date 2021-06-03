@@ -24,6 +24,7 @@ class FilesStore {
   selectedFolderStore;
   treeFoldersStore;
   formatsStore;
+  filesSettingsStore;
 
   isLoaded = false;
   isLoading = false;
@@ -51,7 +52,8 @@ class FilesStore {
     fileActionStore,
     selectedFolderStore,
     treeFoldersStore,
-    formatsStore
+    formatsStore,
+    filesSettingsStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -64,6 +66,7 @@ class FilesStore {
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
     this.formatsStore = formatsStore;
+    this.filesSettingsStore = filesSettingsStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -120,6 +123,7 @@ class FilesStore {
     if (this.isInit) return;
 
     const { isAuthenticated } = this.authStore;
+    const { getFilesSettings } = this.filesSettingsStore;
 
     const {
       getPortalCultures,
@@ -150,6 +154,7 @@ class FilesStore {
         requests.push(getIsEncryptionSupport(), getEncryptionKeys());
       }
     }
+    requests.push(getFilesSettings());
 
     return Promise.all(requests).then(() => (this.isInit = true));
   };
