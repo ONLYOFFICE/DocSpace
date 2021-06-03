@@ -42,11 +42,7 @@ const ConvertDialogComponent = (props) => {
   return (
     <ModalDialogContainer visible={visible} onClose={onClose}>
       <ModalDialog.Header>
-        {
-          convertSingleFile
-            ? t("ConvertAndOpenTitle") //TODO: need translations
-            : t("UploadConvertibleDocumentTitle") //TODO: need translations
-        }
+        {convertSingleFile ? t("ConvertAndOpenTitle") : t("ConversionTitle")}
       </ModalDialog.Header>
       <ModalDialog.Body>
         <div className="convert_dialog_content">
@@ -57,11 +53,9 @@ const ConvertDialogComponent = (props) => {
           />
           <div className="convert_dialog-content">
             <Text>
-              {
-                convertSingleFile
-                  ? t("ConversionMessage") //TODO: need translations
-                  : t("UploadConversionMessage") //TODO: need translations
-              }
+              {convertSingleFile
+                ? t("ConversionFileMessage")
+                : t("ConversionMessage")}
             </Text>
             <Checkbox
               className="convert_dialog_checkbox"

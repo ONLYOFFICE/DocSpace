@@ -158,7 +158,7 @@ class UploadDataStore {
       setTimeout(() => {
         try {
           getFileConversationProgress(fileId).then((res) => {
-            console.log(`getFileConversationProgress fileId:${fileId}`, res);
+            //console.log(`getFileConversationProgress fileId:${fileId}`, res);
             resolve(res);
           });
         } catch (error) {
@@ -172,6 +172,9 @@ class UploadDataStore {
   };
 
   convertFile = async (fileId, t, folderId) => {
+    const { convertItemId, setConvertItemId } = this.dialogsStore;
+    convertItemId && setConvertItemId(null);
+
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,

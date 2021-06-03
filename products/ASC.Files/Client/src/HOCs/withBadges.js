@@ -144,6 +144,7 @@ export default function withBadges(WrappedComponent) {
     setConvertDialogVisible = () => {
       this.props.setConvertItemId(this.props.item.id);
       this.props.setConvertDialogVisible(true);
+      //TODO: need open file?
     };
 
     render() {
