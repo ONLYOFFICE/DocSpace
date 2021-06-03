@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import api from "@appserver/common/api";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import uniqueid from "lodash/uniqueId";
@@ -7,7 +6,17 @@ import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@appserver/common/constants";
 //import toastr from "studio/toastr";
-import { copyToFolder, moveToFolder } from "@appserver/common/api/files";
+import {
+  getFolder,
+  getFileInfo,
+  getProgress,
+  uploadFile,
+  convertFile,
+  startUploadSession,
+  getFileConversationProgress,
+  copyToFolder,
+  moveToFolder,
+} from "@appserver/common/api/files";
 
 const chunkSize = 1024 * 1023; //~0.999mb
 
@@ -22,8 +31,8 @@ class UploadDataStore {
 
   files = [];
   filesSize = 0;
-  //convertFiles = [];
-  //convertFilesSize = 0;
+  convertFiles = [];
+  convertFilesSize = 0;
   uploadStatus = null;
   uploadToFolder = null;
   uploadedFiles = 0;
@@ -78,7 +87,7 @@ class UploadDataStore {
   };
 
   updateUploadedItem = async (id) => {
-    const uploadedFileData = await api.files.getFileInfo(id);
+    const uploadedFileData = await getFileInfo(id);
     this.updateUploadedFile(id, uploadedFileData);
   };
 
@@ -186,8 +195,8 @@ class UploadDataStore {
     const promise = new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
-          api.files.getFileConversationProgress(fileId).then((res) => {
-            console.log("getFileConversationProgress", res);
+          getFileConversationProgress(fileId).then((res) => {
+            console.log(`getFileConversationProgress fileId:${fileId}`, res);
             resolve(res);
           });
         } catch (error) {
@@ -213,7 +222,7 @@ class UploadDataStore {
       visible: true,
     });
 
-    const data = await api.files.convertFile(fileId);
+    const data = await convertFile(fileId);
     if (data && data[0] && data[0].progress !== 100) {
       let progress = data[0].progress;
       let error = null;
@@ -229,7 +238,7 @@ class UploadDataStore {
             alert: true,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          //this.refreshFiles(folderId, false);
+          this.refreshFiles(folderId, false);
           return;
         }
         if (progress === 100) {
@@ -264,7 +273,7 @@ class UploadDataStore {
     for (let index = 0; index < total; index++) {
       const fileId = this.files[index].fileId;
 
-      const data = await api.files.convertFile(fileId);
+      const data = await convertFile(fileId);
 
       if (data && data[0] && data[0].progress !== 100) {
         let progress = data[0].progress;
@@ -319,15 +328,22 @@ class UploadDataStore {
   };
 
   convertUploadedFiles = (t) => {
-    const filesToConvert = this.getFilesToConvert(this.files);
+    this.files = [...this.files, ...this.convertFiles];
 
-    if (filesToConvert.length > 0) {
-      this.startConvertFiles(filesToConvert, t).then(() =>
-        this.finishUploadFiles()
-      );
-    } else {
-      this.finishUploadFiles();
+    if (this.uploaded) {
+      const newUploadData = {
+        files: this.convertFiles,
+        filesSize: this.convertFilesSize,
+        uploadedFiles: this.uploadedFiles,
+        percent: this.percent,
+        uploaded: false,
+      };
+      this.convertFiles = [];
+
+      this.setUploadData(newUploadData);
+      this.startUploadFiles(t);
     }
+    this.convertFiles = [];
   };
 
   startUpload = (uploadFiles, folderId, t) => {
@@ -335,6 +351,7 @@ class UploadDataStore {
 
     let newFiles = this.files;
     let filesSize = 0;
+    let convertSize = 0;
 
     for (let index of Object.keys(uploadFiles)) {
       const file = uploadFiles[index];
@@ -342,9 +359,8 @@ class UploadDataStore {
       const parts = file.name.split(".");
       const ext = parts.length > 1 ? "." + parts.pop() : "";
       const needConvert = canConvert(ext);
-      console.log("needConvert", needConvert);
 
-      newFiles.push({
+      const newFile = {
         file: file,
         uniqueId: uniqueid("download_row-key_"),
         fileId: null,
@@ -353,10 +369,18 @@ class UploadDataStore {
         error: file.size ? null : t("EmptyFile"),
         fileInfo: null,
         cancel: false,
-      });
+      };
+
+      needConvert ? this.convertFiles.push(newFile) : newFiles.push(newFile);
 
       filesSize += file.size;
+      convertSize += file.size;
     }
+
+    this.convertFilesSize = convertSize;
+
+    if (this.convertFiles.length && !this.dialogsStore.convertDialogVisible)
+      this.dialogsStore.setConvertDialogVisible(true);
 
     //const showConvertDialog = uploadStatus === "pending";
 
@@ -368,7 +392,7 @@ class UploadDataStore {
       uploaded: false,
     };
 
-    if (this.uploaded) {
+    if (this.uploaded && newFiles.length) {
       this.setUploadData(newUploadData);
       this.startUploadFiles(t);
     }
@@ -386,16 +410,16 @@ class UploadDataStore {
         false
       );
     } else if (needUpdateTree) {
-      return api.files
-        .getFolder(folderId, this.filesStore.filter.clone())
-        .then((data) => {
+      return getFolder(folderId, this.filesStore.filter.clone()).then(
+        (data) => {
           const path = data.pathParts;
           const newTreeFolders = this.treeFoldersStore.treeFolders;
           const folders = data.folders;
           const foldersCount = data.count;
           loopTreeFolders(path, newTreeFolders, folders, foldersCount);
           setTreeFolders(newTreeFolders);
-        });
+        }
+      );
     }
   };
 
@@ -424,10 +448,7 @@ class UploadDataStore {
         return Promise.resolve();
       }
 
-      const res = await api.files.uploadFile(
-        location,
-        requestsDataArray[index]
-      );
+      const res = await uploadFile(location, requestsDataArray[index]);
 
       //console.log(`Uploaded chunk ${index}/${length}`, res);
 
@@ -454,7 +475,7 @@ class UploadDataStore {
 
       if (uploaded) {
         this.files[indexOfFile].fileId = fileId;
-        this.files[indexOfFile].fileInfo = await api.files.getFileInfo(fileId);
+        this.files[indexOfFile].fileInfo = await getFileInfo(fileId);
         this.percent = newPercent;
         //setUploadData(uploadData);
       }
@@ -463,19 +484,23 @@ class UploadDataStore {
     // All chuncks are uploaded
 
     const currentFile = this.files[indexOfFile];
-
     if (!currentFile) return Promise.resolve();
+    const { fileId, toFolderId } = currentFile;
 
-    const { toFolderId } = currentFile;
-
-    return this.throttleRefreshFiles(toFolderId);
+    if (currentFile.action === "convert") {
+      this.convertFile(fileId, t, toFolderId);
+      return Promise.resolve();
+    } else {
+      return this.throttleRefreshFiles(toFolderId);
+    }
   };
 
   startUploadFiles = async (t) => {
     let files = this.files;
 
-    if (files.length === 0 || this.filesSize === 0)
+    if (files.length === 0 || this.filesSize === 0) {
       return this.finishUploadFiles();
+    }
 
     const progressData = {
       visible: true,
@@ -488,29 +513,15 @@ class UploadDataStore {
 
     let index = 0;
     let len = files.length;
-
     while (index < len) {
-      //if (files[index].action !== "convert") {
       await this.startSessionFunc(index, t);
-      //} else {
-      //  this.dialogsStore.setConvertDialogVisible(true);
-      //}
       index++;
 
       files = this.files;
       len = files.length;
     }
 
-    //TODO: Uncomment after fix conversation
-    // const filesToConvert = this.getFilesToConvert(files);
-    // if (filesToConvert.length > 0) {
-    //   this.dialogsStore.setConvertDialogVisible(true);
-    // }
-
-    // All files has been uploaded and nothing to convert
-
-    const withConvertFiles = this.files.find((x) => x.action === "convert");
-    !withConvertFiles ? this.finishUploadFiles() : (this.uploaded = true);
+    this.finishUploadFiles();
   };
 
   startSessionFunc = (indexOfFile, t) => {
@@ -539,8 +550,7 @@ class UploadDataStore {
       ? file.webkitRelativePath.slice(0, -file.name.length)
       : "";
 
-    return api.files
-      .startUploadSession(toFolderId, fileName, fileSize, relativePath)
+    return startUploadSession(toFolderId, fileName, fileSize, relativePath)
       .then((res) => {
         const location = res.data.location;
 
@@ -750,8 +760,7 @@ class UploadDataStore {
     } = this.secondaryProgressDataStore;
 
     const loopOperation = () => {
-      api.files
-        .getProgress()
+      getProgress()
         .then((res) => {
           const currentItem = res.find((x) => x.id === id);
           if (currentItem && currentItem.progress !== 100) {
@@ -773,7 +782,7 @@ class UploadDataStore {
               alert: false,
             });
 
-            api.files.getFolder(destFolderId).then((data) => {
+            getFolder(destFolderId).then((data) => {
               let newTreeFolders = treeFolders;
               let path = data.pathParts.slice(0);
               let folders = data.folders;
