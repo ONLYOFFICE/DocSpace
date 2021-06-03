@@ -65,6 +65,14 @@ export const settingsTree = [
         link: "accessportal",
         tKey: "PortalAccess",
         isCategory: true,
+        children: [
+          {
+            key: "1-1-0",
+            icon: "",
+            link: "tfa",
+            tKey: "TwoFactorAuth",
+          },
+        ],
       },
     ],
   },
