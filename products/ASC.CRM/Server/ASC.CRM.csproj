@@ -33,8 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="7.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="4.1.1" />
     <PackageReference Include="Grpc.Tools" Version="2.32.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -43,14 +41,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
     <PackageReference Include="SharpZipLib" Version="1.3.2" />
-    <PackageReference Include="Twilio.AspNet.Core" Version="5.37.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\common\ASC.Common\ASC.Common.csproj" />
-    <ProjectReference Include="..\..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
-    <ProjectReference Include="..\..\..\common\ASC.VoipService\ASC.VoipService.csproj" />
-    <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Studio\ASC.Web.Studio.csproj" />
     <ProjectReference Include="..\..\ASC.Files\Server\ASC.Files.csproj" />
   </ItemGroup>

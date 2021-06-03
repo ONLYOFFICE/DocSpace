@@ -35,6 +35,15 @@ namespace ASC.Web.CRM.Core.Search
     [Scope]
     public class BundleSearch
     {
+        private readonly FactoryIndexerContact _factoryIndexerContact;
+        private readonly FactoryIndexerContactInfo _factoryIndexerContactInfo;
+        private readonly FactoryIndexerFieldValue _factoryIndexerFieldValue;
+        private readonly FactoryIndexerEvents _factoryIndexerEvents;
+        private readonly FactoryIndexerDeal _factoryIndexerDeal;
+        private readonly FactoryIndexerTask _factoryIndexerTask;
+        private readonly FactoryIndexerCase _factoryIndexerCase;
+        private readonly FactoryIndexerInvoice _factoryIndexerInvoice;
+
         public BundleSearch(FactoryIndexerContact factoryIndexerContact,
                             FactoryIndexerContactInfo factoryIndexerContactInfo,
                             FactoryIndexerFieldValue factoryIndexerFieldValue,
@@ -44,24 +53,15 @@ namespace ASC.Web.CRM.Core.Search
                             FactoryIndexerCase factoryIndexerCase,
                             FactoryIndexerInvoice factoryIndexerInvoice)
         {
-            FactoryIndexerContact = factoryIndexerContact;
-            FactoryIndexerContactInfo = factoryIndexerContactInfo;
-            FactoryIndexerFieldValue = factoryIndexerFieldValue;
-            FactoryIndexerEvents = factoryIndexerEvents;
-            FactoryIndexerDeal = factoryIndexerDeal;
-            FactoryIndexerTask = factoryIndexerTask;
-            FactoryIndexerCase = factoryIndexerCase;
-            FactoryIndexerInvoice = factoryIndexerInvoice;
+            _factoryIndexerContact = factoryIndexerContact;
+            _factoryIndexerContactInfo = factoryIndexerContactInfo;
+            _factoryIndexerFieldValue = factoryIndexerFieldValue;
+            _factoryIndexerEvents = factoryIndexerEvents;
+            _factoryIndexerDeal = factoryIndexerDeal;
+            _factoryIndexerTask = factoryIndexerTask;
+            _factoryIndexerCase = factoryIndexerCase;
+            _factoryIndexerInvoice = factoryIndexerInvoice;
         }
-
-        public FactoryIndexerContact FactoryIndexerContact { get; }
-        public FactoryIndexerContactInfo FactoryIndexerContactInfo { get; }
-        public FactoryIndexerFieldValue FactoryIndexerFieldValue { get; }
-        public FactoryIndexerEvents FactoryIndexerEvents { get; }
-        public FactoryIndexerDeal FactoryIndexerDeal { get; }
-        public FactoryIndexerTask FactoryIndexerTask { get; }
-        public FactoryIndexerCase FactoryIndexerCase { get; }
-        public FactoryIndexerInvoice FactoryIndexerInvoice { get; }
 
         public bool TrySelectCase(string text, out List<int> result)
         {
@@ -70,14 +70,14 @@ namespace ASC.Web.CRM.Core.Search
 
             List<int> casesId;
 
-            if (FactoryIndexerCase.TrySelectIds(s => s.MatchAll(text), out casesId))
+            if (_factoryIndexerCase.TrySelectIds(s => s.MatchAll(text), out casesId))
             {
                 result.AddRange(casesId);
                 success = true;
             }
 
             IReadOnlyCollection<DbFieldValue> casesCustom;
-            if (FactoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 7), out casesCustom))
+            if (_factoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 7), out casesCustom))
             {
                 result.AddRange(casesCustom.Select(r => r.EntityId).ToList());
                 success = true;
@@ -85,7 +85,7 @@ namespace ASC.Web.CRM.Core.Search
 
             IReadOnlyCollection<DbRelationshipEvent> events;
 
-            if (!FactoryIndexerEvents.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 7).Gt(r => r.EntityId, 0), out events))
+            if (!_factoryIndexerEvents.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 7).Gt(r => r.EntityId, 0), out events))
             {
                 result.AddRange(events.Select(r => r.EntityId).ToList());
                 success = true;
@@ -101,7 +101,7 @@ namespace ASC.Web.CRM.Core.Search
 
             List<int> contactsId;
 
-            if (FactoryIndexerContact.TrySelectIds(s => s.MatchAll(text), out contactsId))
+            if (_factoryIndexerContact.TrySelectIds(s => s.MatchAll(text), out contactsId))
             {
                 result.AddRange(contactsId);
                 success = true;
@@ -109,7 +109,7 @@ namespace ASC.Web.CRM.Core.Search
 
             IReadOnlyCollection<DbContactInfo> infos;
 
-            if (FactoryIndexerContactInfo.TrySelect(s => s.MatchAll(text), out infos))
+            if (_factoryIndexerContactInfo.TrySelect(s => s.MatchAll(text), out infos))
             {
                 result.AddRange(infos.Select(r => r.ContactId).ToList());
                 success = true;
@@ -117,7 +117,7 @@ namespace ASC.Web.CRM.Core.Search
 
             IReadOnlyCollection<DbFieldValue> personCustom;
 
-            if (FactoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).In(r => r.EntityType, new[] { 0, 4, 5 }), out personCustom))
+            if (_factoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).In(r => r.EntityType, new[] { 0, 4, 5 }), out personCustom))
             {
                 result.AddRange(personCustom.Select(r => r.EntityId).ToList());
                 success = true;
@@ -125,7 +125,7 @@ namespace ASC.Web.CRM.Core.Search
 
             IReadOnlyCollection<DbRelationshipEvent> events;
 
-            if (FactoryIndexerEvents.TrySelect(s => s.MatchAll(text).Gt(r => r.ContactId, 0), out events))
+            if (_factoryIndexerEvents.TrySelect(s => s.MatchAll(text).Gt(r => r.ContactId, 0), out events))
             {
                 result.AddRange(events.Select(r => r.ContactId).ToList());
                 success = true;
@@ -141,7 +141,7 @@ namespace ASC.Web.CRM.Core.Search
 
             List<int> dealsId;
 
-            if (FactoryIndexerDeal.TrySelectIds(s => s.MatchAll(text), out dealsId))
+            if (_factoryIndexerDeal.TrySelectIds(s => s.MatchAll(text), out dealsId))
             {
                 result.AddRange(dealsId);
                 success = true;
@@ -149,7 +149,7 @@ namespace ASC.Web.CRM.Core.Search
 
             IReadOnlyCollection<DbFieldValue> casesCustom;
 
-            if (FactoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 1), out casesCustom))
+            if (_factoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 1), out casesCustom))
             {
                 result.AddRange(casesCustom.Select(r => r.EntityId).ToList());
                 success = true;
@@ -157,7 +157,7 @@ namespace ASC.Web.CRM.Core.Search
 
             IReadOnlyCollection<DbRelationshipEvent> events;
 
-            if (!FactoryIndexerEvents.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 1).Gt(r => r.EntityId, 0), out events))
+            if (!_factoryIndexerEvents.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 1).Gt(r => r.EntityId, 0), out events))
             {
                 result.AddRange(events.Select(r => r.EntityId).ToList());
                 success = true;

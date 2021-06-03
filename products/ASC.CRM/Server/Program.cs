@@ -80,29 +80,6 @@ namespace ASC.CRM
                                         {"pathToConf", path}
                     });
                 })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddMemoryCache();
-
-                    var diHelper = new DIHelper(services);
-
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-                    //services.AddHostedService<ServiceLauncher>();
-                    //diHelper.TryAdd<ServiceLauncher>();
-
-                    //services.AddHostedService<FeedAggregatorService>();
-                    //diHelper.TryAdd<FeedAggregatorService>();
-
-                    //services.AddHostedService<Launcher>();
-                    //diHelper.TryAdd<Launcher>();
-
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
-                    //diHelper.TryAdd<FileConverter>();
-                    diHelper.TryAdd<FactoryIndexerFile>();
-                    diHelper.TryAdd<FactoryIndexerFolder>();
-                })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, true, false);

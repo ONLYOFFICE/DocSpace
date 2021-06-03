@@ -40,20 +40,19 @@ namespace ASC.CRM.Core
 {
     public class FileSecurity : IFileSecurity
     {
+        private readonly DaoFactory _daoFactory;
+        private readonly FilesIntegration _filesIntegration;
+        private readonly CrmSecurity _crmSecurity;
+
         public FileSecurity(FilesIntegration filesIntegration,
                             CrmSecurity crmSecurity,
                             DaoFactory daoFactory)
         {
-            FilesIntegration = filesIntegration;
-            CRMSecurity = crmSecurity;
-            DaoFactory = daoFactory;
+            _filesIntegration = filesIntegration;
+            _crmSecurity = crmSecurity;
+            _daoFactory = daoFactory;
         }
 
-        public DaoFactory DaoFactory { get; }
-
-        public FilesIntegration FilesIntegration { get; }
-
-        public CrmSecurity CRMSecurity { get; }
 
         public bool CanCreate<T>(FileEntry<T> entry, Guid userId)
         {
@@ -84,23 +83,23 @@ namespace ASC.CRM.Core
         {
             return
                 CanRead(entry, userId) &&
-                entry.CreateBy == userId || entry.ModifiedBy == userId || CRMSecurity.IsAdministrator(userId);
+                entry.CreateBy == userId || entry.ModifiedBy == userId || _crmSecurity.IsAdministrator(userId);
         }
 
         public bool CanRead<T>(FileEntry<T> entry, Guid userId)
         {
             if (entry.FileEntryType == FileEntryType.Folder) return false;
 
-            var invoice = DaoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
+            var invoice = _daoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
             if (invoice != null)
-                return CRMSecurity.CanAccessTo(invoice, userId);
+                return _crmSecurity.CanAccessTo(invoice, userId);
 
-            var reportFile = DaoFactory.GetReportDao().GetFile(Convert.ToInt32(entry.ID), userId);
+            var reportFile = _daoFactory.GetReportDao().GetFile(Convert.ToInt32(entry.ID), userId);
 
             if (reportFile != null)
                 return true;
 
-            var tagDao = FilesIntegration.DaoFactory.GetTagDao<T>();
+            var tagDao = _filesIntegration.DaoFactory.GetTagDao<T>();
 
             var eventIds = tagDao.GetTags(entry.ID, FileEntryType.File, TagType.System)
                 .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
@@ -109,9 +108,9 @@ namespace ASC.CRM.Core
 
             if (!eventIds.Any()) return false;
 
-            var eventItem = DaoFactory.GetRelationshipEventDao().GetByID(eventIds.First());
+            var eventItem = _daoFactory.GetRelationshipEventDao().GetByID(eventIds.First());
 
-            return CRMSecurity.CanAccessTo(eventItem, userId);
+            return _crmSecurity.CanAccessTo(eventItem, userId);
 
         }
 

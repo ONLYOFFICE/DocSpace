@@ -12,6 +12,7 @@ using ASC.CRM.Api;
 using ASC.CRM.ApiModels;
 using ASC.CRM.HttpHandlers;
 using ASC.CRM.Mapping;
+using ASC.Web.CRM.Core.Search;
 using ASC.Web.CRM.HttpHandlers;
 
 using Microsoft.AspNetCore.Builder;
@@ -34,8 +35,6 @@ namespace ASC.CRM
         public override void ConfigureServices(IServiceCollection services)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            services.AddMemoryCache();
 
             base.ConfigureServices(services);
 
@@ -69,6 +68,15 @@ namespace ASC.CRM
             DIHelper.TryAdd<TaskDtoTypeConverter>();
             DIHelper.TryAdd<CustomFieldDtoTypeConverter>();
             DIHelper.TryAdd<DealMilestoneDtoTypeConverter>();
+
+            DIHelper.TryAdd<FactoryIndexerCase>();
+            DIHelper.TryAdd<FactoryIndexerContact>();
+            DIHelper.TryAdd<FactoryIndexerContactInfo>();
+            DIHelper.TryAdd<FactoryIndexerDeal>();
+            DIHelper.TryAdd<FactoryIndexerEvents>();
+            DIHelper.TryAdd<FactoryIndexerFieldValue>();
+            DIHelper.TryAdd<FactoryIndexerInvoice>();
+            DIHelper.TryAdd<FactoryIndexerTask>();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
