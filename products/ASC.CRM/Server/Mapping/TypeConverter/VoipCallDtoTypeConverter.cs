@@ -23,52 +23,74 @@
  *
 */
 
-
+using System;
 using System.Linq;
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.CRM.ApiModels;
+using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.VoipService;
 using ASC.Web.Api.Models;
 
-namespace ASC.CRM.ApiModels
+using AutoMapper;
+
+using Grpc.Core;
+
+namespace ASC.CRM.Mapping
 {
     [Scope]
-    public class VoipCallDtoHelper
+    public class VoipCallDtoTypeConverter : ITypeConverter<VoipCall, VoipCallDto>
     {
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly DaoFactory _daoFactory;
 
-        public VoipCallDtoHelper(EmployeeWraperHelper employeeWraper,
-                                     ApiDateTimeHelper apiDateTimeHelper)
+        public VoipCallDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
+                                 EmployeeWraperHelper employeeWraperHelper,
+                                 DaoFactory daoFactory)
         {
-            _employeeWraperHelper = employeeWraper;
+            _daoFactory = daoFactory;
             _apiDateTimeHelper = apiDateTimeHelper;
+            _employeeWraperHelper = employeeWraperHelper;
         }
 
-        public VoipCallDto Get(VoipCall call, ContactDto contact = null)
+        public VoipCallDto Convert(VoipCall source, VoipCallDto destination, ResolutionContext context)
         {
+            if (destination != null)
+                throw new NotImplementedException();
+
             var result = new VoipCallDto
             {
-                Id = call.Id,
-                From = call.From,
-                To = call.To,
-                Status = call.Status,
-                AnsweredBy = _employeeWraperHelper.Get(call.AnsweredBy),
-                DialDate = _apiDateTimeHelper.Get(call.DialDate),
-                DialDuration = call.DialDuration,
-                Cost = call.Price + call.ChildCalls.Sum(r => r.Price) + call.VoipRecord.Price,
-                Contact = contact,
-                RecordUrl = call.VoipRecord.Uri,
-                RecordDuration = call.VoipRecord.Duration
+                Id = source.Id,
+                From = source.From,
+                To = source.To,
+                Status = source.Status,
+                AnsweredBy = _employeeWraperHelper.Get(source.AnsweredBy),
+                DialDate = _apiDateTimeHelper.Get(source.DialDate),
+                DialDuration = source.DialDuration,
+                Cost = source.Price + source.ChildCalls.Sum(r => r.Price) + source.VoipRecord.Price,
+                RecordUrl = source.VoipRecord.Uri,
+                RecordDuration = source.VoipRecord.Duration
             };
 
-            if (call.ChildCalls.Any())
-            {
-                result.Calls = call.ChildCalls.Select(childCall => Get(childCall));
+            if (source.ContactId > 0)
+{
+                result.Contact = context.Mapper.Map<ContactDto>(_daoFactory.GetContactDao().GetByID(source.ContactId));
             }
+
+            if (source.ChildCalls.Any())
+            {
+                result.Calls = source.ChildCalls.Select(childCall => context.Mapper.Map<VoipCallDto>(childCall));
+            }
+
 
             return result;
         }
     }
 }
+
+

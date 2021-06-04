@@ -53,6 +53,8 @@ using ASC.Web.Studio.Utility;
 
 using AutoMapper;
 
+using Grpc.Core;
+
 using Microsoft.AspNetCore.Mvc;
 
 using SecurityContext = ASC.Core.SecurityContext;
@@ -65,7 +67,6 @@ namespace ASC.CRM.Api
         private readonly ApiContext _apiContext;
         private readonly VoipEngine _voipEngine;
         private readonly TenantUtil _tenantUtil;
-        private readonly VoipCallDtoHelper _voipCallDtoHelper;
         private readonly SecurityContext _securityContext;
         private readonly CommonLinkUtility _commonLinkUtility;
         private readonly StorageFactory _storageFactory;
@@ -79,7 +80,6 @@ namespace ASC.CRM.Api
              StorageFactory storageFactory,
              CommonLinkUtility commonLinkUtility,
              SecurityContext securityContext,
-             VoipCallDtoHelper voipCallDtoHelper,
              TenantUtil tenantUtil,
              VoipEngine voipEngine,
              ApiContext apiContext,
@@ -92,7 +92,6 @@ namespace ASC.CRM.Api
             _storageFactory = storageFactory;
             _commonLinkUtility = commonLinkUtility;
             _securityContext = securityContext;
-            _voipCallDtoHelper = voipCallDtoHelper;
             _tenantUtil = tenantUtil;
             _voipEngine = voipEngine;
             _apiContext = apiContext;
@@ -677,7 +676,7 @@ namespace ASC.CRM.Api
 
             var call = number.Call(to, contact.Id.ToString(CultureInfo.InvariantCulture));
 
-            return _voipCallDtoHelper.Get(call, contact);
+            return _mapper.Map<VoipCallDto>(call);
 
         }
 
@@ -696,7 +695,7 @@ namespace ASC.CRM.Api
 
             number.AnswerQueueCall(call.Id);
 
-            return _voipCallDtoHelper.Get(call);
+            return _mapper.Map<VoipCallDto>(call);
 
         }
 
@@ -715,7 +714,7 @@ namespace ASC.CRM.Api
 
             number.RejectQueueCall(call.Id);
 
-            return _voipCallDtoHelper.Get(call);
+            return _mapper.Map<VoipCallDto>(call);
         }
 
         /// <summary>
@@ -744,7 +743,8 @@ namespace ASC.CRM.Api
             }
 
             number.RedirectCall(call.Id, to);
-            return _voipCallDtoHelper.Get(call);
+
+            return _mapper.Map<VoipCallDto>(call);
         }
 
         /// <summary>
@@ -826,19 +826,7 @@ namespace ASC.CRM.Api
 
             call = dao.SaveOrUpdateCall(call);
 
-            if (call.ContactId == 0) return _voipCallDtoHelper.Get(call);
-
-            try
-            {
-                var contact = _mapper.Map<ContactDto>(_daoFactory.GetContactDao().GetByID(call.ContactId));
-                contact = GetContactWithFotos(contact);
-
-                return _voipCallDtoHelper.Get(call, contact);
-            }
-            catch (Exception)
-            {
-                return _voipCallDtoHelper.Get(call);
-            }
+            return _mapper.Map<VoipCallDto>(call);
 
         }
 
@@ -909,7 +897,11 @@ namespace ASC.CRM.Api
                             contact = new PersonDto() { SmallFotoUrl = defaultSmallPhoto, Id = -1 };
                         }
 
-                        return _voipCallDtoHelper.Get(r, contact);
+                        var item = _mapper.Map<VoipCallDto>(r);
+
+                        item.Contact = contact;
+
+                        return item;
 
                     }).ToList();
 
@@ -947,7 +939,11 @@ namespace ASC.CRM.Api
                         contact = new PersonDto() { SmallFotoUrl = defaultSmallPhoto, Id = -1 };
                     }
 
-                    return _voipCallDtoHelper.Get(r, contact);
+                    var item = _mapper.Map<VoipCallDto>(r);
+
+                    item.Contact = contact;
+
+                    return item;
 
                 }).ToList();
 
@@ -972,13 +968,7 @@ namespace ASC.CRM.Api
 
             _voipEngine.GetContact(call);
 
-            if (call.ContactId == 0) return _voipCallDtoHelper.Get(call);
-
-            var contact = _mapper.Map<ContactDto>(_daoFactory.GetContactDao().GetByID(call.ContactId));
-
-            contact = GetContactWithFotos(contact);
-
-            return _voipCallDtoHelper.Get(call, contact);
+            return _mapper.Map<VoipCallDto>(call);
         }
 
         private ContactDto GetContactWithFotos(ContactDto contact)

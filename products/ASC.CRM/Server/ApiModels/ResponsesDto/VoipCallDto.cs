@@ -28,12 +28,13 @@ using System.Collections.Generic;
 
 
 using ASC.Api.Core;
+using ASC.Common.Mapping;
 using ASC.VoipService;
 using ASC.Web.Api.Models;
 
 namespace ASC.CRM.ApiModels
 {
-    public class VoipCallDto
+    public class VoipCallDto : IMapFrom<VoipCall>
     {
         public string Id { get; set; }
         public string From { get; set; }
@@ -49,4 +50,5 @@ namespace ASC.CRM.ApiModels
         public int RecordDuration { get; set; }
 
     }
+
 }

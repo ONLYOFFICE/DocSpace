@@ -36,6 +36,7 @@ using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
@@ -58,7 +59,6 @@ namespace ASC.CRM.Api
         private readonly OrganisationLogoManager _organisationLogoManager;
         private readonly ImportFromCSVManager _importFromCSVManager;
         private readonly InvoiceSetting _invoiceSetting;
-        private readonly CurrencyRateInfoDtoHelper _currencyRateInfoDtoHelper;
         private readonly SettingsManager _settingsManager;
         private readonly CurrencyProvider _currencyProvider;
         private readonly MessageService _messageService;
@@ -68,7 +68,6 @@ namespace ASC.CRM.Api
                      MessageService messageService,
                      SettingsManager settingsManager,
                      CurrencyProvider currencyProvider,
-                     CurrencyRateInfoDtoHelper currencyRateInfoDtoHelper,
                      InvoiceSetting invoiceSetting,
                      ImportFromCSVManager importFromCSVManager,
                      OrganisationLogoManager organisationLogoManager,
@@ -81,7 +80,6 @@ namespace ASC.CRM.Api
             _messageService = messageService;
             _currencyProvider = currencyProvider;
             _settingsManager = settingsManager;
-            _currencyRateInfoDtoHelper = currencyRateInfoDtoHelper;
             _invoiceSetting = invoiceSetting;
             _importFromCSVManager = importFromCSVManager;
             _organisationLogoManager = organisationLogoManager;
@@ -145,9 +143,16 @@ namespace ASC.CRM.Api
 
             if (cur == null) throw new ArgumentException();
 
-            var table = _currencyProvider.MoneyConvert(cur);
+            var table = _currencyProvider.MoneyConvert(cur).ToList();
 
-            table.ToList().ForEach(tableItem => result.Add(_currencyRateInfoDtoHelper.Get(tableItem.Key, tableItem.Value)));
+            foreach (var row in table)
+            {
+                var currencyInfoDto = _mapper.Map<CurrencyRateInfoDto>(row.Key);
+
+                currencyInfoDto.Rate = row.Value;
+
+                result.Add(currencyInfoDto);
+            }
 
             return result;
         }

@@ -63,6 +63,7 @@ namespace ASC.CRM
             DIHelper.TryAdd<TaskDtoTypeConverter>();
             DIHelper.TryAdd<CustomFieldDtoTypeConverter>();
             DIHelper.TryAdd<DealMilestoneDtoTypeConverter>();
+            DIHelper.TryAdd<VoipCallDtoTypeConverter>();
 
             DIHelper.TryAdd<FactoryIndexerCase>();
             DIHelper.TryAdd<FactoryIndexerContact>();
