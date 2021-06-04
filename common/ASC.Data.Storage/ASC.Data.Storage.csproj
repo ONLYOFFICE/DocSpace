@@ -36,8 +36,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="openstack.net" Version="1.7.8" />
-    <PackageReference Include="Rackspace" Version="0.2.0" />
+    <PackageReference Include="openstack.net" Version="1.7.9" />
+    <PackageReference Include="Rackspace" Version="0.2.1" />
   </ItemGroup>
 
   <ItemGroup>
