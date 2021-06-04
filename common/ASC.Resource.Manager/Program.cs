@@ -465,6 +465,12 @@ namespace ASC.Resource.Manager
         {
             foreach(var f in Directory.GetFiles(path))
             {
+                if (File.ReadAllText(f) == "{}")
+                {
+                    File.Delete(f);
+                    continue;
+                }
+
                 var name = Path.GetFileName(f);
                 var baseDirName = Path.GetDirectoryName(f);
                 var ext = name.Split('.');
@@ -487,6 +493,27 @@ namespace ASC.Resource.Manager
                 File.Move(f, Path.Combine(dirName, name));
             }
         }
+
+        private static void SortFromFolder(string path)
+        {
+            foreach(var f in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
+            {
+                if (File.ReadAllText(f) == "{}") continue;
+
+                var name = Path.GetFileName(f);
+                var baseDir = Path.GetDirectoryName(f);
+                var baseDirName = Path.GetFileName(baseDir);
+
+                if(baseDirName != "en")
+                {
+                    name = name.Replace(".json", $".{baseDirName}.json");
+                }
+
+
+                File.Move(f, Path.GetFullPath(Path.Combine(baseDir, "..", name)));
+            }
+        }
+
         private static void SortJson(string path)
         {
             foreach(var f in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
