@@ -30,7 +30,7 @@ const PureConnectDialogContainer = (props) => {
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
-    isPersonal,
+    personal,
   } = props;
   const {
     corporate,
@@ -307,7 +307,7 @@ const PureConnectDialogContainer = (props) => {
             onChange={onChangeFolderName}
           />
         </FieldContainer>
-        {!isPersonal && (
+        {!personal && (
           <Checkbox
             label={t("ConnectMakeShared")}
             isChecked={isCorporate}
@@ -353,7 +353,7 @@ export default inject(
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
     const { fetchFiles } = filesStore;
-    const { getOAuthToken, isPersonal } = auth.settingsStore;
+    const { getOAuthToken, personal } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -388,7 +388,7 @@ export default inject(
       fetchTreeFolders,
       setConnectDialogVisible,
 
-      isPersonal,
+      personal,
     };
   }
 )(observer(ConnectDialog));

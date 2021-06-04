@@ -62,7 +62,7 @@ const StyledContainer = styled.div`
   }
 
   .header-headline {
-    margin-left: 16px;
+    margin-left: ${(props) => (props.personal ? "0px" : "16px")};
   }
 `;
 
@@ -420,23 +420,35 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   render() {
-    const { profile, isAdmin, viewer, t, filter, history, isMe } = this.props;
+    const {
+      profile,
+      isAdmin,
+      viewer,
+      t,
+      filter,
+      history,
+      isMe,
+      personal,
+    } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
     return (
       <StyledContainer
         showContextButton={(isAdmin && !profile.isOwner) || isMe}
+        personal={personal}
       >
-        <IconButton
-          iconName="/static/images/arrow.path.react.svg"
-          color="#A3A9AE"
-          size="17"
-          hoverColor="#657077"
-          isFill={true}
-          onClick={this.onClickBack}
-          className="arrow-button"
-        />
+        {!personal && (
+          <IconButton
+            iconName="/static/images/arrow.path.react.svg"
+            color="#A3A9AE"
+            size="17"
+            hoverColor="#657077"
+            isFill={true}
+            onClick={this.onClickBack}
+            className="arrow-button"
+          />
+        )}
         <Headline className="header-headline" type="content" truncate={true}>
           {profile.displayName}
           {profile.isLDAP && ` (${t("Translations:LDAPLbl")})`}
@@ -523,6 +535,7 @@ export default withRouter(
       isMe: peopleStore.targetUserStore.isMe,
       updateProfile: peopleStore.targetUserStore.updateProfile,
       getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+      personal: auth.settingsStore.personal,
     };
   })(
     observer(

@@ -83,6 +83,7 @@ class ArticleBodyContent extends React.Component {
       selectedTreeNode,
       enableThirdParty,
       isVisitor,
+      personal,
     } = this.props;
 
     return isEmpty(treeFolders) ? (
@@ -96,7 +97,7 @@ class ArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        <TreeSettings />
+        {!personal && <TreeSettings />}
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
       </>
     );
@@ -126,6 +127,8 @@ export default inject(
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
+    const { personal } = auth.settingsStore;
+
     return {
       selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
@@ -141,6 +144,8 @@ export default inject(
       setNewFilesPanelVisible,
 
       homepage: config.homepage,
+
+      personal,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));
