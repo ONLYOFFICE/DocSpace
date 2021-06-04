@@ -24,7 +24,6 @@
 */
 
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -68,7 +67,7 @@ namespace ASC.CRM.Core.Dao
                                          .AsNoTracking()
                                          .ToList();
 
-            return _mapper.Map<List<DbCurrencyInfo>, List<CurrencyInfo>>(dbEntities);               
+            return _mapper.Map<List<DbCurrencyInfo>, List<CurrencyInfo>>(dbEntities);
         }
 
         public CurrencyInfo GetByAbbreviation(string abbreviation)

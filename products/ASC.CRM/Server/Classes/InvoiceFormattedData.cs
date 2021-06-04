@@ -514,7 +514,7 @@ namespace ASC.Web.CRM.Classes
             JsonElement tableBodyRows;
             if (jsonObj.TryGetProperty("TableBodyRows", out tableBodyRows))
             {
-                data.TableBodyRows = JsonSerializer.Deserialize<List<List<string>>>(tableBodyRows.ToString()); 
+                data.TableBodyRows = JsonSerializer.Deserialize<List<List<string>>>(tableBodyRows.ToString());
             }
 
             JsonElement tableFooterRows;
@@ -545,7 +545,7 @@ namespace ASC.Web.CRM.Classes
 
             #region Notes
 
-            JsonElement notes; 
+            JsonElement notes;
             if (jsonObj.TryGetProperty("Notes", out notes))
             {
                 data.Notes = JsonSerializer.Deserialize<Tuple<string, string>>(notes.ToString());

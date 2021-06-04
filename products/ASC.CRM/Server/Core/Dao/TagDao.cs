@@ -41,7 +41,6 @@ using ASC.CRM.Resources;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
@@ -59,7 +58,7 @@ namespace ASC.CRM.Core.Dao
                                 tenantManager,
                                 securityContext,
                                 logger,
-                                ascCache, 
+                                ascCache,
                                 mapper)
         {
 

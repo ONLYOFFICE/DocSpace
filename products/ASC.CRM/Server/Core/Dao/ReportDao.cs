@@ -31,7 +31,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -450,20 +449,20 @@ namespace ASC.CRM.Core.Dao
                 case ReportTimePeriod.Today:
                 case ReportTimePeriod.Yesterday:
                     exp = x => x ?? x.Value.Date.AddHours(x.Value.Hour);
-           
+
                     break;
                 case ReportTimePeriod.CurrentWeek:
                 case ReportTimePeriod.PreviousWeek:
                 case ReportTimePeriod.CurrentMonth:
                 case ReportTimePeriod.PreviousMonth:
-                    exp = x => x??x.Value.Date;
-                    
+                    exp = x => x ?? x.Value.Date;
+
                     break;
                 case ReportTimePeriod.CurrentQuarter:
                 case ReportTimePeriod.PreviousQuarter:
                 case ReportTimePeriod.CurrentYear:
                 case ReportTimePeriod.PreviousYear:
-                    exp = x => x??x.Value.Date.AddDays(-(x.Value.Day - 1));
+                    exp = x => x ?? x.Value.Date.AddDays(-(x.Value.Day - 1));
 
                     break;
                 default:
@@ -483,7 +482,7 @@ namespace ASC.CRM.Core.Dao
                               .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
                              .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
                              .Where(x => x.Deal.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
-                             .Where(x => x.DealMilestone.Status ==  DealMilestoneStatus.ClosedAndWon)
+                             .Where(x => x.DealMilestone.Status == DealMilestoneStatus.ClosedAndWon)
                              .GroupBy(x => new { x.Deal.ResponsibleId, x.Deal.ActualCloseDate, x.DealMilestone.Status })
                              .Select(x => new
                              {
@@ -860,7 +859,7 @@ namespace ASC.CRM.Core.Dao
                                  deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
                                                                      x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate)),
 
-                                 value_with_probability = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) * x.Deal.DealMilestoneProbability/100.0m :
+                                 value_with_probability = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) * x.Deal.DealMilestoneProbability / 100.0m :
                                                                      x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) * x.Deal.DealMilestoneProbability / 100.0m),
                                  close_date = exp.Invoke(x.Key.ExpectedCloseDate)
                              }).ToList()
@@ -1111,7 +1110,7 @@ namespace ASC.CRM.Core.Dao
                                               Duration = Convert.ToInt32(x.deals_duration)
                                           });
 
-            return result;        
+            return result;
         }
 
         private object GenerateReportData(ReportTimePeriod timePeriod, List<SalesFunnel> data)
@@ -1234,12 +1233,12 @@ namespace ASC.CRM.Core.Dao
                                            .ToList()
                                            .ConvertAll(x => new WorkloadByContacts
                                            {
-                                              UserId = x.create_by,
-                                              UserName = _displayUserSettings.GetFullUserName(x.create_by),
-                                              CategoryId = x.id,
-                                              CategoryName = x.title,
-                                              Count = x.total,
-                                              WithDeals = x.with_deals
+                                               UserId = x.create_by,
+                                               UserName = _displayUserSettings.GetFullUserName(x.create_by),
+                                               CategoryId = x.id,
+                                               CategoryName = x.title,
+                                               Count = x.total,
+                                               WithDeals = x.with_deals
                                            });
 
             //                    .OrderBy("i.sort_order, i.title", true);
@@ -1588,13 +1587,13 @@ namespace ASC.CRM.Core.Dao
             DateTime toDate;
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
-            
+
             var result = Query(CrmDbContext.Invoices)
                                 .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                                 .GroupBy(x => x.CreateBy)
                                 .Select(x => new
                                 {
-                                    createBy = x.Key, 
+                                    createBy = x.Key,
                                     sent = x.Sum(x => x.Status != InvoiceStatus.Draft && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.IssueDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.IssueDate <= _tenantUtil.DateTimeToUtc(toDate)) ? 1 : 0),
                                     paid = x.Sum(x => x.Status == InvoiceStatus.Paid && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate)) ? 1 : 0),
                                     rejected = x.Sum(x => x.Status == InvoiceStatus.Rejected && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate)) ? 1 : 0),
@@ -1608,7 +1607,7 @@ namespace ASC.CRM.Core.Dao
                                     SentCount = x.sent,
                                     PaidCount = x.paid,
                                     RejectedCount = x.rejected,
-                                    OverdueCount = x.overdue                                     
+                                    OverdueCount = x.overdue
                                 });
 
             return result;
@@ -1985,7 +1984,7 @@ namespace ASC.CRM.Core.Dao
                               })
                               .OrderBy(x => x.title)
                               .ToList();
-                        //    .OrderBy("i.sort_order, i.title", true);
+            //    .OrderBy("i.sort_order, i.title", true);
 
             var voipSqlQuery = Query(CrmDbContext.VoipCalls)
                                 .Where(x => String.IsNullOrEmpty(x.ParentCallId))

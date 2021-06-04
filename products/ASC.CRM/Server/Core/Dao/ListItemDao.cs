@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -42,7 +41,6 @@ using ASC.CRM.Resources;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -174,7 +172,7 @@ namespace ASC.CRM.Core.Dao
 
             if (dbEntity.TenantId != TenantID) return null;
 
-            return _mapper.Map<ListItem>(dbEntity);        
+            return _mapper.Map<ListItem>(dbEntity);
         }
 
         public List<ListItem> GetItems(int[] id)
@@ -183,7 +181,7 @@ namespace ASC.CRM.Core.Dao
                                          .AsNoTracking()
                                          .Where(x => id.Contains(x.Id))
                                          .ToList();
-            
+
             var entities = _mapper.Map<List<DbListItem>, List<ListItem>>(dbEntities);
 
             var systemItem = id.Where(item => item < 0).Select(GetSystemListItem);
@@ -203,8 +201,8 @@ namespace ASC.CRM.Core.Dao
         public void ChangeColor(int id, string newColor)
         {
             var dbEntity = CrmDbContext.ListItem.Find(id);
-                      
-            dbEntity.Color = newColor;            
+
+            dbEntity.Color = newColor;
 
             CrmDbContext.SaveChanges();
         }
@@ -213,11 +211,11 @@ namespace ASC.CRM.Core.Dao
         {
             var result = new NameValueCollection();
 
-             Query(CrmDbContext.ListItem)
-                            .Where(x => x.ListType == listType)
-                            .Select(x => new { x.Id, x.Color })
-                            .ToList()
-                            .ForEach(x => result.Add(x.Id.ToString(), x.Color.ToString()));
+            Query(CrmDbContext.ListItem)
+                           .Where(x => x.ListType == listType)
+                           .Select(x => new { x.Id, x.Color })
+                           .ToList()
+                           .ForEach(x => result.Add(x.Id.ToString(), x.Color.ToString()));
 
             return result;
 

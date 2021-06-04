@@ -29,7 +29,6 @@ using System;
 
 using ASC.Common.Mapping;
 using ASC.CRM.Core;
-using ASC.CRM.Mapping;
 
 using AutoMapper;
 

@@ -474,7 +474,7 @@ namespace ASC.CRM.Api
                 if (files.Any())
                 {
                     var fileAttachAction = GetFilesAttachAction(entityTypeObj, contactId);
-                    
+
                     _messageService.Send(fileAttachAction, _messageTarget.Create(item.ID), entityTitle, files.Select(x => x.Title));
                 }
             }
@@ -483,7 +483,7 @@ namespace ASC.CRM.Api
             {
                 _notifyClient.SendAboutAddRelationshipEventAdd(item, fileListInfoHashtable, _daoFactory, notifyUserList.ToArray());
             }
-                      
+
             var historyCreatedAction = GetHistoryCreatedAction(entityTypeObj, contactId);
 
             _messageService.Send(historyCreatedAction, _messageTarget.Create(item.ID), entityTitle, category.Title);
@@ -504,7 +504,7 @@ namespace ASC.CRM.Api
         /// <returns>Entity with the file attached</returns>
         [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
         public RelationshipEventDto AttachFiles(
-            [FromRoute] string entityType, 
+            [FromRoute] string entityType,
             [FromRoute] int entityid,
             [FromForm] IEnumerable<int> fileids)
         {

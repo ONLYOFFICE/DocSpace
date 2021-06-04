@@ -32,7 +32,6 @@ using System.Linq;
 using System.Text.Json;
 
 using ASC.Core.Users;
-using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;

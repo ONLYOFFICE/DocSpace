@@ -39,7 +39,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
@@ -53,8 +52,6 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Web.Files.Api;
-
-using Autofac;
 
 using MailKit;
 using MailKit.Net.Smtp;
@@ -123,7 +120,7 @@ namespace ASC.Web.CRM.Classes
             _log = logger.Get("ASC.CRM.MailSender");
 
             _tenantID = tenantManager.GetCurrentTenant().TenantId;
-        
+
             var _crmSettings = settingsManager.Load<CrmSettings>();
 
             _smtpSetting = new SMTPServerSetting(coreConfiguration.SmtpSettings);

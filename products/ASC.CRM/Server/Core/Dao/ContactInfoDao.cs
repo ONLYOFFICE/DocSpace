@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -41,7 +40,6 @@ using ASC.Web.CRM.Core.Search;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -84,8 +82,8 @@ namespace ASC.CRM.Core.Dao
 
         public void Delete(int id)
         {
-            var dbEntity = CrmDbContext.ContactsInfo.Find(id); 
-            
+            var dbEntity = CrmDbContext.ContactsInfo.Find(id);
+
             CrmDbContext.Remove(dbEntity);
             CrmDbContext.SaveChanges();
 

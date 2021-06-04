@@ -245,7 +245,7 @@ namespace ASC.Web.CRM.Classes
         public ReportState RunGenareteReport(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
             var reportData = GetReportData(reportType, timePeriod, managers);
-   
+
             if (reportData == null)
                 throw new Exception(CRMReportResource.ErrorNullReportData);
 

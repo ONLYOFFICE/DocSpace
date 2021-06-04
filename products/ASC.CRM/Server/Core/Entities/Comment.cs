@@ -28,8 +28,6 @@
 
 using System;
 
-using ASC.CRM.Mapping;
-
 #endregion
 
 namespace ASC.CRM.Core.Entities

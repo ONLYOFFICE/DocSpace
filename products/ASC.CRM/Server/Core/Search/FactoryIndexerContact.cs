@@ -32,7 +32,6 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.CRM.ApiModels;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.EF;
 using ASC.ElasticSearch;

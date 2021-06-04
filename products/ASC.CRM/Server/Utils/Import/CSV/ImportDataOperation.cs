@@ -25,12 +25,10 @@
 
 
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading;
@@ -115,7 +113,7 @@ namespace ASC.Web.CRM.Classes
                 _importSettings = new ImportCSVSettings(importSettingsJSON);
 
             _IsConfigure = true;
-        }     
+        }
 
         public override bool Equals(object obj)
         {
@@ -139,7 +137,7 @@ namespace ASC.Web.CRM.Classes
             return MemberwiseClone();
         }
 
-     
+
         public object Error { get; set; }
 
         private String GetPropertyValue(String propertyName)

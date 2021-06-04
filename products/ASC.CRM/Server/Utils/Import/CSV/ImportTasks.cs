@@ -30,7 +30,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.CRM.Core.Dao;
@@ -59,7 +58,7 @@ namespace ASC.Web.CRM.Classes
             _importFromCSV = importFromCSV;
             _displayUserSettingsHelper = displayUserSettingsHelper;
         }
-            
+
         private void ImportTaskData(DaoFactory _daoFactory)
         {
             using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))

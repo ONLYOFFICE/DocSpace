@@ -37,8 +37,6 @@ using ASC.CRM.Core.Enums;
 
 using LumenWorks.Framework.IO.Csv;
 
-using Microsoft.EntityFrameworkCore.Storage;
-
 namespace ASC.Web.CRM.Classes
 {
     [Scope]
@@ -87,7 +85,8 @@ namespace ASC.Web.CRM.Classes
 
             while (countRows++ != index && csv.ReadNextRecord()) ;
 
-            return JsonSerializer.Serialize(new { 
+            return JsonSerializer.Serialize(new
+            {
                 data = csv.GetCurrentRowFields(false).ToArray(),
                 isMaxIndex = csv.EndOfStream
             });

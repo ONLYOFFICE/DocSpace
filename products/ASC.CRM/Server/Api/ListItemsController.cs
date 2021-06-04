@@ -257,8 +257,8 @@ namespace ASC.CRM.Api
         ///<exception cref="ArgumentException"></exception>
         [Create(@"history/category")]
         public HistoryCategoryDto CreateHistoryCategory(
-            [FromForm] string title, 
-            [FromForm] string description, 
+            [FromForm] string title,
+            [FromForm] string description,
             [FromForm] string imageName,
             [FromForm] int sortOrder)
         {
@@ -429,7 +429,7 @@ namespace ASC.CRM.Api
         [Create(@"task/category")]
         public TaskCategoryDto CreateTaskCategory(
             [FromForm] string title,
-            [FromForm] string description, 
+            [FromForm] string description,
             [FromForm] string imageName,
             [FromForm] int sortOrder)
         {
@@ -599,8 +599,8 @@ namespace ASC.CRM.Api
         /// </returns>
         [Create(@"contact/status")]
         public ContactStatusDto CreateContactStatus(
-            [FromForm] string title, 
-            [FromForm] string description, 
+            [FromForm] string title,
+            [FromForm] string description,
             [FromForm] string color,
             [FromForm] int sortOrder)
         {
@@ -718,7 +718,7 @@ namespace ASC.CRM.Api
             _daoFactory.GetListItemDao().ReorderItems(ListType.ContactStatus, titles.ToArray());
             _messageService.Send(MessageAction.ContactTemperatureLevelsUpdatedOrder, _messageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
-            return _mapper.Map<List<ListItem>,List<ContactStatusDto>>(result);
+            return _mapper.Map<List<ListItem>, List<ContactStatusDto>>(result);
         }
 
         /// <summary>
@@ -1086,7 +1086,7 @@ namespace ASC.CRM.Api
 
             return result;
         }
-                       
+
         private DealMilestoneDto ToDealMilestoneDto(DealMilestone dealMilestone)
         {
             var result = new DealMilestoneDto(dealMilestone)

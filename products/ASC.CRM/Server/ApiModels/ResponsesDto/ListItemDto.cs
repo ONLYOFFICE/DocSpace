@@ -394,5 +394,5 @@ namespace ASC.CRM.ApiModels
             profile.CreateMap<ListItem, ContactStatusDto>().ConvertUsing<ListItemDtoTypeConverter>();
             profile.CreateMap<ListItem, ContactTypeDto>().ConvertUsing<ListItemDtoTypeConverter>();
         }
-    }   
+    }
 }

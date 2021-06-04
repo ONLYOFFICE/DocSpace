@@ -28,7 +28,6 @@
 using ASC.Common.Mapping;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.Enums;
-using ASC.CRM.Mapping;
 
 using AutoMapper;
 

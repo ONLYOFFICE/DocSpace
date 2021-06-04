@@ -31,7 +31,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -54,7 +53,7 @@ using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.CRM.Core.Dao
-{  
+{
     [Scope]
     public class InvoiceDao : AbstractDao
     {
@@ -419,7 +418,7 @@ namespace ASC.CRM.Core.Dao
         public List<Invoice> GetEntityInvoices(EntityType entityType, int entityID)
         {
             var result = new List<Invoice>();
-            
+
             if (entityID <= 0)
                 return result;
 
@@ -518,7 +517,7 @@ namespace ASC.CRM.Core.Dao
                 invoice.ExchangeRate <= 0 ||
                 String.IsNullOrEmpty(invoice.Terms))
                 throw new ArgumentException();
-                        
+
             var dbEntity = new DbInvoice
             {
                 Id = invoice.ID,
@@ -541,7 +540,7 @@ namespace ASC.CRM.Core.Dao
                 FileId = invoice.FileID,
                 CreateOn = invoice.CreateOn == DateTime.MinValue ? DateTime.UtcNow : invoice.CreateOn,
                 CreateBy = _securityContext.CurrentAccount.ID,
-                LastModifedOn = DateTime.UtcNow,                 
+                LastModifedOn = DateTime.UtcNow,
                 LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
@@ -637,9 +636,9 @@ namespace ASC.CRM.Core.Dao
             {
                 jsonData.LogoBase64 = null;
             }
-            
+
             invoice.JsonData = JsonSerializer.Serialize(jsonData);
-            
+
             UpdateInvoiceJsonData(invoice.ID, invoice.JsonData);
         }
 
@@ -858,7 +857,7 @@ namespace ASC.CRM.Core.Dao
         public void SetInvoiceCreationDate(int id, DateTime creationDate)
         {
             var dbEntity = CrmDbContext.Invoices.Find(id);
-          
+
             var entity = _mapper.Map<Invoice>(dbEntity);
 
             dbEntity.CreateOn = _tenantUtil.DateTimeToUtc(creationDate);

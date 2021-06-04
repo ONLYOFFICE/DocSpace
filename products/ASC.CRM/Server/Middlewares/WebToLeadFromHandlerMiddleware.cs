@@ -52,8 +52,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-using SimpleJson;
-
 namespace ASC.Web.CRM.HttpHandlers
 {
     public class WebToLeadFromHandlerMiddleware
@@ -147,11 +145,11 @@ namespace ASC.Web.CRM.HttpHandlers
 
                 var fieldCollector = new NameValueCollection();
 
-                var addressTemplate = new Dictionary<String, Object>();                
-                
+                var addressTemplate = new Dictionary<String, Object>();
+
                 foreach (String addressPartName in Enum.GetNames(typeof(AddressPart)))
                     addressTemplate.Add(addressPartName.ToLower(), "");
-                                
+
                 var addressTemplateStr = JsonSerializer.Serialize(addressTemplate);
 
                 var isCompany = false;
@@ -296,7 +294,7 @@ namespace ASC.Web.CRM.HttpHandlers
                             Dictionary<string, object> addressParts = JsonSerializer.Deserialize<Dictionary<string, object>>(findedAddress.Data);
                             addressParts[addressPart.ToString().ToLower()] = GetValue(key);
                             string newJson = JsonSerializer.Serialize(addressParts);
-                                                 
+
                             findedAddress.Data = JsonSerializer.Serialize(addressParts);
 
                             continue;

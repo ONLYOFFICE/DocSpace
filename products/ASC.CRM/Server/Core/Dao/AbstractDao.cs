@@ -46,7 +46,7 @@ namespace ASC.CRM.Core.Dao
     public class AbstractDao
     {
         protected readonly List<EntityType> _supportedEntityType = new List<EntityType>();
-        public  CrmDbContext CrmDbContext { get; }
+        public CrmDbContext CrmDbContext { get; }
         protected readonly SecurityContext _securityContext;
         protected readonly ICache _cache;
         protected ILog _logger;
@@ -65,9 +65,9 @@ namespace ASC.CRM.Core.Dao
             _logger = logger.Get("ASC.CRM");
 
             _cache = ascCache;
-            
+
             CrmDbContext = dbContextManager.Get(CrmConstants.DatabaseId);
-   
+
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             _securityContext = securityContext;
 

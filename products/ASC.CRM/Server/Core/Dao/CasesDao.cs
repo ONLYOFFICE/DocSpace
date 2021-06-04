@@ -30,7 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -485,7 +484,7 @@ namespace ASC.CRM.Core.Dao
             var result = Query(CrmDbContext.Cases)
                         .Where(x => casesID.Contains(x.Id))
                         .AsNoTracking()
-                        .ToList();               
+                        .ToList();
 
             return _mapper.Map<List<DbCase>, List<Cases>>(result)
                                         .FindAll(_crmSecurity.CanAccessTo);
@@ -557,7 +556,7 @@ namespace ASC.CRM.Core.Dao
             if (0 < count && count < int.MaxValue) q = q.Take(count);
 
             q = q.OrderBy(x => x.Title);
-                     
+
             return _mapper.Map<List<DbCase>, List<Cases>>(q.ToList())
                     .FindAll(_crmSecurity.CanAccessTo);
         }
@@ -570,11 +569,11 @@ namespace ASC.CRM.Core.Dao
                                .AsNoTracking()
                                .ToList();
 
-          return  _mapper.Map<List<DbCase>, List<Cases>>(result);
+            return _mapper.Map<List<DbCase>, List<Cases>>(result);
         }
 
         public Cases GetByID(int id)
-{
+        {
             var dbEntity = CrmDbContext.Cases.Find(id);
 
             if (dbEntity.TenantId != TenantID) return null;

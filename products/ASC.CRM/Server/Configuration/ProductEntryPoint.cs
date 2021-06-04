@@ -27,20 +27,10 @@ using System;
 using System.Linq;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Configuration;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Dao;
-using ASC.CRM.Core.Entities;
-using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Web.Core;
-using ASC.Web.CRM.Classes;
 using ASC.Web.Files.Api;
-
-using Microsoft.Extensions.Options;
 
 
 namespace ASC.Web.CRM.Configuration

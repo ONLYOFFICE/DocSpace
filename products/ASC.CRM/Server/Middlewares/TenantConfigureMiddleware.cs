@@ -22,7 +22,7 @@ namespace ASC.CRM.HttpHandlers
                                       DaoFactory daoFactory,
                                       SettingsManager settingsManager,
                                       CoreConfiguration coreConfiguration)
-        {    
+        {
             CrmDbContextSeed.SeedInitPortalData(settingsManager, daoFactory, coreConfiguration);
 
             await _next.Invoke(context);

@@ -86,7 +86,7 @@ namespace ASC.CRM.Core
             return string.Concat(Abbreviation, "-", Title);
         }
 
-        public void Mapping(Profile profile) 
+        public void Mapping(Profile profile)
         {
             profile.CreateMap<DbCurrencyInfo, CurrencyInfo>()
                 .ForMember(dest => dest._resourceKey, opt => opt.MapFrom(src => src.ResourceKey));

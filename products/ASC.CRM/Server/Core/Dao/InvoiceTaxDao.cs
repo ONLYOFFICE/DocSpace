@@ -64,7 +64,7 @@ namespace ASC.CRM.Core.Dao
                  mapper)
         {
             _mapper = mapper;
-        }  
+        }
 
         public Boolean IsExist(int id)
         {
@@ -117,7 +117,7 @@ namespace ASC.CRM.Core.Dao
             var dbEntity = CrmDbContext.InvoiceTax.Find(id);
 
             if (dbEntity.TenantId != TenantID) return null;
-            
+
             return _mapper.Map<InvoiceTax>(dbEntity);
         }
 
@@ -157,13 +157,13 @@ namespace ASC.CRM.Core.Dao
         public InvoiceTax DeleteInvoiceTax(int id)
         {
             var dbEntity = CrmDbContext.InvoiceTax.Find(id);
-            
+
             var entity = _mapper.Map<InvoiceTax>(dbEntity);
 
             if (entity == null) return null;
 
             _crmSecurity.DemandDelete(entity);
-                        
+
             CrmDbContext.InvoiceTax.Remove(dbEntity);
 
             CrmDbContext.SaveChanges();

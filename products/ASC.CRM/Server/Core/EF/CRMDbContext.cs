@@ -48,7 +48,7 @@ namespace ASC.CRM.Core.EF
                                .AddDbDeal()
                                .AddDbTask()
                                .AddDbTenant();
-            
+
             modelBuilder.Entity<DbCurrencyInfo>(entity =>
             {
                 entity.HasKey(e => e.Abbreviation)

@@ -30,7 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -1004,7 +1003,7 @@ namespace ASC.CRM.Core.Dao
             if (!(peopleIDs == null || peopleIDs.Length == 0))
             {
 
-                foreach(var id in peopleIDs)
+                foreach (var id in peopleIDs)
                 {
                     var dbContactEntity = CrmDbContext.Contacts.Find(id);
 
@@ -1221,7 +1220,7 @@ namespace ASC.CRM.Core.Dao
 
                 dbEntity.Id = id;
                 dbEntity.StatusId = statusid;
-            
+
             }
 
             CrmDbContext.SaveChanges();
@@ -1718,10 +1717,10 @@ namespace ASC.CRM.Core.Dao
 
                 // crm_invoice
                 var invoicesToUpdate = Query(CrmDbContext.Invoices)
-                                       .AsNoTracking()    
+                                       .AsNoTracking()
                                        .Where(x => x.ContactId == fromContactID)
                                        .ToList();
-              
+
                 invoicesToUpdate.ForEach(x => x.ContactId = toContactID);
 
                 CrmDbContext.SaveChanges();
@@ -1751,7 +1750,7 @@ namespace ASC.CRM.Core.Dao
                                                 .AsNoTracking()
                                                 .Where(x => x.ContactId == fromContactID)
                                                 .ToList();
-               
+
                 relationshipEventToUpdate.ForEach(x => x.ContactId = toContactID);
 
                 CrmDbContext.SaveChanges();

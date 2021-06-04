@@ -520,7 +520,7 @@ namespace ASC.Web.CRM.Classes
                 DataStore = _global.GetStore(),
                 TmpDirName = tmpDirName
             };
-            
+
             if (!_resizeQueue.GetTasks<ResizeWorkerItem>().Contains(resizeWorkerItem))
             {
                 //Add

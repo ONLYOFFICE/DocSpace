@@ -31,7 +31,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -157,7 +156,7 @@ namespace ASC.CRM.Core.Dao
                 Description = invoiceLine.Description,
                 Quantity = invoiceLine.Quantity,
                 Price = invoiceLine.Price,
-                Discount = invoiceLine.Discount,                 
+                Discount = invoiceLine.Discount,
                 TenantId = TenantID
             };
 
@@ -170,7 +169,7 @@ namespace ASC.CRM.Core.Dao
         public void DeleteInvoiceLine(int id)
         {
             var dbEntity = CrmDbContext.InvoiceLine.Find(id);
-                      
+
             CrmDbContext.Remove(dbEntity);
             CrmDbContext.SaveChanges();
 

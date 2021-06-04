@@ -64,7 +64,7 @@ namespace ASC.CRM.Core
         private readonly AuthorizationManager _authorizationManager;
         private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
         private readonly UserManager _userManager;
-        
+
         public readonly IAction _actionRead = new Action(new Guid("{6F05C382-8BCA-4469-9424-C807A98C40D7}"), "", true, false);
 
         public CrmSecurity(SecurityContext securityContext,

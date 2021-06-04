@@ -30,7 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -47,7 +46,6 @@ using ASC.Web.Files.Api;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -129,7 +127,7 @@ namespace ASC.CRM.Core.Dao
         }
 
         public Deal GetByID(int dealID)
-        {        
+        {
             var deals = GetDeals(new[] { dealID });
 
             return deals.Count == 0 ? null : deals[0];
@@ -742,7 +740,7 @@ namespace ASC.CRM.Core.Dao
             if (id <= 0) return null;
 
             var deal = GetByID(id);
-            
+
             if (deal == null) return null;
 
             _crmSecurity.DemandDelete(deal);
@@ -762,7 +760,7 @@ namespace ASC.CRM.Core.Dao
         public List<Deal> DeleteBatchDeals(int[] dealID)
         {
             var deals = GetDeals(dealID).FindAll(_crmSecurity.CanDelete).ToList();
-            
+
             if (!deals.Any()) return deals;
 
             // Delete relative  keys
@@ -775,7 +773,7 @@ namespace ASC.CRM.Core.Dao
         public List<Deal> DeleteBatchDeals(List<Deal> deals)
         {
             deals = deals.FindAll(_crmSecurity.CanDelete).ToList();
-            
+
             if (!deals.Any()) return deals;
 
             // Delete relative  keys

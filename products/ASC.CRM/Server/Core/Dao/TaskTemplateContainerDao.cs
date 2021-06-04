@@ -75,7 +75,7 @@ namespace ASC.CRM.Core.Dao
                 CreateBy = item.CreateBy == Guid.Empty ? _securityContext.CurrentAccount.ID : item.CreateBy,
                 LastModifedOn = DateTime.UtcNow,
                 LastModifedBy = _securityContext.CurrentAccount.ID,
-                TenantId = TenantID                 
+                TenantId = TenantID
             };
 
             CrmDbContext.Update(dbEntity);
@@ -176,7 +176,7 @@ namespace ASC.CRM.Core.Dao
 
             if (sqlResult == null) return null;
 
-            var dbEntity =  Query(CrmDbContext.TaskTemplates)
+            var dbEntity = Query(CrmDbContext.TaskTemplates)
                       .FirstOrDefault(x => x.ContainerId == sqlResult.ContainerId &&
                                       x.SortOrder > sqlResult.SortOrder && !x.DeadLineIsFixed);
 

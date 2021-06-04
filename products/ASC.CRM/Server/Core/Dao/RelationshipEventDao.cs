@@ -27,11 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Text.Json;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -43,10 +40,8 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Files.Core;
-using ASC.Web.CRM;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
-using ASC.Web.Studio.Core;
 
 using AutoMapper;
 
@@ -125,7 +120,7 @@ namespace ASC.CRM.Core.Dao
                 var dbEntity = CrmDbContext.RelationshipEvent.Find(eventID);
 
                 dbEntity.HaveFiles = true;
-                
+
                 CrmDbContext.SaveChanges();
             }
         }

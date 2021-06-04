@@ -35,7 +35,6 @@ using System.Text;
 using System.Text.Json;
 
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading;
@@ -62,7 +61,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Classes
-{  
+{
     [Transient]
     public class ExportDataOperation : DistributedTaskProgress, IProgressItem
     {
@@ -161,7 +160,7 @@ namespace ASC.Web.CRM.Classes
         {
             return MemberwiseClone();
         }
- 
+
         public object Error { get; set; }
         public string FileName { get; set; }
         public string FileUrl { get; set; }
@@ -218,7 +217,7 @@ namespace ASC.Web.CRM.Classes
                 System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
 
                 _log.Debug("Start Export Data");
-                 
+
                 if (_filterObject == null)
                     ExportAllData(_daoFactory);
                 else
@@ -1242,7 +1241,7 @@ namespace ASC.Web.CRM.Classes
 
         public ExportToCsv(SecurityContext securityContext,
                            TenantManager tenantManager,
-                           DistributedTaskQueueOptionsManager  queueOptions,
+                           DistributedTaskQueueOptionsManager queueOptions,
                            ExportDataOperation exportDataOperation)
         {
             _securityContext = securityContext;

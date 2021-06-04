@@ -70,7 +70,7 @@ namespace ASC.Web.CRM.Classes
     {
         public InvoiceSetting()
         {
-                
+
         }
 
         public InvoiceSetting(IConfiguration configuration)
@@ -111,7 +111,7 @@ namespace ASC.Web.CRM.Classes
     {
         public CrmSettings()
         {
-                
+
         }
 
         public Guid ID
@@ -126,7 +126,7 @@ namespace ASC.Web.CRM.Classes
 
         [JsonPropertyName("DefaultCurrency")]
         public String DefaultCurrency { get; set; }
-     
+
         [JsonPropertyName("ChangeContactStatusGroupAuto")]
         public string ChangeContactStatusGroupAutoDto { get; set; }
 
@@ -159,7 +159,7 @@ namespace ASC.Web.CRM.Classes
         {
             var currencyProvider = serviceProvider.GetService<CurrencyProvider>();
             var configuration = serviceProvider.GetService<IConfiguration>();
-            
+
             var languageName = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
 
             var findedCurrency = currencyProvider.GetAll().Find(item => String.Compare(item.CultureName, languageName, true) == 0);

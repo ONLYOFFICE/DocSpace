@@ -189,5 +189,5 @@ namespace ASC.CRM.Core.EF
                 }
             }
         }
-    } 
+    }
 }

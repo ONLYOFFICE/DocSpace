@@ -79,9 +79,9 @@ namespace ASC.CRM.Core.Dao
 
         public CurrencyRate GetByCurrencies(string fromCurrency, string toCurrency)
         {
-            var dbEntity =  Query(CrmDbContext.CurrencyRate).FirstOrDefault(x => 
-                                 string.Compare(x.FromCurrency, fromCurrency, true) == 0 &&
-                                 string.Compare(x.ToCurrency, toCurrency, true) == 0);
+            var dbEntity = Query(CrmDbContext.CurrencyRate).FirstOrDefault(x =>
+                                string.Compare(x.FromCurrency, fromCurrency, true) == 0 &&
+                                string.Compare(x.ToCurrency, toCurrency, true) == 0);
 
             return _mapper.Map<CurrencyRate>(dbEntity);
 
@@ -96,8 +96,8 @@ namespace ASC.CRM.Core.Dao
                 return Delete(entity.ID);
 
             var dbEntity = new DbCurrencyRate
-            { 
-                Id = entity.ID, 
+            {
+                Id = entity.ID,
                 FromCurrency = entity.FromCurrency.ToUpper(),
                 ToCurrency = entity.ToCurrency.ToUpper(),
                 Rate = entity.Rate,
@@ -105,7 +105,7 @@ namespace ASC.CRM.Core.Dao
                 CreateBy = entity.CreateBy == Guid.Empty ? _securityContext.CurrentAccount.ID : entity.CreateBy,
                 LastModifedOn = DateTime.UtcNow,
                 LastModifedBy = _securityContext.CurrentAccount.ID,
-                TenantId = TenantID                   
+                TenantId = TenantID
             };
 
             CrmDbContext.Update(dbEntity);
@@ -130,7 +130,7 @@ namespace ASC.CRM.Core.Dao
             using var tx = CrmDbContext.Database.BeginTransaction();
 
             var items = Query(CrmDbContext.CurrencyRate).AsNoTracking();
-                
+
             CrmDbContext.RemoveRange(items);
 
             foreach (var rate in rates)

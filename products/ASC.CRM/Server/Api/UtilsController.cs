@@ -514,7 +514,7 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"import/uploadfake")]
-        public FileUploadResult ProcessUploadFake( [FromForm] string csvFileURI, [FromForm] string jsonSettings)
+        public FileUploadResult ProcessUploadFake([FromForm] string csvFileURI, [FromForm] string jsonSettings)
         {
             return _importFromCSVManager.ProcessUploadFake(csvFileURI, jsonSettings);
         }

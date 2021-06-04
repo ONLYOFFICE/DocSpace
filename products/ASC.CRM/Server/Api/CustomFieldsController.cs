@@ -105,8 +105,8 @@ namespace ASC.CRM.Api
         /// </returns>
         [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield/{fieldid:int}")]
         public CustomFieldBaseDto SetEntityCustomFieldValue(
-            [FromRoute] string entityType, 
-            [FromRoute] int entityid, 
+            [FromRoute] string entityType,
+            [FromRoute] int entityid,
             [FromRoute] int fieldid,
             [FromForm] string fieldValue)
         {
@@ -217,9 +217,9 @@ namespace ASC.CRM.Api
         [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield")]
         public CustomFieldDto CreateCustomFieldValue(
             [FromRoute] string entityType,
-            [FromForm] string label, 
+            [FromForm] string label,
             [FromForm] int fieldType,
-            [FromForm] int position, 
+            [FromForm] int position,
             [FromForm] string mask)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();

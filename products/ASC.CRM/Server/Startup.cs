@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Common;
-using ASC.Common.Mapping;
 using ASC.CRM.Api;
 using ASC.CRM.ApiModels;
 using ASC.CRM.HttpHandlers;
@@ -17,7 +13,6 @@ using ASC.Web.CRM.HttpHandlers;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

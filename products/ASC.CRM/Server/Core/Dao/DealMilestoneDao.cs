@@ -30,7 +30,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -42,14 +41,13 @@ using ASC.CRM.Resources;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 #endregion
 
 namespace ASC.CRM.Core.Dao
-{  
+{
     [Scope]
     public class DealMilestoneDao : AbstractDao
     {
@@ -216,12 +214,12 @@ namespace ASC.CRM.Core.Dao
                           .OrderBy(x => x.SortOrder)
                           .Where(x => id.Contains(x.Id)).ToList();
 
-            return _mapper.Map<List<DbDealMilestone>, List<DealMilestone>>(result);                
+            return _mapper.Map<List<DbDealMilestone>, List<DealMilestone>>(result);
         }
 
         public List<DealMilestone> GetAll()
         {
-            var result =  Query(CrmDbContext.DealMilestones)
+            var result = Query(CrmDbContext.DealMilestones)
                     .AsNoTracking()
                     .OrderBy(x => x.SortOrder)
                     .ToList();

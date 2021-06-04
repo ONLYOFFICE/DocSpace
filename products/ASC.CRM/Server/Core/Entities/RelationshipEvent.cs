@@ -32,7 +32,6 @@ using ASC.Common.Mapping;
 using ASC.Common.Security;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
-using ASC.CRM.Mapping;
 #endregion
 
 namespace ASC.CRM.Core.Entities

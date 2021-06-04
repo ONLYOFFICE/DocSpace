@@ -25,19 +25,13 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Web;
 
 using ASC.Common;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
-using ASC.CRM.Core.Enums;
 
 using log4net;
 
@@ -200,10 +194,10 @@ namespace ASC.Web.CRM.Classes
 
             if (obj is PdfProgressItem)
             {
-               return ((PdfProgressItem)obj).Id == Id;
+                return ((PdfProgressItem)obj).Id == Id;
             }
 
-            return base.Equals(obj);    
+            return base.Equals(obj);
         }
 
         public override int GetHashCode()

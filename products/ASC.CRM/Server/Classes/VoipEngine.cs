@@ -163,7 +163,7 @@ namespace ASC.Web.CRM.Classes
             }
 
             var contact = daoFactory.GetContactDao().GetByID(call.ContactId);
-            
+
             if (contact != null && _crmSecurity.CanAccessTo(contact))
             {
                 var note = call.Status == VoipCallStatus.Incoming || call.Status == VoipCallStatus.Answered
@@ -223,7 +223,7 @@ namespace ASC.Web.CRM.Classes
         public void SaveAdditionalInfo(string callId)
         {
             lock (Locker)
-            {                
+            {
                 var _queueItem = new QueueItem { CallID = callId, TenantID = _tenantId };
 
                 _queue.QueueTask((a, b) => SaveAdditionalInfoAction(_queueItem), _queueItem); ;
@@ -240,7 +240,7 @@ namespace ASC.Web.CRM.Classes
                                                 _crmSecurity,
                                                 _tenantUtil,
                                                 null,
-                                                _securityContext,                                                
+                                                _securityContext,
                                                 null,
                                                 _tenantManager,
                                                 _voipDao);
@@ -282,7 +282,7 @@ namespace ASC.Web.CRM.Classes
         {
             var provider = _voipDao.GetProvider();
             var twilioCall = provider.GetCall(call.Id);
-            
+
             call.Price = twilioCall.Price;
             call.DialDuration = twilioCall.DialDuration;
         }
@@ -291,7 +291,7 @@ namespace ASC.Web.CRM.Classes
         {
             call.AnsweredBy = _securityContext.CurrentAccount.ID;
             call.Status = VoipCallStatus.Answered;
-            
+
             _daoFactory.GetVoipDao().SaveOrUpdateCall(call);
         }
 

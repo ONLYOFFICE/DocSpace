@@ -390,7 +390,7 @@ namespace ASC.CRM.Api
                     isShared);
 
                 result = _mapper.Map<List<Contact>, List<ContactDto>>(contacts);
-               
+
                 _apiContext.SetDataPaginated();
                 _apiContext.SetDataFiltered();
                 _apiContext.SetDataSorted();

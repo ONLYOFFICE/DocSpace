@@ -193,7 +193,7 @@ namespace ASC.CRM.Core.Entities
                                          .ToList();
 
                         if (fromToArray.Count != 2) continue;
-                        
+
                         FromDate = !String.IsNullOrEmpty(fromToArray[0])
                                               ? Global.ApiDateTimeParse(fromToArray[0]) : DateTime.MinValue;
                         ToDate = !String.IsNullOrEmpty(fromToArray[1])
@@ -294,13 +294,13 @@ namespace ASC.CRM.Core.Entities
 
                     case "my":
                     case "responsibleID":
-                        ResponsibleId = filterParam.GetProperty("value").GetGuid();                       
-                        
+                        ResponsibleId = filterParam.GetProperty("value").GetGuid();
+
                         break;
                     case "stageTypeOpen":
                     case "stageTypeClosedAndWon":
                     case "stageTypeClosedAndLost":
-                        StageType = filterParam.GetProperty("value").GetString();                        
+                        StageType = filterParam.GetProperty("value").GetString();
                         break;
                     case "opportunityStagesID":
                         OpportunityStageId = filterParam.GetProperty("value").GetInt32();
@@ -315,9 +315,9 @@ namespace ASC.CRM.Core.Entities
                                                       .EnumerateArray()
                                                       .Select(x => x.GetString())
                                                       .ToList();
-                        
+
                         if (fromToArray.Count != 2) continue;
-                        
+
                         FromDate = Global.ApiDateTimeParse(fromToArray[0]);
                         ToDate = Global.ApiDateTimeParse(fromToArray[1]);
                         break;
@@ -460,7 +460,7 @@ namespace ASC.CRM.Core.Entities
                                                       .EnumerateArray()
                                                       .Select(x => x.GetString())
                                                       .ToList();
-                        
+
                         if (fromToArray.Count != 2) continue;
 
                         FromDate = Global.ApiDateTimeParse(fromToArray[0]);

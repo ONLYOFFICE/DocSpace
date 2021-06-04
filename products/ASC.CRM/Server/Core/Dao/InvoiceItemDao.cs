@@ -29,13 +29,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
@@ -43,12 +41,11 @@ using ASC.Web.CRM.Classes;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
-{   
+{
     [Scope]
     public class InvoiceItemDao : AbstractDao
     {
@@ -261,7 +258,7 @@ namespace ASC.CRM.Core.Dao
 
             var dbEntity = new DbInvoiceItem
             {
-                Id = invoiceItem.ID,                 
+                Id = invoiceItem.ID,
                 Title = invoiceItem.Title,
                 Description = invoiceItem.Description,
                 StockKeepingUnit = invoiceItem.StockKeepingUnit,
@@ -287,7 +284,7 @@ namespace ASC.CRM.Core.Dao
         public InvoiceItem DeleteInvoiceItem(int invoiceItemID)
         {
             var invoiceItem = GetByID(invoiceItemID);
-            
+
             if (invoiceItem == null) return null;
 
             _crmSecurity.DemandDelete(invoiceItem);
@@ -324,14 +321,14 @@ namespace ASC.CRM.Core.Dao
             }
 
             CrmDbContext.SaveChanges();
-                        
+
             // Delete relative  keys
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceItemCacheKey, String.Empty);*/
-         
+
             return result;
         }
-           
+
         private IQueryable<DbInvoiceItem> GetDbInvoiceItemByFilters(
                                 ICollection<int> exceptIDs,
                                 string searchText,

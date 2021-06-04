@@ -56,14 +56,14 @@ namespace ASC.Web.CRM.Classes
             JsonElement duplicateRecordRuleToken;
             if (jsonElement.TryGetProperty("removing_duplicates_behavior", out duplicateRecordRuleToken))
                 DuplicateRecordRule = duplicateRecordRuleToken.GetInt32();
-            
+
             JsonElement isPrivateToken;
             if (jsonElement.TryGetProperty("is_private", out isPrivateToken))
             {
                 IsPrivate = isPrivateToken.GetBoolean();
                 AccessList = jsonElement.GetProperty("access_list").EnumerateArray().Select(x => x.GetGuid()).ToList();
             }
-            
+
             JsonElement shareTypeToken;
             if (jsonElement.TryGetProperty("share_type", out shareTypeToken))
             {

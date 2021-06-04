@@ -36,7 +36,6 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.EF;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
-using ASC.Web.Files.Core.Search;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

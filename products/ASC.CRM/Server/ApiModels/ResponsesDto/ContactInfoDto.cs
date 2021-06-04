@@ -50,7 +50,7 @@ namespace ASC.CRM.ApiModels
         {
             if (contactInfo.InfoType != ContactInfoType.Address) throw new ArgumentException();
 
-            var jsonElement =  JsonDocument.Parse(contactInfo.Data).RootElement;
+            var jsonElement = JsonDocument.Parse(contactInfo.Data).RootElement;
 
             City = jsonElement.GetProperty("city").GetString();
             Country = jsonElement.GetProperty("country").GetString();
