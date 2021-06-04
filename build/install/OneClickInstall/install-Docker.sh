@@ -13,7 +13,7 @@
 
 PRODUCT="onlyoffice"
 BASE_DIR="/app/$PRODUCT";
-ENV="4testing-"
+ENV=""
 
 NETWORK=${PRODUCT}
 
@@ -28,18 +28,251 @@ KERNEL="";
 INSTALL_MYSQL_SERVER="true";
 INSTALL_DOCUMENT_SERVER="true";
 INSTALL_APPSERVER="true";
-RESTART_APPSERVER="false";
 UPDATE="false";
 
 HUB="";
 USERNAME="";
 PASSWORD="";
 
+MYSQL_DATABASE=""
+MYSQL_USER=""
+MYSQL_PASSWORD=""
+MYSQL_ROOT_PASSWORD=""
+MYSQL_HOST=""
+
+ZOO_PORT=""
+ZOO_HOST=""
+KAFKA_HOST=""
+
+ELK_HOST=""
+
+DOCUMENT_SERVER_JWT_SECRET=""
+DOCUMENT_SERVER_HOST=""
+
+APP_CORE_BASE_DOMAIN=""
+APP_CORE_MACHINEKEY=""
+
 HELP_TARGET="install-Docker.sh";
 
 SKIP_HARDWARE_CHECK="false";
 
+EXTERNAL_PORT=""
 SERVICE_PORT="5050"
+
+while [ "$1" != "" ]; do
+	case $1 in
+
+		-u | --update )
+			if [ "$2" != "" ]; then
+				UPDATE=$2
+				shift
+			fi
+		;;
+
+		-hub | --hub )
+			if [ "$2" != "" ]; then
+				HUB=$2
+				shift
+			fi
+		;;
+
+		-un | --username )
+			if [ "$2" != "" ]; then
+				USERNAME=$2
+				shift
+			fi
+		;;
+
+		-p | --password )
+			if [ "$2" != "" ]; then
+				PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-ias | --installappserver )
+			if [ "$2" != "" ]; then
+				INSTALL_APPSERVER=$2
+				shift
+			fi
+		;;
+
+		-ids | --installdocumentserver )
+			if [ "$2" != "" ]; then
+				INSTALL_DOCUMENT_SERVER=$2
+				shift
+			fi
+		;;
+
+		-imysql | --installmysql )
+			if [ "$2" != "" ]; then
+				INSTALL_MYSQL_SERVER=$2
+				shift
+			fi
+		;;
+
+		-ht | --helptarget )
+			if [ "$2" != "" ]; then
+				HELP_TARGET=$2
+				shift
+			fi
+		;;
+
+		-mysqld | --mysqldatabase )
+			if [ "$2" != "" ]; then
+				MYSQL_DATABASE=$2
+				shift
+			fi
+		;;
+
+		-mysqlrp | --mysqlrootpassword )
+			if [ "$2" != "" ]; then
+				MYSQL_ROOT_PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-mysqlu | --mysqluser )
+			if [ "$2" != "" ]; then
+				MYSQL_USER=$2
+				shift
+			fi
+		;;
+
+		-mysqlh | --mysqlhost )
+			if [ "$2" != "" ]; then
+				MYSQL_HOST=$2
+				shift
+			fi
+		;;
+
+		-mysqlp | --mysqlpassword )
+			if [ "$2" != "" ]; then
+				MYSQL_PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-zp | --zookeeperport )
+			if [ "$2" != "" ]; then
+				ZOO_PORT=$2
+				shift
+			fi
+		;;
+
+		-zh | --zookeeperhost )
+			if [ "$2" != "" ]; then
+				ZOO_HOST=$2
+				shift
+			fi
+		;;
+
+		-kh | --kafkahost )
+			if [ "$2" != "" ]; then
+				KAFKA_HOST=$2
+				shift
+			fi
+		;;
+
+		-esh | --elasticsearchhost )
+			if [ "$2" != "" ]; then
+				ELK_HOST=$2
+				shift
+			fi
+		;;
+
+		-skiphc | --skiphardwarecheck )
+			if [ "$2" != "" ]; then
+				SKIP_HARDWARE_CHECK=$2
+				shift
+			fi
+		;;
+
+		-ip | --internalport )
+			if [ "$2" != "" ]; then
+				SERVICE_PORT=$2
+				shift
+			fi
+		;;
+
+		-ep | --externalport )
+			if [ "$2" != "" ]; then
+				EXTERNAL_PORT=$2
+				shift
+			fi
+		;;
+
+		-ash | --appserverhost )
+			if [ "$2" != "" ]; then
+				APP_CORE_BASE_DOMAIN=$2
+				shift
+			fi
+		;;
+		
+		-mk | --machinekey )
+			if [ "$2" != "" ]; then
+				APP_CORE_MACHINEKEY=$2
+				shift
+			fi
+		;;
+		
+		-env )
+			if [ "$2" != "" ]; then
+				ENV=$2
+				shift
+			fi
+		;;
+
+		-? | -h | --help )
+			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
+			echo
+			echo "    Parameters:"
+			echo "      -hub, --hub                       dockerhub name"
+			echo "      -un, --username                   dockerhub username"
+			echo "      -p, --password                    dockerhub password"
+			echo "      -ias, --installappserver          install or update appserver (true|false)"
+			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
+			echo "      -imysql, --installmysql           install or update mysql (true|false)"
+			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
+			echo "      -mysqld, --mysqldatabase          appserver database name"
+			echo "      -mysqlu, --mysqluser              appserver database user"
+			echo "      -mysqlp, --mysqlpassword          appserver database password"
+			echo "      -mysqlh, --mysqlhost              mysql server host"
+			echo "      -ash, --appserverhost             appserver host"
+			echo "      -zp, --zookeeperport              zookeeper port (default value 2181)"
+			echo "      -zh, --zookeeperhost              zookeeper host"
+			echo "      -kh, --kafkahost                  kafka host"
+			echo "      -esh, --elasticsearchhost         elasticsearch host"
+			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
+			echo "      -ip, --internalport               internal appserver port (default value 5050)"
+			echo "      -ep, --externalport               external appserver port (default value 8092)"
+			echo "      -mk, --machinekey                 setting for core.machinekey"
+			echo "      -?, -h, --help                    this help"
+			echo
+			echo "    Install all the components without document server:"
+			echo "      bash $HELP_TARGET -ids false"
+			echo
+			echo "    Install Document Server only. Skip the installation of MYSQL and Appserver:"
+			echo "      bash $HELP_TARGET -ias false -ids true -imysql false -ims false"
+			echo "    Update all installed components. Stop the containers that need to be updated, remove them and run the latest versions of the corresponding components. The portal data should be picked up automatically:"
+			echo "      bash $HELP_TARGET -u true"
+			echo
+			echo "    Update Document Server only to version 4.4.2.20 and skip the update for all other components:"
+			echo "      bash $HELP_TARGET -u true -dv 4.4.2.20 -ias false"
+			echo
+			echo "    Update Appserver only to version 0.1.10 and skip the update for all other components:"
+			echo "      bash $HELP_TARGET -u true -av 9.1.0.393 -ids false"
+			echo
+			exit 0
+		;;
+
+		* )
+			echo "Unknown parameter $1" 1>&2
+			exit 1
+		;;
+	esac
+	shift
+done
 
 root_checking () {
 	if [ ! $( id -u ) -eq 0 ]; then
@@ -71,6 +304,17 @@ to_lowercase () {
 
 trim () {
 	echo -e "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+}
+
+get_random_str () {
+	LENGTH=$1;
+
+	if [[ -z ${LENGTH} ]]; then
+		LENGTH=12;
+	fi
+
+	VALUE=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c ${LENGTH});
+	echo "$VALUE"
 }
 
 get_os_info () {
@@ -227,7 +471,7 @@ install_docker_compose () {
 }
 
 check_ports () {
-	RESERVED_PORTS=(443 2181 2888 3888 9092 9800 9899 9999);
+	RESERVED_PORTS=(443 2181 2888 3888 9092 9800 9899 9999 ${SERVICE_PORT});
 	ARRAY_PORTS=();
 	USED_PORTS="";
 
@@ -235,16 +479,16 @@ check_ports () {
 		install_service net-tools
 	fi
 
-	if [ "${SERVICE_PORT//[0-9]}" = "" ]; then
+	if [ "${EXTERNAL_PORT//[0-9]}" = "" ]; then
 		for RESERVED_PORT in "${RESERVED_PORTS[@]}"
 		do
-			if [ "$RESERVED_PORT" -eq "$SERVICE_PORT" ] ; then
-				echo "Service port $SERVICE_PORT is reserved. Select another port"
+			if [ "$RESERVED_PORT" -eq "$EXTERNAL_PORT" ] ; then
+				echo "External port $EXTERNAL_PORT is reserved. Select another port"
 				exit 1;
 			fi
 		done
 	else
-		echo "Invalid community port $SERVICE_PORT"
+		echo "Invalid external port $EXTERNAL_PORT"
 		exit 1;
 	fi
 
@@ -376,24 +620,119 @@ create_network () {
 	fi
 }
 
+get_container_env_parameter () {
+	CONTAINER_NAME=$1;
+	PARAMETER_NAME=$2;
+	VALUE="";
+
+	if [[ -z ${CONTAINER_NAME} ]]; then
+		echo "Empty container name"
+		exit 1;
+	fi
+
+	if [[ -z ${PARAMETER_NAME} ]]; then
+		echo "Empty parameter name"
+		exit 1;
+	fi
+
+	if command_exists docker ; then
+		CONTAINER_EXIST=$(docker ps -aqf "name=$CONTAINER_NAME");
+
+		if [[ -n ${CONTAINER_EXIST} ]]; then
+			VALUE=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' ${CONTAINER_NAME} | grep "${PARAMETER_NAME}=" | sed 's/^.*=//');
+		fi
+	fi
+
+	echo "$VALUE"
+}
+
+set_jwt_secret () {
+	CURRENT_JWT_SECRET="";
+
+	if [[ -z ${JWT_SECRET} ]]; then
+		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PRODUCT}-document-server" "JWT_SECRET");
+
+		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
+			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
+		fi
+	fi
+
+	if [[ -z ${JWT_SECRET} ]]; then
+		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PRODUCT}-api" "DOCUMENT_SERVER_JWT_SECRET");
+
+		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
+			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
+		fi
+	fi
+
+	if [[ -z ${JWT_SECRET} ]] && [[ "$UPDATE" != "true" ]]; then
+		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 12);
+	fi
+}
+
+set_core_machinekey () {
+	CURRENT_CORE_MACHINEKEY="";
+
+	if [[ -z ${CORE_MACHINEKEY} ]]; then
+		if file_exists ${BASE_DIR}/.private/machinekey; then
+			CURRENT_CORE_MACHINEKEY=$(cat ${BASE_DIR}/.private/machinekey);
+
+			if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
+				APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
+			fi
+		fi
+	fi
+
+	if [[ -z ${CORE_MACHINEKEY} ]]; then
+		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${PRODUCT}-api" "$APP_CORE_MACHINEKEY");
+
+		if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
+			APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
+		fi
+	fi
+
+	if [[ -z ${CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
+		APP_CORE_MACHINEKEY=$(get_random_str 12);
+		echo $APP_CORE_MACHINEKEY > ${BASE_DIR}/.private/machinekey
+	fi
+}
+
 copy_files () {
-	mkdir -p "$BASE_DIR";
+	mkdir -p ${BASE_DIR}
+	mkdir -p ${BASE_DIR}/.private/
 
 	if ! command_exists git; then
 		install_service git
 	fi
 
 	git clone https://github.com/ONLYOFFICE/AppServer.git
-	cp -r ./AppServer/build/install/docker/{.[!.],}* /app/onlyoffice/
+	cp -r ./AppServer/build/install/docker/{.[!.],}* $BASE_DIR/
 	rm -rf AppServer/
 
-	sed -i "s/STATUS=.*/STATUS=\"$ENV\"/g" /app/onlyoffice/.env
+	if [[ -n ${ENV} ]]; then
+		sed -i "s/STATUS=.*/STATUS=\"${ENV}\"/g" $BASE_DIR/.env
+	fi
+}
+
+reconfigure () {
+	VARIABLE_NAME=$1
+	VARIABLE_VALUE=$2
+
+	if [[ -n ${VARIABLE_VALUE} ]]; then
+		sed -i "s/${VARIABLE_NAME}=.*/${VARIABLE_NAME}=${VARIABLE_VALUE}/g" $BASE_DIR/.env
+	fi
 }
 
 install_mysql_server () {
 	if ! command_exists docker-compose; then
 		install_docker_compose
 	fi
+
+	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
+	reconfigure MYSQL_USER ${MYSQL_USER}
+	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
+	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
+	reconfigure MYSQL_HOST ${MYSQL_HOST}
 
 	docker-compose -f $BASE_DIR/db.yml up -d
 }
@@ -403,6 +742,9 @@ install_document_server () {
 		install_docker_compose
 	fi
 
+	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
+	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
+
 	docker-compose -f $BASE_DIR/ds.yml up -d
 }
 
@@ -411,11 +753,26 @@ install_appserver () {
 		install_docker_compose
 	fi
 
+	reconfigure ZOO_PORT ${ZOO_PORT}
+	reconfigure ZOO_HOST ${ZOO_HOST}
+	reconfigure KAFKA_HOST ${KAFKA_HOST}
+	reconfigure ELK_HOST ${ELK_HOST}
+	reconfigure SERVICE_PORT ${SERVICE_PORT}
+	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
+
+	if [[ -n $EXTERNAL_PORT ]]; then
+		sed -i "s/:8092/:${EXTERNAL_PORT}/g" $BASE_DIR/docker-entrypoint.sh
+	fi
+
 	docker-compose -f $BASE_DIR/appserver.yml up -d
 }
 
 start_installation () {
 	root_checking
+
+	set_jwt_secret
+
+	set_core_machinekey
 
 	get_os_info
 
