@@ -30,7 +30,7 @@ while [ "$1" != "" ]; do
 		"-?" | -h | --help )
 			HELP="true";
 			DOCKER="true";
-			PARAMETERS="$PARAMETERS -ht docs-install.sh";
+			PARAMETERS="$PARAMETERS -ht install-Docker.sh";
 		;;
 	esac
 	PARAMETERS="$PARAMETERS ${1}";
@@ -103,7 +103,7 @@ DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/dev
 
 if [ "$DOCKER" == "true" ]; then
 	if [ "$LOCAL_SCRIPTS" == "true" ]; then
-		bash install.sh ${PARAMETERS}
+		bash install-Docker.sh ${PARAMETERS}
 	else
 		curl -s -O  ${DOWNLOAD_URL_PREFIX}/install-Docker.sh
 		bash install-Docker.sh ${PARAMETERS}
