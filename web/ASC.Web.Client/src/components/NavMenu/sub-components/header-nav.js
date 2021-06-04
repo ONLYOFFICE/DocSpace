@@ -61,7 +61,9 @@ const HeaderNav = ({
   const { t } = useTranslation(["NavMenu", "Common"]);
 
   const onProfileClick = useCallback(() => {
-    history.push(peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL);
+    peopleAvailable
+      ? history.push(PROFILE_SELF_URL)
+      : window.open(PROFILE_MY_URL, "_blank");
   }, []);
 
   const onAboutClick = useCallback(() => history.push(ABOUT_URL), []);
