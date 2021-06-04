@@ -24,7 +24,7 @@ const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 
 const StyledNav = styled.nav`
   display: flex;
-  padding: 0 24px 0 16px;
+  padding: 0 20px 0 16px;
   align-items: center;
   position: absolute;
   right: 0;
