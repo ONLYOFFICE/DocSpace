@@ -90,6 +90,20 @@ const config = {
       },
       { test: /\.json$/, loader: "json-loader" },
       {
+        test: /\.(woff(2)?)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "fonts/[name].[ext]",
+            },
+          },
+        ],
+      } /* {
+        test: /\.(svg|woff|woff2|ttf|eot)$/,
+        loader: "file?name=fonts/[name].[ext]",
+      },*/,
+      {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
