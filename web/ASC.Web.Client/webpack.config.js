@@ -99,10 +99,7 @@ const config = {
             },
           },
         ],
-      } /* {
-        test: /\.(svg|woff|woff2|ttf|eot)$/,
-        loader: "file?name=fonts/[name].[ext]",
-      },*/,
+      },
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
