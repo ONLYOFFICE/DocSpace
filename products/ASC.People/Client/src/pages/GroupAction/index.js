@@ -13,9 +13,9 @@ import { inject, observer } from "mobx-react";
 
 class GroupAction extends React.Component {
   componentDidMount() {
-    const { match, fetchGroup, t, setDocumentTitle } = this.props;
+    const { match, fetchGroup, t, setDocumentTitle, setFirstLoad } = this.props;
     const { groupId } = match.params;
-
+    setFirstLoad(false);
     setDocumentTitle(t("GroupAction"));
 
     if (groupId) {
@@ -99,5 +99,6 @@ export default withRouter(
     fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
     group: peopleStore.selectedGroupStore.targetedGroup,
     resetGroup: peopleStore.selectedGroupStore.resetGroup,
+    setFirstLoad: peopleStore.setFirstLoad,
   }))(observer(GroupActionContainer))
 );

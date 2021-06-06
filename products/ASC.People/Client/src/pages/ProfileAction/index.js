@@ -32,8 +32,10 @@ class ProfileAction extends React.Component {
       setIsEditingForm,
       t,
       setDocumentTitle,
+      setFirstLoad,
     } = this.props;
     const { userId } = match.params;
+    setFirstLoad(false);
     this.documentElement = document.getElementsByClassName("hidingHeader");
     setDocumentTitle(t("ProfileAction"));
 
@@ -127,5 +129,6 @@ export default withRouter(
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
+    setFirstLoad: peopleStore.setFirstLoad,
   }))(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );

@@ -23,8 +23,11 @@ class Profile extends React.Component {
       location,
       t,
       setDocumentTitle,
+      setFirstLoad,
     } = this.props;
     let { userId } = match.params;
+
+    setFirstLoad(false);
 
     if (!userId) userId = "@self";
 
@@ -119,5 +122,6 @@ export default withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
+    setFirstLoad: peopleStore.setFirstLoad,
   }))(observer(withTranslation(["Profile", "Common"])(Profile)))
 );
