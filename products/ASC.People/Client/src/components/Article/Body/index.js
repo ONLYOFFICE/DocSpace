@@ -93,6 +93,7 @@ const getItems = (data) => {
 class ArticleBodyContent extends React.Component {
   componentDidMount() {
     this.changeTitleDocument();
+    this.props.setFirstLoad(false);
   }
 
   getTreeGroups = (groups, departments) => {
@@ -171,7 +172,6 @@ class ArticleBodyContent extends React.Component {
     const { history, selectGroup } = this.props;
 
     this.changeTitleDocument(groupId);
-
 
     if (window.location.pathname.indexOf("/people/filter") > 0) {
       selectGroup(groupId);
@@ -256,6 +256,7 @@ export default inject(({ auth, peopleStore }) => {
     setIsLoading,
     isLoading,
     filterStore,
+    setFirstLoad,
   } = peopleStore;
   const { filter } = filterStore;
   const { groups } = groupsStore;
@@ -278,5 +279,6 @@ export default inject(({ auth, peopleStore }) => {
     setIsLoading,
     isLoading,
     filter,
+    setFirstLoad,
   };
 })(observer(BodyContent));

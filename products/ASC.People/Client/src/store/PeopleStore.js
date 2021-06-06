@@ -33,6 +33,8 @@ class PeopleStore {
   isInit = false;
   loadTimeout = null;
 
+  firstLoad = true;
+
   constructor() {
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this);
@@ -50,6 +52,7 @@ class PeopleStore {
       isLoading: observable,
       isLoaded: observable,
       isRefresh: observable,
+      firstLoad: observable,
       setIsRefresh: action,
       setIsLoading: action,
       setIsLoaded: action,
@@ -76,6 +79,10 @@ class PeopleStore {
     await authStore.settingsStore.getPortalPasswordSettings();
 
     this.setIsLoaded(true);
+  };
+
+  setFirstLoad = (firstLoad) => {
+    this.firstLoad = firstLoad;
   };
 
   setIsLoading = (isLoading) => {
