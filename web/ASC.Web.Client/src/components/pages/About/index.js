@@ -77,7 +77,7 @@ const VersionStyle = styled.div`
 
 const Body = ({ t }) => {
   useEffect(() => {
-    setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
+    setDocumentTitle(t("Common:About"));
   }, [t]);
 
   const gitHub = "GitHub";
@@ -117,7 +117,7 @@ const Body = ({ t }) => {
 
       <VersionStyle>
         <Text className="text_style" fontSize="14px" color="#A3A9AE">
-          {`${t("AboutCompanyVersion")}: ${config.version}`}
+          {`${t("Common:Version")}: ${config.version}`}
         </Text>
       </VersionStyle>
 
@@ -189,7 +189,7 @@ const Body = ({ t }) => {
   );
 };
 
-const BodyWrapper = withTranslation("About")(Body);
+const BodyWrapper = withTranslation(["About", "Common"])(Body);
 
 const About = (props) => {
   return (

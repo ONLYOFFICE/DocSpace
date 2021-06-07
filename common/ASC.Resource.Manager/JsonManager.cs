@@ -28,17 +28,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Xml;
 
 using ASC.Common.Logging;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ASC.Resource.Manager
 {
@@ -76,7 +75,7 @@ namespace ASC.Resource.Manager
             }
             else
             {
-                jsonObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
+                jsonObj = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);
             }
 
             var fileID = resourceData.AddFile(fileName, projectName, moduleName);
@@ -146,7 +145,7 @@ namespace ASC.Resource.Manager
                 {
                     if (File.Exists(zipFileName))
                     {
-                        var jObject = JObject.Parse(File.ReadAllText(zipFileName));
+                        var jObject = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(zipFileName, Encoding.UTF8));
                         foreach (var j in jObject)
                         {
                             toAdd.Add(new ResWord { Title = j.Key, ValueFrom = j.Value.ToString() });
@@ -160,7 +159,29 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
-                    toAdd.AddRange(fileWords.OrderBy(x => x.Title).Where(word => !wordsDictionary.ContainsKey(word.Title)));
+                    if (File.Exists(zipFileName))
+                    {
+                        var jObject = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(zipFileName, Encoding.UTF8));
+                        foreach(var f in fileWords.Where(word => !wordsDictionary.ContainsKey(word.Title)))
+                        {
+                            if (jObject.ContainsKey(f.Title))
+                            {
+                                toAdd.Add(f);
+                            }
+                        }
+
+                        foreach (var j in jObject)
+                        {
+                            if (!toAdd.Any(r=> r.Title == j.Key))
+                            {
+                                toAdd.Add(new ResWord { Title = j.Key, ValueFrom = j.Value, ValueTo = j.Value });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        toAdd.AddRange(fileWords.Where(word => !wordsDictionary.ContainsKey(word.Title)));
+                    }
                 }
 
                 foreach (var word in toAdd.Where(r => r != null))
@@ -178,10 +199,13 @@ namespace ASC.Resource.Manager
                     wordsDictionary.Add(newKey.Keys.First(), newKey.Values.First());
                 }
 
-                using TextWriter writer = new StreamWriter(zipFileName);
+                var serialized = JsonSerializer.Serialize(wordsDictionary.OrderBy(r => r.Key).ToDictionary(r => r.Key, r => r.Value),
+                    new JsonSerializerOptions() { 
+                        WriteIndented = true,
+                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                    });
 
-                var obj = JsonConvert.SerializeObject(wordsDictionary, Formatting.Indented);
-                writer.Write(obj);
+                File.WriteAllText(zipFileName, serialized, Encoding.UTF8);
 
             }
 

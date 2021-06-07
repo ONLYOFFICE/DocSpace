@@ -165,5 +165,7 @@ const FilesRowContent = ({
 };
 
 export default withRouter(
-  withTranslation("Home")(withContent(withBadges(FilesRowContent)))
+  withTranslation(["Home", "Translations"])(
+    withContent(withBadges(FilesRowContent))
+  )
 );

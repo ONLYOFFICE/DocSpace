@@ -64,14 +64,16 @@ const DeleteThirdPartyDialog = (props) => {
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
-      <ModalDialog.Header>{t("DeleteThirdParty")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("Translations:DeleteThirdParty")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
         {t("DeleteThirdPartyAlert", { service: removeItem.title })}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
           isLoading={isLoading}
-          label={t("OKButton")}
+          label={t("Common:OKButton")}
           size="big"
           primary
           onClick={onDeleteThirdParty}
@@ -127,6 +129,8 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation("DeleteThirdPartyDialog")(observer(DeleteThirdPartyDialog))
+    withTranslation(["DeleteThirdPartyDialog", "Common", "Translations"])(
+      observer(DeleteThirdPartyDialog)
+    )
   )
 );

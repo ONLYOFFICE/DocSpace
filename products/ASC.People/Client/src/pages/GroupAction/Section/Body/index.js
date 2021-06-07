@@ -94,7 +94,7 @@ const SectionBodyContent = ({
   isLoaded,
   tReady,
 }) => {
-  const { t, i18n } = useTranslation("GroupAction");
+  const { t, i18n } = useTranslation(["GroupAction", "Translations"]);
 
   const [inLoading, setInLoading] = useState(false);
   const [isHeadSelectorOpen, setIsHeadSelectorOpen] = useState(false);
@@ -157,7 +157,7 @@ const SectionBodyContent = ({
 
   const onSave = () => {
     if (!groupName || !groupName.trim().length) {
-      setNameError(t("EmptyFieldError"));
+      setNameError(t("Common:EmptyFieldError"));
       return false;
     }
 
@@ -229,7 +229,7 @@ const SectionBodyContent = ({
     if (nameError) setNameError(null);
   };
 
-  const buttonLabel = id ? t("SaveButton") : t("AddButton");
+  const buttonLabel = id ? t("Common:SaveButton") : t("Common:AddButton");
 
   return (
     <MainContainer>
@@ -274,7 +274,7 @@ const SectionBodyContent = ({
                 newGroupManager.default ||
                 newGroupManager.key === ID_NO_GROUP_MANAGER ||
                 newGroupManager.displayName === "profile removed"
-                  ? { ...newGroupManager, label: t("LblSelect") }
+                  ? { ...newGroupManager, label: t("SelectAction") }
                   : newGroupManager
               }
               scaled={true}
@@ -291,7 +291,7 @@ const SectionBodyContent = ({
               onCancel={onCancelSelector}
               groupsCaption={groupsCaption}
               defaultOption={me}
-              defaultOptionLabel={t("MeLabel")}
+              defaultOptionLabel={t("Common:MeLabel")}
               employeeStatus={1}
               groupList={groups}
             />
@@ -311,7 +311,7 @@ const SectionBodyContent = ({
               isDisabled={inLoading}
               selectedOption={{
                 key: 0,
-                label: t("AddMembers"),
+                label: t("Translations:AddMembers"),
                 default: true,
               }}
               scaled={true}
@@ -329,7 +329,7 @@ const SectionBodyContent = ({
               searchPlaceHolderLabel={t("SearchAddedMembers")}
               groupsCaption={groupsCaption}
               defaultOption={me}
-              defaultOptionLabel={t("MeLabel")}
+              defaultOptionLabel={t("Common:MeLabel")}
               selectedOptions={newGroupMembers}
               employeeStatus={1}
               groupList={groups}
@@ -372,7 +372,7 @@ const SectionBodyContent = ({
               onClick={onSave}
             />
             <Button
-              label={t("CancelButton")}
+              label={t("Common:CancelButton")}
               className="cancel-button"
               size="big"
               isDisabled={inLoading}

@@ -1,0 +1,10 @@
+{
+  "ChangePasswordSuccess": "Heslo bolo úspešne zmenené",
+  "DeleteProfileBtn": "Vymazať môj účet",
+  "DeleteProfileConfirmation": "Pozor! Idete si zmazať účet.",
+  "DeleteProfileConfirmationInfo": "Odkliknutím \"Vymazať môj účet\" súhlasíte s našou politikou Ochrany súkromia.",
+  "EmailAndPasswordCopiedToClipboard": "E-mail a heslo boli skopírované do schránky",
+  "FirstName": "Krstné meno",
+  "LoginRegistryButton": "Pripojiť",
+  "LoginWithAccount": "alebo sa prihláste s:"
+}

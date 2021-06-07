@@ -4,10 +4,12 @@ import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 const Error520 = ({ match }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["Common"]);
   const { error } = (match && match.params) || {};
 
-  return <ErrorContainer headerText={t("Error520Text")} bodyText={error} />;
+  return (
+    <ErrorContainer headerText={t("SomethingWentWrong")} bodyText={error} />
+  );
 };
 
 Error520.propTypes = {
