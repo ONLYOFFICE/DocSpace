@@ -94,11 +94,21 @@ const GroupActionContainer = withTranslation(["GroupAction", "Common"])(
   GroupAction
 );
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    setDocumentTitle: auth.setDocumentTitle,
-    fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
-    group: peopleStore.selectedGroupStore.targetedGroup,
-    resetGroup: peopleStore.selectedGroupStore.resetGroup,
-    setFirstLoad: peopleStore.setFirstLoad,
-  }))(observer(GroupActionContainer))
+  inject(({ auth, peopleStore }) => {
+    const { setDocumentTitle } = auth;
+    const { selectedGroupStore, loadingStore } = peopleStore;
+    const {
+      setTargetedGroup: fetchGroup,
+      targetedGroup: group,
+      resetGroup,
+    } = selectedGroupStore;
+    const { setFirstLoad } = loadingStore;
+    return {
+      setDocumentTitle,
+      fetchGroup,
+      group,
+      resetGroup,
+      setFirstLoad,
+    };
+  })(observer(GroupActionContainer))
 );

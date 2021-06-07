@@ -253,10 +253,8 @@ export default inject(({ auth, peopleStore }) => {
     groupsStore,
     selectedGroupStore,
     editingFormStore,
-    setIsLoading,
-    isLoading,
     filterStore,
-    setFirstLoad,
+    loadingStore,
   } = peopleStore;
   const { filter } = filterStore;
   const { groups } = groupsStore;
@@ -264,6 +262,7 @@ export default inject(({ auth, peopleStore }) => {
   const { isEdit, setIsVisibleDataLossDialog } = editingFormStore;
   const { selectedGroup, selectGroup } = selectedGroupStore;
   const selectedKeys = selectedGroup ? [selectedGroup] : ["root"];
+  const { setFirstLoad, setIsLoading, isLoading } = loadingStore;
   return {
     setDocumentTitle,
     isLoaded,

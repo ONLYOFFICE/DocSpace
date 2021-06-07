@@ -122,13 +122,30 @@ ProfileAction.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    setProviders: peopleStore.usersStore.setProviders,
-    setDocumentTitle: auth.setDocumentTitle,
-    isEdit: peopleStore.editingFormStore.isEdit,
-    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    setFirstLoad: peopleStore.setFirstLoad,
-  }))(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
+  inject(({ auth, peopleStore }) => {
+    const { setDocumentTitle } = auth;
+    const {
+      usersStore,
+      editingFormStore,
+      targetUserStore,
+      loadingStore,
+    } = peopleStore;
+    const { setProviders } = usersStore;
+    const { isEdit, setIsEditingForm } = editingFormStore;
+    const {
+      getTargetUser: fetchProfile,
+      targetUser: profile,
+    } = targetUserStore;
+    const { setFirstLoad } = loadingStore;
+
+    return {
+      setProviders,
+      setDocumentTitle,
+      isEdit,
+      setIsEditingForm,
+      fetchProfile,
+      profile,
+      setFirstLoad,
+    };
+  })(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );

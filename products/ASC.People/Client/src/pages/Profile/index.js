@@ -115,13 +115,24 @@ Profile.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    setDocumentTitle: auth.setDocumentTitle,
-    isAdmin: auth.isAdmin,
-    language: auth.language,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    setFirstLoad: peopleStore.setFirstLoad,
-  }))(observer(withTranslation(["Profile", "Common"])(Profile)))
+  inject(({ auth, peopleStore }) => {
+    const { setDocumentTitle, isAdmin, language } = auth;
+    const { targetUserStore, loadingStore } = peopleStore;
+    const {
+      resetTargetUser: resetProfile,
+      getTargetUser: fetchProfile,
+      targetUser: profile,
+    } = targetUserStore;
+    const { setFirstLoad } = loadingStore;
+    console.log(targetUserStore);
+    return {
+      setDocumentTitle,
+      isAdmin,
+      language,
+      resetProfile,
+      fetchProfile,
+      profile,
+      setFirstLoad,
+    };
+  })(observer(withTranslation(["Profile", "Common"])(Profile)))
 );
