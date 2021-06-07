@@ -11,6 +11,7 @@ import Dialogs from "./Dialogs";
 import { isMobile } from "react-device-detect";
 
 import withLoader from "../../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
 
 const SectionBodyContent = ({ peopleList, tReady }) => {
   return peopleList.length > 0 ? (
@@ -45,4 +46,10 @@ export default inject(({ auth, peopleStore }) => ({
   isRefresh: peopleStore.isRefresh,
   peopleList: peopleStore.usersStore.peopleList,
   isLoading: peopleStore.isLoading,
-}))(withTranslation("Home")(withLoader(observer(SectionBodyContent))));
+}))(
+  withTranslation("Home")(
+    withLoader(observer(SectionBodyContent))(
+      <Loaders.Rows isRectangle={false} />
+    )
+  )
+);
