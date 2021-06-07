@@ -176,21 +176,32 @@ class UploadDataStore {
     return promise;
   };
 
-  convertFile = async (fileId, t, toFolderId) => {
+  setConversionPercent = (percent, alert) => {
+    if (this.uploaded) {
+      this.primaryProgressDataStore.setPrimaryProgressBarData({
+        icon: "file",
+        percent,
+        visible: true,
+        alert,
+      });
+    } else if (alert) {
+      this.primaryProgressDataStore.setPrimaryProgressBarData({ alert });
+    }
+  };
+
+  getConversationPercent = (percent, fileIndex) => {
+    const conversionFilesLength = this.filesToConversion.length;
+    return !percent
+      ? (fileIndex / conversionFilesLength) * 100
+      : percent / conversionFilesLength;
+  };
+
+  convertFile = async () => {
     const { convertItemId, setConvertItemId } = this.dialogsStore;
     convertItemId && setConvertItemId(null);
 
-    // const {
-    //   setSecondaryProgressBarData,
-    //   clearSecondaryProgressData,
-    // } = this.secondaryProgressDataStore;
-
-    // setSecondaryProgressBarData({
-    //   icon: "file",
-    //   //label: t("ConvertingLabel", { file: 0, totalFiles: total }),
-    //   percent: 0,
-    //   visible: true,
-    // });
+    this.setConversionPercent(0);
+    let index = 1;
 
     for (let conversionItem of this.filesToConversion) {
       const { fileId, toFolderId } = conversionItem;
@@ -207,8 +218,9 @@ class UploadDataStore {
 
           error = res && res[0] && res[0].error;
           if (error.length) {
-            //setSecondaryProgressBarData({ icon: "file", visible: true, alert: true, });
-            //setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            const percent = this.getConversationPercent(100 * index);
+            this.setConversionPercent(percent, true);
+
             runInAction(() => (conversionItem.error = error));
             this.refreshFiles(toFolderId, false);
             break;
@@ -217,19 +229,23 @@ class UploadDataStore {
             runInAction(() => (conversionItem.convertProgress = progress));
             conversionItem.action = "converted";
             this.refreshFiles(toFolderId, false);
+
+            const percent = this.getConversationPercent(100 * index);
+            this.setConversionPercent(percent);
+
             break;
-          } /*  else {
-            setSecondaryProgressBarData({
-              icon: "file",
-              //label: t("ConvertingLabel", { file: index + 1, totalFiles: total }),
-              percent: progress,
-              visible: true,
-            });
-          } */
+          } else {
+            const percent = this.getConversationPercent(
+              progress * index,
+              index - 1
+            );
+            this.setConversionPercent(percent);
+          }
         }
       }
+      index++;
     }
-    this.finishUploadFiles();
+    this.uploaded && this.finishUploadFiles();
   };
 
   convertUploadedFiles = (t) => {

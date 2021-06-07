@@ -3,7 +3,7 @@ import styled, { css, keyframes } from "styled-components";
 
 const backgroundColor = "none";
 const color = "#2DA7DB";
-const convertColor = "#BCDF7E";
+const convertColor = "#20d21f";
 
 const StyledCircleWrap = styled.div`
   width: 16px;

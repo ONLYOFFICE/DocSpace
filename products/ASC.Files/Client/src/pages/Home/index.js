@@ -28,6 +28,13 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 
+const color = "#2DA7DB";
+const convertColor = "#20d21f";
+
+//#BCDF7E
+//#20d21f
+//#b9d21f
+
 class PureHome extends React.Component {
   componentDidMount() {
     const {
@@ -177,11 +184,18 @@ class PureHome extends React.Component {
   };
 
   showUploadPanel = () => {
-    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+    const {
+      uploaded,
+      converted,
+      uploadPanelVisible,
+      setUploadPanelVisible,
+      clearPrimaryProgressData,
+      primaryProgressDataVisible,
+    } = this.props;
+    setUploadPanelVisible(!uploadPanelVisible);
 
-    //    this.props.primaryProgressDataVisible &&
-    //      this.props.uploaded &&
-    //      this.props.clearPrimaryProgressData();
+    if (primaryProgressDataVisible && uploaded && converted)
+      clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {
@@ -234,7 +248,11 @@ class PureHome extends React.Component {
 
       isLoading,
       dragging,
+
+      uploaded,
     } = this.props;
+
+    const primaryProgressBarColor = uploaded ? convertColor : color;
 
     return (
       <>
@@ -251,6 +269,7 @@ class PureHome extends React.Component {
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}
+          primaryProgressBarColor={primaryProgressBarColor}
           showPrimaryButtonAlert={primaryProgressDataAlert}
           showSecondaryProgressBar={secondaryProgressDataStoreVisible}
           secondaryProgressBarValue={secondaryProgressDataStorePercent}
@@ -347,7 +366,12 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
     } = secondaryProgressDataStore;
 
-    const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
+    const {
+      setUploadPanelVisible,
+      startUpload,
+      uploaded,
+      converted,
+    } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -364,6 +388,7 @@ export default inject(
       filter,
       viewAs,
       uploaded,
+      converted,
       isRecycleBinFolder,
       isVisitor: auth.userStore.user.isVisitor,
 
