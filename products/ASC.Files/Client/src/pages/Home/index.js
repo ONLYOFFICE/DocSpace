@@ -22,7 +22,6 @@ import {
   SectionPagingContent,
 } from "./Section";
 
-import { ConvertDialog } from "../../components/dialogs";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";

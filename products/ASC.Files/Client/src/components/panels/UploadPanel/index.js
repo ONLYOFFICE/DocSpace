@@ -24,15 +24,17 @@ class UploadPanelComponent extends React.Component {
 
   onClose = () => {
     const {
-      setUploadPanelVisible,
-      uploadPanelVisible,
       uploaded,
       converted,
       clearUploadData,
+      uploadPanelVisible,
+      setUploadPanelVisible,
+      clearPrimaryProgressData,
     } = this.props;
     setUploadPanelVisible(!uploadPanelVisible);
     if (uploaded && converted) {
       clearUploadData();
+      clearPrimaryProgressData();
     }
   };
   componentDidMount() {
@@ -130,7 +132,7 @@ class UploadPanelComponent extends React.Component {
 
 const UploadPanel = withTranslation("UploadPanel")(UploadPanelComponent);
 
-export default inject(({ dialogsStore, uploadDataStore }) => {
+export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
   //const { sharingPanelVisible } = dialogsStore;
 
   const {
@@ -141,7 +143,10 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     uploadPanelVisible,
     setUploadPanelVisible,
     files,
+    primaryProgressDataStore,
   } = uploadDataStore;
+
+  const { clearPrimaryProgressData } = primaryProgressDataStore;
 
   return {
     //sharingPanelVisible,
@@ -153,5 +158,6 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     clearUploadData,
     cancelUpload,
     uploadDataFiles: files,
+    clearPrimaryProgressData,
   };
 })(observer(UploadPanel));
