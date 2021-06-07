@@ -79,6 +79,11 @@ namespace ASC.Files.Core
             FileTracker = fileTracker;
         }
 
+        public File()
+        {
+
+        }
+
         public int Version { get; set; }
 
         [JsonPropertyName("version_group")]
@@ -238,15 +243,15 @@ namespace ASC.Files.Core
         public object NativeAccessor { get; set; }
 
         [NonSerialized]
-        private FileTrackerHelper FileTracker;
+        public FileTrackerHelper FileTracker;
 
         [NonSerialized]
-        private readonly FilesLinkUtility FilesLinkUtility;
+        public FilesLinkUtility FilesLinkUtility;
 
         [NonSerialized]
-        private readonly FileUtility FileUtility;
+        public FileUtility FileUtility;
 
         [NonSerialized]
-        private readonly FileConverter FileConverter;
+        public FileConverter FileConverter;
     }
 }

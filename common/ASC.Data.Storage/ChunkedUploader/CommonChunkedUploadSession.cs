@@ -27,7 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 
 namespace ASC.Core.ChunkedUploader
 {
@@ -54,7 +56,7 @@ namespace ASC.Core.ChunkedUploader
 
         public string CultureName { get; set; }
 
-        public Dictionary<string, object> Items = new Dictionary<string, object>();
+        public Dictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
 
         private const string TempPathKey = "TempPath";
         public string TempPath
@@ -91,16 +93,45 @@ namespace ASC.Core.ChunkedUploader
             return Items.ContainsKey(key) && Items[key] is T t ? t : default;
         }
 
-        public Stream Serialize()
+        public virtual Stream Serialize()
         {
-            var stream = new MemoryStream();
-            new BinaryFormatter().Serialize(stream, this);
-            return stream;
+            return null;
         }
 
         public static CommonChunkedUploadSession Deserialize(Stream stream)
         {
-            return (CommonChunkedUploadSession)new BinaryFormatter().Deserialize(stream);
+            var sr = new StreamReader(stream);
+            string str = sr.ReadToEnd();
+            var CommonChunkedUploadSession =  JsonSerializer.Deserialize<CommonChunkedUploadSession>(str);
+            CommonChunkedUploadSession.TransformItems();
+            return CommonChunkedUploadSession;
+        }
+
+        public void TransformItems()
+        {
+            var newItems = new Dictionary<string, object>();
+            foreach(var item in Items)
+            {
+                if (item.Value != null)
+                {
+                    if (item.Value.GetType() == typeof(JsonElement))
+                    {
+                        var value = (JsonElement)item.Value;
+                        if (value.ValueKind == JsonValueKind.String)
+                        {
+                            newItems.Add(item.Key, item.Value.ToString());
+                        }
+                        if (value.ValueKind == JsonValueKind.Array)
+                        {
+                            newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
+                        }
+                    }
+                    else
+                    {
+                        newItems.Add(item.Key, item.Value);
+                    }
+                }
+            }
         }
 
         public virtual object Clone()

@@ -40,6 +40,11 @@ namespace ASC.Files.Core
             Global = global;
         }
 
+        public FileEntry()
+        {
+
+        }
+
         public virtual string Title { get; set; }
 
         [JsonPropertyName("create_by_id")]
@@ -56,14 +61,12 @@ namespace ASC.Files.Core
         public string CreateOnString
         {
             get { return CreateOn.Equals(default) ? null : CreateOn.ToString("g"); }
-            set { throw new NotImplementedException(); }
         }
 
         [JsonPropertyName("modified_on")]
         public string ModifiedOnString
         {
             get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
-            set { throw new NotImplementedException(); }
         }
 
         [JsonPropertyName("modified_by_id")]
@@ -105,7 +108,7 @@ namespace ASC.Files.Core
         public FileEntryType FileEntryType;
 
         [NonSerialized]
-        protected Global Global;
+        public Global Global;
 
         private string _modifiedByString;
         private string _createByString;
@@ -127,6 +130,11 @@ namespace ASC.Files.Core
     {
         public FileEntry(Global global) : base(global)
         {
+        }
+
+        public FileEntry()
+        {
+
         }
 
         public T ID { get; set; }
