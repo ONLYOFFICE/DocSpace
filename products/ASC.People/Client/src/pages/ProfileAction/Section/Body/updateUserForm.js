@@ -303,9 +303,9 @@ class UpdateUserForm extends React.Component {
   }
 
   onCancel() {
-    const { filter, setFilter, history } = this.props;
+    const { filter, setFilter, history, personal } = this.props;
 
-    if (document.referrer) {
+    if (document.referrer || personal) {
       history.goBack();
     } else {
       history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
@@ -943,6 +943,7 @@ export default withRouter(
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
     isSelf: peopleStore.targetUserStore.isMe,
+    personal: auth.settingsStore.personal,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(
