@@ -697,17 +697,28 @@ set_core_machinekey () {
 	fi
 }
 
-copy_files () {
+download_files () {
 	mkdir -p ${BASE_DIR}
 	mkdir -p ${BASE_DIR}/.private/
+	mkdir -p ${BASE_DIR}/config/mysql/conf.d/
 
-	if ! command_exists git; then
-		install_service git
+	if ! command_exists wget; then
+		install_service wget
 	fi
-
-	git clone https://github.com/ONLYOFFICE/AppServer.git
-	cp -r ./AppServer/build/install/docker/{.[!.],}* $BASE_DIR/
-	rm -rf AppServer/
+	
+	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/AppServer/develop/build/install/docker"
+	wget -O $BASE_DIR/.env "${DOWNLOAD_URL_PREFIX}/.env"
+	wget -O $BASE_DIR/appserver.yml "${DOWNLOAD_URL_PREFIX}/appserver.yml"
+	wget -O $BASE_DIR/db.yml "${DOWNLOAD_URL_PREFIX}/db.yml"
+	wget -O $BASE_DIR/ds.yml "${DOWNLOAD_URL_PREFIX}/ds.yml"
+	wget -O $BASE_DIR/config/createdb.sql "${DOWNLOAD_URL_PREFIX}/config/createdb.sql"
+	wget -O $BASE_DIR/config/onlyoffice.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.sql"
+	wget -O $BASE_DIR/config/onlyoffice.data.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.data.sql"
+	wget -O $BASE_DIR/config/mysql/conf.d/mysql.cnf "${DOWNLOAD_URL_PREFIX}/config/mysql/conf.d/mysql.cnf"
+	wget -O $BASE_DIR/config/onlyoffice.resources.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.resources.sql"
+	wget -O $BASE_DIR/config/onlyoffice.upgradev110.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev110.sql"
+	wget -O $BASE_DIR/config/onlyoffice.upgradev111.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev111.sql"
+	wget -O $BASE_DIR/config/onlyoffice.upgradev115.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev115.sql"
 
 	if [[ -n ${ENV} ]]; then
 		sed -i "s/STATUS=.*/STATUS=\"${ENV}\"/g" $BASE_DIR/.env
@@ -759,6 +770,7 @@ install_appserver () {
 	reconfigure ELK_HOST ${ELK_HOST}
 	reconfigure SERVICE_PORT ${SERVICE_PORT}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
+	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 
 	if [[ -n $EXTERNAL_PORT ]]; then
 		sed -i "s/:8092/:${EXTERNAL_PORT}/g" $BASE_DIR/docker-entrypoint.sh
@@ -769,10 +781,6 @@ install_appserver () {
 
 start_installation () {
 	root_checking
-
-	set_jwt_secret
-
-	set_core_machinekey
 
 	get_os_info
 
@@ -795,7 +803,11 @@ start_installation () {
 
 	docker_login
 
-	copy_files
+	download_files
+
+	set_jwt_secret
+
+	set_core_machinekey
 
 	create_network
 
