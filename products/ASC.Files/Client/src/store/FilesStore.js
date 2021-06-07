@@ -416,7 +416,7 @@ class FilesStore {
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
-    const { isDesktopClient } = this.settingsStore;
+    const { isDesktopClient, personal } = this.settingsStore;
 
     if (isFile) {
       let fileOptions = [
@@ -453,6 +453,16 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (personal) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "owner-change",
+          "link-for-portal-users",
+          "docu-sign",
+          "mark-read",
+          "unsubscribe",
+        ]);
+      }
 
       if (!this.isWebEditSelected) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
@@ -671,6 +681,16 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (personal) {
+        folderOptions = this.removeOptions(folderOptions, [
+          "owner-change",
+          "link-for-portal-users",
+          "docu-sign",
+          "mark-read",
+          "unsubscribe",
+        ]);
+      }
 
       if (isPrivacyFolder) {
         folderOptions = this.removeOptions(folderOptions, ["copy"]);

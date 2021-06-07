@@ -45,7 +45,9 @@ const Header = styled.header`
     font-size: 21px;
     line-height: 0;
     margin-top: -5px;
-    cursor: pointer;
+    cursor: ${(props) => (props.isPersonal ? "default" : "pointer")};
+
+    ${(props) => props.isPersonal && `margin-left: 20px;`}
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-drag: none;
@@ -74,7 +76,8 @@ const Header = styled.header`
   }
 
   .header-logo-icon {
-    width: 146px;
+    width: ${(props) => (props.isPersonal ? "254px" : "146px")};
+    ${(props) => props.isPersonal && `margin-left: 17px;`}
     height: 24px;
     position: relative;
     padding: 0 20px 0 6px;
@@ -126,6 +129,7 @@ const HeaderComponent = ({
   isAuthenticated,
   isAdmin,
   backdropClick,
+  isPersonal,
   ...props
 }) => {
   const { t } = useTranslation("Common");
@@ -159,23 +163,38 @@ const HeaderComponent = ({
       <Header
         module={currentProductName}
         isLoaded={isLoaded}
+        isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
       >
-        <NavItem
-          badgeNumber={totalNotifications}
-          onClick={onClick}
-          noHover={true}
-        />
+        {!isPersonal && (
+          <NavItem
+            badgeNumber={totalNotifications}
+            onClick={onClick}
+            noHover={true}
+          />
+        )}
 
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
-          <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
+          {!isPersonal ? (
+            <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
+          ) : (
+            <img
+              alt="logo"
+              className="header-logo-icon"
+              src={combineUrl(
+                AppServerConfig.proxyURL,
+                "/static/images/personal.logo.react.svg"
+              )}
+            />
+          )}
         </LinkWithoutRedirect>
+
         <Headline
           className="header-module-title"
           type="header"
           color="#FFF"
-          onClick={onClick}
+          {...(!isPersonal && { onClick: onClick })}
         >
           {currentProductName}
         </Headline>
@@ -281,12 +300,18 @@ export default inject(({ auth }) => {
     availableModules,
     version,
   } = auth;
-  const { logoUrl, defaultPage, currentProductId } = settingsStore;
+  const {
+    logoUrl,
+    defaultPage,
+    currentProductId,
+    personal: isPersonal,
+  } = settingsStore;
   const { totalNotifications } = moduleStore;
 
   //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
 
   return {
+    isPersonal,
     isAdmin,
     defaultPage,
     logoUrl,

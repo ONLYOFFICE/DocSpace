@@ -551,6 +551,7 @@ class UpdateUserForm extends React.Component {
       isMy,
       isSelf,
       language,
+      personal,
     } = this.props;
     const {
       guestCaption,
@@ -776,36 +777,40 @@ class UpdateUserForm extends React.Component {
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
             />
-            <RadioField
-              labelText={`${t("Common:Type")}:`}
-              radioName="isVisitor"
-              radioValue={profile.isVisitor.toString()}
-              radioOptions={[
-                { value: "true", label: guestCaption },
-                { value: "false", label: userCaption },
-              ]}
-              radioIsDisabled={
-                isLoading || disableProfileType || radioIsDisabled || isMy
-              }
-              radioOnChange={this.onUserTypeChange}
-              tooltipContent={tooltipTypeContent}
-              helpButtonHeaderContent={t("Common:Type")}
-            />
-            <DateField
-              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-              labelText={`${regDateCaption}:`}
-              inputName="workFrom"
-              inputValue={
-                profile.workFrom ? new Date(profile.workFrom) : undefined
-              }
-              inputIsDisabled={isLoading || !isAdmin}
-              inputOnChange={this.onWorkFromDateChange}
-              inputTabIndex={7}
-              calendarMinDate={
-                profile.birthday ? new Date(profile.birthday) : new Date()
-              }
-              locale={language}
-            />
+            {!personal && (
+              <RadioField
+                labelText={`${t("Common:Type")}:`}
+                radioName="isVisitor"
+                radioValue={profile.isVisitor.toString()}
+                radioOptions={[
+                  { value: "true", label: guestCaption },
+                  { value: "false", label: userCaption },
+                ]}
+                radioIsDisabled={
+                  isLoading || disableProfileType || radioIsDisabled || isMy
+                }
+                radioOnChange={this.onUserTypeChange}
+                tooltipContent={tooltipTypeContent}
+                helpButtonHeaderContent={t("Common:Type")}
+              />
+            )}
+            {!personal && (
+              <DateField
+                calendarHeaderContent={`${t("CalendarSelectDate")}:`}
+                labelText={`${regDateCaption}:`}
+                inputName="workFrom"
+                inputValue={
+                  profile.workFrom ? new Date(profile.workFrom) : undefined
+                }
+                inputIsDisabled={isLoading || !isAdmin}
+                inputOnChange={this.onWorkFromDateChange}
+                inputTabIndex={7}
+                calendarMinDate={
+                  profile.birthday ? new Date(profile.birthday) : new Date()
+                }
+                locale={language}
+              />
+            )}
             <TextField
               labelText={`${t("Translations:Location")}:`}
               inputName="location"
@@ -814,15 +819,17 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onInputChange}
               inputTabIndex={8}
             />
-            <TextField
-              labelText={`${userPostCaption}:`}
-              inputName="title"
-              inputValue={profile.title}
-              inputIsDisabled={isLoading || !isAdmin}
-              inputOnChange={this.onInputChange}
-              inputTabIndex={9}
-            />
-            {!isMy && (
+            {!personal && (
+              <TextField
+                labelText={`${userPostCaption}:`}
+                inputName="title"
+                inputValue={profile.title}
+                inputIsDisabled={isLoading || !isAdmin}
+                inputOnChange={this.onInputChange}
+                inputTabIndex={9}
+              />
+            )}
+            {!isMy && !personal && (
               <DepartmentField
                 labelText={`${groupCaption}:`}
                 isDisabled={isLoading || !isAdmin}
@@ -840,16 +847,18 @@ class UpdateUserForm extends React.Component {
             )}
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("Translations:Comments")}>
-          <Textarea
-            placeholder={t("WriteComment")}
-            name="notes"
-            value={profile.notes}
-            isDisabled={isLoading}
-            onChange={this.onInputChange}
-            tabIndex={10}
-          />
-        </InfoFieldContainer>
+        {!personal && (
+          <InfoFieldContainer headerText={t("Translations:Comments")}>
+            <Textarea
+              placeholder={t("WriteComment")}
+              name="notes"
+              value={profile.notes}
+              isDisabled={isLoading}
+              onChange={this.onInputChange}
+              tabIndex={10}
+            />
+          </InfoFieldContainer>
+        )}
         <InfoFieldContainer headerText={t("ContactInformation")}>
           <ContactsField
             pattern={pattern.contact}

@@ -270,7 +270,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { profile, isAdmin, t, isSelf } = this.props;
+    const { profile, isAdmin, t, isSelf, personal } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -313,7 +313,7 @@ class SectionBodyContent extends React.PureComponent {
           //culture={culture}
         />
 
-        {isSelf && this.oauthDataExists() && (
+        {!personal && isSelf && this.oauthDataExists() && (
           <ToggleWrapper>
             <ToggleContent label={t("LoginSettings")} isOpen={true}>
               <ProviderButtonsWrapper>
@@ -322,7 +322,7 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {isSelf && false && (
+        {!personal && isSelf && false && (
           <ToggleWrapper isSelf={true}>
             <ToggleContent label={t("Subscriptions")} isOpen={true}>
               <Text as="span">
@@ -378,6 +378,7 @@ export default withRouter(
     setProviders: peopleStore.usersStore.setProviders,
     getOAuthToken: auth.settingsStore.getOAuthToken,
     getLoginLink: auth.settingsStore.getLoginLink,
+    personal: auth.settingsStore.personal,
   }))(
     observer(
       withTranslation(["Profile", "Common", "Translations"])(SectionBodyContent)
