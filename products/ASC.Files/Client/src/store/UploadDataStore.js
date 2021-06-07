@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import uniqueid from "lodash/uniqueId";
@@ -203,18 +203,18 @@ class UploadDataStore {
           const res = await this.getConversationProgress(fileId);
           progress = res && res[0] && res[0].progress;
 
-          conversionItem.convertProgress = progress;
+          runInAction(() => (conversionItem.convertProgress = progress));
 
           error = res && res[0] && res[0].error;
           if (error.length) {
             //setSecondaryProgressBarData({ icon: "file", visible: true, alert: true, });
             //setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-            conversionItem.error = error;
+            runInAction(() => (conversionItem.error = error));
             this.refreshFiles(toFolderId, false);
             break;
           }
           if (progress === 100) {
-            conversionItem.convertProgress = progress;
+            runInAction(() => (conversionItem.convertProgress = progress));
             conversionItem.action = "converted";
             this.refreshFiles(toFolderId, false);
             break;
@@ -442,9 +442,11 @@ class UploadDataStore {
       len = files.length;
     }
 
-    !this.filesToConversion.length
-      ? this.finishUploadFiles()
-      : (this.uploaded = true);
+    if (!this.filesToConversion.length) {
+      this.finishUploadFiles();
+    } else {
+      runInAction(() => (this.uploaded = true));
+    }
   };
 
   startSessionFunc = (indexOfFile, t) => {
