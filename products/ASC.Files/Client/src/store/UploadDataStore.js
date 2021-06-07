@@ -31,13 +31,15 @@ class UploadDataStore {
 
   files = [];
   filesSize = 0;
-  convertFiles = [];
+  tempConversionFiles = [];
+  filesToConversion = [];
   convertFilesSize = 0;
   uploadStatus = null;
   uploadToFolder = null;
   uploadedFiles = 0;
   percent = 0;
   uploaded = true;
+  converted = true;
 
   uploadPanelVisible = false;
 
@@ -93,11 +95,13 @@ class UploadDataStore {
 
   clearUploadData = () => {
     this.files = [];
+    this.filesToConversion = [];
     this.filesSize = 0;
     this.uploadStatus = null;
     this.uploadedFiles = 0;
     this.percent = 0;
     this.uploaded = true;
+    this.converted = true;
   };
 
   getUploadedFile = (id) => {
@@ -119,6 +123,7 @@ class UploadDataStore {
       uploadedFiles: this.uploadedFiles,
       percent: 100,
       uploaded: true,
+      converted: true,
     };
 
     if (newUploadData.files.length === 0) this.setUploadPanelVisible(false);
@@ -171,73 +176,80 @@ class UploadDataStore {
     return promise;
   };
 
-  convertFile = async (fileId, t, folderId) => {
+  convertFile = async (fileId, t, toFolderId) => {
     const { convertItemId, setConvertItemId } = this.dialogsStore;
     convertItemId && setConvertItemId(null);
 
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.secondaryProgressDataStore;
+    // const {
+    //   setSecondaryProgressBarData,
+    //   clearSecondaryProgressData,
+    // } = this.secondaryProgressDataStore;
 
-    setSecondaryProgressBarData({
-      icon: "file",
-      //label: t("ConvertingLabel", { file: 0, totalFiles: total }),
-      percent: 0,
-      visible: true,
-    });
+    // setSecondaryProgressBarData({
+    //   icon: "file",
+    //   //label: t("ConvertingLabel", { file: 0, totalFiles: total }),
+    //   percent: 0,
+    //   visible: true,
+    // });
 
-    const data = await convertFile(fileId);
-    if (data && data[0] && data[0].progress !== 100) {
-      let progress = data[0].progress;
-      let error = null;
-      while (progress < 100) {
-        const res = await this.getConversationProgress(fileId);
+    for (let conversionItem of this.filesToConversion) {
+      const { fileId, toFolderId } = conversionItem;
 
-        progress = res && res[0] && res[0].progress;
-        error = res && res[0] && res[0].error;
-        if (error.length) {
-          setSecondaryProgressBarData({
-            icon: "file",
-            visible: true,
-            alert: true,
-          });
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          this.refreshFiles(folderId, false);
-          return;
-        }
-        if (progress === 100) {
-          this.refreshFiles(folderId, false);
-          break;
-        } else {
-          setSecondaryProgressBarData({
-            icon: "file",
-            //label: t("ConvertingLabel", { file: index + 1, totalFiles: total }),
-            percent: progress,
-            visible: true,
-          });
+      const data = await convertFile(fileId);
+      if (data && data[0] && data[0].progress !== 100) {
+        let progress = data[0].progress;
+        let error = null;
+        while (progress < 100) {
+          const res = await this.getConversationProgress(fileId);
+          progress = res && res[0] && res[0].progress;
+
+          conversionItem.convertProgress = progress;
+
+          error = res && res[0] && res[0].error;
+          if (error.length) {
+            //setSecondaryProgressBarData({ icon: "file", visible: true, alert: true, });
+            //setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            conversionItem.error = error;
+            this.refreshFiles(toFolderId, false);
+            break;
+          }
+          if (progress === 100) {
+            conversionItem.convertProgress = progress;
+            conversionItem.action = "converted";
+            this.refreshFiles(toFolderId, false);
+            break;
+          } /*  else {
+            setSecondaryProgressBarData({
+              icon: "file",
+              //label: t("ConvertingLabel", { file: index + 1, totalFiles: total }),
+              percent: progress,
+              visible: true,
+            });
+          } */
         }
       }
     }
+    this.finishUploadFiles();
   };
 
   convertUploadedFiles = (t) => {
-    this.files = [...this.files, ...this.convertFiles];
+    this.files = [...this.files, ...this.tempConversionFiles];
 
     if (this.uploaded) {
       const newUploadData = {
-        files: this.convertFiles,
+        files: this.files,
         filesSize: this.convertFilesSize,
         uploadedFiles: this.uploadedFiles,
         percent: this.percent,
         uploaded: false,
+        converted: false,
       };
-      this.convertFiles = [];
+      this.tempConversionFiles = [];
 
       this.setUploadData(newUploadData);
       this.startUploadFiles(t);
     }
-    this.convertFiles = [];
+    this.tempConversionFiles = [];
   };
 
   startUpload = (uploadFiles, folderId, t) => {
@@ -259,13 +271,17 @@ class UploadDataStore {
         uniqueId: uniqueid("download_row-key_"),
         fileId: null,
         toFolderId: folderId,
-        action: needConvert ? "convert" : "upload",
+        //action: needConvert ? "convert" : "upload",
+        action: "upload",
         error: file.size ? null : t("EmptyFile"),
         fileInfo: null,
         cancel: false,
+        needConvert,
       };
 
-      needConvert ? this.convertFiles.push(newFile) : newFiles.push(newFile);
+      needConvert
+        ? this.tempConversionFiles.push(newFile)
+        : newFiles.push(newFile);
 
       filesSize += file.size;
       convertSize += file.size;
@@ -273,7 +289,10 @@ class UploadDataStore {
 
     this.convertFilesSize = convertSize;
 
-    if (this.convertFiles.length && !this.dialogsStore.convertDialogVisible)
+    if (
+      this.tempConversionFiles.length &&
+      !this.dialogsStore.convertDialogVisible
+    )
       this.dialogsStore.setConvertDialogVisible(true);
 
     //const showConvertDialog = uploadStatus === "pending";
@@ -284,6 +303,7 @@ class UploadDataStore {
       uploadedFiles: this.uploadedFiles,
       percent: this.percent,
       uploaded: false,
+      converted: !this.tempConversionFiles.length,
     };
 
     if (this.uploaded && newFiles.length) {
@@ -368,6 +388,7 @@ class UploadDataStore {
       });
 
       if (uploaded) {
+        this.files[indexOfFile].action = "uploaded";
         this.files[indexOfFile].fileId = fileId;
         this.files[indexOfFile].fileInfo = await getFileInfo(fileId);
         this.percent = newPercent;
@@ -379,10 +400,16 @@ class UploadDataStore {
 
     const currentFile = this.files[indexOfFile];
     if (!currentFile) return Promise.resolve();
-    const { fileId, toFolderId } = currentFile;
+    const { fileId, toFolderId, needConvert } = currentFile;
 
-    if (currentFile.action === "convert") {
-      this.convertFile(fileId, t, toFolderId);
+    if (needConvert) {
+      currentFile.action = "convert";
+      if (!this.filesToConversion.length) {
+        this.filesToConversion.push(currentFile);
+        this.convertFile(fileId, t, toFolderId);
+      } else {
+        this.filesToConversion.push(currentFile);
+      }
       return Promise.resolve();
     } else {
       return this.throttleRefreshFiles(toFolderId);
@@ -415,7 +442,9 @@ class UploadDataStore {
       len = files.length;
     }
 
-    this.finishUploadFiles();
+    !this.filesToConversion.length
+      ? this.finishUploadFiles()
+      : (this.uploaded = true);
   };
 
   startSessionFunc = (indexOfFile, t) => {
@@ -431,6 +460,8 @@ class UploadDataStore {
 
     if (!item) {
       console.error("Empty files");
+      return Promise.resolve();
+    } else if (item.action === "uploaded" || item.action === "convert") {
       return Promise.resolve();
     }
 
@@ -521,16 +552,23 @@ class UploadDataStore {
       uploadedFiles: 0,
       percent: 0,
       uploaded: true,
+      converted: true,
     };
 
     setTimeout(() => {
-      !this.primaryProgressDataStore.alert &&
+      if (!this.primaryProgressDataStore.alert) {
         this.primaryProgressDataStore.clearPrimaryProgressData();
+      }
+      // !this.primaryProgressDataStore.alert &&
+      //   this.primaryProgressDataStore.clearPrimaryProgressData();
 
-      uploadData.files =
-        this.uploadPanelVisible || this.primaryProgressDataStore.alert
-          ? this.files
-          : [];
+      if (this.uploadPanelVisible || this.primaryProgressDataStore.alert) {
+        uploadData.files = this.files;
+        uploadData.filesToConversion = this.filesToConversion;
+      } else {
+        uploadData.files = [];
+        uploadData.filesToConversion = [];
+      }
 
       this.setUploadData(uploadData);
     }, TIMEOUT);

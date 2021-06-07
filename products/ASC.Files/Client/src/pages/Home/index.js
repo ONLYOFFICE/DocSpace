@@ -179,9 +179,9 @@ class PureHome extends React.Component {
   showUploadPanel = () => {
     this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
 
-    this.props.primaryProgressDataVisible &&
-      this.props.uploaded &&
-      this.props.clearPrimaryProgressData();
+    //    this.props.primaryProgressDataVisible &&
+    //      this.props.uploaded &&
+    //      this.props.clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {

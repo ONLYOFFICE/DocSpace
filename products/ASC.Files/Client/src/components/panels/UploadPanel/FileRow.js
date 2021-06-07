@@ -69,6 +69,7 @@ const FileRow = (props) => {
     cancelCurrentUpload,
     //onMediaClick,
     currentFileUploadProgress,
+    conversationProgress,
     fileIcon,
     isMedia,
     ext,
@@ -132,11 +133,22 @@ const FileRow = (props) => {
           ) : (
             <></>
           )}
-          {item.fileId ? (
-            <ShareButton uniqueId={item.uniqueId} />
+          {item.fileId && !item.error ? (
+            item.action === "upload" ? (
+              <ShareButton uniqueId={item.uniqueId} />
+            ) : item.action === "convert" ? (
+              <div
+                className="upload_panel-icon"
+                data-id={item.uniqueId}
+                onClick={onCancelCurrentUpload}
+              >
+                <LoadingButton isConversion percent={conversationProgress} />
+              </div>
+            ) : (
+              <></>
+            )
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
-              {" "}
               <LoadErrorIcon
                 size="medium"
                 data-for="errorTooltip"
@@ -144,7 +156,7 @@ const FileRow = (props) => {
               />
               <Tooltip
                 id="errorTooltip"
-                offsetTop={64}
+                offsetTop={0}
                 getContent={(dataTip) => <Text fontSize="13px">{dataTip}</Text>}
                 effect="float"
                 place="left"
@@ -199,8 +211,11 @@ export default inject(
         ? loadingFile.percent
         : null;
 
+    const conversationProgress = item.convertProgress;
+
     return {
       currentFileUploadProgress,
+      conversationProgress,
       uploaded,
       isMedia,
       fileIcon,

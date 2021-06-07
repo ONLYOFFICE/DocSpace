@@ -173,7 +173,6 @@ export default function withFileActions(WrappedFileItem) {
         if (canConvert) {
           setConvertItemId(id);
           setConvertDialogVisible(true);
-          //TODO: need open file?
           return;
         }
 

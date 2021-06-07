@@ -11,7 +11,7 @@ import { inject, observer } from "mobx-react";
 const ConvertDialogComponent = (props) => {
   const {
     t,
-    tReady,
+    //tReady,
     visible,
     folderId,
     convertFile,
@@ -36,6 +36,8 @@ const ConvertDialogComponent = (props) => {
       ? convertFile(convertItemId, t, folderId)
       : convertUploadedFiles(t);
   };
+
+  const tReady = true;
 
   return tReady ? (
     <ModalDialogContainer visible={visible} onClose={onClose}>

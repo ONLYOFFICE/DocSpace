@@ -27,10 +27,11 @@ class UploadPanelComponent extends React.Component {
       setUploadPanelVisible,
       uploadPanelVisible,
       uploaded,
+      converted,
       clearUploadData,
     } = this.props;
     setUploadPanelVisible(!uploadPanelVisible);
-    if (uploaded) {
+    if (uploaded && converted) {
       clearUploadData();
     }
   };
@@ -58,6 +59,7 @@ class UploadPanelComponent extends React.Component {
       t,
       uploadPanelVisible,
       /* sharingPanelVisible, */ uploaded,
+      converted,
       uploadDataFiles,
     } = this.props;
 
@@ -133,6 +135,7 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
 
   const {
     uploaded,
+    converted,
     clearUploadData,
     cancelUpload,
     uploadPanelVisible,
@@ -144,6 +147,7 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     //sharingPanelVisible,
     uploadPanelVisible,
     uploaded,
+    converted,
 
     setUploadPanelVisible,
     clearUploadData,
