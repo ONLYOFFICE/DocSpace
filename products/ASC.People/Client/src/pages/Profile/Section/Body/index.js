@@ -130,7 +130,6 @@ class SectionBodyContent extends React.PureComponent {
       resetAppDialogVisible: false,
       backupCodesDialogVisible: false,
       tfa: null,
-      backupCodes: null,
     };
   }
   async componentDidMount() {
@@ -143,6 +142,7 @@ class SectionBodyContent extends React.PureComponent {
       setProviders,
       getTfaType,
       getBackupCodes,
+      setBackupCodes,
     } = this.props;
 
     //const isSelf = isMe(viewer, profile.userName);
@@ -164,24 +164,9 @@ class SectionBodyContent extends React.PureComponent {
 
     if (type && type !== "none") {
       const codes = await getBackupCodes();
-      this.setState({ backupCodes: codes });
+      setBackupCodes(codes);
     }
     window.loginCallback = this.loginCallback;
-  }
-
-  async componentDidUpdate(prevState) {
-    const { getBackupCodes } = this.props;
-    const { tfa } = this.state;
-
-    if (
-      tfa &&
-      tfa !== "none" &&
-      this.state.backupCodesDialogVisible !== prevState.backupCodesDialogVisible
-    ) {
-      await getBackupCodes().then((codes) =>
-        this.setState({ backupCodes: codes })
-      );
-    }
   }
 
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
@@ -333,12 +318,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const {
-      resetAppDialogVisible,
-      backupCodesDialogVisible,
-      tfa,
-      backupCodes,
-    } = this.state;
+    const { resetAppDialogVisible, backupCodesDialogVisible, tfa } = this.state;
     const {
       profile,
       cultures,
@@ -348,6 +328,7 @@ class SectionBodyContent extends React.PureComponent {
       t,
       isSelf,
       providers,
+      backupCodes,
     } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
@@ -494,6 +475,7 @@ class SectionBodyContent extends React.PureComponent {
             getNewBackupCodes={this.props.getNewBackupCodes}
             backupCodes={backupCodes}
             backupCodesCount={backupCodesCount}
+            setBackupCodes={this.props.setBackupCodes}
           />
         )}
       </ProfileWrapper>
@@ -518,6 +500,8 @@ export default withRouter(
     getNewBackupCodes: auth.tfaStore.getNewBackupCodes,
     resetTfaApp: auth.tfaStore.unlinkApp,
     getTfaType: auth.tfaStore.getTfaType,
+    backupCodes: auth.tfaStore.backupCodes,
+    setBackupCodes: auth.tfaStore.setBackupCodes,
   }))(
     observer(
       withTranslation(["Profile", "Common", "Translations"])(SectionBodyContent)
