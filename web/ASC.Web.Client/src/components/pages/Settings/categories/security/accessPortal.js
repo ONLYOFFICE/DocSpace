@@ -78,18 +78,8 @@ class AccessPortal extends PureComponent {
     setDocumentTitle(t("ManagementCategorySecurity"));
   }
 
-  async componentDidMount() {
-    const { admins, getUpdateListAdmin } = this.props;
-
+  componentDidMount() {
     showLoader();
-    if (isEmpty(admins, true)) {
-      try {
-        await getUpdateListAdmin();
-      } catch (error) {
-        toastr.error(error);
-      }
-    }
-
     hideLoader();
   }
 
@@ -100,7 +90,7 @@ class AccessPortal extends PureComponent {
   };
 
   render() {
-    const { t, admins } = this.props;
+    const { t } = this.props;
     return (
       <MainContainer>
         <div className="category-item-wrapper">
@@ -127,12 +117,8 @@ class AccessPortal extends PureComponent {
   }
 }
 
-export default inject(({ auth, setup }) => {
-  const { getUpdateListAdmin } = setup;
-  const { admins } = setup.security.accessRight;
+export default inject(({ auth }) => {
   return {
-    admins,
-    getUpdateListAdmin,
     organizationName: auth.settingsStore.organizationName,
   };
 })(withTranslation("Settings")(withRouter(AccessPortal)));
