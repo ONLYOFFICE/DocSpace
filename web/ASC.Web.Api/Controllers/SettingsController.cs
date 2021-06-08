@@ -83,10 +83,13 @@ using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Google.Authenticator;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -1411,6 +1414,41 @@ namespace ASC.Api.Settings
             return result;
         }
 
+        [Create("tfaapp/validate")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
+        public bool TfaValidateAuthCode(TfaValidateModel model)
+        {
+            ApiContext.AuthByClaim();
+            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+            return TfaManager.ValidateAuthCode(user, model.Code);
+        }
+
+        [Read("tfaapp/confirm")]
+        public object TfaConfirmUrl()
+        {
+            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+            if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)// && smsConfirm.ToLower() != "true")
+            {
+                var confirmType = string.IsNullOrEmpty(user.MobilePhone) ||
+                               user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated
+                                   ? ConfirmType.PhoneActivation
+                                   : ConfirmType.PhoneAuth;
+
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            }
+
+            if (TfaAppAuthSettings.IsVisibleSettings && SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            {
+                var confirmType = TfaAppUserSettings.EnableForUser(SettingsManager, AuthContext.CurrentAccount.ID)
+                    ? ConfirmType.TfaAuth
+                    : ConfirmType.TfaActivation;
+
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            }
+
+            return string.Empty;
+        }
+
         [Update("tfaapp")]
         public bool TfaSettingsFromBody([FromBody]TfaModel model)
         {
@@ -1501,7 +1539,24 @@ namespace ASC.Api.Settings
             return result;
         }
 
-        ///<visible>false</visible>
+        [Read("tfaapp/setup")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
+        public SetupCode TfaAppGenerateSetupCode()
+        {
+            ApiContext.AuthByClaim();
+            var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+
+            if (!TfaAppAuthSettings.IsVisibleSettings || 
+                !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
+                TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
+                throw new Exception(Resource.TfaAppNotAvailable);
+
+            if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
+                throw new NotSupportedException("Not available.");
+
+            return TfaManager.GenerateSetupCode(currentUser);
+        }
+
         [Read("tfaappcodes")]
         public IEnumerable<object> TfaAppGetCodes()
         {
@@ -1533,7 +1588,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("tfaappnewapp")]
-        public object TfaAppNewAppFromBody([FromBody]TfaModel model)
+        public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)]TfaModel model)
         {
             return TfaAppNewApp(model);
         }
@@ -1547,8 +1602,9 @@ namespace ASC.Api.Settings
 
         private object TfaAppNewApp(TfaModel model)
         {
-            var isMe = model.Id.Equals(Guid.Empty);
-            var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : model.Id);
+            var id = model?.Id ?? Guid.Empty;
+            var isMe = id.Equals(Guid.Empty);
+            var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : id);
 
             if (!isMe && !PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser))
                 throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
