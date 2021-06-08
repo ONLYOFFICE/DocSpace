@@ -91,7 +91,7 @@ const TfaActivationForm = withLoader((props) => {
   };
 
   const onKeyPress = (target) => {
-    if (target.code === "Enter") onSubmit();
+    if (target.code === "Enter" || target.code === "NumpadEnter") onSubmit();
   };
 
   const width = window.innerWidth;
