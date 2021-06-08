@@ -93,11 +93,11 @@ class Profile extends React.Component {
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          <SectionHeaderContent />
+          <SectionHeaderContent profile={profile} />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          <SectionBodyContent />
+          <SectionBodyContent profile={profile} />
         </PageLayout.SectionBody>
       </PageLayout>
     );

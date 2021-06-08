@@ -73,7 +73,7 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     this.loaded = false;
-    const { profile, match, isMy } = this.props;
+    const { profile, match, isMy, tReady } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -97,15 +97,11 @@ class ProfileAction extends React.Component {
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {this.loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          <SectionHeaderContent tReady={tReady} loaded={this.loaded} />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {this.loaded ? (
-            <SectionUserBody isMy={isMy} />
-          ) : (
-            <Loaders.ProfileView isEdit={false} />
-          )}
+          <SectionUserBody isMy={isMy} tReady={tReady} loaded={this.loaded} />
         </PageLayout.SectionBody>
       </PageLayout>
     );

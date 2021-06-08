@@ -275,98 +275,98 @@ class SectionBodyContent extends React.PureComponent {
 
   render() {
     const { profile, isAdmin, t, isSelf } = this.props;
-    if (profile) {
-      const contacts = profile.contacts && getUserContacts(profile.contacts);
-      const role = getUserRole(profile);
-      const socialContacts =
-        (contacts &&
-          contacts.social &&
-          contacts.social.length > 0 &&
-          createContacts(contacts.social)) ||
-        null;
-      const infoContacts = contacts && createContacts(contacts.contact);
-      //const isSelf = isMe(viewer, profile.userName);
+    if (!profile) return null;
 
-      return (
-        <ProfileWrapper>
-          <AvatarWrapper>
-            <Avatar
-              size="max"
-              role={role}
-              source={profile.avatarMax}
-              userName={profile.displayName}
-            />
-            {profile.status !== 2 && (isAdmin || isSelf) && (
-              <EditButtonWrapper>
+    const contacts = profile.contacts && getUserContacts(profile.contacts);
+    const role = getUserRole(profile);
+    const socialContacts =
+      (contacts &&
+        contacts.social &&
+        contacts.social.length > 0 &&
+        createContacts(contacts.social)) ||
+      null;
+    const infoContacts = contacts && createContacts(contacts.contact);
+    //const isSelf = isMe(viewer, profile.userName);
+
+    return (
+      <ProfileWrapper>
+        <AvatarWrapper>
+          <Avatar
+            size="max"
+            role={role}
+            source={profile.avatarMax}
+            userName={profile.displayName}
+          />
+          {profile.status !== 2 && (isAdmin || isSelf) && (
+            <EditButtonWrapper>
+              <Button
+                size="big"
+                scale={true}
+                label={t("EditUser")}
+                title={t("EditUser")}
+                onClick={this.onEditProfileClick}
+              />
+            </EditButtonWrapper>
+          )}
+        </AvatarWrapper>
+        <ProfileInfo
+          profile={profile}
+          isSelf={isSelf}
+          isAdmin={isAdmin}
+          t={t}
+          //cultures={cultures}
+          //culture={culture}
+        />
+
+        {isSelf && this.oauthDataExists() && (
+          <ToggleWrapper>
+            <ToggleContent label={t("LoginSettings")} isOpen={true}>
+              <ProviderButtonsWrapper>
+                {this.providerButtons()}
+              </ProviderButtonsWrapper>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+        {isSelf && false && (
+          <ToggleWrapper isSelf={true}>
+            <ToggleContent label={t("Subscriptions")} isOpen={true}>
+              <Text as="span">
                 <Button
                   size="big"
-                  scale={true}
-                  label={t("EditUser")}
-                  title={t("EditUser")}
-                  onClick={this.onEditProfileClick}
+                  label={t("EditSubscriptionsBtn")}
+                  primary={true}
+                  onClick={this.onEditSubscriptionsClick}
                 />
-              </EditButtonWrapper>
-            )}
-          </AvatarWrapper>
-          <ProfileInfo
-            profile={profile}
-            isSelf={isSelf}
-            isAdmin={isAdmin}
-            t={t}
-            //cultures={cultures}
-            //culture={culture}
-          />
-
-          {isSelf && this.oauthDataExists() && (
-            <ToggleWrapper>
-              <ToggleContent label={t("LoginSettings")} isOpen={true}>
-                <ProviderButtonsWrapper>
-                  {this.providerButtons()}
-                </ProviderButtonsWrapper>
-              </ToggleContent>
-            </ToggleWrapper>
-          )}
-          {isSelf && false && (
-            <ToggleWrapper isSelf={true}>
-              <ToggleContent label={t("Subscriptions")} isOpen={true}>
-                <Text as="span">
-                  <Button
-                    size="big"
-                    label={t("EditSubscriptionsBtn")}
-                    primary={true}
-                    onClick={this.onEditSubscriptionsClick}
-                  />
-                </Text>
-              </ToggleContent>
-            </ToggleWrapper>
-          )}
-          {profile.notes && (
-            <ToggleWrapper>
-              <ToggleContent label={t("Translations:Comments")} isOpen={true}>
-                <Text as="span">{profile.notes}</Text>
-              </ToggleContent>
-            </ToggleWrapper>
-          )}
-          {profile.contacts && (
-            <ToggleWrapper isContacts={true}>
-              <ToggleContent label={t("ContactInformation")} isOpen={true}>
-                <Text as="span">{infoContacts}</Text>
-              </ToggleContent>
-            </ToggleWrapper>
-          )}
-          {socialContacts && (
-            <ToggleWrapper isContacts={true}>
-              <ToggleContent
-                label={t("Translations:SocialProfiles")}
-                isOpen={true}
-              >
-                <Text as="span">{socialContacts}</Text>
-              </ToggleContent>
-            </ToggleWrapper>
-          )}
-        </ProfileWrapper>
-      );
-    } else return null;
+              </Text>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+        {profile.notes && (
+          <ToggleWrapper>
+            <ToggleContent label={t("Translations:Comments")} isOpen={true}>
+              <Text as="span">{profile.notes}</Text>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+        {profile.contacts && (
+          <ToggleWrapper isContacts={true}>
+            <ToggleContent label={t("ContactInformation")} isOpen={true}>
+              <Text as="span">{infoContacts}</Text>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+        {socialContacts && (
+          <ToggleWrapper isContacts={true}>
+            <ToggleContent
+              label={t("Translations:SocialProfiles")}
+              isOpen={true}
+            >
+              <Text as="span">{socialContacts}</Text>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+      </ProfileWrapper>
+    );
   }
 }
 

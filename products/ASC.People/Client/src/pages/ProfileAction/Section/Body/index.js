@@ -6,8 +6,12 @@ import UpdateUserForm from "./updateUserForm";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 
-const SectionUserBody = ({ avatarEditorIsOpen, match, isMy }) => {
+import withLoader from "../../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
+
+const SectionUserBody = ({ avatarEditorIsOpen, match, isMy, loaded }) => {
   const { type } = match.params;
+  if (!loaded) return null;
   return type ? (
     avatarEditorIsOpen ? (
       <CreateAvatarEditorPage />
@@ -24,5 +28,9 @@ const SectionUserBody = ({ avatarEditorIsOpen, match, isMy }) => {
 export default withRouter(
   inject(({ peopleStore }) => ({
     avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
-  }))(observer(SectionUserBody))
+  }))(
+    withLoader(observer(SectionUserBody))(
+      <Loaders.ProfileView isEdit={false} />
+    )
+  )
 );

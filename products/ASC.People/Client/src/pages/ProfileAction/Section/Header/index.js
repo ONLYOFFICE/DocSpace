@@ -9,6 +9,10 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../../HOCs/withLoader";
+
 const homepage = config.homepage;
 
 const Wrapper = styled.div`
@@ -99,6 +103,7 @@ const SectionHeaderContent = (props) => {
   const onClickBack = useCallback(() => {
     avatarEditorIsOpen ? toggleAvatarEditor(false) : goBackAndReset();
   }, [avatarEditorIsOpen, toggleAvatarEditor, profile, filter, goBackAndReset]);
+  if (!props.loaded) return null;
   return (
     <Wrapper>
       <IconButton
@@ -129,5 +134,5 @@ export default withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
     avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
-  }))(observer(SectionHeaderContent))
+  }))(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
 );
