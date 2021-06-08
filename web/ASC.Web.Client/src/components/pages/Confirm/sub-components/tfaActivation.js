@@ -172,7 +172,11 @@ const TfaActivationForm = withLoader((props) => {
                   primary
                   size={width <= 1024 ? "large" : "medium"}
                   tabIndex={3}
-                  label={isLoading ? t("LoadingProcessing") : t("SetAppButton")}
+                  label={
+                    isLoading
+                      ? t("Common:LoadingProcessing")
+                      : t("SetAppButton")
+                  }
                   isDisabled={!code.length || isLoading}
                   isLoading={isLoading}
                   onClick={onSubmit}
@@ -230,4 +234,8 @@ export default inject(({ auth, confirm }) => ({
   tfaAndroidAppUrl: auth.tfaStore.tfaAndroidAppUrl,
   tfaIosAppUrl: auth.tfaStore.tfaIosAppUrl,
   tfaWinAppUrl: auth.tfaStore.tfaWinAppUrl,
-}))(withRouter(withTranslation("Confirm")(observer(TfaActivationWrapper))));
+}))(
+  withRouter(
+    withTranslation(["Confirm", "Common"])(observer(TfaActivationWrapper))
+  )
+);

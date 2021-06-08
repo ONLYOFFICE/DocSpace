@@ -119,7 +119,7 @@ class PureTfaPage extends Component {
         />
         {showButton && (
           <Button
-            label={t("SaveButton")}
+            label={t("Common:SaveButton")}
             size="medium"
             primary={true}
             className="save-button"
@@ -137,4 +137,4 @@ export default inject(({ auth }) => ({
   getTfaSettings: auth.tfaStore.getTfaSettings,
   setTfaSettings: auth.tfaStore.setTfaSettings,
   getTfaConfirmLink: auth.tfaStore.getTfaConfirmLink,
-}))(withTranslation("Settings")(withRouter(PureTfaPage)));
+}))(withTranslation(["Settings", "Common"])(withRouter(PureTfaPage)));

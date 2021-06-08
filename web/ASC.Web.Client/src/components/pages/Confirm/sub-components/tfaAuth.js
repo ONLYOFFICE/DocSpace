@@ -120,7 +120,11 @@ const TfaAuthForm = withLoader((props) => {
             primary
             size={width <= 1024 ? "large" : "medium"}
             tabIndex={3}
-            label={isLoading ? t("LoadingProcessing") : t("Continue")}
+            label={
+              isLoading
+                ? t("Common:LoadingProcessing")
+                : t("Common:ContinueButton")
+            }
             isDisabled={!code.length || isLoading}
             isLoading={isLoading}
             onClick={onSubmit}
@@ -153,4 +157,8 @@ export default inject(({ auth, confirm }) => ({
   setIsLoading: confirm.setIsLoading,
   loginWithCode: auth.loginWithCode,
   loginWithCodeAndCookie: auth.tfaStore.loginWithCodeAndCookie,
-}))(withRouter(withTranslation("Confirm")(observer(TfaAuthFormWrapper))));
+}))(
+  withRouter(
+    withTranslation(["Confirm", "Common"])(observer(TfaAuthFormWrapper))
+  )
+);
