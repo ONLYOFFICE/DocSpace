@@ -81,7 +81,7 @@ export const settingsTree = [
     key: "4",
     icon: "/images/data-management.react.svg",
     link: "datamanagement",
-    tKey: "DataManagement",
+    tKey: "ManagementCategoryDataManagement",
     isHeader: true,
     children: [
       {
