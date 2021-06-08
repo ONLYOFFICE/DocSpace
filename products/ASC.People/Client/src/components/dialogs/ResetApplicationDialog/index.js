@@ -45,7 +45,7 @@ class ResetApplicationDialogComponent extends React.Component {
           <Button
             key="CloseBtn"
             className="button-dialog"
-            label={t("CloseButton")}
+            label={t("Common:CloseButton")}
             size="medium"
             primary={false}
             onClick={onClose}
@@ -56,9 +56,10 @@ class ResetApplicationDialogComponent extends React.Component {
   }
 }
 
-const ResetApplicationDialog = withTranslation("ResetApplicationDialog")(
-  ResetApplicationDialogComponent
-);
+const ResetApplicationDialog = withTranslation([
+  "ResetApplicationDialog",
+  "Common",
+])(ResetApplicationDialogComponent);
 
 ResetApplicationDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

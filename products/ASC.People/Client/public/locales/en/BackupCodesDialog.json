@@ -4,6 +4,5 @@
   "BackupCodesSecondDescription": "Each code can be used only one time. You can get new codes anytime. Only codes which was generated last are valid.",
   "CodesCounter": "{{count}} codes:",
   "PrintButton": "Print",
-  "RequestNewButton": "Request new",
-  "CloseButton": "Close"
+  "RequestNewButton": "Request new"
 }

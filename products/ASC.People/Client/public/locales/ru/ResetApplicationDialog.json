@@ -1,6 +1,5 @@
 {
   "ResetApplicationTitle": "Сбросить настройки приложения",
   "ResetApplicationDescription": " Настройки приложения для аутентификации будут сброшены.",
-  "ResetButton": "Сбросить приложение",
-  "CloseButton": "Закрыть"
+  "ResetButton": "Сбросить приложение"
 }
