@@ -56,7 +56,7 @@ HELP_TARGET="install-Docker.sh";
 
 SKIP_HARDWARE_CHECK="false";
 
-EXTERNAL_PORT=""
+EXTERNAL_PORT="8092"
 SERVICE_PORT="5050"
 
 while [ "$1" != "" ]; do
@@ -471,7 +471,7 @@ install_docker_compose () {
 }
 
 check_ports () {
-	RESERVED_PORTS=(443 2181 2888 3888 9092 9800 9899 9999 ${SERVICE_PORT});
+	RESERVED_PORTS=(443 2181 2888 3306 3888 8081 8099 9092 9200 9300 9800 9899 9999 33060);
 	ARRAY_PORTS=();
 	USED_PORTS="";
 
@@ -486,10 +486,19 @@ check_ports () {
 				echo "External port $EXTERNAL_PORT is reserved. Select another port"
 				exit 1;
 			fi
+
+			if [ "$RESERVED_PORT" -eq "$SERVICE_PORT" ] ; then
+				echo "Internal port $SERVICE_PORT is reserved. Select another port"
+				exit 1;
+			fi
 		done
 	else
 		echo "Invalid external port $EXTERNAL_PORT"
 		exit 1;
+	fi
+
+	if [ "$INSTALL_APPSERVER" == "true" ]; then
+		ARRAY_PORTS=(${ARRAY_PORTS[@]} "$EXTERNAL_PORT");
 	fi
 
 	for PORT in "${ARRAY_PORTS[@]}"
@@ -773,7 +782,7 @@ install_appserver () {
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 
 	if [[ -n $EXTERNAL_PORT ]]; then
-		sed -i "s/:8092/:${EXTERNAL_PORT}/g" $BASE_DIR/docker-entrypoint.sh
+		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/appserver.yml
 	fi
 
 	docker-compose -f $BASE_DIR/appserver.yml up -d
