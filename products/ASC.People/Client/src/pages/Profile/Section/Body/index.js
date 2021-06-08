@@ -427,12 +427,7 @@ class SectionBodyContent extends React.PureComponent {
         {isSelf && tfa && tfa !== "none" && (
           <ToggleWrapper>
             <ToggleContent label={t("TfaLoginSettings")} isOpen={true}>
-              <Trans t={t} i18nKey="TwoFactorDescription" ns="Profile">
-                <Text as="span">
-                  Two-factor authentication via code generating application was
-                  enabled for all users by cloud service administrator.
-                </Text>
-              </Trans>
+              <Text as="span">{t("TwoFactorDescription")}</Text>
               <LinkActionWrapper>
                 <Link
                   type="action"
@@ -454,14 +449,7 @@ class SectionBodyContent extends React.PureComponent {
                 </Link>
 
                 <Link color="#A3A9AE" noHover={true}>
-                  <Trans
-                    t={t}
-                    i18nKey="CountCodesRemaining"
-                    ns="Profile"
-                    count={backupCodesCount}
-                  >
-                    ({{ count: backupCodesCount }} codes remaining)
-                  </Trans>
+                  ({backupCodesCount} {t("CountCodesRemaining")})
                 </Link>
               </LinkActionWrapper>
             </ToggleContent>
