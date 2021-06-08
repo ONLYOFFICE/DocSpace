@@ -25,84 +25,75 @@
 
 
 //using System;
+using System;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.Configuration;
-//using ASC.FederatedLogin;
-//using ASC.FederatedLogin.Helpers;
+using ASC.FederatedLogin;
+using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 
 namespace ASC.Mail.Authorization
 {
+    [Scope]
     public class BaseOAuth2Authorization<T> where T : Consumer, ILoginProvider, new()
     {
-        public readonly ILog log;
+        private readonly ILog log;
 
         private readonly T loginProvider;
+        private ConsumerFactory ConsumerFactory;
 
-        public string ClientId
-        {
-            get { return loginProvider.ClientID; }
+        public string ClientId => loginProvider.ClientID;
+
+        public string ClientSecret => loginProvider.ClientSecret;
+
+        public string RedirectUrl => loginProvider.RedirectUri;
+
+        public string RefreshUrl => loginProvider.AccessTokenUrl;
+
+        public BaseOAuth2Authorization(ILog log, ConsumerFactory consumerFactory)
+        {            
+            ConsumerFactory = consumerFactory;
+
+            this.log = log;
+            loginProvider = ConsumerFactory.Get<T>();
+
+            try
+            {
+                if (String.IsNullOrEmpty(loginProvider.ClientID))
+                    throw new ArgumentNullException("ClientId");
+
+                if (String.IsNullOrEmpty(loginProvider.ClientSecret))
+                    throw new ArgumentNullException("ClientSecret");
+
+                if (String.IsNullOrEmpty(loginProvider.RedirectUri))
+                    throw new ArgumentNullException("RedirectUrl");
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("GoogleOAuth2Authorization() Exception:\r\n{0}\r\n", ex.ToString());
+            }
         }
 
-        public string ClientSecret
+        public OAuth20Token RequestAccessToken(string refreshToken)
         {
-            get { return loginProvider.ClientSecret; }
+            var token = new OAuth20Token
+            {
+                ClientID = ClientId,
+                ClientSecret = ClientSecret,
+                RedirectUri = RedirectUrl,
+                RefreshToken = refreshToken,
+            };
+
+            try
+            {
+                return OAuth20TokenHelper.RefreshToken<T>(ConsumerFactory, token);
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("RequestAccessToken() Exception:\r\n{0}\r\n", ex.ToString());
+                return null;
+            }
         }
-
-        public string RedirectUrl
-        {
-            get { return loginProvider.RedirectUri; }
-        }
-
-        public string RefreshUrl
-        {
-            get { return loginProvider.AccessTokenUrl; }
-        }
-
-        //public BaseOAuth2Authorization(ILog log)
-        //{
-        //    if (null == log)
-        //        throw new ArgumentNullException("log");
-
-        //    this.log = log;
-        //    loginProvider = ConsumerFactory.Get<T>();
-
-        //    try
-        //    {
-        //        if (String.IsNullOrEmpty(loginProvider.ClientID))
-        //            throw new ArgumentNullException("ClientId");
-
-        //        if (String.IsNullOrEmpty(loginProvider.ClientSecret))
-        //            throw new ArgumentNullException("ClientSecret");
-
-        //        if (String.IsNullOrEmpty(loginProvider.RedirectUri))
-        //            throw new ArgumentNullException("RedirectUrl");
-        //}
-        //    catch (Exception ex)
-        //    {
-        //        log.ErrorFormat("GoogleOAuth2Authorization() Exception:\r\n{0}\r\n", ex.ToString());
-        //    }
-        //}
-
-        //public OAuth20Token RequestAccessToken(string refreshToken)
-        //{
-        //    var token = new OAuth20Token
-        //        {
-        //            ClientID = ClientId,
-        //            ClientSecret = ClientSecret,
-        //            RedirectUri = RedirectUrl,
-        //            RefreshToken = refreshToken,
-        //        };
-
-        //    try
-        //    {
-        //        return OAuth20TokenHelper.RefreshToken<T>(token);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.ErrorFormat("RequestAccessToken() Exception:\r\n{0}\r\n", ex.ToString());
-        //        return null;
-        //    }
-        //}
     }
 }

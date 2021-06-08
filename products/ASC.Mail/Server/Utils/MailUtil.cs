@@ -215,9 +215,9 @@ namespace ASC.Mail.Utils
                         calendar.Version));
 
                 if (string.IsNullOrEmpty(calendar.Method)
-                    || (!calendar.Method.Equals(Defines.ICAL_REQUEST, StringComparison.InvariantCultureIgnoreCase)
-                    && !calendar.Method.Equals(Defines.ICAL_REPLY, StringComparison.InvariantCultureIgnoreCase)
-                    && !calendar.Method.Equals(Defines.ICAL_CANCEL, StringComparison.InvariantCultureIgnoreCase)))
+                    || (!calendar.Method.Equals(DefineConstants.ICAL_REQUEST, StringComparison.InvariantCultureIgnoreCase)
+                    && !calendar.Method.Equals(DefineConstants.ICAL_REPLY, StringComparison.InvariantCultureIgnoreCase)
+                    && !calendar.Method.Equals(DefineConstants.ICAL_CANCEL, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     throw new InvalidDataException(string.Format("Calendar method is not supported (method == {0})",
                         calendar.Method));

@@ -24,8 +24,14 @@
 */
 
 
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Models;
+
+using Google.Apis.Storage.v1.Data;
+
+using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -34,67 +40,59 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
     public class MailboxesForProcessingExp : IMailboxesExp
     {
-        public string OrderBy { get; private set; }
+        public string OrderBy
+        {
+            get { return MailMailboxNames.DateChecked; }
+        }
         public bool? OrderAsc { get; private set; }
         public int? Limit { get; private set; }
 
-        private TasksConfig TasksConfig { get; set; }
+        private MailSettings MailSettings { get; set; }
         private bool OnlyActive { get; set; }
 
-        public MailboxesForProcessingExp(TasksConfig tasksConfig, int tasksLimit, bool active)
+        public MailboxesForProcessingExp(MailSettings mailSettings, int tasksLimit, bool active)
         {
-            TasksConfig = tasksConfig;
+            MailSettings = mailSettings;
 
-            Limit = tasksLimit > 0 ? tasksLimit : (int?) null;
+            Limit = tasksLimit > 0 ? tasksLimit : null;
 
             OnlyActive = active;
 
-            OrderBy = ""; //TODO: fix MailboxTable.Columns.DateChecked;
             OrderAsc = true;
         }
 
-        /*private const string WHERE_LOGIN_DELAY_EXPIRED =
-            MailboxTable.Columns.DateLoginDelayExpires + " < UTC_TIMESTAMP()";
-
-        private const string DATE_USER_CHECKED_TIMESTAMP =
-            "TIMESTAMPDIFF(SECOND, " + MailboxTable.Columns.DateUserChecked + ", UTC_TIMESTAMP())";
-
-        public Exp GetExpression()
+        Expression<Func<MailMailbox, bool>> IMailboxesExp.GetExpression()
         {
-            var exp = Exp.Eq(MailboxTable.Columns.IsProcessed, false)
-                      & Exp.Sql(WHERE_LOGIN_DELAY_EXPIRED)
-                      & Exp.Eq(MailboxTable.Columns.IsRemoved, false)
-                      & Exp.Eq(MailboxTable.Columns.Enabled, true);
+            var now = DateTime.UtcNow;
 
-            if (TasksConfig.AggregateMode != TasksConfig.AggregateModeType.All)
+            Expression<Func<MailMailbox, bool>> exp = mb =>
+            mb.IsProcessed == false
+            && mb.DateLoginDelayExpires < now
+            && mb.IsRemoved == false
+            && mb.Enabled == true;
+
+            if (MailSettings.AggregateMode != MailSettings.AggregateModeType.All)
             {
-                exp = exp &
-                      Exp.Eq(MailboxTable.Columns.IsServerMailbox,
-                          TasksConfig.AggregateMode == TasksConfig.AggregateModeType.Internal);
+                exp = exp.And(mb => mb.IsServerMailbox == (MailSettings.AggregateMode == MailSettings.AggregateModeType.Internal));
             }
 
-            if (TasksConfig.EnableSignalr)
+            if (MailSettings.EnableSignalr)
             {
-                exp = exp & Exp.Eq(MailboxTable.Columns.UserOnline, OnlyActive);
+                exp = exp.And(mb => mb.UserOnline == OnlyActive);
             }
             else
             {
-                exp = exp & Exp.Or(Exp.Eq(MailboxTable.Columns.DateUserChecked, null), OnlyActive
-                    ? Exp.Lt(DATE_USER_CHECKED_TIMESTAMP, TasksConfig.ActiveInterval.Seconds)
-                    : Exp.Gt(DATE_USER_CHECKED_TIMESTAMP, TasksConfig.ActiveInterval.Seconds));
+                exp = exp.And(mb => mb.DateUserChecked == null || OnlyActive
+                ? EF.Functions.DateDiffSecond(mb.DateUserChecked, now) < MailSettings.ActiveInterval.TotalSeconds
+                : EF.Functions.DateDiffSecond(mb.DateUserChecked, now) >= MailSettings.ActiveInterval.TotalSeconds);
             }
 
-            if (TasksConfig.WorkOnUsersOnly.Any())
+            if (MailSettings.WorkOnUsersOnlyList.Any())
             {
-                exp = exp & Exp.In(MailboxTable.Columns.User, TasksConfig.WorkOnUsersOnly);
+                exp = exp.And(mb => MailSettings.WorkOnUsersOnlyList.Contains(mb.IdUser));
             }
 
             return exp;
-        }*/
-
-        Expression<Func<MailMailbox, bool>> IMailboxesExp.GetExpression()
-        {
-            throw new NotImplementedException();
         }
     }
 }

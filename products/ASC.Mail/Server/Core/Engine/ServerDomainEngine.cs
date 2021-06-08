@@ -41,11 +41,12 @@ using SecurityContext = ASC.Core.SecurityContext;
 using ASC.Common;
 using ASC.Mail.Server.Utils;
 using System.Data;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
-    public class ServerDomainEngine
+    public class ServerDomainEngine : BaseEngine
     {
         public int Tenant => TenantManager.GetCurrentTenant().TenantId;
 
@@ -64,7 +65,8 @@ namespace ASC.Mail.Core.Engine
             TenantManager tenantManager,
             DaoFactory daoFactory,
             CoreBaseSettings coreBaseSettings,
-            WebItemSecurity webItemSecurity)
+            WebItemSecurity webItemSecurity,
+            MailSettings mailSettings) : base(mailSettings)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -119,7 +121,7 @@ namespace ASC.Mail.Core.Engine
         public ServerDomainData GetCommonDomain()
         {
             var domainCommon = DaoFactory.ServerDomainDao.GetDomains()
-                .SingleOrDefault(x => x.Tenant == Defines.SHARED_TENANT_ID);
+                .SingleOrDefault(x => x.Tenant == DefineConstants.SHARED_TENANT_ID);
 
             if (domainCommon == null)
                 return null;
@@ -176,27 +178,27 @@ namespace ASC.Mail.Core.Engine
                 CryptoUtil.GenerateDkimKeys(out privateKey, out publicKey);
 
                 var domainCheckValue = PasswordGenerator.GenerateNewPassword(16);
-                var domainCheck = Defines.ServerDnsDomainCheckPrefix + ": " + domainCheckValue;
+                var domainCheck = MailSettings.ServerDnsDomainCheckPrefix + ": " + domainCheckValue;
 
                 var serverDns = new ServerDns
                 {
                     Id = 0,
                     Tenant = Tenant,
                     User = User,
-                    DomainId = Defines.UNUSED_DNS_SETTING_DOMAIN_ID,
+                    DomainId = DefineConstants.UNUSED_DNS_SETTING_DOMAIN_ID,
                     DomainCheck = domainCheck,
-                    DkimSelector = Defines.ServerDnsDkimSelector,
+                    DkimSelector = MailSettings.ServerDnsDkimSelector,
                     DkimPrivateKey = privateKey,
                     DkimPublicKey = publicKey,
-                    DkimTtl = Defines.ServerDnsDefaultTtl,
+                    DkimTtl = MailSettings.ServerDnsDefaultTtl,
                     DkimVerified = false,
                     DkimDateChecked = null,
-                    Spf = Defines.ServerDnsSpfRecordValue,
-                    SpfTtl = Defines.ServerDnsDefaultTtl,
+                    Spf = MailSettings.ServerDnsSpfRecordValue,
+                    SpfTtl = MailSettings.ServerDnsDefaultTtl,
                     SpfVerified = false,
                     SpfDateChecked = null,
                     Mx = server.MxRecord,
-                    MxTtl = Defines.ServerDnsDefaultTtl,
+                    MxTtl = MailSettings.ServerDnsDefaultTtl,
                     MxVerified = false,
                     MxDateChecked = null,
                     TimeModified = DateTime.UtcNow
@@ -214,7 +216,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     Host = dnsSettings.Mx,
                     IsVerified = false,
-                    Priority = Defines.ServerDnsMxRecordPriority
+                    Priority = (int)MailSettings.ServerDnsMxRecordPriority
                 },
                 DkimRecord = new ServerDomainDkimRecordData
                 {
@@ -224,13 +226,13 @@ namespace ASC.Mail.Core.Engine
                 },
                 DomainCheckRecord = new ServerDomainDnsRecordData
                 {
-                    Name = Defines.DNS_DEFAULT_ORIGIN,
+                    Name = DefineConstants.DNS_DEFAULT_ORIGIN,
                     IsVerified = false,
                     Value = dnsSettings.DomainCheck
                 },
                 SpfRecord = new ServerDomainDnsRecordData
                 {
-                    Name = Defines.DNS_DEFAULT_ORIGIN,
+                    Name = DefineConstants.DNS_DEFAULT_ORIGIN,
                     IsVerified = false,
                     Value = dnsSettings.Spf
                 }
@@ -370,7 +372,7 @@ namespace ASC.Mail.Core.Engine
                 Id = domain.Id,
                 Name = domain.Name,
                 Dns = dns,
-                IsSharedDomain = domain.Tenant == Defines.SHARED_TENANT_ID
+                IsSharedDomain = domain.Tenant == DefineConstants.SHARED_TENANT_ID
             };
 
             return serverDomain;
@@ -388,11 +390,11 @@ namespace ASC.Mail.Core.Engine
                 {
                     Host = serverDns.Mx,
                     IsVerified = serverDns.MxVerified,
-                    Priority = Defines.ServerDnsMxRecordPriority
+                    Priority = (int)MailSettings.ServerDnsMxRecordPriority
                 },
                 SpfRecord = new ServerDomainDnsRecordData
                 {
-                    Name = Defines.DNS_DEFAULT_ORIGIN,
+                    Name = DefineConstants.DNS_DEFAULT_ORIGIN,
                     IsVerified = serverDns.SpfVerified,
                     Value = serverDns.Spf
                 },
@@ -404,7 +406,7 @@ namespace ASC.Mail.Core.Engine
                 },
                 DomainCheckRecord = new ServerDomainDnsRecordData
                 {
-                    Name = Defines.DNS_DEFAULT_ORIGIN,
+                    Name = DefineConstants.DNS_DEFAULT_ORIGIN,
                     IsVerified = true,
                     Value = serverDns.DomainCheck
                 }

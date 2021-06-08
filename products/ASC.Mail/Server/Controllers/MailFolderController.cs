@@ -23,7 +23,7 @@ namespace ASC.Mail.Controllers
         [Read(@"folders")]
         public IEnumerable<MailFolderData> GetFolders()
         {
-            if (!Defines.IsSignalRAvailable)
+            if (!MailSettings.IsSignalRAvailable)
                 AccountEngine.SetAccountsActivity();
 
             return FolderEngine.GetFolders()

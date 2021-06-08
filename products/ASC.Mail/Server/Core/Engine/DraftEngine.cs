@@ -60,6 +60,7 @@ using ASC.Web.Files.Services.WCFService;
 using ASC.Common;
 using System.Data;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -107,6 +108,7 @@ namespace ASC.Mail.Core.Engine
             IServiceProvider serviceProvider,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
             IOptionsMonitor<ILog> option,
+            MailSettings mailSettings,
             DeliveryFailureMessageTranslates daemonLabels = null)
             : base(
             accountEngine,
@@ -123,6 +125,7 @@ namespace ASC.Mail.Core.Engine
             storageFactory,
             optionsSnapshot,
             option,
+            mailSettings,
             daemonLabels)
         {
             CrmLinkEngine = crmLinkEngine;
@@ -187,7 +190,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     LoadImages = false,
                     LoadBody = true,
-                    NeedProxyHttp = Defines.NeedProxyHttp,
+                    NeedProxyHttp = MailSettings.NeedProxyHttp,
                     NeedSanitizer = false
                 });
 
@@ -196,9 +199,9 @@ namespace ASC.Mail.Core.Engine
                     throw new InvalidOperationException("Sending emails is permitted only in the Drafts folder");
                 }
 
-                if (message.HtmlBody.Length > Defines.MaximumMessageBodySize)
+                if (message.HtmlBody.Length > MailSettings.MaximumMessageBodySize)
                 {
-                    throw new InvalidOperationException("Message body exceeded limit (" + Defines.MaximumMessageBodySize / 1024 + " KB)");
+                    throw new InvalidOperationException("Message body exceeded limit (" + MailSettings.MaximumMessageBodySize / 1024 + " KB)");
                 }
 
                 mimeMessageId = message.MimeMessageId;
@@ -492,13 +495,13 @@ namespace ASC.Mail.Core.Engine
                 {
                     switch (draft.CalendarMethod)
                     {
-                        case Defines.ICAL_REQUEST:
+                        case DefineConstants.ICAL_REQUEST:
                             state = 1;
                             break;
-                        case Defines.ICAL_REPLY:
+                        case DefineConstants.ICAL_REPLY:
                             state = 2;
                             break;
-                        case Defines.ICAL_CANCEL:
+                        case DefineConstants.ICAL_CANCEL:
                             state = 3;
                             break;
                     }

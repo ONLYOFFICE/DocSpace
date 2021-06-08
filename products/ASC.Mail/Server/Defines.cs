@@ -26,12 +26,15 @@
 
 using System;
 using System.Configuration;
+
+using ASC.Common;
 using ASC.Core;
+using ASC.Mail.Configuration;
 using ASC.Web.Studio.Core;
 
 namespace ASC.Mail
 {
-    public class Defines
+    public class DefineConstants
     {
         public const string MODULE_NAME = "mailaggregator";
         public const string MD5_EMPTY = "d41d8cd98f00b204e9800998ecf8427e";
@@ -85,6 +88,8 @@ namespace ASC.Mail
 
         public static readonly DateTime BaseJsDateTime = new DateTime(1970, 1, 1);
 
+        public static readonly DateTime MinBeginDate = new DateTime(1975, 1, 1, 0, 0, 0);
+
         public enum TariffType
         {
             Active = 0,
@@ -92,69 +97,67 @@ namespace ASC.Mail
             LongDead
         };
 
-        public static int DefaultServerLoginDelay
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["mail.default-login-delay"] != null
-                    ? Convert.ToInt32(ConfigurationManager.AppSettings["mail.default-login-delay"])
-                    : 30;
-            }
-        }
+        //public static int DefaultServerLoginDelay
+        //{
+        //    get
+        //    {
+        //        return ConfigurationManager.AppSettings["mail.default-login-delay"] != null
+        //            ? Convert.ToInt32(ConfigurationManager.AppSettings["mail.default-login-delay"])
+        //            : 30;
+        //    }
+        //}
 
-        public static string DefaultServerLoginDelayStr
-        {
-            get { return DefaultServerLoginDelay.ToString(); }
-        }
+        //public static string DefaultServerLoginDelayStr
+        //{
+        //    get { return DefaultServerLoginDelay.ToString(); }
+        //}        
 
-        public static readonly DateTime MinBeginDate = new DateTime(1975, 1, 1, 0, 0, 0);
+        //public static bool SslCertificatesErrorPermit
+        //{
+        //    get
+        //    {
+        //        return ConfigurationManager.AppSettings["mail.certificate-permit"] != null &&
+        //               Convert.ToBoolean(ConfigurationManager.AppSettings["mail.certificate-permit"]);
+        //    }
+        //}
 
-        public static bool SslCertificatesErrorPermit
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["mail.certificate-permit"] != null &&
-                       Convert.ToBoolean(ConfigurationManager.AppSettings["mail.certificate-permit"]);
-            }
-        }
+        //public static bool IsSignalRAvailable
+        //{
+        //    get { return !string.IsNullOrEmpty(ConfigurationManager.AppSettings["web.hub"]); }
+        //}
 
-        public static bool IsSignalRAvailable
-        {
-            get { return !string.IsNullOrEmpty(ConfigurationManager.AppSettings["web.hub"]); }
-        }
+        //public static TimeSpan AuthErrorWarningTimeout
+        //{
+        //    get
+        //    {
+        //        return ConfigurationManager.AppSettings["mail.auth-error-warning-in-minutes"] != null
+        //            ? TimeSpan.FromMinutes(
+        //                Convert.ToInt32(ConfigurationManager.AppSettings["mail.auth-error-warning-in-minutes"]))
+        //            : TimeSpan.FromHours(1);
+        //    }
+        //}
 
-        public static TimeSpan AuthErrorWarningTimeout
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["mail.auth-error-warning-in-minutes"] != null
-                    ? TimeSpan.FromMinutes(
-                        Convert.ToInt32(ConfigurationManager.AppSettings["mail.auth-error-warning-in-minutes"]))
-                    : TimeSpan.FromHours(1);
-            }
-        }
+        //public static TimeSpan AuthErrorDisableTimeout
+        //{
+        //    get
+        //    {
+        //        return ConfigurationManager.AppSettings["mail.auth-error-disable-mailbox-in-minutes"] != null
+        //            ? TimeSpan.FromMinutes(
+        //                Convert.ToInt32(
+        //                    ConfigurationManager.AppSettings["mail.auth-error-disable-mailbox-in-minutes"]))
+        //            : TimeSpan.FromDays(3);
+        //    }
+        //}
 
-        public static TimeSpan AuthErrorDisableTimeout
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["mail.auth-error-disable-mailbox-in-minutes"] != null
-                    ? TimeSpan.FromMinutes(
-                        Convert.ToInt32(
-                            ConfigurationManager.AppSettings["mail.auth-error-disable-mailbox-in-minutes"]))
-                    : TimeSpan.FromDays(3);
-            }
-        }
+        //public static string MailDaemonEmail
+        //{
+        //    get { return ConfigurationManager.AppSettings["mail.daemon-email"] ?? "mail-daemon@onlyoffice.com"; }
+        //}
 
-        public static string MailDaemonEmail
-        {
-            get { return ConfigurationManager.AppSettings["mail.daemon-email"] ?? "mail-daemon@onlyoffice.com"; }
-        }
-
-        public static bool NeedProxyHttp
-        {
-            get { return SetupInfo.IsVisibleSettings("ProxyHttpContent"); }
-        }
+        //public static bool NeedProxyHttp
+        //{
+        //    get { return SetupInfo.IsVisibleSettings("ProxyHttpContent"); }
+        //}
 
         //public static string DefaultApiSchema
         //{
@@ -176,116 +179,116 @@ namespace ASC.Mail
         /// <summary>
         /// Test mailbox connection tcp timeout (10 sec is default)
         /// </summary>
-        public static int TcpTimeout
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["mail.tcp-timeout"] != null
-                    ? Convert.ToInt32(ConfigurationManager.AppSettings["mail.tcp-timeout"])
-                    : 10000;
-            }
-        }
+        //public static int TcpTimeout
+        //{
+        //    get
+        //    {
+        //        return ConfigurationManager.AppSettings["mail.tcp-timeout"] != null
+        //            ? Convert.ToInt32(ConfigurationManager.AppSettings["mail.tcp-timeout"])
+        //            : 10000;
+        //    }
+        //}
 
-        public static int RecalculateFoldersTimeout
-        {
-            get
-            {
-                var limit = ConfigurationManager.AppSettings["mail.recalculate-folders-timeout"];
-                return limit != null ? Convert.ToInt32(limit) : 99999;
-            }
-        }
+        //public static int RecalculateFoldersTimeout
+        //{
+        //    get
+        //    {
+        //        var limit = ConfigurationManager.AppSettings["mail.recalculate-folders-timeout"];
+        //        return limit != null ? Convert.ToInt32(limit) : 99999;
+        //    }
+        //}
 
-        public static int RemoveDomainTimeout
-        {
-            get
-            {
-                var limit = ConfigurationManager.AppSettings["mail.remove-domain-timeout"];
-                return limit != null ? Convert.ToInt32(limit) : 99999;
-            }
-        }
+        //public static int RemoveDomainTimeout
+        //{
+        //    get
+        //    {
+        //        var limit = ConfigurationManager.AppSettings["mail.remove-domain-timeout"];
+        //        return limit != null ? Convert.ToInt32(limit) : 99999;
+        //    }
+        //}
 
-        public static int RemoveMailboxTimeout
-        {
-            get
-            {
-                var limit = ConfigurationManager.AppSettings["mail.remove-mailbox-timeout"];
-                return limit != null ? Convert.ToInt32(limit) : 99999;
-            }
-        }
+        //public static int RemoveMailboxTimeout
+        //{
+        //    get
+        //    {
+        //        var limit = ConfigurationManager.AppSettings["mail.remove-mailbox-timeout"];
+        //        return limit != null ? Convert.ToInt32(limit) : 99999;
+        //    }
+        //}
 
-        public static bool SaveOriginalMessage
-        {
-            get
-            {
-                var saveFlag = ConfigurationManager.AppSettings["mail.save-original-message"];
-                return saveFlag != null && Convert.ToBoolean(saveFlag);
-            }
-        }
+        //public static bool SaveOriginalMessage
+        //{
+        //    get
+        //    {
+        //        var saveFlag = ConfigurationManager.AppSettings["mail.save-original-message"];
+        //        return saveFlag != null && Convert.ToBoolean(saveFlag);
+        //    }
+        //}
 
-        public static int ServerDomainMailboxPerUserLimit
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["mail.server-mailbox-limit-per-user"] ?? "2");
-            }
-        }
+        //public static int ServerDomainMailboxPerUserLimit
+        //{
+        //    get
+        //    {
+        //        return Convert.ToInt32(ConfigurationManager.AppSettings["mail.server-mailbox-limit-per-user"] ?? "2");
+        //    }
+        //}
 
-        public static string ServerDnsSpfRecordValue
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["mail.server.spf-record-value"] ?? "v=spf1 +mx ~all";
-            }
-        }
+        //public static string ServerDnsSpfRecordValue
+        //{
+        //    get
+        //    {
+        //        return ConfigurationManager.AppSettings["mail.server.spf-record-value"] ?? "v=spf1 +mx ~all";
+        //    }
+        //}
 
-        public static int ServerDnsMxRecordPriority
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["mail.server.mx-record-priority"] ?? "0");
-            }
-        }
+        //public static int ServerDnsMxRecordPriority
+        //{
+        //    get
+        //    {
+        //        return Convert.ToInt32(ConfigurationManager.AppSettings["mail.server.mx-record-priority"] ?? "0");
+        //    }
+        //}
 
-        public static string ServerDnsDkimSelector
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["mail.server-dkim-selector"] ?? "dkim";
-            }
-        }
+        //public static string ServerDnsDkimSelector
+        //{
+        //    get
+        //    {
+        //        return ConfigurationManager.AppSettings["mail.server-dkim-selector"] ?? "dkim";
+        //    }
+        //}
 
-        public static string ServerDnsDomainCheckPrefix
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["mail.server-dns-check-prefix"] ?? "onlyoffice-domain";
-            }
-        }
+        //public static string ServerDnsDomainCheckPrefix
+        //{
+        //    get
+        //    {
+        //        return ConfigurationManager.AppSettings["mail.server-dns-check-prefix"] ?? "onlyoffice-domain";
+        //    }
+        //}
 
-        public static int ServerDnsDefaultTtl
-        {
-            get
-            {
-                var ttl = ConfigurationManager.AppSettings["mail.server-dns-default-ttl"];
-                return ttl != null ? Convert.ToInt32(ttl) : 300;
-            }
-        }
+        //public static int ServerDnsDefaultTtl
+        //{
+        //    get
+        //    {
+        //        var ttl = ConfigurationManager.AppSettings["mail.server-dns-default-ttl"];
+        //        return ttl != null ? Convert.ToInt32(ttl) : 300;
+        //    }
+        //}
 
-        public static int MaximumMessageBodySize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["mail.maximum-message-body-size"] ?? "524288");
-            }
-        }
+        //public static int MaximumMessageBodySize
+        //{
+        //    get
+        //    {
+        //        return Convert.ToInt32(ConfigurationManager.AppSettings["mail.maximum-message-body-size"] ?? "524288");
+        //    }
+        //}
 
-        public static bool IsAttachmentsGroupOperationsAvailable
-        {
-            get
-            {
-                var operations = ConfigurationManager.AppSettings["mail.attachments-group-operations"];
-                return operations != null ? Convert.ToBoolean(operations) : true;
-            }
-        }
+        //public static bool IsAttachmentsGroupOperationsAvailable
+        //{
+        //    get
+        //    {
+        //        var operations = ConfigurationManager.AppSettings["mail.attachments-group-operations"];
+        //        return operations != null ? Convert.ToBoolean(operations) : true;
+        //    }
+        //}
     }
 }

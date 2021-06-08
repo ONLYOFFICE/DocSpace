@@ -30,6 +30,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Storage;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 
@@ -88,13 +89,13 @@ namespace ASC.Mail.Extensions
             }
         }
 
-        public static Defines.TariffType GetTenantStatus(this MailBoxData mailbox,
+        public static DefineConstants.TariffType GetTenantStatus(this MailBoxData mailbox,
             TenantManager tenantManager, SecurityContext securityContext, ApiHelper apiHelper,
             int tenantOverdueDays, ILog log = null)
         {
             log = log ?? new NullLog();
 
-            Defines.TariffType type;
+            DefineConstants.TariffType type;
 
             try
             {
@@ -103,7 +104,7 @@ namespace ASC.Mail.Extensions
                 var tenantInfo = tenantManager.GetCurrentTenant();
 
                 if (tenantInfo.Status == TenantStatus.RemovePending)
-                    return Defines.TariffType.LongDead;
+                    return DefineConstants.TariffType.LongDead;
 
                 try
                 {
@@ -120,36 +121,36 @@ namespace ASC.Mail.Extensions
             {
                 log.ErrorFormat("GetTenantStatus(Tenant={0}, User='{1}') Exception: {2}",
                     mailbox.TenantId, mailbox.UserId, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-                type = Defines.TariffType.Active;
+                type = DefineConstants.TariffType.Active;
             }
 
             return type;
         }
 
-        //public static bool IsTenantQuotaEnded(this MailBoxData mailbox, long minBalance, ILog log = null)
-        //{
-        //    var quotaEnded = false;
-        //    log = log ?? new NullLog();
+        public static bool IsTenantQuotaEnded(this MailBoxData mailbox, TenantManager tenantManager, long minBalance, ILog log = null)
+        {
+            var quotaEnded = false;
+            log = log ?? new NullLog();
 
-        //    try
-        //    {
-        //        var quotaController = new TenantQuotaController(mailbox.TenantId);
-        //        var quota = CoreContext.TenantManager.GetTenantQuota(mailbox.TenantId);
-        //        var usedQuota = quotaController.QuotaCurrentGet();
-        //        quotaEnded = quota.MaxTotalSize - usedQuota < minBalance;
-        //        log.DebugFormat("IsTenantQuotaEnded: {0} Tenant = {1}. Tenant quota = {2}Mb ({3}), used quota = {4}Mb ({5}) ", 
-        //            quotaEnded,
-        //            mailbox.TenantId,
-        //            MailUtil.BytesToMegabytes(quota.MaxTotalSize), quota.MaxTotalSize,
-        //            MailUtil.BytesToMegabytes(usedQuota), usedQuota);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.ErrorFormat("IsQuotaExhausted(Tenant={0}) Exception: {1}", mailbox.TenantId, ex.Message);
-        //    }
+            try
+            {
+                var quotaController = new TenantQuotaController(mailbox.TenantId, tenantManager);
+                var quota = tenantManager.GetTenantQuota(mailbox.TenantId);
+                var usedQuota = quotaController.QuotaCurrentGet();
+                quotaEnded = quota.MaxTotalSize - usedQuota < minBalance;
+                log.DebugFormat("IsTenantQuotaEnded: {0} Tenant = {1}. Tenant quota = {2}Mb ({3}), used quota = {4}Mb ({5}) ",
+                    quotaEnded,
+                    mailbox.TenantId,
+                    MailUtil.BytesToMegabytes(quota.MaxTotalSize), quota.MaxTotalSize,
+                    MailUtil.BytesToMegabytes(usedQuota), usedQuota);
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("IsQuotaExhausted(Tenant={0}) Exception: {1}", mailbox.TenantId, ex.Message);
+            }
 
-        //    return quotaEnded;
-        //}
+            return quotaEnded;
+        }
 
         public static bool IsCrmAvailable(this MailBoxData mailbox,
             TenantManager tenantManager, SecurityContext securityContext, ApiHelper apiHelper,

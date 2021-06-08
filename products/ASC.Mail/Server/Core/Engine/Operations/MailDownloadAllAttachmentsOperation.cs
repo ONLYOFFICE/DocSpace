@@ -170,10 +170,10 @@ namespace ASC.Mail.Core.Engine.Operations
 
                     var path = mailStorage.Save(
                         FileConstant.StorageDomainTmp,
-                        string.Format(@"{0}\{1}", ((IAccount) Thread.CurrentPrincipal.Identity).ID, Defines.ARCHIVE_NAME),
+                        string.Format(@"{0}\{1}", ((IAccount) Thread.CurrentPrincipal.Identity).ID, DefineConstants.ARCHIVE_NAME),
                         stream,
                         "application/zip",
-                        "attachment; filename=\"" + Defines.ARCHIVE_NAME + "\"");
+                        "attachment; filename=\"" + DefineConstants.ARCHIVE_NAME + "\"");
 
                     Log.DebugFormat("Zipped archive has been stored to {0}", path.ToString());
                 }

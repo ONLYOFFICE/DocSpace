@@ -86,15 +86,15 @@ namespace ASC.Mail.Core.Dao
             {
                 var sortField = "DateSent";
 
-                if (exp.OrderBy == Defines.ORDER_BY_SUBJECT)
+                if (exp.OrderBy == DefineConstants.ORDER_BY_SUBJECT)
                 {
                     sortField = "Subject";
                 }
-                else if (exp.OrderBy == Defines.ORDER_BY_SENDER)
+                else if (exp.OrderBy == DefineConstants.ORDER_BY_SENDER)
                 {
                     sortField = "FromText";
                 }
-                else if (exp.OrderBy == Defines.ORDER_BY_DATE_CHAIN)
+                else if (exp.OrderBy == DefineConstants.ORDER_BY_DATE_CHAIN)
                 {
                     sortField = "ChainDate";
                 }

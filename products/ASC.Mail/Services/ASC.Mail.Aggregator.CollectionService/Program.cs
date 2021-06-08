@@ -1,68 +1,89 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
+using ASC.Common.Utils;
+using ASC.Mail.Aggregator.CollectionService.Console;
 
-using System;
-using System.Linq;
-using System.ServiceProcess;
-using ASC.Common.Logging;
+using Autofac.Extensions.DependencyInjection;
+
 using CommandLine;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Mail.Aggregator.CollectionService
 {
-    internal class Program
+    class Program
     {
-        private static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            var host = CreateHostBuilder(args).Build();
 
-             var options = new Options();
+            await host.RunAsync();
 
-            if (args.Any())
-            {
-               Parser.Default.ParseArgumentsStrict(args, options,
-                                                                () =>
-                                                                Console.WriteLine(@"Bad command line parameters."));
-            }
-
-            if (Environment.UserInteractive || options.IsConsole)
-            {
-                var service = new AggregatorService(options);
-                service.StartConsole();
-            }
-            else
-            {
-                ServiceBase.Run(new AggregatorService(options));
-            }
         }
 
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseSystemd()
+                .UseWindowsService()
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    var builder = webBuilder.UseStartup<Startup>();
 
-        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var log = LogManager.GetLogger("ASC.Mail.Aggregator");
-            log.FatalFormat("Unhandled exception: {0}", e.ExceptionObject.ToString());
-        }
+                    builder.ConfigureKestrel((hostingContext, serverOptions) =>
+                    {
+                        var kestrelConfig = hostingContext.Configuration.GetSection("Kestrel");
+
+                        if (!kestrelConfig.Exists()) return;
+
+                        var unixSocket = kestrelConfig.GetValue<string>("ListenUnixSocket");
+
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        {
+                            if (!String.IsNullOrWhiteSpace(unixSocket))
+                            {
+                                unixSocket = String.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
+
+                                serverOptions.ListenUnixSocket(unixSocket);
+                            }
+                        }
+                    });
+                })
+                .ConfigureAppConfiguration((hostContext, config) =>
+                {
+                    var buided = config.Build();
+                    var path = buided["pathToConf"];
+                    if (!Path.IsPathRooted(path))
+                    {
+                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+                    } 
+                    
+                    config.SetBasePath(path);
+                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
+                    config
+                        .AddJsonFile("appsettings.json")
+                        .AddJsonFile($"appsettings.{env}.json", true)
+                        .AddJsonFile("storage.json")
+                        .AddJsonFile("notify.json")
+                        .AddJsonFile("backup.json")
+                        .AddJsonFile("kafka.json")
+                        .AddJsonFile("mail.json")
+                        .AddJsonFile($"kafka.{env}.json", true)
+                        .AddEnvironmentVariables()
+                        .AddCommandLine(args)
+                        .AddInMemoryCollection(new Dictionary<string, string>
+                            {
+                                {"pathToConf", path }
+                            }
+                        );
+                })
+            .ConfigureServices(services => services.AddSingleton(new ConsoleParser(args)));
     }
 }

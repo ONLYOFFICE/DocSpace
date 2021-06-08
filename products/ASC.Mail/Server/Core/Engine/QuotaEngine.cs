@@ -54,7 +54,7 @@ namespace ASC.Mail.Core.Engine
             try
             {
                 var quotaController = new TenantQuotaController(Tenant, TenantManager);
-                quotaController.QuotaUsedAdd(Defines.MODULE_NAME, string.Empty, Defines.MAIL_QUOTA_TAG, usedQuota);
+                quotaController.QuotaUsedAdd(DefineConstants.MODULE_NAME, string.Empty, DefineConstants.MAIL_QUOTA_TAG, usedQuota);
             }
             catch (Exception ex)
             {
@@ -69,7 +69,7 @@ namespace ASC.Mail.Core.Engine
             try
             {
                 var quotaController = new TenantQuotaController(Tenant, TenantManager);
-                quotaController.QuotaUsedDelete(Defines.MODULE_NAME, string.Empty, Defines.MAIL_QUOTA_TAG, usedQuota);
+                quotaController.QuotaUsedDelete(DefineConstants.MODULE_NAME, string.Empty, DefineConstants.MAIL_QUOTA_TAG, usedQuota);
             }
             catch (Exception ex)
             {

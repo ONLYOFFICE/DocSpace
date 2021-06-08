@@ -31,8 +31,8 @@ namespace ASC.Mail.Core.Dao.Entities
         public bool IsProcessed { get; set; }
         [Column("is_server_mailbox", TypeName = "tinyint(1) unsigned")]
         public bool IsServerMailbox { get; set; }
-        [Column("is_teamlab_mailbox", TypeName = "tinyint(1) unsigned")]
-        public bool IsTeamlabMailbox { get; set; }
+        //[Column("is_teamlab_mailbox", TypeName = "tinyint(1) unsigned")]
+        //public bool IsTeamlabMailbox { get; set; }
         [Column("imap", TypeName = "tinyint(1) unsigned")]
         public bool Imap { get; set; }
         [Column("user_online", TypeName = "tinyint(1) unsigned")]
@@ -151,5 +151,12 @@ namespace ASC.Mail.Core.Dao.Entities
 
             return modelBuilder;
         }
+    }
+
+    public class MailMailboxNames
+    {
+        public const string DateChecked = "date_checked";
+        public const string DateLoginDelayExpires = "date_login_delay_expires";
+        public const string DateUserChecked = "date_user_checked";
     }
 }

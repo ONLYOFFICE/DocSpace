@@ -48,7 +48,7 @@ namespace ASC.Mail.Core.Dao
 
         public ServerDns Get(int domainId)
         {
-            var tenants = new List<int> { Tenant, Defines.SHARED_TENANT_ID };
+            var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
             var dns = MailDb.MailServerDns
                 .Where(d => tenants.Contains(d.Tenant))
@@ -75,7 +75,7 @@ namespace ASC.Mail.Core.Dao
             var dns = MailDb.MailServerDns
                .Where(d => d.Tenant == Tenant)
                .Where(d => d.IdUser == UserId)
-               .Where(d => d.IdDomain == Defines.UNUSED_DNS_SETTING_DOMAIN_ID)
+               .Where(d => d.IdDomain == DefineConstants.UNUSED_DNS_SETTING_DOMAIN_ID)
                .Select(ToServerDns)
                .SingleOrDefault();
 

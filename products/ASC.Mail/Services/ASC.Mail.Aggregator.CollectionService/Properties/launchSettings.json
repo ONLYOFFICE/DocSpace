@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ASC.Mail.Aggregator.CollectionService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "core__products__folder": "../../../../../../"
+      }
+    }
+  }
+}

@@ -31,70 +31,70 @@ namespace ASC.Mail.Models
 {
     public class MailGarbageEraserConfig
     {
-        public string HttpContextScheme { get; private set; }
-        public int GarbageOverdueDays { get; private set; }
-        public int MaxTasksAtOnce { get; private set; }
-        public int MaxFilesToRemoveAtOnce { get; private set; }
-        public int TenantCacheDays { get; private set; }
-        public int TenantOverdueDays { get; private set; }
+        //public string HttpContextScheme { get; private set; }
+        //public int GarbageOverdueDays { get; private set; }
+        //public int MaxTasksAtOnce { get; private set; }
+        //public int MaxFilesToRemoveAtOnce { get; private set; }
+        //public int TenantCacheDays { get; private set; }
+        //public int TenantOverdueDays { get; private set; }
 
-        public MailGarbageEraserConfig(int maxTasksAtOnce, int maxFilesToRemoveAtOnce, int tenantCacheDays,
-            int tenantOverdueDays, int garbageOverdueDays, string httpContextScheme)
-        {
-            HttpContextScheme = httpContextScheme;
-            GarbageOverdueDays = garbageOverdueDays;
-            MaxTasksAtOnce = maxTasksAtOnce;
-            MaxFilesToRemoveAtOnce = maxFilesToRemoveAtOnce;
-            TenantCacheDays = tenantCacheDays;
-            TenantOverdueDays = tenantOverdueDays;
-        }
+        //public MailGarbageEraserConfig(int maxTasksAtOnce, int maxFilesToRemoveAtOnce, int tenantCacheDays,
+        //    int tenantOverdueDays, int garbageOverdueDays, string httpContextScheme)
+        //{
+        //    HttpContextScheme = httpContextScheme;
+        //    GarbageOverdueDays = garbageOverdueDays;
+        //    MaxTasksAtOnce = maxTasksAtOnce;
+        //    MaxFilesToRemoveAtOnce = maxFilesToRemoveAtOnce;
+        //    TenantCacheDays = tenantCacheDays;
+        //    TenantOverdueDays = tenantOverdueDays;
+        //}
 
-        public static MailGarbageEraserConfig Default()
-        {
-            return new MailGarbageEraserConfig(1, 100, 1, 30, 30, "http");
-        }
+        //public static MailGarbageEraserConfig Default()
+        //{
+        //    return new MailGarbageEraserConfig(1, 100, 1, 30, 30, "http");
+        //}
 
-        public static MailGarbageEraserConfig FromConfig()
-        {
-            try
-            {
-                var defaultConfig = Default();
+        //public static MailGarbageEraserConfig FromConfig()
+        //{
+        //    try
+        //    {
+        //        var defaultConfig = Default();
 
-                var maxTasksAtOnce = ConfigurationManager.AppSettings["cleaner.max-tasks-at-once"] != null
-                    ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.max-tasks-at-once"])
-                    : defaultConfig.MaxTasksAtOnce;
+        //        var maxTasksAtOnce = ConfigurationManager.AppSettings["cleaner.max-tasks-at-once"] != null
+        //            ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.max-tasks-at-once"])
+        //            : defaultConfig.MaxTasksAtOnce;
 
-                var maxFilesToRemoveAtOnce = ConfigurationManager.AppSettings["cleaner.files-remove-limit-at-once"] !=
-                                             null
-                    ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.files-remove-limit-at-once"])
-                    : defaultConfig.MaxFilesToRemoveAtOnce;
+        //        var maxFilesToRemoveAtOnce = ConfigurationManager.AppSettings["cleaner.files-remove-limit-at-once"] !=
+        //                                     null
+        //            ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.files-remove-limit-at-once"])
+        //            : defaultConfig.MaxFilesToRemoveAtOnce;
 
-                var tenantCacheDays = ConfigurationManager.AppSettings["cleaner.tenant-cache-days"] != null
-                    ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.tenant-cache-days"])
-                    : defaultConfig.TenantCacheDays;
+        //        var tenantCacheDays = ConfigurationManager.AppSettings["cleaner.tenant-cache-days"] != null
+        //            ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.tenant-cache-days"])
+        //            : defaultConfig.TenantCacheDays;
 
-                var tenantOverdueDays = ConfigurationManager.AppSettings["cleaner.tenant-overdue-days"] != null
-                    ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.tenant-overdue-days"])
-                    : defaultConfig.TenantOverdueDays;
+        //        var tenantOverdueDays = ConfigurationManager.AppSettings["cleaner.tenant-overdue-days"] != null
+        //            ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.tenant-overdue-days"])
+        //            : defaultConfig.TenantOverdueDays;
 
-                var garbageOverdueDays = ConfigurationManager.AppSettings["cleaner.mailbox-garbage-overdue-days"] !=
-                                         null
-                    ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.mailbox-garbage-overdue-days"])
-                    : defaultConfig.GarbageOverdueDays;
+        //        var garbageOverdueDays = ConfigurationManager.AppSettings["cleaner.mailbox-garbage-overdue-days"] !=
+        //                                 null
+        //            ? Convert.ToInt32(ConfigurationManager.AppSettings["cleaner.mailbox-garbage-overdue-days"])
+        //            : defaultConfig.GarbageOverdueDays;
 
-                var httpContextScheme = ConfigurationManager.AppSettings["mail.default-api-scheme"] != null
-                    ? (ConfigurationManager.AppSettings["mail.default-api-scheme"] == Uri.UriSchemeHttps
-                        ? Uri.UriSchemeHttps
-                        : Uri.UriSchemeHttp)
-                    : defaultConfig.HttpContextScheme;
+        //        var httpContextScheme = ConfigurationManager.AppSettings["mail.default-api-scheme"] != null
+        //            ? (ConfigurationManager.AppSettings["mail.default-api-scheme"] == Uri.UriSchemeHttps
+        //                ? Uri.UriSchemeHttps
+        //                : Uri.UriSchemeHttp)
+        //            : defaultConfig.HttpContextScheme;
 
-                return new MailGarbageEraserConfig(maxTasksAtOnce, maxFilesToRemoveAtOnce, tenantCacheDays,
-                    tenantOverdueDays, garbageOverdueDays, httpContextScheme);
-            }
-            catch (Exception)
-            {
-                return Default();
-            }
-        }
+        //        return new MailGarbageEraserConfig(maxTasksAtOnce, maxFilesToRemoveAtOnce, tenantCacheDays,
+        //            tenantOverdueDays, garbageOverdueDays, httpContextScheme);
+        //    }
+        //    catch (Exception) 
+        //    {
+        //        return Default();
+        //    }
+        //}
     }
 }

@@ -41,11 +41,12 @@ using SecurityContext = ASC.Core.SecurityContext;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.Users;
 using ASC.Common;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
-    public class ServerEngine
+    public class ServerEngine : BaseEngine
     {
         private int Tenant => TenantManager.GetCurrentTenant().TenantId;
         private bool IsAdmin => WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
@@ -69,7 +70,8 @@ namespace ASC.Mail.Core.Engine
             WebItemSecurity webItemSecurity,
             SettingsManager settingsManager,
             UserManagerWrapper userManagerWrapper,
-            IServiceProvider serviceProvider)
+            MailSettings mailSettings,
+            IServiceProvider serviceProvider) : base(mailSettings)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -230,7 +232,7 @@ namespace ASC.Mail.Core.Engine
                 Dns = dns,
                 ServerLimits = new ServerLimitData
                 {
-                    MailboxMaxCountPerUser = Defines.ServerDomainMailboxPerUserLimit
+                    MailboxMaxCountPerUser = (int)MailSettings.ServerDomainMailboxPerUserLimit
                 },
                 InServer = inServer,
                 OutServer = outServer

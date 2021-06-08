@@ -95,7 +95,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerDomain> GetDomains()
         {
-            var tenants = new List<int> { Tenant, Defines.SHARED_TENANT_ID };
+            var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
             var list = MailDb.MailServerDomain
                 .Where(d => tenants.Contains(d.Tenant))
@@ -116,7 +116,7 @@ namespace ASC.Mail.Core.Dao
 
         public ServerDomain GetDomain(int id)
         {
-            var tenants = new List<int> { Tenant, Defines.SHARED_TENANT_ID };
+            var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
             var domain = MailDb.MailServerDomain
                 .Where(d => tenants.Contains(d.Tenant))

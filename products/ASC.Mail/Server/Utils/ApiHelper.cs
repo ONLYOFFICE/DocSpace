@@ -40,6 +40,7 @@ using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Mail.Configuration;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
@@ -69,13 +70,13 @@ namespace ASC.Mail.Utils
         private CoreSettings CoreSettings { get; }
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
         private string Scheme { get; }
+        private MailSettings MailSettings { get; }
 
         protected UriBuilder BaseUrl { get; private set; }
 
         private HttpContext HttpContext { get; set; }
-        
-        private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContext)); } }
+
+        private Tenant Tenant => TenantManager.GetCurrentTenant(HttpContext);
 
         public string Token { get; set; }
 
@@ -89,6 +90,7 @@ namespace ASC.Mail.Utils
             TenantManager tenantManager,
             CoreSettings coreSettings,
             ApiDateTimeHelper apiDateTimeHelper,
+            MailSettings mailSettings,
             IConfiguration configuration,
             IOptionsMonitor<ILog> option)
         {
@@ -99,16 +101,20 @@ namespace ASC.Mail.Utils
 
             /*if (!scheme.Equals(Uri.UriSchemeHttps) && !scheme.Equals(Uri.UriSchemeHttp))
                 throw new ApiHelperException("ApiHelper: url scheme not setup", HttpStatusCode.InternalServerError, "");*/
-
+            MailSettings = mailSettings;
             Configuration = configuration;
             Log = option.Get("ASC.Mail.ApiHelper");
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
             ApiDateTimeHelper = apiDateTimeHelper;
-            Scheme = Configuration["mail:default-api-scheme"] ?? Uri.UriSchemeHttp;
+            Scheme = mailSettings.DefaultApiSchema ?? Uri.UriSchemeHttp;
+            //TODO: FIX!
+            //Tenant = new Tenant(1, "");
+            //TenantManager.GetCurrentTenant();
+            MailSettings = mailSettings;
 
-            if (!Scheme.Equals(Uri.UriSchemeHttps) || !Defines.SslCertificatesErrorPermit)
+            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorPermit)
                 return;
 
             ServicePointManager.ServerCertificateValidationCallback =
@@ -182,7 +188,7 @@ namespace ASC.Mail.Utils
             return response;
         }
 
-        public Defines.TariffType GetTenantTariff(int tenantOverdueDays)
+        public DefineConstants.TariffType GetTenantTariff(int tenantOverdueDays)
         {
             var request = new RestRequest("portal/tariff.json", Method.GET);
 
@@ -191,7 +197,7 @@ namespace ASC.Mail.Utils
             var response = Execute(request);
 
             if (response.StatusCode == HttpStatusCode.PaymentRequired)
-                return Defines.TariffType.LongDead;
+                return DefineConstants.TariffType.LongDead;
 
             if (response.ResponseStatus != ResponseStatus.Completed ||
                 (response.StatusCode != HttpStatusCode.Created &&
@@ -206,11 +212,11 @@ namespace ASC.Mail.Utils
 
             Enum.TryParse(json["response"]["state"].ToString(), out state);
 
-            Defines.TariffType result;
+            DefineConstants.TariffType result;
 
             if (state < TariffState.NotPaid)
             {
-                result = Defines.TariffType.Active;
+                result = DefineConstants.TariffType.Active;
             }
             else
             {
@@ -226,8 +232,8 @@ namespace ASC.Mail.Utils
 
                 result = (!delayDateString.Equals(maxDateStr) ? delayDueDate : dueDate)
                              .AddDays(tenantOverdueDays) <= DateTime.UtcNow
-                             ? Defines.TariffType.LongDead
-                             : Defines.TariffType.Overdue;
+                             ? DefineConstants.TariffType.LongDead
+                             : DefineConstants.TariffType.Overdue;
             }
 
             return result;

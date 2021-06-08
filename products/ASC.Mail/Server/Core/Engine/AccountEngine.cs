@@ -35,6 +35,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Mail.Authorization;
 using ASC.Mail.Clients;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
@@ -59,6 +60,7 @@ namespace ASC.Mail.Core.Engine
         private MailBoxSettingEngine MailBoxSettingEngine { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private SettingsManager SettingsManager { get; }
+        private MailSettings MailSettings { get; }
 
         public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; set; }
 
@@ -72,11 +74,14 @@ namespace ASC.Mail.Core.Engine
             MailBoxSettingEngine mailBoxSettingEngine,
             CoreBaseSettings coreBaseSettings,
             SettingsManager settingsManager,
+            MailSettings mailSettings,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
 
             MailboxEngine = mailboxEngine;
+
+            MailSettings = mailSettings;
 
             DaoFactory = daoFactory;
             TenantManager = tenantManager;
@@ -128,9 +133,9 @@ namespace ASC.Mail.Core.Engine
                         {
                             var authErrorDate = account.MailboxDateAuthError.Value;
 
-                            if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorDisableTimeout)
+                            if (DateTime.UtcNow - authErrorDate > MailSettings.AuthErrorDisableMailboxTimeout)
                                 authErrorType = MailBoxData.AuthProblemType.TooManyErrors;
-                            else if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorWarningTimeout)
+                            else if (DateTime.UtcNow - authErrorDate > MailSettings.AuthErrorWarningTimeout)
                                 authErrorType = MailBoxData.AuthProblemType.ConnectError;
                         }
 
@@ -146,7 +151,7 @@ namespace ASC.Mail.Core.Engine
                             !string.IsNullOrEmpty(account.MailboxOAuthToken),
                             account.MailboxEmailInFolder,
                             account.MailboxIsServerMailbox,
-                            account.ServerDomainTenant == Defines.SHARED_TENANT_ID);
+                            account.ServerDomainTenant == DefineConstants.SHARED_TENANT_ID);
 
                         if (group != null) accountInfo.Groups.Add(group);
 
@@ -217,18 +222,18 @@ namespace ASC.Mail.Core.Engine
         {
             switch (action)
             {
-                case Defines.GET_IMAP_POP_SETTINGS:
+                case DefineConstants.GET_IMAP_POP_SETTINGS:
                     return
                         MailboxEngine.GetDefaultMailboxData(email, "",
                             AuthorizationServiceType.None, true, true) ??
                         MailboxEngine.GetDefaultMailboxData(email, "",
                             AuthorizationServiceType.None, false, false);
-                case Defines.GET_IMAP_SERVER:
-                case Defines.GET_IMAP_SERVER_FULL:
+                case DefineConstants.GET_IMAP_SERVER:
+                case DefineConstants.GET_IMAP_SERVER_FULL:
                     return MailboxEngine.GetDefaultMailboxData(email, "",
                         AuthorizationServiceType.None, true, false);
-                case Defines.GET_POP_SERVER:
-                case Defines.GET_POP_SERVER_FULL:
+                case DefineConstants.GET_POP_SERVER:
+                case DefineConstants.GET_POP_SERVER_FULL:
                     return MailboxEngine.GetDefaultMailboxData(email, "",
                         AuthorizationServiceType.None, false, false);
             }
@@ -268,7 +273,7 @@ namespace ASC.Mail.Core.Engine
             };
 
             using (var client = new MailClient(mbox, CancellationToken.None, ServerFolderAccessInfos,
-                    certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
+                    certificatePermit: MailSettings.SslCertificatesErrorPermit, log: Log))
             {
                 loginResult = client.TestLogin();
             }
@@ -295,7 +300,7 @@ namespace ASC.Mail.Core.Engine
                 throw new NullReferenceException("mbox");
 
             using (var client = new MailClient(mbox, CancellationToken.None, ServerFolderAccessInfos,
-                    certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
+                    certificatePermit: MailSettings.SslCertificatesErrorPermit, log: Log))
             {
                 loginResult = client.TestLogin();
             }
@@ -337,8 +342,8 @@ namespace ASC.Mail.Core.Engine
             {
                 LoginResult loginResult;
 
-                using (var client = new MailClient(mb, CancellationToken.None, ServerFolderAccessInfos, 
-                    Defines.TcpTimeout, Defines.SslCertificatesErrorPermit, log: Log))
+                using (var client = new MailClient(mb, CancellationToken.None, ServerFolderAccessInfos,
+                    MailSettings.TcpTimeout, MailSettings.SslCertificatesErrorPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
                 }
@@ -558,7 +563,7 @@ namespace ASC.Mail.Core.Engine
             {
                 // Check account connection setting on activation
                 using (var client = new MailClient(tuple.Item1, CancellationToken.None, ServerFolderAccessInfos,
-                        certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
+                        certificatePermit: MailSettings.SslCertificatesErrorPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
                 }

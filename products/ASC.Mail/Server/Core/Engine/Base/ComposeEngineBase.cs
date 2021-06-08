@@ -48,6 +48,7 @@ using Microsoft.Extensions.Options;
 using MailMessage = ASC.Mail.Models.MailMessageData;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Common;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -76,6 +77,7 @@ namespace ASC.Mail.Core.Engine
         private protected TenantManager TenantManager { get; }
         private protected CoreSettings CoreSettings { get; }
         private StorageFactory StorageFactory { get; }
+        internal MailSettings MailSettings { get; }
         public class DeliveryFailureMessageTranslates
         {
             public string DaemonEmail { get; set; }
@@ -148,6 +150,7 @@ namespace ASC.Mail.Core.Engine
             StorageFactory storageFactory,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
             IOptionsMonitor<ILog> option,
+            MailSettings mailSettings,
             DeliveryFailureMessageTranslates daemonLabels = null)
         {
             AccountEngine = accountEngine;
@@ -163,11 +166,13 @@ namespace ASC.Mail.Core.Engine
             CoreSettings = coreSettings;
             StorageFactory = storageFactory;
 
+            MailSettings = mailSettings;
+
             Log = option.Get("ASC.Mail.ComposeEngineBase");
 
             DaemonLabels = daemonLabels ?? DeliveryFailureMessageTranslates.Defauilt;
 
-            _sslCertificatePermit = Defines.SslCertificatesErrorPermit;
+            _sslCertificatePermit = MailSettings.SslCertificatesErrorPermit;
 
             if (_signalrServiceClient != null) return;
             _signalrServiceClient = optionsSnapshot.Get("mail");
@@ -205,7 +210,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     LoadImages = false,
                     LoadBody = true,
-                    NeedProxyHttp = Defines.NeedProxyHttp,
+                    NeedProxyHttp = MailSettings.NeedProxyHttp,
                     NeedSanitizer = false
                 });
 
@@ -214,9 +219,9 @@ namespace ASC.Mail.Core.Engine
                     throw new InvalidOperationException("Saving emails is permitted only in the Drafts folder");
                 }
 
-                if (message.HtmlBody.Length > Defines.MaximumMessageBodySize)
+                if (message.HtmlBody.Length > MailSettings.MaximumMessageBodySize)
                 {
-                    throw new InvalidOperationException("Message body exceeded limit (" + Defines.MaximumMessageBodySize / 1024 + " KB)");
+                    throw new InvalidOperationException("Message body exceeded limit (" + MailSettings.MaximumMessageBodySize / 1024 + " KB)");
                 }
 
                 mimeMessageId = message.MimeMessageId;

@@ -12,6 +12,7 @@ using ASC.Common.Threading;
 using System.Configuration;
 using ASC.Web.Core.Users;
 using System;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Controllers
 {
@@ -57,6 +58,8 @@ namespace ASC.Mail.Controllers
         private IServiceProvider ServiceProvider { get; }
         private ILog Log { get; }
 
+        private MailSettings MailSettings { get; }
+
         public MailController(
             TenantManager tenantManager,
             SecurityContext securityContext,
@@ -88,11 +91,13 @@ namespace ASC.Mail.Controllers
             OperationEngine operationEngine,
             TestEngine testEngine,
             CoreBaseSettings coreBaseSettings,
+            MailSettings mailSettings,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             TenantManager = tenantManager;
             SecurityContext = securityContext;
+            MailSettings = mailSettings;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             ApiContext = apiContext;

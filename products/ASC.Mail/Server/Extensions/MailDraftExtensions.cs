@@ -315,13 +315,13 @@ namespace ASC.Mail.Extensions
                     var filename = "calendar.ics";
                     switch (draft.CalendarMethod)
                     {
-                        case Defines.ICAL_REQUEST:
+                        case DefineConstants.ICAL_REQUEST:
                             filename = "invite.ics";
                             break;
-                        case Defines.ICAL_REPLY:
+                        case DefineConstants.ICAL_REPLY:
                             filename = "reply.ics";
                             break;
-                        case Defines.ICAL_CANCEL:
+                        case DefineConstants.ICAL_CANCEL:
                             filename = "cancel.ics";
                             break;
                     }

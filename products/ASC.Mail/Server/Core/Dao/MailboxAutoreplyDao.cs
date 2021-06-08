@@ -47,15 +47,15 @@ namespace ASC.Mail.Core.Dao
         {
         }
 
-        public MailboxAutoreply GetAutoreply(int mailboxId)
+        public MailboxAutoreply GetAutoreply(Mailbox mailbox)
         {
             var autoreply = MailDb.MailMailboxAutoreply
-                .Where(a => a.Tenant == Tenant && a.IdMailbox == mailboxId)
+                .Where(a => a.Tenant == mailbox.Tenant && a.IdMailbox == mailbox.Id)
                 .Select(ToAutoreply)
                 .DefaultIfEmpty(new MailboxAutoreply
                 {
-                    MailboxId = mailboxId,
-                    Tenant = Tenant,
+                    MailboxId = mailbox.Id,
+                    Tenant = mailbox.Tenant,
                     TurnOn = false,
                     OnlyContacts = false,
                     TurnOnToDate = false,

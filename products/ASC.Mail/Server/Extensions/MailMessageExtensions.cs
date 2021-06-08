@@ -71,7 +71,7 @@ namespace ASC.Mail.Extensions
                         continue;
 
                     if (calendar.Events[0].Organizer == null &&
-                        calendar.Method.Equals(Defines.ICAL_REPLY, StringComparison.OrdinalIgnoreCase))
+                        calendar.Method.Equals(DefineConstants.ICAL_REPLY, StringComparison.OrdinalIgnoreCase))
                     {
                         // Fix reply organizer (Outlook style of Reply)
                         var toAddress = message.To.Mailboxes.FirstOrDefault();
@@ -152,9 +152,9 @@ namespace ASC.Mail.Extensions
 
                     if (string.IsNullOrEmpty(calendarPart.ContentDisposition.FileName))
                     {
-                        calendarPart.ContentDisposition.FileName = calendar.Method == Defines.ICAL_REQUEST
+                        calendarPart.ContentDisposition.FileName = calendar.Method == DefineConstants.ICAL_REQUEST
                             ? "invite.ics"
-                            : calendar.Method == Defines.ICAL_REPLY ? "reply.ics" : "cancel.ics";
+                            : calendar.Method == DefineConstants.ICAL_REPLY ? "reply.ics" : "cancel.ics";
                     }
 
                     mail.LoadAttachments(new List<MimeEntity> { calendarPart }, true);

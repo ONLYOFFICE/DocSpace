@@ -30,6 +30,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Authorization;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Expressions.Conversation;
@@ -39,6 +40,8 @@ using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
+using DocuSign.eSign.Model;
+
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -48,7 +51,7 @@ using System.Net.Mail;
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
-    public class MailboxEngine
+    public class MailboxEngine : BaseEngine
     {
         private int Tenant => TenantManager.GetCurrentTenant().TenantId;
         private string UserId => SecurityContext.CurrentAccount.ID.ToString();
@@ -75,7 +78,8 @@ namespace ASC.Mail.Core.Engine
             QuotaEngine quotaEngine,
             CacheEngine cacheEngine,
             IndexEngine indexEngine,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            MailSettings mailSettings) : base (mailSettings)
         {
             TenantManager = tenantManager;
             SecurityContext = securityContext;
@@ -176,7 +180,7 @@ namespace ASC.Mail.Core.Engine
 
             var host = address.Host.ToLowerInvariant();
 
-            if (type == AuthorizationServiceType.Google) host = Defines.GOOGLE_HOST;
+            if (type == AuthorizationServiceType.Google) host = DefineConstants.GOOGLE_HOST;
 
             MailBoxData initialMailbox = null;
 
@@ -301,14 +305,14 @@ namespace ASC.Mail.Core.Engine
             var mailboxId = 0;
             var dateCreated = DateTime.UtcNow;
             var enabled = true;
-            var host = authType == AuthorizationServiceType.Google ? Defines.GOOGLE_HOST : mailbox.EMail.Host;
+            var host = authType == AuthorizationServiceType.Google ? DefineConstants.GOOGLE_HOST : mailbox.EMail.Host;
 
             // Get new imap/pop3 server from MailBoxData
             var newInServer = new MailboxServer
             {
                 Hostname = mailbox.Server,
                 Port = mailbox.Port,
-                Type = mailbox.Imap ? Defines.IMAP : Defines.POP3,
+                Type = mailbox.Imap ? DefineConstants.IMAP : DefineConstants.POP3,
                 Username = mailbox.EMail.ToLoginFormat(mailbox.Account) ?? mailbox.Account,
                 SocketType = mailbox.Encryption.ToNameString(),
                 Authentication = mailbox.Authentication.ToNameString()
@@ -319,7 +323,7 @@ namespace ASC.Mail.Core.Engine
             {
                 Hostname = mailbox.SmtpServer,
                 Port = mailbox.SmtpPort,
-                Type = Defines.SMTP,
+                Type = DefineConstants.SMTP,
                 Username =
                     mailbox.SmtpAuthentication != SaslMechanism.None
                         ? mailbox.EMail.ToLoginFormat(mailbox.SmtpAccount) ?? mailbox.SmtpAccount
@@ -450,44 +454,44 @@ namespace ASC.Mail.Core.Engine
             return true;
         }
 
-        public List<MailBoxData> GetMailboxesForProcessing(TasksConfig tasksConfig, int needTasks)
+        public List<MailBoxData> GetMailboxesForProcessing(MailSettings mailSettings, int needTasks)
         {
             var mailboxes = new List<MailBoxData>();
 
-            var boundaryRatio = !(tasksConfig.InactiveMailboxesRatio > 0 && tasksConfig.InactiveMailboxesRatio < 100);
+            var boundaryRatio = !(mailSettings.InactiveMailboxesRatio > 0 && mailSettings.InactiveMailboxesRatio < 100);
 
             if (needTasks > 1 || boundaryRatio)
             {
-                var inactiveCount = (int)Math.Round(needTasks * tasksConfig.InactiveMailboxesRatio / 100, MidpointRounding.AwayFromZero);
+                var inactiveCount = (int)Math.Round(needTasks * mailSettings.InactiveMailboxesRatio / 100, MidpointRounding.AwayFromZero);
 
                 var activeCount = needTasks - inactiveCount;
 
                 if (activeCount == needTasks)
                 {
-                    mailboxes.AddRange(GetActiveMailboxesForProcessing(tasksConfig, activeCount));
+                    mailboxes.AddRange(GetActiveMailboxesForProcessing(mailSettings, activeCount));
                 }
                 else if (inactiveCount == needTasks)
                 {
-                    mailboxes.AddRange(GetInactiveMailboxesForProcessing(tasksConfig, inactiveCount));
+                    mailboxes.AddRange(GetInactiveMailboxesForProcessing(mailSettings, inactiveCount));
                 }
                 else
                 {
-                    mailboxes.AddRange(GetActiveMailboxesForProcessing(tasksConfig, activeCount));
+                    mailboxes.AddRange(GetActiveMailboxesForProcessing(mailSettings, activeCount));
 
                     var difference = inactiveCount + activeCount - mailboxes.Count;
 
                     if (difference > 0)
-                        mailboxes.AddRange(GetInactiveMailboxesForProcessing(tasksConfig, difference));
+                        mailboxes.AddRange(GetInactiveMailboxesForProcessing(mailSettings, difference));
                 }
             }
             else
             {
-                mailboxes.AddRange(GetActiveMailboxesForProcessing(tasksConfig, 1));
+                mailboxes.AddRange(GetActiveMailboxesForProcessing(mailSettings, 1));
 
                 var difference = needTasks - mailboxes.Count;
 
                 if (difference > 0)
-                    mailboxes.AddRange(GetInactiveMailboxesForProcessing(tasksConfig, difference));
+                    mailboxes.AddRange(GetInactiveMailboxesForProcessing(mailSettings, difference));
             }
 
             return mailboxes;
@@ -500,7 +504,7 @@ namespace ASC.Mail.Core.Engine
             return status;
         }
 
-        public bool ReleaseMaibox(MailBoxData account, TasksConfig tasksConfig)
+        public bool ReleaseMaibox(MailBoxData account, MailSettings mailSettings)
         {
             var disableMailbox = false;
 
@@ -508,14 +512,14 @@ namespace ASC.Mail.Core.Engine
             {
                 var difference = DateTime.UtcNow - account.AuthErrorDate.Value;
 
-                if (difference > tasksConfig.AuthErrorDisableMailboxTimeout)
+                if (difference > mailSettings.AuthErrorDisableMailboxTimeout)
                 {
                     disableMailbox = true;
 
                     AlertEngine.CreateAuthErrorDisableAlert(account.TenantId, account.UserId,
                         account.MailBoxId);
                 }
-                else if (difference > tasksConfig.AuthErrorWarningTimeout)
+                else if (difference > mailSettings.AuthErrorWarningTimeout)
                 {
                     AlertEngine.CreateAuthErrorWarningAlert(account.TenantId, account.UserId,
                         account.MailBoxId);
@@ -748,28 +752,28 @@ namespace ASC.Mail.Core.Engine
             return totalAttachmentsSize;
         }
 
-        private IEnumerable<MailBoxData> GetActiveMailboxesForProcessing(TasksConfig tasksConfig, int tasksLimit)
+        private IEnumerable<MailBoxData> GetActiveMailboxesForProcessing(MailSettings mailSettings, int tasksLimit)
         {
             if (tasksLimit <= 0)
                 return new List<MailBoxData>();
 
             Log.Debug("GetActiveMailboxForProcessing()");
 
-            var mailboxes = GetMailboxDataList(new MailboxesForProcessingExp(tasksConfig, tasksLimit, true));
+            var mailboxes = GetMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, true));
 
             Log.DebugFormat("Found {0} active tasks", mailboxes.Count);
 
             return mailboxes;
         }
 
-        private IEnumerable<MailBoxData> GetInactiveMailboxesForProcessing(TasksConfig tasksConfig, int tasksLimit)
+        private IEnumerable<MailBoxData> GetInactiveMailboxesForProcessing(MailSettings mailSettings, int tasksLimit)
         {
             if (tasksLimit <= 0)
                 return new List<MailBoxData>();
 
             Log.Debug("GetInactiveMailboxForProcessing()");
 
-            var mailboxes = GetMailboxDataList(new MailboxesForProcessingExp(tasksConfig, tasksLimit, false));
+            var mailboxes = GetMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, false));
 
             Log.DebugFormat("Found {0} inactive tasks", mailboxes.Count);
 
@@ -860,7 +864,7 @@ namespace ASC.Mail.Core.Engine
             //1.3) Match email addreess of account with regexs from mail_login_delays
             //1.4) If email matched then set delay from that record.
             if (mailbox.Server == "pop3.live.com")
-                return Defines.HARDCODED_LOGIN_TIME_FOR_MS_MAIL;
+                return DefineConstants.HARDCODED_LOGIN_TIME_FOR_MS_MAIL;
 
             return mailbox.ServerLoginDelay < MailBoxData.DefaultServerLoginDelay
                        ? MailBoxData.DefaultServerLoginDelay
@@ -879,7 +883,7 @@ namespace ASC.Mail.Core.Engine
             if (outServer == null)
                 return null;
 
-            var autoreply = DaoFactory.MailboxAutoreplyDao.GetAutoreply(mailbox.Id);
+            var autoreply = DaoFactory.MailboxAutoreplyDao.GetAutoreply(mailbox);
 
             return new Tuple<MailBoxData, Mailbox>(ToMailBoxData(mailbox, inServer, outServer, autoreply), mailbox);
         }

@@ -1,92 +1,93 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Aggregator.CollectionService.Queue.Data;
 using ASC.Mail.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Data.Contracts;
+using ASC.Mail.Models;
 using ASC.Mail.Extensions;
+
 using LiteDB;
+using ASC.Mail.Configuration;
+using ASC.Common;
+using ASC.Mail.Utils;
+using ASC.Mail.Core.Engine;
 
 namespace ASC.Mail.Aggregator.CollectionService.Queue
 {
+    [Scope]
     public class QueueManager : IDisposable
     {
-        private readonly EngineFactory _engineFactory;
-
         private readonly int _maxItemsLimit;
         private readonly Queue<MailBoxData> _mailBoxQueue;
         private List<MailBoxData> _lockedMailBoxList;
-        private readonly TasksConfig _tasksConfig;
         private readonly ILog _log;
         private DateTime _loadQueueTime;
         private MemoryCache _tenantMemCache;
-
         private const string DBC_MAILBOXES = "mailboxes";
         private const string DBC_TENANTS = "tenants";
         private static string _dbcFile;
         private static string _dbcJournalFile;
-
         private readonly object _locker = new object();
-
         private LiteDatabase _db;
-        private LiteCollection<MailboxData> _mailboxes;
-        private LiteCollection<TenantData> _tenants;
+        private ILiteCollection<MailboxData> _mailboxes;
+        private ILiteCollection<TenantData> _tenants;
+
+
+        private MailSettings MailSettings { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private ApiHelper ApiHelper { get; }
+        private UserManager UserManager { get; }
+        private MailboxEngine MailboxEngine { get; }
+        private AlertEngine AlertEngine { get; }
 
         public ManualResetEvent CancelHandler { get; set; }
 
-        public QueueManager(TasksConfig tasksConfig, ILog log)
-        {           
-            _maxItemsLimit = tasksConfig.MaxTasksAtOnce;
+        public QueueManager(
+            MailSettings mailSettings, 
+            ILog log,
+            TenantManager tenantManager, 
+            SecurityContext securityContext,
+            ApiHelper apiHelper,
+            UserManager userManager,
+            MailboxEngine mailboxEngine,
+            AlertEngine alertEngine)
+        {
+            _maxItemsLimit = mailSettings.MaxTasksAtOnce;
             _mailBoxQueue = new Queue<MailBoxData>();
             _lockedMailBoxList = new List<MailBoxData>();
-            _tasksConfig = tasksConfig;
+
+            MailSettings = mailSettings;
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            ApiHelper = apiHelper;
+            UserManager = userManager;
+            MailboxEngine = mailboxEngine;
+            AlertEngine = alertEngine;
+
             _log = log;
             _loadQueueTime = DateTime.UtcNow;
             _tenantMemCache = new MemoryCache("QueueManagerTenantCache");
 
             CancelHandler = new ManualResetEvent(false);
 
-            _engineFactory = new EngineFactory(-1);
+            if (MailSettings.UseDump)
+            {
+                _dbcFile = Path.Combine(Environment.CurrentDirectory, "dump.db");
+                _dbcJournalFile = Path.Combine(Environment.CurrentDirectory, "dump-journal.db");
 
-            _dbcFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dump.db");
-            _dbcJournalFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dump-journal.db");
+                _log.DebugFormat("Dump file path: {0}", _dbcFile);
 
-            _log.DebugFormat("Dump file path: {0}", _dbcFile);
-
-            LoadDump();
+                LoadDump();
+            }
         }
 
         #region - public methods -
@@ -157,9 +158,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                 _log.InfoFormat("QueueManager->ReleaseMailbox(MailboxId = {0} Address '{1}')", mailBoxData.MailBoxId, mailBoxData.EMail);
 
-                CoreContext.TenantManager.SetCurrentTenant(mailBoxData.TenantId);
+                TenantManager.SetCurrentTenant(mailBoxData.TenantId);
 
-                _engineFactory.MailboxEngine.ReleaseMaibox(mailBoxData, _tasksConfig);
+                MailboxEngine.ReleaseMaibox(mailBoxData, MailSettings);
 
                 _lockedMailBoxList.Remove(mailBoxData);
 
@@ -179,6 +180,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         public void LoadMailboxesFromDump()
         {
+            if (!MailSettings.UseDump)
+                return;
+
             if (_lockedMailBoxList.Any())
                 return;
 
@@ -203,6 +207,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         public void LoadTenantsFromDump()
         {
+            if (!MailSettings.UseDump)
+                return;
+
             try
             {
                 _log.Debug("LoadTenantsFromDump()");
@@ -232,6 +239,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void ReCreateDump()
         {
+            if (!MailSettings.UseDump)
+                return;
+
             try
             {
                 if (File.Exists(_dbcFile))
@@ -268,6 +278,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void AddMailboxToDumpDb(MailboxData mailboxData)
         {
+            if (!MailSettings.UseDump)
+                return;
+
             try
             {
                 lock (_locker)
@@ -293,6 +306,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void DeleteMailboxFromDumpDb(int mailBoxId)
         {
+            if (!MailSettings.UseDump)
+                return;
+
             try
             {
                 lock (_locker)
@@ -302,7 +318,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     if (mailbox == null)
                         return;
 
-                    _mailboxes.Delete(Query.EQ("MailboxId", mailBoxId));
+                    _mailboxes.DeleteMany(Query.EQ("MailboxId", mailBoxId));
                 }
             }
             catch (Exception ex)
@@ -315,6 +331,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void LoadDump()
         {
+            if (!MailSettings.UseDump)
+                return;
+
             try
             {
                 if (File.Exists(_dbcJournalFile))
@@ -338,15 +357,18 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void AddTenantToDumpDb(TenantData tenantData)
         {
+            if (!MailSettings.UseDump)
+                return;
+
             try
             {
                 lock (_locker)
                 {
                     var tenant = _tenants.FindOne(Query.EQ("Tenant", tenantData.Tenant));
 
-                    if(tenant != null)
+                    if (tenant != null)
                         return;
-                     
+
                     _tenants.Insert(tenantData);
 
                     // Create, if not exists, new index on Name field
@@ -363,6 +385,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void DeleteTenantFromDumpDb(int tenantId)
         {
+            if (!MailSettings.UseDump)
+                return;
+
             try
             {
                 lock (_locker)
@@ -372,7 +397,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     if (tenant == null)
                         return;
 
-                    _tenants.Delete(Query.EQ("Tenant", tenantId));
+                    _tenants.DeleteMany(Query.EQ("Tenant", tenantId));
                 }
             }
             catch (Exception ex)
@@ -395,7 +420,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
             var cacheItem = new CacheItem(tenantData.Tenant.ToString(CultureInfo.InvariantCulture), tenantData);
 
-            var nowOffset = tenantData.Expired - now;              
+            var nowOffset = tenantData.Expired - now;
 
             var absoluteExpiration = DateTime.UtcNow.Add(nowOffset);
 
@@ -420,14 +445,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private bool QueueLifetimeExpired
         {
-            get { return DateTime.UtcNow - _loadQueueTime >= _tasksConfig.QueueLifetime; }
+            get { return DateTime.UtcNow - _loadQueueTime >= MailSettings.QueueLifetime; }
         }
 
         private void LoadQueue()
         {
             try
             {
-                var mbList = _engineFactory.MailboxEngine.GetMailboxesForProcessing(_tasksConfig, _maxItemsLimit);
+                var mbList = MailboxEngine.GetMailboxesForProcessing(MailSettings, _maxItemsLimit);
 
                 ReloadQueue(mbList);
             }
@@ -481,31 +506,31 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     _log.DebugFormat("Tenant {0} isn't in cache", mailbox.TenantId);
                     try
                     {
-                        var type = mailbox.GetTenantStatus(_tasksConfig.TenantOverdueDays, _tasksConfig.DefaultApiSchema, _log);
+                        var type = mailbox.GetTenantStatus(TenantManager, SecurityContext, ApiHelper, (int)MailSettings.TenantOverdueDays, _log);
 
                         switch (type)
                         {
-                            case Defines.TariffType.LongDead:
+                            case DefineConstants.TariffType.LongDead:
                                 _log.InfoFormat("Tenant {0} is not paid. Disable mailboxes.", mailbox.TenantId);
-                                
-                                _engineFactory.MailboxEngine.DisableMailboxes(
+
+                                MailboxEngine.DisableMailboxes(
                                     new TenantMailboxExp(mailbox.TenantId));
 
                                 var userIds =
-                                    _engineFactory.MailboxEngine.GetMailUsers(new TenantMailboxExp(mailbox.TenantId))
+                                    MailboxEngine.GetMailUsers(new TenantMailboxExp(mailbox.TenantId))
                                         .ConvertAll(t => t.Item2);
 
-                                _engineFactory.AlertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId, userIds);
+                                AlertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId, userIds);
 
                                 RemoveFromQueue(mailbox.TenantId);
 
                                 return false;
 
-                            case Defines.TariffType.Overdue:
+                            case DefineConstants.TariffType.Overdue:
                                 _log.InfoFormat("Tenant {0} is not paid. Stop processing mailboxes.", mailbox.TenantId);
 
-                                _engineFactory.MailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
-                                    _tasksConfig.OverdueAccountDelay);
+                                MailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
+                                    MailSettings.OverdueAccountDelay);
 
                                 RemoveFromQueue(mailbox.TenantId);
 
@@ -514,7 +539,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                             default:
                                 _log.InfoFormat("Tenant {0} is paid.", mailbox.TenantId);
 
-                                var expired = DateTime.UtcNow.Add(_tasksConfig.TenantCachingPeriod);
+                                var expired = DateTime.UtcNow.Add(MailSettings.TenantCachingPeriod);
 
                                 var tenantData = new TenantData
                                 {
@@ -538,16 +563,16 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     _log.DebugFormat("Tenant {0} is in cache", mailbox.TenantId);
                 }
 
-                if (mailbox.IsUserTerminated() || mailbox.IsUserRemoved())
+                if (mailbox.IsUserTerminated(TenantManager, UserManager) || mailbox.IsUserRemoved(TenantManager, UserManager))
                 {
                     _log.InfoFormat("User '{0}' was terminated. Tenant = {1}. Disable mailboxes for user.",
                               mailbox.UserId,
                               mailbox.TenantId);
 
-                    _engineFactory.MailboxEngine.DisableMailboxes(
+                    MailboxEngine.DisableMailboxes(
                         new UserMailboxExp(mailbox.TenantId, mailbox.UserId));
 
-                    _engineFactory.AlertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId,
+                    AlertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId,
                         new List<string> { mailbox.UserId });
 
                     RemoveFromQueue(mailbox.TenantId, mailbox.UserId);
@@ -555,22 +580,22 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     return false;
                 }
 
-                if (mailbox.IsTenantQuotaEnded(_tasksConfig.TenantMinQuotaBalance, _log))
+                if (mailbox.IsTenantQuotaEnded(TenantManager, (int)MailSettings.TenantMinQuotaBalance, _log))
                 {
                     _log.InfoFormat("Tenant = {0} User = {1}. Quota is ended.", mailbox.TenantId, mailbox.UserId);
 
                     if (!mailbox.QuotaError)
-                        _engineFactory.AlertEngine.CreateQuotaErrorWarningAlert(mailbox.TenantId, mailbox.UserId);
+                        AlertEngine.CreateQuotaErrorWarningAlert(mailbox.TenantId, mailbox.UserId);
 
-                    _engineFactory.MailboxEngine.SetNextLoginDelay(new UserMailboxExp(mailbox.TenantId, mailbox.UserId),
-                                    _tasksConfig.QuotaEndedDelay);
+                    MailboxEngine.SetNextLoginDelay(new UserMailboxExp(mailbox.TenantId, mailbox.UserId),
+                                    MailSettings.QuotaEndedDelay);
 
                     RemoveFromQueue(mailbox.TenantId, mailbox.UserId);
 
                     return false;
                 }
 
-                return _engineFactory.MailboxEngine.LockMaibox(mailbox.MailBoxId);
+                return MailboxEngine.LockMaibox(mailbox.MailBoxId);
 
             }
             catch (Exception ex)
@@ -602,9 +627,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             _tenantMemCache.Dispose();
             _tenantMemCache = null;
 
-            _db.Dispose();
-            _db = null;
+            if (MailSettings.UseDump)
+            {
+                _db.Dispose();
+                _db = null;
+            }
         }
     }
-
 }

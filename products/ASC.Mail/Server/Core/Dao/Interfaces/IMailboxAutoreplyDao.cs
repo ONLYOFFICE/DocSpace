@@ -36,7 +36,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
         /// </summary>
         /// <param name="mailboxId"></param>
         /// <returns>signature</returns>
-        MailboxAutoreply GetAutoreply(int mailboxId);
+        MailboxAutoreply GetAutoreply(Mailbox mailbox);
 
         /// <summary>
         ///     Get a list of autoreply.

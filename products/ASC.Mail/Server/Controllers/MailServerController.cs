@@ -477,7 +477,7 @@ namespace ASC.Mail.Controllers
 
                 if (CoreBaseSettings.Standalone)
                 {
-                    var encType = Enum.GetName(typeof(EncryptionType), mailbox.Encryption) ?? Defines.START_TLS;
+                    var encType = Enum.GetName(typeof(EncryptionType), mailbox.Encryption) ?? DefineConstants.START_TLS;
 
                     string mxHost = null;
 

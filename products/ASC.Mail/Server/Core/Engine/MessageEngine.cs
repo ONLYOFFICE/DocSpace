@@ -59,11 +59,12 @@ using ASC.Mail.Exceptions;
 using ASC.Web.Core.Files;
 using Microsoft.EntityFrameworkCore;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
-    public class MessageEngine
+    public class MessageEngine : BaseEngine
     {
         private DaoFactory DaoFactory { get; }
         private TenantManager TenantManager { get; }
@@ -85,11 +86,10 @@ namespace ASC.Mail.Core.Engine
         private FileConverter FileConverter { get; }
         private ILog Log { get; }
 
-        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        public int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        public string User => SecurityContext.CurrentAccount.ID.ToString();
 
-        private string User => SecurityContext.CurrentAccount.ID.ToString();
-
-        public IDataStore Storage { get; set; }
+        public IDataStore Storage => StorageFactory.GetMailStorage(Tenant);
 
         private const int CHUNK_SIZE = 3;
 
@@ -112,7 +112,8 @@ namespace ASC.Mail.Core.Engine
             FactoryIndexer<MailMail> factoryIndexer,
             FactoryIndexer factoryIndexerCommon,
             IServiceProvider serviceProvider,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            MailSettings mailSettings) : base(mailSettings)
         {
             DaoFactory = daoFactory;
             TenantManager = tenantManager;
@@ -132,7 +133,11 @@ namespace ASC.Mail.Core.Engine
             FilesDaoFactory = filesDaoFactory;
             FilesSeurity = filesSeurity;
             FileConverter = fileConverter;
-            Storage = StorageFactory.GetMailStorage(Tenant);
+
+            //Tenant = TenantManager.GetCurrentTenant().TenantId;
+            //User = SecurityContext.CurrentAccount.ID.ToString();
+
+            //Storage =            
 
             Log = option.Get("ASC.Mail.MessageEngine");
         }
@@ -222,7 +227,7 @@ namespace ASC.Mail.Core.Engine
                 exp = SimpleMessagesExp.CreateBuilder(Tenant, User)
                         .SetMessageIds(ids)
                         .SetOrderBy(filter.Sort)
-                        .SetOrderAsc(filter.SortOrder == Defines.ASCENDING)
+                        .SetOrderAsc(filter.SortOrder == DefineConstants.ASCENDING)
                         .SetLimit(pageSize)
                         .Build();
 
@@ -1562,7 +1567,7 @@ namespace ASC.Mail.Core.Engine
         private bool UpdateExistingMessages(MailBoxData mailbox, FolderType folder, string uidl, string md5,
             string mimeMessageId, string subject, DateTime dateSent, bool fromThisMailBox, bool toThisMailBox, List<int> tagsIds, ILog log)
         {
-            if ((string.IsNullOrEmpty(md5) || md5.Equals(Defines.MD5_EMPTY)) && string.IsNullOrEmpty(mimeMessageId))
+            if ((string.IsNullOrEmpty(md5) || md5.Equals(DefineConstants.MD5_EMPTY)) && string.IsNullOrEmpty(mimeMessageId))
             {
                 return false;
             }
@@ -2362,13 +2367,13 @@ namespace ASC.Mail.Core.Engine
 #endif
             var list = GetConversationMessages(Tenant, User, id,
                 loadAll.GetValueOrDefault(false),
-                Defines.NeedProxyHttp,
+                MailSettings.NeedProxyHttp,
                 needSanitize.GetValueOrDefault(false),
                 markRead.GetValueOrDefault(false));
 #if DEBUG
             watch.Stop();
             Log.DebugFormat("Mail->GetConversation(id={0})->Elapsed {1}ms (NeedProxyHttp={2}, NeedSanitizer={3})", id,
-                watch.Elapsed.TotalMilliseconds, Defines.NeedProxyHttp, needSanitize.GetValueOrDefault(false));
+                watch.Elapsed.TotalMilliseconds, MailSettings.NeedProxyHttp, needSanitize.GetValueOrDefault(false));
 #endif
             var item = list.FirstOrDefault(m => m.Id == id);
 
@@ -2427,11 +2432,11 @@ namespace ASC.Mail.Core.Engine
 
                         if (prevFlag)
                         {
-                            query.SetOrderAsc(!(filter.SortOrder == Defines.ASCENDING));
+                            query.SetOrderAsc(!(filter.SortOrder == DefineConstants.ASCENDING));
                         }
                         else
                         {
-                            query.SetOrderAsc(filter.SortOrder == Defines.ASCENDING);
+                            query.SetOrderAsc(filter.SortOrder == DefineConstants.ASCENDING);
                         }
 
                         exp = query
@@ -2643,7 +2648,7 @@ namespace ASC.Mail.Core.Engine
 
             totalSize += contentLength;
 
-            if (totalSize > Defines.ATTACHMENTS_TOTAL_SIZE_LIMIT)
+            if (totalSize > DefineConstants.ATTACHMENTS_TOTAL_SIZE_LIMIT)
                 throw new AttachmentsException(AttachmentsException.Types.TotalSizeExceeded,
                     "Total size of all files exceeds limit!");
 
@@ -3000,7 +3005,7 @@ namespace ASC.Mail.Core.Engine
                         watch.Reset();
 #endif
                         if (options.NeedSanitizer && item.Folder != FolderType.Draft &&
-                            !item.From.Equals(Defines.MailDaemonEmail))
+                            !item.From.Equals(MailSettings.MailDaemonEmail))
                         {
 #if DEBUG
                             watch.Start();

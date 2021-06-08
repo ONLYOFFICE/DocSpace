@@ -217,7 +217,7 @@ namespace ASC.Mail.Core.Dao
             if (string.IsNullOrEmpty(domainName))
                 throw new ArgumentNullException("domainName");
 
-            var tenants = new List<int> { Tenant, Defines.SHARED_TENANT_ID };
+            var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
             var exists = MailDb.MailServerAddress
                 .Join(MailDb.MailServerDomain, a => a.IdDomain, d => d.Id,

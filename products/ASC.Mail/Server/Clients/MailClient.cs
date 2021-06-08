@@ -48,6 +48,7 @@ using MailFolder = ASC.Mail.Models.MailFolder;
 using Pop3Client = MailKit.Net.Pop3.Pop3Client;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 using ASC.Mail.Core.Engine;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Clients
 {
@@ -65,7 +66,7 @@ namespace ASC.Mail.Clients
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
 
-        private const int CONNECT_TIMEOUT = 10000;
+        private const int CONNECT_TIMEOUT = 120000;
         private const int ENABLE_UTF8_TIMEOUT = 10000;
         private const int LOGIN_TIMEOUT = 30000;
 
@@ -253,10 +254,10 @@ namespace ASC.Mail.Clients
             }
         }
 
-        public void Aggregate(TasksConfig tasksConfig, int limitMessages = -1)
+        public void Aggregate(MailSettings mailSettings, int limitMessages = -1)
         {
             if (Account.Imap)
-                AggregateImap(tasksConfig, limitMessages);
+                AggregateImap(mailSettings, limitMessages);
             else
                 AggregatePop3(limitMessages);
         }
@@ -515,7 +516,7 @@ namespace ASC.Mail.Clients
             OnAuthenticated(authenticatedEventArgs.Message);
         }
 
-        private void AggregateImap(TasksConfig tasksConfig, int limitMessages = -1)
+        private void AggregateImap(MailSettings mailSettings, int limitMessages = -1)
         {
             if (!Imap.IsAuthenticated)
                 LoginImap();
@@ -531,7 +532,7 @@ namespace ASC.Mail.Clients
                     if (!Imap.IsConnected || CancelToken.IsCancellationRequested)
                         return;
 
-                    var mailFolder = DetectFolder(tasksConfig, folder);
+                    var mailFolder = DetectFolder(mailSettings, folder);
 
                     if (mailFolder == null)
                     {
@@ -863,13 +864,13 @@ namespace ASC.Mail.Clients
             return infoList;
         }
 
-        private MailFolder DetectFolder(TasksConfig tasksConfig, IMailFolder folder)
+        private MailFolder DetectFolder(MailSettings mailSettings, IMailFolder folder)
         {
             var folderName = folder.Name.ToLowerInvariant();
 
-            if (tasksConfig.SkipImapFlags != null &&
-                tasksConfig.SkipImapFlags.Any() &&
-                tasksConfig.SkipImapFlags.Contains(folderName))
+            if (mailSettings.SkipImapFlags != null &&
+                mailSettings.SkipImapFlags.Any() &&
+                mailSettings.SkipImapFlags.Contains(folderName))
             {
                 return null;
             }
@@ -900,18 +901,18 @@ namespace ASC.Mail.Clients
                 return null; // Skip folders
             }
 
-            if (tasksConfig.ImapFlags != null &&
-                tasksConfig.ImapFlags.Any() &&
-                tasksConfig.ImapFlags.ContainsKey(folderName))
+            if (mailSettings.ImapFlags != null &&
+                mailSettings.ImapFlags.Any() &&
+                mailSettings.ImapFlags.ContainsKey(folderName))
             {
-                folderId = (FolderType) tasksConfig.ImapFlags[folderName];
+                folderId = (FolderType)mailSettings.ImapFlags[folderName];
                 return new MailFolder(folderId, folder.Name);
             }
 
-            if (tasksConfig.SpecialDomainFolders.Any() &&
-                tasksConfig.SpecialDomainFolders.ContainsKey(Account.Server))
+            if (mailSettings.SpecialDomainFolders.Any() &&
+                mailSettings.SpecialDomainFolders.ContainsKey(Account.Server))
             {
-                var domainSpecialFolders = tasksConfig.SpecialDomainFolders[Account.Server];
+                var domainSpecialFolders = mailSettings.SpecialDomainFolders[Account.Server];
 
                 if (domainSpecialFolders.Any() &&
                     domainSpecialFolders.ContainsKey(folderName))
@@ -921,10 +922,10 @@ namespace ASC.Mail.Clients
                 }
             }
 
-            if (tasksConfig.DefaultFolders == null || !tasksConfig.DefaultFolders.ContainsKey(folderName))
+            if (mailSettings.DefaultFolders == null || !mailSettings.DefaultFolders.ContainsKey(folderName))
                 return new MailFolder(FolderType.Inbox, folder.Name, new[] {folder.FullName});
 
-            folderId = (FolderType) tasksConfig.DefaultFolders[folderName];
+            folderId = (FolderType)mailSettings.DefaultFolders[folderName];
             return new MailFolder(folderId, folder.Name);
         }
 
@@ -1138,7 +1139,7 @@ namespace ASC.Mail.Clients
 
                 newMessages = FixPop3UidsOrder(newMessages);
 
-                var skipOnDate = Account.BeginDate != Defines.MinBeginDate;
+                var skipOnDate = Account.BeginDate != DefineConstants.MinBeginDate;
 
                 foreach (var newMessage in newMessages)
                 {

@@ -33,6 +33,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Mail.Core
 {
     public interface IDaoFactory { }
+
     [Scope]
     public class DaoFactory : IDaoFactory
     {

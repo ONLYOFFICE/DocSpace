@@ -97,11 +97,11 @@ namespace ASC.Mail.Utils
         {
             switch (type.ToLower().Trim())
             {
-                case Defines.SSL:
+                case DefineConstants.SSL:
                     return EncryptionType.SSL;
-                case Defines.START_TLS:
+                case DefineConstants.START_TLS:
                     return EncryptionType.StartTLS;
-                case Defines.PLAIN:
+                case DefineConstants.PLAIN:
                     return EncryptionType.None;
                 default:
                     throw new ArgumentException("Unknown mail server socket type: " + type);
@@ -113,11 +113,11 @@ namespace ASC.Mail.Utils
             switch (encryptionType)
             {
                 case EncryptionType.SSL:
-                    return Defines.SSL;
+                    return DefineConstants.SSL;
                 case EncryptionType.StartTLS:
-                    return Defines.START_TLS;
+                    return DefineConstants.START_TLS;
                 case EncryptionType.None:
-                    return Defines.PLAIN;
+                    return DefineConstants.PLAIN;
                 default:
                     throw new ArgumentException("Unknown mail server EncryptionType: " + Enum.GetName(typeof(EncryptionType), encryptionType));
             }
@@ -128,12 +128,12 @@ namespace ASC.Mail.Utils
             switch (type.ToLower().Trim())
             {
                 case "":
-                case Defines.OAUTH2:
-                case Defines.PASSWORD_CLEARTEXT:
+                case DefineConstants.OAUTH2:
+                case DefineConstants.PASSWORD_CLEARTEXT:
                     return SaslMechanism.Login;
-                case Defines.NONE:
+                case DefineConstants.NONE:
                     return SaslMechanism.None;
-                case Defines.PASSWORD_ENCRYPTED:
+                case DefineConstants.PASSWORD_ENCRYPTED:
                     return SaslMechanism.CramMd5;
                 default:
                     throw new ArgumentException("Unknown mail server authentication type: " + type);
@@ -147,9 +147,9 @@ namespace ASC.Mail.Utils
                 case SaslMechanism.Login:
                     return "";
                 case SaslMechanism.None:
-                    return Defines.NONE;
+                    return DefineConstants.NONE;
                 case SaslMechanism.CramMd5:
-                    return Defines.PASSWORD_ENCRYPTED;
+                    return DefineConstants.PASSWORD_ENCRYPTED;
                 default:
                     throw new ArgumentException("Unknown mail server SaslMechanism: " + Enum.GetName(typeof(SaslMechanism), saslType));
             }

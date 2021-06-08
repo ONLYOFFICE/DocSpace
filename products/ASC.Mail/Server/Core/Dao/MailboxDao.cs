@@ -28,12 +28,15 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Security.Cryptography;
+
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,14 +47,17 @@ namespace ASC.Mail.Core.Dao
     public class MailboxDao : BaseDao, IMailboxDao
     {
         private InstanceCrypto InstanceCrypto { get; }
+        private MailSettings MailSettings { get; }
         public MailboxDao(
              TenantManager tenantManager,
              SecurityContext securityContext,
              DbContextManager<MailDbContext> dbContext,
-             InstanceCrypto instanceCrypto)
+             InstanceCrypto instanceCrypto,
+             MailSettings mailSettings)
             : base(tenantManager, securityContext, dbContext)
         {
             InstanceCrypto = instanceCrypto;
+            MailSettings = mailSettings;
         }
 
         public Mailbox GetMailBox(IMailboxExp exp)
@@ -73,14 +79,20 @@ namespace ASC.Mail.Core.Dao
 
             if (!string.IsNullOrEmpty(exp.OrderBy) && exp.OrderAsc.HasValue)
             {
-                //TODO: Fix
-                ///query.OrderBy(mb => mb.
-                //query.OrderBy(exp.OrderBy, exp.OrderAsc.Value);
+                if ((bool)exp.OrderAsc)
+                {
+                    query = query.OrderBy(b => b.DateChecked);
+                }
+                else
+                {
+                    query = query.OrderByDescending(b => b.DateChecked);
+                }
+
             }
 
             if (exp.Limit.HasValue)
             {
-                query.Take(exp.Limit.Value);
+                query = query.Take(exp.Limit.Value);
             }
 
             var mailboxes = query.ToList();
@@ -130,7 +142,8 @@ namespace ASC.Mail.Core.Dao
 
         public int SaveMailBox(Mailbox mailbox)
         {
-            var mailMailbox = new MailMailbox { 
+            var mailMailbox = new MailMailbox
+            {
                 Id = (uint)mailbox.Id,
                 Tenant = mailbox.Tenant,
                 IdUser = mailbox.User,
@@ -209,19 +222,20 @@ namespace ASC.Mail.Core.Dao
 
         public bool Enable(IMailboxExp exp, bool enabled)
         {
-            var mailbox = MailDb.MailMailbox
-                .Where(exp.GetExpression())
-                .FirstOrDefault();
+            var mailboxes = MailDb.MailMailbox
+                .Where(exp.GetExpression()).ToList();
+            //.FirstOrDefault();
 
-            if (mailbox == null)
+            if (!mailboxes.Any())
                 return false;
-
-            mailbox.Enabled = enabled;
-
-            if (enabled) {
-                mailbox.DateAuthError = null;
+            foreach (var mb in mailboxes)
+            {
+                mb.Enabled = enabled;
+                if (enabled)
+                {
+                    mb.DateAuthError = null;
+                }
             }
-
             var result = MailDb.SaveChanges();
 
             return result > 0;
@@ -247,9 +261,9 @@ namespace ASC.Mail.Core.Dao
         public bool SetMailboxEmailIn(Mailbox mailbox, string emailInFolder)
         {
             var mailMailbox = MailDb.MailMailbox
-                .Where(mb => mb.Id == mailbox.Id 
-                    && mb.Tenant == mailbox.Tenant 
-                    && mb.IdUser == mailbox.User 
+                .Where(mb => mb.Id == mailbox.Id
+                    && mb.Tenant == mailbox.Tenant
+                    && mb.IdUser == mailbox.User
                     && mb.IsRemoved == false)
                 .FirstOrDefault();
 
@@ -315,8 +329,8 @@ namespace ASC.Mail.Core.Dao
             int? messageCount = null, long? size = null, bool? quotaError = null, string oAuthToken = null,
             string imapIntervalsJson = null, bool? resetImapIntervals = false)
         {
-            if (nextLoginDelay < Defines.DefaultServerLoginDelay)
-                nextLoginDelay = Defines.DefaultServerLoginDelay;
+            if (nextLoginDelay < MailSettings.DefaultServerLoginDelay)
+                nextLoginDelay = MailSettings.DefaultServerLoginDelay;
 
             var mailMailbox = MailDb.MailMailbox
                 .Where(mb => mb.Id == mailbox.Id)
@@ -328,9 +342,9 @@ namespace ASC.Mail.Core.Dao
             mailMailbox.IsProcessed = false;
             mailMailbox.DateChecked = DateTime.UtcNow;
             mailbox.DateLoginDelayExpires =
-                nextLoginDelay > Defines.DefaultServerLoginDelay
+                nextLoginDelay > MailSettings.DefaultServerLoginDelay
                 ? DateTime.UtcNow.AddSeconds(nextLoginDelay)
-                : DateTime.UtcNow.AddSeconds(Defines.DefaultServerLoginDelay);
+                : DateTime.UtcNow.AddSeconds(MailSettings.DefaultServerLoginDelay);
 
             if (enabled.HasValue)
             {
@@ -404,14 +418,15 @@ namespace ASC.Mail.Core.Dao
         public List<int> SetMailboxesProcessed(int timeoutInMinutes)
         {
             var mailboxes = MailDb.MailMailbox
-                .Where(mb => mb.IsProcessed == true 
-                    && mb.DateChecked != null 
+                .Where(mb => mb.IsProcessed == true
+                    && mb.DateChecked != null
                     && (DateTime.UtcNow - mb.DateChecked).GetValueOrDefault().TotalMinutes > timeoutInMinutes);
 
             if (!mailboxes.Any())
                 return new List<int>();
 
-            foreach (var mbox in mailboxes) {
+            foreach (var mbox in mailboxes)
+            {
                 mbox.IsProcessed = false;
             }
 
@@ -476,7 +491,7 @@ namespace ASC.Mail.Core.Dao
                 OAuthType = r.TokenType,
 
                 ImapIntervals = r.ImapIntervals,
-                SmtpServerId =r.IdSmtpServer,
+                SmtpServerId = r.IdSmtpServer,
                 ServerId = r.IdInServer,
                 EmailInFolder = r.EmailInFolder,
                 IsTeamlabMailbox = r.IsServerMailbox,
@@ -485,7 +500,7 @@ namespace ASC.Mail.Core.Dao
                 DateUserChecked = r.DateUserChecked.GetValueOrDefault(),
                 UserOnline = r.UserOnline,
                 DateLoginDelayExpires = r.DateLoginDelayExpires,
-                DateAuthError =r.DateAuthError
+                DateAuthError = r.DateAuthError
             };
 
             string password = r.Pop3Password,

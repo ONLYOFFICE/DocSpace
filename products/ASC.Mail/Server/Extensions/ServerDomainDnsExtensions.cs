@@ -27,7 +27,7 @@
 using System;
 using System.Linq;
 using ASC.Common.Utils;
-using ASC.Mail.Core;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
@@ -75,7 +75,7 @@ namespace ASC.Mail.Extensions
                     .FirstOrDefault(mx => mx.ExchangeDomainName.ToString().TrimEnd('.').Equals(dns.Mx));
 
             dns.MxVerified = mxRecord != null;
-            dns.MxTtl = mxRecord != null ? mxRecord.TimeToLive : Defines.ServerDnsDefaultTtl;
+            dns.MxTtl = mxRecord != null ? mxRecord.TimeToLive : MailSettings.Current.ServerDnsDefaultTtl;//DefineConstants.ServerDnsDefaultTtl;
             dns.MxDateChecked = utcNow;
 
             hasChanges = true;
@@ -100,7 +100,7 @@ namespace ASC.Mail.Extensions
                     .Equals(dns.Spf, StringComparison.InvariantCultureIgnoreCase));
 
             dns.SpfVerified = spfRecord != null;
-            dns.SpfTtl = spfRecord != null ? spfRecord.TimeToLive : Defines.ServerDnsDefaultTtl;
+            dns.SpfTtl = spfRecord != null ? spfRecord.TimeToLive : MailSettings.Current.ServerDnsDefaultTtl;
             dns.SpfDateChecked = utcNow;
 
             return true;
@@ -123,7 +123,7 @@ namespace ASC.Mail.Extensions
                         .Equals(dns.DkimPublicKey, StringComparison.InvariantCultureIgnoreCase));
 
             dns.DkimVerified = dkimRecord != null;
-            dns.DkimTtl = dkimRecord != null ? dkimRecord.TimeToLive : Defines.ServerDnsDefaultTtl;
+            dns.DkimTtl = dkimRecord != null ? dkimRecord.TimeToLive : MailSettings.Current.ServerDnsDefaultTtl;
             dns.DkimDateChecked = utcNow;
 
             return true;

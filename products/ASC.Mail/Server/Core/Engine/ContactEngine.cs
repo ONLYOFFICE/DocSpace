@@ -99,9 +99,9 @@ namespace ASC.Mail.Core.Engine
             string sortorder, out int totalCount)
         {
             var exp = string.IsNullOrEmpty(search) && !contactType.HasValue
-                ? new SimpleFilterContactsExp(Tenant, User, sortorder == Defines.ASCENDING, fromIndex, pageSize)
+                ? new SimpleFilterContactsExp(Tenant, User, sortorder == DefineConstants.ASCENDING, fromIndex, pageSize)
                 : new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, search, contactType,
-                    orderAsc: sortorder == Defines.ASCENDING,
+                    orderAsc: sortorder == DefineConstants.ASCENDING,
                     startIndex: fromIndex, limit: pageSize);
 
             var contacts = GetContactCards(exp);

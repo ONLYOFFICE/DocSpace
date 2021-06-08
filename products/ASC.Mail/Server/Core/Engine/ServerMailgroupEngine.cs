@@ -114,7 +114,7 @@ namespace ASC.Mail.Core.Engine
 
             var serverDomain = DaoFactory.ServerDomainDao.GetDomain(domainId);
 
-            if (serverDomain.Tenant == Defines.SHARED_TENANT_ID)
+            if (serverDomain.Tenant == DefineConstants.SHARED_TENANT_ID)
                 throw new InvalidOperationException("Creating mail group is not allowed for shared domain.");
 
             if (DaoFactory.ServerAddressDao.IsAddressAlreadyRegistered(mailgroupName, serverDomain.Name))

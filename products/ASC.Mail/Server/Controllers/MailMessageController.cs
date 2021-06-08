@@ -76,7 +76,7 @@ namespace ASC.Mail.Controllers
                 SearchText = search,
                 Page = page.HasValue ? (page.Value > 0 ? page.Value - 1 : 0) : 0,
                 PageSize = page_size.GetValueOrDefault(25),
-                Sort = Defines.ORDER_BY_DATE_SENT,
+                Sort = DefineConstants.ORDER_BY_DATE_SENT,
                 SortOrder = sortorder,
                 WithCalendar = with_calendar,
                 UserFolderId = user_folder_id
@@ -118,7 +118,7 @@ namespace ASC.Mail.Controllers
             {
                 LoadImages = loadImages.GetValueOrDefault(false),
                 LoadBody = true,
-                NeedProxyHttp = Defines.NeedProxyHttp,
+                NeedProxyHttp = MailSettings.NeedProxyHttp,
                 NeedSanitizer = needSanitizeHtml
             });
 
@@ -128,7 +128,7 @@ namespace ASC.Mail.Controllers
                 watch.Stop();
                 Log.DebugFormat(
                     "Mail->GetMessage(id={0})->Elapsed {1}ms [NotFound] (NeedProxyHttp={2}, NeedSanitizer={3})", id,
-                    watch.Elapsed.TotalMilliseconds, Defines.NeedProxyHttp, needSanitizeHtml);
+                    watch.Elapsed.TotalMilliseconds, MailSettings.NeedProxyHttp, needSanitizeHtml);
 #endif
                 throw new ItemNotFoundException(string.Format("Message with {0} wasn't found.", id));
             }
@@ -146,7 +146,7 @@ namespace ASC.Mail.Controllers
 #if DEBUG
             watch.Stop();
             Log.DebugFormat("Mail->GetMessage(id={0})->Elapsed {1}ms (NeedProxyHttp={2}, NeedSanitizer={3})", id,
-                watch.Elapsed.TotalMilliseconds, Defines.NeedProxyHttp, needSanitizeHtml);
+                watch.Elapsed.TotalMilliseconds, MailSettings.NeedProxyHttp, needSanitizeHtml);
 #endif
             if (item.Folder != FolderType.UserFolder)
                 return item;
@@ -270,7 +270,7 @@ namespace ASC.Mail.Controllers
         {
             // inverse sort order if prev message require
             if ("prev" == direction)
-                sortorder = Defines.ASCENDING == sortorder ? Defines.DESCENDING : Defines.ASCENDING;
+                sortorder = DefineConstants.ASCENDING == sortorder ? DefineConstants.DESCENDING : DefineConstants.ASCENDING;
 
             var primaryFolder = folder.HasValue ? (FolderType)folder.Value : FolderType.Inbox;
 
@@ -289,7 +289,7 @@ namespace ASC.Mail.Controllers
                 SearchText = search,
                 Page = null,
                 PageSize = 2,
-                Sort = Defines.ORDER_BY_DATE_SENT,
+                Sort = DefineConstants.ORDER_BY_DATE_SENT,
                 SortOrder = sortorder,
                 WithCalendar = with_calendar,
                 UserFolderId = user_folder_id
@@ -424,7 +424,7 @@ namespace ASC.Mail.Controllers
 
                 var daemonLabels =
                     new DraftEngine.DeliveryFailureMessageTranslates(
-                        Defines.MailDaemonEmail,
+                        MailSettings.MailDaemonEmail,
                         MailApiResource.DeliveryFailureSubject,
                         MailApiResource.DeliveryFailureAutomaticMessage,
                         MailApiResource.DeliveryFailureMessageIdentificator,

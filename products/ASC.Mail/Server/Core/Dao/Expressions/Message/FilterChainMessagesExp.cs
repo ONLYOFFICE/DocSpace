@@ -51,7 +51,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             {
                 var prevFlag = Filter.PrevFlag.GetValueOrDefault(false);
 
-                if (Filter.SortOrder == Defines.DESCENDING)
+                if (Filter.SortOrder == DefineConstants.DESCENDING)
                 {
                     exp = prevFlag
                         ? exp.And(m => m.ChainDate >= Filter.FromDate.Value)
@@ -182,7 +182,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             {
                 var prevFlag = filter.PrevFlag.GetValueOrDefault(false);
 
-                if (filter.SortOrder == Defines.DESCENDING)
+                if (filter.SortOrder == DefineConstants.DESCENDING)
                 {
                     if (prevFlag)
                     {
@@ -209,10 +209,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             if (filter.PeriodFrom.HasValue && filter.PeriodTo.HasValue)
             {
                 var fromTs = TimeSpan.FromMilliseconds(filter.PeriodFrom.Value);
-                var from = Defines.BaseJsDateTime.Add(fromTs);
+                var from = DefineConstants.BaseJsDateTime.Add(fromTs);
 
                 var toTs = TimeSpan.FromMilliseconds(filter.PeriodTo.Value);
-                var to = Defines.BaseJsDateTime.Add(toTs);
+                var to = DefineConstants.BaseJsDateTime.Add(toTs);
 
                 selector.Ge(s => s.DateSent, from);
                 selector.Le(s => s.DateSent, to);
@@ -228,7 +228,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             }
 
             selector.Where(r => r.IdUser, userId.ToString())
-                .Sort(r => r.ChainDate, filter.SortOrder == Defines.ASCENDING);
+                .Sort(r => r.ChainDate, filter.SortOrder == DefineConstants.ASCENDING);
 
             if (!factoryIndexer.TrySelect(s => selector, out IReadOnlyCollection<MailMail> result))
                 return false;

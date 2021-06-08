@@ -37,6 +37,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Mail.Authorization;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
@@ -53,7 +54,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
-    public class ServerMailboxEngine
+    public class ServerMailboxEngine : BaseEngine
     {
         private int Tenant => TenantManager.GetCurrentTenant().TenantId;
         private string User => SecurityContext.CurrentAccount.ID.ToString();
@@ -88,7 +89,8 @@ namespace ASC.Mail.Core.Engine
             UserManagerWrapper userManagerWrapper,
             AuthManager authManager,
             UserManager userManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper)
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            MailSettings mailSettings) : base(mailSettings)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -138,7 +140,7 @@ namespace ASC.Mail.Core.Engine
         {
             var serverDomain = DaoFactory.ServerDomainDao.GetDomain(domainId);
 
-            var isSharedDomain = serverDomain.Tenant == Defines.SHARED_TENANT_ID;
+            var isSharedDomain = serverDomain.Tenant == DefineConstants.SHARED_TENANT_ID;
 
             if (!IsAdmin && !isSharedDomain)
                 throw new SecurityException("Need admin privileges.");
@@ -167,7 +169,7 @@ namespace ASC.Mail.Core.Engine
         {
             var serverDomain = DaoFactory.ServerDomainDao.GetDomain(domainId);
 
-            var isSharedDomain = serverDomain.Tenant == Defines.SHARED_TENANT_ID;
+            var isSharedDomain = serverDomain.Tenant == DefineConstants.SHARED_TENANT_ID;
 
             if (!IsAdmin && !isSharedDomain)
                 throw new SecurityException("Need admin privileges.");
@@ -202,7 +204,7 @@ namespace ASC.Mail.Core.Engine
 
             var serverDomain = DaoFactory.ServerDomainDao.GetDomain(domainId);
 
-            var isSharedDomain = serverDomain.Tenant == Defines.SHARED_TENANT_ID;
+            var isSharedDomain = serverDomain.Tenant == DefineConstants.SHARED_TENANT_ID;
 
             if (!IsAdmin && !isSharedDomain)
                 throw new SecurityException("Need admin privileges.");
@@ -254,7 +256,7 @@ namespace ASC.Mail.Core.Engine
                 throw new DuplicateNameException("You want to create a mailbox with already existing address.");
             }
 
-            if (Defines.ServerDomainMailboxPerUserLimit > 0)
+            if (MailSettings.ServerDomainMailboxPerUserLimit > 0)
             {
                 var accounts = AccountEngine.GetAccountInfoList();
 
@@ -264,11 +266,11 @@ namespace ASC.Mail.Core.Engine
                         Parser.ParseAddress(a.Email)
                             .Domain.Equals(serverDomain.Name, StringComparison.InvariantCultureIgnoreCase));
 
-                if (countDomainMailboxes >= Defines.ServerDomainMailboxPerUserLimit)
+                if (countDomainMailboxes >= MailSettings.ServerDomainMailboxPerUserLimit)
                 {
                     throw new ArgumentOutOfRangeException(
                         string.Format("Count of user's mailboxes must be less or equal {0}.",
-                            Defines.ServerDomainMailboxPerUserLimit));
+                            MailSettings.ServerDomainMailboxPerUserLimit));
                 }
             }
 
@@ -306,7 +308,7 @@ namespace ASC.Mail.Core.Engine
                     SmtpPassword = password,
                     SizeLast = 0,
                     MsgCountLast = 0,
-                    BeginDate = Defines.MinBeginDate,
+                    BeginDate = DefineConstants.MinBeginDate,
                     Imap = true,
                     Enabled = true,
                     IsTeamlabMailbox = true,
@@ -407,7 +409,7 @@ namespace ASC.Mail.Core.Engine
 
             var serverDomain = DaoFactory.ServerDomainDao.GetDomain(serverMailboxAddress.DomainId);
 
-            var isSharedDomain = serverDomain.Tenant == Defines.SHARED_TENANT_ID;
+            var isSharedDomain = serverDomain.Tenant == DefineConstants.SHARED_TENANT_ID;
 
             if (!IsAdmin && !isSharedDomain)
                 throw new SecurityException("Need admin privileges.");
@@ -469,7 +471,7 @@ namespace ASC.Mail.Core.Engine
             if (!mailbox.IsTeamlabMailbox)
                 throw new ArgumentException("Invalid mailbox type");
 
-            if (mailbox.Tenant == Defines.SHARED_TENANT_ID)
+            if (mailbox.Tenant == DefineConstants.SHARED_TENANT_ID)
                 throw new InvalidOperationException("Adding mailbox alias is not allowed for shared domain.");
 
             var mailAddress = new MailAddress(mailbox.Address);
@@ -672,7 +674,7 @@ namespace ASC.Mail.Core.Engine
             if (mailbox == null)
                 throw new ItemNotFoundException("Mailbox not found.");
 
-            var isSharedDomain = mailbox.TenantId == Defines.SHARED_TENANT_ID;
+            var isSharedDomain = mailbox.TenantId == DefineConstants.SHARED_TENANT_ID;
 
             if (!IsAdmin && !isSharedDomain)
                 throw new SecurityException("Need admin privileges.");

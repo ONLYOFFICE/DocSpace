@@ -61,7 +61,7 @@ namespace ASC.Mail.Models.Base
 
             var distinct = attachments == null ? new List<MailAttachmentData>() : attachments.Distinct().ToList();
 
-            if (distinct.Sum(a => a.size) > Defines.ATTACHMENTS_TOTAL_SIZE_LIMIT)
+            if (distinct.Sum(a => a.size) > DefineConstants.ATTACHMENTS_TOTAL_SIZE_LIMIT)
                 throw new DraftException(DraftException.ErrorTypes.TotalSizeExceeded,
                     "Total size of all files exceeds limit!");
 

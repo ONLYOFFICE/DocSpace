@@ -40,6 +40,7 @@ using MailMessage = ASC.Mail.Models.MailMessageData;
 using ASC.Data.Storage;
 using Microsoft.Extensions.Options;
 using ASC.Common;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -61,6 +62,7 @@ namespace ASC.Mail.Core.Engine
             StorageFactory storageFactory,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
             IOptionsMonitor<ILog> option, 
+            MailSettings mailSettings,
             DeliveryFailureMessageTranslates daemonLabels = null)
             : base(
             accountEngine,
@@ -77,6 +79,7 @@ namespace ASC.Mail.Core.Engine
             storageFactory,
             optionsSnapshot,
             option,
+            mailSettings,
             daemonLabels)
         {
             Log = option.Get("ASC.Mail.TemplateEngine");
@@ -112,7 +115,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     LoadImages = false,
                     LoadBody = true,
-                    NeedProxyHttp = Defines.NeedProxyHttp,
+                    NeedProxyHttp = MailSettings.NeedProxyHttp,
                     NeedSanitizer = false
                 });
 
@@ -121,9 +124,9 @@ namespace ASC.Mail.Core.Engine
                     throw new InvalidOperationException("Saving emails is permitted only in the Templates folder");
                 }
 
-                if (message.HtmlBody.Length > Defines.MaximumMessageBodySize)
+                if (message.HtmlBody.Length > MailSettings.MaximumMessageBodySize)
                 {
-                    throw new InvalidOperationException("Message body exceeded limit (" + Defines.MaximumMessageBodySize / 1024 + " KB)");
+                    throw new InvalidOperationException("Message body exceeded limit (" + MailSettings.MaximumMessageBodySize / 1024 + " KB)");
                 }
 
                 mimeMessageId = message.MimeMessageId;

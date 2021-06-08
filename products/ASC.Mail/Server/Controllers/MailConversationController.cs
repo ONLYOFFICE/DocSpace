@@ -75,7 +75,7 @@ namespace ASC.Mail.Controllers
                 CustomLabels = new List<int>(tags),
                 SearchText = search,
                 PageSize = page_size.GetValueOrDefault(25),
-                Sort = Defines.ORDER_BY_DATE_CHAIN,
+                Sort = DefineConstants.ORDER_BY_DATE_CHAIN,
                 SortOrder = sortorder,
                 WithCalendar = with_calendar,
                 UserFolderId = user_folder_id,
@@ -159,7 +159,7 @@ namespace ASC.Mail.Controllers
         {
             // inverse sort order if prev message require
             if ("prev" == direction)
-                sortorder = Defines.ASCENDING == sortorder ? Defines.DESCENDING : Defines.ASCENDING;
+                sortorder = DefineConstants.ASCENDING == sortorder ? DefineConstants.DESCENDING : DefineConstants.ASCENDING;
 
             var primaryFolder = folder.HasValue ? (FolderType)folder.Value : FolderType.Inbox;
 
@@ -177,7 +177,7 @@ namespace ASC.Mail.Controllers
                 CustomLabels = new List<int>(tags),
                 SearchText = search,
                 PageSize = page_size.GetValueOrDefault(25),
-                Sort = Defines.ORDER_BY_DATE_CHAIN,
+                Sort = DefineConstants.ORDER_BY_DATE_CHAIN,
                 SortOrder = sortorder,
                 WithCalendar = with_calendar,
                 UserFolderId = user_folder_id

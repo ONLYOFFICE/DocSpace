@@ -86,7 +86,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             OrderAsc = string.IsNullOrEmpty(Filter.SortOrder)
                     ? (bool?)null
-                    : Filter.SortOrder == Defines.ASCENDING;
+                    : Filter.SortOrder == DefineConstants.ASCENDING;
         }
 
         private const string MM_ALIAS = "mm";
@@ -106,10 +106,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             if (Filter.PeriodFrom.HasValue && Filter.PeriodTo.HasValue)
             {
                 var fromTs = TimeSpan.FromMilliseconds(Filter.PeriodFrom.Value);
-                var from = Defines.BaseJsDateTime.Add(fromTs);
+                var from = DefineConstants.BaseJsDateTime.Add(fromTs);
 
                 var toTs = TimeSpan.FromMilliseconds(Filter.PeriodTo.Value);
-                var to = Defines.BaseJsDateTime.Add(toTs);
+                var to = DefineConstants.BaseJsDateTime.Add(toTs);
 
                 filterExp = filterExp.And(m => m.DateSent > from && m.DateSent < to);
             }
@@ -270,7 +270,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (dateSend.HasValue)
             {
-                if (filter.SortOrder == Defines.ASCENDING)
+                if (filter.SortOrder == DefineConstants.ASCENDING)
                 {
                     selector.Ge(r => r.DateSent, dateSend.Value);
                 }
@@ -288,10 +288,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             if (filter.PeriodFrom.HasValue && filter.PeriodTo.HasValue)
             {
                 var fromTs = TimeSpan.FromMilliseconds(filter.PeriodFrom.Value);
-                var from = Defines.BaseJsDateTime.Add(fromTs);
+                var from = DefineConstants.BaseJsDateTime.Add(fromTs);
 
                 var toTs = TimeSpan.FromMilliseconds(filter.PeriodTo.Value);
-                var to = Defines.BaseJsDateTime.Add(toTs);
+                var to = DefineConstants.BaseJsDateTime.Add(toTs);
 
                 selector.Ge(s => s.DateSent, from);
                 selector.Le(s => s.DateSent, to);
@@ -309,7 +309,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             }
 
             selector.Where(r => r.IdUser, userId.ToString())
-                .Sort(r => r.DateSent, filter.SortOrder == Defines.ASCENDING);
+                .Sort(r => r.DateSent, filter.SortOrder == DefineConstants.ASCENDING);
 
             return factoryIndexer.TrySelectIds(s => selector, out ids, out total);
         }

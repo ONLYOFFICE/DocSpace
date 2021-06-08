@@ -85,6 +85,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Mail", "products\ASC.Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Calendar", "products\ASC.Calendar\Server\ASC.Calendar.csproj", "{F39933F8-7598-492F-9DD3-E25780D68288}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Mail.Aggregator.CollectionService", "products\ASC.Mail\Services\ASC.Mail.Aggregator.CollectionService\ASC.Mail.Aggregator.CollectionService.csproj", "{5D08F455-8F19-4716-94BF-92A072C865EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -239,6 +241,10 @@ Global
 		{F39933F8-7598-492F-9DD3-E25780D68288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F39933F8-7598-492F-9DD3-E25780D68288}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F39933F8-7598-492F-9DD3-E25780D68288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D08F455-8F19-4716-94BF-92A072C865EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D08F455-8F19-4716-94BF-92A072C865EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D08F455-8F19-4716-94BF-92A072C865EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D08F455-8F19-4716-94BF-92A072C865EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
