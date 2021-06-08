@@ -28,10 +28,9 @@ import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 
 const color = "#2DA7DB";
-const convertColor = "#20d21f";
+const convertColor = "#BCDF7E";
 
 //#BCDF7E
-//#20d21f
 //#b9d21f
 
 class PureHome extends React.Component {

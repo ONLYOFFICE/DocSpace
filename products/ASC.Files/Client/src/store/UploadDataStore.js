@@ -144,6 +144,26 @@ class UploadDataStore {
     this.setUploadData(newUploadData);
   };
 
+  cancelCurrentFileConversion = (fileId) => {
+    const { convertItem, setConvertItem } = this.dialogsStore;
+    convertItem && setConvertItem(null);
+
+    const files = this.files.filter((el) => el.fileId + "" !== fileId);
+    const filesToConversion = this.filesToConversion.filter(
+      (el) => el.fileId + "" !== fileId
+    );
+
+    const newUploadData = {
+      files,
+      filesToConversion,
+      filesSize: this.filesSize,
+      uploadedFiles: this.uploadedFiles,
+      percent: this.percent,
+    };
+
+    this.setUploadData(newUploadData);
+  };
+
   convertFile = (file) => {
     const alreadyConverting = this.files.some(
       (item) => item.fileId === file.fileId
@@ -162,9 +182,17 @@ class UploadDataStore {
   };
 
   getNewPercent = (uploadedSize, indexOfFile) => {
-    const newTotalSize = sumBy(this.files, (f) => (f.file ? f.file.size : 0));
+    const newTotalSize = sumBy(this.files, (f) =>
+      f.file && f.action !== "uploaded" && f.action !== "converted"
+        ? f.file.size
+        : 0
+    );
     const totalUploadedFiles = this.files.filter((_, i) => i < indexOfFile);
-    const totalUploadedSize = sumBy(totalUploadedFiles, (f) => f.file.size);
+    const totalUploadedSize = sumBy(totalUploadedFiles, (f) =>
+      f.file && f.action !== "uploaded" && f.action !== "converted"
+        ? f.file.size
+        : 0
+    );
     const newPercent =
       ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
 
@@ -209,18 +237,22 @@ class UploadDataStore {
     const conversionFilesLength = this.filesToConversion.length;
     return !percent
       ? (fileIndex / conversionFilesLength) * 100
-      : percent / conversionFilesLength;
+      : percent / conversionFilesLength + this.primaryProgressDataStore.percent;
   };
 
   startConversion = async () => {
-    this.converted = false;
     const { convertItem, setConvertItem } = this.dialogsStore;
+
+    runInAction(() => (this.converted = false));
     convertItem && setConvertItem(null);
-
     this.setConversionPercent(0);
-    let index = 1;
 
-    for (let conversionItem of this.filesToConversion) {
+    let index = 0;
+    let len = this.filesToConversion.length;
+    let filesToConversion = this.filesToConversion;
+
+    while (index < len) {
+      const conversionItem = this.filesToConversion[index];
       const { fileId, toFolderId } = conversionItem;
 
       const data = await convertFile(fileId);
@@ -238,7 +270,7 @@ class UploadDataStore {
 
           error = res && res[0] && res[0].error;
           if (error.length) {
-            const percent = this.getConversationPercent(100 * index);
+            const percent = this.getConversationPercent(100);
             this.setConversionPercent(percent, true);
 
             runInAction(() => {
@@ -256,21 +288,22 @@ class UploadDataStore {
             conversionItem.action = "converted";
             this.refreshFiles(toFolderId, false);
 
-            const percent = this.getConversationPercent(100 * index);
+            const percent = this.getConversationPercent(100, index);
             this.setConversionPercent(percent);
 
             break;
           } else {
-            const percent = this.getConversationPercent(
-              progress * index,
-              index - 1
-            );
+            const percent = this.getConversationPercent(progress, index);
             this.setConversionPercent(percent);
           }
         }
       }
+
       index++;
+      filesToConversion = this.filesToConversion;
+      len = filesToConversion.length;
     }
+
     if (this.uploaded) {
       this.finishUploadFiles();
     } else {
@@ -336,10 +369,9 @@ class UploadDataStore {
 
     this.convertFilesSize = convertSize;
 
-    if (
-      this.tempConversionFiles.length &&
-      !this.dialogsStore.convertDialogVisible
-    )
+    //console.log("this.tempConversionFiles", this.tempConversionFiles);
+
+    if (this.tempConversionFiles.length)
       this.dialogsStore.setConvertDialogVisible(true);
 
     //const showConvertDialog = uploadStatus === "pending";
@@ -350,7 +382,7 @@ class UploadDataStore {
       uploadedFiles: this.uploadedFiles,
       percent: this.percent,
       uploaded: false,
-      converted: !this.tempConversionFiles.length,
+      converted: !!this.tempConversionFiles.length,
     };
 
     if (this.uploaded && newFiles.length) {
@@ -477,7 +509,7 @@ class UploadDataStore {
       visible: true,
       percent: this.percent,
       icon: "upload",
-      alert: false,
+      //alert: false,
     };
 
     this.primaryProgressDataStore.setPrimaryProgressBarData(progressData);
