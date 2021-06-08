@@ -417,7 +417,7 @@ class SectionBodyContent extends React.PureComponent {
                   isBold={true}
                   onClick={this.toggleResetAppDialogVisible}
                 >
-                  {t("ResetApplication")}
+                  {t("Common:ResetApplication")}
                 </Link>
                 <Link
                   type="action"

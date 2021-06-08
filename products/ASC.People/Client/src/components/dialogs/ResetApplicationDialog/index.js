@@ -37,7 +37,7 @@ class ResetApplicationDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t("ResetButton")}
+            label={t("Common:ResetApplication")}
             size="medium"
             primary={true}
             onClick={this.resetApp}

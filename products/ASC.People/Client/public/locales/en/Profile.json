@@ -16,7 +16,6 @@
   "Subscriptions": "Subscriptions",
 
   "TwoFactorDescription": "Two-factor authentication via code generating application was enabled for all users by cloud service administrator.",
-  "ResetApplication": "Reset application",
   "ShowBackupCodes": "Show backup codes",
   "CountCodesRemaining": "codes remaining",
   "TfaLoginSettings": "Login settings"
