@@ -110,7 +110,7 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager, _) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager, authManager) = scopeClass;
             tenantManager.SetCurrentTenant(tenant.TenantId);
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
@@ -140,7 +140,7 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, _, tenantManager, _) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, _, tenantManager, authManager) = scopeClass;
             tenantManager.SetCurrentTenant(tenant.TenantId);
 
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
