@@ -95,7 +95,7 @@ const config = {
           {
             loader: "file-loader",
             options: {
-              name: "fonts/[name].[ext]",
+              name: "fonts/[hash].[ext]",
             },
           },
         ],
