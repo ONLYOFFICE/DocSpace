@@ -4,6 +4,7 @@ import history from "../history";
 
 class TfaStore {
   tfaSettings = null;
+  backupCodes = [];
   tfaAndroidAppUrl =
     "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2";
   tfaIosAppUrl = "https://apps.apple.com/app/google-authenticator/id388497605";
@@ -31,6 +32,10 @@ class TfaStore {
 
   setTfaSettings = async (type) => {
     return await api.settings.setTfaSettings(type);
+  };
+
+  setBackupCodes = (codes) => {
+    this.backupCodes = codes;
   };
 
   getTfaConfirmLink = async (res) => {
