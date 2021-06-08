@@ -47,7 +47,7 @@ const Header = styled.header`
     margin-top: -5px;
     cursor: ${(props) => (props.isPersonal ? "default" : "pointer")};
 
-    ${(props) => props.isPersonal && `margin-left: 20px;`}
+    ${(props) => props.isPersonal && `margin-left: 16px;`}
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-drag: none;
