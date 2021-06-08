@@ -71,7 +71,7 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     this.loaded = false;
-    const { profile, match } = this.props;
+    const { profile, match, isMy } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -100,7 +100,7 @@ class ProfileAction extends React.Component {
 
         <PageLayout.SectionBody>
           {this.loaded ? (
-            <SectionUserBody />
+            <SectionUserBody isMy={isMy} />
           ) : (
             <Loaders.ProfileView isEdit={false} />
           )}
@@ -127,5 +127,5 @@ export default withRouter(
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-  }))(withTranslation("ProfileAction")(observer(ProfileAction)))
+  }))(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );

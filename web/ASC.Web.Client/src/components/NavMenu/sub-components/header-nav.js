@@ -16,10 +16,11 @@ const homepage = config.homepage;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-const PROFILE_URL = combineUrl(
+const PROFILE_SELF_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/products/people/view/@self"
 );
+const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 
 const StyledNav = styled.nav`
   display: flex;
@@ -49,11 +50,18 @@ const StyledNav = styled.nav`
     padding: 0 16px;
   }
 `;
-const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
-  const { t } = useTranslation("NavMenu");
+const HeaderNav = ({
+  history,
+  modules,
+  user,
+  logout,
+  isAuthenticated,
+  peopleAvailable,
+}) => {
+  const { t } = useTranslation(["NavMenu", "Common"]);
 
   const onProfileClick = useCallback(() => {
-    history.push(PROFILE_URL);
+    history.push(peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL);
   }, []);
 
   const onAboutClick = useCallback(() => history.push(ABOUT_URL), []);
@@ -74,9 +82,9 @@ const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
     const currentUserActions = [
       {
         key: "ProfileBtn",
-        label: t("Profile"),
+        label: t("Common:Profile"),
         onClick: onProfileClick,
-        url: PROFILE_URL,
+        url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
       },
       {
         key: "SwitchToBtn",
@@ -154,15 +162,16 @@ export default withRouter(
     } = auth;
     const { defaultPage } = settingsStore;
     const { user } = userStore;
-
+    const modules = auth.availableModules;
     return {
       user,
       isAuthenticated,
       isLoaded,
       language,
       defaultPage: defaultPage || "/",
-      modules: auth.availableModules,
+      modules,
       logout,
+      peopleAvailable: modules.some((m) => m.appName === "people"),
     };
   })(observer(HeaderNav))
 );

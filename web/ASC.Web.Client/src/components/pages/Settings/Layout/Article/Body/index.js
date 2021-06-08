@@ -64,12 +64,46 @@ const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
   }
 `;
 const getTreeItems = (data, path, t) => {
+  const maptKeys = (tKey) => {
+    switch (tKey) {
+      case "AccessRights":
+        return t("AccessRights");
+      case "ManagementCategoryCommon":
+        return t("ManagementCategoryCommon");
+      case "Customization":
+        return t("Customization");
+      case "StudioTimeLanguageSettings":
+        return t("StudioTimeLanguageSettings");
+      case "CustomTitles":
+        return t("CustomTitles");
+      case "TeamTemplate":
+        return t("TeamTemplate");
+      case "ManagementCategorySecurity":
+        return t("ManagementCategorySecurity");
+      case "PortalAccess":
+        return t("PortalAccess");
+      case "TwoFactorAuth":
+        return t("TwoFactorAuth");
+      case "ManagementCategoryIntegration":
+        return t("ManagementCategoryIntegration");
+      case "ThirdPartyAuthorization":
+        return t("ThirdPartyAuthorization");
+      case "Migration":
+        return t("Migration");
+      case "Backup":
+        return t("Backup");
+      default:
+        throw new Error("Unexpected translation key");
+    }
+  };
   return data.map((item) => {
     if (item.children && item.children.length && !item.isCategory) {
       return (
         <TreeNode
           title={
-            <Text className="inherit-title-link header">{t(item.tKey)}</Text>
+            <Text className="inherit-title-link header">
+              {maptKeys(item.tKey)}
+            </Text>
           }
           key={item.key}
           icon={item.icon && <ReactSVG className="tree_icon" src={item.icon} />}
@@ -85,7 +119,7 @@ const getTreeItems = (data, path, t) => {
         key={item.key}
         title={
           <Link className="inherit-title-link" href={link}>
-            {t(item.tKey)}
+            {maptKeys(item.tKey)}
           </Link>
         }
         icon={item.icon && <ReactSVG src={item.icon} className="tree_icon" />}
@@ -147,7 +181,6 @@ class ArticleBodyContent extends React.Component {
     if (isArrayEqual(value, selectedKeys)) {
       return;
     }
-
 
     this.setState({ selectedKeys: value });
   };

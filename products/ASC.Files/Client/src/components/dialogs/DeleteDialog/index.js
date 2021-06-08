@@ -7,10 +7,7 @@ import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import Scrollbar from "@appserver/components/scrollbar";
 import { withTranslation } from "react-i18next";
-//import { getProgress, removeFiles } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
-//import { TIMEOUT } from "../../../helpers/constants";
-//import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
 
 class DeleteDialogComponent extends React.Component {
@@ -26,7 +23,8 @@ class DeleteDialogComponent extends React.Component {
       if (!(props.isRootFolder && props.selection[i].providerKey)) {
         if (
           props.selection[i].access === 0 ||
-          props.selection[i].access === 1
+          props.selection[i].access === 1 ||
+          props.unsubscribe
         ) {
           const item = { ...props.selection[i], checked: true };
           selection.push(item);
@@ -47,9 +45,9 @@ class DeleteDialogComponent extends React.Component {
     this.onClose();
     const { t, deleteAction } = this.props;
     const translations = {
-      deleteOperation: t("DeleteOperation"),
-      deleteFromTrash: t("DeleteFromTrash"),
-      deleteSelectedElem: t("DeleteSelectedElem"),
+      deleteOperation: t("Translations:DeleteOperation"),
+      deleteFromTrash: t("Translations:DeleteFromTrash"),
+      deleteSelectedElem: t("Translations:DeleteSelectedElem"),
     };
 
     const selection = this.state.selection.filter((f) => f.checked);
@@ -57,6 +55,24 @@ class DeleteDialogComponent extends React.Component {
     if (!selection.length) return;
 
     deleteAction(translations, selection).catch((err) => toastr.error(err));
+  };
+
+  onUnsubscribe = () => {
+    this.onClose();
+    const { unsubscribeAction } = this.props;
+
+    const selection = this.state.selection.filter((f) => f.checked);
+
+    if (!selection.length) return;
+
+    let filesId = [];
+    let foldersId = [];
+
+    selection.map((item) => {
+      item.fileExst ? filesId.push(item.id) : foldersId.push(item.id);
+    });
+
+    unsubscribeAction(filesId, foldersId).catch((err) => toastr.error(err));
   };
 
   onChange = (event) => {
@@ -83,24 +99,26 @@ class DeleteDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, isLoading } = this.props;
+    const { visible, t, isLoading, unsubscribe } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    const title =
-      checkedSelections.length === 1
-        ? checkedSelections[0].fileExst
-          ? t("MoveToTrashOneFileTitle")
-          : t("MoveToTrashOneFolderTitle")
-        : t("MoveToTrashItemsTitle");
+    const title = unsubscribe
+      ? t("UnsubscribeTitle")
+      : checkedSelections.length === 1
+      ? checkedSelections[0].fileExst
+        ? t("MoveToTrashOneFileTitle")
+        : t("MoveToTrashOneFolderTitle")
+      : t("MoveToTrashItemsTitle");
 
-    const noteText =
-      checkedSelections.length === 1
-        ? checkedSelections[0].fileExst
-          ? t("MoveToTrashOneFileNote")
-          : t("MoveToTrashOneFolderNote")
-        : t("MoveToTrashItemsNote");
+    const noteText = unsubscribe
+      ? t("UnsubscribeNote")
+      : checkedSelections.length === 1
+      ? checkedSelections[0].fileExst
+        ? t("MoveToTrashOneFileNote")
+        : t("MoveToTrashOneFolderNote")
+      : t("MoveToTrashItemsNote");
 
     const accuracy = 20;
     let filesHeight = 25 * filesList.length + accuracy + 8;
@@ -123,7 +141,7 @@ class DeleteDialogComponent extends React.Component {
             <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
               {foldersList.length > 0 && (
                 <Text isBold className="delete_dialog-text">
-                  {t("FoldersModule")}:
+                  {t("Translations:Folders")}:
                 </Text>
               )}
               {foldersList.map((item, index) => (
@@ -140,7 +158,7 @@ class DeleteDialogComponent extends React.Component {
 
               {filesList.length > 0 && (
                 <Text isBold className="delete_dialog-text">
-                  {t("FilesModule")}:
+                  {t("Translations:Files")}:
                 </Text>
               )}
               {filesList.map((item, index) => (
@@ -161,16 +179,18 @@ class DeleteDialogComponent extends React.Component {
           <Button
             className="button-dialog-accept"
             key="OkButton"
-            label={t("MoveToTrashButton")}
+            label={
+              unsubscribe ? t("UnsubscribeButton") : t("MoveToTrashButton")
+            }
             size="medium"
             primary
-            onClick={this.onDelete}
+            onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
             isLoading={isLoading}
           />
           <Button
             className="button-dialog"
             key="CancelButton"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={this.onClose}
             isLoading={isLoading}
@@ -181,48 +201,35 @@ class DeleteDialogComponent extends React.Component {
   }
 }
 
-const DeleteDialog = withTranslation("DeleteDialog")(DeleteDialogComponent);
+const DeleteDialog = withTranslation([
+  "DeleteDialog",
+  "Common",
+  "Translations",
+])(DeleteDialogComponent);
 
 export default inject(
-  ({
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-    filesActionsStore,
-  }) => {
-    const { fetchFiles, selection, filter, isLoading } = filesStore;
-    const { deleteAction } = filesActionsStore;
-
-    const {
-      treeFolders,
-      setTreeFolders,
-      isRecycleBinFolder,
-      isPrivacyFolder,
-    } = treeFoldersStore;
+  ({ filesStore, selectedFolderStore, dialogsStore, filesActionsStore }) => {
+    const { selection, isLoading } = filesStore;
+    const { deleteAction, unsubscribeAction } = filesActionsStore;
 
     const {
       deleteDialogVisible: visible,
       setDeleteDialogVisible,
       removeMediaItem,
       setRemoveMediaItem,
+      unsubscribe,
     } = dialogsStore;
 
     return {
-      currentFolderId: selectedFolderStore.id,
       selection: removeMediaItem ? [removeMediaItem] : selection,
       isLoading,
-      treeFolders,
-      isRecycleBinFolder,
-      isPrivacy: isPrivacyFolder,
-      filter,
       isRootFolder: selectedFolderStore.isRootFolder,
       visible,
 
-      fetchFiles,
-      setTreeFolders,
       setDeleteDialogVisible,
       deleteAction,
+      unsubscribeAction,
+      unsubscribe,
 
       setRemoveMediaItem,
     };

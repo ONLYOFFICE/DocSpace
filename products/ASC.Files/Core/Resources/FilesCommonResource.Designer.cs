@@ -19,7 +19,7 @@ namespace ASC.Files.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FilesCommonResource {
@@ -763,7 +763,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are not allowed to preview the elements in the Recycle Bin.
+        ///   Looks up a localized string similar to You are not allowed to preview the elements in the Trash.
         /// </summary>
         public static string ErrorMassage_ViewTrashItem {
             get {
@@ -790,7 +790,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search by contents of documents.
+        ///   Looks up a localized string similar to Search in documents content.
         /// </summary>
         public static string IndexTitle {
             get {
@@ -808,7 +808,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do the same as a user|Link Dropbox, Box and other accounts in the &apos;Common Documents&apos; section|Set up access rights to the documents and folders in the &apos;Common Documents&apos; section.
+        ///   Looks up a localized string similar to Do the same as a user|Link Dropbox, Box and other accounts in the &apos;Common&apos; section|Set up access rights to the documents and folders in the &apos;Common&apos; section.
         /// </summary>
         public static string ProductAdminOpportunities {
             get {
@@ -817,7 +817,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed..
+        ///   Looks up a localized string similar to Create, edit, and share office documents. Collaborate on them in real-time. 100% compatibility with docx, xlsx, pptx guaranteed. .
         /// </summary>
         public static string ProductDescription {
             get {
@@ -826,7 +826,8 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed..
+        ///   Looks up a localized string similar to Edit, share and collaborate on office documents in real-time. Create and manage common docs for the whole team to access. 
+        ///100% compatibility with docx, xlsx, pptx. .
         /// </summary>
         public static string ProductDescriptionEx {
             get {

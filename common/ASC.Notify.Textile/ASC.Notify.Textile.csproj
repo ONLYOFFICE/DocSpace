@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProductVersion>9.0.30729</ProductVersion>
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyTitle>ASC.Notify.Textile</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
@@ -22,7 +21,6 @@
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\ASC.Textile\ASC.Textile.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Resources\NotifyTemplateResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -30,7 +28,6 @@
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -52,5 +49,4 @@
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  
 </Project>

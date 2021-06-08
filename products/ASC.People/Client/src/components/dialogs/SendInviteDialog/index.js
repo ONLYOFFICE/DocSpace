@@ -45,7 +45,7 @@ class SendInviteDialogComponent extends React.Component {
 
     this.setState({ isRequestRunning: true }, () => {
       resendUserInvites(userIds)
-        .then(() => toastr.success(t("SuccessSendInvitation")))
+        .then(() => toastr.success(t("Translations:SuccessSentInvitation")))
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
@@ -113,13 +113,15 @@ class SendInviteDialogComponent extends React.Component {
     //console.log("SendInviteDialog render");
     return (
       <ModalDialogContainer visible={visible} onClose={onClose}>
-        <ModalDialog.Header>{t("SendInviteAgain")}</ModalDialog.Header>
+        <ModalDialog.Header>
+          {t("Translations:SendInviteAgain")}
+        </ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("SendInviteAgainDialog")}</Text>
           <Text>{t("SendInviteAgainDialogMessage")}</Text>
           <ToggleContent
             className="toggle-content-dialog"
-            label={t("ShowUsersList")}
+            label={t("Common:ShowUsersList")}
           >
             <div style={containerStyles} className="modal-dialog-content">
               <AutoSizer>{renderList}</AutoSizer>
@@ -128,7 +130,7 @@ class SendInviteDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            label={t("OKButton")}
+            label={t("Common:OKButton")}
             size="medium"
             primary
             onClick={this.onSendInvite}
@@ -137,7 +139,7 @@ class SendInviteDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -148,9 +150,11 @@ class SendInviteDialogComponent extends React.Component {
   }
 }
 
-const SendInviteDialog = withTranslation("SendInviteDialog")(
-  SendInviteDialogComponent
-);
+const SendInviteDialog = withTranslation([
+  "SendInviteDialog",
+  "Common",
+  "Translations",
+])(SendInviteDialogComponent);
 
 SendInviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

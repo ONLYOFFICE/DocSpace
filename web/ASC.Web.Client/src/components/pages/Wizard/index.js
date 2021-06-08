@@ -12,7 +12,6 @@ import { combineUrl, createPasswordHash } from "@appserver/common/utils";
 import Loader from "@appserver/components/loader";
 import { tablet } from "@appserver/components/utils/device";
 import { EmailSettings } from "@appserver/components/utils/email";
-
 import HeaderContainer from "./sub-components/header-container";
 import ButtonContainer from "./sub-components/button-container";
 import SettingsContainer from "./sub-components/settings-container";
@@ -22,6 +21,7 @@ import ModalContainer from "./sub-components/modal-dialog-container";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import { AppServerConfig } from "@appserver/common/constants";
+import withCultureNames from "@appserver/common/hoc/withCultureNames";
 
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
@@ -64,7 +64,6 @@ class Body extends Component {
       email: "",
       changeEmail: "",
       license: false,
-      languages: null,
       timezones: null,
       selectLanguage: null,
       selectTimezone: null,
@@ -91,6 +90,8 @@ class Body extends Component {
       getMachineName,
       getIsRequiredLicense,
       history,
+      i18n,
+      cultureNames,
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
@@ -115,22 +116,18 @@ class Body extends Component {
               },
             });
           }),
-          getPortalCultures().then(() => {
-            const { cultures, culture } = this.props;
-            const languages = this.mapCulturesToArray(cultures, t);
-            let select = languages.filter((lang) => lang.key === culture);
-            if (!select.length)
-              select = languages.filter((lang) => lang.key === "en-US");
-            this.setState({
-              languages: languages,
-              selectLanguage: {
-                key: select[0].key,
-                label: select[0].label,
-              },
-            });
-          }),
         ])
         .then(() => {
+          let select = cultureNames.filter((lang) => lang.key === culture);
+          if (!select.length)
+            select = cultureNames.filter((lang) => lang.key === "en-US");
+
+          this.setState({
+            selectLanguage: {
+              key: select[0].key,
+              label: select[0].label,
+            },
+          });
           setIsWizardLoaded(true);
           setDocumentTitle(t("WizardTitle"));
         })
@@ -160,12 +157,6 @@ class Body extends Component {
   mapTimezonesToArray = (timezones) => {
     return timezones.map((timezone) => {
       return { key: timezone.id, label: timezone.displayName };
-    });
-  };
-
-  mapCulturesToArray = (cultures, t) => {
-    return cultures.map((culture) => {
-      return { key: culture, label: t(`Culture_${culture}`) };
     });
   };
 
@@ -378,6 +369,7 @@ class Body extends Component {
       culture,
       isLicenseRequired,
       urlLicense,
+      cultureNames,
     } = this.props;
 
     const {
@@ -385,7 +377,6 @@ class Body extends Component {
       selectLanguage,
       license,
       selectTimezone,
-      languages,
       timezones,
       emailNeeded,
       email,
@@ -407,7 +398,7 @@ class Body extends Component {
     if (errorInitWizard) {
       return (
         <ErrorContainer
-          headerText={t("ErrorInitWizardHeader")}
+          headerText={t("Common:SomethingWentWrong")}
           bodyText={t("ErrorInitWizard")}
           buttonText={t("ErrorInitWizardButton")}
           buttonUrl="/"
@@ -455,7 +446,7 @@ class Body extends Component {
               t={t}
               selectLanguage={selectLanguage}
               selectTimezone={selectTimezone}
-              languages={languages}
+              languages={cultureNames}
               timezones={timezones}
               emailNeeded={emailNeeded}
               emailOwner={emailOwner}
@@ -493,7 +484,7 @@ Body.propTypes = {
   licenseUpload: PropTypes.string,
 };
 
-const WizardWrapper = withTranslation("Wizard")(Body);
+const WizardWrapper = withTranslation(["Wizard", "Common"])(Body);
 
 const WizardPage = (props) => {
   const { isLoaded } = props;
@@ -519,7 +510,6 @@ export default inject(({ auth, wizard }) => {
     passwordSettings,
     culture,
     wizardToken,
-    cultures,
     timezones,
     timezone,
     urlLicense,
@@ -527,7 +517,6 @@ export default inject(({ auth, wizard }) => {
     getPortalSettings,
     setWizardComplete,
     getPortalTimezones,
-    getPortalCultures,
     getPortalPasswordSettings,
   } = auth.settingsStore;
 
@@ -549,7 +538,6 @@ export default inject(({ auth, wizard }) => {
     culture,
     wizardToken,
     passwordSettings,
-    cultures,
     timezones,
     timezone,
     urlLicense,
@@ -561,7 +549,6 @@ export default inject(({ auth, wizard }) => {
     getPortalSettings,
     setWizardComplete,
     getPortalPasswordSettings,
-    getPortalCultures,
     getPortalTimezones,
     setIsWizardLoaded,
     getMachineName,
@@ -570,4 +557,4 @@ export default inject(({ auth, wizard }) => {
     setLicense,
     resetLicenseUploaded,
   };
-})(withRouter(observer(WizardPage)));
+})(withRouter(observer(withCultureNames(WizardPage))));

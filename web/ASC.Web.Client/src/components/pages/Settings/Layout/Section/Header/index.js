@@ -214,14 +214,14 @@ class SectionHeaderContent extends React.Component {
 
     const menuItems = [
       {
-        label: t("Select"),
+        label: t("Common:Select"),
         isDropdown: true,
         isSeparator: true,
         isSelect: true,
         fontWeight: "bold",
       },
       {
-        label: t("Remove"),
+        label: t("Common:Delete"),
         disabled: !selection || !selection.length > 0,
         onClick: this.removeAdmins,
       },
@@ -237,8 +237,8 @@ class SectionHeaderContent extends React.Component {
               onChange={this.onCheck}
               menuItems={menuItems}
               visible={true}
-              moreLabel={t("More")}
-              closeTitle={t("CloseButton")}
+              moreLabel={t("Common:More")}
+              closeTitle={t("Common:CloseButton")}
               onClose={this.onClose}
               selected={menuItems[0].label}
             />
@@ -311,4 +311,8 @@ export default inject(({ auth, setup }) => {
     selectorIsOpen,
     selection,
   };
-})(withRouter(withTranslation("Settings")(observer(SectionHeaderContent))));
+})(
+  withRouter(
+    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+  )
+);

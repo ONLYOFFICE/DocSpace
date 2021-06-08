@@ -14,7 +14,8 @@ export function regDesktop(
   keys,
   setEncryptionKeys,
   isEditor,
-  getEncryptionAccess
+  getEncryptionAccess,
+  t
 ) {
   const data = {
     displayName: user.displayName,
@@ -58,7 +59,7 @@ export function regDesktop(
           break;
         }
         case "relogin": {
-          toastr.info("Encryption keys must be re-entered");
+          toastr.info(t("Common:EncryptionKeysReload"));
           //relogin();
           break;
         }
@@ -82,13 +83,13 @@ export function regDesktop(
         if (!message) {
           switch (e.opType) {
             case 0:
-              message = "Preparing file for encryption";
+              message = t("Common:EncryptionFilePreparing");
               break;
             case 1:
-              message = "Encrypting file";
+              message = t("Common:EncryptingFile");
               break;
             default:
-              message = "Loading...";
+              message = t("Common:LoadingProcessing");
           }
         }
         toastr.info(message);

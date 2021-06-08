@@ -176,7 +176,7 @@ namespace ASC.Files.Core
                 if (value)
                     _status |= FileStatus.IsNew;
                 else
-                    _status ^= FileStatus.IsNew;
+                    _status &= ~FileStatus.IsNew;
             }
         }
 
@@ -188,7 +188,7 @@ namespace ASC.Files.Core
                 if (value)
                     _status |= FileStatus.IsFavorite;
                 else
-                    _status ^= FileStatus.IsFavorite;
+                    _status &= ~FileStatus.IsFavorite;
             }
         }
 
@@ -200,11 +200,14 @@ namespace ASC.Files.Core
                 if (value)
                     _status |= FileStatus.IsTemplate;
                 else
-                    _status ^= FileStatus.IsTemplate;
+                    _status &= ~FileStatus.IsTemplate;
             }
         }
 
         public bool Encrypted { get; set; }
+
+        [JsonPropertyName("thumbnail_status")]
+        public Thumbnail ThumbnailStatus { get; set; }
 
         public ForcesaveType Forcesave { get; set; }
 

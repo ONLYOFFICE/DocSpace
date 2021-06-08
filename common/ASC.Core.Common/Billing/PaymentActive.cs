@@ -48,5 +48,17 @@ namespace ASC.Core.Billing
             get;
             set;
         }
+
+        public int PaymentStatus
+        {
+            get;
+            set;
+        }
+
+        public int Quantity
+        {
+            get;
+            set;
+        }
     }
 }

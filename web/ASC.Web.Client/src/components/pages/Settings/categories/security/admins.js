@@ -690,7 +690,7 @@ class PortalAdmins extends Component {
             <ToggleContentContainer>
               <SearchInput
                 className="filter_container"
-                placeholder={t("Search")}
+                placeholder={t("Common:Search")}
                 onChange={this.onSearchChange}
                 onClearSearch={this.onSearchChange}
                 value={searchValue}
@@ -745,7 +745,7 @@ class PortalAdmins extends Component {
                         <div className="full-access-wrapper">
                           <div className="help-button-wrapper">
                             <Text as="p" fontWeight={600} fontSize="15px">
-                              {t("FullAccess")}
+                              {t("Common:FullAccess")}
                             </Text>
                             <HelpButton
                               displayType="dropdown"
@@ -940,7 +940,7 @@ class PortalAdmins extends Component {
                         isHovered={true}
                         onClick={this.onSearchChange.bind(this, "")}
                       >
-                        {t("ClearButton")}
+                        {t("Common:ClearButton")}
                       </Link>
                     </>
                   }
@@ -1029,4 +1029,4 @@ export default inject(({ auth, setup }) => {
     setAdmins,
     getUsersByIds,
   };
-})(withTranslation("Settings")(withRouter(observer(PortalAdmins))));
+})(withTranslation(["Settings", "Common"])(withRouter(observer(PortalAdmins))));

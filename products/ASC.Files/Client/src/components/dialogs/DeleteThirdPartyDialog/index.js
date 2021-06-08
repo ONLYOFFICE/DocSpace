@@ -46,13 +46,8 @@ const DeleteThirdPartyDialog = (props) => {
     deleteThirdParty(+removeItem.id)
       .then(() => {
         setThirdPartyProviders(newProviders);
-        if (currentFolderId) {
-          fetchFiles(currentFolderId).then((data) => {
-            const path = data.selectedFolder.pathParts;
-            const folders = data.selectedFolder.folders;
-            updateTree(path, folders);
-          });
-        } else {
+        if (currentFolderId) fetchFiles(currentFolderId);
+        else {
           const folderId = providerItem.corporate ? commonId : myId;
           getFolder(folderId).then((data) => {
             const path = [folderId];
@@ -69,14 +64,16 @@ const DeleteThirdPartyDialog = (props) => {
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
-      <ModalDialog.Header>{t("DeleteThirdParty")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("Translations:DeleteThirdParty")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
         {t("DeleteThirdPartyAlert", { service: removeItem.title })}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
           isLoading={isLoading}
-          label={t("OKButton")}
+          label={t("Common:OKButton")}
           size="big"
           primary
           onClick={onDeleteThirdParty}
@@ -132,6 +129,8 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation("DeleteThirdPartyDialog")(observer(DeleteThirdPartyDialog))
+    withTranslation(["DeleteThirdPartyDialog", "Common", "Translations"])(
+      observer(DeleteThirdPartyDialog)
+    )
   )
 );

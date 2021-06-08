@@ -22,6 +22,7 @@ class DateField extends React.Component {
       inputOnChange,
       inputTabIndex,
       calendarMinDate,
+      locale,
     } = this.props;
 
     return (
@@ -41,6 +42,7 @@ class DateField extends React.Component {
           calendarHeaderContent={calendarHeaderContent}
           minDate={calendarMinDate ? calendarMinDate : new Date("1900/01/01")}
           maxDate={new Date()}
+          locale={locale}
         />
       </FieldContainer>
     );

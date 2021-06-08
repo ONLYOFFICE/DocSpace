@@ -46,10 +46,10 @@ class Body extends React.PureComponent {
 
     setPaymentsLicense(null, fd)
       .then(() => {
-        toastr.success(t("LoadingLicenseSuccess"), "");
+        toastr.success(t("SuccessLoadingLicense"), "");
       })
       .catch((error) => {
-        toastr.error(t("LoadingLicenseError"), "LicenseIsNotValid", 0, true);
+        toastr.error(t("ErrorLoadingLicense"), "LicenseIsNotValid", 0, true);
         console.log(error);
       });
   };

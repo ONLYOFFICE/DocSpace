@@ -34,13 +34,14 @@ using System.Threading;
 using ASC.Common;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading;
+using ASC.Common.Web;
 using ASC.Core.Tenants;
-using ASC.Data.Storage;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Compress;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
@@ -49,7 +50,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 
 using SharpCompress.Common;
-using SharpCompress.Writers;
 using SharpCompress.Writers.Zip;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
@@ -70,9 +70,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     [Transient]
     class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<string>, FileDownloadOperationData<int>>
     {
-        public FileDownloadOperation(IServiceProvider serviceProvider, FileOperation<FileDownloadOperationData<string>, string> f1, FileOperation<FileDownloadOperationData<int>, int> f2)
+        public FileDownloadOperation(IServiceProvider serviceProvider, TempStream tempStream, FileOperation<FileDownloadOperationData<string>, string> f1, FileOperation<FileDownloadOperationData<int>, int> f2)
             : base(serviceProvider, f1, f2)
         {
+            TempStream = tempStream;
         }
 
         public override FileOperationType OperationType
@@ -80,12 +81,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             get { return FileOperationType.Download; }
         }
 
+        private TempStream TempStream { get; }
+
         public override void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
             base.RunJob(distributedTask, cancellationToken);
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
+            var zip = scope.ServiceProvider.GetService<CompressToArchive>();
             var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
             using var stream = TempStream.Create();
 
@@ -93,24 +97,29 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             writerOptions.ArchiveEncoding.Default = Encoding.UTF8;
             writerOptions.DeflateCompressionLevel = SharpCompress.Compressors.Deflate.CompressionLevel.Level3;
 
-            using (var zip = WriterFactory.Open(stream, ArchiveType.Zip, writerOptions))
-            {
-                (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZip(zip, stream, scope);
-                (DaoOperation as FileDownloadOperation<int>).CompressToZip(zip, stream, scope);
-            }
+            zip.SetStream(stream);
+            (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZip(zip, stream, scope);
+            (DaoOperation as FileDownloadOperation<int>).CompressToZip(zip, stream, scope);
 
             if (stream != null)
             {
                 stream.Position = 0;
-                const string fileName = FileConstant.DownloadTitle + ".zip";
+                string fileName = FileConstant.DownloadTitle + zip.ArchiveExtension;
                 var store = globalStore.GetStore();
+                var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
+
+                if (store.IsFile(FileConstant.StorageDomainTmp, path))
+                {
+                    store.Delete(FileConstant.StorageDomainTmp, path);
+                }
+
                 store.Save(
                     FileConstant.StorageDomainTmp,
-                    string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
+                    path,
                     stream,
-                    "application/zip",
+                    MimeMapping.GetMimeMapping(path),
                     "attachment; filename=\"" + fileName + "\"");
-                Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
+                Status = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, zip.ArchiveExtension);
             }
 
             FillDistributedTask();
@@ -231,11 +240,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return entriesPathId;
         }
 
-        internal void CompressToZip(IWriter zip, Stream stream, IServiceScope scope)
+        internal void CompressToZip(ICompress compressTo, Stream stream, IServiceScope scope)
         {
             if (entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            var (_, _, setupInfo, fileConverter, filesMessageService) = scopeClass;
+            var (_, _, _, fileConverter, filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
             foreach (var path in entriesPathId.AllKeys)
@@ -245,7 +254,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     if (CancellationToken.IsCancellationRequested)
                     {
-                        zip.Dispose();
+                        compressTo.Dispose();
                         stream.Dispose();
                         CancellationToken.ThrowIfCancellationRequested();
                     }
@@ -255,7 +264,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     File<T> file = null;
                     var convertToExt = string.Empty;
 
-                    if (!entryId.Equals(default(T)))
+                    if (!Equals(entryId, default(T)))
                     {
                         FileDao.InvalidateCache(entryId);
                         file = FileDao.GetFile(entryId);
@@ -263,12 +272,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         if (file == null)
                         {
                             Error = FilesCommonResource.ErrorMassage_FileNotFound;
-                            continue;
-                        }
-
-                        if (file.ContentLength > setupInfo.AvailableFileSize)
-                        {
-                            Error = string.Format(FilesCommonResource.ErrorMassage_FileSizeZip, FileSizeComment.FilesSizeToString(setupInfo.AvailableFileSize));
                             continue;
                         }
 
@@ -286,7 +289,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     {
                         var suffix = " (" + counter + ")";
 
-                        if (!entryId.Equals(default(T)))
+                        if (!Equals(entryId, default(T)))
                         {
                             newtitle = 0 < newtitle.IndexOf('.') ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
                         }
@@ -296,48 +299,50 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                     }
 
-                    if (!entryId.Equals(default(T)) && file != null)
-                    {
-                        Stream readStream = null;
+                    compressTo.CreateEntry(newtitle);
 
+                    if (!Equals(entryId, default(T)) && file != null)
+                    {
                         try
                         {
                             if (fileConverter.EnableConvert(file, convertToExt))
                             {
                                 //Take from converter
-                                readStream = fileConverter.Exec(file, convertToExt);
-                                
-                                if (!string.IsNullOrEmpty(convertToExt))
+                                using (var readStream = fileConverter.Exec(file, convertToExt))
                                 {
-                                    filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
-                                }
-                                else
-                                {
-                                    filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                    compressTo.PutStream(readStream);
+
+                                    if (!string.IsNullOrEmpty(convertToExt))
+                                    {
+                                        filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
+                                    }
+                                    else
+                                    {
+                                        filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                    }
                                 }
                             }
                             else
                             {
-                                readStream = FileDao.GetFileStream(file);
-                                filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
-                            }
+                                using (var readStream = FileDao.GetFileStream(file))
+                                {
+                                    compressTo.PutStream(readStream);
 
-                            zip.Write(newtitle, readStream);
+                                    filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                }
+                            }
                         }
                         catch (Exception ex)
                         {
                             Error = ex.Message;
                             Logger.Error(Error, ex);
                         }
-                        finally
-                        {
-                            if (readStream != null)
-                            {
-                                readStream.Close();
-                                readStream.Dispose();
-                            }
-                        }
                     }
+                    else
+                    {
+                        compressTo.PutNextEntry();
+                    }
+                    compressTo.CloseEntry();
                     counter++;
                 }
 

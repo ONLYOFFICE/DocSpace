@@ -145,13 +145,13 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t, tReady }) => {
   const appButtons = (
     <>
       <Badge
-        label={t("ComingSoon")}
+        label={t("Common:ComingSoon")}
         maxWidth="150px"
         borderRadius="2px"
         className="coming-soon-badge"
       />
       <ExternalLink
-        label={t("ViewWeb")}
+        label={t("Common:ViewWeb")}
         onClick={() => {
           deleteCookie("desktop_view");
           window.open(webLink, "_self", "", true);
@@ -159,7 +159,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t, tReady }) => {
       />
       {appLink && (
         <ExternalLink
-          label={t("OpenApp", {
+          label={t("Common:OpenApp", {
             title: title,
           })}
           href={appLink}
@@ -181,7 +181,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t, tReady }) => {
           isBold
           isHovered
         >
-          {t("LearnMore")}...
+          {t("Common:LearnMore")}...
         </Link>
       )}
     </Text>
@@ -247,7 +247,7 @@ const ComingSoonWrapper = inject(({ auth }) => ({
   modules: auth.moduleStore.modules,
   isLoaded: auth.isLoaded,
   setCurrentProductId: auth.settingsStore.setCurrentProductId,
-}))(withRouter(withTranslation("ComingSoon")(ComingSoon)));
+}))(withRouter(withTranslation(["ComingSoon", "Common"])(ComingSoon)));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

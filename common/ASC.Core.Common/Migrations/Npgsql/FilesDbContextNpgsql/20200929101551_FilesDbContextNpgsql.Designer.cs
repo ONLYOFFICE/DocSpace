@@ -229,6 +229,31 @@ namespace ASC.Core.Common.Migrations.Npgsql.FilesDbContextNpgsql
                         },
                         new
                         {
+                            Input = ".fb2",
+                            Ouput = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Ouput = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Ouput = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Ouput = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".fb2",
+                            Ouput = ".txt"
+                        },
+                        new
+                        {
                             Input = ".fodp",
                             Ouput = ".odp"
                         },

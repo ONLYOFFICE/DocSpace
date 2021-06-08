@@ -1,18 +1,15 @@
 import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import { LANGUAGE } from "@appserver/common/constants";
-
-//import LanguageDetector from "i18next-browser-languagedetector";
-// not like to use this?
-// have a look at the Quick start guide
-// for passing in lng and translations on init
+import config from "../../../../../package.json";
+import { loadLanguagePath } from "@appserver/common/utils";
 
 const newInstance = i18n.createInstance();
 
 newInstance.use(Backend).init({
   lng: localStorage.getItem(LANGUAGE) || "en",
   fallbackLng: "en",
-  load: "languageOnly",
+  load: "all",
   //debug: true,
 
   interpolation: {
@@ -24,7 +21,7 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: `/locales/{{lng}}/Error404.json`,
+    loadPath: loadLanguagePath(config.homepage, "Error404"),
   },
 
   react: {

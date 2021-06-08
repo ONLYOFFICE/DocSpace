@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
 

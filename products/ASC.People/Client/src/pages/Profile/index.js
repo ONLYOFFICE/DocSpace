@@ -24,9 +24,11 @@ class Profile extends React.Component {
       t,
       setDocumentTitle,
     } = this.props;
-    const { userId } = match.params;
+    let { userId } = match.params;
 
-    setDocumentTitle(t("Profile"));
+    if (!userId) userId = "@self";
+
+    setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
@@ -117,5 +119,5 @@ export default withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-  }))(observer(withTranslation("Profile")(Profile)))
+  }))(observer(withTranslation(["Profile", "Common"])(Profile)))
 );
