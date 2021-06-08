@@ -90,13 +90,14 @@ class AccessRights extends PureComponent {
 
     if (isEmpty(admins, true)) {
       this.setIsLoading(true);
+      showLoader();
       try {
         await updateListAdmins(null, true);
-        this.setIsLoading(false);
       } catch (error) {
         toastr.error(error);
-        this.setIsLoading(false);
       }
+      this.setIsLoading(false);
+      hideLoader();
     }
   }
 

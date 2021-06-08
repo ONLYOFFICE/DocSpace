@@ -315,11 +315,10 @@ class PortalAdmins extends Component {
       this.setIsLoading(true);
       try {
         await updateListAdmins(currentFilter, true);
-        this.setIsLoading(false);
       } catch (error) {
         toastr.error(error);
-        this.setIsLoading(false);
       }
+      this.setIsLoading(false);
     } else {
       setFilterParams(currentFilter);
     }
