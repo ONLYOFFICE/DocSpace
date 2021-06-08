@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
-import { isMobile } from "react-device-detect";
 
 let loadTimeout = null;
 const WithLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
-    const { tReady, isLoaded, isLoading, firstLoad, isRefresh } = props;
+    const { tReady, isLoaded, isLoading, firstLoad } = props;
     const [inLoad, setInLoad] = useState(false);
 
     const cleanTimer = () => {
@@ -31,26 +30,21 @@ const WithLoader = (WrappedComponent) => (Loader) => {
       };
     }, [isLoading]);
 
-    return firstLoad ||
-      !isLoaded ||
-      (isMobile && inLoad) ||
-      //isRefresh ||
-      !tReady ? (
-      Loader
-    ) : (
+    return !firstLoad && isLoaded && !inLoad && tReady ? (
       <WrappedComponent {...props} />
+    ) : (
+      Loader
     );
   };
 
   return inject(({ auth, peopleStore }) => {
     const { isLoaded } = auth;
     const { loadingStore } = peopleStore;
-    const { isLoading, firstLoad, isRefresh } = loadingStore;
+    const { isLoading, firstLoad } = loadingStore;
     return {
       isLoaded,
       isLoading,
       firstLoad,
-      isRefresh,
     };
   })(observer(withLoader));
 };

@@ -23,6 +23,7 @@ class Profile extends React.Component {
       t,
       setDocumentTitle,
       setFirstLoad,
+      setIsLoading,
     } = this.props;
     let { userId } = match.params;
 
@@ -43,7 +44,8 @@ class Profile extends React.Component {
       toastr.success(t("ChangeEmailSuccess"));
     }
     if (!profile) {
-      fetchProfile(userId);
+      setIsLoading(true);
+      fetchProfile(userId).finally(() => setIsLoading(false));
     }
 
     if (!profile && this.documentElement) {
@@ -54,12 +56,13 @@ class Profile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile } = this.props;
+    const { match, fetchProfile, profile, setIsLoading } = this.props;
     const { userId } = match.params;
     const prevUserId = prevProps.match.params.userId;
 
     if (userId !== undefined && userId !== prevUserId) {
-      fetchProfile(userId);
+      setIsLoading(true);
+      fetchProfile(userId).finally(() => setIsLoading(false));
     }
 
     if (profile && this.documentElement) {
@@ -122,7 +125,7 @@ export default withRouter(
       getTargetUser: fetchProfile,
       targetUser: profile,
     } = targetUserStore;
-    const { setFirstLoad } = loadingStore;
+    const { setFirstLoad, setIsLoading } = loadingStore;
     return {
       setDocumentTitle,
       isAdmin,
@@ -131,6 +134,7 @@ export default withRouter(
       fetchProfile,
       profile,
       setFirstLoad,
+      setIsLoading,
     };
   })(observer(withTranslation(["Profile", "Common"])(Profile)))
 );

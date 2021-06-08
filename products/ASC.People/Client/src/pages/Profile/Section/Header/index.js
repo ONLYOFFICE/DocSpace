@@ -77,10 +77,12 @@ class SectionHeaderContent extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
+    if (!this.props.profile && !prevProps.profile) return;
     if (
       !prevProps.profile ||
       this.props.profile.userName !== prevProps.profile.userName
     ) {
+      console.log(this.props, prevProps);
       this.setState(this.mapPropsToState(this.props));
     }
   }
