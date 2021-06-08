@@ -1,10 +1,4 @@
 {
-  "LoadingProcessing": "Загрузка...",
-  "LoadingDescription": "Пожалуйста, подождите...",
-  "Download": "Скачать",
-  "Restore": "Восстановить",
-  "AddButton": "Сохранить",
-  "CancelButton": "Отмена",
   "EditComment": "Редактировать комментарий",
   "Version": "Ver.{{version}}"
 }

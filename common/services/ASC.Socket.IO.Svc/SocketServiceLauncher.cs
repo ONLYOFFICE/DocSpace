@@ -34,28 +34,31 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Notify.Signalr;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
+using WebSocketSharp;
+
 namespace ASC.Socket.IO.Svc
 {
-    [Scope]
+    [Singletone]
     public class SocketServiceLauncher : IHostedService
     {
-        //private const int PingInterval = 10000;
+        private const int PingInterval = 10000;
 
         private Process Proc { get; set; }
         private ProcessStartInfo StartInfo { get; set; }
-        //private WebSocket WebSocket { get; set; }
-        // private CancellationTokenSource CancellationTokenSource { get; set; }
+        private WebSocket WebSocket { get; set; }
+        private CancellationTokenSource CancellationTokenSource { get; set; }
         private ILog Logger { get; set; }
         private string LogDir { get; set; }
         private IConfiguration Configuration { get; set; }
         private ConfigurationExtension ConfigurationExtension { get; }
         private CoreBaseSettings CoreBaseSettings { get; set; }
-        //private SignalrServiceClient SignalrServiceClient { get; set; }
+        private SignalrServiceClient SignalrServiceClient { get; set; }
         private IHostEnvironment HostEnvironment { get; set; }
 
         public SocketServiceLauncher(
@@ -63,15 +66,15 @@ namespace ASC.Socket.IO.Svc
             IConfiguration configuration,
             ConfigurationExtension configurationExtension,
             CoreBaseSettings coreBaseSettings,
-            //IOptionsSnapshot<SignalrServiceClient> signalrServiceClient,
+            IOptionsSnapshot<SignalrServiceClient> signalrServiceClient,
             IHostEnvironment hostEnvironment)
         {
             Logger = options.CurrentValue;
-            //CancellationTokenSource = new CancellationTokenSource();
+            CancellationTokenSource = new CancellationTokenSource();
             Configuration = configuration;
             ConfigurationExtension = configurationExtension;
             CoreBaseSettings = coreBaseSettings;
-            //SignalrServiceClient = signalrServiceClient.Value;
+            SignalrServiceClient = signalrServiceClient.Value;
             HostEnvironment = hostEnvironment;
         }
 
@@ -117,7 +120,7 @@ namespace ASC.Socket.IO.Svc
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            //StopPing();
+            StopPing();
             StopNode();
             return Task.CompletedTask;
         }
@@ -127,8 +130,8 @@ namespace ASC.Socket.IO.Svc
             StopNode();
             Proc = Process.Start(StartInfo);
 
-            //var task = new Task(StartPing, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
-            //task.Start(TaskScheduler.Default); TODO: not available in .net core
+            var task = new Task(StartPing, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
+            task.Start(TaskScheduler.Default);
         }
 
         private void StopNode()
@@ -153,94 +156,94 @@ namespace ASC.Socket.IO.Svc
             }
         }
 
-        //private void StartPing()
-        //{
-        //    Thread.Sleep(PingInterval);
+        private void StartPing()
+        {
+            Thread.Sleep(PingInterval);
 
-        //    var error = false;
-        //    WebSocket = new WebSocket(string.Format("ws://127.0.0.1:{0}/socket.io/?EIO=3&transport=websocket", StartInfo.EnvironmentVariables["port"]));
-        //    WebSocket.SetCookie(new WebSocketSharp.Net.Cookie("authorization", SignalrServiceClient.CreateAuthToken()));
-        //    WebSocket.EmitOnPing = true;
+            var error = false;
+            WebSocket = new WebSocket(string.Format("ws://127.0.0.1:{0}/socket.io/?EIO=3&transport=websocket", StartInfo.EnvironmentVariables["port"]));
+            WebSocket.SetCookie(new WebSocketSharp.Net.Cookie("authorization", SignalrServiceClient.CreateAuthToken()));
+            WebSocket.EmitOnPing = true;
 
-        //    WebSocket.Log.Level = WebSocketSharp.LogLevel.Trace;
+            WebSocket.Log.Level = WebSocketSharp.LogLevel.Trace;
 
-        //    WebSocket.Log.Output = (logData, filePath) =>
-        //    {
-        //        if (logData.Message.Contains("SocketException"))
-        //        {
-        //            error = true;
-        //        }
+            WebSocket.Log.Output = (logData, filePath) =>
+            {
+                if (logData.Message.Contains("SocketException"))
+                {
+                    error = true;
+                }
 
-        //        Logger.Debug(logData.Message);
-        //    };
+                Logger.Debug(logData.Message);
+            };
 
-        //    WebSocket.OnOpen += (sender, e) =>
-        //    {
-        //        Logger.Info("Open");
-        //        error = false;
+            WebSocket.OnOpen += (sender, e) =>
+            {
+                Logger.Info("Open");
+                error = false;
 
-        //        Thread.Sleep(PingInterval);
+                Thread.Sleep(PingInterval);
 
-        //        Task.Run(() =>
-        //        {
-        //            while (WebSocket.Ping())
-        //            {
-        //                Logger.Debug("Ping " + WebSocket.ReadyState);
-        //                Thread.Sleep(PingInterval);
-        //            }
-        //            Logger.Debug("Reconnect" + WebSocket.ReadyState);
+                Task.Run(() =>
+                {
+                    while (WebSocket.Ping())
+                    {
+                        Logger.Debug("Ping " + WebSocket.ReadyState);
+                        Thread.Sleep(PingInterval);
+                    }
+                    Logger.Debug("Reconnect" + WebSocket.ReadyState);
 
-        //        }, CancellationTokenSource.Token);
-        //    };
+                }, CancellationTokenSource.Token);
+            };
 
-        //    WebSocket.OnClose += (sender, e) =>
-        //    {
-        //        Logger.Info("Close");
-        //        if (CancellationTokenSource.IsCancellationRequested) return;
+            WebSocket.OnClose += (sender, e) =>
+            {
+                Logger.Info("Close");
+                if (CancellationTokenSource.IsCancellationRequested) return;
 
-        //        if (error)
-        //        {
-        //            Process.GetCurrentProcess().Kill();
-        //        }
-        //        else
-        //        {
-        //            WebSocket.Connect();
-        //        }
+                if (error)
+                {
+                    Process.GetCurrentProcess().Kill();
+                }
+                else
+                {
+                    WebSocket.Connect();
+                }
 
-        //    };
+            };
 
-        //    WebSocket.OnMessage += (sender, e) =>
-        //    {
-        //        if (e.Data.Contains("error"))
-        //        {
-        //            Logger.Error("Auth error");
-        //            CancellationTokenSource.Cancel();
-        //        }
-        //    };
+            WebSocket.OnMessage += (sender, e) =>
+            {
+                if (e.Data.Contains("error"))
+                {
+                    Logger.Error("Auth error");
+                    CancellationTokenSource.Cancel();
+                }
+            };
 
-        //    WebSocket.OnError += (sender, e) =>
-        //    {
-        //        Logger.Error("Error", e.Exception);
-        //    };
+            WebSocket.OnError += (sender, e) =>
+            {
+                Logger.Error("Error", e.Exception);
+            };
 
-        //    WebSocket.Connect();
-        //}
+            WebSocket.Connect();
+        }
 
-        //private void StopPing()
-        //{
-        //    try
-        //    {
-        //        CancellationTokenSource.Cancel();
-        //        if (WebSocket.IsAlive)
-        //        {
-        //            WebSocket.Close();
-        //            WebSocket = null;
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        Logger.Error("Ping failed stop");
-        //    }
-        //}
+        private void StopPing()
+        {
+            try
+            {
+                CancellationTokenSource.Cancel();
+                if (WebSocket.IsAlive)
+                {
+                    WebSocket.Close();
+                    WebSocket = null;
+                }
+            }
+            catch (Exception)
+            {
+                Logger.Error("Ping failed stop");
+            }
+        }
     }
 }

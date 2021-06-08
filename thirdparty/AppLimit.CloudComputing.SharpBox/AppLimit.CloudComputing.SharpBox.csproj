@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProductVersion>9.0.30729</ProductVersion>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>net5.0;net4.8</TargetFrameworks>
     <FileUpgradeFlags />
     <UpgradeBackupLocation />
     <AssemblyTitle>AppLimit.CloudComputing.SharpBox</AssemblyTitle>
@@ -13,8 +13,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>1.1.0.451</Version>
     <PackageLicenseExpression></PackageLicenseExpression>
-    <AssemblyVersion>1.1.0.450</AssemblyVersion>
-    <FileVersion>1.1.0.450</FileVersion>
+    <AssemblyVersion>1.1.0.451</AssemblyVersion>
+    <FileVersion>1.1.0.451</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -23,10 +23,18 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory">
+      <Version>5.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net4.8'">
+    <Reference Include="System.Web" />
+    <Reference Include="System.Runtime.Serialization" Version="4.1.2.0" />
   </ItemGroup>
 </Project>

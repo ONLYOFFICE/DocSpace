@@ -231,6 +231,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     {
                         FileDao.MoveFile(file.ID, _trashId);
                         filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
+
+                        if (file.ThumbnailStatus == Thumbnail.Waiting)
+                        {
+                            file.ThumbnailStatus = Thumbnail.NotRequired;
+                            FileDao.SaveThumbnail(file, null);
+                        }
                     }
                     else
                     {

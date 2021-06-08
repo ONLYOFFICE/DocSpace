@@ -42,13 +42,11 @@ namespace ASC.Core.Billing
 
         void ClearCache(int tenantId);
 
-        IEnumerable<PaymentInfo> GetPayments(int tenantId, DateTime from, DateTime to);
+        IEnumerable<PaymentInfo> GetPayments(int tenantId);
 
-        Uri GetShoppingUri(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null);
+        Uri GetShoppingUri(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null);
 
-        IDictionary<string, IEnumerable<Tuple<string, decimal>>> GetProductPriceInfo(params string[] productIds);
-
-        Invoice GetInvoice(string paymentId);
+        IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds);
 
         string GetButton(int tariffId, string partnerId);
 

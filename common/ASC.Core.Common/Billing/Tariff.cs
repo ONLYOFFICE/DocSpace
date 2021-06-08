@@ -49,6 +49,7 @@ namespace ASC.Core.Billing
 
         public bool Prolongable { get; set; }
 
+        public int Quantity { get; set; }
 
         public static Tariff CreateDefault()
         {
@@ -59,6 +60,7 @@ namespace ASC.Core.Billing
                 DueDate = DateTime.MaxValue,
                 DelayDueDate = DateTime.MaxValue,
                 LicenseDate = DateTime.MaxValue,
+                Quantity = 1
             };
         }
 
@@ -71,6 +73,14 @@ namespace ASC.Core.Billing
         public override bool Equals(object obj)
         {
             return obj is Tariff t && t.QuotaId == QuotaId;
+        }
+
+        public bool EqualsByParams(Tariff t)
+        {
+            return t != null
+                && t.QuotaId == QuotaId
+                && t.DueDate == DueDate
+                && t.Quantity == Quantity;
         }
     }
 }

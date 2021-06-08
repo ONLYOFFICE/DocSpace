@@ -90,7 +90,9 @@ class GroupAction extends React.Component {
   }
 }
 
-const GroupActionContainer = withTranslation("GroupAction")(GroupAction);
+const GroupActionContainer = withTranslation(["GroupAction", "Common"])(
+  GroupAction
+);
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
     setDocumentTitle: auth.setDocumentTitle,

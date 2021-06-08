@@ -112,7 +112,7 @@ class ChangeOwnerComponent extends React.Component {
           </StyledContent>
           <StyledFooter>
             <Button
-              label={t("AddButton")}
+              label={t("Common:SaveButton")}
               size="medium"
               scale
               primary
@@ -136,7 +136,7 @@ class ChangeOwnerComponent extends React.Component {
   }
 }
 
-const ChangeOwnerPanel = withTranslation("ChangeOwnerPanel")(
+const ChangeOwnerPanel = withTranslation(["ChangeOwnerPanel", "Common"])(
   ChangeOwnerComponent
 );
 

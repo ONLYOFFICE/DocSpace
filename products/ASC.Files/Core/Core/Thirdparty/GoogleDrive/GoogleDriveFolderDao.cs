@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -64,8 +65,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             CrossDao crossDao,
             GoogleDriveDaoSelector googleDriveDaoSelector,
             IFileDao<int> fileDao,
-            IFolderDao<int> folderDao
-            ) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFolderDao<int> folderDao,
+            TempPath tempPath
+            ) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             GoogleDriveDaoSelector = googleDriveDaoSelector;
@@ -402,7 +404,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public bool UseRecursiveOperation(string folderId, string toRootFolderId)
         {
-            return true;
+            return false;
         }
 
         public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)

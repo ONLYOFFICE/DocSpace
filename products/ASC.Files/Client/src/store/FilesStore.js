@@ -91,7 +91,7 @@ class FilesStore {
     this.startDrag = startDrag;
   };
 
-  get tooltipValue() {
+  get tooltipOptions() {
     if (!this.dragging) return null;
 
     const selectionLength = this.selection.length;
@@ -110,13 +110,10 @@ class FilesStore {
       operationName = "move";
     }
 
-    return operationName === "copy"
-      ? singleElement
-        ? { label: "TooltipElementCopyMessage", filesCount }
-        : { label: "TooltipElementsCopyMessage", filesCount }
-      : singleElement
-      ? { label: "TooltipElementMoveMessage", filesCount }
-      : { label: "TooltipElementsMoveMessage", filesCount };
+    return {
+      filesCount,
+      operationName,
+    };
   }
 
   initFiles = () => {

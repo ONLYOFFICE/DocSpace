@@ -34,12 +34,10 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
-    ${
-      isMobile &&
-      css`
-        position: sticky;
-      `
-    }
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
     ${(props) =>
       !props.isTabletView
         ? props.width &&
@@ -55,12 +53,10 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
-      ${
-        !isMobile &&
-        css`
-          height: 56px;
-        `
-      }
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
           !isMobile &&
@@ -218,16 +214,20 @@ const SectionHeaderContent = (props) => {
   const menuItems = useMemo(
     () => [
       {
-        label: t("LblSelect"),
+        label: t("Common:Select"),
         isDropdown: true,
         isSeparator: true,
         isSelect: true,
         fontWeight: "bold",
         children: [
-          <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
+          <DropDownItem
+            key="active"
+            label={t("Common:Active")}
+            data-index={0}
+          />,
           <DropDownItem
             key="disabled"
-            label={t("LblTerminated")}
+            label={t("Translations:DisabledEmployeeStatus")}
             data-index={1}
           />,
           <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
@@ -269,7 +269,7 @@ const SectionHeaderContent = (props) => {
         onClick: onSendEmail,
       },
       {
-        label: t("DeleteButton"),
+        label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
         onClick: toggleDeleteDialog,
       },
@@ -318,12 +318,12 @@ const SectionHeaderContent = (props) => {
     return [
       {
         key: "edit-group",
-        label: t("EditButton"),
+        label: t("Common:EditButton"),
         onClick: onEditGroup,
       },
       {
         key: "delete-group",
-        label: t("DeleteButton"),
+        label: t("Common:Delete"),
         onClick: onDeleteGroup,
       },
     ];
@@ -377,7 +377,7 @@ const SectionHeaderContent = (props) => {
       } /* ,
       {
         key: "send-invitation",
-        label: t("SendInviteAgain"),
+        label: t("Translations:SendInviteAgain"),
         onClick: onSentInviteAgain
       } */,
     ];
@@ -453,8 +453,8 @@ const SectionHeaderContent = (props) => {
                 onChange={onCheck}
                 menuItems={menuItems}
                 visible={isHeaderVisible}
-                moreLabel={t("More")}
-                closeTitle={t("CloseButton")}
+                moreLabel={t("Common:More")}
+                closeTitle={t("Common:CloseButton")}
                 onClose={onClose}
                 selected={menuItems[0].label}
                 sectionWidth={context.sectionWidth}
@@ -477,7 +477,7 @@ const SectionHeaderContent = (props) => {
                     <ContextMenuButton
                       className="action-button"
                       directionX="right"
-                      title={t("Actions")}
+                      title={t("Common:Actions")}
                       iconName="/static/images/vertical-dots.react.svg"
                       size={17}
                       color="#A3A9AE"
@@ -500,7 +500,7 @@ const SectionHeaderContent = (props) => {
                       <ContextMenuButton
                         className="action-button"
                         directionX="right"
-                        title={t("Actions")}
+                        title={t("Common:Actions")}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
                         color="#A3A9AE"
@@ -555,5 +555,9 @@ export default withRouter(
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
     group: peopleStore.selectedGroupStore.group,
     isTabletView: auth.settingsStore.isTabletView,
-  }))(observer(withTranslation("Home")(SectionHeaderContent)))
+  }))(
+    observer(
+      withTranslation(["Home", "Common", "Translations"])(SectionHeaderContent)
+    )
+  )
 );

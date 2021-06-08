@@ -1,0 +1,11 @@
+{
+  "ChangeEmailSuccess": "L'indirizzo e-mail è stato modificato con successo",
+  "ChangesApplied": "Le modifiche sono state applicate",
+  "ContactInformation": "Informazioni di contatto",
+  "EditPhoto": "Modifica Foto",
+  "EditSubscriptionsBtn": "Modifica sottoscrizione",
+  "InviteAgainLbl": "Invita di nuovo",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Le istruzioni per l'attivazione sono state inviate all'indirizzo email <strong>{{email}}</strong>",
+  "PhoneLbl": "Telefono",
+  "Subscriptions": "Sottoscrizione"
+}

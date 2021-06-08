@@ -128,7 +128,7 @@ const HeaderComponent = ({
   backdropClick,
   ...props
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Common");
 
   const isNavAvailable = mainModules.length > 0;
 
@@ -153,36 +153,6 @@ const HeaderComponent = ({
     backdropClick();
     e.preventDefault();
   };
-
-  //TODO: getCustomModules
-  // const getCustomModules = () => {
-  //   if (!isAdmin) {
-  //     return [];
-  //   } // Temporarily hiding the settings module
-
-  //   return (
-  //     <>
-  //       <NavItem
-  //         separator={true}
-  //         key={"nav-modules-separator"}
-  //         data-id={"nav-modules-separator"}
-  //       />
-  //       <NavItem
-  //         separator={false}
-  //         key={"settings"}
-  //         data-id={"settings"}
-  //         data-link="/settings"
-  //         opened={isNavOpened}
-  //         active={"settings" == currentProductId}
-  //         iconName={"SettingsIcon"}
-  //         onClick={onItemClick}
-  //         url="/settings"
-  //       >
-  //         {t("Settings")}
-  //       </NavItem>
-  //     </>
-  //   );
-  // };
 
   return (
     <>
@@ -248,11 +218,10 @@ const HeaderComponent = ({
                 url={link}
                 dashed={dashed}
               >
-                {id === "settings" ? i18n.t(title) : title}
+                {id === "settings" ? i18n.t("Common:Settings") : title}
               </NavItem>
             )
           )}
-          {/*getCustomModules()*/}
           <Box className="version-box">
             <Link
               as="a"
@@ -260,7 +229,7 @@ const HeaderComponent = ({
               target="_blank"
               {...versionBadgeProps}
             >
-              {t("Version")} {version}
+              {t("Common:Version")} {version}
             </Link>
             <Text as="span" {...versionBadgeProps}>
               {" "}
@@ -271,7 +240,7 @@ const HeaderComponent = ({
                 to={combineUrl(proxyURL, "/about")}
                 className="nav-menu-header_link"
               >
-                {t("AboutShort")}
+                {t("Common:About")}
               </LinkWithoutRedirect>
             </StyledLink>
           </Box>
