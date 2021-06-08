@@ -707,18 +707,18 @@ download_files () {
 	fi
 	
 	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/AppServer/develop/build/install/docker"
-	wget -O $BASE_DIR/.env "${DOWNLOAD_URL_PREFIX}/.env"
-	wget -O $BASE_DIR/appserver.yml "${DOWNLOAD_URL_PREFIX}/appserver.yml"
-	wget -O $BASE_DIR/db.yml "${DOWNLOAD_URL_PREFIX}/db.yml"
-	wget -O $BASE_DIR/ds.yml "${DOWNLOAD_URL_PREFIX}/ds.yml"
-	wget -O $BASE_DIR/config/createdb.sql "${DOWNLOAD_URL_PREFIX}/config/createdb.sql"
-	wget -O $BASE_DIR/config/onlyoffice.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.sql"
-	wget -O $BASE_DIR/config/onlyoffice.data.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.data.sql"
-	wget -O $BASE_DIR/config/mysql/conf.d/mysql.cnf "${DOWNLOAD_URL_PREFIX}/config/mysql/conf.d/mysql.cnf"
-	wget -O $BASE_DIR/config/onlyoffice.resources.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.resources.sql"
-	wget -O $BASE_DIR/config/onlyoffice.upgradev110.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev110.sql"
-	wget -O $BASE_DIR/config/onlyoffice.upgradev111.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev111.sql"
-	wget -O $BASE_DIR/config/onlyoffice.upgradev115.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev115.sql"
+	wget -q -O $BASE_DIR/.env "${DOWNLOAD_URL_PREFIX}/.env"
+	wget -q -O $BASE_DIR/appserver.yml "${DOWNLOAD_URL_PREFIX}/appserver.yml"
+	wget -q -O $BASE_DIR/db.yml "${DOWNLOAD_URL_PREFIX}/db.yml"
+	wget -q -O $BASE_DIR/ds.yml "${DOWNLOAD_URL_PREFIX}/ds.yml"
+	wget -q -O $BASE_DIR/config/createdb.sql "${DOWNLOAD_URL_PREFIX}/config/createdb.sql"
+	wget -q -O $BASE_DIR/config/onlyoffice.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.sql"
+	wget -q -O $BASE_DIR/config/onlyoffice.data.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.data.sql"
+	wget -q -O $BASE_DIR/config/mysql/conf.d/mysql.cnf "${DOWNLOAD_URL_PREFIX}/config/mysql/conf.d/mysql.cnf"
+	wget -q -O $BASE_DIR/config/onlyoffice.resources.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.resources.sql"
+	wget -q -O $BASE_DIR/config/onlyoffice.upgradev110.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev110.sql"
+	wget -q -O $BASE_DIR/config/onlyoffice.upgradev111.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev111.sql"
+	wget -q -O $BASE_DIR/config/onlyoffice.upgradev115.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev115.sql"
 
 	if [[ -n ${ENV} ]]; then
 		sed -i "s/STATUS=.*/STATUS=\"${ENV}\"/g" $BASE_DIR/.env
