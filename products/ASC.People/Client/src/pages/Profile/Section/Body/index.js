@@ -162,16 +162,20 @@ class SectionBodyContent extends React.PureComponent {
     const type = await getTfaType();
     this.setState({ tfa: type });
 
-    const codes = await getBackupCodes();
-    this.setState({ backupCodes: codes });
-
+    if (type && type !== "none") {
+      const codes = await getBackupCodes();
+      this.setState({ backupCodes: codes });
+    }
     window.loginCallback = this.loginCallback;
   }
 
   async componentDidUpdate(prevState) {
     const { getBackupCodes } = this.props;
+    const { tfa } = this.state;
 
     if (
+      tfa &&
+      tfa !== "none" &&
       this.state.backupCodesDialogVisible !== prevState.backupCodesDialogVisible
     ) {
       await getBackupCodes().then((codes) =>
