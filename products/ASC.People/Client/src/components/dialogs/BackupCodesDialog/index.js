@@ -54,14 +54,7 @@ class BackupCodesDialogComponent extends React.Component {
             </Text>
 
             <Text className="text-dialog" isBold={true}>
-              <Trans
-                t={t}
-                i18nKey="CodesCounter"
-                ns="BackupCodesDialog"
-                count={backupCodesCount}
-              >
-                {{ count: backupCodesCount }} codes:
-              </Trans>
+              {backupCodesCount} {t("CodesCounter")}
             </Text>
 
             <Text className="text-dialog" isBold={true}>
