@@ -428,7 +428,7 @@ class SectionBodyContent extends React.PureComponent {
           <ToggleWrapper>
             <ToggleContent label={t("TfaLoginSettings")} isOpen={true}>
               <Trans t={t} i18nKey="TwoFactorDescription" ns="Profile">
-                <Text>
+                <Text as="span">
                   Two-factor authentication via code generating application was
                   enabled for all users by cloud service administrator.
                 </Text>
