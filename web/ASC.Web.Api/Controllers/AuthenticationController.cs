@@ -4,12 +4,14 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
 
+using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Security;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.FederatedLogin;
@@ -22,9 +24,13 @@ using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
+using ASC.Web.Core.Sms;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.Core.SMS;
+using ASC.Web.Studio.Core.TFA;
+using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,8 +62,17 @@ namespace ASC.Web.Api.Controllers
         private PersonalSettingsHelper PersonalSettingsHelper { get; }
         private StudioNotifyService StudioNotifyService { get; }
         private UserHelpTourHelper UserHelpTourHelper { get; }
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private MessageTarget MessageTarget { get; }
+        private StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private SmsManager SmsManager { get; }
+        private TfaManager TfaManager { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
+        private SmsKeyStorage SmsKeyStorage { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
         private UserManagerWrapper UserManagerWrapper { get; }
 
         public AuthenticationController(
@@ -79,7 +94,16 @@ namespace ASC.Web.Api.Controllers
             UserManagerWrapper userManagerWrapper,
             UserHelpTourHelper userHelpTourHelper,
             Signature signature,
-            InstanceCrypto instanceCrypto)
+            InstanceCrypto instanceCrypto,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            MessageTarget messageTarget,
+            StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+            SettingsManager settingsManager,
+            SmsManager smsManager,
+            TfaManager tfaManager,
+            TimeZoneConverter timeZoneConverter,
+            SmsKeyStorage smsKeyStorage,
+            CommonLinkUtility commonLinkUtility)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -99,6 +123,15 @@ namespace ASC.Web.Api.Controllers
             UserHelpTourHelper = userHelpTourHelper;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            MessageTarget = messageTarget;
+            StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+            SettingsManager = settingsManager;
+            SmsManager = smsManager;
+            TfaManager = tfaManager;
+            TimeZoneConverter = timeZoneConverter;
+            SmsKeyStorage = smsKeyStorage;
+            CommonLinkUtility = commonLinkUtility;
             UserManagerWrapper = userManagerWrapper;
         }
 
@@ -107,6 +140,19 @@ namespace ASC.Web.Api.Controllers
         public bool GetIsAuthentificated()
         {
             return SecurityContext.IsAuthenticated;
+        }
+
+        [Create("{code}", false, order: int.MaxValue)]
+        public AuthenticationTokenData AuthenticateMeFromBodyWithCode([FromBody] AuthModel auth)
+        {
+            return AuthenticateMeWithCode(auth);
+        }
+
+        [Create("{code}", false, order: int.MaxValue)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public AuthenticationTokenData AuthenticateMeFromFormWithCode([FromForm] AuthModel auth)
+        {
+            return AuthenticateMeWithCode(auth);
         }
 
         [Create(false)]
@@ -144,31 +190,142 @@ namespace ASC.Web.Api.Controllers
 
         private AuthenticationTokenData AuthenticateMe(AuthModel auth)
         {
-            var tenant = TenantManager.GetCurrentTenant();
-            var user = GetUser(tenant.TenantId, auth);
+            var tenant = TenantManager.GetCurrentTenant().TenantId;
+
+            bool viaEmail;
+            var user = GetUser(tenant, auth, out viaEmail);
+
+            if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)
+            {
+                if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
+                    return new AuthenticationTokenData
+                    {
+                        Sms = true,
+                        ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
+                    };
+
+                SmsManager.PutAuthCode(user, false);
+
+                return new AuthenticationTokenData
+                {
+                    Sms = true,
+                    PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
+                    Expires = new ApiDateTime(TenantManager, TimeZoneConverter, DateTime.UtcNow.Add(SmsKeyStorage.StoreInterval)),
+                    ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneAuth)
+                };
+            }
+
+            if (TfaAppAuthSettings.IsVisibleSettings && SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            {
+                if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
+                    return new AuthenticationTokenData
+                    {
+                        Tfa = true,
+                        TfaKey = TfaManager.GenerateSetupCode(user).ManualEntryKey,
+                        ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
+                    };
+
+                return new AuthenticationTokenData
+                {
+                    Tfa = true,
+                    ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaAuth)
+                };
+            }
 
             try
             {
                 var token = SecurityContext.AuthenticateMe(user.ID);
                 CookiesManager.SetCookies(CookiesType.AuthKey, token);
-                var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant.TenantId);
+
+                MessageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
+
+                var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
 
                 return new AuthenticationTokenData
                 {
                     Token = token,
-                    Expires = expires
+                    Expires = new ApiDateTime(TenantManager, TimeZoneConverter, expires)
                 };
             }
             catch
             {
-                throw new Exception("User authentication failed");
+                MessageService.Send(user.DisplayUserName(false, DisplayUserSettingsHelper), viaEmail ? MessageAction.LoginFailViaApi : MessageAction.LoginFailViaApiSocialAccount);
+                throw new AuthenticationException("User authentication failed");
+            }
+            finally
+            {
+                SecurityContext.Logout();
             }
         }
 
-        private UserInfo GetUser(int tenantId, AuthModel memberModel)
+        private AuthenticationTokenData AuthenticateMeWithCode(AuthModel auth)
         {
+            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var user = GetUser(tenant, auth, out _);
+
+            var sms = false;
+            try
+            {
+                if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)
+                {
+                    sms = true;
+                    SmsManager.ValidateSmsCode(user, auth.Code);
+                }
+                else if (TfaAppAuthSettings.IsVisibleSettings && SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+                {
+                    if (TfaManager.ValidateAuthCode(user, auth.Code))
+                    {
+                        MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(user.ID));
+                    }
+                }
+                else
+                {
+                    throw new System.Security.SecurityException("Auth code is not available");
+                }
+
+                var token = SecurityContext.AuthenticateMe(user.ID);
+
+                MessageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
+;
+                var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
+
+                var result = new AuthenticationTokenData
+                {
+                    Token = token,
+                    Expires = new ApiDateTime(TenantManager, TimeZoneConverter, expires)
+                };
+
+                if (sms)
+                {
+                    result.Sms = true;
+                    result.PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone);
+                }
+                else
+                {
+                    result.Tfa = true;
+                }
+
+                return result;
+            }
+            catch
+            {
+                MessageService.Send(user.DisplayUserName(false, DisplayUserSettingsHelper), sms
+                                                                              ? MessageAction.LoginFailViaApiSms
+                                                                              : MessageAction.LoginFailViaApiTfa,
+                                    MessageTarget.Create(user.ID));
+                throw new AuthenticationException("User authentication failed");
+            }
+            finally
+            {
+                SecurityContext.Logout();
+            }
+        }
+
+        private UserInfo GetUser(int tenantId, AuthModel memberModel, out bool viaEmail)
+        {
+            viaEmail = true;
             var action = MessageAction.LoginFailViaApi;
-            UserInfo user = null;
+            UserInfo user;
             try
             {
                 if ((string.IsNullOrEmpty(memberModel.Provider) && string.IsNullOrEmpty(memberModel.SerializedProfile)) || memberModel.Provider == "email")
@@ -215,6 +372,7 @@ namespace ASC.Web.Api.Controllers
                 }
                 else
                 {
+                    viaEmail = false;
                     action = MessageAction.LoginFailViaApiSocialAccount;
                     LoginProfile thirdPartyProfile;
                     if (!string.IsNullOrEmpty(memberModel.SerializedProfile))
@@ -414,6 +572,8 @@ namespace ASC.Web.Api.Controllers
         public bool Tfa { get; set; }
 
         public string TfaKey { get; set; }
+
+        public string ConfirmUrl { get; set; }
 
         public static AuthenticationTokenData GetSample()
         {

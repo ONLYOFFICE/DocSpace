@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -36,6 +37,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Sms
 {
+    [Singletone]
     public class SmsKeyStorageCache
     {
         private ICacheNotify<SmsKeyCacheKey> KeyCacheNotify { get; }
@@ -56,6 +58,7 @@ namespace ASC.Web.Core.Sms
         }
     }
 
+    [Scope]
     public class SmsKeyStorage
     {
         public readonly int KeyLength;

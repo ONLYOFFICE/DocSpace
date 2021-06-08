@@ -27,6 +27,11 @@ import config from "../../../../../package.json";
 import { AppServerConfig, providersData } from "@appserver/common/constants";
 import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
+import { Trans, useTranslation } from "react-i18next";
+import {
+  ResetApplicationDialog,
+  BackupCodesDialog,
+} from "../../../../components/dialogs";
 
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
@@ -71,11 +76,26 @@ const ContactWrapper = styled.div`
   }
 `;
 
+const LinkActionWrapper = styled.div`
+  margin-top: 17px;
+
+  .link-action-reset {
+    margin-right: 18px;
+  }
+
+  .link-action-backup {
+    margin-right: 5px;
+  }
+`;
 const ProviderButtonsWrapper = styled.div`
   align-items: center;
   display: grid;
   grid-template-columns: auto 1fr;
   grid-gap: 16px 22px;
+
+  .link-action {
+    margin-right: 5px;
+  }
 `;
 
 const createContacts = (contacts) => {
@@ -107,6 +127,14 @@ const stringFormat = (string, data) =>
   string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
 
 class SectionBodyContent extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      resetAppDialogVisible: false,
+      backupCodesDialogVisible: false,
+      tfa: null,
+    };
+  }
   async componentDidMount() {
     const {
       //cultures,
@@ -115,7 +143,11 @@ class SectionBodyContent extends React.PureComponent {
       //viewer,
       isSelf,
       setProviders,
+      getTfaType,
+      getBackupCodes,
+      setBackupCodes,
     } = this.props;
+
     //const isSelf = isMe(viewer, profile.userName);
     //if (isSelf && !cultures.length) {
     //getPortalCultures();
@@ -131,6 +163,13 @@ class SectionBodyContent extends React.PureComponent {
       console.error(e);
     }
 
+    const type = await getTfaType();
+    this.setState({ tfa: type });
+
+    if (type && type !== "none") {
+      const codes = await getBackupCodes();
+      setBackupCodes(codes);
+    }
     window.loginCallback = this.loginCallback;
   }
 
@@ -152,6 +191,15 @@ class SectionBodyContent extends React.PureComponent {
     history.push(editUrl);
   };
 
+  toggleResetAppDialogVisible = () => {
+    this.setState({ resetAppDialogVisible: !this.state.resetAppDialogVisible });
+  };
+
+  toggleBackupCodesDialogVisible = () => {
+    this.setState({
+      backupCodesDialogVisible: !this.state.backupCodesDialogVisible,
+    });
+  };
   loginCallback = (profile) => {
     const { setProviders, t } = this.props;
     linkOAuth(profile.Serialized).then((resp) => {
@@ -274,7 +322,18 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { profile, isAdmin, t, isSelf } = this.props;
+    const { resetAppDialogVisible, backupCodesDialogVisible, tfa } = this.state;
+    const {
+      profile,
+      cultures,
+      culture,
+      isAdmin,
+      viewer,
+      t,
+      isSelf,
+      providers,
+      backupCodes,
+    } = this.props;
     if (!profile) return null;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
@@ -287,6 +346,16 @@ class SectionBodyContent extends React.PureComponent {
       null;
     const infoContacts = contacts && createContacts(contacts.contact);
     //const isSelf = isMe(viewer, profile.userName);
+
+    let backupCodesCount = 0;
+
+    if (backupCodes && backupCodes.length > 0) {
+      backupCodes.map((item) => {
+        if (!item.isUsed) {
+          backupCodesCount++;
+        }
+      });
+    }
 
     return (
       <ProfileWrapper>
@@ -341,6 +410,38 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
+        {isSelf && tfa && tfa !== "none" && (
+          <ToggleWrapper>
+            <ToggleContent label={t("TfaLoginSettings")} isOpen={true}>
+              <Text as="span">{t("TwoFactorDescription")}</Text>
+              <LinkActionWrapper>
+                <Link
+                  type="action"
+                  isHovered={true}
+                  className="link-action-reset"
+                  isBold={true}
+                  onClick={this.toggleResetAppDialogVisible}
+                >
+                  {t("Common:ResetApplication")}
+                </Link>
+                <Link
+                  type="action"
+                  isHovered={true}
+                  className="link-action-backup"
+                  isBold={true}
+                  onClick={this.toggleBackupCodesDialogVisible}
+                >
+                  {t("ShowBackupCodes")}
+                </Link>
+
+                <Link color="#A3A9AE" noHover={true}>
+                  ({backupCodesCount} {t("CountCodesRemaining")})
+                </Link>
+              </LinkActionWrapper>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+
         {profile.notes && (
           <ToggleWrapper>
             <ToggleContent label={t("Translations:Comments")} isOpen={true}>
@@ -365,6 +466,23 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
+        {resetAppDialogVisible && (
+          <ResetApplicationDialog
+            visible={resetAppDialogVisible}
+            onClose={this.toggleResetAppDialogVisible}
+            resetTfaApp={this.props.resetTfaApp}
+          />
+        )}
+        {backupCodesDialogVisible && (
+          <BackupCodesDialog
+            visible={backupCodesDialogVisible}
+            onClose={this.toggleBackupCodesDialogVisible}
+            getNewBackupCodes={this.props.getNewBackupCodes}
+            backupCodes={backupCodes}
+            backupCodesCount={backupCodesCount}
+            setBackupCodes={this.props.setBackupCodes}
+          />
+        )}
       </ProfileWrapper>
     );
   }
@@ -372,13 +490,21 @@ class SectionBodyContent extends React.PureComponent {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => {
-    const { isAdmin, userStore, settingsStore } = auth;
+    const { isAdmin, userStore, settingsStore, tfaStore } = auth;
     const { user: viewer } = userStore;
     const { isTabletView, getOAuthToken, getLoginLink } = settingsStore;
     const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
     const { targetUser: profile, isMe: isSelf } = targetUserStore;
     const { avatarMax, setAvatarMax } = avatarEditorStore;
     const { providers, setProviders } = usersStore;
+    const {
+      getBackupCodes,
+      getNewBackupCodes,
+      unlinkApp: resetTfaApp,
+      getTfaType,
+      backupCodes,
+      setBackupCodes,
+    } = tfaStore;
 
     return {
       isAdmin,
@@ -392,6 +518,12 @@ export default withRouter(
       setProviders,
       getOAuthToken,
       getLoginLink,
+      getBackupCodes,
+      getNewBackupCodes,
+      resetTfaApp,
+      getTfaType,
+      backupCodes,
+      setBackupCodes,
     };
   })(
     observer(

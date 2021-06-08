@@ -9,6 +9,8 @@ import SendInviteDialog from "./SendInviteDialog";
 import ChangeUserStatusDialog from "./ChangeUserStatusDialog";
 import ChangeUserTypeDialog from "./ChangeUserTypeDialog";
 import DataLossWarningDialog from "./DataLossWarningDialog";
+import ResetApplicationDialog from "./ResetApplicationDialog";
+import BackupCodesDialog from "./BackupCodesDialog";
 
 export {
   ChangeEmailDialog,
@@ -22,4 +24,6 @@ export {
   ChangeUserStatusDialog,
   ChangeUserTypeDialog,
   DataLossWarningDialog,
+  ResetApplicationDialog,
+  BackupCodesDialog,
 };
