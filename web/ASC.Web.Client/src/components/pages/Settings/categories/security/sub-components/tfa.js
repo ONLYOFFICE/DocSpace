@@ -29,7 +29,7 @@ const HeaderContainer = styled.div`
   margin: 0 0 16px 0;
 `;
 
-class PureTfaPage extends Component {
+class TfaPage extends Component {
   constructor(props) {
     super(props);
 
@@ -135,4 +135,4 @@ export default inject(({ auth }) => ({
   getTfaSettings: auth.tfaStore.getTfaSettings,
   setTfaSettings: auth.tfaStore.setTfaSettings,
   getTfaConfirmLink: auth.tfaStore.getTfaConfirmLink,
-}))(withTranslation(["Settings", "Common"])(withRouter(PureTfaPage)));
+}))(withTranslation(["Settings", "Common"])(withRouter(TfaPage)));

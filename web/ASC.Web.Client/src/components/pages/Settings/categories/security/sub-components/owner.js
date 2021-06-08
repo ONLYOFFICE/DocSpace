@@ -99,7 +99,7 @@ const getGroupLink = (department) => {
   );
 };
 
-class PureOwnerSettings extends Component {
+class OwnerSettings extends Component {
   constructor(props) {
     super(props);
 
@@ -243,11 +243,11 @@ class PureOwnerSettings extends Component {
   }
 }
 
-PureOwnerSettings.defaultProps = {
+OwnerSettings.defaultProps = {
   owner: {},
 };
 
-PureOwnerSettings.propTypes = {
+OwnerSettings.propTypes = {
   owner: PropTypes.object,
 };
 
@@ -261,4 +261,4 @@ export default inject(({ auth, setup }) => {
     me: auth.userStore.user,
     sendOwnerChange,
   };
-})(withTranslation("Settings")(withRouter(PureOwnerSettings)));
+})(withTranslation("Settings")(withRouter(OwnerSettings)));
