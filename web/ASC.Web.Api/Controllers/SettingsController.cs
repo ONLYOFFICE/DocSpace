@@ -53,7 +53,6 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Backup;
 using ASC.Data.Backup.Contracts;
-using ASC.Data.Backup.Service;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Encryption;
@@ -157,14 +156,14 @@ namespace ASC.Api.Settings
         private UrlShortener UrlShortener { get; }
         private EncryptionServiceClient EncryptionServiceClient { get; }
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
-        private BackupServiceNotifier BackupServiceNotifier { get; }
+        private BackupAjaxHandler BackupAjaxHandler { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
-        private EncryptionServiceNotifier EncryptionServiceNotifier { get; }
+        private EncryptionWorker EncryptionWorker { get; }
         private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
-        private BackupAjaxHandler BackupAjaxHandler { get; }
         private PaymentManager PaymentManager { get; }
+        public Constants Constants { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -221,12 +220,12 @@ namespace ASC.Api.Settings
             UrlShortener urlShortener,
             EncryptionServiceClient encryptionServiceClient,
             EncryptionSettingsHelper encryptionSettingsHelper,
-            BackupServiceNotifier backupServiceNotifier,
-            ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-            EncryptionServiceNotifier encryptionServiceNotifier,
-            PasswordHasher passwordHasher,
             BackupAjaxHandler backupAjaxHandler,
-            PaymentManager paymentManager)
+            ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
+            EncryptionWorker encryptionWorker,
+            PasswordHasher passwordHasher,
+            PaymentManager paymentManager,
+            Constants constants)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -279,15 +278,15 @@ namespace ASC.Api.Settings
             ServiceClient = serviceClient;
             EncryptionServiceClient = encryptionServiceClient;
             EncryptionSettingsHelper = encryptionSettingsHelper;
-            BackupServiceNotifier = backupServiceNotifier;
+            BackupAjaxHandler = backupAjaxHandler;
             CacheDeleteSchedule = cacheDeleteSchedule;
-            EncryptionServiceNotifier = encryptionServiceNotifier;
+            EncryptionWorker = encryptionWorker;
             PasswordHasher = passwordHasher;
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
-            BackupAjaxHandler = backupAjaxHandler;
             PaymentManager = paymentManager;
+            Constants = constants;
         }
 
         [Read("", Check = false)]
@@ -315,7 +314,7 @@ namespace ASC.Api.Settings
             {
                 if (!SettingsManager.Load<WizardSettings>().Completed)
                 {
-                    settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
+                    settings.WizardToken = CommonLinkUtility.GetToken(Tenant.TenantId, "", ConfirmType.Wizard, userId: Tenant.OwnerId);
                 }
 
                 settings.EnabledJoin =
@@ -497,7 +496,7 @@ namespace ASC.Api.Settings
                     case TenantTrustedDomainsType.Custom:
                     {
                         var address = new MailAddress(email);
-                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
@@ -642,7 +641,7 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager);
+            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager, Constants);
         }
 
         [AllowAnonymous]
@@ -2213,7 +2212,7 @@ namespace ASC.Api.Settings
 
             foreach (var tenant in tenants)
             {
-                var progress = BackupServiceNotifier.GetBackupProgress(tenant.TenantId);
+                var progress = BackupAjaxHandler.GetBackupProgress(tenant.TenantId);
                 if (progress != null && progress.IsCompleted == false)
                 {
                     throw new Exception();
@@ -2345,7 +2344,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
             }
 
-            return EncryptionServiceNotifier.GetEncryptionProgress(Tenant.TenantId)?.Progress;
+            return EncryptionWorker.GetEncryptionProgress();
         }
 
         [Update("storage")]
@@ -2738,7 +2737,10 @@ namespace ASC.Api.Settings
         private bool SaveAuthKeys(AuthServiceModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString()))
+
+            var saveAvailable = CoreBaseSettings.Standalone || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).ThirdParty;
+            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString())
+                || !saveAvailable)
                 throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
 
             var changed = false;

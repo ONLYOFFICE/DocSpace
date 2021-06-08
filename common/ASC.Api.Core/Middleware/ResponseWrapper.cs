@@ -1,4 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Security;
+
+using ASC.Common.Web;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -10,12 +14,33 @@ namespace ASC.Api.Core.Middleware
         public override void OnException(ExceptionContext context)
         {
             var status = (HttpStatusCode)context.HttpContext.Response.StatusCode;
+            string message = null;
+
             if (status == HttpStatusCode.OK)
             {
                 status = HttpStatusCode.InternalServerError;
             }
 
-            var result = new ObjectResult(new ErrorApiResponse(status, context.Exception))
+            switch (context.Exception)
+            {
+                case ItemNotFoundException:
+                    status = HttpStatusCode.NotFound;
+                    message = "The record could not be found";
+                    break;
+                case ArgumentException:
+                    status = HttpStatusCode.BadRequest;
+                    message = "Invalid arguments";
+                    break;
+                case SecurityException:
+                    status = HttpStatusCode.Forbidden;
+                    message = "Access denied";
+                    break;
+                case InvalidOperationException:
+                    status = HttpStatusCode.Forbidden;
+                    break;
+            }
+
+            var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message))
             {
                 StatusCode = (int)status
             };

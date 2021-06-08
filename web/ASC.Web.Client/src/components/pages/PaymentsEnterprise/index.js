@@ -23,12 +23,10 @@ const StyledBody = styled.div`
   overflow-wrap: anywhere;
   margin-top: 40px;
 
-  ${
-    isMobile &&
-    `
+  ${isMobile &&
+  `
       margin-top: 56px;
-    `
-  }
+    `}
 
   @media ${tablet} {
     max-width: ${size.smallTablet}px;
@@ -37,7 +35,6 @@ const StyledBody = styled.div`
     min-width: 343px;
     ${!isMobile && `margin-top: 0;`}
   }
-
 `;
 
 class Body extends React.Component {
@@ -45,7 +42,7 @@ class Body extends React.Component {
     super(props);
     const { t } = this.props;
 
-    setDocumentTitle(`${t("Payments")}`);
+    setDocumentTitle(`${t("PaymentsTitle")}`);
   }
 
   componentDidMount() {

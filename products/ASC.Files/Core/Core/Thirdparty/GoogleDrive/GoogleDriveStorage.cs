@@ -90,8 +90,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         private ConsumerFactory ConsumerFactory { get; }
         private FileUtility FileUtility { get; }
         public ILog Log { get; }
+        private TempStream TempStream { get; }
 
         public const long MaxChunkedUploadFileSize = 2L * 1024L * 1024L * 1024L;
+
+        public GoogleDriveStorage(TempStream tempStream)
+        {
+            TempStream = tempStream;
+        }
 
         public void Open(OAuth20Token token)
         {
@@ -224,7 +230,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 return new ResponseStream(response.GetResponseStream(), file.Size.Value);
             }
 
-            var tempBuffer = new FileStream(Path.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 8096, FileOptions.DeleteOnClose);
+            var tempBuffer = TempStream.Create();
             using (var str = response.GetResponseStream())
             {
                 if (str != null)

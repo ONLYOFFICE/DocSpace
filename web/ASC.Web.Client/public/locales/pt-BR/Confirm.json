@@ -1,0 +1,16 @@
+{
+  "ChangePasswordSuccess": "A senha foi alterada com sucesso",
+  "ConfirmOwnerPortalSuccessMessage": "Proprietário portal foi alterado com sucesso. Em 10 segundos você será redirecionado.",
+  "ConfirmOwnerPortalTitle": "Por favor, confirme que você deseja mudar o proprietário do portal para {{newOwner}}",
+  "DeleteProfileBtn": "Apagar minha conta",
+  "DeleteProfileConfirmation": "Atenção! Você está prestes a apagar sua conta.",
+  "DeleteProfileConfirmationInfo": "Ao clicar em \"Apagar minha conta\", você concorda com nossa política de privacidade.",
+  "DeleteProfileSuccessMessage": "Sua conta foi excluída com sucesso.",
+  "DeleteProfileSuccessMessageInfo": "Consulte nossa política de privacidade para saber mais sobre como excluir sua conta e os dados associados a ela.",
+  "EmailAndPasswordCopiedToClipboard": "Email e senha copiados para a área de transferência",
+  "FirstName": "Primeiro nome",
+  "InviteTitle": "Você está convidado a participar deste portal!",
+  "LoginRegistryButton": "Aderir",
+  "LoginWithAccount": "ou fazer login com:",
+  "PassworResetTitle": "Agora você pode criar uma nova senha."
+}

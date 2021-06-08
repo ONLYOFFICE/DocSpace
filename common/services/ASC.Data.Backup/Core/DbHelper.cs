@@ -99,7 +99,6 @@ namespace ASC.Data.Backup
                     "core_settings",
                     "webstudio_uservisit",
                     "webstudio_useractivity",
-                    "tenants_tariff",
                     "tenants_forbiden",
                 };
 

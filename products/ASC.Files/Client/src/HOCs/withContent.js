@@ -194,7 +194,7 @@ export default function withContent(WrappedContent) {
               if (isPrivacy) {
                 return setEncryptionAccess(file).then((encryptedFile) => {
                   if (!encryptedFile) return Promise.resolve();
-                  toastr.info(t("EncryptedFileSaving"));
+                  toastr.info(t("Translations:EncryptedFileSaving"));
                   return replaceFileStream(
                     file.id,
                     encryptedFile,
@@ -275,7 +275,7 @@ export default function withContent(WrappedContent) {
 
       const fileOwner =
         createdBy &&
-        ((viewer.id === createdBy.id && t("AuthorMe")) ||
+        ((viewer.id === createdBy.id && t("Common:MeLabel")) ||
           createdBy.displayName);
 
       const accessToEdit =
@@ -308,7 +308,7 @@ export default function withContent(WrappedContent) {
           newItems={newItems}
           showNew={showNew}
           isTrashFolder={isTrashFolder}
-          onFilesClick={this.onFilesClick}
+          onFilesClick={onFilesClick}
           {...this.props}
         />
       );

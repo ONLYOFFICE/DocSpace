@@ -205,24 +205,23 @@ namespace ASC.Web.Files.Services.DocumentService
         public EditorType Type = EditorType.Desktop;
         private string _breadCrumbs;
 
-        public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharing fileSharing)
+        public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharing fileSharing, SecurityContext securityContext, UserManager userManager)
         {
             BreadCrumbsManager = breadCrumbsManager;
             FileSharing = fileSharing;
+            SecurityContext = securityContext;
+            UserManager = userManager;
         }
 
-        //todo: obsolete since DS v5.5
-        public string Author
+        public bool? Favorite
         {
             set { }
-            get { return File.CreateByString; }
-        }
-
-        //todo: obsolete since DS v5.5
-        public string Created
-        {
-            set { }
-            get { return File.CreateOnString; }
+            get
+            {
+                if (!SecurityContext.IsAuthenticated || UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
+                if (File.Encrypted) return null;
+                return File.IsFavorite;
+            }
         }
 
         public string Folder
@@ -277,6 +276,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         private BreadCrumbsManager BreadCrumbsManager { get; }
         private FileSharing FileSharing { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
     }
 
     public class PermissionsConfig
@@ -330,17 +331,14 @@ namespace ASC.Web.Files.Services.DocumentService
             Embedded = embeddedConfig;
             _userInfo = userManager.GetUsers(authContext.CurrentAccount.ID);
 
-            User = _userInfo.ID.Equals(ASC.Core.Configuration.Constants.Guest.ID)
-                       ? new UserConfig
-                       {
-                           Id = Guid.NewGuid().ToString(),
-                           Name = FilesCommonResource.Guest,
-                       }
-                       : new UserConfig
-                       {
-                           Id = _userInfo.ID.ToString(),
-                           Name = _userInfo.DisplayUserName(false, displayUserSettingsHelper),
-                       };
+            if (!_userInfo.ID.Equals(ASC.Core.Configuration.Constants.Guest.ID))
+            {
+                User = new UserConfig
+                {
+                    Id = _userInfo.ID.ToString(),
+                    Name = _userInfo.DisplayUserName(false, displayUserSettingsHelper),
+                };
+            }
         }
 
         public bool ModeWrite = false;
@@ -606,18 +604,22 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 var plugins = new List<string>();
 
-                var easyBibHelper = ConsumerFactory.Get<EasyBibHelper>();
-                if (!string.IsNullOrEmpty(easyBibHelper.AppKey))
+                if (CoreBaseSettings.Standalone
+    || !TenantExtra.GetTenantQuota().Free)
                 {
-                    plugins.Add(BaseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/easybib/config.json"));
-                }
+                    var easyBibHelper = ConsumerFactory.Get<EasyBibHelper>();
+                    if (!string.IsNullOrEmpty(easyBibHelper.AppKey))
+                    {
+                        plugins.Add(BaseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/easybib/config.json"));
+                    }
 
-                var wordpressLoginProvider = ConsumerFactory.Get<WordpressLoginProvider>();
-                if (!string.IsNullOrEmpty(wordpressLoginProvider.ClientID) &&
-                    !string.IsNullOrEmpty(wordpressLoginProvider.ClientSecret) &&
-                    !string.IsNullOrEmpty(wordpressLoginProvider.RedirectUri))
-                {
-                    plugins.Add(BaseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/wordpress/config.json"));
+                    var wordpressLoginProvider = ConsumerFactory.Get<WordpressLoginProvider>();
+                    if (!string.IsNullOrEmpty(wordpressLoginProvider.ClientID) &&
+                        !string.IsNullOrEmpty(wordpressLoginProvider.ClientSecret) &&
+                        !string.IsNullOrEmpty(wordpressLoginProvider.RedirectUri))
+                    {
+                        plugins.Add(BaseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/wordpress/config.json"));
+                    }
                 }
 
                 return plugins.ToArray();
@@ -626,11 +628,19 @@ namespace ASC.Web.Files.Services.DocumentService
 
         private ConsumerFactory ConsumerFactory { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private TenantExtra TenantExtra { get; }
 
-        public PluginsConfig(ConsumerFactory consumerFactory, BaseCommonLinkUtility baseCommonLinkUtility)
+        public PluginsConfig(
+            ConsumerFactory consumerFactory,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            CoreBaseSettings coreBaseSettings,
+            TenantExtra tenantExtra)
         {
             ConsumerFactory = consumerFactory;
             BaseCommonLinkUtility = baseCommonLinkUtility;
+            CoreBaseSettings = coreBaseSettings;
+            TenantExtra = tenantExtra;
         }
     }
 
@@ -913,7 +923,7 @@ namespace ASC.Web.Files.Services.DocumentService
     {
         public string Image { get; set; }
 
-        //todo: obsolete since DS v5.6
+        //todo: obsolete since DS v6.0
         public string Name { get; set; }
 
         public string Title { get; set; }

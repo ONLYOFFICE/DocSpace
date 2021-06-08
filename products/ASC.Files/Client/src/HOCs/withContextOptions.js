@@ -94,7 +94,7 @@ export default function withContextOptions(WrappedComponent) {
           : `${window.location.origin + homepage}/filter?folder=${id}`
       );
 
-      toastr.success(t("LinkCopySuccess"));
+      toastr.success(t("Translations:LinkCopySuccess"));
     };
 
     onClickLinkEdit = () => {
@@ -109,7 +109,9 @@ export default function withContextOptions(WrappedComponent) {
       const isFile = !!fileExst && contentLength;
       isFile
         ? window.open(viewUrl, "_blank")
-        : downloadAction(t("ArchivingData")).catch((err) => toastr.error(err));
+        : downloadAction(t("Translations:ArchivingData")).catch((err) =>
+            toastr.error(err)
+          );
     };
 
     onClickDownloadAs = () => {
@@ -119,7 +121,7 @@ export default function withContextOptions(WrappedComponent) {
 
     onDuplicate = () => {
       const { duplicateAction, t, item } = this.props;
-      duplicateAction(item, t("CopyOperation")).catch((err) =>
+      duplicateAction(item, t("Translations:CopyOperation")).catch((err) =>
         toastr.error(err)
       );
     };
@@ -165,7 +167,7 @@ export default function withContextOptions(WrappedComponent) {
       }
 
       const translations = {
-        deleteOperation: t("DeleteOperation"),
+        deleteOperation: t("Translations:DeleteOperation"),
         successRemoveFile: t("FileRemoved"),
         successRemoveFolder: t("FolderRemoved"),
       };
@@ -177,6 +179,20 @@ export default function withContextOptions(WrappedComponent) {
       const { onSelectItem, setSharingPanelVisible, item } = this.props;
       onSelectItem(item);
       setSharingPanelVisible(true);
+    };
+
+    onClickMarkRead = () => {
+      const { markAsRead, item } = this.props;
+      item.fileExst
+        ? markAsRead([], [item.id], item)
+        : markAsRead([item.id], [], item);
+    };
+
+    onClickUnsubscribe = () => {
+      const { setDeleteDialogVisible, setUnsubscribe } = this.props;
+
+      setUnsubscribe(true);
+      setDeleteDialogVisible(true);
     };
 
     getFilesContextOptions = () => {
@@ -258,7 +274,7 @@ export default function withContextOptions(WrappedComponent) {
           case "owner-change":
             return {
               key: option,
-              label: t("ChangeOwner"),
+              label: t("Translations:OwnerChange"),
               icon: "images/catalog.user.react.svg",
               onClick: this.onOwnerChange,
               disabled: false,
@@ -274,7 +290,7 @@ export default function withContextOptions(WrappedComponent) {
           case "edit":
             return {
               key: option,
-              label: t("Edit"),
+              label: t("Common:EditButton"),
               icon: "/static/images/access.edit.react.svg",
               onClick: this.onClickLinkEdit,
               disabled: false,
@@ -283,14 +299,14 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("Preview"),
-              icon: "EyeIcon",
+              icon: "/static/images/eye.react.svg",
               onClick: this.onClickLinkEdit,
-              disabled: true,
+              disabled: false,
             };
           case "view":
             return {
               key: option,
-              label: t("View"),
+              label: t("Common:View"),
               icon: "/static/images/eye.react.svg",
               onClick: this.onMediaFileClick,
               disabled: false,
@@ -298,7 +314,7 @@ export default function withContextOptions(WrappedComponent) {
           case "download":
             return {
               key: option,
-              label: t("Download"),
+              label: t("Common:Download"),
               icon: "images/download.react.svg",
               onClick: this.onClickDownload,
               disabled: false,
@@ -306,7 +322,7 @@ export default function withContextOptions(WrappedComponent) {
           case "download-as":
             return {
               key: option,
-              label: t("DownloadAs"),
+              label: t("Translations:DownloadAs"),
               icon: "images/download-as.react.svg",
               onClick: this.onClickDownloadAs,
               disabled: false,
@@ -322,7 +338,7 @@ export default function withContextOptions(WrappedComponent) {
           case "restore":
             return {
               key: option,
-              label: t("Restore"),
+              label: t("Translations:Restore"),
               icon: "images/move.react.svg",
               onClick: this.onMoveAction,
               disabled: false,
@@ -330,7 +346,7 @@ export default function withContextOptions(WrappedComponent) {
           case "copy-to":
             return {
               key: option,
-              label: t("Copy"),
+              label: t("Translations:Copy"),
               icon: "/static/images/copy.react.svg",
               onClick: this.onCopyAction,
               disabled: false,
@@ -354,7 +370,7 @@ export default function withContextOptions(WrappedComponent) {
           case "change-thirdparty-info":
             return {
               key: option,
-              label: t("ThirdPartyInfo"),
+              label: t("Translations:ThirdPartyInfo"),
               icon: "/static/images/access.edit.react.svg",
               onClick: this.onChangeThirdPartyInfo,
               disabled: false,
@@ -362,7 +378,9 @@ export default function withContextOptions(WrappedComponent) {
           case "delete":
             return {
               key: option,
-              label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
+              label: isThirdPartyFolder
+                ? t("Translations:DeleteThirdParty")
+                : t("Common:Delete"),
               icon: "/static/images/catalog.trash.react.svg",
               onClick: this.onClickDelete,
               disabled: false,
@@ -376,6 +394,22 @@ export default function withContextOptions(WrappedComponent) {
               disabled: false,
               "data-action": "remove",
               action: "remove",
+            };
+          case "unsubscribe":
+            return {
+              key: option,
+              label: t("RemoveFromList"),
+              icon: "images/remove.svg",
+              onClick: this.onClickUnsubscribe,
+              disabled: false,
+            };
+          case "mark-read":
+            return {
+              key: option,
+              label: t("MarkRead"),
+              icon: "images/tick.rounded.svg",
+              onClick: this.onClickMarkRead,
+              disabled: false,
             };
           default:
             break;
@@ -432,6 +466,8 @@ export default function withContextOptions(WrappedComponent) {
         setThirdpartyInfo,
         onSelectItem,
         deleteItemAction,
+        markAsRead,
+        unsubscribeAction,
       } = filesActionsStore;
       const {
         setChangeOwnerPanelVisible,
@@ -441,15 +477,18 @@ export default function withContextOptions(WrappedComponent) {
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
         setSharingPanelVisible,
+        setDeleteDialogVisible,
+        setUnsubscribe,
       } = dialogsStore;
       const { isTabletView } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
       const { isRootFolder } = selectedFolderStore;
-      const { isRecycleBinFolder } = treeFoldersStore;
+      const { isRecycleBinFolder, isShare } = treeFoldersStore;
 
       const isThirdPartyFolder = item.providerKey && isRootFolder;
+      const isShareFolder = isShare(item.rootFolderType);
 
       return {
         openLocationAction,
@@ -480,6 +519,11 @@ export default function withContextOptions(WrappedComponent) {
         actionId: id,
         actionExtension: extension,
         isTrashFolder: isRecycleBinFolder,
+        isShareFolder,
+        markAsRead,
+        unsubscribeAction,
+        setDeleteDialogVisible,
+        setUnsubscribe,
       };
     }
   )(observer(WithContextOptions));

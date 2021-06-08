@@ -62,7 +62,7 @@ class ConvertDialogComponent extends React.Component {
             <Button
               className="convert_dialog_button-accept"
               key="ContinueButton"
-              label={t("ContinueButton")}
+              label={t("Common:ContinueButton")}
               size="medium"
               primary
               onClick={this.onConvert}
@@ -70,7 +70,7 @@ class ConvertDialogComponent extends React.Component {
             <Button
               className="convert_dialog_button"
               key="CloseButton"
-              label={t("CloseButton")}
+              label={t("Common:CloseButton")}
               size="medium"
               onClick={this.onClose}
             />
@@ -81,7 +81,11 @@ class ConvertDialogComponent extends React.Component {
   }
 }
 
-const ConvertDialog = withTranslation("ConvertDialog")(ConvertDialogComponent);
+const ConvertDialog = withTranslation([
+  "ConvertDialog",
+  "Common",
+  "setDialogVisible",
+])(ConvertDialogComponent);
 
 export default inject(({ uploadDataStore, treeFoldersStore }) => {
   const { setTreeFolders } = treeFoldersStore;

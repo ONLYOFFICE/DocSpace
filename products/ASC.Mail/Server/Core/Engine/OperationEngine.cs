@@ -79,6 +79,7 @@ namespace ASC.Mail.Core.Engine
         private FactoryIndexer<MailMail> FactoryIndexer { get; }
         private IServiceProvider ServiceProvider { get; }
         private IOptionsMonitor<ILog> Option { get; }
+        private TempStream TempStream { get; }
 
         public OperationEngine(
             DistributedTaskCacheNotify distributedTaskCacheNotify,
@@ -98,11 +99,12 @@ namespace ASC.Mail.Core.Engine
             StorageManager storageManager,
             StorageFactory storageFactory,
             FactoryIndexer<MailMail> factoryIndexer,
+            TempStream tempStream,
             IServiceProvider serviceProvider,
+            DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager,
             IOptionsMonitor<ILog> option)
         {
-            MailOperations = new DistributedTaskQueue(distributedTaskCacheNotify, 
-                "mailOperations", MailOperationsLimit);
+            MailOperations = distributedTaskQueueOptionsManager.Get("mailOperations");                
 
             DistributedTaskCacheNotify = distributedTaskCacheNotify;
             TenantManager = tenantManager;
@@ -123,6 +125,7 @@ namespace ASC.Mail.Core.Engine
             FactoryIndexer = factoryIndexer;
             ServiceProvider = serviceProvider;
             Option = option;
+            TempStream = tempStream;
         }
 
         public MailOperationStatus RemoveMailbox(MailBoxData mailbox,
@@ -219,6 +222,7 @@ namespace ASC.Mail.Core.Engine
                 StorageManager,
                 StorageFactory,
                 Option,
+                TempStream,
                 messageId);
 
             return QueueTask(op, translateMailOperationStatus);

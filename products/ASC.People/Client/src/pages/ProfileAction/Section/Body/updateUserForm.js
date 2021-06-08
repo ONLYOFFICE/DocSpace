@@ -548,6 +548,9 @@ class UpdateUserForm extends React.Component {
       //avatarMax,
       disableProfileType,
       isAdmin,
+      isMy,
+      isSelf,
+      language,
     } = this.props;
     const {
       guestCaption,
@@ -587,39 +590,39 @@ class UpdateUserForm extends React.Component {
                 </Th>
               </tr>
               <tr>
-                <Td>{t("Mail")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Mail")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
-                <Td>{t("DocumentsProduct")}</Td>
-                <Td>{t("AccessRightsFullAccess")}</Td>
-                <Td>{t("ViewAccess")}</Td>
+                <Td>{t("Common:Documents")}</Td>
+                <Td>{t("Common:FullAccess")}</Td>
+                <Td>{t("Common:View")}</Td>
               </tr>
               <tr>
-                <Td>{t("ProjectsProduct")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:ProjectsProduct")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
-                <Td>{t("CommunityProduct")}</Td>
-                <Td>{t("AccessRightsFullAccess")}</Td>
-                <Td>{t("ViewAccess")}</Td>
+                <Td>{t("Common:CommunityProduct")}</Td>
+                <Td>{t("Common:FullAccess")}</Td>
+                <Td>{t("Common:View")}</Td>
               </tr>
               <tr>
-                <Td>{t("People")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:People")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("Message")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
+                <Td>{t("Common:Review")}</Td>
               </tr>
               <tr>
                 <Td>{t("Calendar")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
+                <Td>{t("Common:Review")}</Td>
               </tr>
             </tbody>
           </Table>
@@ -635,6 +638,9 @@ class UpdateUserForm extends React.Component {
       </>
     );
 
+    const radioIsDisabled =
+      isSelf || (profile.listAdminModules && !!profile.listAdminModules.length);
+
     return (
       <>
         <MainContainer>
@@ -646,7 +652,7 @@ class UpdateUserForm extends React.Component {
               source={this.props.avatarMax || profile.avatarMax}
               userName={profile.displayName}
               editing={true}
-              editLabel={t("editAvatar")}
+              editLabel={t("Common:EditAvatar")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
@@ -658,27 +664,29 @@ class UpdateUserForm extends React.Component {
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
-              selectNewPhotoLabel={t("selectNewPhotoLabel")}
-              orDropFileHereLabel={t("orDropFileHereLabel")}
-              unknownTypeError={t("ErrorUnknownFileImageType")}
-              maxSizeFileError={t("maxSizeFileError")}
-              unknownError={t("Error")}
+              selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+              orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+              unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+              maxSizeFileError={t("Translations:maxSizeFileError")}
+              unknownError={t("Common:Error")}
               saveButtonLabel={
-                this.state.isLoading ? t("UpdatingProcess") : t("SaveButton")
+                this.state.isLoading
+                  ? t("UpdatingProcess")
+                  : t("Common:SaveButton")
               }
               saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
             <TextChangeField
-              labelText={`${t("Email")}:`}
+              labelText={`${t("Common:Email")}:`}
               inputName="email"
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={1}
-              helpButtonHeaderContent={t("Mail")}
+              helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
                   <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
@@ -702,7 +710,7 @@ class UpdateUserForm extends React.Component {
               dataDialog={dialogsDataset.changeEmail}
             />
             <TextChangeField
-              labelText={`${t("Password")}:`}
+              labelText={`${t("Common:Password")}:`}
               inputName="password"
               inputValue={"********"}
               buttonText={t("ChangeButton")}
@@ -737,7 +745,7 @@ class UpdateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
-              labelText={`${t("LastName")}:`}
+              labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
               inputIsDisabled={isLoading}
@@ -747,7 +755,7 @@ class UpdateUserForm extends React.Component {
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-              labelText={`${t("Birthdate")}:`}
+              labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
@@ -755,30 +763,33 @@ class UpdateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={6}
+              locale={language}
             />
             <RadioField
-              labelText={`${t("Sex")}:`}
+              labelText={`${t("Translations:Sex")}:`}
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: "male", label: t("MaleSexStatus") },
-                { value: "female", label: t("FemaleSexStatus") },
+                { value: "male", label: t("Translations:MaleSexStatus") },
+                { value: "female", label: t("Translations:FemaleSexStatus") },
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
             />
             <RadioField
-              labelText={`${t("UserType")}:`}
+              labelText={`${t("Common:Type")}:`}
               radioName="isVisitor"
               radioValue={profile.isVisitor.toString()}
               radioOptions={[
                 { value: "true", label: guestCaption },
                 { value: "false", label: userCaption },
               ]}
-              radioIsDisabled={isLoading || disableProfileType}
+              radioIsDisabled={
+                isLoading || disableProfileType || radioIsDisabled || isMy
+              }
               radioOnChange={this.onUserTypeChange}
               tooltipContent={tooltipTypeContent}
-              helpButtonHeaderContent={t("UserType")}
+              helpButtonHeaderContent={t("Common:Type")}
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
@@ -793,9 +804,10 @@ class UpdateUserForm extends React.Component {
               calendarMinDate={
                 profile.birthday ? new Date(profile.birthday) : new Date()
               }
+              locale={language}
             />
             <TextField
-              labelText={`${t("Location")}:`}
+              labelText={`${t("Translations:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
@@ -810,23 +822,25 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onInputChange}
               inputTabIndex={9}
             />
-            <DepartmentField
-              labelText={`${groupCaption}:`}
-              isDisabled={isLoading || !isAdmin}
-              showGroupSelectorButtonTitle={t("AddButton")}
-              onShowGroupSelector={this.onShowGroupSelector}
-              onCloseGroupSelector={this.onCloseGroupSelector}
-              onRemoveGroup={this.onRemoveGroup}
-              selectorIsVisible={selector.visible}
-              selectorOptions={selector.options}
-              selectorSelectedOptions={selector.selected}
-              selectorSelectAllText={t("SelectAll")}
-              selectorOnSearchGroups={this.onSearchGroups}
-              selectorOnSelectGroups={this.onSelectGroups}
-            />
+            {!isMy && (
+              <DepartmentField
+                labelText={`${groupCaption}:`}
+                isDisabled={isLoading || !isAdmin}
+                showGroupSelectorButtonTitle={t("Common:AddButton")}
+                onShowGroupSelector={this.onShowGroupSelector}
+                onCloseGroupSelector={this.onCloseGroupSelector}
+                onRemoveGroup={this.onRemoveGroup}
+                selectorIsVisible={selector.visible}
+                selectorOptions={selector.options}
+                selectorSelectedOptions={selector.selected}
+                selectorSelectAllText={t("Common:SelectAll")}
+                selectorOnSearchGroups={this.onSearchGroups}
+                selectorOnSelectGroups={this.onSelectGroups}
+              />
+            )}
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("Comments")}>
+        <InfoFieldContainer headerText={t("Translations:Comments")}>
           <Textarea
             placeholder={t("WriteComment")}
             name="notes"
@@ -848,7 +862,7 @@ class UpdateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("SocialProfiles")}>
+        <InfoFieldContainer headerText={t("Translations:SocialProfiles")}>
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -862,7 +876,7 @@ class UpdateUserForm extends React.Component {
         </InfoFieldContainer>
         <div>
           <Button
-            label={t("SaveButton")}
+            label={t("Common:SaveButton")}
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
@@ -870,7 +884,7 @@ class UpdateUserForm extends React.Component {
             tabIndex={11}
           />
           <Button
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
             size="big"
@@ -911,6 +925,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => ({
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
+    language: auth.language,
     groups: peopleStore.groupsStore.groups,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsVisibleDataLossDialog:
@@ -928,5 +943,11 @@ export default withRouter(
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
     isSelf: peopleStore.targetUserStore.isMe,
-  }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
+  }))(
+    observer(
+      withTranslation(["ProfileAction", "Common", "Translations"])(
+        UpdateUserForm
+      )
+    )
+  )
 );

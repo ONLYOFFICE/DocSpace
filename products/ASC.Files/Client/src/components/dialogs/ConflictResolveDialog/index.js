@@ -139,7 +139,7 @@ const ConflictResolveDialog = (props) => {
         <Button
           className="button-dialog-accept"
           key="OkButton"
-          label={t("OKButton")}
+          label={t("Common:OKButton")}
           size="medium"
           primary
           onClick={onAcceptType}
@@ -148,7 +148,7 @@ const ConflictResolveDialog = (props) => {
         <Button
           className="button-dialog"
           key="CancelButton"
-          label={t("CancelButton")}
+          label={t("Common:CancelButton")}
           size="medium"
           onClick={onClose}
           //isLoading={isLoading}
@@ -177,6 +177,8 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
   };
 })(
   withRouter(
-    withTranslation("ConflictResolveDialog")(observer(ConflictResolveDialog))
+    withTranslation(["ConflictResolveDialog", "Common"])(
+      observer(ConflictResolveDialog)
+    )
   )
 );

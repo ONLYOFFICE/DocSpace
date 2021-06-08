@@ -49,7 +49,7 @@ const SectionHeaderContent = (props) => {
       </div>
       <Headline type="content" truncate={true} style={textStyle}>
         {/* {profile.displayName}
-        {profile.isLDAP && ` (${t('LDAPLbl')})`}
+        {profile.isLDAP && ` (${t('Translations:LDAPLbl')})`}
         -  */}
         {t("ReassignmentData")}
       </Headline>

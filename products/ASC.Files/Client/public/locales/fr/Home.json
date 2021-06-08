@@ -1,0 +1,14 @@
+{
+  "All": "Tous",
+  "AllFiles": "Tous les fichiers",
+  "Archives": "Archives",
+  "BackToParentFolderButton": "Retour vers le dossier précédent",
+  "ByAuthor": "Auteur",
+  "CopyItem": "<strong>{{title}}</strong> copié",
+  "CopyItems": "<strong>{{qty}}</strong> éléments copiés",
+  "CreateWithEmptyTitle": "Impossible de créer un dossier ou un fichier sans titre",
+  "MarkedAsFavorite": "Ajouté aux favoris",
+  "MoveItem": "<strong>{{title}}</strong> déplacé",
+  "MoveItems": "<strong>{{qty}}</strong> éléments ont été déplacés",
+  "ViewList": "Liste"
+}

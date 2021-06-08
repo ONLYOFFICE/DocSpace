@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
@@ -49,10 +50,11 @@ using ASC.Mail.Extensions;
 //using Resources;
 
 namespace ASC.Mail.Core.Engine.Operations
-{
+{    
     public class MailDownloadAllAttachmentsOperation : MailOperation
     {
-        public MessageEngine MessageEngine { get; }
+        private MessageEngine MessageEngine { get; }
+        private TempStream TempStream { get; }
         public int MessageId { get; set; }
 
         public ILog Log { get; set; }
@@ -71,11 +73,13 @@ namespace ASC.Mail.Core.Engine.Operations
             StorageManager storageManager,
             StorageFactory storageFactory,
             IOptionsMonitor<ILog> optionsMonitor,
+            TempStream tempStream,
             int messageId)
             : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor, storageFactory)
         {
             MessageEngine = messageEngine;
             MessageId = messageId;
+            TempStream = tempStream;
         }
 
         protected override void Do()

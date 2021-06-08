@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
     <value>Estimado/a $UserName,
@@ -110,32 +110,6 @@ También Usted puede editar documentos offline con nuestros "editores desktop" g
 Muy atentamente,
 Equipo de ONLYOFFICE</value>
   </data>
-  <data name="pattern_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>$PersonalHeaderStart Conecte su almacenamiento en la nube favorito al ONLYOFFICE $PersonalHeaderEnd
-
-Ya ha pasado una semana desde que Usted creó su oficina en la nube, creemos que es un mejor momento para revelar unas características beneficiosas.
-
-Conecte *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* o *Yandex.Disk* al ONLYOFFICE y cree un espacio único de gestión de documentos para todos sus archivos. Usted podrá editar archivos externos en ONLYOFFICE y guardarlos en el almacenamiento donde mantiene documentos. Lea detalles acerca de cómo conectar almacenamientos de archivos al ONLYOFFICE "aquí":"${__HelpLink}/tipstricks/add-resource.aspx".
-
-También puede integrar editores de ONLYOFFICE en Google Drive usando nuestra "aplicación de conectores":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
-
-¿Necesita más de gestión de documentos?
-
-h3.Pruebe ONLYOFFICE para negocios "en la nube":"https://www.onlyoffice.com/cloud-office.aspx" o "en su servidor":"https://www.onlyoffice.com/server-solutions.aspx" gratis durante 30 días y evalue unas opciones avanzadas de gestión de documentos junto con el set de herramientas de negocios:
-
-- Gestione documentos de equipo en proyectos;
-
-- Integre documentos con CRM y Correo;
-
-- Comparta archivos con grupos de usuarios;
-
-- Optimice su flujo de trabajo usando herramientas de comunicación en equipo.
-
-¿Suena interesante? Aprenda más sobre "ONLYOFFICE para negocios":"http://www.onlyoffice.com/document-management.aspx".
-
-Muy atentamente,
-Equipo de ONLYOFFICE</value>
-  </data>
   <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
     <value>$PersonalHeaderStart Conecte su nube de almacenamiento favorita a ONLYOFFICE $PersonalHeaderEnd
 
@@ -162,19 +136,18 @@ h3.Pruebe ONLYOFFICE para negocios "en la nube":"https://www.onlyoffice.com/es/c
 Cordialmente,
 Equipo ONLYOFFICE </value>
   </data>
-  <data name="pattern_personal_custom_mode_change_email" xml:space="preserve">
-    <value>Usted ha solicitado el cambio de su dirección de email que se usa para entrar en el portal ${LetterLogoText}.
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>¿Desea cambiar el correo electrónico de su cuenta de oficina en la nube?
 
-Por favor, siga el enlace abajo para cambiar su dirección de email:
+Haga clic en el siguiente botón e inicie sesión* en su nube.
 
 $GreenButton
 
-*Tome en cuenta*: este enlace es válido sólo durante 7 días. Por favor, termine el proceso de cambio de su dirección de email dentro de este período.
+El enlace es válido durante 7 días.
 
-Si Usted no quiere cambiar su dirección de email o ha recibido este mensaje por error, por favor, ignórelo.
+*Si no ha iniciado sesión en su oficina en la nube en este navegador, tendrá que utilizar su correo electrónico anterior para la confirmación.
 
-Muy atentamente,
-Equipo de ONLYOFFICE</value>
+¿No desea cambiar su correo electrónico? Simplemente ignore este mensaje.</value>
   </data>
   <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
     <value>Se ha pedido el cambio de contraseña que se usa para entrar en el portal "${__VirtualRootPath}":"${__VirtualRootPath}".
@@ -238,7 +211,7 @@ La eliminación de datos personales permitió liberar:
 # Fecha de creación: $Date</value>
   </data>
   <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
-    <value>Hacer lo mismo que el usuario|Enlazar Dropbox, Box y otras cuentas en la sección 'Documentos comunes'|Dar derechos de acceso a los documentos y carpetas en la sección 'Documentos comunes'</value>
+    <value>Haga lo mismo que un usuario|Enlace Dropbox, Box y otras cuentas en la sección 'Documentos comunes'|Configure derechos de acceso a los documentos y carpetas en la sección 'Documentos comunes'</value>
   </data>
   <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
     <value>Crear y editar sus propios documentos y documentos compartidos con los derechos de acceso propios|Dar derechos de acceso a otros usuarios para leer/editar los documentos y carpetas|Enlazar Dropbox, Box y otras cuentas en la sección de 'Mis documentos'</value>
@@ -248,9 +221,6 @@ La eliminación de datos personales permitió liberar:
   </data>
   <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
     <value>Conecte su almacenamiento en la nube favorito al ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_email" xml:space="preserve">
-    <value>ONLYOFFICE Personal. Solicitud de cambio de correo electrónico</value>
   </data>
   <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
     <value>Asistencia para contraseñas de ONLYOFFICE Personal</value>

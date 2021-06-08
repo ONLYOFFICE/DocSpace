@@ -149,7 +149,7 @@ const PureTreeSettings = ({
       <TreeNode
         id="settings"
         key="settings"
-        title={t("TreeSettingsMenuTitle")}
+        title={t("Common:Settings")}
         isLeaf={false}
         icon={<StyledSettingsIcon size="scale" />}
       >
@@ -158,7 +158,7 @@ const PureTreeSettings = ({
           id="common-settings"
           key="common"
           isLeaf={true}
-          title={t("TreeSettingsCommonSettings")}
+          title={t("CommonSettings")}
         />
         {isAdmin ? (
           <TreeNode
@@ -166,7 +166,7 @@ const PureTreeSettings = ({
             id="admin-settings"
             key="admin"
             isLeaf={true}
-            title={t("TreeSettingsAdminSettings")}
+            title={t("Common:AdminSettings")}
           />
         ) : null}
         {enableThirdParty && !isVisitor ? (
@@ -176,7 +176,7 @@ const PureTreeSettings = ({
             id="connected-clouds"
             key="thirdParty"
             isLeaf={true}
-            title={t("TreeSettingsConnectedCloud")}
+            title={t("ThirdPartySettings")}
           />
         ) : null}
       </TreeNode>
@@ -205,7 +205,9 @@ const PureTreeSettings = ({
   );
 };
 
-const TreeSettings = withTranslation("Settings")(withRouter(PureTreeSettings));
+const TreeSettings = withTranslation(["Settings", "Common"])(
+  withRouter(PureTreeSettings)
+);
 
 export default inject(
   ({

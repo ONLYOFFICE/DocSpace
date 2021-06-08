@@ -25,7 +25,7 @@ const SimpleFilesRowContent = styled(RowContent)`
     margin-right: 6px;
   }
   .lock-file {
-    cursor: pointer;
+    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
   }
   .badges {
     display: flex;
@@ -59,6 +59,7 @@ const FilesRowContent = ({
   isTrashFolder,
   onFilesClick,
   badgesComponent,
+  isAdmin,
 }) => {
   const {
     contentLength,
@@ -66,12 +67,15 @@ const FilesRowContent = ({
     filesCount,
     foldersCount,
     providerKey,
+    access,
   } = item;
 
   const onMobileRowClick = () => {
     if (isTrashFolder || window.innerWidth > 1024) return;
     onFilesClick();
   };
+
+  const withAccess = isAdmin || access === 0;
 
   return (
     <>
@@ -80,6 +84,7 @@ const FilesRowContent = ({
         isMobile={isMobile}
         sideColor={sideColor}
         isFile={fileExst || contentLength}
+        withAccess={withAccess}
         //onClick={onMobileRowClick}
       >
         <Link
@@ -160,5 +165,7 @@ const FilesRowContent = ({
 };
 
 export default withRouter(
-  withTranslation("Home")(withContent(withBadges(FilesRowContent)))
+  withTranslation(["Home", "Translations"])(
+    withContent(withBadges(FilesRowContent))
+  )
 );

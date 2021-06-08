@@ -170,7 +170,12 @@ namespace ASC.Core.Common.Migrations.Npgsql.FilesDbContextNpgsql
                     { ".fodt", ".txt" },
                     { ".html", ".docx" },
                     { ".fods", ".xlsx" },
-                    { ".xps", ".pdf" }
+                    { ".xps", ".pdf" },
+                    { ".fb2", ".docx" },
+                    { ".fb2", ".odt" },
+                    { ".fb2", ".pdf" },
+                    { ".fb2", ".rtf" },
+                    { ".fb2", ".txt" }
                 });
         }
 

@@ -75,9 +75,7 @@ namespace ASC.ApiSystem
             diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             diHelper.TryAdd<AuthHandler>();
             diHelper.TryAdd<CalDavController>();
-            diHelper.TryAdd<CoreSettingsController>();
             diHelper.TryAdd<PortalController>();
-            diHelper.TryAdd<RegistrationController>();
             diHelper.TryAdd<SettingsController>();
             diHelper.TryAdd<TariffController>();
 

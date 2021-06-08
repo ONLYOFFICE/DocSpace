@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
@@ -35,6 +36,7 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.Users;
+using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 
@@ -57,9 +59,9 @@ namespace ASC.Data.Backup
             MigrationNotify(tenant, Actions.MigrationPortalStart, targetRegion, string.Empty, notifyUsers);
         }
 
-        public void SendAboutTransferComplete(Tenant tenant, string targetRegion, string targetAddress, bool notifyOnlyOwner)
+        public void SendAboutTransferComplete(Tenant tenant, string targetRegion, string targetAddress, bool notifyOnlyOwner, int toTenantId)
         {
-            MigrationNotify(tenant, Actions.MigrationPortalSuccess, targetRegion, targetAddress, !notifyOnlyOwner);
+            MigrationNotify(tenant, Actions.MigrationPortalSuccessV115, targetRegion, targetAddress, !notifyOnlyOwner, toTenantId);
         }
 
         public void SendAboutTransferError(Tenant tenant, string targetRegion, string resultAddress, bool notifyOnlyOwner)
@@ -71,7 +73,7 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             client.SendNoticeToAsync(
@@ -85,7 +87,7 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            (var userManager, var studioNotifyHelper, var studioNotifySource, var displayUserSettingsHelper) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             var owner = userManager.GetUsers(tenant.OwnerId);
@@ -104,69 +106,134 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper) = scopeClass;
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, authManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             var owner = userManager.GetUsers(tenant.OwnerId);
+            var users = notifyAllUsers
+                ? userManager.GetUsers(EmployeeStatus.Active)
+                : new[] { userManager.GetUsers(tenantManager.GetCurrentTenant().OwnerId) };
 
-            var users =
-                notifyAllUsers
-                    ? userManager.GetUsers(EmployeeStatus.Active).Select(u => studioNotifyHelper.ToRecipient(u.ID)).ToArray()
-                    : new[] { studioNotifyHelper.ToRecipient(owner.ID) };
+            foreach (var user in users)
+            {
+                var hash = authManager.GetUserPasswordStamp(user.ID).ToString("s");
+                var confirmationUrl = commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PasswordChange, hash);
 
-            client.SendNoticeToAsync(
-                Actions.RestoreCompleted,
-                users,
-                new[] { StudioNotifyService.EMailSenderName },
-                new TagValue(Tags.OwnerName, owner.DisplayUserName(displayUserSettingsHelper)));
+                Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
+
+                client.SendNoticeToAsync(
+                    Actions.RestoreCompletedV115,
+                    new IRecipient[] { user },
+                    new[] { StudioNotifyService.EMailSenderName },
+                    null,
+                    TagValues.GreenButton(greenButtonText, confirmationUrl));
+            }
         }
 
-        private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify)
+        private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, _) = scopeClass;
+            var (userManager, studioNotifyHelper, studioNotifySource, _, authManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
+            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
             var users = userManager.GetUsers()
                 .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
-                .Select(u => studioNotifyHelper.ToRecipient(u.ID))
                 .ToArray();
 
             if (users.Any())
             {
-                client.SendNoticeToAsync(
-                    action,
-                    users,
-                    new[] { StudioNotifyService.EMailSenderName },
-                    new TagValue(Tags.RegionName, TransferResourceHelper.GetRegionDescription(region)),
-                    new TagValue(Tags.PortalUrl, url));
+                var args = CreateArgs(scope, region, url);
+                if (action == Actions.MigrationPortalSuccessV115)
+                {
+                    foreach (var user in users)
+                    {
+                        var currentArgs = new List<ITagValue>(args);
+
+                        var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.TenantId;
+                        var hash = authManager.GetUserPasswordStamp(user.ID).ToString("s");
+                        var confirmationUrl = url + "/" + commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash);
+
+                        Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
+                        currentArgs.Add(TagValues.GreenButton(greenButtonText, confirmationUrl));
+
+                        client.SendNoticeToAsync(
+                            action,
+                            null,
+                            new IRecipient[] { user },
+                            new[] { StudioNotifyService.EMailSenderName },
+                            currentArgs.ToArray());
+                    }
+                }
+                else
+                {
+                    client.SendNoticeToAsync(
+                        action,
+                        null,
+                        users.Select(u => studioNotifyHelper.ToRecipient(u.ID)).ToArray(),
+                        new[] { StudioNotifyService.EMailSenderName },
+                        args.ToArray());
+                }
             }
+        }
+
+        private List<ITagValue> CreateArgs(IServiceScope scope,string region, string url)
+        {
+            var args = new List<ITagValue>()
+                    {
+                        new TagValue(Tags.RegionName, TransferResourceHelper.GetRegionDescription(region)),
+                        new TagValue(Tags.PortalUrl, url)
+                    };
+
+            if (!string.IsNullOrEmpty(url))
+            {
+                args.Add(new TagValue(CommonTags.VirtualRootPath, url));
+                args.Add(new TagValue(CommonTags.ProfileUrl, url + scope.ServiceProvider.GetService<CommonLinkUtility>().GetMyStaff()));
+                args.Add(new TagValue(CommonTags.LetterLogo, scope.ServiceProvider.GetService<TenantLogoManager>().GetLogoDark(true)));
+            }
+            return args;
         }
     }
 
     [Scope]
     public class NotifyHelperScope
     {
+        private AuthManager AuthManager { get; }
         private UserManager UserManager { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private StudioNotifySource StudioNotifySource { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
-        public NotifyHelperScope(UserManager userManager, StudioNotifyHelper studioNotifyHelper, StudioNotifySource studioNotifySource, DisplayUserSettingsHelper displayUserSettingsHelper)
+        public NotifyHelperScope(
+            UserManager userManager,
+            StudioNotifyHelper studioNotifyHelper,
+            StudioNotifySource studioNotifySource,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            AuthManager authManager)
         {
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
             StudioNotifySource = studioNotifySource;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
+            AuthManager = authManager;
         }
 
-        public void Deconstruct(out UserManager userManager, out StudioNotifyHelper studioNotifyHelper, out StudioNotifySource studioNotifySource, out DisplayUserSettingsHelper displayUserSettingsHelper)
+        public void Deconstruct(
+            out UserManager userManager,
+            out StudioNotifyHelper studioNotifyHelper,
+            out StudioNotifySource studioNotifySource,
+            out DisplayUserSettingsHelper displayUserSettingsHelper,
+            out AuthManager authManager
+            )
         {
             userManager = UserManager;
             studioNotifyHelper = StudioNotifyHelper;
             studioNotifySource = StudioNotifySource;
             displayUserSettingsHelper = DisplayUserSettingsHelper;
+            authManager = AuthManager;
         }
     }
 

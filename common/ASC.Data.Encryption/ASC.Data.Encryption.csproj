@@ -5,8 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
-    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
   </ItemGroup>
 

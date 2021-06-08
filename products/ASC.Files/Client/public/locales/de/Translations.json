@@ -1,0 +1,22 @@
+{
+  "ArchivingData": "Archivieren der Daten",
+  "ConnectingAccount": "Konto wird verbunden",
+  "Copy": "Kopieren",
+  "CopyOperation": "Kopieren",
+  "DeleteFromTrash": "Die ausgewählten Elemente wurden aus dem Papierkorb gelöscht",
+  "DeleteOperation": "Löschen",
+  "DeleteSelectedElem": "Die ausgewählten Elemente wurden gelöscht",
+  "DeleteThirdParty": "Drittanbieterdienst deaktivieren",
+  "DownloadAs": "Herunterladen als",
+  "EncryptedFileSaving": "Die verschlüsselte Datei wird gespeichert",
+  "Files": "Dateien",
+  "Folders": "Ordner",
+  "LinkCopySuccess": "Der Link wurde in die Zwischenablage kopiert",
+  "Move": "Verschieben",
+  "MoveToOperation": "Wird verschoben",
+  "OwnerChange": "Besitzer ändern",
+  "Presentations": "Präsentationen",
+  "Restore": "Wiederherstellen",
+  "Spreadsheets": "Tabellenkalkulationen",
+  "UploadingLabel": "Dateien hochgeladen: {{file}} von {{totalFiles}}"
+}

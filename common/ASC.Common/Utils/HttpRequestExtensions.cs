@@ -30,6 +30,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Net.Http.Headers;
 
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
@@ -164,14 +165,16 @@ namespace System.Web
 
         public static bool DesktopApp(this HttpRequest request)
         {
-            return request != null && !string.IsNullOrEmpty(request.Headers["desktop"]);
+            return request != null
+                && (!string.IsNullOrEmpty(request.Query["desktop"])
+                    || !string.IsNullOrEmpty(request.Headers[HeaderNames.UserAgent]) && request.Headers[HeaderNames.UserAgent].ToString().Contains("AscDesktopEditor"));
         }
 
         public static bool SailfishApp(this HttpRequest request)
         {
             return request != null
                    && (!string.IsNullOrEmpty(request.Headers["sailfish"])
-                       || !string.IsNullOrEmpty(request.Headers["User-Agent"]) && request.Headers["User-Agent"].ToString().Contains("SailfishOS"));
+                       || !string.IsNullOrEmpty(request.Headers[HeaderNames.UserAgent]) && request.Headers[HeaderNames.UserAgent].ToString().Contains("SailfishOS"));
         }
 
 

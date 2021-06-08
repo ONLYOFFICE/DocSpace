@@ -64,6 +64,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Transient]
     class FileDeleteOperation : ComposeFileOperation<FileDeleteOperationData<string>, FileDeleteOperationData<int>>
     {
         public FileDeleteOperation(IServiceProvider serviceProvider, FileOperation<FileDeleteOperationData<string>, string> f1, FileOperation<FileDeleteOperationData<int>, int> f2)
@@ -230,6 +231,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     {
                         FileDao.MoveFile(file.ID, _trashId);
                         filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
+
+                        if (file.ThumbnailStatus == Thumbnail.Waiting)
+                        {
+                            file.ThumbnailStatus = Thumbnail.NotRequired;
+                            FileDao.SaveThumbnail(file, null);
+                        }
                     }
                     else
                     {

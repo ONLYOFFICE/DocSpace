@@ -160,9 +160,11 @@ const PureConnectDialogContainer = (props) => {
         });
       })
       .catch((err) => {
+        onClose();
         toastr.error(err);
         setIsLoading(false);
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, [
     commonFolderId,
     customerTitle,
@@ -215,7 +217,9 @@ const PureConnectDialogContainer = (props) => {
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
-      <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("Translations:ConnectingAccount")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
         {isAccount ? (
           <FieldContainer labelVisible labelText={t("Account")} isVertical>
@@ -236,7 +240,7 @@ const PureConnectDialogContainer = (props) => {
                 labelText={t("ConnectionUrl")}
                 isVertical
                 hasError={!isUrlValid}
-                errorMessage={t("RequiredFieldMessage")}
+                errorMessage={t("Common:RequiredField")}
               >
                 <TextInput
                   isAutoFocussed={true}
@@ -255,7 +259,7 @@ const PureConnectDialogContainer = (props) => {
               isRequired
               isVertical
               hasError={!isLoginValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={t("Common:RequiredField")}
             >
               <TextInput
                 hasError={!isLoginValid}
@@ -267,11 +271,11 @@ const PureConnectDialogContainer = (props) => {
               />
             </FieldContainer>
             <FieldContainer
-              labelText={t("Password")}
+              labelText={t("Common:Password")}
               isRequired
               isVertical
               hasError={!isPasswordValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={t("Common:RequiredField")}
             >
               <PasswordInput
                 hasError={!isPasswordValid}
@@ -291,7 +295,7 @@ const PureConnectDialogContainer = (props) => {
           isRequired
           isVertical
           hasError={!isTitleValid}
-          errorMessage={t("RequiredFieldMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <TextInput
             hasError={!isTitleValid}
@@ -312,7 +316,7 @@ const PureConnectDialogContainer = (props) => {
       <ModalDialog.Footer>
         <Button
           tabIndex={5}
-          label={t("SaveButton")}
+          label={t("Common:SaveButton")}
           size="big"
           primary
           onClick={onSave}
@@ -324,9 +328,11 @@ const PureConnectDialogContainer = (props) => {
   );
 };
 
-const ConnectDialog = withTranslation("ConnectDialog")(
-  PureConnectDialogContainer
-);
+const ConnectDialog = withTranslation([
+  "ConnectDialog",
+  "Common",
+  "Translations",
+])(PureConnectDialogContainer);
 
 export default inject(
   ({

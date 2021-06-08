@@ -12,6 +12,7 @@ import toastr from "@appserver/components/toast/toastr";
 import Heading from "@appserver/components/heading";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
+import { PasswordLimitSpecialCharacters } from "@appserver/common/constants";
 import { inject, observer } from "mobx-react";
 
 const BodyStyle = styled.form`
@@ -162,18 +163,18 @@ class Form extends React.PureComponent {
           isDisabled={isLoading}
           hasError={passwordEmpty}
           onValidateInput={this.validatePassword}
-          generatorSpecial="!@#$%^&*"
+          generatorSpecial={PasswordLimitSpecialCharacters}
           tabIndex={1}
           value={password}
           onChange={this.onChange}
           emailInputName="E-mail"
           passwordSettings={settings}
           tooltipPasswordTitle="Password must contain:"
-          tooltipPasswordLength={`${t("ErrorPasswordLength", {
-            fromNumber: settings.minLength,
+          tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+            fromNumber: settings ? settings.minLength : 8,
             toNumber: 30,
           })}:`}
-          placeholder={t("PasswordCustomMode")}
+          placeholder={t("Common:Password")}
           maxLength={30}
           onKeyDown={this.onKeyPress}
           isAutoFocussed={true}
@@ -186,7 +187,7 @@ class Form extends React.PureComponent {
           size="big"
           tabIndex={2}
           label={
-            isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
+            isLoading ? t("Common:LoadingProcessing") : t("Common:OKButton")
           }
           isDisabled={isLoading}
           isLoading={isLoading}
@@ -238,4 +239,8 @@ export default inject(({ auth, setup }) => {
     getPortalPasswordSettings,
     changePassword,
   };
-})(withRouter(withTranslation("Confirm")(observer(ChangePasswordForm))));
+})(
+  withRouter(
+    withTranslation(["Confirm", "Common"])(observer(ChangePasswordForm))
+  )
+);

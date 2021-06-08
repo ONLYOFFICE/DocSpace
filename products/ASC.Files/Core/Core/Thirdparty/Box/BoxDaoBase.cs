@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -58,7 +59,8 @@ namespace ASC.Files.Thirdparty.Box
             DbContextManager<FilesDbContext> dbContextManager,
             SetupInfo setupInfo,
             IOptionsMonitor<ILog> monitor,
-            FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            FileUtility fileUtility,
+            TempPath tempPath) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
 
