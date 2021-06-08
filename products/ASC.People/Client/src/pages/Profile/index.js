@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import toastr from "studio/toastr";
-import Loaders from "@appserver/common/components/Loaders";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -94,11 +93,11 @@ class Profile extends React.Component {
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          <SectionHeaderContent />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
+          <SectionBodyContent />
         </PageLayout.SectionBody>
       </PageLayout>
     );
@@ -124,7 +123,6 @@ export default withRouter(
       targetUser: profile,
     } = targetUserStore;
     const { setFirstLoad } = loadingStore;
-    console.log(targetUserStore);
     return {
       setDocumentTitle,
       isAdmin,

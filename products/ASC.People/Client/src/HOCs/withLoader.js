@@ -30,12 +30,12 @@ const WithLoader = (WrappedComponent) => (Loader) => {
         cleanTimer();
       };
     }, [isLoading]);
-    console.log(firstLoad, isLoading, isLoaded, isMobile && inLoad, tReady);
-    return firstLoad || isLoading || !tReady || inLoad || isRefresh ? (
-      //!isLoaded ||
-      //(isMobile && inLoad) ||
+
+    return firstLoad ||
+      !isLoaded ||
+      (isMobile && inLoad) ||
       //isRefresh ||
-      //!tReady ?
+      !tReady ? (
       Loader
     ) : (
       <WrappedComponent {...props} />

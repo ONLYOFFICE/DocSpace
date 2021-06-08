@@ -28,6 +28,9 @@ import { AppServerConfig, providersData } from "@appserver/common/constants";
 import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../../HOCs/withLoader";
+
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: flex-start;
@@ -119,6 +122,7 @@ class SectionBodyContent extends React.PureComponent {
     //}
 
     if (!isSelf) return;
+
     try {
       await getAuthProviders().then((providers) => {
         setProviders(providers);
@@ -271,116 +275,129 @@ class SectionBodyContent extends React.PureComponent {
 
   render() {
     const { profile, isAdmin, t, isSelf } = this.props;
+    if (profile) {
+      const contacts = profile.contacts && getUserContacts(profile.contacts);
+      const role = getUserRole(profile);
+      const socialContacts =
+        (contacts &&
+          contacts.social &&
+          contacts.social.length > 0 &&
+          createContacts(contacts.social)) ||
+        null;
+      const infoContacts = contacts && createContacts(contacts.contact);
+      //const isSelf = isMe(viewer, profile.userName);
 
-    const contacts = profile.contacts && getUserContacts(profile.contacts);
-    const role = getUserRole(profile);
-    const socialContacts =
-      (contacts &&
-        contacts.social &&
-        contacts.social.length > 0 &&
-        createContacts(contacts.social)) ||
-      null;
-    const infoContacts = contacts && createContacts(contacts.contact);
-    //const isSelf = isMe(viewer, profile.userName);
-
-    return (
-      <ProfileWrapper>
-        <AvatarWrapper>
-          <Avatar
-            size="max"
-            role={role}
-            source={profile.avatarMax}
-            userName={profile.displayName}
-          />
-          {profile.status !== 2 && (isAdmin || isSelf) && (
-            <EditButtonWrapper>
-              <Button
-                size="big"
-                scale={true}
-                label={t("EditUser")}
-                title={t("EditUser")}
-                onClick={this.onEditProfileClick}
-              />
-            </EditButtonWrapper>
-          )}
-        </AvatarWrapper>
-        <ProfileInfo
-          profile={profile}
-          isSelf={isSelf}
-          isAdmin={isAdmin}
-          t={t}
-          //cultures={cultures}
-          //culture={culture}
-        />
-
-        {isSelf && this.oauthDataExists() && (
-          <ToggleWrapper>
-            <ToggleContent label={t("LoginSettings")} isOpen={true}>
-              <ProviderButtonsWrapper>
-                {this.providerButtons()}
-              </ProviderButtonsWrapper>
-            </ToggleContent>
-          </ToggleWrapper>
-        )}
-        {isSelf && false && (
-          <ToggleWrapper isSelf={true}>
-            <ToggleContent label={t("Subscriptions")} isOpen={true}>
-              <Text as="span">
+      return (
+        <ProfileWrapper>
+          <AvatarWrapper>
+            <Avatar
+              size="max"
+              role={role}
+              source={profile.avatarMax}
+              userName={profile.displayName}
+            />
+            {profile.status !== 2 && (isAdmin || isSelf) && (
+              <EditButtonWrapper>
                 <Button
                   size="big"
-                  label={t("EditSubscriptionsBtn")}
-                  primary={true}
-                  onClick={this.onEditSubscriptionsClick}
+                  scale={true}
+                  label={t("EditUser")}
+                  title={t("EditUser")}
+                  onClick={this.onEditProfileClick}
                 />
-              </Text>
-            </ToggleContent>
-          </ToggleWrapper>
-        )}
-        {profile.notes && (
-          <ToggleWrapper>
-            <ToggleContent label={t("Translations:Comments")} isOpen={true}>
-              <Text as="span">{profile.notes}</Text>
-            </ToggleContent>
-          </ToggleWrapper>
-        )}
-        {profile.contacts && (
-          <ToggleWrapper isContacts={true}>
-            <ToggleContent label={t("ContactInformation")} isOpen={true}>
-              <Text as="span">{infoContacts}</Text>
-            </ToggleContent>
-          </ToggleWrapper>
-        )}
-        {socialContacts && (
-          <ToggleWrapper isContacts={true}>
-            <ToggleContent
-              label={t("Translations:SocialProfiles")}
-              isOpen={true}
-            >
-              <Text as="span">{socialContacts}</Text>
-            </ToggleContent>
-          </ToggleWrapper>
-        )}
-      </ProfileWrapper>
-    );
+              </EditButtonWrapper>
+            )}
+          </AvatarWrapper>
+          <ProfileInfo
+            profile={profile}
+            isSelf={isSelf}
+            isAdmin={isAdmin}
+            t={t}
+            //cultures={cultures}
+            //culture={culture}
+          />
+
+          {isSelf && this.oauthDataExists() && (
+            <ToggleWrapper>
+              <ToggleContent label={t("LoginSettings")} isOpen={true}>
+                <ProviderButtonsWrapper>
+                  {this.providerButtons()}
+                </ProviderButtonsWrapper>
+              </ToggleContent>
+            </ToggleWrapper>
+          )}
+          {isSelf && false && (
+            <ToggleWrapper isSelf={true}>
+              <ToggleContent label={t("Subscriptions")} isOpen={true}>
+                <Text as="span">
+                  <Button
+                    size="big"
+                    label={t("EditSubscriptionsBtn")}
+                    primary={true}
+                    onClick={this.onEditSubscriptionsClick}
+                  />
+                </Text>
+              </ToggleContent>
+            </ToggleWrapper>
+          )}
+          {profile.notes && (
+            <ToggleWrapper>
+              <ToggleContent label={t("Translations:Comments")} isOpen={true}>
+                <Text as="span">{profile.notes}</Text>
+              </ToggleContent>
+            </ToggleWrapper>
+          )}
+          {profile.contacts && (
+            <ToggleWrapper isContacts={true}>
+              <ToggleContent label={t("ContactInformation")} isOpen={true}>
+                <Text as="span">{infoContacts}</Text>
+              </ToggleContent>
+            </ToggleWrapper>
+          )}
+          {socialContacts && (
+            <ToggleWrapper isContacts={true}>
+              <ToggleContent
+                label={t("Translations:SocialProfiles")}
+                isOpen={true}
+              >
+                <Text as="span">{socialContacts}</Text>
+              </ToggleContent>
+            </ToggleWrapper>
+          )}
+        </ProfileWrapper>
+      );
+    } else return null;
   }
 }
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    isAdmin: auth.isAdmin,
-    profile: peopleStore.targetUserStore.targetUser,
-    viewer: auth.userStore.user,
-    isTabletView: auth.settingsStore.isTabletView,
-    isSelf: peopleStore.targetUserStore.isMe,
-    avatarMax: peopleStore.avatarEditorStore.avatarMax,
-    setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
-    providers: peopleStore.usersStore.providers,
-    setProviders: peopleStore.usersStore.setProviders,
-    getOAuthToken: auth.settingsStore.getOAuthToken,
-    getLoginLink: auth.settingsStore.getLoginLink,
-  }))(
+  inject(({ auth, peopleStore }) => {
+    const { isAdmin, userStore, settingsStore } = auth;
+    const { user: viewer } = userStore;
+    const { isTabletView, getOAuthToken, getLoginLink } = settingsStore;
+    const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
+    const { targetUser: profile, isMe: isSelf } = targetUserStore;
+    const { avatarMax, setAvatarMax } = avatarEditorStore;
+    const { providers, setProviders } = usersStore;
+
+    return {
+      isAdmin,
+      profile,
+      viewer,
+      isTabletView,
+      isSelf,
+      avatarMax,
+      setAvatarMax,
+      providers,
+      setProviders,
+      getOAuthToken,
+      getLoginLink,
+    };
+  })(
     observer(
-      withTranslation(["Profile", "Common", "Translations"])(SectionBodyContent)
+      withTranslation(["Profile", "Common", "Translations"])(
+        withLoader(SectionBodyContent)(<Loaders.ProfileView />)
+      )
     )
   )
 );

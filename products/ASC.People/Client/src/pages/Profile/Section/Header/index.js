@@ -28,6 +28,9 @@ import {
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../../HOCs/withLoader";
+
 const StyledContainer = styled.div`
   position: relative;
 
@@ -74,8 +77,10 @@ class SectionHeaderContent extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.profile.userName !== prevProps.profile.userName) {
-      console.log(this.props.profile.userName);
+    if (
+      !prevProps.profile ||
+      this.props.profile.userName !== prevProps.profile.userName
+    ) {
       this.setState(this.mapPropsToState(this.props));
     }
   }
@@ -422,88 +427,90 @@ class SectionHeaderContent extends React.PureComponent {
   render() {
     const { profile, isAdmin, viewer, t, filter, history, isMe } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
-    const contextOptions = () => this.getUserContextOptions(profile, viewer);
+    if (profile) {
+      const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
-    return (
-      <StyledContainer
-        showContextButton={(isAdmin && !profile.isOwner) || isMe}
-      >
-        <IconButton
-          iconName="/static/images/arrow.path.react.svg"
-          color="#A3A9AE"
-          size="17"
-          hoverColor="#657077"
-          isFill={true}
-          onClick={this.onClickBack}
-          className="arrow-button"
-        />
-        <Headline className="header-headline" type="content" truncate={true}>
-          {profile.displayName}
-          {profile.isLDAP && ` (${t("Translations:LDAPLbl")})`}
-        </Headline>
-        {((isAdmin && !profile.isOwner) || isMe) && (
-          <ContextMenuButton
-            className="action-button"
-            directionX="right"
-            title={t("Common:Actions")}
-            iconName="/static/images/vertical-dots.react.svg"
-            size={17}
+      return (
+        <StyledContainer
+          showContextButton={(isAdmin && !profile.isOwner) || isMe}
+        >
+          <IconButton
+            iconName="/static/images/arrow.path.react.svg"
             color="#A3A9AE"
-            getData={contextOptions}
-            isDisabled={false}
+            size="17"
+            hoverColor="#657077"
+            isFill={true}
+            onClick={this.onClickBack}
+            className="arrow-button"
           />
-        )}
+          <Headline className="header-headline" type="content" truncate={true}>
+            {profile.displayName}
+            {profile.isLDAP && ` (${t("Translations:LDAPLbl")})`}
+          </Headline>
+          {((isAdmin && !profile.isOwner) || isMe) && (
+            <ContextMenuButton
+              className="action-button"
+              directionX="right"
+              title={t("Common:Actions")}
+              iconName="/static/images/vertical-dots.react.svg"
+              size={17}
+              color="#A3A9AE"
+              getData={contextOptions}
+              isDisabled={false}
+            />
+          )}
 
-        <AvatarEditor
-          image={avatar.image}
-          visible={visibleAvatarEditor}
-          onClose={this.onCloseAvatarEditor}
-          onSave={this.onSaveAvatar}
-          onLoadFile={this.onLoadFileAvatar}
-          headerLabel={t("Common:EditAvatar")}
-          selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-          orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
-          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
-          maxSizeFileError={t("Translations:maxSizeFileError")}
-          unknownError={t("Common:Error")}
-          saveButtonLabel={t("Common:SaveButton")}
-        />
-
-        {dialogsVisible.deleteSelfProfile && (
-          <DeleteSelfProfileDialog
-            visible={dialogsVisible.deleteSelfProfile}
-            onClose={this.toggleDeleteSelfProfileDialog}
-            email={this.state.profile.email}
+          <AvatarEditor
+            image={avatar.image}
+            visible={visibleAvatarEditor}
+            onClose={this.onCloseAvatarEditor}
+            onSave={this.onSaveAvatar}
+            onLoadFile={this.onLoadFileAvatar}
+            headerLabel={t("Common:EditAvatar")}
+            selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+            orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+            unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+            maxSizeFileError={t("Translations:maxSizeFileError")}
+            unknownError={t("Common:Error")}
+            saveButtonLabel={t("Common:SaveButton")}
           />
-        )}
 
-        {dialogsVisible.changePassword && (
-          <ChangePasswordDialog
-            visible={dialogsVisible.changePassword}
-            onClose={this.toggleChangePasswordDialog}
-            email={this.state.profile.email}
-          />
-        )}
+          {dialogsVisible.deleteSelfProfile && (
+            <DeleteSelfProfileDialog
+              visible={dialogsVisible.deleteSelfProfile}
+              onClose={this.toggleDeleteSelfProfileDialog}
+              email={this.state.profile.email}
+            />
+          )}
 
-        {dialogsVisible.changeEmail && (
-          <ChangeEmailDialog
-            visible={dialogsVisible.changeEmail}
-            onClose={this.toggleChangeEmailDialog}
-            user={this.state.profile}
-          />
-        )}
+          {dialogsVisible.changePassword && (
+            <ChangePasswordDialog
+              visible={dialogsVisible.changePassword}
+              onClose={this.toggleChangePasswordDialog}
+              email={this.state.profile.email}
+            />
+          )}
 
-        {dialogsVisible.deleteProfileEver && (
-          <DeleteProfileEverDialog
-            visible={dialogsVisible.deleteProfileEver}
-            onClose={this.toggleDeleteProfileEverDialog}
-            user={this.state.profile}
-            filter={filter}
-            history={history}
-          />
-        )}
-      </StyledContainer>
-    );
+          {dialogsVisible.changeEmail && (
+            <ChangeEmailDialog
+              visible={dialogsVisible.changeEmail}
+              onClose={this.toggleChangeEmailDialog}
+              user={this.state.profile}
+            />
+          )}
+
+          {dialogsVisible.deleteProfileEver && (
+            <DeleteProfileEverDialog
+              visible={dialogsVisible.deleteProfileEver}
+              onClose={this.toggleDeleteProfileEverDialog}
+              user={this.state.profile}
+              filter={filter}
+              history={history}
+            />
+          )}
+        </StyledContainer>
+      );
+    } else return null;
   }
 }
 
@@ -527,7 +534,7 @@ export default withRouter(
   })(
     observer(
       withTranslation(["Profile", "Common", "Translations"])(
-        SectionHeaderContent
+        withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
       )
     )
   )
