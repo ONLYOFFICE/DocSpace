@@ -15,14 +15,14 @@ const ConvertDialogComponent = (props) => {
     visible,
     folderId,
     convertFile,
-    convertItemId,
+    convertItem,
     setStoreOriginal,
     storeOriginalFiles,
     convertUploadedFiles,
     setConvertDialogVisible,
   } = props;
 
-  const convertSingleFile = !!convertItemId;
+  const convertSingleFile = !!convertItem;
   const [hideMessage, setHideMessage] = useState(false);
 
   const onChangeFormat = () =>
@@ -32,9 +32,18 @@ const ConvertDialogComponent = (props) => {
 
   const onConvert = () => {
     onClose();
-    convertSingleFile
-      ? convertFile(convertItemId, t, folderId)
-      : convertUploadedFiles(t);
+
+    if (convertSingleFile) {
+      const item = {
+        fileId: convertItem.id,
+        toFolderId: folderId,
+        action: "convert",
+      };
+      item.fileInfo = convertItem;
+      convertFile(item);
+    } else {
+      convertUploadedFiles(t);
+    }
   };
 
   const tReady = true;
@@ -118,14 +127,14 @@ export default inject(
     const {
       convertDialogVisible: visible,
       setConvertDialogVisible,
-      convertItemId,
+      convertItem,
     } = dialogsStore;
 
     return {
       visible,
       folderId,
       convertFile,
-      convertItemId,
+      convertItem,
       setTreeFolders,
       setStoreOriginal,
       storeOriginalFiles,

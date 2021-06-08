@@ -7,10 +7,7 @@ import {
 } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import { combineUrl } from "@appserver/common/utils";
-import {
-  convertFile,
-  getFileConversationProgress,
-} from "@appserver/common/api/files";
+import { getFileConversationProgress } from "@appserver/common/api/files";
 
 import Badges from "../components/Badges";
 import config from "../../package.json";
@@ -70,24 +67,6 @@ export default function withBadges(WrappedComponent) {
       }
     };
 
-    // onConvert = () => {
-    //   const { item, t, setSecondaryProgressBarData } = this.props;
-    //   setSecondaryProgressBarData({
-    //     icon: "file",
-    //     visible: true,
-    //     percent: 0,
-    //     label: t("Convert"),
-    //     alert: false,
-    //   });
-    //   this.setState({ showConvertDialog: false }, () =>
-    //     convertFile(item.id).then((convertRes) => {
-    //       if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
-    //         this.getConvertProgress(item.id);
-    //       }
-    //     })
-    //   );
-    // };
-
     getConvertProgress = (fileId) => {
       const {
         selectedFolderId,
@@ -142,7 +121,7 @@ export default function withBadges(WrappedComponent) {
     };
 
     setConvertDialogVisible = () => {
-      this.props.setConvertItemId(this.props.item.id);
+      this.props.setConvertItem(this.props.item);
       this.props.setConvertDialogVisible(true);
     };
 
@@ -218,7 +197,7 @@ export default function withBadges(WrappedComponent) {
       const {
         setNewFilesPanelVisible,
         setConvertDialogVisible,
-        setConvertItemId,
+        setConvertItem,
       } = dialogsStore;
       const { filter, setIsLoading, fetchFiles } = filesStore;
       const { secondaryProgressDataStore } = uploadDataStore;
@@ -252,7 +231,7 @@ export default function withBadges(WrappedComponent) {
         clearSecondaryProgressData,
         fetchFiles,
         setConvertDialogVisible,
-        setConvertItemId,
+        setConvertItem,
       };
     }
   )(observer(WithBadges));

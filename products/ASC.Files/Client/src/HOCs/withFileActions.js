@@ -141,7 +141,7 @@ export default function withFileActions(WrappedFileItem) {
         expandedKeys,
         addExpandedKeys,
         setMediaViewerData,
-        setConvertItemId,
+        setConvertItem,
         setConvertDialogVisible,
       } = this.props;
       const {
@@ -171,7 +171,7 @@ export default function withFileActions(WrappedFileItem) {
           .finally(() => setIsLoading(false));
       } else {
         if (canConvert) {
-          setConvertItemId(id);
+          setConvertItem(item);
           setConvertDialogVisible(true);
           return;
         }
@@ -276,7 +276,7 @@ export default function withFileActions(WrappedFileItem) {
       const {
         setSharingPanelVisible,
         setConvertDialogVisible,
-        setConvertItemId,
+        setConvertItem,
       } = dialogsStore;
       const {
         isPrivacyFolder,
@@ -366,7 +366,7 @@ export default function withFileActions(WrappedFileItem) {
         setMediaViewerData,
         getFolderInfo,
         markAsRead,
-        setConvertItemId,
+        setConvertItem,
         setConvertDialogVisible,
       };
     }

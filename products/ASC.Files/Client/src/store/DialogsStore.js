@@ -30,7 +30,7 @@ class DialogsStore {
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
-  convertItemId = null;
+  convertItem = null;
 
   constructor(treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
@@ -167,8 +167,8 @@ class DialogsStore {
     this.convertDialogVisible = visible;
   };
 
-  setConvertItemId = (id) => {
-    this.convertItemId = id;
+  setConvertItem = (item) => {
+    this.convertItem = item;
   };
 }
 
