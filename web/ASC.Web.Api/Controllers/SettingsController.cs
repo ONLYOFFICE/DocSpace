@@ -1554,7 +1554,7 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            return TfaManager.GenerateSetupCode(currentUser, 300);
+            return TfaManager.GenerateSetupCode(currentUser);
         }
 
         [Read("tfaappcodes")]

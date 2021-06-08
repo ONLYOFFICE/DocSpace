@@ -221,7 +221,7 @@ namespace ASC.Web.Api.Controllers
                     return new AuthenticationTokenData
                     {
                         Tfa = true,
-                        TfaKey = TfaManager.GenerateSetupCode(user, 300).ManualEntryKey,
+                        TfaKey = TfaManager.GenerateSetupCode(user).ManualEntryKey,
                         ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
                     };
 
