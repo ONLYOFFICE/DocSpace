@@ -70,7 +70,7 @@ export const settingsTree = [
       {
         key: "1-1",
         icon: "",
-        link: "accessportal",
+        link: "access-portal",
         tKey: "PortalAccess",
         isCategory: true,
         children: [

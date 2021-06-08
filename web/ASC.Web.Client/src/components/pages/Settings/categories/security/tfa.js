@@ -41,8 +41,6 @@ class PureTfaPage extends Component {
       smsDisabled: false,
       appDisabled: false,
     };
-
-    setDocumentTitle(t("PortalSecurity"));
   }
 
   async componentDidMount() {

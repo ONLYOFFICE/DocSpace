@@ -10,7 +10,7 @@ const SecuritySettings = lazy(() =>
 );
 const Admins = lazy(() => import("./categories/security/admins"));
 
-const AccessPortal = lazy(() => import("./categories/security/accessPortal"));
+const AccessPortal = lazy(() => import("./categories/security/access-portal"));
 const TfaPage = lazy(() => import("./categories/security/tfa"));
 
 const CustomizationSettings = lazy(() =>
@@ -47,8 +47,8 @@ const TEAM_TEMPLATE_URL = combineUrl(
 );
 //const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
 const SECURITY_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights");
-const ACCESS_PORTAL_URL = combineUrl(PROXY_BASE_URL, "/security/accessportal");
-const TFA_PAGE_URL = combineUrl(PROXY_BASE_URL, "/security/accessportal/tfa");
+const ACCESS_PORTAL_URL = combineUrl(PROXY_BASE_URL, "/security/access-portal");
+const TFA_PAGE_URL = combineUrl(PROXY_BASE_URL, "/security/access-portal/tfa");
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const THIRD_PARTY_URL = combineUrl(
