@@ -7,6 +7,9 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
+import withLoader from "../../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
+
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: auto 1fr auto auto;
@@ -76,5 +79,11 @@ export default withRouter(
     setFilter: peopleStore.filterStore.setFilterParams,
     group: peopleStore.selectedGroupStore.targetedGroup,
     resetGroup: peopleStore.selectedGroupStore.resetGroup,
-  }))(observer(withTranslation("GroupAction")(SectionHeaderContent)))
+  }))(
+    observer(
+      withTranslation("GroupAction")(
+        withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
+      )
+    )
+  )
 );
