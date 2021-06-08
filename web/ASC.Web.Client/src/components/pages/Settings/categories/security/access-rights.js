@@ -82,7 +82,7 @@ class AccessRights extends PureComponent {
       isLoading: false,
     };
 
-    setDocumentTitle(t("ManagementCategorySecurity"));
+    setDocumentTitle(t("AccessRights"));
   }
 
   async componentDidMount() {
