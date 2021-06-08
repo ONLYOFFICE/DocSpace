@@ -8,10 +8,12 @@ import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 const SecuritySettings = lazy(() =>
   import("./categories/security/access-rights")
 );
-const Admins = lazy(() => import("./categories/security/admins"));
+const Admins = lazy(() =>
+  import("./categories/security/sub-components/admins")
+);
 
 const AccessPortal = lazy(() => import("./categories/security/access-portal"));
-const TfaPage = lazy(() => import("./categories/security/tfa"));
+const TfaPage = lazy(() => import("./categories/security/sub-components/tfa"));
 
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")

@@ -25,7 +25,7 @@ import PeopleSelector from "people/PeopleSelector";
 import { inject, observer } from "mobx-react";
 
 import { getUserRole } from "@appserver/people/src/helpers/people-helpers";
-import { getNewModulesList } from "../../utils";
+import { getNewModulesList } from "../../../utils";
 
 import isEmpty from "lodash/isEmpty";
 

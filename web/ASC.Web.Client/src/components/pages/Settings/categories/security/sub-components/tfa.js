@@ -9,7 +9,7 @@ import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 
-import { setDocumentTitle } from "../../../../../helpers/utils";
+import { setDocumentTitle } from "../../../../../../helpers/utils";
 import { inject } from "mobx-react";
 
 const MainContainer = styled.div`
