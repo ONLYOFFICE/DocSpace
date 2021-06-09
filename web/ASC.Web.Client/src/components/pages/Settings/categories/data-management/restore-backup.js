@@ -14,6 +14,7 @@ class RestoreBackup extends React.Component {
 
     this.state = {
       isChecked: false,
+      isNotify: true,
     };
   }
 
@@ -22,9 +23,14 @@ class RestoreBackup extends React.Component {
       isChecked: !this.state.isChecked,
     });
   };
+  onChangeCheckboxNotify = () => {
+    this.setState({
+      isNotify: !this.state.isNotify,
+    });
+  };
   render() {
     const { t } = this.props;
-    const { isChecked, isLoading } = this.state;
+    const { isChecked, isLoading, isNotify } = this.state;
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -36,6 +42,14 @@ class RestoreBackup extends React.Component {
         <Text className="category-item-description restore-source">
           {t("Source")}
         </Text>
+
+        <Checkbox
+          truncate
+          className="restore-backup-checkbox_notification"
+          onChange={this.onChangeCheckboxNotify}
+          isChecked={isNotify}
+          label={t("RestoreNotification")}
+        />
 
         <Text className="category-item-description restore-source restore-warning">
           {t("Common:Warning")}

@@ -68,6 +68,9 @@ const StyledComponent = styled.div`
   .restore-backup-checkbox {
     margin-bottom: 24px;
   }
+  .restore-backup-checkbox_notification {
+    margin-top: 15px;
+  }
 `;
 const StyledModules = styled.div`
   margin-bottom: 40px;
