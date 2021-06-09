@@ -634,8 +634,8 @@ class DocumentsModule extends React.Component {
               onCancelClick={this.onCancelModuleSettings}
               showReminder={false}
               reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("SaveButton")}
-              cancelButtonLabel={t("CancelButton")}
+              saveButtonLabel={t("Common:SaveButton")}
+              cancelButtonLabel={t("Common:CancelButton")}
               isDisabled={isCopyingToLocal || isLoadingData}
             />
           )}
@@ -644,4 +644,4 @@ class DocumentsModule extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(DocumentsModule);
+export default withTranslation(["Settings", "Common"])(DocumentsModule);

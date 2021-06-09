@@ -640,8 +640,8 @@ class ThirdPartyModule extends React.Component {
               onCancelClick={this.onCancelModuleSettings}
               showReminder={false}
               reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("SaveButton")}
-              cancelButtonLabel={t("CancelButton")}
+              saveButtonLabel={t("Common:SaveButton")}
+              cancelButtonLabel={t("Common:CancelButton")}
               isDisabled={isCopyingToLocal || isLoadingData}
             />
           )}
@@ -655,4 +655,4 @@ export default inject(({ auth }) => {
   return {
     helpUrlCreatingBackup,
   };
-})(withTranslation("Settings")(observer(ThirdPartyModule)));
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

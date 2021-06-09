@@ -112,8 +112,8 @@ class GoogleCloudStorage extends React.Component {
             onCancelClick={this.onCancelSettings}
             showReminder={false}
             reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("SaveButton")}
-            cancelButtonLabel={t("CancelButton")}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("Common:CancelButton")}
             isDisabled={isCopyingToLocal || isLoadingData || isLoading}
           />
         )}
@@ -121,4 +121,4 @@ class GoogleCloudStorage extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(GoogleCloudStorage);
+export default withTranslation(["Settings", "Common"])(GoogleCloudStorage);

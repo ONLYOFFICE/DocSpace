@@ -859,8 +859,8 @@ class AutomaticBackup extends React.PureComponent {
             onCancelClick={this.onCancelModuleSettings}
             showReminder={false}
             reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("SaveButton")}
-            cancelButtonLabel={t("CancelButton")}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("Common:CancelButton")}
             isDisabled={isCopyingToLocal || isLoadingData}
           />
         )}
@@ -884,4 +884,4 @@ export default inject(({ auth }) => {
   return {
     language,
   };
-})(withTranslation("Settings")(observer(AutomaticBackup)));
+})(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

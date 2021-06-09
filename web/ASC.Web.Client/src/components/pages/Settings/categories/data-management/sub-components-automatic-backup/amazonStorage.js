@@ -238,8 +238,8 @@ class AmazonStorage extends React.Component {
             onCancelClick={this.onCancelSettings}
             showReminder={false}
             reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("SaveButton")}
-            cancelButtonLabel={t("CancelButton")}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("Common:CancelButton")}
             isDisabled={
               isCopyingToLocal || isLoadingData || isLoading || this.isDisabled
             }
@@ -249,4 +249,4 @@ class AmazonStorage extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(AmazonStorage);
+export default withTranslation(["Settings", "Common"])(AmazonStorage);
