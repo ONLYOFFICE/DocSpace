@@ -6,6 +6,8 @@ import { withTranslation } from "react-i18next";
 import Headline from "@appserver/common/components/Headline";
 import IconButton from "@appserver/components/icon-button";
 import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
+import DropDownItem from "@appserver/components/drop-down-item";
+
 import { tablet, desktop } from "@appserver/components/utils/device";
 
 import {
@@ -192,6 +194,11 @@ class SectionHeaderContent extends React.Component {
     setSelected(checked ? "all" : "close");
   };
 
+  onSelectAll = () => {
+    const { setSelected } = this.props;
+    setSelected("all");
+  };
+
   removeAdmins = () => {
     const { removeAdmins } = this.props;
     if (!removeAdmins) return;
@@ -217,6 +224,14 @@ class SectionHeaderContent extends React.Component {
         isSeparator: true,
         isSelect: true,
         fontWeight: "bold",
+        children: [
+          <DropDownItem
+            key="all"
+            label={t("Common:SelectAll")}
+            data-index={0}
+            onClick={this.onSelectAll}
+          />,
+        ],
       },
       {
         label: t("Common:Delete"),
