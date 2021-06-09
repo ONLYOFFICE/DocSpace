@@ -90,6 +90,8 @@ const getTreeItems = (data, path, t) => {
         return t("Migration");
       case "Backup":
         return t("Backup");
+      case "DataRestore":
+        return t("DataRestore");
       default:
         throw new Error("Unexpected translation key");
     }

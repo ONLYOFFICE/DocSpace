@@ -26,6 +26,9 @@ const AutomaticBackup = lazy(() =>
 const ManualBackup = lazy(() =>
   import("./categories/data-management/manual-backup.js")
 );
+const RestoreBackup = lazy(() =>
+  import("./categories/data-management/restore-backup.js")
+);
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
 
@@ -65,6 +68,10 @@ const MANUAL_BACKUP_URL = combineUrl(
   PROXY_BASE_URL,
   "/datamanagement/backup/manual-backup"
 );
+const RESTORE_BACKUP_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/datamanagement/backup/restore-backup"
+);
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 console.log();
 const Settings = () => {
@@ -98,6 +105,7 @@ const Settings = () => {
             component={AutomaticBackup}
           />
           <Route exact path={MANUAL_BACKUP_URL} component={ManualBackup} />
+          <Route exact path={RESTORE_BACKUP_URL} component={RestoreBackup} />
           <Redirect
             to={{
               pathname: ERROR_404_URL,

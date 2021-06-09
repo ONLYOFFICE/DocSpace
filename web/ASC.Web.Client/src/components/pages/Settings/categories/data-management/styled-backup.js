@@ -50,6 +50,24 @@ const StyledComponent = styled.div`
     width: 100%;
     max-width: 820px;
   }
+  .restore-source {
+    font-weight: 600;
+    margin-top: 30px;
+    font-size: 19px;
+  }
+  .restore-warning {
+    font-weight: 600;
+    margin-top: 18px;
+    margin-bottom: 15px;
+    font-size: 19px;
+    color: #c30;
+  }
+  .restore-warning_link {
+    margin: 15px 0;
+  }
+  .restore-backup-checkbox {
+    margin-bottom: 24px;
+  }
 `;
 const StyledModules = styled.div`
   margin-bottom: 40px;

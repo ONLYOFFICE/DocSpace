@@ -154,7 +154,17 @@ class Backup extends React.Component {
 
         <div className="category-item-wrapper">
           <div className="category-item-heading">
-            <Text className="inherit-title-link">{t("DataRestore")}</Text>
+            <Link
+              truncate={true}
+              className="inherit-title-link header"
+              onClick={this.onClickLink}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/settings/datamanagement/backup/restore-backup"
+              )}
+            >
+              {t("DataRestore")}
+            </Link>
             <StyledArrowRightIcon size="small" color="#333333" />
           </div>
           <Text className="category-item-description">
