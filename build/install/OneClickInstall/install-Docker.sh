@@ -469,33 +469,37 @@ check_hardware () {
 }
 
 install_service () {
+	COMMAND_NAME=$1
+	PACKAGE_NAME=$2
+
+	PACKAGE_NAME=${PACKAGE_NAME:-"$COMMAND_NAME"}
+
 	if command_exists apt-get; then
-		apt-get -y update
-		apt-get -y -q install $1
+		apt-get -y update -qq
+		apt-get -y -q install $PACKAGE_NAME
 	elif command_exists yum; then
-		yum -y install $1
+		yum -y install $PACKAGE_NAME
 	fi
 
-	if ! command_exists $1; then
-		echo "command $1 not found"
+	if ! command_exists $COMMAND_NAME; then
+		echo "command $COMMAND_NAME not found"
 		exit 1;
 	fi
 }
 
 install_docker_compose () {
 	if ! command_exists python3; then
-		if command_exists apt-get; then
-			apt-get -y -q install python3
-		elif command_exists yum; then
-			yum -y install python3
-		fi
+		install_service python3
 	fi
 
-	if command_exists pip3; then
+	if command_exists apt-get; then
+		apt-get -y update -qq
+		apt-get -y -q install python3-pip
+	elif command_exists yum; then
 		curl -O https://bootstrap.pypa.io/get-pip.py
 		python3 get-pip.py || true
 		rm get-pip.py
-	fi
+	fi	
 
 	python3 -m pip install docker-compose
 	sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
@@ -512,7 +516,7 @@ check_ports () {
 	USED_PORTS="";
 
 	if ! command_exists netstat; then
-		install_service net-tools
+		install_service netstat net-tools
 	fi
 
 	if [ "${EXTERNAL_PORT//[0-9]}" = "" ]; then
