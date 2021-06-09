@@ -13,7 +13,7 @@
 
 PRODUCT="onlyoffice"
 BASE_DIR="/app/$PRODUCT";
-ENV=""
+STATUS=""
 
 NETWORK=${PRODUCT}
 
@@ -51,6 +51,7 @@ DOCUMENT_SERVER_HOST=""
 
 APP_CORE_BASE_DOMAIN=""
 APP_CORE_MACHINEKEY=""
+APP_DOTNET_ENV=""
 
 HELP_TARGET="install-Docker.sh";
 
@@ -216,9 +217,16 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
-		-env )
+		-env | --dotnetenv )
 			if [ "$2" != "" ]; then
-				ENV=$2
+				APP_DOTNET_ENV=$2
+				shift
+			fi
+		;;
+
+		-s | --status )
+			if [ "$2" != "" ]; then
+				STATUS=$2
 				shift
 			fi
 		;;
@@ -729,8 +737,8 @@ download_files () {
 	wget -q -O $BASE_DIR/config/onlyoffice.upgradev111.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev111.sql"
 	wget -q -O $BASE_DIR/config/onlyoffice.upgradev115.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev115.sql"
 
-	if [[ -n ${ENV} ]]; then
-		sed -i "s/STATUS=.*/STATUS=\"${ENV}\"/g" $BASE_DIR/.env
+	if [[ -n ${STATUS} ]]; then
+		sed -i "s/STATUS=.*/STATUS=\"${STATUS}\"/g" $BASE_DIR/.env
 	fi
 }
 
