@@ -888,7 +888,7 @@ class PortalAdmins extends Component {
                                       fontSize="9px"
                                       fontWeight={600}
                                     >
-                                      {t("FullAccess")}
+                                      {t("Common:FullAccess")}
                                     </Text>
                                   </div>
                                 ) : user.listAdminModules ? (
