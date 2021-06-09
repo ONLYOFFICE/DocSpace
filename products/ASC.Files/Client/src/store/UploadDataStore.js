@@ -104,6 +104,18 @@ class UploadDataStore {
     this.converted = true;
   };
 
+  clearUploadedFiles = () => {
+    const uploadData = {
+      filesSize: 0,
+      uploadStatus: null,
+      uploadedFiles: 0,
+      percent: 0,
+      files: this.files.filter((x) => x.action !== "uploaded"),
+    };
+
+    this.setUploadData(uploadData);
+  };
+
   getUploadedFile = (id) => {
     return this.files.filter((f) => f.uniqueId === id);
   };
@@ -119,6 +131,29 @@ class UploadDataStore {
 
     const newUploadData = {
       files: newFiles,
+      filesSize: this.filesSize,
+      uploadedFiles: this.uploadedFiles,
+      percent: 100,
+      uploaded: true,
+      converted: true,
+    };
+
+    if (newUploadData.files.length === 0) this.setUploadPanelVisible(false);
+    this.setUploadData(newUploadData);
+  };
+
+  cancelConversion = () => {
+    let newFiles = [];
+
+    for (let i = 0; i < this.files.length; i++) {
+      if (this.files[i].action === "converted" || this.files[i].error) {
+        newFiles.push(this.files[i]);
+      }
+    }
+
+    const newUploadData = {
+      files: newFiles,
+      filesToConversion: [],
       filesSize: this.filesSize,
       uploadedFiles: this.uploadedFiles,
       percent: 100,
@@ -183,15 +218,11 @@ class UploadDataStore {
 
   getNewPercent = (uploadedSize, indexOfFile) => {
     const newTotalSize = sumBy(this.files, (f) =>
-      f.file && f.action !== "uploaded" && f.action !== "converted"
-        ? f.file.size
-        : 0
+      f.file && f.action !== "converted" ? f.file.size : 0
     );
     const totalUploadedFiles = this.files.filter((_, i) => i < indexOfFile);
     const totalUploadedSize = sumBy(totalUploadedFiles, (f) =>
-      f.file && f.action !== "uploaded" && f.action !== "converted"
-        ? f.file.size
-        : 0
+      f.file && f.action !== "converted" ? f.file.size : 0
     );
     const newPercent =
       ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
@@ -228,8 +259,6 @@ class UploadDataStore {
       this.primaryProgressDataStore.setPrimaryProgressBarData(
         alert ? { ...data, ...{ alert } } : data
       );
-    } else if (alert) {
-      this.primaryProgressDataStore.setPrimaryProgressBarData({ alert });
     }
   };
 
@@ -271,7 +300,7 @@ class UploadDataStore {
           error = res && res[0] && res[0].error;
           if (error.length) {
             const percent = this.getConversationPercent(100);
-            this.setConversionPercent(percent, true);
+            this.setConversionPercent(percent, !!error);
 
             runInAction(() => {
               const file = this.files.find((file) => file.fileId === fileId);
@@ -289,7 +318,7 @@ class UploadDataStore {
             this.refreshFiles(toFolderId, false);
 
             const percent = this.getConversationPercent(100, index);
-            this.setConversionPercent(percent);
+            this.setConversionPercent(percent, !!error);
 
             break;
           } else {
@@ -485,7 +514,7 @@ class UploadDataStore {
     const { toFolderId, needConvert } = currentFile;
 
     if (needConvert) {
-      currentFile.action = "convert";
+      runInAction(() => (currentFile.action = "convert"));
       if (!this.filesToConversion.length || this.converted) {
         this.filesToConversion.push(currentFile);
         this.startConversion();
@@ -509,7 +538,7 @@ class UploadDataStore {
       visible: true,
       percent: this.percent,
       icon: "upload",
-      //alert: false,
+      alert: false,
     };
 
     this.primaryProgressDataStore.setPrimaryProgressBarData(progressData);
@@ -528,6 +557,16 @@ class UploadDataStore {
       this.finishUploadFiles();
     } else {
       runInAction(() => (this.uploaded = true));
+      const uploadedFiles = this.files.filter((x) => x.action === "uploaded");
+      const totalErrorsCount = sumBy(uploadedFiles, (f) => (f.error ? 1 : 0));
+      if (totalErrorsCount > 0)
+        console.log("Upload errors: ", totalErrorsCount);
+
+      setTimeout(() => {
+        if (!this.uploadPanelVisible && !totalErrorsCount) {
+          this.clearUploadedFiles();
+        }
+      }, TIMEOUT);
     }
   };
 
