@@ -92,6 +92,10 @@ const FileRow = (props) => {
   //   this.props.setMediaViewerData(item);
   // };
 
+  const onCancelClick = !item.inConversion
+    ? { onClick: onCancelCurrentUpload }
+    : {};
+
   return (
     <>
       <StyledFileRow
@@ -146,9 +150,13 @@ const FileRow = (props) => {
                 data-id={item.uniqueId}
                 data-file-id={item.fileId}
                 data-action={item.action}
-                onClick={onCancelCurrentUpload}
+                {...onCancelClick}
               >
-                <LoadingButton isConversion percent={conversationProgress} />
+                <LoadingButton
+                  isConversion
+                  inConversion={item.inConversion}
+                  percent={conversationProgress}
+                />
               </div>
             ) : (
               <></>

@@ -34,15 +34,12 @@ class UploadDataStore {
   tempConversionFiles = [];
   filesToConversion = [];
   convertFilesSize = 0;
-  uploadStatus = null;
   uploadToFolder = null;
   uploadedFiles = 0;
   percent = 0;
   uploaded = true;
   converted = true;
-
   uploadPanelVisible = false;
-
   selectedUploadFile = [];
 
   constructor(
@@ -97,7 +94,6 @@ class UploadDataStore {
     this.files = [];
     this.filesToConversion = [];
     this.filesSize = 0;
-    this.uploadStatus = null;
     this.uploadedFiles = 0;
     this.percent = 0;
     this.uploaded = true;
@@ -107,7 +103,6 @@ class UploadDataStore {
   clearUploadedFiles = () => {
     const uploadData = {
       filesSize: 0,
-      uploadStatus: null,
       uploadedFiles: 0,
       percent: 0,
       files: this.files.filter((x) => x.action !== "uploaded"),
@@ -146,7 +141,8 @@ class UploadDataStore {
     let newFiles = [];
 
     for (let i = 0; i < this.files.length; i++) {
-      if (this.files[i].action === "converted" || this.files[i].error) {
+      const file = this.files[i];
+      if (file.action === "converted" || file.error || file.inConversion) {
         newFiles.push(this.files[i]);
       }
     }
@@ -200,9 +196,19 @@ class UploadDataStore {
   };
 
   convertFile = (file) => {
+    this.dialogsStore.setConvertItem(null);
+
     const alreadyConverting = this.files.some(
       (item) => item.fileId === file.fileId
     );
+
+    if (this.converted) {
+      this.filesToConversion = [];
+      this.convertFilesSize = 0;
+      this.files = this.files.filter((f) => f.action === "converted");
+
+      this.primaryProgressDataStore.clearPrimaryProgressData();
+    }
 
     if (!alreadyConverting) {
       this.files.push(file);
@@ -270,10 +276,7 @@ class UploadDataStore {
   };
 
   startConversion = async () => {
-    const { convertItem, setConvertItem } = this.dialogsStore;
-
     runInAction(() => (this.converted = false));
-    convertItem && setConvertItem(null);
     this.setConversionPercent(0);
 
     let index = 0;
@@ -283,6 +286,9 @@ class UploadDataStore {
     while (index < len) {
       const conversionItem = this.filesToConversion[index];
       const { fileId, toFolderId } = conversionItem;
+
+      const file = this.files.find((f) => f.fileId === fileId);
+      if (file) file.inConversion = true;
 
       const data = await convertFile(fileId);
       if (data && data[0] && data[0].progress !== 100) {
@@ -304,7 +310,10 @@ class UploadDataStore {
 
             runInAction(() => {
               const file = this.files.find((file) => file.fileId === fileId);
-              if (file) file.error = error;
+              if (file) {
+                file.error = error;
+                file.inConversion = false;
+              }
             });
             this.refreshFiles(toFolderId, false);
             break;
@@ -312,9 +321,12 @@ class UploadDataStore {
           if (progress === 100) {
             runInAction(() => {
               const file = this.files.find((file) => file.fileId === fileId);
-              if (file) file.convertProgress = progress;
+              if (file) {
+                file.convertProgress = progress;
+                file.inConversion = false;
+                file.action = "converted";
+              }
             });
-            conversionItem.action = "converted";
             this.refreshFiles(toFolderId, false);
 
             const percent = this.getConversationPercent(100, index);
@@ -364,6 +376,17 @@ class UploadDataStore {
   startUpload = (uploadFiles, folderId, t) => {
     const { canConvert } = this.formatsStore.docserviceStore;
 
+    if (this.uploaded) {
+      this.files = this.files.filter((f) => f.action !== "upload");
+      this.filesSize = 0;
+      this.uploadToFolder = null;
+      this.percent = 0;
+    }
+    if (this.converted) {
+      this.files = [];
+      this.filesToConversion = [];
+    }
+
     let newFiles = this.files;
     let filesSize = 0;
     let convertSize = 0;
@@ -380,7 +403,6 @@ class UploadDataStore {
         uniqueId: uniqueid("download_row-key_"),
         fileId: null,
         toFolderId: folderId,
-        //action: needConvert ? "convert" : "upload",
         action: "upload",
         error: file.size ? null : t("EmptyFile"),
         fileInfo: null,
@@ -402,8 +424,6 @@ class UploadDataStore {
 
     if (this.tempConversionFiles.length)
       this.dialogsStore.setConvertDialogVisible(true);
-
-    //const showConvertDialog = uploadStatus === "pending";
 
     const newUploadData = {
       files: newFiles,
@@ -563,7 +583,7 @@ class UploadDataStore {
         console.log("Upload errors: ", totalErrorsCount);
 
       setTimeout(() => {
-        if (!this.uploadPanelVisible && !totalErrorsCount) {
+        if (!this.uploadPanelVisible && !totalErrorsCount && this.converted) {
           this.clearUploadedFiles();
         }
       }, TIMEOUT);
@@ -669,13 +689,13 @@ class UploadDataStore {
 
     if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
 
+    this.uploaded = true;
+    this.converted = true;
+
     const uploadData = {
       filesSize: 0,
-      uploadStatus: null,
       uploadedFiles: 0,
       percent: 0,
-      uploaded: true,
-      converted: true,
     };
 
     setTimeout(() => {

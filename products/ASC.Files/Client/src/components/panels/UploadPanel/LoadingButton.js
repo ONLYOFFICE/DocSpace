@@ -86,7 +86,7 @@ const StyledLoadingButton = styled.div`
 `;
 
 const LoadingButton = ({ id, className, style, ...rest }) => {
-  const { percent, onClick, isConversion } = rest;
+  const { percent, onClick, isConversion, inConversion } = rest;
 
   return (
     <StyledCircleWrap
@@ -104,7 +104,7 @@ const LoadingButton = ({ id, className, style, ...rest }) => {
         </div>
 
         <StyledLoadingButton isConversion={isConversion}>
-          &times;
+          {!inConversion && <>&times;</>}
         </StyledLoadingButton>
       </StyledCircle>
     </StyledCircleWrap>
