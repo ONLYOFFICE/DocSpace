@@ -1,9 +1,10 @@
 import React from "react";
 import styled, { css, keyframes } from "styled-components";
+import globalColors from "@appserver/components/utils/globalColors";
 
 const backgroundColor = "none";
-const color = "#2DA7DB";
-const convertColor = "#20d21f";
+const color = globalColors.blueMain;
+const convertColor = globalColors.hoverSuccess;
 
 const StyledCircleWrap = styled.div`
   width: 16px;

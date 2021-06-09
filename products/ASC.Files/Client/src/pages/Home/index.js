@@ -26,13 +26,10 @@ import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
+import globalColors from "@appserver/components/utils/globalColors";
 
-const color = "#2DA7DB";
-const convertColor = "#20d21f";
-
-//#BCDF7E
-//#20d21f
-//#b9d21f
+const color = globalColors.blueMain;
+const convertColor = globalColors.hoverSuccess;
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -249,9 +246,11 @@ class PureHome extends React.Component {
       dragging,
 
       uploaded,
+      converted,
     } = this.props;
 
-    const primaryProgressBarColor = uploaded ? convertColor : color;
+    const primaryProgressBarColor =
+      uploaded && !converted ? convertColor : color;
 
     return (
       <>

@@ -67,6 +67,7 @@ const FileRow = (props) => {
     item,
     uploaded,
     cancelCurrentUpload,
+    cancelCurrentFileConversion,
     //onMediaClick,
     currentFileUploadProgress,
     conversationProgress,
@@ -78,8 +79,11 @@ const FileRow = (props) => {
 
   const onCancelCurrentUpload = (e) => {
     //console.log("cancel upload ", e);
-    const id = e.currentTarget.dataset.id;
-    return cancelCurrentUpload(id);
+    const { id, action, fileId } = e.currentTarget.dataset;
+
+    return action === "convert"
+      ? cancelCurrentFileConversion(fileId)
+      : cancelCurrentUpload(id);
   };
 
   // const onMediaClick = (id) => {
@@ -140,6 +144,8 @@ const FileRow = (props) => {
               <div
                 className="upload_panel-icon"
                 data-id={item.uniqueId}
+                data-file-id={item.fileId}
+                data-action={item.action}
                 onClick={onCancelCurrentUpload}
               >
                 <LoadingButton isConversion percent={conversationProgress} />
@@ -199,6 +205,7 @@ export default inject(
       uploaded,
       primaryProgressDataStore,
       cancelCurrentUpload,
+      cancelCurrentFileConversion,
     } = uploadDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
     const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
@@ -224,6 +231,7 @@ export default inject(
       loadingFile,
 
       cancelCurrentUpload,
+      cancelCurrentFileConversion,
     };
   }
 )(observer(FileRow));

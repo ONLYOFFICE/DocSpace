@@ -27,7 +27,7 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
   return (
     <StyledCircleWrap
       id={id}
-      className={className}
+      className={`${className} not-selectable`}
       style={style}
       icon={icon}
       onClick={onClick}

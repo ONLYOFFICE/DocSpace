@@ -28,13 +28,20 @@ class UploadPanelComponent extends React.Component {
       converted,
       clearUploadData,
       uploadPanelVisible,
+      clearUploadedFiles,
       setUploadPanelVisible,
       clearPrimaryProgressData,
     } = this.props;
+
     setUploadPanelVisible(!uploadPanelVisible);
-    if (uploaded && converted) {
-      clearUploadData();
-      clearPrimaryProgressData();
+
+    if (uploaded) {
+      if (converted) {
+        clearUploadData();
+        clearPrimaryProgressData();
+      } else {
+        clearUploadedFiles();
+      }
     }
   };
   componentDidMount() {
@@ -63,6 +70,8 @@ class UploadPanelComponent extends React.Component {
       /* sharingPanelVisible, */ uploaded,
       converted,
       uploadDataFiles,
+      cancelUpload,
+      cancelConversion,
     } = this.props;
 
     const visible = uploadPanelVisible;
@@ -84,21 +93,21 @@ class UploadPanelComponent extends React.Component {
               </Heading>
               <div className="upload_panel-icons-container">
                 <div className="upload_panel-remove-icon">
-                  {uploaded ? (
+                  {uploaded && converted ? (
                     <IconButton
                       size="20"
                       iconName="images/clear.active.react.svg"
                       color="#A3A9AE"
-                      isClickable={true}
+                      isClickable
                       onClick={this.clearUploadPanel}
                     />
                   ) : (
                     <IconButton
                       size="20"
                       iconName="images/button.cancel.react.svg"
-                      color="#A3A9AE"
-                      isClickable={true}
-                      onClick={this.props.cancelUpload}
+                      color={uploaded ? "#BCDF7E" : "#A3A9AE"}
+                      isClickable
+                      onClick={uploaded ? cancelConversion : cancelUpload}
                     />
                   )}
                 </div>
@@ -136,6 +145,8 @@ export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
     converted,
     clearUploadData,
     cancelUpload,
+    cancelConversion,
+    clearUploadedFiles,
     uploadPanelVisible,
     setUploadPanelVisible,
     files,
@@ -153,6 +164,8 @@ export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
     setUploadPanelVisible,
     clearUploadData,
     cancelUpload,
+    cancelConversion,
+    clearUploadedFiles,
     uploadDataFiles: files,
     clearPrimaryProgressData,
   };
