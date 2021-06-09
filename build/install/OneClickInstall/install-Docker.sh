@@ -251,6 +251,12 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-ls | --local_scripts )
+			if [ "$2" != "" ]; then
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -276,6 +282,7 @@ while [ "$1" != "" ]; do
 			echo "      -ip, --internalport               internal appserver port (default value 5050)"
 			echo "      -ep, --externalport               external appserver port (default value 8092)"
 			echo "      -mk, --machinekey                 setting for core.machinekey"
+			echo "      -ls, --local_scripts              run the installation from local scripts"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"
