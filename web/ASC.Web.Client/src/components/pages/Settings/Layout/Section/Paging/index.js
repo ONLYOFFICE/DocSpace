@@ -79,15 +79,15 @@ const SectionPagingContent = ({
     () => [
       {
         key: 25,
-        label: t("CountPerPage", { count: 25 }),
+        label: t("Common:CountPerPage", { count: 25 }),
       },
       {
         key: 50,
-        label: t("CountPerPage", { count: 50 }),
+        label: t("Common:CountPerPage", { count: 50 }),
       },
       {
         key: 100,
-        label: t("CountPerPage", { count: 100 }),
+        label: t("Common:CountPerPage", { count: 100 }),
       },
     ],
     [t]
@@ -99,19 +99,22 @@ const SectionPagingContent = ({
     return [...Array(totalPages).keys()].map((item) => {
       return {
         key: item,
-        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages }),
+        label: t("Common:PageOfTotalPage", {
+          page: item + 1,
+          totalPage: totalPages,
+        }),
       };
     });
   }, [filter.total, filter.pageCount, t]);
 
   const emptyPageSelection = {
     key: 0,
-    label: t("PageOfTotalPage", { page: 1, totalPage: 1 }),
+    label: t("Common:PageOfTotalPage", { page: 1, totalPage: 1 }),
   };
 
   const emptyCountSelection = {
     key: 0,
-    label: t("CountPerPage", { count: 25 }),
+    label: t("Common:CountPerPage", { count: 25 }),
   };
 
   const selectedPageItem =
@@ -126,8 +129,8 @@ const SectionPagingContent = ({
       <></>
     ) : (
       <Paging
-        previousLabel={t("PreviousPage")}
-        nextLabel={t("NextPage")}
+        previousLabel={t("Common:PreviousPage")}
+        nextLabel={t("Common:NextPage")}
         pageItems={pageItems}
         onSelectPage={onChangePage}
         countItems={countItems}
@@ -153,4 +156,4 @@ export default inject(({ auth, setup }) => ({
   fetchPeople: setup.updateListAdmins,
   filter: setup.security.accessRight.filter,
   setIsLoading: setup.setIsLoading,
-}))(withTranslation("Settings")(observer(SectionPagingContent)));
+}))(withTranslation(["Settings", "Common"])(observer(SectionPagingContent)));
