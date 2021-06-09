@@ -5,6 +5,7 @@ import history from "../history";
 import ModuleStore from "./ModuleStore";
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
+import TfaStore from "./TfaStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
 import isEmpty from "lodash/isEmpty";
@@ -15,6 +16,7 @@ class AuthStore {
   userStore = null;
   moduleStore = null;
   settingsStore = null;
+  tfaStore = null;
 
   isLoading = false;
   isAuthenticated = false;
@@ -26,6 +28,7 @@ class AuthStore {
     this.userStore = new UserStore();
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
+    this.tfaStore = new TfaStore();
 
     makeAutoObservable(this);
   }
@@ -153,16 +156,31 @@ class AuthStore {
     try {
       const response = await api.user.login(user, hash);
 
-      if (!response || !response.token) throw "Empty API response";
+      if (!response || (!response.token && !response.tfa))
+        throw response.error.message;
+
+      if (response.tfa && response.confirmUrl) {
+        const url = response.confirmUrl.replace(window.location.origin, "");
+        return Promise.resolve({ url, user, hash });
+      }
 
       setWithCredentialsStatus(true);
 
       await this.init();
 
-      return Promise.resolve(true);
+      return Promise.resolve({ url: this.settingsStore.defaultPage });
     } catch (e) {
       return Promise.reject(e);
     }
+  };
+
+  loginWithCode = async (userName, passwordHash, code) => {
+    await this.tfaStore.loginWithCode(userName, passwordHash, code);
+    setWithCredentialsStatus(true);
+
+    await this.init();
+
+    return Promise.resolve(this.settingsStore.defaultPage);
   };
 
   thirdPartyLogin = async (SerializedProfile) => {
