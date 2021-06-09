@@ -206,6 +206,7 @@ class OwnerSettings extends Component {
                   className="option-info"
                   offsetRight={0}
                   tooltipContent={this.ownerInfo()}
+                  tooltipColor="#F8F7BF"
                 />
               </div>
               <div className="chooseOwnerWrap">

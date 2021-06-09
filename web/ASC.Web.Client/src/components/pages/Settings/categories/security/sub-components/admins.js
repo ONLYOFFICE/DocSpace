@@ -751,6 +751,7 @@ class PortalAdmins extends Component {
                               place="top"
                               offsetRight={0}
                               tooltipContent={this.fullAccessTooltip()}
+                              tooltipColor="#F8F7BF"
                             />
                           </div>
                           <ToggleButton
@@ -778,6 +779,7 @@ class PortalAdmins extends Component {
                                 place="bottom"
                                 offsetRight={0}
                                 tooltipContent={this.modulesTooltip()}
+                                tooltipColor="#F8F7BF"
                               />
                             </div>
 
