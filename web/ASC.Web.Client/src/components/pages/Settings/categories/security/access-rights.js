@@ -141,7 +141,7 @@ class AccessRights extends PureComponent {
             </div>
             {adminsTotal > 0 && (
               <Text className="category-item-subheader" truncate={true}>
-                {adminsTotal} {t("Employees")}
+                {adminsTotal} {t("Admins")}
               </Text>
             )}
             <Text className="category-item-description">
