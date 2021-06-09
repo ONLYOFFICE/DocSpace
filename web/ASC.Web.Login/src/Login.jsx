@@ -305,8 +305,9 @@ const Form = (props) => {
 
     isDesktop && checkPwd();
     login(userName, hash)
-      .then(() => {
-        history.push(defaultPage);
+      .then((res) => {
+        const { url, user, hash } = res;
+        history.push(url, { user, hash });
       })
       .catch((error) => {
         setErrorText(error);

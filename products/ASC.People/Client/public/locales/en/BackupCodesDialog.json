@@ -1,0 +1,8 @@
+{
+  "BackupCodesTitle": "Backup codes",
+  "BackupCodesDescription": "Backup codes allow you to confirm login when you don't have access to your phone.",
+  "BackupCodesSecondDescription": "Each code can be used only one time. You can get new codes anytime. Only codes which was generated last are valid.",
+  "CodesCounter": "codes:",
+  "PrintButton": "Print",
+  "RequestNewButton": "Request new"
+}

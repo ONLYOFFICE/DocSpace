@@ -62,5 +62,12 @@
   "UseAsLogoButton": "Use as logo",
   "Users": "Users",
   "WelcomePageTitle": "Welcome page title",
-  "YouHaveUnsavedChanges": "You have unsaved changes"
+  "YouHaveUnsavedChanges": "You have unsaved changes",
+
+  "PortalAccess": "Portal access",
+  "TwoFactorAuth": "Two-factor authentication",
+  "Disabled": "Disabled",
+  "BySms": "By sms",
+  "ByApp": "By authenticator app",
+  "TwoFactorAuthDescription": "Two-factor authentication provides a more secure way for users to log in to the portal. After entering the credentials, the user will have to enter a code from an SMS message that comes to the cell phone, or a code from the authentication app. The phone number is specified when logging in to the portal for the first time using two-factor authentication."
 }

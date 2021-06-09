@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
     <PackageReference Include="NLog" Version="4.7.5" />
@@ -23,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
-    <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\ASC.Data.Encryption\ASC.Data.Encryption.csproj" />
   </ItemGroup>
 
