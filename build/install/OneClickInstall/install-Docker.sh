@@ -756,6 +756,14 @@ install_mysql_server () {
 		install_docker_compose
 	fi
 
+	if [[ -z ${MYSQL_PASSWORD} ]] && [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
+		MYSQL_PASSWORD=$(get_random_str 20);
+		MYSQL_ROOT_PASSWORD=$(get_random_str 20);
+	elif [[ -z ${MYSQL_PASSWORD} ]] || [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
+		MYSQL_PASSWORD=${MYSQL_PASSWORD:-"$MYSQL_ROOT_PASSWORD"}
+		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-"$MYSQL_PASSWORD"}
+	fi
+
 	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
 	reconfigure MYSQL_USER ${MYSQL_USER}
 	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
