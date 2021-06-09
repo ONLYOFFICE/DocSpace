@@ -66,7 +66,7 @@ namespace ASC.Mail.Clients
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
 
-        private const int CONNECT_TIMEOUT = 120000;
+        private const int CONNECT_TIMEOUT = 60000;
         private const int ENABLE_UTF8_TIMEOUT = 10000;
         private const int LOGIN_TIMEOUT = 30000;
 
@@ -148,9 +148,6 @@ namespace ASC.Mail.Clients
             {
                 Imap = new ImapClient(protocolLogger)
                 {
-                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-                        certificatePermit ||
-                        MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                     Timeout = tcpTimeout
                 };
 
@@ -160,9 +157,6 @@ namespace ASC.Mail.Clients
             {
                 Pop = new Pop3Client(protocolLogger)
                 {
-                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-                        certificatePermit ||
-                        MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                     Timeout = tcpTimeout
                 };
                 Imap = null;
@@ -181,9 +175,6 @@ namespace ASC.Mail.Clients
                     DeliveryStatusNotification.Failure |
                     DeliveryStatusNotification.Delay)
                 {
-                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-                        certificatePermit ||
-                        MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                     Timeout = tcpTimeout
                 };
             }
@@ -191,9 +182,6 @@ namespace ASC.Mail.Clients
             {
                 Smtp = new SmtpClient(protocolLogger)
                 {
-                    ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-                        certificatePermit ||
-                        MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
                     Timeout = tcpTimeout
                 };
             }
@@ -446,7 +434,7 @@ namespace ASC.Mail.Clients
                     break;
                 case EncryptionType.SSL:
                     secureSocketOptions = SecureSocketOptions.SslOnConnect;
-                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
+                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
                     break;
                 case EncryptionType.None:
                     secureSocketOptions = SecureSocketOptions.None;

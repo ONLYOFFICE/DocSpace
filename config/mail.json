@@ -18,7 +18,7 @@
 			  "DefaultApiSchema": "http",
 			  "TaskLifetime": "00:05:00",
 			  "CheckTimerInterval": "00:00:10",
-			  "MaxTasksAtOnce": 1,
+			  "MaxTasksAtOnce": 10,
 			  "MaxMessagesPerSession": 25,
 			  "InactiveMailboxesRatio": 25,
 			  "ActiveInterval": "00:01:30",
