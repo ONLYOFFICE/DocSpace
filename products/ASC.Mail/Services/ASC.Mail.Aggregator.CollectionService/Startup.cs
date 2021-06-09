@@ -10,7 +10,12 @@ namespace ASC.Mail.Aggregator.CollectionService
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.Mail.Aggregator" }; }
+        public override string[] LogParams  => new string[] 
+        { 
+            "ASC.Mail.Aggregator",
+            "ASC.Mail.MainThread",
+            "ASC.Mail.Stat"
+        }; 
 
         public Startup(
             IConfiguration configuration,
