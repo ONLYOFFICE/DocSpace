@@ -114,11 +114,7 @@ class UploadPanelComponent extends React.Component {
             <StyledBody
               stype="mediumBlack"
               className="upload-panel_body"
-              style={
-                uploadDataFiles.length > 15
-                  ? { height: `100vh` }
-                  : { height: `calc(100vh - 130px)` }
-              }
+              style={{ height: `calc(100vh - 64px)` }}
             >
               <FileList />
             </StyledBody>
