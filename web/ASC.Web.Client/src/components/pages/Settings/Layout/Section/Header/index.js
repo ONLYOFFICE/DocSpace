@@ -43,22 +43,16 @@ const HeaderContainer = styled.div`
 `;
 
 const StyledContainer = styled.div`
-  @media ${desktop} {
-    ${(props) =>
-      props.isHeaderVisible &&
-      css`
-        width: calc(100% + 76px);
-      `}
-  }
-
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
+
     ${isMobile &&
     css`
       position: sticky;
     `}
+
     ${(props) =>
       !props.isTabletView
         ? props.width &&
@@ -69,7 +63,7 @@ const StyledContainer = styled.div`
         : props.width &&
           isMobile &&
           css`
-            width: ${props.width + 24 + "px"};
+            width: ${props.width + 32 + "px"};
           `}
 
     @media ${tablet} {
@@ -87,7 +81,11 @@ const StyledContainer = styled.div`
           `}
 
         position: absolute;
-        top: 56px;
+        ${(props) =>
+          !props.isDesktop &&
+          css`
+            top: 56px;
+          `}
         z-index: 180;
       }
     }

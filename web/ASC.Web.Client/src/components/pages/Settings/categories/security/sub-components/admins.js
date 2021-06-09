@@ -331,9 +331,10 @@ class PortalAdmins extends Component {
   };
 
   componentWillUnmount() {
-    const { setAddUsers, setRemoveAdmins } = this.props;
+    const { setAddUsers, setRemoveAdmins, setSelected } = this.props;
     setAddUsers("");
     setRemoveAdmins("");
+    setSelected("none");
   }
 
   onAdminsFilter = () => {
