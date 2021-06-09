@@ -217,7 +217,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
-		-env | --dotnetenv )
+		-env | --environment )
 			if [ "$2" != "" ]; then
 				APP_DOTNET_ENV=$2
 				shift
@@ -251,6 +251,7 @@ while [ "$1" != "" ]; do
 			echo "      -zh, --zookeeperhost              zookeeper host"
 			echo "      -kh, --kafkahost                  kafka host"
 			echo "      -esh, --elasticsearchhost         elasticsearch host"
+			echo "      -env, --environment               appserver environment"
 			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
 			echo "      -ip, --internalport               internal appserver port (default value 5050)"
 			echo "      -ep, --externalport               external appserver port (default value 8092)"
@@ -744,7 +745,7 @@ download_files () {
 
 reconfigure () {
 	VARIABLE_NAME=$1
-	VARIABLE_VALUE=$2
+	VARIABLE_VALUE=$(echo $2 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g')
 
 	if [[ -n ${VARIABLE_VALUE} ]]; then
 		sed -i "s/${VARIABLE_NAME}=.*/${VARIABLE_NAME}=${VARIABLE_VALUE}/g" $BASE_DIR/.env
