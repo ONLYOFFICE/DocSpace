@@ -254,11 +254,11 @@ CMD ["ASC.Projects.dll", "ASC.Projects"]
 
 ## ASC.Socket.IO.Svc ##
 FROM builder AS socket
-WORKDIR ${BUILD_PATH}/services/socket/
+WORKDIR ${BUILD_PATH}/services/socket.io.svc/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/  ${BUILD_PATH}/www/ASC.Socket.IO/
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/  ${BUILD_PATH}/ASC.Socket.IO/
 
 CMD ["ASC.Socket.IO.Svc.dll", "ASC.Socket.IO.Svc"]
 

@@ -149,7 +149,7 @@ services:
     container_name: ${SOCKET_HOST}
     expose:
     - ${SERVICE_PORT}
-    - "9999"
+    - "9899"
   
   onlyoffice-studio-notify:
     <<: *x-service-base
