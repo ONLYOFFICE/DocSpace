@@ -682,6 +682,9 @@
   <data name="OrgServerRegion" xml:space="preserve">
     <value>Регион ORG</value>
   </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Владелец</value>
+  </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Превышена квота на размер дискового пространства</value>
   </data>

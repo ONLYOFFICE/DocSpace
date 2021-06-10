@@ -80,6 +80,10 @@ const getTreeItems = (data, path, t) => {
         return t("TeamTemplate");
       case "ManagementCategorySecurity":
         return t("ManagementCategorySecurity");
+      case "PortalAccess":
+        return t("PortalAccess");
+      case "TwoFactorAuth":
+        return t("TwoFactorAuth");
       case "ManagementCategoryIntegration":
         return t("ManagementCategoryIntegration");
       case "ThirdPartyAuthorization":
