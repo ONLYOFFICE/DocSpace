@@ -125,13 +125,13 @@ const defaultConfig = {
   textHeader: "Default Header text",
   textBody: "Default Body text",
 
-  showAction: true,
+  showAction: false,
   actionText: "Close",
   actionTextColor: "#0F4071",
 
   showSecondButton: true,
   secondButtonText: "Reload",
-  secondButtonTextColor: "#4CAF50",
+  secondButtonTextColor: "#0F4071",
 
   position: "bottom-center",
   duration: null,
