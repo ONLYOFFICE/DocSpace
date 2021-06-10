@@ -57,7 +57,6 @@ using DocuSign.eSign.Api;
 using DocuSign.eSign.Client;
 using DocuSign.eSign.Model;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
@@ -408,7 +407,7 @@ namespace ASC.Web.Files.Helpers
                 }
             }
 
-            var file = ServiceProvider.GetService<File<T>>();
+            var file = new File<T>();
             file.FolderID = folderId;
             file.Comment = FilesCommonResource.CommentCreateByDocuSign;
             file.Title = FileUtility.ReplaceFileExtension(documentName, ".pdf");

@@ -45,8 +45,6 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]
@@ -162,7 +160,7 @@ namespace ASC.Web.Files.Utils
                 return file;
             }
 
-            var newFile = ServiceProvider.GetService<File<T>>();
+            var newFile = new File<T>();
             newFile.FolderID = folderId;
             newFile.Title = fileName;
             return newFile;
@@ -215,7 +213,7 @@ namespace ASC.Web.Files.Utils
 
                     if (folder == null)
                     {
-                        var newFolder = ServiceProvider.GetService<Folder<T>>();
+                        var newFolder = new Folder<T>();
                         newFolder.Title = subFolderTitle;
                         newFolder.FolderID = folderId;
 
@@ -252,7 +250,7 @@ namespace ASC.Web.Files.Utils
 
         public ChunkedUploadSession<T> InitiateUpload<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted)
         {
-            var file = ServiceProvider.GetService<File<T>>();
+            var file = new File<T>();
             file.ID = fileId;
             file.FolderID = folderId;
             file.Title = fileName;

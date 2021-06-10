@@ -39,6 +39,8 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Web.Files.Configuration
 {
     public class SearchHandler
@@ -72,6 +74,7 @@ namespace ASC.Web.Files.Configuration
         private FileUtility FileUtility { get; }
         private PathProvider PathProvider { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public SearchHandler(
             FileSecurity fileSecurity,
@@ -82,7 +85,8 @@ namespace ASC.Web.Files.Configuration
             FilesLinkUtility filesLinkUtility,
             FileUtility fileUtility,
             PathProvider pathProvider,
-            ThirdpartyConfiguration thirdpartyConfiguration)
+            ThirdpartyConfiguration thirdpartyConfiguration,
+            IServiceProvider serviceProvider)
         {
             FileSecurity = fileSecurity;
             DaoFactory = daoFactory;
@@ -93,6 +97,7 @@ namespace ASC.Web.Files.Configuration
             FileUtility = fileUtility;
             PathProvider = pathProvider;
             ThirdpartyConfiguration = thirdpartyConfiguration;
+            ServiceProvider = serviceProvider;
         }
 
         public IEnumerable<File<int>> SearchFiles(string text)
@@ -130,39 +135,49 @@ namespace ASC.Web.Files.Configuration
         public SearchResultItem[] Search(string text)
         {
             var folderDao = DaoFactory.GetFolderDao<int>();
-            var result = SearchFiles(text)
-                            .Select(r => new SearchResultItem
-                            {
-                                Name = r.Title ?? string.Empty,
-                                Description = string.Empty,
-                                URL = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, r.Title, r.ID),
-                                Date = r.ModifiedOn,
-                                Additional = new Dictionary<string, object>
+            var files = SearchFiles(text);
+            var helper = ServiceProvider.GetService<FileHelper<int>>();
+            List<SearchResultItem> list = new List<SearchResultItem>();
+            foreach (var file in files)
+            {
+                helper.FileEntry = file;
+                var searchResultItem = new SearchResultItem
+                {
+                    Name = file.Title ?? string.Empty,
+                    Description = string.Empty,
+                    URL = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID),
+                    Date = file.ModifiedOn,
+                    Additional = new Dictionary<string, object>
                                 {
-                                    { "Author", r.CreateByString.HtmlEncode() },
-                                    { "Path", FolderPathBuilder<int>(EntryManager.GetBreadCrumbs(r.FolderID, folderDao)) },
-                                    { "Size", FileSizeComment.FilesSizeToString(r.ContentLength) }
+                                    { "Author", helper.CreateByString.HtmlEncode() },
+                                    { "Path", FolderPathBuilder<int>(EntryManager.GetBreadCrumbs(file.FolderID, folderDao)) },
+                                    { "Size", FileSizeComment.FilesSizeToString(file.ContentLength) }
                                 }
-                            }
-            );
+                };
+                list.Add(searchResultItem);
+            }
 
-            var resultFolder = SearchFolders(text)
-                .Select(f =>
-                        new SearchResultItem
-                        {
-                            Name = f.Title ?? string.Empty,
-                            Description = string.Empty,
-                            URL = PathProvider.GetFolderUrl(f),
-                            Date = f.ModifiedOn,
-                            Additional = new Dictionary<string, object>
+            var folders = SearchFolders(text);
+            foreach (var folder in folders)
+            {
+                helper.FileEntry = folder;
+                var searchResultItem = new SearchResultItem
+                {
+                    Name = folder.Title ?? string.Empty,
+                    Description = string.Empty,
+                    URL = PathProvider.GetFolderUrl(folder),
+                    Date = folder.ModifiedOn,
+                    Additional = new Dictionary<string, object>
                                     {
-                                            { "Author", f.CreateByString.HtmlEncode() },
-                                            { "Path", FolderPathBuilder<int>(EntryManager.GetBreadCrumbs(f.ID, folderDao)) },
+                                            { "Author", helper.CreateByString.HtmlEncode() },
+                                            { "Path", FolderPathBuilder<int>(EntryManager.GetBreadCrumbs(folder.ID, folderDao)) },
                                             { "IsFolder", true }
                                     }
-                        });
+                };
+                list.Add(searchResultItem);
+            }
 
-            return result.Concat(resultFolder).ToArray();
+            return list.ToArray();
         }
 
         private static string FolderPathBuilder<T>(IEnumerable<FileEntry> folders)

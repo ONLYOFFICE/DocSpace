@@ -118,7 +118,7 @@ namespace ASC.Files.Core.Thirdparty
         {
             var fromFolder = fromFolderDao.GetFolder(fromConverter(fromFolderId));
 
-            var toFolder1 = ServiceProvider.GetService<Folder<TTo>>();
+            var toFolder1 = new Folder<TTo>();
             toFolder1.Title = fromFolder.Title;
             toFolder1.FolderID = toConverter(toRootFolderId);
 

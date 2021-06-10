@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ASC.Core.ChunkedUploader
 {
@@ -58,6 +59,8 @@ namespace ASC.Core.ChunkedUploader
         public Dictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
 
         private const string TempPathKey = "TempPath";
+
+        [JsonIgnore]
         public string TempPath
         {
             get { return GetItemOrDefault<string>(TempPathKey); }
@@ -65,6 +68,8 @@ namespace ASC.Core.ChunkedUploader
         }
 
         private const string UploadIdKey = "UploadId";
+
+        [JsonIgnore]
         public string UploadId
         {
             get { return GetItemOrDefault<string>(UploadIdKey); }
@@ -72,6 +77,8 @@ namespace ASC.Core.ChunkedUploader
         }
 
         private const string ChunksBufferKey = "ChunksBuffer";
+
+        [JsonIgnore]
         public string ChunksBuffer
         {
             get { return GetItemOrDefault<string>(ChunksBufferKey); }
@@ -120,6 +127,10 @@ namespace ASC.Core.ChunkedUploader
                         {
                             newItems.Add(item.Key, item.Value.ToString());
                         }
+                        if (value.ValueKind == JsonValueKind.Number)
+                        {
+                            newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
+                        }
                         if (value.ValueKind == JsonValueKind.Array)
                         {
                             newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
@@ -131,6 +142,7 @@ namespace ASC.Core.ChunkedUploader
                     }
                 }
             }
+            Items = newItems;
         }
 
         public virtual object Clone()

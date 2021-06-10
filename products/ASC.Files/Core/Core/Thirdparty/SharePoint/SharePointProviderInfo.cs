@@ -39,7 +39,6 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Web.Files.Classes;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SharePoint.Client;
 
@@ -281,7 +280,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (file == null)
                 return null;
 
-            var result = ServiceProvider.GetService<File<string>>();
+            var result = new File<string>();
 
             if (file is SharePointFileErrorEntry errorFile)
             {
@@ -307,7 +306,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             //ContentLength = file.Length,
             result.CreateBy = Owner;
             result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
-            result.FileStatus = FileStatus.None;
             result.FolderID = MakeId(GetParentFolderId(file.ServerRelativeUrl));
             result.ModifiedBy = Owner;
             result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;
@@ -498,7 +496,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             if (folder == null) return null;
 
-            var result = ServiceProvider.GetService<Folder<string>>();
+            var result = new Folder<string>();
 
             if (folder is SharePointFolderErrorEntry errorFolder)
             {

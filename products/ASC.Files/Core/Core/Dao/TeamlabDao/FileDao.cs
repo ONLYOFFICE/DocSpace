@@ -823,8 +823,10 @@ namespace ASC.Files.Core.Data
             var file = GetFile(fileId);
             if (file != null)
             {
-                var copy = ServiceProvider.GetService<File<int>>();
-                copy.FileStatus = file.FileStatus;
+                var copy = new File<int>();
+                var fileHelper = ServiceProvider.GetService<FileHelper<int>>();
+                fileHelper.FileEntry = file;
+                copy._status = fileHelper.FileStatus;
                 copy.FolderID = toFolderId;
                 copy.Title = file.Title;
                 copy.ConvertedType = file.ConvertedType;
@@ -1039,7 +1041,7 @@ namespace ASC.Files.Core.Data
 
                 return file;
             }
-            var result = ServiceProvider.GetService<File<int>>();
+            var result = new File<int>();
             result.FolderID = uploadSession.File.FolderID;
             result.Title = uploadSession.File.Title;
             result.ContentLength = uploadSession.BytesTotal;
@@ -1429,7 +1431,7 @@ namespace ASC.Files.Core.Data
 
         public File<int> ToFile(DbFileQuery r)
         {
-            var file = ServiceProvider.GetService<File<int>>();
+            var file = new File<int>();
             if (r == null) return null;
             file.ID = r.File.Id;
             file.Title = r.File.Title;
@@ -1479,7 +1481,7 @@ namespace ASC.Files.Core.Data
                 return dbFile;
             }
 
-            var file = ServiceProvider.GetService<File<int>>();
+            var file = new File<int>();
             file.ID = dbFile.Id;
             file.Title = dbFile.Title;
             file.Version = dbFile.Version;
@@ -1513,7 +1515,7 @@ namespace ASC.Files.Core.Data
                 return dbFile;
             }
 
-            var file = ServiceProvider.GetService<File<int>>();
+            var file = new File<int>();
             file.ID = dbFile.Id;
             file.Title = dbFile.Title;
             file.Version = dbFile.Version;

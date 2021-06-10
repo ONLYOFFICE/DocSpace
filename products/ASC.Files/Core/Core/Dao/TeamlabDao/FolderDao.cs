@@ -50,7 +50,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
@@ -576,7 +575,7 @@ namespace ASC.Files.Core.Data
             if (folder.FolderType == FolderType.BUNCH)
                 folder.FolderType = FolderType.DEFAULT;
 
-            var copy = ServiceProvider.GetService<Folder<int>>();
+            var copy = new Folder<int>();
             copy.FolderID = toFolderId;
             copy.RootFolderId = toFolder.RootFolderId;
             copy.RootFolderCreator = toFolder.RootFolderCreator;
@@ -834,7 +833,7 @@ namespace ASC.Files.Core.Data
                 var newFolderId = 0;
                 if (createIfNotExists && !folderIdsDictionary.TryGetValue(key, out var folderId))
                 {
-                    var folder = ServiceProvider.GetService<Folder<int>>();
+                    var folder = new Folder<int>();
                     switch (bunch)
                     {
                         case my:
@@ -918,7 +917,7 @@ namespace ASC.Files.Core.Data
             var newFolderId = 0;
             if (createIfNotExists)
             {
-                var folder = ServiceProvider.GetService<Folder<int>>();
+                var folder = new Folder<int>();
                 folder.FolderID = 0;
                 switch (bunch)
                 {
@@ -1090,7 +1089,7 @@ namespace ASC.Files.Core.Data
         public Folder<int> ToFolder(DbFolderQuery r)
         {
             if (r == null) return null;
-            var result = ServiceProvider.GetService<Folder<int>>();
+            var result = new Folder<int>();
             result.ID = r.Folder.Id;
             result.FolderID = r.Folder.ParentId;
             result.Title = r.Folder.Title;

@@ -31,11 +31,8 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.ChunkedUploader;
 using ASC.Files.Core;
-using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Options;
 
@@ -47,20 +44,17 @@ namespace ASC.Web.Files.Utils
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
         private IOptionsMonitor<ILog> Options { get; }
-        private IServiceProvider ServiceProvider { get; }
         private GlobalStore GlobalStore { get; }
         private SetupInfo SetupInfo { get; }
         private TempPath TempPath { get; }
 
         public ChunkedUploadSessionHolder(
             IOptionsMonitor<ILog> options,
-            IServiceProvider serviceProvider,
             GlobalStore globalStore,
             SetupInfo setupInfo,
             TempPath tempPath)
         {
             Options = options;
-            ServiceProvider = serviceProvider;
             GlobalStore = globalStore;
             SetupInfo = setupInfo;
             TempPath = tempPath;
@@ -90,11 +84,6 @@ namespace ASC.Web.Files.Utils
         {
             using var stream = CommonSessionHolder(false).GetStream(sessionId);
             var chunkedUploadSession =  ChunkedUploadSession<T>.Deserialize(stream);
-            chunkedUploadSession.File.Global = ServiceProvider.GetService<Global>();
-            chunkedUploadSession.File.FilesLinkUtility = ServiceProvider.GetService<FilesLinkUtility>();
-            chunkedUploadSession.File.FileUtility = ServiceProvider.GetService<FileUtility>();
-            chunkedUploadSession.File.FileConverter = ServiceProvider.GetService<FileConverter>();
-            chunkedUploadSession.File.FileTracker = ServiceProvider.GetService<FileTrackerHelper>();
             return chunkedUploadSession;
         }
 

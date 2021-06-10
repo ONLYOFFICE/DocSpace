@@ -40,6 +40,8 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using FileShare = ASC.Files.Core.Security.FileShare;
 namespace ASC.Api.Documents
 {
@@ -154,6 +156,7 @@ namespace ASC.Api.Documents
         private CommonLinkUtility CommonLinkUtility { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileUtility FileUtility { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public FileWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
@@ -164,7 +167,8 @@ namespace ASC.Api.Documents
             GlobalFolderHelper globalFolderHelper,
             CommonLinkUtility commonLinkUtility,
             FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility)
+            FileUtility fileUtility,
+            IServiceProvider serviceProvider)
             : base(apiDateTimeHelper, employeeWrapperHelper)
         {
             AuthContext = authContext;
@@ -174,6 +178,7 @@ namespace ASC.Api.Documents
             CommonLinkUtility = commonLinkUtility;
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
+            ServiceProvider = serviceProvider;
         }
 
         public FileWrapper<T> Get<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -212,6 +217,9 @@ namespace ASC.Api.Documents
 
         private FileWrapper<T> GetFileWrapper<T>(File<T> file)
         {
+            var fileHelper = ServiceProvider.GetService<FileHelper<T>>();
+            fileHelper.FileEntry = file;
+
             var result = Get<FileWrapper<T>, T>(file);
 
             result.FileExst = FileUtility.GetFileExtension(file.Title);
@@ -219,7 +227,7 @@ namespace ASC.Api.Documents
             result.Version = file.Version;
             result.VersionGroup = file.VersionGroup;
             result.ContentLength = file.ContentLengthString;
-            result.FileStatus = file.FileStatus;
+            result.FileStatus = fileHelper.FileStatus;
             result.PureContentLength = file.ContentLength.NullIfDefault();
             result.Comment = file.Comment;
             result.Encrypted = file.Encrypted.NullIfDefault();
@@ -228,7 +236,7 @@ namespace ASC.Api.Documents
 
             try
             {
-                result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
+                result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(fileHelper.DownloadUrl);
 
                 result.WebUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID, file.Version));
 

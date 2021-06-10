@@ -28,7 +28,6 @@ using System;
 using System.Diagnostics;
 
 using ASC.Common;
-using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
@@ -84,8 +83,7 @@ namespace ASC.Files.Core
             set { NewForMe = Convert.ToInt32(value); }
         }
 
-        public Folder(Global global)
-            : base(global)
+        public Folder()
         {
             Title = string.Empty;
             FileEntryType = FileEntryType.Folder;

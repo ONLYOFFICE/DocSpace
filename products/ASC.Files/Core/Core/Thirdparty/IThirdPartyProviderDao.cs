@@ -20,7 +20,6 @@ using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Core;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
@@ -290,7 +289,7 @@ namespace ASC.Files.Thirdparty
 
         protected Folder<string> GetFolder()
         {
-            var folder = ServiceProvider.GetService<Folder<string>>();
+            var folder = new Folder<string>();
 
             InitFileEntry(folder);
 
@@ -315,12 +314,11 @@ namespace ASC.Files.Thirdparty
 
         protected File<string> GetFile()
         {
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = new File<string>();
 
             InitFileEntry(file);
 
             file.Access = FileShare.None;
-            file.FileStatus = FileStatus.None;
             file.Shared = false;
             file.Version = 1;
 

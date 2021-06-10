@@ -47,7 +47,6 @@ using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Constants = ASC.Core.Configuration.Constants;
@@ -572,7 +571,7 @@ namespace ASC.Web.Files.Classes
 
             foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
             {
-                var folder = ServiceProvider.GetService<Folder<T>>();
+                var folder = new Folder<T>();
                 folder.Title = folderName;
                 folder.FolderID = folderId;
 
@@ -591,7 +590,7 @@ namespace ASC.Web.Files.Classes
                     return;
 
                 var fileName = Path.GetFileName(filePath);
-                var file = ServiceProvider.GetService<File<T>>();
+                var file = new File<T>();
 
                 file.Title = fileName;
                 file.FolderID = folder;

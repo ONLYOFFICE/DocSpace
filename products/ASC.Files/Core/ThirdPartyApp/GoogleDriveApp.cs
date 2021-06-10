@@ -63,7 +63,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -227,19 +226,19 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             var jsonFile = JObject.Parse(driveFile);
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = new File<string>();
             file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
             file.Title = Global.ReplaceInvalidCharsAndTruncate(GetCorrectTitle(jsonFile));
             file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("createdTime"));
             file.ModifiedOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modifiedTime"));
             file.ContentLength = Convert.ToInt64(jsonFile.Value<string>("size"));
-            file.ModifiedByString = jsonFile["lastModifyingUser"]["displayName"].Value<string>();
+            file._modifiedByString = jsonFile["lastModifyingUser"]["displayName"].Value<string>();
             file.ProviderKey = "Google";
 
             var owners = jsonFile["owners"];
             if (owners != null)
             {
-                file.CreateByString = owners[0]["displayName"].Value<string>();
+                file._createByString = owners[0]["displayName"].Value<string>();
             }
 
             editable = jsonFile["capabilities"]["canEdit"].Value<bool>();

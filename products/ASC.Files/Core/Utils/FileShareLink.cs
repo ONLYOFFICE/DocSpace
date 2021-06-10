@@ -24,6 +24,7 @@
 */
 
 
+using System;
 using System.Web;
 
 using ASC.Common;
@@ -33,6 +34,8 @@ using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
 
@@ -46,24 +49,29 @@ namespace ASC.Web.Files.Utils
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         private Global Global { get; }
         private FileSecurity FileSecurity { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public FileShareLink(
             FileUtility fileUtility,
             FilesLinkUtility filesLinkUtility,
             BaseCommonLinkUtility baseCommonLinkUtility,
             Global global,
-            FileSecurity fileSecurity)
+            FileSecurity fileSecurity,
+            IServiceProvider serviceProvider)
         {
             FileUtility = fileUtility;
             FilesLinkUtility = filesLinkUtility;
             BaseCommonLinkUtility = baseCommonLinkUtility;
             Global = global;
             FileSecurity = fileSecurity;
+            ServiceProvider = serviceProvider;
         }
 
         public string GetLink<T>(File<T> file, bool withHash = true)
         {
-            var url = file.DownloadUrl;
+            var fileHelper = ServiceProvider.GetService<FileHelper<T>>();
+            fileHelper.FileEntry = file;
+            var url = fileHelper.DownloadUrl;
 
             if (FileUtility.CanWebView(file.Title))
                 url = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID);
