@@ -129,8 +129,8 @@ const SectionPagingContent = ({
       <></>
     ) : (
       <Paging
-        previousLabel={t("Common:PreviousPage")}
-        nextLabel={t("Common:NextPage")}
+        previousLabel={t("Common:Previous")}
+        nextLabel={t("Common:Next")}
         pageItems={pageItems}
         onSelectPage={onChangePage}
         countItems={countItems}
