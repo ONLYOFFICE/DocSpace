@@ -4,7 +4,6 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import RowWrapper from "./RowWrapper";
 import { inject, observer } from "mobx-react";
-import { withTranslation } from "react-i18next";
 
 const FileList = ({ uploadDataFiles }) => {
   //console.log("FileList render");
@@ -34,4 +33,4 @@ export default inject(({ uploadDataStore }) => {
   return {
     uploadDataFiles: files,
   };
-})(withTranslation("UploadPanel")(observer(FileList)));
+})(observer(FileList));

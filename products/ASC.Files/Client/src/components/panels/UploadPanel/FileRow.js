@@ -8,6 +8,7 @@ import LoadingButton from "./LoadingButton";
 import ShareButton from "./ShareButton";
 import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
 import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
 
 const StyledFileRow = styled(Row)`
   margin: 0 16px;
@@ -242,4 +243,4 @@ export default inject(
       cancelCurrentFileConversion,
     };
   }
-)(observer(FileRow));
+)(withTranslation("UploadPanel")(observer(FileRow)));

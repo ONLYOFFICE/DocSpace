@@ -37,6 +37,7 @@ class UploadDataStore {
   uploadToFolder = null;
   uploadedFiles = 0;
   percent = 0;
+  conversionPercent = 0;
   uploaded = true;
   converted = true;
   uploadPanelVisible = false;
@@ -96,6 +97,7 @@ class UploadDataStore {
     this.filesSize = 0;
     this.uploadedFiles = 0;
     this.percent = 0;
+    this.conversionPercent = 0;
     this.uploaded = true;
     this.converted = true;
   };
@@ -268,11 +270,9 @@ class UploadDataStore {
     }
   };
 
-  getConversationPercent = (percent, fileIndex) => {
-    const conversionFilesLength = this.filesToConversion.length;
-    return !percent
-      ? (fileIndex / conversionFilesLength) * 100
-      : percent / conversionFilesLength + this.primaryProgressDataStore.percent;
+  getConversationPercent = (fileIndex) => {
+    const length = this.files.filter((f) => f.needConvert).length;
+    return (fileIndex / length) * 100;
   };
 
   startConversion = async () => {
@@ -305,7 +305,7 @@ class UploadDataStore {
 
           error = res && res[0] && res[0].error;
           if (error.length) {
-            const percent = this.getConversationPercent(100);
+            const percent = this.getConversationPercent(index + 1);
             this.setConversionPercent(percent, !!error);
 
             runInAction(() => {
@@ -329,12 +329,12 @@ class UploadDataStore {
             });
             this.refreshFiles(toFolderId, false);
 
-            const percent = this.getConversationPercent(100, index);
+            const percent = this.getConversationPercent(index + 1);
             this.setConversionPercent(percent, !!error);
 
             break;
           } else {
-            const percent = this.getConversationPercent(progress, index);
+            const percent = this.getConversationPercent(index + 1);
             this.setConversionPercent(percent);
           }
         }
@@ -346,10 +346,12 @@ class UploadDataStore {
     }
 
     if (this.uploaded) {
+      this.setConversionPercent(100);
       this.finishUploadFiles();
     } else {
       this.converted = true;
       this.filesToConversion = [];
+      this.conversionPercent = 0;
     }
   };
 
@@ -696,6 +698,7 @@ class UploadDataStore {
       filesSize: 0,
       uploadedFiles: 0,
       percent: 0,
+      conversionPercent: 0,
     };
 
     setTimeout(() => {
