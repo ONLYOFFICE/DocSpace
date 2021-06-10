@@ -9,7 +9,7 @@ import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 
-import { setDocumentTitle } from "../../../../../helpers/utils";
+import { setDocumentTitle } from "../../../../../../helpers/utils";
 import { inject } from "mobx-react";
 
 const MainContainer = styled.div`
@@ -29,7 +29,7 @@ const HeaderContainer = styled.div`
   margin: 0 0 16px 0;
 `;
 
-class PureTfaPage extends Component {
+class TfaPage extends Component {
   constructor(props) {
     super(props);
 
@@ -41,8 +41,6 @@ class PureTfaPage extends Component {
       smsDisabled: false,
       appDisabled: false,
     };
-
-    setDocumentTitle(t("PortalSecurity"));
   }
 
   async componentDidMount() {
@@ -137,4 +135,4 @@ export default inject(({ auth }) => ({
   getTfaSettings: auth.tfaStore.getTfaSettings,
   setTfaSettings: auth.tfaStore.setTfaSettings,
   getTfaConfirmLink: auth.tfaStore.getTfaConfirmLink,
-}))(withTranslation(["Settings", "Common"])(withRouter(PureTfaPage)));
+}))(withTranslation(["Settings", "Common"])(withRouter(TfaPage)));
