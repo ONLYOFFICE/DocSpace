@@ -4,8 +4,10 @@ import Text from "@appserver/components/text";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import Box from "@appserver/components/box";
 import styled from "styled-components";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { getBackupProgress } from "@appserver/common/api/portal";
@@ -105,7 +107,7 @@ class Backup extends React.Component {
     );
   };
   render() {
-    const { t } = this.props;
+    const { t, helpUrlCreatingBackup } = this.props;
     const { downloadingProgress } = this.state;
     return (
       <StyledBackup>
@@ -170,6 +172,16 @@ class Backup extends React.Component {
           <Text className="category-item-description">
             {t("DataRestoreSettingsDescription")}
           </Text>
+          <Box marginProp="16px 0 0 0">
+            <Link
+              color="#316DAA"
+              target="_blank"
+              isHovered={true}
+              href={helpUrlCreatingBackup}
+            >
+              {t("Common:LearnMore")}
+            </Link>
+          </Box>
         </div>
 
         {downloadingProgress > 0 && downloadingProgress !== 100 && (
@@ -185,4 +197,10 @@ class Backup extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(Backup);
+
+export default inject(({ auth }) => {
+  const { helpUrlCreatingBackup } = auth.settingsStore;
+  return {
+    helpUrlCreatingBackup,
+  };
+})(observer(withTranslation(["Settings", "Common"])(Backup)));
