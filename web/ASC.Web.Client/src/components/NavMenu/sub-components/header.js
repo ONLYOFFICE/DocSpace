@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { Link as LinkWithoutRedirect } from "react-router-dom";
+import { isMobileOnly } from "react-device-detect";
 import NavItem from "./nav-item";
 import Headline from "@appserver/common/components/Headline";
 import Nav from "./nav";
@@ -17,6 +18,7 @@ import { desktop, tablet } from "@appserver/components/utils/device";
 import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+
 const { proxyURL } = AppServerConfig;
 
 const backgroundColor = "#0F4071";
@@ -33,6 +35,7 @@ const Header = styled.header`
 
     ${(props) =>
       props.module &&
+      !props.isPersonal &&
       css`
         @media ${tablet} {
           display: none;
@@ -45,9 +48,7 @@ const Header = styled.header`
     font-size: 21px;
     line-height: 0;
     margin-top: -5px;
-    cursor: ${(props) => (props.isPersonal ? "default" : "pointer")};
-
-    ${(props) => props.isPersonal && `margin-left: 20px;`}
+    cursor: "pointer";
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-drag: none;
@@ -76,17 +77,28 @@ const Header = styled.header`
   }
 
   .header-logo-icon {
-    width: ${(props) => (props.isPersonal ? "254px" : "146px")};
-    ${(props) => props.isPersonal && `margin-left: 17px;`}
+    width: ${(props) => (props.isPersonal ? "220px" : "146px")};
+    ${(props) => props.isPersonal && `margin-left: 20px;`}
     height: 24px;
     position: relative;
-    padding: 0 20px 0 6px;
+    padding: ${(props) => (!props.isPersonal ? "0 20px 0 6px" : "0")};
     cursor: pointer;
 
-    @media (max-width: 620px) {
-      display: ${(props) => (props.module ? "none" : "block")};
-      padding: 0px 20px 0 6px;
+    @media ${tablet} {
+      ${(props) => props.isPersonal && `margin-left: 16px;`}
     }
+
+    @media (max-width: 620px) {
+      ${(props) =>
+        !props.isPersonal &&
+        css`
+          display: ${(props) => (props.module ? "none" : "block")};
+          padding: 0px 20px 0 6px;
+        `}
+    }
+  }
+  .mobile-short-logo {
+    width: 146px;
   }
 `;
 
@@ -178,7 +190,7 @@ const HeaderComponent = ({
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
             <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
-          ) : (
+          ) : !isMobileOnly ? (
             <img
               alt="logo"
               className="header-logo-icon"
@@ -187,17 +199,27 @@ const HeaderComponent = ({
                 "/static/images/personal.logo.react.svg"
               )}
             />
+          ) : (
+            <img
+              className="header-logo-icon mobile-short-logo"
+              src={combineUrl(
+                AppServerConfig.proxyURL,
+                "/static/images/nav.logo.opened.react.svg"
+              )}
+            />
           )}
         </LinkWithoutRedirect>
 
-        <Headline
-          className="header-module-title"
-          type="header"
-          color="#FFF"
-          {...(!isPersonal && { onClick: onClick })}
-        >
-          {currentProductName}
-        </Headline>
+        {!isPersonal && (
+          <Headline
+            className="header-module-title"
+            type="header"
+            color="#FFF"
+            onClick={onClick}
+          >
+            {currentProductName}
+          </Headline>
+        )}
       </Header>
 
       {isNavAvailable && (

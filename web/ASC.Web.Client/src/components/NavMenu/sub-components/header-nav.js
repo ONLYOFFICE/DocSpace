@@ -57,6 +57,7 @@ const HeaderNav = ({
   logout,
   isAuthenticated,
   peopleAvailable,
+  isPersonal,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common"]);
 
@@ -90,10 +91,12 @@ const HeaderNav = ({
       },
       {
         key: "SwitchToBtn",
-        label: t("TurnOnDesktopVersion"),
-        onClick: onSwitchToDesktopClick,
-        url: `${window.location.origin}?desktop_view=true`,
-        target: "_self",
+        ...(!isPersonal && {
+          label: t("TurnOnDesktopVersion"),
+          onClick: onSwitchToDesktopClick,
+          url: `${window.location.origin}?desktop_view=true`,
+          target: "_self",
+        }),
       },
       {
         key: "AboutBtn",
@@ -162,10 +165,11 @@ export default withRouter(
       language,
       logout,
     } = auth;
-    const { defaultPage } = settingsStore;
+    const { defaultPage, personal: isPersonal } = settingsStore;
     const { user } = userStore;
     const modules = auth.availableModules;
     return {
+      isPersonal,
       user,
       isAuthenticated,
       isLoaded,

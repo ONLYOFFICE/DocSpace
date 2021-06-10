@@ -324,6 +324,7 @@ class SectionHeaderContent extends React.Component {
       isFavoritesFolder,
       isRecentFolder,
       isShareFolder,
+      personal,
     } = this.props;
 
     let menu = [
@@ -441,6 +442,10 @@ class SectionHeaderContent extends React.Component {
 
     if (isShareFolder) {
       menu.splice(4, 1);
+    }
+
+    if ((personal && !isWebEditSelected) || selectionCount > 1) {
+      menu.splice(1, 1);
     }
 
     return menu;

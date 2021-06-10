@@ -196,6 +196,8 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
+        personal,
+        canWebEdit,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -218,7 +220,12 @@ export default function withFileActions(WrappedFileItem) {
         : "96px";
 
       const sharedButton =
-        !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
+        !canShare ||
+        (isPrivacy && !fileExst) ||
+        (personal && !canWebEdit) ||
+        isEdit ||
+        id <= 0 ||
+        isMobile
           ? null
           : this.getSharedButton(shared);
 
@@ -252,6 +259,7 @@ export default function withFileActions(WrappedFileItem) {
   return inject(
     (
       {
+        auth,
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
@@ -351,6 +359,7 @@ export default function withFileActions(WrappedFileItem) {
         setMediaViewerData,
         getFolderInfo,
         markAsRead,
+        personal: auth.settingsStore.personal,
       };
     }
   )(observer(WithFileActions));

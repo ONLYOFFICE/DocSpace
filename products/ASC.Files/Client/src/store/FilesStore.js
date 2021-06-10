@@ -462,6 +462,10 @@ class FilesStore {
           "mark-read",
           "unsubscribe",
         ]);
+
+        if (!this.isWebEditSelected) {
+          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+        }
       }
 
       if (!this.isWebEditSelected) {
@@ -684,8 +688,10 @@ class FilesStore {
 
       if (personal) {
         folderOptions = this.removeOptions(folderOptions, [
+          "sharing-settings",
           "owner-change",
           "link-for-portal-users",
+          "separator1",
           "docu-sign",
           "mark-read",
           "unsubscribe",
