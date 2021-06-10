@@ -1846,6 +1846,9 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}. Otra migración de portal de región ha comenzado</value>
   </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Otra migración de portal de región ha completado con éxito</value>
+  </data>
   <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
     <value>Confirme su email</value>
   </data>
@@ -1935,6 +1938,9 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_request_tariff" xml:space="preserve">
     <value>Solicitud de Plano de Precios SaaS</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Restauración ha acabado</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restauración ha comenzado</value>

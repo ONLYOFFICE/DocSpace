@@ -2903,6 +2903,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText}. Another region portal migration successfully completed.
+        /// </summary>
+        public static string subject_migration_success {
+            get {
+                return ResourceManager.GetString("subject_migration_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm your email.
         /// </summary>
         public static string subject_opensource_admin_activation_v11 {
@@ -3169,6 +3178,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_request_tariff {
             get {
                 return ResourceManager.GetString("subject_request_tariff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText}. Restore completed.
+        /// </summary>
+        public static string subject_restore_completed {
+            get {
+                return ResourceManager.GetString("subject_restore_completed", resourceCulture);
             }
         }
         
