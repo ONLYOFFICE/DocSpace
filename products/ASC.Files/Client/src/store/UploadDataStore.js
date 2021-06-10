@@ -284,16 +284,18 @@ class UploadDataStore {
     let filesToConversion = this.filesToConversion;
 
     while (index < len) {
-      const conversionItem = this.filesToConversion[index];
+      const conversionItem = filesToConversion[index];
       const { fileId, toFolderId } = conversionItem;
 
       const file = this.files.find((f) => f.fileId === fileId);
-      if (file) file.inConversion = true;
+      if (file) runInAction(() => (file.inConversion = true));
 
       const data = await convertFile(fileId);
-      if (data && data[0] && data[0].progress !== 100) {
+
+      if (data && data[0]) {
         let progress = data[0].progress;
         let error = null;
+
         while (progress < 100) {
           const res = await this.getConversationProgress(fileId);
           progress = res && res[0] && res[0].progress;
@@ -318,25 +320,24 @@ class UploadDataStore {
             this.refreshFiles(toFolderId, false);
             break;
           }
-          if (progress === 100) {
-            runInAction(() => {
-              const file = this.files.find((file) => file.fileId === fileId);
-              if (file) {
-                file.convertProgress = progress;
-                file.inConversion = false;
-                file.action = "converted";
-              }
-            });
-            this.refreshFiles(toFolderId, false);
 
-            const percent = this.getConversationPercent(index + 1);
-            this.setConversionPercent(percent, !!error);
+          const percent = this.getConversationPercent(index + 1);
+          this.setConversionPercent(percent);
+        }
 
-            break;
-          } else {
-            const percent = this.getConversationPercent(index + 1);
-            this.setConversionPercent(percent);
-          }
+        if (progress === 100) {
+          runInAction(() => {
+            const file = this.files.find((file) => file.fileId === fileId);
+            if (file) {
+              file.convertProgress = progress;
+              file.inConversion = false;
+              file.action = "converted";
+            }
+          });
+
+          this.refreshFiles(toFolderId, false);
+          const percent = this.getConversationPercent(index + 1);
+          this.setConversionPercent(percent, !!error);
         }
       }
 
@@ -606,7 +607,11 @@ class UploadDataStore {
     if (!item) {
       console.error("Empty files");
       return Promise.resolve();
-    } else if (item.action === "uploaded" || item.action === "convert") {
+    } else if (
+      item.action === "uploaded" ||
+      item.action === "convert" ||
+      item.action === "converted"
+    ) {
       return Promise.resolve();
     }
 

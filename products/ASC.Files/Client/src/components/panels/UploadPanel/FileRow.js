@@ -71,7 +71,6 @@ const FileRow = (props) => {
     cancelCurrentFileConversion,
     //onMediaClick,
     currentFileUploadProgress,
-    conversationProgress,
     fileIcon,
     isMedia,
     ext,
@@ -108,7 +107,9 @@ const FileRow = (props) => {
         }
       >
         <>
-          {item.fileId ? (
+          {item.fileId &&
+          item.action !== "convert" &&
+          item.action !== "converted" ? (
             isMedia ? (
               <Text
                 fontWeight="600"
@@ -156,7 +157,7 @@ const FileRow = (props) => {
                 <LoadingButton
                   isConversion
                   inConversion={item.inConversion}
-                  percent={conversationProgress}
+                  percent={item.convertProgress}
                 />
               </div>
             ) : (
@@ -227,11 +228,8 @@ export default inject(
         ? loadingFile.percent
         : null;
 
-    const conversationProgress = item.convertProgress;
-
     return {
       currentFileUploadProgress,
-      conversationProgress,
       uploaded,
       isMedia,
       fileIcon,
