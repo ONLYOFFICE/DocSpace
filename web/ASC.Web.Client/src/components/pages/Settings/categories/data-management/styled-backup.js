@@ -53,6 +53,7 @@ const StyledComponent = styled.div`
   .restore-source {
     font-weight: 600;
     margin-top: 30px;
+    margin-bottom: 15px;
     font-size: 19px;
   }
   .restore-warning {

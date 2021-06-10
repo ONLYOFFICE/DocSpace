@@ -6,9 +6,14 @@ import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
 import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
+import RadioButton from "@appserver/components/radio-button";
 
 import { StyledComponent } from "./styled-backup";
 import BackupListModalDialog from "./sub-components-restore-backup/backupListModalDialog";
+import Documents from "./sub-components-restore-backup/documents";
+import ThirdPartyResources from "./sub-components-restore-backup/thirdPartyResources";
+import ThirdPartyStorages from "./sub-components-restore-backup/thirdPartyStorages";
+import { StyledModules } from "./styled-backup";
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -17,6 +22,9 @@ class RestoreBackup extends React.Component {
       isChecked: false,
       isNotify: true,
       isVisibleDialog: false,
+      isCheckedDocuments: true,
+      isCheckedThirdParty: false,
+      isCheckedThirdPartyStorage: false,
     };
   }
 
@@ -40,9 +48,111 @@ class RestoreBackup extends React.Component {
       isVisibleDialog: false,
     });
   };
+  onClickShowStorage = (e) => {
+    const {
+      isCheckedTemporaryStorage,
+      isCheckedDocuments,
+      isCheckedThirdParty,
+      isCheckedThirdPartyStorage,
+    } = this.state;
+    const name = e.target.name;
+
+    switch (+name) {
+      case 0:
+        if (isCheckedDocuments) {
+          this.setState({
+            isCheckedDocuments: false,
+            isCheckedTemporaryStorage: true,
+          });
+        }
+        if (isCheckedThirdParty) {
+          this.setState({
+            isCheckedThirdParty: false,
+            isCheckedTemporaryStorage: true,
+          });
+        }
+        if (isCheckedThirdPartyStorage) {
+          this.setState({
+            isCheckedThirdPartyStorage: false,
+            isCheckedTemporaryStorage: true,
+          });
+        }
+        break;
+      case 1:
+        if (isCheckedTemporaryStorage) {
+          this.setState({
+            isCheckedTemporaryStorage: false,
+            isCheckedDocuments: true,
+          });
+        }
+        if (isCheckedThirdParty) {
+          this.setState({
+            isCheckedThirdParty: false,
+            isCheckedDocuments: true,
+          });
+        }
+        if (isCheckedThirdPartyStorage) {
+          this.setState({
+            isCheckedThirdPartyStorage: false,
+            isCheckedDocuments: true,
+          });
+        }
+        break;
+
+      case 2:
+        if (isCheckedTemporaryStorage) {
+          this.setState({
+            isCheckedTemporaryStorage: false,
+            isCheckedThirdParty: true,
+          });
+        }
+        if (isCheckedDocuments) {
+          this.setState({
+            isCheckedDocuments: false,
+            isCheckedThirdParty: true,
+          });
+        }
+        if (isCheckedThirdPartyStorage) {
+          this.setState({
+            isCheckedThirdPartyStorage: false,
+            isCheckedThirdParty: true,
+          });
+        }
+        break;
+
+      default:
+        if (isCheckedTemporaryStorage) {
+          this.setState({
+            isCheckedTemporaryStorage: false,
+            isCheckedThirdPartyStorage: true,
+          });
+        }
+        if (isCheckedDocuments) {
+          this.setState({
+            isCheckedDocuments: false,
+            isCheckedThirdPartyStorage: true,
+          });
+        }
+        if (isCheckedThirdParty) {
+          this.setState({
+            isCheckedThirdParty: false,
+            isCheckedThirdPartyStorage: true,
+          });
+        }
+        break;
+    }
+  };
   render() {
     const { t } = this.props;
-    const { isChecked, isLoading, isNotify, isVisibleDialog } = this.state;
+    const {
+      isChecked,
+      isLoading,
+      isNotify,
+      isVisibleDialog,
+      isCheckedDocuments,
+      isCheckedThirdParty,
+      isCheckedThirdPartyStorage,
+    } = this.state;
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -54,6 +164,53 @@ class RestoreBackup extends React.Component {
         <Text className="category-item-description restore-source">
           {t("Source")}
         </Text>
+
+        <StyledModules>
+          <RadioButton
+            fontSize="13px"
+            fontWeight="400"
+            label={t("DocumentsModule")}
+            name={"1"}
+            key={1}
+            onClick={this.onClickShowStorage}
+            isChecked={isCheckedDocuments}
+            isDisabled={false}
+            value="value"
+            className="backup_radio-button"
+          />
+          {isCheckedDocuments && <Documents />}
+        </StyledModules>
+
+        <StyledModules>
+          <RadioButton
+            fontSize="13px"
+            fontWeight="400"
+            label={t("ThirdPartyResource")}
+            name={"2"}
+            key={1}
+            onClick={this.onClickShowStorage}
+            isChecked={isCheckedThirdParty}
+            isDisabled={false}
+            value="value"
+            className="backup_radio-button"
+          />
+          {isCheckedThirdParty && <ThirdPartyResources />}
+        </StyledModules>
+        <StyledModules>
+          <RadioButton
+            fontSize="13px"
+            fontWeight="400"
+            label={t("ThirdPartyStorage")}
+            name={"3"}
+            key={1}
+            onClick={this.onClickShowStorage}
+            isChecked={isCheckedThirdPartyStorage}
+            isDisabled={false}
+            value="value"
+            className="backup_radio-button"
+          />
+          {isCheckedThirdPartyStorage && <ThirdPartyStorages />}
+        </StyledModules>
 
         <Text className="restore-backup_list" onClick={this.onClickBackupList}>
           {t("BackupList")}
