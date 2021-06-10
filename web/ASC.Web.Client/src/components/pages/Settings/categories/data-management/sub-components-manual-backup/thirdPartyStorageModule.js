@@ -199,7 +199,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             isHovered={true}
             href={helpUrlCreatingBackup}
           >
-            {t("LearnMore")}
+            {t("Common:LearnMore")}
           </Link>
         </Box>
         <ComboBox
@@ -268,4 +268,4 @@ export default inject(({ auth }) => {
   return {
     helpUrlCreatingBackup,
   };
-})(withTranslation("Settings")(observer(ThirdPartyStorageModule)));
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyStorageModule)));

@@ -121,7 +121,7 @@ class ThirdPartyModule extends React.Component {
             isHovered={true}
             href={helpUrlCreatingBackup}
           >
-            {t("LearnMore")}
+            {t("Common:LearnMore")}
           </Link>
         </Box>
 
@@ -167,4 +167,4 @@ export default inject(({ auth }) => {
   return {
     helpUrlCreatingBackup,
   };
-})(withTranslation("Settings")(observer(ThirdPartyModule)));
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

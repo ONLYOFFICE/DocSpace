@@ -588,7 +588,7 @@ class ThirdPartyModule extends React.Component {
               isHovered={true}
               href={helpUrlCreatingBackup}
             >
-              {t("LearnMore")}
+              {t("Common:LearnMore")}
             </Link>
           </Box>
 
