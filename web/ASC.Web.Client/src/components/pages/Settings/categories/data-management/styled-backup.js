@@ -71,6 +71,11 @@ const StyledComponent = styled.div`
   .restore-backup-checkbox_notification {
     margin-top: 15px;
   }
+  .restore-backup_list {
+    color: #316daa;
+    text-decoration: underline;
+    cursor: pointer;
+  }
 `;
 const StyledModules = styled.div`
   margin-bottom: 40px;

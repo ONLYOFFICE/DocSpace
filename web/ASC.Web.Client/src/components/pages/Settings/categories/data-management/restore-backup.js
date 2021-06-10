@@ -8,6 +8,7 @@ import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 
 import { StyledComponent } from "./styled-backup";
+import BackupListModalDialog from "./sub-components-restore-backup/backupListModalDialog";
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -15,6 +16,7 @@ class RestoreBackup extends React.Component {
     this.state = {
       isChecked: false,
       isNotify: true,
+      isVisibleDialog: false,
     };
   }
 
@@ -28,9 +30,19 @@ class RestoreBackup extends React.Component {
       isNotify: !this.state.isNotify,
     });
   };
+  onClickBackupList = () => {
+    this.setState({
+      isVisibleDialog: !this.state.isVisibleDialog,
+    });
+  };
+  onModalClose = () => {
+    this.setState({
+      isVisibleDialog: false,
+    });
+  };
   render() {
     const { t } = this.props;
-    const { isChecked, isLoading, isNotify } = this.state;
+    const { isChecked, isLoading, isNotify, isVisibleDialog } = this.state;
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -43,12 +55,23 @@ class RestoreBackup extends React.Component {
           {t("Source")}
         </Text>
 
+        <Text className="restore-backup_list" onClick={this.onClickBackupList}>
+          {t("BackupList")}
+        </Text>
+        {isVisibleDialog && (
+          <BackupListModalDialog
+            t={t}
+            isVisibleDialog={isVisibleDialog}
+            isLoading={isLoading}
+            onModalClose={this.onModalClose}
+          />
+        )}
         <Checkbox
           truncate
           className="restore-backup-checkbox_notification"
           onChange={this.onChangeCheckboxNotify}
           isChecked={isNotify}
-          label={t("RestoreNotification")}
+          label={t("UserNotification")}
         />
 
         <Text className="category-item-description restore-source restore-warning">
@@ -67,7 +90,7 @@ class RestoreBackup extends React.Component {
           className="restore-backup-checkbox"
           onChange={this.onChangeCheckbox}
           isChecked={isChecked}
-          label={t("RestoreAgreement")}
+          label={t("UserAgreement")}
         />
         <Button
           label={t("RestoreButton")}

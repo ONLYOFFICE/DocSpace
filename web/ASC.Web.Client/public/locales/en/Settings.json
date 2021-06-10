@@ -101,7 +101,10 @@
   "Source": "Source:",
   "RestoreSettingsWarning": "The portal will become unavailable during the restore process. After the restore is complete all the changes made after the date of the selected restore point will be lost.",
   "RestoreSettingsLink": "All current passwords will be reset. Portal users will get an email with the access restoration link.",
-  "RestoreAgreement": "I understand and want to proceed",
+  "UserAgreement": "I understand and want to proceed",
   "RestoreButton": "Restore",
-  "RestoreNotification": "Send notification about portal restoring to users"
+  "UserNotification": "Send notification about portal restoring to users",
+  "ShowBackupList": "Show the backup list",
+  "BackupList": "Backup List",
+  "BackupListDeleteWarning": "If you delete any items from the list, their corresponding files will also be deleted. This action cannot be undone. To delete all the files use the link:"
 }
