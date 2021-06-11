@@ -73,6 +73,7 @@ class ProfileActions extends React.PureComponent {
           size="small"
           source={user.avatar}
           userName={user.displayName}
+          className="icon-profile-menu"
         />
         <ProfileMenu
           className="profile-menu"

@@ -64,8 +64,13 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   );
 };
 
-export default inject(({ peopleStore }) => ({
-  resetFilter: peopleStore.resetFilter,
-  isEmptyGroup: peopleStore.selectedGroupStore.isEmptyGroup,
-  setIsLoading: peopleStore.setIsLoading,
-}))(observer(EmptyScreen));
+export default inject(({ peopleStore }) => {
+  const { loadingStore, resetFilter, selectedGroupStore } = peopleStore;
+  const { isEmptyGroup } = selectedGroupStore;
+  const { setIsLoading } = loadingStore;
+  return {
+    resetFilter,
+    isEmptyGroup,
+    setIsLoading,
+  };
+})(observer(EmptyScreen));

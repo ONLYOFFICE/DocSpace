@@ -96,6 +96,7 @@ export default function withFileActions(WrappedFileItem) {
 
     onMouseDown = (e) => {
       const { draggable, setTooltipPosition, setStartDrag } = this.props;
+      const notSelectable = e.target.classList.contains("not-selectable");
       if (!draggable) {
         return;
       }
@@ -103,7 +104,9 @@ export default function withFileActions(WrappedFileItem) {
       if (
         window.innerWidth < 1025 ||
         e.target.tagName === "rect" ||
-        e.target.tagName === "path"
+        e.target.tagName === "path" ||
+        e.target.tagName === "svg" ||
+        notSelectable
       ) {
         return;
       }
@@ -117,6 +120,8 @@ export default function withFileActions(WrappedFileItem) {
         return;
       }
 
+      //console.log("e.target.classList", e.target.classList);
+      //console.log("onMouseDown setStartDrag", e);
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
     };

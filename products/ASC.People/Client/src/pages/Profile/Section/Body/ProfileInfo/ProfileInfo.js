@@ -379,19 +379,40 @@ class ProfileInfo extends React.PureComponent {
 }
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    culture: auth.settingsStore.culture,
-    groupCaption: auth.settingsStore.customNames.groupCaption,
-    regDateCaption: auth.settingsStore.customNames.regDateCaption,
-    userPostCaption: auth.settingsStore.customNames.userPostCaption,
-    userCaption: auth.settingsStore.customNames.userCaption,
-    guestCaption: auth.settingsStore.customNames.guestCaption,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
-    setIsLoading: peopleStore.setIsLoading,
-    isLoading: peopleStore.isLoading,
-    updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-  }))(
+  inject(({ auth, peopleStore }) => {
+    const { settingsStore } = auth;
+    const { culture, customNames } = settingsStore;
+    const {
+      groupCaption,
+      regDateCaption,
+      userPostCaption,
+      userCaption,
+      guestCaption,
+    } = customNames;
+    const {
+      usersStore,
+      filterStore,
+      loadingStore,
+      targetUserStore,
+    } = peopleStore;
+    const { getUsersList: fetchPeople } = usersStore;
+    const { filter } = filterStore;
+    const { setIsLoading, isLoading } = loadingStore;
+    const { updateProfileCulture } = targetUserStore;
+    return {
+      culture,
+      groupCaption,
+      regDateCaption,
+      userPostCaption,
+      userCaption,
+      guestCaption,
+      fetchPeople,
+      filter,
+      setIsLoading,
+      isLoading,
+      updateProfileCulture,
+    };
+  })(
     observer(
       withTranslation(["Profile", "Common", "Translations"])(
         withCultureNames(ProfileInfo)

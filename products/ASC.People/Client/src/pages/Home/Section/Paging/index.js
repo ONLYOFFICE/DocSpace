@@ -151,9 +151,16 @@ const SectionPagingContent = ({
   );
 };
 
-export default inject(({ auth, peopleStore }) => ({
-  isLoaded: auth.isLoaded,
-  fetchPeople: peopleStore.usersStore.getUsersList,
-  filter: peopleStore.filterStore.filter,
-  setIsLoading: peopleStore.setIsLoading,
-}))(observer(SectionPagingContent));
+export default inject(({ auth, peopleStore }) => {
+  const { isLoaded } = auth;
+  const { usersStore, filterStore, loadingStore } = peopleStore;
+  const { filter } = filterStore;
+  const { setIsLoading } = loadingStore;
+  const { getUsersList: fetchPeople } = usersStore;
+  return {
+    isLoaded,
+    fetchPeople,
+    filter,
+    setIsLoading,
+  };
+})(observer(SectionPagingContent));

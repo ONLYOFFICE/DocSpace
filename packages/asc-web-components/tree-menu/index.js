@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Tree from "rc-tree";
 
 import Badge from "../badge";
+import Text from "../text";
 
 const StyledTreeMenu = styled(Tree)`
   margin: 0;
