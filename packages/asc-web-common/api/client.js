@@ -38,8 +38,13 @@ client.interceptors.response.use(
 
     switch (true) {
       case error.response.status === 401:
-        setWithCredentialsStatus(false);
-        window.location.href = loginURL;
+        request({
+          method: "post",
+          url: "/authentication/logout",
+        }).then((res) => {
+          setWithCredentialsStatus(false);
+          window.location.href = loginURL;
+        });
         break;
       case error.response.status === 402:
         if (!window.location.pathname.includes("payments")) {

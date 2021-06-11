@@ -32,7 +32,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     echo ${GIT_BRANCH}  && \
-    git clone --depth 1 -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
+    git clone --depth 1 --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     cd ${SRC_PATH} && \
@@ -45,6 +45,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
     bash build-backend.sh -sp ${SRC_PATH} -ar "--disable-parallel" && \
     bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH} -ar "--disable-parallel" && \
+    cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
     rm -rf ${SRC_PATH}/common/* && \
     rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
     rm -rf ${SRC_PATH}/web/ASC.Web.Studio/* && \
@@ -253,11 +254,11 @@ CMD ["ASC.Projects.dll", "ASC.Projects"]
 
 ## ASC.Socket.IO.Svc ##
 FROM builder AS socket
-WORKDIR ${BUILD_PATH}/services/socket/
+WORKDIR ${BUILD_PATH}/services/socket.io.svc/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/  ${BUILD_PATH}/www/ASC.Socket.IO/
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/  ${BUILD_PATH}/ASC.Socket.IO/
 
 CMD ["ASC.Socket.IO.Svc.dll", "ASC.Socket.IO.Svc"]
 

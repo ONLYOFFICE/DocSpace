@@ -1170,6 +1170,9 @@ il team di ONLYOFFICE</value>
   <data name="subject_migration_start" xml:space="preserve">
     <value>Un'altra migrazione regione portale iniziata</value>
   </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>Un'altra migrazione regione portale completato con successo</value>
+  </data>
   <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
     <value>Conferma la tua email</value>
   </data>
@@ -1250,6 +1253,9 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_request_tariff" xml:space="preserve">
     <value>Richiedi piano tariffario SaaS</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Ripristino completato</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Ripristino avviato</value>

@@ -523,6 +523,13 @@ namespace ASC.Files.Helpers
             return GetSecurityInfo(new List<T> { }, new List<T> { folderId });
         }
 
+        public IEnumerable<FileEntryWrapper> GetFolders(T folderId)
+        {
+            return FileStorageService.GetFolders(folderId)
+                                .Select(GetFileEntryWrapper)
+                                .ToList();
+        }
+
         public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
             var fileShares = FileStorageService.GetSharedInfo(fileIds, folderIds);

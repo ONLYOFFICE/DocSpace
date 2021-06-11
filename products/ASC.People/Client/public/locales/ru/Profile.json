@@ -13,5 +13,10 @@
   "PhoneLbl": "Основной телефон",
   "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
   "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен",
-  "Subscriptions": "Подписки"
+  "Subscriptions": "Подписки",
+
+  "TwoFactorDescription": "Двухфакторная аутентификация через приложение для генерации кодов включена для всех пользователей администратором облачного сервиса.",
+  "ShowBackupCodes": "Показать резервные коды",
+  "CountCodesRemaining": "кодов осталось",
+  "TfaLoginSettings": "Настройки входа"
 }
