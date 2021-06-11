@@ -379,6 +379,18 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("{folderId}/subfolders")]
+        public IEnumerable<FileEntryWrapper> GetFolders(string folderId)
+        {
+            return FilesControllerHelperString.GetFolders(folderId);
+        }
+
+        [Read("{folderId:int}/subfolders")]
+        public IEnumerable<FileEntryWrapper> GetFolders(int folderId)
+        {
+            return FilesControllerHelperInt.GetFolders(folderId);
+        }
+
         [Read("{folderId}/news")]
         public List<FileEntryWrapper> GetNewItems(string folderId)
         {
