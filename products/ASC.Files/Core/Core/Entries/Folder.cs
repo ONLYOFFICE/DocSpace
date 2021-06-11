@@ -27,8 +27,6 @@
 using System;
 using System.Diagnostics;
 
-using ASC.Common;
-
 namespace ASC.Files.Core
 {
     public enum FolderType
@@ -61,7 +59,6 @@ namespace ASC.Files.Core
         public string FolderUrl { get; set; }
     }
 
-    [Transient]
     [DebuggerDisplay("{Title} ({ID})")]
     public class Folder<T> : FileEntry<T>, IFolder
     {
