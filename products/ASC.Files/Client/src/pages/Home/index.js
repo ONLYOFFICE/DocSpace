@@ -22,6 +22,7 @@ import {
   SectionPagingContent,
 } from "./Section";
 
+import { createTreeFolders } from "../../helpers/files-helpers";
 import { ConvertDialog } from "../../components/dialogs";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
@@ -36,6 +37,8 @@ class PureHome extends React.Component {
       setIsLoading,
       setFirstLoad,
       isVisitor,
+      expandedKeys,
+      setExpandedKeys,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
@@ -117,7 +120,12 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           //console.log("filter", filter);
-          return fetchFiles(folderId, filter);
+
+          return fetchFiles(folderId, filter).then((data) => {
+            const pathParts = data.selectedFolder.pathParts;
+            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            setExpandedKeys(newExpandedKeys);
+          });
         }
 
         return Promise.resolve();
@@ -335,7 +343,11 @@ export default inject(
     } = filesStore;
 
     const { id } = fileActionStore;
-    const { isRecycleBinFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      expandedKeys,
+      setExpandedKeys,
+    } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -374,6 +386,7 @@ export default inject(
       uploaded,
       isRecycleBinFolder,
       isVisitor: auth.userStore.user.isVisitor,
+      expandedKeys,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -391,6 +404,7 @@ export default inject(
       isProgressFinished,
       selectionTitle,
 
+      setExpandedKeys,
       setFirstLoad,
       setDragging,
       setIsLoading,

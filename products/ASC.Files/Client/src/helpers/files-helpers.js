@@ -34,9 +34,12 @@ export const getTitleWithoutExst = (item) => {
 };
 
 export const createTreeFolders = (pathParts, expandedKeys) => {
+  const newPathParts =
+    pathParts.length > 1 ? pathParts.splice(0, pathParts.length - 1) : [];
+
   let treeFolders = [];
-  if (pathParts.length > 0) {
-    for (let item of pathParts) {
+  if (newPathParts.length > 0) {
+    for (let item of newPathParts) {
       treeFolders.push(item.toString());
     }
   }

@@ -9,7 +9,7 @@ import {
   FilesFormats,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-import { createTreeFolders, loopTreeFolders } from "../helpers/files-helpers";
+import { loopTreeFolders } from "../helpers/files-helpers";
 import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
@@ -256,21 +256,11 @@ class FilesStore {
   fetchFiles = (folderId, filter, clearFilter = true) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
-    const {
-      privacyFolder,
-      expandedKeys,
-      setExpandedKeys,
-      setSelectedNode,
-    } = this.treeFoldersStore;
+    const { privacyFolder, setSelectedNode } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
 
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!this.settingsStore.isEncryptionSupport) {
-        const newExpandedKeys = createTreeFolders(
-          privacyFolder.pathParts,
-          expandedKeys
-        );
-        setExpandedKeys(newExpandedKeys);
         filterData.total = 0;
         this.setFilesFilter(filterData); //TODO: FILTER
         if (clearFilter) {
@@ -310,11 +300,6 @@ class FilesStore {
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
-          const newExpandedKeys = createTreeFolders(
-            data.pathParts,
-            expandedKeys
-          );
-          setExpandedKeys(newExpandedKeys);
           filterData.total = data.total;
           this.setFilesFilter(filterData); //TODO: FILTER
           this.setFolders(
