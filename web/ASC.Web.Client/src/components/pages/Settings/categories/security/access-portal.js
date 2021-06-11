@@ -75,7 +75,7 @@ class AccessPortal extends PureComponent {
 
     const { t } = props;
 
-    setDocumentTitle(t("ManagementCategorySecurity"));
+    setDocumentTitle(t("PortalAccess"));
   }
 
   componentDidMount() {
@@ -101,7 +101,7 @@ class AccessPortal extends PureComponent {
               truncate={true}
               href={combineUrl(
                 AppServerConfig.proxyURL,
-                "/settings/security/accessportal/tfa"
+                "/settings/security/access-portal/tfa"
               )}
             >
               {t("TwoFactorAuth")}

@@ -6,10 +6,14 @@ import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 
 const SecuritySettings = lazy(() =>
-  import("./categories/security/accessRights")
+  import("./categories/security/access-rights")
 );
-const AccessPortal = lazy(() => import("./categories/security/accessPortal"));
-const TfaPage = lazy(() => import("./categories/security/tfa"));
+const Admins = lazy(() =>
+  import("./categories/security/sub-components/admins")
+);
+
+const AccessPortal = lazy(() => import("./categories/security/access-portal"));
+const TfaPage = lazy(() => import("./categories/security/sub-components/tfa"));
 
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")
@@ -44,10 +48,11 @@ const TEAM_TEMPLATE_URL = combineUrl(
   "/common/customization/team-template"
 );
 //const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
-const SECURITY_URL = combineUrl(PROXY_BASE_URL, "/security/accessrights");
-const ACCESS_PORTAL_URL = combineUrl(PROXY_BASE_URL, "/security/accessportal");
-const TFA_PAGE_URL = combineUrl(PROXY_BASE_URL, "/security/accessportal/tfa");
+const SECURITY_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights");
+const ACCESS_PORTAL_URL = combineUrl(PROXY_BASE_URL, "/security/access-portal");
+const TFA_PAGE_URL = combineUrl(PROXY_BASE_URL, "/security/access-portal/tfa");
 
+const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
@@ -73,6 +78,8 @@ const Settings = () => {
             component={WhiteLabel}
           /> */}
           <Route exact path={SECURITY_URL} component={SecuritySettings} />
+          <Route path={ADMINS_URL} component={Admins} />
+
           <Route exact path={ACCESS_PORTAL_URL} component={AccessPortal} />
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
 

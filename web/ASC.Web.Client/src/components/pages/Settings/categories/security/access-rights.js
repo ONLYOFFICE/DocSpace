@@ -16,6 +16,7 @@ import { combineUrl, showLoader, hideLoader } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
+import Loader from "@appserver/components/loader";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -26,14 +27,16 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
 
 const MainContainer = styled.div`
   width: 100%;
+  position: relative;
+
+  .page-loader {
+    position: absolute;
+    left: calc(50% - 35px);
+    top: 35%;
+  }
 
   .settings_tabs {
     padding-bottom: 16px;
-  }
-
-  .page_loader {
-    position: fixed;
-    left: 50%;
   }
 
   .category-item-wrapper {
@@ -75,63 +78,90 @@ class AccessRights extends PureComponent {
 
     const { t } = props;
 
-    setDocumentTitle(t("ManagementCategorySecurity"));
+    this.state = {
+      isLoading: false,
+    };
+
+    setDocumentTitle(t("AccessRights"));
   }
 
   async componentDidMount() {
-    const { admins, getUpdateListAdmin } = this.props;
+    const { admins, updateListAdmins } = this.props;
 
-    showLoader();
     if (isEmpty(admins, true)) {
+      this.setIsLoading(true);
+      showLoader();
       try {
-        await getUpdateListAdmin();
+        await updateListAdmins(null, true);
       } catch (error) {
         toastr.error(error);
       }
+      this.setIsLoading(false);
+      hideLoader();
     }
-
-    hideLoader();
   }
 
+  onClickLink = (e) => {
+    e.preventDefault();
+    const { history } = this.props;
+    history.push(e.target.pathname);
+  };
+
+  setIsLoading = (isLoading) => {
+    this.setState({
+      isLoading,
+    });
+  };
+
   render() {
-    const { t, admins } = this.props;
-    return (
+    const { t, adminsTotal } = this.props;
+    const { isLoading } = this.state;
+    return isLoading ? (
+      <MainContainer>
+        <Loader className="page-loader" type="rombs" size="40px" />
+      </MainContainer>
+    ) : (
       <MainContainer>
         <OwnerSettings />
-        {/*<div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              className="inherit-title-link header"
-              truncate={true}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/security/access-rights/portal-admins"
-              )}
-            >
-              {t("PortalAdmins")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          {admins.length > 0 && (
-            <Text className="category-item-subheader" truncate={true}>
-              {admins.length} {t("Employees")}
+        {
+          <div className="category-item-wrapper">
+            <div className="category-item-heading">
+              <Link
+                className="inherit-title-link header"
+                truncate={true}
+                onClick={this.onClickLink}
+                href={combineUrl(
+                  AppServerConfig.proxyURL,
+                  "/settings/security/access-rights/admins"
+                )}
+              >
+                {t("PortalAdmins")}
+              </Link>
+              <StyledArrowRightIcon size="small" color="#333333" />
+            </div>
+            {adminsTotal > 0 && (
+              <Text className="category-item-subheader" truncate={true}>
+                {adminsTotal} {t("Admins")}
+              </Text>
+            )}
+            <Text className="category-item-description">
+              {t("PortalAdminsDescription")}
             </Text>
-          )}
-          <Text className="category-item-description">
-            {t("PortalAdminsDescription")}
-          </Text>
-          </div>*/}
+          </div>
+        }
       </MainContainer>
     );
   }
 }
 
 export default inject(({ auth, setup }) => {
-  const { getUpdateListAdmin } = setup;
-  const { admins } = setup.security.accessRight;
+  const { updateListAdmins } = setup;
+  const { admins, adminsTotal } = setup.security.accessRight;
   return {
     admins,
-    getUpdateListAdmin,
+    adminsTotal,
+    updateListAdmins,
     organizationName: auth.settingsStore.organizationName,
+    owner: auth.settingsStore.owner,
   };
 })(withTranslation("Settings")(withRouter(AccessRights)));

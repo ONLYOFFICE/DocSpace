@@ -1883,6 +1883,9 @@ The link is only valid for 7 days.</value>
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}. Another region portal migration started</value>
   </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Another region portal migration successfully completed</value>
+  </data>
   <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
     <value>Confirm your email</value>
   </data>
@@ -1972,6 +1975,9 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_request_tariff" xml:space="preserve">
     <value>SaaS pricing plan request</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Restore completed</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restore started</value>
