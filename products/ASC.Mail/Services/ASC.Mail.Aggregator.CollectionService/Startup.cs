@@ -32,7 +32,7 @@ namespace ASC.Mail.Aggregator.CollectionService
             DIHelper.TryAdd<AggregatorServiceLauncher>();
 
             services.AddHostedService<AggregatorServiceLauncher>();
-            services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(10));
+            
         }
     }
 }

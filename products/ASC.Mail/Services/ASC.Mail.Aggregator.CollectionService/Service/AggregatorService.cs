@@ -48,12 +48,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         private const string PROCESS_MAILBOX = "process mailbox";
         private const string CONNECT_MAILBOX = "connect mailbox";
         private const int SIGNALR_WAIT_SECONDS = 30;
+
         private readonly TimeSpan _tsTaskStateCheckInterval;
         private bool _isFirstTime = true;
         readonly TaskFactory _taskFactory;
         private readonly TimeSpan _taskSecondsLifetime;
-        internal Timer WorkTimer;
         private SignalrWorker _signalrWorker;
+        private Timer _workTimer;
+        private readonly CancellationTokenSource _cancelTokenSource;
 
         public Dictionary<string, int> ImapFlags { get; set; }
         public string[] SkipImapFlags { get; set; }
@@ -76,7 +78,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _consoleParameters = consoleParser.GetParsedParameters();            
+            _consoleParameters = consoleParser.GetParsedParameters();
 
             _log = optionsMonitor.Get("ASC.Mail.MainThread");
             _logStat = optionsMonitor.Get("ASC.Mail.Stat");
@@ -102,11 +104,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             _taskFactory = new TaskFactory();
 
+            _cancelTokenSource = new CancellationTokenSource();
+
             if (_mailSettings.EnableSignalr)
                 _signalrWorker = _scope.SignalrWorker;
 
+            _workTimer = new Timer(workTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
+
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
-            WorkTimer = new Timer(workTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
 
             _log.Info("Service is ready.");
         }
@@ -115,28 +120,42 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         public ConcurrentDictionary<string, List<MailSieveFilterData>> Filters { get; set; }
         internal void startTimer(bool immediately = false)
         {
-            if (WorkTimer == null)
+            if (_workTimer == null)
                 return;
 
             _log.DebugFormat("Setup _workTimer to {0} seconds", _mailSettings.CheckTimerInterval.TotalSeconds);
 
             if (immediately)
             {
-                WorkTimer.Change(0, Timeout.Infinite);
+                _workTimer.Change(0, Timeout.Infinite);
             }
             else
             {
-                WorkTimer.Change(_mailSettings.CheckTimerInterval, _mailSettings.CheckTimerInterval);
+                _workTimer.Change(_mailSettings.CheckTimerInterval, _mailSettings.CheckTimerInterval);
             }
         }
 
-        internal void stopTimer()
+        private void stopTimer()
         {
-            if (WorkTimer == null)
+            if (_workTimer == null)
                 return;
 
             _log.Debug("Setup _workTimer to Timeout.Infinite");
-            WorkTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            _workTimer.Change(Timeout.Infinite, Timeout.Infinite);
+        }
+
+        internal void StopService()
+        {
+            if (_cancelTokenSource != null)
+                _cancelTokenSource.Cancel();
+
+            if (_scope.QueueManager != null)
+            {
+                _scope.QueueManager.CancelHandler.WaitOne();
+            }
+
+            stopTimer();
+            disposeWorkers();
         }
 
         internal void workTimerElapsed(object state)
@@ -256,12 +275,12 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             startTimer();
         }
 
-        public void DisposeWorkers()
+        private void disposeWorkers()
         {
-            if (WorkTimer != null)
+            if (_workTimer != null)
             {
-                WorkTimer.Dispose();
-                WorkTimer = null;
+                _workTimer.Dispose();
+                _workTimer = null;
             }
 
             if (_scope.QueueManager != null)
@@ -318,7 +337,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         {
             _log.InfoFormat("CreateTasks(need {0} tasks).", needCount);
 
-            var mailboxes = _scope.QueueManager.GetLockedMailboxes(needCount);
+            var mailboxes = _scope.QueueManager.GetLockedMailboxes(needCount).ToList();
 
             var tasks = new List<TaskData>();
 
@@ -617,7 +636,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             var failed = false;
 
             var mailbox = mailClientMessageEventArgs.Mailbox;
-
+            string er = "";
             try
             {
                 var mimeMessage = mailClientMessageEventArgs.Message;
@@ -653,9 +672,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             catch (Exception ex)
             {
                 log.ErrorFormat("[ClientOnGetMessage] Exception:\r\n{0}\r\n", ex.ToString());
-
+                er += $" with error {ex.Message}";
                 failed = true;
-
+                
                 throw ex;
             }
             finally
@@ -664,7 +683,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 {
                     watch.Stop();
 
-                    LogStat(PROCESS_MESSAGE, mailbox, watch.Elapsed, failed);
+                    LogStat(PROCESS_MESSAGE+er, mailbox, watch.Elapsed, failed);
                 }
             }
         }
@@ -984,30 +1003,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             QueueManager = queueManager;
             SignalrWorker = signalrWorker;
             DaoFactory = daoFactory;
-        }
-
-        public void Deconstruct(
-            out TenantManager tenantManager,
-            out CoreBaseSettings coreBaseSettings,
-            out MailQueueItemSettings mailQueueItemSettings,
-            out StorageFactory storageFactory,
-            out MailEnginesFactory mailEnginesFactory,
-            out SecurityContext securityContext,
-            out ApiHelper apiHelper,
-            out QueueManager queueManager,
-            out SignalrWorker signalrWorker,
-            out DaoFactory daoFactory)
-        {
-            tenantManager = TenantManager;
-            mailQueueItemSettings = MailQueueItemSettings;
-            coreBaseSettings = CoreBaseSettings;
-            storageFactory = StorageFactory;
-            mailEnginesFactory = MailEnginesFactory;
-            securityContext = SecurityContext;
-            apiHelper = ApiHelper;
-            queueManager = QueueManager;
-            signalrWorker = SignalrWorker;
-            daoFactory = DaoFactory;
         }
     }
 

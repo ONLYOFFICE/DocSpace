@@ -84,6 +84,11 @@ namespace ASC.Mail.Aggregator.CollectionService
                             }
                         );
                 })
-            .ConfigureServices(services => services.AddSingleton(new ConsoleParser(args)));
+            .ConfigureServices(services => 
+            { 
+                services.AddSingleton(new ConsoleParser(args));
+                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15)); 
+                services.AddMemoryCache();
+            });
     }
 }
