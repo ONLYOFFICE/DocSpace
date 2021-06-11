@@ -17,6 +17,7 @@ import {
   DownloadDialog,
   ThirdPartyDialog,
   ConflictResolveDialog,
+  ConvertDialog,
 } from "../dialogs";
 
 const Panels = (props) => {
@@ -36,6 +37,7 @@ const Panels = (props) => {
     thirdPartyDialogVisible,
     newFilesPanelVisible,
     conflictResolveDialogVisible,
+    convertDialogVisible,
   } = props;
 
   return [
@@ -68,6 +70,7 @@ const Panels = (props) => {
     conflictResolveDialogVisible && (
       <ConflictResolveDialog key="conflict-resolve-dialog" />
     ),
+    convertDialogVisible && <ConvertDialog key="convert-dialog" />,
   ];
 };
 
@@ -87,6 +90,7 @@ export default inject(
       thirdPartyDialogVisible,
       newFilesPanelVisible,
       conflictResolveDialogVisible,
+      convertDialogVisible,
 
       connectItem, //TODO:
     } = dialogsStore;
@@ -110,6 +114,7 @@ export default inject(
       thirdPartyDialogVisible,
       newFilesPanelVisible,
       conflictResolveDialogVisible,
+      convertDialogVisible,
     };
   }
 )(observer(Panels));
