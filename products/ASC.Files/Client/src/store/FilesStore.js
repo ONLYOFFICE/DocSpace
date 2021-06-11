@@ -296,7 +296,10 @@ class FilesStore {
       api.files
         .getFolder(folderId, filter)
         .then((data) => {
-          if (!this.treeFoldersStore.isRecycleBinFolder) {
+          const isRecycleBinFolder =
+            data.current.rootFolderType === FolderType.TRASH;
+
+          if (!isRecycleBinFolder) {
             const path = data.pathParts.slice();
             const newTreeFolders = this.treeFoldersStore.treeFolders;
             const folders = data.folders;
