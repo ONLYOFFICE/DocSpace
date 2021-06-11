@@ -1988,19 +1988,9 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <returns></returns>
         [Read(@"settings")]
-        public object GetFilesSettings()
+        public FilesSettingsHelper GetFilesSettings()
         {
-            return new
-            {
-                FilesSettingsHelper.StoreOriginalFiles,
-                FilesSettingsHelper.ConfirmDelete,
-                FilesSettingsHelper.UpdateIfExist,
-                FilesSettingsHelper.Forcesave,
-                FilesSettingsHelper.StoreForcesave,
-                FilesSettingsHelper.EnableThirdParty,
-                FilesSettingsHelper.RecentSection,
-                FilesSettingsHelper.FavoritesSection
-            };
+            return FilesSettingsHelper;
         }
 
         /// <summary>
