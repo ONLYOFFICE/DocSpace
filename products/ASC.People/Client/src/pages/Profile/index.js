@@ -46,7 +46,7 @@ class Profile extends React.Component {
     if (linkParams.email_change && linkParams.email_change === "success") {
       toastr.success(t("ChangeEmailSuccess"));
     }
-    if (!profile) {
+    if (!profile || profile.userName !== userId) {
       setIsLoading(true);
       setLoadedProfile(false);
       fetchProfile(userId).finally(() => {

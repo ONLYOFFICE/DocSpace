@@ -71,6 +71,10 @@ class ProfileAction extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.setIsEditTargetUser(false);
+  }
+
   render() {
     console.log("ProfileAction render");
 
@@ -133,6 +137,7 @@ export default withRouter(
     const {
       getTargetUser: fetchProfile,
       targetUser: profile,
+      setIsEditTargetUser,
     } = targetUserStore;
     const { setFirstLoad, setLoadedProfile } = loadingStore;
 
@@ -145,6 +150,7 @@ export default withRouter(
       profile,
       setFirstLoad,
       setLoadedProfile,
+      setIsEditTargetUser,
     };
   })(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );
