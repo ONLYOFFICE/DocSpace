@@ -33,6 +33,9 @@ import {
   BackupCodesDialog,
 } from "../../../../components/dialogs";
 
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../../HOCs/withLoader";
+
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: flex-start;
@@ -151,6 +154,7 @@ class SectionBodyContent extends React.PureComponent {
     //}
 
     if (!isSelf) return;
+
     try {
       await getAuthProviders().then((providers) => {
         setProviders(providers);
@@ -172,10 +176,17 @@ class SectionBodyContent extends React.PureComponent {
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
 
   onEditProfileClick = () => {
-    const { isMy, avatarMax, setAvatarMax, history, profile } = this.props;
+    const {
+      isMy,
+      avatarMax,
+      setAvatarMax,
+      history,
+      profile,
+      setIsEditTargetUser,
+    } = this.props;
 
     avatarMax && setAvatarMax(null);
-
+    setIsEditTargetUser(true);
     const editUrl = isMy
       ? combineUrl(AppServerConfig.proxyURL, `/my?action=edit`)
       : combineUrl(
@@ -484,27 +495,52 @@ class SectionBodyContent extends React.PureComponent {
 }
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    isAdmin: auth.isAdmin,
-    profile: peopleStore.targetUserStore.targetUser,
-    viewer: auth.userStore.user,
-    isTabletView: auth.settingsStore.isTabletView,
-    isSelf: peopleStore.targetUserStore.isMe,
-    avatarMax: peopleStore.avatarEditorStore.avatarMax,
-    setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
-    providers: peopleStore.usersStore.providers,
-    setProviders: peopleStore.usersStore.setProviders,
-    getOAuthToken: auth.settingsStore.getOAuthToken,
-    getLoginLink: auth.settingsStore.getLoginLink,
-    getBackupCodes: auth.tfaStore.getBackupCodes,
-    getNewBackupCodes: auth.tfaStore.getNewBackupCodes,
-    resetTfaApp: auth.tfaStore.unlinkApp,
-    getTfaType: auth.tfaStore.getTfaType,
-    backupCodes: auth.tfaStore.backupCodes,
-    setBackupCodes: auth.tfaStore.setBackupCodes,
-  }))(
+  inject(({ auth, peopleStore }) => {
+    const { isAdmin, userStore, settingsStore, tfaStore } = auth;
+    const { user: viewer } = userStore;
+    const { isTabletView, getOAuthToken, getLoginLink } = settingsStore;
+    const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
+    const {
+      targetUser: profile,
+      isMe: isSelf,
+      setIsEditTargetUser,
+    } = targetUserStore;
+    const { avatarMax, setAvatarMax } = avatarEditorStore;
+    const { providers, setProviders } = usersStore;
+    const {
+      getBackupCodes,
+      getNewBackupCodes,
+      unlinkApp: resetTfaApp,
+      getTfaType,
+      backupCodes,
+      setBackupCodes,
+    } = tfaStore;
+
+    return {
+      isAdmin,
+      profile,
+      viewer,
+      isTabletView,
+      isSelf,
+      avatarMax,
+      setAvatarMax,
+      providers,
+      setProviders,
+      getOAuthToken,
+      getLoginLink,
+      getBackupCodes,
+      getNewBackupCodes,
+      resetTfaApp,
+      getTfaType,
+      backupCodes,
+      setBackupCodes,
+      setIsEditTargetUser,
+    };
+  })(
     observer(
-      withTranslation(["Profile", "Common", "Translations"])(SectionBodyContent)
+      withTranslation(["Profile", "Common", "Translations"])(
+        withLoader(SectionBodyContent)(<Loaders.ProfileView />)
+      )
     )
   )
 );

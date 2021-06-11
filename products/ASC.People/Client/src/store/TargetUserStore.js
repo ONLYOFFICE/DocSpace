@@ -7,6 +7,7 @@ const { auth: authStore } = store;
 
 class TargetUserStore {
   targetUser = null;
+  isEditTargetUser = false;
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
@@ -46,7 +47,9 @@ class TargetUserStore {
   };
 
   resetTargetUser = () => {
-    this.targetUser = null;
+    if (!this.isEditTargetUser) {
+      this.targetUser = null;
+    }
   };
 
   updateProfile = async (profile) => {
@@ -83,6 +86,10 @@ class TargetUserStore {
   getUserPhoto = async (id) => {
     const res = await api.people.getUserPhoto(id);
     return res;
+  };
+
+  setIsEditTargetUser = (isEditTargetUser) => {
+    this.isEditTargetUser = isEditTargetUser;
   };
 }
 

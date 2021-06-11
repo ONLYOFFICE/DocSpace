@@ -104,6 +104,10 @@ class UpdateUserForm extends React.Component {
     this.mainFieldsContainerRef = React.createRef();
   }
 
+  componentDidMount() {
+    this.props.setIsEditTargetUser(true);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.match.params.userId !== prevProps.match.params.userId) {
       this.setState(this.mapPropsToState(this.props));
@@ -303,10 +307,22 @@ class UpdateUserForm extends React.Component {
   }
 
   onCancel() {
-    const { filter, setFilter, history } = this.props;
+    const {
+      filter,
+      setFilter,
+      history,
+      isEditTargetUser,
+      profile,
+    } = this.props;
 
-    if (document.referrer) {
-      history.goBack();
+    if (isEditTargetUser || document.referrer) {
+      history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/view/${profile.userName}`
+        )
+      );
     } else {
       history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
       setFilter(filter);
@@ -943,6 +959,8 @@ export default withRouter(
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
     isSelf: peopleStore.targetUserStore.isMe,
+    setIsEditTargetUser: peopleStore.targetUserStore.setIsEditTargetUser,
+    isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

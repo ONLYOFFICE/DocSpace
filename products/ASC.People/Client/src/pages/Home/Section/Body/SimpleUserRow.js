@@ -28,6 +28,7 @@ const SimpleUserRow = ({
   closeDialogs,
   updateUserStatus,
   history,
+  fetchProfile,
 }) => {
   const { t } = useTranslation(["Home", "Translations"]);
   const isRefetchPeople = true;
@@ -55,11 +56,24 @@ const SimpleUserRow = ({
   const onSendMessageClick = () => {
     window.open(`sms:${mobilePhone}`);
   };
-
-  const onEditClick = () => {
+  const redirectToEdit = () => {
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, `/edit/${userName}`)
     );
+  };
+  const onEditClick = () => {
+    const timer = setTimeout(() => redirectToEdit(), 500);
+    fetchProfile(userName).finally(() => {
+      clearTimeout(timer);
+      if (
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/edit/${userName}`
+        ) !== window.location.pathname
+      )
+        redirectToEdit();
+    });
   };
 
   const toggleChangeEmailDialog = () => {
@@ -282,6 +296,7 @@ const SimpleUserRow = ({
         history={history}
         selectGroup={selectGroup}
         sectionWidth={sectionWidth}
+        fetchProfile={fetchProfile}
       />
     </Row>
   );
@@ -309,6 +324,7 @@ export default withRouter(
       setDialogData: peopleStore.dialogStore.setDialogData,
       closeDialogs: peopleStore.dialogStore.closeDialogs,
       updateUserStatus: peopleStore.usersStore.updateUserStatus,
+      fetchProfile: peopleStore.targetUserStore.getTargetUser,
     };
   })(observer(SimpleUserRow))
 );

@@ -32,16 +32,20 @@ class ProfileAction extends React.Component {
       setIsEditingForm,
       t,
       setDocumentTitle,
+      setFirstLoad,
+      profile,
+      setLoadedProfile,
     } = this.props;
     const { userId } = match.params;
+    setFirstLoad(false);
     this.documentElement = document.getElementsByClassName("hidingHeader");
     setDocumentTitle(t("ProfileAction"));
-
     if (isEdit) {
       setIsEditingForm(false);
     }
-    if (userId) {
-      fetchProfile(userId);
+    if ((userId && !profile) || (profile && userId !== profile.userName)) {
+      setLoadedProfile(false);
+      fetchProfile(userId).finally(() => setLoadedProfile(true));
     }
 
     if (!this.loaded && this.documentElement) {
@@ -67,11 +71,15 @@ class ProfileAction extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.setIsEditTargetUser(false);
+  }
+
   render() {
     console.log("ProfileAction render");
 
     this.loaded = false;
-    const { profile, match, isMy } = this.props;
+    const { profile, match, isMy, tReady } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -95,15 +103,11 @@ class ProfileAction extends React.Component {
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {this.loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          <SectionHeaderContent tReady={tReady} loaded={this.loaded} />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {this.loaded ? (
-            <SectionUserBody isMy={isMy} />
-          ) : (
-            <Loaders.ProfileView isEdit={false} />
-          )}
+          <SectionUserBody isMy={isMy} tReady={tReady} loaded={this.loaded} />
         </PageLayout.SectionBody>
       </PageLayout>
     );
@@ -120,12 +124,33 @@ ProfileAction.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    setProviders: peopleStore.usersStore.setProviders,
-    setDocumentTitle: auth.setDocumentTitle,
-    isEdit: peopleStore.editingFormStore.isEdit,
-    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-  }))(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
+  inject(({ auth, peopleStore }) => {
+    const { setDocumentTitle } = auth;
+    const {
+      usersStore,
+      editingFormStore,
+      targetUserStore,
+      loadingStore,
+    } = peopleStore;
+    const { setProviders } = usersStore;
+    const { isEdit, setIsEditingForm } = editingFormStore;
+    const {
+      getTargetUser: fetchProfile,
+      targetUser: profile,
+      setIsEditTargetUser,
+    } = targetUserStore;
+    const { setFirstLoad, setLoadedProfile } = loadingStore;
+
+    return {
+      setProviders,
+      setDocumentTitle,
+      isEdit,
+      setIsEditingForm,
+      fetchProfile,
+      profile,
+      setFirstLoad,
+      setLoadedProfile,
+      setIsEditTargetUser,
+    };
+  })(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );

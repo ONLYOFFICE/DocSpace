@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledTreeFolder = styled.div`
-  width: 100%;
+  width: 90%;
   display: grid;
   grid-template-columns: 8px 1fr;
   grid-template-rows: 1fr;
