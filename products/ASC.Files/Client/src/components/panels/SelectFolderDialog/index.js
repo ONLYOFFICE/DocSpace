@@ -15,12 +15,12 @@ import {
   getCommonFolderList,
   getFolderPath,
 } from "@appserver/common/api/files";
-import SelectedFolderModal from "../SelectedFolderInput";
-import i18n from "../SelectedFolderInput/i18n";
+import SelectFolderModal from "../SelectFolderInput";
+import i18n from "../SelectFolderInput/i18n";
 
 let pathName = "";
 let folderList;
-class SelectedFolderModalDialog extends React.Component {
+class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,7 +42,7 @@ class SelectedFolderModalDialog extends React.Component {
       onSetLoadingData && onSetLoadingData(true);
       switch (foldersType) {
         case "common":
-          SelectedFolderDialog.getCommonFolders()
+          SelectFolderDialog.getCommonFolders()
             .then((commonFolder) => {
               folderList = commonFolder;
             })
@@ -65,7 +65,7 @@ class SelectedFolderModalDialog extends React.Component {
             });
           break;
         case "third-party":
-          SelectedFolderDialog.getCommonThirdPartyList()
+          SelectFolderDialog.getCommonThirdPartyList()
             .then(
               (commonThirdPartyArray) => (folderList = commonThirdPartyArray)
             )
@@ -91,7 +91,7 @@ class SelectedFolderModalDialog extends React.Component {
       getFolderPath(folder)
         .then(
           (foldersArray) =>
-            (pathName = SelectedFolderModal.setFullFolderPath(foldersArray))
+            (pathName = SelectFolderModal.setFullFolderPath(foldersArray))
         )
         .then(() => onSetFullPath && onSetFullPath(pathName))
         .then(() => onSelectFolder && onSelectFolder(folder[0]))
@@ -145,14 +145,14 @@ class SelectedFolderModalDialog extends React.Component {
   }
 }
 
-SelectedFolderModalDialog.propTypes = {
+SelectFolderModalDialog.propTypes = {
   onSelectFolder: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   foldersType: PropTypes.oneOf(["common", "third-party"]),
 };
 
-const SelectedFolderDialogWrapper = inject(
+const SelectFolderDialogWrapper = inject(
   ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter } = filesStore;
     const { expandedPanelKeys } = treeFoldersStore;
@@ -165,11 +165,11 @@ const SelectedFolderDialogWrapper = inject(
   }
 )(
   observer(
-    withTranslation(["SelectedFolder", "Common"])(SelectedFolderModalDialog)
+    withTranslation(["SelectedFolder", "Common"])(SelectFolderModalDialog)
   )
 );
 
-class SelectedFolderDialog extends React.Component {
+class SelectFolderDialog extends React.Component {
   static getCommonThirdPartyList = async () => {
     const commonThirdPartyArray = await getCommonThirdPartyList();
 
@@ -211,7 +211,7 @@ class SelectedFolderDialog extends React.Component {
 
   static getFolderPath = async (folderId) => {
     const foldersArray = await getFolderPath(folderId);
-    const convertFoldersArray = SelectedFolderModal.setFullFolderPath(
+    const convertFoldersArray = SelectFolderModal.setFullFolderPath(
       foldersArray
     );
 
@@ -222,11 +222,11 @@ class SelectedFolderDialog extends React.Component {
     return (
       <MobxProvider {...stores}>
         <I18nextProvider i18n={i18n}>
-          <SelectedFolderDialogWrapper {...this.props} />
+          <SelectFolderDialogWrapper {...this.props} />
         </I18nextProvider>
       </MobxProvider>
     );
   }
 }
 
-export default SelectedFolderDialog;
+export default SelectFolderDialog;

@@ -8,7 +8,7 @@ import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
 
-import SelectedFolderDialog from "files/SelectedFolderDialog";
+import SelectFolderDialog from "files/SelectFolderDialog";
 
 import { StyledComponent } from "./styled-backup";
 import BackupListModalDialog from "./sub-components-restore-backup/backupListModalDialog";
@@ -36,7 +36,7 @@ class RestoreBackup extends React.Component {
         isLoading: true,
       },
       function () {
-        SelectedFolderDialog.getCommonThirdPartyList()
+        SelectFolderDialog.getCommonThirdPartyList()
           .then(
             (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
           )

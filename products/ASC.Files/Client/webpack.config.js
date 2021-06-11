@@ -149,9 +149,8 @@ var config = {
       exposes: {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
-        "./SelectedFolderInput": "./src/components/panels/SelectedFolderInput",
-        "./SelectedFolderDialog":
-          "./src/components/panels/SelectedFolderDialog",
+        "./SelectFolderInput": "./src/components/panels/SelectFolderInput",
+        "./SelectFolderDialog": "./src/components/panels/SelectFolderDialog",
       },
       shared: {
         ...deps,

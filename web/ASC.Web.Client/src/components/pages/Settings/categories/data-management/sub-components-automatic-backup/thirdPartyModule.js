@@ -1,8 +1,8 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import SelectedFolderInput from "files/SelectedFolderInput";
-import SelectedFolderDialog from "files/SelectedFolderDialog";
+import SelectFolderInput from "files/SelectFolderInput";
+import SelectFolderDialog from "files/SelectFolderDialog";
 import ScheduleComponent from "./scheduleComponent";
 
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
@@ -117,7 +117,7 @@ class ThirdPartyModule extends React.Component {
     //debugger;
     this.setState({ isLoading: true }, function () {
       +defaultStorageType === 1
-        ? SelectedFolderDialog.getFolderPath(defaultSelectedFolder)
+        ? SelectFolderDialog.getFolderPath(defaultSelectedFolder)
             .then(
               (folderPath) => (this.folderThirdPartyModulePath = folderPath)
             )
@@ -432,7 +432,7 @@ class ThirdPartyModule extends React.Component {
             this.onSelectFolder(`${folderId}`);
           }
         })
-        .then(() => SelectedFolderDialog.getFolderPath(folderId))
+        .then(() => SelectFolderDialog.getFolderPath(folderId))
         .then((folderPath) => {
           this.folderThirdPartyModulePath = folderPath;
         })
@@ -594,7 +594,7 @@ class ThirdPartyModule extends React.Component {
           </Box>
 
           {!isLoading ? (
-            <SelectedFolderInput
+            <SelectFolderInput
               onSelectFolder={this.onSelectFolder}
               name={"thirdParty"}
               onClose={this.onClose}

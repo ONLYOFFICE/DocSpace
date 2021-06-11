@@ -15,7 +15,7 @@ import {
 } from "@appserver/common/api/portal";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
-import SelectedFolderDialog from "files/SelectedFolderDialog";
+import SelectFolderDialog from "files/SelectFolderDialog";
 
 import Loader from "@appserver/components/loader";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -135,7 +135,7 @@ class AutomaticBackup extends React.PureComponent {
     });
 
     this.setState({ isLoading: true }, function () {
-      SelectedFolderDialog.getCommonThirdPartyList()
+      SelectFolderDialog.getCommonThirdPartyList()
         .then(
           (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
         )

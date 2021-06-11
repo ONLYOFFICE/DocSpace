@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import i18n from "./i18n";
 import stores from "../../../store/index";
 import FileInputWithFolderPath from "./fileInputWithFolderPath";
-import SelectedFolderDialog from "../SelectedFolderDialog/index";
+import SelectFolderDialog from "../SelectFolderDialog/index";
 
 let path = "";
 
@@ -30,7 +30,7 @@ const StyledComponent = styled.div`
   }
 `;
 
-class SelectedFolder extends React.PureComponent {
+class SelectFolder extends React.PureComponent {
   constructor(props) {
     super(props);
     this.inputRef = React.createRef();
@@ -118,7 +118,7 @@ class SelectedFolder extends React.PureComponent {
           onClickInput={onClickInput}
         />
 
-        <SelectedFolderDialog
+        <SelectFolderDialog
           zIndex={zIndex}
           isPanelVisible={isPanelVisible}
           onClose={onClose}
@@ -136,21 +136,21 @@ class SelectedFolder extends React.PureComponent {
   }
 }
 
-SelectedFolder.propTypes = {
+SelectFolder.propTypes = {
   onClickInput: PropTypes.func.isRequired,
 };
 
-SelectedFolder.defaultProps = {
+SelectFolder.defaultProps = {
   isCommonWithoutProvider: false,
   isDisabled: false,
   folderList: "",
   folderPath: "",
 };
-const SelectedFolderWrapper = withTranslation(["SelectedFolder", "Common"])(
-  SelectedFolder
+const SelectFolderWrapper = withTranslation(["SelectedFolder", "Common"])(
+  SelectFolder
 );
 
-class SelectedFolderModal extends React.Component {
+class SelectFolderModal extends React.Component {
   static setFullFolderPath = (foldersArray) => {
     path = "";
     if (foldersArray.length > 1) {
@@ -170,11 +170,11 @@ class SelectedFolderModal extends React.Component {
     return (
       <MobxProvider {...stores}>
         <I18nextProvider i18n={i18n}>
-          <SelectedFolderWrapper {...this.props} />
+          <SelectFolderWrapper {...this.props} />
         </I18nextProvider>
       </MobxProvider>
     );
   }
 }
 
-export default SelectedFolderModal;
+export default SelectFolderModal;

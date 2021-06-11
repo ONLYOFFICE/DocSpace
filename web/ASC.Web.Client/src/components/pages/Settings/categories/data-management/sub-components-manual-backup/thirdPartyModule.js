@@ -1,7 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectedFolderInput from "files/SelectedFolderInput";
-import SelectedFolderDialog from "files/SelectedFolderDialog";
+import SelectFolderInput from "files/SelectFolderInput";
+import SelectFolderDialog from "files/SelectFolderDialog";
 import Button from "@appserver/components/button";
 
 import { startBackup } from "@appserver/common/api/portal";
@@ -87,7 +87,7 @@ class ThirdPartyModule extends React.Component {
 
     saveToSessionStorage("selectedFolder", `${selectedFolder}`);
 
-    SelectedFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
+    SelectFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
       saveToSessionStorage("selectedFolderPath", `${folderPath}`);
     });
 
@@ -126,7 +126,7 @@ class ThirdPartyModule extends React.Component {
           </Link>
         </Box>
 
-        <SelectedFolderInput
+        <SelectFolderInput
           onSelectFolder={this.onSelectFolder}
           name={"thirdParty"}
           onClose={this.onClose}

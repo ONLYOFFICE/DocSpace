@@ -1,6 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectedFolderInput from "files/SelectedFolderInput";
+import SelectFolderInput from "files/SelectFolderInput";
+import SelectFolderDialog from "files/SelectFolderDialog";
 import Button from "@appserver/components/button";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { startBackup } from "@appserver/common/api/portal";
@@ -72,7 +73,7 @@ class DocumentsModule extends React.Component {
 
     saveToSessionStorage("selectedFolder", `${selectedFolder}`);
 
-    SelectedFolderInput.getFolderPath(selectedFolder).then((folderPath) => {
+    SelectFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
       saveToSessionStorage("selectedFolderPath", `${folderPath}`);
     });
     const { setInterval } = this.props;
@@ -91,7 +92,7 @@ class DocumentsModule extends React.Component {
 
     return (
       <div className="category-item-wrapper">
-        <SelectedFolderInput
+        <SelectFolderInput
           onSelectFolder={this.onSelectFolder}
           name={"common"}
           onClose={this.onClose}

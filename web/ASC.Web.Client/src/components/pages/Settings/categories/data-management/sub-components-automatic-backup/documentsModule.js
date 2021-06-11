@@ -1,7 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectedFolderInput from "files/SelectedFolderInput";
-import SelectedFolderDialog from "files/SelectedFolderDialog";
+import SelectFolderInput from "files/SelectFolderInput";
+import SelectFolderDialog from "files/SelectFolderDialog";
 import ScheduleComponent from "./scheduleComponent";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import {
@@ -118,7 +118,7 @@ class DocumentsModule extends React.Component {
 
     this.setState({ isLoading: true }, function () {
       defaultStorageType && +defaultStorageType === 0
-        ? SelectedFolderDialog.getFolderPath(defaultSelectedFolder)
+        ? SelectFolderDialog.getFolderPath(defaultSelectedFolder)
             .then((folderPath) => {
               this.folderDocumentsModulePath = folderPath;
             })
@@ -437,7 +437,7 @@ class DocumentsModule extends React.Component {
             this.onSelectFolder(`${folderId}`);
           }
         })
-        .then(() => SelectedFolderDialog.getFolderPath(folderId))
+        .then(() => SelectFolderDialog.getFolderPath(folderId))
         .then((folderPath) => {
           this.folderDocumentsModulePath = folderPath;
         })
@@ -588,7 +588,7 @@ class DocumentsModule extends React.Component {
       <div className="category-item-wrapper">
         <>
           {!isLoading ? (
-            <SelectedFolderInput
+            <SelectFolderInput
               onSelectFolder={this.onSelectFolder}
               name={"thirdParty"}
               onClose={this.onClose}
