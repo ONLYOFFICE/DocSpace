@@ -83,15 +83,12 @@ const SectionHeaderContent = (props) => {
     }
 
     if (!isEditTargetUser && (!profile || !document.referrer)) {
-      console.log("here1");
       setFilterAndReset(filter);
       const urlFilter = filter.toUrlParams();
       return history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
       );
     }
-
-    console.log("here2");
 
     history.push(
       combineUrl(
