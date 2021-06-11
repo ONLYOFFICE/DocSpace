@@ -69,69 +69,56 @@ const MainContainer = styled.div`
   }
 `;
 
-class AccessRights extends PureComponent {
+class AccessPortal extends PureComponent {
   constructor(props) {
     super(props);
 
     const { t } = props;
 
-    setDocumentTitle(t("ManagementCategorySecurity"));
+    setDocumentTitle(t("PortalAccess"));
   }
 
-  async componentDidMount() {
-    const { admins, getUpdateListAdmin } = this.props;
-
+  componentDidMount() {
     showLoader();
-    if (isEmpty(admins, true)) {
-      try {
-        await getUpdateListAdmin();
-      } catch (error) {
-        toastr.error(error);
-      }
-    }
-
     hideLoader();
   }
 
+  onClickLink = (e) => {
+    e.preventDefault();
+    const { history } = this.props;
+    history.push(e.target.pathname);
+  };
+
   render() {
-    const { t, admins } = this.props;
+    const { t } = this.props;
     return (
       <MainContainer>
-        <OwnerSettings />
-        {/*<div className="category-item-wrapper">
+        <div className="category-item-wrapper">
           <div className="category-item-heading">
             <Link
               className="inherit-title-link header"
+              onClick={this.onClickLink}
               truncate={true}
               href={combineUrl(
                 AppServerConfig.proxyURL,
-                "/settings/security/access-rights/portal-admins"
+                "/settings/security/access-portal/tfa"
               )}
             >
-              {t("PortalAdmins")}
+              {t("TwoFactorAuth")}
             </Link>
             <StyledArrowRightIcon size="small" color="#333333" />
           </div>
-          {admins.length > 0 && (
-            <Text className="category-item-subheader" truncate={true}>
-              {admins.length} {t("Employees")}
-            </Text>
-          )}
           <Text className="category-item-description">
-            {t("PortalAdminsDescription")}
+            {t("TwoFactorAuthDescription")}
           </Text>
-          </div>*/}
+        </div>
       </MainContainer>
     );
   }
 }
 
-export default inject(({ auth, setup }) => {
-  const { getUpdateListAdmin } = setup;
-  const { admins } = setup.security.accessRight;
+export default inject(({ auth }) => {
   return {
-    admins,
-    getUpdateListAdmin,
     organizationName: auth.settingsStore.organizationName,
   };
-})(withTranslation("Settings")(withRouter(AccessRights)));
+})(withTranslation("Settings")(withRouter(AccessPortal)));

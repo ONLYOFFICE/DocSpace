@@ -1856,6 +1856,9 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}. Migration du portail dans une autre région a commencé </value>
   </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Migration du portail dans une autre région terminée avec succès</value>
+  </data>
   <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
     <value>Confirmez votre adresse email</value>
   </data>
@@ -1945,6 +1948,9 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_request_tariff" xml:space="preserve">
     <value>Demande du plan tarifaire de SaaS</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Restauration terminée</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restauration démarrée

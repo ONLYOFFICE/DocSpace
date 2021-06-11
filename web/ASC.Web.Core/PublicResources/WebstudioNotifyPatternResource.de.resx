@@ -1867,6 +1867,9 @@ Dieser Link ist nur 7 Tage gültig.</value>
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}. Eine andere Region Portalsmigration startet</value>
   </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Eine andere Region Portalsmigration ist erfolgreich abgeschlossen</value>
+  </data>
   <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
     <value>Bestätigen Sie Ihre E-Mail-Adresse</value>
   </data>
@@ -1956,6 +1959,9 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_request_tariff" xml:space="preserve">
     <value>SaaS Preis Plan Ausschreibung</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Wiederherstellung ist abgeschlossen</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Wiederherstellung startet</value>

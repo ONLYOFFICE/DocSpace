@@ -52,6 +52,7 @@ const Dark = {
   color: whiteSolitude,
   backgroundColor: blueCharcoal,
   fontFamily: "Open Sans, sans-serif, Arial",
+  fontSize: "13px",
 
   text: {
     color: white,

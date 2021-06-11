@@ -92,6 +92,7 @@ class Body extends Component {
       history,
       i18n,
       cultureNames,
+      culture,
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
@@ -132,6 +133,7 @@ class Body extends Component {
           setDocumentTitle(t("WizardTitle"));
         })
         .catch((e) => {
+          console.error(e);
           this.setState({
             errorInitWizard: e,
           });
@@ -508,7 +510,6 @@ WizardPage.propTypes = {
 export default inject(({ auth, wizard }) => {
   const {
     passwordSettings,
-    culture,
     wizardToken,
     timezones,
     timezone,
@@ -520,6 +521,7 @@ export default inject(({ auth, wizard }) => {
     getPortalPasswordSettings,
   } = auth.settingsStore;
 
+  const { language } = auth;
   const {
     isWizardLoaded,
     machineName,
@@ -535,7 +537,7 @@ export default inject(({ auth, wizard }) => {
 
   return {
     isLoaded: auth.isLoaded,
-    culture,
+    culture: language,
     wizardToken,
     passwordSettings,
     timezones,
