@@ -189,7 +189,6 @@ class PageLayout extends React.Component {
       onDrop,
       showPrimaryProgressBar,
       primaryProgressBarIcon,
-      primaryProgressBarColor,
       primaryProgressBarValue,
       showPrimaryButtonAlert,
       showSecondaryProgressBar,
@@ -392,7 +391,6 @@ class PageLayout extends React.Component {
                       <>
                         <FloatingButton
                           className="layout-progress-bar"
-                          color={primaryProgressBarColor}
                           icon={primaryProgressBarIcon}
                           percent={primaryProgressBarValue}
                           alert={showPrimaryButtonAlert}
@@ -408,7 +406,6 @@ class PageLayout extends React.Component {
                     ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
                       <FloatingButton
                         className="layout-progress-bar"
-                        color={primaryProgressBarColor}
                         icon={primaryProgressBarIcon}
                         percent={primaryProgressBarValue}
                         alert={showPrimaryButtonAlert}

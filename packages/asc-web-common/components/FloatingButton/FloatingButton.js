@@ -22,7 +22,7 @@ const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
 const FloatingButton = ({ id, className, style, ...rest }) => {
-  const { icon, alert, percent, color, onClick } = rest;
+  const { icon, alert, percent, onClick } = rest;
 
   return (
     <StyledCircleWrap
@@ -32,7 +32,7 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
       icon={icon}
       onClick={onClick}
     >
-      <StyledCircle color={color} percent={percent}>
+      <StyledCircle percent={percent}>
         <div className="circle__mask circle__full">
           <div className="circle__fill"></div>
         </div>

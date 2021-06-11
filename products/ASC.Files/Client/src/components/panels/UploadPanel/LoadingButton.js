@@ -4,7 +4,6 @@ import globalColors from "@appserver/components/utils/globalColors";
 
 const backgroundColor = "none";
 const color = globalColors.blueMain;
-const convertColor = globalColors.hoverSuccess;
 
 const StyledCircleWrap = styled.div`
   width: 16px;
@@ -53,7 +52,7 @@ const StyledCircle = styled.div`
 
   .circle__mask .circle__fill {
     clip: rect(0px, 8px, 16px, 0px);
-    background-color: ${(props) => (props.isConversion ? convertColor : color)};
+    background-color: ${color};
   }
 
   .circle__mask.circle__full {
@@ -80,7 +79,7 @@ const StyledLoadingButton = styled.div`
   background: #fff;
   position: absolute;
   margin: 2px;
-  color: ${(props) => (props.isConversion ? convertColor : color)};
+  color: ${color};
   font-size: 16px;
   font-weight: bold;
 `;

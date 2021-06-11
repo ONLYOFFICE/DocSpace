@@ -50,7 +50,7 @@ const StyledCircle = styled.div`
 
   .circle__mask .circle__fill {
     clip: rect(0px, 27px, 54px, 0px);
-    background-color: ${(props) => (props.color ? props.color : color)};
+    background-color: ${color};
   }
 
   .circle__mask.circle__full {

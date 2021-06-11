@@ -26,10 +26,6 @@ import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
-import globalColors from "@appserver/components/utils/globalColors";
-
-const color = globalColors.blueMain;
-const convertColor = globalColors.hoverSuccess;
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -249,9 +245,6 @@ class PureHome extends React.Component {
       converted,
     } = this.props;
 
-    const primaryProgressBarColor =
-      uploaded && !converted ? convertColor : color;
-
     return (
       <>
         <MediaViewer />
@@ -267,7 +260,6 @@ class PureHome extends React.Component {
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}
-          primaryProgressBarColor={primaryProgressBarColor}
           showPrimaryButtonAlert={primaryProgressDataAlert}
           showSecondaryProgressBar={secondaryProgressDataStoreVisible}
           secondaryProgressBarValue={secondaryProgressDataStorePercent}

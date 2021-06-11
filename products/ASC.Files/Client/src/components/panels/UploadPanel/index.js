@@ -105,7 +105,7 @@ class UploadPanelComponent extends React.Component {
                     <IconButton
                       size="20"
                       iconName="images/button.cancel.react.svg"
-                      color={uploaded ? "#BCDF7E" : "#A3A9AE"}
+                      color={"#A3A9AE"}
                       isClickable
                       onClick={uploaded ? cancelConversion : cancelUpload}
                     />
