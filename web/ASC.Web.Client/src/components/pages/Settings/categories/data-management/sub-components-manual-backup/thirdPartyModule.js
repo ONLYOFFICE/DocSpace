@@ -1,6 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectedFolder from "files/SelectedFolder";
+import SelectedFolderInput from "files/SelectedFolderInput";
+import SelectedFolderDialog from "files/SelectedFolderDialog";
 import Button from "@appserver/components/button";
 
 import { startBackup } from "@appserver/common/api/portal";
@@ -86,7 +87,7 @@ class ThirdPartyModule extends React.Component {
 
     saveToSessionStorage("selectedFolder", `${selectedFolder}`);
 
-    SelectedFolder.getFolderPath(selectedFolder).then((folderPath) => {
+    SelectedFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
       saveToSessionStorage("selectedFolderPath", `${folderPath}`);
     });
 
@@ -125,7 +126,7 @@ class ThirdPartyModule extends React.Component {
           </Link>
         </Box>
 
-        <SelectedFolder
+        <SelectedFolderInput
           onSelectFolder={this.onSelectFolder}
           name={"thirdParty"}
           onClose={this.onClose}
@@ -135,7 +136,7 @@ class ThirdPartyModule extends React.Component {
           isPanelVisible={isPanelVisible}
           isError={isError}
           folderPath={folderPath}
-          isThirdPartyFolders
+          foldersType="third-party"
         />
 
         <div className="manual-backup_buttons">

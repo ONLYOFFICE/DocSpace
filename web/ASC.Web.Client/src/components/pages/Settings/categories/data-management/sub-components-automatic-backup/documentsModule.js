@@ -1,6 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectedFolder from "files/SelectedFolder";
+import SelectedFolderInput from "files/SelectedFolderInput";
+import SelectedFolderDialog from "files/SelectedFolderDialog";
 import ScheduleComponent from "./scheduleComponent";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import {
@@ -117,7 +118,7 @@ class DocumentsModule extends React.Component {
 
     this.setState({ isLoading: true }, function () {
       defaultStorageType && +defaultStorageType === 0
-        ? SelectedFolder.getFolderPath(defaultSelectedFolder)
+        ? SelectedFolderDialog.getFolderPath(defaultSelectedFolder)
             .then((folderPath) => {
               this.folderDocumentsModulePath = folderPath;
             })
@@ -436,7 +437,7 @@ class DocumentsModule extends React.Component {
             this.onSelectFolder(`${folderId}`);
           }
         })
-        .then(() => SelectedFolder.getFolderPath(folderId))
+        .then(() => SelectedFolderDialog.getFolderPath(folderId))
         .then((folderPath) => {
           this.folderDocumentsModulePath = folderPath;
         })
@@ -582,12 +583,12 @@ class DocumentsModule extends React.Component {
       t,
       onSetLoadingData,
     } = this.props;
-
+    console.log("isLoading auto!", isLoading);
     return (
       <div className="category-item-wrapper">
         <>
           {!isLoading ? (
-            <SelectedFolder
+            <SelectedFolderInput
               onSelectFolder={this.onSelectFolder}
               name={"thirdParty"}
               onClose={this.onClose}
@@ -597,7 +598,7 @@ class DocumentsModule extends React.Component {
               isSetDefaultFolderPath={isSetDefaultFolderPath}
               isError={isError}
               onSetLoadingData={onSetLoadingData}
-              isCommonFolders
+              foldersType="common"
               isCommonWithoutProvider
               isSavingProcess={isLoadingData}
             />
