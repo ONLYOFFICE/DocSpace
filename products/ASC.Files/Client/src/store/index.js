@@ -51,7 +51,8 @@ const uploadDataStore = new UploadDataStore(
   filesStore,
   secondaryProgressDataStore,
   primaryProgressDataStore,
-  dialogsStore
+  dialogsStore,
+  settingsStore
 );
 const filesActionsStore = new FilesActionsStore(
   store.auth,

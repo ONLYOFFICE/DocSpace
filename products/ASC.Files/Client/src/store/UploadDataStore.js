@@ -28,6 +28,7 @@ class UploadDataStore {
   secondaryProgressDataStore;
   primaryProgressDataStore;
   dialogsStore;
+  settingsStore;
 
   files = [];
   filesSize = 0;
@@ -50,7 +51,8 @@ class UploadDataStore {
     filesStore,
     secondaryProgressDataStore,
     primaryProgressDataStore,
-    dialogsStore
+    dialogsStore,
+    settingsStore
   ) {
     makeAutoObservable(this);
     this.formatsStore = formatsStore;
@@ -60,6 +62,7 @@ class UploadDataStore {
     this.secondaryProgressDataStore = secondaryProgressDataStore;
     this.primaryProgressDataStore = primaryProgressDataStore;
     this.dialogsStore = dialogsStore;
+    this.settingsStore = settingsStore;
   }
 
   selectUploadedFile = (file) => {
@@ -426,7 +429,9 @@ class UploadDataStore {
     //console.log("this.tempConversionFiles", this.tempConversionFiles);
 
     if (this.tempConversionFiles.length)
-      this.dialogsStore.setConvertDialogVisible(true);
+      this.settingsStore.hideConfirmConvertSave
+        ? this.convertUploadedFiles(t)
+        : this.dialogsStore.setConvertDialogVisible(true);
 
     const newUploadData = {
       files: newFiles,
