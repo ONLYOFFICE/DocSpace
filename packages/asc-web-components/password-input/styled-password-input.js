@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import Text from "../text";
 import { tablet, mobile } from "../utils/device";
 import Base from "../themes/base";
-import { isSafari, isFirefox, isIOS, isDesktop } from "react-device-detect";
 // eslint-disable-next-line no-unused-vars
 const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => (
   <div {...props}></div>

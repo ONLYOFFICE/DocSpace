@@ -28,14 +28,7 @@ class PeopleStore {
   inviteLinksStore = null;
   dialogStore = null;
   loadingStore = null;
-
-  isLoading = false;
-  isLoaded = false;
-  isRefresh = false;
   isInit = false;
-  loadTimeout = null;
-
-  firstLoad = true;
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
