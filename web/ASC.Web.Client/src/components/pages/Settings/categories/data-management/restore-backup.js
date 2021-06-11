@@ -8,6 +8,7 @@ import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
 
+import SelectedFolder from "files/SelectedFolder";
 import { StyledComponent } from "./styled-backup";
 import BackupListModalDialog from "./sub-components-restore-backup/backupListModalDialog";
 import Documents from "./sub-components-restore-backup/documents";
@@ -28,6 +29,24 @@ class RestoreBackup extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.setState(
+      {
+        isLoading: true,
+      },
+      function () {
+        SelectedFolder.getCommonThirdPartyList()
+          .then(
+            (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
+          )
+          .finally(() =>
+            this.setState({
+              isLoading: false,
+            })
+          );
+      }
+    );
+  }
   onChangeCheckbox = () => {
     this.setState({
       isChecked: !this.state.isChecked,
@@ -181,7 +200,11 @@ class RestoreBackup extends React.Component {
           {isCheckedDocuments && <Documents />}
         </StyledModules>
 
-        <StyledModules>
+        <StyledModules
+          isDisabled={
+            this.commonThirdPartyList && this.commonThirdPartyList.length === 0
+          }
+        >
           <RadioButton
             fontSize="13px"
             fontWeight="400"
@@ -190,12 +213,16 @@ class RestoreBackup extends React.Component {
             key={1}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedThirdParty}
-            isDisabled={false}
+            isDisabled={
+              this.commonThirdPartyList &&
+              this.commonThirdPartyList.length === 0
+            }
             value="value"
             className="backup_radio-button"
           />
           {isCheckedThirdParty && <ThirdPartyResources />}
         </StyledModules>
+
         <StyledModules>
           <RadioButton
             fontSize="13px"
