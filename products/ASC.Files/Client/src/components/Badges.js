@@ -43,17 +43,21 @@ const Badges = ({
           hoverColor="#3B72A7"
         />
       )}
-      {canWebEdit && !isTrashFolder && accessToEdit && showEditBadge && (
-        <IconButton
-          onClick={onFilesClick}
-          iconName="/static/images/access.edit.react.svg"
-          className="badge icons-group"
-          size="small"
-          isfill={true}
-          color="#A3A9AE"
-          hoverColor="#3B72A7"
-        />
-      )}
+      {canWebEdit &&
+        !isTrashFolder &&
+        accessToEdit &&
+        showEditBadge &&
+        !canConvert && (
+          <IconButton
+            onClick={onFilesClick}
+            iconName="/static/images/access.edit.react.svg"
+            className="badge icons-group"
+            size="small"
+            isfill={true}
+            color="#A3A9AE"
+            hoverColor="#3B72A7"
+          />
+        )}
       {locked && accessToEdit && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"
