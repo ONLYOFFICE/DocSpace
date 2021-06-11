@@ -24,10 +24,13 @@ class Profile extends React.Component {
       setDocumentTitle,
       setFirstLoad,
       setIsLoading,
+      setIsEditTargetUser,
+      setLoadedProfile,
     } = this.props;
     let { userId } = match.params;
 
     setFirstLoad(false);
+    setIsEditTargetUser(false);
 
     if (!userId) userId = "@self";
 
@@ -45,7 +48,11 @@ class Profile extends React.Component {
     }
     if (!profile) {
       setIsLoading(true);
-      fetchProfile(userId).finally(() => setIsLoading(false));
+      setLoadedProfile(false);
+      fetchProfile(userId).finally(() => {
+        setIsLoading(false);
+        setLoadedProfile(true);
+      });
     }
 
     if (!profile && this.documentElement) {
@@ -73,7 +80,10 @@ class Profile extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.resetProfile();
+    const { isEditTargetUser } = this.props;
+    if (!isEditTargetUser) {
+      this.props.resetProfile();
+    }
   }
 
   render() {
@@ -124,8 +134,10 @@ export default withRouter(
       resetTargetUser: resetProfile,
       getTargetUser: fetchProfile,
       targetUser: profile,
+      isEditTargetUser,
+      setIsEditTargetUser,
     } = targetUserStore;
-    const { setFirstLoad, setIsLoading } = loadingStore;
+    const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
     return {
       setDocumentTitle,
       isAdmin,
@@ -135,6 +147,9 @@ export default withRouter(
       profile,
       setFirstLoad,
       setIsLoading,
+      isEditTargetUser,
+      setIsEditTargetUser,
+      setLoadedProfile,
     };
   })(observer(withTranslation(["Profile", "Common"])(Profile)))
 );

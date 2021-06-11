@@ -11,7 +11,6 @@ import Loaders from "@appserver/common/components/Loaders";
 
 const SectionUserBody = ({ avatarEditorIsOpen, match, isMy, loaded }) => {
   const { type } = match.params;
-  if (!loaded) return null;
   return type ? (
     avatarEditorIsOpen ? (
       <CreateAvatarEditorPage />

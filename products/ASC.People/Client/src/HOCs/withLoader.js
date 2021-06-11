@@ -4,8 +4,8 @@ import { observer, inject } from "mobx-react";
 let loadTimeout = null;
 const WithLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
-    const { tReady, isLoaded, isLoading, firstLoad } = props;
-    const [inLoad, setInLoad] = useState(false);
+    const { tReady, isLoaded, isLoading, firstLoad, profileLoaded } = props;
+    const [inLoad, setInLoad] = useState(true);
 
     const cleanTimer = () => {
       loadTimeout && clearTimeout(loadTimeout);
@@ -30,21 +30,22 @@ const WithLoader = (WrappedComponent) => (Loader) => {
       };
     }, [isLoading]);
 
-    return !firstLoad && isLoaded && !inLoad && tReady ? (
-      <WrappedComponent {...props} />
-    ) : (
+    return firstLoad || !isLoaded || inLoad || !tReady || !profileLoaded ? (
       Loader
+    ) : (
+      <WrappedComponent {...props} />
     );
   };
 
   return inject(({ auth, peopleStore }) => {
     const { isLoaded } = auth;
     const { loadingStore } = peopleStore;
-    const { isLoading, firstLoad } = loadingStore;
+    const { isLoading, firstLoad, profileLoaded } = loadingStore;
     return {
       isLoaded,
       isLoading,
       firstLoad,
+      profileLoaded,
     };
   })(observer(withLoader));
 };

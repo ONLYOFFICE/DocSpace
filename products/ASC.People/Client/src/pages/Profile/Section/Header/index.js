@@ -428,7 +428,6 @@ class SectionHeaderContent extends React.PureComponent {
   render() {
     const { profile, isAdmin, viewer, t, filter, history, isMe } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
-    if (!profile) return null;
 
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 

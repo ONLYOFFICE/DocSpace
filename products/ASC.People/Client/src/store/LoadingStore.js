@@ -5,6 +5,7 @@ class LoadingStore {
   isLoaded = false;
   isRefresh = false;
   firstLoad = true;
+  profileLoaded = true;
 
   constructor() {
     makeAutoObservable(this);
@@ -24,6 +25,10 @@ class LoadingStore {
 
   setFirstLoad = (firstLoad) => {
     this.firstLoad = firstLoad;
+  };
+
+  setLoadedProfile = (profileLoaded) => {
+    this.profileLoaded = profileLoaded;
   };
 }
 

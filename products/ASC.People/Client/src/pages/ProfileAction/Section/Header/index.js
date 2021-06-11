@@ -45,6 +45,7 @@ const SectionHeaderContent = (props) => {
     toggleAvatarEditor,
     avatarEditorIsOpen,
     isMy,
+    isEditTargetUser,
   } = props;
   const { userCaption, guestCaption } = customNames;
   const { type } = match.params;
@@ -81,13 +82,16 @@ const SectionHeaderContent = (props) => {
       return history.goBack();
     }
 
-    if (!profile || !document.referrer) {
+    if (!isEditTargetUser && (!profile || !document.referrer)) {
+      console.log("here1");
       setFilterAndReset(filter);
       const urlFilter = filter.toUrlParams();
       return history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
       );
     }
+
+    console.log("here2");
 
     history.push(
       combineUrl(
@@ -103,7 +107,6 @@ const SectionHeaderContent = (props) => {
   const onClickBack = useCallback(() => {
     avatarEditorIsOpen ? toggleAvatarEditor(false) : goBackAndReset();
   }, [avatarEditorIsOpen, toggleAvatarEditor, profile, filter, goBackAndReset]);
-  if (!props.loaded) return null;
   return (
     <Wrapper>
       <IconButton
@@ -134,5 +137,6 @@ export default withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
     avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
+    isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
   }))(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
 );

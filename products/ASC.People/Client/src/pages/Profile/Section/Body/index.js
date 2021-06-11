@@ -176,10 +176,17 @@ class SectionBodyContent extends React.PureComponent {
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
 
   onEditProfileClick = () => {
-    const { isMy, avatarMax, setAvatarMax, history, profile } = this.props;
+    const {
+      isMy,
+      avatarMax,
+      setAvatarMax,
+      history,
+      profile,
+      setIsEditTargetUser,
+    } = this.props;
 
     avatarMax && setAvatarMax(null);
-
+    setIsEditTargetUser(true);
     const editUrl = isMy
       ? combineUrl(AppServerConfig.proxyURL, `/my?action=edit`)
       : combineUrl(
@@ -334,7 +341,6 @@ class SectionBodyContent extends React.PureComponent {
       providers,
       backupCodes,
     } = this.props;
-    if (!profile) return null;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -494,7 +500,11 @@ export default withRouter(
     const { user: viewer } = userStore;
     const { isTabletView, getOAuthToken, getLoginLink } = settingsStore;
     const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
-    const { targetUser: profile, isMe: isSelf } = targetUserStore;
+    const {
+      targetUser: profile,
+      isMe: isSelf,
+      setIsEditTargetUser,
+    } = targetUserStore;
     const { avatarMax, setAvatarMax } = avatarEditorStore;
     const { providers, setProviders } = usersStore;
     const {
@@ -524,6 +534,7 @@ export default withRouter(
       getTfaType,
       backupCodes,
       setBackupCodes,
+      setIsEditTargetUser,
     };
   })(
     observer(

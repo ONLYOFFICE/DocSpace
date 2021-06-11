@@ -33,17 +33,19 @@ class ProfileAction extends React.Component {
       t,
       setDocumentTitle,
       setFirstLoad,
+      profile,
+      setLoadedProfile,
     } = this.props;
     const { userId } = match.params;
     setFirstLoad(false);
     this.documentElement = document.getElementsByClassName("hidingHeader");
     setDocumentTitle(t("ProfileAction"));
-
     if (isEdit) {
       setIsEditingForm(false);
     }
-    if (userId) {
-      fetchProfile(userId);
+    if ((userId && !profile) || (profile && userId !== profile.userName)) {
+      setLoadedProfile(false);
+      fetchProfile(userId).finally(() => setLoadedProfile(true));
     }
 
     if (!this.loaded && this.documentElement) {
@@ -132,7 +134,7 @@ export default withRouter(
       getTargetUser: fetchProfile,
       targetUser: profile,
     } = targetUserStore;
-    const { setFirstLoad } = loadingStore;
+    const { setFirstLoad, setLoadedProfile } = loadingStore;
 
     return {
       setProviders,
@@ -142,6 +144,7 @@ export default withRouter(
       fetchProfile,
       profile,
       setFirstLoad,
+      setLoadedProfile,
     };
   })(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );
