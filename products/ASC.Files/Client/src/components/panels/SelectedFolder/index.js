@@ -191,7 +191,6 @@ class SelectedFolder extends React.PureComponent {
     const {
       expandedKeys,
       filter,
-
       t,
       name,
       onClickInput,
@@ -251,7 +250,9 @@ class SelectedFolder extends React.PureComponent {
                 ) : (
                   <div key="loader" className="panel-loader-wrapper">
                     <Loader type="oval" size="16px" className="panel-loader" />
-                    <Text as="span">{t("LoadingLabel")}</Text>
+                    <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                      "Common:LoadingDescription"
+                    )}`}</Text>
                   </div>
                 )}
               </ModalDialog.Body>
@@ -267,12 +268,14 @@ SelectedFolder.propTypes = {
   onClickInput: PropTypes.func.isRequired,
   onSelectFolder: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  isPanelVisible: PropTypes.bool.isRequired,
 };
 
 SelectedFolder.defaultProps = {
   isThirdParty: false,
   isCommonWithoutProvider: false,
   withoutTopLevelFolder: false,
+  isDisabled: false,
   folderList: "",
   folderPath: "",
 };
@@ -288,7 +291,7 @@ const SelectedFolderWrapper = inject(
       fetchTreeFolders,
     };
   }
-)(observer(withTranslation("SelectedFolder")(SelectedFolder)));
+)(observer(withTranslation(["SelectedFolder", "Common"])(SelectedFolder)));
 
 class SelectedFolderModal extends React.Component {
   static getCommonThirdPartyList = async () => {
