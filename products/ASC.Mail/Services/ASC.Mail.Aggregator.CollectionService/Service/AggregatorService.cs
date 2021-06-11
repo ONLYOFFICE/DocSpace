@@ -109,7 +109,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             if (_mailSettings.EnableSignalr)
                 _signalrWorker = _scope.SignalrWorker;
 
-            _workTimer = new Timer(workTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
+            _workTimer = new Timer(workTimerElapsed, _cancelTokenSource, Timeout.Infinite, Timeout.Infinite);
 
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
 

@@ -73,9 +73,8 @@ namespace ASC.Mail.Aggregator.CollectionService
             {
                 _log.Info("Stoping service\r\n");
 
-                _aggregatorService.stopTimer();
+                _aggregatorService.StopService();
 
-                _aggregatorService.DisposeWorkers();
             }
             catch (Exception ex)
             {
