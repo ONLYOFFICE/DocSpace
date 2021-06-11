@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="d4255232-eaee-4be0-baf5-c949278a0f90" revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <introduction>
+      <para>Welcome to the SimpleRESTServices Library Reference</para>
+    </introduction>
+
+    <section>
+      <content>
+        <para>Select a topic from the table of contents.</para>
+      </content>
+    </section>
+
+    <relatedTopics>
+      <link xlink:href="c3df986e-20f6-4ba7-8825-11f5f7efcb58"/>
+    </relatedTopics>
+  </developerConceptualDocument>
+</topic>

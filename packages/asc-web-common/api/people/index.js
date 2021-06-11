@@ -107,7 +107,7 @@ export function getListAdmins(filter = Filter.getDefault()) {
 
   return request({
     method: "get",
-    url: `/people/filter.json?${filterParams}`,
+    url: `/people/filter.json?isadministrator=true&${filterParams}`,
   });
 }
 
