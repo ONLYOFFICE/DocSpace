@@ -18,7 +18,6 @@ import {
 import SelectedFolderModal from "../SelectedFolderInput";
 import i18n from "../SelectedFolderInput/i18n";
 
-let commonTreeFolder;
 let pathName = "";
 let folderList;
 class SelectedFolderModalDialog extends React.Component {
@@ -85,11 +84,9 @@ class SelectedFolderModalDialog extends React.Component {
           break;
       }
     });
-    console.log("isLoadingDat a!!!", this.state.isLoadingData);
   }
   onSelect = (folder) => {
     const { onSelectFolder, onClose, onSetFullPath } = this.props;
-    console.log("isLoadingDat a!!! ---- ", this.state.isLoadingData);
     this.setState({ isLoadingData: true }, function () {
       getFolderPath(folder)
         .then(
