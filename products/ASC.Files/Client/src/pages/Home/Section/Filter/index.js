@@ -302,8 +302,9 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
   const { user } = auth.userStore;
   const { customNames, culture } = auth.settingsStore;
 
-  const { search, filterType } = filter;
-  const isFiltered = !!files.length || !!folders.length || search || filterType;
+  const { search, filterType, authorType } = filter;
+  const isFiltered =
+    !!files.length || !!folders.length || search || filterType || authorType;
 
   return {
     customNames,

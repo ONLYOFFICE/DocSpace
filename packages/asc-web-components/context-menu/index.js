@@ -105,7 +105,7 @@ class ContextMenuSub extends Component {
     return (
       <li
         key={"separator_" + index}
-        className="p-menu-separator"
+        className="p-menu-separator not-selectable"
         role="separator"
       ></li>
     );
@@ -133,7 +133,7 @@ class ContextMenuSub extends Component {
       { "p-menuitem-active": active },
       item.className
     );
-    const linkClassName = classNames("p-menuitem-link", {
+    const linkClassName = classNames("p-menuitem-link", "not-selectable", {
       "p-disabled": item.disabled,
     });
     const iconClassName = classNames("p-menuitem-icon", {
@@ -148,7 +148,7 @@ class ContextMenuSub extends Component {
       ></ReactSVG>
     );
     const label = item.label && (
-      <span className="p-menuitem-text">{item.label}</span>
+      <span className="p-menuitem-text not-selectable">{item.label}</span>
     );
     const submenuIcon = item.items && (
       <ArrowIcon className={submenuIconClassName} />
@@ -235,7 +235,7 @@ class ContextMenuSub extends Component {
         unmountOnExit={true}
         onEnter={this.onEnter}
       >
-        <ul ref={this.submenuRef} className={className}>
+        <ul ref={this.submenuRef} className={`${className} not-selectable`}>
           {submenu}
         </ul>
       </CSSTransition>

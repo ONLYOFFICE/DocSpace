@@ -24,6 +24,8 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import { useTranslation } from "react-i18next";
 
+import withLoader from "../../../../HOCs/withLoader";
+
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -233,157 +235,153 @@ const SectionBodyContent = ({
 
   return (
     <MainContainer>
-      {isLoaded && tReady ? (
-        <>
-          <FieldContainer
-            className="group-name_container"
-            isRequired={true}
+      <>
+        <FieldContainer
+          className="group-name_container"
+          isRequired={true}
+          hasError={!!nameError}
+          errorMessage={nameError}
+          isVertical={true}
+          labelText={t("Name")}
+        >
+          <TextInput
+            id="group-name"
+            name="group-name"
+            scale={true}
+            isAutoFocussed={true}
+            isBold={true}
+            tabIndex={1}
+            value={groupName}
             hasError={!!nameError}
-            errorMessage={nameError}
-            isVertical={true}
-            labelText={t("Name")}
+            onChange={onGroupChange}
+            isDisabled={inLoading}
+            onKeyUp={onKeyPress}
+            onFocus={onFocusName}
+          />
+        </FieldContainer>
+        <FieldContainer
+          className="head_container"
+          isRequired={false}
+          hasError={false}
+          isVertical={true}
+          labelText={groupHeadCaption}
+        >
+          <ComboBox
+            id="head-selector_button"
+            tabIndex={2}
+            options={[]}
+            opened={isHeadSelectorOpen}
+            selectedOption={
+              newGroupManager.default ||
+              newGroupManager.key === ID_NO_GROUP_MANAGER ||
+              newGroupManager.displayName === "profile removed"
+                ? { ...newGroupManager, label: t("SelectAction") }
+                : newGroupManager
+            }
+            scaled={true}
+            isDisabled={inLoading}
+            size="content"
+            toggleAction={onHeadSelectorClick}
+            displayType="toggle"
           >
-            <TextInput
-              id="group-name"
-              name="group-name"
-              scale={true}
-              isAutoFocussed={true}
-              isBold={true}
-              tabIndex={1}
-              value={groupName}
-              hasError={!!nameError}
-              onChange={onGroupChange}
-              isDisabled={inLoading}
-              onKeyUp={onKeyPress}
-              onFocus={onFocusName}
-            />
-          </FieldContainer>
-          <FieldContainer
-            className="head_container"
-            isRequired={false}
-            hasError={false}
-            isVertical={true}
-            labelText={groupHeadCaption}
+            <CatalogGuestIcon size="medium" />
+          </ComboBox>
+          <PeopleSelector
+            isOpen={isHeadSelectorOpen}
+            onSelect={onGroupManagerSelect}
+            onCancel={onCancelSelector}
+            groupsCaption={groupsCaption}
+            defaultOption={me}
+            defaultOptionLabel={t("Common:MeLabel")}
+            employeeStatus={1}
+            groupList={groups}
+          />
+        </FieldContainer>
+        <FieldContainer
+          className="members_container"
+          isRequired={false}
+          hasError={false}
+          isVertical={true}
+          labelText={t("Members")}
+        >
+          <ComboBox
+            id="users-selector_button"
+            tabIndex={3}
+            options={[]}
+            opened={isUsersSelectorOpen}
+            isDisabled={inLoading}
+            selectedOption={{
+              key: 0,
+              label: t("Translations:AddMembers"),
+              default: true,
+            }}
+            scaled={true}
+            size="content"
+            toggleAction={onUsersSelectorClick}
+            displayType="toggle"
           >
-            <ComboBox
-              id="head-selector_button"
-              tabIndex={2}
-              options={[]}
-              opened={isHeadSelectorOpen}
-              selectedOption={
-                newGroupManager.default ||
-                newGroupManager.key === ID_NO_GROUP_MANAGER ||
-                newGroupManager.displayName === "profile removed"
-                  ? { ...newGroupManager, label: t("SelectAction") }
-                  : newGroupManager
-              }
-              scaled={true}
-              isDisabled={inLoading}
-              size="content"
-              toggleAction={onHeadSelectorClick}
-              displayType="toggle"
-            >
-              <CatalogGuestIcon size="medium" />
-            </ComboBox>
-            <PeopleSelector
-              isOpen={isHeadSelectorOpen}
-              onSelect={onGroupManagerSelect}
-              onCancel={onCancelSelector}
-              groupsCaption={groupsCaption}
-              defaultOption={me}
-              defaultOptionLabel={t("Common:MeLabel")}
-              employeeStatus={1}
-              groupList={groups}
-            />
-          </FieldContainer>
-          <FieldContainer
-            className="members_container"
-            isRequired={false}
-            hasError={false}
-            isVertical={true}
-            labelText={t("Members")}
-          >
-            <ComboBox
-              id="users-selector_button"
-              tabIndex={3}
-              options={[]}
-              opened={isUsersSelectorOpen}
-              isDisabled={inLoading}
-              selectedOption={{
-                key: 0,
-                label: t("Translations:AddMembers"),
-                default: true,
-              }}
-              scaled={true}
-              size="content"
-              toggleAction={onUsersSelectorClick}
-              displayType="toggle"
-            >
-              <CatalogGuestIcon size="medium" />
-            </ComboBox>
-            <PeopleSelector
-              isOpen={isUsersSelectorOpen}
-              isMultiSelect={true}
-              onSelect={onUsersSelectorSelect}
-              onCancel={onCancelSelector}
-              searchPlaceHolderLabel={t("SearchAddedMembers")}
-              groupsCaption={groupsCaption}
-              defaultOption={me}
-              defaultOptionLabel={t("Common:MeLabel")}
-              selectedOptions={newGroupMembers}
-              employeeStatus={1}
-              groupList={groups}
-            />
-          </FieldContainer>
-          {newGroupMembers && newGroupMembers.length > 0 && (
-            <>
-              <div className="search_container">
-                <SearchInput
-                  id="member-search"
+            <CatalogGuestIcon size="medium" />
+          </ComboBox>
+          <PeopleSelector
+            isOpen={isUsersSelectorOpen}
+            isMultiSelect={true}
+            onSelect={onUsersSelectorSelect}
+            onCancel={onCancelSelector}
+            searchPlaceHolderLabel={t("SearchAddedMembers")}
+            groupsCaption={groupsCaption}
+            defaultOption={me}
+            defaultOptionLabel={t("Common:MeLabel")}
+            selectedOptions={newGroupMembers}
+            employeeStatus={1}
+            groupList={groups}
+          />
+        </FieldContainer>
+        {newGroupMembers && newGroupMembers.length > 0 && (
+          <>
+            <div className="search_container">
+              <SearchInput
+                id="member-search"
+                isDisabled={inLoading}
+                scale={true}
+                placeholder={t("SearchAddedMembers")}
+                value={searchValue}
+                onChange={onSearchChange}
+              />
+            </div>
+            <div className="selected-members_container">
+              {newGroupMembers.map((member) => (
+                <SelectedItem
+                  key={member.key}
+                  text={member.label}
+                  onClose={onSelectedItemClose.bind(this, member)}
+                  isInline={false}
+                  className="selected-item"
                   isDisabled={inLoading}
-                  scale={true}
-                  placeholder={t("SearchAddedMembers")}
-                  value={searchValue}
-                  onChange={onSearchChange}
                 />
-              </div>
-              <div className="selected-members_container">
-                {newGroupMembers.map((member) => (
-                  <SelectedItem
-                    key={member.key}
-                    text={member.label}
-                    onClose={onSelectedItemClose.bind(this, member)}
-                    isInline={false}
-                    className="selected-item"
-                    isDisabled={inLoading}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-          <div className="buttons_container">
-            <Button
-              label={buttonLabel}
-              primary
-              type="submit"
-              isLoading={inLoading}
-              size="big"
-              tabIndex={4}
-              onClick={onSave}
-            />
-            <Button
-              label={t("Common:CancelButton")}
-              className="cancel-button"
-              size="big"
-              isDisabled={inLoading}
-              onClick={onCancel}
-              tabIndex={5}
-            />
-          </div>
-        </>
-      ) : (
-        <Loaders.Group />
-      )}
+              ))}
+            </div>
+          </>
+        )}
+        <div className="buttons_container">
+          <Button
+            label={buttonLabel}
+            primary
+            type="submit"
+            isLoading={inLoading}
+            size="big"
+            tabIndex={4}
+            onClick={onSave}
+          />
+          <Button
+            label={t("Common:CancelButton")}
+            className="cancel-button"
+            size="big"
+            isDisabled={inLoading}
+            onClick={onCancel}
+            tabIndex={5}
+          />
+        </div>
+      </>
     </MainContainer>
   );
 };
@@ -470,5 +468,5 @@ export default withRouter(
       selectedGroup: selectedGroup,
       setSelectGroup: setSelectedGroup,
     };
-  })(observer(SectionBodyContent))
+  })(observer(withLoader(SectionBodyContent)(<Loaders.Group />)))
 );

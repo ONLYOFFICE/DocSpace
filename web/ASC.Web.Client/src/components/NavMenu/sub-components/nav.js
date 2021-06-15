@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
+import { isMobileOnly, isDesktop } from "react-device-detect";
 
 const backgroundColor = "#0F4071";
 
@@ -19,9 +20,23 @@ const StyledNav = styled.nav`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .version-box {
-    position: inherit;
+    position: absolute;
+
+    @media (orientation: landscape) {
+      position: ${isMobileOnly && "relative"};
+      margin-top: 16px;
+    }
+
+    ${(props) =>
+      props.numberOfModules &&
+      `@media (max-height: ${props.numberOfModules * 52 + 80}px) {
+      position: ${isDesktop && "relative"};
+      margin-top: 16px;
+    }`}
+
+    bottom: 8px;
     left: 16px;
-    bottom: 16px;
+
     white-space: nowrap;
     a:focus {
       outline: 0;
@@ -35,13 +50,19 @@ const StyledScrollbar = styled(Scrollbar)`
 
 const Nav = React.memo((props) => {
   //console.log("Nav render");
-  const { opened, onMouseEnter, onMouseLeave, children } = props;
-
+  const {
+    opened,
+    onMouseEnter,
+    onMouseLeave,
+    children,
+    numberOfModules,
+  } = props;
   return (
     <StyledNav
       opened={opened}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      numberOfModules={numberOfModules}
     >
       <StyledScrollbar stype="smallWhite">{children}</StyledScrollbar>
     </StyledNav>

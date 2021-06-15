@@ -135,7 +135,7 @@ class ComboBox extends React.Component {
         />
         {displayType !== "toggle" && (
           <DropDown
-            className="dropdown-container"
+            className="dropdown-container not-selectable"
             directionX={directionX}
             directionY={directionY}
             manualY="102%"

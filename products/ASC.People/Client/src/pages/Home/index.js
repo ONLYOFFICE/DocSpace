@@ -96,10 +96,17 @@ Home.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-export default inject(({ peopleStore }) => ({
-  isLoading: peopleStore.isLoading,
-  getUsersList: peopleStore.usersStore.getUsersList,
-  setIsLoading: peopleStore.setIsLoading,
-  setIsRefresh: peopleStore.setIsRefresh,
-  selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-}))(observer(withRouter(Home)));
+export default inject(({ peopleStore }) => {
+  const { usersStore, selectedGroupStore, loadingStore } = peopleStore;
+  const { getUsersList } = usersStore;
+  const { selectedGroup } = selectedGroupStore;
+  const { isLoading, setIsLoading, setIsRefresh } = loadingStore;
+
+  return {
+    isLoading,
+    getUsersList,
+    setIsLoading,
+    setIsRefresh,
+    selectedGroup,
+  };
+})(observer(withRouter(Home)));
