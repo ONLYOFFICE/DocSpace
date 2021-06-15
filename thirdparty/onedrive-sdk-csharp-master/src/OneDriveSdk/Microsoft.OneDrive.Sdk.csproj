@@ -12,12 +12,12 @@
     <PackageProjectUrl>https://github.com/OneDrive/onedrive-sdk-csharp</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.0.7.5</Version>
+    <Version>2.0.7.6</Version>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Graph.Core" Version="1.5.0.1" />
+    <PackageReference Include="Microsoft.Graph.Core" Version="1.5.0.2" />
   </ItemGroup>
 </Project>
