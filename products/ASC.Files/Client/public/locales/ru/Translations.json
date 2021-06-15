@@ -19,6 +19,5 @@
   "Presentations": "Презентации",
   "Restore": "Восстановить",
   "Spreadsheets": "Таблицы",
-  "ThirdPartyInfo": "Изменить настройки подключения",
-  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}"
+  "ThirdPartyInfo": "Изменить настройки подключения"
 }

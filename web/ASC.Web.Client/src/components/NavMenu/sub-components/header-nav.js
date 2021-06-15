@@ -49,6 +49,9 @@ const StyledNav = styled.nav`
   @media ${tablet} {
     padding: 0 16px;
   }
+  .icon-profile-menu {
+    cursor: pointer;
+  }
 `;
 const HeaderNav = ({
   history,
@@ -134,7 +137,6 @@ const HeaderNav = ({
             noHover={true}
           />
         ))}
-
       {isAuthenticated && user ? (
         <ProfileActions userActions={getCurrentUserActions()} user={user} />
       ) : (

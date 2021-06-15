@@ -19,6 +19,10 @@ const StyledTreeMenu = styled(TreeMenu)`
     margin-top: 14px !important;
   }
 
+  .rc-tree-node-content-wrapper {
+    width: 98% !important;
+  }
+
   .rc-tree-node-selected {
     background: #dfe2e3 !important;
   }

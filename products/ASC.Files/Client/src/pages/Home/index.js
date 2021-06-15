@@ -23,7 +23,6 @@ import {
 } from "./Section";
 
 import { createTreeFolders } from "../../helpers/files-helpers";
-import { ConvertDialog } from "../../components/dialogs";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
@@ -185,11 +184,18 @@ class PureHome extends React.Component {
   };
 
   showUploadPanel = () => {
-    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+    const {
+      uploaded,
+      converted,
+      uploadPanelVisible,
+      setUploadPanelVisible,
+      clearPrimaryProgressData,
+      primaryProgressDataVisible,
+    } = this.props;
+    setUploadPanelVisible(!uploadPanelVisible);
 
-    this.props.primaryProgressDataVisible &&
-      this.props.uploaded &&
-      this.props.clearPrimaryProgressData();
+    if (primaryProgressDataVisible && uploaded && converted)
+      clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {
@@ -225,7 +231,6 @@ class PureHome extends React.Component {
     //console.log("Home render");
     const {
       viewAs,
-      convertDialogVisible,
       fileActionId,
       firstLoad,
       isHeaderVisible,
@@ -243,14 +248,13 @@ class PureHome extends React.Component {
 
       isLoading,
       dragging,
+
+      uploaded,
+      converted,
     } = this.props;
 
     return (
       <>
-        {convertDialogVisible && (
-          <ConvertDialog visible={convertDialogVisible} />
-        )}
-
         <MediaViewer />
         <DragTooltip />
         <PageLayout
@@ -319,7 +323,6 @@ export default inject(
     auth,
     filesStore,
     uploadDataStore,
-    dialogsStore,
     selectedFolderStore,
     treeFoldersStore,
   }) => {
@@ -365,9 +368,12 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
     } = secondaryProgressDataStore;
 
-    const { convertDialogVisible } = dialogsStore;
-
-    const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
+    const {
+      setUploadPanelVisible,
+      startUpload,
+      uploaded,
+      converted,
+    } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -384,6 +390,7 @@ export default inject(
       filter,
       viewAs,
       uploaded,
+      converted,
       isRecycleBinFolder,
       isVisitor: auth.userStore.user.isVisitor,
       expandedKeys,
@@ -399,7 +406,6 @@ export default inject(
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
 
-      convertDialogVisible,
       selectionLength,
       isProgressFinished,
       selectionTitle,

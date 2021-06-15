@@ -19,6 +19,7 @@ class DialogsStore {
   thirdPartyDialogVisible = false;
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
+  convertDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -29,6 +30,7 @@ class DialogsStore {
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
+  convertItem = null;
 
   constructor(treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
@@ -159,6 +161,14 @@ class DialogsStore {
 
   setUnsubscribe = (unsubscribe) => {
     this.unsubscribe = unsubscribe;
+  };
+
+  setConvertDialogVisible = (visible) => {
+    this.convertDialogVisible = visible;
+  };
+
+  setConvertItem = (item) => {
+    this.convertItem = item;
   };
 }
 
