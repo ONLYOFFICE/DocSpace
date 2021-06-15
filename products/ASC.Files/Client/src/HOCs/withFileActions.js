@@ -176,6 +176,7 @@ export default function withFileActions(WrappedFileItem) {
         isImage,
         isSound,
         isVideo,
+        canConvert,
         canWebEdit,
         item,
         isTrashFolder,
@@ -183,6 +184,8 @@ export default function withFileActions(WrappedFileItem) {
         expandedKeys,
         addExpandedKeys,
         setMediaViewerData,
+        setConvertItem,
+        setConvertDialogVisible,
       } = this.props;
       const {
         id,
@@ -210,6 +213,12 @@ export default function withFileActions(WrappedFileItem) {
           })
           .finally(() => setIsLoading(false));
       } else {
+        if (canConvert) {
+          setConvertItem(item);
+          setConvertDialogVisible(true);
+          return;
+        }
+
         if (fileStatus === 2) this.onMarkAsRead(id);
 
         if (canWebEdit) {
@@ -308,7 +317,11 @@ export default function withFileActions(WrappedFileItem) {
       { item, t, history }
     ) => {
       const { selectRowAction, onSelectItem, markAsRead } = filesActionsStore;
-      const { setSharingPanelVisible } = dialogsStore;
+      const {
+        setSharingPanelVisible,
+        setConvertDialogVisible,
+        setConvertItem,
+      } = dialogsStore;
       const {
         isPrivacyFolder,
         isRecycleBinFolder,
@@ -358,6 +371,7 @@ export default function withFileActions(WrappedFileItem) {
       const isSound = iconFormatsStore.isSound(item.fileExst);
       const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+      const canConvert = docserviceStore.canConvert(item.fileExst);
 
       return {
         t,
@@ -389,6 +403,7 @@ export default function withFileActions(WrappedFileItem) {
         isSound,
         isVideo,
         canWebEdit,
+        canConvert,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
         expandedKeys,
@@ -397,6 +412,8 @@ export default function withFileActions(WrappedFileItem) {
         getFolderInfo,
         markAsRead,
         viewAs,
+        setConvertItem,
+        setConvertDialogVisible,
       };
     }
   )(observer(WithFileActions));

@@ -734,3 +734,11 @@ export function setRecentSetting(set) {
     data: { set },
   });
 }
+
+export function hideConfirmConvert(save) {
+  return request({
+    method: "put",
+    url: "/files/hideconfirmconvert.json",
+    data: { save },
+  });
+}

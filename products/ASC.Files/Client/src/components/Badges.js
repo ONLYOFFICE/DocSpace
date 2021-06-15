@@ -13,7 +13,7 @@ const Badges = ({
   item,
   canWebEdit,
   isTrashFolder,
-  /* canConvert, */
+  canConvert,
   accessToEdit,
   showNew,
   onFilesClick,
@@ -21,7 +21,7 @@ const Badges = ({
   onClickFavorite,
   onShowVersionHistory,
   onBadgeClick,
-  /*setConvertDialogVisible*/
+  setConvertDialogVisible,
 }) => {
   const { id, locked, fileStatus, versionGroup, title, fileExst } = item;
 
@@ -32,28 +32,32 @@ const Badges = ({
 
   return fileExst ? (
     <div className="badges additional-badges">
-      {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
-                  <IconButton
-                    onClick={setConvertDialogVisible}
-                    iconName="FileActionsConvertIcon"
-                    className="badge"
-                    size="small"
-                    isfill={true}
-                    color="#A3A9AE"
-                    hoverColor="#3B72A7"
-                  />
-      )} */}
-      {canWebEdit && !isTrashFolder && accessToEdit && showEditBadge && (
+      {canConvert && !isTrashFolder && (
         <IconButton
-          onClick={onFilesClick}
-          iconName="/static/images/access.edit.react.svg"
-          className="badge icons-group"
+          onClick={setConvertDialogVisible}
+          iconName="/static/images/refresh.react.svg"
+          className="badge"
           size="small"
           isfill={true}
           color="#A3A9AE"
           hoverColor="#3B72A7"
         />
       )}
+      {canWebEdit &&
+        !isTrashFolder &&
+        accessToEdit &&
+        showEditBadge &&
+        !canConvert && (
+          <IconButton
+            onClick={onFilesClick}
+            iconName="/static/images/access.edit.react.svg"
+            className="badge icons-group"
+            size="small"
+            isfill={true}
+            color="#A3A9AE"
+            hoverColor="#3B72A7"
+          />
+        )}
       {locked && accessToEdit && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"

@@ -60,7 +60,7 @@ const StyledAsidePanel = styled.div`
     background-color: #fff;
   }
   .upload-panel_body {
-    padding: 64px 0;
+    padding-top: 64px;
   }
   .modal-dialog-aside {
     padding: 0;
