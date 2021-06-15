@@ -503,6 +503,37 @@ const StyledLinkRow = styled.div`
   }
 `;
 
+const StyledSelectFolderPanel = styled.div`
+  .modal-dialog_header {
+    display: flex;
+    align-items: center;
+  }
+  .modal-dialog_header-title {
+    ${(props) => props.isNeedArrowIcon && `margin-left:16px;`}
+  }
+`;
+const StyledSelectFilePanel = styled.div`
+  .modal-dialog_body-files-list {
+    margin-top: 16px;
+  }
+  .entry-title,
+  .file-exst {
+    margin-top: 7px;
+    font-weight: 600;
+  }
+  .entry-title:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .file-name {
+    display: flex;
+    border-bottom: 1px solid #eceef1;
+    padding: 7px 0px;
+  }
+  .file-exst {
+    color: #a3a9ae;
+  }
+`;
 export {
   StyledAsidePanel,
   StyledAddGroupsPanel,
@@ -515,4 +546,6 @@ export {
   StyledSharingBody,
   StyledFooter,
   StyledLinkRow,
+  StyledSelectFolderPanel,
+  StyledSelectFilePanel,
 };

@@ -706,6 +706,13 @@ export function getEncryptionAccess(fileId) {
   });
 }
 
+export function getFiles(folderId) {
+  return request({
+    method: "get",
+    url: `files/${folderId}?filterType=1`,
+  });
+}
+
 export function updateFileStream(file, fileId, encrypted, forcesave) {
   let fd = new FormData();
   fd.append("file", file);

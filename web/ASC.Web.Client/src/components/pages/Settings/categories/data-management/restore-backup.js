@@ -24,6 +24,7 @@ class RestoreBackup extends React.Component {
       isChecked: false,
       isNotify: true,
       isVisibleDialog: false,
+      isPanelVisible: false,
       isCheckedDocuments: true,
       isCheckedThirdParty: false,
       isCheckedThirdPartyStorage: false,
@@ -63,9 +64,22 @@ class RestoreBackup extends React.Component {
       isVisibleDialog: !this.state.isVisibleDialog,
     });
   };
+
   onModalClose = () => {
     this.setState({
       isVisibleDialog: false,
+    });
+  };
+
+  onClickInput = () => {
+    this.setState({
+      isPanelVisible: true,
+    });
+  };
+
+  onPanelClose = () => {
+    this.setState({
+      isPanelVisible: false,
     });
   };
   onClickShowStorage = (e) => {
@@ -169,6 +183,7 @@ class RestoreBackup extends React.Component {
       isLoading,
       isNotify,
       isVisibleDialog,
+      isPanelVisible,
       isCheckedDocuments,
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
@@ -198,7 +213,13 @@ class RestoreBackup extends React.Component {
             value="value"
             className="backup_radio-button"
           />
-          {isCheckedDocuments && <Documents />}
+          {isCheckedDocuments && (
+            <Documents
+              isPanelVisible={isPanelVisible}
+              onClose={this.onPanelClose}
+              onClickInput={this.onClickInput}
+            />
+          )}
         </StyledModules>
 
         <StyledModules

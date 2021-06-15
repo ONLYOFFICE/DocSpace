@@ -1,10 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import FileInput from "@appserver/components/file-input";
+import SelectFileInput from "files/SelectFileInput";
 class Documents extends React.Component {
   render() {
-    return <FileInput scale />;
+    const { onClose, isPanelVisible, onClickInput } = this.props;
+    return (
+      <SelectFileInput
+        isPanelVisible={isPanelVisible}
+        onClose={onClose}
+        onClickInput={onClickInput}
+        foldersType="common"
+      />
+    );
   }
 }
 

@@ -151,6 +151,8 @@ var config = {
         "./SharingDialog": "./src/components/panels/SharingDialog",
         "./SelectFolderInput": "./src/components/panels/SelectFolderInput",
         "./SelectFolderDialog": "./src/components/panels/SelectFolderDialog",
+        "./SelectFileInput": "./src/components/panels/SelectFileInput",
+        "./SelectFileDialog": "./src/components/panels/SelectFileDialog",
       },
       shared: {
         ...deps,

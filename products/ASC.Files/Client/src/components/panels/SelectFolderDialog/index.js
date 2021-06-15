@@ -9,12 +9,13 @@ import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
-import { StyledAsidePanel } from "../StyledPanels";
+import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
   getCommonFolderList,
   getFolderPath,
 } from "@appserver/common/api/files";
+import IconButton from "@appserver/components/icon-button";
 import SelectFolderModal from "../SelectFolderInput";
 import i18n from "../SelectFolderInput/i18n";
 
@@ -87,17 +88,15 @@ class SelectFolderModalDialog extends React.Component {
   }
   onSelect = (folder) => {
     const { onSelectFolder, onClose, onSetFullPath } = this.props;
-    this.setState({ isLoadingData: true }, function () {
-      getFolderPath(folder)
-        .then(
-          (foldersArray) =>
-            (pathName = SelectFolderModal.setFullFolderPath(foldersArray))
-        )
-        .then(() => onSetFullPath && onSetFullPath(pathName))
-        .then(() => onSelectFolder && onSelectFolder(folder[0]))
-        .then(() => onClose && onClose())
-        .finally(() => this.setState({ isLoadingData: false }));
-    });
+
+    getFolderPath(folder)
+      .then(
+        (foldersArray) =>
+          (pathName = SelectFolderModal.setFullFolderPath(foldersArray))
+      )
+      .then(() => onSetFullPath && onSetFullPath(pathName))
+      .then(() => onSelectFolder && onSelectFolder(folder[0]))
+      .finally(() => onClose && onClose());
   };
   render() {
     const {
@@ -108,13 +107,30 @@ class SelectFolderModalDialog extends React.Component {
       expandedKeys,
       filter,
       isCommonWithoutProvider,
+      isNeedArrowIcon,
     } = this.props;
     const { isLoadingData, isAvailableFolders, certainFolders } = this.state;
 
     return (
       <StyledAsidePanel visible={isPanelVisible}>
         <ModalDialog visible={isPanelVisible} zIndex={zIndex} onClose={onClose}>
-          <ModalDialog.Header>{t("ChooseFolder")}</ModalDialog.Header>
+          <ModalDialog.Header>
+            <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
+              <div className="modal-dialog_header">
+                {isNeedArrowIcon && (
+                  <IconButton
+                    size="16"
+                    iconName="/static/images/arrow.path.react.svg"
+                    onClick={onClose}
+                    color="#A3A9AE"
+                  />
+                )}
+                <div className="modal-dialog_header-title">
+                  {t("ChooseFolder")}
+                </div>
+              </div>
+            </StyledSelectFolderPanel>
+          </ModalDialog.Header>
 
           <ModalDialog.Body>
             {!isLoadingData ? (
@@ -150,6 +166,9 @@ SelectFolderModalDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   foldersType: PropTypes.oneOf(["common", "third-party"]),
+};
+SelectFolderModalDialog.defaultProps = {
+  isNeedArrowIcon: false,
 };
 
 const SelectFolderDialogWrapper = inject(

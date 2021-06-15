@@ -102,6 +102,7 @@ class SelectFolder extends React.PureComponent {
       onSetLoadingData,
       foldersType,
       folderPath,
+      isNeedArrowIcon,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
     const zIndex = 310;
@@ -130,6 +131,7 @@ class SelectFolder extends React.PureComponent {
           onSetFullPath={this.onSetFullPath}
           onSetBaseFolderPath={this.onSetBaseFolderPath}
           onSetLoadingData={onSetLoadingData}
+          isNeedArrowIcon={isNeedArrowIcon}
         />
       </StyledComponent>
     );
