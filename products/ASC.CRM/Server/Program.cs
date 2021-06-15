@@ -74,10 +74,6 @@ namespace ASC.CRM
                     {
                                         {"pathToConf", path}
                     });
-                })
-                .ConfigureContainer<ContainerBuilder>((context, builder) =>
-                {
-                    builder.Register(context.Configuration, true, false);
-                });//if (!FilesIntegration.IsRegisteredFileSecurityProvider("crm", "crm_common"))//{//    FilesIntegration.RegisterFileSecurityProvider("crm", "crm_common", new FileSecurityProvider());//}////Register prodjects' calendar events//CalendarManager.Instance.RegistryCalendarProvider(userid =>//{//    if (WebItemSecurity.IsAvailableForUser(WebItemManager.CRMProductID, userid))//    {//        return new List<BaseCalendar> { new CRMCalendar(userid) };//    }//    return new List<BaseCalendar>();//});
+                });
     }
 }
