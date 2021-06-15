@@ -84,7 +84,14 @@ const StyledModules = styled.div`
     ${(props) => props.isDisabled && `color: #A3A9AE`}
   }
 `;
-
+const StyledRestoreModules = styled.div`
+  .category-item-description {
+    ${(props) => props.isDisabled && `color: #A3A9AE`}
+  }
+  .radio-button_text {
+    font-weight: normal;
+  }
+`;
 const StyledScheduleComponent = styled.div`
   .time_options {
     .drop-down_variable-size {
@@ -120,4 +127,5 @@ export {
   StyledComponent,
   StyledScheduleComponent,
   StyledBackup,
+  StyledRestoreModules,
 };

@@ -13,7 +13,7 @@ let path = "";
 
 const StyledComponent = styled.div`
   .file-input {
-    margin-top: 16px;
+    margin: 16px 0;
   }
   .file-input,
   .file-text-input {

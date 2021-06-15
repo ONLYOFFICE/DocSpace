@@ -15,7 +15,7 @@ import BackupListModalDialog from "./sub-components-restore-backup/backupListMod
 import Documents from "./sub-components-restore-backup/documents";
 import ThirdPartyResources from "./sub-components-restore-backup/thirdPartyResources";
 import ThirdPartyStorages from "./sub-components-restore-backup/thirdPartyStorages";
-import { StyledModules } from "./styled-backup";
+import { StyledRestoreModules } from "./styled-backup";
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -200,7 +200,7 @@ class RestoreBackup extends React.Component {
           {t("Source")}
         </Text>
 
-        <StyledModules>
+        <StyledRestoreModules>
           <RadioButton
             fontSize="13px"
             fontWeight="400"
@@ -213,16 +213,9 @@ class RestoreBackup extends React.Component {
             value="value"
             className="backup_radio-button"
           />
-          {isCheckedDocuments && (
-            <Documents
-              isPanelVisible={isPanelVisible}
-              onClose={this.onPanelClose}
-              onClickInput={this.onClickInput}
-            />
-          )}
-        </StyledModules>
+        </StyledRestoreModules>
 
-        <StyledModules
+        <StyledRestoreModules
           isDisabled={
             this.commonThirdPartyList && this.commonThirdPartyList.length === 0
           }
@@ -242,10 +235,9 @@ class RestoreBackup extends React.Component {
             value="value"
             className="backup_radio-button"
           />
-          {isCheckedThirdParty && <ThirdPartyResources />}
-        </StyledModules>
+        </StyledRestoreModules>
 
-        <StyledModules>
+        <StyledRestoreModules>
           <RadioButton
             fontSize="13px"
             fontWeight="400"
@@ -258,8 +250,16 @@ class RestoreBackup extends React.Component {
             value="value"
             className="backup_radio-button"
           />
-          {isCheckedThirdPartyStorage && <ThirdPartyStorages />}
-        </StyledModules>
+        </StyledRestoreModules>
+        {isCheckedDocuments && (
+          <Documents
+            isPanelVisible={isPanelVisible}
+            onClose={this.onPanelClose}
+            onClickInput={this.onClickInput}
+          />
+        )}
+        {isCheckedThirdParty && <ThirdPartyResources />}
+        {isCheckedThirdPartyStorage && <ThirdPartyStorages />}
 
         <Text className="restore-backup_list" onClick={this.onClickBackupList}>
           {t("BackupList")}
