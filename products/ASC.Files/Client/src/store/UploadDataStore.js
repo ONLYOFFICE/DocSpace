@@ -457,7 +457,8 @@ class UploadDataStore {
       return this.filesStore.fetchFiles(
         this.selectedFolderStore.id,
         this.filesStore.filter.clone(),
-        false
+        false,
+        true
       );
     } else if (needUpdateTree) {
       return getFolder(folderId, this.filesStore.filter.clone()).then(
@@ -881,7 +882,9 @@ class UploadDataStore {
                 this.filesStore
                   .fetchFiles(
                     this.selectedFolderStore.id,
-                    this.filesStore.filter
+                    this.filesStore.filter,
+                    true,
+                    true
                   )
                   .finally(() => {
                     setTimeout(

@@ -248,7 +248,7 @@ class FilesStore {
     );
   };
 
-  fetchFiles = async (
+  fetchFiles = (
     folderId,
     filter,
     clearFilter = true,
@@ -263,8 +263,6 @@ class FilesStore {
       getSubfolders,
     } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
-
-    const subfolders = withSubfolders ? await getSubfolders(folderId) : [];
 
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!this.settingsStore.isEncryptionSupport) {
@@ -292,13 +290,14 @@ class FilesStore {
     const request = () =>
       api.files
         .getFolder(folderId, filter)
-        .then((data) => {
+        .then(async (data) => {
           const isRecycleBinFolder =
             data.current.rootFolderType === FolderType.TRASH;
 
           if (!isRecycleBinFolder && withSubfolders) {
             const path = data.pathParts.slice(0);
             const foldersCount = data.current.foldersCount;
+            const subfolders = await getSubfolders(folderId);
             loopTreeFolders(path, treeFolders, subfolders, foldersCount);
           }
 

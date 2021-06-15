@@ -356,15 +356,10 @@ class FilesActionStore {
   unsubscribeAction = async (fileIds, folderIds) => {
     const { setUnsubscribe } = this.dialogsStore;
     const { filter, fetchFiles } = this.filesStore;
-    const {
-      treeFolders,
-      isRecycleBinFolder,
-      setTreeFolders,
-    } = this.treeFoldersStore;
 
     return removeShareFiles(fileIds, folderIds)
       .then(() => setUnsubscribe(false))
-      .then(() => fetchFiles(this.selectedFolderStore.id, filter));
+      .then(() => fetchFiles(this.selectedFolderStore.id, filter, true, true));
   };
 
   deleteFolderAction = (folderId, currentFolderId, translations) => {
@@ -392,11 +387,6 @@ class FilesActionStore {
   loopDeleteProgress = (id, folderId, isFolder, translations) => {
     const { filter, fetchFiles } = this.filesStore;
     const {
-      treeFolders,
-      isRecycleBinFolder,
-      setTreeFolders,
-    } = this.treeFoldersStore;
-    const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
@@ -423,7 +413,7 @@ class FilesActionStore {
           label: translations.deleteOperation,
           alert: false,
         });
-        fetchFiles(folderId, filter)
+        fetchFiles(folderId, filter, true, true)
           .catch((err) => {
             setSecondaryProgressBarData({
               visible: true,
