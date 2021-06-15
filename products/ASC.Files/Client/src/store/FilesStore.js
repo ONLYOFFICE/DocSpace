@@ -9,7 +9,6 @@ import {
   FilesFormats,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-import { createTreeFolders, loopTreeFolders } from "../helpers/files-helpers";
 import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
@@ -291,14 +290,6 @@ class FilesStore {
       api.files
         .getFolder(folderId, filter)
         .then((data) => {
-          if (!this.treeFoldersStore.isRecycleBinFolder) {
-            const path = data.pathParts.slice();
-            const newTreeFolders = this.treeFoldersStore.treeFolders;
-            const folders = data.folders;
-            const foldersCount = data.current.foldersCount;
-            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-            this.treeFoldersStore.setTreeFolders(newTreeFolders);
-          }
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
