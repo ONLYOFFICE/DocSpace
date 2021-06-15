@@ -118,7 +118,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     stream,
                     MimeMapping.GetMimeMapping(path),
                     "attachment; filename=\"" + fileName + "\"");
-                Status = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, zip.ArchiveExtension);
+                Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, zip.ArchiveExtension);
             }
 
             FillDistributedTask();
