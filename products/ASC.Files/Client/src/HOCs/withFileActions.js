@@ -7,6 +7,7 @@ import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 
 import { EncryptedFileIcon } from "../components/Icons";
+import { createTreeFolders } from "../helpers/files-helpers";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
@@ -145,6 +146,7 @@ export default function withFileActions(WrappedFileItem) {
         openDocEditor,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
         setMediaViewerData,
         setConvertItem,
         setConvertDialogVisible,
@@ -168,7 +170,13 @@ export default function withFileActions(WrappedFileItem) {
         }
 
         fetchFiles(id, filter)
-          .then(() => this.setNewBadgeCount())
+          .then((data) => {
+            const pathParts = data.selectedFolder.pathParts;
+            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            setExpandedKeys(newExpandedKeys);
+
+            this.setNewBadgeCount();
+          })
           .catch((err) => {
             toastr.error(err);
             setIsLoading(false);
@@ -288,6 +296,7 @@ export default function withFileActions(WrappedFileItem) {
         isRecycleBinFolder,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
       } = treeFoldersStore;
       const { id: selectedFolderId, isRootFolder } = selectedFolderStore;
       const {
@@ -368,6 +377,7 @@ export default function withFileActions(WrappedFileItem) {
         openDocEditor,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
         setMediaViewerData,
         getFolderInfo,
         markAsRead,
