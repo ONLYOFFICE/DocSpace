@@ -28,6 +28,7 @@ namespace ASC.Web.Files.Core.Compress
     /// <summary>
     /// Archives the data stream into the format .tar.gz
     /// </summary>
+    [Scope]
     public class CompressToTarGz : ICompress
     {
         private GZipOutputStream gzoStream;
@@ -35,7 +36,7 @@ namespace ASC.Web.Files.Core.Compress
         private TarEntry tarEntry;
         private TempStream TempStream { get; }
 
-        internal CompressToTarGz(TempStream tempStream)
+        public CompressToTarGz(TempStream tempStream)
         {
             TempStream = tempStream;
         }
