@@ -46,7 +46,7 @@ const DeleteThirdPartyDialog = (props) => {
     deleteThirdParty(+removeItem.id)
       .then(() => {
         setThirdPartyProviders(newProviders);
-        if (currentFolderId) fetchFiles(currentFolderId);
+        if (currentFolderId) fetchFiles(currentFolderId, null, true, true);
         else {
           const folderId = providerItem.corporate ? commonId : myId;
           getFolder(folderId).then((data) => {

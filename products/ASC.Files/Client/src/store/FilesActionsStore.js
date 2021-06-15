@@ -292,10 +292,9 @@ class FilesActionStore {
         const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
         if (!selectedItem.fileExst && !selectedItem.contentLength) {
           const path = data.selectedFolder.pathParts;
-          const newTreeFolders = treeFolders;
           const folders = await getSubfolders(this.selectedFolderStore.id);
-          loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-          setTreeFolders(newTreeFolders);
+          loopTreeFolders(path, treeFolders, folders, null, newItem);
+          setTreeFolders(treeFolders);
         }
       }
       setAction({ type: null, id: null, extension: null });
