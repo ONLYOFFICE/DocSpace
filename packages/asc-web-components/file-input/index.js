@@ -33,7 +33,6 @@ class FileInput extends Component {
   };
 
   onChangeHandler = (e) => {
-    debugger;
     this.setState({
       fileName: e.target.value,
     });
