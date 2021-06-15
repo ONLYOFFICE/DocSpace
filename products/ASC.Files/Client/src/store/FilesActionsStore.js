@@ -11,6 +11,7 @@ import {
   markAsRead,
   checkFileConflicts,
   removeShareFiles,
+  getSubfolders,
 } from "@appserver/common/api/files";
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -140,7 +141,7 @@ class FilesActionStore {
             alert: false,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(this.selectedFolderStore.id, filter);
+          fetchFiles(this.selectedFolderStore.id, filter, true, true);
         }
       })
       .catch((err) => {
@@ -292,7 +293,7 @@ class FilesActionStore {
         if (!selectedItem.fileExst && !selectedItem.contentLength) {
           const path = data.selectedFolder.pathParts;
           const newTreeFolders = treeFolders;
-          const folders = data.selectedFolder.folders;
+          const folders = await getSubfolders(this.selectedFolderStore.id);
           loopTreeFolders(path, newTreeFolders, folders, null, newItem);
           setTreeFolders(newTreeFolders);
         }

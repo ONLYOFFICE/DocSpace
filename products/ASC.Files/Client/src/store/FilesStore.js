@@ -12,6 +12,7 @@ import history from "@appserver/common/history";
 import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
+import { loopTreeFolders } from "../helpers/files-helpers";
 
 const { FilesFilter } = api;
 
@@ -247,11 +248,23 @@ class FilesStore {
     );
   };
 
-  fetchFiles = (folderId, filter, clearFilter = true) => {
+  fetchFiles = async (
+    folderId,
+    filter,
+    clearFilter = true,
+    withSubfolders = false
+  ) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
-    const { privacyFolder, setSelectedNode } = this.treeFoldersStore;
+    const {
+      treeFolders,
+      privacyFolder,
+      setSelectedNode,
+      getSubfolders,
+    } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
+
+    const subfolders = withSubfolders ? await getSubfolders(folderId) : [];
 
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!this.settingsStore.isEncryptionSupport) {
@@ -280,6 +293,15 @@ class FilesStore {
       api.files
         .getFolder(folderId, filter)
         .then((data) => {
+          const isRecycleBinFolder =
+            data.current.rootFolderType === FolderType.TRASH;
+
+          if (!isRecycleBinFolder && withSubfolders) {
+            const path = data.pathParts.slice(0);
+            const foldersCount = data.current.foldersCount;
+            loopTreeFolders(path, treeFolders, subfolders, foldersCount);
+          }
+
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
