@@ -58,6 +58,7 @@ namespace ASC.Files.Service
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("elastic.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args);
                 })
