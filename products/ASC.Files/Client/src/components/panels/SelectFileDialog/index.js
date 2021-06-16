@@ -13,6 +13,7 @@ import IconButton from "@appserver/components/icon-button";
 import { getBackupFiles, getFolderInfo } from "@appserver/common/api/files";
 import SelectFolderDialog from "../SelectFolderDialog";
 import Text from "@appserver/components/text";
+import Loader from "@appserver/components/loader";
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
@@ -35,9 +36,11 @@ class SelectFileDialogBody extends React.Component {
     if (selectedFolder !== prevState.selectedFolder) {
       if (foldersType === "common") {
         //debugger;
-        getBackupFiles(selectedFolder).then((filesList) =>
-          this.setState({ filesList: filesList })
-        );
+        this.setState({ isLoadingData: true }, function () {
+          getBackupFiles(selectedFolder)
+            .then((filesList) => this.setState({ filesList: filesList }))
+            .finally(() => this.setState({ isLoadingData: false }));
+        });
         console.log("selectedFolder", selectedFolder);
       }
     }
@@ -45,7 +48,7 @@ class SelectFileDialogBody extends React.Component {
 
   onClickInput = () => {
     this.setState({
-      isVisible: !this.state.isVisible,
+      isVisible: true,
     });
   };
   onClose = () => {
@@ -69,32 +72,49 @@ class SelectFileDialogBody extends React.Component {
       },
       function () {
         onClose && onClose();
+        onSetFileName & onSetFileName(filesList[index].title);
       }
     );
-    onSetFileName & onSetFileName(filesList[index].title);
+  };
+  onSetLoadingData = (loading) => {
+    this.setState({
+      isLoadingData: loading,
+    });
   };
   render() {
     const { t, isPanelVisible, onClose, zIndex, foldersType } = this.props;
-    const { isVisible, filesList, selectedFolder } = this.state;
-    console.log("filesList", filesList);
+    const { isVisible, filesList, selectedFolder, isLoadingData } = this.state;
+    //console.log("isLoadingData", isLoadingData);
     return (
       <StyledAsidePanel visible={isPanelVisible}>
-        <ModalDialog visible={isPanelVisible} zIndex={zIndex} onClose={onClose}>
+        <ModalDialog
+          visible={isPanelVisible}
+          zIndex={zIndex}
+          onClose={onClose}
+          //displayType="aside"
+        >
           <ModalDialog.Header>{t("SelectFile")}</ModalDialog.Header>
           <ModalDialog.Body>
             <StyledSelectFilePanel>
-              <Text fontWeight="600">{t("ChooseByUser")}</Text>
+              <Text fontWeight="600" fontSize="14px">
+                {t("ChooseByUser")}
+              </Text>
               <SelectFolderInput
                 onClickInput={this.onClickInput}
                 onClose={this.onClose}
                 onSelectFolder={this.onSelectFolder}
+                onSetLoadingData={this.onSetLoadingData}
                 isPanelVisible={isVisible}
                 foldersType={foldersType}
                 isNeedArrowIcon
               />
               <div className="modal-dialog_body-files-list">
-                <Text fontWeight="600"> {"Список файлов:"}</Text>
-                {filesList &&
+                <Text fontWeight="600" fontSize="14px">
+                  {" "}
+                  {"Список файлов:"}
+                </Text>
+                {!isLoadingData ? (
+                  filesList &&
                   filesList.map((data, index) => (
                     <div className="file-name">
                       <div
@@ -107,7 +127,15 @@ class SelectFileDialogBody extends React.Component {
                       </div>
                       <div className="file-exst">{".gz"}</div>
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  <div key="loader" className="panel-loader-wrapper">
+                    <Loader type="oval" size="16px" className="panel-loader" />
+                    <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                      "Common:LoadingDescription"
+                    )}`}</Text>
+                  </div>
+                )}
               </div>
             </StyledSelectFilePanel>
           </ModalDialog.Body>

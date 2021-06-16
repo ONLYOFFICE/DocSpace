@@ -533,6 +533,13 @@ const StyledSelectFilePanel = styled.div`
   .file-exst {
     color: #a3a9ae;
   }
+  .panel-loader-wrapper {
+    margin-top: 8px;
+  }
+  .panel-loader {
+    display: inline;
+    margin-right: 10px;
+  }
 `;
 export {
   StyledAsidePanel,
