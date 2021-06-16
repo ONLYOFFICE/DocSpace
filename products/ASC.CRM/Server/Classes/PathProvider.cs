@@ -55,7 +55,7 @@ namespace ASC.Web.CRM
         }
 
 
-        public readonly String BaseVirtualPath = "~/Products/CRM/";
+        public readonly String BaseVirtualPath = "/products/crm/";
         public readonly String BaseAbsolutePath;
 
         public String StartURL()
