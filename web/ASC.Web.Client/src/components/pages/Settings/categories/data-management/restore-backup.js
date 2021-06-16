@@ -258,7 +258,13 @@ class RestoreBackup extends React.Component {
             onClickInput={this.onClickInput}
           />
         )}
-        {isCheckedThirdParty && <ThirdPartyResources />}
+        {isCheckedThirdParty && (
+          <ThirdPartyResources
+            isPanelVisible={isPanelVisible}
+            onClose={this.onPanelClose}
+            onClickInput={this.onClickInput}
+          />
+        )}
         {isCheckedThirdPartyStorage && <ThirdPartyStorages />}
 
         <Text className="restore-backup_list" onClick={this.onClickBackupList}>

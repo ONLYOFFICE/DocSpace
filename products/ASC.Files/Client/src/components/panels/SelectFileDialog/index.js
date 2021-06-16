@@ -32,17 +32,15 @@ class SelectFileDialogBody extends React.Component {
   componentDidMount() {}
   componentDidUpdate(prevProps, prevState) {
     const { selectedFolder } = this.state;
-    const { foldersType, getBackupFiles } = this.props;
-    if (selectedFolder !== prevState.selectedFolder) {
-      if (foldersType === "common") {
-        //debugger;
-        this.setState({ isLoadingData: true }, function () {
-          getBackupFiles(selectedFolder)
-            .then((filesList) => this.setState({ filesList: filesList }))
-            .finally(() => this.setState({ isLoadingData: false }));
-        });
-        console.log("selectedFolder", selectedFolder);
-      }
+    const { getBackupFiles } = this.props;
+    if (selectedFolder !== prevState.selectedFolder && selectedFolder) {
+      //debugger;
+      this.setState({ isLoadingData: true }, function () {
+        getBackupFiles(selectedFolder)
+          .then((filesList) => this.setState({ filesList: filesList }))
+          .finally(() => this.setState({ isLoadingData: false }));
+      });
+      console.log("selectedFolder", selectedFolder);
     }
   }
 
