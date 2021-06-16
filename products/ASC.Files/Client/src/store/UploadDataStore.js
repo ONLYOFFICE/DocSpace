@@ -229,11 +229,11 @@ class UploadDataStore {
 
   getNewPercent = (uploadedSize, indexOfFile) => {
     const newTotalSize = sumBy(this.files, (f) =>
-      f.file && f.action !== "converted" ? f.file.size : 0
+      f.file && !this.uploaded ? f.file.size : 0
     );
     const totalUploadedFiles = this.files.filter((_, i) => i < indexOfFile);
     const totalUploadedSize = sumBy(totalUploadedFiles, (f) =>
-      f.file && f.action !== "converted" ? f.file.size : 0
+      f.file && !this.uploaded ? f.file.size : 0
     );
     const newPercent =
       ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
@@ -353,9 +353,11 @@ class UploadDataStore {
       this.setConversionPercent(100);
       this.finishUploadFiles();
     } else {
-      this.converted = true;
-      this.filesToConversion = [];
-      this.conversionPercent = 0;
+      runInAction(() => {
+        this.converted = true;
+        this.filesToConversion = [];
+        this.conversionPercent = 0;
+      });
     }
   };
 
