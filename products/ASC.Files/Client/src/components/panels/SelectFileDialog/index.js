@@ -16,17 +16,26 @@ class SelectFileDialogBody extends React.Component {
     super(props);
     this.state = {
       isLoadingData: false,
-      isAvailableFolders: true,
-      certainFolders: true,
       isVisible: false,
       selectedFolder: "",
       filesList: [],
+      width: window.innerWidth,
     };
-    this.backupList;
-    this.convertedData = [];
+    this.timeoutId = null;
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    window.addEventListener("resize", this.updateWidth);
+  }
+
+  updateWidth = () => {
+    clearTimeout(this.timeoutId);
+    this.timeoutId = setTimeout(
+      () => this.setState({ width: window.innerWidth }),
+      150
+    );
+  };
+
   componentDidUpdate(prevProps, prevState) {
     const { selectedFolder } = this.state;
 
@@ -41,6 +50,10 @@ class SelectFileDialogBody extends React.Component {
       });
       console.log("selectedFolder", selectedFolder);
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateWidth);
   }
 
   onClickInput = () => {
@@ -88,10 +101,9 @@ class SelectFileDialogBody extends React.Component {
       foldersType,
       isCommonWithoutProvider,
     } = this.props;
-    const { isVisible, filesList, isLoadingData } = this.state;
-    console.log("filesList", filesList);
-    let type = "aside";
-    return type === "aside" ? (
+    const { isVisible, filesList, isLoadingData, width } = this.state;
+
+    return width < 1024 ? (
       <SelectFileDialogAsideView
         t={t}
         isPanelVisible={isPanelVisible}
