@@ -382,6 +382,8 @@ class UploadDataStore {
   startUpload = (uploadFiles, folderId, t) => {
     const { canConvert } = this.formatsStore.docserviceStore;
 
+    const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
+
     if (this.uploaded) {
       this.files = this.files.filter((f) => f.action !== "upload");
       this.filesSize = 0;
@@ -408,7 +410,7 @@ class UploadDataStore {
         file: file,
         uniqueId: uniqueid("download_row-key_"),
         fileId: null,
-        toFolderId: folderId,
+        toFolderId,
         action: "upload",
         error: file.size ? null : t("EmptyFile"),
         fileInfo: null,

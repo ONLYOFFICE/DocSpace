@@ -135,17 +135,10 @@ class PureHome extends React.Component {
   }
 
   onDrop = (files, uploadToFolder) => {
-    const {
-      t,
-      currentFolderId,
-      startUpload,
-      setDragging,
-      dragging,
-    } = this.props;
-    const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
+    const { t, startUpload, setDragging, dragging } = this.props;
 
     dragging && setDragging(false);
-    startUpload(files, folderId, t);
+    startUpload(files, uploadToFolder, t);
   };
 
   showOperationToast = (type, qty, title) => {
@@ -196,7 +189,18 @@ class PureHome extends React.Component {
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
   };
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
+    Object.entries(this.props).forEach(
+      ([key, val]) =>
+        prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    );
+    if (this.state) {
+      Object.entries(this.state).forEach(
+        ([key, val]) =>
+          prevState[key] !== val && console.log(`State '${key}' changed`)
+      );
+    }
+
     const {
       isLoading,
       isProgressFinished,
@@ -247,9 +251,6 @@ class PureHome extends React.Component {
 
       isLoading,
       dragging,
-
-      uploaded,
-      converted,
     } = this.props;
 
     return (
@@ -318,13 +319,7 @@ class PureHome extends React.Component {
 const Home = withTranslation("Home")(PureHome);
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    uploadDataStore,
-    selectedFolderStore,
-    treeFoldersStore,
-  }) => {
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
@@ -384,7 +379,6 @@ export default inject(
       firstLoad,
       dragging,
       fileActionId: id,
-      currentFolderId: selectedFolderStore.id,
       isLoading,
       filter,
       viewAs,
