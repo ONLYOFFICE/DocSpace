@@ -169,7 +169,7 @@ namespace ASC.Common.Threading
         }
 
         public void QueueTask(Action<DistributedTask, CancellationToken> action, DistributedTask distributedTask = null)
-        {
+        {   
             if (distributedTask == null)
             {
                 distributedTask = new DistributedTask();
@@ -286,7 +286,10 @@ namespace ASC.Common.Threading
             if (distributedTask != null)
             {
                 distributedTask.Status = DistributedTaskStatus.Completed;
-                distributedTask.Exception = task.Exception;
+                if (task.Exception != null)
+                {
+                    distributedTask.Exception = task.Exception;
+                }
                 if (task.IsFaulted)
                 {
                     distributedTask.Status = DistributedTaskStatus.Failted;
