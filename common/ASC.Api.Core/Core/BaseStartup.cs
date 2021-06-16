@@ -10,9 +10,12 @@ using ASC.Common.Logging;
 
 using Autofac;
 
+using HealthChecks.UI.Client;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +46,7 @@ namespace ASC.Api.Core
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            services.AddCustomHealthCheck(Configuration);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
 
@@ -132,6 +136,16 @@ namespace ASC.Api.Core
             {
                 endpoints.MapControllers();
                 endpoints.MapCustom();
+
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+                {
+                    Predicate = r => r.Name.Contains("self")
+                });
             });
         }
 
