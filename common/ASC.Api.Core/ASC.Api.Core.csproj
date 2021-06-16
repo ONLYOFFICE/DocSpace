@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
