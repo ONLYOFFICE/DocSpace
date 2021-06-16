@@ -89,8 +89,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            var zip = scope.ServiceProvider.GetService<CompressToArchive>();
-            var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
+            var (zip, globalStore, filesLinkUtility, _, _, _) = scopeClass;
             using var stream = TempStream.Create();
 
             var writerOptions = new ZipWriterOptions(CompressionType.Deflate);
@@ -119,7 +118,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     stream,
                     MimeMapping.GetMimeMapping(path),
                     "attachment; filename=\"" + fileName + "\"");
-                Status = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, zip.ArchiveExtension);
+                Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, zip.ArchiveExtension);
             }
 
             FillDistributedTask();
@@ -244,7 +243,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            var (_, _, _, fileConverter, filesMessageService) = scopeClass;
+            var (_, _, _, _, fileConverter, filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
             foreach (var path in entriesPathId.AllKeys)
@@ -430,18 +429,27 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private SetupInfo SetupInfo { get; }
         private FileConverter FileConverter { get; }
         private FilesMessageService FilesMessageService { get; }
+        private CompressToArchive CompressToArchive { get; }
 
-        public FileDownloadOperationScope(GlobalStore globalStore, FilesLinkUtility filesLinkUtility, SetupInfo setupInfo, FileConverter fileConverter, FilesMessageService filesMessageService)
+        public FileDownloadOperationScope(
+            GlobalStore globalStore,
+            FilesLinkUtility filesLinkUtility,
+            SetupInfo setupInfo,
+            FileConverter fileConverter,
+            FilesMessageService filesMessageService,
+            CompressToArchive compressToArchive)
         {
             GlobalStore = globalStore;
             FilesLinkUtility = filesLinkUtility;
             SetupInfo = setupInfo;
             FileConverter = fileConverter;
             FilesMessageService = filesMessageService;
+            CompressToArchive = compressToArchive;
         }
 
-        public void Deconstruct(out GlobalStore globalStore, out FilesLinkUtility filesLinkUtility, out SetupInfo setupInfo, out FileConverter fileConverter, out FilesMessageService filesMessageService)
+        public void Deconstruct(out CompressToArchive compressToArchive, out GlobalStore globalStore, out FilesLinkUtility filesLinkUtility, out SetupInfo setupInfo, out FileConverter fileConverter, out FilesMessageService filesMessageService)
         {
+            compressToArchive = CompressToArchive;
             globalStore = GlobalStore;
             filesLinkUtility = FilesLinkUtility;
             setupInfo = SetupInfo;
