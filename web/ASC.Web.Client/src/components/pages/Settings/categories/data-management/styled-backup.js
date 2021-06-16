@@ -17,9 +17,7 @@ const StyledComponent = styled.div`
   .note_description {
     margin-top: 8px;
   }
-  .radio-button_text {
-    font-size: 19px;
-  }
+
   .automatic-backup_main {
     margin-bottom: 30px;
     .radio-button_text {
@@ -29,7 +27,7 @@ const StyledComponent = styled.div`
   .radio-button_text {
     margin-right: 7px;
     margin-left: 8px;
-    font-size: 19px;
+    //font-size: 19px;
     font-weight: 600;
   }
   .backup_radio-button {
@@ -54,7 +52,7 @@ const StyledComponent = styled.div`
     font-weight: 600;
     margin-top: 30px;
     margin-bottom: 15px;
-    font-size: 19px;
+    font-size: 15px;
   }
   .restore-warning {
     font-weight: 600;
