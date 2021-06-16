@@ -4,6 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -31,7 +33,9 @@
 	<ItemGroup>
 	  <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
 	  <PackageReference Include="Google.Protobuf" Version="3.13.0" />
-	  <PackageReference Include="Grpc" Version="2.32.0" />
+	  <PackageReference Include="Grpc" Version="2.32.0">
+	    <TreatAsUsed>true</TreatAsUsed>
+	  </PackageReference>
 	  <PackageReference Include="Grpc.Tools" Version="2.32.0">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
