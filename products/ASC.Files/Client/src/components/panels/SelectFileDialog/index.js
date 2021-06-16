@@ -9,6 +9,7 @@ import stores from "../../../store/index";
 import i18n from "../SelectFileInput/i18n";
 import SelectFileDialogModalView from "./modalView";
 import SelectFileDialogAsideView from "./asideView";
+import { getFiles } from "@appserver/common/api/files";
 
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
@@ -28,12 +29,14 @@ class SelectFileDialogBody extends React.Component {
   componentDidMount() {}
   componentDidUpdate(prevProps, prevState) {
     const { selectedFolder } = this.state;
-    const { getBackupFiles } = this.props;
+
     if (selectedFolder !== prevState.selectedFolder && selectedFolder) {
       //debugger;
       this.setState({ isLoadingData: true }, function () {
-        getBackupFiles(selectedFolder)
-          .then((filesList) => this.setState({ filesList: filesList }))
+        getFiles(selectedFolder)
+          .then((filesList) => {
+            this.setState({ filesList: filesList.files });
+          })
           .finally(() => this.setState({ isLoadingData: false }));
       });
       console.log("selectedFolder", selectedFolder);
@@ -86,6 +89,7 @@ class SelectFileDialogBody extends React.Component {
       isCommonWithoutProvider,
     } = this.props;
     const { isVisible, filesList, isLoadingData } = this.state;
+    console.log("filesList", filesList);
     let type = "aside";
     return type === "aside" ? (
       <SelectFileDialogAsideView
@@ -122,10 +126,9 @@ class SelectFileDialogBody extends React.Component {
 
 const SelectFileDialogWrapper = inject(
   ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { getBackupFiles, filter } = filesStore;
+    const { filter } = filesStore;
     const { expandedPanelKeys } = treeFoldersStore;
     return {
-      getBackupFiles,
       expandedKeys: expandedPanelKeys
         ? expandedPanelKeys
         : selectedFolderStore.pathParts,

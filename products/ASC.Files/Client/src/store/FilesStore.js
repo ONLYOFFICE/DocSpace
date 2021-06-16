@@ -1278,18 +1278,6 @@ class FilesStore {
     this.setFolder(folderInfo);
   };
 
-  getBackupFiles = async (id) => {
-    const arrayInfo = await api.files.getFiles(id);
-
-    let convertedData = [];
-    arrayInfo.files.map((data, index) => {
-      if (data.fileExst === ".gz") {
-        convertedData.push(data);
-      }
-    });
-
-    return convertedData;
-  };
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
     if (providerKey) {
       tab

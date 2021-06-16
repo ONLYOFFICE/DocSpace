@@ -709,7 +709,7 @@ export function getEncryptionAccess(fileId) {
 export function getFiles(folderId) {
   return request({
     method: "get",
-    url: `files/${folderId}?filterType=1`,
+    url: `files/${folderId}?count=30&filterType=10&withSubfolders=true`,
   });
 }
 
