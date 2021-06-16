@@ -540,6 +540,13 @@ const StyledSelectFilePanel = styled.div`
     display: inline;
     margin-right: 10px;
   }
+  .modal-dialog_body {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    .modal-dialog_tree-body {
+      margin-top: 16px;
+    }
+  }
 `;
 export {
   StyledAsidePanel,

@@ -10,7 +10,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
-import TreeFolders from "../../Article/Body/TreeFolders";
+import FolderTreeBody from "./folderTreeBody";
 import {
   getCommonFolderList,
   getFolderPath,
@@ -133,27 +133,16 @@ class SelectFolderModalDialog extends React.Component {
           </ModalDialog.Header>
 
           <ModalDialog.Body>
-            {!isLoadingData ? (
-              isAvailableFolders ? (
-                <TreeFolders
-                  expandedPanelKeys={expandedKeys}
-                  data={folderList}
-                  filter={filter}
-                  onSelect={this.onSelect}
-                  withoutProvider={isCommonWithoutProvider}
-                  certainFolders={certainFolders}
-                />
-              ) : (
-                <Text as="span">{t("NotAvailableFolder")}</Text>
-              )
-            ) : (
-              <div key="loader" className="panel-loader-wrapper">
-                <Loader type="oval" size="16px" className="panel-loader" />
-                <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                  "Common:LoadingDescription"
-                )}`}</Text>
-              </div>
-            )}
+            <FolderTreeBody
+              isLoadingData={isLoadingData}
+              expandedKeys={expandedKeys}
+              folderList={folderList}
+              onSelect={this.onSelect}
+              isCommonWithoutProvider={isCommonWithoutProvider}
+              certainFolders={certainFolders}
+              isAvailableFolders={isAvailableFolders}
+              filter={filter}
+            />
           </ModalDialog.Body>
         </ModalDialog>
       </StyledAsidePanel>

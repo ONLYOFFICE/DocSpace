@@ -11,6 +11,7 @@ class Documents extends React.Component {
         onClose={onClose}
         onClickInput={onClickInput}
         foldersType="common"
+        isCommonWithoutProvider
       />
     );
   }
