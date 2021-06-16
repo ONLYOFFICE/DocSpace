@@ -189,18 +189,7 @@ class PureHome extends React.Component {
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
   };
-  componentDidUpdate(prevProps, prevState) {
-    Object.entries(this.props).forEach(
-      ([key, val]) =>
-        prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    );
-    if (this.state) {
-      Object.entries(this.state).forEach(
-        ([key, val]) =>
-          prevState[key] !== val && console.log(`State '${key}' changed`)
-      );
-    }
-
+  componentDidUpdate(prevProps) {
     const {
       isLoading,
       isProgressFinished,
@@ -328,7 +317,6 @@ export default inject(
       firstLoad,
       setFirstLoad,
       fetchFiles,
-      filter,
       fileActionStore,
       selection,
       setSelections,
@@ -380,7 +368,6 @@ export default inject(
       dragging,
       fileActionId: id,
       isLoading,
-      filter,
       viewAs,
       uploaded,
       converted,
