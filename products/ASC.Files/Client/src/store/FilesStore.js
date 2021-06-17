@@ -1010,6 +1010,7 @@ class FilesStore {
         viewUrl,
         webUrl,
         providerKey,
+        thumbnailUrl,
       } = item;
 
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
@@ -1064,6 +1065,7 @@ class FilesStore {
         canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
+        thumbnailUrl,
       };
     });
 

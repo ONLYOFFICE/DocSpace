@@ -48,7 +48,7 @@ export function getFolder(folderId, filter) {
     filter && filter instanceof FilesFilter
       ? `${folderId}?${filter.toApiUrlParams()}`
       : folderId;
-
+  console.log(params);
   const options = {
     method: "get",
     url: `/files/${params}`,
@@ -741,4 +741,14 @@ export function hideConfirmConvert(save) {
     url: "/files/hideconfirmconvert.json",
     data: { save },
   });
+}
+
+export function createThumbnails(fileIds) {
+  const options = {
+    method: "post",
+    url: "/files/thumbnails",
+    data: { fileIds: fileIds },
+  };
+
+  return request(options);
 }
