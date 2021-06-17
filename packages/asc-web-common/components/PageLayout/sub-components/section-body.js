@@ -101,7 +101,6 @@ class SectionBody extends React.Component {
       children,
       onDrop,
       pinned,
-      setSelections,
       uploadFiles,
       viewAs,
       withScroll,
@@ -194,7 +193,6 @@ SectionBody.propTypes = {
   autoFocus: PropTypes.bool,
   pinned: PropTypes.bool,
   onDrop: PropTypes.func,
-  setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

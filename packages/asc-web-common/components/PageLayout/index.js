@@ -162,14 +162,11 @@ class PageLayout extends React.Component {
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
-  // duringSelection = (duringItems) => {
-  //   if (!this.props.uploadFiles || isMobile) return;
-  //   const items = [];
-  //   for (let item of duringItems) {
-  //     items.push(item.props.item);
-  //   }
-  //   this.props.setSelections(items);
-  // };
+  onSelect = (e) => {
+    if (!e.selected.length || this.props.dragging) return;
+    const items = e.selected;
+    this.props.setSelections(items);
+  };
 
   render() {
     const {
@@ -194,6 +191,7 @@ class PageLayout extends React.Component {
       isTabletView,
       firstLoad,
       isLoading,
+      dragging,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -426,27 +424,21 @@ class PageLayout extends React.Component {
     return (
       <>
         {renderPageLayout()}
-        <Selecto
-          dragContainer={".main"}
-          selectableTargets={[".files-row"]}
-          hitRate={0}
-          selectByClick={true}
-          selectFromInside={true}
-          ratio={0}
-          onSelect={(e) => {
-            console.log("onSelect", e);
-          }}
-        />
+        {!isMobile && uploadFiles && !dragging && (
+          <Selecto
+            //container={document.body} // The container to add a selection element
+            dragContainer={".main"}
+            selectableTargets={[".files-row"]}
+            hitRate={1}
+            selectByClick={false}
+            selectFromInside={true}
+            ratio={0}
+            continueSelect={false}
+            onSelect={this.onSelect}
+          />
+        )}
       </>
     );
-
-    // return isMobile || !uploadFiles ? (
-    //   renderPageLayout()
-    // ) : (
-    //   <StyledSelectableGroup>
-    //     {renderPageLayout()}
-    //   </StyledSelectableGroup>
-    // );
   }
 }
 

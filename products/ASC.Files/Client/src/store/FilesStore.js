@@ -1194,14 +1194,26 @@ class FilesStore {
   setSelections = (items) => {
     if (!items.length && !this.selection.length) return;
 
-    if (items.length !== this.selection.length) {
-      this.setSelection(items);
-    } else if (items.length === 0) {
-      const item = this.selection.find(
-        (x) => x.id === item[0].id && x.fileExst === item.fileExst
-      );
-      if (!item) this.setSelection(items);
+    //if (items.length !== this.selection.length) {
+    const newSelection = [];
+
+    for (let item of items) {
+      const value = item.getAttribute("value");
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      //const id = splitValue.slice(1).join("_");
+      const id = splitValue[1];
+
+      if (fileType === "file") {
+        newSelection.push(this.files.find((f) => f.id == id && f.fileExst));
+      } else {
+        newSelection.push(this.folders.find((f) => f.id == id && !f.fileExst));
+      }
     }
+
+    this.setSelection(newSelection);
+    //}
   };
 
   getShareUsers(folderIds, fileIds) {
