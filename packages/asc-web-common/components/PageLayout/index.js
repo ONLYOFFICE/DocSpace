@@ -19,20 +19,6 @@ import SectionToggler from "./sub-components/section-toggler";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
-import { SelectableGroup } from "react-selectable-fast";
-import styled from "styled-components";
-
-const StyledSelectableGroup = styled(SelectableGroup)`
-  display: contents;
-
-  .selectable-selectbox {
-    display: ${(props) => (props.dragging ? "none" : "block")};
-    border: 1px dotted #5c6a8e;
-    background-color: #6582c9;
-    z-index: 200;
-    opacity: 0.4;
-  }
-`;
 
 function ArticleHeader() {
   return null;
@@ -175,14 +161,14 @@ class PageLayout extends React.Component {
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
-  duringSelection = (duringItems) => {
-    if (!this.props.uploadFiles || isMobile) return;
-    const items = [];
-    for (let item of duringItems) {
-      items.push(item.props.item);
-    }
-    this.props.setSelections(items);
-  };
+  // duringSelection = (duringItems) => {
+  //   if (!this.props.uploadFiles || isMobile) return;
+  //   const items = [];
+  //   for (let item of duringItems) {
+  //     items.push(item.props.item);
+  //   }
+  //   this.props.setSelections(items);
+  // };
 
   render() {
     const {
@@ -207,7 +193,6 @@ class PageLayout extends React.Component {
       isTabletView,
       firstLoad,
       isLoading,
-      dragging,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -437,20 +422,15 @@ class PageLayout extends React.Component {
       );
     };
 
-    return isMobile || !uploadFiles ? (
-      renderPageLayout()
-    ) : (
-      <StyledSelectableGroup
-        dragging={dragging}
-        enableDeselect
-        resetOnStart
-        allowClickWithoutSelected={false}
-        duringSelection={this.duringSelection}
-        ignoreList={[".not-selectable", "draggable"]}
-      >
-        {renderPageLayout()}
-      </StyledSelectableGroup>
-    );
+    return renderPageLayout();
+
+    // return isMobile || !uploadFiles ? (
+    //   renderPageLayout()
+    // ) : (
+    //   <StyledSelectableGroup>
+    //     {renderPageLayout()}
+    //   </StyledSelectableGroup>
+    // );
   }
 }
 

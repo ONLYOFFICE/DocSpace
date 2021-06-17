@@ -17,7 +17,6 @@
     "url": ""
   },
   "dependencies": {
-    "global": "^4.4.0",
-    "react-selectable-fast": "^3.4.0"
+    "global": "^4.4.0"
   }
 }
