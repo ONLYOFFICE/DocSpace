@@ -71,27 +71,19 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
-      const {
-        t,
-        selectedFolderId,
-        dragging,
-        setDragging,
-        startUpload,
-      } = this.props;
+      const { t, dragging, setDragging, startUpload } = this.props;
 
-      const folderId = uploadToFolder ? uploadToFolder : selectedFolderId;
       dragging && setDragging(false);
-      startUpload(files, folderId, t);
+      startUpload(files, uploadToFolder, t);
     };
 
     onDrop = (items) => {
-      const { item, selectedFolderId } = this.props;
-      const { fileExst, id } = item;
+      const { fileExst, id } = this.props.item;
 
       if (!fileExst) {
         this.onDropZoneUpload(items, id);
       } else {
-        this.onDropZoneUpload(items, selectedFolderId);
+        this.onDropZoneUpload(items);
       }
     };
 
@@ -306,7 +298,7 @@ export default function withFileActions(WrappedFileItem) {
         addExpandedKeys,
         setExpandedKeys,
       } = treeFoldersStore;
-      const { id: selectedFolderId, isRootFolder } = selectedFolderStore;
+      const { isRootFolder } = selectedFolderStore;
       const {
         dragging,
         setDragging,
@@ -357,7 +349,6 @@ export default function withFileActions(WrappedFileItem) {
         onSelectItem,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
-        selectedFolderId,
         dragging,
         setDragging,
         startUpload,

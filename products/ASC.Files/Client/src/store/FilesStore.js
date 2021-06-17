@@ -253,10 +253,20 @@ class FilesStore {
     );
   };
 
-  fetchFiles = (folderId, filter, clearFilter = true) => {
+  fetchFiles = (
+    folderId,
+    filter,
+    clearFilter = true,
+    withSubfolders = false
+  ) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
-    const { privacyFolder, setSelectedNode } = this.treeFoldersStore;
+    const {
+      treeFolders,
+      privacyFolder,
+      setSelectedNode,
+      getSubfolders,
+    } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
 
     if (privacyFolder && privacyFolder.id === +folderId) {
@@ -285,18 +295,17 @@ class FilesStore {
     const request = () =>
       api.files
         .getFolder(folderId, filter)
-        .then((data) => {
+        .then(async (data) => {
           const isRecycleBinFolder =
             data.current.rootFolderType === FolderType.TRASH;
 
-          if (!isRecycleBinFolder) {
-            const path = data.pathParts.slice();
-            const newTreeFolders = this.treeFoldersStore.treeFolders;
-            const folders = data.folders;
+          if (!isRecycleBinFolder && withSubfolders) {
+            const path = data.pathParts.slice(0);
             const foldersCount = data.current.foldersCount;
-            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-            this.treeFoldersStore.setTreeFolders(newTreeFolders);
+            const subfolders = await getSubfolders(folderId);
+            loopTreeFolders(path, treeFolders, subfolders, foldersCount);
           }
+
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
