@@ -7,11 +7,17 @@ import Tree from "rc-tree";
 import Badge from "../badge";
 import Text from "../text";
 
+import { tablet } from "../utils/device";
+
 const StyledTreeMenu = styled(Tree)`
   margin: 0;
   padding: 0;
   width: 93%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  @media ${tablet} {
+    width: 90%;
+  }
 
   .rc-tree-switcher {
     margin-left: 0 !important;
