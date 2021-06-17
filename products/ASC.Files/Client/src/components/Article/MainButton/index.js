@@ -26,10 +26,10 @@ class PureArticleMainButtonContent extends React.Component {
   onUploadFileClick = () => {
     if (this.props.isPrivacy) {
       encryptionUploadDialog((encryptedFile, encrypted) => {
-        const { selectedFolderId, startUpload, t } = this.props;
+        const { startUpload, t } = this.props;
         encryptedFile.encrypted = encrypted;
         this.goToHomePage();
-        startUpload([encryptedFile], selectedFolderId, t);
+        startUpload([encryptedFile], null, t);
       });
     } else {
       this.inputFilesElement.click();
@@ -47,9 +47,9 @@ class PureArticleMainButtonContent extends React.Component {
   };
 
   onFileChange = (e) => {
-    const { selectedFolderId, startUpload, t } = this.props;
+    const { startUpload, t } = this.props;
     this.goToHomePage();
-    startUpload(e.target.files, selectedFolderId, t);
+    startUpload(e.target.files, null, t);
   };
 
   onInputClick = (e) => (e.target.value = null);
@@ -151,29 +151,19 @@ ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default inject(
-  ({
-    auth,
-    filesStore,
-    uploadDataStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
-    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
-    const { isPrivacyFolder } = treeFoldersStore;
-    const { id } = selectedFolderStore;
-    const { startUpload } = uploadDataStore;
+export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
+  const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
+  const { isPrivacyFolder } = treeFoldersStore;
+  const { startUpload } = uploadDataStore;
 
-    return {
-      homepage: config.homepage,
-      firstLoad,
-      selectedFolderId: id,
-      isPrivacy: isPrivacyFolder,
-      filter,
-      canCreate,
+  return {
+    homepage: config.homepage,
+    firstLoad,
+    isPrivacy: isPrivacyFolder,
+    filter,
+    canCreate,
 
-      setAction: fileActionStore.setAction,
-      startUpload,
-    };
-  }
-)(withRouter(observer(ArticleMainButtonContent)));
+    setAction: fileActionStore.setAction,
+    startUpload,
+  };
+})(withRouter(observer(ArticleMainButtonContent)));

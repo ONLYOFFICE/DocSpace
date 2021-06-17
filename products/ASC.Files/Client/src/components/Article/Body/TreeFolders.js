@@ -3,7 +3,6 @@ import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
 //import equal from "fast-deep-equal/react";
-import { getFolder } from "@appserver/common/api/files";
 import { FolderType, ShareAccessRights } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
@@ -14,6 +13,7 @@ import ExpanderRightIcon from "../../../../../../../public/images/expander-right
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import { observer, inject } from "mobx-react";
+import { runInAction } from "mobx";
 
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
@@ -272,28 +272,25 @@ class TreeFolders extends React.Component {
     }
   };
 
-  loop = (data, curId, child, level) => {
-    //if (level < 1 || curId.length - 3 > level * 2) return;
-    data.forEach((item) => {
-      const itemId = item.id.toString();
-      if (curId.indexOf(itemId) >= 0) {
-        const listIds = curId;
-        const treeItem = listIds.find((x) => x.toString() === itemId);
-        if (treeItem === undefined) {
-          listIds.push(itemId);
-        }
-        if (item.folders) {
-          this.loop(item.folders, listIds, child);
-        } else {
-          item.folders = child;
-        }
-      }
+  loop = (data, child, pos) => {
+    let newPos = pos.split("-");
+    let newData = data;
+
+    newPos.shift();
+    while (newPos.length !== 1) {
+      const index = +newPos[0];
+      newData = newData[index].folders;
+      newPos.shift();
+    }
+
+    runInAction(() => {
+      newData[newPos].folders = child;
     });
   };
 
-  getNewTreeData(treeData, curId, child, level) {
-    this.loop(treeData, curId, child, level);
-    this.setLeaf(treeData, curId, level);
+  getNewTreeData(treeData, curId, child, pos) {
+    this.loop(treeData, child, pos);
+    this.setLeaf(treeData, curId, 10);
   }
 
   setLeaf(treeData, curKey, level) {
@@ -319,20 +316,11 @@ class TreeFolders extends React.Component {
 
   generateTreeNodes = (treeNode) => {
     const folderId = treeNode.props.id;
+    const level = treeNode.props.pos;
+
     let arrayFolders;
-
-    const newFilter = this.props.filter.clone();
-    newFilter.filterType = 2;
-    newFilter.withSubfolders = null;
-    newFilter.authorType = null;
-
-    return getFolder(folderId, newFilter).then((data) => {
-      arrayFolders = data.folders;
-
-      let listIds = [];
-      for (let item of data.pathParts) {
-        listIds.push(item.toString());
-      }
+    return this.props.getSubfolders(folderId).then((data) => {
+      arrayFolders = data;
 
       const folderIndex = treeNode.props.pos;
       let i = 0;
@@ -341,7 +329,7 @@ class TreeFolders extends React.Component {
         i++;
       }
 
-      return { folders: arrayFolders, listIds };
+      return { folders: arrayFolders, listIds: [], level };
     });
   };
 
@@ -362,10 +350,10 @@ class TreeFolders extends React.Component {
 
         const treeData = [...this.props.treeFolders];
 
-        this.getNewTreeData(treeData, listIds, data.folders, 10);
-        /* this.props.needUpdate &&  */ this.props.setTreeFolders(treeData);
+        this.getNewTreeData(treeData, listIds, data.folders, data.level);
+        this.props.setTreeFolders(treeData);
       })
-      .catch((err) => toastr.error(err))
+      .catch((err) => console.log("err", err))
       .finally(() => {
         this.setState({ isExpand: false });
         this.props.setIsLoading && this.props.setIsLoading(false);
@@ -487,6 +475,7 @@ export default inject(
       expandedKeys,
       setExpandedKeys,
       setExpandedPanelKeys,
+      getSubfolders,
     } = treeFoldersStore;
     const { id /* rootFolderType */ } = selectedFolderStore;
 
@@ -509,6 +498,7 @@ export default inject(
       setTreeFolders,
       setExpandedKeys,
       setExpandedPanelKeys,
+      getSubfolders,
     };
   }
 )(observer(TreeFolders));

@@ -7,6 +7,7 @@ import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 
 import { EncryptedFileIcon } from "../components/Icons";
+import { createTreeFolders } from "../helpers/files-helpers";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
@@ -70,27 +71,19 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
-      const {
-        t,
-        selectedFolderId,
-        dragging,
-        setDragging,
-        startUpload,
-      } = this.props;
+      const { t, dragging, setDragging, startUpload } = this.props;
 
-      const folderId = uploadToFolder ? uploadToFolder : selectedFolderId;
       dragging && setDragging(false);
-      startUpload(files, folderId, t);
+      startUpload(files, uploadToFolder, t);
     };
 
     onDrop = (items) => {
-      const { item, selectedFolderId } = this.props;
-      const { fileExst, id } = item;
+      const { fileExst, id } = this.props.item;
 
       if (!fileExst) {
         this.onDropZoneUpload(items, id);
       } else {
-        this.onDropZoneUpload(items, selectedFolderId);
+        this.onDropZoneUpload(items);
       }
     };
 
@@ -145,6 +138,7 @@ export default function withFileActions(WrappedFileItem) {
         openDocEditor,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
         setMediaViewerData,
         setConvertItem,
         setConvertDialogVisible,
@@ -168,7 +162,13 @@ export default function withFileActions(WrappedFileItem) {
         }
 
         fetchFiles(id, filter)
-          .then(() => this.setNewBadgeCount())
+          .then((data) => {
+            const pathParts = data.selectedFolder.pathParts;
+            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            setExpandedKeys(newExpandedKeys);
+
+            this.setNewBadgeCount();
+          })
           .catch((err) => {
             toastr.error(err);
             setIsLoading(false);
@@ -288,8 +288,9 @@ export default function withFileActions(WrappedFileItem) {
         isRecycleBinFolder,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
       } = treeFoldersStore;
-      const { id: selectedFolderId, isRootFolder } = selectedFolderStore;
+      const { isRootFolder } = selectedFolderStore;
       const {
         dragging,
         setDragging,
@@ -340,7 +341,6 @@ export default function withFileActions(WrappedFileItem) {
         onSelectItem,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
-        selectedFolderId,
         dragging,
         setDragging,
         startUpload,
@@ -368,6 +368,7 @@ export default function withFileActions(WrappedFileItem) {
         openDocEditor,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
         setMediaViewerData,
         getFolderInfo,
         markAsRead,
