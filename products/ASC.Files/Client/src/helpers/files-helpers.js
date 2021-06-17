@@ -50,7 +50,7 @@ export const createTreeFolders = (pathParts, expandedKeys) => {
       expandedKeys.filter((x) => !treeFolders.includes(x))
     );
   }
-  return treeFolders;
+  return treeFolders.length ? treeFolders : expandedKeys;
 };
 
 const renameTreeFolder = (folders, newItems, currentFolder) => {
