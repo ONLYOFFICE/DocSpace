@@ -10,8 +10,8 @@ import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
 
 const StyledGridWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 245px));
+  //width: 100%;
   grid-gap: 22px 16px;
   padding-bottom: 24px;
   padding-right: 2px;
@@ -21,13 +21,14 @@ const StyledGridWrapper = styled.div`
 const StyledTileContainer = styled.div`
   position: relative;
 
-  .tileItemWrapper {
+  .tile-item-wrapper {
     border: 1px solid #eceef1;
     border-radius: 3px;
     border-top-left-radius: 0;
     position: relative;
     min-width: 220px;
     box-sizing: border-box;
+    max-width: 245px;
 
     &.file {
       padding: 0;
@@ -38,7 +39,7 @@ const StyledTileContainer = styled.div`
     }
   }
 
-  .tileItemsHeading {
+  .tile-items-heading {
     margin: 0;
     padding-bottom: 11px;
 
@@ -82,7 +83,7 @@ class TileContainer extends React.PureComponent {
   };
 
   // eslint-disable-next-line react/prop-types
-  renderRow = memo(({ data, index, style }) => {
+  renderTile = memo(({ data, index, style }) => {
     // eslint-disable-next-line react/prop-types
     const options = data[index].props.contextOptions;
 
@@ -115,7 +116,7 @@ class TileContainer extends React.PureComponent {
       if (item.props.item.isFolder) {
         Folders.push(
           <div
-            className="tileItemWrapper folder"
+            className="tile-item-wrapper folder"
             key={index}
             onContextMenu={this.onRowContextClick.bind(
               this,
@@ -128,7 +129,7 @@ class TileContainer extends React.PureComponent {
       } else {
         Files.push(
           <div
-            className="tileItemWrapper file"
+            className="tile-item-wrapper file"
             key={index}
             onContextMenu={this.onRowContextClick.bind(
               this,
@@ -143,7 +144,7 @@ class TileContainer extends React.PureComponent {
 
     const renderList = ({ height, width }) => (
       <List
-        className="List"
+        className="list"
         height={height}
         width={width}
         itemSize={itemHeight}
@@ -151,7 +152,7 @@ class TileContainer extends React.PureComponent {
         itemData={children}
         outerElementType={CustomScrollbarsVirtualList}
       >
-        {this.renderRow}
+        {this.renderTile}
       </List>
     );
 
@@ -164,7 +165,7 @@ class TileContainer extends React.PureComponent {
       >
         {Folders.length > 0 && (
           <>
-            <Heading size="xsmall" className="tileItemsHeading">
+            <Heading size="xsmall" className="tile-items-heading">
               {headingFolders}
             </Heading>
             {useReactWindow ? (
@@ -177,7 +178,7 @@ class TileContainer extends React.PureComponent {
 
         {Files.length > 0 && (
           <>
-            <Heading size="xsmall" className="tileItemsHeading">
+            <Heading size="xsmall" className="tile-items-heading">
               {headingFiles}
             </Heading>
             {useReactWindow ? (

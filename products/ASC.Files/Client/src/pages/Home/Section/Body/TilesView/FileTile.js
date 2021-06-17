@@ -39,6 +39,9 @@ const FilesTile = createSelectable((props) => {
     item.providerKey,
     item.contentLength
   );
+
+  const { thumbnailUrl } = item;
+
   return (
     <div ref={props.selectableRef}>
       <DragAndDrop
@@ -54,6 +57,7 @@ const FilesTile = createSelectable((props) => {
           key={item.id}
           item={item}
           temporaryIcon={temporaryIcon}
+          thumbnail={thumbnailUrl}
           element={element}
           sectionWidth={sectionWidth}
           contentElement={sharedButton}

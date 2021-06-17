@@ -76,19 +76,15 @@ const StyledFileTileTop = styled.div`
   height: 157px;
   position: relative;
 
-  .thumbnailImage {
-    //pointer-events: none;
-    & > .injected-svg {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: auto;
-      z-index: 0;
-    }
-  }
-
+  .thumbnail-image,
   .temporary-icon > .injected-svg {
+    //pointer-events: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 0;
     margin-bottom: 16px;
   }
 `;
@@ -142,7 +138,7 @@ const StyledElement = styled.div`
 const StyledOptionButton = styled.div`
   display: block;
 
-  .expandButton > div:first-child {
+  .expand-button > div:first-child {
     padding-top: 8px;
     padding-bottom: 8px;
     padding-left: 12px;
@@ -151,12 +147,6 @@ const StyledOptionButton = styled.div`
 `;
 
 class Tile extends React.PureComponent {
-  // shouldComponentUpdate(nextProps) {
-  //   if (this.props.needForUpdate) {
-  //     return this.props.needForUpdate(this.props, nextProps);
-  //   }
-  //   return !equal(this.props, nextProps);
-  // }
   constructor(props) {
     super(props);
 
@@ -165,15 +155,19 @@ class Tile extends React.PureComponent {
   }
 
   getIconFile = () => {
-    const { item, temporaryIcon, thumbnailClick } = this.props;
+    const { item, temporaryIcon, thumbnailClick, thumbnail } = this.props;
 
-    const icon = item.thumbnail ? item.thumbnail : temporaryIcon;
-    let className = "thumbnailImage";
-    if (!item.thumbnail) className += " temporary-icon";
+    const icon = thumbnail ? thumbnail : temporaryIcon;
+    let className = "thumbnail-image";
+    if (!thumbnail) className += "temporary-icon";
 
     return (
       <Link type="page" onClick={thumbnailClick}>
-        <ReactSVG className={className} src={icon} loading={svgLoader} />
+        {thumbnail ? (
+          <img src={thumbnail} className="thumbnail-image" />
+        ) : (
+          <ReactSVG className="temporary-icon" src={icon} loading={svgLoader} />
+        )}
       </Link>
     );
   };
@@ -254,12 +248,12 @@ class Tile extends React.PureComponent {
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (
                 <ContextMenuButton
-                  className="expandButton"
+                  className="expand-button"
                   directionX="right"
                   getData={getOptions}
                 />
               ) : (
-                <div className="expandButton"> </div>
+                <div className="expand-button"> </div>
               )}
               <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
             </StyledOptionButton>
@@ -284,12 +278,12 @@ class Tile extends React.PureComponent {
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
                 {renderContext ? (
                   <ContextMenuButton
-                    className="expandButton"
+                    className="expand-button"
                     directionX="right"
                     getData={getOptions}
                   />
                 ) : (
-                  <div className="expandButton"> </div>
+                  <div className="expand-button"> </div>
                 )}
                 <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
               </StyledOptionButton>

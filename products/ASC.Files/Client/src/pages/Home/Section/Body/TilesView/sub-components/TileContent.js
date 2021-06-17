@@ -164,10 +164,10 @@ const TileContent = (props) => {
           children[0].props && children[0].props.containerWidth
         }
       >
-        <MainContainer className="rowMainContainer">
+        <MainContainer className="row-main-container">
           {children[0]}
         </MainContainer>
-        <MainIcons className="mainIcons">{children[1]}</MainIcons>
+        <MainIcons className="main-icons">{children[1]}</MainIcons>
       </MainContainerWrapper>
       {children.map((element, index) => {
         if (index > 1 && element) {

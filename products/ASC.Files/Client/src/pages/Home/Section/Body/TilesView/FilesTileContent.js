@@ -11,7 +11,7 @@ import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 
 const SimpleFilesTileContent = styled(TileContent)`
-  .rowMainContainer {
+  .row-main-container {
     height: auto;
     max-width: 100%;
     align-self: flex-end;
@@ -21,7 +21,7 @@ const SimpleFilesTileContent = styled(TileContent)`
     }
   }
 
-  .mainIcons {
+  .main-icons {
     align-self: flex-end;
   }
 
@@ -49,6 +49,10 @@ const SimpleFilesTileContent = styled(TileContent)`
   .share-icon {
     margin-top: -4px;
     padding-right: 8px;
+  }
+
+  .title-link {
+    font-size: 14px;
   }
 
   @media (max-width: 1024px) {
@@ -86,11 +90,12 @@ const FilesTileContent = ({
         //disableSideInfo
       >
         <Link
+          className="title-link"
           containerWidth="100%"
           type="page"
           title={titleWithoutExt}
-          fontWeight="bold"
-          fontSize="15px"
+          fontWeight="600"
+          fontSize="14px"
           {...linkStyles}
           color="#333"
           isTextOverflow
@@ -101,7 +106,7 @@ const FilesTileContent = ({
               className="badge-ext"
               as="span"
               color="#A3A9AE"
-              fontSize="15px"
+              fontSize="14px"
               fontWeight={600}
               title={fileExst}
               truncate={true}
@@ -118,5 +123,7 @@ const FilesTileContent = ({
 };
 
 export default withRouter(
-   withTranslation(["Home", "Translations"])(withContent(withBadges(FilesTileContent)))
+  withTranslation(["Home", "Translations"])(
+    withContent(withBadges(FilesTileContent))
+  )
 );
