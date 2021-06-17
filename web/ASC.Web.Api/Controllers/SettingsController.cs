@@ -802,7 +802,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security")]
-        public IEnumerable<SecurityWrapper> GetWebItemSecurityInfo(IEnumerable<string> ids)
+        public IEnumerable<SecurityWrapper> GetWebItemSecurityInfo([FromQuery]IEnumerable<string> ids)
         {
             if (ids == null || !ids.Any())
             {
