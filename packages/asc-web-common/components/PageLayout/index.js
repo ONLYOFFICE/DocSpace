@@ -19,6 +19,7 @@ import SectionToggler from "./sub-components/section-toggler";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
+import Selecto from "react-selecto";
 
 function ArticleHeader() {
   return null;
@@ -422,7 +423,22 @@ class PageLayout extends React.Component {
       );
     };
 
-    return renderPageLayout();
+    return (
+      <>
+        {renderPageLayout()}
+        <Selecto
+          dragContainer={".main"}
+          selectableTargets={[".files-row"]}
+          hitRate={0}
+          selectByClick={true}
+          selectFromInside={true}
+          ratio={0}
+          onSelect={(e) => {
+            console.log("onSelect", e);
+          }}
+        />
+      </>
+    );
 
     // return isMobile || !uploadFiles ? (
     //   renderPageLayout()
