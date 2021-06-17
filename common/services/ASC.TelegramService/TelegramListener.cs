@@ -23,6 +23,8 @@
  *
 */
 
+using System.Threading.Tasks;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core.Common.Notify;
@@ -38,12 +40,12 @@ namespace ASC.TelegramService
         private ICacheNotify<CreateClientProto> CacheCreateClient { get; }
         private ICacheNotify<DisableClientProto> CacheDisableClient { get; }
 
-        private TelegramService TelegramService { get; set; }
+        private TelegramHandler TelegramHandler { get; set; }
 
         public TelegramListener(ICacheNotify<NotifyMessage> cacheMessage,
             ICacheNotify<RegisterUserProto> cacheRegisterUser,
             ICacheNotify<CreateClientProto> cacheCreateClient,
-            TelegramService telegramService,
+            TelegramHandler telegramHandler,
             ICacheNotify<DisableClientProto> cacheDisableClient)
         {
             CacheMessage = cacheMessage;
@@ -51,12 +53,12 @@ namespace ASC.TelegramService
             CacheCreateClient = cacheCreateClient;
             CacheDisableClient = cacheDisableClient;
 
-            TelegramService = telegramService;
+            TelegramHandler = telegramHandler;
         }
 
         public void Start()
         {
-            CacheMessage.Subscribe(n => SendMessage(n), CacheNotifyAction.Insert);
+            CacheMessage.Subscribe(async n => await SendMessage(n), CacheNotifyAction.Insert);
             CacheRegisterUser.Subscribe(n => RegisterUser(n), CacheNotifyAction.Insert);
             CacheCreateClient.Subscribe(n => CreateOrUpdateClient(n), CacheNotifyAction.Insert);
             CacheDisableClient.Subscribe(n => DisableClient(n), CacheNotifyAction.Insert);
@@ -73,22 +75,22 @@ namespace ASC.TelegramService
 
         private void DisableClient(DisableClientProto n)
         {
-            TelegramService.DisableClient(n.TenantId);
+            TelegramHandler.DisableClient(n.TenantId);
         }
 
-        private void SendMessage(NotifyMessage notifyMessage)
+        private async Task SendMessage(NotifyMessage notifyMessage)
         {
-            TelegramService.SendMessage(notifyMessage);
+            await TelegramHandler.SendMessage(notifyMessage);
         }
 
         private void RegisterUser(RegisterUserProto registerUserProto)
         {
-            TelegramService.RegisterUser(registerUserProto.UserId, registerUserProto.TenantId, registerUserProto.Token);
+            TelegramHandler.RegisterUser(registerUserProto.UserId, registerUserProto.TenantId, registerUserProto.Token);
         }
 
         private void CreateOrUpdateClient(CreateClientProto createClientProto)
         {
-            TelegramService.CreateOrUpdateClient(createClientProto.TenantId, createClientProto.Token, createClientProto.TokenLifespan, createClientProto.Proxy);
+            TelegramHandler.CreateOrUpdateClientForTenant(createClientProto.TenantId, createClientProto.Token, createClientProto.TokenLifespan, createClientProto.Proxy, false);
         }
     }
 }

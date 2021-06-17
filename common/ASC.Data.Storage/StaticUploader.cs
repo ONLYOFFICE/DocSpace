@@ -131,7 +131,7 @@ namespace ASC.Data.Storage
             return task;
         }
 
-        public async Task UploadDir(string relativePath, string mappedPath)
+        public void UploadDir(string relativePath, string mappedPath)
         {
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;

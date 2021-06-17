@@ -1,6 +1,6 @@
-﻿/*
+/*
  *
- * (c) Copyright Ascensio System Limited 2010-2020
+ * (c) Copyright Ascensio System Limited 2010-2018
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,40 +24,31 @@
 */
 
 
-using ASC.Common;
-using ASC.Core.Common.Notify;
-using ASC.Notify.Messages;
+#region Import
 
-namespace ASC.TelegramService
+using System;
+
+using ASC.Common.Mapping;
+using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Enums;
+
+#endregion
+
+namespace ASC.CRM.Core.Entities
 {
-    [Singletone]
-    public class TelegramService : ITelegramService
+    public class CustomField : DomainObject, IMapFrom<DbFieldDescription>
     {
-        private TelegramHandler TelegramHandler { get; set; }
+        public EntityType EntityType { get; set; }
+        public int EntityID { get; set; }
+        public String Label { get; set; }
+        public String Value { get; set; }
+        public CustomFieldType Type { get; set; }
+        public int SortOrder { get; set; }
+        public String Mask { get; set; }
 
-        public TelegramService(TelegramHandler telegramHandler)
+        public override int GetHashCode()
         {
-            TelegramHandler = telegramHandler;
-        }
-
-        public void SendMessage(NotifyMessage m)
-        {
-            TelegramHandler.SendMessage(m);
-        }
-
-        public void RegisterUser(string userId, int tenantId, string token)
-        {
-            TelegramHandler.RegisterUser(userId, tenantId, token);
-        }
-
-        public void DisableClient(int tenantId)
-        {
-            TelegramHandler.DisableClient(tenantId);
-        }
-
-        public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
-        {
-            TelegramHandler.CreateOrUpdateClientForTenant(tenantId, token, tokenLifespan, proxy, false);
+            return string.Format("{0}|{1}|{2}|{3}|{4}", GetType().FullName, ID, EntityID, Label, (int)Type).GetHashCode();
         }
     }
 }
