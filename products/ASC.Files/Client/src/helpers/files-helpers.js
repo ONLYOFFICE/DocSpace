@@ -1,3 +1,5 @@
+import { runInAction } from "mobx";
+
 export const presentInArray = (array, search, caseInsensitive = false) => {
   let pattern = caseInsensitive ? search.toLowerCase() : search;
   const result = array.findIndex((item) => item === pattern);
@@ -34,9 +36,12 @@ export const getTitleWithoutExst = (item) => {
 };
 
 export const createTreeFolders = (pathParts, expandedKeys) => {
+  const newPathParts =
+    pathParts.length > 1 ? pathParts.splice(0, pathParts.length - 1) : [];
+
   let treeFolders = [];
-  if (pathParts.length > 0) {
-    for (let item of pathParts) {
+  if (newPathParts.length > 0) {
+    for (let item of newPathParts) {
       treeFolders.push(item.toString());
     }
   }
@@ -45,7 +50,7 @@ export const createTreeFolders = (pathParts, expandedKeys) => {
       expandedKeys.filter((x) => !treeFolders.includes(x))
     );
   }
-  return treeFolders;
+  return treeFolders.length ? treeFolders : expandedKeys;
 };
 
 const renameTreeFolder = (folders, newItems, currentFolder) => {
@@ -102,36 +107,38 @@ export const loopTreeFolders = (
   foldersCount,
   currentFolder
 ) => {
-  const newPath = path.slice();
-  while (newPath.length !== 0) {
-    const newItems = item.find((x) => x.id === newPath[0]);
-    if (!newItems) {
-      return;
-    }
-    newPath.shift();
-    if (newPath.length === 0) {
-      let foldersLength = newItems.folders ? newItems.folders.length : 0;
-      if (folders.length > foldersLength) {
-        addTreeFolder(folders, newItems, foldersCount);
-      } else if (folders.length < foldersLength) {
-        removeTreeFolder(folders, newItems, foldersCount);
-      } else if (
-        folders.length > 0 &&
-        newItems.folders.length > 0 &&
-        currentFolder
-      ) {
-        renameTreeFolder(folders, newItems, currentFolder);
-      } else {
+  runInAction(() => {
+    const newPath = path.slice();
+    while (newPath.length !== 0) {
+      const newItems = item.find((x) => x.id === newPath[0]);
+      if (!newItems) {
         return;
       }
-      return;
+      newPath.shift();
+      if (newPath.length === 0) {
+        let foldersLength = newItems.folders ? newItems.folders.length : 0;
+        if (folders.length > foldersLength) {
+          addTreeFolder(folders, newItems, foldersCount);
+        } else if (folders.length < foldersLength) {
+          removeTreeFolder(folders, newItems, foldersCount);
+        } else if (
+          folders.length > 0 &&
+          newItems.folders.length > 0 &&
+          currentFolder
+        ) {
+          renameTreeFolder(folders, newItems, currentFolder);
+        } else {
+          return;
+        }
+        return;
+      }
+      loopTreeFolders(
+        newPath,
+        newItems.folders,
+        folders,
+        foldersCount,
+        currentFolder
+      );
     }
-    loopTreeFolders(
-      newPath,
-      newItems.folders,
-      folders,
-      foldersCount,
-      currentFolder
-    );
-  }
+  });
 };

@@ -229,11 +229,11 @@ class UploadDataStore {
 
   getNewPercent = (uploadedSize, indexOfFile) => {
     const newTotalSize = sumBy(this.files, (f) =>
-      f.file && f.action !== "converted" ? f.file.size : 0
+      f.file && !this.uploaded ? f.file.size : 0
     );
     const totalUploadedFiles = this.files.filter((_, i) => i < indexOfFile);
     const totalUploadedSize = sumBy(totalUploadedFiles, (f) =>
-      f.file && f.action !== "converted" ? f.file.size : 0
+      f.file && !this.uploaded ? f.file.size : 0
     );
     const newPercent =
       ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
@@ -353,9 +353,11 @@ class UploadDataStore {
       this.setConversionPercent(100);
       this.finishUploadFiles();
     } else {
-      this.converted = true;
-      this.filesToConversion = [];
-      this.conversionPercent = 0;
+      runInAction(() => {
+        this.converted = true;
+        this.filesToConversion = [];
+        this.conversionPercent = 0;
+      });
     }
   };
 
@@ -381,6 +383,8 @@ class UploadDataStore {
 
   startUpload = (uploadFiles, folderId, t) => {
     const { canConvert } = this.formatsStore.docserviceStore;
+
+    const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
 
     if (this.uploaded) {
       this.files = this.files.filter((f) => f.action !== "upload");
@@ -408,7 +412,7 @@ class UploadDataStore {
         file: file,
         uniqueId: uniqueid("download_row-key_"),
         fileId: null,
-        toFolderId: folderId,
+        toFolderId,
         action: "upload",
         error: file.size ? null : t("EmptyFile"),
         fileInfo: null,
@@ -457,7 +461,8 @@ class UploadDataStore {
       return this.filesStore.fetchFiles(
         this.selectedFolderStore.id,
         this.filesStore.filter.clone(),
-        false
+        false,
+        true
       );
     } else if (needUpdateTree) {
       return getFolder(folderId, this.filesStore.filter.clone()).then(
@@ -881,7 +886,9 @@ class UploadDataStore {
                 this.filesStore
                   .fetchFiles(
                     this.selectedFolderStore.id,
-                    this.filesStore.filter
+                    this.filesStore.filter,
+                    true,
+                    true
                   )
                   .finally(() => {
                     setTimeout(
