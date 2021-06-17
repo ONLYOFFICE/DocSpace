@@ -1,14 +1,11 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
-import { inject, observer } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import stores from "../../../store/index";
 import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 import ModalDialog from "@appserver/components/modal-dialog";
-import Loader from "@appserver/components/loader";
-import Text from "@appserver/components/text";
 import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
 import FolderTreeBody from "./folderTreeBody";
 import {
@@ -135,13 +132,11 @@ class SelectFolderModalDialog extends React.Component {
           <ModalDialog.Body>
             <FolderTreeBody
               isLoadingData={isLoadingData}
-              expandedKeys={expandedKeys}
               folderList={folderList}
               onSelect={this.onSelect}
               isCommonWithoutProvider={isCommonWithoutProvider}
               certainFolders={certainFolders}
               isAvailableFolders={isAvailableFolders}
-              filter={filter}
             />
           </ModalDialog.Body>
         </ModalDialog>
@@ -160,21 +155,8 @@ SelectFolderModalDialog.defaultProps = {
   isNeedArrowIcon: false,
 };
 
-const SelectFolderDialogWrapper = inject(
-  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { filter } = filesStore;
-    const { expandedPanelKeys } = treeFoldersStore;
-    return {
-      expandedKeys: expandedPanelKeys
-        ? expandedPanelKeys
-        : selectedFolderStore.pathParts,
-      filter,
-    };
-  }
-)(
-  observer(
-    withTranslation(["SelectedFolder", "Common"])(SelectFolderModalDialog)
-  )
+const SelectFolderDialogWrapper = withTranslation(["SelectedFolder", "Common"])(
+  SelectFolderModalDialog
 );
 
 class SelectFolderDialog extends React.Component {

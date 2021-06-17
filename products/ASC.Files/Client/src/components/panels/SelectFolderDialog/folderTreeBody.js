@@ -1,8 +1,9 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import TreeFolders from "../../Article/Body/TreeFolders";
-import { useTranslation } from "react-i18next";
 const FolderTreeBody = ({
   isLoadingData,
   expandedKeys,
@@ -40,4 +41,21 @@ const FolderTreeBody = ({
     </>
   );
 };
-export default FolderTreeBody;
+
+FolderTreeBody.defaultProps = {
+  isAvailableFolders: true,
+  isLoadingData: false,
+};
+
+export default inject(
+  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { filter } = filesStore;
+    const { expandedPanelKeys } = treeFoldersStore;
+    return {
+      expandedKeys: expandedPanelKeys
+        ? expandedPanelKeys
+        : selectedFolderStore.pathParts,
+      filter,
+    };
+  }
+)(observer(FolderTreeBody));
