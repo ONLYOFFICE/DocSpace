@@ -1202,8 +1202,10 @@ class FilesStore {
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];
-      //const id = splitValue.slice(1).join("_");
-      const id = splitValue[1];
+      const id =
+        splitValue[splitValue.length - 1] === "draggable"
+          ? splitValue.slice(1, -1).join("_")
+          : splitValue.slice(1).join("_");
 
       if (fileType === "file") {
         newSelection.push(this.files.find((f) => f.id == id && f.fileExst));
