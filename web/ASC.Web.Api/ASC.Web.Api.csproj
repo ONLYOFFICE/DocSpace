@@ -2,15 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <IsPackable>false</IsPackable>
-    <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <AssemblyTitle>ASC.Web.Api</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Web.Api</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

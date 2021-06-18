@@ -33,7 +33,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             return MustConvertable.Contains(extension.TrimStart('.'));
         }
 
-        public Stream Convert(Stream inputStream, string inputFormat)
+        public async Task<Stream> Convert(Stream inputStream, string inputFormat)
         {
             if (inputStream == null) throw new ArgumentException();
             if (string.IsNullOrEmpty(inputFormat)) throw new ArgumentException();
@@ -45,9 +45,9 @@ namespace ASC.Web.Files.Services.FFmpegService
             {
                 process.Start();
 
-                StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
+                await StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
 
-                ProcessLog(process.StandardError.BaseStream);
+                await ProcessLog(process.StandardError.BaseStream);
 
                 return process.StandardOutput.BaseStream;
             }

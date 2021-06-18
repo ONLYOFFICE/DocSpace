@@ -51,7 +51,7 @@ const Base = {
   color: black,
   backgroundColor: white,
   fontFamily: "Open Sans, sans-serif, Arial",
-  fontSize: "30px",
+  fontSize: "13px",
 
   text: {
     color: black,

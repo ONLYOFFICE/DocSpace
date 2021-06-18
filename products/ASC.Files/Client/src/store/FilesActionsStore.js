@@ -11,6 +11,7 @@ import {
   markAsRead,
   checkFileConflicts,
   removeShareFiles,
+  getSubfolders,
 } from "@appserver/common/api/files";
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -140,7 +141,7 @@ class FilesActionStore {
             alert: false,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(this.selectedFolderStore.id, filter);
+          fetchFiles(this.selectedFolderStore.id, filter, true, true);
         }
       })
       .catch((err) => {
@@ -291,10 +292,9 @@ class FilesActionStore {
         const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
         if (!selectedItem.fileExst && !selectedItem.contentLength) {
           const path = data.selectedFolder.pathParts;
-          const newTreeFolders = treeFolders;
-          const folders = data.selectedFolder.folders;
-          loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-          setTreeFolders(newTreeFolders);
+          const folders = await getSubfolders(this.selectedFolderStore.id);
+          loopTreeFolders(path, treeFolders, folders, null, newItem);
+          setTreeFolders(treeFolders);
         }
       }
       setAction({ type: null, id: null, extension: null });
@@ -355,15 +355,10 @@ class FilesActionStore {
   unsubscribeAction = async (fileIds, folderIds) => {
     const { setUnsubscribe } = this.dialogsStore;
     const { filter, fetchFiles } = this.filesStore;
-    const {
-      treeFolders,
-      isRecycleBinFolder,
-      setTreeFolders,
-    } = this.treeFoldersStore;
 
     return removeShareFiles(fileIds, folderIds)
       .then(() => setUnsubscribe(false))
-      .then(() => fetchFiles(this.selectedFolderStore.id, filter));
+      .then(() => fetchFiles(this.selectedFolderStore.id, filter, true, true));
   };
 
   deleteFolderAction = (folderId, currentFolderId, translations) => {
@@ -391,11 +386,6 @@ class FilesActionStore {
   loopDeleteProgress = (id, folderId, isFolder, translations) => {
     const { filter, fetchFiles } = this.filesStore;
     const {
-      treeFolders,
-      isRecycleBinFolder,
-      setTreeFolders,
-    } = this.treeFoldersStore;
-    const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
@@ -422,7 +412,7 @@ class FilesActionStore {
           label: translations.deleteOperation,
           alert: false,
         });
-        fetchFiles(folderId, filter)
+        fetchFiles(folderId, filter, true, true)
           .catch((err) => {
             setSecondaryProgressBarData({
               visible: true,

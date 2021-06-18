@@ -98,8 +98,25 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickLinkEdit = () => {
+      const {
+        item,
+        canConvert,
+        setConvertItem,
+        setConvertDialogVisible,
+      } = this.props;
+
+      if (canConvert) {
+        setConvertItem(item);
+        setConvertDialogVisible(true);
+      } else {
+        onPreviewClick();
+      }
+    };
+
+    onPreviewClick = () => {
       const { item, openDocEditor } = this.props;
       const { id, providerKey } = item;
+
       openDocEditor(id, providerKey);
     };
 
@@ -300,7 +317,7 @@ export default function withContextOptions(WrappedComponent) {
               key: option,
               label: t("Preview"),
               icon: "/static/images/eye.react.svg",
-              onClick: this.onClickLinkEdit,
+              onClick: this.onPreviewClick,
               disabled: false,
             };
           case "view":

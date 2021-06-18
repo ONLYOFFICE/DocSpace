@@ -166,7 +166,7 @@ namespace ASC.TelegramService
 
         private void BindClient(TelegramBotClient client, int tenantId)
         {
-            client.OnMessage += (sender, e) => { OnMessage(sender, e, client, tenantId); };
+            client.OnMessage += async (sender, e) => { await OnMessage(sender, e, client, tenantId); };
             client.StartReceiving();
         }
 

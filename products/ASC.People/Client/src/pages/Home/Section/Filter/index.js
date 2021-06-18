@@ -250,15 +250,24 @@ class SectionFilterContent extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => {
+    const { loadingStore, filterStore, usersStore, groupsStore } = peopleStore;
+    const { settingsStore, userStore, isLoaded, isAdmin } = auth;
+    const { customNames } = settingsStore;
+    const { user } = userStore;
+    const { groups } = groupsStore;
+    const { getUsersList: fetchPeople } = usersStore;
+    const { filter } = filterStore;
+    const { setIsLoading } = loadingStore;
+
     return {
-      customNames: auth.settingsStore.customNames,
-      isLoaded: auth.isLoaded,
-      isAdmin: auth.isAdmin,
-      user: auth.userStore.user,
-      groups: peopleStore.groupsStore.groups,
-      fetchPeople: peopleStore.usersStore.getUsersList,
-      filter: peopleStore.filterStore.filter,
-      setIsLoading: peopleStore.setIsLoading,
+      customNames,
+      isLoaded,
+      isAdmin,
+      user,
+      groups,
+      fetchPeople,
+      filter,
+      setIsLoading,
     };
   })(
     observer(

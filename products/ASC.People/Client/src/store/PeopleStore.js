@@ -12,6 +12,7 @@ import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
 import store from "studio/store";
 import DialogStore from "./DialogStore";
+import LoadingStore from "./LoadingStore";
 const { auth: authStore } = store;
 
 class PeopleStore {
@@ -26,12 +27,8 @@ class PeopleStore {
   avatarEditorStore = null;
   inviteLinksStore = null;
   dialogStore = null;
-
-  isLoading = false;
-  isLoaded = false;
-  isRefresh = false;
+  loadingStore = null;
   isInit = false;
-  loadTimeout = null;
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
@@ -45,14 +42,9 @@ class PeopleStore {
     this.avatarEditorStore = new AvatarEditorStore(this);
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
+    this.loadingStore = new LoadingStore();
 
     makeObservable(this, {
-      isLoading: observable,
-      isLoaded: observable,
-      isRefresh: observable,
-      setIsRefresh: action,
-      setIsLoading: action,
-      setIsLoaded: action,
       init: action,
       isPeoplesAdmin: computed,
       resetFilter: action,
@@ -75,19 +67,7 @@ class PeopleStore {
     await this.groupsStore.getGroupList();
     await authStore.settingsStore.getPortalPasswordSettings();
 
-    this.setIsLoaded(true);
-  };
-
-  setIsLoading = (isLoading) => {
-    this.isLoading = isLoading;
-  };
-
-  setIsLoaded = (isLoaded) => {
-    this.isLoaded = isLoaded;
-  };
-
-  setIsRefresh = (isRefresh) => {
-    this.isRefresh = isRefresh;
+    this.loadingStore.setIsLoaded(true);
   };
 
   resetFilter = (withoutGroup = false) => {
