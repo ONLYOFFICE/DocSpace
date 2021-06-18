@@ -13,7 +13,7 @@ const SelectFileDialogAsideView = ({
   isCommonWithoutProvider,
   foldersType,
   isLoadingData,
-  onFileClick,
+  onSelectFile,
   onClickInput,
   onCloseSelectFolderDialog,
   onSelectFolder,
@@ -47,7 +47,7 @@ const SelectFileDialogAsideView = ({
             <FileListBody
               isLoadingData={isLoadingData}
               filesList={filesList}
-              onFileClick={onFileClick}
+              onSelectFile={onSelectFile}
             />
           </div>
         </StyledSelectFilePanel>
