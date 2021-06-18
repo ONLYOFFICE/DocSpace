@@ -432,7 +432,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public ItemList<AceWrapper> GetSharedInfo<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+        public List<AceWrapper> GetSharedInfo<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
             if (!AuthContext.IsAuthenticated)
             {
@@ -542,26 +542,26 @@ namespace ASC.Web.Files.Utils
                 result = new List<AceWrapper> { linkAce }.Concat(result).ToList();
             }
 
-            return new ItemList<AceWrapper>(result);
+            return new List<AceWrapper>(result);
         }
 
-        public ItemList<AceShortWrapper> GetSharedInfoShortFile<T>(T fileID)
+        public List<AceShortWrapper> GetSharedInfoShortFile<T>(T fileID)
         {
             var aces = GetSharedInfo(new List<T> { fileID}, new List<T>());
 
             return GetAceShortWrappers(aces);
         }
 
-        public ItemList<AceShortWrapper> GetSharedInfoShortFolder<T>(T folderId)
+        public List<AceShortWrapper> GetSharedInfoShortFolder<T>(T folderId)
         {
             var aces = GetSharedInfo(new List<T>(), new List<T> { folderId });
 
             return GetAceShortWrappers(aces);
         }
 
-        private ItemList<AceShortWrapper> GetAceShortWrappers(ItemList<AceWrapper> aces)
+        private List<AceShortWrapper> GetAceShortWrappers(List<AceWrapper> aces)
         {
-            return new ItemList<AceShortWrapper>(aces
+            return new List<AceShortWrapper>(aces
                 .Where(aceWrapper => !aceWrapper.SubjectId.Equals(FileConstant.ShareLinkId) || aceWrapper.Share != FileShare.Restrict)
                 .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
         }
