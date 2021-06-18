@@ -18,8 +18,15 @@ class SelectFileDialogBody extends React.Component {
       isLoadingData: false,
       isVisible: false,
       selectedFolder: "",
+      selectedFile: "",
+      defaultSelectedFile: "",
+      fileName: "",
+      defaultFileName: "",
       filesList: [],
       width: window.innerWidth,
+      isChecked: false,
+      hasNextPage: true,
+      isNextPageLoading: false,
     };
     this.timeoutId = null;
   }
@@ -36,22 +43,6 @@ class SelectFileDialogBody extends React.Component {
     );
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedFolder } = this.state;
-
-    if (selectedFolder !== prevState.selectedFolder && selectedFolder) {
-      //debugger;
-      this.setState({ isLoadingData: true }, function () {
-        getFiles(selectedFolder)
-          .then((filesList) => {
-            this.setState({ filesList: filesList.files });
-          })
-          .finally(() => this.setState({ isLoadingData: false }));
-      });
-      console.log("selectedFolder", selectedFolder);
-    }
-  }
-
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateWidth);
   }
@@ -61,7 +52,8 @@ class SelectFileDialogBody extends React.Component {
       isVisible: true,
     });
   };
-  onClose = () => {
+
+  onCloseSelectFolderDialog = () => {
     this.setState({
       isVisible: false,
     });
@@ -72,11 +64,11 @@ class SelectFileDialogBody extends React.Component {
     });
   };
 
-  onFileClick = (e) => {
-    console.log("e", e.target.id);
+  onSelectFile = (e) => {
     const { onSetFileName, onClose } = this.props;
     const { filesList } = this.state;
     const index = e.target.id;
+
     this.setState(
       {
         selectedFile: filesList[index].id,
@@ -87,9 +79,57 @@ class SelectFileDialogBody extends React.Component {
       }
     );
   };
+
+  onClickFile = (e) => {
+    const { filesList } = this.state;
+    const index = +e.target.id;
+
+    this.setState({
+      selectedFile: filesList[index].id,
+      fileName: filesList[index].title,
+    });
+  };
+  onClickSave = () => {
+    const { onSetFileName, onClose, onSetFileId } = this.props;
+    const { fileName, selectedFile } = this.state;
+    onSetFileName & onSetFileName(fileName);
+    onSetFileId & onSetFileId(selectedFile);
+    onClose && onClose();
+  };
+
+  onCloseModalView = () => {
+    this.setState({
+      isChecked: false,
+    });
+  };
+
   onSetLoadingData = (loading) => {
     this.setState({
       isLoadingData: loading,
+    });
+  };
+  loadNextPage = ({ startIndex }) => {
+    //debugger;
+    console.log(`loadNextPage(startIndex=${startIndex}")`);
+    const { selectedFolder } = this.state;
+    const pageCount = 30;
+    console.log("selectedFolder", selectedFolder);
+    this.setState({ isNextPageLoading: true }, () => {
+      getFiles(selectedFolder, pageCount, startIndex)
+        .then((response) => {
+          //debugger;
+          let newFilesList = startIndex
+            ? this.state.filesList.concat(response.files)
+            : response.files;
+          console.log("newFilesList", newFilesList);
+
+          this.setState({
+            hasNextPage: newFilesList.length < response.total,
+            isNextPageLoading: false,
+            filesList: newFilesList,
+          });
+        })
+        .catch((error) => console.log(error));
     });
   };
   render() {
@@ -101,7 +141,14 @@ class SelectFileDialogBody extends React.Component {
       foldersType,
       isCommonWithoutProvider,
     } = this.props;
-    const { isVisible, filesList, isLoadingData, width } = this.state;
+    const {
+      isVisible,
+      filesList,
+      isLoadingData,
+      width,
+      hasNextPage,
+      isNextPageLoading,
+    } = this.state;
 
     return width < 1024 ? (
       <SelectFileDialogAsideView
@@ -114,11 +161,14 @@ class SelectFileDialogBody extends React.Component {
         foldersType={foldersType}
         filesList={filesList}
         isLoadingData={isLoadingData}
-        onFileClick={this.onFileClick}
+        onSelectFile={this.onSelectFile}
         onClickInput={this.onClickInput}
-        onCloseSelectFolderDialog={this.onClose}
+        onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
         onSelectFolder={this.onSelectFolder}
         onSetLoadingData={this.onSetLoadingData}
+        hasNextPage={hasNextPage}
+        isNextPageLoading={isNextPageLoading}
+        loadNextPage={this.loadNextPage}
       />
     ) : (
       <SelectFileDialogModalView
@@ -127,10 +177,13 @@ class SelectFileDialogBody extends React.Component {
         onClose={onClose}
         onSelectFolder={this.onSelectFolder}
         foldersType={foldersType}
-        onFileClick={this.onFileClick}
+        onClickFile={this.onClickFile}
         filesList={filesList}
         isLoadingData={isLoadingData}
         onSelectFolder={this.onSelectFolder}
+        hasNextPage={hasNextPage}
+        isNextPageLoading={isNextPageLoading}
+        loadNextPage={this.loadNextPage}
       />
     );
   }
