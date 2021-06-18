@@ -75,7 +75,14 @@ namespace ASC.Data.Backup.Storage
 
         public bool IsExists(string storagePath)
         {
-            return Store.IsFile(Domain, storagePath);
+            if (Store != null)
+            {
+                return Store.IsFile(Domain, storagePath);
+            }
+            else
+            {
+               return false;
+            }
         }
 
         public string GetPublicLink(string storagePath)
