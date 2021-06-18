@@ -706,10 +706,10 @@ export function getEncryptionAccess(fileId) {
   });
 }
 
-export function getFiles(folderId) {
+export function getFiles(folderId, pageCount = 30, startIndex) {
   return request({
     method: "get",
-    url: `files/${folderId}?count=30&filterType=10&withSubfolders=true`,
+    url: `files/${folderId}?count=${pageCount}&filterType=10&withSubfolders=true&startIndex=${startIndex}&filterType=FilesOnly`,
   });
 }
 
