@@ -20,6 +20,13 @@ import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import Selecto from "react-selecto";
+import styled from "styled-components";
+
+const StyledSelectoWrapper = styled.div`
+  .selecto-selection {
+    z-index: 200;
+  }
+`;
 
 function ArticleHeader() {
   return null;
@@ -78,9 +85,15 @@ class PageLayout extends React.Component {
 
     this.timeoutHandler = null;
     this.intervalHandler = null;
+
+    this.scroll = null;
   }
 
   componentDidUpdate(prevProps) {
+    if (!this.scroll) {
+      this.scroll = document.getElementsByClassName("section-scroll")[0];
+    }
+
     if (
       (this.props.hideAside &&
         !this.state.isArticlePinned &&
@@ -180,6 +193,10 @@ class PageLayout extends React.Component {
     if (notSelectablePath || isBackdrop) {
       return false;
     } else return true;
+  };
+
+  onScroll = (e) => {
+    this.scroll.scrollBy(e.direction[0] * 10, e.direction[1] * 10);
   };
 
   render() {
@@ -435,22 +452,33 @@ class PageLayout extends React.Component {
       );
     };
 
+    const scrollOptions = this.scroll
+      ? {
+          container: this.scroll,
+          throttleTime: 0,
+          threshold: 100,
+        }
+      : {};
+
     return (
       <>
         {renderPageLayout()}
         {!isMobile && uploadFiles && !dragging && (
-          <Selecto
-            //container={document.body} // The container to add a selection element
-            dragContainer={".main"}
-            selectableTargets={[".files-row"]}
-            hitRate={1}
-            selectByClick={false}
-            selectFromInside={true}
-            ratio={0}
-            continueSelect={false}
-            onSelect={this.onSelect}
-            dragCondition={this.dragCondition}
-          />
+          <StyledSelectoWrapper>
+            <Selecto
+              dragContainer={".main"}
+              selectableTargets={[".files-row"]}
+              hitRate={1}
+              selectByClick={false}
+              selectFromInside={true}
+              ratio={0}
+              continueSelect={false}
+              onSelect={this.onSelect}
+              dragCondition={this.dragCondition}
+              scrollOptions={scrollOptions}
+              onScroll={this.onScroll}
+            />
+          </StyledSelectoWrapper>
         )}
       </>
     );

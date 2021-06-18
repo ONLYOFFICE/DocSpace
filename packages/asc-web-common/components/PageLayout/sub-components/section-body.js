@@ -77,7 +77,6 @@ class SectionBody extends React.Component {
     super(props);
 
     this.focusRef = React.createRef();
-    this.scrollRef = React.createRef();
   }
 
   // shouldComponentUpdate(nextProps) {
@@ -91,7 +90,6 @@ class SectionBody extends React.Component {
 
   componentWillUnmount() {
     this.focusRef = null;
-    this.scrollRef = null;
   }
 
   render() {
@@ -114,8 +112,6 @@ class SectionBody extends React.Component {
         }
       : {};
 
-    const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
-
     return uploadFiles ? (
       <StyledDropZoneBody
         isDropZone
@@ -127,7 +123,7 @@ class SectionBody extends React.Component {
       >
         {withScroll ? (
           !isMobile ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
+            <Scrollbar scrollclass="section-scroll" stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -159,7 +155,7 @@ class SectionBody extends React.Component {
       >
         {withScroll ? (
           !isMobile ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
+            <Scrollbar stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
