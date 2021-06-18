@@ -1144,7 +1144,7 @@ namespace ASC.Web.Files
                 fileTitle += fileExt;
             }
 
-            var file = new File<T>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
@@ -1160,7 +1160,7 @@ namespace ASC.Web.Files
             if (string.IsNullOrEmpty(fileTitle))
                 fileTitle = Path.GetFileName(HttpUtility.UrlDecode(fileUri));
 
-            var file = new File<T>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;

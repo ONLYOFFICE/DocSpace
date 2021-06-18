@@ -39,8 +39,6 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Files.Configuration
 {
     public class SearchHandler
@@ -136,11 +134,9 @@ namespace ASC.Web.Files.Configuration
         {
             var folderDao = DaoFactory.GetFolderDao<int>();
             var files = SearchFiles(text);
-            var helper = ServiceProvider.GetService<FileHelper<int>>();
             List<SearchResultItem> list = new List<SearchResultItem>();
             foreach (var file in files)
             {
-                helper.FileEntry = file;
                 var searchResultItem = new SearchResultItem
                 {
                     Name = file.Title ?? string.Empty,
@@ -149,7 +145,7 @@ namespace ASC.Web.Files.Configuration
                     Date = file.ModifiedOn,
                     Additional = new Dictionary<string, object>
                                 {
-                                    { "Author", helper.CreateByString.HtmlEncode() },
+                                    { "Author", file.CreateByString.HtmlEncode() },
                                     { "Path", FolderPathBuilder<int>(EntryManager.GetBreadCrumbs(file.FolderID, folderDao)) },
                                     { "Size", FileSizeComment.FilesSizeToString(file.ContentLength) }
                                 }
@@ -160,7 +156,6 @@ namespace ASC.Web.Files.Configuration
             var folders = SearchFolders(text);
             foreach (var folder in folders)
             {
-                helper.FileEntry = folder;
                 var searchResultItem = new SearchResultItem
                 {
                     Name = folder.Title ?? string.Empty,
@@ -169,7 +164,7 @@ namespace ASC.Web.Files.Configuration
                     Date = folder.ModifiedOn,
                     Additional = new Dictionary<string, object>
                                     {
-                                            { "Author", helper.CreateByString.HtmlEncode() },
+                                            { "Author", folder.CreateByString.HtmlEncode() },
                                             { "Path", FolderPathBuilder<int>(EntryManager.GetBreadCrumbs(folder.ID, folderDao)) },
                                             { "IsFolder", true }
                                     }

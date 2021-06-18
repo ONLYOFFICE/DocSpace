@@ -122,7 +122,7 @@ namespace ASC.Web.Files.HttpHandlers
                     await Invoke<int>(context);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 await Invoke<string>(context);
             }
@@ -209,7 +209,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (!string.IsNullOrEmpty(request.UploadId))
             {
-                var uploadSession = ChunkedUploadSessionHolder.GetSession(request.UploadId);
+                var uploadSession = ChunkedUploadSessionHolder.GetSession<T>(request.UploadId);
                 if (uploadSession != null)
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);

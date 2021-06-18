@@ -145,7 +145,7 @@ namespace ASC.Data.Backup.Storage
             }
 
             using var source = File.OpenRead(localPath);
-            var newFile = new File<T>();
+            var newFile = ServiceProvider.GetService<File<T>>();
             newFile.Title = Path.GetFileName(localPath);
             newFile.FolderID = folder.ID;
             newFile.ContentLength = source.Length;

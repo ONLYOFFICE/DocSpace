@@ -40,8 +40,6 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Utility;
 
-using Microsoft.Extensions.DependencyInjection;
-
 using FileShare = ASC.Files.Core.Security.FileShare;
 namespace ASC.Api.Documents
 {
@@ -217,9 +215,6 @@ namespace ASC.Api.Documents
 
         private FileWrapper<T> GetFileWrapper<T>(File<T> file)
         {
-            var fileHelper = ServiceProvider.GetService<FileHelper<T>>();
-            fileHelper.FileEntry = file;
-
             var result = Get<FileWrapper<T>, T>(file);
 
             result.FileExst = FileUtility.GetFileExtension(file.Title);
@@ -227,7 +222,7 @@ namespace ASC.Api.Documents
             result.Version = file.Version;
             result.VersionGroup = file.VersionGroup;
             result.ContentLength = file.ContentLengthString;
-            result.FileStatus = fileHelper.FileStatus;
+            result.FileStatus = file.FileStatus;
             result.PureContentLength = file.ContentLength.NullIfDefault();
             result.Comment = file.Comment;
             result.Encrypted = file.Encrypted.NullIfDefault();
@@ -236,7 +231,7 @@ namespace ASC.Api.Documents
 
             try
             {
-                result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(fileHelper.DownloadUrl);
+                result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
 
                 result.WebUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID, file.Version));
 

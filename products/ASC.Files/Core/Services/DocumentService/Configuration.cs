@@ -201,18 +201,16 @@ namespace ASC.Web.Files.Services.DocumentService
     public class InfoConfig<T>
     {
         public File<T> File;
-        private FileHelper<T> FileHelper;
 
         public EditorType Type = EditorType.Desktop;
         private string _breadCrumbs;
 
-        public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharing fileSharing, SecurityContext securityContext, UserManager userManager, FileHelper<T> fileHelper)
+        public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharing fileSharing, SecurityContext securityContext, UserManager userManager)
         {
             BreadCrumbsManager = breadCrumbsManager;
             FileSharing = fileSharing;
             SecurityContext = securityContext;
             UserManager = userManager;
-            FileHelper = fileHelper;
         }
 
         public bool? Favorite
@@ -248,8 +246,7 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             set { }
             get {
-                FileHelper.FileEntry = File;
-                return FileHelper.CreateByString; 
+                return File.CreateByString; 
             }
         }
 

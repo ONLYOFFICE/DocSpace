@@ -39,6 +39,7 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Web.Files.Classes;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SharePoint.Client;
 
@@ -280,7 +281,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (file == null)
                 return null;
 
-            var result = new File<string>();
+            var result = ServiceProvider.GetService<File<string>>();
 
             if (file is SharePointFileErrorEntry errorFile)
             {
@@ -496,7 +497,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             if (folder == null) return null;
 
-            var result = new Folder<string>();
+            var result = ServiceProvider.GetService<Folder<string>>();
 
             if (folder is SharePointFolderErrorEntry errorFolder)
             {

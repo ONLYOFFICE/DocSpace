@@ -27,6 +27,8 @@
 using System;
 using System.Diagnostics;
 
+using ASC.Common;
+
 namespace ASC.Files.Core
 {
     public enum FolderType
@@ -60,6 +62,7 @@ namespace ASC.Files.Core
     }
 
     [DebuggerDisplay("{Title} ({ID})")]
+    [Transient]
     public class Folder<T> : FileEntry<T>, IFolder
     {
         public FolderType FolderType { get; set; }
@@ -84,6 +87,11 @@ namespace ASC.Files.Core
         {
             Title = string.Empty;
             FileEntryType = FileEntryType.Folder;
+        }
+
+        public Folder(FileHelper fileHelper) : this()
+        {
+            FileHelper = fileHelper;
         }
     }
 }

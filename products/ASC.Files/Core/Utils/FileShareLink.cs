@@ -35,8 +35,6 @@ using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 
-using Microsoft.Extensions.DependencyInjection;
-
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Utils
@@ -69,9 +67,7 @@ namespace ASC.Web.Files.Utils
 
         public string GetLink<T>(File<T> file, bool withHash = true)
         {
-            var fileHelper = ServiceProvider.GetService<FileHelper<T>>();
-            fileHelper.FileEntry = file;
-            var url = fileHelper.DownloadUrl;
+            var url = file.DownloadUrl;
 
             if (FileUtility.CanWebView(file.Title))
                 url = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID);

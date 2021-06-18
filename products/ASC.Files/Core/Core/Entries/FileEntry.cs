@@ -34,9 +34,30 @@ namespace ASC.Files.Core
     [Serializable]
     public abstract class FileEntry : ICloneable
     {
-        public string Title { get; set; }
+        [JsonIgnore]
+        public FileHelper FileHelper { get; set; }
+
+        protected FileEntry()
+        {
+
+        }
+
+        public FileEntry(FileHelper fileHelper)
+        {
+            FileHelper = fileHelper;
+        }
+
+        public virtual string Title { get; set; }
 
         public Guid CreateBy { get; set; }
+
+        [JsonIgnore]
+        public string CreateByString { get => FileHelper.GetCreateByString(this); }
+
+        public Guid ModifiedBy { get; set; }
+
+        [JsonIgnore]
+        public string ModifiedByString { get => FileHelper.GetModifiedByString(this); }
 
         [JsonIgnore]
         public string CreateOnString
@@ -49,8 +70,6 @@ namespace ASC.Files.Core
         {
             get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
         }
-
-        public Guid ModifiedBy { get; set; }
 
         public string Error { get; set; }
 
@@ -102,6 +121,15 @@ namespace ASC.Files.Core
         public T FolderID { get; set; }
 
         private T _folderIdDisplay;
+
+        protected FileEntry()
+        {
+
+        }
+
+        protected FileEntry(FileHelper fileHelper) : base(fileHelper)
+        {
+        }
 
         public T FolderIdDisplay
         {

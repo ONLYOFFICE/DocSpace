@@ -405,7 +405,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             try
             {
-                var newFolder = new Folder<T>();
+                var newFolder = ServiceProvider.GetService<Folder<T>>();
                 newFolder.Title = title;
                 newFolder.FolderID = parent.ID;
 
@@ -578,7 +578,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
 
-            var file = new File<T>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
 
@@ -1532,7 +1532,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (file == null)
                 {
-                    var newFile = new File<T>();
+                    var newFile = ServiceProvider.GetService<File<T>>();
                     newFile.ID = fileId;
                     newFile.Version = version;
 
@@ -1602,7 +1602,7 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     //create folder with name userFrom in folder userTo
                     var folderIdToMy = folderDao.GetFolderIDUser(true, userTo.ID);
-                    var newFolder = new Folder<T>();
+                    var newFolder = ServiceProvider.GetService<Folder<T>>();
                     newFolder.Title = string.Format(CustomNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, DisplayUserSettingsHelper));
                     newFolder.FolderID = folderIdToMy;
 
@@ -2138,14 +2138,12 @@ namespace ASC.Web.Files.Services.WCFService
                 var newFile = file;
                 if (file.CreateBy != userInfo.ID)
                 {
-                    newFile = new File<T>();
-                    var fileHelper = ServiceProvider.GetService<FileHelper<T>>();
-                    fileHelper.FileEntry = file;
+                    newFile = ServiceProvider.GetService<File<T>>();
                     newFile.ID = file.ID;
                     newFile.Version = file.Version + 1;
                     newFile.VersionGroup = file.VersionGroup + 1;
                     newFile.Title = file.Title;
-                    newFile._status = fileHelper.FileStatus;
+                    newFile.FileStatus = file.FileStatus;
                     newFile.FolderID = file.FolderID;
                     newFile.CreateBy = userInfo.ID;
                     newFile.CreateOn = file.CreateOn;

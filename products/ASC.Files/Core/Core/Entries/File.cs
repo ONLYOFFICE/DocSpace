@@ -59,8 +59,7 @@ namespace ASC.Files.Core
     [DebuggerDisplay("{Title} ({ID} v{Version})")]
     public class File<T> : FileEntry<T>
     {
-        public FileStatus _status;
-
+        private FileStatus _status;
 
         public File()
         {
@@ -69,17 +68,21 @@ namespace ASC.Files.Core
             FileEntryType = FileEntryType.File;
         }
 
+        public File(FileHelper fileHelper): this()
+        {
+            FileHelper = fileHelper;
+        }
+
         public int Version { get; set; }
 
         public int VersionGroup { get; set; }
 
         public string Comment { get; set; }
 
-        [JsonIgnore]
         public string PureTitle
         {
-            get { return Title; }
-            set { Title = value; }
+            get { return base.Title; }
+            set { base.Title = value; }
         }
 
         public long ContentLength { get; set; }
@@ -116,6 +119,19 @@ namespace ASC.Files.Core
             }
         }
 
+        public FileStatus FileStatus
+        {
+            get => FileHelper.GetFileStatus(this, _status);
+            set => _status = value;
+        }
+
+        [JsonIgnore]
+        public override string Title { get => FileHelper.GetTitle(this); }
+
+
+        [JsonIgnore]
+        public string DownloadUrl { get => FileHelper.GetDownloadUrl(this); }
+
         public bool Locked { get; set; }
 
         public string LockedBy { get; set; }
@@ -123,37 +139,39 @@ namespace ASC.Files.Core
         [JsonIgnore]
         public override bool IsNew
         {
-            get { return (_status & FileStatus.IsNew) == FileStatus.IsNew; }
+            get { return (FileStatus & FileStatus.IsNew) == FileStatus.IsNew; }
             set
             {
                 if (value)
-                    _status |= FileStatus.IsNew;
+                    FileStatus |= FileStatus.IsNew;
                 else
-                    _status &= ~FileStatus.IsNew;
+                    FileStatus &= ~FileStatus.IsNew;
             }
         }
 
+        [JsonIgnore]
         public bool IsFavorite
         {
-            get { return (_status & FileStatus.IsFavorite) == FileStatus.IsFavorite; }
+            get { return (FileStatus & FileStatus.IsFavorite) == FileStatus.IsFavorite; }
             set
             {
                 if (value)
-                    _status |= FileStatus.IsFavorite;
+                    FileStatus |= FileStatus.IsFavorite;
                 else
-                    _status &= ~FileStatus.IsFavorite;
+                    FileStatus &= ~FileStatus.IsFavorite;
             }
         }
 
+        [JsonIgnore]
         public bool IsTemplate
         {
-            get { return (_status & FileStatus.IsTemplate) == FileStatus.IsTemplate; }
+            get { return (FileStatus & FileStatus.IsTemplate) == FileStatus.IsTemplate; }
             set
             {
                 if (value)
-                    _status |= FileStatus.IsTemplate;
+                    FileStatus |= FileStatus.IsTemplate;
                 else
-                    _status &= ~FileStatus.IsTemplate;
+                    FileStatus &= ~FileStatus.IsTemplate;
             }
         }
 

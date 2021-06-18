@@ -71,13 +71,16 @@ namespace ASC.Files.Core.Data
     {
         public static void Register(DIHelper services)
         {
-            services.TryAdd<FileHelper<int>>();
-            services.TryAdd<FileHelper<string>>();
-
+            services.TryAdd<File<int>>();
             services.TryAdd<IFileDao<int>, FileDao>();
+
+            services.TryAdd<File<string>>();
             services.TryAdd<IFileDao<string>, ProviderFileDao>();
 
+            services.TryAdd<Folder<int>>();
             services.TryAdd<IFolderDao<int>, FolderDao>();
+
+            services.TryAdd<Folder<string>>();
             services.TryAdd<IFolderDao<string>, ProviderFolderDao>();
 
             services.TryAdd<SecurityDao<int>>();

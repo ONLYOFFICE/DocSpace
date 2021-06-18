@@ -104,15 +104,6 @@ namespace ASC.Core.ChunkedUploader
             return null;
         }
 
-        public static CommonChunkedUploadSession Deserialize(Stream stream)
-        {
-            var sr = new StreamReader(stream);
-            string str = sr.ReadToEnd();
-            var CommonChunkedUploadSession =  JsonSerializer.Deserialize<CommonChunkedUploadSession>(str);
-            CommonChunkedUploadSession.TransformItems();
-            return CommonChunkedUploadSession;
-        }
-
         public void TransformItems()
         {
             var newItems = new Dictionary<string, object>();

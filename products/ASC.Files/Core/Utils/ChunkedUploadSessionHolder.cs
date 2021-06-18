@@ -47,17 +47,20 @@ namespace ASC.Web.Files.Utils
         private GlobalStore GlobalStore { get; }
         private SetupInfo SetupInfo { get; }
         private TempPath TempPath { get; }
+        private FileHelper FileHelper { get; }
 
         public ChunkedUploadSessionHolder(
             IOptionsMonitor<ILog> options,
             GlobalStore globalStore,
             SetupInfo setupInfo,
-            TempPath tempPath)
+            TempPath tempPath,
+            FileHelper fileHelper)
         {
             Options = options;
             GlobalStore = globalStore;
             SetupInfo = setupInfo;
             TempPath = tempPath;
+            FileHelper = fileHelper;
 
             // clear old sessions
             try
@@ -83,14 +86,8 @@ namespace ASC.Web.Files.Utils
         public ChunkedUploadSession<T> GetSession<T>(string sessionId)
         {
             using var stream = CommonSessionHolder(false).GetStream(sessionId);
-            var chunkedUploadSession =  ChunkedUploadSession<T>.Deserialize(stream);
+            var chunkedUploadSession =  ChunkedUploadSession<T>.Deserialize(stream, FileHelper);
             return chunkedUploadSession;
-        }
-
-        public CommonChunkedUploadSession GetSession(string sessionId)
-        {
-            using var stream = CommonSessionHolder(false).GetStream(sessionId);
-            return CommonChunkedUploadSession.Deserialize(stream);
         }
 
 

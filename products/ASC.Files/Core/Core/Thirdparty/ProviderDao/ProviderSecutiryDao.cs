@@ -35,6 +35,8 @@ using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     [Scope]
@@ -153,7 +155,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 foreach (var pureShareRecord in pureShareRecords)
                 {
                     if (pureShareRecord == null) continue;
-                    var f = new Folder<string>();
+                    var f = ServiceProvider.GetService<Folder<string>>();
                     f.ID = pureShareRecord.EntryId.ToString();
 
                     pureShareRecord.Level = parentFolders.IndexOf(f);

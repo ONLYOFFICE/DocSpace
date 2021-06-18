@@ -62,6 +62,7 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -206,7 +207,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             var jsonFile = JObject.Parse(boxFile);
 
-            var file = new File<string>();
+            var file = ServiceProvider.GetService<File<string>>();
             file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
             file.Title = Global.ReplaceInvalidCharsAndTruncate(jsonFile.Value<string>("name"));
             file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("created_at"));

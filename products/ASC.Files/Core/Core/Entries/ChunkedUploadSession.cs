@@ -74,11 +74,10 @@ namespace ASC.Files.Core
             return stream;
         }
 
-        public static ChunkedUploadSession<T> Deserialize(Stream stream)
+        public static ChunkedUploadSession<T> Deserialize(Stream stream, FileHelper fileHelper)
         {
-            var sr = new StreamReader(stream);
-            string str = sr.ReadToEnd();
-            var chunkedUploadSession = JsonSerializer.Deserialize<ChunkedUploadSession<T>>(str);
+            var chunkedUploadSession = JsonSerializer.DeserializeAsync<ChunkedUploadSession<T>>(stream).Result;
+            chunkedUploadSession.File.FileHelper = fileHelper;
             chunkedUploadSession.TransformItems();
             return chunkedUploadSession;
 

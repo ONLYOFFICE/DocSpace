@@ -777,14 +777,7 @@ namespace ASC.Web.Files.Utils
                 ,
                 SortedByType.Author => (x, y) =>
                 {
-                    var fileHelper = ServiceProvider.GetService<FileHelper<T>>();
-                    fileHelper.FileEntry = x;
-                    var xCreateByString = fileHelper.CreateByString;
-
-                    fileHelper.FileEntry = y;
-                    var yCreateByString = fileHelper.CreateByString;
-
-                    var cmp = c * string.Compare(xCreateByString, yCreateByString);
+                    var cmp = c * string.Compare(x.CreateByString, y.CreateByString);
                     return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
                 }
                 ,
@@ -838,7 +831,7 @@ namespace ASC.Web.Files.Utils
         public Folder<string> GetFakeThirdpartyFolder<T>(IProviderInfo providerInfo, string parentFolderId = null)
         {
             //Fake folder. Don't send request to third party
-            var folder = new Folder<string>();
+            var folder = ServiceProvider.GetService<Folder<string>>();
 
             folder.FolderID = parentFolderId;
 
@@ -1112,15 +1105,13 @@ namespace ASC.Web.Files.Utils
             try
             {
                 var currFile = fileDao.GetFile(fileId);
-                var newFile = new File<T>();
-                var fileHelper = ServiceProvider.GetService<FileHelper<T>>();
-                fileHelper.FileEntry = currFile;
+                var newFile = ServiceProvider.GetService<File<T>>();
 
                 newFile.ID = fromFile.ID;
                 newFile.Version = currFile.Version + 1;
                 newFile.VersionGroup = currFile.VersionGroup;
                 newFile.Title = FileUtility.ReplaceFileExtension(currFile.Title, FileUtility.GetFileExtension(fromFile.Title));
-                newFile._status = fileHelper.FileStatus;
+                newFile.FileStatus = currFile.FileStatus;
                 newFile.FolderID = currFile.FolderID;
                 newFile.CreateBy = currFile.CreateBy;
                 newFile.CreateOn = currFile.CreateOn;
