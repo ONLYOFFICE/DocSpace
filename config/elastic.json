@@ -3,7 +3,8 @@
 		"elastic": { 
             "Scheme": "http",
             "Host": "onlyoffice-elasticsearch",
-            "Port": "9200"
+            "Port": "9200",
+            "Threads": "1"
         }
 	}
 }
