@@ -26,13 +26,14 @@ namespace ASC.Web.Files.Core.Compress
     /// <summary>
     /// Archives the data stream into the format .zip
     /// </summary>
+    [Scope]
     public class CompressToZip : ICompress
     {
         private ZipOutputStream zipStream;
         private ZipEntry zipEntry;
         private TempStream TempStream { get; }
 
-        internal CompressToZip(TempStream tempStream)
+        public CompressToZip(TempStream tempStream)
         {
             TempStream = tempStream;
         }

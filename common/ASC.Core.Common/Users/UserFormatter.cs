@@ -44,6 +44,7 @@ namespace ASC.Core.Users
 
         public UserFormatter(IConfiguration configuration)
         {
+            format = DisplayUserNameFormat.Default;
             Configuration = configuration;
             UserNameRegex = new Regex(Configuration["core:username:regex"] ?? "");
         }
@@ -102,11 +103,6 @@ namespace ASC.Core.Users
             { "ru", new Dictionary<DisplayUserNameFormat, string>{ { DisplayUserNameFormat.Default, "{1} {0}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1} {0}" } } },
             { "default", new Dictionary<DisplayUserNameFormat, string>{ {DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } } },
         };
-
-        private string GetUserDisplayFormat()
-        {
-            return GetUserDisplayFormat(DisplayUserNameFormat.Default);
-        }
 
 
         private string GetUserDisplayFormat(DisplayUserNameFormat format)

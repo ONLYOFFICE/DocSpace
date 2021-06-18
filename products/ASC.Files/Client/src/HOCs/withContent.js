@@ -333,7 +333,6 @@ export default function withContent(WrappedContent) {
       const { culture, isDesktopClient } = auth.settingsStore;
 
       return {
-        editCompleteAction,
         setIsLoading,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
