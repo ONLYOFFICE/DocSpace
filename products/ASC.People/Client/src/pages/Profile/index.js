@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import toastr from "studio/toastr";
-import Loaders from "@appserver/common/components/Loaders";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -23,8 +22,15 @@ class Profile extends React.Component {
       location,
       t,
       setDocumentTitle,
+      setFirstLoad,
+      setIsLoading,
+      setIsEditTargetUser,
+      setLoadedProfile,
     } = this.props;
     let { userId } = match.params;
+
+    setFirstLoad(false);
+    setIsEditTargetUser(false);
 
     if (!userId) userId = "@self";
 
@@ -40,8 +46,13 @@ class Profile extends React.Component {
     if (linkParams.email_change && linkParams.email_change === "success") {
       toastr.success(t("ChangeEmailSuccess"));
     }
-    if (!profile) {
-      fetchProfile(userId);
+    if (!profile || profile.userName !== userId) {
+      setIsLoading(true);
+      setLoadedProfile(false);
+      fetchProfile(userId).finally(() => {
+        setIsLoading(false);
+        setLoadedProfile(true);
+      });
     }
 
     if (!profile && this.documentElement) {
@@ -52,12 +63,13 @@ class Profile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile } = this.props;
+    const { match, fetchProfile, profile, setIsLoading } = this.props;
     const { userId } = match.params;
     const prevUserId = prevProps.match.params.userId;
 
     if (userId !== undefined && userId !== prevUserId) {
-      fetchProfile(userId);
+      setIsLoading(true);
+      fetchProfile(userId).finally(() => setIsLoading(false));
     }
 
     if (profile && this.documentElement) {
@@ -68,7 +80,10 @@ class Profile extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.resetProfile();
+    const { isEditTargetUser } = this.props;
+    if (!isEditTargetUser) {
+      this.props.resetProfile();
+    }
   }
 
   render() {
@@ -91,11 +106,11 @@ class Profile extends React.Component {
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          <SectionHeaderContent profile={profile} />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
+          <SectionBodyContent profile={profile} />
         </PageLayout.SectionBody>
       </PageLayout>
     );
@@ -112,12 +127,29 @@ Profile.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    setDocumentTitle: auth.setDocumentTitle,
-    isAdmin: auth.isAdmin,
-    language: auth.language,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-  }))(observer(withTranslation(["Profile", "Common"])(Profile)))
+  inject(({ auth, peopleStore }) => {
+    const { setDocumentTitle, isAdmin, language } = auth;
+    const { targetUserStore, loadingStore } = peopleStore;
+    const {
+      resetTargetUser: resetProfile,
+      getTargetUser: fetchProfile,
+      targetUser: profile,
+      isEditTargetUser,
+      setIsEditTargetUser,
+    } = targetUserStore;
+    const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
+    return {
+      setDocumentTitle,
+      isAdmin,
+      language,
+      resetProfile,
+      fetchProfile,
+      profile,
+      setFirstLoad,
+      setIsLoading,
+      isEditTargetUser,
+      setIsEditTargetUser,
+      setLoadedProfile,
+    };
+  })(observer(withTranslation(["Profile", "Common"])(Profile)))
 );

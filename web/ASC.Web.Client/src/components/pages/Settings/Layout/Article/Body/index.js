@@ -19,6 +19,8 @@ import {
 import { ReactSVG } from "react-svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { clickBackdrop } from "@appserver/common/utils";
+import { tablet } from "@appserver/components/utils/device";
+
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
     font-size: inherit;
@@ -34,6 +36,15 @@ const StyledTreeMenu = styled(TreeMenu)`
 
   .rc-tree-node-content-wrapper-open {
     pointer-events: none;
+  }
+
+  span.rc-tree-node-content-wrapper:not(.rc-tree-node-content-wrapper-open) {
+    width: unset;
+    padding: 0 4px 0 4px !important;
+    max-width: 98%;
+    @media ${tablet} {
+      margin-left: 24px;
+    }
   }
 
   .tree_icon {
@@ -80,6 +91,10 @@ const getTreeItems = (data, path, t) => {
         return t("TeamTemplate");
       case "ManagementCategorySecurity":
         return t("ManagementCategorySecurity");
+      case "PortalAccess":
+        return t("PortalAccess");
+      case "TwoFactorAuth":
+        return t("TwoFactorAuth");
       case "ManagementCategoryIntegration":
         return t("ManagementCategoryIntegration");
       case "ThirdPartyAuthorization":

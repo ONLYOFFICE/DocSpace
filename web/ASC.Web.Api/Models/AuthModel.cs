@@ -8,5 +8,7 @@
         public string Provider { get; set; }
         public string AccessToken { get; set; }
         public string SerializedProfile { get; set; }
+        public string Code { get; set; }
+        public string MobilePhone { get; set; }
     }
 }

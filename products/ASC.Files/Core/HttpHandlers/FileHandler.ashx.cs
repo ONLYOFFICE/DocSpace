@@ -388,7 +388,7 @@ namespace ASC.Web.Files
                                     fileStream = fileDao.GetFileStream(file);
 
                                     Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.ID);
-                                    var stream = FFmpegService.Convert(fileStream, ext);
+                                    var stream = await FFmpegService.Convert(fileStream, ext);
                                     store.Save(string.Empty, mp4Path, stream, mp4Name);
                                 }
 

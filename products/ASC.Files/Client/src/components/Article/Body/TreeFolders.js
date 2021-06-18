@@ -66,6 +66,7 @@ class TreeFolders extends React.Component {
   }
 
   onBadgeClick = (e) => {
+    e.stopPropagation();
     const id = e.currentTarget.dataset.id;
     this.props.onBadgeClick && this.props.onBadgeClick(id);
   };

@@ -36,7 +36,7 @@ pipeline {
 			}
 		}
 		stage('Test') {
-			when { expression { return env.CHANGE_ID; } }
+			when { expression { return env.CHANGE_ID != null } }
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
