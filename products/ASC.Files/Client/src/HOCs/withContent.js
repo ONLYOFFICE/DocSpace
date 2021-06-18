@@ -19,17 +19,14 @@ export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
       super(props);
-      let titleWithoutExt = getTitleWithoutExst(props.item);
 
-      if (props.fileActionId === -1) {
-        titleWithoutExt = this.getDefaultName(props.fileActionExt);
+      const { item, fileActionId, fileActionExt } = props;
+      let titleWithoutExt = getTitleWithoutExst(item);
+      if (fileActionId === -1 && item.id === fileActionId) {
+        titleWithoutExt = this.getDefaultName(fileActionExt);
       }
 
-      this.state = {
-        itemTitle: titleWithoutExt,
-
-        //loading: false
-      };
+      this.state = { itemTitle: titleWithoutExt };
     }
 
     componentDidUpdate(prevProps) {
@@ -38,11 +35,6 @@ export default function withContent(WrappedContent) {
         const itemTitle = this.getDefaultName(fileActionExt);
         this.setState({ itemTitle });
       }
-      // if (fileAction) {
-      //   if (fileActionId !== prevProps.fileActionId) {
-      //     this.setState({ editingId: fileActionId });
-      //   }
-      // }
     }
 
     getDefaultName = (format) => {
@@ -338,7 +330,6 @@ export default function withContent(WrappedContent) {
       const { culture, isDesktopClient } = auth.settingsStore;
 
       return {
-        editCompleteAction,
         setIsLoading,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,

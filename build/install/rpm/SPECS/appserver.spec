@@ -47,7 +47,7 @@ App Server is a platform for building your own online office by connecting ONLYO
 
 %prep
 
-rm -rf %{_rpmdir}/%{_arch}/%{product}-*
+rm -rf %{_rpmdir}/%{_arch}/%{name}-*
 %setup -n %{sourcename}
 
 %include build.spec

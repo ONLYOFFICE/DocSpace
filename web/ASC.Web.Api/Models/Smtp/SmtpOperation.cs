@@ -104,8 +104,8 @@ namespace ASC.Api.Settings.Smtp
             Configuration = configuration;
 
             //todo
-            //messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
-            //messageBody = WebstudioNotifyPatternResource.pattern_smtp_test;
+            messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
+            messageBody = WebstudioNotifyPatternResource.pattern_smtp_test;
 
             Source = "";
             Progress = 0;

@@ -93,14 +93,23 @@ export function updateTempContent(isAuth = false) {
   }
 }
 
+let timer = null;
+
 export function hideLoader() {
   if (isMobile) return;
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
   TopLoaderService.end();
 }
 
 export function showLoader() {
   if (isMobile) return;
-  TopLoaderService.start();
+
+  hideLoader();
+
+  timer = setTimeout(() => TopLoaderService.start(), 500);
 }
 
 export { withLayoutSize } from "./withLayoutSize";

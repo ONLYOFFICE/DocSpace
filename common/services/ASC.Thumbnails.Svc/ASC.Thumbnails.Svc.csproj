@@ -4,6 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -12,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ASC.Data.Encryption\ASC.Data.Encryption.csproj" />
     <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
   </ItemGroup>
 

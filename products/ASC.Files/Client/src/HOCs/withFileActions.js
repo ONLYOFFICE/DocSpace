@@ -7,6 +7,7 @@ import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 
 import { EncryptedFileIcon } from "../components/Icons";
+import { createTreeFolders } from "../helpers/files-helpers";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
@@ -70,32 +71,25 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
-      const {
-        t,
-        selectedFolderId,
-        dragging,
-        setDragging,
-        startUpload,
-      } = this.props;
+      const { t, dragging, setDragging, startUpload } = this.props;
 
-      const folderId = uploadToFolder ? uploadToFolder : selectedFolderId;
       dragging && setDragging(false);
-      startUpload(files, folderId, t);
+      startUpload(files, uploadToFolder, t);
     };
 
     onDrop = (items) => {
-      const { item, selectedFolderId } = this.props;
-      const { fileExst, id } = item;
+      const { fileExst, id } = this.props.item;
 
       if (!fileExst) {
         this.onDropZoneUpload(items, id);
       } else {
-        this.onDropZoneUpload(items, selectedFolderId);
+        this.onDropZoneUpload(items);
       }
     };
 
     onMouseDown = (e) => {
       const { draggable, setTooltipPosition, setStartDrag } = this.props;
+      const notSelectable = e.target.classList.contains("not-selectable");
       if (!draggable) {
         return;
       }
@@ -103,7 +97,9 @@ export default function withFileActions(WrappedFileItem) {
       if (
         window.innerWidth < 1025 ||
         e.target.tagName === "rect" ||
-        e.target.tagName === "path"
+        e.target.tagName === "path" ||
+        e.target.tagName === "svg" ||
+        notSelectable
       ) {
         return;
       }
@@ -117,6 +113,8 @@ export default function withFileActions(WrappedFileItem) {
         return;
       }
 
+      //console.log("e.target.classList", e.target.classList);
+      //console.log("onMouseDown setStartDrag", e);
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
     };
@@ -133,13 +131,17 @@ export default function withFileActions(WrappedFileItem) {
         isImage,
         isSound,
         isVideo,
+        canConvert,
         canWebEdit,
         item,
         isTrashFolder,
         openDocEditor,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
         setMediaViewerData,
+        setConvertItem,
+        setConvertDialogVisible,
       } = this.props;
       const {
         id,
@@ -160,13 +162,25 @@ export default function withFileActions(WrappedFileItem) {
         }
 
         fetchFiles(id, filter)
-          .then(() => this.setNewBadgeCount())
+          .then((data) => {
+            const pathParts = data.selectedFolder.pathParts;
+            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            setExpandedKeys(newExpandedKeys);
+
+            this.setNewBadgeCount();
+          })
           .catch((err) => {
             toastr.error(err);
             setIsLoading(false);
           })
           .finally(() => setIsLoading(false));
       } else {
+        if (canConvert) {
+          setConvertItem(item);
+          setConvertDialogVisible(true);
+          return;
+        }
+
         if (fileStatus === 2) this.onMarkAsRead(id);
 
         if (canWebEdit) {
@@ -264,14 +278,19 @@ export default function withFileActions(WrappedFileItem) {
       { item, t, history }
     ) => {
       const { selectRowAction, onSelectItem, markAsRead } = filesActionsStore;
-      const { setSharingPanelVisible } = dialogsStore;
+      const {
+        setSharingPanelVisible,
+        setConvertDialogVisible,
+        setConvertItem,
+      } = dialogsStore;
       const {
         isPrivacyFolder,
         isRecycleBinFolder,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
       } = treeFoldersStore;
-      const { id: selectedFolderId, isRootFolder } = selectedFolderStore;
+      const { isRootFolder } = selectedFolderStore;
       const {
         dragging,
         setDragging,
@@ -313,6 +332,7 @@ export default function withFileActions(WrappedFileItem) {
       const isSound = iconFormatsStore.isSound(item.fileExst);
       const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+      const canConvert = docserviceStore.canConvert(item.fileExst);
 
       return {
         t,
@@ -321,7 +341,6 @@ export default function withFileActions(WrappedFileItem) {
         onSelectItem,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
-        selectedFolderId,
         dragging,
         setDragging,
         startUpload,
@@ -344,13 +363,17 @@ export default function withFileActions(WrappedFileItem) {
         isSound,
         isVideo,
         canWebEdit,
+        canConvert,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
         expandedKeys,
         addExpandedKeys,
+        setExpandedKeys,
         setMediaViewerData,
         getFolderInfo,
         markAsRead,
+        setConvertItem,
+        setConvertDialogVisible,
       };
     }
   )(observer(WithFileActions));

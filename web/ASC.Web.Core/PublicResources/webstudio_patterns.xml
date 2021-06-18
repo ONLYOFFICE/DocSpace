@@ -120,7 +120,7 @@ $activity.Key
   
   <!-- restore_completed_v115 -->
   <pattern id="restore_completed_v115" sender="email.sender">
-    <subject resource="|subject_restore_completed_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <subject resource="|subject_restore_completed|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_restore_completed_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
@@ -267,7 +267,7 @@ $activity.Key
 
   <!-- migration_success -->
   <pattern id="migration_success_v115">
-     <subject resource="|subject_migration_success_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+     <subject resource="|subject_migration_success|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
      <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_migration_success_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
@@ -672,7 +672,7 @@ $activity.Key
 
   <!-- personal change email-->
   <pattern id="personal_change_email_v115">
-    <subject resource="|subject_personal_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <subject resource="|subject_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
@@ -706,7 +706,7 @@ $activity.Key
 
   <!-- personal custom mode change email-->
   <pattern id="personal_custom_mode_change_email_v115">
-    <subject resource="|subject_personal_custom_mode_change_email_v115|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
+    <subject resource="|subject_change_email_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_change_email_v115|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
   </pattern>
 

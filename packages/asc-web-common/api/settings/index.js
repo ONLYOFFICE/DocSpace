@@ -249,3 +249,69 @@ export function updateConsumerProps(newProps) {
 
   return request(options);
 }
+
+export function getTfaSettings() {
+  return request({
+    method: "get",
+    url: `/settings/tfaapp`,
+  });
+}
+
+export function setTfaSettings(type) {
+  return request({
+    method: "put",
+    url: "/settings/tfaapp",
+    data: { type: type },
+  });
+}
+
+export function getTfaBackupCodes() {
+  return request({
+    method: "get",
+    url: "/settings/tfaappcodes",
+  });
+}
+
+export function getTfaNewBackupCodes() {
+  return request({
+    method: "put",
+    url: "/settings/tfaappnewcodes",
+  });
+}
+
+export function getTfaConfirmLink() {
+  return request({
+    method: "get",
+    url: "/settings/tfaapp/confirm",
+  });
+}
+
+export function unlinkTfaApp() {
+  return request({
+    method: "put",
+    url: "/settings/tfaappnewapp",
+  });
+}
+
+export function getTfaSecretKeyAndQR(confirmKey = null) {
+  const options = {
+    method: "get",
+    url: "/settings/tfaapp/setup",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function validateTfaCode(code) {
+  const data = {
+    code,
+  };
+
+  return request({
+    method: "post",
+    url: "/settings/tfaapp/validate",
+    data,
+  });
+}

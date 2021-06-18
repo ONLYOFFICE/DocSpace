@@ -379,6 +379,18 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("{folderId}/subfolders")]
+        public IEnumerable<FileEntryWrapper> GetFolders(string folderId)
+        {
+            return FilesControllerHelperString.GetFolders(folderId);
+        }
+
+        [Read("{folderId:int}/subfolders")]
+        public IEnumerable<FileEntryWrapper> GetFolders(int folderId)
+        {
+            return FilesControllerHelperInt.GetFolders(folderId);
+        }
+
         [Read("{folderId}/news")]
         public List<FileEntryWrapper> GetNewItems(string folderId)
         {
@@ -1976,19 +1988,9 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <returns></returns>
         [Read(@"settings")]
-        public object GetFilesSettings()
+        public FilesSettingsHelper GetFilesSettings()
         {
-            return new
-            {
-                FilesSettingsHelper.StoreOriginalFiles,
-                FilesSettingsHelper.ConfirmDelete,
-                FilesSettingsHelper.UpdateIfExist,
-                FilesSettingsHelper.Forcesave,
-                FilesSettingsHelper.StoreForcesave,
-                FilesSettingsHelper.EnableThirdParty,
-                FilesSettingsHelper.RecentSection,
-                FilesSettingsHelper.FavoritesSection
-            };
+            return FilesSettingsHelper;
         }
 
         /// <summary>

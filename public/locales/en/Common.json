@@ -90,5 +90,6 @@
   "Version": "Version",
   "View": "View",
   "ViewWeb": "View web version",
-  "Warning": "Warning"
+  "Warning": "Warning",
+  "ResetApplication": "Reset application"
 }

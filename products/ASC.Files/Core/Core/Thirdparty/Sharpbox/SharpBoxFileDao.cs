@@ -280,7 +280,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return false;
         }
 
-        public Stream GetFileStream(File<string> file)
+        public override Stream GetFileStream(File<string> file)
         {
             return GetFileStream(file, 0);
         }

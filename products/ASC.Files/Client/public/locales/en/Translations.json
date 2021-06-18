@@ -19,6 +19,5 @@
   "Presentations": "Presentations",
   "Restore": "Restore",
   "Spreadsheets": "Spreadsheets",
-  "ThirdPartyInfo": "Change the third-party info",
-  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
+  "ThirdPartyInfo": "Change the third-party info"
 }
