@@ -170,11 +170,14 @@ class PageLayout extends React.Component {
 
   dragCondition = (e) => {
     const path = e.inputEvent.composedPath();
+    const isBackdrop = path.some(
+      (x) => x.classList && x.classList.contains("backdrop-active")
+    );
     const notSelectablePath = path.some(
       (x) => x.classList && x.classList.contains("not-selectable")
     );
 
-    if (notSelectablePath) {
+    if (notSelectablePath || isBackdrop) {
       return false;
     } else return true;
   };
