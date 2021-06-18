@@ -139,39 +139,39 @@ namespace ASC.Files.Core
         [JsonIgnore]
         public override bool IsNew
         {
-            get { return (FileStatus & FileStatus.IsNew) == FileStatus.IsNew; }
+            get { return (_status & FileStatus.IsNew) == FileStatus.IsNew; }
             set
             {
                 if (value)
-                    FileStatus |= FileStatus.IsNew;
+                    _status |= FileStatus.IsNew;
                 else
-                    FileStatus &= ~FileStatus.IsNew;
+                    _status &= ~FileStatus.IsNew;
             }
         }
 
         [JsonIgnore]
         public bool IsFavorite
         {
-            get { return (FileStatus & FileStatus.IsFavorite) == FileStatus.IsFavorite; }
+            get { return (_status & FileStatus.IsFavorite) == FileStatus.IsFavorite; }
             set
             {
                 if (value)
-                    FileStatus |= FileStatus.IsFavorite;
+                    _status |= FileStatus.IsFavorite;
                 else
-                    FileStatus &= ~FileStatus.IsFavorite;
+                    _status &= ~FileStatus.IsFavorite;
             }
         }
 
         [JsonIgnore]
         public bool IsTemplate
         {
-            get { return (FileStatus & FileStatus.IsTemplate) == FileStatus.IsTemplate; }
+            get { return (_status & FileStatus.IsTemplate) == FileStatus.IsTemplate; }
             set
             {
                 if (value)
-                    FileStatus |= FileStatus.IsTemplate;
+                    _status |= FileStatus.IsTemplate;
                 else
-                    FileStatus &= ~FileStatus.IsTemplate;
+                    _status &= ~FileStatus.IsTemplate;
             }
         }
 
