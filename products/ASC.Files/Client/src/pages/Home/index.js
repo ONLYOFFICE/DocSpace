@@ -22,7 +22,7 @@ import {
   SectionPagingContent,
 } from "./Section";
 
-import { ConvertDialog } from "../../components/dialogs";
+import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
@@ -30,7 +30,15 @@ import config from "../../../package.json";
 
 class PureHome extends React.Component {
   componentDidMount() {
-    const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
+    const {
+      fetchFiles,
+      homepage,
+      setIsLoading,
+      setFirstLoad,
+      isVisitor,
+      expandedKeys,
+      setExpandedKeys,
+    } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
@@ -41,6 +49,7 @@ class PureHome extends React.Component {
 
       if (!filterObj) {
         filterObj = FilesFilter.getDefault();
+        if (isVisitor) filterObj.folder = "@common";
         const folderId = filterObj.folder;
         setIsLoading(true);
         fetchFiles(folderId, filterObj).finally(() => {
@@ -110,7 +119,11 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           //console.log("filter", filter);
-          return fetchFiles(folderId, filter);
+          return fetchFiles(folderId, filter).then((data) => {
+            const pathParts = data.selectedFolder.pathParts;
+            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            setExpandedKeys(newExpandedKeys);
+          });
         }
 
         return Promise.resolve();
@@ -122,17 +135,10 @@ class PureHome extends React.Component {
   }
 
   onDrop = (files, uploadToFolder) => {
-    const {
-      t,
-      currentFolderId,
-      startUpload,
-      setDragging,
-      dragging,
-    } = this.props;
-    const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
+    const { t, startUpload, setDragging, dragging } = this.props;
 
     dragging && setDragging(false);
-    startUpload(files, folderId, t);
+    startUpload(files, uploadToFolder, t);
   };
 
   showOperationToast = (type, qty, title) => {
@@ -170,11 +176,18 @@ class PureHome extends React.Component {
   };
 
   showUploadPanel = () => {
-    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+    const {
+      uploaded,
+      converted,
+      uploadPanelVisible,
+      setUploadPanelVisible,
+      clearPrimaryProgressData,
+      primaryProgressDataVisible,
+    } = this.props;
+    setUploadPanelVisible(!uploadPanelVisible);
 
-    this.props.primaryProgressDataVisible &&
-      this.props.uploaded &&
-      this.props.clearPrimaryProgressData();
+    if (primaryProgressDataVisible && uploaded && converted)
+      clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {
@@ -210,7 +223,6 @@ class PureHome extends React.Component {
     //console.log("Home render");
     const {
       viewAs,
-      convertDialogVisible,
       fileActionId,
       firstLoad,
       isHeaderVisible,
@@ -227,17 +239,15 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreAlert,
 
       isLoading,
+      dragging,
     } = this.props;
 
     return (
       <>
-        {convertDialogVisible && (
-          <ConvertDialog visible={convertDialogVisible} />
-        )}
-
         <MediaViewer />
         <DragTooltip />
         <PageLayout
+          dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
@@ -298,14 +308,7 @@ class PureHome extends React.Component {
 const Home = withTranslation("Home")(PureHome);
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    uploadDataStore,
-    dialogsStore,
-    selectedFolderStore,
-    treeFoldersStore,
-  }) => {
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
@@ -314,7 +317,6 @@ export default inject(
       firstLoad,
       setFirstLoad,
       fetchFiles,
-      filter,
       fileActionStore,
       selection,
       setSelections,
@@ -326,7 +328,11 @@ export default inject(
     } = filesStore;
 
     const { id } = fileActionStore;
-    const { isRecycleBinFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      expandedKeys,
+      setExpandedKeys,
+    } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -344,9 +350,12 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
     } = secondaryProgressDataStore;
 
-    const { convertDialogVisible } = dialogsStore;
-
-    const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
+    const {
+      setUploadPanelVisible,
+      startUpload,
+      uploaded,
+      converted,
+    } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -358,12 +367,13 @@ export default inject(
       firstLoad,
       dragging,
       fileActionId: id,
-      currentFolderId: selectedFolderStore.id,
       isLoading,
-      filter,
       viewAs,
       uploaded,
+      converted,
       isRecycleBinFolder,
+      isVisitor: auth.userStore.user.isVisitor,
+      expandedKeys,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -376,11 +386,11 @@ export default inject(
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
 
-      convertDialogVisible,
       selectionLength,
       isProgressFinished,
       selectionTitle,
 
+      setExpandedKeys,
       setFirstLoad,
       setDragging,
       setIsLoading,

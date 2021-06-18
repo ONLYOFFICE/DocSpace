@@ -1,10 +1,8 @@
 {
+  "ConversionMessage": "All the documents you upload will be converted into Office Open XML format (docx, xlsx or pptx) for faster editing.",
+  "ConversionFileMessage": "The document file you open will be converted to the Office Open XML format for faster viewing and editing.",
   "ConversionTitle": "Document uploading",
-  "ConversionMessage": "All the documents you upload will be converted into the corresponding Office Open XML format (docx, xlsx or pptx) for faster editing.",
-  "SaveOriginalFormatMessage": "Save the file copy in the original format as well",
+  "ConvertAndOpenTitle": "Convert and open document",
   "HideMessage": "Do not show this message again",
-  "ContinueButton": "Continue",
-  "CloseButton": "Close",
-  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
-  "ConvertingLabel": "Converting files: {{file}} of {{totalFiles}}"
+  "SaveOriginalFormatMessage": "Save the file copy in the original format"
 }

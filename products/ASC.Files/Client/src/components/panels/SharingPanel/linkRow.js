@@ -44,7 +44,7 @@ class LinkRow extends React.Component {
       <StyledLinkRow withToggle={withToggle} isDisabled={isDisabled}>
         <Row
           className="link-row"
-          key={`${linkText}-key_${index}`}
+          key={`${linkText.replace(" ", "-")}-key_${index}`}
           element={
             withToggle ? (
               <AccessComboBox
@@ -75,7 +75,7 @@ class LinkRow extends React.Component {
               fontWeight={600}
               isDisabled={isDisabled}
             >
-              {t(linkText)}
+              {linkText}
             </LinkWithDropdown>
             {withToggle && (
               <div>

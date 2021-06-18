@@ -19,7 +19,7 @@ namespace ASC.Web.Core.PublicResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CustomModeResource {
@@ -102,19 +102,6 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///It has been a week since you created your cloud office, so we believe it&apos;s time to unveil some beneficial features you might have missed.
         ///
-        ///Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You&apos;ll be able to edit external files in ONLYOFFICE and save them to the storage you keep documents [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_personal_custom_mode_after_registration7 {
-            get {
-                return ResourceManager.GetString("pattern_personal_custom_mode_after_registration7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to $PersonalHeaderStart Connect your favorite cloud storage to ONLYOFFICE $PersonalHeaderEnd
-        ///
-        ///It has been a week since you created your cloud office, so we believe it&apos;s time to unveil some beneficial features you might have missed.
-        ///
         ///Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You&apos;ll be able to edit external files in ONLYOFFICE and save them to the storage you keep [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_custom_mode_after_registration8 {
@@ -124,22 +111,21 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have requested to change your email address used to enter the ${LetterLogoText} portal.
+        ///   Looks up a localized string similar to Want to change the email on your cloud office account?
         ///
-        ///Please follow the link below to change your email address:
+        ///Click the button below and log in* to your cloud.
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete your email change process within that period.
+        ///The link is valid for 7 days.
         ///
-        ///If you do not want to change your email or received this email by mistake, please ignore it.
+        ///*If you are not signed in to your cloud office in this browser, you’ll need to use your old email for confirmation.
         ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
+        ///Don’t want to change your email? Just ignore this message..
         /// </summary>
-        public static string pattern_personal_custom_mode_change_email {
+        public static string pattern_personal_custom_mode_change_email_v115 {
             get {
-                return ResourceManager.GetString("pattern_personal_custom_mode_change_email", resourceCulture);
+                return ResourceManager.GetString("pattern_personal_custom_mode_change_email_v115", resourceCulture);
             }
         }
         
@@ -230,7 +216,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do the same as a user|Link Dropbox, Box and other accounts in the &apos;Common Documents&apos; section|Set up access rights to the documents and folders in the &apos;Common Documents&apos; section.
+        ///   Looks up a localized string similar to Do the same as a user|Link Dropbox, Box and other accounts in the &apos;Common&apos; section|Set up access rights to the documents and folders in the &apos;Common&apos; section.
         /// </summary>
         public static string ProductAdminOpportunitiesCustomMode {
             get {
@@ -262,15 +248,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_personal_custom_mode_after_registration7 {
             get {
                 return ResourceManager.GetString("subject_personal_custom_mode_after_registration7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Personal. Email change request.
-        /// </summary>
-        public static string subject_personal_custom_mode_change_email {
-            get {
-                return ResourceManager.GetString("subject_personal_custom_mode_change_email", resourceCulture);
             }
         }
         

@@ -165,7 +165,14 @@ namespace ASC.Api.Documents
         public IEnumerable<FolderContentWrapper<int>> GetRootFolders(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
         {
             var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
+            var IsOutsider = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager);
             var result = new SortedSet<int>();
+
+            if (IsOutsider)
+            {
+                withoutTrash = true;
+                withoutAdditionalFolder = true;
+            }
 
             if (!IsVisitor)
             {
@@ -208,8 +215,7 @@ namespace ASC.Api.Documents
                 result.Add(GlobalFolderHelper.FolderTemplates);
             }
 
-            if (!IsVisitor
-               && !withoutTrash)
+            if (!withoutTrash)
             {
                 result.Add((int)GlobalFolderHelper.FolderTrash);
             }
@@ -373,6 +379,18 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders);
         }
 
+        [Read("{folderId}/subfolders")]
+        public IEnumerable<FileEntryWrapper> GetFolders(string folderId)
+        {
+            return FilesControllerHelperString.GetFolders(folderId);
+        }
+
+        [Read("{folderId:int}/subfolders")]
+        public IEnumerable<FileEntryWrapper> GetFolders(int folderId)
+        {
+            return FilesControllerHelperInt.GetFolders(folderId);
+        }
+
         [Read("{folderId}/news")]
         public List<FileEntryWrapper> GetNewItems(string folderId)
         {
@@ -473,13 +491,13 @@ namespace ASC.Api.Documents
         /// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <returns>Uploaded file</returns>
-        [Create("{folderId}/upload", DisableFormat = true)]
+        [Create("{folderId}/upload")]
         public List<FileWrapper<string>> UploadFileFromBody(string folderId, [FromBody]UploadModel uploadModel)
         {
             return FilesControllerHelperString.UploadFile(folderId, uploadModel);
         }
 
-        [Create("{folderId}/upload", DisableFormat = true)]
+        [Create("{folderId}/upload")]
         [Consumes("application/x-www-form-urlencoded")]
         public List<FileWrapper<string>> UploadFileFromForm(string folderId, [FromForm]UploadModel uploadModel)
         {
@@ -540,7 +558,7 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <category>Uploads</category>
         /// <returns></returns>
-        [Create("{folderId}/insert", order: int.MaxValue, DisableFormat = true)]
+        [Create("{folderId}/insert", order: int.MaxValue)]
         public FileWrapper<string> InsertFile(string folderId, [FromForm] InsertFileModel model)
         {
             return FilesControllerHelperString.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
@@ -566,7 +584,7 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
 
-        [Update("{fileId}/update", DisableFormat = true)]
+        [Update("{fileId}/update")]
         public FileWrapper<string> UpdateFileStreamFromForm(string fileId, [FromForm]FileStreamModel model)
         {
             return FilesControllerHelperString.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
@@ -590,7 +608,7 @@ namespace ASC.Api.Documents
         /// <param name="forcesave"></param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Update("file/{fileId}/saveediting", DisableFormat = true)]
+        [Update("file/{fileId}/saveediting")]
         public FileWrapper<string> SaveEditingFromForm(string fileId, [FromForm]SaveEditingModel model)
         {
             using var stream = model.Stream.OpenReadStream();
@@ -612,13 +630,13 @@ namespace ASC.Api.Documents
         /// <param name="doc"></param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Create("file/{fileId}/startedit", DisableFormat = true)]
+        [Create("file/{fileId}/startedit")]
         public object StartEditFromBody(string fileId, [FromBody]StartEditModel model)
         {
             return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
-        [Create("file/{fileId}/startedit", DisableFormat = true)]
+        [Create("file/{fileId}/startedit")]
         [Consumes("application/x-www-form-urlencoded")]
         public object StartEditFromForm(string fileId, [FromForm]StartEditModel model)
         {
@@ -648,7 +666,7 @@ namespace ASC.Api.Documents
         /// <param name="isFinish"></param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Read("file/{fileId}/trackeditfile", DisableFormat = true)]
+        [Read("file/{fileId}/trackeditfile")]
         public KeyValuePair<bool, string> TrackEditFile(string fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
         {
             return FilesControllerHelperString.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
@@ -669,14 +687,14 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [AllowAnonymous]
-        [Read("file/{fileId}/openedit", DisableFormat = true)]
+        [Read("file/{fileId}/openedit", Check = false)]
         public Configuration<string> OpenEdit(string fileId, int version, string doc)
         {
             return FilesControllerHelperString.OpenEdit(fileId, version, doc);
         }
 
         [AllowAnonymous]
-        [Read("file/{fileId:int}/openedit")]
+        [Read("file/{fileId:int}/openedit", Check = false)]
         public Configuration<int> OpenEdit(int fileId, int version, string doc)
         {
             return FilesControllerHelperInt.OpenEdit(fileId, version, doc);
@@ -695,7 +713,7 @@ namespace ASC.Api.Documents
         /// <param name="encrypted" visible="false"></param>
         /// <remarks>
         /// <![CDATA[
-        /// Each chunk can have different length but its important what length is multiple of <b>512</b> and greater or equal than <b>5 mb</b>. Last chunk can have any size.
+        /// Each chunk can have different length but its important what length is multiple of <b>512</b> and greater or equal than <b>10 mb</b>. Last chunk can have any size.
         /// After initial request respond with status 200 OK you must obtain value of 'location' field from the response. Send all your chunks to that location.
         /// Each chunk must be sent in strict order in which chunks appears in file.
         /// After receiving each chunk if no errors occured server will respond with current information about upload session.
@@ -715,13 +733,13 @@ namespace ASC.Api.Documents
         /// </ul>
         /// ]]>
         /// </returns>
-        [Create("{folderId}/upload/create_session", DisableFormat = true)]
+        [Create("{folderId}/upload/create_session")]
         public object CreateUploadSessionFromBody(string folderId, [FromBody]SessionModel sessionModel)
         {
             return FilesControllerHelperString.CreateUploadSession(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted);
         }
 
-        [Create("{folderId}/upload/create_session", DisableFormat = true)]
+        [Create("{folderId}/upload/create_session")]
         [Consumes("application/x-www-form-urlencoded")]
         public object CreateUploadSessionFromForm(string folderId, [FromForm]SessionModel sessionModel)
         {
@@ -792,13 +810,13 @@ namespace ASC.Api.Documents
         /// <param name="title">File title</param>
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
-        [Create("{folderId}/text", DisableFormat = true)]
+        [Create("{folderId}/text")]
         public FileWrapper<string> CreateTextFileFromBody(string folderId, [FromBody]CreateTextOrHtmlFileModel model)
         {
             return CreateTextFile(folderId, model);
         }
 
-        [Create("{folderId}/text", DisableFormat = true)]
+        [Create("{folderId}/text")]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> CreateTextFileFromForm(string folderId, [FromForm]CreateTextOrHtmlFileModel model)
         {
@@ -837,13 +855,13 @@ namespace ASC.Api.Documents
         /// <param name="title">File title</param>
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
-        [Create("{folderId}/html", DisableFormat = true)]
+        [Create("{folderId}/html")]
         public FileWrapper<string> CreateHtmlFileFromBody(string folderId, [FromBody]CreateTextOrHtmlFileModel model)
         {
             return CreateHtmlFile(folderId, model);
         }
 
-        [Create("{folderId}/html", DisableFormat = true)]
+        [Create("{folderId}/html")]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> CreateHtmlFileFromForm(string folderId, [FromForm]CreateTextOrHtmlFileModel model)
         {
@@ -981,13 +999,13 @@ namespace ASC.Api.Documents
         /// <param name="title" remark="Allowed values: the file must have one of the following extensions: DOCX, XLSX, PPTX">File title</param>
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
-        [Create("{folderId}/file", DisableFormat = true)]
+        [Create("{folderId}/file")]
         public FileWrapper<string> CreateFileFromBody(string folderId, [FromBody]CreateFileModel<string> model)
         {
             return FilesControllerHelperString.CreateFile(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
         }
 
-        [Create("{folderId}/file", DisableFormat = true)]
+        [Create("{folderId}/file")]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> CreateFileFromForm(string folderId, [FromForm]CreateFileModel<string> model)
         {
@@ -1088,7 +1106,7 @@ namespace ASC.Api.Documents
         /// <param name="folderId"></param>
         /// <category>Folders</category>
         /// <returns>Parent folders</returns>
-        [Read("folder/{folderId}/path", DisableFormat = true)]
+        [Read("folder/{folderId}/path")]
         public IEnumerable<FileEntryWrapper> GetFolderPath(string folderId)
         {
             return FilesControllerHelperString.GetFolderPath(folderId);
@@ -1112,7 +1130,7 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.GetFileInfo(fileId, version);
         }
 
-        [Read("file/{fileId:int}", DisableFormat = true)]
+        [Read("file/{fileId:int}")]
         public FileWrapper<int> GetFileInfo(int fileId, int version = -1)
         {
             return FilesControllerHelperInt.GetFileInfo(fileId, version);
@@ -1181,7 +1199,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <param name="fileId"></param>
         /// <returns>Operation result</returns>
-        [Update("file/{fileId}/checkconversion", DisableFormat = true)]
+        [Update("file/{fileId}/checkconversion")]
         public IEnumerable<ConversationResult<string>> StartConversion(string fileId)
         {
             return FilesControllerHelperString.StartConversion(fileId);
@@ -1201,7 +1219,7 @@ namespace ASC.Api.Documents
         /// <param name="fileId"></param>
         /// <param name="start"></param>
         /// <returns>Operation result</returns>
-        [Read("file/{fileId}/checkconversion", DisableFormat = true)]
+        [Read("file/{fileId}/checkconversion")]
         public IEnumerable<ConversationResult<string>> CheckConversion(string fileId, bool start)
         {
             return FilesControllerHelperString.CheckConversion(fileId, start);
@@ -1413,7 +1431,7 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <param name="fileId">File ID</param>
         /// <returns>File information</returns>
-        [Read("file/{fileId}/history", DisableFormat = true)]
+        [Read("file/{fileId}/history")]
         public IEnumerable<FileWrapper<string>> GetFileVersionInfo(string fileId)
         {
             return FilesControllerHelperString.GetFileVersionInfo(fileId);
@@ -1433,13 +1451,13 @@ namespace ASC.Api.Documents
         /// <param name="continueVersion">Mark as version or revision</param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Update("file/{fileId}/history", DisableFormat = true)]
+        [Update("file/{fileId}/history")]
         public IEnumerable<FileWrapper<string>> ChangeHistoryFromBody(string fileId, [FromBody]ChangeHistoryModel model)
         {
             return FilesControllerHelperString.ChangeHistory(fileId, model.Version, model.ContinueVersion);
         }
 
-        [Update("file/{fileId}/history", DisableFormat = true)]
+        [Update("file/{fileId}/history")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<FileWrapper<string>> ChangeHistoryFromForm(string fileId, [FromForm]ChangeHistoryModel model)
         {
@@ -1459,13 +1477,13 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.ChangeHistory(fileId, model.Version, model.ContinueVersion);
         }
 
-        [Update("file/{fileId}/lock", DisableFormat = true)]
+        [Update("file/{fileId}/lock")]
         public FileWrapper<string> LockFileFromBody(string fileId, [FromBody]LockFileModel model)
         {
             return FilesControllerHelperString.LockFile(fileId, model.LockFile);
         }
 
-        [Update("file/{fileId}/lock", DisableFormat = true)]
+        [Update("file/{fileId}/lock")]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> LockFileFromForm(string fileId, [FromForm]LockFileModel model)
         {
@@ -1485,13 +1503,13 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.LockFile(fileId, model.LockFile);
         }
 
-        [Update("file/{fileId}/comment", DisableFormat = true)]
+        [Update("file/{fileId}/comment")]
         public object UpdateCommentFromBody(string fileId, [FromBody]UpdateCommentModel model)
         {
             return FilesControllerHelperString.UpdateComment(fileId, model.Version, model.Comment);
         }
 
-        [Update("file/{fileId}/comment", DisableFormat = true)]
+        [Update("file/{fileId}/comment")]
         [Consumes("application/x-www-form-urlencoded")]
         public object UpdateCommentFromForm(string fileId, [FromForm]UpdateCommentModel model)
         {
@@ -1518,7 +1536,7 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <param name="fileId">File ID</param>
         /// <returns>Shared file information</returns>
-        [Read("file/{fileId}/share", DisableFormat = true)]
+        [Read("file/{fileId}/share")]
         public IEnumerable<FileShareWrapper> GetFileSecurityInfo(string fileId)
         {
             return FilesControllerHelperString.GetFileSecurityInfo(fileId);
@@ -1537,7 +1555,7 @@ namespace ASC.Api.Documents
         /// <param name="folderId">Folder ID</param>
         /// <category>Sharing</category>
         /// <returns>Shared folder information</returns>
-        [Read("folder/{folderId}/share", DisableFormat = true)]
+        [Read("folder/{folderId}/share")]
         public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(string folderId)
         {
             return FilesControllerHelperString.GetFolderSecurityInfo(folderId);
@@ -1581,13 +1599,13 @@ namespace ASC.Api.Documents
         /// Each of the FileShareParams must contain two parameters: 'ShareTo' - ID of the user with whom we want to share and 'Access' - access type which we want to grant to the user (Read, ReadWrite, etc) 
         /// </remarks>
         /// <returns>Shared file information</returns>
-        [Update("file/{fileId}/share", DisableFormat = true)]
+        [Update("file/{fileId}/share")]
         public IEnumerable<FileShareWrapper> SetFileSecurityInfoFromBody(string fileId, [FromBody]SecurityInfoModel model)
         {
             return FilesControllerHelperString.SetFileSecurityInfo(fileId, model.Share, model.Notify, model.SharingMessage);
         }
 
-        [Update("file/{fileId}/share", DisableFormat = true)]
+        [Update("file/{fileId}/share")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<FileShareWrapper> SetFileSecurityInfoFromForm(string fileId, [FromForm]SecurityInfoModel model)
         {
@@ -1641,13 +1659,13 @@ namespace ASC.Api.Documents
         /// </remarks>
         /// <category>Sharing</category>
         /// <returns>Shared folder information</returns>
-        [Update("folder/{folderId}/share", DisableFormat = true)]
+        [Update("folder/{folderId}/share")]
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfoFromBody(string folderId, [FromBody]SecurityInfoModel model)
         {
             return FilesControllerHelperString.SetFolderSecurityInfo(folderId, model.Share, model.Notify, model.SharingMessage);
         }
 
-        [Update("folder/{folderId}/share", DisableFormat = true)]
+        [Update("folder/{folderId}/share")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfoFromForm(string folderId, [FromForm]SecurityInfoModel model)
         {
@@ -1676,10 +1694,10 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <returns>Shared file information</returns>
         [Delete("share")]
-        public bool RemoveSecurityInfo(BaseBatchModel<object> model)
+        public bool RemoveSecurityInfo(BaseBatchModel<JsonElement> model)
         {
-            FilesControllerHelperInt.RemoveSecurityInfo(model.FileIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList(), model.FolderIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList());
-            FilesControllerHelperString.RemoveSecurityInfo(model.FileIds.OfType<string>().ToList(), model.FolderIds.OfType<string>().ToList());
+            FilesControllerHelperInt.RemoveSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList());
+            FilesControllerHelperString.RemoveSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList());
             return true;
         }
 
@@ -1693,13 +1711,13 @@ namespace ASC.Api.Documents
         /// <param name="share">Access right</param>
         /// <category>Files</category>
         /// <returns>Shared file link</returns>
-        [Update("{fileId}/sharedlink", DisableFormat = true)]
+        [Update("{fileId}/sharedlink")]
         public object GenerateSharedLinkFromBody(string fileId, [FromBody]GenerateSharedLinkModel model)
         {
             return FilesControllerHelperString.GenerateSharedLink(fileId, model.Share);
         }
 
-        [Update("{fileId}/sharedlink", DisableFormat = true)]
+        [Update("{fileId}/sharedlink")]
         [Consumes("application/x-www-form-urlencoded")]
         public object GenerateSharedLinkFromForm(string fileId, [FromForm]GenerateSharedLinkModel model)
         {
@@ -1883,6 +1901,18 @@ namespace ASC.Api.Documents
             return true;
         }
 
+        [Read("favorites/{fileId}")]
+        public bool ToggleFileFavorite(string fileId, bool favorite)
+        {
+            return FileStorageService.ToggleFileFavorite(fileId, favorite);
+        }
+
+        [Read("favorites/{fileId:int}")]
+        public bool ToggleFavoriteFromForm(int fileId, bool favorite)
+        {
+            return FileStorageServiceInt.ToggleFileFavorite(fileId, favorite);
+        }
+
         /// <summary>
         /// Removing files from favorite list
         /// </summary>
@@ -1958,17 +1988,9 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <returns></returns>
         [Read(@"settings")]
-        public object GetFilesSettings()
+        public FilesSettingsHelper GetFilesSettings()
         {
-            return new
-            {
-                FilesSettingsHelper.StoreOriginalFiles,
-                FilesSettingsHelper.ConfirmDelete,
-                FilesSettingsHelper.UpdateIfExist,
-                FilesSettingsHelper.Forcesave,
-                FilesSettingsHelper.StoreForcesave,
-                FilesSettingsHelper.EnableThirdParty
-            };
+            return FilesSettingsHelper;
         }
 
         /// <summary>
@@ -2138,6 +2160,24 @@ namespace ASC.Api.Documents
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"settings/downloadtargz")]
+        public bool ChangeDownloadZipFromBody([FromBody] DisplayModel model)
+        {
+            return FileStorageService.ChangeDownloadTarGz(model.Set);
+        }
+
+        [Update(@"settings/downloadtargz")]
+        public bool ChangeDownloadZipFromForm([FromForm] DisplayModel model)
+        {
+            return FileStorageService.ChangeDownloadTarGz(model.Set);
+        }
+
+        /// <summary>
         ///  Checking document service location
         /// </summary>
         /// <param name="docServiceUrl">Document editing service Domain</param>
@@ -2155,6 +2195,27 @@ namespace ASC.Api.Documents
         public IEnumerable<string> CheckDocServiceUrlFromForm([FromForm]CheckDocServiceUrlModel model)
         {
             return CheckDocServiceUrl(model);
+        }
+
+        /// <summary>
+        /// Create thumbnails for files with the IDs specified in the request
+        /// </summary>
+        /// <short>Create thumbnails</short>
+        /// <category>Files</category>
+        /// <param name="fileIds">File IDs</param>
+        /// <visible>false</visible>
+        /// <returns></returns>
+        [Create("thumbnails")]
+        public IEnumerable<JsonElement> CreateThumbnailsFromBody([FromBody]BaseBatchModel<JsonElement> model)
+        {
+            return FileStorageService.CreateThumbnails(model.FileIds);
+        }
+
+        [Create("thumbnails")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm] BaseBatchModel<JsonElement> model)
+        {
+            return FileStorageService.CreateThumbnails(model.FileIds);
         }
 
         public IEnumerable<string> CheckDocServiceUrl(CheckDocServiceUrlModel model)

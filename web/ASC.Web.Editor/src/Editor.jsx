@@ -12,7 +12,6 @@ import {
   getObjectByLocation,
   //showLoader,
   //hideLoader,
-  tryRedirectTo,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -29,7 +28,6 @@ import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
 
-import "./custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
 
@@ -96,7 +94,13 @@ const Editor = () => {
       const success = await checkIsAuthenticated();
 
       if (!doc && !success) {
-        return tryRedirectTo(combineUrl(AppServerConfig.proxyURL, "/login"));
+        window.open(
+          combineUrl(AppServerConfig.proxyURL, "/login"),
+          "_self",
+          "",
+          true
+        );
+        return;
       }
 
       if (success) {
@@ -142,7 +146,8 @@ const Editor = () => {
                   true
                 );
               });
-          }
+          },
+          i18n.t
         );
       }
 

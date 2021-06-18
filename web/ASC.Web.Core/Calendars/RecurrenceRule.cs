@@ -73,6 +73,12 @@ namespace ASC.Web.Core.Calendars
             }
             return count;
         }
+
+        public static string ToShortString(this DateTime targetDateTime)
+        {
+            return String.Format("{0} {1}", targetDateTime.ToShortDateString(), targetDateTime.ToShortTimeString());
+        }
+
     }
 
     public enum Frequency
@@ -238,17 +244,18 @@ namespace ASC.Web.Core.Calendars
             return true;
         }
 
-        public List<DateTime> GetDates(DateTime utcStartDate, DateTime fromDate, int maxCount)
+        public List<DateTime> GetDates(DateTime utcStartDate, TimeZoneInfo eventTimeZone, bool isAllDayLong, DateTime fromDate, int maxCount)
         {
-            return GetDates(utcStartDate, fromDate, DateTime.MaxValue, maxCount);
+            return GetDates(utcStartDate, eventTimeZone, isAllDayLong, fromDate, DateTime.MaxValue, maxCount);
         }
-        public List<DateTime> GetDates(DateTime utcStartDate, DateTime fromDate, DateTime toDate)
+        public List<DateTime> GetDates(DateTime utcStartDate, TimeZoneInfo eventTimeZone, bool isAllDayLong, DateTime fromDate, DateTime toDate)
         {
-            return GetDates(utcStartDate, fromDate, toDate, int.MaxValue);
+            return GetDates(utcStartDate, eventTimeZone, isAllDayLong, fromDate, toDate, int.MaxValue);
         }
-        public List<DateTime> GetDates(DateTime utcStartDate, DateTime fromDate, DateTime toDate, int maxCount, bool removeExDates = true)
+        public List<DateTime> GetDates(DateTime utcStartDate, TimeZoneInfo eventTimeZone, bool isAllDayLong, DateTime fromDate, DateTime toDate, int maxCount, bool removeExDates = true)
         {
             var dates = new List<DateTime>();
+            var utcStartDateOffset = isAllDayLong ? TimeSpan.Zero : eventTimeZone.GetUtcOffset(utcStartDate);
             var endDate = (this.Until == DateTime.MinValue ? toDate : (toDate > this.Until ? this.Until : toDate));
 
             //push start date           
@@ -363,8 +370,8 @@ namespace ASC.Web.Core.Calendars
 
                     #region Weekly
 
-                    d = utcStartDate;
-                    while (d <= endDate && CheckCount(dates, fromDate, maxCount))
+                    d = utcStartDate + utcStartDateOffset;
+                    while (d <= (endDate == DateTime.MaxValue ? endDate : (endDate + utcStartDateOffset)) && CheckCount(dates, fromDate, maxCount))
                     {
                         var dateRange = new List<DateTime>();
                         for (var i = 0; i < 7; i++)
@@ -385,7 +392,7 @@ namespace ASC.Web.Core.Calendars
                         if (ByDay == null && ByMonthDay == null && ByYearDay == null)
                             dateRange.RemoveAll(date => date.Day != d.Day);
 
-                        GetDatesWithTime(ref dates, utcStartDate, endDate, d, dateRange);
+                        GetDatesWithTime(ref dates, utcStartDate, endDate, (d - utcStartDateOffset), dateRange.Select(item => item - utcStartDateOffset).ToList());
 
                         d = d.AddDays(7 * this.Interval);
 
@@ -397,8 +404,8 @@ namespace ASC.Web.Core.Calendars
 
                     #region Monthly
 
-                    d = utcStartDate;
-                    while (d <= endDate && CheckCount(dates, fromDate, maxCount))
+                    d = utcStartDate + utcStartDateOffset;
+                    while (d <= (endDate == DateTime.MaxValue ? endDate : (endDate + utcStartDateOffset)) && CheckCount(dates, fromDate, maxCount))
                     {
                         var dateRange = new List<DateTime>();
                         if (ByMonth != null && !ByMonth.Contains(d.Month))
@@ -433,9 +440,20 @@ namespace ASC.Web.Core.Calendars
                         if (ByDay == null && ByMonthDay == null && ByYearDay == null)
                             dateRange.RemoveAll(date => date.Day != d.Day);
 
-                        GetDatesWithTime(ref dates, utcStartDate, endDate, d, dateRange);
+                        GetDatesWithTime(ref dates, utcStartDate, endDate, (d - utcStartDateOffset), dateRange);
 
-                        d = d.AddMonths(this.Interval);
+                        var nextd = d.AddMonths(this.Interval);
+
+                        if (ByDay == null && ByMonthDay == null && ByYearDay == null)
+                        {
+                            var i = 1;
+                            while (nextd.Day != d.Day)
+                            {
+                                nextd = d.AddMonths(this.Interval * (++i));
+                            }
+                        }
+
+                        d = nextd;
 
                     }
                     break;
@@ -445,7 +463,7 @@ namespace ASC.Web.Core.Calendars
 
                     #region Yearly
 
-                    d = utcStartDate;
+                    d = utcStartDate + utcStartDateOffset;
 
                     if (d.Month == 2 && d.Day == 29)
                     {
@@ -455,10 +473,10 @@ namespace ASC.Web.Core.Calendars
                         }
                     }
 
-                    while (d.Year <= endDate.Year && CheckCount(dates, fromDate, maxCount))
+                    while (d.Year <= (endDate == DateTime.MaxValue ? endDate : (endDate + utcStartDateOffset)).Year && CheckCount(dates, fromDate, maxCount))
                     {
                         var dateRange = new List<DateTime>();
-                        var isFirst = true;
+                        bool isFirst = true;
 
                         if (ByMonth != null)
                         {
@@ -558,7 +576,7 @@ namespace ASC.Web.Core.Calendars
                         if (isFirst)
                             dateRange.Add(d);
 
-                        GetDatesWithTime(ref dates, utcStartDate, endDate, d, dateRange);
+                        GetDatesWithTime(ref dates, utcStartDate, endDate, (d - utcStartDateOffset), dateRange);
 
                         d = d.AddYears(this.Interval);
 
@@ -573,6 +591,11 @@ namespace ASC.Web.Core.Calendars
                 dates = dates.FindAll(date => (--count) >= 0);
             }
 
+            if (!isAllDayLong)
+            {
+                dates = OffsetCorrection(utcStartDate, eventTimeZone, dates);
+            }
+
             if (removeExDates && ExDates != null)
             {
                 foreach (var exDate in ExDates)
@@ -583,6 +606,21 @@ namespace ASC.Web.Core.Calendars
 
             return dates;
         }
+
+        private List<DateTime> OffsetCorrection(DateTime origUtcStartDate, TimeZoneInfo eventTimeZone, List<DateTime> dates)
+        {
+            var result = new List<DateTime>();
+
+            var origOffset = eventTimeZone.GetUtcOffset(origUtcStartDate);
+
+            foreach (var date in dates)
+            {
+                result.Add(date + (origOffset - eventTimeZone.GetUtcOffset(date))); //todo: check negative timespan
+            }
+
+            return result;
+        }
+
 
         private bool CheckCount(List<DateTime> dates, DateTime fromDate, int maxCount)
         {

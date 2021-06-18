@@ -10,6 +10,7 @@ import AccessComboBox from "./AccessComboBox";
 //import equal from "fast-deep-equal/react";
 import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";
+import { objectToGetParams } from "@appserver/common/utils";
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -31,13 +32,13 @@ class SharingRow extends React.Component {
     const { internalLink, t } = this.props;
 
     copy(internalLink);
-    toastr.success(t("LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
   };
 
   onCopyClick = () => {
     const { t, item } = this.props;
     const { shareLink } = item.sharedTo;
-    toastr.success(t("LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
     copy(shareLink);
   };
 
@@ -49,19 +50,42 @@ class SharingRow extends React.Component {
     const subject = t("ShareEmailSubject", { itemName });
     const body = t("ShareEmailBody", { itemName, shareLink });
 
-    window.open(`mailto:?subject=${subject}&body=${body}`);
+    const mailtoLink =
+      "mailto:" +
+      objectToGetParams({
+        subject,
+        body,
+      });
+
+    window.open(mailtoLink);
   };
 
   onShareTwitter = () => {
-    const encodedLink = encodeURIComponent(this.props.item.sharedTo.shareLink);
-    window.open(`https://twitter.com/intent/tweet?text=${encodedLink}`);
+    const { item } = this.props;
+    const { shareLink } = item.sharedTo;
+
+    const twitterLink =
+      "https://twitter.com/intent/tweet" +
+      objectToGetParams({
+        text: shareLink,
+      });
+
+    window.open(twitterLink);
   };
 
-  onShareFacebook = () => {
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${this.props.item.sharedTo.shareLink}`
-    );
-  };
+  // onShareFacebook = () => {
+  //   const { item, selection } = this.props;
+  //   const { shareLink } = item.sharedTo;
+
+  //   const facebookLink =
+  //     "https://www.facebook.com/sharer/sharer.php" +
+  //     objectToGetParams({
+  //       u: shareLink,
+  //       t: selection.title ? selection.title : selection[0].title,
+  //     });
+
+  //   window.open(facebookLink);
+  // };
 
   render() {
     //console.log("SharingRow render");
@@ -120,11 +144,11 @@ class SharingRow extends React.Component {
         label: `${t("ShareVia")} e-mail`,
         onClick: this.onShareEmail,
       },
-      {
-        key: "linkItem_3",
-        label: `${t("ShareVia")} Facebook`,
-        onClick: this.onShareFacebook,
-      },
+      // {
+      //   key: "linkItem_3",
+      //   label: `${t("ShareVia")} Facebook`,
+      //   onClick: this.onShareFacebook,
+      // },
       {
         key: "linkItem_4",
         label: `${t("ShareVia")} Twitter`,
@@ -152,7 +176,7 @@ class SharingRow extends React.Component {
       <>
         {externalLinkVisible && (
           <LinkRow
-            linkText="ExternalLink"
+            linkText={t("ExternalLink")}
             options={externalLinkOptions}
             externalLinkData={externalLinkData}
             onToggleLink={onToggleLink}
@@ -162,7 +186,7 @@ class SharingRow extends React.Component {
         )}
         {internalLinkVisible && (
           <LinkRow
-            linkText="InternalLink"
+            linkText={t("InternalLink")}
             options={internalLinkData}
             {...this.props}
           />
@@ -224,7 +248,7 @@ class SharingRow extends React.Component {
                   className="sharing_panel-remove-icon"
                   //color="#A3A9AE"
                 >
-                  {t("AccessRightsFullAccess")}
+                  {t("Common:FullAccess")}
                 </Text>
               ) : (
                 !shareLink &&

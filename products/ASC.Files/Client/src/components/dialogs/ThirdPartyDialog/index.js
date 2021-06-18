@@ -52,6 +52,7 @@ const ServiceItem = (props) => {
   const dataProps = {
     "data-link": capabilityLink,
     "data-title": capabilityName,
+    "data-key": capabilityName,
   };
 
   return <img {...dataProps} {...rest} alt="" />;
@@ -125,7 +126,9 @@ const ThirdPartyDialog = (props) => {
       zIndex={310}
       onClose={onClose}
     >
-      <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("Translations:ConnectingAccount")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
         <Text as="div">
           {t("ConnectDescription")}
@@ -222,6 +225,7 @@ const ThirdPartyDialog = (props) => {
               onClick={onShowService}
               className="service-item service-text"
               data-title={webDavConnectItem[0]}
+              data-key={webDavConnectItem[0]}
             >
               {t("ConnextOtherAccount")}
             </Text>
@@ -274,4 +278,4 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     getOAuthToken,
     openConnectWindow,
   };
-})(withTranslation("Settings")(observer(ThirdPartyDialog)));
+})(withTranslation(["Settings", "Translations"])(observer(ThirdPartyDialog)));

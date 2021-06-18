@@ -122,6 +122,7 @@ class InputBlock extends React.Component {
           //iconNames.includes(iconName) && (
           <div className="append">
             <StyledIconBlock
+              className="input-block-icon"
               isDisabled={isDisabled}
               onClick={this.onIconClick}
               isClickable={typeof onIconClick === "function"}

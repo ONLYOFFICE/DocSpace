@@ -6,6 +6,8 @@
     <Company>Ascensio System SIA</Company>
     <Product>ASC.ApiSystem</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>

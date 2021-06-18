@@ -27,16 +27,29 @@ class SelectedFolderStore {
     return this.pathParts && this.pathParts.length <= 1;
   }
 
+  toDefault = () => {
+    this.folders = null;
+    this.parentId = null;
+    this.filesCount = null;
+    this.foldersCount = null;
+    this.isShareable = null;
+    this.new = null;
+    this.id = null;
+    this.title = null;
+    this.access = null;
+    this.shared = null;
+    this.created = null;
+    this.createdBy = null;
+    this.updated = null;
+    this.updatedBy = null;
+    this.rootFolderType = null;
+    this.pathParts = null;
+    this.providerItem = null;
+  };
+
   setSelectedFolder = (selectedFolder) => {
     if (!selectedFolder) {
-      const newStore = new SelectedFolderStore();
-
-      const selectedFolderItems = Object.keys(newStore);
-      for (let key of selectedFolderItems) {
-        if (key in this) {
-          this[key] = newStore[key];
-        }
-      }
+      this.toDefault();
     } else {
       const selectedFolderItems = Object.keys(selectedFolder);
 

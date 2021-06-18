@@ -6,10 +6,9 @@ import Checkbox from "@appserver/components/checkbox";
 import TextInput from "@appserver/components/text-input";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
-
-import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { runInAction } from "mobx";
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -17,9 +16,7 @@ const PureConnectDialogContainer = (props) => {
     t,
     item,
     treeFolders,
-    setTreeFolders,
     fetchThirdPartyProviders,
-    fetchTreeFolders,
     myFolderId,
     commonFolderId,
     providers,
@@ -30,12 +27,19 @@ const PureConnectDialogContainer = (props) => {
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
+    getSubfolders,
   } = props;
-  const { corporate, title, link, token, provider_id, provider_key } = item;
+  const {
+    corporate,
+    title,
+    link,
+    token,
+    provider_id,
+    provider_key,
+    key,
+  } = item;
 
-  const provider = providers.find(
-    (el) => el.provider_key === item.provider_key
-  );
+  const provider = providers.find((el) => el.provider_id === item.provider_id);
   const folderTitle = provider ? provider.customer_title : title;
 
   const [urlValue, setUrlValue] = useState("");
@@ -105,56 +109,30 @@ const PureConnectDialogContainer = (props) => {
 
     setIsLoading(true);
     saveThirdParty(
-      null,
-      null,
-      null,
+      urlValue,
+      loginValue,
+      passwordValue,
       oAuthToken,
       isCorporate,
       customerTitle,
-      provider_key,
+      provider_key || key,
       provider_id
     )
-      .then((folderData) => {
-        fetchTreeFolders().then((data) => {
-          const commonFolder = data.find((x) => x.id === commonFolderId);
-          const myFolder = data.find((x) => x.id === myFolderId);
+      .then(async () => {
+        const folderId = isCorporate ? commonFolderId : myFolderId;
+        const subfolders = await getSubfolders(folderId);
+        const node = treeFolders.find((x) => x.id === folderId);
 
-          const newTreeFolders = treeFolders;
+        runInAction(() => (node.folders = subfolders));
 
-          loopTreeFolders(
-            myFolder.pathParts,
-            newTreeFolders,
-            myFolder.folders,
-            myFolder.foldersCount,
-            !isCorporate ? folderData : null
-          );
-
-          loopTreeFolders(
-            commonFolder.pathParts,
-            newTreeFolders,
-            commonFolder.folders,
-            commonFolder.foldersCount,
-            isCorporate ? folderData : null
-          );
-          setTreeFolders(newTreeFolders);
-          fetchThirdPartyProviders();
-
-          const newFolder =
-            selectedFolderFolders &&
-            selectedFolderFolders.find((x) => x.id === folderData.id);
-          if (newFolder)
-            fetchFiles(selectedFolderId).then(() => {
-              onClose();
-              setIsLoading(false);
-            });
-          else {
-            onClose();
-            setIsLoading(false);
-          }
-        });
+        await fetchThirdPartyProviders();
       })
       .catch((err) => {
+        onClose();
         toastr.error(err);
+        setIsLoading(false);
+      })
+      .finally(() => {
         onClose();
         setIsLoading(false);
       });
@@ -163,7 +141,6 @@ const PureConnectDialogContainer = (props) => {
     customerTitle,
     fetchFiles,
     fetchThirdPartyProviders,
-    fetchTreeFolders,
     isCorporate,
     link,
     loginValue,
@@ -175,7 +152,6 @@ const PureConnectDialogContainer = (props) => {
     provider_key,
     selectedFolderFolders,
     selectedFolderId,
-    setTreeFolders,
     showUrlField,
     treeFolders,
     urlValue,
@@ -210,7 +186,9 @@ const PureConnectDialogContainer = (props) => {
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
-      <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("Translations:ConnectingAccount")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
         {isAccount ? (
           <FieldContainer labelVisible labelText={t("Account")} isVertical>
@@ -231,9 +209,10 @@ const PureConnectDialogContainer = (props) => {
                 labelText={t("ConnectionUrl")}
                 isVertical
                 hasError={!isUrlValid}
-                errorMessage={t("RequiredFieldMessage")}
+                errorMessage={t("Common:RequiredField")}
               >
                 <TextInput
+                  isAutoFocussed={true}
                   hasError={!isUrlValid}
                   isDisabled={isLoading}
                   tabIndex={1}
@@ -249,7 +228,7 @@ const PureConnectDialogContainer = (props) => {
               isRequired
               isVertical
               hasError={!isLoginValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={t("Common:RequiredField")}
             >
               <TextInput
                 hasError={!isLoginValid}
@@ -261,11 +240,11 @@ const PureConnectDialogContainer = (props) => {
               />
             </FieldContainer>
             <FieldContainer
-              labelText={t("Password")}
+              labelText={t("Common:Password")}
               isRequired
               isVertical
               hasError={!isPasswordValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={t("Common:RequiredField")}
             >
               <PasswordInput
                 hasError={!isPasswordValid}
@@ -285,7 +264,7 @@ const PureConnectDialogContainer = (props) => {
           isRequired
           isVertical
           hasError={!isTitleValid}
-          errorMessage={t("RequiredFieldMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <TextInput
             hasError={!isTitleValid}
@@ -306,7 +285,7 @@ const PureConnectDialogContainer = (props) => {
       <ModalDialog.Footer>
         <Button
           tabIndex={5}
-          label={t("SaveButton")}
+          label={t("Common:SaveButton")}
           size="big"
           primary
           onClick={onSave}
@@ -318,9 +297,11 @@ const PureConnectDialogContainer = (props) => {
   );
 };
 
-const ConnectDialog = withTranslation("ConnectDialog")(
-  PureConnectDialogContainer
-);
+const ConnectDialog = withTranslation([
+  "ConnectDialog",
+  "Common",
+  "Translations",
+])(PureConnectDialogContainer);
 
 export default inject(
   ({
@@ -342,10 +323,9 @@ export default inject(
 
     const {
       treeFolders,
-      setTreeFolders,
       myFolderId,
       commonFolderId,
-      fetchTreeFolders,
+      getSubfolders,
     } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
     const {
@@ -365,12 +345,11 @@ export default inject(
       item,
 
       fetchFiles,
-      setTreeFolders,
       getOAuthToken,
+      getSubfolders,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,
-      fetchTreeFolders,
       setConnectDialogVisible,
     };
   }

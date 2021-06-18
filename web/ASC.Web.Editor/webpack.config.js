@@ -7,6 +7,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const { InjectManifest } = require("workbox-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const { proxyURL } = AppServerConfig;
 
 const path = require("path");
 const pkg = require("./package.json");
@@ -93,6 +94,17 @@ const config = {
       },
       { test: /\.json$/, loader: "json-loader" },
       {
+        test: /\.(woff(2)?)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "fonts/[hash].[ext]",
+            },
+          },
+        ],
+      },
+      {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
@@ -107,6 +119,7 @@ const config = {
           "sass-loader",
         ],
       },
+
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -134,12 +147,9 @@ const config = {
       name: "editor",
       filename: "remoteEntry.js",
       remotes: {
-        studio: `studio@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/remoteEntry.js"
-        )}`,
+        studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
         files: `files@${combineUrl(
-          AppServerConfig.proxyURL,
+          proxyURL,
           "/products/files/remoteEntry.js"
         )}`,
       },

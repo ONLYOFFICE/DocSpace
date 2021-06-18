@@ -51,66 +51,66 @@ const ForgotPasswordModalDialog = (props) => {
   };
 
   return (
-    <ModalDialogContainer>
-      <ModalDialog
-        visible={visible}
-        bodyPadding="16px 0 0 0"
-        onClose={onDialogClose}
-      >
-        <ModalDialog.Header>
-          <Text isBold={true} fontSize="21px">
-            {t("PasswordRecoveryTitle")}
-          </Text>
-        </ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text
-            key="text-body"
-            className="text-body"
-            isBold={false}
-            fontSize="13px"
-          >
-            {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
-          </Text>
+    <ModalDialogContainer
+      visible={visible}
+      bodyPadding="16px 0 0 0"
+      onClose={onDialogClose}
+    >
+      <ModalDialog.Header>
+        <Text isBold={true} fontSize="21px">
+          {t("PasswordRecoveryTitle")}
+        </Text>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text
+          key="text-body"
+          className="text-body"
+          isBold={false}
+          fontSize="13px"
+        >
+          {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
+        </Text>
 
-          <FieldContainer
-            key="e-mail"
-            isVertical={true}
+        <FieldContainer
+          key="e-mail"
+          isVertical={true}
+          hasError={emailError}
+          labelVisible={false}
+          errorMessage={t("Common:RequiredField")}
+        >
+          <TextInput
             hasError={emailError}
-            labelVisible={false}
-            errorMessage={t("RequiredFieldMessage")}
-          >
-            <TextInput
-              hasError={emailError}
-              placeholder={t("PasswordRecoveryPlaceholder")}
-              isAutoFocussed={true}
-              id="e-mail"
-              name="e-mail"
-              type="text"
-              size="base"
-              scale={true}
-              tabIndex={2}
-              isDisabled={isLoading}
-              value={email}
-              onChange={onChangeEmail}
-              onKeyDown={onKeyDown}
-            />
-          </FieldContainer>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            className="modal-dialog-button"
-            key="SendBtn"
-            label={isLoading ? t("LoadingProcessing") : t("SendButton")}
-            size="big"
-            scale={false}
-            primary={true}
-            onClick={onSendPasswordInstructions}
-            isLoading={isLoading}
-            isDisabled={isLoading}
+            placeholder={t("RegistrationEmail")}
+            isAutoFocussed={true}
+            id="e-mail"
+            name="e-mail"
+            type="text"
+            size="base"
+            scale={true}
             tabIndex={2}
+            isDisabled={isLoading}
+            value={email}
+            onChange={onChangeEmail}
+            onKeyDown={onKeyDown}
           />
-        </ModalDialog.Footer>
-      </ModalDialog>
+        </FieldContainer>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          className="modal-dialog-button"
+          key="SendBtn"
+          label={
+            isLoading ? t("Common:LoadingProcessing") : t("Common:SendButton")
+          }
+          size="big"
+          scale={false}
+          primary={true}
+          onClick={onSendPasswordInstructions}
+          isLoading={isLoading}
+          isDisabled={isLoading}
+          tabIndex={2}
+        />
+      </ModalDialog.Footer>
     </ModalDialogContainer>
   );
 };

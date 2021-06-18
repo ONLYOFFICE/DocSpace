@@ -80,6 +80,7 @@ const ServiceItem = (props) => {
   const dataProps = {
     "data-link": capabilityLink,
     "data-title": capabilityName,
+    "data-key": capabilityName,
   };
 
   return (
@@ -160,7 +161,7 @@ const PureThirdPartyListContainer = ({
         fontWeight={600}
         onClick={onShowConnectPanel}
       >
-        {t("AddAccount")}
+        {t("Translations:AddAccount")}
       </Link>
       <div className="tree-thirdparty-list">
         {googleConnectItem && (
@@ -210,7 +211,7 @@ const PureThirdPartyListContainer = ({
   );
 };
 
-const ThirdPartyList = withTranslation("Article")(
+const ThirdPartyList = withTranslation(["Article", "Translations"])(
   withRouter(PureThirdPartyListContainer)
 );
 

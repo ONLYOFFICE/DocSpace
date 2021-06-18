@@ -39,7 +39,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Thumbnails.Svc
 {
-    [Scope]
+    [Singletone]
     public class ThumbnailsServiceLauncher : IHostedService
     {
         private ProcessStartInfo StartInfo { get; set; }

@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Text;
 using System.Web;
 
@@ -396,14 +395,6 @@ namespace ASC.FederatedLogin.Profile
         public LoginProfile(Signature signature, InstanceCrypto instanceCrypto, string transport) : this(signature, instanceCrypto)
         {
             FromTransport(transport);
-        }
-
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-                throw new ArgumentNullException("info");
-            info.AddValue(QueryParamName, Transport());
         }
 
         public string ToJson()

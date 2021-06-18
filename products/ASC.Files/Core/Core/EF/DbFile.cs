@@ -6,6 +6,7 @@ using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +46,7 @@ namespace ASC.Files.Core.EF
         public string Changes { get; set; }
         public bool Encrypted { get; set; }
         public ForcesaveType Forcesave { get; set; }
+        public Thumbnail Thumb { get; set; }
 
 
         [Nested]
@@ -58,10 +60,14 @@ namespace ASC.Files.Core.EF
 
         public Document Document { get; set; }
 
-        [Ignore]
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            get => (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
+            if (searchSettings.CanSearchByContent(GetType()))
+            {
+                return (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
+            }
+
+            return (a) => new[] { Title, Comment, Changes };
         }
 
         public override object[] GetKeys()
@@ -113,13 +119,13 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("changes")
                     .HasColumnType("mediumtext")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ContentLength).HasColumnName("content_length");
 
@@ -127,20 +133,22 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("converted_type")
                     .HasColumnType("varchar(10)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateBy)
                     .IsRequired()
                     .HasColumnName("create_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
+
+                entity.Property(e => e.Thumb).HasColumnName("thumb");
 
                 entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
@@ -155,7 +163,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("modified_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ModifiedOn)
                     .HasColumnName("modified_on")
@@ -166,7 +174,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("title")
                     .HasColumnType("varchar(400)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.VersionGroup)
                     .HasColumnName("version_group")
@@ -229,6 +237,8 @@ namespace ASC.Files.Core.EF
                 entity.Property(e => e.CreateOn).HasColumnName("create_on");
 
                 entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
+
+                entity.Property(e => e.Thumb).HasColumnName("thumb");
 
                 entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 

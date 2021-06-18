@@ -8,11 +8,12 @@ import {
 } from "./Icons";
 
 const Badges = ({
+  t,
   newItems,
   item,
   canWebEdit,
   isTrashFolder,
-  /* canConvert, */
+  canConvert,
   accessToEdit,
   showNew,
   onFilesClick,
@@ -20,34 +21,43 @@ const Badges = ({
   onClickFavorite,
   onShowVersionHistory,
   onBadgeClick,
-  /*setConvertDialogVisible*/
+  setConvertDialogVisible,
 }) => {
   const { id, locked, fileStatus, versionGroup, title, fileExst } = item;
 
+  const isFavorite = fileStatus === 32;
+  const isEditing = fileStatus === 1;
+  const isNewWithFav = fileStatus === 34;
+  const showEditBadge = !locked || item.access === 0;
+
   return fileExst ? (
     <div className="badges additional-badges">
-      {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
-                  <IconButton
-                    onClick={setConvertDialogVisible}
-                    iconName="FileActionsConvertIcon"
-                    className="badge"
-                    size="small"
-                    isfill={true}
-                    color="#A3A9AE"
-                    hoverColor="#3B72A7"
-                  />
-      )} */}
-      {canWebEdit && !isTrashFolder && accessToEdit && (
+      {canConvert && !isTrashFolder && (
         <IconButton
-          onClick={onFilesClick}
-          iconName="/static/images/access.edit.react.svg"
-          className="badge icons-group"
+          onClick={setConvertDialogVisible}
+          iconName="/static/images/refresh.react.svg"
+          className="badge"
           size="small"
           isfill={true}
           color="#A3A9AE"
           hoverColor="#3B72A7"
         />
       )}
+      {canWebEdit &&
+        !isTrashFolder &&
+        accessToEdit &&
+        showEditBadge &&
+        !canConvert && (
+          <IconButton
+            onClick={onFilesClick}
+            iconName="/static/images/access.edit.react.svg"
+            className="badge icons-group"
+            size="small"
+            isfill={true}
+            color="#A3A9AE"
+            hoverColor="#3B72A7"
+          />
+        )}
       {locked && accessToEdit && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"
@@ -57,7 +67,7 @@ const Badges = ({
           onClick={onClickLock}
         />
       )}
-      {fileStatus === 32 && !isTrashFolder && (
+      {(isFavorite || isNewWithFav) && !isTrashFolder && (
         <StyledFavoriteIcon
           className="favorite icons-group"
           size="small"
@@ -67,7 +77,7 @@ const Badges = ({
           onClick={onClickFavorite}
         />
       )}
-      {fileStatus === 1 && (
+      {isEditing && (
         <StyledFileActionsConvertEditDocIcon className="badge" size="small" />
       )}
       {versionGroup > 1 && (
@@ -85,7 +95,7 @@ const Badges = ({
           data-id={id}
         />
       )}
-      {showNew && (
+      {(showNew || isNewWithFav) && (
         <Badge
           className="badge-version icons-group"
           backgroundColor="#ED7309"
@@ -93,7 +103,7 @@ const Badges = ({
           color="#FFFFFF"
           fontSize="10px"
           fontWeight={800}
-          label={`New`}
+          label={t("New")}
           maxWidth="50px"
           onClick={onBadgeClick}
           padding="0 5px"

@@ -89,21 +89,21 @@ class ConnectClouds extends React.Component {
 
   onChangeThirdPartyInfo = (e) => {
     const { dataset } = (e.originalEvent || e).currentTarget;
-    const { provider_key } = dataset;
+    const { provider_id } = dataset;
     const capabilitiesItem = this.props.capabilities.find(
-      (x) => x[0] === provider_key
+      (x) => x[0] === provider_id
     );
     const providerItem = this.props.providers.find(
-      (x) => x.provider_key === provider_key
+      (x) => x.provider_id === provider_id
     );
-    const { corporate, provider_id, customer_title } = providerItem;
+    const { corporate, customer_title, provider_key } = providerItem;
 
     const item = {
       title: capabilitiesItem ? capabilitiesItem[0] : customer_title,
       link: capabilitiesItem ? capabilitiesItem[1] : " ",
-      corporate: corporate,
-      provider_id: provider_id,
-      provider_key: provider_key,
+      corporate,
+      provider_id,
+      provider_key,
     };
 
     this.props.setConnectItem(item);
@@ -176,15 +176,15 @@ class ConnectClouds extends React.Component {
     return [
       {
         key: `${index}_change`,
-        "data-provider_key": item.provider_key,
-        label: t("ThirdPartyInfo"),
+        "data-provider_id": item.provider_id,
+        label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
       {
         key: `${index}_delete`,
         "data-id": item.provider_id,
         "data-title": item.customer_title,
-        label: t("DeleteThirdParty"),
+        label: t("Translations:DeleteThirdParty"),
         onClick: this.onDeleteThirdParty,
       },
     ];
@@ -265,7 +265,7 @@ class ConnectClouds extends React.Component {
                 />
                 <Box className="flex-wrapper_container">
                   <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
-                    {t("AddAccount")},
+                    {t("Translations:AddAccount")},
                   </Link>
                 </Box>
               </div>
@@ -306,4 +306,8 @@ export default inject(
       homepage: config.homepage,
     };
   }
-)(withTranslation("Settings")(observer(withRouter(ConnectClouds))));
+)(
+  withTranslation(["Settings", "Translations"])(
+    observer(withRouter(ConnectClouds))
+  )
+);

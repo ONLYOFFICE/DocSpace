@@ -8,16 +8,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import FieldContainer from "@appserver/components/field-container";
 
 import ModalDialogContainer from "./modal-dialog-container";
-
-const domains = ["mail.ru", "gmail.com", "yandex.ru"];
-const domainList = domains.map((domain, i) => (
-  <span key={i}>
-    <b>
-      {domain}
-      {i === domains.length - 1 ? "." : ", "}
-    </b>
-  </span>
-));
+import { TenantTrustedDomainsType } from "@appserver/common/constants";
 
 const RegisterModalDialog = ({
   visible,
@@ -28,65 +19,84 @@ const RegisterModalDialog = ({
   onChangeEmail,
   onRegisterModalClose,
   onSendRegisterRequest,
+  trustedDomainsType,
+  trustedDomains,
 }) => {
-  return (
-    <ModalDialogContainer>
-      <ModalDialog
-        visible={visible}
-        bodyPadding="16px 0 0 0"
-        onClose={onRegisterModalClose}
-      >
-        <ModalDialog.Header>
-          <Text isBold={true} fontSize="21px">
-            {t("RegisterTitle")}
-          </Text>
-        </ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text key="text-body" isBold={false} fontSize="13px">
-            {t("RegisterTextBodyBeforeDomainsList")} {domainList}{" "}
-            {t("RegisterTextBodyAfterDomainsList")}
-          </Text>
+  const getDomains = () => {
+    return trustedDomains.map((domain, i) => (
+      <span key={i}>
+        <b>
+          {domain}
+          {i === trustedDomains.length - 1 ? "." : ", "}
+        </b>
+      </span>
+    ));
+  };
 
-          <FieldContainer
-            key="e-mail"
-            isVertical={true}
+  const getDomainsBlock = () => {
+    return trustedDomainsType === TenantTrustedDomainsType.Custom ? (
+      <>
+        {t("RegisterTextBodyBeforeDomainsList")} {getDomains()}{" "}
+      </>
+    ) : (
+      <></>
+    );
+  };
+
+  return (
+    <ModalDialogContainer
+      visible={visible}
+      bodyPadding="16px 0 0 0"
+      onClose={onRegisterModalClose}
+    >
+      <ModalDialog.Header>
+        <Text isBold={true} fontSize="21px">
+          {t("RegisterTitle")}
+        </Text>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text key="text-body" isBold={false} fontSize="13px">
+          {getDomainsBlock()}
+          {t("RegisterTextBodyAfterDomainsList")}
+        </Text>
+
+        <FieldContainer
+          key="e-mail"
+          isVertical={true}
+          hasError={emailErr}
+          labelVisible={false}
+          errorMessage={t("Common:RequiredField")}
+        >
+          <TextInput
             hasError={emailErr}
-            labelVisible={false}
-            errorMessage={t("RequiredFieldMessage")}
-          >
-            <TextInput
-              hasError={emailErr}
-              placeholder={t("RegisterPlaceholder")}
-              isAutoFocussed={true}
-              id="e-mail"
-              name="e-mail"
-              type="text"
-              size="base"
-              scale={true}
-              tabIndex={3}
-              isDisabled={loading}
-              value={email}
-              onChange={onChangeEmail}
-            />
-          </FieldContainer>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            className="modal-dialog-button"
-            key="SendBtn"
-            label={
-              loading ? t("RegisterProcessSending") : t("RegisterSendButton")
-            }
-            size="big"
-            scale={false}
-            primary={true}
-            onClick={onSendRegisterRequest}
-            isLoading={loading}
-            isDisabled={loading}
+            placeholder={t("RegistrationEmail")}
+            isAutoFocussed={true}
+            id="e-mail"
+            name="e-mail"
+            type="text"
+            size="base"
+            scale={true}
             tabIndex={3}
+            isDisabled={loading}
+            value={email}
+            onChange={onChangeEmail}
           />
-        </ModalDialog.Footer>
-      </ModalDialog>
+        </FieldContainer>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          className="modal-dialog-button"
+          key="SendBtn"
+          label={loading ? t("Common:Sending") : t("RegisterSendButton")}
+          size="big"
+          scale={false}
+          primary={true}
+          onClick={onSendRegisterRequest}
+          isLoading={loading}
+          isDisabled={loading}
+          tabIndex={3}
+        />
+      </ModalDialog.Footer>
     </ModalDialogContainer>
   );
 };
@@ -100,6 +110,8 @@ RegisterModalDialog.propTypes = {
   onChangeEmail: PropTypes.func.isRequired,
   onSendRegisterRequest: PropTypes.func.isRequired,
   onRegisterModalClose: PropTypes.func.isRequired,
+  trustedDomainsType: PropTypes.number,
+  trustedDomains: PropTypes.array,
 };
 
 export default RegisterModalDialog;

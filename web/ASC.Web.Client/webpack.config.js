@@ -90,6 +90,17 @@ const config = {
       },
       { test: /\.json$/, loader: "json-loader" },
       {
+        test: /\.(woff(2)?)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "fonts/[hash].[ext]",
+            },
+          },
+        ],
+      },
+      {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
@@ -166,6 +177,9 @@ const config = {
           singleton: true,
           requiredVersion: deps["react-dom"],
         },
+        "./src/store": {
+          singleton: true,
+        },
       },
     }),
     new HtmlWebpackPlugin({
@@ -195,7 +209,11 @@ module.exports = (env, argv) => {
     config.optimization = {
       splitChunks: { chunks: "all" },
       minimize: true,
-      minimizer: [new TerserPlugin()],
+      minimizer: [
+        new TerserPlugin({
+          include: "./src/store",
+        }),
+      ],
     };
 
     config.plugins.push(

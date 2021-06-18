@@ -29,8 +29,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -45,13 +47,21 @@ namespace ASC.Data.Storage
     public abstract class BaseStorage : IDataStore
     {
         protected ILog Log { get; set; }
+        protected TempStream TempStream { get; }
+        protected TenantManager TenantManager { get; }
+        protected PathUtils PathUtils { get; }
+        protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        protected IHttpContextAccessor HttpContextAccessor { get; }
+        protected IOptionsMonitor<ILog> Options { get; }
 
         public BaseStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options)
         {
+            TempStream = tempStream;
             TenantManager = tenantManager;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
@@ -60,11 +70,14 @@ namespace ASC.Data.Storage
         }
 
         public BaseStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options) : this(tenantManager,
+            IOptionsMonitor<ILog> options) : this(
+            tempStream,
+            tenantManager,
             pathUtils,
             emailValidationKeyProvider,
             options)
@@ -177,6 +190,7 @@ namespace ASC.Data.Storage
 
         public abstract Stream GetReadStream(string domain, string path);
         public abstract Stream GetReadStream(string domain, string path, int offset);
+        public abstract Task<Stream> GetReadStreamAsync(string domain, string path, int offset);
 
         public abstract Uri Save(string domain, string path, Stream stream);
         public abstract Uri Save(string domain, string path, Stream stream, ACL acl);
@@ -228,12 +242,6 @@ namespace ASC.Data.Storage
 
         public virtual bool IsSupportChunking { get { return false; } }
 
-        protected TenantManager TenantManager { get; }
-        protected PathUtils PathUtils { get; }
-        protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        protected IHttpContextAccessor HttpContextAccessor { get; }
-        protected IOptionsMonitor<ILog> Options { get; }
-
         #endregion
 
         public abstract void Delete(string domain, string path);
@@ -241,11 +249,12 @@ namespace ASC.Data.Storage
         public abstract void DeleteFiles(string domain, List<string> paths);
         public abstract void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate);
         public abstract void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir);
-        public abstract Uri Move(string srcdomain, string srcpath, string newdomain, string newpath);
+        public abstract Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true);
         public abstract Uri SaveTemp(string domain, out string assignedPath, Stream stream);
         public abstract string[] ListDirectoriesRelative(string domain, string path, bool recursive);
         public abstract string[] ListFilesRelative(string domain, string path, string pattern, bool recursive);
         public abstract bool IsFile(string domain, string path);
+        public abstract Task<bool> IsFileAsync(string domain, string path);
         public abstract bool IsDirectory(string domain, string path);
         public abstract void DeleteDirectory(string domain, string path);
         public abstract long GetFileSize(string domain, string path);
@@ -370,11 +379,11 @@ namespace ASC.Data.Storage
 
         #endregion
 
-        internal void QuotaUsedAdd(string domain, long size)
+        internal void QuotaUsedAdd(string domain, long size, bool quotaCheckFileSize = true)
         {
             if (QuotaController != null)
             {
-                QuotaController.QuotaUsedAdd(_modulename, domain, _dataList.GetData(domain), size);
+                QuotaController.QuotaUsedAdd(_modulename, domain, _dataList.GetData(domain), size, quotaCheckFileSize);
             }
         }
 

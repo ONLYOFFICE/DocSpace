@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
-//import ProgressBar from "@appserver/components/progress-bar";
 import { size } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
 import { isMobile } from "react-device-detect";
@@ -21,11 +20,18 @@ import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import { SelectableGroup } from "react-selectable-fast";
-import SelectedFrame from "./sub-components/SelectedFrame";
 import styled from "styled-components";
 
 const StyledSelectableGroup = styled(SelectableGroup)`
   display: contents;
+
+  .selectable-selectbox {
+    display: ${(props) => (props.dragging ? "none" : "block")};
+    border: 1px dotted #5c6a8e;
+    background-color: #6582c9;
+    z-index: 200;
+    opacity: 0.4;
+  }
 `;
 
 function ArticleHeader() {
@@ -201,6 +207,7 @@ class PageLayout extends React.Component {
       isTabletView,
       firstLoad,
       isLoading,
+      dragging,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -264,15 +271,9 @@ class PageLayout extends React.Component {
         isArticleAvailable,
       isBackdropAvailable = isArticleAvailable;
 
-    return (
-      <>
-        <StyledSelectableGroup
-          enableDeselect
-          resetOnStart
-          allowClickWithoutSelected={false}
-          duringSelection={this.duringSelection}
-          ignoreList={[".not-selectable", "draggable"]}
-        >
+    const renderPageLayout = () => {
+      return (
+        <>
           {isBackdropAvailable && (
             <Backdrop
               zIndex={400}
@@ -432,9 +433,23 @@ class PageLayout extends React.Component {
               )}
             </ReactResizeDetector>
           )}
-        </StyledSelectableGroup>
-        {uploadFiles && <SelectedFrame />}
-      </>
+        </>
+      );
+    };
+
+    return isMobile || !uploadFiles ? (
+      renderPageLayout()
+    ) : (
+      <StyledSelectableGroup
+        dragging={dragging}
+        enableDeselect
+        resetOnStart
+        allowClickWithoutSelected={false}
+        duringSelection={this.duringSelection}
+        ignoreList={[".not-selectable", "draggable"]}
+      >
+        {renderPageLayout()}
+      </StyledSelectableGroup>
     );
   }
 }

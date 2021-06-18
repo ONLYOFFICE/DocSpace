@@ -19,11 +19,18 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import Register from "./sub-components/register-container";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import { checkPwd } from "@appserver/common/desktop";
-import { createPasswordHash } from "@appserver/common/utils";
+import {
+  createPasswordHash,
+  getProviderTranslation,
+} from "@appserver/common/utils";
 import { providersData } from "@appserver/common/constants";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
-import { I18nextProvider, useTranslation } from "react-i18next";
+import {
+  I18nextProvider,
+  useTranslation,
+  withTranslation,
+} from "react-i18next";
 import toastr from "@appserver/components/toast/toastr";
 
 const ButtonsWrapper = styled.div`
@@ -205,7 +212,10 @@ const Form = (props) => {
         history.push(defaultPage);
       })
       .catch(() => {
-        toastr.error(t("ProviderNotConnected"), t("ProviderLoginError"));
+        toastr.error(
+          t("Common:ProviderNotConnected"),
+          t("Common:ProviderLoginError")
+        );
       });
   };
 
@@ -295,8 +305,9 @@ const Form = (props) => {
 
     isDesktop && checkPwd();
     login(userName, hash)
-      .then(() => {
-        history.push(defaultPage);
+      .then((res) => {
+        const { url, user, hash } = res;
+        history.push(url, { user, hash });
       })
       .catch((error) => {
         setErrorText(error);
@@ -346,7 +357,7 @@ const Form = (props) => {
       >
         <FacebookButton
           iconName={icon}
-          label={t(label)}
+          label={getProviderTranslation(label, t)}
           className="socialButton"
           $iconOptions={iconOptions}
           data-url={faceBookData.url}
@@ -376,7 +387,7 @@ const Form = (props) => {
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
-              label={t(label)}
+              label={getProviderTranslation(label, t)}
               className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
@@ -421,7 +432,7 @@ const Form = (props) => {
           isVertical={true}
           labelVisible={false}
           hasError={!identifierValid}
-          errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
+          errorMessage={errorText ? errorText : t("Common:RequiredField")} //TODO: Add wrong login server error
         >
           <TextInput
             id="login"
@@ -445,14 +456,14 @@ const Form = (props) => {
           isVertical={true}
           labelVisible={false}
           hasError={!passwordValid}
-          errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
+          errorMessage={errorText ? "" : t("Common:RequiredField")} //TODO: Add wrong password server error
         >
           <PasswordInput
             simpleView={true}
             passwordSettings={settings}
             id="password"
             inputName="password"
-            placeholder={t("Password")}
+            placeholder={t("Common:Password")}
             type="password"
             hasError={!passwordValid}
             inputValue={password}
@@ -507,7 +518,7 @@ const Form = (props) => {
           primary
           size="large"
           scale={true}
-          label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+          label={isLoading ? t("Common:LoadingProcessing") : t("LoginButton")}
           tabIndex={1}
           isDisabled={isLoading}
           isLoading={isLoading}
@@ -614,7 +625,7 @@ const Login = inject(({ auth }) => {
     setProviders,
     providers,
   };
-})(withRouter(observer(LoginForm)));
+})(withRouter(observer(withTranslation(["Login", "Common"])(LoginForm))));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

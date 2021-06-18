@@ -102,6 +102,6 @@ const SimpleFilesRow = createSelectable((props) => {
   );
 });
 
-export default withTranslation("Home")(
-  withFileActions(withContextOptions(withRouter(SimpleFilesRow)))
+export default withTranslation(["Home", "Translations"])(
+  withFileActions(withRouter(withContextOptions(SimpleFilesRow)))
 );

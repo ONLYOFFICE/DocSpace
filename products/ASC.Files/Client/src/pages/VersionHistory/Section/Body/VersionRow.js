@@ -13,6 +13,7 @@ import StyledVersionRow from "./StyledVersionRow";
 import ExternalLinkIcon from "../../../../../public/images/external.link.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
+import toastr from "studio/toastr";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
@@ -74,10 +75,14 @@ const VersionRow = (props) => {
 
   const contextOptions = [
     canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
-    canEdit && { key: "restore", label: t("Restore"), onClick: onRestoreClick },
+    canEdit && {
+      key: "restore",
+      label: t("Translations:Restore"),
+      onClick: onRestoreClick,
+    },
     {
       key: "download",
-      label: `${t("Download")} (${info.contentLength})`,
+      label: `${t("Common:Download")} (${info.contentLength})`,
       onClick: onDownloadAction,
     },
   ];
@@ -158,7 +163,7 @@ const VersionRow = (props) => {
                     <ModalDialog.Footer>
                       <Button
                         className="version_save-button"
-                        label={t("AddButton")}
+                        label={t("Common:SaveButton")}
                         size="big"
                         primary
                         onClick={onSaveClick}
@@ -187,7 +192,7 @@ const VersionRow = (props) => {
                 {...linkStyles}
                 className="version_link-action"
               >
-                {t("Restore")}
+                {t("Translations:Restore")}
               </Link>
             )}
             <Link
@@ -195,7 +200,7 @@ const VersionRow = (props) => {
               {...linkStyles}
               className="version_link-action"
             >
-              {t("Download")}
+              {t("Common:Download")}
             </Link>
           </div>
         </Box>
@@ -210,7 +215,7 @@ const VersionRow = (props) => {
                 scale={true}
                 primary
                 onClick={onSaveClick}
-                label={t("AddButton")}
+                label={t("Common:SaveButton")}
               />
             </Box>
             <Box
@@ -221,7 +226,7 @@ const VersionRow = (props) => {
                 size="base"
                 scale={true}
                 onClick={onCancelClick}
-                label={t("CancelButton")}
+                label={t("Common:CancelButton")}
               />
             </Box>
           </Box>
@@ -249,4 +254,10 @@ export default inject(({ auth, versionHistoryStore }) => {
     restoreVersion,
     updateCommentVersion,
   };
-})(withRouter(withTranslation("VersionHistory")(observer(VersionRow))));
+})(
+  withRouter(
+    withTranslation(["VersionHistory", "Common", "Translations"])(
+      observer(VersionRow)
+    )
+  )
+);

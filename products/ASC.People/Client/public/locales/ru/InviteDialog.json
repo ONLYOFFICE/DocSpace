@@ -1,11 +1,8 @@
 {
-  "InviteLinkTitle": "Пригласительная ссылка",
+  "CopyToClipboard": "Копировать ссылку",
+  "GetShortenLink": "Получить сокращенную ссылку",
   "HelpAnswerLinkInviteSettings": "Поделитесь ссылкой, чтобы пригласить коллег на портал.",
   "InviteLinkValidInterval": "Эта ссылка действительна только в течение {{ count }} дней.",
-  "CopyToClipboard": "Копировать ссылку",
-  "CloseButton": "Закрыть",
-  "LinkCopySuccess": "Ссылка скопирована",
-  "GetShortenLink": "Получить сокращенную ссылку",
   "InviteUsersAsCollaborators": "Добавить со статусом {{guestsCaption, lowercase}}",
-  "LoadingProcessing": "Загрузка..."
+  "LinkCopySuccess": "Ссылка скопирована"
 }

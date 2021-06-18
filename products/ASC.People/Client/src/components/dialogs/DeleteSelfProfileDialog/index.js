@@ -39,50 +39,49 @@ class DeleteSelfProfileDialogComponent extends React.Component {
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>{t("DeleteProfileTitle")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text fontSize="13px">
-              {t("DeleteProfileInfo")}{" "}
-              <Link
-                type="page"
-                href={`mailto:${email}`}
-                noHover
-                color="#316DAA"
-                title={email}
-              >
-                {email}
-              </Link>
-            </Text>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              key="SendBtn"
-              label={t("SendButton")}
-              size="medium"
-              primary={true}
-              onClick={this.onDeleteSelfProfileInstructions}
-              isLoading={isRequestRunning}
-            />
-            <Button
-              className="button-dialog"
-              key="CloseBtn"
-              label={t("CloseButton")}
-              size="medium"
-              onClick={onClose}
-              isDisabled={isRequestRunning}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+      <ModalDialogContainer visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("DeleteProfileTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text fontSize="13px">
+            {t("DeleteProfileInfo")}{" "}
+            <Link
+              type="page"
+              href={`mailto:${email}`}
+              noHover
+              color="#316DAA"
+              title={email}
+            >
+              {email}
+            </Link>
+          </Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="SendBtn"
+            label={t("Common:SendButton")}
+            size="medium"
+            primary={true}
+            onClick={this.onDeleteSelfProfileInstructions}
+            isLoading={isRequestRunning}
+          />
+          <Button
+            className="button-dialog"
+            key="CloseBtn"
+            label={t("Common:CloseButton")}
+            size="medium"
+            onClick={onClose}
+            isDisabled={isRequestRunning}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
 }
 
-const DeleteSelfProfileDialog = withTranslation("DeleteSelfProfileDialog")(
-  DeleteSelfProfileDialogComponent
-);
+const DeleteSelfProfileDialog = withTranslation([
+  "DeleteSelfProfileDialog",
+  "Common",
+])(DeleteSelfProfileDialogComponent);
 
 DeleteSelfProfileDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

@@ -26,93 +26,83 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.ServiceModel;
-using System.Web;
-using System.Xml.Linq;
-using System.Xml.XPath;
+using System.Text;
+using System.Text.Json;
 
-using ASC.Common.Logging;
+using ASC.Common;
 
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
-    public class BillingClient : ClientBase<IService>, IDisposable
+    [Singletone]
+    public class BillingClient
     {
-        private readonly ILog log;
-        private readonly bool test;
+        public readonly bool Configured = false;
+        private readonly string _billingDomain;
+        private readonly string _billingKey;
+        private readonly string _billingSecret;
+        private readonly bool _test;
 
-        private string Security { get; set; }
-        private string PartnersProduct { get; set; }
+        private const int AvangatePaymentSystemId = 1;
 
-        public BillingClient(IConfiguration configuration, IOptionsMonitor<ILog> option)
-            : this(false, configuration, option)
+
+        public BillingClient(IConfiguration configuration)
+            : this(false, configuration)
         {
         }
 
-        public BillingClient(bool test, IConfiguration configuration, IOptionsMonitor<ILog> option)
+        public BillingClient(bool test, IConfiguration configuration)
         {
-            this.test = test;
-            Security = configuration["core:payment:security"];
-            PartnersProduct = configuration["core:payment:partners-product"];
-            log = option.CurrentValue;
-        }
+            _test = test;
 
+            var billingDomain = configuration["core:payment-url"];
+
+            _billingDomain = (billingDomain ?? "").Trim().TrimEnd('/');
+            if (!string.IsNullOrEmpty(_billingDomain))
+            {
+                _billingDomain += "/billing/";
+
+                _billingKey = configuration["core:payment-key"];
+                _billingSecret = configuration["core:payment-secret"];
+
+                Configured = true;
+            }
+        }
 
         public PaymentLast GetLastPayment(string portalId)
         {
-            var result = Request("GetLatestActiveResourceEx", portalId);
-            var xelement = ToXElement("<root>" + result + "</root>");
-            var dedicated = xelement.Element("dedicated-resource");
-            var payment = xelement.Element("payment");
+            var result = Request("GetActiveResource", portalId);
+            var paymentLast = JsonSerializer.Deserialize<PaymentLast>(result);
 
-            if (!test && GetValueString(payment.Element("status")) == "4")
+            if (!_test && paymentLast.PaymentStatus == 4)
             {
                 throw new BillingException("Can not accept test payment.", new { PortalId = portalId });
             }
 
-            var autorenewal = string.Empty;
-            try
-            {
-                autorenewal = Request("GetLatestAvangateLicenseRecurringStatus", portalId);
-            }
-            catch (BillingException err)
-            {
-                log.Debug(err); // ignore
-            }
-
-            return new PaymentLast
-            {
-                ProductId = GetValueString(dedicated.Element("product-id")),
-                EndDate = GetValueDateTime(dedicated.Element("end-date")),
-                Autorenewal = "enabled".Equals(autorenewal, StringComparison.InvariantCultureIgnoreCase),
-            };
+            return paymentLast;
         }
 
-        public IEnumerable<PaymentInfo> GetPayments(string portalId, DateTime from, DateTime to)
+        public IEnumerable<PaymentInfo> GetPayments(string portalId)
         {
-            string result;
-            if (from == DateTime.MinValue && to == DateTime.MaxValue)
-            {
-                result = Request("GetPayments", portalId);
-            }
-            else
-            {
-                result = Request("GetListOfPaymentsByTimeSpan", portalId, Tuple.Create("StartDate", from.ToString("yyyy-MM-dd HH:mm:ss")), Tuple.Create("EndDate", to.ToString("yyyy-MM-dd HH:mm:ss")));
-            }
-            var xelement = ToXElement(result);
-            return xelement.Elements("payment").Select(ToPaymentInfo);
+            string result = Request("GetPayments", portalId);
+            var payments = JsonSerializer.Deserialize<List<PaymentInfo>>(result);
+
+            return payments;
         }
 
-        public IDictionary<string, Tuple<Uri, Uri>> GetPaymentUrls(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerId = null)
+        public IDictionary<string, Tuple<Uri, Uri>> GetPaymentUrls(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerId = null, string quantity = null)
         {
             var urls = new Dictionary<string, Tuple<Uri, Uri>>();
 
-            var additionalParameters = new List<Tuple<string, string>>(2) { Tuple.Create("PaymentSystemId", "1") };
+            var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()) };
             if (!string.IsNullOrEmpty(affiliateId))
             {
                 additionalParameters.Add(Tuple.Create("AffiliateId", affiliateId));
@@ -133,6 +123,10 @@ namespace ASC.Core.Billing
             {
                 additionalParameters.Add(Tuple.Create("CustomerID", customerId));
             }
+            if (!string.IsNullOrEmpty(quantity))
+            {
+                additionalParameters.Add(Tuple.Create("Quantity", quantity));
+            }
 
             var parameters = products
                 .Distinct()
@@ -141,34 +135,35 @@ namespace ASC.Core.Billing
                 .ToArray();
 
             //max 100 products
-            var paymentUrls = ToXElement(Request("GetBatchPaymentSystemUrl", portalId, parameters))
-                .Elements()
-                .ToDictionary(e => e.Attribute("id").Value, e => ToUrl(e.Attribute("value").Value));
+            var result = Request("GetPaymentUrl", portalId, parameters);
+            var paymentUrls = JsonSerializer.Deserialize<Dictionary<string, string>>(result);
 
             var upgradeUrls = new Dictionary<string, string>();
-            if (!string.IsNullOrEmpty(portalId))
+            if (!string.IsNullOrEmpty(portalId)
+                //TODO: remove
+                && false)
             {
                 try
                 {
                     //max 100 products
-                    upgradeUrls = ToXElement(Request("GetBatchPaymentSystemUpgradeUrl", portalId, parameters))
-                        .Elements()
-                        .ToDictionary(e => e.Attribute("id").Value, e => ToUrl(e.Attribute("value").Value));
+                    result = Request("GetPaymentUpgradeUrl", portalId, parameters);
+                    upgradeUrls = JsonSerializer.Deserialize<Dictionary<string, string>>(result);
                 }
-                catch (BillingException)
+                catch (BillingNotFoundException)
                 {
                 }
             }
 
             foreach (var p in products)
             {
+                string url;
                 var paymentUrl = (Uri)null;
                 var upgradeUrl = (Uri)null;
-                if (paymentUrls.TryGetValue(p, out var url) && !string.IsNullOrEmpty(url))
+                if (paymentUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url = ToUrl(url)))
                 {
                     paymentUrl = new Uri(url);
                 }
-                if (upgradeUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url))
+                if (upgradeUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url = ToUrl(url)))
                 {
                     upgradeUrl = new Uri(url);
                 }
@@ -177,98 +172,125 @@ namespace ASC.Core.Billing
             return urls;
         }
 
-        public Invoice GetInvoice(string paymentId)
-        {
-            var result = Request("GetInvoice", null, Tuple.Create("PaymentId", paymentId));
-            var xelement = ToXElement(result);
-            return new Invoice
-            {
-                Sale = GetValueString(xelement.Element("sale")),
-                Refund = GetValueString(xelement.Element("refund")),
-            };
-        }
-
-        public IDictionary<string, IEnumerable<Tuple<string, decimal>>> GetProductPriceInfo(params string[] productIds)
+        public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
         {
             if (productIds == null)
             {
                 throw new ArgumentNullException("productIds");
             }
 
-            var responce = Request("GetBatchAvangateProductPriceInfo", null, productIds.Select(pid => Tuple.Create("ProductId", pid)).ToArray());
-            var xelement = ToXElement(responce);
-            return productIds
-                .Select(p =>
+            var parameters = productIds.Select(pid => Tuple.Create("ProductId", pid)).ToList();
+            parameters.Add(Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()));
+
+            var result = Request("GetProductsPrices", null, parameters.ToArray());
+            var prices = JsonSerializer.Deserialize<Dictionary<int, Dictionary<string, Dictionary<string, decimal>>>>(result);
+
+            if (prices.ContainsKey(AvangatePaymentSystemId))
+            {
+                var pricesPaymentSystem = prices[AvangatePaymentSystemId];
+
+                return productIds.Select(productId =>
                 {
-                    var prices = Enumerable.Empty<Tuple<string, decimal>>();
-                    var product = xelement.XPathSelectElement(string.Format("/avangate-product/internal-id[text()=\"{0}\"]", p));
-                    if (product != null)
+                    if (pricesPaymentSystem.ContainsKey(productId))
                     {
-                        prices = product.Parent.Element("prices").Elements("price-item")
-                                        .Select(e => Tuple.Create(e.Element("currency").Value, decimal.Parse(e.Element("amount").Value)));
+                        return new { ProductId = productId, Prices = pricesPaymentSystem[productId] };
                     }
-                    return new { ProductId = p, Prices = prices, };
+                    return new { ProductId = productId, Prices = new Dictionary<string, decimal>() };
                 })
-                .ToDictionary(e => e.ProductId, e => e.Prices);
+                    .ToDictionary(e => e.ProductId, e => e.Prices);
+            }
+
+            return new Dictionary<string, Dictionary<string, decimal>>();
         }
 
 
+        private string CreateAuthToken(string pkey, string machinekey)
+        {
+            using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(machinekey)))
+            {
+                var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
+                return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+            }
+        }
+
         private string Request(string method, string portalId, params Tuple<string, string>[] parameters)
         {
-            var request = new XElement(method);
+            var url = _billingDomain + method;
+
+            var request = WebRequest.Create(url);
+            request.Method = "POST";
+            request.Timeout = 60000;
+            request.ContentType = "application/json";
+
+            if (!string.IsNullOrEmpty(_billingKey))
+            {
+                request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
+            }
+
+            var data = new Dictionary<string, List<string>>();
             if (!string.IsNullOrEmpty(portalId))
             {
-                request.Add(new XElement("PortalId", portalId));
+                data.Add("PortalId", new List<string>() { portalId });
             }
-            request.Add(parameters.Select(p => new XElement(p.Item1, p.Item2)).ToArray());
+            foreach (var parameter in parameters)
+            {
+                if (!data.ContainsKey(parameter.Item1))
+                {
+                    data.Add(parameter.Item1, new List<string>() { parameter.Item2 });
+                }
+                else
+                {
+                    data[parameter.Item1].Add(parameter.Item2);
+                }
+            }
+            var body = JsonSerializer.Serialize(data);
 
-            var responce = Channel.Request(new Message { Type = MessageType.Data, Content = request.ToString(SaveOptions.DisableFormatting), });
-            if (responce.Content == null)
+            var bytes = Encoding.UTF8.GetBytes(body ?? "");
+            request.ContentLength = bytes.Length;
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(bytes, 0, bytes.Length);
+            }
+
+            string result;
+            try
+            {
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    if (stream == null)
+                    {
+                        throw new BillingNotConfiguredException("Billing response is null");
+                    }
+                    using (var readStream = new StreamReader(stream))
+                    {
+                        result = readStream.ReadToEnd();
+                    }
+                }
+            }
+            catch (WebException)
+            {
+                request.Abort();
+                throw;
+            }
+
+            if (string.IsNullOrEmpty(result))
             {
                 throw new BillingNotConfiguredException("Billing response is null");
             }
-            if (responce.Type == MessageType.Data)
+            if (!result.StartsWith("{\"Message\":\"error"))
             {
-                var result = responce.Content;
-                var invalidChar = ((char)65279).ToString();
-                return result.Contains(invalidChar) ? result.Replace(invalidChar, string.Empty) : result;
+                return result;
             }
 
             var @params = (parameters ?? Enumerable.Empty<Tuple<string, string>>()).Select(p => string.Format("{0}: {1}", p.Item1, p.Item2));
             var info = new { Method = method, PortalId = portalId, Params = string.Join(", ", @params) };
-            if (responce.Content.Contains("error: cannot find "))
+            if (result.Contains("{\"Message\":\"error: cannot find "))
             {
-                throw new BillingNotFoundException(responce.Content, info);
+                throw new BillingNotFoundException(result, info);
             }
-            throw new BillingException(responce.Content, info);
-        }
-
-        private static XElement ToXElement(string xml)
-        {
-            return XElement.Parse(xml);
-        }
-
-        private static PaymentInfo ToPaymentInfo(XElement x)
-        {
-            return new PaymentInfo
-            {
-                ID = (int)GetValueDecimal(x.Element("id")),
-                Status = (int)GetValueDecimal(x.Element("status")),
-                PaymentType = GetValueString(x.Element("reserved-str-2")),
-                ExchangeRate = (double)GetValueDecimal(x.Element("exch-rate")),
-                GrossSum = (double)GetValueDecimal(x.Element("gross-sum")),
-                Name = (GetValueString(x.Element("fname")) + " " + GetValueString(x.Element("lname"))).Trim(),
-                Email = GetValueString(x.Element("email")),
-                Date = GetValueDateTime(x.Element("payment-date")),
-                Price = GetValueDecimal(x.Element("price")),
-                Currency = GetValueString(x.Element("payment-currency")),
-                Method = GetValueString(x.Element("payment-method")),
-                CartId = GetValueString(x.Element("cart-id")),
-                ProductId = GetValueString(x.Element("product-ref")),
-                TenantID = GetValueString(x.Element("customer-id")),
-                Country = GetValueString(x.Element("country")),
-                DiscountSum = GetValueDecimal(x.Element("discount-sum"))
-            };
+            throw new BillingException(result, info);
         }
 
         private string ToUrl(string s)
@@ -278,54 +300,11 @@ namespace ASC.Core.Billing
             {
                 return string.Empty;
             }
-            if (test && !s.Contains("&DOTEST = 1"))
+            if (_test && !s.Contains("&DOTEST = 1"))
             {
                 s += "&DOTEST=1";
             }
             return s;
-        }
-
-        private static string GetValueString(XElement xelement)
-        {
-            return xelement != null ? HttpUtility.HtmlDecode(xelement.Value) : default;
-        }
-
-        private static DateTime GetValueDateTime(XElement xelement)
-        {
-            return xelement != null ?
-                       DateTime.ParseExact(xelement.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) :
-                       default;
-        }
-
-        private static decimal GetValueDecimal(XElement xelement)
-        {
-            if (xelement == null || string.IsNullOrEmpty(xelement.Value))
-            {
-                return default;
-            }
-            var sep = CultureInfo.InvariantCulture.NumberFormat.CurrencyDecimalSeparator;
-            return decimal.TryParse(xelement.Value.Replace(".", sep).Replace(",", sep), NumberStyles.Currency, CultureInfo.InvariantCulture, out var value) ? value : default;
-        }
-
-        void IDisposable.Dispose()
-        {
-            try
-            {
-                Close();
-            }
-            catch (CommunicationException)
-            {
-                Abort();
-            }
-            catch (TimeoutException)
-            {
-                Abort();
-            }
-            catch (Exception)
-            {
-                Abort();
-                throw;
-            }
         }
     }
 

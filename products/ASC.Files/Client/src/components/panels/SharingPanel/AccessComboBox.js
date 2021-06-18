@@ -30,7 +30,7 @@ const AccessComboBox = (props) => {
     <>
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
-          label={t("FullAccess")}
+          label={t("Common:FullAccess")}
           icon="/static/images/access.edit.react.svg"
           data-id={itemId}
           data-access={FullAccess}
@@ -50,7 +50,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("Review") && (
         <DropDownItem
-          label={t("Review")}
+          label={t("Common:Review")}
           icon="/static/images/access.review.react.svg"
           data-id={itemId}
           data-access={Review}
