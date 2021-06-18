@@ -168,6 +168,17 @@ class PageLayout extends React.Component {
     this.props.setSelections(items);
   };
 
+  dragCondition = (e) => {
+    const path = e.inputEvent.composedPath();
+    const notSelectablePath = path.some(
+      (x) => x.classList && x.classList.contains("not-selectable")
+    );
+
+    if (notSelectablePath) {
+      return false;
+    } else return true;
+  };
+
   render() {
     const {
       onDrop,
@@ -435,6 +446,7 @@ class PageLayout extends React.Component {
             ratio={0}
             continueSelect={false}
             onSelect={this.onSelect}
+            dragCondition={this.dragCondition}
           />
         )}
       </>
