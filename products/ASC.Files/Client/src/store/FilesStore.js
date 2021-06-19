@@ -264,7 +264,6 @@ class FilesStore {
       getSubfolders,
     } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
-    this.createThumbnails();
 
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!this.settingsStore.isEncryptionSupport) {
@@ -333,6 +332,7 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
+          this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
         .catch(() => {
