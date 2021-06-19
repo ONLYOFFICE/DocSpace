@@ -155,11 +155,9 @@ class Tile extends React.PureComponent {
   }
 
   getIconFile = () => {
-    const { item, temporaryIcon, thumbnailClick, thumbnail } = this.props;
+    const { temporaryIcon, thumbnailClick, thumbnail } = this.props;
 
     const icon = thumbnail ? thumbnail : temporaryIcon;
-    let className = "thumbnail-image";
-    if (!thumbnail) className += "temporary-icon";
 
     return (
       <Link type="page" onClick={thumbnailClick}>
@@ -248,9 +246,13 @@ class Tile extends React.PureComponent {
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (
                 <ContextMenuButton
+                  color="#A3A9AE"
+                  hoverColor="#657077"
                   className="expand-button"
                   directionX="right"
                   getData={getOptions}
+                  isNew={true}
+                  onClick={onContextMenu}
                 />
               ) : (
                 <div className="expand-button"> </div>
@@ -278,9 +280,12 @@ class Tile extends React.PureComponent {
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
                 {renderContext ? (
                   <ContextMenuButton
+                    color="#A3A9AE"
+                    hoverColor="#657077"
                     className="expand-button"
                     directionX="right"
                     getData={getOptions}
+                    onClick={onContextMenu}
                   />
                 ) : (
                   <div className="expand-button"> </div>
