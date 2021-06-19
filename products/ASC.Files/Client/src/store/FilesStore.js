@@ -264,6 +264,7 @@ class FilesStore {
       getSubfolders,
     } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
+    this.createThumbnails();
 
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!this.settingsStore.isEncryptionSupport) {
@@ -1315,6 +1316,20 @@ class FilesStore {
               )
         );
     }
+  };
+
+  createThumbnails = () => {
+    const filesList = this.filesList;
+    const fileIds = [];
+    const re = /\d*$/;
+
+    filesList.map((file) => {
+      if (!file.thumbnailUrl && !file.isFolder) {
+        fileIds.push(file.id);
+      }
+    });
+
+    if (fileIds.length) return api.files.createThumbnails(fileIds);
   };
 }
 

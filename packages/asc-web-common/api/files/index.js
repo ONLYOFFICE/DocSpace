@@ -48,7 +48,6 @@ export function getFolder(folderId, filter) {
     filter && filter instanceof FilesFilter
       ? `${folderId}?${filter.toApiUrlParams()}`
       : folderId;
-  console.log(params);
   const options = {
     method: "get",
     url: `/files/${params}`,

@@ -93,7 +93,8 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    const { setViewAs } = this.props;
+    const { setViewAs, createThumbnails } = this.props;
+    if (view === "tile") createThumbnails();
     setViewAs(view);
   };
 
@@ -289,38 +290,43 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-export default inject(({ auth, filesStore, selectedFolderStore }) => {
-  const {
-    fetchFiles,
-    filter,
-    setIsLoading,
-    setViewAs,
-    viewAs,
-    files,
-    folders,
-  } = filesStore;
+export default inject(
+  ({ auth, filesStore, selectedFolderStore, thumbnailsStore }) => {
+    const {
+      fetchFiles,
+      filter,
+      setIsLoading,
+      setViewAs,
+      viewAs,
+      files,
+      folders,
+      createThumbnails,
+    } = filesStore;
 
-  const { user } = auth.userStore;
-  const { customNames, culture } = auth.settingsStore;
+    const { user } = auth.userStore;
+    const { customNames, culture } = auth.settingsStore;
 
-  const { search, filterType, authorType } = filter;
-  const isFiltered =
-    !!files.length || !!folders.length || search || filterType || authorType;
+    const { search, filterType, authorType } = filter;
+    const isFiltered =
+      !!files.length || !!folders.length || search || filterType || authorType;
 
-  return {
-    customNames,
-    user,
-    selectedFolderId: selectedFolderStore.id,
-    selectedItem: filter.selectedItem,
-    filter,
-    viewAs,
-    isFiltered,
+    //const { createThumbnails } = thumbnailsStore;
+    return {
+      customNames,
+      user,
+      selectedFolderId: selectedFolderStore.id,
+      selectedItem: filter.selectedItem,
+      filter,
+      viewAs,
+      isFiltered,
 
-    setIsLoading,
-    fetchFiles,
-    setViewAs,
-  };
-})(
+      setIsLoading,
+      fetchFiles,
+      setViewAs,
+      createThumbnails,
+    };
+  }
+)(
   withRouter(
     withLayoutSize(
       withTranslation(["Home", "Common", "Translations"])(

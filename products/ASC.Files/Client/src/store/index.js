@@ -16,7 +16,6 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
-import ThumbnailsStore from "./ThumbnailsStore";
 
 import store from "studio/store";
 
@@ -67,7 +66,6 @@ const filesActionsStore = new FilesActionsStore(
 );
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
-const thumbnailsStore = new ThumbnailsStore(filesStore);
 
 const stores = {
   filesStore,
@@ -80,7 +78,6 @@ const stores = {
   treeFoldersStore,
   selectedFolderStore,
   filesActionsStore,
-  thumbnailsStore,
 };
 
 export default stores;
