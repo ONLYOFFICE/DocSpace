@@ -63,7 +63,7 @@ namespace ASC.Mail.Core.Dao
                 FromText = MailUtil.NormalizeStringForMySql(mail.From),
                 ToText = MailUtil.NormalizeStringForMySql(mail.To),
                 ReplyTo = mail.Reply,
-                Subject = mail.Subject,
+                Subject = MailUtil.NormalizeStringForMySql(mail.Subject),
                 Cc = mail.Cc,
                 Bcc = mail.Bcc,
                 Importance = mail.Importance,

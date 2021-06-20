@@ -14,7 +14,8 @@ namespace ASC.Mail.Aggregator.CollectionService
         { 
             "ASC.Mail.Aggregator",
             "ASC.Mail.MainThread",
-            "ASC.Mail.Stat"
+            "ASC.Mail.Stat",
+            "ASC.Mail.MailboxEngine"
         }; 
 
         public Startup(

@@ -20,6 +20,8 @@ using ASC.Common;
 using ASC.Mail.Utils;
 using ASC.Mail.Core.Engine;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Mail.Aggregator.CollectionService.Queue
 {
     [Scope]
@@ -53,7 +55,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         public QueueManager(
             MailSettings mailSettings, 
-            ILog log,
+            IOptionsMonitor<ILog> optionsMonitor,
             TenantManager tenantManager, 
             SecurityContext securityContext,
             ApiHelper apiHelper,
@@ -73,7 +75,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             MailboxEngine = mailboxEngine;
             AlertEngine = alertEngine;
 
-            _log = log;
+            _log = optionsMonitor.Get("ASC.Mail.MainThread");
             _loadQueueTime = DateTime.UtcNow;
             _tenantMemCache = new MemoryCache("QueueManagerTenantCache");
 

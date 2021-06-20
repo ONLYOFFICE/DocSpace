@@ -1262,7 +1262,7 @@ namespace ASC.Mail.Core.Engine
             log.Debug("UpdateExistingMessages()");
 
             var found = UpdateExistingMessages(mailbox, folder.Folder, uidl, md5,
-                mimeMessage.MessageId, mimeMessage.Subject, mimeMessage.Date.UtcDateTime, fromThisMailBox, toThisMailBox, tagsIds, log);
+                mimeMessage.MessageId, MailUtil.NormalizeStringForMySql(mimeMessage.Subject), mimeMessage.Date.UtcDateTime, fromThisMailBox, toThisMailBox, tagsIds, log);
 
             var needSave = !found;
             if (!needSave)

@@ -93,7 +93,7 @@ namespace ASC.Mail.Core.Engine
             CacheEngine = cacheEngine;
             IndexEngine = indexEngine;
 
-            Log = option.Get("ASC.Mail.AccountEngine");
+            Log = option.Get("ASC.Mail.MailboxEngine");
         }
 
         public MailBoxData GetMailboxData(IMailboxExp exp)

@@ -636,7 +636,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             var failed = false;
 
             var mailbox = mailClientMessageEventArgs.Mailbox;
-            string er = "";
             try
             {
                 var mimeMessage = mailClientMessageEventArgs.Message;
@@ -645,7 +644,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 var unread = mailClientMessageEventArgs.Unread;
                 log = mailClientMessageEventArgs.Logger;
 
-                var uidl = mailbox.Imap ? string.Format("{0}-{1}", uid, (int)folder.Folder) : uid;
+                var uidl = mailbox.Imap ? $"{uid}-{(int)folder.Folder}" : uid;
 
                 log.InfoFormat("Found message (UIDL: '{0}', MailboxId = {1}, Address = '{2}')",
                     uidl, mailbox.MailBoxId, mailbox.EMail);
@@ -671,8 +670,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             }
             catch (Exception ex)
             {
-                log.ErrorFormat("[ClientOnGetMessage] Exception:\r\n{0}\r\n", ex.ToString());
-                er += $" with error {ex.Message}";
+                _log.ErrorFormat("[ClientOnGetMessage] Exception:\r\n{0}\r\n", ex.ToString());
                 failed = true;
                 
                 throw ex;
@@ -683,7 +681,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 {
                     watch.Stop();
 
-                    LogStat(PROCESS_MESSAGE+er, mailbox, watch.Elapsed, failed);
+                    LogStat(PROCESS_MESSAGE, mailbox, watch.Elapsed, failed);
                 }
             }
         }
@@ -721,8 +719,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             }
             catch (Exception exGetMbInfo)
             {
-                log.InfoFormat("GetMailBoxState(Tenant = {0}, MailboxId = {1}, Address = '{2}') Exception: {3}",
-                    mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, exGetMbInfo.Message);
+                log.ErrorFormat(
+                    $"GetMailBoxState(Tenant = {mailbox.TenantId}, " +
+                    $"MailboxId = {mailbox.MailBoxId}, " +
+                    $"Address = '{mailbox.EMail}') " +
+                    $"Exception: {exGetMbInfo.Message} \n{exGetMbInfo.StackTrace}");
             }
 
             return MailboxState.NoChanges;
