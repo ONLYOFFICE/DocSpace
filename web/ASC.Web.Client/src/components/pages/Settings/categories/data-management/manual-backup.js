@@ -81,9 +81,13 @@ class ManualBackup extends React.Component {
           .then((response) => {
             if (response) {
               if (!response.error) {
+                response.link &&
+                  response.link.slice(0, 1) === "/" &&
+                  this.setState({
+                    link: response.link,
+                  });
                 this.setState({
                   downloadingProgress: response.progress,
-                  link: response.link,
                 });
                 if (response.progress !== 100) {
                   this._isMounted &&
@@ -129,13 +133,13 @@ class ManualBackup extends React.Component {
   };
 
   getProgress = () => {
-    const { downloadingProgress, isLoadingData } = this.state;
+    //const { downloadingProgress, } = this.state;
     const { t } = this.props;
-    console.log("downloadingProgress", downloadingProgress);
+    //console.log("downloadingProgress", downloadingProgress);
 
     getBackupProgress()
-      .then((res) => {
-        if (res.error.length > 0 && res.progress !== 100) {
+      .then((response) => {
+        if (response.error.length > 0 && response.progress !== 100) {
           saveToSessionStorage("selectedManualStorageType", "");
 
           getFromSessionStorage("selectedFolderPath") &&
@@ -146,7 +150,7 @@ class ManualBackup extends React.Component {
 
           clearInterval(this.timerId);
           this.timerId && toastr.error(`${t("CopyingError")}`);
-          //console.log("error", res.error);
+          //console.log("error", response.error);
           this.timerId = null;
           this.setState({
             downloadingProgress: 100,
@@ -155,7 +159,7 @@ class ManualBackup extends React.Component {
           return;
         }
 
-        if (res.progress === 100) {
+        if (response.progress === 100) {
           //debugger;
           saveToSessionStorage("selectedManualStorageType", "");
 
@@ -168,9 +172,11 @@ class ManualBackup extends React.Component {
           clearInterval(this.timerId);
 
           if (this._isMounted) {
-            this.setState({
-              link: res.link,
-            });
+            response.link &&
+              response.link.slice(0, 1) === "/" &&
+              this.setState({
+                link: response.link,
+              });
             this.setState({
               isLoadingData: false,
             });
@@ -181,7 +187,7 @@ class ManualBackup extends React.Component {
         }
         if (this._isMounted) {
           this.setState({
-            downloadingProgress: res.progress,
+            downloadingProgress: response.progress,
           });
         }
       })
@@ -334,7 +340,7 @@ class ManualBackup extends React.Component {
       isLoadingData,
     } = this.state;
     const maxProgress = downloadingProgress === 100;
-
+    console.log("link", link);
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
