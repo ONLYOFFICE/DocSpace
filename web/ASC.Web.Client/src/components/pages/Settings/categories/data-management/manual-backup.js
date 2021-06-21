@@ -12,7 +12,7 @@ import ThirdPartyStorageModule from "./sub-components-manual-backup/thirdPartySt
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
 import { StyledModules, StyledComponent } from "./styled-backup";
-import SelectedFolder from "files/SelectedFolder";
+import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 
@@ -73,7 +73,7 @@ class ManualBackup extends React.Component {
         isLoading: true,
       },
       function () {
-        SelectedFolder.getCommonThirdPartyList()
+        SelectFolderDialog.getCommonThirdPartyList()
           .then(
             (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
           )
@@ -89,7 +89,7 @@ class ManualBackup extends React.Component {
                   this.setState({
                     isLoadingData: true,
                   });
-                this.timerId = setInterval(() => this.getProgress(), 5000);
+                this.timerId = setInterval(() => this.getProgress(), 1000);
               } else {
                 saveToSessionStorage("selectedManualStorageType", "");
                 getFromSessionStorage("selectedFolderPath") &&
@@ -123,7 +123,7 @@ class ManualBackup extends React.Component {
       isLoadingData: true,
     });
 
-    this.timerId = setInterval(() => this.getProgress(), 5000);
+    this.timerId = setInterval(() => this.getProgress(), 1000);
   };
 
   getProgress = () => {
@@ -143,8 +143,8 @@ class ManualBackup extends React.Component {
             saveToSessionStorage("selectedFolder", "");
 
           clearInterval(this.timerId);
-          this.timerId && toastr.error(`${res.error}`);
-          console.log("error", res.error);
+          this.timerId && toastr.error(`${t("CopyingError")}`);
+          //console.log("error", res.error);
           this.timerId = null;
           this.setState({
             downloadingProgress: 100,
@@ -184,12 +184,21 @@ class ManualBackup extends React.Component {
         }
       })
       .catch((err) => {
+        //console.log("error!", err);
+        saveToSessionStorage("selectedManualStorageType", "");
+
+        getFromSessionStorage("selectedFolderPath") &&
+          saveToSessionStorage("selectedFolderPath", "");
+
+        getFromSessionStorage("selectedFolder") &&
+          saveToSessionStorage("selectedFolder", "");
         clearInterval(this.timerId);
-        this.timerId && toastr.error(err);
+        this.timerId && toastr.error(`${t("CopyingError")}`);
         this.timerId = null;
         if (this._isMounted) {
           this.setState({
             downloadingProgress: 100,
+            isLoadingData: false,
           });
         }
       });
@@ -200,7 +209,7 @@ class ManualBackup extends React.Component {
       downloadingProgress: 1,
       isLoadingData: true,
     });
-    this.timerId = setInterval(() => this.getProgress(), 5000);
+    this.timerId = setInterval(() => this.getProgress(), 1000);
   };
 
   onClickDownload = () => {
