@@ -118,14 +118,20 @@ class AutomaticBackup extends React.PureComponent {
     const { selectedFolder } = this.state;
     this.getWeekdaysOptions();
 
-    getBackupProgress().then((res) => {
-      if (res) {
-        if (res.progress === 100)
+    getBackupProgress().then((response) => {
+      if (response) {
+        if (!response.error) {
+          if (response.progress === 100)
+            this.setState({
+              isCopyingToLocal: false,
+            });
+          if (response.progress !== 100)
+            this.timerId = setInterval(() => this.getProgress(), 1000);
+        } else {
           this.setState({
             isCopyingToLocal: false,
           });
-        if (res.progress !== 100)
-          this.timerId = setInterval(() => this.getProgress(), 1000);
+        }
       } else {
         this._isMounted &&
           this.setState({

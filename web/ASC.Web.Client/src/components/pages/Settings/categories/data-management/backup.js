@@ -36,14 +36,14 @@ class Backup extends React.Component {
   componentDidMount() {
     this._isMounted = true;
 
-    getBackupProgress().then((res) => {
-      if (res) {
+    getBackupProgress().then((response) => {
+      if (response && !response.error) {
         this._isMounted &&
           this.setState({
-            downloadingProgress: res.progress,
-            link: res.link,
+            downloadingProgress: response.progress,
+            link: response.link,
           });
-        if (res.progress !== 100) {
+        if (response.progress !== 100) {
           this.timerId = setInterval(() => this.getProgress(), 5000);
         }
       }
@@ -64,21 +64,24 @@ class Backup extends React.Component {
     const { t } = this.props;
 
     getBackupProgress()
-      .then((res) => {
-        if (res) {
-          if (res.error.length > 0 && res.progress !== 100) {
+      .then((response) => {
+        if (response) {
+          if (response.error.length > 0 && response.progress !== 100) {
             clearInterval(this.timerId);
-            this.timerId && toastr.error(`${res.error}`);
-            console.log("error", res.error);
+            this.timerId && toastr.error(`${t("CopyingError")}`);
+            //console.log("error", response.error);
             this.timerId = null;
+            this.setState({
+              downloadingProgress: 100,
+            });
             return;
           }
           if (this._isMounted) {
             this.setState({
-              downloadingProgress: res.progress,
+              downloadingProgress: response.progress,
             });
           }
-          if (res.progress === 100) {
+          if (response.progress === 100) {
             clearInterval(this.timerId);
 
             this.timerId && toastr.success(`${t("SuccessCopied")}`);
@@ -88,8 +91,8 @@ class Backup extends React.Component {
       })
       .catch((err) => {
         clearInterval(this.timerId);
-        this.timerId && toastr.error(err);
-        console.log("err", err);
+        this.timerId && toastr.error(`${t("CopyingError")}`);
+        //console.log("err", err);
 
         this.timerId = null;
         if (this._isMounted) {

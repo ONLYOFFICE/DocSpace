@@ -78,25 +78,27 @@ class ManualBackup extends React.Component {
             (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
           )
           .then(() => getBackupProgress())
-          .then((res) => {
-            if (res) {
-              this.setState({
-                downloadingProgress: res.progress,
-                link: res.link,
-              });
-              if (res.progress !== 100) {
-                this._isMounted &&
-                  this.setState({
-                    isLoadingData: true,
-                  });
-                this.timerId = setInterval(() => this.getProgress(), 1000);
-              } else {
-                saveToSessionStorage("selectedManualStorageType", "");
-                getFromSessionStorage("selectedFolderPath") &&
-                  saveToSessionStorage("selectedFolderPath", "");
+          .then((response) => {
+            if (response) {
+              if (!response.error) {
+                this.setState({
+                  downloadingProgress: response.progress,
+                  link: response.link,
+                });
+                if (response.progress !== 100) {
+                  this._isMounted &&
+                    this.setState({
+                      isLoadingData: true,
+                    });
+                  this.timerId = setInterval(() => this.getProgress(), 1000);
+                } else {
+                  saveToSessionStorage("selectedManualStorageType", "");
+                  getFromSessionStorage("selectedFolderPath") &&
+                    saveToSessionStorage("selectedFolderPath", "");
 
-                getFromSessionStorage("selectedFolder") &&
-                  saveToSessionStorage("selectedFolder", "");
+                  getFromSessionStorage("selectedFolder") &&
+                    saveToSessionStorage("selectedFolder", "");
+                }
               }
             }
           })
