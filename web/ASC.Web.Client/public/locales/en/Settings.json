@@ -124,5 +124,6 @@
   "UserNotification": "Send notification about portal restoring to users",
   "ShowBackupList": "Show the backup list",
   "BackupList": "Backup List",
-  "BackupListDeleteWarning": "If you delete any items from the list, their corresponding files will also be deleted. This action cannot be undone. To delete all the files use the link:"
+  "BackupListDeleteWarning": "If you delete any items from the list, their corresponding files will also be deleted. This action cannot be undone. To delete all the files use the link:",
+  "CopyingError": "An error has been encountered. Please contact your administrator."
 }
