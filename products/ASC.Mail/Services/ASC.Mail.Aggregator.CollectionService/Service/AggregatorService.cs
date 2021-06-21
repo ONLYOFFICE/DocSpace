@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Mail.Aggregator.CollectionService.Console;
@@ -20,6 +21,7 @@ using ASC.Mail.Configuration;
 using ASC.Mail.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine;
+using ASC.Mail.Core.Entities;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Storage;
@@ -109,7 +111,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             if (_mailSettings.EnableSignalr)
                 _signalrWorker = _scope.SignalrWorker;
 
-            _workTimer = new Timer(workTimerElapsed, _cancelTokenSource, Timeout.Infinite, Timeout.Infinite);
+            _workTimer = new Timer(workTimerElapsed, _cancelTokenSource.Token, Timeout.Infinite, Timeout.Infinite);
 
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
 
@@ -208,11 +210,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                     else
                     {
                         _log.InfoFormat("Task.WaitAny timeout. Tasks count = {0}\r\nTasks:\r\n{1}", tasks.Count,
-                            string.Join("\r\n",
-                                tasks.Select(
-                                    t =>
-                                        string.Format("Id: {0} Status: {1}, MailboxId: {2} Address: '{3}'",
-                                            t.Task.Id, t.Task.Status, t.Mailbox.MailBoxId, t.Mailbox.EMail))));
+                            string.Join("\r\n", tasks.Select(t =>
+                                        $"Id: {t.Task.Id} Status: {t.Task.Status}, MailboxId: {t.Mailbox.MailBoxId} Address: '{t.Mailbox.EMail}'")));
                     }
 
                     var tasks2Free =
@@ -701,7 +700,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 log.Debug("GetMailBoxState()");
 
                 //var engine = new EngineFactory(-1);
-                var status = _scope.MailEnginesFactory.MailboxEngine.GetMailboxStatus(new СoncreteUserMailboxExp(mailbox.MailBoxId, mailbox.TenantId, mailbox.UserId, null));
+                var status = (MailboxStatus)_scope.MailEnginesFactory.MailboxEngine.GetMailboxStatus(new СoncreteUserMailboxExp(mailbox.MailBoxId, mailbox.TenantId, mailbox.UserId, null));
 
                 if (mailbox.BeginDate != status.BeginDate)
                 {

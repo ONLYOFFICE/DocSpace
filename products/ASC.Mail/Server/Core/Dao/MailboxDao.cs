@@ -40,6 +40,9 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management;
+
+using ASC.Mail.Utils;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -81,18 +84,18 @@ namespace ASC.Mail.Core.Dao
             {
                 if ((bool)exp.OrderAsc)
                 {
-                    query = query.OrderBy(b => b.DateChecked);
+                    query = query.OrderBy(b => b.DateChecked).ToList();
                 }
                 else
                 {
-                    query = query.OrderByDescending(b => b.DateChecked);
+                    query = query.OrderByDescending(b => b.DateChecked).ToList();
                 }
 
             }
 
             if (exp.Limit.HasValue)
             {
-                query = query.Take(exp.Limit.Value);
+                query = query.Take(exp.Limit.Value).ToList();
             }
 
             var mailboxes = query.ToList();
@@ -332,16 +335,14 @@ namespace ASC.Mail.Core.Dao
             if (nextLoginDelay < MailSettings.DefaultServerLoginDelay)
                 nextLoginDelay = MailSettings.DefaultServerLoginDelay;
 
-            var mailMailbox = MailDb.MailMailbox
-                .Where(mb => mb.Id == mailbox.Id)
-                .FirstOrDefault();
+            var mailMailbox = MailDb.MailMailbox.FirstOrDefault(mb => mb.Id == mailbox.Id);
 
             if (mailMailbox == null)
                 return false;
 
             mailMailbox.IsProcessed = false;
             mailMailbox.DateChecked = DateTime.UtcNow;
-            mailbox.DateLoginDelayExpires =
+            mailMailbox.DateLoginDelayExpires =
                 nextLoginDelay > MailSettings.DefaultServerLoginDelay
                 ? DateTime.UtcNow.AddSeconds(nextLoginDelay)
                 : DateTime.UtcNow.AddSeconds(MailSettings.DefaultServerLoginDelay);
@@ -368,8 +369,7 @@ namespace ASC.Mail.Core.Dao
 
             if (!string.IsNullOrEmpty(oAuthToken))
             {
-                //TODO: Fix
-                //mailMailbox.Token = MailUtil.EncryptPassword(oAuthToken);
+                mailMailbox.Token = InstanceCrypto.Encrypt(oAuthToken);
             }
 
             if (resetImapIntervals.HasValue)
@@ -439,7 +439,7 @@ namespace ASC.Mail.Core.Dao
         {
             var foundIds = MailDb.MailMailbox
                .Where(exp.GetExpression())
-               .Select(mb => mb.Id);
+               .Select(mb => mb.Id).ToList();
 
             return foundIds.Any();
         }

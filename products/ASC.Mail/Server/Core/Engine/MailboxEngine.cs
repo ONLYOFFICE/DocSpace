@@ -111,10 +111,10 @@ namespace ASC.Mail.Core.Engine
         public List<Tuple<MailBoxData, Mailbox>> GetMailboxFullInfoList(IMailboxesExp exp)
         {
             var list = new List<Tuple<MailBoxData, Mailbox>>();
-
+            
             var mailboxes = DaoFactory.MailboxDao.GetMailBoxes(exp);
 
-            list.AddRange(mailboxes.Select(mailbox => GetMailbox(mailbox)).Where(tuple => tuple != null));
+            list.AddRange(mailboxes.Select(GetMailbox).Where(tuple => tuple != null));
 
             return list;
         }
@@ -752,7 +752,7 @@ namespace ASC.Mail.Core.Engine
             return totalAttachmentsSize;
         }
 
-        private IEnumerable<MailBoxData> GetActiveMailboxesForProcessing(MailSettings mailSettings, int tasksLimit)
+        private List<MailBoxData> GetActiveMailboxesForProcessing(MailSettings mailSettings, int tasksLimit)
         {
             if (tasksLimit <= 0)
                 return new List<MailBoxData>();

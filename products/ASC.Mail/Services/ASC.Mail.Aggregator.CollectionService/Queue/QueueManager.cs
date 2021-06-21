@@ -454,7 +454,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         {
             try
             {
-                var mbList = MailboxEngine.GetMailboxesForProcessing(MailSettings, _maxItemsLimit);
+                var mbList = MailboxEngine.GetMailboxesForProcessing(MailSettings, _maxItemsLimit).ToList();
 
                 ReloadQueue(mbList);
             }
