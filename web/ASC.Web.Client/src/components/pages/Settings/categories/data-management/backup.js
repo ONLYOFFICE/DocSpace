@@ -10,12 +10,17 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import Box from "@appserver/components/box";
 import styled from "styled-components";
 import FloatingButton from "@appserver/common/components/FloatingButton";
-import { getBackupProgress } from "@appserver/common/api/portal";
+import {
+  getBackupProgress,
+  getBackupSchedule,
+} from "@appserver/common/api/portal";
+import Loader from "@appserver/components/loader";
 import { StyledBackup } from "./styled-backup";
 
 const { proxyURL } = AppServerConfig;
 
 import toastr from "@appserver/components/toast/toastr";
+import moment from "moment";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -27,15 +32,83 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
 class Backup extends React.Component {
   constructor(props) {
     super(props);
+    const { language } = props;
+
+    this.lng = language.substring(0, language.indexOf("-"));
+    moment.locale(this.lng);
+
     this.state = {
       downloadingProgress: false,
+      isLoading: false,
     };
     this._isMounted = false;
     this.timerId = null;
+    this.scheduleInformation = "";
   }
   componentDidMount() {
     this._isMounted = true;
+    const { t } = this.props;
+    this.setState(
+      {
+        isLoading: true,
+      },
+      function () {
+        getBackupSchedule()
+          .then((backupSchedule) => {
+            if (backupSchedule) {
+              if (backupSchedule.storageType === 0)
+                this.scheduleInformation += `${t("DocumentsModule")} `;
+              if (backupSchedule.storageType === 1)
+                this.scheduleInformation += `${t("ThirdPartyResource")} `;
+              if (backupSchedule.storageType === 5)
+                this.scheduleInformation += `${t("ThirdPartyStorage")} `;
+              let time = backupSchedule.cronParams.hour;
+              let day = backupSchedule.cronParams.day;
 
+              if (backupSchedule.cronParams.period === 1) {
+                let isoWeekDay = day !== 1 ? day - 1 : 7;
+
+                this.scheduleInformation += `(${t(
+                  "WeeklyPeriodSchedule"
+                )}, ${moment()
+                  .isoWeekday(isoWeekDay)
+                  .add(7, "days")
+                  .hour(time)
+                  .minute("00")
+                  .format("dddd,  LT")})`;
+              }
+
+              if (backupSchedule.cronParams.period === 0) {
+                this.scheduleInformation += `(${t(
+                  "DailyPeriodSchedule"
+                )}, ${moment()
+                  .add(1, "days")
+                  .hour(time)
+                  .minute("00")
+                  .format("LT")})`;
+              }
+
+              if (backupSchedule.cronParams.period === 2) {
+                const year = moment().year();
+                const month = moment().month();
+
+                this.scheduleInformation += `(${t(
+                  "MonthlyPeriodSchedule"
+                )}, ${moment([year, 0, day])
+                  .month(month)
+                  .hour(time)
+                  .minute("00")
+                  .format("Do, LT")})`;
+              }
+            }
+          })
+          .finally(() =>
+            this.setState({
+              isLoading: false,
+            })
+          );
+      }
+    );
     getBackupProgress().then((response) => {
       if (response && !response.error) {
         this._isMounted &&
@@ -111,8 +184,10 @@ class Backup extends React.Component {
   };
   render() {
     const { t, helpUrlCreatingBackup } = this.props;
-    const { downloadingProgress } = this.state;
-    return (
+    const { downloadingProgress, isLoading } = this.state;
+    return isLoading ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : (
       <StyledBackup>
         <div className="category-item-wrapper">
           <div className="category-item-heading">
@@ -129,6 +204,10 @@ class Backup extends React.Component {
             </Link>
             <StyledArrowRightIcon size="small" color="#333333" />
           </div>
+
+          <Text className="schedule-information">
+            {this.scheduleInformation}
+          </Text>
           <Text className="category-item-description">
             {t("AutomaticBackupSettingsDescription")}
           </Text>
@@ -202,8 +281,10 @@ class Backup extends React.Component {
 }
 
 export default inject(({ auth }) => {
+  const { language } = auth;
   const { helpUrlCreatingBackup } = auth.settingsStore;
   return {
     helpUrlCreatingBackup,
+    language,
   };
 })(observer(withTranslation(["Settings", "Common"])(Backup)));
