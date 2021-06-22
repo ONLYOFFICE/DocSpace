@@ -20,29 +20,44 @@ export const Snackbar = {
     }
 
     Snackbar.snackbar = document.createElement("div");
-    Snackbar.snackbar.className = "snackbar-container " + options.customClass;
+    Snackbar.snackbar.className = `snackbar-container ${
+      options.parentElementId && "inline"
+    } ${options.customClass}`;
     Snackbar.snackbar.style.width = options.width;
+
+    if (options.logoImg) {
+      let logoImg = document.createElement("div");
+      logoImg.src = options.logoImg;
+      logoImg.className = "logo";
+      logoImg.alt = "logo";
+      logoImg.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM7 6V4H9V6H7ZM7 12V7H9V12H7Z" fill="black"/>
+      </svg>`;
+      Snackbar.snackbar.appendChild(logoImg);
+    }
 
     let textContainer = document.createElement("div");
     textContainer.className = "text-container";
     Snackbar.snackbar.appendChild(textContainer);
 
-    let header = document.createElement("p");
-    header.style.margin = 0;
-    header.style.padding = 0;
-    header.style.color = options.textColor;
-    header.style.fontSize = "13px";
-    header.style.fontWeight = 800;
-    header.style.lineHeight = "1em";
-    header.innerHTML = options.textHeader;
-    textContainer.appendChild(header);
+    if (options.textHeader) {
+      let header = document.createElement("p");
+      header.style.margin = 0;
+      header.style.padding = 0;
+      header.style.color = options.textColor;
+      header.style.fontSize = "12px";
+      header.style.fontWeight = 600;
+      header.style.lineHeight = "16px";
+      header.innerHTML = options.textHeader;
+      textContainer.appendChild(header);
+    }
 
     let body = document.createElement("p");
     body.style.margin = 0;
     body.style.padding = 0;
     body.style.color = options.textColor;
     body.style.fontSize = "12px";
-    body.style.lineHeight = "1em";
+    body.style.lineHeight = "16px";
     body.innerHTML = options.textBody;
     textContainer.appendChild(body);
 
@@ -54,7 +69,7 @@ export const Snackbar = {
       secondButton.className = "action";
       secondButton.innerHTML = options.secondButtonText;
       secondButton.style.color = options.secondButtonTextColor;
-      secondButton.addEventListener("click", function () {
+      secondButton.addEventListener("click", () => {
         options.onSecondButtonClick(Snackbar.snackbar);
       });
       Snackbar.snackbar.appendChild(secondButton);
@@ -63,8 +78,16 @@ export const Snackbar = {
     if (options.showAction) {
       let actionButton = document.createElement("button");
       actionButton.className = "action";
-      actionButton.innerHTML = options.actionText;
-      actionButton.style.color = options.actionTextColor;
+
+      if (options.actionIcon) {
+        actionButton.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M7.76288 6.35869C7.56764 6.16343 7.56764 5.84687 7.76288 5.65161L10.9493 2.46498C11.1445 2.26973 11.1445 1.95316 10.9493 1.75791L10.2422 1.05077C10.0469 0.855489 9.73031 0.855489 9.53504 1.05077L6.34878 4.23729C6.15352 4.43257 5.83691 4.43257 5.64165 4.23729L2.46017 1.05556C2.26491 0.860275 1.9483 0.860275 1.75304 1.05556L1.04596 1.76269C0.850716 1.95795 0.850716 2.27451 1.04596 2.46977L4.22755 5.65161C4.42279 5.84687 4.42279 6.16343 4.22755 6.35869L1.0501 9.53639C0.854858 9.73165 0.854858 10.0482 1.0501 10.2435L1.75718 10.9506C1.95245 11.1459 2.26905 11.1459 2.46432 10.9506L5.64165 7.77302C5.83691 7.57774 6.15352 7.57774 6.34878 7.77302L9.5309 10.9554C9.72616 11.1507 10.0428 11.1507 10.238 10.9554L10.9451 10.2483C11.1404 10.053 11.1404 9.73644 10.9451 9.54118L7.76288 6.35869Z" fill="#999976"/>
+        </svg>`; //`<img src="${options.actionIcon}" alt="${options.actionText}" class="action-icon">`;
+      } else {
+        actionButton.innerHTML = options.actionText;
+        actionButton.style.color = options.actionTextColor;
+      }
+
       actionButton.addEventListener("click", function () {
         options.onActionClick(Snackbar.snackbar);
       });
@@ -87,7 +110,7 @@ export const Snackbar = {
 
     Snackbar.snackbar.addEventListener(
       "transitionend",
-      function (event, elapsed) {
+      function (event) {
         if (event.propertyName === "opacity" && this.style.opacity === "0") {
           if (typeof options.onClose === "function") options.onClose(this);
 
@@ -101,15 +124,25 @@ export const Snackbar = {
 
     Snackbar.current = Snackbar.snackbar;
 
-    document.body.appendChild(Snackbar.snackbar);
-    let bottom = getComputedStyle(Snackbar.snackbar).bottom;
-    let top = getComputedStyle(Snackbar.snackbar).top;
+    var parentElm =
+      options.parentElementId &&
+      document.getElementById(options.parentElementId);
+
+    if (parentElm) {
+      parentElm.appendChild(Snackbar.snackbar);
+    } else {
+      document.body.appendChild(Snackbar.snackbar);
+    }
+
+    //let bottom = getComputedStyle(Snackbar.snackbar).bottom;
+    //let top = getComputedStyle(Snackbar.snackbar).top;
     Snackbar.snackbar.style.opacity = 1;
-    Snackbar.snackbar.className =
-      "snackbar-container " +
-      options.customClass +
-      " snackbar-pos " +
-      options.position;
+
+    Snackbar.snackbar.className = `snackbar-container ${
+      options.parentElementId && "inline"
+    } ${options.customClass} ${
+      !options.parentElementId && ` snackbar-pos ${options.position}`
+    }`;
   },
   close() {
     if (Snackbar.current) {
@@ -119,17 +152,20 @@ export const Snackbar = {
 };
 
 const defaultConfig = {
-  backgroundColor: "#F1DA92",
+  parentElementId: null,
+  backgroundColor: "#F8F7BF",
   textColor: "#000",
   width: "auto",
-  textHeader: "Default Header text",
+  textHeader: null,
   textBody: "Default Body text",
+  logoImg: "/static/images/info.react.svg",
 
   showAction: false,
+  actionIcon: "/static/images/cross.react.svg",
   actionText: "Close",
   actionTextColor: "#0F4071",
 
-  showSecondButton: true,
+  showSecondButton: false,
   secondButtonText: "Reload",
   secondButtonTextColor: "#0F4071",
 
@@ -137,13 +173,13 @@ const defaultConfig = {
   duration: null,
   customClass: "",
 
-  onActionClick: function (element) {
+  onActionClick: (element) => {
     element.style.opacity = 0;
   },
-  onSecondButtonClick: function (element) {
+  onSecondButtonClick: () => {
     location.reload();
   },
-  onClose: function (element) {},
+  onClose: () => {},
 };
 
 const extend = function () {

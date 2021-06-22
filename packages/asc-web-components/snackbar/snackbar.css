@@ -2,19 +2,34 @@
   transition: all 500ms ease;
   transition-property: top, right, bottom, left, opacity;
   font-family: Open Sans, sans-serif, Arial;
-  font-size: 14px;
+  font-size: 12px;
   min-height: 14px;
   position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   color: white;
-  line-height: 22px;
-  padding: 18px 24px;
+  line-height: 16px;
+  padding: 12px;
   bottom: -100px;
   top: -100px;
   opacity: 0;
   z-index: 9999;
+}
+
+.snackbar-container.inline {
+  position: relative;
+  z-index: initial;
+  top: initial;
+  bottom: initial;
+  margin: 16px 24px 0 0;
+  max-width: initial;
+  justify-content: initial;
+}
+
+.snackbar-container.inline button:last-child {
+  margin-left: auto;
+  padding-left: 8px;
 }
 
 .snackbar-container .action {
@@ -29,6 +44,10 @@
   cursor: pointer;
 }
 
+.logo {
+  padding-right: 10px;
+}
+
 .text-container {
   display: flex;
   flex-direction: column;
@@ -37,10 +56,10 @@
 
 @media (min-width: 640px) {
   .snackbar-container {
-    min-width: 288px;
+    min-width: 400px;
     max-width: 568px;
     display: inline-flex;
-    border-radius: 2px;
+    border-radius: 6px;
     margin: 24px;
   }
 }

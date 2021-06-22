@@ -337,6 +337,7 @@ class PageLayout extends React.Component {
                     unpinArticle={this.unpinArticle}
                     pinned={this.state.isArticlePinned}
                   >
+                    <div id="main-bar" style={{ display: "grid" }}></div>
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
