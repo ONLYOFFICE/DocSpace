@@ -33,7 +33,6 @@ namespace ASC.Api.Core
         public IHostEnvironment HostEnvironment { get; }
         public virtual string[] LogParams { get; }
         public virtual JsonConverter[] Converters { get; }
-        public virtual bool AddControllers { get; } = true;
         public virtual bool ConfirmAddScheme { get; } = false;
         protected DIHelper DIHelper { get; }
 
@@ -52,25 +51,22 @@ namespace ASC.Api.Core
 
             DIHelper.Configure(services);
 
-            if (AddControllers)
-            {
-                services.AddControllers()
-                    .AddXmlSerializerFormatters()
-                    .AddJsonOptions(options =>
-                    {
-                        options.JsonSerializerOptions.WriteIndented = false;
-                        options.JsonSerializerOptions.IgnoreNullValues = true;
-                        options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+            services.AddControllers()
+                .AddXmlSerializerFormatters()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
 
-                        if (Converters != null)
+                    if (Converters != null)
+                    {
+                        foreach (var c in Converters)
                         {
-                            foreach (var c in Converters)
-                            {
-                                options.JsonSerializerOptions.Converters.Add(c);
-                            }
+                            options.JsonSerializerOptions.Converters.Add(c);
                         }
-                    });
-            }
+                    }
+                });
 
             DIHelper.TryAdd<DisposeMiddleware>();
             DIHelper.TryAdd<CultureMiddleware>();
