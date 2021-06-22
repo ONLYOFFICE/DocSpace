@@ -63,14 +63,16 @@ class SelectFile extends React.PureComponent {
           onClickInput={onClickInput}
         />
 
-        <SelectFileDialog
-          zIndex={zIndex}
-          onClose={onClose}
-          isPanelVisible={isPanelVisible}
-          foldersType={foldersType}
-          onSetFileName={this.onSetFileName}
-          isCommonWithoutProvider={isCommonWithoutProvider}
-        />
+        {isPanelVisible && (
+          <SelectFileDialog
+            zIndex={zIndex}
+            onClose={onClose}
+            isPanelVisible={isPanelVisible}
+            foldersType={foldersType}
+            onSetFileName={this.onSetFileName}
+            isCommonWithoutProvider={isCommonWithoutProvider}
+          />
+        )}
       </StyledComponent>
     );
   }

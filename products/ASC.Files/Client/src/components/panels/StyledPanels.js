@@ -513,17 +513,32 @@ const StyledSelectFolderPanel = styled.div`
   }
 `;
 const StyledSelectFilePanel = styled.div`
+  height: 100%;
   .modal-dialog_body-files-list {
     margin-top: 16px;
+    height: 800px;
+  }
+  .modal-dialog_body-files-list:first-child {
+    height: 100%;
+  }
+  .modal-dialog_file-name {
+    display: flex;
+    cursor: pointer;
+    border-bottom: 1px solid #eceef1;
+    align-items: center;
+    padding: 7px 0;
+  }
+  .select-file-dialog_icon {
+    margin-right: 8px;
   }
   .entry-title,
   .file-exst {
-    margin-top: 7px;
+    //margin-top: 7px;
     font-weight: 600;
   }
-  .entry-title:hover {
-    cursor: pointer;
-    text-decoration: underline;
+  .modal-dialog_file-name:hover {
+    background-color: #eceef1;
+    border-radius: 3px;
   }
   .file-name {
     display: flex;
@@ -542,7 +557,8 @@ const StyledSelectFilePanel = styled.div`
   }
   .modal-dialog_body {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 240px 1fr;
+    height: 300px;
     .modal-dialog_tree-body {
       margin-top: 16px;
     }
