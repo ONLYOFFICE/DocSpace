@@ -176,7 +176,7 @@ class PageLayout extends React.Component {
   };
 
   onSelect = (e) => {
-    if (!e.selected.length || this.props.dragging) return;
+    if (this.props.dragging) return;
     const items = e.selected;
     this.props.setSelections(items);
   };
