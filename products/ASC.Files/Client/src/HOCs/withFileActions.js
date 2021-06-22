@@ -189,7 +189,7 @@ export default function withFileActions(WrappedFileItem) {
         contentLength,
         fileStatus,
       } = item;
-
+      console.log("onFilesClick");
       if (isTrashFolder) return;
 
       if (!fileExst && !contentLength) {

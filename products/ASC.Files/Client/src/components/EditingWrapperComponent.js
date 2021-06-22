@@ -89,6 +89,8 @@ const EditingWrapperComponent = (props) => {
     viewAs,
   } = props;
 
+  console.log("here");
+
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
 

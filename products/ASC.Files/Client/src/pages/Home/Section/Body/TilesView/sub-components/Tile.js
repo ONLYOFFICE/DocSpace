@@ -188,7 +188,7 @@ class Tile extends React.PureComponent {
       isRecycleBin,
       item,
     } = this.props;
-    const { isFolder } = item;
+    const { isFolder, id, fileExst } = item;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -225,10 +225,10 @@ class Tile extends React.PureComponent {
         {...this.props}
         onContextMenu={onContextMenu}
         dragging={dragging && isFolder}
-        isFolder={isFolder}
+        isFolder={isFolder || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
       >
-        {isFolder ? (
+        {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderCheckbox && (
               <StyledCheckbox>
@@ -239,7 +239,7 @@ class Tile extends React.PureComponent {
                 />
               </StyledCheckbox>
             )}
-            {renderElement && !isFolder && (
+            {renderElement && !(isFolder || (!fileExst && id === -1)) && (
               <StyledElement>{element}</StyledElement>
             )}
             <StyledContent isFolder={isFolder}>{children}</StyledContent>
