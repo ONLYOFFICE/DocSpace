@@ -29,6 +29,8 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Enums;
+using ASC.ElasticSearch;
 
 namespace ASC.Web.CRM.Core.Search
 {
@@ -43,15 +45,17 @@ namespace ASC.Web.CRM.Core.Search
         private readonly FactoryIndexerTask _factoryIndexerTask;
         private readonly FactoryIndexerCase _factoryIndexerCase;
         private readonly FactoryIndexerInvoice _factoryIndexerInvoice;
+        private readonly FactoryIndexer _factoryIndexer;
 
-        public BundleSearch(FactoryIndexerContact factoryIndexerContact,
-                            FactoryIndexerContactInfo factoryIndexerContactInfo,
-                            FactoryIndexerFieldValue factoryIndexerFieldValue,
-                            FactoryIndexerEvents factoryIndexerEvents,
-                            FactoryIndexerDeal factoryIndexerDeal,
-                            FactoryIndexerTask factoryIndexerTask,
-                            FactoryIndexerCase factoryIndexerCase,
-                            FactoryIndexerInvoice factoryIndexerInvoice)
+        public BundleSearch(        FactoryIndexer factoryIndexer,
+                                    FactoryIndexerContact factoryIndexerContact,
+                                    FactoryIndexerContactInfo factoryIndexerContactInfo,
+                                    FactoryIndexerFieldValue factoryIndexerFieldValue,
+                                    FactoryIndexerEvents factoryIndexerEvents,
+                                    FactoryIndexerDeal factoryIndexerDeal,
+                                    FactoryIndexerTask factoryIndexerTask,
+                                    FactoryIndexerCase factoryIndexerCase,
+                                    FactoryIndexerInvoice factoryIndexerInvoice)
         {
             _factoryIndexerContact = factoryIndexerContact;
             _factoryIndexerContactInfo = factoryIndexerContactInfo;
@@ -61,6 +65,13 @@ namespace ASC.Web.CRM.Core.Search
             _factoryIndexerTask = factoryIndexerTask;
             _factoryIndexerCase = factoryIndexerCase;
             _factoryIndexerInvoice = factoryIndexerInvoice;
+            _factoryIndexer = factoryIndexer;
+        }
+
+
+        public bool CheckFullTextSearchEnable()
+        {
+           return _factoryIndexer.CheckState();
         }
 
         public bool TrySelectCase(string text, out List<int> result)

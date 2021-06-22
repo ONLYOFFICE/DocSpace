@@ -36,6 +36,7 @@ FFMPEG_EXTS=${FFMPEG_EXTS:-'"avi", "mpeg", "mpg", "wmv"'}
 ELK_SHEME=${ELK_SHEME:-"http"}
 ELK_HOST=${ELK_HOST:-"${PRODUCT}-elasticsearch"}
 ELK_PORT=${ELK_PORT:-"9200"}
+ELK_THREADS=${ELK_THREADS:-"1"}
 
 KAFKA_HOST=${KAFKA_HOST:-"kafka"}":9092"
 
@@ -67,9 +68,11 @@ sed -i "s!\"exts\".*!\"exts\": \[ ${FFMPEG_EXTS} \]!g" ${PATH_TO_CONF}/appsettin
 sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"header\".*!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 
-sed -i "s!\"Scheme\".*!\"Scheme\": \"${ELK_SHEME}\"!g" ${PATH_TO_CONF}/elastic.json
-sed -i "s!\"Host\".*!\"Host\": \"${ELK_HOST}\"!g" ${PATH_TO_CONF}/elastic.json
-sed -i "s!\"Port\".*!\"Port\": \"${ELK_PORT}\"!g" ${PATH_TO_CONF}/elastic.json
+sed -i "s!\"Scheme\".*!\"Scheme\": \"${ELK_SHEME}\",!g" ${PATH_TO_CONF}/elastic.json
+sed -i "s!\"Host\".*!\"Host\": \"${ELK_HOST}\",!g" ${PATH_TO_CONF}/elastic.json
+sed -i "s!\"Port\".*!\"Port\": \"${ELK_PORT}\",!g" ${PATH_TO_CONF}/elastic.json
+sed -i "s!\"Threads\".*!\"Threads\": \"${ELK_THREADS}\"!g" ${PATH_TO_CONF}/elastic.json
+
 
 sed -i "s!\"subfolder\".*!\"subfolder\": \"server\",!g" ${PATH_TO_CONF}/appsettings.services.json
 sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}\"!g" ${PATH_TO_CONF}/kafka.${APP_DOTNET_ENV}.json
