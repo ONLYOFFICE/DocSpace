@@ -27,7 +27,7 @@ const Main = React.memo((props) => {
   const vh = (window.innerHeight - 57) * 0.01;
   document.documentElement.style.setProperty("--vh", `${vh}px`);
   //console.log("Main render");
-  return <StyledMain {...props} />;
+  return <StyledMain className="main" {...props} />;
 });
 
 /*Main.defaultProps = {

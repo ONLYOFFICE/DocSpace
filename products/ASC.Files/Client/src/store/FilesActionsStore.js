@@ -500,7 +500,7 @@ class FilesActionStore {
 
   selectRowAction = (checked, file) => {
     const { selected, setSelected, selectFile, deselectFile } = this.filesStore;
-    selected === "close" && setSelected("none");
+    //selected === "close" && setSelected("none");
     if (checked) {
       selectFile(file);
     } else {
