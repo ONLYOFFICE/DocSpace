@@ -285,6 +285,7 @@ class Tile extends React.PureComponent {
                     className="expand-button"
                     directionX="right"
                     getData={getOptions}
+                    isNew={true}
                     onClick={onContextMenu}
                   />
                 ) : (
