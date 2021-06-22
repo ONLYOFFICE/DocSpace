@@ -44,9 +44,12 @@ class DocumentsModule extends React.Component {
     numberPeriodFromSessionStorage = getFromSessionStorage("numberPeriod");
     //debugger;
     console.log("weekOptions", weekOptions);
+    console.log("selectedWeekdayOption", selectedWeekdayOption);
+    //debugger;
     const weekName =
-      numberPeriodFromSessionStorage === 2
-        ? weekOptions[+dayFromSessionStorage].label
+      (numberPeriodFromSessionStorage === 2 && dayFromSessionStorage) ||
+      (weeklySchedule && dayFromSessionStorage)
+        ? weekOptions[+dayFromSessionStorage - 1].label
         : "";
     const periodName = numberPeriodFromSessionStorage
       ? periodOptions[+numberPeriodFromSessionStorage - 1].label

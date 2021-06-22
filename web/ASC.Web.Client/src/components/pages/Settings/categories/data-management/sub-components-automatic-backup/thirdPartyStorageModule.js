@@ -57,6 +57,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       monthlySchedule,
       weeklySchedule,
       periodOptions,
+      weekOptions,
     } = this.props;
 
     this.isSetDefaultIdStorage = false;
@@ -66,8 +67,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
     maxCopiesFromSessionStorage = getFromSessionStorage("maxCopies");
     numberPeriodFromSessionStorage = getFromSessionStorage("numberPeriod");
     const weekName =
-      numberPeriodFromSessionStorage === 2
-        ? weekOptions[+dayFromSessionStorage].label
+      (numberPeriodFromSessionStorage === 2 && dayFromSessionStorage) ||
+      (weeklySchedule && dayFromSessionStorage)
+        ? weekOptions[+dayFromSessionStorage - 1].label
         : "";
     const periodName = numberPeriodFromSessionStorage
       ? periodOptions[+numberPeriodFromSessionStorage - 1].label

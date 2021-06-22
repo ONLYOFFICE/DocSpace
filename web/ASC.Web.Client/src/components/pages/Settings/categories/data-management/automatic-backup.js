@@ -109,7 +109,7 @@ class AutomaticBackup extends React.PureComponent {
     this.getMaxNumberCopies();
 
     this.weekdaysOptions = [];
-    this.arrayWeekdays = moment.weekdays(true);
+    this.arrayWeekdays = moment.weekdays();
     this._isMounted = false;
   }
 
@@ -241,7 +241,7 @@ class AutomaticBackup extends React.PureComponent {
     if (+defaultPeriod === 1) {
       //Every Week option
       //debugger;
-      const arrayIndex = this.lng === "en" ? defaultDay : defaultDay - 1;
+      const arrayIndex = defaultDay - 1;
       defaultWeekly = true;
 
       this._isMounted &&
@@ -362,10 +362,14 @@ class AutomaticBackup extends React.PureComponent {
       };
       this.weekdaysOptions.push(obj);
     }
+    const isEnglishLanguage = this.lng === "en";
+
     this._isMounted &&
       this.setState({
         weekOptions: this.weekdaysOptions,
-        selectedWeekdayOption: this.weekdaysOptions[0].label,
+        selectedWeekdayOption: isEnglishLanguage
+          ? this.weekdaysOptions[0].label
+          : this.weekdaysOptions[1].label,
       });
   };
 

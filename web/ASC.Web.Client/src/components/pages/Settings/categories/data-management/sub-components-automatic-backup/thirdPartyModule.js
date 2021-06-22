@@ -46,8 +46,9 @@ class ThirdPartyModule extends React.Component {
 
     numberPeriodFromSessionStorage = getFromSessionStorage("numberPeriod");
     const weekName =
-      numberPeriodFromSessionStorage === 2
-        ? weekOptions[+dayFromSessionStorage].label
+      (numberPeriodFromSessionStorage === 2 && dayFromSessionStorage) ||
+      (weeklySchedule && dayFromSessionStorage)
+        ? weekOptions[+dayFromSessionStorage - 1].label
         : "";
     const periodName = numberPeriodFromSessionStorage
       ? periodOptions[+numberPeriodFromSessionStorage - 1].label
