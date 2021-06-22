@@ -118,6 +118,11 @@ const StyledScheduleComponent = styled.div`
 `;
 
 const StyledBackup = styled.div`
+  .schedule-information {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
   ${commonSettingsStyles}
 `;
 export {
