@@ -147,19 +147,20 @@ export function getFoldersTree() {
           title: data.current.title,
           rootFolderType: type,
           rootFolderName: name,
-          folders: !isRecycleBinFolder
-            ? data.folders.map((folder) => {
-                return {
-                  id: folder.id,
-                  title: folder.title,
-                  access: folder.access,
-                  foldersCount: folder.foldersCount,
-                  rootFolderType: folder.rootFolderType,
-                  providerKey: folder.providerKey,
-                  newItems: folder.new,
-                };
-              })
-            : null,
+          // folders: !isRecycleBinFolder
+          //   ? data.folders.map((folder) => {
+          //       return {
+          //         id: folder.id,
+          //         title: folder.title,
+          //         access: folder.access,
+          //         foldersCount: folder.foldersCount,
+          //         rootFolderType: folder.rootFolderType,
+          //         providerKey: folder.providerKey,
+          //         newItems: folder.new,
+          //       };
+          //     })
+          //   : null,
+          folders: null,
           pathParts: data.pathParts,
           foldersCount: !isRecycleBinFolder ? data.current.foldersCount : null,
           newItems: data.new,
@@ -740,5 +741,12 @@ export function hideConfirmConvert(save) {
     method: "put",
     url: "/files/hideconfirmconvert.json",
     data: { save },
+  });
+}
+
+export function getSubfolders(folderId) {
+  return request({
+    method: "get",
+    url: `files/${folderId}/subfolders`,
   });
 }

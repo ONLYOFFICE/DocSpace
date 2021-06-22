@@ -116,7 +116,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (root != null)
             {
-                Status += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
+                Result += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
             }
 
             DeleteFiles(Files, scope);

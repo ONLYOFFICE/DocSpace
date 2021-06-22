@@ -6,10 +6,9 @@ import Checkbox from "@appserver/components/checkbox";
 import TextInput from "@appserver/components/text-input";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
-
-import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { runInAction } from "mobx";
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -17,9 +16,7 @@ const PureConnectDialogContainer = (props) => {
     t,
     item,
     treeFolders,
-    setTreeFolders,
     fetchThirdPartyProviders,
-    fetchTreeFolders,
     myFolderId,
     commonFolderId,
     providers,
@@ -31,6 +28,7 @@ const PureConnectDialogContainer = (props) => {
     openConnectWindow,
     setConnectDialogVisible,
     personal,
+    getSubfolders,
   } = props;
   const {
     corporate,
@@ -121,57 +119,29 @@ const PureConnectDialogContainer = (props) => {
       provider_key || key,
       provider_id
     )
-      .then((folderData) => {
-        fetchTreeFolders().then((data) => {
-          const commonFolder = data.find((x) => x.id === commonFolderId);
-          const myFolder = data.find((x) => x.id === myFolderId);
+      .then(async () => {
+        const folderId = isCorporate ? commonFolderId : myFolderId;
+        const subfolders = await getSubfolders(folderId);
+        const node = treeFolders.find((x) => x.id === folderId);
 
-          const newTreeFolders = treeFolders;
+        runInAction(() => (node.folders = subfolders));
 
-          loopTreeFolders(
-            myFolder.pathParts,
-            newTreeFolders,
-            myFolder.folders,
-            myFolder.foldersCount,
-            !isCorporate ? folderData : null
-          );
-
-          loopTreeFolders(
-            commonFolder.pathParts,
-            newTreeFolders,
-            commonFolder.folders,
-            commonFolder.foldersCount,
-            isCorporate ? folderData : null
-          );
-          setTreeFolders(newTreeFolders);
-          fetchThirdPartyProviders();
-
-          const newFolder =
-            selectedFolderFolders &&
-            selectedFolderFolders.find((x) => x.id === folderData.id);
-          if (newFolder)
-            fetchFiles(selectedFolderId).then(() => {
-              onClose();
-              setIsLoading(false);
-            });
-          else {
-            onClose();
-            setIsLoading(false);
-          }
-        });
+        await fetchThirdPartyProviders();
       })
       .catch((err) => {
         onClose();
         toastr.error(err);
         setIsLoading(false);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        onClose();
+        setIsLoading(false);
+      });
   }, [
     commonFolderId,
     customerTitle,
     fetchFiles,
     fetchThirdPartyProviders,
-    fetchTreeFolders,
     isCorporate,
     link,
     loginValue,
@@ -183,7 +153,6 @@ const PureConnectDialogContainer = (props) => {
     provider_key,
     selectedFolderFolders,
     selectedFolderId,
-    setTreeFolders,
     showUrlField,
     treeFolders,
     urlValue,
@@ -357,10 +326,9 @@ export default inject(
 
     const {
       treeFolders,
-      setTreeFolders,
       myFolderId,
       commonFolderId,
-      fetchTreeFolders,
+      getSubfolders,
     } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
     const {
@@ -380,12 +348,11 @@ export default inject(
       item,
 
       fetchFiles,
-      setTreeFolders,
       getOAuthToken,
+      getSubfolders,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,
-      fetchTreeFolders,
       setConnectDialogVisible,
 
       personal,

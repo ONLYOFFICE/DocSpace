@@ -133,7 +133,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 rootIds.Select(r => new KeyValuePair<int, int>(r, fileMarker.GetRootFoldersIdMarkedAsNew(r)))
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
-            Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
+            Result += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
         }
     }
 

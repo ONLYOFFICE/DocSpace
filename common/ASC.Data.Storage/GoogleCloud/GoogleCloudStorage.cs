@@ -825,7 +825,7 @@ namespace ASC.Data.Storage.GoogleCloud
                     }
 
                     if (status != 308)
-                        throw (ex);
+                        throw;
 
                     break;
                 }

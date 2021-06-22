@@ -11,10 +11,10 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <WarningsAsErrors></WarningsAsErrors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.451</Version>
+    <Version>1.1.0.453</Version>
     <PackageLicenseExpression></PackageLicenseExpression>
-    <AssemblyVersion>1.1.0.451</AssemblyVersion>
-    <FileVersion>1.1.0.451</FileVersion>
+    <AssemblyVersion>1.1.0.453</AssemblyVersion>
+    <FileVersion>1.1.0.453</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -35,6 +35,5 @@
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.8'">
     <Reference Include="System.Web" />
-    <Reference Include="System.Runtime.Serialization" Version="4.1.2.0" />
   </ItemGroup>
 </Project>

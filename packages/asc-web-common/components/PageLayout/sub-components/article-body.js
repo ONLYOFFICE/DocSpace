@@ -18,7 +18,7 @@ const StyledArticleBody = styled.div`
   @media ${tablet} {
     height: calc(100% - 104px);
     display: table;
-    width: 100%;
+    width: calc(100% + 16px);
 
     .custom-scrollbar {
       display: table-cell;
