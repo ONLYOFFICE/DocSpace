@@ -265,6 +265,7 @@ class AutomaticBackup extends React.PureComponent {
         this._isMounted &&
           this.setState({
             defaultSelectedOption: this.periodOptions[0].label,
+            dailySchedule: true,
           });
       }
     }
@@ -376,6 +377,7 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedDocuments,
       monthlySchedule,
       weeklySchedule,
+      dailySchedule,
       defaultSelectedFolder,
       defaultStorageType,
     } = this.state;
@@ -415,6 +417,11 @@ class AutomaticBackup extends React.PureComponent {
         });
       }
 
+      if (dailySchedule === defaultMonthly || dailySchedule === defaultWeekly) {
+        this.setState({
+          dailySchedule: false,
+        });
+      }
       this.onSetDefaultOptions();
 
       if (+defaultStorageType === 0) {

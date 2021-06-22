@@ -14,21 +14,12 @@ import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 import { StyledComponent } from "../styled-backup";
 import TextInput from "@appserver/components/text-input";
 
-let periodFromSessionStorage = "";
 let numberPeriodFromSessionStorage = null;
 let dayFromSessionStorage = "";
 let timeFromSessionStorage = "";
 let maxCopiesFromSessionStorage = "";
-let weekdayNameFromSessionStorage = "";
 
-const settingNames = [
-  "period",
-  "day",
-  "time",
-  "maxCopies",
-  "weekdayName",
-  "numberPeriod",
-];
+const settingNames = ["day", "time", "maxCopies", "numberPeriod"];
 class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
@@ -39,18 +30,27 @@ class DocumentsModule extends React.Component {
       defaultDay,
       defaultHour,
       defaultMaxCopies,
-
+      weekOptions,
       monthlySchedule,
       weeklySchedule,
+      dailySchedule,
+      periodOptions,
     } = this.props;
     //debugger;
 
-    periodFromSessionStorage = getFromSessionStorage("period");
     dayFromSessionStorage = getFromSessionStorage("day");
     timeFromSessionStorage = getFromSessionStorage("time");
     maxCopiesFromSessionStorage = getFromSessionStorage("maxCopies");
-    weekdayNameFromSessionStorage = getFromSessionStorage("weekdayName");
     numberPeriodFromSessionStorage = getFromSessionStorage("numberPeriod");
+    //debugger;
+    console.log("weekOptions", weekOptions);
+    const weekName =
+      numberPeriodFromSessionStorage === 2
+        ? weekOptions[+dayFromSessionStorage].label
+        : "";
+    const periodName = numberPeriodFromSessionStorage
+      ? periodOptions[+numberPeriodFromSessionStorage - 1].label
+      : "";
 
     const numberMaxCopies = maxCopiesFromSessionStorage
       ? maxCopiesFromSessionStorage.substring(
@@ -67,6 +67,10 @@ class DocumentsModule extends React.Component {
       ? dayFromSessionStorage || defaultDay
       : dayFromSessionStorage || "2";
 
+    const dayOption = numberPeriodFromSessionStorage
+      ? numberPeriodFromSessionStorage === 1
+      : dailySchedule || false;
+
     const weekdayOption = numberPeriodFromSessionStorage
       ? numberPeriodFromSessionStorage === 2
       : weeklySchedule || false;
@@ -82,15 +86,12 @@ class DocumentsModule extends React.Component {
       isLoading: false,
 
       monthlySchedule: monthOption,
-      dailySchedule: false,
+      dailySchedule: dayOption,
       weeklySchedule: weekdayOption,
 
       selectedOption:
-        periodFromSessionStorage ||
-        defaultSelectedOption ||
-        t("DailyPeriodSchedule"),
-      selectedWeekdayOption:
-        weekdayNameFromSessionStorage || selectedWeekdayOption,
+        periodName || defaultSelectedOption || t("DailyPeriodSchedule"),
+      selectedWeekdayOption: weekName || selectedWeekdayOption,
       selectedNumberWeekdayOption: weekdayNumber,
       selectedTimeOption: timeFromSessionStorage || defaultHour || "12:00",
       selectedMonthOption: monthNumber,
@@ -174,7 +175,6 @@ class DocumentsModule extends React.Component {
     const key = options.key;
     const label = options.label;
     //debugger;
-    saveToSessionStorage("period", label);
     saveToSessionStorage("numberPeriod", key);
 
     this.setState({ selectedOption: label });
@@ -218,8 +218,6 @@ class DocumentsModule extends React.Component {
     const key = options.key;
     const label = options.label;
     //debugger;
-
-    saveToSessionStorage("weekdayName", label);
     saveToSessionStorage("day", key);
 
     this.setState(
@@ -283,7 +281,7 @@ class DocumentsModule extends React.Component {
   checkChanges = () => {
     const { defaultStorageType } = this.props;
     const { isChanged } = this.state;
-    // debugger;
+
     let changed;
 
     if (defaultStorageType && +defaultStorageType === 0) {

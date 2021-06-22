@@ -17,21 +17,12 @@ import Link from "@appserver/components/link";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 import { StyledComponent } from "../styled-backup";
 
-let periodFromSessionStorage = "";
 let numberPeriodFromSessionStorage = null;
 let dayFromSessionStorage = "";
 let timeFromSessionStorage = "";
 let maxCopiesFromSessionStorage = "";
-let weekdayNameFromSessionStorage = "";
 
-const settingNames = [
-  "period",
-  "day",
-  "time",
-  "maxCopies",
-  "weekdayName",
-  "numberPeriod",
-];
+const settingNames = ["day", "time", "maxCopies", "numberPeriod"];
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
@@ -44,14 +35,23 @@ class ThirdPartyModule extends React.Component {
       defaultMaxCopies,
       monthlySchedule,
       weeklySchedule,
+      dailySchedule,
+      weekOptions,
+      periodOptions,
     } = this.props;
 
-    periodFromSessionStorage = getFromSessionStorage("period");
     dayFromSessionStorage = getFromSessionStorage("day");
     timeFromSessionStorage = getFromSessionStorage("time");
     maxCopiesFromSessionStorage = getFromSessionStorage("maxCopies");
-    weekdayNameFromSessionStorage = getFromSessionStorage("weekdayName");
+
     numberPeriodFromSessionStorage = getFromSessionStorage("numberPeriod");
+    const weekName =
+      numberPeriodFromSessionStorage === 2
+        ? weekOptions[+dayFromSessionStorage].label
+        : "";
+    const periodName = numberPeriodFromSessionStorage
+      ? periodOptions[+numberPeriodFromSessionStorage - 1].label
+      : "";
 
     const numberMaxCopies = maxCopiesFromSessionStorage
       ? maxCopiesFromSessionStorage.substring(
@@ -71,6 +71,10 @@ class ThirdPartyModule extends React.Component {
     const weekdayOption = numberPeriodFromSessionStorage
       ? numberPeriodFromSessionStorage === 2
       : weeklySchedule || false;
+    const dayOption = numberPeriodFromSessionStorage
+      ? numberPeriodFromSessionStorage === 1
+      : dailySchedule || false;
+
     const monthOption = numberPeriodFromSessionStorage
       ? numberPeriodFromSessionStorage === 3
       : monthlySchedule || false;
@@ -83,15 +87,12 @@ class ThirdPartyModule extends React.Component {
       isLoading: false,
 
       monthlySchedule: monthOption,
-      dailySchedule: false,
+      dailySchedule: dayOption,
       weeklySchedule: weekdayOption,
 
       selectedOption:
-        periodFromSessionStorage ||
-        defaultSelectedOption ||
-        t("DailyPeriodSchedule"),
-      selectedWeekdayOption:
-        weekdayNameFromSessionStorage || selectedWeekdayOption,
+        periodName || defaultSelectedOption || t("DailyPeriodSchedule"),
+      selectedWeekdayOption: weekName || selectedWeekdayOption,
       selectedNumberWeekdayOption: weekdayNumber,
       selectedTimeOption: timeFromSessionStorage || defaultHour || "12:00",
       selectedMonthOption: monthNumber,
@@ -173,7 +174,7 @@ class ThirdPartyModule extends React.Component {
     const key = options.key;
     const label = options.label;
     //debugger;
-    saveToSessionStorage("period", label);
+
     saveToSessionStorage("numberPeriod", key);
 
     this.setState({ selectedOption: label });
@@ -217,8 +218,6 @@ class ThirdPartyModule extends React.Component {
     const key = options.key;
     const label = options.label;
     //debugger;
-
-    saveToSessionStorage("weekdayName", label);
     saveToSessionStorage("day", key);
 
     this.setState(

@@ -37,21 +37,12 @@ const StyledComponent = styled.div`
 let googleStorageId = "GoogleCloud";
 let inputValueArray;
 
-let periodFromSessionStorage = "";
 let numberPeriodFromSessionStorage = null;
 let dayFromSessionStorage = "";
 let timeFromSessionStorage = "";
 let maxCopiesFromSessionStorage = "";
-let weekdayNameFromSessionStorage = "";
 
-const settingNames = [
-  "period",
-  "day",
-  "time",
-  "maxCopies",
-  "weekdayName",
-  "numberPeriod",
-];
+const settingNames = ["day", "time", "maxCopies", "numberPeriod"];
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -62,20 +53,25 @@ class ThirdPartyStorageModule extends React.PureComponent {
       defaultDay,
       defaultHour,
       defaultMaxCopies,
-
+      dailySchedule,
       monthlySchedule,
       weeklySchedule,
+      periodOptions,
     } = this.props;
 
     this.isSetDefaultIdStorage = false;
 
-    periodFromSessionStorage = getFromSessionStorage("period");
     dayFromSessionStorage = getFromSessionStorage("day");
     timeFromSessionStorage = getFromSessionStorage("time");
     maxCopiesFromSessionStorage = getFromSessionStorage("maxCopies");
-    weekdayNameFromSessionStorage = getFromSessionStorage("weekdayName");
     numberPeriodFromSessionStorage = getFromSessionStorage("numberPeriod");
-
+    const weekName =
+      numberPeriodFromSessionStorage === 2
+        ? weekOptions[+dayFromSessionStorage].label
+        : "";
+    const periodName = numberPeriodFromSessionStorage
+      ? periodOptions[+numberPeriodFromSessionStorage - 1].label
+      : "";
     const numberMaxCopies = maxCopiesFromSessionStorage
       ? maxCopiesFromSessionStorage.substring(
           0,
@@ -94,6 +90,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const weekdayOption = numberPeriodFromSessionStorage
       ? numberPeriodFromSessionStorage === 2
       : weeklySchedule || false;
+    const dayOption = numberPeriodFromSessionStorage
+      ? numberPeriodFromSessionStorage === 1
+      : dailySchedule || false;
+
     const monthOption = numberPeriodFromSessionStorage
       ? numberPeriodFromSessionStorage === 3
       : monthlySchedule || false;
@@ -107,15 +107,12 @@ class ThirdPartyStorageModule extends React.PureComponent {
       isChanged: false,
 
       monthlySchedule: monthOption,
-      dailySchedule: false,
+      dailySchedule: dayOption,
       weeklySchedule: weekdayOption,
 
       selectedOption:
-        periodFromSessionStorage ||
-        defaultSelectedOption ||
-        t("DailyPeriodSchedule"),
-      selectedWeekdayOption:
-        weekdayNameFromSessionStorage || selectedWeekdayOption,
+        periodName || defaultSelectedOption || t("DailyPeriodSchedule"),
+      selectedWeekdayOption: weekName || selectedWeekdayOption,
       selectedNumberWeekdayOption: weekdayNumber,
       selectedTimeOption: timeFromSessionStorage || defaultHour || "12:00",
       selectedMonthOption: monthNumber,
@@ -271,7 +268,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const key = options.key;
     const label = options.label;
     //debugger;
-    saveToSessionStorage("period", label);
+
     saveToSessionStorage("numberPeriod", key);
 
     this.setState({ selectedOption: label });
@@ -315,8 +312,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const key = options.key;
     const label = options.label;
     //debugger;
-
-    saveToSessionStorage("weekdayName", label);
     saveToSessionStorage("day", key);
 
     this.setState(
