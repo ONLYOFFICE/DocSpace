@@ -9,5 +9,3 @@ if %errorlevel% == 0 (
 		call build\scripts\%%~nxf
 	)
 )
-
-pause
