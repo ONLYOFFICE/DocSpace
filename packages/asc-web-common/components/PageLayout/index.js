@@ -471,7 +471,7 @@ class PageLayout extends React.Component {
           <StyledSelectoWrapper>
             <Selecto
               dragContainer={".main"}
-              selectableTargets={[".files-row"]}
+              selectableTargets={[".files-item"]}
               hitRate={1}
               selectByClick={false}
               selectFromInside={true}

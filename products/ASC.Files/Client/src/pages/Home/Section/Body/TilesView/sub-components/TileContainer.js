@@ -42,6 +42,7 @@ const StyledTileContainer = styled.div`
   .tile-items-heading {
     margin: 0;
     padding-bottom: 11px;
+    pointer-events: none;
 
     &.files {
       padding-top: 8px;
