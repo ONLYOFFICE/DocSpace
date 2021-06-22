@@ -121,7 +121,7 @@ namespace ASC.Files.Core
 
         public FileStatus FileStatus
         {
-            get => FileHelper.GetFileStatus(this, _status);
+            get => FileHelper.GetFileStatus(this, ref _status);
             set => _status = value;
         }
 
