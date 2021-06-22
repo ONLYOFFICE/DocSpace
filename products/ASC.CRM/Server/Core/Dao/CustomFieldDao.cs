@@ -202,7 +202,7 @@ namespace ASC.CRM.Core.Dao
                     }
                     catch (Exception ex)
                     {
-                        throw new ArgumentException(CRMErrorsResource.CustomFieldMaskNotValid);
+                        throw new ArgumentException(CRMErrorsResource.CustomFieldMaskNotValid, ex);
                     }
                 }
             }
@@ -352,7 +352,7 @@ namespace ASC.CRM.Core.Dao
                             }
                             catch (Exception ex)
                             {
-                                throw new ArgumentException(CRMErrorsResource.CustomFieldMaskNotValid);
+                                throw new ArgumentException(CRMErrorsResource.CustomFieldMaskNotValid, ex);
                             }
                         }
                     }

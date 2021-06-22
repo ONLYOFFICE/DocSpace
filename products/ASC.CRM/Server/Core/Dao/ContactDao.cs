@@ -341,7 +341,7 @@ namespace ASC.CRM.Core.Dao
 
             var ids = new List<int>();
 
-            List<int> contactsIds;
+ //           List<int> contactsIds;
 
             IReadOnlyCollection<DbContactInfo> dbContactInfos;
 
