@@ -194,7 +194,6 @@ export default function withFileActions(WrappedFileItem) {
 
       if (!fileExst && !contentLength) {
         setIsLoading(true);
-
         if (!expandedKeys.includes(parentFolder + "")) {
           addExpandedKeys(parentFolder + "");
         }

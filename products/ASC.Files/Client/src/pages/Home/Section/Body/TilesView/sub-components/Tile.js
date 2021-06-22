@@ -138,7 +138,7 @@ const StyledElement = styled.div`
 const StyledOptionButton = styled.div`
   display: block;
 
-  .expand-button > div:first-child {
+  .expandButton > div:first-child {
     padding-top: 8px;
     padding-bottom: 8px;
     padding-left: 12px;
@@ -248,14 +248,14 @@ class Tile extends React.PureComponent {
                 <ContextMenuButton
                   color="#A3A9AE"
                   hoverColor="#657077"
-                  className="expand-button"
+                  className="expandButton"
                   directionX="right"
                   getData={getOptions}
                   isNew={true}
                   onClick={onContextMenu}
                 />
               ) : (
-                <div className="expand-button"> </div>
+                <div className="expandButton"> </div>
               )}
               <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
             </StyledOptionButton>
@@ -282,14 +282,14 @@ class Tile extends React.PureComponent {
                   <ContextMenuButton
                     color="#A3A9AE"
                     hoverColor="#657077"
-                    className="expand-button"
+                    className="expandButton"
                     directionX="right"
                     getData={getOptions}
                     isNew={true}
                     onClick={onContextMenu}
                   />
                 ) : (
-                  <div className="expand-button"> </div>
+                  <div className="expandButton"> </div>
                 )}
                 <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
               </StyledOptionButton>

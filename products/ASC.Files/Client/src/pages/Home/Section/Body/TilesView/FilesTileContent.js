@@ -66,7 +66,6 @@ const SimpleFilesTileContent = styled(TileContent)`
 `;
 
 const FilesTileContent = ({
-  t,
   item,
   titleWithoutExt,
   linkStyles,
