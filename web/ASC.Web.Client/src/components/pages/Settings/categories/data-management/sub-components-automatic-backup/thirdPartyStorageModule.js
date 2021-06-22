@@ -463,6 +463,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
     let storageParams = [];
 
     onSetLoadingData && onSetLoadingData(true);
+    settingNames.forEach((settingName) => {
+      saveToSessionStorage(settingName, "");
+    });
     this.setState({ isLoadingData: true }, function () {
       let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
 

@@ -377,6 +377,9 @@ class ThirdPartyModule extends React.Component {
       return;
     }
     onSetLoadingData && onSetLoadingData(true);
+    settingNames.forEach((settingName) => {
+      saveToSessionStorage(settingName, "");
+    });
     this.setState({ isLoadingData: true }, function () {
       let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
       let defaultSelectedFolder;
@@ -578,7 +581,7 @@ class ThirdPartyModule extends React.Component {
     } = this.props;
     //console.log("selectedFolder THRDPARTY", selectedFolder);
     // console.log("third-party module render", this.folderThirdPartyModulePath);
-    // console.log("___");
+    //console.log("selectedWeekdayOption", selectedWeekdayOption);
     return (
       <div className="category-item-wrapper">
         <>

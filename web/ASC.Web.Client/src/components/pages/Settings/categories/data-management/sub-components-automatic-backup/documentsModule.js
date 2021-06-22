@@ -381,6 +381,9 @@ class DocumentsModule extends React.Component {
     }
 
     onSetLoadingData && onSetLoadingData(true);
+    settingNames.forEach((settingName) => {
+      saveToSessionStorage(settingName, "");
+    });
     this.setState({ isLoadingData: true }, function () {
       let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
       let defaultSelectedFolder;
@@ -583,7 +586,7 @@ class DocumentsModule extends React.Component {
       t,
       onSetLoadingData,
     } = this.props;
-    console.log("isLoading auto!", isLoading);
+
     return (
       <div className="category-item-wrapper">
         <>
