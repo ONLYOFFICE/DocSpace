@@ -82,12 +82,12 @@ const Scrollbar = React.forwardRef((props, ref) => {
     />
   );
 
-  const renderView = ({ style, ...props }) => (
+  const renderView = ({ style, ...rest }) => (
     <div
-      {...props}
+      {...rest}
       style={{ ...style, ...view }}
       tabIndex={-1}
-      className={"scroll-body"}
+      className={`${props.scrollclass} scroll-body`}
     />
   );
 

@@ -6,12 +6,11 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Tile from "./sub-components/Tile";
 import FilesTileContent from "./FilesTileContent";
 import { withRouter } from "react-router-dom";
-import { createSelectable } from "react-selectable-fast";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
 
-const FilesTile = createSelectable((props) => {
+const FilesTile = (props) => {
   const {
     item,
     sectionWidth,
@@ -81,7 +80,7 @@ const FilesTile = createSelectable((props) => {
       </DragAndDrop>
     </div>
   );
-});
+};
 
 export default inject(({ formatsStore }) => {
   const { getIcon } = formatsStore.iconFormatsStore;
