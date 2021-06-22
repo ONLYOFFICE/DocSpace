@@ -19,12 +19,12 @@ export default function withLoader(WrappedComponent, type) {
       if (isLoading) {
         cleanTimer();
         loadTimeout = setTimeout(() => {
-          console.log("inLoad", true);
+          //console.log("inLoad", true);
           setInLoad(true);
         }, 500);
       } else {
         cleanTimer();
-        console.log("inLoad", false);
+        //console.log("inLoad", false);
         setInLoad(false);
       }
 
