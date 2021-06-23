@@ -78,86 +78,9 @@ namespace ASC.Calendar.Notification
             DisplayUserSettingsHelper = displayUserSettingsHelper;
 
             NotifyContext = new NotifyContext(serviceProvider);
-            _notifyClient = NotifyContext.NotifyService.RegisterClient(CalendarNotifySource, ServiceProvider.CreateScope());
+            _notifyClient = WorkContext.NotifyContext.NotifyService.RegisterClient(CalendarNotifySource, ServiceProvider.CreateScope());
         }
 
-        private static bool _isRegistered = false;
-        public static void RegisterSendMethod()
-        {
-            if (!_isRegistered)
-            {
-                lock (_syncName)
-                {
-                    if (!_isRegistered)
-                    {
-                       // _notifyClient.RegisterSendMethod(NotifyAbouFutureEvent, "0 * * ? * *");
-
-                        _isRegistered = true;
-                    }
-                }
-            }
-        }
-        /*private void NotifyAbouFutureEvent(DateTime scheduleDate)
-        {
-            try
-            {
-                using (var provider = new DataProvider())
-                {
-                    foreach (var data in provider.ExtractAndRecountNotifications(scheduleDate))
-                    {
-                        if (data.Event == null || data.Event.Status == EventStatus.Cancelled)
-                        {
-                            continue;
-                        }
-
-                        var tenant = CoreContext.TenantManager.GetTenant(data.TenantId);
-                        if (tenant == null ||
-                            tenant.Status != TenantStatus.Active ||
-                            TariffState.NotPaid <= CoreContext.PaymentManager.GetTariff(tenant.TenantId).State)
-                        {
-                            continue;
-                        }
-                        CoreContext.TenantManager.SetCurrentTenant(tenant);
-
-                        var r =
-                            CalendarNotifySource.Instance.GetRecipientsProvider().GetRecipient(data.UserId.ToString());
-                        if (r == null)
-                        {
-                            continue;
-                        }
-
-                        var startDate = data.GetUtcStartDate();
-                        var endDate = data.GetUtcEndDate();
-
-                        if (!data.Event.AllDayLong)
-                        {
-                            startDate = startDate.Add(data.TimeZone.GetOffset());
-                            endDate = (endDate == DateTime.MinValue
-                                ? DateTime.MinValue
-                                : endDate.Add(data.TimeZone.GetOffset()));
-                        }
-
-                        _notifyClient.SendNoticeAsync(CalendarNotifySource.EventAlert,
-                            null,
-                            r,
-                            true,
-                            new TagValue("EventName", data.Event.Name),
-                            new TagValue("EventDescription", data.Event.Description ?? ""),
-                            new TagValue("EventStartDate",
-                                startDate.ToShortDateString() + " " + startDate.ToShortTimeString()),
-                            new TagValue("EventEndDate",
-                                (endDate > startDate)
-                                    ? (endDate.ToShortDateString() + " " + endDate.ToShortTimeString())
-                                    : ""),
-                            new TagValue("Priority", 1));
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                LogManager.GetLogger("ASC.Notify.Calendar").Error(error);
-            }
-        } */
         public void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar)
         {
             NotifyAboutSharingCalendar(calendar, null);
@@ -238,17 +161,6 @@ namespace ASC.Calendar.Notification
     {
         public static INotifyAction CalendarSharing = new NotifyAction("CalendarSharingPattern");
         public static INotifyAction EventAlert = new NotifyAction("EventAlertPattern");
-
-        /*public CalendarNotifySource Instance
-        {
-            get;
-            private set;
-        }
-
-        static CalendarNotifySource()
-        {
-            Instance = new CalendarNotifySource();
-        }*/
 
         public CalendarNotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
             : base(new Guid("{40650DA3-F7C1-424c-8C89-B9C115472E08}"), userManager, recipientsProvider, subscriptionManager)

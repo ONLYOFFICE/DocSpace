@@ -1911,75 +1911,7 @@ namespace ASC.Calendar.BusinessObjects
             }
             CalendarDb.SaveChanges();
             tx.Commit();
-            /*
-            public List<EventNotificationData> ExtractAndRecountNotifications(DateTime utcDate)
-            {
-                List<EventNotificationData> data;
-                using (var tr = db.BeginTransaction())
-                {
-                    var cc = new ColumnCollection();
-                    var userIdCol = cc.RegistryColumn("user_id");
-                    var tenantCol = cc.RegistryColumn("tenant");
-                    var eventIdCol = cc.RegistryColumn("event_id");
-                    var notifyDateCol = cc.RegistryColumn("notify_date");
-                    var rruleCol = cc.RegistryColumn("rrule");
-                    var alertTypeCol = cc.RegistryColumn("alert_type");
-                    var timeZoneCol = cc.RegistryColumn("time_zone");
 
-                    data = new List<EventNotificationData>(db.ExecuteList(new SqlQuery("calendar_notifications").Select(cc.SelectQuery)
-                                            .Where(Exp.Le(notifyDateCol.Name, utcDate)))
-                                            .Select(r => new EventNotificationData
-                                            {
-                                                UserId = userIdCol.Parse<Guid>(r),
-                                                TenantId = tenantCol.Parse<int>(r),
-                                                EventId = eventIdCol.Parse<int>(r),
-                                                NotifyUtcDate = notifyDateCol.Parse<DateTime>(r),
-                                                RRule = rruleCol.Parse<RecurrenceRule>(r),
-                                                AlertType = (EventAlertType)alertTypeCol.Parse<int>(r),
-                                                TimeZone = timeZoneCol.Parse<TimeZoneInfo>(r)
-                                            }));
-
-
-                    var events = GetEventsByIds(data.Select(d => (object)d.EventId).Distinct().ToArray(), Guid.Empty);
-                    data.ForEach(d => d.Event = events.Find(e => String.Equals(e.Id, d.EventId.ToString(CultureInfo.InvariantCulture), StringComparison.InvariantCultureIgnoreCase)));
-
-                    foreach (var d in data)   
-                    {
-                        if (d.RRule.Freq == Frequency.Never)
-                            db.ExecuteNonQuery(new SqlDelete("calendar_notifications").Where(Exp.Eq("user_id", d.UserId) & Exp.Eq("event_id", d.EventId)));
-                        else
-                        {
-                            var alertDate = GetNextAlertDate(d.Event.UtcStartDate, d.RRule, d.AlertType, d.TimeZone, d.Event.AllDayLong);
-                            if (!alertDate.Equals(DateTime.MinValue))
-                            {
-                                db.ExecuteNonQuery(new SqlInsert("calendar_notifications", true).InColumnValue("user_id", d.UserId)
-                                                                                                    .InColumnValue("event_id", d.EventId)
-                                                                                                    .InColumnValue("rrule", d.RRule.ToString())
-                                                                                                    .InColumnValue("alert_type", (int)d.AlertType)
-                                                                                                    .InColumnValue("tenant", d.TenantId)
-                                                                                                    .InColumnValue("notify_date", alertDate)
-                                                                                                    .InColumnValue("time_zone", d.TimeZone.Id));
-                            }
-                            else
-                                db.ExecuteNonQuery(new SqlDelete("calendar_notifications").Where(Exp.Eq("user_id", d.UserId) & Exp.Eq("event_id", d.EventId)));
-                        }
-                    }
-
-                    tr.Commit();
-                }
-
-                return data;
-            }
-
-            #endregion
-
-            public void Dispose()
-            {
-                if (HttpContext.Current == null && db != null)
-                {
-                    db.Dispose();
-                }
-            }*/
         }
 
         public string GetSystemAuthorization()

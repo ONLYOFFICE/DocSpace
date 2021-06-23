@@ -251,14 +251,6 @@ namespace ASC.Calendar.Controllers
             AllSeries = 2
         }
 
-        //[Read("info")]
-        //public Module GetModule()
-        //{
-        //    var product = new CalendarProduct();
-        //    product.Init();
-        //    return new Module(product);
-        //}
-
         [Read("info")]
         public Module GetModule()
         {
