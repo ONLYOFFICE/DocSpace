@@ -320,7 +320,6 @@ namespace ASC.Files.Thirdparty
             InitFileEntry(file);
 
             file.Access = FileShare.None;
-            file.FileStatus = FileStatus.None;
             file.Shared = false;
             file.Version = 1;
 

@@ -87,10 +87,9 @@ namespace ASC.Core.ChunkedUploader
             DataStore.Delete(Domain, GetPathWithId(s.Id));
         }
 
-        public CommonChunkedUploadSession Get(string sessionId)
+        public Stream GetStream(string sessionId)
         {
-            using var stream = DataStore.GetReadStream(Domain, GetPathWithId(sessionId));
-            return CommonChunkedUploadSession.Deserialize(stream);
+            return DataStore.GetReadStream(Domain, GetPathWithId(sessionId));
         }
 
         public void Init(CommonChunkedUploadSession chunkedUploadSession)
