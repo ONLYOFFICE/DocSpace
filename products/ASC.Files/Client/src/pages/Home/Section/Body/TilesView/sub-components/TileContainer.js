@@ -10,8 +10,8 @@ import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
 
 const StyledGridWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 245px));
-  //width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  width: 100%;
   grid-gap: 22px 16px;
   padding-bottom: 24px;
   padding-right: 2px;
@@ -22,19 +22,22 @@ const StyledTileContainer = styled.div`
   position: relative;
 
   .tile-item-wrapper {
-    border: 1px solid #eceef1;
-    border-radius: 3px;
-    border-top-left-radius: 0;
     position: relative;
-    min-width: 220px;
+    width: 100%;
     box-sizing: border-box;
-    max-width: 245px;
 
     &.file {
       padding: 0;
 
       .drag-and-drop {
         margin: -1px;
+      }
+    }
+    &.folder {
+      padding: 0;
+
+      .drag-and-drop {
+        margin: 0px;
       }
     }
   }

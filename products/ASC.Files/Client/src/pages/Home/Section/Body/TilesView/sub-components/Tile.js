@@ -6,6 +6,7 @@ import { ReactSVG } from "react-svg";
 //import equal from "fast-deep-equal/react";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
+import { tablet } from "@appserver/components/utils/device";
 
 import Link from "@appserver/components/link";
 
@@ -23,48 +24,75 @@ const FlexBoxStyles = css`
 
 const FolderStyles = css`
   padding-left: 13px;
+  padding-bottom: 2px;
   box-sizing: border-box;
 `;
 
 const StyledTile = styled.div`
   cursor: ${(props) =>
     props.isFolder && !props.isRecycleBin ? "pointer" : "default"};
-
-  min-height: 55px;
+  min-height: 57px;
   width: 100%;
+  border: 1px solid #d0d5da;
+  border-radius: 3px;
+  ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => props.isFolder && FolderStyles}
-
-  ${(props) =>
+    ${(props) =>
     props.isFolder &&
     `&:before {
     content: "";
     position: absolute;
-    top: -7px;
-    left: -1px;
-    border: 1px solid #eceef1;
+    top: -5px;
+    left: 1px;
+    border-top: 1px solid #D0D5DA;
     border-top-left-radius: 3px;
-    border-top-right-radius: 7px;
-    width: 50px;
-    height: 7px;
+    border-left: 1px solid #D0D5DA;
+    width: 38px;
+    height: 8px;
     background-color: #FFF;
     border-bottom: transparent;
-  }`}
-  ${(props) =>
+
+    @media ${tablet} {
+      left: 0px;
+    }
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    top: -3.5px;
+    left: 36px;
+    border-top: 1px solid #D0D5DA;
+    background-color: #FFF;
+    width: 9px;
+    height: 10px;
+    transform: rotateZ(35deg);
+    
+    @media ${tablet} {
+      left: 35px;
+    }
+  }
+  `}
+    ${(props) =>
     props.isFolder &&
     props.dragging &&
     `&:before {
-        background-color: #F8F7BF;
-        width: 51px; 
-        left: -2px;
-  }`}
-  ${(props) =>
+        background-color: #F8F7BF;    
+    }
+    &:after {
+      background-color: #F8F7BF;
+    }
+  `}
+    ${(props) =>
     props.isFolder &&
     props.dragging &&
     `&:hover:before {
-        background-color: #EFEFB2;
-  }`}
+      background-color: #EFEFB2;
+    }
+    &:hover:after {
+      background-color: #EFEFB2;
+    }`};
 `;
 
 const StyledFileTileTop = styled.div`
