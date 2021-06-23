@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
-import { inject, observer } from "mobx-react";
+
 import { I18nextProvider } from "react-i18next";
 
 import PropTypes from "prop-types";
@@ -11,13 +11,12 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import SelectFolderDialog from "../SelectFolderDialog";
 import FolderTreeBody from "../SelectFolderDialog/folderTreeBody";
 import FileListBody from "./fileListBody";
+import Button from "@appserver/components/button";
 class SelectFileDialogModalViewBody extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoadingData: false,
-      isAvailableFolders: true,
-      certainFolders: true,
+      isLoading: false,
     };
     this.backupList;
     this.convertedData = [];
@@ -37,7 +36,7 @@ class SelectFileDialogModalViewBody extends React.Component {
             onSetLoadingData && onSetLoadingData(false);
 
             this.setState({
-              isLoadingData: false,
+              isLoading: false,
             });
           });
         break;
@@ -50,7 +49,7 @@ class SelectFileDialogModalViewBody extends React.Component {
             onSetLoadingData && onSetLoadingData(false);
 
             this.setState({
-              isLoadingData: false,
+              isLoading: false,
             });
           });
         break;
@@ -78,8 +77,12 @@ class SelectFileDialogModalViewBody extends React.Component {
       onFileClick,
       filesList,
       isLoadingData,
+      hasNextPage,
+      isNextPageLoading,
+      loadNextPage,
+      selectedFolder,
     } = this.props;
-    const { isAvailableFolders } = this.state;
+    const { isAvailableFolders, isLoading } = this.state;
     console.log("filesList", filesList);
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -92,7 +95,7 @@ class SelectFileDialogModalViewBody extends React.Component {
           displayType="modal"
         >
           <ModalDialog.Header>{t("SelectFile")}</ModalDialog.Header>
-          <ModalDialog.Body>
+          <ModalDialog.Body className="select-file_body-modal-dialog">
             <StyledSelectFilePanel>
               <div className="modal-dialog_body">
                 <div className="modal-dialog_tree-body">
@@ -102,7 +105,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                     onSelect={this.onSelect}
                     isCommonWithoutProvider={isCommonWithoutProvider}
                     certainFolders
-                    isAvailableFolders={isAvailableFolders}
+                    isAvailableFolders
                     filter={filter}
                   />
                 </div>
@@ -111,6 +114,10 @@ class SelectFileDialogModalViewBody extends React.Component {
                     isLoadingData={isLoadingData}
                     filesList={filesList}
                     onFileClick={onFileClick}
+                    hasNextPage={hasNextPage}
+                    isNextPageLoading={isNextPageLoading}
+                    loadNextPage={loadNextPage}
+                    selectedFolder={selectedFolder}
                   />
                 </div>
               </div>
@@ -123,7 +130,7 @@ class SelectFileDialogModalViewBody extends React.Component {
               size="big"
               label={t("Common:CloseButton")}
               tabIndex={1}
-              onClick={onModalClose}
+              onClick={onClose}
             />
           </ModalDialog.Footer>
         </ModalDialog>
@@ -132,26 +139,12 @@ class SelectFileDialogModalViewBody extends React.Component {
   }
 }
 
-const SelectFileDialogModalViewWrapper = inject(
-  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { getBackupFiles, filter } = filesStore;
-    const { expandedPanelKeys } = treeFoldersStore;
-    return {
-      getBackupFiles,
-      expandedKeys: expandedPanelKeys
-        ? expandedPanelKeys
-        : selectedFolderStore.pathParts,
-      filter,
-    };
-  }
-)(observer(SelectFileDialogModalViewBody));
-
 class SelectFileDialogModalView extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
         <I18nextProvider i18n={i18n}>
-          <SelectFileDialogModalViewWrapper {...this.props} />
+          <SelectFileDialogModalViewBody {...this.props} />
         </I18nextProvider>
       </MobxProvider>
     );
