@@ -19,18 +19,12 @@ import SectionToggler from "./sub-components/section-toggler";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
-import { SelectableGroup } from "react-selectable-fast";
+import Selecto from "react-selecto";
 import styled from "styled-components";
 
-const StyledSelectableGroup = styled(SelectableGroup)`
-  display: contents;
-
-  .selectable-selectbox {
-    display: ${(props) => (props.dragging ? "none" : "block")};
-    border: 1px dotted #5c6a8e;
-    background-color: #6582c9;
+const StyledSelectoWrapper = styled.div`
+  .selecto-selection {
     z-index: 200;
-    opacity: 0.4;
   }
 `;
 
@@ -91,9 +85,15 @@ class PageLayout extends React.Component {
 
     this.timeoutHandler = null;
     this.intervalHandler = null;
+
+    this.scroll = null;
   }
 
   componentDidUpdate(prevProps) {
+    if (!this.scroll) {
+      this.scroll = document.getElementsByClassName("section-scroll")[0];
+    }
+
     if (
       (this.props.hideAside &&
         !this.state.isArticlePinned &&
@@ -175,13 +175,28 @@ class PageLayout extends React.Component {
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
-  duringSelection = (duringItems) => {
-    if (!this.props.uploadFiles || isMobile) return;
-    const items = [];
-    for (let item of duringItems) {
-      items.push(item.props.item);
-    }
+  onSelect = (e) => {
+    if (this.props.dragging) return;
+    const items = e.selected;
     this.props.setSelections(items);
+  };
+
+  dragCondition = (e) => {
+    const path = e.inputEvent.composedPath();
+    const isBackdrop = path.some(
+      (x) => x.classList && x.classList.contains("backdrop-active")
+    );
+    const notSelectablePath = path.some(
+      (x) => x.classList && x.classList.contains("not-selectable")
+    );
+
+    if (notSelectablePath || isBackdrop) {
+      return false;
+    } else return true;
+  };
+
+  onScroll = (e) => {
+    this.scroll.scrollBy(e.direction[0] * 10, e.direction[1] * 10);
   };
 
   render() {
@@ -437,19 +452,35 @@ class PageLayout extends React.Component {
       );
     };
 
-    return isMobile || !uploadFiles ? (
-      renderPageLayout()
-    ) : (
-      <StyledSelectableGroup
-        dragging={dragging}
-        enableDeselect
-        resetOnStart
-        allowClickWithoutSelected={false}
-        duringSelection={this.duringSelection}
-        ignoreList={[".not-selectable", "draggable"]}
-      >
+    const scrollOptions = this.scroll
+      ? {
+          container: this.scroll,
+          throttleTime: 0,
+          threshold: 100,
+        }
+      : {};
+
+    return (
+      <>
         {renderPageLayout()}
-      </StyledSelectableGroup>
+        {!isMobile && uploadFiles && !dragging && (
+          <StyledSelectoWrapper>
+            <Selecto
+              dragContainer={".main"}
+              selectableTargets={[".files-row"]}
+              hitRate={1}
+              selectByClick={false}
+              selectFromInside={true}
+              ratio={0}
+              continueSelect={false}
+              onSelect={this.onSelect}
+              dragCondition={this.dragCondition}
+              scrollOptions={scrollOptions}
+              onScroll={this.onScroll}
+            />
+          </StyledSelectoWrapper>
+        )}
+      </>
     );
   }
 }
