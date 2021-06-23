@@ -25,6 +25,7 @@ const TileLoader = ({
         <RectangleLoader
           className="first-content"
           title={title}
+          width="100%"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}
@@ -52,6 +53,7 @@ const TileLoader = ({
         <RectangleLoader
           className="main-content"
           height="100%"
+          width="100%"
           title={title}
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
@@ -78,6 +80,7 @@ const TileLoader = ({
         <RectangleLoader
           className="second-content"
           title={title}
+          width="100%"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}

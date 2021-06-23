@@ -46,7 +46,7 @@ const StyledTile = styled.div`
 `;
 
 const StyledMainContent = styled.div`
-  padding: 12px 0px 4px 16px;
+  padding: 12px 12px 4px 12px;
   height: 175px;
 `;
 
@@ -54,7 +54,7 @@ const StyledBottom = styled.div`
   display: grid;
   grid-template-columns: 24px auto;
   grid-gap: 8px;
-  padding: ${(props) => (props.isFolder ? "20px 12px" : "8px 0px 12px 16px")};
+  padding: ${(props) => (props.isFolder ? "20px 12px" : "8px 12px 12px 12px")};
 
   .first-content {
     display: inline-block;

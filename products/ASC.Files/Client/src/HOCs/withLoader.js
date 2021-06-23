@@ -33,7 +33,7 @@ export default function withLoader(WrappedComponent, type) {
       };
     }, [isLoading]);
 
-    return true ? ( //firstLoad || !isLoaded || (isMobile && inLoad) || !tReady ? (
+    return firstLoad || !isLoaded || (isMobile && inLoad) || !tReady ? (
       viewAs === "tile" ? (
         <Loaders.Tiles />
       ) : (
