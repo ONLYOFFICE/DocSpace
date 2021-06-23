@@ -24,7 +24,6 @@ const StyledTileContainer = styled.div`
   .tile-item-wrapper {
     position: relative;
     width: 100%;
-    box-sizing: border-box;
 
     &.file {
       padding: 0;

@@ -124,11 +124,7 @@ export default function withContent(WrappedContent) {
     };
 
     onClickUpdateItem = (e) => {
-      console.log("here");
       const { fileActionType } = this.props;
-
-      console.log(fileActionType, FileAction.Create);
-
       fileActionType === FileAction.Create
         ? this.createItem(e)
         : this.updateItem(e);
@@ -148,8 +144,6 @@ export default function withContent(WrappedContent) {
         createFolder,
       } = this.props;
       const { itemTitle } = this.state;
-
-      console.log("create");
 
       setIsLoading(true);
 
