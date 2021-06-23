@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,7 +7,6 @@ using ASC.Common.Logging;
 using ASC.Mail.Aggregator.CollectionService.Console;
 using ASC.Mail.Aggregator.CollectionService.Service;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -17,51 +15,51 @@ namespace ASC.Mail.Aggregator.CollectionService
     [Singletone]
     class AggregatorServiceLauncher : IHostedService
     {
-        private ILog _log { get; }
-        private AggregatorService _aggregatorService { get; }
-        private ConsoleParameters _consoleParameters { get; }
+        private ILog Log { get; }
+        private AggregatorService AggregatorService { get; }
+        private ConsoleParameters ConsoleParameters { get; }
 
-        private ManualResetEvent _resetEvent;
+        private ManualResetEvent ResetEvent;
 
         public AggregatorServiceLauncher(
             IOptionsMonitor<ILog> options,
             AggregatorService aggregatorService,
             ConsoleParser consoleParser)
         {
-            _log = options.Get("ASC.Mail.MainThread");
-            _aggregatorService = aggregatorService;
-            _consoleParameters = consoleParser.GetParsedParameters();
+            Log = options.Get("ASC.Mail.MainThread");
+            AggregatorService = aggregatorService;
+            ConsoleParameters = consoleParser.GetParsedParameters();
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            _log.FatalFormat("Unhandled exception: {0}", e.ExceptionObject.ToString());
+            Log.FatalFormat("Unhandled exception: {0}", e.ExceptionObject.ToString());
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-                _log.Info("Start service\r\n");
+                Log.Info("Start service\r\n");
 
-                if (Environment.UserInteractive || _consoleParameters.IsConsole)
+                if (Environment.UserInteractive || ConsoleParameters.IsConsole)
                 {
-                    _log.Info("Service Start in console-daemon mode");
-                    _aggregatorService.startTimer(true);
-                    _resetEvent = new ManualResetEvent(false);
+                    Log.Info("Service Start in console-daemon mode");
+                    AggregatorService.StartTimer(true);
+                    ResetEvent = new ManualResetEvent(false);
                     System.Console.CancelKeyPress += (sender, e) => StopAsync(cancellationToken);
-                    _resetEvent.WaitOne();
+                    ResetEvent.WaitOne();
                 }
                 else
                 {
-                    _aggregatorService.startTimer(true);
+                    AggregatorService.StartTimer(true);
                 }
             }
             catch (Exception ex)
             {
-                _log.FatalFormat("Unhandled exception: {0}", ex.ToString());
+                Log.FatalFormat("Unhandled exception: {0}", ex.ToString());
                 StopAsync(cancellationToken);
             }
             return Task.CompletedTask;
@@ -71,21 +69,21 @@ namespace ASC.Mail.Aggregator.CollectionService
         {
             try
             {
-                _log.Info("Stoping service\r\n");
+                Log.Info("Stoping service\r\n");
 
-                _aggregatorService.StopService();
+                AggregatorService.StopService();
 
             }
             catch (Exception ex)
             {
-                _log.ErrorFormat("Stop service Error: {0}\r\n", ex.ToString());
+                Log.ErrorFormat("Stop service Error: {0}\r\n", ex.ToString());
             }
             finally
             {
-                _log.Info("Stop service\r\n");
+                Log.Info("Stop service\r\n");
 
-                if (_resetEvent != null)
-                    _resetEvent.Set();
+                if (ResetEvent != null)
+                    ResetEvent.Set();
             }
 
             return Task.CompletedTask;

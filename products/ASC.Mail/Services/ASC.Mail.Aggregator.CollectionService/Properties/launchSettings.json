@@ -5,7 +5,7 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../../../../../Data",
-        "log__name": "mail_aggregator_service",
+        "log__name": "mail.agg",
         "log__dir": "../../../../../../../Logs",
         "core__products__folder": "../../../../../../",
         "ASPNETCORE_URLS": "http://localhost:5024",
@@ -17,7 +17,7 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../../../../../Data",
-        "log__name": "mail_aggregator_service",
+        "log__name": "mail.agg",
         "log__dir": "../../../../../../../Logs",
         "core__products__folder": "../../../../../../",
         "ASPNETCORE_URLS": "http://localhost:5024",
