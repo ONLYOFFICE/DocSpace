@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 
 using ASC.Common;
@@ -71,12 +70,6 @@ namespace ASC.Thumbnails.Svc
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
                         .AddJsonFile("appsettings.json")
-                        .AddJsonFile("storage.json")
-                        .AddJsonFile("kafka.json")
-                        .AddJsonFile("thumb.json")
-                        .AddJsonFile($"kafka.{env}.json", true)
-                        .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile($"thumb.{env}.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
@@ -91,7 +84,7 @@ namespace ASC.Thumbnails.Svc
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Thumbnails.Svc");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.ClearEvents");
                     services.AddHostedService<ClearEventsServiceLauncher>();
                     diHelper.TryAdd<ClearEventsServiceLauncher>();
                 })
