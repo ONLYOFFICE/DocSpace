@@ -12,6 +12,7 @@ import SelectFolderDialog from "../SelectFolderDialog";
 import FolderTreeBody from "../SelectFolderDialog/folderTreeBody";
 import FileListBody from "./fileListBody";
 import Button from "@appserver/components/button";
+import { isArrayEqual } from "@appserver/components/utils/array";
 class SelectFileDialogModalViewBody extends React.Component {
   constructor(props) {
     super(props);
@@ -25,6 +26,7 @@ class SelectFileDialogModalViewBody extends React.Component {
 
   componentDidMount() {
     const { foldersType, onSetLoadingData, onSelectFolder } = this.props;
+
     switch (foldersType) {
       case "common":
         SelectFolderDialog.getCommonFolders()
@@ -63,6 +65,13 @@ class SelectFileDialogModalViewBody extends React.Component {
   };
   onSelect = (folder) => {
     const { onSelectFolder } = this.props;
+    const { selectedKeys } = this.state;
+
+    if (isArrayEqual(folder, selectedKeys)) {
+      return;
+    }
+    this.setState({ selectedKeys: folder });
+
     onSelectFolder && onSelectFolder(folder[0]);
   };
   render() {
@@ -82,7 +91,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       loadNextPage,
       selectedFolder,
     } = this.props;
-    const { isAvailableFolders, isLoading } = this.state;
+    const { isAvailableFolders, isLoading, selectedKeys } = this.state;
     console.log("filesList", filesList);
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -107,18 +116,22 @@ class SelectFileDialogModalViewBody extends React.Component {
                     certainFolders
                     isAvailableFolders
                     filter={filter}
+                    selectedKeys={selectedKeys}
                   />
                 </div>
                 <div className="modal-dialog_files-body">
-                  <FileListBody
-                    isLoadingData={isLoadingData}
-                    filesList={filesList}
-                    onFileClick={onFileClick}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                    selectedFolder={selectedFolder}
-                  />
+                  {selectedFolder && (
+                    <FileListBody
+                      isLoadingData={isLoadingData}
+                      filesList={filesList}
+                      onFileClick={onFileClick}
+                      hasNextPage={hasNextPage}
+                      isNextPageLoading={isNextPageLoading}
+                      loadNextPage={loadNextPage}
+                      selectedFolder={selectedFolder}
+                      isCommonWithoutProvider={isCommonWithoutProvider}
+                    />
+                  )}
                 </div>
               </div>
             </StyledSelectFilePanel>

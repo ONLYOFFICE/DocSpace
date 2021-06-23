@@ -13,6 +13,7 @@ const FolderTreeBody = ({
   certainFolders,
   isAvailableFolders,
   filter,
+  selectedKeys,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   return (
@@ -26,6 +27,7 @@ const FolderTreeBody = ({
             onSelect={onSelect}
             withoutProvider={isCommonWithoutProvider}
             certainFolders={certainFolders}
+            selectedKeys={selectedKeys}
           />
         ) : (
           <Text as="span">{t("NotAvailableFolder")}</Text>
