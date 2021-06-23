@@ -33,7 +33,7 @@ class SelectFileDialogModalViewBody extends React.Component {
           .then((commonFolder) => {
             this.folderList = commonFolder;
           })
-          .then(() => onSelectFolder(`${this.folderList[0].id}`))
+
           .finally(() => {
             onSetLoadingData && onSetLoadingData(false);
 
@@ -91,7 +91,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       loadNextPage,
       selectedFolder,
     } = this.props;
-    const { isAvailableFolders, isLoading, selectedKeys } = this.state;
+    const { selectedKeys } = this.state;
     console.log("filesList", filesList);
     return (
       <StyledAsidePanel visible={isPanelVisible}>
