@@ -146,7 +146,7 @@ export default function withFileActions(WrappedFileItem) {
         return;
 
       if (isFolder && viewAs === "tile") {
-        if (!isMouseDown) return;
+        if (!isMouseDown || e.target.closest(".edit-button")) return;
         this.onFilesClick();
       } else {
         if (checked) {

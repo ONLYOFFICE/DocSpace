@@ -218,14 +218,13 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
-
     return (
       <StyledTile
         ref={this.tile}
         {...this.props}
         onContextMenu={onContextMenu}
         dragging={dragging && isFolder}
-        isFolder={isFolder || (!fileExst && id === -1)}
+        isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
       >
         {isFolder || (!fileExst && id === -1) ? (
@@ -242,7 +241,11 @@ class Tile extends React.PureComponent {
             {renderElement && !(isFolder || (!fileExst && id === -1)) && (
               <StyledElement>{element}</StyledElement>
             )}
-            <StyledContent isFolder={isFolder}>{children}</StyledContent>
+            <StyledContent
+              isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+            >
+              {children}
+            </StyledContent>
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (
                 <ContextMenuButton
@@ -276,7 +279,12 @@ class Tile extends React.PureComponent {
             </StyledFileTileTop>
             <StyledFileTileBottom>
               <StyledElement>{element}</StyledElement>
-              <StyledContent isFolder={isFolder}>{children}</StyledContent>
+              <StyledContent
+                className="styled-content"
+                isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+              >
+                {children}
+              </StyledContent>
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
                 {renderContext ? (
                   <ContextMenuButton
