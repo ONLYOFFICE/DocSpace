@@ -264,26 +264,26 @@ class FilesStore {
     } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
 
-    if (privacyFolder && privacyFolder.id === +folderId) {
-      if (!this.settingsStore.isEncryptionSupport) {
-        filterData.total = 0;
-        this.setFilesFilter(filterData); //TODO: FILTER
-        if (clearFilter) {
-          this.setFolders([]);
-          this.setFiles([]);
-          this.fileActionStore.setAction({ type: null });
-          this.setSelected("close");
+    // if (privacyFolder && privacyFolder.id === +folderId) {
+    //   if (!this.settingsStore.isEncryptionSupport) {
+    //     filterData.total = 0;
+    //     this.setFilesFilter(filterData); //TODO: FILTER
+    //     if (clearFilter) {
+    //       this.setFolders([]);
+    //       this.setFiles([]);
+    //       this.fileActionStore.setAction({ type: null });
+    //       this.setSelected("close");
 
-          this.selectedFolderStore.setSelectedFolder({
-            folders: [],
-            ...privacyFolder,
-            pathParts: privacyFolder.pathParts,
-            ...{ new: 0 },
-          });
-        }
-        return Promise.resolve();
-      }
-    }
+    //       this.selectedFolderStore.setSelectedFolder({
+    //         folders: [],
+    //         ...privacyFolder,
+    //         pathParts: privacyFolder.pathParts,
+    //         ...{ new: 0 },
+    //       });
+    //     }
+    //     return Promise.resolve();
+    //   }
+    // }
 
     //TODO: fix @my
     let requestCounter = 1;
@@ -301,21 +301,10 @@ class FilesStore {
             loopTreeFolders(path, treeFolders, subfolders, foldersCount);
           }
 
-          const isPrivacyFolder =
-            data.current.rootFolderType === FolderType.Privacy;
-
           filterData.total = data.total;
           this.setFilesFilter(filterData); //TODO: FILTER
-          this.setFolders(
-            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-              ? []
-              : data.folders
-          );
-          this.setFiles(
-            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-              ? []
-              : data.files
-          );
+          this.setFolders(data.folders);
+          this.setFiles(data.files);
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
             this.setSelected("close");
@@ -677,10 +666,14 @@ class FilesStore {
 
       if (isPrivacyFolder) {
         folderOptions = this.removeOptions(folderOptions, [
+          "sharing-settings",
           "copy",
           "copy-to",
-          "sharing-settings",
         ]);
+
+        if (!this.authStore.settingsStore.isDesktopClient) {
+          folderOptions = this.removeOptions(folderOptions, ["rename"]);
+        }
       }
 
       if (isShareItem) {

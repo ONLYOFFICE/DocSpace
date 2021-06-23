@@ -131,6 +131,7 @@ export default function withBadges(WrappedComponent) {
         item,
         canWebEdit,
         isTrashFolder,
+        isPrivacy,
         canConvert,
         onFilesClick, // from withFileAction HOC
         isAdmin,
@@ -154,6 +155,7 @@ export default function withBadges(WrappedComponent) {
           canWebEdit={canWebEdit}
           canConvert={canConvert}
           isTrashFolder={isTrashFolder}
+          isPrivacy={isPrivacy}
           accessToEdit={accessToEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
@@ -186,7 +188,11 @@ export default function withBadges(WrappedComponent) {
       { item }
     ) => {
       const { docserviceStore } = formatsStore;
-      const { isRecycleBinFolder, updateRootBadge } = treeFoldersStore;
+      const {
+        isRecycleBinFolder,
+        isPrivacyFolder,
+        updateRootBadge,
+      } = treeFoldersStore;
       const {
         lockFileAction,
         setFavoriteAction,
@@ -214,6 +220,7 @@ export default function withBadges(WrappedComponent) {
         canWebEdit,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
+        isPrivacy: isPrivacyFolder,
         lockFileAction,
         setFavoriteAction,
         homepage: config.homepage,

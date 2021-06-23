@@ -13,6 +13,7 @@ const Badges = ({
   item,
   canWebEdit,
   isTrashFolder,
+  isPrivacy,
   canConvert,
   accessToEdit,
   showNew,
@@ -45,6 +46,7 @@ const Badges = ({
       )}
       {canWebEdit &&
         !isTrashFolder &&
+        !isPrivacy &&
         accessToEdit &&
         showEditBadge &&
         !canConvert && (

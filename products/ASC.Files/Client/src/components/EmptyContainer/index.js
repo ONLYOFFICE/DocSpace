@@ -32,7 +32,7 @@ const EmptyContainer = ({
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
-  ) : parentId === 0 || (isPrivacyFolder && !isEncryptionSupport) ? (
+  ) : parentId === 0 ? (
     <RootFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
   ) : (
     <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />

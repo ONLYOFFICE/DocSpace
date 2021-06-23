@@ -104,9 +104,11 @@ class DeleteDialogComponent extends React.Component {
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    const title = unsubscribe
+    const title = isPrivacyFolder
+      ? t("ConfirmRemove")
+      : unsubscribe
       ? t("UnsubscribeTitle")
-      : checkedSelections.length === 1 && !isPrivacyFolder
+      : checkedSelections.length === 1 || isPrivacyFolder
       ? checkedSelections[0].fileExst
         ? t("MoveToTrashOneFileTitle")
         : t("MoveToTrashOneFolderTitle")
@@ -114,7 +116,7 @@ class DeleteDialogComponent extends React.Component {
 
     const noteText = unsubscribe
       ? t("UnsubscribeNote")
-      : checkedSelections.length === 1 && !isPrivacyFolder
+      : checkedSelections.length === 1 || isPrivacyFolder
       ? checkedSelections[0].fileExst
         ? t("MoveToTrashOneFileNote")
         : t("MoveToTrashOneFolderNote")
