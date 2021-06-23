@@ -1009,6 +1009,7 @@ class FilesStore {
         webUrl,
         providerKey,
         thumbnailUrl,
+        thumbnailStatus,
       } = item;
 
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
@@ -1064,6 +1065,7 @@ class FilesStore {
         //canWebEdit: isCanWebEdit,
         //canShare,
         thumbnailUrl,
+        thumbnailStatus,
       };
     });
 
@@ -1335,12 +1337,18 @@ class FilesStore {
   createThumbnails = () => {
     const filesList = this.filesList;
     const fileIds = [];
-    const re = /\d*$/;
 
     filesList.map((file) => {
-      if (!file.thumbnailUrl && !file.isFolder) {
-        fileIds.push(file.id);
-      }
+      const { thumbnailStatus, thumbnailUrl, isFolder } = file;
+
+      if (
+        isFolder ||
+        thumbnailStatus === 3 ||
+        (thumbnailStatus === 1 && thumbnailUrl)
+      )
+        return;
+
+      fileIds.push(file.id);
     });
 
     if (fileIds.length) return api.files.createThumbnails(fileIds);

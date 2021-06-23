@@ -94,7 +94,10 @@ class SectionFilterContent extends React.Component {
 
   onChangeViewAs = (view) => {
     const { setViewAs, createThumbnails } = this.props;
-    if (view === "tile") createThumbnails();
+    if (view === "tile") {
+      console.log("here");
+      createThumbnails();
+    }
     setViewAs(view);
   };
 
