@@ -313,7 +313,10 @@ class FilesActionStore {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
-    if (this.settingsStore.confirmDelete) {
+    if (
+      this.settingsStore.confirmDelete ||
+      this.treeFoldersStore.isPrivacyFolder
+    ) {
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
       setSecondaryProgressBarData({
@@ -500,7 +503,7 @@ class FilesActionStore {
 
   selectRowAction = (checked, file) => {
     const { selected, setSelected, selectFile, deselectFile } = this.filesStore;
-    //selected === "close" && setSelected("none");
+    selected === "close" && setSelected("none");
     if (checked) {
       selectFile(file);
     } else {

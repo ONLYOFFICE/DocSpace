@@ -86,6 +86,7 @@ class FilesContent extends React.Component {
         encryptionKeys,
         setEncryptionKeys,
         this.isEditor,
+        null,
         this.props.t
       );
       console.log(

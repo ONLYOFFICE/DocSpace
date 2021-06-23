@@ -88,9 +88,15 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onMouseDown = (e) => {
-      const { draggable, setTooltipPosition, setStartDrag } = this.props;
+      const {
+        draggable,
+        setTooltipPosition,
+        setStartDrag,
+        isPrivacy,
+      } = this.props;
       const notSelectable = e.target.classList.contains("not-selectable");
-      if (!draggable) {
+
+      if (!draggable || isPrivacy) {
         return;
       }
 

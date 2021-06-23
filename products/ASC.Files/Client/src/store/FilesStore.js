@@ -523,7 +523,7 @@ class FilesStore {
         }
       }
 
-      if (isFavoritesFolder || isPrivacyFolder || isRecentFolder) {
+      if (isFavoritesFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "copy",
           "move-to",
@@ -642,6 +642,17 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["unsubscribe"]);
       }
 
+      if (isPrivacyFolder) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "preview",
+          "view",
+          "separator0",
+          "copy",
+          "unsubscribe",
+          "download-as",
+        ]);
+      }
+
       return fileOptions;
     } else {
       let folderOptions = [
@@ -665,7 +676,11 @@ class FilesStore {
       ];
 
       if (isPrivacyFolder) {
-        folderOptions = this.removeOptions(folderOptions, ["copy"]);
+        folderOptions = this.removeOptions(folderOptions, [
+          "copy",
+          "copy-to",
+          "sharing-settings",
+        ]);
       }
 
       if (isShareItem) {
@@ -1214,6 +1229,7 @@ class FilesStore {
       }
     }
 
+    this.selected === "close" && this.setSelected("none");
     this.setSelection(newSelection);
     //}
   };
