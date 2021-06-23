@@ -67,7 +67,6 @@ namespace ASC.Web.CRM.Classes
         private readonly SecurityContext _securityContext;
         private readonly UserManager _userManager;
         private readonly DaoFactory _daoFactory;
-        private readonly ILog _logManager;
 
         public ImportDataOperation(Global global,
                                    TenantManager tenantManager,
@@ -86,6 +85,7 @@ namespace ASC.Web.CRM.Classes
             _securityContext = securityContext;
             _dataStore = global.GetStore();
 
+            _tenantManager = tenantManager;
             _tenantID = tenantManager.GetCurrentTenant().TenantId;
             _author = _securityContext.CurrentAccount;
 

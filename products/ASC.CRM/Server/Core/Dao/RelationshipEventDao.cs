@@ -296,14 +296,14 @@ namespace ASC.CRM.Core.Dao
 
             if (item.CategoryID == (int)HistoryCategorySystem.MailMessage)
             {
-                var jsonObj = JsonDocument.Parse(item.Content).RootElement;
-                var messageId = jsonObj.GetProperty("message_id").GetInt32();
+           //     var jsonObj = JsonDocument.Parse(item.Content).RootElement;
+         //       var messageId = jsonObj.GetProperty("message_id").GetInt32();
 
                 //var apiServer = new ApiServer();
                 //var msg = apiServer.GetApiResponse(
                 //    String.Format("{0}mail/messages/{1}.json?id={1}&loadImages=true&needSanitize=true", SetupInfo.WebApiBaseUrl, messageId), "GET");
 
-                String msg = null;
+        //        String msg = null;
                 //                if (msg == null)
                 throw new ArgumentException("Mail message cannot be found");
 
