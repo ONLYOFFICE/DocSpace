@@ -8,7 +8,7 @@
         "log__name": "sso",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
-        "ASPNETCORE_URLS": "http://localhost:5025",
+        "ASPNETCORE_URLS": "http://localhost:5024",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

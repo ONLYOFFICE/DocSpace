@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
@@ -15,6 +16,7 @@ using ASC.Web.Files.Core.Search;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,6 +37,7 @@ namespace ASC.Files.Service
                 .UseSystemd()
                 .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
