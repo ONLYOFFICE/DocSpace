@@ -119,7 +119,7 @@ const StyledFileTileTop = styled.div`
 
 const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles}
-  padding: 9px 13px;
+  padding: 9px 10px;
   padding-right: 0;
   min-height: 56px;
   box-sizing: border-box;
@@ -161,6 +161,7 @@ const StyledElement = styled.div`
   display: flex;
   margin-right: 4px;
   user-select: none;
+  margin-top: 3px;
 `;
 
 const StyledOptionButton = styled.div`
