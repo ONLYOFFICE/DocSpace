@@ -61,6 +61,8 @@ class SelectFileDialogBody extends React.Component {
   onSelectFolder = (id) => {
     this.setState({
       selectedFolder: id,
+      hasNextPage: true,
+      filesList: [],
     });
   };
 
@@ -108,7 +110,7 @@ class SelectFileDialogBody extends React.Component {
       isLoadingData: loading,
     });
   };
-  loadNextPage = ({ startIndex }) => {
+  loadNextPage = ({ startIndex = 0 }) => {
     //debugger;
     console.log(`loadNextPage(startIndex=${startIndex}")`);
     const { selectedFolder } = this.state;
@@ -148,9 +150,10 @@ class SelectFileDialogBody extends React.Component {
       width,
       hasNextPage,
       isNextPageLoading,
+      selectedFolder,
     } = this.state;
 
-    return width < 1024 ? (
+    return width < 1025 ? (
       <SelectFileDialogAsideView
         t={t}
         isPanelVisible={isPanelVisible}
@@ -169,6 +172,7 @@ class SelectFileDialogBody extends React.Component {
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
+        selectedFolder={selectedFolder}
       />
     ) : (
       <SelectFileDialogModalView
@@ -184,6 +188,7 @@ class SelectFileDialogBody extends React.Component {
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
+        selectedFolder={selectedFolder}
       />
     );
   }
