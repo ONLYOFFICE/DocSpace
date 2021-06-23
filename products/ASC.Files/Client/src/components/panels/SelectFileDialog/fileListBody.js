@@ -18,6 +18,7 @@ const FileListBody = ({
   loadNextPage,
   hasNextPage,
   isNextPageLoading,
+  displayType,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   // Every row is loaded except for our loading indicator row.
@@ -90,7 +91,7 @@ const FileListBody = ({
     <>
       {!isLoadingData ? (
         <AutoSizer>
-          {({ width }) => (
+          {({ width, height }) => (
             <InfiniteLoader
               //ref={listOptionsRef}
               isItemLoaded={isItemLoaded}
@@ -100,7 +101,7 @@ const FileListBody = ({
               {({ onItemsRendered, ref }) => (
                 <List
                   className="options_list"
-                  height={320}
+                  height={displayType === "aside" ? height : 320}
                   itemCount={itemCount}
                   itemSize={36}
                   onItemsRendered={onItemsRendered}

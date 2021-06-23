@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
+import { tablet } from "@appserver/components/utils/device";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -43,6 +44,7 @@ const PanelStyles = css`
 
 const StyledAsidePanel = styled.div`
   z-index: 310;
+
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
@@ -513,20 +515,41 @@ const StyledSelectFolderPanel = styled.div`
   }
 `;
 const StyledSelectFilePanel = styled.div`
-  height: 100%;
-  .modal-dialog_body-files-list {
-    margin-top: 16px;
-    height: 800px;
+  ${(props) =>
+    props.displayType === "aside" &&
+    css`
+      height: 100%;
+      overflow: hidden;
+    `}
+  .select-file-dialog_aside-body_wrapper {
+    height: calc(100% - 200px);
+    width: 320px;
+    padding: 0 16px;
   }
-  .modal-dialog_body-files-list:first-child {
+  .select-file-dialog_aside_body {
+    margin-top: 16px;
     height: 100%;
+    width: 290px;
+  }
+  .select-file-dialog_aside-header_title {
+    margin: 0px;
+    line-height: 56px;
+    max-width: 474px;
+    width: 400px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .select-file-dialog_aside-header {
+    margin-bottom: 16px;
   }
   .modal-dialog_file-name {
     display: flex;
     cursor: pointer;
     border-bottom: 1px solid #eceef1;
     align-items: center;
-    padding: 7px 0;
+    //padding: 7px 0;
+    height: 36px;
   }
   .select-file-dialog_icon {
     margin-right: 8px;
@@ -540,9 +563,13 @@ const StyledSelectFilePanel = styled.div`
     background-color: #eceef1;
     border-radius: 3px;
   }
+  .select-file-dialog_aside-header,
+  .file-name {
+    border-bottom: 1px solid #eceef1;
+  }
   .file-name {
     display: flex;
-    border-bottom: 1px solid #eceef1;
+
     padding: 7px 0px;
   }
   .file-exst {
