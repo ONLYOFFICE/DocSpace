@@ -58,13 +58,21 @@ namespace ASC.CRM.Core.Dao
         private Dictionary<EntityType, IEnumerable<int>> _findedIDs;
 
         //TODO: setting _fullTextSearchEnable field
-        private readonly bool _fullTextSearchEnable;
+        private bool _fullTextSearchEnable;
 
+        private readonly DaoFactory _daoFactory;
+        private readonly CrmSecurity _crmSecurity;
+        private readonly BundleSearch _bundleSearch;
+        private readonly WebImageSupplier _webImageSupplier;
+        private readonly TenantUtil _tenantUtil;
+        private readonly PathProvider _pathProvider;
+        private readonly FactoryIndexerTask _factoryIndexerTask;
+        private readonly FactoryIndexerInvoice _factoryIndexerInvoice;
 
-        private DaoFactory DaoFactory { get; set; }
 
         public SearchDao(DbContextManager<CrmDbContext> dbContextManager,
                       TenantManager tenantManager,
+                      DaoFactory daoFactory,
                       SecurityContext securityContext,
                       CrmSecurity crmSecurity,
                       TenantUtil tenantUtil,
@@ -84,25 +92,17 @@ namespace ASC.CRM.Core.Dao
                 ascCache,
                 mapper)
         {
-            FactoryIndexerTask = tasksDtoIndexer;
-            FactoryIndexerInvoice = invoicesDtoIndexer;
-            CRMSecurity = crmSecurity;
-            TenantUtil = tenantUtil;
-            PathProvider = pathProvider;
-            WebImageSupplier = webImageSupplier;
-            BundleSearch = bundleSearch;
+            _daoFactory = daoFactory;
+            _factoryIndexerTask = tasksDtoIndexer;
+            _factoryIndexerInvoice = invoicesDtoIndexer;
+            _crmSecurity = crmSecurity;
+            _tenantUtil = tenantUtil;
+            _pathProvider = pathProvider;
+            _webImageSupplier = webImageSupplier;
+            _bundleSearch = bundleSearch;
         }
 
 
-        public BundleSearch BundleSearch { get; }
-
-        public WebImageSupplier WebImageSupplier { get; }
-
-        public TenantUtil TenantUtil { get; }
-        public PathProvider PathProvider { get; }
-        public FactoryIndexerTask FactoryIndexerTask { get; }
-        public FactoryIndexerInvoice FactoryIndexerInvoice { get; }
-        public CrmSecurity CRMSecurity { get; }
 
         public SearchResultItem[] Search(String searchText)
         {
@@ -111,38 +111,40 @@ namespace ASC.CRM.Core.Dao
 
             if (keywords.Length == 0) return new List<SearchResultItem>().ToArray();
 
+            _fullTextSearchEnable = _bundleSearch.CheckFullTextSearchEnable();
+
             if (_fullTextSearchEnable)
             {
                 _findedIDs = new Dictionary<EntityType, IEnumerable<int>>();
 
                 List<int> casesId;
-                if (BundleSearch.TrySelectCase(searchText, out casesId))
+                if (_bundleSearch.TrySelectCase(searchText, out casesId))
                 {
                     _findedIDs.Add(EntityType.Case, casesId);
                 }
 
                 List<int> contactsId;
-                if (BundleSearch.TrySelectContact(searchText, out contactsId))
+                if (_bundleSearch.TrySelectContact(searchText, out contactsId))
                 {
                     _findedIDs.Add(EntityType.Contact, contactsId);
                 }
 
                 List<int> dealsId;
-                if (BundleSearch.TrySelectOpportunity(searchText, out dealsId))
+                if (_bundleSearch.TrySelectOpportunity(searchText, out dealsId))
                 {
                     _findedIDs.Add(EntityType.Opportunity, dealsId);
                 }
 
                 List<int> tasksId;
 
-                if (FactoryIndexerTask.TrySelectIds(r => r.MatchAll(searchText), out tasksId))
+                if (_factoryIndexerTask.TrySelectIds(r => r.MatchAll(searchText), out tasksId))
                 {
                     _findedIDs.Add(EntityType.Task, tasksId);
                 }
 
                 List<int> invoicesId;
 
-                if (FactoryIndexerInvoice.TrySelectIds(r => r.MatchAll(searchText), out invoicesId))
+                if (_factoryIndexerInvoice.TrySelectIds(r => r.MatchAll(searchText), out invoicesId))
                 {
                     _findedIDs.Add(EntityType.Invoice, invoicesId);
                 }
@@ -237,16 +239,16 @@ namespace ASC.CRM.Core.Dao
 
                 sqlQuery.ToList().ForEach(x =>
                 {
-                    if (!CRMSecurity.CanAccessTo(new Task { ID = x.Id })) return;
+                    if (!_crmSecurity.CanAccessTo(new Task { ID = x.Id })) return;
 
                     result.Add(new SearchResultItem
                     {
                         Name = x.Title,
                         Description = HtmlUtil.GetText(x.Description, 120),
-                        URL = PathProvider.BaseAbsolutePath,
-                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        URL = _pathProvider.BaseAbsolutePath,
+                        Date = _tenantUtil.DateTimeFromUtc(x.CreateOn),
                         Additional = new Dictionary<String, Object>
-                                            { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath("tasks_widget.png", ProductEntryPoint.ID) },
+                                            { { "imageRef",  _webImageSupplier.GetAbsoluteWebPath("tasks_widget.png", ProductEntryPoint.ID) },
                                                 {"relativeInfo", GetPath(
                                                     x.ContactId,
                                                     x.EntityId,
@@ -280,16 +282,16 @@ namespace ASC.CRM.Core.Dao
 
                 sqlQuery.ToList().ForEach(x =>
                 {
-                    if (!CRMSecurity.CanAccessTo(new Deal { ID = x.Id })) return;
+                    if (!_crmSecurity.CanAccessTo(new Deal { ID = x.Id })) return;
 
                     result.Add(new SearchResultItem
                     {
                         Name = x.Title,
                         Description = HtmlUtil.GetText(x.Description, 120),
-                        URL = string.Concat(PathProvider.BaseAbsolutePath, string.Format("deals.aspx?id={0}", x.Id)),
-                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        URL = string.Concat(_pathProvider.BaseAbsolutePath, string.Format("deals.aspx?id={0}", x.Id)),
+                        Date = _tenantUtil.DateTimeFromUtc(x.CreateOn),
                         Additional = new Dictionary<string, object>
-                                                     { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath("deal_widget.png", ProductEntryPoint.ID) },
+                                                     { { "imageRef",  _webImageSupplier.GetAbsoluteWebPath("deal_widget.png", ProductEntryPoint.ID) },
                                                               {"relativeInfo", GetPath(
                                                                   x.ContactId,
                                                                   0,
@@ -330,21 +332,21 @@ namespace ASC.CRM.Core.Dao
                 {
                     if (x.IsCompany)
                     {
-                        if (!CRMSecurity.CanAccessTo(new Company { ID = x.Id })) return;
+                        if (!_crmSecurity.CanAccessTo(new Company { ID = x.Id })) return;
                     }
                     else
                     {
-                        if (!CRMSecurity.CanAccessTo(new Person { ID = x.Id })) return;
+                        if (!_crmSecurity.CanAccessTo(new Person { ID = x.Id })) return;
                     }
 
                     result.Add(new SearchResultItem
                     {
                         Name = x.IsCompany ? x.CompanyName : String.Format("{0} {1}", x.FirstName, x.LastName),
                         Description = HtmlUtil.GetText(x.Notes, 120),
-                        URL = String.Concat(PathProvider.BaseAbsolutePath, String.Format("default.aspx?id={0}", x.Id)),
-                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        URL = String.Concat(_pathProvider.BaseAbsolutePath, String.Format("default.aspx?id={0}", x.Id)),
+                        Date = _tenantUtil.DateTimeFromUtc(x.CreateOn),
                         Additional = new Dictionary<String, Object>
-                                                     { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath(x.IsCompany ? "companies_widget.png" : "people_widget.png", ProductEntryPoint.ID) },
+                                                     { { "imageRef",  _webImageSupplier.GetAbsoluteWebPath(x.IsCompany ? "companies_widget.png" : "people_widget.png", ProductEntryPoint.ID) },
                                                               {"relativeInfo", GetPath(
                                                                   0,
                                                                   0,
@@ -376,16 +378,16 @@ namespace ASC.CRM.Core.Dao
 
                 sqlQuery.ToList().ForEach(x =>
                 {
-                    if (!CRMSecurity.CanAccessTo(new Cases { ID = x.Id })) return;
+                    if (!_crmSecurity.CanAccessTo(new Cases { ID = x.Id })) return;
 
                     result.Add(new SearchResultItem
                     {
                         Name = x.Title,
                         Description = String.Empty,
-                        URL = String.Concat(PathProvider.BaseAbsolutePath, String.Format("cases.aspx?id={0}", x.Id)),
-                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        URL = String.Concat(_pathProvider.BaseAbsolutePath, String.Format("cases.aspx?id={0}", x.Id)),
+                        Date = _tenantUtil.DateTimeFromUtc(x.CreateOn),
                         Additional = new Dictionary<String, Object>
-                                                     { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath("cases_widget.png", ProductEntryPoint.ID) },
+                                                     { { "imageRef",  _webImageSupplier.GetAbsoluteWebPath("cases_widget.png", ProductEntryPoint.ID) },
                                                               {"relativeInfo", GetPath(
                                                                   0,
                                                                   0,
@@ -421,16 +423,16 @@ namespace ASC.CRM.Core.Dao
 
                 sqlQuery.ToList().ForEach(x =>
                 {
-                    if (!CRMSecurity.CanAccessTo(new Invoice { ID = x.Id })) return;
+                    if (!_crmSecurity.CanAccessTo(new Invoice { ID = x.Id })) return;
 
                     result.Add(new SearchResultItem
                     {
                         Name = x.Number,
                         Description = String.Empty,
-                        URL = String.Concat(PathProvider.BaseAbsolutePath, String.Format("invoices.aspx?id={0}", x.Id)),
-                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        URL = String.Concat(_pathProvider.BaseAbsolutePath, String.Format("invoices.aspx?id={0}", x.Id)),
+                        Date = _tenantUtil.DateTimeFromUtc(x.CreateOn),
                         Additional = new Dictionary<String, Object>
-                                                         { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath("invoices_widget.png", ProductEntryPoint.ID) },
+                                                         { { "imageRef",  _webImageSupplier.GetAbsoluteWebPath("invoices_widget.png", ProductEntryPoint.ID) },
                                                               {"relativeInfo", GetPath(
                                                                   x.ContactId,
                                                                   x.EntityId,
@@ -451,20 +453,20 @@ namespace ASC.CRM.Core.Dao
             if (contactID == 0) return String.Empty;
 
             if (entityID == 0)
-                return DaoFactory.GetContactDao().GetByID(contactID).GetTitle();
+                return _daoFactory.GetContactDao().GetByID(contactID).GetTitle();
 
             switch (entityType)
             {
                 case EntityType.Company:
                 case EntityType.Person:
                 case EntityType.Contact:
-                    var contact = DaoFactory.GetContactDao().GetByID(contactID);
+                    var contact = _daoFactory.GetContactDao().GetByID(contactID);
                     return contact == null ? string.Empty : contact.GetTitle();
                 case EntityType.Opportunity:
-                    var opportunity = DaoFactory.GetDealDao().GetByID(entityID);
+                    var opportunity = _daoFactory.GetDealDao().GetByID(entityID);
                     return opportunity == null ? string.Empty : opportunity.Title;
                 case EntityType.Case:
-                    var @case = DaoFactory.GetCasesDao().GetByID(entityID);
+                    var @case = _daoFactory.GetCasesDao().GetByID(entityID);
                     return @case == null ? string.Empty : @case.Title;
                 default:
                     throw new ArgumentException();

@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -86,6 +85,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Calendar", "products\ASC.Calendar\Server\ASC.Calendar.csproj", "{F39933F8-7598-492F-9DD3-E25780D68288}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.SsoAuth.Svc", "common\services\ASC.SsoAuth.Svc\ASC.SsoAuth.Svc.csproj", "{6AD828EA-FBA2-4D30-B969-756B3BE78E4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Web.HealthChecks.UI", "web\ASC.Web.HealthChecks.UI\ASC.Web.HealthChecks.UI.csproj", "{0C1A387E-0CD0-4BE8-82FC-9FCAD05BF289}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ClearEvents", "common\services\ASC.ClearEvents\ASC.ClearEvents.csproj", "{448221A8-EABA-4200-9192-E08BF241A487}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.CRM.BackgroundTasks", "products\ASC.CRM\BackgroundTasks\ASC.CRM.BackgroundTasks.csproj", "{E52C0E35-A05C-437F-8FF2-3E0AC9F81433}"
 EndProject
@@ -247,6 +250,14 @@ Global
 		{6AD828EA-FBA2-4D30-B969-756B3BE78E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AD828EA-FBA2-4D30-B969-756B3BE78E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AD828EA-FBA2-4D30-B969-756B3BE78E4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C1A387E-0CD0-4BE8-82FC-9FCAD05BF289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C1A387E-0CD0-4BE8-82FC-9FCAD05BF289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C1A387E-0CD0-4BE8-82FC-9FCAD05BF289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C1A387E-0CD0-4BE8-82FC-9FCAD05BF289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{448221A8-EABA-4200-9192-E08BF241A487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{448221A8-EABA-4200-9192-E08BF241A487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{448221A8-EABA-4200-9192-E08BF241A487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{448221A8-EABA-4200-9192-E08BF241A487}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E52C0E35-A05C-437F-8FF2-3E0AC9F81433}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E52C0E35-A05C-437F-8FF2-3E0AC9F81433}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E52C0E35-A05C-437F-8FF2-3E0AC9F81433}.Release|Any CPU.ActiveCfg = Release|Any CPU
