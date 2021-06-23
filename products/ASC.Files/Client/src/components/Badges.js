@@ -78,7 +78,10 @@ const Badges = ({
         />
       )}
       {isEditing && (
-        <StyledFileActionsConvertEditDocIcon className="badge" size="small" />
+        <StyledFileActionsConvertEditDocIcon
+          className="badge icons-group is-editing"
+          size="small"
+        />
       )}
       {versionGroup > 1 && (
         <Badge

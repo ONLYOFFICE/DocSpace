@@ -55,6 +55,12 @@ const SimpleFilesTileContent = styled(TileContent)`
     font-size: 14px;
   }
 
+  .lock-file,
+  .is-editing {
+    height: 16px;
+    width: 16px;
+  }
+
   @media (max-width: 1024px) {
     display: inline-flex;
     height: auto;
