@@ -578,6 +578,11 @@ const StyledSelectFilePanel = styled.div`
   .panel-loader-wrapper {
     margin-top: 8px;
   }
+  .select-file-dialog_modal-loader {
+    height: 300px;
+    padding-top: 16px;
+    box-sizing: border-box;
+  }
   .panel-loader {
     display: inline;
     margin-right: 10px;

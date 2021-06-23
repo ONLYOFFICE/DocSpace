@@ -12,6 +12,8 @@ import SelectFolderDialog from "../SelectFolderDialog";
 import FolderTreeBody from "../SelectFolderDialog/folderTreeBody";
 import FileListBody from "./fileListBody";
 import Button from "@appserver/components/button";
+import Loader from "@appserver/components/loader";
+import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
 class SelectFileDialogModalViewBody extends React.Component {
   constructor(props) {
@@ -29,31 +31,38 @@ class SelectFileDialogModalViewBody extends React.Component {
 
     switch (foldersType) {
       case "common":
-        SelectFolderDialog.getCommonFolders()
-          .then((commonFolder) => {
-            this.folderList = commonFolder;
-          })
+        this.setState({ isLoading: true }, function () {
+          SelectFolderDialog.getCommonFolders()
+            .then((commonFolder) => {
+              this.folderList = commonFolder;
+            })
 
-          .finally(() => {
-            onSetLoadingData && onSetLoadingData(false);
+            .finally(() => {
+              onSetLoadingData && onSetLoadingData(false);
 
-            this.setState({
-              isLoading: false,
+              this.setState({
+                isLoading: false,
+              });
             });
-          });
+        });
+
         break;
       case "third-party":
-        SelectFolderDialog.getCommonThirdPartyList()
-          .then(
-            (commonThirdPartyArray) => (this.folderList = commonThirdPartyArray)
-          )
-          .finally(() => {
-            onSetLoadingData && onSetLoadingData(false);
+        this.setState({ isLoading: true }, function () {
+          SelectFolderDialog.getCommonThirdPartyList()
+            .then(
+              (commonThirdPartyArray) =>
+                (this.folderList = commonThirdPartyArray)
+            )
+            .finally(() => {
+              onSetLoadingData && onSetLoadingData(false);
 
-            this.setState({
-              isLoading: false,
+              this.setState({
+                isLoading: false,
+              });
             });
-          });
+        });
+
         break;
     }
   }
@@ -65,7 +74,7 @@ class SelectFileDialogModalViewBody extends React.Component {
   };
   onSelect = (folder) => {
     const { onSelectFolder } = this.props;
-    const { selectedKeys } = this.state;
+    const { isLoading, selectedKeys } = this.state;
 
     if (isArrayEqual(folder, selectedKeys)) {
       return;
@@ -91,7 +100,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       loadNextPage,
       selectedFolder,
     } = this.props;
-    const { selectedKeys } = this.state;
+    const { isLoading, selectedKeys } = this.state;
     console.log("filesList", filesList);
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -106,34 +115,46 @@ class SelectFileDialogModalViewBody extends React.Component {
           <ModalDialog.Header>{t("SelectFile")}</ModalDialog.Header>
           <ModalDialog.Body className="select-file_body-modal-dialog">
             <StyledSelectFilePanel>
-              <div className="modal-dialog_body">
-                <div className="modal-dialog_tree-body">
-                  <FolderTreeBody
-                    expandedKeys={expandedKeys}
-                    folderList={this.folderList}
-                    onSelect={this.onSelect}
-                    isCommonWithoutProvider={isCommonWithoutProvider}
-                    certainFolders
-                    isAvailableFolders
-                    filter={filter}
-                    selectedKeys={selectedKeys}
-                  />
-                </div>
-                <div className="modal-dialog_files-body">
-                  {selectedFolder && (
-                    <FileListBody
-                      isLoadingData={isLoadingData}
-                      filesList={filesList}
-                      onFileClick={onFileClick}
-                      hasNextPage={hasNextPage}
-                      isNextPageLoading={isNextPageLoading}
-                      loadNextPage={loadNextPage}
-                      selectedFolder={selectedFolder}
+              {!isLoading ? (
+                <div className="modal-dialog_body">
+                  <div className="modal-dialog_tree-body">
+                    <FolderTreeBody
+                      expandedKeys={expandedKeys}
+                      folderList={this.folderList}
+                      onSelect={this.onSelect}
                       isCommonWithoutProvider={isCommonWithoutProvider}
+                      certainFolders
+                      isAvailableFolders
+                      filter={filter}
+                      selectedKeys={selectedKeys}
                     />
-                  )}
+                  </div>
+                  <div className="modal-dialog_files-body">
+                    {selectedFolder && (
+                      <FileListBody
+                        isLoadingData={isLoadingData}
+                        filesList={filesList}
+                        onFileClick={onFileClick}
+                        hasNextPage={hasNextPage}
+                        isNextPageLoading={isNextPageLoading}
+                        loadNextPage={loadNextPage}
+                        selectedFolder={selectedFolder}
+                        isCommonWithoutProvider={isCommonWithoutProvider}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div
+                  key="loader"
+                  className="select-file-dialog_modal-loader panel-loader-wrapper "
+                >
+                  <Loader type="oval" size="16px" className="panel-loader" />
+                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                    "Common:LoadingDescription"
+                  )}`}</Text>
+                </div>
+              )}
             </StyledSelectFilePanel>
           </ModalDialog.Body>
           <ModalDialog.Footer>
