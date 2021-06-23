@@ -101,6 +101,9 @@ namespace ASC.Api.Documents
         /// </summary>
         public string ThumbnailUrl { get; set; }
 
+
+        public Thumbnail ThumbnailStatus { get; set; }
+
         /// <summary>
         /// </summary>
         public bool? Locked { get; set; }
@@ -232,6 +235,7 @@ namespace ASC.Api.Documents
 
                 result.WebUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID, file.Version));
 
+                result.ThumbnailStatus = file.ThumbnailStatus;
 
                 if (file.ThumbnailStatus == Thumbnail.Created)
                 {

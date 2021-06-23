@@ -28,24 +28,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.SsoAuth.Svc;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 
-namespace ASC.Socket.IO.Svc
+namespace ASC.Thumbnails.Svc
 {
     public class Program
     {
@@ -61,7 +58,6 @@ namespace ASC.Socket.IO.Svc
                 .UseSystemd()
                 .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -74,12 +70,6 @@ namespace ASC.Socket.IO.Svc
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
                         .AddJsonFile("appsettings.json")
-                        .AddJsonFile("storage.json")
-                        .AddJsonFile("kafka.json")
-                        .AddJsonFile("ssoauth.json")
-                        .AddJsonFile($"kafka.{env}.json", true)
-                        .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile($"ssoauth.{env}.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
@@ -92,12 +82,11 @@ namespace ASC.Socket.IO.Svc
                 {
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.SsoAuth.Svc");
-                    services.AddHostedService<Launcher>();
-                    diHelper.TryAdd<Launcher>();
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.ClearEvents");
+                    services.AddHostedService<ClearEventsServiceLauncher>();
+                    diHelper.TryAdd<ClearEventsServiceLauncher>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
@@ -105,4 +94,3 @@ namespace ASC.Socket.IO.Svc
                 });
     }
 }
-

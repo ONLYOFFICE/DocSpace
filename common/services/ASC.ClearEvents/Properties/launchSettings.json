@@ -5,10 +5,10 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
-        "log__name": "sso",
+        "log__name": "clearEvents",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
-        "ASPNETCORE_URLS": "http://localhost:5024",
+        "ASPNETCORE_URLS": "http://localhost:5027",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -17,10 +17,10 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
-        "log__name": "sso",
+        "log__name": "clearEvents",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
-        "ASPNETCORE_URLS": "http://localhost:5024",
+        "ASPNETCORE_URLS": "http://localhost:5027",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "distributionName": "Ubuntu-20.04"
