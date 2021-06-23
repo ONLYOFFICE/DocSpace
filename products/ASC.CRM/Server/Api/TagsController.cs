@@ -141,7 +141,7 @@ namespace ASC.CRM.Api
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
         [Create(@"{entityType:regex(contact|opportunity|case)}/tag")]
-        public string CreateTag([FromRoute] string entityType, [FromForm] string tagName)
+        public string CreateTag([FromRoute] string entityType, [FromBody] string tagName)
         {
             if (string.IsNullOrEmpty(tagName)) throw new ArgumentException();
 
@@ -371,7 +371,7 @@ namespace ASC.CRM.Api
         ///   Tag
         /// </returns> 
         [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/tag")]
-        public string AddTagTo([FromRoute] string entityType, [FromRoute] int entityid, [FromForm] string tagName)
+        public string AddTagTo([FromRoute] string entityType, [FromRoute] int entityid, [FromBody] string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
 
@@ -404,7 +404,7 @@ namespace ASC.CRM.Api
         ///   Tag
         /// </returns>
         [Create(@"{entityType:regex(company|person)}/{entityid:int}/tag/group")]
-        public string AddContactTagToGroup([FromRoute] string entityType, [FromRoute] int entityid, [FromForm] string tagName)
+        public string AddContactTagToGroup([FromRoute] string entityType, [FromRoute] int entityid, [FromBody] string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
 

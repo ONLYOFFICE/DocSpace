@@ -680,7 +680,7 @@ namespace ASC.CRM.Api
         ///    Person
         /// </returns>
         [Create(@"contact/company/{companyid:int}/person")]
-        public PersonDto AddPeopleToCompany([FromRoute] int companyid, [FromForm] int personid)
+        public PersonDto AddPeopleToCompany([FromRoute] int companyid, [FromBody] int personid)
         {
             if ((companyid <= 0) || (personid <= 0)) throw new ArgumentException();
 
@@ -741,7 +741,7 @@ namespace ASC.CRM.Api
         /// <returns>Person</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/person")]
-        public PersonDto CreatePerson([FromForm] CreateOrUpdatePersonRequestDto intDto)
+        public PersonDto CreatePerson([FromBody] CreateOrUpdatePersonRequestDto intDto)
         {
             string firstName = intDto.FirstName;
             string lastName = intDto.LastName;
@@ -918,7 +918,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Update(@"contact/person/{personid:int}")]
-        public PersonDto UpdatePerson([FromQuery] int personid, [FromForm] CreateOrUpdatePersonRequestDto inDto)
+        public PersonDto UpdatePerson([FromQuery] int personid, [FromBody] CreateOrUpdatePersonRequestDto inDto)
         {
             string firstName = inDto.FirstName;
             string lastName = inDto.LastName;
@@ -992,7 +992,7 @@ namespace ASC.CRM.Api
         /// <returns>Company</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/company")]
-        public CompanyDto CreateCompany([FromForm] CreateOrUpdateCompanyRequestDto inDto)
+        public CompanyDto CreateCompany([FromBody] CreateOrUpdateCompanyRequestDto inDto)
         {
             var personList = inDto.PersonList;
             string companyName = inDto.CompanyName;
@@ -1064,7 +1064,7 @@ namespace ASC.CRM.Api
         /// <returns>Contact list</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/company/quick")]
-        public IEnumerable<ContactBaseDto> CreateCompany([FromForm] IEnumerable<string> companyName)
+        public IEnumerable<ContactBaseDto> CreateCompany([FromBody] IEnumerable<string> companyName)
         {
             if (companyName == null) throw new ArgumentException();
 
@@ -1114,7 +1114,7 @@ namespace ASC.CRM.Api
         /// <returns>Contact list</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/person/quick")]
-        public IEnumerable<ContactBaseDto> CreatePerson([FromForm] IEnumerable<ItemKeyValuePair<string, string>> data)
+        public IEnumerable<ContactBaseDto> CreatePerson([FromBody] IEnumerable<ItemKeyValuePair<string, string>> data)
         {
             if (data == null) return null;
 
@@ -1167,8 +1167,8 @@ namespace ASC.CRM.Api
         /// </returns>
         [Update(@"contact/company/{companyid:int}")]
         public CompanyDto UpdateCompany(
-            int companyid,
-            [FromForm] CreateOrUpdateCompanyRequestDto intDto)
+            [FromRoute] int companyid,
+            [FromBody] CreateOrUpdateCompanyRequestDto intDto)
         {
             string companyName = intDto.CompanyName;
             string about = intDto.About;
@@ -1507,7 +1507,7 @@ namespace ASC.CRM.Api
         /// </returns>
         [Update(@"contact/filter/access")]
         public IEnumerable<ContactDto> SetAccessToBatchContact(
-         [FromForm] SetAccessToBatchContactByFilterRequestDto inDto)
+         [FromBody] SetAccessToBatchContactByFilterRequestDto inDto)
         {
             IEnumerable<String> tags = inDto.Tags;
             int? contactStage = inDto.ContactStage;
