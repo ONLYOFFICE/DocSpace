@@ -554,6 +554,12 @@ const StyledSelectFilePanel = styled.div`
   .select-file-dialog_icon {
     margin-right: 8px;
   }
+  .entry-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 250px;
+  }
   .entry-title,
   .file-exst {
     //margin-top: 7px;
