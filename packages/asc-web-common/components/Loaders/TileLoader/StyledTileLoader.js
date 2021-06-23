@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobile } from "@appserver/components/utils/device";
+import { mobile, tablet } from "@appserver/components/utils/device";
 
 const StyledTile = styled.div`
   position: relative;
@@ -13,28 +13,40 @@ const StyledTile = styled.div`
   ${(props) =>
     props.isFolder
       ? `   
-  &:before {
-        content: "";
-        position: absolute;
-        top: -7px;
-        left: -1px;
-        border: 1px solid #d0d5da;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 6px;
-        width: 50px;
-        height: 6px;
-        background-color: #fff;
-        border-bottom: transparent;
-      }`
+        &:before {
+          content: "";
+          position: absolute;
+          top: -5px;
+          left: -1px;
+          border-top: 1px solid #D0D5DA;
+          border-top-left-radius: 3px;
+          border-left: 1px solid #D0D5DA;
+          width: 38px;
+          height: 8px;
+          background-color: #FFF;
+          border-bottom: transparent;
+        }
+        
+        &:after {
+          content: "";
+          position: absolute;
+          top: -4px;
+          left: 34px;
+          border-top: 1px solid #D0D5DA;
+          background-color: #FFF;
+          width: 7px;
+          height: 10px;
+          transform: rotateZ(35deg);
+          
+          @media ${tablet} {
+            left: 34px;
+          }
+        }`
       : null}
-
-  @media ${mobile} {
-    width: 100%;
-  }
 `;
 
 const StyledMainContent = styled.div`
-  padding: 12px 12px 4px 12px;
+  padding: 12px 0px 4px 16px;
   height: 175px;
 `;
 
@@ -42,7 +54,7 @@ const StyledBottom = styled.div`
   display: grid;
   grid-template-columns: 24px auto;
   grid-gap: 8px;
-  padding: ${(props) => (props.isFolder ? "20px 12px" : "8px 12px 12px 12px")};
+  padding: ${(props) => (props.isFolder ? "20px 12px" : "8px 0px 12px 16px")};
 
   .first-content {
     display: inline-block;
