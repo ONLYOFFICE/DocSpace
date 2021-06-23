@@ -267,10 +267,9 @@ class Tile extends React.PureComponent {
               </StyledCheckbox>
             )}
             {renderElement && !(isFolder || (!fileExst && id === -1)) && (
-              <StyledElement className="styledElement">{element}</StyledElement>
+              <StyledElement>{element}</StyledElement>
             )}
             <StyledContent
-              className="styledCOntent"
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
               {children}

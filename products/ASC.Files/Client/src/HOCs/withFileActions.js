@@ -139,6 +139,8 @@ export default function withFileActions(WrappedFileItem) {
       if (
         e.target.closest(".checkbox") ||
         e.target.tagName === "INPUT" ||
+        e.target.tagName === "SPAN" ||
+        e.target.tagName === "A" ||
         e.target.closest(".expandButton") ||
         e.target.closest(".badges") ||
         e.button !== 0

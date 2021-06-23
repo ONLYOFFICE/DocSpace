@@ -60,6 +60,10 @@ const SimpleFilesTileContent = styled(TileContent)`
     height: 16px;
     width: 16px;
   }
+  .favorite {
+    height: 14px;
+    width: 14px;
+  }
 
   @media (max-width: 1024px) {
     display: inline-flex;
