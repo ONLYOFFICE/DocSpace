@@ -5,7 +5,6 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
-import { createSelectable } from "react-selectable-fast";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
@@ -46,7 +45,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 `;
 
-const SimpleFilesRow = createSelectable((props) => {
+const SimpleFilesRow = (props) => {
   const {
     item,
     sectionWidth,
@@ -72,7 +71,7 @@ const SimpleFilesRow = createSelectable((props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={className}
+        className={`files-row ${className}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -100,7 +99,7 @@ const SimpleFilesRow = createSelectable((props) => {
       </DragAndDrop>
     </div>
   );
-});
+};
 
 export default withTranslation(["Home", "Translations"])(
   withFileActions(withRouter(withContextOptions(SimpleFilesRow)))

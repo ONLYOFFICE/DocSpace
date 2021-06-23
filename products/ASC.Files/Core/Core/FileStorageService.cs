@@ -220,14 +220,14 @@ namespace ASC.Web.Files.Services.WCFService
             return folder;
         }
 
-        public ItemList<Folder<T>> GetFolders(T parentId)
+        public ItemList<FileEntry> GetFolders(T parentId)
         {
             var folderDao = GetFolderDao();
 
             try
             {
                 var folders = EntryManager.GetEntries(folderDao.GetFolder(parentId), 0, 0, FilterType.FoldersOnly, false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true), out var total);
-                return new ItemList<Folder<T>>(folders.OfType<Folder<T>>());
+                return new ItemList<FileEntry>(folders);
             }
             catch (Exception e)
             {

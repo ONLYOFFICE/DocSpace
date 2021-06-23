@@ -372,10 +372,10 @@ namespace ASC.ElasticSearch
             return false;
         }
 
-        public async Task ReIndex()
+        public Task ReIndex()
         {
             Clear();
-            await Task.CompletedTask;
+            return Task.CompletedTask;
             //((IIndexer) this).IndexAll();
         }
 

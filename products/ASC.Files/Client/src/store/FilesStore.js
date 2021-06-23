@@ -9,10 +9,10 @@ import {
   FilesFormats,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-import { createTreeFolders, loopTreeFolders } from "../helpers/files-helpers";
 import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
+import { loopTreeFolders } from "../helpers/files-helpers";
 
 const { FilesFilter } = api;
 
@@ -248,24 +248,24 @@ class FilesStore {
     );
   };
 
-  fetchFiles = (folderId, filter, clearFilter = true) => {
+  fetchFiles = (
+    folderId,
+    filter,
+    clearFilter = true,
+    withSubfolders = false
+  ) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
     const {
+      treeFolders,
       privacyFolder,
-      expandedKeys,
-      setExpandedKeys,
       setSelectedNode,
+      getSubfolders,
     } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
 
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!this.settingsStore.isEncryptionSupport) {
-        const newExpandedKeys = createTreeFolders(
-          privacyFolder.pathParts,
-          expandedKeys
-        );
-        setExpandedKeys(newExpandedKeys);
         filterData.total = 0;
         this.setFilesFilter(filterData); //TODO: FILTER
         if (clearFilter) {
@@ -290,23 +290,20 @@ class FilesStore {
     const request = () =>
       api.files
         .getFolder(folderId, filter)
-        .then((data) => {
-          if (!this.treeFoldersStore.isRecycleBinFolder) {
-            const path = data.pathParts.slice();
-            const newTreeFolders = this.treeFoldersStore.treeFolders;
-            const folders = data.folders;
+        .then(async (data) => {
+          const isRecycleBinFolder =
+            data.current.rootFolderType === FolderType.TRASH;
+
+          if (!isRecycleBinFolder && withSubfolders) {
+            const path = data.pathParts.slice(0);
             const foldersCount = data.current.foldersCount;
-            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-            this.treeFoldersStore.setTreeFolders(newTreeFolders);
+            const subfolders = await getSubfolders(folderId);
+            loopTreeFolders(path, treeFolders, subfolders, foldersCount);
           }
+
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
-          const newExpandedKeys = createTreeFolders(
-            data.pathParts,
-            expandedKeys
-          );
-          setExpandedKeys(newExpandedKeys);
           filterData.total = data.total;
           this.setFilesFilter(filterData); //TODO: FILTER
           this.setFolders(
@@ -1197,14 +1194,28 @@ class FilesStore {
   setSelections = (items) => {
     if (!items.length && !this.selection.length) return;
 
-    if (items.length !== this.selection.length) {
-      this.setSelection(items);
-    } else if (items.length === 0) {
-      const item = this.selection.find(
-        (x) => x.id === item[0].id && x.fileExst === item.fileExst
-      );
-      if (!item) this.setSelection(items);
+    //if (items.length !== this.selection.length) {
+    const newSelection = [];
+
+    for (let item of items) {
+      const value = item.getAttribute("value");
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      const id =
+        splitValue[splitValue.length - 1] === "draggable"
+          ? splitValue.slice(1, -1).join("_")
+          : splitValue.slice(1).join("_");
+
+      if (fileType === "file") {
+        newSelection.push(this.files.find((f) => f.id == id && f.fileExst));
+      } else {
+        newSelection.push(this.folders.find((f) => f.id == id && !f.fileExst));
+      }
     }
+
+    this.setSelection(newSelection);
+    //}
   };
 
   getShareUsers(folderIds, fileIds) {

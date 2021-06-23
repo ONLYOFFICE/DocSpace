@@ -38,9 +38,6 @@ namespace ASC.Core.Notify
 {
     public abstract class NotifySource : INotifySource
     {
-        private readonly object syncRoot = new object();
-        private readonly bool initialized;
-
         private readonly IDictionary<CultureInfo, IActionProvider> actions = new Dictionary<CultureInfo, IActionProvider>();
 
         private readonly IDictionary<CultureInfo, IPatternProvider> patterns = new Dictionary<CultureInfo, IPatternProvider>();
