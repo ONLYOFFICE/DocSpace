@@ -26,6 +26,8 @@ const SectionBodyContent = (props) => {
     isRecycleBinFolder,
     moveDragItems,
     viewAs,
+    selection,
+    setSelection,
   } = props;
 
   useEffect(() => {
@@ -37,6 +39,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
+    selection.length > 0 && window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 
@@ -44,6 +47,7 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
     return () => {
+      window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mousemove", onMouseMove);
 
@@ -51,7 +55,12 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  }, [onMouseUp, onMouseMove, startDrag, folderId]);
+  }, [onMouseUp, onMouseMove, startDrag, folderId, selection.length, viewAs]);
+
+  const onMouseDown = (e) => {
+    if (e.target.closest(".scroll-body") && !e.target.closest(".files-item"))
+      setSelection([]);
+  };
 
   const onMouseMove = (e) => {
     if (!dragging) {
@@ -169,6 +178,8 @@ export default inject(
       setTooltipPosition,
       startDrag,
       setStartDrag,
+      selection,
+      setSelection,
     } = filesStore;
 
     return {
@@ -185,6 +196,8 @@ export default inject(
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
+      selection,
+      setSelection,
     };
   }
 )(

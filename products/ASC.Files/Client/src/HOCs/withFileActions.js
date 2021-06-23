@@ -98,7 +98,6 @@ export default function withFileActions(WrappedFileItem) {
       const { draggable, setTooltipPosition, setStartDrag, item } = this.props;
       const { sectionWidth } = item;
       const isMobile = sectionWidth < 500;
-
       this.setState({ isMouseDown: true });
 
       if (!draggable) return;
@@ -135,17 +134,19 @@ export default function withFileActions(WrappedFileItem) {
 
     onMouseUpHandler = (e) => {
       const { isMouseDown } = this.state;
-      const { isFolder, viewAs, checked, item } = this.props;
+      const { viewAs, checked, item } = this.props;
+
       if (
         e.target.closest(".checkbox") ||
         e.target.tagName === "INPUT" ||
         e.target.closest(".expandButton") ||
         e.target.closest(".badges") ||
         e.button !== 0
-      )
+      ) {
         return;
+      }
 
-      if (isFolder && viewAs === "tile") {
+      if (viewAs === "tile") {
         if (!isMouseDown || e.target.closest(".edit-button")) return;
         this.onFilesClick();
       } else {
@@ -189,7 +190,6 @@ export default function withFileActions(WrappedFileItem) {
         contentLength,
         fileStatus,
       } = item;
-      console.log("onFilesClick");
       if (isTrashFolder) return;
 
       if (!fileExst && !contentLength) {

@@ -29,8 +29,7 @@ const FolderStyles = css`
 `;
 
 const StyledTile = styled.div`
-  cursor: ${(props) =>
-    props.isFolder && !props.isRecycleBin ? "pointer" : "default"};
+  cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
   min-height: 57px;
   width: 100%;
   border: 1px solid #d0d5da;
@@ -268,9 +267,10 @@ class Tile extends React.PureComponent {
               </StyledCheckbox>
             )}
             {renderElement && !(isFolder || (!fileExst && id === -1)) && (
-              <StyledElement>{element}</StyledElement>
+              <StyledElement className="styledElement">{element}</StyledElement>
             )}
             <StyledContent
+              className="styledCOntent"
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
               {children}
