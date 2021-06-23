@@ -24,7 +24,6 @@
 */
 
 
-using System;
 using System.Web;
 
 using ASC.Common;
@@ -47,22 +46,19 @@ namespace ASC.Web.Files.Utils
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         private Global Global { get; }
         private FileSecurity FileSecurity { get; }
-        private IServiceProvider ServiceProvider { get; }
 
         public FileShareLink(
             FileUtility fileUtility,
             FilesLinkUtility filesLinkUtility,
             BaseCommonLinkUtility baseCommonLinkUtility,
             Global global,
-            FileSecurity fileSecurity,
-            IServiceProvider serviceProvider)
+            FileSecurity fileSecurity)
         {
             FileUtility = fileUtility;
             FilesLinkUtility = filesLinkUtility;
             BaseCommonLinkUtility = baseCommonLinkUtility;
             Global = global;
             FileSecurity = fileSecurity;
-            ServiceProvider = serviceProvider;
         }
 
         public string GetLink<T>(File<T> file, bool withHash = true)

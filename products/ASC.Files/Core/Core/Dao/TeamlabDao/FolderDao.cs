@@ -50,7 +50,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data

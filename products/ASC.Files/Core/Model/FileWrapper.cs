@@ -157,7 +157,6 @@ namespace ASC.Api.Documents
         private CommonLinkUtility CommonLinkUtility { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileUtility FileUtility { get; }
-        private IServiceProvider ServiceProvider { get; }
 
         public FileWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
@@ -168,8 +167,7 @@ namespace ASC.Api.Documents
             GlobalFolderHelper globalFolderHelper,
             CommonLinkUtility commonLinkUtility,
             FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility,
-            IServiceProvider serviceProvider)
+            FileUtility fileUtility)
             : base(apiDateTimeHelper, employeeWrapperHelper)
         {
             AuthContext = authContext;
@@ -179,7 +177,6 @@ namespace ASC.Api.Documents
             CommonLinkUtility = commonLinkUtility;
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
-            ServiceProvider = serviceProvider;
         }
 
         public FileWrapper<T> Get<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)

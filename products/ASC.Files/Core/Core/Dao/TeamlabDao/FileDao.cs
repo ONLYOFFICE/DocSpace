@@ -824,7 +824,6 @@ namespace ASC.Files.Core.Data
             if (file != null)
             {
                 var copy = ServiceProvider.GetService<File<int>>();
-
                 copy.FileStatus = file.FileStatus;
                 copy.FolderID = toFolderId;
                 copy.Title = file.Title;
@@ -1040,7 +1039,6 @@ namespace ASC.Files.Core.Data
 
                 return file;
             }
-
             var result = ServiceProvider.GetService<File<int>>();
             result.FolderID = uploadSession.File.FolderID;
             result.Title = uploadSession.File.Title;

@@ -72,7 +72,6 @@ namespace ASC.Web.Files.Configuration
         private FileUtility FileUtility { get; }
         private PathProvider PathProvider { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        private IServiceProvider ServiceProvider { get; }
 
         public SearchHandler(
             FileSecurity fileSecurity,
@@ -83,8 +82,7 @@ namespace ASC.Web.Files.Configuration
             FilesLinkUtility filesLinkUtility,
             FileUtility fileUtility,
             PathProvider pathProvider,
-            ThirdpartyConfiguration thirdpartyConfiguration,
-            IServiceProvider serviceProvider)
+            ThirdpartyConfiguration thirdpartyConfiguration)
         {
             FileSecurity = fileSecurity;
             DaoFactory = daoFactory;
@@ -95,7 +93,6 @@ namespace ASC.Web.Files.Configuration
             FileUtility = fileUtility;
             PathProvider = pathProvider;
             ThirdpartyConfiguration = thirdpartyConfiguration;
-            ServiceProvider = serviceProvider;
         }
 
         public IEnumerable<File<int>> SearchFiles(string text)

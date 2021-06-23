@@ -245,9 +245,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public string Owner
         {
             set { }
-            get {
-                return File.CreateByString; 
-            }
+            get { return File.CreateByString; }
         }
 
         public string Uploaded

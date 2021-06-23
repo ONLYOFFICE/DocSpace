@@ -71,7 +71,7 @@ namespace ASC.Files.Core
                         : FileUtility.ReplaceFileExtension(file.PureTitle, FileUtility.GetInternalExtension(file.PureTitle));
         }
 
-        internal FileStatus GetFileStatus<T>(File<T> file, FileStatus currentStatus)
+        internal FileStatus GetFileStatus<T>(File<T> file, ref FileStatus currentStatus)
         {
             if (FileTracker.IsEditing(file.ID))
             {
