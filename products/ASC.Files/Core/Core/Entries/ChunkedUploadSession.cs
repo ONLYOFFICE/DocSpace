@@ -27,7 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -62,6 +65,22 @@ namespace ASC.Files.Core
             var clone = (ChunkedUploadSession<T>)MemberwiseClone();
             clone.File = (File<T>)File.Clone();
             return clone;
+        }
+
+        public override Stream Serialize()
+        {
+            var str = JsonSerializer.Serialize(this);
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(str));
+            return stream;
+        }
+
+        public static ChunkedUploadSession<T> Deserialize(Stream stream, FileHelper fileHelper)
+        {
+            var chunkedUploadSession = JsonSerializer.DeserializeAsync<ChunkedUploadSession<T>>(stream).Result;
+            chunkedUploadSession.File.FileHelper = fileHelper;
+            chunkedUploadSession.TransformItems();
+            return chunkedUploadSession;
+
         }
     }
 

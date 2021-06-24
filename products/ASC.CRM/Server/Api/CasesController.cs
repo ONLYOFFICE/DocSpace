@@ -160,7 +160,7 @@ namespace ASC.CRM.Api
         /// ]]>
         /// </example>
         [Create(@"case")]
-        public CasesDto CreateCases([FromForm] CreateOrUpdateCasesRequestDto inDto)
+        public CasesDto CreateCases([FromBody] CreateOrUpdateCasesRequestDto inDto)
         {
 
             var title = inDto.Title;
@@ -237,7 +237,7 @@ namespace ASC.CRM.Api
         /// ]]>
         /// </example>
         [Update(@"case/{caseid:int}")]
-        public CasesDto UpdateCases(int caseid, [FromForm] CreateOrUpdateCasesRequestDto inDto)
+        public CasesDto UpdateCases(int caseid, [FromBody] CreateOrUpdateCasesRequestDto inDto)
         {
             var title = inDto.Title;
             var isPrivate = inDto.isPrivate;
@@ -356,7 +356,7 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Update(@"case/access")]
-        public IEnumerable<CasesDto> SetAccessToBatchCases([FromForm] SetAccessToBatchCasesRequestDto inDto)
+        public IEnumerable<CasesDto> SetAccessToBatchCases([FromBody] SetAccessToBatchCasesRequestDto inDto)
         {
             var casesid = inDto.CasesId;
             var isPrivate = inDto.isPrivate;
@@ -397,7 +397,7 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Update(@"case/filter/access")]
-        public IEnumerable<CasesDto> SetAccessToBatchCases([FromForm] SetAccessToBatchCasesByFilterInDto inDto)
+        public IEnumerable<CasesDto> SetAccessToBatchCases([FromBody] SetAccessToBatchCasesByFilterInDto inDto)
         {
             int contactid = inDto.Contactid;
             bool? isClosed = inDto.isClosed;
@@ -562,7 +562,7 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Update(@"case")]
-        public IEnumerable<CasesDto> DeleteBatchCases([FromForm] IEnumerable<int> casesids)
+        public IEnumerable<CasesDto> DeleteBatchCases([FromBody] IEnumerable<int> casesids)
         {
             if (casesids == null) throw new ArgumentException();
 
@@ -634,7 +634,7 @@ namespace ASC.CRM.Api
         ///    Participant
         /// </returns>
         [Create(@"case/{caseid:int}/contact")]
-        public ContactDto AddMemberToCases([FromRoute] int caseid, [FromForm] int contactid)
+        public ContactDto AddMemberToCases([FromRoute] int caseid, [FromBody] int contactid)
         {
             if ((caseid <= 0) || (contactid <= 0)) throw new ArgumentException();
 

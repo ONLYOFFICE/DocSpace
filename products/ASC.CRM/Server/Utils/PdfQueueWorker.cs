@@ -115,13 +115,19 @@ namespace ASC.Web.CRM.Classes
         private Guid _userId;
 
         public object Error { get; set; }
-        private readonly PdfCreator PdfCreator;
-        private readonly SecurityContext SecurityContext;
-        private readonly TenantManager TenantManager;
+        private readonly PdfCreator _pdfCreator;
+        private readonly SecurityContext _securityContext;
+        private readonly TenantManager _tenantManager;
 
-        public PdfProgressItem(IHttpContextAccessor httpContextAccessor)
+        public PdfProgressItem(IHttpContextAccessor httpContextAccessor,
+                               PdfCreator pdfCreator,
+                               SecurityContext securityContext,
+                               TenantManager tenantManager)
         {
             _contextUrl = httpContextAccessor.HttpContext != null ? httpContextAccessor.HttpContext.Request.GetUrlRewriter().ToString() : null;
+            _pdfCreator = pdfCreator;
+            _securityContext = securityContext;
+            _tenantManager = tenantManager;
 
             Error = null;
             Percentage = 0;
@@ -146,9 +152,9 @@ namespace ASC.Web.CRM.Classes
             {
                 Percentage = 0;
 
-                TenantManager.SetCurrentTenant(_tenantId);
+                _tenantManager.SetCurrentTenant(_tenantId);
 
-                SecurityContext.AuthenticateMe(_userId);
+                _securityContext.AuthenticateMe(_userId);
 
                 //if (HttpContext.Current == null && !WorkContext.IsMono)
                 //{
@@ -157,7 +163,7 @@ namespace ASC.Web.CRM.Classes
                 //        new HttpResponse(new System.IO.StringWriter()));
                 //}
 
-                PdfCreator.CreateAndSaveFile(_invoiceId);
+                _pdfCreator.CreateAndSaveFile(_invoiceId);
 
                 Percentage = 100;
                 PublishChanges();

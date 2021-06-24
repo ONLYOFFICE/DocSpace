@@ -72,7 +72,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <visible>false</visible>
         [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
-        public TaskTemplateContainerDto CreateTaskTemplateContainer([FromRoute] string entityType, [FromForm] string title)
+        public TaskTemplateContainerDto CreateTaskTemplateContainer([FromRoute] string entityType, [FromBody] string title)
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
 
