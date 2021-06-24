@@ -379,6 +379,7 @@ class FilesStore {
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
     const isEditing = false; //TODO: need this prop;
+    const isFileOwner = item.createdBy.id === this.userStore.user.id;
 
     const {
       isRecycleBinFolder,
@@ -627,7 +628,7 @@ class FilesStore {
             "delete",
           ]);
         }
-      } else {
+      } else if (!isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, ["unsubscribe"]);
       }
 
@@ -637,9 +638,17 @@ class FilesStore {
           "view",
           "separator0",
           "copy",
-          "unsubscribe",
           "download-as",
         ]);
+
+        if (!this.authStore.settingsStore.isDesktopClient) {
+          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+        }
+
+        fileOptions = this.removeOptions(
+          fileOptions,
+          isFileOwner ? ["unsubscribe"] : ["move-to", "delete"]
+        );
       }
 
       return fileOptions;
@@ -994,6 +1003,7 @@ class FilesStore {
         contentLength,
         created,
         createdBy,
+        encrypted,
         fileExst,
         filesCount,
         fileStatus,
@@ -1033,6 +1043,7 @@ class FilesStore {
         contextOptions,
         created,
         createdBy,
+        encrypted,
         fileExst,
         filesCount,
         fileStatus,
@@ -1164,6 +1175,10 @@ class FilesStore {
       canFormFillingDocs,
       canWebFilterEditing,
     } = this.formatsStore.docserviceStore;
+
+    if (selection[0].encrypted) {
+      return ["FullAccess", "DenyAccess"];
+    }
 
     let AccessOptions = [];
 

@@ -141,6 +141,7 @@ export default function withFileActions(WrappedFileItem) {
         canWebEdit,
         item,
         isTrashFolder,
+        isPrivacy,
         openDocEditor,
         expandedKeys,
         addExpandedKeys,
@@ -156,7 +157,19 @@ export default function withFileActions(WrappedFileItem) {
         providerKey,
         contentLength,
         fileStatus,
+        encrypted,
       } = item;
+
+      if (encrypted && isPrivacy) {
+        console.log("item", item);
+        return;
+
+        // if (localStorage.getItem("protocoldetector") == 1) {
+        //   openCustomProtocolInIframe(customUrlForFileOpenDesktopEditor);
+        // } else {
+        //   window.open(urlForOpenPrivate, "_blank");
+        // }
+      }
 
       if (isTrashFolder) return;
 

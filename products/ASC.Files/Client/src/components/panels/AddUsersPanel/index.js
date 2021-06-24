@@ -19,9 +19,13 @@ class AddUsersPanelComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    const accessRight = props.isEncrypted
+      ? ShareAccessRights.FullAccess
+      : ShareAccessRights.ReadOnly;
+
     this.state = {
       showActionPanel: false,
-      accessRight: ShareAccessRights.ReadOnly,
+      accessRight,
     };
 
     this.scrollRef = React.createRef();
@@ -88,25 +92,6 @@ class AddUsersPanelComponent extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPress);
   }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const { showActionPanel, accessRight } = this.state;
-  //   const { visible } = this.props;
-
-  //   if (accessRight !== nextState.accessRight) {
-  //     return true;
-  //   }
-
-  //   if (showActionPanel !== nextState.showActionPanel) {
-  //     return true;
-  //   }
-
-  //   if (visible !== nextProps.visible) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
 
   onAccessChange = (e) => {
     const accessRight = +e.currentTarget.dataset.access;
