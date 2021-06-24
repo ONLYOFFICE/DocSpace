@@ -40,58 +40,62 @@ const StyledTile = styled.div`
   ${(props) => props.isFolder && FolderStyles}
     ${(props) =>
     props.isFolder &&
-    `&:before {
-    content: "";
-    position: absolute;
-    top: -5px;
-    left: 1px;
-    border-top: 1px solid #D0D5DA;
-    border-top-left-radius: 3px;
-    border-left: 1px solid #D0D5DA;
-    width: 38px;
-    height: 8px;
-    background-color: #FFF;
-    border-bottom: transparent;
+    css`
+      &:before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 1px;
+        border-top: 1px solid #d0d5da;
+        border-top-left-radius: 3px;
+        border-left: 1px solid #d0d5da;
+        width: 38px;
+        height: 8px;
+        background-color: #fff;
+        border-bottom: transparent;
 
-    @media ${tablet} {
-      left: 0px;
-    }
-  }
-  &:after {
-    content: "";
-    position: absolute;
-    top: -3.5px;
-    left: 36px;
-    border-top: 1px solid #D0D5DA;
-    background-color: #FFF;
-    width: 9px;
-    height: 10px;
-    transform: rotateZ(35deg);
-    
-    @media ${tablet} {
-      left: 35px;
-    }
-  }
-  `}
+        @media ${tablet} {
+          left: 0px;
+        }
+      }
+      &:after {
+        content: "";
+        position: absolute;
+        top: -3.5px;
+        left: 36px;
+        border-top: 1px solid #d0d5da;
+        background-color: #fff;
+        width: 9px;
+        height: 10px;
+        transform: rotateZ(35deg);
+
+        @media ${tablet} {
+          left: 35px;
+        }
+      }
+    `}
     ${(props) =>
     props.isFolder &&
     props.dragging &&
-    `&:before {
-        background-color: #F8F7BF;    
-    }
-    &:after {
-      background-color: #F8F7BF;
-    }
-  `}
+    css`
+      &:before {
+        background-color: #f8f7bf;
+      }
+      &:after {
+        background-color: #f8f7bf;
+      }
+    `}
     ${(props) =>
     props.isFolder &&
     props.dragging &&
-    `&:hover:before {
-      background-color: #EFEFB2;
-    }
-    &:hover:after {
-      background-color: #EFEFB2;
-    }`};
+    css`
+      &:hover:before {
+        background-color: #efefb2;
+      }
+      &:hover:after {
+        background-color: #efefb2;
+      }
+    `};
 `;
 
 const StyledFileTileTop = styled.div`
