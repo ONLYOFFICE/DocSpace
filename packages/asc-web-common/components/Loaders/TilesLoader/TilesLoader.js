@@ -47,6 +47,7 @@ const TilesLoader = ({ foldersCount, filesCount, ...rest }) => {
           height="15px"
           width="120px"
           className="folders"
+          animate={false}
           {...rest}
         />
       ) : null}
@@ -56,6 +57,7 @@ const TilesLoader = ({ foldersCount, filesCount, ...rest }) => {
           height="15px"
           width="120px"
           className="files"
+          animate={false}
           {...rest}
         />
       ) : null}

@@ -32,7 +32,7 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={animate}
+          animate={false}
         />
         <RectangleLoader
           className="second-content"
@@ -43,7 +43,7 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={animate}
+          animate={false}
         />
       </StyledBottom>
     </StyledTile>
@@ -53,7 +53,7 @@ const TileLoader = ({
         <RectangleLoader
           className="main-content"
           height="100%"
-          width="100%"
+          //width="100%"
           title={title}
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
@@ -61,7 +61,7 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={animate}
+          animate={false}
         />
       </StyledMainContent>
 
@@ -75,7 +75,7 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={animate}
+          animate={false}
         />
         <RectangleLoader
           className="second-content"
@@ -87,7 +87,7 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={animate}
+          animate={false}
         />
       </StyledBottom>
     </StyledTile>
