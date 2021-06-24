@@ -28,6 +28,7 @@ const FolderTreeBody = ({
             withoutProvider={isCommonWithoutProvider}
             certainFolders={certainFolders}
             selectedKeys={selectedKeys}
+            needUpdate={false}
           />
         ) : (
           <Text as="span">{t("NotAvailableFolder")}</Text>
