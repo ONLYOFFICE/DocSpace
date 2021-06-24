@@ -138,7 +138,7 @@ namespace ASC.Web.Files.Utils
         {
             lock (Locker)
             {
-                if (ConversionQueue.ContainsKey(file))
+                if (Cache.Get<FileOperationResult>(GetKey(file)) != null)
                 {
                     return;
                 }
@@ -160,7 +160,14 @@ namespace ASC.Web.Files.Utils
                     Password = password,
                     ServerRootPath = serverRootPath
                 };
-                ConversionQueue.Add(file, queueResult);
+                if (ConversionQueue.ContainsKey(file))
+                {
+                    ConversionQueue[file] = queueResult;
+                }
+                else
+                {
+                    ConversionQueue.Add(file, queueResult);
+                }
                 InsertToCache(file, queueResult);
 
                 Timer.Change(0, Timeout.Infinite);
