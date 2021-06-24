@@ -162,6 +162,9 @@ export default function withFileActions(WrappedFileItem) {
 
       if (encrypted && isPrivacy) {
         console.log("item", item);
+
+        window.open("/products/files/private", "_blank");
+
         return;
 
         // if (localStorage.getItem("protocoldetector") == 1) {
@@ -229,6 +232,7 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
+        isDesktop,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -250,8 +254,10 @@ export default function withFileActions(WrappedFileItem) {
         ? "38px"
         : "96px";
 
+      const showShare = isPrivacy && (!isDesktop || !fileExst) ? false : true;
+
       const sharedButton =
-        !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
+        !canShare || !showShare || isEdit || id <= 0 || isMobile
           ? null
           : this.getSharedButton(shared);
 
@@ -285,6 +291,7 @@ export default function withFileActions(WrappedFileItem) {
   return inject(
     (
       {
+        auth,
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
@@ -393,6 +400,7 @@ export default function withFileActions(WrappedFileItem) {
         markAsRead,
         setConvertItem,
         setConvertDialogVisible,
+        isDesktop: auth.settingsStore.isDesktopClient,
       };
     }
   )(observer(WithFileActions));
