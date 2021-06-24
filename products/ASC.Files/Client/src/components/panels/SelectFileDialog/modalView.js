@@ -92,7 +92,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       isCommonWithoutProvider,
       expandedKeys,
       filter,
-      onFileClick,
+      onSelectFile,
       filesList,
       isLoadingData,
       hasNextPage,
@@ -109,7 +109,7 @@ class SelectFileDialogModalViewBody extends React.Component {
           zIndex={zIndex}
           onClose={onClose}
           className="select-file-modal-dialog"
-          style={{ maxWidth: "660px" }}
+          style={{ maxWidth: "890px" }}
           displayType="modal"
         >
           <ModalDialog.Header>{t("SelectFile")}</ModalDialog.Header>
@@ -134,7 +134,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                       <FileListBody
                         isLoadingData={isLoadingData}
                         filesList={filesList}
-                        onFileClick={onFileClick}
+                        onSelectFile={onSelectFile}
                         hasNextPage={hasNextPage}
                         isNextPageLoading={isNextPageLoading}
                         loadNextPage={loadNextPage}

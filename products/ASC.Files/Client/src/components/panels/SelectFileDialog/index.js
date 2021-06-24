@@ -180,11 +180,11 @@ class SelectFileDialogBody extends React.Component {
         isPanelVisible={isPanelVisible}
         onClose={onClose}
         onSelectFolder={this.onSelectFolder}
+        onSelectFile={this.onSelectFile}
         foldersType={foldersType}
         onClickFile={this.onClickFile}
         filesList={filesList}
         isLoadingData={isLoadingData}
-        onSelectFolder={this.onSelectFolder}
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
