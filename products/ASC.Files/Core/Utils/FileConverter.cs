@@ -70,16 +70,69 @@ namespace ASC.Web.Files.Utils
         private readonly object locker;
         private readonly ICache cache;
         private const int TIMER_PERIOD = 500;
+        private ICacheNotify<ConverterFileNotify> Notify { get; }
 
         private IServiceProvider ServiceProvider { get; }
 
-        public FileConverterQueue(IServiceProvider ServiceProvider, ICache cache)
+        public FileConverterQueue(IServiceProvider ServiceProvider, ICache cache, ICacheNotify<ConverterFileNotify> notify)
         {
             conversionQueue = new Dictionary<File<T>, ConvertFileOperationResult>(new FileComparer<T>());
             timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
             locker = new object();
             this.ServiceProvider = ServiceProvider;
             this.cache = cache;
+            Notify = notify;
+
+            Notify.Subscribe((c) =>
+            {
+                var result = new FileOperationResult()
+                {
+                    Id = c.OperationResult.Id,
+                    OperationType = (FileOperationType)c.OperationResult.OperationType,
+                    Processed = c.OperationResult.Processed,
+                    Source = c.OperationResult.Source,
+                    Result = c.OperationResult.Result,
+                    Error = c.OperationResult.Error,
+                    Progress = c.OperationResult.Progress,
+                    Finished = c.OperationResult.Finished
+                };
+                this.cache.Insert(c.Id, result, TimeSpan.FromMinutes(10));
+            }, CacheNotifyAction.InsertOrUpdate);
+
+            Notify.Subscribe((c) =>
+            {
+                this.cache.Remove(c.Id);
+            }, CacheNotifyAction.Remove);
+        }
+
+        private void InsertToCache(File<T> file, FileOperationResult result)
+        {
+            var operationResult = new OperationResult()
+            {
+                Id = result.Id,
+                OperationType = (OperationType)result.OperationType,
+                Processed = result.Processed,
+                Source = result.Source,
+                Result = result.Result,
+                Error = result.Error,
+                Progress = result.Progress,
+                Finished = result.Finished
+            };
+            var converterFileNotify = new ConverterFileNotify()
+            {
+                Id = GetKey(file),
+                OperationResult = operationResult
+            };
+            Notify.Publish(converterFileNotify, CacheNotifyAction.InsertOrUpdate);
+        }
+
+        private void RemoveFromCache(File<T> file)
+        {
+            var converterFileNotify = new ConverterFileNotify()
+            {
+                Id = GetKey(file)
+            };
+            Notify.Publish(converterFileNotify, CacheNotifyAction.Remove);
         }
 
         public void Add(File<T> file, string password, int tenantId, IAccount account, bool deleteAfter, string url, string serverRootPath)
@@ -109,17 +162,16 @@ namespace ASC.Web.Files.Utils
                     ServerRootPath = serverRootPath
                 };
                 conversionQueue.Add(file, queueResult);
-                cache.Insert(GetKey(file), queueResult, TimeSpan.FromMinutes(10));
+                InsertToCache(file, queueResult);
 
                 timer.Change(0, Timeout.Infinite);
             }
         }
 
-        public ConvertFileOperationResult GetStatus(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
+        public FileOperationResult GetStatus(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
         {
             var file = pair.Key;
-            var key = GetKey(file);
-            var operation = cache.Get<ConvertFileOperationResult>(key);
+            var operation = cache.Get<FileOperationResult>(GetKey(file));
             if (operation != null && (pair.Value || fileSecurity.CanRead(file)))
             {
                 lock (locker)
@@ -127,7 +179,7 @@ namespace ASC.Web.Files.Utils
                     if (operation.Progress == 100)
                     {
                         conversionQueue.Remove(file);
-                        cache.Remove(key);
+                        RemoveFromCache(file);
                     }
                     return operation;
                 }
@@ -137,7 +189,7 @@ namespace ASC.Web.Files.Utils
 
         public bool IsConverting(File<T> file)
         {
-            var result = cache.Get<ConvertFileOperationResult>(GetKey(file));
+            var result = cache.Get<FileOperationResult>(GetKey(file));
             return result != null && result.Progress != 100 && string.IsNullOrEmpty(result.Error);
         }
 
@@ -175,7 +227,7 @@ namespace ASC.Web.Files.Utils
                                        .ForEach(x =>
                                        {
                                            conversionQueue.Remove(x);
-                                           cache.Remove(GetKey(x.Key));
+                                           RemoveFromCache(x.Key);
                                        });
 
                         logger.DebugFormat("Run CheckConvertFilesStatus: count {0}", conversionQueue.Count);
@@ -224,7 +276,7 @@ namespace ASC.Web.Files.Utils
                                 //        new HttpResponse(new StringWriter()));
                                 //}
 
-                                cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
+                                InsertToCache(file, operationResult);
                             }
 
                             var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
@@ -276,7 +328,7 @@ namespace ASC.Web.Files.Utils
                                     if (operationResult.Delete)
                                     {
                                         conversionQueue.Remove(file);
-                                        cache.Remove(GetKey(file));
+                                        RemoveFromCache(file);
                                     }
                                     else
                                     {
@@ -284,7 +336,7 @@ namespace ASC.Web.Files.Utils
                                         operationResult.StopDateTime = DateTime.UtcNow;
                                         operationResult.Error = exception.Message;
                                         if (password) operationResult.Result = "password";
-                                        cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
+                                        InsertToCache(file, operationResult);
                                     }
                                 }
                             }
@@ -311,7 +363,7 @@ namespace ASC.Web.Files.Utils
                                         operationResult.Processed = "";
                                     }
                                     operationResult.Progress = operationResultProgress;
-                                    cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
+                                    InsertToCache(file, operationResult);
                                 }
                             }
 
@@ -343,7 +395,7 @@ namespace ASC.Web.Files.Utils
                                     if (operationResult.Delete)
                                     {
                                         conversionQueue.Remove(file);
-                                        cache.Remove(GetKey(file));
+                                        RemoveFromCache(file);
                                     }
                                     else
                                     {
@@ -362,7 +414,7 @@ namespace ASC.Web.Files.Utils
                                         {
                                             operationResult.Error = operationResultError;
                                         }
-                                        cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
+                                        InsertToCache(file, operationResult);
                                     }
                                 }
                             }
