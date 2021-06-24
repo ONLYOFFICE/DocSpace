@@ -14,7 +14,6 @@ const FileListBody = ({
   isLoadingData,
   filesList,
   onSelectFile,
-  isModalView,
   loadNextPage,
   hasNextPage,
   isNextPageLoading,
@@ -54,6 +53,7 @@ const FileListBody = ({
           ((viewer.id === file.createdBy.id && t("Common:MeLabel")) ||
             file.createdBy.displayName)
         : "";
+
       return (
         <div style={style}>
           {!isItemLoaded(index) ? (
@@ -72,7 +72,7 @@ const FileListBody = ({
             </div>
           ) : (
             <div
-              id={index}
+              data-index={index}
               className="modal-dialog_file-name"
               onClick={onSelectFile}
             >
@@ -80,19 +80,19 @@ const FileListBody = ({
                 src={`${config.homepage}/images/icons/24/file_archive.svg`}
                 className="select-file-dialog_icon"
               />
-              <div className="files-list_full-name">
-                <Text className="entry-title">
-                  {filesList[index] &&
-                    filesList[index].title.substring(
-                      0,
-                      filesList[index].title.indexOf(".gz")
-                    )}
+              <div data-index={index} className="files-list_full-name">
+                <Text data-index={index} className="entry-title">
+                  {file && file.title.substring(0, file.title.indexOf(".gz"))}
                 </Text>
 
-                <div className="file-exst">{".gz"}</div>
+                <div data-index={index} className="file-exst">
+                  {".gz"}
+                </div>
               </div>
               <div className="files-list_file-owner_wrapper">
-                <Text className="files-list_file-owner">{fileOwner}</Text>
+                <Text data-index={index} className="files-list_file-owner">
+                  {fileOwner}
+                </Text>
               </div>
             </div>
           )}

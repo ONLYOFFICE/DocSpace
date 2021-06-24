@@ -69,8 +69,9 @@ class SelectFileDialogBody extends React.Component {
   onSelectFile = (e) => {
     const { onSetFileName, onClose } = this.props;
     const { filesList } = this.state;
-    const index = e.target.id;
-
+    const index = e.target.dataset.index;
+  
+    if (!index) return;
     this.setState(
       {
         selectedFile: filesList[index].id,
