@@ -95,7 +95,6 @@ class SectionFilterContent extends React.Component {
   onChangeViewAs = (view) => {
     const { setViewAs, createThumbnails } = this.props;
     if (view === "tile") {
-      console.log("here");
       createThumbnails();
     }
     setViewAs(view);
@@ -313,7 +312,6 @@ export default inject(
     const isFiltered =
       !!files.length || !!folders.length || search || filterType || authorType;
 
-    //const { createThumbnails } = thumbnailsStore;
     return {
       customNames,
       user,
@@ -322,7 +320,6 @@ export default inject(
       filter,
       viewAs,
       isFiltered,
-
       setIsLoading,
       fetchFiles,
       setViewAs,
