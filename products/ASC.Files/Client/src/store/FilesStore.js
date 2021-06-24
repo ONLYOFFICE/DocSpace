@@ -1339,16 +1339,9 @@ class FilesStore {
     const fileIds = [];
 
     filesList.map((file) => {
-      const { thumbnailStatus, thumbnailUrl, isFolder } = file;
+      const { thumbnailStatus } = file;
 
-      if (
-        isFolder ||
-        thumbnailStatus === 3 ||
-        (thumbnailStatus === 1 && thumbnailUrl)
-      )
-        return;
-
-      fileIds.push(file.id);
+      if (thumbnailStatus === 0) fileIds.push(file.id);
     });
 
     if (fileIds.length) return api.files.createThumbnails(fileIds);

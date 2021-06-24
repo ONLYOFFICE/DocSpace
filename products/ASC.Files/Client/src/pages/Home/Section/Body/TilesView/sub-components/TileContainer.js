@@ -12,7 +12,7 @@ const StyledGridWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   width: 100%;
-  grid-gap: 22px 16px;
+  grid-gap: ${(props) => (props.isFolders ? "13px 14px" : "16px 18px")};
   padding-bottom: 24px;
   padding-right: 2px;
   box-sizing: border-box;
@@ -175,7 +175,7 @@ class TileContainer extends React.PureComponent {
             {useReactWindow ? (
               <AutoSizer>{renderList}</AutoSizer>
             ) : (
-              <StyledGridWrapper>{Folders}</StyledGridWrapper>
+              <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
             )}
           </>
         )}
