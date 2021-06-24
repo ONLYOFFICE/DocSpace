@@ -80,15 +80,20 @@ const FileListBody = ({
                 src={`${config.homepage}/images/icons/24/file_archive.svg`}
                 className="select-file-dialog_icon"
               />
-              <Text className="entry-title">
-                {filesList[index] &&
-                  filesList[index].title.substring(
-                    0,
-                    filesList[index].title.indexOf(".gz")
-                  )}
-              </Text>
-              <div className="file-exst">{".gz"}</div>
-              <Text className="files-list_file-owner">{fileOwner}</Text>
+              <div className="files-list_full-name">
+                <Text className="entry-title">
+                  {filesList[index] &&
+                    filesList[index].title.substring(
+                      0,
+                      filesList[index].title.indexOf(".gz")
+                    )}
+                </Text>
+
+                <div className="file-exst">{".gz"}</div>
+              </div>
+              <div className="files-list_file-owner_wrapper">
+                <Text className="files-list_file-owner">{fileOwner}</Text>
+              </div>
             </div>
           )}
         </div>
@@ -112,7 +117,7 @@ const FileListBody = ({
                   className="options_list"
                   height={displayType === "aside" ? height : 320}
                   itemCount={itemCount}
-                  itemSize={36}
+                  itemSize={displayType === "aside" ? 40 : 36}
                   onItemsRendered={onItemsRendered}
                   ref={ref}
                   width={width + 8}
