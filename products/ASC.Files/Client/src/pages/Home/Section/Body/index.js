@@ -39,7 +39,9 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    selection.length > 0 && window.addEventListener("mousedown", onMouseDown);
+    selection.length &&
+      !isMobile > 0 &&
+      window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 
