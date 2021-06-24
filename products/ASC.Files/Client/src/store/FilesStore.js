@@ -13,6 +13,7 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { loopTreeFolders } from "../helpers/files-helpers";
+import { thumbnailStatuses } from "../helpers/constants";
 
 const { FilesFilter } = api;
 
@@ -1341,7 +1342,7 @@ class FilesStore {
     filesList.map((file) => {
       const { thumbnailStatus } = file;
 
-      if (thumbnailStatus === 0) fileIds.push(file.id);
+      if (thumbnailStatus === thumbnailStatuses.WAITING) fileIds.push(file.id);
     });
 
     if (fileIds.length) return api.files.createThumbnails(fileIds);
