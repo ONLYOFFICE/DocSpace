@@ -90,17 +90,6 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                         .HasDefaultValueSql("NULL")
                         .HasMaxLength(38);
 
-                    b.Property<bool>("Public")
-                        .HasColumnName("public")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("PublicVisibleProducts")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("publicvisibleproducts")
-                        .HasColumnType("character varying(1024)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(1024);
-
                     b.Property<bool>("Spam")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("spam")
