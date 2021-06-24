@@ -1,14 +1,14 @@
 import React, { useCallback } from "react";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
-import { useTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 import config from "../../../../package.json";
-import Checkbox from "@appserver/components/checkbox";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
+import { inject, observer } from "mobx-react";
 
 const FileListBody = ({
   isLoadingData,
@@ -19,6 +19,7 @@ const FileListBody = ({
   hasNextPage,
   isNextPageLoading,
   displayType,
+  viewer,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   // Every row is loaded except for our loading indicator row.
@@ -46,6 +47,13 @@ const FileListBody = ({
 
   const Item = useCallback(
     ({ index, style }) => {
+      const file = filesList[index];
+
+      const fileOwner = file
+        ? file.createdBy &&
+          ((viewer.id === file.createdBy.id && t("Common:MeLabel")) ||
+            file.createdBy.displayName)
+        : "";
       return (
         <div style={style}>
           {!isItemLoaded(index) ? (
@@ -72,14 +80,15 @@ const FileListBody = ({
                 src={`${config.homepage}/images/icons/24/file_archive.svg`}
                 className="select-file-dialog_icon"
               />
-              <div className="entry-title">
+              <Text className="entry-title">
                 {filesList[index] &&
                   filesList[index].title.substring(
                     0,
                     filesList[index].title.indexOf(".gz")
                   )}
-              </div>
+              </Text>
               <div className="file-exst">{".gz"}</div>
+              <Text className="files-list_file-owner">{fileOwner}</Text>
             </div>
           )}
         </div>
@@ -130,4 +139,9 @@ FileListBody.defaultProps = {
   isModalView: false,
   isLoadingData: false,
 };
-export default FileListBody;
+export default inject(({ auth }) => {
+  const { user } = auth.userStore;
+  return {
+    viewer: user,
+  };
+})(observer(withTranslation("Common")(FileListBody)));

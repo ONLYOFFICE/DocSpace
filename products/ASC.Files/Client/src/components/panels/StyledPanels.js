@@ -560,6 +560,15 @@ const StyledSelectFilePanel = styled.div`
     overflow: hidden;
     max-width: 250px;
   }
+  .files-list_file-owner {
+    margin-left: auto;
+    margin-right: 16px;
+    max-width: 280px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #a3a9ae;
+  }
   .entry-title,
   .file-exst {
     //margin-top: 7px;
