@@ -139,7 +139,6 @@ class SelectFileDialogModalViewBody extends React.Component {
                         isNextPageLoading={isNextPageLoading}
                         loadNextPage={loadNextPage}
                         selectedFolder={selectedFolder}
-                        isCommonWithoutProvider={isCommonWithoutProvider}
                       />
                     )}
                   </div>
