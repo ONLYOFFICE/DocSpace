@@ -120,3 +120,11 @@ export function createBackupSchedule(
   };
   return request(options);
 }
+
+export function deleteBackupHistory() {
+  return request({ method: "delete", url: "/portal/deletebackuphistory" });
+}
+
+export function getBackupHistory() {
+  return request({ method: "get", url: "/portal/getbackuphistory" });
+}

@@ -1,21 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withTranslation } from "react-i18next";
+import throttle from "lodash/throttle";
+
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
-import FileListBody from "files/FileListBody";
-import { getFiles } from "../../../../../../../../../packages/asc-web-common/api/files";
-import { StyledBackupList } from "../styled-backup";
-import { withTranslation } from "react-i18next";
+import Loader from "@appserver/components/loader";
+
 import IconButton from "@appserver/components/icon-button";
 import utils from "@appserver/components/utils";
-import Aside from "@appserver/components/aside";
-import Heading from "@appserver/components/heading";
-import Backdrop from "@appserver/components/backdrop";
 import Link from "@appserver/components/link";
-import throttle from "lodash/throttle";
+import { StyledBackupList } from "../styled-backup";
+import {
+  deleteBackupHistory,
+  getBackupHistory,
+} from "../../../../../../../../../packages/asc-web-common/api/portal";
+import BackupListBody from "./backupListBody";
+
 const { desktop } = utils.device;
-const zIndex = 310;
+
 class BackupListModalDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -34,6 +38,11 @@ class BackupListModalDialog extends React.Component {
     if (isVisibleDialog) {
       window.addEventListener("resize", this.throttledResize);
     }
+    getBackupHistory().then((backupList) =>
+      this.setState({
+        filesList: backupList,
+      })
+    );
   }
 
   componentWillUnmount() {
@@ -53,115 +62,76 @@ class BackupListModalDialog extends React.Component {
 
     this.setState({ displayType: displayType });
   };
-  loadNextPage = ({ startIndex = 0 }) => {
-    //debugger;
-    console.log(`loadNextPage(startIndex=${startIndex}")`);
-    const { selectedFolder } = this.state;
-    const pageCount = 30;
-    console.log("selectedFolder", selectedFolder);
-    this.setState({ isNextPageLoading: true }, () => {
-      getFiles("12", pageCount, startIndex) //must be getbackuphistory method!
-        .then((response) => {
-          let newFilesList = startIndex
-            ? this.state.filesList.concat(response.files)
-            : response.files;
-          console.log("newFilesList", newFilesList);
 
-          this.setState({
-            hasNextPage: newFilesList.length < response.total,
-            isNextPageLoading: false,
-            filesList: newFilesList,
-          });
-        })
-        .catch((error) => console.log(error));
+  onCleanListClick = () => {
+    this.setState({ isLoading: true }, function () {
+      deleteBackupHistory()
+        .then(() => getBackupHistory())
+        .then((backupList) => this.setState({ filesList: backupList }))
+        .catch((error) => console.log("backup list error", error))
+        .finally(() => this.setState({ isLoading: false }));
     });
   };
   render() {
     const { onModalClose, isVisibleDialog, t } = this.props;
-    const {
-      filesList,
-      isNextPageLoading,
-      hasNextPage,
-      displayType,
-    } = this.state;
-
-    return displayType === "aside" ? (
-      <>
-        <Backdrop
-          onClick={onModalClose}
-          visible={isVisibleDialog}
-          zIndex={zIndex}
-          isAside={true}
-        />
-        <Aside visible={isVisibleDialog} zIndex={zIndex}>
-          <StyledBackupList displayType={displayType}>
-            <Heading size="medium" className="backup-list_aside-header_title">
-              {t("BackupList")}
-            </Heading>
-
-            <div className="backup-list_aside-body_wrapper">
-              <Text className="backup-list_aside-header_description">
-                {t("BackupListDeleteWarning")}
-              </Text>
-              <div className="backup-list_aside_body">
-                <FileListBody
-                  needRowSelection={false}
-                  filesList={filesList}
-                  hasNextPage={hasNextPage}
-                  isNextPageLoading={isNextPageLoading}
-                  loadNextPage={this.loadNextPage}
-                  displayType={displayType}
-                >
-                  <div className="backup-list_options">
-                    <Link className="backup-list_restore-link">
-                      {t("RestoreBackup")}
-                    </Link>
-
-                    <IconButton
-                      className="backup-list_trash-icon"
-                      size={16}
-                      color="#657077"
-                      iconName="/static/images/button.trash.react.svg"
-                      onClick={undefined}
-                    />
-                  </div>
-                </FileListBody>
-              </div>
-            </div>
-          </StyledBackupList>
-        </Aside>
-      </>
-    ) : (
+    const { filesList, displayType, isLoading } = this.state;
+    // console.log("filesList", filesList);
+    return (
       <ModalDialog visible={isVisibleDialog} onClose={onModalClose}>
         <ModalDialog.Header>{t("BackupList")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <StyledBackupList>
+          <StyledBackupList displayType={displayType}>
             <div className="backup-list_modal-dialog_body">
-              <Text className="backup-list_modal-header_description">
-                {t("BackupListDeleteWarning")}
-              </Text>
-              <FileListBody
-                filesList={filesList}
-                hasNextPage={hasNextPage}
-                isNextPageLoading={isNextPageLoading}
-                loadNextPage={this.loadNextPage}
-                listHeight={240}
-                needRowSelection={false}
-                displayType={displayType}
-              >
-                <div className="backup-list_options">
-                  <Link className="backup-list_restore-link">
-                    {t("RestoreBackup")}
+              <div className="backup-list_modal-header_wrapper_description">
+                <Text className="backup-list_modal-header_description">
+                  {t("BackupListDeleteWarning")}
+                  <Link
+                    className="backup-list_clear-link"
+                    onClick={this.onCleanListClick}
+                  >
+                    {t("ClearList")}
                   </Link>
-                  <IconButton
-                    className="backup-list_trash-icon"
-                    size={16}
-                    color="#657077"
-                    iconName="/static/images/button.trash.react.svg"
-                    onClick={undefined}
+                </Text>
+              </div>
+              {!isLoading ? (
+                filesList.length > 0 ? (
+                  <BackupListBody
+                    displayType={displayType}
+                    needRowSelection={false}
+                    filesList={filesList}
+                  >
+                    <div className="backup-list_options">
+                      <Link className="backup-list_restore-link">
+                        {t("RestoreBackup")}
+                      </Link>
+
+                      <IconButton
+                        className="backup-list_trash-icon"
+                        size={16}
+                        color="#657077"
+                        iconName="/static/images/button.trash.react.svg"
+                        onClick={undefined}
+                      />
+                    </div>
+                  </BackupListBody>
+                ) : (
+                  <Text>{t("EmptyBackupList")}</Text>
+                )
+              ) : (
+                <div key="loader">
+                  <Loader
+                    type="oval"
+                    size="16px"
+                    style={{
+                      display: "inline",
+                      marginRight: "10px",
+                    }}
                   />
+                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                    "Common:LoadingDescription"
+                  )}`}</Text>
                 </div>
-              </FileListBody>
+              )}
             </div>
           </StyledBackupList>
         </ModalDialog.Body>

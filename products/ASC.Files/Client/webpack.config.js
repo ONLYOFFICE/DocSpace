@@ -167,6 +167,7 @@ var config = {
         "./SelectFileDialog": "./src/components/panels/SelectFileDialog",
         "./FileListBody":
           "./src/components/panels/SelectFileDialog/fileListBody.js",
+        "./ListRow": "./src/components/panels/SelectFileDialog/listRow.js",
       },
       shared: {
         ...deps,

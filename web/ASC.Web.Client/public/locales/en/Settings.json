@@ -126,5 +126,7 @@
   "BackupList": "Backup List",
   "BackupListDeleteWarning": "If you delete any items from the list, their corresponding files will also be deleted. This action cannot be undone. To delete all the files use the link:",
   "CopyingError": "An error has been encountered. Please contact your administrator.",
-  "RestoreBackup": "Restore"
+  "RestoreBackup": "Restore",
+  "ClearList": "Clear the list.",
+  "EmptyBackupList": "No backups have been created yet. Create one or more backups for them to appear in this list."
 }

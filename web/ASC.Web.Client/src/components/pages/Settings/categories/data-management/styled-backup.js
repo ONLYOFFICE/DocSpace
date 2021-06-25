@@ -128,6 +128,13 @@ const StyledBackup = styled.div`
 
 const StyledBackupList = styled.div`
   height: 100%;
+  .backup-list_modal-header_wrapper_description {
+    margin-bottom: 16px;
+  }
+  .backup-list-row-list {
+    height: ${(props) => (props.displayType === "aside" ? "100vh" : "234px")};
+    width: 100%;
+  }
   .backup-list_modal-dialog_body {
     height: 300px;
   }
@@ -145,6 +152,7 @@ const StyledBackupList = styled.div`
     overflow: hidden;
     padding-left: 16px;
     border-bottom: 1px solid #eceef1;
+    margin-bottom: 16px;
   }
   .backup-list_aside-header {
     margin-bottom: 16px;
@@ -155,9 +163,19 @@ const StyledBackupList = styled.div`
   .backup-list_modal-header_description {
     margin-bottom: 16px;
   }
+  .backup-list_modal-header_description,
+  .backup-list_aside-header_description {
+    display: flex;
+    display: contents;
+    overflow-wrap: break-word;
+  }
+  .backup-list_clear-link {
+    margin-left: 4px;
+    text-decoration: underline;
+  }
   .backup-list_aside-body_wrapper {
     height: calc(100% - 200px);
-    width: 320px;
+    width: 300px;
     padding: 0 16px;
   }
   .backup-list_aside_body {
@@ -167,6 +185,10 @@ const StyledBackupList = styled.div`
   }
   .backup-list_restore-link {
     margin-right: 16px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .backup-list_trash-icon,
   .backup-list_restore-link {
