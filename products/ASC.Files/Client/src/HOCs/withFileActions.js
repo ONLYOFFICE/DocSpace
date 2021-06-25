@@ -159,7 +159,7 @@ export default function withFileActions(WrappedFileItem) {
       }
       this.setState({ isMouseDown: false });
     };
-    onFilesClick = () => {
+    onFilesClick = (e) => {
       const {
         filter,
         parentFolder,
@@ -189,6 +189,7 @@ export default function withFileActions(WrappedFileItem) {
         fileStatus,
       } = item;
       if (isTrashFolder) return;
+      if (e && e.target.tagName === "INPUT") return;
 
       if (!fileExst && !contentLength) {
         setIsLoading(true);
