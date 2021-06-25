@@ -129,8 +129,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                     statuschanged = table.Column<DateTime>(nullable: true),
                     creationdatetime = table.Column<DateTime>(nullable: false),
                     owner_id = table.Column<Guid>(maxLength: 38, nullable: false, defaultValueSql: "NULL"),
-                    @public = table.Column<bool>(name: "public", nullable: false),
-                    publicvisibleproducts = table.Column<string>(maxLength: 1024, nullable: true, defaultValueSql: "NULL"),
                     payment_id = table.Column<string>(maxLength: 38, nullable: true, defaultValueSql: "NULL"),
                     industry = table.Column<int>(nullable: true),
                     last_modified = table.Column<DateTime>(nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),

@@ -281,7 +281,7 @@ namespace ASC.CRM.Api
         /// </returns>
         /// <visible>false</visible>
         [Create(@"contact/{contactid:int}/batch")]
-        public IEnumerable<ContactInfoDto> CreateBatchContactInfo([FromRoute] int contactid, [FromForm] IEnumerable<ContactInfoDto> items)
+        public IEnumerable<ContactInfoDto> CreateBatchContactInfo([FromRoute] int contactid, [FromBody] IEnumerable<ContactInfoDto> items)
         {
             if (contactid <= 0) throw new ArgumentException();
 

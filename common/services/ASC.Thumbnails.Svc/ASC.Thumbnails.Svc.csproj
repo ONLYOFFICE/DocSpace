@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\..\ASC.Data.Encryption\ASC.Data.Encryption.csproj" />
     <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
   </ItemGroup>
