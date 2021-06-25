@@ -282,11 +282,6 @@ class FilterInput extends React.Component {
   onClickViewSelector = (checked) => {
     const viewAs = checked ? "tile" : "row";
     this.props.onChangeViewAs(viewAs);
-    /*
-    const itemId = (item.target && item.target.dataset.for) || item;
-    const viewAs = itemId.indexOf("row") === -1 ? "tile" : "row";
-    this.props.onChangeViewAs(viewAs);
-    */
   };
 
   onClickSortItem = (key) => {
