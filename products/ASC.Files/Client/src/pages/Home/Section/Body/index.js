@@ -60,7 +60,6 @@ const SectionBodyContent = (props) => {
   }, [onMouseUp, onMouseMove, startDrag, folderId, selection.length, viewAs]);
 
   const onMouseDown = (e) => {
-    console.log(e.target);
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&

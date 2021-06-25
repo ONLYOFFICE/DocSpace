@@ -33,6 +33,8 @@ const SimpleFilesTileContent = styled(TileContent)`
   .badge {
     margin-right: 8px;
     cursor: pointer;
+    height: 16px;
+    width: 16px;
   }
 
   .new-items {

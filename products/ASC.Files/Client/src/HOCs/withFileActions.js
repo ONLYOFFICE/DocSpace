@@ -140,7 +140,12 @@ export default function withFileActions(WrappedFileItem) {
       }
 
       if (viewAs === "tile") {
-        if (!isMouseDown || e.target.closest(".edit-button")) return;
+        if (
+          !isMouseDown ||
+          e.target.closest(".edit-button") ||
+          e.target.tagName === "IMG"
+        )
+          return;
         this.onFilesClick();
       } else {
         if (checked) {
