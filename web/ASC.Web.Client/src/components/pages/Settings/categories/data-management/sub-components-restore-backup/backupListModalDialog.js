@@ -35,6 +35,12 @@ class BackupListModalDialog extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.throttledResize) {
+      this.throttledResize && this.throttledResize.cancel();
+      window.removeEventListener("resize", this.throttledResize);
+    }
+  }
   getDisplayType = () => {
     const displayType =
       window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "modal";
