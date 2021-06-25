@@ -1333,10 +1333,27 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@daybrush/utils@^1.0.0", "@daybrush/utils@^1.1.1", "@daybrush/utils@^1.3.1", "@daybrush/utils@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@daybrush/utils/-/utils-1.4.0.tgz#c42ea6e65c044b8854d3456531deb226f2db7a56"
+  integrity sha512-P+l76QjGFwu8IbrFoIHO1equrL02h6wYJLRZ37Snr6o3bPEwPS0mdJqyTZipHMhrWoR44UVtZTUi41GPCDc9PQ==
+
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.2.tgz#8f03a22a04de437254e8ce8cc84ba39689288752"
   integrity sha512-HyYEUDeIj5rRQU2Hk5HTB2uHsbRQpF70nvMhVzi+VJR0X+xNEhjPui4/kBf3VeH/wqD28PT4sVOm8qqLjBrSZg==
+
+"@egjs/children-differ@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@egjs/children-differ/-/children-differ-1.0.1.tgz#5465fa80671d5ca3564ebe912f48b05b3e8a14fd"
+  integrity sha512-DRvyqMf+CPCOzAopQKHtW+X8iN6Hy6SFol+/7zCUiE5y4P/OB8JP8FtU4NxtZwtafvSL4faD5KoQYPj3JHzPFQ==
+  dependencies:
+    "@egjs/list-differ" "^1.0.0"
+
+"@egjs/list-differ@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@egjs/list-differ/-/list-differ-1.0.0.tgz#2277aff52e3e4bd9318d5c30ffc3ba3b6216f05e"
+  integrity sha512-HsbMKc0ZAQH+EUeCmI/2PvTYSybmkaWwakU8QGDYYgMVIg9BQ5sM0A0Nnombjxo2+JzXHxmH+jw//yGX+y6GYw==
 
 "@emotion/babel-plugin-jsx-pragmatic@^0.1.5":
   version "0.1.5"
@@ -2747,6 +2764,27 @@
     "@types/estree" "0.0.39"
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
+
+"@scena/dragscroll@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@scena/dragscroll/-/dragscroll-1.0.1.tgz#efa81c984f0dd00ce90130f29580a471e2a171dc"
+  integrity sha512-EQXsJku85gb8dxlCWmMpqWieunN/Ojr5u5czNQwwC/Ab0YjhdHtvvK9DGS9ej9Uu4+MbN/F4HUTIMhhukx6dSg==
+  dependencies:
+    "@scena/event-emitter" "^1.0.2"
+
+"@scena/event-emitter@^1.0.2", "@scena/event-emitter@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@scena/event-emitter/-/event-emitter-1.0.5.tgz#047e3acef93cf238d7ce3a8cc5a12ec6bd9c3bb1"
+  integrity sha512-AzY4OTb0+7ynefmWFQ6hxDdk0CySAq/D4efljfhtRHCOP7MBF9zUfhKG3TJiroVjASqVgkRJFdenS8ArZo6Olg==
+  dependencies:
+    "@daybrush/utils" "^1.1.1"
+
+"@scena/matrix@^1.0.0":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@scena/matrix/-/matrix-1.1.1.tgz#5297f71825c72e2c2c8f802f924f482ed200c43c"
+  integrity sha512-JVKBhN0tm2Srl+Yt+Ywqu0oLgLcdemDQlD1OxmN9jaCTwaFPZ7tY8n6dhVgMEaR9qcR7r+kAlMXnSfNyYdE+Vg==
+  dependencies:
+    "@daybrush/utils" "^1.4.0"
 
 "@sheerun/mutationobserver-shim@^0.3.2":
   version "0.3.3"
@@ -6836,6 +6874,22 @@ css-select@^4.1.2:
     domutils "^2.6.0"
     nth-check "^2.0.0"
 
+css-styled@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/css-styled/-/css-styled-1.0.0.tgz#6fe10a98f95c24fa66cb1c41e11e7c00bcedac13"
+  integrity sha512-lDdPvM2/djv+La110zVY3RGQ7X4OOlzLS+IEjRcn8UlUmJd1+GNcGfDFmsKWwnLBupsY1w0QM1gRgV4RdcCjfw==
+  dependencies:
+    "@daybrush/utils" "^1.0.0"
+    string-hash "^1.1.3"
+
+css-to-mat@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/css-to-mat/-/css-to-mat-1.0.3.tgz#5c0d9b572b68b57fa8ba0b1a4c572c18ce3b2b60"
+  integrity sha512-HADRhVqPc8wFqEp6ClK+uuPYg+FMBinNo2ReLyI/KQCncmHPJ60o5zldyJG7NjsTqXWbdfGJO51jnoxfMvWJiA==
+  dependencies:
+    "@daybrush/utils" "^1.3.1"
+    "@scena/matrix" "^1.0.0"
+
 css-to-react-native@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/css-to-react-native/-/css-to-react-native-3.0.0.tgz#62dbe678072a824a689bcfee011fc96e02a7d756"
@@ -8578,6 +8632,11 @@ framesync@5.3.0:
   dependencies:
     tslib "^2.1.0"
 
+framework-utils@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/framework-utils/-/framework-utils-1.1.0.tgz#a3b528bce838dfd623148847dc92371b09d0da2d"
+  integrity sha512-KAfqli5PwpFJ8o3psRNs8svpMGyCSAe8nmGcjQ0zZBWN2H6dZDnq+ABp3N3hdUmFeMrLtjOCTXD4yplUJIWceg==
+
 fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
@@ -8726,6 +8785,14 @@ gensync@^1.0.0-beta.1, gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
   integrity sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==
+
+gesto@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/gesto/-/gesto-1.3.0.tgz#ff141964faecbbae38e0cfb008607c533a6c694f"
+  integrity sha512-be9jSmhiDMjMzCQwBewOp/kBtKDB97d3e2lNkojMW9Ckgeu8c8Qglx7fopnLweoIGlIYsqDqwxHdJAkyL/TmFA==
+  dependencies:
+    "@daybrush/utils" "^1.0.0"
+    "@scena/event-emitter" "^1.0.2"
 
 get-caller-file@^2.0.1:
   version "2.0.5"
@@ -10991,6 +11058,20 @@ junk@^3.1.0:
   resolved "https://registry.yarnpkg.com/junk/-/junk-3.1.0.tgz#31499098d902b7e98c5d9b9c80f43457a88abfa1"
   integrity sha512-pBxcB3LFc8QVgdggvZWyeys+hnrNWg4OcZIU/1X59k5jQdLBlCsYGRQaz234SqoRLTCgMH00fY0xRJH+F9METQ==
 
+keycode@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
+  integrity sha1-PQr1bce4uOXLqNCpfxByBO7CKwQ=
+
+keycon@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/keycon/-/keycon-1.1.2.tgz#a7a9f5f22f32012fafd11e68c4283911d0738bce"
+  integrity sha512-yCoUAfwqmQUWrtOFuZhicxasF/4ae+M0aH8yV1wEKKZCZql8v6jWhlVF9dT5i1TfuHSmgt/GNuCaWIHT8wk6eQ==
+  dependencies:
+    "@daybrush/utils" "^1.0.0"
+    "@scena/event-emitter" "^1.0.2"
+    keycode "^2.2.0"
+
 killable@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.1.tgz#4c8ce441187a061c7474fb87ca08e2a638194892"
@@ -12585,6 +12666,13 @@ osenv@^0.1.4, osenv@^0.1.5:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.0"
 
+overlap-area@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/overlap-area/-/overlap-area-1.0.0.tgz#d44db45b810ec05c4c2c9f430ab60c9473f2101b"
+  integrity sha512-Oi3hxRf6Flvv1upldnjOtV7euFkc75G/wsxYfS/ssNKEZ3Z+HbIoPHkFfLH3hgwqLJKpq9wdFo7I6xcdS6k8yg==
+  dependencies:
+    "@daybrush/utils" "^1.3.1"
+
 overlayscrollbars@^1.13.1:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/overlayscrollbars/-/overlayscrollbars-1.13.1.tgz#0b840a88737f43a946b9d87875a2f9e421d0338a"
@@ -13987,10 +14075,12 @@ react-router@5.2.0, react-router@^5.2.0:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-selectable-fast@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/react-selectable-fast/-/react-selectable-fast-3.4.0.tgz#fb3e6490ebd3f91309b5a58ca17f629baab6e625"
-  integrity sha512-4DVrX6eTCLqt+GVtSNAEcL3S9ODUvtcPrzUL1ObjSL507D+i+HE4tCokSxUn4PqLtEsrWxXJU+CVC43XmwIVyw==
+react-selecto@^1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/react-selecto/-/react-selecto-1.12.0.tgz#dd1d3c415d7c9f302cc358fcec7b6f7bf0ea3bd3"
+  integrity sha512-W4dX0d5EVeAuBK485tWm8uF9xjAavdm+HQ4dIghXU3t9NvSN0WOfCvW+gD/o3BszXb7y7XPHp/42hXxBuJ6w9w==
+  dependencies:
+    selecto "~1.12.1"
 
 react-shallow-renderer@^16.13.1:
   version "16.14.1"
@@ -14972,6 +15062,22 @@ select@^1.1.2:
   resolved "https://registry.yarnpkg.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
   integrity sha1-DnNQrN7ICxEIUoeG7B1EGNEbOW0=
 
+selecto@~1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/selecto/-/selecto-1.12.1.tgz#3cc1852fa4d243c7f15523837bb748f122440ccc"
+  integrity sha512-X/NcHVFp55YbmV15N8mq6NUexQ+5JM1lKXbGSjdS7hGXLcJ4vxs6VELQtNpoETSTdgDL3d0Hvp0z7sR9MtkXXg==
+  dependencies:
+    "@daybrush/utils" "^1.4.0"
+    "@egjs/children-differ" "^1.0.1"
+    "@scena/dragscroll" "^1.0.1"
+    "@scena/event-emitter" "^1.0.5"
+    css-styled "^1.0.0"
+    css-to-mat "^1.0.3"
+    framework-utils "^1.1.0"
+    gesto "^1.3.0"
+    keycon "^1.1.2"
+    overlap-area "^1.0.0"
+
 selfsigned@^1.10.8:
   version "1.10.11"
   resolved "https://registry.yarnpkg.com/selfsigned/-/selfsigned-1.10.11.tgz#24929cd906fe0f44b6d01fb23999a739537acbe9"
@@ -15613,6 +15719,11 @@ strict-uri-encode@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
   integrity sha1-ucczDHBChi9rFC3CdLvMWGbONUY=
+
+string-hash@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/string-hash/-/string-hash-1.1.3.tgz#e8aafc0ac1855b4666929ed7dd1275df5d6c811b"
+  integrity sha1-6Kr8CsGFW0Zmkp7X3RJ1311sgRs=
 
 string-length@^2.0.0:
   version "2.0.0"

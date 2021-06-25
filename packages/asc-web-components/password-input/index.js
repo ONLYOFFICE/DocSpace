@@ -426,7 +426,7 @@ class PasswordInput extends React.Component {
       showCopyLink,
     } = this.props;
 
-    const { copyLabel, disableCopyAction } = this.state;
+    const { copyLabel, disableCopyAction, type } = this.state;
 
     return (
       <StyledInput

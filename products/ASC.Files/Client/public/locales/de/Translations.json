@@ -17,6 +17,5 @@
   "OwnerChange": "Besitzer ändern",
   "Presentations": "Präsentationen",
   "Restore": "Wiederherstellen",
-  "Spreadsheets": "Tabellenkalkulationen",
-  "UploadingLabel": "Dateien hochgeladen: {{file}} von {{totalFiles}}"
+  "Spreadsheets": "Tabellenkalkulationen"
 }

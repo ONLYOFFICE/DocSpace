@@ -343,10 +343,10 @@ namespace Frontend.Translations.Tests
 
                     /* Save empty 'EN' keys to not found files */
 
-                    foreach (var path in notFoundFilePaths)
+                    /*foreach (var path in notFoundFilePaths)
                     {
                         SaveNotFoundLanguage(path.Replace($"\\{lng.Lng}\\", "\\en\\"), path);
-                    }
+                    }*/
                 }
             }
 

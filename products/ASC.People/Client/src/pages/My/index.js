@@ -19,9 +19,19 @@ import EditBodyContent from "../ProfileAction/Section/Body";
 
 class My extends React.Component {
   componentDidMount() {
-    const { fetchProfile, profile, location, t, setDocumentTitle } = this.props;
+    const {
+      fetchProfile,
+      profile,
+      location,
+      t,
+      setDocumentTitle,
+      setLoadedProfile,
+      setIsLoading,
+      setFirstLoad,
+    } = this.props;
 
     setDocumentTitle(t("Common:Profile"));
+    setFirstLoad(false);
 
     this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
@@ -35,7 +45,12 @@ class My extends React.Component {
       toastr.success(t("ChangeEmailSuccess"));
     }
     if (!profile) {
-      fetchProfile("@self");
+      setIsLoading(true);
+      setLoadedProfile(false);
+      fetchProfile("@self").finally(() => {
+        setIsLoading(false);
+        setLoadedProfile(true);
+      });
     }
 
     if (!profile && this.documentElement) {
@@ -59,26 +74,18 @@ class My extends React.Component {
     return (
       <PageLayout withBodyAutoFocus>
         <PageLayout.SectionHeader>
-          {profile && tReady ? (
-            isEdit ? (
-              <EditHeaderContent isMy={true} />
-            ) : (
-              <ViewHeaderContent isMy={true} />
-            )
+          {isEdit ? (
+            <EditHeaderContent isMy={true} tReady={tReady} />
           ) : (
-            <Loaders.SectionHeader />
+            <ViewHeaderContent isMy={true} tReady={tReady} />
           )}
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {profile && tReady ? (
-            isEdit ? (
-              <EditBodyContent isMy={true} />
-            ) : (
-              <ViewBodyContent isMy={true} />
-            )
+          {isEdit ? (
+            <EditBodyContent isMy={true} tReady={tReady} />
           ) : (
-            <Loaders.ProfileView />
+            <ViewBodyContent isMy={true} tReady={tReady} />
           )}
         </PageLayout.SectionBody>
       </PageLayout>
@@ -101,6 +108,9 @@ const MyProfile = withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
+    setLoadedProfile: peopleStore.loadingStore.setLoadedProfile,
+    setIsLoading: peopleStore.loadingStore.setIsLoading,
+    setFirstLoad: peopleStore.loadingStore.setFirstLoad,
   }))(withTranslation(["Profile", "ProfileAction"])(observer(My)))
 );
 

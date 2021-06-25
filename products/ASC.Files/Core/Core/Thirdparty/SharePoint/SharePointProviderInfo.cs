@@ -307,7 +307,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             //ContentLength = file.Length,
             result.CreateBy = Owner;
             result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
-            result.FileStatus = FileStatus.None;
             result.FolderID = MakeId(GetParentFolderId(file.ServerRelativeUrl));
             result.ModifiedBy = Owner;
             result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;

@@ -1,18 +1,24 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 
 using ASC.Api.Core.Auth;
+using ASC.Api.Core.Convention;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Common.Mapping;
 
 using Autofac;
+
+using HealthChecks.UI.Client;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -30,9 +36,10 @@ namespace ASC.Api.Core
         public IHostEnvironment HostEnvironment { get; }
         public virtual string[] LogParams { get; }
         public virtual JsonConverter[] Converters { get; }
-        public virtual bool AddControllers { get; } = true;
         public virtual bool ConfirmAddScheme { get; } = false;
         protected DIHelper DIHelper { get; }
+        protected bool LoadProducts { get; } = true;
+        protected bool LoadConsumers { get; } = true;
 
         public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
@@ -43,30 +50,28 @@ namespace ASC.Api.Core
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            services.AddCustomHealthCheck(Configuration);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
 
             DIHelper.Configure(services);
 
-            if (AddControllers)
-            {
-                services.AddControllers()
-                    .AddXmlSerializerFormatters()
-                    .AddJsonOptions(options =>
-                    {
-                        options.JsonSerializerOptions.WriteIndented = false;
-                        options.JsonSerializerOptions.IgnoreNullValues = true;
-                        options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+            services.AddControllers()
+                .AddXmlSerializerFormatters()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = false;
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
 
-                        if (Converters != null)
+                    if (Converters != null)
+                    {
+                        foreach (var c in Converters)
                         {
-                            foreach (var c in Converters)
-                            {
-                                options.JsonSerializerOptions.Converters.Add(c);
-                            }
+                            options.JsonSerializerOptions.Converters.Add(c);
                         }
-                    });
-            }
+                    }
+                });
 
             DIHelper.TryAdd<DisposeMiddleware>();
             DIHelper.TryAdd<CultureMiddleware>();
@@ -82,7 +87,10 @@ namespace ASC.Api.Core
 
             var builder = services.AddMvcCore(config =>
             {
+                config.Conventions.Add(new ControllerNameAttributeConvention());
+
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+
                 config.Filters.Add(new AuthorizeFilter(policy));
                 config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
                 config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
@@ -109,6 +117,8 @@ namespace ASC.Api.Core
             {
                 LogNLogExtension.ConfigureLog(DIHelper, LogParams);
             }
+
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -132,12 +142,22 @@ namespace ASC.Api.Core
             {
                 endpoints.MapControllers();
                 endpoints.MapCustom();
+
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+                {
+                    Predicate = r => r.Name.Contains("self")
+                });
             });
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.Register(Configuration);
+            builder.Register(Configuration, LoadProducts, LoadConsumers);
         }
     }
 }

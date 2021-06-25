@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Mail.Aggregator.CollectionService.Console;
 
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
@@ -25,7 +26,7 @@ namespace ASC.Mail.Aggregator.CollectionService
         public async static Task Main(string[] args)
         {
 #if DEBUG
-            Thread.Sleep(30_000); //to have time to attach the process
+            //Thread.Sleep(30_000); //to have time to attach the process
 #endif
             var host = CreateHostBuilder(args).Build();
 
@@ -95,12 +96,15 @@ namespace ASC.Mail.Aggregator.CollectionService
                 var diHelper = new DIHelper(services);
                 LogNLogExtension.ConfigureLog(diHelper, "ASC.Mail.Aggregator", "ASC.Mail.MainThread", "ASC.Mail.Stat", "ASC.Mail.MailboxEngine");
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                //diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 services.AddSingleton(new ConsoleParser(args));
                 diHelper.TryAdd<AggregatorServiceLauncher>();
                 services.AddHostedService<AggregatorServiceLauncher>();
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
 
+            })
+            .ConfigureContainer<ContainerBuilder>((context, builder) =>
+            {
+                builder.Register(context.Configuration, false, false);
             });
     }
 }

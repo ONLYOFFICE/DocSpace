@@ -10,6 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.Elasticsearch" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Kafka" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="5.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
