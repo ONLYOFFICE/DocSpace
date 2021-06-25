@@ -49,7 +49,7 @@ if [ -z "${UPDATE}" ]; then
 fi
 
 if [ -z "${LOCAL_SCRIPTS}" ]; then
-   LOCAL_SCRIPTS="true";
+   LOCAL_SCRIPTS="false";
 fi
 
 cat > /etc/yum.repos.d/onlyoffice.repo <<END
@@ -70,7 +70,8 @@ enabled=1
 gpgkey=http://static.teamlab.info.s3.amazonaws.com/k8s
 END
 
-DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/install-appserver/install-RedHat"
+#DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/install-appserver/install-RedHat"
+DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/develop/build/install/OneClickInstall/install-RedHat"
 
 if [ "$LOCAL_SCRIPTS" = "true" ]; then
 	source install-RedHat/bootstrap.sh

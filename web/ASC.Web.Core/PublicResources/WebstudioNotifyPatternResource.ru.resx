@@ -1873,6 +1873,9 @@ $GreenButton
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}. Начался перенос портала в другой регион</value>
   </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Перенос портала в другой регион успешно завершен</value>
+  </data>
   <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
     <value>Подтвердите адрес электронной почты</value>
   </data>
@@ -1962,6 +1965,9 @@ $GreenButton
   </data>
   <data name="subject_request_tariff" xml:space="preserve">
     <value>Запрос тарифных планов по SaaS-версии</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Восстановление завершено</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Началось восстановление</value>

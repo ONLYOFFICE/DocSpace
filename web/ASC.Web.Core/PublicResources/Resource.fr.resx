@@ -684,6 +684,9 @@
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Région</value>
   </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Propriétaire</value>
+  </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota d'espace disque est dépassé</value>
   </data>
