@@ -9,8 +9,9 @@ import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { inject, observer } from "mobx-react";
-
+import { StyledFilesList, StyledSelectFilePanel } from "../StyledPanels";
 const FileListBody = ({
+  children,
   isLoadingData,
   filesList,
   onSelectFile,
@@ -19,6 +20,8 @@ const FileListBody = ({
   isNextPageLoading,
   displayType,
   viewer,
+  listHeight,
+  needRowSelection,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   // Every row is loaded except for our loading indicator row.
@@ -71,30 +74,39 @@ const FileListBody = ({
               )}`}</Text>
             </div>
           ) : (
-            <div
-              data-index={index}
-              className="modal-dialog_file-name"
-              onClick={onSelectFile}
+            <StyledFilesList
+              displayType={displayType}
+              needRowSelection={needRowSelection}
             >
-              <ReactSVG
-                src={`${config.homepage}/images/icons/24/file_archive.svg`}
-                className="select-file-dialog_icon"
-              />
-              <div data-index={index} className="files-list_full-name">
-                <Text data-index={index} className="entry-title">
-                  {file && file.title.substring(0, file.title.indexOf(".gz"))}
-                </Text>
+              <div
+                data-index={index}
+                className="modal-dialog_file-name"
+                onClick={onSelectFile}
+              >
+                <ReactSVG
+                  src={`${config.homepage}/images/icons/24/file_archive.svg`}
+                  className="select-file-dialog_icon"
+                />
+                <div data-index={index} className="files-list_full-name">
+                  <Text data-index={index} className="entry-title">
+                    {file && file.title.substring(0, file.title.indexOf(".gz"))}
+                  </Text>
 
-                <div data-index={index} className="file-exst">
-                  {".gz"}
+                  <div data-index={index} className="file-exst">
+                    {".gz"}
+                  </div>
+                </div>
+                <div className="files-list_file-owner_wrapper">
+                  {children ? (
+                    children
+                  ) : (
+                    <Text data-index={index} className="files-list_file-owner">
+                      {fileOwner}
+                    </Text>
+                  )}
                 </div>
               </div>
-              <div className="files-list_file-owner_wrapper">
-                <Text data-index={index} className="files-list_file-owner">
-                  {fileOwner}
-                </Text>
-              </div>
-            </div>
+            </StyledFilesList>
           )}
         </div>
       );
@@ -102,47 +114,38 @@ const FileListBody = ({
     [filesList]
   );
   return (
-    <>
-      {!isLoadingData ? (
-        <AutoSizer>
-          {({ width, height }) => (
-            <InfiniteLoader
-              //ref={listOptionsRef}
-              isItemLoaded={isItemLoaded}
+    <AutoSizer>
+      {({ width, height }) => (
+        <InfiniteLoader
+          //ref={listOptionsRef}
+          isItemLoaded={isItemLoaded}
+          itemCount={itemCount}
+          loadMoreItems={loadMoreItems}
+        >
+          {({ onItemsRendered, ref }) => (
+            <List
+              className="options_list"
+              height={displayType === "aside" ? height : listHeight}
               itemCount={itemCount}
-              loadMoreItems={loadMoreItems}
+              itemSize={displayType === "aside" ? 40 : 36}
+              onItemsRendered={onItemsRendered}
+              ref={ref}
+              width={width + 8}
+              outerElementType={CustomScrollbarsVirtualList}
             >
-              {({ onItemsRendered, ref }) => (
-                <List
-                  className="options_list"
-                  height={displayType === "aside" ? height : 320}
-                  itemCount={itemCount}
-                  itemSize={displayType === "aside" ? 40 : 36}
-                  onItemsRendered={onItemsRendered}
-                  ref={ref}
-                  width={width + 8}
-                  outerElementType={CustomScrollbarsVirtualList}
-                >
-                  {Item}
-                </List>
-              )}
-            </InfiniteLoader>
+              {Item}
+            </List>
           )}
-        </AutoSizer>
-      ) : (
-        <div key="loader" className="panel-loader-wrapper">
-          <Loader type="oval" size="16px" className="panel-loader" />
-          <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-            "Common:LoadingDescription"
-          )}`}</Text>
-        </div>
+        </InfiniteLoader>
       )}
-    </>
+    </AutoSizer>
   );
 };
 FileListBody.defaultProps = {
   isModalView: false,
   isLoadingData: false,
+  listHeight: 320,
+  needRowSelection: true,
 };
 export default inject(({ auth }) => {
   const { user } = auth.userStore;

@@ -543,69 +543,7 @@ const StyledSelectFilePanel = styled.div`
   .select-file-dialog_aside-header {
     margin-bottom: 16px;
   }
-  .files-list_full-name {
-    grid-area: full-name;
-    display: flex;
-    ${(props) =>
-      props.displayType === "aside" &&
-      css`
-        padding-top: 4px;
-      `}
-  }
-  .select-file-dialog_icon {
-    grid-area: icon-name;
-  }
-  .files-list_file-owner_wrapper {
-    grid-area: owner-name;
-  }
-  .modal-dialog_file-name {
-    cursor: pointer;
-    border-bottom: 1px solid #eceef1;
-    align-items: center;
-    display: grid;
 
-    ${(props) =>
-      props.displayType === "aside"
-        ? css`
-            height: 40px;
-            grid-template-areas: "icon-name full-name full-name" "icon-name owner-name owner-name";
-          `
-        : css`
-            height: 36px;
-            grid-template-areas: "icon-name full-name owner-name";
-          `}
-
-    grid-template-columns: 32px 1fr;
-  }
-
-  .select-file-dialog_icon {
-    margin-right: 8px;
-  }
-  .entry-title {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    max-width: ${(props) =>
-      props.displayType === "aside" ? "240px" : "250px"};
-  }
-  .files-list_file-owner {
-    margin-left: auto;
-    margin-right: 16px;
-    max-width: 280px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    color: #a3a9ae;
-  }
-  .entry-title,
-  .file-exst {
-    //margin-top: 7px;
-    font-weight: 600;
-  }
-  .modal-dialog_file-name:hover {
-    background-color: #eceef1;
-    border-radius: 3px;
-  }
   .select-file-dialog_aside-header,
   .file-name {
     border-bottom: 1px solid #eceef1;
@@ -639,6 +577,73 @@ const StyledSelectFilePanel = styled.div`
     }
   }
 `;
+
+const StyledFilesList = styled.div`
+  .select-file-dialog_icon {
+    margin-right: 8px;
+  }
+  .entry-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "240px" : "250px"};
+  }
+  .files-list_file-owner {
+    margin-left: auto;
+
+    max-width: 280px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #a3a9ae;
+  }
+  .entry-title,
+  .file-exst {
+    //margin-top: 7px;
+    font-weight: 600;
+  }
+  .modal-dialog_file-name:hover {
+    background-color: #eceef1;
+    border-radius: 3px;
+  }
+
+  .files-list_full-name {
+    grid-area: full-name;
+    display: flex;
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        padding-top: 4px;
+      `}
+  }
+  .select-file-dialog_icon {
+    grid-area: icon-name;
+  }
+  .files-list_file-owner_wrapper {
+    grid-area: owner-name;
+    margin-right: 16px;
+  }
+  .modal-dialog_file-name {
+    cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
+    border-bottom: 1px solid #eceef1;
+    align-items: center;
+    display: grid;
+
+    ${(props) =>
+      props.displayType === "aside"
+        ? css`
+            height: 40px;
+            grid-template-areas: "icon-name full-name full-name" "icon-name owner-name owner-name";
+          `
+        : css`
+            height: 36px;
+            grid-template-areas: "icon-name full-name owner-name";
+          `}
+
+    grid-template-columns: 32px 1fr;
+  }
+`;
 export {
   StyledAsidePanel,
   StyledAddGroupsPanel,
@@ -653,4 +658,5 @@ export {
   StyledLinkRow,
   StyledSelectFolderPanel,
   StyledSelectFilePanel,
+  StyledFilesList,
 };

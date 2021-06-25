@@ -125,10 +125,54 @@ const StyledBackup = styled.div`
   }
   ${commonSettingsStyles}
 `;
+
+const StyledBackupList = styled.div`
+  height: 100%;
+  .backup-list_modal-dialog_body {
+    height: 300px;
+  }
+  .backup-list_options {
+    display: flex;
+  }
+
+  .backup-list_aside-header_title {
+    margin: 0px;
+    line-height: 56px;
+    max-width: 474px;
+    width: 400px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .backup-list_aside-header {
+    margin-bottom: 16px;
+  }
+  .backup-list_aside-body_wrapper {
+    height: calc(100% - 200px);
+    width: 320px;
+    padding: 0 16px;
+  }
+  .backup-list_aside_body {
+    margin-top: 16px;
+    height: 100%;
+    width: 290px;
+  }
+  .backup-list_restore-link {
+    margin-right: 16px;
+  }
+  .backup-list_trash-icon,
+  .backup-list_restore-link {
+    cursor: pointer;
+  }
+  .backup-list_trash-icon:hover {
+    text-decoration: underline;
+  }
+`;
 export {
   StyledModules,
   StyledComponent,
   StyledScheduleComponent,
   StyledBackup,
   StyledRestoreModules,
+  StyledBackupList,
 };
