@@ -280,7 +280,13 @@ class FilterInput extends React.Component {
     this.setState({ sortDirection: !!key });
   };
   onClickViewSelector = (checked) => {
-    const viewAs = checked ? "tile" : "row";
+    let viewAs;
+    if (typeof checked === "string") {
+      viewAs = checked;
+    } else {
+      viewAs = checked ? "tile" : "row";
+    }
+
     this.props.onChangeViewAs(viewAs);
   };
 
