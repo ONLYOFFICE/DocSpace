@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
+import styled from "styled-components";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Button from "@appserver/components/button";
 import PageLayout from "@appserver/common/components/PageLayout";
+import { smallTablet, tablet } from "@appserver/components/utils/device";
 import { I18nextProvider, Trans, withTranslation } from "react-i18next";
-import styled from "styled-components";
+import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 //import { setDocumentTitle } from "../../helpers/utils";
 import i18n from "./i18n";
-import { smallTablet, tablet } from "@appserver/components/utils/device";
 
 const StyledPrivacyPage = styled.div`
   margin-top: ${isMobile ? "80px" : "36px"};
@@ -35,6 +36,23 @@ const StyledPrivacyPage = styled.div`
     width: 70%;
     margin: 28px 0 42px 0;
     border-bottom: 1px solid #d3d3d3;
+  }
+
+  .privacy-rooms-install-text {
+    text-align: left;
+
+    @media ${smallTablet} {
+      text-align: center;
+    }
+  }
+
+  .privacy-rooms-install {
+    display: flex;
+    flex-direction: row;
+
+    @media ${smallTablet} {
+      flex-direction: column;
+    }
   }
 
   .privacy-rooms-link {
@@ -72,12 +90,24 @@ const StyledPrivacyPage = styled.div`
   }
 `;
 
-const PrivacyPageComponent = ({ t }) => {
+const PrivacyPageComponent = ({ t, history }) => {
   //   useEffect(() => {
   //     setDocumentTitle(t("Common:About"));
   //   }, [t]);
 
-  //"ConnectAdminDescription": "Для успешного подключения введите нужные данные на <1>этой странице</1>.",
+  const onOpenEditorsPopup = () => {
+    // if (localStorage.getItem("protocoldetector") == 1) {
+    //   openCustomProtocolInIframe(customUrlForFileOpenDesktopEditor);
+    // } else {
+    //   window.open(urlForOpenPrivate, "_blank");
+    // }
+
+    const fileId = history.location.search.slice(1);
+    window.open(
+      `oo-office:${window.location.origin}/products/files/doceditor?${fileId}`,
+      "_self"
+    );
+  };
 
   return (
     <StyledPrivacyPage>
@@ -118,16 +148,25 @@ const PrivacyPageComponent = ({ t }) => {
         >
           {t("PrivacyDialog")}.
         </Text>
-        <Button size="large" primary label={t("PrivacyButton")} />
+        <Button
+          onClick={onOpenEditorsPopup}
+          size="large"
+          primary
+          label={t("PrivacyButton")}
+        />
 
         <label className="privacy-rooms-text-separator" />
 
-        <div style={{ display: "flex" }}>
-          <Text fontSize="16px" fontWeight={300}>
+        <div className="privacy-rooms-install">
+          <Text
+            className="privacy-rooms-install-text"
+            fontSize="16px"
+            fontWeight={300}
+          >
             {t("PrivacyEditors")}?
           </Text>
           <Link
-            className="privacy-rooms-link"
+            className="privacy-rooms-link privacy-rooms-install-text"
             fontSize="16px"
             isHovered
             color="#116d9d"
@@ -153,7 +192,7 @@ const PrivacyPageComponent = ({ t }) => {
 };
 
 const PrivacyPageWrapper = withTranslation(["PrivacyPage"])(
-  PrivacyPageComponent
+  withRouter(PrivacyPageComponent)
 );
 
 const PrivacyPage = (props) => {

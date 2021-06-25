@@ -110,11 +110,7 @@ class FilesContent extends React.Component {
         <Switch>
           <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
           <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
-          <PrivateRoute
-            exact
-            path={PRIVATE_ROOMS_URL}
-            component={PrivateRoomsPage}
-          />
+          <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
           <PrivateRoute exact path={HOME_URL} component={Home} />
           <PrivateRoute path={FILTER_URL} component={Home} />
           <PrivateRoute component={Error404Route} />

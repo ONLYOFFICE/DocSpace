@@ -161,17 +161,11 @@ export default function withFileActions(WrappedFileItem) {
       } = item;
 
       if (encrypted && isPrivacy) {
-        console.log("item", item);
-
-        window.open("/products/files/private", "_blank");
-
-        return;
-
-        // if (localStorage.getItem("protocoldetector") == 1) {
-        //   openCustomProtocolInIframe(customUrlForFileOpenDesktopEditor);
-        // } else {
-        //   window.open(urlForOpenPrivate, "_blank");
-        // }
+        //console.log("item", item);
+        return window.open(
+          `/products/files/private?fileId=${item.id}`,
+          "_blank"
+        );
       }
 
       if (isTrashFolder) return;
