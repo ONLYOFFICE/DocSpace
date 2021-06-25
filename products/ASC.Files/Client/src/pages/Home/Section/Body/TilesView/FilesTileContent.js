@@ -57,12 +57,8 @@ const SimpleFilesTileContent = styled(TileContent)`
     font-size: 14px;
   }
 
-  .lock-file,
-  .is-editing {
-    height: 16px;
-    width: 16px;
-  }
-  .favorite {
+  .favorite,
+  .can-convert {
     height: 14px;
     width: 14px;
   }

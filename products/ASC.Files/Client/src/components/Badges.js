@@ -36,7 +36,7 @@ const Badges = ({
         <IconButton
           onClick={setConvertDialogVisible}
           iconName="/static/images/refresh.react.svg"
-          className="badge"
+          className="badge icons-group can-convert"
           size="small"
           isfill={true}
           color="#A3A9AE"
