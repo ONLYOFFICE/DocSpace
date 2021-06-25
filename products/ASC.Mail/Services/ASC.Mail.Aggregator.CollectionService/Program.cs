@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
+using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Mail.Aggregator.CollectionService.Console;
 
 using Autofac.Extensions.DependencyInjection;
-
-using CommandLine;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,9 @@ namespace ASC.Mail.Aggregator.CollectionService
     {
         public async static Task Main(string[] args)
         {
+#if DEBUG
+            Thread.Sleep(30_000); //to have time to attach the process
+#endif
             var host = CreateHostBuilder(args).Build();
 
             await host.RunAsync();
@@ -63,8 +68,8 @@ namespace ASC.Mail.Aggregator.CollectionService
                     if (!Path.IsPathRooted(path))
                     {
                         path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-                    } 
-                    
+                    }
+
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
@@ -84,11 +89,18 @@ namespace ASC.Mail.Aggregator.CollectionService
                             }
                         );
                 })
-            .ConfigureServices(services => 
-            { 
-                services.AddSingleton(new ConsoleParser(args));
-                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15)); 
+            .ConfigureServices((hostContext, services) =>
+            {
                 services.AddMemoryCache();
+                var diHelper = new DIHelper(services);
+                LogNLogExtension.ConfigureLog(diHelper, "ASC.Mail.Aggregator", "ASC.Mail.MainThread", "ASC.Mail.Stat", "ASC.Mail.MailboxEngine");
+                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                //diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                services.AddSingleton(new ConsoleParser(args));
+                diHelper.TryAdd<AggregatorServiceLauncher>();
+                services.AddHostedService<AggregatorServiceLauncher>();
+                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
+
             });
     }
 }
