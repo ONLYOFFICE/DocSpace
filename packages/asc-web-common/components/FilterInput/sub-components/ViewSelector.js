@@ -15,8 +15,6 @@ class ViewSelector extends React.Component {
   onClickViewSelector = (item) => {
     this.props.onClickViewSelector &&
       this.props.onClickViewSelector(item.target.checked);
-
-    //this.props.onClickViewSelector && this.props.onClickViewSelector(item);
   };
 
   render() {

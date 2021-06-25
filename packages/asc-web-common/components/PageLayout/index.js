@@ -105,11 +105,6 @@ class PageLayout extends React.Component {
     ) {
       this.backdropClick();
     }
-    // if (this.props.dragging) {
-    //   const el = document.getElementsByClassName("selectable-selectbox");
-    //   el[0].style.maxHeight = "0px";
-    //   el[0].style.maxWidth = "0px";
-    // }
   }
 
   componentDidMount() {

@@ -240,7 +240,6 @@ class PureHome extends React.Component {
       isLoading,
       dragging,
     } = this.props;
-    console.log(dragging, "Home");
     return (
       <>
         <MediaViewer />

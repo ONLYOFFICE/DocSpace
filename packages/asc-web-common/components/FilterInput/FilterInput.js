@@ -284,7 +284,6 @@ class FilterInput extends React.Component {
     this.props.onChangeViewAs(viewAs);
     /*
     const itemId = (item.target && item.target.dataset.for) || item;
-    console.log(item, item.target.dataset.for);
     const viewAs = itemId.indexOf("row") === -1 ? "tile" : "row";
     this.props.onChangeViewAs(viewAs);
     */
@@ -947,7 +946,7 @@ FilterInput.propTypes = {
   selectedFilterData: PropTypes.object,
   directionAscLabel: PropTypes.string,
   directionDescLabel: PropTypes.string,
-  viewAs: PropTypes.string, // TODO: include viewSelector after adding method getThumbnail - PropTypes.string
+  viewAs: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

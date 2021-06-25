@@ -186,7 +186,7 @@ SortComboBox.propTypes = {
   onChangeSortId: PropTypes.func,
   onChangeView: PropTypes.func,
   sortDirection: PropTypes.number,
-  viewAs: PropTypes.string, // TODO: include viewSelector after adding method getThumbnail - PropTypes.string
+  viewAs: PropTypes.string,
 };
 
 SortComboBox.defaultProps = {
