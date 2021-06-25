@@ -254,7 +254,8 @@ namespace ASC.CRM.Core.Dao
             var dbTag = new DbTag
             {
                 Title = tagName,
-                EntityType = entityType
+                EntityType = entityType,
+                TenantId = TenantID
             };
 
             CrmDbContext.Tags.Add(dbTag);

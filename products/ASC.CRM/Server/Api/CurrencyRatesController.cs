@@ -131,10 +131,13 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         [Create(@"currency/rates")]
         public CurrencyRateDto CreateCurrencyRate(
-             [FromForm] string fromCurrency,
-             [FromForm] string toCurrency,
-             [FromForm] decimal rate)
+            [FromBody] CreateCurrencyRateRequestDto inDto)
         {
+
+            var rate = inDto.Rate;
+            var fromCurrency = inDto.FromCurrency;
+            var toCurrency = inDto.ToCurrency;
+
             ValidateRate(rate);
 
             ValidateCurrencies(new[] { fromCurrency, toCurrency });
