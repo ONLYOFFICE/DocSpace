@@ -10,7 +10,6 @@ const BackupListBody = ({
   filesList,
   children,
 }) => {
-  const height = displayType === "aside" ? "100vh" : "234px";
   const Item = ({ index, style }) => {
     const file = filesList[index];
     const fileName = file.fileName;
