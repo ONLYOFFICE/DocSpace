@@ -1,5 +1,5 @@
 {
-    "elastic": { 
+    "elastic": {
         "Scheme": "http",
         "Host": "onlyoffice-elasticsearch",
         "Port": "9200",
