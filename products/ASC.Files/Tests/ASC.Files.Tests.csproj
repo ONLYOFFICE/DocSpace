@@ -16,7 +16,7 @@
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="Box.V2.Core" Version="3.24.0" />
-    <PackageReference Include="Confluent.Kafka" Version="1.5.1" />
+    <PackageReference Include="Confluent.Kafka" Version="1.5.2" />
     <PackageReference Include="Dropbox.Api" Version="5.0.0" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.49.0.2111" />

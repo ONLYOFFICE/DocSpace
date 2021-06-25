@@ -236,7 +236,7 @@ namespace ASC.CRM.Api
         /// <category>Common</category>
         /// <returns></returns>
         [Create(@"currency/addrates")]
-        public List<CurrencyRateDto> AddCurrencyRates([FromForm] List<CurrencyRate> rates)
+        public List<CurrencyRateDto> AddCurrencyRates([FromBody] List<CurrencyRate> rates)
         {
             if (!_crmSecurity.IsAdmin)
                 throw _crmSecurity.CreateSecurityException();

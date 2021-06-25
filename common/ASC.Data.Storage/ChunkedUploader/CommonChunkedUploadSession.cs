@@ -27,7 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ASC.Core.ChunkedUploader
 {
@@ -54,9 +56,11 @@ namespace ASC.Core.ChunkedUploader
 
         public string CultureName { get; set; }
 
-        public Dictionary<string, object> Items = new Dictionary<string, object>();
+        public Dictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
 
         private const string TempPathKey = "TempPath";
+
+        [JsonIgnore]
         public string TempPath
         {
             get { return GetItemOrDefault<string>(TempPathKey); }
@@ -64,6 +68,8 @@ namespace ASC.Core.ChunkedUploader
         }
 
         private const string UploadIdKey = "UploadId";
+
+        [JsonIgnore]
         public string UploadId
         {
             get { return GetItemOrDefault<string>(UploadIdKey); }
@@ -71,6 +77,8 @@ namespace ASC.Core.ChunkedUploader
         }
 
         private const string ChunksBufferKey = "ChunksBuffer";
+
+        [JsonIgnore]
         public string ChunksBuffer
         {
             get { return GetItemOrDefault<string>(ChunksBufferKey); }
@@ -91,16 +99,41 @@ namespace ASC.Core.ChunkedUploader
             return Items.ContainsKey(key) && Items[key] is T t ? t : default;
         }
 
-        public Stream Serialize()
+        public virtual Stream Serialize()
         {
-            var stream = new MemoryStream();
-            new BinaryFormatter().Serialize(stream, this);
-            return stream;
+            return null;
         }
 
-        public static CommonChunkedUploadSession Deserialize(Stream stream)
+        public void TransformItems()
         {
-            return (CommonChunkedUploadSession)new BinaryFormatter().Deserialize(stream);
+            var newItems = new Dictionary<string, object>();
+            foreach(var item in Items)
+            {
+                if (item.Value != null)
+                {
+                    if (item.Value.GetType() == typeof(JsonElement))
+                    {
+                        var value = (JsonElement)item.Value;
+                        if (value.ValueKind == JsonValueKind.String)
+                        {
+                            newItems.Add(item.Key, item.Value.ToString());
+                        }
+                        if (value.ValueKind == JsonValueKind.Number)
+                        {
+                            newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
+                        }
+                        if (value.ValueKind == JsonValueKind.Array)
+                        {
+                            newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
+                        }
+                    }
+                    else
+                    {
+                        newItems.Add(item.Key, item.Value);
+                    }
+                }
+            }
+            Items = newItems;
         }
 
         public virtual object Clone()

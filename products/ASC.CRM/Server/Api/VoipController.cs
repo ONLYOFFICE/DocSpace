@@ -155,7 +155,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers")]
-        public VoipPhone BuyNumber([FromForm] string number)
+        public VoipPhone BuyNumber([FromBody] string number)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
@@ -176,7 +176,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers/link")]
-        public VoipPhone LinkNumber([FromForm] string id)
+        public VoipPhone LinkNumber([FromBody] string id)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
