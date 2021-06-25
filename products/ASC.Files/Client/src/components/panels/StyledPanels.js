@@ -623,6 +623,12 @@ const StyledFilesList = styled.div`
   .files-list_file-owner_wrapper {
     grid-area: owner-name;
     margin-right: 16px;
+
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        margin-top: -17px;
+      `}
   }
   .modal-dialog_file-name {
     cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
@@ -633,7 +639,7 @@ const StyledFilesList = styled.div`
     ${(props) =>
       props.displayType === "aside"
         ? css`
-            height: 40px;
+            height: 56px;
             grid-template-areas: "icon-name full-name full-name" "icon-name owner-name owner-name";
           `
         : css`

@@ -164,6 +164,9 @@ const StyledBackupList = styled.div`
   .backup-list_restore-link {
     cursor: pointer;
   }
+  .backup-list_trash-icon {
+    margin-top: 1px;
+  }
   .backup-list_trash-icon:hover {
     text-decoration: underline;
   }

@@ -127,7 +127,7 @@ const FileListBody = ({
               className="options_list"
               height={displayType === "aside" ? height : listHeight}
               itemCount={itemCount}
-              itemSize={displayType === "aside" ? 40 : 36}
+              itemSize={displayType === "aside" ? 56 : 36}
               onItemsRendered={onItemsRendered}
               ref={ref}
               width={width + 8}

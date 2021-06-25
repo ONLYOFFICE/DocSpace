@@ -12,6 +12,7 @@ import utils from "@appserver/components/utils";
 import Aside from "@appserver/components/aside";
 import Heading from "@appserver/components/heading";
 import Backdrop from "@appserver/components/backdrop";
+import Link from "@appserver/components/link";
 import throttle from "lodash/throttle";
 const { desktop } = utils.device;
 const zIndex = 310;
@@ -110,12 +111,14 @@ class BackupListModalDialog extends React.Component {
                   displayType={displayType}
                 >
                   <div className="backup-list_options">
-                    <Text className="backup-list_restore-link">
+                    <Link className="backup-list_restore-link">
                       {t("RestoreBackup")}
-                    </Text>
+                    </Link>
+
                     <IconButton
                       className="backup-list_trash-icon"
                       size={16}
+                      color="#657077"
                       iconName="/static/images/button.trash.react.svg"
                       onClick={undefined}
                     />
@@ -149,6 +152,7 @@ class BackupListModalDialog extends React.Component {
                   <IconButton
                     className="backup-list_trash-icon"
                     size={16}
+                    color="#657077"
                     iconName="/static/images/button.trash.react.svg"
                     onClick={undefined}
                   />
