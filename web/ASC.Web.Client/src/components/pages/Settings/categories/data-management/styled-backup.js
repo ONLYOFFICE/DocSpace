@@ -143,8 +143,16 @@ const StyledBackupList = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    padding-left: 16px;
+    border-bottom: 1px solid #eceef1;
   }
   .backup-list_aside-header {
+    margin-bottom: 16px;
+  }
+  .backup-list_aside-header_description {
+    margin-top: 16px;
+  }
+  .backup-list_modal-header_description {
     margin-bottom: 16px;
   }
   .backup-list_aside-body_wrapper {

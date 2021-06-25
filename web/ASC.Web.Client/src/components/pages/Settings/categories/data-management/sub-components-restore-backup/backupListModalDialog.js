@@ -100,7 +100,9 @@ class BackupListModalDialog extends React.Component {
             </Heading>
 
             <div className="backup-list_aside-body_wrapper">
-              <Text>{t("BackupListDeleteWarning")}</Text>
+              <Text className="backup-list_aside-header_description">
+                {t("BackupListDeleteWarning")}
+              </Text>
               <div className="backup-list_aside_body">
                 <FileListBody
                   needRowSelection={false}
@@ -135,20 +137,22 @@ class BackupListModalDialog extends React.Component {
         <ModalDialog.Body>
           <StyledBackupList>
             <div className="backup-list_modal-dialog_body">
-              <Text>{t("BackupListDeleteWarning")}</Text>
+              <Text className="backup-list_modal-header_description">
+                {t("BackupListDeleteWarning")}
+              </Text>
               <FileListBody
                 filesList={filesList}
                 hasNextPage={hasNextPage}
                 isNextPageLoading={isNextPageLoading}
                 loadNextPage={this.loadNextPage}
-                listHeight={250}
+                listHeight={240}
                 needRowSelection={false}
                 displayType={displayType}
               >
                 <div className="backup-list_options">
-                  <Text className="backup-list_restore-link">
+                  <Link className="backup-list_restore-link">
                     {t("RestoreBackup")}
-                  </Text>
+                  </Link>
                   <IconButton
                     className="backup-list_trash-icon"
                     size={16}
