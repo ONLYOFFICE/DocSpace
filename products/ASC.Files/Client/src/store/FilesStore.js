@@ -13,6 +13,7 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { loopTreeFolders } from "../helpers/files-helpers";
+import { isMobile } from "react-device-detect";
 
 const { FilesFilter } = api;
 
@@ -301,10 +302,14 @@ class FilesStore {
             loopTreeFolders(path, treeFolders, subfolders, foldersCount);
           }
 
+          const isPrivacyFolder =
+            data.current.rootFolderType === FolderType.Privacy;
+
           filterData.total = data.total;
           this.setFilesFilter(filterData); //TODO: FILTER
-          this.setFolders(data.folders);
-          this.setFiles(data.files);
+          this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
+          this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
             this.setSelected("close");
