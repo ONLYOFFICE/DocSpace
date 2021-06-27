@@ -218,13 +218,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   });
 
   //console.log("Shell ", history);
-  const hideHeader = history.location.pathname === "/products/files/private";
 
   return (
     <Layout>
       <Router history={history}>
         <>
-          {isEditor || hideHeader ? <></> : <NavMenu />}
+          {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
           <Main isDesktop={isDesktop}>
             <Switch>

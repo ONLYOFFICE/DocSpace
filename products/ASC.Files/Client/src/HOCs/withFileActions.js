@@ -7,7 +7,7 @@ import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 
 import { EncryptedFileIcon } from "../components/Icons";
-import { createTreeFolders } from "../helpers/files-helpers";
+import { checkProtocol, createTreeFolders } from "../helpers/files-helpers";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
@@ -160,13 +160,7 @@ export default function withFileActions(WrappedFileItem) {
         encrypted,
       } = item;
 
-      if (encrypted && isPrivacy) {
-        //console.log("item", item);
-        return window.open(
-          `/products/files/private?fileId=${item.id}`,
-          "_blank"
-        );
-      }
+      if (encrypted && isPrivacy) return checkProtocol(item.id);
 
       if (isTrashFolder) return;
 

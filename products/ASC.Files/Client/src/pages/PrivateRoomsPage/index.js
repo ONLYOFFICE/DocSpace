@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
@@ -10,6 +10,8 @@ import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 //import { setDocumentTitle } from "../../helpers/utils";
 import i18n from "./i18n";
+import toastr from "studio/toastr";
+import { checkProtocol } from "../../helpers/files-helpers";
 
 const StyledPrivacyPage = styled.div`
   margin-top: ${isMobile ? "80px" : "36px"};
@@ -95,18 +97,19 @@ const PrivacyPageComponent = ({ t, history }) => {
   //     setDocumentTitle(t("Common:About"));
   //   }, [t]);
 
-  const onOpenEditorsPopup = () => {
-    // if (localStorage.getItem("protocoldetector") == 1) {
-    //   openCustomProtocolInIframe(customUrlForFileOpenDesktopEditor);
-    // } else {
-    //   window.open(urlForOpenPrivate, "_blank");
-    // }
+  const [isDisabled, setIsDisabled] = useState(false);
 
-    const fileId = history.location.search.slice(1);
-    window.open(
-      `oo-office:${window.location.origin}/products/files/doceditor?${fileId}`,
-      "_self"
+  const onOpenEditorsPopup = async () => {
+    setIsDisabled(true);
+    const isInstalled = await checkProtocol(
+      history.location.search.split("=")[1]
     );
+
+    if (isInstalled) setIsDisabled(false);
+    else {
+      setIsDisabled(false);
+      toastr.info(t("PrivacyEditors"));
+    }
   };
 
   return (
@@ -152,6 +155,7 @@ const PrivacyPageComponent = ({ t, history }) => {
           onClick={onOpenEditorsPopup}
           size="large"
           primary
+          isDisabled={isDisabled}
           label={t("PrivacyButton")}
         />
 
