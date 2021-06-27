@@ -26,7 +26,6 @@ const SectionBodyContent = (props) => {
     isRecycleBinFolder,
     moveDragItems,
     viewAs,
-    selection,
     setSelection,
   } = props;
 
@@ -39,9 +38,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    selection.length &&
-      !isMobile > 0 &&
-      window.addEventListener("mousedown", onMouseDown);
+    !isMobile && window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 
@@ -57,7 +54,7 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  }, [onMouseUp, onMouseMove, startDrag, folderId, selection.length, viewAs]);
+  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
 
   const onMouseDown = (e) => {
     if (
@@ -158,7 +155,6 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
-
   return (!fileActionId && isEmptyFilesList) || null ? (
     <EmptyContainer />
   ) : viewAs === "tile" ? (
@@ -184,7 +180,6 @@ export default inject(
       setTooltipPosition,
       startDrag,
       setStartDrag,
-      selection,
       setSelection,
     } = filesStore;
 
@@ -202,7 +197,6 @@ export default inject(
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
-      selection,
       setSelection,
     };
   }

@@ -115,7 +115,6 @@ export default function withFileActions(WrappedFileItem) {
       if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
         return;
       }
-
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
     };
@@ -135,9 +134,8 @@ export default function withFileActions(WrappedFileItem) {
         e.target.closest(".expandButton") ||
         e.target.closest(".badges") ||
         e.button !== 0
-      ) {
+      )
         return;
-      }
 
       if (viewAs === "tile") {
         if (
@@ -146,6 +144,7 @@ export default function withFileActions(WrappedFileItem) {
           e.target.tagName === "IMG"
         )
           return;
+
         this.onFilesClick();
       } else {
         if (checked) {
