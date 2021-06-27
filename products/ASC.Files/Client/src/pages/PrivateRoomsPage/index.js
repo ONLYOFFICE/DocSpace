@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Button from "@appserver/components/button";
+import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { smallTablet, tablet } from "@appserver/components/utils/device";
 import { I18nextProvider, Trans, withTranslation } from "react-i18next";
@@ -92,7 +93,7 @@ const StyledPrivacyPage = styled.div`
   }
 `;
 
-const PrivacyPageComponent = ({ t, history }) => {
+const PrivacyPageComponent = ({ t, history, tReady }) => {
   //   useEffect(() => {
   //     setDocumentTitle(t("Common:About"));
   //   }, [t]);
@@ -112,7 +113,9 @@ const PrivacyPageComponent = ({ t, history }) => {
     }
   };
 
-  return (
+  return !tReady ? (
+    <Loader className="pageLoader" type="rombs" size="40px" />
+  ) : (
     <StyledPrivacyPage>
       <div className="privacy-rooms-avatar">
         <Link href="/">
