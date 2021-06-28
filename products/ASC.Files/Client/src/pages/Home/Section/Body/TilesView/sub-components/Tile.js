@@ -110,7 +110,7 @@ const StyledFileTileTop = styled.div`
 
   .thumbnail-image,
   .temporary-icon > .injected-svg {
-    //pointer-events: none;
+    pointer-events: none;
     position: absolute;
     left: 0;
     right: 0;
