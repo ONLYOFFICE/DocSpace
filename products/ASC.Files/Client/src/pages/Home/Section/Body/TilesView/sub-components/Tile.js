@@ -192,7 +192,6 @@ class Tile extends React.PureComponent {
   }
 
   onError = () => {
-    console.log("onError");
     this.setState({
       errorLoadSrc: true,
     });

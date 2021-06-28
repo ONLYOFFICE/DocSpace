@@ -44,6 +44,7 @@ const Badges = ({
         />
       )}
       {canWebEdit &&
+        !isEditing &&
         !isTrashFolder &&
         accessToEdit &&
         showEditBadge &&
@@ -79,6 +80,7 @@ const Badges = ({
       )}
       {isEditing && (
         <StyledFileActionsConvertEditDocIcon
+          onClick={onFilesClick}
           className="badge icons-group is-editing"
           size="small"
         />
