@@ -1405,7 +1405,8 @@ namespace ASC.CRM.Core.Dao
                 DisplayName = displayName,
                 IsShared = contact.ShareType,
                 ContactTypeId = contact.ContactTypeID,
-                Currency = contact.Currency
+                Currency = contact.Currency,
+                TenantId = TenantID
             };
 
             CrmDbContext.Contacts.Add(itemToInsert);
@@ -1859,7 +1860,8 @@ namespace ASC.CRM.Core.Dao
 
                 CrmDbContext.Contacts.Remove(new DbContact
                 {
-                    Id = fromContactID
+                    Id = fromContactID,
+                    TenantId = TenantID
                 });
 
                 CrmDbContext.SaveChanges();

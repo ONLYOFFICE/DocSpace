@@ -255,8 +255,9 @@ namespace ASC.CRM.Core.Dao
             var dbEntity = new DbOrganisationLogo
             {
                 Content = Convert.ToBase64String(bytes),
-                CreateOn = DateTime.UtcNow,
-                CreateBy = _securityContext.CurrentAccount.ID.ToString()
+                CreateOn = DateTime.UtcNow,                
+                CreateBy = _securityContext.CurrentAccount.ID.ToString(),
+                TenantId = TenantID
             };
 
             CrmDbContext.OrganisationLogo.Add(dbEntity);
