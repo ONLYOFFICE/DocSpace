@@ -289,6 +289,7 @@ class RestoreBackup extends React.Component {
             t={t}
             isVisibleDialog={isVisibleDialog}
             isLoading={isLoading}
+            iconUrl={ICON_URL}
             onModalClose={this.onModalClose}
           />
         )}

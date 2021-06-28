@@ -38,11 +38,16 @@ class BackupListModalDialog extends React.Component {
     if (isVisibleDialog) {
       window.addEventListener("resize", this.throttledResize);
     }
-    getBackupHistory().then((backupList) =>
-      this.setState({
-        filesList: backupList,
-      })
-    );
+
+    this.setState({ isLoading: true }, function () {
+      getBackupHistory()
+        .then((backupList) =>
+          this.setState({
+            filesList: backupList,
+          })
+        )
+        .finally(() => this.setState({ isLoading: false }));
+    });
   }
 
   componentWillUnmount() {
@@ -73,15 +78,26 @@ class BackupListModalDialog extends React.Component {
     });
   };
   onDeleteClick = (e) => {
-    console.log("delete");
+    const { filesList } = this.state;
+    const index =
+      e.target.dataset.index ||
+      (e.target.farthestViewportElement &&
+        e.target.farthestViewportElement.dataset.index);
+    if (!index) return;
 
-    //deleteBackup(filesList[index].id)
+    this.setState({ isLoading: true }, function () {
+      deleteBackup(filesList[+index].id)
+        .then(() => getBackupHistory())
+        .then((backupList) => this.setState({ filesList: backupList }))
+        .catch((error) => console.log("backup list error", error))
+        .finally(() => this.setState({ isLoading: false }));
+    });
   };
   onRestoreClick = (e) => {
     console.log("restore");
   };
   render() {
-    const { onModalClose, isVisibleDialog, t } = this.props;
+    const { onModalClose, isVisibleDialog, t, iconUrl } = this.props;
     const { filesList, displayType, isLoading } = this.state;
     // console.log("filesList", filesList);
     return (
@@ -110,6 +126,7 @@ class BackupListModalDialog extends React.Component {
                     filesList={filesList}
                     onIconClick={this.onDeleteClick}
                     onRestoreClick={this.onRestoreClick}
+                    iconUrl={iconUrl}
                   />
                 ) : (
                   <Text>{t("EmptyBackupList")}</Text>

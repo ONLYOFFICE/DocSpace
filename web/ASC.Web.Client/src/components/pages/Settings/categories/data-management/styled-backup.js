@@ -144,9 +144,6 @@ const StyledBackupList = styled.div`
   .backup-list_trash-icon {
     width: 16px;
     height: 16px;
-    path {
-      fill: #657077;
-    }
   }
   .backup-list_aside-header_title {
     margin: 0px;
@@ -191,10 +188,22 @@ const StyledBackupList = styled.div`
   }
   .backup-list_restore-link {
     margin-right: 16px;
+    color: #a3a9ae;
     max-width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .backup-list_restore-link:hover {
+    text-decoration: none;
+    font-weight: 600;
+    color: #657077;
+  }
+  .backup-list_trash-icon:hover {
+    path {
+      fill: #657077;
+    }
   }
   .backup-list_trash-icon,
   .backup-list_restore-link {
@@ -202,9 +211,6 @@ const StyledBackupList = styled.div`
   }
   .backup-list_trash-icon {
     margin-top: 1px;
-  }
-  .backup-list_trash-icon:hover {
-    text-decoration: underline;
   }
 `;
 export {

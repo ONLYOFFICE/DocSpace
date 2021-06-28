@@ -4,9 +4,9 @@ import AutoSizer from "react-virtualized-auto-sizer";
 
 import ListRow from "files/ListRow";
 import Link from "@appserver/components/link";
-import IconButton from "@appserver/components/icon-button";
 
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+import TrashIcon from "../../../../../../../../../public/images/button.trash.react.svg";
 const BackupListBody = ({
   displayType,
   needRowSelection,
@@ -14,17 +14,22 @@ const BackupListBody = ({
   onIconClick,
   onRestoreClick,
   t,
+  iconUrl,
 }) => {
   const Item = ({ index, style }) => {
     const file = filesList[index];
     const fileName = file.fileName;
+    const fileExst = "gz";
+    const modifyFileName = fileName.substring(0, fileName.indexOf("gz"));
     return (
       <div style={style}>
         <ListRow
           displayType={displayType}
           needRowSelection={needRowSelection}
           index={index}
-          fileName={fileName}
+          fileName={modifyFileName}
+          fileExst={fileExst}
+          iconUrl={iconUrl}
         >
           <div data-index={index} className="backup-list_options">
             <Link
@@ -34,12 +39,9 @@ const BackupListBody = ({
             >
               {t("RestoreBackup")}
             </Link>
-
-            <IconButton
+            <TrashIcon
+              data-index={index}
               className="backup-list_trash-icon"
-              size={16}
-              color="#657077"
-              iconName="/static/images/button.trash.react.svg"
               onClick={onIconClick}
             />
           </div>

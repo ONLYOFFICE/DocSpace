@@ -553,9 +553,7 @@ const StyledSelectFilePanel = styled.div`
 
     padding: 7px 0px;
   }
-  .file-exst {
-    color: #a3a9ae;
-  }
+
   .panel-loader-wrapper {
     margin-top: 8px;
   }
@@ -602,6 +600,9 @@ const StyledFilesList = styled.div`
   .file-exst {
     //margin-top: 7px;
     font-weight: 600;
+  }
+  .file-exst {
+    color: #a3a9ae;
   }
   .modal-dialog_file-name:hover {
     background-color: #eceef1;
