@@ -16,6 +16,7 @@ const StyledGridWrapper = styled.div`
   padding-bottom: 24px;
   padding-right: 2px;
   box-sizing: border-box;
+  padding-left: 1px;
 `;
 
 const StyledTileContainer = styled.div`

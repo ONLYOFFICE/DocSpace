@@ -1,6 +1,6 @@
 # Rows Loader
 
-Component that displays tiles loader
+Component that displays tile loader
 
 ### Usage
 
