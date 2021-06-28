@@ -102,15 +102,12 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
 
   const onOpenEditorsPopup = async () => {
     setIsDisabled(true);
-    const isInstalled = await checkProtocol(
-      history.location.search.split("=")[1]
-    );
-
-    if (isInstalled) setIsDisabled(false);
-    else {
-      setIsDisabled(false);
-      toastr.info(t("PrivacyEditors"));
-    }
+    checkProtocol(history.location.search.split("=")[1])
+      .then(() => setIsDisabled(false))
+      .catch(() => {
+        setIsDisabled(false);
+        toastr.info(t("PrivacyEditors"));
+      });
   };
 
   return !tReady ? (

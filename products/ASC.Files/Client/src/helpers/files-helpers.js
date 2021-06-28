@@ -144,18 +144,19 @@ export const loopTreeFolders = (
   });
 };
 
-export const checkProtocol = (fileId) =>
+export const checkProtocol = (fileId, withRedirect) =>
   new Promise((resolve, reject) => {
     const onBlur = () => {
       clearTimeout(timeout);
       window.removeEventListener("blur", onBlur);
-      resolve(true);
+      resolve();
     };
 
     const timeout = setTimeout(() => {
-      reject(false);
+      reject();
       window.removeEventListener("blur", onBlur);
-      window.open(`/products/files/private?fileId=${fileId}`, "_blank");
+      withRedirect &&
+        window.open(`/products/files/private?fileId=${fileId}`, "_blank");
     }, 1000);
 
     window.addEventListener("blur", onBlur);

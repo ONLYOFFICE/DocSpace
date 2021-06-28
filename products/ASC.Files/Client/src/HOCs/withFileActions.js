@@ -160,7 +160,7 @@ export default function withFileActions(WrappedFileItem) {
         encrypted,
       } = item;
 
-      if (encrypted && isPrivacy) return checkProtocol(item.id);
+      if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
       if (isTrashFolder) return;
 
