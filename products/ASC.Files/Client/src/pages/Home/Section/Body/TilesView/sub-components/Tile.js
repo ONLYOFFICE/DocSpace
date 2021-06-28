@@ -183,22 +183,35 @@ class Tile extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.state = {
+      errorLoadSrc: false,
+    };
+
     this.cm = React.createRef();
     this.tile = React.createRef();
   }
 
+  onError = () => {
+    console.log("onError");
+    this.setState({
+      errorLoadSrc: true,
+    });
+  };
+
   getIconFile = () => {
     const { temporaryIcon, thumbnailClick, thumbnail } = this.props;
 
-    const icon = thumbnail ? thumbnail : temporaryIcon;
+    const icon =
+      thumbnail && !this.state.errorLoadSrc ? thumbnail : temporaryIcon;
 
     return (
       <Link type="page" onClick={thumbnailClick}>
-        {thumbnail ? (
+        {thumbnail && !this.state.errorLoadSrc ? (
           <img
-            src={thumbnail || temporaryIcon}
+            src={thumbnail}
             className="thumbnail-image"
             alt="Thumbnail-img"
+            onError={this.onError}
           />
         ) : (
           <ReactSVG className="temporary-icon" src={icon} loading={svgLoader} />
