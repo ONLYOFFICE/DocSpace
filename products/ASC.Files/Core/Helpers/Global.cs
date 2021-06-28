@@ -41,6 +41,7 @@ using ASC.Files.Core;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core;
+using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Files.Utils;
@@ -127,9 +128,13 @@ namespace ASC.Web.Files.Classes
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             CustomNamingPeople = customNamingPeople;
             FileSecurityCommon = fileSecurityCommon;
+
+            ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "png";
         }
 
         #region Property
+
+        public string ThumbnailExtension;
 
         public const int MaxTitle = 170;
 
@@ -259,7 +264,8 @@ namespace ASC.Web.Files.Classes
         private SettingsManager SettingsManager { get; }
         private GlobalStore GlobalStore { get; }
         private IServiceProvider ServiceProvider { get; }
-        public ILog Logger { get; }
+        private Global Global { get; }
+        private ILog Logger { get; }
 
         public GlobalFolder(
             CoreBaseSettings coreBaseSettings,
@@ -271,7 +277,8 @@ namespace ASC.Web.Files.Classes
             SettingsManager settingsManager,
             GlobalStore globalStore,
             IOptionsMonitor<ILog> options,
-            IServiceProvider serviceProvider
+            IServiceProvider serviceProvider,
+            Global global
         )
         {
             CoreBaseSettings = coreBaseSettings;
@@ -283,6 +290,7 @@ namespace ASC.Web.Files.Classes
             SettingsManager = settingsManager;
             GlobalStore = globalStore;
             ServiceProvider = serviceProvider;
+            Global = global;
             Logger = options.Get("ASC.Files");
         }
 
@@ -540,7 +548,7 @@ namespace ASC.Web.Files.Classes
                         var path = FileConstant.StartDocPath + culture + "/";
 
                         if (!storeTemplate.IsDirectory(path))
-                            path = FileConstant.StartDocPath + "default/";
+                            path = FileConstant.StartDocPath + "en-US/";
                         path += my ? "my/" : "corporate/";
 
                         SaveStartDocument(fileMarker, folderDao, fileDao, id, path, storeTemplate);
@@ -576,19 +584,34 @@ namespace ASC.Web.Files.Classes
 
         private void SaveFile<T>(FileMarker fileMarker, IFileDao<T> fileDao, T folder, string filePath, IDataStore storeTemp)
         {
-            using var stream = storeTemp.GetReadStream("", filePath);
-            var fileName = Path.GetFileName(filePath);
-            var file = ServiceProvider.GetService<File<T>>();
-
-            file.Title = fileName;
-            file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
-            file.FolderID = folder;
-            file.Comment = FilesCommonResource.CommentCreate;
-
-            stream.Position = 0;
             try
             {
-                file = fileDao.SaveFile(file, stream);
+                if (FileUtility.GetFileExtension(filePath) == "." + Global.ThumbnailExtension
+                    && storeTemp.IsFile("", Regex.Replace(filePath, "\\." + Global.ThumbnailExtension + "$", "")))
+                    return;
+
+                var fileName = Path.GetFileName(filePath);
+                var file = ServiceProvider.GetService<File<T>>();
+
+                file.Title = fileName;
+                file.FolderID = folder;
+                file.Comment = FilesCommonResource.CommentCreate;
+
+                using (var stream = storeTemp.GetReadStream("", filePath))
+                {
+                    file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
+                    file = fileDao.SaveFile(file, stream);
+                }
+
+                var pathThumb = filePath + "." + Global.ThumbnailExtension;
+                if (storeTemp.IsFile("", pathThumb))
+                {
+                    using (var streamThumb = storeTemp.GetReadStream("", pathThumb))
+                    {
+                        fileDao.SaveThumbnail(file, streamThumb);
+                    }
+                    file.ThumbnailStatus = Thumbnail.Created;
+                }
 
                 fileMarker.MarkAsNew(file);
             }

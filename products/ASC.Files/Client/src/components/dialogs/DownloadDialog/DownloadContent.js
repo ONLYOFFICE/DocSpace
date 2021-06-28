@@ -5,6 +5,7 @@ import RowContainer from "@appserver/components/row-container";
 import Text from "@appserver/components/text";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import styled from "styled-components";
+import { FilesFormats } from "@appserver/common/constants";
 
 const StyledDownloadContent = styled.div`
   .row_content,
@@ -19,7 +20,6 @@ const DownloadContent = (props) => {
     checkedTitle,
     indeterminateTitle,
     items,
-    formatKeys,
     onSelectFormat,
     onRowSelect,
     getItemIcon,
@@ -35,7 +35,7 @@ const DownloadContent = (props) => {
         label: t("OriginalFormat"),
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.OriginalFormat,
+          FilesFormats.OriginalFormat,
           item,
           "document"
         ),
@@ -45,7 +45,7 @@ const DownloadContent = (props) => {
         label: ".txt",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.TxtFormat,
+          FilesFormats.TxtFormat,
           item,
           "document"
         ),
@@ -55,7 +55,7 @@ const DownloadContent = (props) => {
         label: ".docx",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.DocxFormat,
+          FilesFormats.DocxFormat,
           item,
           "document"
         ),
@@ -65,7 +65,7 @@ const DownloadContent = (props) => {
         label: ".odt",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.OdtFormat,
+          FilesFormats.OdtFormat,
           item,
           "document"
         ),
@@ -75,7 +75,7 @@ const DownloadContent = (props) => {
         label: ".pdf",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.PdfFormat,
+          FilesFormats.PdfFormat,
           item,
           "document"
         ),
@@ -85,7 +85,7 @@ const DownloadContent = (props) => {
         label: ".rtf",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.RtfFormat,
+          FilesFormats.RtfFormat,
           item,
           "document"
         ),
@@ -95,7 +95,7 @@ const DownloadContent = (props) => {
         label: t("CustomFormat"),
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.CustomFormat,
+          FilesFormats.CustomFormat,
           item,
           "document"
         ),
@@ -108,7 +108,7 @@ const DownloadContent = (props) => {
         label: t("OriginalFormat"),
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.OriginalFormat,
+          FilesFormats.OriginalFormat,
           item,
           "presentation"
         ),
@@ -118,7 +118,7 @@ const DownloadContent = (props) => {
         label: ".odp",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.OdpFormat,
+          FilesFormats.OdpFormat,
           item,
           "presentation"
         ),
@@ -128,7 +128,7 @@ const DownloadContent = (props) => {
         label: ".pdf",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.PdfFormat,
+          FilesFormats.PdfFormat,
           item,
           "presentation"
         ),
@@ -138,7 +138,7 @@ const DownloadContent = (props) => {
         label: ".pptx",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.PptxFormat,
+          FilesFormats.PptxFormat,
           item,
           "presentation"
         ),
@@ -148,7 +148,7 @@ const DownloadContent = (props) => {
         label: t("CustomFormat"),
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.CustomFormat,
+          FilesFormats.CustomFormat,
           item,
           "presentation"
         ),
@@ -161,7 +161,7 @@ const DownloadContent = (props) => {
         label: t("OriginalFormat"),
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.OriginalFormat,
+          FilesFormats.OriginalFormat,
           item,
           "spreadsheet"
         ),
@@ -171,7 +171,7 @@ const DownloadContent = (props) => {
         label: ".odp",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.OdsFormat,
+          FilesFormats.OdsFormat,
           item,
           "spreadsheet"
         ),
@@ -181,7 +181,7 @@ const DownloadContent = (props) => {
         label: ".pdf",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.PdfFormat,
+          FilesFormats.PdfFormat,
           item,
           "spreadsheet"
         ),
@@ -191,7 +191,7 @@ const DownloadContent = (props) => {
         label: ".xlsx",
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.XlsxFormat,
+          FilesFormats.XlsxFormat,
           item,
           "spreadsheet"
         ),
@@ -201,7 +201,7 @@ const DownloadContent = (props) => {
         label: t("CustomFormat"),
         onClick: onSelectFormat.bind(
           this,
-          formatKeys.CustomFormat,
+          FilesFormats.CustomFormat,
           item,
           "spreadsheet"
         ),
@@ -223,11 +223,11 @@ const DownloadContent = (props) => {
   const getTitle = () => {
     switch (type) {
       case "document":
-        return t("Documents");
+        return t("Common:Documents");
       case "spreadsheet":
-        return t("Spreadsheets");
+        return t("Translations:Spreadsheets");
       case "presentation":
-        return t("Presentations");
+        return t("Translations:Presentations");
       default:
         return "";
     }
@@ -256,18 +256,22 @@ const DownloadContent = (props) => {
             </Text>
             <></>
             <Text fontSize="12px" containerWidth="auto">
-              {t("ConvertInto")}
+              {(checkedTitle || indeterminateTitle) && t("ConvertInto")}
             </Text>
-            <LinkWithDropdown
-              containerWidth="auto"
-              data={formats}
-              directionX="left"
-              directionY="bottom"
-              dropdownType="appearDashedAfterHover"
-              fontSize="12px"
-            >
-              {documentsTitle}
-            </LinkWithDropdown>
+            {checkedTitle || indeterminateTitle ? (
+              <LinkWithDropdown
+                containerWidth="auto"
+                data={formats}
+                directionX="left"
+                directionY="bottom"
+                dropdownType="appearDashedAfterHover"
+                fontSize="12px"
+              >
+                {documentsTitle}
+              </LinkWithDropdown>
+            ) : (
+              <></>
+            )}
           </RowContent>
         </Row>
       )}
@@ -297,19 +301,26 @@ const DownloadContent = (props) => {
                   {file.title}
                 </Text>
                 <></>
-                <Text fontSize="12px" containerWidth="auto">
-                  {file.checked && t("ConvertInto")}
-                </Text>
-                <LinkWithDropdown
-                  dropdownType="appearDashedAfterHover"
-                  containerWidth="auto"
-                  data={dropdownItems}
-                  directionX="left"
-                  directionY="bottom"
-                  fontSize="12px"
-                >
-                  {format}
-                </LinkWithDropdown>
+                {file.checked && (
+                  <Text fontSize="12px" containerWidth="auto">
+                    {t("ConvertInto")}
+                  </Text>
+                )}
+
+                {file.checked ? (
+                  <LinkWithDropdown
+                    dropdownType="appearDashedAfterHover"
+                    containerWidth="auto"
+                    data={dropdownItems}
+                    directionX="left"
+                    directionY="bottom"
+                    fontSize="12px"
+                  >
+                    {format}
+                  </LinkWithDropdown>
+                ) : (
+                  <></>
+                )}
               </RowContent>
             </Row>
           );

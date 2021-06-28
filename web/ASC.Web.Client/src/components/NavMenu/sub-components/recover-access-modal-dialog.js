@@ -9,7 +9,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Textarea from "@appserver/components/textarea";
 import FieldContainer from "@appserver/components/field-container";
 
-const ModalDialogContainer = styled.div`
+const ModalDialogContainer = styled(ModalDialog)`
   .modal-dialog-aside-footer {
     @media (max-width: 1024px) {
       width: 90%;
@@ -47,82 +47,78 @@ const RecoverAccessModalDialog = ({
   }, []);
 
   return (
-    <ModalDialogContainer>
-      <ModalDialog
-        visible={visible}
-        bodyPadding="16px 0 0 0"
-        onClose={onRecoverModalClose}
-      >
-        <ModalDialog.Header>
-          <Text isBold={true} fontSize="21px">
-            {t("RecoverTitle")}
-          </Text>
-        </ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text
-            key="text-body"
-            className="text-body"
-            isBold={false}
-            fontSize="13px"
-          >
-            {t("RecoverTextBody")}
-          </Text>
-          <FieldContainer
-            key="e-mail"
-            isVertical={true}
-            labelVisible={false}
+    <ModalDialogContainer
+      visible={visible}
+      bodyPadding="16px 0 0 0"
+      onClose={onRecoverModalClose}
+    >
+      <ModalDialog.Header>
+        <Text isBold={true} fontSize="21px">
+          {t("RecoverTitle")}
+        </Text>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text
+          key="text-body"
+          className="text-body"
+          isBold={false}
+          fontSize="13px"
+        >
+          {t("RecoverTextBody")}
+        </Text>
+        <FieldContainer
+          key="e-mail"
+          isVertical={true}
+          labelVisible={false}
+          hasError={emailErr}
+          errorMessage={t("Common:RequiredField")}
+        >
+          <TextInput
             hasError={emailErr}
-            errorMessage={t("RecoverErrorMessage")}
-          >
-            <TextInput
-              hasError={emailErr}
-              id="e-mail"
-              name="e-mail"
-              type="text"
-              size="base"
-              scale={true}
-              tabIndex={3}
-              placeholder={t("RecoverContactEmailPlaceholder")}
-              isAutoFocussed={true}
-              isDisabled={loading}
-              value={email}
-              onChange={onChangeEmail}
-            />
-          </FieldContainer>
-          <FieldContainer
-            key="text-description"
-            isVertical={true}
-            hasError={descErr}
-            labelVisible={false}
-            errorMessage={t("RecoverErrorMessage")}
-          >
-            <Textarea
-              heightScale={width > 1024 ? false : true}
-              hasError={descErr}
-              placeholder={t("RecoverDescribeYourProblemPlaceholder")}
-              tabIndex={3}
-              value={description}
-              onChange={onChangeDescription}
-              isDisabled={loading}
-            />
-          </FieldContainer>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            className="recover-button-dialog"
-            key="SendBtn"
-            label={
-              loading ? t("RecoverProcessSending") : t("RecoverSendButton")
-            }
-            size="big"
-            primary={true}
-            onClick={onSendRecoverRequest}
-            isLoading={loading}
-            isDisabled={loading}
+            id="e-mail"
+            name="e-mail"
+            type="text"
+            size="base"
+            scale={true}
             tabIndex={3}
+            placeholder={t("RecoverContactEmailPlaceholder")}
+            isAutoFocussed={true}
+            isDisabled={loading}
+            value={email}
+            onChange={onChangeEmail}
           />
-        </ModalDialog.Footer>
-      </ModalDialog>
+        </FieldContainer>
+        <FieldContainer
+          key="text-description"
+          isVertical={true}
+          hasError={descErr}
+          labelVisible={false}
+          errorMessage={t("Common:RequiredField")}
+        >
+          <Textarea
+            heightScale={width > 1024 ? false : true}
+            hasError={descErr}
+            placeholder={t("RecoverDescribeYourProblemPlaceholder")}
+            tabIndex={3}
+            value={description}
+            onChange={onChangeDescription}
+            isDisabled={loading}
+          />
+        </FieldContainer>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          className="recover-button-dialog"
+          key="SendBtn"
+          label={loading ? t("Common:Sending") : t("Common:SendButton")}
+          size="big"
+          primary={true}
+          onClick={onSendRecoverRequest}
+          isLoading={loading}
+          isDisabled={loading}
+          tabIndex={3}
+        />
+      </ModalDialog.Footer>
     </ModalDialogContainer>
   );
 };

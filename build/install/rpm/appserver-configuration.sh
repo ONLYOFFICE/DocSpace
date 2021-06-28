@@ -1,8 +1,8 @@
 #!/bin/bash
+PRODUCT="appserver"
 ENVIRONMENT="production"
 
-APP_DIR="/etc/onlyoffice/appserver"
-APP_CONF="$APP_DIR/appsettings.json"
+APP_DIR="/etc/onlyoffice/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_CONF="/etc/nginx/conf.d"
 SYSTEMD_DIR="/etc/systemd/system"
@@ -116,11 +116,11 @@ while [ "$1" != "" ]; do
 		;;
 
 		-? | -h | --help )
-			echo "  Usage: bash appserver-configuration.sh [PARAMETER] [[PARAMETER], ...]"
+			echo "  Usage: bash ${PRODUCT}-configuration.sh [PARAMETER] [[PARAMETER], ...]"
 			echo
 			echo "    Parameters:"
-			echo "      -ash, --appshost                    appserver ip"
-			echo "      -asp, --appsport                    appserver port (default 80)"
+			echo "      -ash, --appshost                    ${PRODUCT} ip"
+			echo "      -asp, --appsport                    ${PRODUCT} port (default 80)"
 			echo "      -dsh, --docshost                    document server ip"
 			echo "      -dsp, --docsport                    document server port (default 8083)"
 			echo "      -kh, --kafkahost                    kafka ip"
@@ -166,17 +166,23 @@ install_json() {
 		chown onlyoffice:onlyoffice $USER_CONF
 	
 		set_core_machinekey
-		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
-		$JSON $APP_CONF -e "this.core.products.subfolder='server'" >/dev/null 2>&1 #Fix error
+		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
+		-e "this.urlshortener={ 'path': 'client/index.js' }" -e "this.thumb={ 'path': 'client/' }" \
+		-e "this.socket={ 'path': '../ASC.Socket.IO' }" >/dev/null 2>&1
+		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" >/dev/null 2>&1
+		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
+		
 	fi
 }
 
 restart_services() {
 	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld appserver-api appserver-socket appserver-api_system appserver-backup \
-	appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify \
-	appserver-thumbnails appserver-urlshortener elasticsearch kafka zookeeper
+	for SVC in nginx mysqld ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
+	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
+	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
+	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
+	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
 	do
 		sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service >/dev/null 2>&1
 		
@@ -347,20 +353,27 @@ execute_mysql_script(){
 	#Checking the quantity of the tables created in the db
     DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
     
+	local SQL_DIR="/var/www/${PRODUCT}/sql"
     if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
-		local SQL_DIR="/var/www/appserver/sql"
 
 		echo -n "Installing MYSQL database... "
 
 		#Adding data to the db
 		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql
 		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
+		echo 'CREATE TABLE IF NOT EXISTS `Tenants` ( `id` varchar(200) NOT NULL, `Status` varchar(200) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> $SQL_DIR/onlyoffice.sql #Fix non-existent tables Tenants
 		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
+		for i in $(ls $SQL_DIR/*upgrade*.sql); do
+			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
+		done
 	else
 		echo -n "Upgrading MySQL database... "
+		for i in $(ls $SQL_DIR/*upgrade*.sql); do
+			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
+		done
     fi
     echo "OK"
 }
@@ -381,7 +394,9 @@ setup_nginx(){
 				PORTS+=("$DOCUMENT_SERVER_PORT")
 				PORTS+=('5001') #ASC.Web.Studio
 				PORTS+=('5002') #ASC.People
-				PORTS+=('5008') #ASC.Files
+				PORTS+=('5008') #ASC.Files/client
+				PORTS+=('5013') #ASC.Files/editor
+				PORTS+=('5014') #ASC.CRM
 				setsebool -P httpd_can_network_connect on
 			;;
 			disabled)

@@ -110,52 +110,50 @@ const ConflictResolveDialog = (props) => {
   const file = items[0].title;
 
   return (
-    <ModalDialogContainer>
-      <ModalDialog visible={visible} onClose={onClose}>
-        <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text className="conflict-resolve-dialog-text">
-            {singleFile
-              ? t("ConflictResolveDescription", { file, folder: folderTitle })
-              : t("ConflictResolveDescriptionFiles", {
-                  filesCount,
-                  folder: folderTitle,
-                })}
-          </Text>
-          <Text className="conflict-resolve-dialog-text">
-            {t("ConflictResolveSelectAction")}
-          </Text>
-          <RadioButtonGroup
-            className="conflict-resolve-radio-button"
-            orientation="vertical"
-            fontSize="13px"
-            fontWeight="400"
-            name="group"
-            onClick={onSelectResolveType}
-            options={radioOptions}
-            selected="overwrite"
-          />
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            className="button-dialog-accept"
-            key="OkButton"
-            label={t("OKButton")}
-            size="medium"
-            primary
-            onClick={onAcceptType}
-            //isLoading={isLoading}
-          />
-          <Button
-            className="button-dialog"
-            key="CancelButton"
-            label={t("CancelButton")}
-            size="medium"
-            onClick={onClose}
-            //isLoading={isLoading}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
+    <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text className="conflict-resolve-dialog-text">
+          {singleFile
+            ? t("ConflictResolveDescription", { file, folder: folderTitle })
+            : t("ConflictResolveDescriptionFiles", {
+                filesCount,
+                folder: folderTitle,
+              })}
+        </Text>
+        <Text className="conflict-resolve-dialog-text">
+          {t("ConflictResolveSelectAction")}
+        </Text>
+        <RadioButtonGroup
+          className="conflict-resolve-radio-button"
+          orientation="vertical"
+          fontSize="13px"
+          fontWeight="400"
+          name="group"
+          onClick={onSelectResolveType}
+          options={radioOptions}
+          selected="overwrite"
+        />
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          className="button-dialog-accept"
+          key="OkButton"
+          label={t("Common:OKButton")}
+          size="medium"
+          primary
+          onClick={onAcceptType}
+          //isLoading={isLoading}
+        />
+        <Button
+          className="button-dialog"
+          key="CancelButton"
+          label={t("Common:CancelButton")}
+          size="medium"
+          onClick={onClose}
+          //isLoading={isLoading}
+        />
+      </ModalDialog.Footer>
     </ModalDialogContainer>
   );
 };
@@ -179,6 +177,8 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
   };
 })(
   withRouter(
-    withTranslation("ConflictResolveDialog")(observer(ConflictResolveDialog))
+    withTranslation(["ConflictResolveDialog", "Common"])(
+      observer(ConflictResolveDialog)
+    )
   )
 );

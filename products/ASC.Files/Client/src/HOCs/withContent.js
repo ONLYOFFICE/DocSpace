@@ -19,17 +19,14 @@ export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
       super(props);
-      let titleWithoutExt = getTitleWithoutExst(props.item);
 
-      if (props.fileActionId === -1) {
-        titleWithoutExt = this.getDefaultName(props.fileActionExt);
+      const { item, fileActionId, fileActionExt } = props;
+      let titleWithoutExt = getTitleWithoutExst(item);
+      if (fileActionId === -1 && item.id === fileActionId) {
+        titleWithoutExt = this.getDefaultName(fileActionExt);
       }
 
-      this.state = {
-        itemTitle: titleWithoutExt,
-
-        //loading: false
-      };
+      this.state = { itemTitle: titleWithoutExt };
     }
 
     componentDidUpdate(prevProps) {
@@ -38,11 +35,6 @@ export default function withContent(WrappedContent) {
         const itemTitle = this.getDefaultName(fileActionExt);
         this.setState({ itemTitle });
       }
-      // if (fileAction) {
-      //   if (fileActionId !== prevProps.fileActionId) {
-      //     this.setState({ editingId: fileActionId });
-      //   }
-      // }
     }
 
     getDefaultName = (format) => {
@@ -194,7 +186,7 @@ export default function withContent(WrappedContent) {
               if (isPrivacy) {
                 return setEncryptionAccess(file).then((encryptedFile) => {
                   if (!encryptedFile) return Promise.resolve();
-                  toastr.info(t("EncryptedFileSaving"));
+                  toastr.info(t("Translations:EncryptedFileSaving"));
                   return replaceFileStream(
                     file.id,
                     encryptedFile,
@@ -275,7 +267,7 @@ export default function withContent(WrappedContent) {
 
       const fileOwner =
         createdBy &&
-        ((viewer.id === createdBy.id && t("AuthorMe")) ||
+        ((viewer.id === createdBy.id && t("Common:MeLabel")) ||
           createdBy.displayName);
 
       const accessToEdit =
@@ -308,7 +300,7 @@ export default function withContent(WrappedContent) {
           newItems={newItems}
           showNew={showNew}
           isTrashFolder={isTrashFolder}
-          onFilesClick={this.onFilesClick}
+          onFilesClick={onFilesClick}
           {...this.props}
         />
       );
@@ -338,7 +330,6 @@ export default function withContent(WrappedContent) {
       const { culture, isDesktopClient } = auth.settingsStore;
 
       return {
-        editCompleteAction,
         setIsLoading,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,

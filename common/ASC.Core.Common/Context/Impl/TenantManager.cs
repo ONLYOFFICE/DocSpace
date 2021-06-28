@@ -315,20 +315,28 @@ namespace ASC.Core
 
         public TenantQuota GetTenantQuota(int tenant)
         {
-            // если в tenants_quota есть строка, с данным идентификатором портала, то в качестве квоты берется именно она
-            var q = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DEFAULT_TENANT) ?? TenantQuota.Default;
-            if (q.Id != tenant && TariffService != null)
+            var defaultQuota = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DEFAULT_TENANT) ?? TenantQuota.Default;
+            if (defaultQuota.Id != tenant && TariffService != null)
             {
-                var tariffQuota = QuotaService.GetTenantQuota(TariffService.GetTariff(tenant).QuotaId);
-                if (tariffQuota != null)
+                var tariff = TariffService.GetTariff(tenant);
+                var currentQuota = QuotaService.GetTenantQuota(tariff.QuotaId);
+                if (currentQuota != null)
                 {
-                    return tariffQuota;
+                    currentQuota = (TenantQuota)currentQuota.Clone();
+
+                    if (currentQuota.ActiveUsers == -1)
+                    {
+                        currentQuota.ActiveUsers = tariff.Quantity;
+                        currentQuota.MaxTotalSize *= currentQuota.ActiveUsers;
+                    }
+
+                    return currentQuota;
                 }
             }
-            return q;
+            return defaultQuota;
         }
 
-        public IDictionary<string, IEnumerable<Tuple<string, decimal>>> GetProductPriceInfo(bool all = true)
+        public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(bool all = true)
         {
             var productIds = GetTenantQuotas(all)
                 .Select(p => p.AvangateId)

@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -39,7 +40,6 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OneDrive.Sdk;
 
@@ -49,7 +49,8 @@ namespace ASC.Files.Thirdparty.OneDrive
     {
         protected override string Id { get => "onedrive"; }
 
-        public OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+        public OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
 
@@ -171,7 +172,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             if (onedriveFile.File == null) return null;
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = GetFile();
 
             file.ID = MakeId(onedriveFile.Id);
             file.ContentLength = onedriveFile.Size.HasValue ? (long)onedriveFile.Size : 0;

@@ -28,15 +28,17 @@ using System;
 using System.IO;
 using System.Threading;
 
+using ASC.Common;
+
 namespace ASC.Data.Storage
 {
     public static class Extensions
     {
         private const int BufferSize = 2048;//NOTE: set to 2048 to fit in minimum tcp window
 
-        public static Stream IronReadStream(this IDataStore store, string domain, string path, int tryCount)
+        public static Stream IronReadStream(this IDataStore store, TempStream tempStream, string domain, string path, int tryCount)
         {
-            var ms = TempStream.Create();
+            var ms = tempStream.Create();
             IronReadToStream(store, domain, path, tryCount, ms);
             ms.Seek(0, SeekOrigin.Begin);
             return ms;

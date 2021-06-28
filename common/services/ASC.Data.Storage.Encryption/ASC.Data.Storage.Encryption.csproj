@@ -4,6 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -16,22 +18,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="Google.Protobuf" Version="3.13.0" />
     <PackageReference Include="Grpc" Version="2.32.0" />
     <PackageReference Include="Grpc.Tools" Version="2.32.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
     <PackageReference Include="SharpCompress" Version="0.26.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\products\ASC.Files\Server\ASC.Files.csproj" />
-    <ProjectReference Include="..\..\..\products\ASC.People\Server\ASC.People.csproj" />
     <ProjectReference Include="..\..\ASC.Api.Core\ASC.Api.Core.csproj" />
-    <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
-    <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
-    <ProjectReference Include="..\..\ASC.Data.Encryption\ASC.Data.Encryption.csproj" />
     <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
   </ItemGroup>
 

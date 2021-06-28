@@ -92,6 +92,17 @@ var config = {
       },
       { test: /\.json$/, loader: "json-loader" },
       {
+        test: /\.(woff(2)?)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "fonts/[hash].[ext]",
+            },
+          },
+        ],
+      },
+      {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
@@ -106,6 +117,7 @@ var config = {
           "sass-loader",
         ],
       },
+
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -148,6 +160,7 @@ var config = {
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
+        "./MyProfile": "./src/pages/My",
       },
       shared: {
         ...deps,

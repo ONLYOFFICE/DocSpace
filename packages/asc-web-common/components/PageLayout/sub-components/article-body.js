@@ -11,10 +11,14 @@ const StyledArticleBody = styled.div`
   flex-grow: 1;
   height: 100%;
 
+  .custom-scrollbar {
+    width: calc(100% + 24px) !important;
+  }
+
   @media ${tablet} {
     height: calc(100% - 104px);
     display: table;
-    width: 100%;
+    width: calc(100% + 16px);
 
     .custom-scrollbar {
       display: table-cell;

@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActionCreateBlog" xml:space="preserve">
     <value>Blog creato alle</value>
@@ -121,9 +121,6 @@
   <data name="ButtonActivateEmail" xml:space="preserve">
     <value>Clicca qui per attivare il tuo indirizzo email</value>
   </data>
-  <data name="ButtonBuyNow" xml:space="preserve">
-    <value>Acquista ora</value>
-  </data>
   <data name="ButtonChangeEmail" xml:space="preserve">
     <value>Modifica indirizzo email</value>
   </data>
@@ -134,7 +131,7 @@
     <value>Modifica numero di cellulare</value>
   </data>
   <data name="ButtonChangeTfa" xml:space="preserve">
-    <value>Cambia i codici di backup</value>
+    <value>Configura l'app di autenticazione</value>
   </data>
   <data name="ButtonConfigureRightNow" xml:space="preserve">
     <value>Configura adesso</value>
@@ -157,12 +154,6 @@
   <data name="ButtonDeletePortal" xml:space="preserve">
     <value>Elimina Portale</value>
   </data>
-  <data name="ButtonDownloadNow" xml:space="preserve">
-    <value>Scarica ora</value>
-  </data>
-  <data name="ButtonGoToAppStore" xml:space="preserve">
-    <value>Vai sull'App Store &gt;&gt;</value>
-  </data>
   <data name="ButtonInviteRightNow" xml:space="preserve">
     <value>Invita ora</value>
   </data>
@@ -184,38 +175,11 @@
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Seleziona i piani tariffari adesso</value>
   </data>
-  <data name="ButtonSendRequest" xml:space="preserve">
-    <value>Invia Richiesta</value>
-  </data>
   <data name="ButtonStartFreeTrial" xml:space="preserve">
     <value>Inizia il periodo di prova gratuita</value>
   </data>
-  <data name="ButtonStartNow" xml:space="preserve">
-    <value>Inizia subito</value>
-  </data>
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Usa lo sconto</value>
-  </data>
-  <data name="ItemOpensourceDocsTips1" xml:space="preserve">
-    <value>&lt;b&gt;Suggerimento # 1. &lt;/b&gt; Utilizzare la funzione di co-editing in tempo reale&lt;/b&gt; per velocizzare il processo di interazione quando si specificano i dettagli o si corregge un documento. Scegliere tra due modalità di co-editing-&lt;b&gt; Fast &lt;/b&gt; quando si vedono le modifiche come co-autore sta digitando o &lt;b&gt;strict&lt;/b&gt; quando le modifiche vengono visualizzate solo dopo aver salvato il documento.</value>
-  </data>
-  <data name="ItemOpensourceDocsTips2" xml:space="preserve">
-    <value>&lt;b&gt;Suggerimento #2.&lt;/b&gt; Usa l'opzione &lt;b&gt;Cronologia versioni&lt;/b&gt; per controllare i cambiamenti apportati ad un file da te e il tuo team o vedere chi ha fatto modifiche specifiche.</value>
-  </data>
-  <data name="ItemOpensourceDocsTips3" xml:space="preserve">
-    <value>&lt;b&gt;Suggerimento #3.&lt;/b&gt;Usa la &lt;b&gt;Revisione&lt;/b&gt; per evitare di tracciare le modifiche ed unire. Per garantire un accesso rapido ai tuoi documenti per la loro revisione e consentire agli altri di suggerire modifiche senza in realtà modificare il documento. Accetta o rifiuta in modo semplice i suggerimenti</value>
-  </data>
-  <data name="ItemOpensourceDocsTips4" xml:space="preserve">
-    <value>&lt;b&gt;Suggerimento #4.&lt;/b&gt; Condividi documenti con altri utenti. Allega documenti come link nelle tue email per ridurre il traffico email</value>
-  </data>
-  <data name="ItemOpensourceDocsTips5" xml:space="preserve">
-    <value>&lt;b&gt;Suggerimento #5.&lt;/b&gt; usa la funzione &lt;b&gt;Unisci mail&lt;/b&gt; per creare un set personalizzato di messaggi o modelli per risparmiare il tempo utilizzato solitamente per scrivere lo stesso messaggio svariate volte.</value>
-  </data>
-  <data name="ItemOpensourceDocsTips6" xml:space="preserve">
-    <value>&lt;b&gt;Suggerimento #6.&lt;/b&gt; Scarica gratis ONLYOFFICE® Desktop Editors per lavorare sui documenti senza usare connessione internet. Nota che l'app può essere connessa al tuo portale ONLYOFFICE® per accedere a quei documenti memorizzati su di esso.</value>
-  </data>
-  <data name="ItemOpensourceDocsTips7" xml:space="preserve">
-    <value>&lt;b&gt;Suggerimento #7.&lt;/b&gt; Scarica &lt;b&gt;ONLYOFFICE Documents app&lt;/b&gt; e installalo sul tuo dispositivo iOS per lavorare ai documenti dove, come e quando vuoi, anche al volo.</value>
   </data>
   <data name="LinkLearnMore" xml:space="preserve">
     <value>Per saperne di più &gt;&gt;</value>
@@ -248,20 +212,20 @@ il team ONLYOFFICE®
 "www.onlyoffice.com":"http://onlyoffice.com/"
 </value>
   </data>
-  <data name="pattern_change_email" xml:space="preserve">
-    <value>h1.Richiesta cambio email
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) backup del portale creato
 
-Hai richiesto di modificare il tuo indirizzo email usato per accedere al portale ${LetterLogoText}.
+Gentile $OwnerName,
 
-Si prega di seguire il link qui sotto per confermare l'operazione:
+Un file di backup contenente i dati del Suo portale [${__VirtualRootPath}](${__VirtualRootPath}) è stato creato.
 
-$GreenButton
+Per sapere di più sulla procedura di backup consultare il manuale utente alla sezione [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx).
 
-* Nota *: questo collegamento è valido solo per 7 giorni. Completa il processo di cambio di indirizzo del portale entro tale periodo.
+Per qualsiasi domanda o in caso di assistenza non esitate a contattarci [support.onlyoffice.com](http://support.onlyoffice.com)
 
-Potresti aver bisogno del tuo vecchio indirizzo email per accedere al portale quando segui il collegamento. Se non ricordi il vecchio indirizzo email, contatta l'amministratore del tuo portale.
-
-Se non desideri modificare la tua email o aver ricevuto questa email per errore, ignora o contatta l'amministratore del portale per scoprire i dettagli.</value>
+Cordiali saluti,
+Il team di supporto ONLYOFFICE®
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
   </data>
   <data name="pattern_change_password" xml:space="preserve">
     <value>h1.Richiesta modifica password per il portale "${__VirtualRootPath}":"${__VirtualRootPath}" 
@@ -295,7 +259,7 @@ Team di supporto ONLYOFFICE®
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_change_tfa" xml:space="preserve">
-    <value>h1.Richiesta modifica codici di backup 
+    <value>h1.Notifica di sicurezza 
 
 Hai richiesto di modificare i codici di backup utilizzati per accedere al portale ${LetterLogoText}.
 
@@ -360,6 +324,26 @@ Vai su Impostazioni &gt;&gt; Comuni &gt;&gt; Personalizzazione.</value>
   <data name="pattern_enterprise_admin_customize_portal_v10_item_regional_hdr" xml:space="preserve">
     <value>Suggerimento #2: Regola le impostazioni regionali</value>
   </data>
+  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Si prega di notare che l'abbonamento ONLYOFFICE scade tra una settimana. Per estendere l'abbonamento, è necessario acquistare un rinnovo del prodotto per ONLYOFFICE.
+
+Fai clic sul link di seguito per avviare la procedura di rinnovo:
+"Listino prezzi":"$PricingPage"
+
+Per ulteriori informazioni sull'installazione, attivazione e supporto tecnico del prodotto, non esitate a contattare il nostro team di supporto all'indirizzo "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Si prega di notare che l'abbonamento ONLYOFFICE scade oggi. Per estendere l'abbonamento, è necessario acquistare un rinnovo del prodotto per ONLYOFFICE.
+
+Fai clic sul link di seguito per avviare la procedura di rinnovo:
+"Listino prezzi":"$PricingPage"
+
+Per ulteriori informazioni sull'installazione, attivazione e supporto tecnico del prodotto, non esitate a contattare il nostro team di supporto all'indirizzo "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
+  </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Salve, $UserName!
 
@@ -368,6 +352,31 @@ Ottieni le app gratuite ONLYOFFICE per lavorare su documenti e progetti da quals
 # Per lavorare su documenti offline su Windows, Linux e Mac, scaricare "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/apps.aspx".
 # Per modificare documenti su dispositivi mobili, l'app ONLYOFFICE Documents per "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" o "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 # Per gestire le prestazioni del tuo team in viaggio, ottieni ONLYOFFICE Projects for "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v10" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Ecco cosa puoi fare per rendere il tuo web-office ancora più sicuro:
+
+*Ottieni un certificato SSL* se hai intenzione di fornire non solo l'accesso al portale locale ma anche esterno per i tuoi utenti. Genera un nuovo certificato firmato nel Pannello di controllo o acquistarne uno dal fornitore di fiducia.
+
+*Abilita backup automatici* nel Pannello di controllo. Ti consigliamo inoltre di utilizzare servizi di terze parti e di creare una copia di backup del server con ONLYOFFICE installato di volta in volta. Istruzioni nel nostro "Centro assistenza":"${__HelpLink}/server/controlpanel/enterprise/backup-restore.aspx".
+
+*Regola le impostazioni di sicurezza del portale*: limita l'accesso utilizzando la whitelisting IP, specifica domini di posta affidabili, imposta la lunghezza della password e altro. "Ulteriori informazioni &gt;&gt;":"$ {__HelpLink}/server/enterprise/configure-enterprise.aspx"
+
+*Abilita autenticazione a 2 fattori* tramite SMS o app di autenticazione. Istruzioni "qui":"${__HelpLink}/guides/two-factor-authentication.aspx".
+
+*Usa LDAP per la centralizzazione dell'accesso*. Importa facilmente gli utenti e i gruppi necessari dal tuo server LDAP (ad es. OpenLDAP Server o Microsoft Active Directory) al tuo portale. Ulteriori informazioni "qui":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
+
+*Utilizzare il proprio server SMPT*. Per impostazione predefinita, le notifiche per gli utenti di ONLYOFFICE Enterprise Edition (ad esempio, se gli viene concesso l'accesso a un documento) vengono fornite tramite il server SMPT ONLYOFFICE standard. Configura il tuo server SMTP in modo che le tue notifiche non passino attraverso nessun server di terze parti. "Istruzioni &gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx"
+
+*Chiudi tutte le porte non necessarie*. L'elenco di tutte le porte che devono essere aperte per ONLYOFFICE è "qui":"${__HelpLink}/server/docker/community/open-ports.aspx".
+
+Rendi il tuo ONLYOFFICE più sicuro ora.
+
+$GreenButton
+
+Ulteriori informazioni nel nostro "Centro assistenza":"$ {__HelpLink}".</value>
   </data>
   <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
     <value>Salve, $UserName!
@@ -447,6 +456,13 @@ Riceverai ulteriori suggerimenti su come utilizzare il nostro ufficio. Puoi annu
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Messaggio dal portale "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Messaggio dal portale [${__VirtualRootPath}](${__VirtualRootPath})
 
 Email: $UserEmail
 
@@ -544,77 +560,28 @@ Team di supporto ONLYOFFICE®
 
 ^ Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}:"${__VirtualRootPath}". ^</value>
   </data>
-  <data name="pattern_migration_success" xml:space="preserve">
-    <value>H1.Un'altra migrazione della regione del portale completata con successo
+  <data name="pattern_opensource_user_welcome_v11" xml:space="preserve">
+    <value>Congratulazioni, $UserName!
 
-La migrazione del portale alla regione $RegionName è stata completata con successo.
-Il tuo portale è adesso disponibile su "$PortalUrl":"$PortalUrl"
+Sei ufficialmente entrato nel team web-office su "${__VirtualRootPath}":"${__VirtualRootPath}". Adesso puoi:
 
-Se hai domande o hai bisogno di assistenza, non esitate a contattarci all'indirizzo "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+*Archiviare, gestire e condividere documenti*. ‎Visualizzare immagini, riprodurre audio e video‎. "Maggiori informazioni":"${__HelpLink}/gettingstarted/documents.aspx"
 
-Cordiali saluti,
-Team di supporto ONLYOFFICE®
-"www.onlyoffice.com":"http://onlyoffice.com/"
+*E‎Modificare e creare in modo condiviso documenti, fogli di calcolo e presentazioni* utilizzando editor ONLYOFFICE integrati. Usa centinaia di strumenti di formattazione e collabora in modo efficiente. "Guarda il video":"https://youtu.be/ep1VLGlmsdI"
 
-^ Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}:"${__VirtualRootPath}". ^</value>
-  </data>
-  <data name="pattern_opensource_admin_activation" xml:space="preserve">
-    <value>Gentile $UserName,
+*Gestisci le tue attività*. Usa "ONLYOFFICE Projects":"${__HelpLink}/projects.aspx" per pianificare, definire attività e scadenze. 
 
-Hai appena creato il tuo portale ONLYOFFICE, il tuo ufficio web sicuro e protetto. L'indirizzo del tuo portale è
-"${__VirtualRootPath}":"${__VirtualRootPath}". Vai al link sottostante per confermare il tuo indirizzo email:
+*Relazioni con la clientela*. costruisci il tuo database clienti, gestisci il processo del business, analizza ‎potenziale tasso di successo dell'affare e tenere traccia delle vendite ‎con "ONLYOFFICE CRM":"${__HelpLink}/crm.aspx".
 
-$GreenButton
+*Crea calendari personali e condivisi*. fissa riunioni, imposta promemoria, ‎Crea elenchi di cose da fare‎! "Maggiori informazioni":"${__HelpLink}/calendar.aspx"
 
-Si prega di completare l'attivazione dell'email entro una settimana poiché il link è valido solo per 7 giorni.
+*Usa il wiki interno e il social network*.‎ Mantenere una knowledge base interna per aiutare i nuovi membri a essere coinvolti rapidamente. Condividi i tuoi pensieri con blog, forum e sondaggi‎. "Maggiori informazioni":"${__HelpLink}/community.aspx"
 
-Nota: non inviamo informazioni riservate (come la tua password) nelle e-mail per motivi di sicurezza. Puoi cambiare la tua e-mail o password nella "pagina del profilo":"$MyStaffLink".
+*Gestisci tutte le email e crea caselle di posta di progetto*. Raggruppa la corrispondenza da account differenti in un'unica area di lavoro oppure chiedi al tuo amministratore di creare una nuova casella di posta aziendale. "Maggiori informazioni":"${__HelpLink}/mail.aspx"
 
-Per inviare notifiche, utilizziamo le impostazioni SMTP del nostro server di posta predefinito. Per cambiarli, segui le istruzioni "qui":"http://helpcenter.onlyoffice.com/server/windows/community/smtp-settings.aspx".
+*Scambia messaggi istantanei* e condividi rapidamente file utilizzando Talk. "Maggiori informazioni":"${__HelpLink}/talk.aspx"
 
-Per maggiori informazioni ti invitiamo a consultare il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com".
-
-Distinti saluti,
-Team ONLYOFFICE
-"www.onlyoffice.com":"https://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_opensource_admin_docs_tips" xml:space="preserve">
-    <value>Gentile $UserName,
-
-In quasi tutti gli affari dobbiamo trattare ogni giorno i documenti (contratti, relazioni, white paper, fatture, ecc.) E sprecare un sacco di tempo a spostarlo. Per aiutarti a lavorare in modo più efficiente e ridurre i tempi e gli sforzi spesi per il lavoro di ufficio, fai uso di questi 7 semplici consigli e trucchi.
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm
-
-Sai che stai usando i più potenti editor online del mondo? Vuoi sapere perché ONLYOFFICE è meglio di MS Office Online, Google Docs o Collabora? "Guarda qui":"https://www.onlyoffice.com/document-editor-comparison.aspx"
-
-Se hai bisogno di aiuto con il tuo portale, ti invitiamo a consultare il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com".
-
-Distinti saluti,
-Team ONLYOFFICE
-"www.onlyoffice.com":"https://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_opensource_admin_security_tips" xml:space="preserve">
-    <value>Gentile $UserName,
-
-La sicurezza dei dati è un problema scottante per la maggior parte dei team, specialmente quando si tratta di documenti. Per affermare la trasparenza e l'affidabilità di ONLYOFFICE abbiamo aperto il codice sorgente disponibile su "GitHub":"https://github.com/ONLYOFFICE".
-
-Per renderlo ancora più sicuro:
-
-#Attiva HTTPS per mantenere sicuri i tuoi dati del portale;
-#Effettua regolarmente il backup dei dati del portale per evitare perdite di dati;
-#Traccia la cronologia dei tentativi di accesso.
-
-Pannello di controllo incluso in ONLYOFFICE Enterprise Edition consente di automatizzare questi processi e fare ancora di più: modificare i loghi predefiniti del portale, importare gli utenti dal proprio server LDAP, controllare gli aggiornamenti ONLYOFFICE disponibili.
-
-Sei interessato? Inizia la prova gratuita di 30 giorni di ONLYOFFICE Enterprise Edition:
-
-$GreenButton
-
-Per maggiori informazioni ti invitiamo a consultare il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com".
-
-Distinti saluti,
-Team ONLYOFFICE
-"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+Per accedere al tuo web-office, Vai al "link":"${__VirtualRootPath}".</value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Salve, $UserName
@@ -694,7 +661,7 @@ h3.Nel caso tu collabori con un team o gestisca un progetto, ti suggeriamo di pr
 
 Crea un singolo spazio di lavoro collaborativo per te e i tuoi compagni di squadra.
 
-Registrare una versione di prova "nel cloud":"https://www.onlyoffice.com/registration.aspx" o "sul server":"https://www.onlyoffice.com/enterprise-edition-free.aspx?from=enterprise-edition" senza limitazioni funzionali per 30 giorni e scopri come il tuo flusso di lavoro migliorerebbe immediatamente!
+Registrare una versione di prova "nel cloud":"https://www.onlyoffice.com/registration.aspx" o "sul server":"https://www.onlyoffice.com/download-commercial.aspx?from=enterprise-edition" senza limitazioni funzionali per 30 giorni e scopri come il tuo flusso di lavoro migliorerebbe immediatamente!
 
 Cordiali saluti,
 il team ONLYOFFICE</value>
@@ -747,46 +714,6 @@ Interessato? Ulteriori informazioni su "ONLYOFFICE for business":"http://www.onl
 Cordiali saluti,
 il team ONLYOFFICE</value>
   </data>
-  <data name="pattern_personal_after_registration8" xml:space="preserve">
-    <value>$PersonalHeaderStart Collega il tuo archivio cloud preferito a ONLYOFFICE $PersonalHeaderEnd
-
-È trascorsa una settimana da quando hai creato il tuo cloud office, quindi crediamo sia giunto il momento di svelare alcune funzionalità utili che potresti aver perso.
-
-Collega * Dropbox *, * Google Drive *, * Box *, * OneDrive *, * Nextcloud *, * ownCloud *, * kDrive * o * Yandex.Disk * a ONLYOFFICE e crea un unico spazio di gestione dei documenti per tutti i tuoi documenti. Sarai in grado di modificare i file esterni in ONLYOFFICE e salvarli nella memoria in cui tieni i documenti. Leggi i dettagli sulla connessione di archivi di file a ONLYOFFICE "qui":"${__HelpLink}/tipstricks/add-resource.aspx".
-
-È possibile anche integrare gli editor di ONLYOFFICE in Google Drive utilizzando la nostra "app connettore":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
-
-Hai bisogno di più gestione dei documenti?
-
-h3.Try ONLYOFFICE for business "nel cloud":"https://www.onlyoffice.com/cloud-office.aspx" o "sul tuo server":"https://www.onlyoffice.com/server-solutions .aspx "gratuitamente per 30 giorni e controlla le opportunità di gestione estesa dei documenti insieme a un set di strumenti aziendali:
-
-- Gestire i documenti del team nei progetti;
-
-- Integrare documenti con CRM ed e-mail;
-
-- Condividi file con gruppi di utenti;
-
-- Ottimizza il flusso di lavoro con gli strumenti di comunicazione del team.
-
-Ti interessa? Ulteriori informazioni su "ONLYOFFICE for business":"http://www.onlyoffice.com/document-management.aspx".
-
-Cordiali saluti,
-La squadra di ONLYOFFICE</value>
-  </data>
-  <data name="pattern_personal_change_email" xml:space="preserve">
-    <value>Hai richiesto di cambiare il tuo indirizzo email utilizzato per accedere al portale ${LetterLogoText}.
-
-Si prega di seguire il link sottostante per cambiare il tuo indirizzo email:
-
-$GreenButton
-
-*Nota*: questo link è valido solo per 7 giorni. Si prega di completare il processo di modifica della posta elettronica entro tale periodo.
-
-Se non vuoi cambiare la tua email o aver ricevuto questa email per errore, ti preghiamo di ignorarla.
-
-Cordiali saluti,
-il Team ONLYOFFICE</value>
-  </data>
   <data name="pattern_personal_change_password" xml:space="preserve">
     <value>È stata richiesta la modifica della password utilizzata per accedere al portale "${__VirtualRootPath}":"${__VirtualRootPath}".
 
@@ -816,7 +743,7 @@ il Team ONLYOFFICE</value>
 
 $GreenButton
 
-*Nota*: Dopo la cancellazione, il tuo account e tutti i dati ad esso associati verranno cancellati in modo permanente in conformità con la nostra "Informativa sulla privacy":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+*Nota*: Dopo la cancellazione, il tuo account e tutti i dati ad esso associati verranno cancellati in modo permanente in conformità con la nostra "Informativa sulla privacy":"https://help.onlyoffice.com/Products/Files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
 
 Ignora questo messaggio se non intendi procedere.
 
@@ -872,19 +799,6 @@ Cordiali saluti,
 Team di supporto ONLYOFFICE®
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_portal_delete_success_v10" xml:space="preserve">
-    <value>Il tuo ONLYOFFICE è stato disattivato correttamente. Si noti che tutti i dati verranno eliminati in conformità con la "nostra informativa sulla privacy":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
-
-Perché hai deciso di andartene? Condividi la tua esperienza con noi.
-
-$GreenButton
-
-Grazie e buona fortuna!
-
-Distinti saluti,
-il Team ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_portal_rename" xml:space="preserve">
     <value>h1.Cambio indirizzo portale
 
@@ -925,6 +839,22 @@ Per visualizzare il tuo profilo vai su:
 ^ Ricevi questa mail in quanto utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}"^
 
 Distinti Saluti</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Il tuo profilo su [${__VirtualRootPath}](${__VirtualRootPath}) è stato modificato
+
+Gentile $UserName,
+
+I dettagli relativi al tuo profilo utente su [${__VirtualRootPath}](${__VirtualRootPath}) sono stati modificati da [$__AuthorName]($__AuthorUrl).
+
+Per visualizzare il tuo profilo vai al link di seguito:
+[$UserName]($MyStaffLink)
+
+Hai ricevuto questa mail perché sei un utente registrato del portale [${__VirtualRootPath}](${__VirtualRootPath}).
+
+Cordiali saluti
+il Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/" </value>
   </data>
   <data name="pattern_reassigns_completed" xml:space="preserve">
     <value>Gentile $UserName,
@@ -996,21 +926,6 @@ $Body
 h3.INDIRIZZO PORTALE
 "${__VirtualRootPath}":"${__VirtualRootPath}"</value>
   </data>
-  <data name="pattern_request_tariff" xml:space="preserve">
-    <value>h1.SAAS richiesta listino prezzi per "${__VirtualRootPath}":"${__VirtualRootPath}"
-
-h3.Nome
-$UserName
-
-h3.Email
-"$UserEmail":"mailto:$UserEmail"
-
-h3.Richiesta contenuto
-$Body</value>
-  </data>
-  <data name="pattern_restore_completed" xml:space="preserve">
-    <value>Restauro modello completato</value>
-  </data>
   <data name="pattern_restore_started" xml:space="preserve">
     <value>h1.Procedura di ripristino del portale avviata
 
@@ -1026,271 +941,67 @@ Team di supporto ONLYOFFICE®
 
 ^Ricevi questa mail in quanto utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}". Per modificare il tipo di notifica, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_payment_after_monthly_subscriptions_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-In precedenza hai sottoscritto un abbonamento mensile. Se hai intenzione di continuare a utilizzare ONLYOFFICE, ti consigliamo di acquistare abbonamenti più lunghi.
-
-Ecco la nostra offerta speciale: usa questo coupon * 10% di sconto * per ottenere il 10% di sconto sull'abbonamento di 1 anno o questo * upgrade tre anni 20% * per acquistare un abbonamento di 3 anni con uno sconto del 20%.
-
-$GreenButton
-
-Se hai bisogno di assistenza, contattaci a "support@onlyoffice.com":"mailto: support@onlyoffice.com". Saremo felici di aiutarti!
- 
-Distinti saluti,
-Squadra ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_3rdparty" xml:space="preserve">
+    <value>‎Connetti Dropbox, Google Drive o altri servizi per gestire i tuoi file da un'unica posizione.‎</value>
   </data>
-  <data name="pattern_saas_admin_payment_warning_after1_v10" xml:space="preserve">
-    <value>Il tuo abbonamento ONLYOFFICE è scaduto. Rinnova il tuo abbonamento ONLYOFFICE per continuare a usarlo.
-    
-$ GreenButton
-
-Abilita l'opzione "Rinnovo automatico" per rinnovare automaticamente la tua licenza alla scadenza e non preoccuparti più del tempo di pagamento. Puoi disattivarlo in qualsiasi momento "qui": "https://secure.avangate.com/myaccount/?lang=en&amp;e=example@customer-email.com&amp;k=xxxxxxxxxx"
-
-Per problemi relativi al pagamento, contattare Avangate all'indirizzo "support@avangate.com": "mailto: support@avangate.com"
-
-Distinti saluti,
-Squadra ONLYOFFICE
-"www.onlyoffice.com": "http://onlyoffice.com/"</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr" xml:space="preserve">
+    <value>‎*Connetti cloud di terze parti*‎</value>
   </data>
-  <data name="pattern_saas_admin_payment_warning_before5_v10" xml:space="preserve">
-    <value>Il tuo abbonamento a ONLYOFFICE scadrà tra 5 giorni. Rinnova il tuo abbonamento ONLYOFFICE per continuare a usarlo.
-
-$GreenButton
-
-Abilita l'opzione "Rinnovo automatico" per rinnovare automaticamente la tua licenza alla scadenza e non preoccuparti più del tempo di pagamento. Puoi disattivarlo in qualsiasi momento "qui":"https://secure.avangate.com/myaccount/?lang=en&amp;e=example@customer-email.com&amp;k=xxxxxxxxxx":"https://secure.avangate.com/myaccount/?lang=en&amp;e=example@customer-email.com&amp;k=xxxxxxxxxx".
-
-Per problemi relativi al pagamento, contattare Avangate all'indirizzo "support@avangate.com": "mailto: support@avangate.com"
-
-Distinti saluti,
-la squadra ONLYOFFICE
-"www.onlyoffice.com": "http://onlyoffice.com/"</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_apps" xml:space="preserve">
+    <value>Scarica le app per lavorare sui documenti &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://www.onlyoffice.com/apps.aspx"&gt;offline&lt;/a&gt; e su &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://itunes.apple.com/us/app/onlyoffice-documents/id944896972"&gt;iOS&lt;/a&gt; e &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://play.google.com/store/apps/details?id=com.onlyoffice.documents"&gt;Android.&lt;/a&gt;</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_after30_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Non hai aggiunto nessun membro alla squadra, probabilmente ONLYOFFICE Personal è più adatto alle tue esigenze? È gratuito e sarai in grado di:
-
-# Lavorare con documenti di testo, fogli di calcolo e presentazioni.
-# Condividere documenti con i tuoi amici e collaboraci in tempo reale.
-# Incorporare documenti nella tua pagina web.
-# Collegare l'archiviazione cloud di terze parti come Dropbox o Google Drive per gestire i documenti da un'unica posizione.
-
-Per iniziare rapidamente, registrati tramite il tuo account Facebook o Google.
-
-$GreenButton
-
-Puoi anche installare questa "estensione di Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US" per ottenere un rapido accesso a ONLYOFFICE Personal o "questa applicazione":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn" per utilizzare gli editor di ONLYOFFICE in Google Drive.
-
-Cordialmente,
-il Team di ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_apps_hdr" xml:space="preserve">
+    <value>‎*Ottieni le app*‎</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_after5_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Non sei riuscito a dare un'occhiata più da vicino a ONLYOFFICE? Estendi la tua prova oggi! Inoltre: paga di meno se la tua decisione è rapida e positiva!
-
-Ottieni 20 giorni aggiuntivi di prova o uno sconto del 20% su un abbonamento di 1 o 3 anni. Sarai in grado di utilizzare lo sconto entro 5 giorni dalla ricezione di questo messaggio.
-
-$GreenButton
-
-Puoi anche distribuire ONLYOFFICE sulla tua rete privata per ottenere il pieno controllo dei tuoi dati. "Ulteriori informazioni":"https://www.onlyoffice.com/server-solutions.aspx"
-
-Distinti saluti,
-Squadra ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_attach_hdr" xml:space="preserve">
+    <value>‎*Allegare documenti a progetti ed e-mail*‎</value>
   </data>
-  <data name="pattern_saas_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Ottieni le app gratuite ONLYOFFICE per lavorare su documenti e progetti da qualsiasi dispositivo.
-
-# Per lavorare su documenti offline su Windows, Linux e Mac, scaricare "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/apps.aspx".
-# Per modificare documenti su dispositivi mobili, l'app ONLYOFFICE Documents per "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" o "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-# Per gestire le prestazioni del tuo team in viaggio, ottieni ONLYOFFICE Projects for "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".
-
-Distinti saluti,
-Squadra ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr" xml:space="preserve">
+    <value>‎*Scegli la modalità di co-editing*‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-Ci auguriamo che ti piaccia usare ONLYOFFICE editors. Ecco alcuni suggerimenti su come renderlo più efficace.
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm
-
-$GreenButton
-
-Approposito, hai notato l'utilizzo dei più potenti editor nel cloud? Confrontalo con gli altri editor online "per saperne di più":"https://www.onlyoffice.com/document-editor-comparison.aspx".
-
-Cordialmente
-la squadra ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_contentcontrols" xml:space="preserve">
+    <value>‎Usare Controlli contenuto per creare moduli personalizzabili.‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_3rdparty" xml:space="preserve">
-    <value>Collega Dropbox, Google Drive o altri servizi per gestire i tuoi file in un unico posto.</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr" xml:space="preserve">
+    <value>‎*Usa controlli contenuto*‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_3rdparty_hdr" xml:space="preserve">
-    <value>Connetti servizi cloud di terze parti</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_differences" xml:space="preserve">
+    <value>‎Trovare rapidamente le differenze tra due versioni dello stesso documento con la funzionalità Confronta documenti.‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_apps" xml:space="preserve">
-    <value>Scarica le app per lavorare su documenti &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://www.onlyoffice.com/apps.aspx"&gt;offline&lt;/a&gt; as well as on &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://itunes.apple.com/us/app/onlyoffice-documents/id944896972"&gt;iOS&lt;/a&gt; and &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://play.google.com/store/apps/details?id=com.onlyoffice.documents"&gt;Android&lt;/a&gt; dispositivi.</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_differences_hdr" xml:space="preserve">
+    <value>‎*Trovare rapidamente le differenze*‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_apps_hdr" xml:space="preserve">
-    <value>Ottieni le apps</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_formatting" xml:space="preserve">
+    <value>‎ONLYOFFICE fornisce il set più completo di strumenti per lo stile e la formattazione.‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_attach" xml:space="preserve">
-    <value>I documenti sono integrati con tutti gli altri moduli di ONLYOFFICE, quindi non dovrai mai più scaricare i documenti e caricarli da qualche altra parte.</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr" xml:space="preserve">
+    <value>‎*Esplora la formattazione avanzata*‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_attach_hdr" xml:space="preserve">
-    <value>Allegare documenti a progetti ed e-mail</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_review" xml:space="preserve">
+    <value>‎Usa la Revisione per suggerire modifiche senza modificare il documento originale, aggiungi commenti per condividere le tue opinioni su un estratto specifico o discuti all'interno del tuo documento tramite messaggi istantanei.‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_coediting" xml:space="preserve">
-    <value>Passa alla modalità Veloce mentre stai operando la co-modifica di un documento con il tuo team in tempo reale per visualizzare le modifiche mentre il tuo coautore sta scrivendo o in modalità Rigorosa per ottenere un livello più elevato di privacy.</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_review_hdr" xml:space="preserve">
+    <value>‎*Recensisci, commenta e discuti*‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_coediting_hdr" xml:space="preserve">
-    <value>Scegli la modalità di co-editing</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_share" xml:space="preserve">
+    <value>‎Condividi documenti con singoli utenti o gruppi di utenti. Scegli il loro livello di accesso: sola lettura, commento, compilazione moduli, revisione o accesso completo.‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_formatting" xml:space="preserve">
-    <value>ONLYOFFICE ti offre la serie più completa di strumenti per lo stile e la formattazione.</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_share_hdr" xml:space="preserve">
+    <value>‎*Condividi documenti*‎</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr" xml:space="preserve">
-    <value>Esplora formattazione avanzata</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_review" xml:space="preserve">
-    <value>Utilizza Revisiona per suggerire modifiche senza modificare il documento originale, aggiungere commenti per condividere le tue opinioni su un estratto specifico o chattare all'interno del tuo documento tramite messaggi istantanei.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_review_hdr" xml:space="preserve">
-    <value>Revisiona, commenta e discuti</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_share" xml:space="preserve">
-    <value>Condividi documenti a singoli o gruppi di utenti. Scegli il livello di accesso: sola lettura, commento, compilazione modulo, revisione o accesso completo.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v10_item_share_hdr" xml:space="preserve">
-    <value>Condividi documenti</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Personalizza e gestisci il tuo ONLYOFFICE per remderlo più confortevole e sicuro:
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm
-
-E questa non è neanche la lista intera delle cose che puoi fare!
-
-$GreenButton
-
-Visita il nostro "Centro Assistenza":"${__HelpLink}" per saperne di più su come personalizzare il tuo ufficio. Consultalo in ogni momento per qualsiasi domanda sulle funzionalità e invita i tuoi utenti a fare lo stesso.
-
-Cordialmente,
-il team ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v10_item_backup" xml:space="preserve">
-    <value>Esegui backup dei dati</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v10_item_brand" xml:space="preserve">
-    <value>Personalizza ONLYOFFICE con il nome e il logo del tuo team, seleziona un tema di colore, imposta un URL alternativo.</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v10_item_customize" xml:space="preserve">
-    <value>Scegli i moduli di cui i tuoi utenti hanno bisogno, aggiungi i tuoi collegamenti al menu di navigazione, seleziona una pagina iniziale predefinita.</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v10_item_regional" xml:space="preserve">
-    <value>Imposta la lingua e il fuso orario.</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v10_item_security" xml:space="preserve">
-    <value>Determina le impostazioni di sicurezza, come la sicurezza della password e i domini di posta elettronica attendibili, e imposta i diritti di accesso.</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v10_item_telephony" xml:space="preserve">
-    <value>Connetti servizi di terze parti Twilio per VoIP, DocuSign per le firme elettroniche e molto altro.</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v10_item_usertrack" xml:space="preserve">
-    <value>Traccia Accesso utenti e altre azioni.</value>
-  </data>
-  <data name="pattern_saas_admin_without_activity_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Ci auguriamo che ti piaccia usare ONLYOFFICE. Come sta procedendo con la versione di prova? Gradiremmo molto il tuo feedback!
-
-Per favore, non esitare a contattarci a "support@onlyoffice.com":"mailto: support@onlyoffice.com" tutte le volte che avete domande o idee, suggerimenti.
-
-Distinti saluti,
-Squadra ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_saas_guest_activation_v10" xml:space="preserve">
-    <value>Salve!
-
-Sei stato invitato ad unirti su "${__VirtualRootPath}":"${__VirtualRootPath}" come utente ospite. Accetta l'invitco cliccando il link:
-
-$GreenButton
-
-Ti invieremo anche suggerimenti utili, ultime notizie su ONLYOFFICE e offerte speciali di tanto in tanto. Puoi annullare la sottoscrizione nella pagina del tuo profilo in qualsiasi momento e riattivarla.
-
-Cordialmente,
-il team di ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_saas_guest_welcome_v10" xml:space="preserve">
-    <value>Salve!
-
-Il tuo profilo ospite è stato aggiunto con successo a  "${__VirtualRootPath}":"${__VirtualRootPath}". Adesso puoi:
-
-# Modificare il tuo "profilo":"$MyStaffLink".
-# Visualizza e commenta il contenuto disponibile nella "Community":"${__VirtualRootPath}/products/community/" e "Progetti":"${__VirtualRootPath}/products/projects/".
-# Aggiungi e scarica i file disponibili per te in  "Documenti":"${__VirtualRootPath}/products/files/".
-# Organizza il tuo piano con il "Calendario":"${__VirtualRootPath}/addons/calendar/" incorporato.
-# Usa la Use "Chat":"${__VirtualRootPath}/addons/talk/" per scambiare messaggi istantanei.
-
-$GreenButton
-
-Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"${__HelpLink}" o chiedi alla nostra "squadra di supporto":"https://support.onlyoffice.com".
-
-Cordialmente,
-la squadra ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_saas_user_activation_v10" xml:space="preserve">
-    <value>Salve!
-
-Sei stato invitato ad unirti su ONLYOFFICE in "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando sul link di seguito:
-
-$GreenButton
-
-Ti invieremo inoltre consigli utili, le ultime notizie e offerte speciali di tanto in tanto. Puoi annullare le sottoscrizioni in qualsiasi momento andando sulla pagina del tuo Profilo e se vorrai potrai riattivarle in seguito.
-
-Cordialmente,
-il team ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_saas_user_welcome_v10" xml:space="preserve">
-    <value>Salve!
-
-Benvenuto su ONLYOFFICE! Il tuo profilo è stato aggiunto con successo al portale "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Adesso è possibile:
-# Creare e modificare "Documenti":"${__VirtualRootPath}/products/files/", condividerli con la tua squadra e collaborare in tempo reale.
-# Aggiungere i tuoi account email e gestire tutta la corrispondenza da un unico luogo tramite "Posta":"${__VirtualRootPath}/addons/mail/".
-# Gestire il tuo flusso di lavoro con "Progetti""${__VirtualRootPath}/products/projects/" e le relazioni con i tuoi clienti tramite "CRM":"${__VirtualRootPath}/products/crm/".
-# Usa "Comunità":"${__VirtualRootPath}/products/community/" per avviare il tuo blog, forums, creare eventi, condividere segnalibri.
-# Organizza il tuo piano di lavoro con il "Calendario":"${__VirtualRootPath}/addons/calendar/" incorporato.
-# Usa la "Chat":"${__VirtualRootPath}/addons/talk/" per scambiare messaggi istantanei.
-
-$GreenButton
-
-Se ti occorre aiuto visita la nostra "Assistenza Tecnica":"${__HelpLink}" o chiedi al nostro "Team di supporto":"https://support.onlyoffice.com".
-
-Cordialmente,
-il team ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  <data name="pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr" xml:space="preserve">
+    <value>‎*Collaborare comodamente ai fogli di calcolo*‎</value>
   </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.cambio notifica profilo portale "${__VirtualRootPath}":"${__VirtualRootPath}"
 "$__AuthorName":"$__AuthorUrl" ha cambiato i suoi dettagli profilo nel portale "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 ^Ricevi questa email perché sei un amministratore del portale "${__VirtualRootPath}":"${__VirtualRootPath}". Se non desideri ricevere le notifiche sugli aggiornamenti del profilo, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) ‎Notifica di modifica del profilo portale ‎
+
+[$__AuthorName]($__AuthorUrl) Ha modificato i suoi dettagli sul portale [${__VirtualRootPath}](${__VirtualRootPath})</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
     <value>h1.Cosa c'è di nuovo sul portale "${__VirtualRootPath}":"${__VirtualRootPath}" il  $Date
@@ -1327,6 +1038,10 @@ il Team ONLYOFFICE
 
 ^ Ricevi questa email perché sei un utente di amministratore del portale "${__VirtualRootPath}":"${__VirtualRootPath}". Se non desideri ricevere le notifiche su nuovi utenti, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL". ^</value>
   </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Nuovo utente aggiunto nel portale [${__VirtualRootPath}](${__VirtualRootPath})
+[$__AuthorName]($__AuthorUrl) si è unito al tuo portale [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
   <data name="pattern_user_ldap_activation" xml:space="preserve">
     <value>Gentile $UserName,
 
@@ -1347,8 +1062,8 @@ il team di ONLYOFFICE</value>
   <data name="subject_backup_created" xml:space="preserve">
     <value>${LetterLogoText}. ${__VirtualRootPath} Backup del portale eseguito</value>
   </data>
-  <data name="subject_change_email" xml:space="preserve">
-    <value>${LetterLogoText}. Richiesta cambio email</value>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>‎Confermare la modifica della dell'indirizzo di posta elettronica‎</value>
   </data>
   <data name="subject_change_password" xml:space="preserve">
     <value>${LetterLogoText} Password di assistenza</value>
@@ -1357,7 +1072,7 @@ il team di ONLYOFFICE</value>
     <value>${LetterLogoText}. Richiesta cambio cellulare</value>
   </data>
   <data name="subject_change_tfa" xml:space="preserve">
-    <value>${LetterLogoText}. Richiesta di modifica dei codici di backup</value>
+    <value>${LetterLogoText}. Notifica di sicurezza</value>
   </data>
   <data name="subject_confirm_owner_change" xml:space="preserve">
     <value>${LetterLogoText}. Cambio del proprietario del portale</value>
@@ -1458,14 +1173,23 @@ il team di ONLYOFFICE</value>
   <data name="subject_migration_success" xml:space="preserve">
     <value>Un'altra migrazione regione portale completato con successo</value>
   </data>
-  <data name="subject_opensource_admin_activation" xml:space="preserve">
-    <value>Benvenuti in ONLYOFFICE!</value>
+  <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
+    <value>Conferma la tua email</value>
   </data>
-  <data name="subject_opensource_admin_docs_tips" xml:space="preserve">
-    <value>7 Consigli e suggerimenti per lavorare più efficacemente su ONLYOFFICE Documents</value>
+  <data name="subject_opensource_admin_docs_tips_v11" xml:space="preserve">
+    <value>5 suggerimenti per un lavoro efficace sui tuoi documenti</value>
   </data>
-  <data name="subject_opensource_admin_security_tips" xml:space="preserve">
-    <value>Un modo facile di rendere il tuo portale più sicuro</value>
+  <data name="subject_opensource_admin_welcome_v11" xml:space="preserve">
+    <value>Rendi il tuo ONLYOFFICE più sicuro</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
+    <value>Benvenuti sul vostro web-office</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v11" xml:space="preserve">
+    <value>6 suggerimenti per un lavoro efficace sui tuoi documenti</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v11" xml:space="preserve">
+    <value>Benvenuti sul vostro web-office</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Benvenuti su ONLYOFFICE per uso personale!</value>
@@ -1485,9 +1209,6 @@ il team di ONLYOFFICE</value>
   <data name="subject_personal_after_registration7" xml:space="preserve">
     <value>Collega il tuo cloud storage preferito a ONLYOFFICE</value>
   </data>
-  <data name="subject_personal_change_email" xml:space="preserve">
-    <value>ONLYOFFICE Personal. Richiesta di modifica dell'email</value>
-  </data>
   <data name="subject_personal_change_password" xml:space="preserve">
     <value>ONLYOFFICE Personal assistenza per password</value>
   </data>
@@ -1502,9 +1223,6 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_portal_delete" xml:space="preserve">
     <value>Eliminazione del ${__VirtualRootPath} portale</value>
-  </data>
-  <data name="subject_portal_delete_success_v10" xml:space="preserve">
-    <value>ONLYOFFICE è stato disattivato</value>
   </data>
   <data name="subject_portal_rename" xml:space="preserve">
     <value>${LetterLogoText}. Cambio dell'indirizzo del portale.</value>
@@ -1542,62 +1260,35 @@ il team di ONLYOFFICE</value>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Ripristino avviato</value>
   </data>
-  <data name="subject_saas_admin_activation_v10" xml:space="preserve">
-    <value>Benvenuto nel cloud di ONLYOFFICE!</value>
+  <data name="subject_saas_admin_activation_v115" xml:space="preserve">
+    <value>Conferma la tua email</value>
   </data>
-  <data name="subject_saas_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Invita persone nell'ufficio cloud</value>
+  <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
+    <value>‎Consigli per lavorare in modo confortevole‎</value>
   </data>
-  <data name="subject_saas_admin_payment_after_monthly_subscriptions_v10" xml:space="preserve">
-    <value>Per te un'offerta speciale di ONLYOFFICE</value>
+  <data name="subject_saas_admin_modules_v115" xml:space="preserve">
+    <value>‎Panoramica dei moduli ONLYOFFICE‎</value>
   </data>
-  <data name="subject_saas_admin_payment_warning_after1_v10" xml:space="preserve">
-    <value>Notifica di rinnovo ONLYOFFICE®</value>
+  <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
+    <value>‎Riattiva business e risparmia il 20% del prezzo‎</value>
   </data>
-  <data name="subject_saas_admin_payment_warning_before5_v10" xml:space="preserve">
-    <value>Rinnova sottoscrizione a ONLYOFFICE</value>
+  <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
+    <value>‎Notifica di rinnovo‎</value>
   </data>
-  <data name="subject_saas_admin_trial_warning_after_half_year_v10" xml:space="preserve">
-    <value>Il tuo ONLYOFFICE sarà eliminato</value>
+  <data name="subject_saas_admin_trial_warning_before5_v115" xml:space="preserve">
+    <value>‎Utilizza questo sconto prima della fine della versione di valutazione‎</value>
   </data>
-  <data name="subject_saas_admin_trial_warning_after30_v10" xml:space="preserve">
-    <value>Passa a ONLYOFFICE Personal gratuitamente</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_after5_v10" xml:space="preserve">
-    <value>Estendi il periodo di prova ONLYOFFICE e ottieni sconti</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_before5_v10" xml:space="preserve">
-    <value>Usa questo sconto prima che il periodo di prova finisca</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_v10" xml:space="preserve">
-    <value>Il tuo periodo prova di ONLYOFFICE® scade oggi</value>
-  </data>
-  <data name="subject_saas_admin_user_apps_tips_v10" xml:space="preserve">
+  <data name="subject_saas_admin_user_apps_tips_v115" xml:space="preserve">
     <value>Ottieni apps di ONLYOFFICE gratis</value>
   </data>
-  <data name="subject_saas_admin_user_comfort_tips_v10" xml:space="preserve">
-    <value>Suggerimenti per lavorare in modo confortevole</value>
-  </data>
-  <data name="subject_saas_admin_user_docs_tips_v10" xml:space="preserve">
+  <data name="subject_saas_admin_user_docs_tips_v115" xml:space="preserve">
     <value>7 suggerimenti per un lavoro efficace sui tuoi documenti</value>
   </data>
-  <data name="subject_saas_admin_welcome_v10" xml:space="preserve">
-    <value>Configura il tuo ONLYOFFICE</value>
+  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
+    <value>‎Benvenuti nel vostro ONLYOFFICE‎</value>
   </data>
-  <data name="subject_saas_admin_without_activity_v10" xml:space="preserve">
-    <value>Attenzionato dal team ONLYOFFICE </value>
-  </data>
-  <data name="subject_saas_guest_activation_v10" xml:space="preserve">
-    <value>Unirsi su ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_saas_guest_welcome_v10" xml:space="preserve">
-    <value>Benvenuto nel tuo ONLYOFFICE!</value>
-  </data>
-  <data name="subject_saas_user_activation_v10" xml:space="preserve">
-    <value>Unirsi su ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_saas_user_welcome_v10" xml:space="preserve">
-    <value>Benvenuto nel tuo ONLYOFFICE!</value>
+  <data name="subject_saas_user_welcome_v115" xml:space="preserve">
+    <value>‎Benvenuti nel vostro ONLYOFFICE‎</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} Notifica per il cambio profilo del portale </value>
@@ -1616,6 +1307,15 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_storage_decryption_success" xml:space="preserve">
     <value>${LetterLogoText}. Processo di decrittografia completato</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di crittografia non riuscito</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di crittografia iniziato</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di crittografia completato</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Nuovo utente aggiunto al portale ${LetterLogoText}</value>

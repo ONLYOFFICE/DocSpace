@@ -37,6 +37,7 @@ using System.Text.Json;
 using System.Web;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -116,6 +117,8 @@ namespace ASC.Web.Files.Services.WCFService
         private FileOperationsManager FileOperationsManager { get; }
         private TenantManager TenantManager { get; }
         private FileTrackerHelper FileTracker { get; }
+        private ICacheNotify<ThumbnailRequest> ThumbnailNotify { get; }
+        private EntryStatusManager EntryStatusManager { get; }
         private ILog Logger { get; set; }
 
         public FileStorageService(
@@ -158,7 +161,9 @@ namespace ASC.Web.Files.Services.WCFService
             SettingsManager settingsManager,
             FileOperationsManager fileOperationsManager,
             TenantManager tenantManager,
-            FileTrackerHelper fileTracker)
+            FileTrackerHelper fileTracker,
+            ICacheNotify<ThumbnailRequest> thumbnailNotify,
+            EntryStatusManager entryStatusManager)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -200,6 +205,8 @@ namespace ASC.Web.Files.Services.WCFService
             FileOperationsManager = fileOperationsManager;
             TenantManager = tenantManager;
             FileTracker = fileTracker;
+            ThumbnailNotify = thumbnailNotify;
+            EntryStatusManager = entryStatusManager;
         }
 
         public Folder<T> GetFolder(T folderId)
@@ -213,14 +220,14 @@ namespace ASC.Web.Files.Services.WCFService
             return folder;
         }
 
-        public ItemList<Folder<T>> GetFolders(T parentId)
+        public ItemList<FileEntry> GetFolders(T parentId)
         {
             var folderDao = GetFolderDao();
 
             try
             {
                 var folders = EntryManager.GetEntries(folderDao.GetFolder(parentId), 0, 0, FilterType.FoldersOnly, false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true), out var total);
-                return new ItemList<Folder<T>>(folders.OfType<Folder<T>>());
+                return new ItemList<FileEntry>(folders);
             }
             catch (Exception e)
             {
@@ -382,7 +389,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
             }
 
-            EntryManager.SetFileStatus(entries.OfType<File<TId>>().Where(r => r.ID != null).ToList());
+            EntryStatusManager.SetFileStatus(entries);
 
             return new ItemList<FileEntry>(entries);
         }
@@ -467,7 +474,7 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            EntryManager.SetFileStatus(file);
+            EntryStatusManager.SetFileStatus(file);
 
             if (file.RootFolderType == FolderType.USER
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
@@ -609,22 +616,33 @@ namespace ASC.Web.Files.Services.WCFService
                 var path = FileConstant.NewDocPath + culture + "/";
                 if (!storeTemplate.IsDirectory(path))
                 {
-                    path = FileConstant.NewDocPath + "default/";
+                    path = FileConstant.NewDocPath + "en-US/";
                 }
-
-                path += "new" + fileExt;
 
                 try
                 {
                     if (!externalExt)
                     {
-                        using var stream = storeTemplate.GetReadStream("", path);
-                        file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
-                        file = fileDao.SaveFile(file, stream);
+                        var pathNew = path + "new" + fileExt;
+                        using (var stream = storeTemplate.GetReadStream("", pathNew))
+                        {
+                            file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(pathNew);
+                            file = fileDao.SaveFile(file, stream);
+                        }
                     }
                     else
                     {
                         file = fileDao.SaveFile(file, null);
+                    }
+
+                    var pathThumb = path + fileExt.Trim('.') + "." + Global.ThumbnailExtension;
+                    if (storeTemplate.IsFile("", pathThumb))
+                    {
+                        using (var streamThumb = storeTemplate.GetReadStream("", pathThumb))
+                        {
+                            fileDao.SaveThumbnail(file, streamThumb);
+                        }
+                        file.ThumbnailStatus = Thumbnail.Created;
                     }
                 }
                 catch (Exception e)
@@ -640,9 +658,20 @@ namespace ASC.Web.Files.Services.WCFService
 
                 try
                 {
-                    using var stream = fileDao.GetFileStream(template);
-                    file.ContentLength = template.ContentLength;
-                    file = fileDao.SaveFile(file, stream);
+                    using (var stream = fileDao.GetFileStream(template))
+                    {
+                        file.ContentLength = template.ContentLength;
+                        file = fileDao.SaveFile(file, stream);
+                    }
+
+                    if (template.ThumbnailStatus == Thumbnail.Created)
+                    {
+                        using (var thumb = fileDao.GetThumbnail(template))
+                        {
+                            fileDao.SaveThumbnail(file, thumb);
+                        }
+                        file.ThumbnailStatus = Thumbnail.Created;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -971,7 +1000,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
             }
 
-            EntryManager.SetFileStatus(file);
+            EntryStatusManager.SetFileStatus(file);
 
             if (file.RootFolderType == FolderType.USER
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
@@ -1050,7 +1079,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var path = FileConstant.NewDocPath + culture + "/";
                     if (!storeTemplate.IsDirectory(path))
                     {
-                        path = FileConstant.NewDocPath + "default/";
+                        path = FileConstant.NewDocPath + "en-US/";
                     }
 
                     var fileExt = FileUtility.GetFileExtension(file.Title);
@@ -1127,7 +1156,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (!result.Any())
                 {
-                    MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(folderId.ToString()).RootElement }, new List<JsonElement>() { }); //TODO
+                    MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(JsonSerializer.Serialize(folderId)).RootElement }, new List<JsonElement>() { }); //TODO
                 }
 
 
@@ -1225,7 +1254,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
                 catch (Exception e)
                 {
-                    throw GenerateException(e);
+                    throw GenerateException(e.InnerException ?? e);
                 }
             }
             else
@@ -1656,6 +1685,19 @@ namespace ASC.Web.Files.Services.WCFService
         }
         #region Favorites Manager
 
+        public bool ToggleFileFavorite(T fileId, bool favorite)
+        {
+            if (favorite)
+            {
+                AddToFavorites(new List<T>(0), new List<T>(1) { fileId });
+            }
+            else
+            {
+                DeleteFavorites(new List<T>(0), new List<T>(1) { fileId });
+            }
+            return favorite;
+        }
+
         public ItemList<FileEntry<T>> AddToFavorites(IEnumerable<T> foldersId, IEnumerable<T> filesId)
         {
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
@@ -1665,7 +1707,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var entries = Enumerable.Empty<FileEntry<T>>();
 
-            var files = fileDao.GetFiles(filesId);
+            var files = fileDao.GetFiles(filesId).Where(file => !file.Encrypted);
             files = FileSecurity.FilterRead(files).ToList();
             entries = entries.Concat(files);
 
@@ -2115,9 +2157,18 @@ namespace ASC.Web.Files.Services.WCFService
                         newFile = fileDao.SaveFile(newFile, stream);
                     }
 
+                    if (file.ThumbnailStatus == Thumbnail.Created)
+                    {
+                        using (var thumbnail = fileDao.GetThumbnail(file))
+                        {
+                            fileDao.SaveThumbnail(newFile, thumbnail);
+                        }
+                        newFile.ThumbnailStatus = Thumbnail.Created;
+                    }
+
                     FileMarker.MarkAsNew(newFile);
 
-                    EntryManager.SetFileStatus(newFile);
+                    EntryStatusManager.SetFileStatus(newFile);
 
                     FilesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, DisplayUserSettingsHelper) });
                 }
@@ -2202,12 +2253,43 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.TemplatesSection;
         }
 
+        public bool ChangeDownloadTarGz(bool set)
+        {
+            FilesSettingsHelper.DownloadTarGz = set;
+
+            return FilesSettingsHelper.DownloadTarGz;
+        }
 
         public bool ChangeDeleteConfrim(bool set)
         {
             FilesSettingsHelper.ConfirmDelete = set;
 
             return FilesSettingsHelper.ConfirmDelete;
+        }
+
+        public IEnumerable<JsonElement> CreateThumbnails(IEnumerable<JsonElement> fileIds)
+        {
+            try
+            {
+                var req = new ThumbnailRequest()
+                {
+                    Tenant = TenantManager.GetCurrentTenant().TenantId,
+                    BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
+                };
+
+                foreach(var f in fileIds.Where(r=> r.ValueKind == JsonValueKind.Number))
+                {
+                    req.Files.Add(f.GetInt32());
+                }
+
+                ThumbnailNotify.Publish(req, CacheNotifyAction.Insert);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("CreateThumbnails", e);
+            }
+
+            return fileIds;
         }
 
         public string GetHelpCenter()

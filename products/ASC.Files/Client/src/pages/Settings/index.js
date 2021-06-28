@@ -30,16 +30,16 @@ const PureSettings = ({
   useEffect(() => {
     switch (setting) {
       case "common":
-        setTitle("CommonSettings");
+        setTitle(t("CommonSettings"));
         break;
       case "admin":
-        setTitle("AdminSettings");
+        setTitle(t("Common:AdminSettings"));
         break;
       case "thirdParty":
-        setTitle("ThirdPartySettings");
+        setTitle(t("ThirdPartySettings"));
         break;
       default:
-        setTitle("CommonSettings");
+        setTitle(t("CommonSettings"));
         break;
     }
   }, [setting]);
@@ -55,7 +55,7 @@ const PureSettings = ({
   //console.log("render settings");
 
   useEffect(() => {
-    setDocumentTitle(t(`${title}`));
+    setDocumentTitle(title);
   }, [title, t]);
 
   return (
@@ -77,7 +77,7 @@ const PureSettings = ({
           {(!isLoadedSettingsTree && isLoading) || isLoading ? (
             <Loaders.SectionHeader />
           ) : (
-            <SectionHeaderContent title={t(`${title}`)} />
+            <SectionHeaderContent title={title} />
           )}
         </PageLayout.SectionHeader>
 
@@ -97,7 +97,7 @@ const PureSettings = ({
   );
 };
 
-const Settings = withTranslation("Settings")(PureSettings);
+const Settings = withTranslation(["Settings", "Common"])(PureSettings);
 
 export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
   const { setFirstLoad, isLoading } = filesStore;

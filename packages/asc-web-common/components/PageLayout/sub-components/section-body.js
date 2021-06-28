@@ -77,7 +77,6 @@ class SectionBody extends React.Component {
     super(props);
 
     this.focusRef = React.createRef();
-    this.scrollRef = React.createRef();
   }
 
   // shouldComponentUpdate(nextProps) {
@@ -91,7 +90,6 @@ class SectionBody extends React.Component {
 
   componentWillUnmount() {
     this.focusRef = null;
-    this.scrollRef = null;
   }
 
   render() {
@@ -101,7 +99,6 @@ class SectionBody extends React.Component {
       children,
       onDrop,
       pinned,
-      setSelections,
       uploadFiles,
       viewAs,
       withScroll,
@@ -111,11 +108,9 @@ class SectionBody extends React.Component {
     const focusProps = autoFocus
       ? {
           ref: this.focusRef,
-          tabIndex: 1,
+          tabIndex: -1,
         }
       : {};
-
-    const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
 
     return uploadFiles ? (
       <StyledDropZoneBody
@@ -128,7 +123,7 @@ class SectionBody extends React.Component {
       >
         {withScroll ? (
           !isMobile ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
+            <Scrollbar scrollclass="section-scroll" stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -160,7 +155,7 @@ class SectionBody extends React.Component {
       >
         {withScroll ? (
           !isMobile ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
+            <Scrollbar stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -194,7 +189,6 @@ SectionBody.propTypes = {
   autoFocus: PropTypes.bool,
   pinned: PropTypes.bool,
   onDrop: PropTypes.func,
-  setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

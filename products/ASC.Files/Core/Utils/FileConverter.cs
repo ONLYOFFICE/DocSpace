@@ -40,6 +40,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
@@ -81,7 +82,7 @@ namespace ASC.Web.Files.Utils
             this.cache = cache;
         }
 
-        public void Add(File<T> file, string password, int tenantId, IAccount account, bool deleteAfter, string url)
+        public void Add(File<T> file, string password, int tenantId, IAccount account, bool deleteAfter, string url, string serverRootPath)
         {
             lock (locker)
             {
@@ -104,7 +105,8 @@ namespace ASC.Web.Files.Utils
                     Delete = deleteAfter,
                     StartDateTime = DateTime.Now,
                     Url = url,
-                    Password = password
+                    Password = password,
+                    ServerRootPath = serverRootPath
                 };
                 conversionQueue.Add(file, queueResult);
                 cache.Insert(GetKey(file), queueResult, TimeSpan.FromMinutes(10));
@@ -144,9 +146,20 @@ namespace ASC.Web.Files.Utils
             if (Monitor.TryEnter(singleThread))
             {
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
-                var (options, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;
-                var logger = options.CurrentValue;
+                TenantManager tenantManager;
+                UserManager userManager;
+                SecurityContext securityContext;
+                IDaoFactory daoFactory;
+                FileSecurity fileSecurity;
+                PathProvider pathProvider;
+                SetupInfo setupInfo;
+                FileUtility fileUtility;
+                DocumentServiceHelper documentServiceHelper;
+                DocumentServiceConnector documentServiceConnector;
+                EntryStatusManager entryManager;
+                FileConverter fileConverter;
+
+                var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
 
                 try
                 {
@@ -189,6 +202,7 @@ namespace ASC.Web.Files.Utils
                             int tenantId;
                             IAccount account;
                             string password;
+                            string serverRootPath;
 
                             lock (locker)
                             {
@@ -201,6 +215,7 @@ namespace ASC.Web.Files.Utils
                                 tenantId = operationResult.TenantId;
                                 account = operationResult.Account;
                                 password = operationResult.Password;
+                                serverRootPath = operationResult.ServerRootPath;
 
                                 //if (HttpContext.Current == null && !WorkContext.IsMono)
                                 //{
@@ -211,6 +226,12 @@ namespace ASC.Web.Files.Utils
 
                                 cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
                             }
+
+                            var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
+                            commonLinkUtilitySettings.ServerUri = serverRootPath;
+
+                            var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
+                            (_, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;
 
                             tenantManager.SetCurrentTenant(tenantId);
 
@@ -238,7 +259,7 @@ namespace ASC.Web.Files.Utils
                             var docKey = documentServiceHelper.GetDocKey(file);
 
                             fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
+                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, null, null, true, out convertedFileUrl);
                         }
                         catch (Exception exception)
                         {
@@ -375,7 +396,7 @@ namespace ASC.Web.Files.Utils
             return string.Format("fileConvertation-{0}", f.ID);
         }
 
-        private string FileJsonSerializer(EntryManager EntryManager, File<T> file, string folderTitle)
+        private string FileJsonSerializer(EntryStatusManager EntryManager, File<T> file, string folderTitle)
         {
             if (file == null) return string.Empty;
 
@@ -423,7 +444,7 @@ namespace ASC.Web.Files.Utils
         private FileUtility FileUtility { get; }
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
-        private EntryManager EntryManager { get; }
+        private EntryStatusManager EntryManager { get; }
         private FileConverter FileConverter { get; }
 
         public FileConverterQueueScope(IOptionsMonitor<ILog> options,
@@ -437,7 +458,7 @@ namespace ASC.Web.Files.Utils
             FileUtility fileUtility,
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
-            EntryManager entryManager,
+            EntryStatusManager entryManager,
             FileConverter fileConverter)
         {
             Options = options;
@@ -467,7 +488,7 @@ namespace ASC.Web.Files.Utils
             out FileUtility fileUtility,
             out DocumentServiceHelper documentServiceHelper,
             out DocumentServiceConnector documentServiceConnector,
-            out EntryManager entryManager,
+            out EntryStatusManager entryManager,
             out FileConverter fileConverter)
         {
             optionsMonitor = Options;
@@ -517,6 +538,7 @@ namespace ASC.Web.Files.Utils
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private FileTrackerHelper FileTracker { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         private IServiceProvider ServiceProvider { get; }
         private IHttpContextAccessor HttpContextAccesor { get; }
 
@@ -538,6 +560,7 @@ namespace ASC.Web.Files.Utils
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
             FileTrackerHelper fileTracker,
+            BaseCommonLinkUtility baseCommonLinkUtility,
             IServiceProvider serviceProvider)
         {
             FileUtility = fileUtility;
@@ -557,6 +580,7 @@ namespace ASC.Web.Files.Utils
             DocumentServiceHelper = documentServiceHelper;
             DocumentServiceConnector = documentServiceConnector;
             FileTracker = fileTracker;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
             ServiceProvider = serviceProvider;
         }
         public FileConverter(
@@ -577,12 +601,13 @@ namespace ASC.Web.Files.Utils
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
             FileTrackerHelper fileTracker,
+            BaseCommonLinkUtility baseCommonLinkUtility,
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccesor)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
                   fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
                   globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector, fileTracker,
-                  serviceProvider)
+                  baseCommonLinkUtility, serviceProvider)
         {
             HttpContextAccesor = httpContextAccesor;
         }
@@ -648,7 +673,7 @@ namespace ASC.Web.Files.Utils
             var fileUri = PathProvider.GetFileStreamUrl(file);
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
             {
@@ -680,7 +705,7 @@ namespace ASC.Web.Files.Utils
             var docKey = DocumentServiceHelper.GetDocKey(file);
 
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
             return SaveConvertedFile(file, convertUri);
         }
@@ -697,7 +722,7 @@ namespace ASC.Web.Files.Utils
             }
 
             FileMarker.RemoveMarkAsNew(file);
-            GetFileConverter<T>().Add(file, password, TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount, deleteAfter, HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null);
+            GetFileConverter<T>().Add(file, password, TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount, deleteAfter, HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, BaseCommonLinkUtility.ServerRootPath);
         }
 
         public bool IsConverting<T>(File<T> file)
@@ -777,6 +802,7 @@ namespace ASC.Web.Files.Utils
             newFile.Title = newFileTitle;
             newFile.ConvertedType = null;
             newFile.Comment = string.Format(FilesCommonResource.CommentConvert, file.Title);
+            newFile.ThumbnailStatus = Thumbnail.Waiting;
 
             var req = (HttpWebRequest)WebRequest.Create(convertedFileUrl);
 
@@ -858,6 +884,9 @@ namespace ASC.Web.Files.Utils
         public bool Delete { get; set; }
         public string Url { get; set; }
         public string Password { get; set; }
+
+        //hack for download
+        public string ServerRootPath { get; set; }
     }
 
     public class FileConverterQueueExtension

@@ -4,12 +4,13 @@ set -e
 
 package_manager="yum"
 package_sysname="onlyoffice";
+product="appserver"
 
 package_services="";	
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
 RES_CHECK_PORTS="please, make sure that the ports are free.";
-RES_INSTALL_SUCCESS="Thank you for installing ONLYOFFICE Appserver.";
+RES_INSTALL_SUCCESS="Thank you for installing ONLYOFFICE ${product}.";
 RES_QUESTIONS="In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://dev.onlyoffice.org"
 
 while [ "$1" != "" ]; do
@@ -48,7 +49,7 @@ if [ -z "${UPDATE}" ]; then
 fi
 
 if [ -z "${LOCAL_SCRIPTS}" ]; then
-   LOCAL_SCRIPTS="true";
+   LOCAL_SCRIPTS="false";
 fi
 
 cat > /etc/yum.repos.d/onlyoffice.repo <<END
@@ -69,7 +70,8 @@ enabled=1
 gpgkey=http://static.teamlab.info.s3.amazonaws.com/k8s
 END
 
-DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/install-appserver/install-RedHat"
+#DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/install-appserver/install-RedHat"
+DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/develop/build/install/OneClickInstall/install-RedHat"
 
 if [ "$LOCAL_SCRIPTS" = "true" ]; then
 	source install-RedHat/bootstrap.sh

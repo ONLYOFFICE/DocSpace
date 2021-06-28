@@ -1,8 +1,4 @@
 {
-  "People": "Люди",
-
-  "InviteLinkTitle": "Пригласительная ссылка",
   "ImportPeople": "Импортировать людей",
-  "Actions": "Действия",
-  "LblInviteAgain": "Отправить приглашение ещё раз"
+  "SendInvitesAgain": "Отправить приглашения ещё раз"
 }

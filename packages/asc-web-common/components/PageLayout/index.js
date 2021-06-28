@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
-//import ProgressBar from "@appserver/components/progress-bar";
 import { size } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
 import { isMobile } from "react-device-detect";
@@ -20,12 +19,13 @@ import SectionToggler from "./sub-components/section-toggler";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
-import { SelectableGroup } from "react-selectable-fast";
-import SelectedFrame from "./sub-components/SelectedFrame";
+import Selecto from "react-selecto";
 import styled from "styled-components";
 
-const StyledSelectableGroup = styled(SelectableGroup)`
-  display: contents;
+const StyledSelectoWrapper = styled.div`
+  .selecto-selection {
+    z-index: 200;
+  }
 `;
 
 function ArticleHeader() {
@@ -85,9 +85,15 @@ class PageLayout extends React.Component {
 
     this.timeoutHandler = null;
     this.intervalHandler = null;
+
+    this.scroll = null;
   }
 
   componentDidUpdate(prevProps) {
+    if (!this.scroll) {
+      this.scroll = document.getElementsByClassName("section-scroll")[0];
+    }
+
     if (
       (this.props.hideAside &&
         !this.state.isArticlePinned &&
@@ -169,13 +175,28 @@ class PageLayout extends React.Component {
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
-  duringSelection = (duringItems) => {
-    if (!this.props.uploadFiles || isMobile) return;
-    const items = [];
-    for (let item of duringItems) {
-      items.push(item.props.item);
-    }
+  onSelect = (e) => {
+    if (this.props.dragging) return;
+    const items = e.selected;
     this.props.setSelections(items);
+  };
+
+  dragCondition = (e) => {
+    const path = e.inputEvent.composedPath();
+    const isBackdrop = path.some(
+      (x) => x.classList && x.classList.contains("backdrop-active")
+    );
+    const notSelectablePath = path.some(
+      (x) => x.classList && x.classList.contains("not-selectable")
+    );
+
+    if (notSelectablePath || isBackdrop) {
+      return false;
+    } else return true;
+  };
+
+  onScroll = (e) => {
+    this.scroll.scrollBy(e.direction[0] * 10, e.direction[1] * 10);
   };
 
   render() {
@@ -201,6 +222,7 @@ class PageLayout extends React.Component {
       isTabletView,
       firstLoad,
       isLoading,
+      dragging,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -264,15 +286,9 @@ class PageLayout extends React.Component {
         isArticleAvailable,
       isBackdropAvailable = isArticleAvailable;
 
-    return (
-      <>
-        <StyledSelectableGroup
-          enableDeselect
-          resetOnStart
-          allowClickWithoutSelected={false}
-          duringSelection={this.duringSelection}
-          ignoreList={[".not-selectable", "draggable"]}
-        >
+    const renderPageLayout = () => {
+      return (
+        <>
           {isBackdropAvailable && (
             <Backdrop
               zIndex={400}
@@ -432,8 +448,38 @@ class PageLayout extends React.Component {
               )}
             </ReactResizeDetector>
           )}
-        </StyledSelectableGroup>
-        {uploadFiles && <SelectedFrame />}
+        </>
+      );
+    };
+
+    const scrollOptions = this.scroll
+      ? {
+          container: this.scroll,
+          throttleTime: 0,
+          threshold: 100,
+        }
+      : {};
+
+    return (
+      <>
+        {renderPageLayout()}
+        {!isMobile && uploadFiles && !dragging && (
+          <StyledSelectoWrapper>
+            <Selecto
+              dragContainer={".main"}
+              selectableTargets={[".files-row"]}
+              hitRate={1}
+              selectByClick={false}
+              selectFromInside={true}
+              ratio={0}
+              continueSelect={false}
+              onSelect={this.onSelect}
+              dragCondition={this.dragCondition}
+              scrollOptions={scrollOptions}
+              onScroll={this.onScroll}
+            />
+          </StyledSelectoWrapper>
+        )}
       </>
     );
   }

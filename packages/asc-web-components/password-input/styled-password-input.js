@@ -20,6 +20,7 @@ const StyledInput = styled(SimpleInput)`
   line-height: ${(props) => props.theme.passwordInput.lineHeight};
   flex-direction: row;
   flex-wrap: wrap;
+  position: relative;
 
   .input-relative {
     svg {
@@ -36,8 +37,16 @@ const StyledInput = styled(SimpleInput)`
     flex-wrap: wrap;
   }
 
+  .input-block-icon {
+    height: 42px;
+  }
+
   .append {
     padding-right: 8px;
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .prepend-children {

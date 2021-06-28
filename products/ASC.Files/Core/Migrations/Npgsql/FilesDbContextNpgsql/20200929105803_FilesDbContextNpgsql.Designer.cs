@@ -90,17 +90,6 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                         .HasDefaultValueSql("NULL")
                         .HasMaxLength(38);
 
-                    b.Property<bool>("Public")
-                        .HasColumnName("public")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("PublicVisibleProducts")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("publicvisibleproducts")
-                        .HasColumnType("character varying(1024)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(1024);
-
                     b.Property<bool>("Spam")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("spam")
@@ -322,6 +311,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                         .HasColumnName("version_group")
                         .HasColumnType("integer")
                         .HasDefaultValueSql("1");
+                    
+                    b.Property<bool>("Thumb")
+                        .HasColumnName("thumb")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id", "TenantId", "Version")
                         .HasName("files_file_pkey");
@@ -515,7 +508,7 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                         .IsRequired()
                         .HasColumnName("password")
                         .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(512);
 
                     b.Property<string>("Provider")
                         .IsRequired()

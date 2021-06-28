@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
     <value>Здравствуйте, $UserName,
@@ -74,6 +74,7 @@ h3.Попробуйте дополнительные инструменты ${Le
 
 # Добавьте свою учетную запись электронной почты в "Почту ${LetterLogoText}":"${__VirtualRootPath}/addons/mail/".
 # Создавайте "Проекты":"${__VirtualRootPath}/products/projects/" и управляйте рабочим процессом, добавляя вехи и ставя задачи.
+# Управляйте взаимоотношениями с клиентами, используя модуль "CRM":"${__VirtualRootPath}/products/crm/", определяйте приоритетные контакты, следите за историей взаимодействия и эффективностью продаж.
 # Используйте "Сообщество":"${__VirtualRootPath}/products/community/", чтобы вести блоги, общаться на форумах, добавлять события, делиться закладками.
 # Планируйте рабочий график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
 # Запустите "Чат":"${__VirtualRootPath}/addons/talk/", чтобы общаться со своей командой онлайн.
@@ -107,28 +108,6 @@ h3.Возможности тестового облака Р7-Офис:
 С уважением,
 Команда Р7-Офис</value>
   </data>
-  <data name="pattern_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>h1.Работайте над документами совместно в тестовом облаке Р7-Офис
-
-Совместная работа над документами стала еще проще благодаря целому набору профессиональных инструментов, доступных в Р7-Офис:
-
-- Несколько уровней доступа для просмотра документов, рецензирования или совместной работы над ними;
-
-- Быстрый режим совместного редактирования для внесения и просмотра изменений в режиме реального времени;
-
-- Строгий режим совместного редактирования, позволяющий редактировать части документа приватно;
-
-- История версий;
-
-- Рецензирование с возможностью отслеживать и предлагать изменения;
-
-- Комментирование и встроенный чат.
-
-Вам больше не нужно скачивать файлы и пересылать их по электронной почте. Просто предоставьте ссылку на документ с установленными правами доступа своим коллегам и работайте над ним совместно, где бы вы ни были. 
-
-С уважением,
-Команда Р7-Офис</value>
-  </data>
   <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
     <value>$PersonalHeaderStart Подключите свое облачное хранилище к ONLYOFFICE $PersonalHeaderEnd
 
@@ -155,19 +134,18 @@ h3.Попробуйте бизнес-решения ONLYOFFICE "в облаке"
 С уважением,
 команда ONLYOFFICE</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_email" xml:space="preserve">
-    <value>Вы запросили смену адреса электронной почты, служащего для доступа к порталу Р7-Офис.
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Хотите изменить адрес электронной почты в своем аккаунте?
 
-Пожалуйста, перейдите по ссылке ниже для смены Вашего адреса электронной почты:
+Нажмите на кнопку ниже и войдите* в ваш облачный офис.
 
 $GreenButton
 
-*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните изменение адреса электронной почты в течение этого времени.
+Ссылка действительна в течение 7 дней.
 
-Если Вы не хотите менять адрес электронной почты или получили это письмо по ошибке, пожалуйста, проигнорируйте его.
+*Если вы не войдете в облачный офис в этом браузере, потребуется использовать старый адрес электронной почты для подтверждения.
 
-С уважением,
-Команда Р7-Офис</value>
+Не хотите менять адрес электронной почты? Просто проигнорируйте это сообщение.</value>
   </data>
   <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
     <value>Был получен запрос на смену пароля, который Вы используете для входа на портал "${__VirtualRootPath}":"${__VirtualRootPath}".
@@ -215,6 +193,7 @@ $GreenButton
 Удаление персональных данных позволило освободить:
 
 # Документы - $DocsSpace
+# CRM - $CrmSpace
 # Почта - $MailSpace
 # Чат - $TalkSpace
 
@@ -231,7 +210,7 @@ $GreenButton
 # Дата создания: $Date</value>
   </data>
   <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
-    <value>Делать то же самое, что и пользователь|Настраивать права доступа к документам и папкам в разделе 'Общие документы'</value>
+    <value>Делать то же самое, что и пользователь|Подключать аккаунты Dropbox, Box и другие в разделе 'Общие'|Настраивать права доступа к документам и папкам в разделе 'Общие'</value>
   </data>
   <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
     <value>Создавать и редактировать свои документы, а также те, к которым предоставлен доступ с соответствующими правами|Предоставлять другим пользователям доступ к документам и папкам с правами на чтение/редактирование</value>
@@ -241,9 +220,6 @@ $GreenButton
   </data>
   <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
     <value>Работайте над документами совместно в тестовом облаке Р7-Офис</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_email" xml:space="preserve">
-    <value>Р7-Офис. Запрос на изменение адреса электронной почты</value>
   </data>
   <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
     <value>Р7-Офис. Помощь с паролем</value>

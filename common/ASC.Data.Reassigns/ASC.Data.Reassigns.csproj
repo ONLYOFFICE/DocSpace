@@ -1,10 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <ApplicationIcon />
-    <OutputType>Library</OutputType>
-    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -19,8 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
-    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
-    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
   </ItemGroup>
 

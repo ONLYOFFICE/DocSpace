@@ -27,7 +27,12 @@ const StyledRegister = styled(Box)`
 `;
 
 const Register = (props) => {
-  const { enabledJoin, isAuthenticated } = props;
+  const {
+    enabledJoin,
+    isAuthenticated,
+    trustedDomainsType,
+    trustedDomains,
+  } = props;
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -54,9 +59,9 @@ const Register = (props) => {
     } else {
       setLoading(true);
       sendRegisterRequest(email)
-        .then(() => {
+        .then((res) => {
           setLoading(false);
-          toastr.success("Successfully sent");
+          toastr.success(res);
         })
         .catch((error) => {
           setLoading(false);
@@ -78,6 +83,8 @@ const Register = (props) => {
           loading={loading}
           email={email}
           emailErr={emailErr}
+          trustedDomainsType={trustedDomainsType}
+          trustedDomains={trustedDomains}
           t={t}
           onChangeEmail={onChangeEmail}
           onRegisterModalClose={onRegisterModalClose}
@@ -98,9 +105,11 @@ Register.propTypes = {
 
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, language } = auth;
-  const { enabledJoin } = settingsStore;
+  const { enabledJoin, trustedDomainsType, trustedDomains } = settingsStore;
   return {
     enabledJoin,
+    trustedDomainsType,
+    trustedDomains,
     isAuthenticated,
     language,
   };

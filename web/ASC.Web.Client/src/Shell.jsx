@@ -3,7 +3,6 @@ import { Router, Switch, Route } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
-import Box from "@appserver/components/box";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import PublicRoute from "@appserver/common/components/PublicRoute";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
@@ -17,7 +16,6 @@ import ThemeProvider from "@appserver/components/theme-provider";
 import { Base } from "@appserver/components/themes";
 import store from "studio/store";
 import config from "../package.json";
-import "./custom.scss";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import AppLoader from "@appserver/common/components/AppLoader";
@@ -41,17 +39,11 @@ const LOGIN_URLS = [
   combineUrl(PROXY_HOMEPAGE_URL, "/login/confirmed-email=:confirmedEmail"),
 ];
 const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
-const COMING_SOON_URLS = [
-  combineUrl(PROXY_HOMEPAGE_URL, "/coming-soon"),
-  //combineUrl(PROXY_HOMEPAGE_URL, "/products/mail"),
-  //combineUrl(PROXY_HOMEPAGE_URL, "/products/projects"),
-  //combineUrl(PROXY_HOMEPAGE_URL, "/products/crm"),
-  //combineUrl(PROXY_HOMEPAGE_URL, "/products/calendar"),
-  //combineUrl(PROXY_HOMEPAGE_URL, "/products/talk/"),
-];
+const COMING_SOON_URLS = [combineUrl(PROXY_HOMEPAGE_URL, "/coming-soon")];
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
 const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
+const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -63,6 +55,7 @@ const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 const Confirm = React.lazy(() => import("./components/pages/Confirm"));
+const MyProfile = React.lazy(() => import("people/MyProfile"));
 
 const SettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -142,8 +135,16 @@ const ComingSoonRoute = (props) => (
   </React.Suspense>
 );
 
+const MyProfileRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <MyProfile {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const Shell = ({ items = [], page = "home", ...rest }) => {
-  const { isLoaded, loadBaseInfo, modules } = rest;
+  const { isLoaded, loadBaseInfo, modules, isDesktop } = rest;
 
   useEffect(() => {
     try {
@@ -224,7 +225,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <>
           {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
-          <Main>
+          <Main isDesktop={isDesktop}>
             <Switch>
               <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
               <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
@@ -241,6 +242,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={SETTINGS_URL}
                 component={SettingsRoute}
               />
+              <PrivateRoute
+                exact
+                allowForMe
+                path={PROFILE_MY_URL}
+                component={MyProfileRoute}
+              />
               {dynamicRoutes}
               <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
               <PrivateRoute component={Error404Route} />
@@ -254,18 +261,20 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
 const ShellWrapper = inject(({ auth }) => {
   const { init, isLoaded } = auth;
-  const pathname = window.location.pathname.toLowerCase();
-  //const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
 
   return {
     loadBaseInfo: () => {
       init();
       auth.settingsStore.setModuleInfo(config.homepage, "home");
       auth.setProductVersion(config.version);
+
+      if (auth.settingsStore.isDesktopClient) {
+        document.body.classList.add("desktop");
+      }
     },
-    //isThirdPartyResponse,
     isLoaded,
     modules: auth.moduleStore.modules,
+    isDesktop: auth.settingsStore.isDesktopClient,
   };
 })(observer(Shell));
 

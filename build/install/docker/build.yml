@@ -133,7 +133,21 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: studio
     image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
-    
+
+  onlyoffice-bin-share:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: bin_share
+    image: "${REPO}/${STATUS}appserver-bin-share:${SRV_VERSION}"
+
+  onlyoffice-wait-bin-share:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: wait_bin_share
+    image: "${REPO}/${STATUS}appserver-wait-bin-share:${SRV_VERSION}"
+
   onlyoffice-proxy:
     build:
       context:  ./

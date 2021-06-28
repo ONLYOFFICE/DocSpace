@@ -44,11 +44,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     {
         private readonly DistributedTaskQueue tasks;
 
+        private TempStream TempStream { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public FileOperationsManager(DistributedTaskCacheNotify distributedTaskCacheNotify, IServiceProvider serviceProvider)
+        public FileOperationsManager(TempStream tempStream, DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
         {
-            tasks = new DistributedTaskQueue(distributedTaskCacheNotify, "fileOperations", 10);
+            tasks = distributedTaskQueueOptionsManager.Get<FileOperation>();
+            TempStream = tempStream;
             ServiceProvider = serviceProvider;
         }
 
@@ -127,7 +129,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folders.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), tenant, headers));
             var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folders.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), tenant, headers));
-            var op = new FileDownloadOperation(ServiceProvider, op2, op1);
+            var op = new FileDownloadOperation(ServiceProvider, TempStream, op2, op1);
 
             return QueueTask(userId, op);
         }
@@ -179,6 +181,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             services.TryAdd<FileMoveCopyOperationScope>();
             services.TryAdd<FileOperationScope>();
             services.TryAdd<FileDownloadOperationScope>();
+            services.AddDistributedTaskQueueService<FileOperation>(10);
         }
     }
 }

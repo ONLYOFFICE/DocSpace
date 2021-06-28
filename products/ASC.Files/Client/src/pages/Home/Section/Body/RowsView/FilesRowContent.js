@@ -15,7 +15,6 @@ const sideColor = "#A3A9AE";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
-    margin-left: -8px;
     margin-right: 8px;
   }
 
@@ -25,11 +24,12 @@ const SimpleFilesRowContent = styled(RowContent)`
     margin-right: 6px;
   }
   .lock-file {
-    cursor: pointer;
+    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
   }
   .badges {
     display: flex;
     align-items: center;
+    height: 19px;
   }
 
   .favorite {
@@ -59,6 +59,7 @@ const FilesRowContent = ({
   isTrashFolder,
   onFilesClick,
   badgesComponent,
+  isAdmin,
 }) => {
   const {
     contentLength,
@@ -66,12 +67,15 @@ const FilesRowContent = ({
     filesCount,
     foldersCount,
     providerKey,
+    access,
   } = item;
 
   const onMobileRowClick = () => {
     if (isTrashFolder || window.innerWidth > 1024) return;
     onFilesClick();
   };
+
+  const withAccess = isAdmin || access === 0;
 
   return (
     <>
@@ -80,6 +84,7 @@ const FilesRowContent = ({
         isMobile={isMobile}
         sideColor={sideColor}
         isFile={fileExst || contentLength}
+        withAccess={withAccess}
         //onClick={onMobileRowClick}
       >
         <Link
@@ -93,9 +98,6 @@ const FilesRowContent = ({
           isTextOverflow
         >
           {titleWithoutExt}
-        </Link>
-
-        <div className="badges">
           {fileExst ? (
             <Text
               className="badge-ext"
@@ -109,8 +111,9 @@ const FilesRowContent = ({
               {fileExst}
             </Text>
           ) : null}
-          {badgesComponent}
-        </div>
+        </Link>
+
+        <div className="badges">{badgesComponent}</div>
         <Text
           containerMinWidth="120px"
           containerWidth="15%"
@@ -160,5 +163,7 @@ const FilesRowContent = ({
 };
 
 export default withRouter(
-  withTranslation("Home")(withContent(withBadges(FilesRowContent)))
+  withTranslation(["Home", "Translations"])(
+    withContent(withBadges(FilesRowContent))
+  )
 );

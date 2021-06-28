@@ -13,20 +13,7 @@ import { downloadFormatFiles } from "@appserver/common/api/files";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { inject, observer } from "mobx-react";
-
-const formatKeys = Object.freeze({
-  OriginalFormat: 0,
-  TxtFormat: 1,
-  DocxFormat: 2,
-  OdtFormat: 3,
-  OdsFormat: 4,
-  OdpFormat: 5,
-  PdfFormat: 6,
-  RtfFormat: 7,
-  XlsxFormat: 8,
-  PptxFormat: 9,
-  CustomFormat: 10,
-});
+import { FilesFormats } from "@appserver/common/constants";
 
 class DownloadDialogComponent extends React.Component {
   constructor(props) {
@@ -39,9 +26,9 @@ class DownloadDialogComponent extends React.Component {
       presentations: sortedFiles.presentations,
       other: sortedFiles.other,
 
-      documentsTitleFormat: formatKeys.OriginalFormat,
-      spreadsheetsTitleFormat: formatKeys.OriginalFormat,
-      presentationsTitleFormat: formatKeys.OriginalFormat,
+      documentsTitleFormat: FilesFormats.OriginalFormat,
+      spreadsheetsTitleFormat: FilesFormats.OriginalFormat,
+      presentationsTitleFormat: FilesFormats.OriginalFormat,
 
       checkedDocTitle: true,
       checkedSpreadsheetTitle: true,
@@ -142,15 +129,16 @@ class DownloadDialogComponent extends React.Component {
         icon: "file",
         visible: true,
         percent: 0,
-        label: t("ArchivingData"),
+        label: t("Translations:ArchivingData"),
         alert: false,
       });
       downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
           this.onClose();
-          getDownloadProgress(res[0], t("ArchivingData")).catch((err) =>
-            toastr.error(err)
-          );
+          getDownloadProgress(
+            res[0],
+            t("Translations:ArchivingData")
+          ).catch((err) => toastr.error(err));
         })
         .catch((err) => {
           setSecondaryProgressBarData({
@@ -166,7 +154,7 @@ class DownloadDialogComponent extends React.Component {
   getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? this.props.getFileIcon(extension, 24)
+      ? this.props.getIcon(24, extension)
       : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
@@ -192,8 +180,8 @@ class DownloadDialogComponent extends React.Component {
       if (!file) {
         for (let file of newDocuments) {
           file.format =
-            format === formatKeys.CustomFormat || file.fileExst === format
-              ? formatKeys.OriginalFormat
+            format === FilesFormats.CustomFormat || file.fileExst === format
+              ? FilesFormats.OriginalFormat
               : format;
         }
         this.setState({
@@ -207,7 +195,7 @@ class DownloadDialogComponent extends React.Component {
           newDoc.format = format;
           this.setState({
             documents: newDocuments,
-            documentsTitleFormat: formatKeys.CustomFormat,
+            documentsTitleFormat: FilesFormats.CustomFormat,
           });
         }
       }
@@ -216,8 +204,8 @@ class DownloadDialogComponent extends React.Component {
       if (!file) {
         for (let file of newSpreadsheets) {
           file.format =
-            format === formatKeys.CustomFormat || file.fileExst === format
-              ? formatKeys.OriginalFormat
+            format === FilesFormats.CustomFormat || file.fileExst === format
+              ? FilesFormats.OriginalFormat
               : format;
         }
         this.setState({
@@ -231,7 +219,7 @@ class DownloadDialogComponent extends React.Component {
           newSpreadsheet.format = format;
           this.setState({
             spreadsheets: newSpreadsheets,
-            spreadsheetsTitleFormat: formatKeys.CustomFormat,
+            spreadsheetsTitleFormat: FilesFormats.CustomFormat,
           });
         }
       }
@@ -240,8 +228,8 @@ class DownloadDialogComponent extends React.Component {
       if (!file) {
         for (let file of newPresentations) {
           file.format =
-            format === formatKeys.CustomFormat || file.fileExst === format
-              ? formatKeys.OriginalFormat
+            format === FilesFormats.CustomFormat || file.fileExst === format
+              ? FilesFormats.OriginalFormat
               : format;
         }
         this.setState({
@@ -255,7 +243,7 @@ class DownloadDialogComponent extends React.Component {
           newPresentation.format = format;
           this.setState({
             presentations: newPresentations,
-            presentationsTitleFormat: formatKeys.CustomFormat,
+            presentationsTitleFormat: FilesFormats.CustomFormat,
           });
         }
       }
@@ -428,7 +416,6 @@ class DownloadDialogComponent extends React.Component {
     } = this.state;
 
     const otherLength = other.length;
-
     const showOther = otherLength > 1;
     const minHeight = otherLength > 2 ? 110 : otherLength * 50;
 
@@ -436,152 +423,144 @@ class DownloadDialogComponent extends React.Component {
       documents.filter((f) => f.checked).length +
         spreadsheets.filter((f) => f.checked).length +
         presentations.filter((f) => f.checked).length +
-        other.filter((f) => f.checked).length ===
+        other.filter((f) => f.checked).length <=
       1;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={this.onClose}>
-          <ModalDialog.Header>{t("DownloadAs")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text>{t("ChooseFormatText")}</Text>
-            {documents.length > 0 && (
-              <DownloadContent
-                t={t}
-                checkedTitle={checkedDocTitle}
-                indeterminateTitle={indeterminateDocTitle}
-                items={documents}
-                formatKeys={formatKeys}
-                onSelectFormat={this.onSelectFormat}
-                onRowSelect={this.onRowSelect}
-                getItemIcon={this.getItemIcon}
-                getTitleLabel={this.getTitleLabel}
-                titleFormat={documentsTitleFormat}
-                type="document"
-              />
-            )}
+      <ModalDialogContainer visible={visible} onClose={this.onClose}>
+        <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>{t("ChooseFormatText")}</Text>
+          {documents.length > 0 && (
+            <DownloadContent
+              t={t}
+              checkedTitle={checkedDocTitle}
+              indeterminateTitle={indeterminateDocTitle}
+              items={documents}
+              onSelectFormat={this.onSelectFormat}
+              onRowSelect={this.onRowSelect}
+              getItemIcon={this.getItemIcon}
+              getTitleLabel={this.getTitleLabel}
+              titleFormat={documentsTitleFormat}
+              type="document"
+            />
+          )}
 
-            {spreadsheets.length > 0 && (
-              <DownloadContent
-                t={t}
-                checkedTitle={checkedSpreadsheetTitle}
-                indeterminateTitle={indeterminateSpreadsheetTitle}
-                items={spreadsheets}
-                formatKeys={formatKeys}
-                onSelectFormat={this.onSelectFormat}
-                onRowSelect={this.onRowSelect}
-                getItemIcon={this.getItemIcon}
-                getTitleLabel={this.getTitleLabel}
-                titleFormat={spreadsheetsTitleFormat}
-                type="spreadsheet"
-              />
-            )}
+          {spreadsheets.length > 0 && (
+            <DownloadContent
+              t={t}
+              checkedTitle={checkedSpreadsheetTitle}
+              indeterminateTitle={indeterminateSpreadsheetTitle}
+              items={spreadsheets}
+              onSelectFormat={this.onSelectFormat}
+              onRowSelect={this.onRowSelect}
+              getItemIcon={this.getItemIcon}
+              getTitleLabel={this.getTitleLabel}
+              titleFormat={spreadsheetsTitleFormat}
+              type="spreadsheet"
+            />
+          )}
 
-            {presentations.length > 0 && (
-              <DownloadContent
-                t={t}
-                checkedTitle={checkedPresentationTitle}
-                indeterminateTitle={indeterminatePresentationTitle}
-                items={presentations}
-                formatKeys={formatKeys}
-                onSelectFormat={this.onSelectFormat}
-                onRowSelect={this.onRowSelect}
-                getItemIcon={this.getItemIcon}
-                getTitleLabel={this.getTitleLabel}
-                titleFormat={presentationsTitleFormat}
-                type="presentation"
-              />
-            )}
+          {presentations.length > 0 && (
+            <DownloadContent
+              t={t}
+              checkedTitle={checkedPresentationTitle}
+              indeterminateTitle={indeterminatePresentationTitle}
+              items={presentations}
+              onSelectFormat={this.onSelectFormat}
+              onRowSelect={this.onRowSelect}
+              getItemIcon={this.getItemIcon}
+              getTitleLabel={this.getTitleLabel}
+              titleFormat={presentationsTitleFormat}
+              type="presentation"
+            />
+          )}
 
-            {otherLength > 0 && (
-              <>
-                {showOther && (
-                  <Row
-                    key="title2"
-                    onSelect={this.onRowSelect.bind(this, "All", "other")}
-                    checked={checkedOtherTitle}
-                    indeterminate={indeterminateOtherTitle}
-                  >
-                    <RowContent>
-                      <Text
-                        truncate
-                        type="page"
-                        title={"Other"}
-                        fontSize="14px"
-                      >
-                        {t("Other")}
-                      </Text>
-                      <></>
-                    </RowContent>
-                  </Row>
-                )}
-
-                <RowContainer
-                  useReactWindow
-                  style={{ minHeight: minHeight, padding: "8px 0" }}
-                  itemHeight={50}
+          {otherLength > 0 && (
+            <>
+              {showOther && (
+                <Row
+                  key="title2"
+                  onSelect={this.onRowSelect.bind(this, "All", "other")}
+                  checked={checkedOtherTitle}
+                  indeterminate={indeterminateOtherTitle}
                 >
-                  {other.map((folder) => {
-                    const element = this.getItemIcon(folder);
-                    return (
-                      <Row
-                        key={folder.id}
-                        onSelect={this.onRowSelect.bind(this, folder, "other")}
-                        checked={folder.checked}
-                        element={element}
-                      >
-                        <RowContent>
-                          <Text
-                            truncate
-                            type="page"
-                            title={folder.title}
-                            fontSize="14px"
-                          >
-                            {folder.title}
-                          </Text>
-                          <></>
-                          <Text fontSize="12px" containerWidth="auto">
-                            {folder.fileExst && t("OriginalFormat")}
-                          </Text>
-                        </RowContent>
-                      </Row>
-                    );
-                  })}
-                </RowContainer>
-              </>
-            )}
+                  <RowContent>
+                    <Text truncate type="page" title={"Other"} fontSize="14px">
+                      {t("Other")}
+                    </Text>
+                    <></>
+                  </RowContent>
+                </Row>
+              )}
 
-            {!isSingleFile && <Text>{t("ConvertToZip")}</Text>}
-            <Text>{t("ConvertMessage")}</Text>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              className="button-dialog-accept"
-              key="DownloadButton"
-              label={t("DownloadButton")}
-              size="medium"
-              primary
-              onClick={this.onDownload}
-              //isLoading={isLoading}
-            />
-            <Button
-              className="button-dialog"
-              key="CancelButton"
-              label={t("CancelButton")}
-              size="medium"
-              onClick={this.onClose}
-              //isLoading={isLoading}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+              <RowContainer
+                useReactWindow
+                style={{ minHeight: minHeight, padding: "8px 0" }}
+                itemHeight={50}
+              >
+                {other.map((folder) => {
+                  const element = this.getItemIcon(folder);
+                  return (
+                    <Row
+                      key={folder.id}
+                      onSelect={this.onRowSelect.bind(this, folder, "other")}
+                      checked={folder.checked}
+                      element={element}
+                    >
+                      <RowContent>
+                        <Text
+                          truncate
+                          type="page"
+                          title={folder.title}
+                          fontSize="14px"
+                        >
+                          {folder.title}
+                        </Text>
+                        <></>
+                        <Text fontSize="12px" containerWidth="auto">
+                          {folder.fileExst && t("OriginalFormat")}
+                        </Text>
+                      </RowContent>
+                    </Row>
+                  );
+                })}
+              </RowContainer>
+            </>
+          )}
+
+          {!isSingleFile && <Text>{t("ConvertToZip")}</Text>}
+          <Text>{t("ConvertMessage")}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            className="button-dialog-accept"
+            key="DownloadButton"
+            label={t("Common:Download")}
+            size="medium"
+            primary
+            onClick={this.onDownload}
+            //isLoading={isLoading}
+          />
+          <Button
+            className="button-dialog"
+            key="CancelButton"
+            label={t("Common:CancelButton")}
+            size="medium"
+            onClick={this.onClose}
+            //isLoading={isLoading}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
 }
 
-const DownloadDialog = withTranslation("DownloadDialog")(
-  DownloadDialogComponent
-);
+const DownloadDialog = withTranslation([
+  "DownloadDialog",
+  "Common",
+  "Translations",
+])(DownloadDialogComponent);
 
 export default inject(
   ({
@@ -593,7 +572,7 @@ export default inject(
   }) => {
     const { secondaryProgressDataStore } = uploadDataStore;
     const { sortedFiles } = filesStore;
-    const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -612,7 +591,7 @@ export default inject(
 
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      getFileIcon,
+      getIcon,
       getFolderIcon,
       setDownloadDialogVisible,
       getDownloadProgress,

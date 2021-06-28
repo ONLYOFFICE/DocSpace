@@ -52,13 +52,13 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("cultureTitle")
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Title)
                     .HasColumnName("title")
                     .HasColumnType("varchar(120)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.AuthorLogin)
                     .IsRequired()
@@ -66,13 +66,13 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnType("varchar(50)")
                     .HasDefaultValueSql("'Console'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Flag).HasColumnName("flag");
 
@@ -84,19 +84,19 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("link")
                     .HasColumnType("varchar(120)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ResourceType)
                     .HasColumnName("resourceType")
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TextValue)
                     .HasColumnName("textValue")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TimeChanges)
                     .HasColumnName("timeChanges")

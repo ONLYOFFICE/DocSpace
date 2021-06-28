@@ -1,13 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-
+import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import { tablet, smallTablet } from "@appserver/components/utils/device";
 import CatalogPinIcon from "../../../../../public/images/catalog.pin.react.svg";
 import CatalogUnpinIcon from "../../../../../public/images/catalog.unpin.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import i18n from "../i18n";
 
 const StyledCatalogPinIcon = styled(CatalogPinIcon)`
   ${commonIconsStyles}
@@ -62,7 +61,7 @@ const StyledArticlePinPanel = styled.div`
 const ArticlePinPanel = React.memo((props) => {
   //console.log("PageLayout ArticlePinPanel render");
 
-  const { pinned, onPin, onUnpin } = props;
+  const { pinned, onPin, onUnpin, t } = props;
   const textStyles = {
     as: "span",
     color: "#555F65",
@@ -77,14 +76,14 @@ const ArticlePinPanel = React.memo((props) => {
           <div className="icon-wrapper">
             <StyledCatalogUnpinIcon size="scale" />
           </div>
-          <Text {...textStyles}>{i18n.t("Unpin")}</Text>
+          <Text {...textStyles}>{t("Common:Unpin")}</Text>
         </div>
       ) : (
         <div onClick={onPin}>
           <div className="icon-wrapper">
             <StyledCatalogPinIcon size="scale" />
           </div>
-          <Text {...textStyles}>{i18n.t("Pin")}</Text>
+          <Text {...textStyles}>{t("Common:Pin")}</Text>
         </div>
       )}
     </StyledArticlePinPanel>
@@ -101,4 +100,6 @@ ArticlePinPanel.propTypes = {
   onUnpin: PropTypes.func,
 };
 
-export default ArticlePinPanel;
+const ArticlePinPanelWrapper = withTranslation("Common")(ArticlePinPanel);
+
+export default ArticlePinPanelWrapper;

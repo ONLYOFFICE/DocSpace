@@ -1,9 +1,6 @@
 {
-  "SearchUsersPlaceholder": "Search users",
-  "AddMembersButtonLabel": "Add members",
-  "SelectAllLabel": "Select all",
+  "CustomAllGroups": "All {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "There are no users with such name",
   "EmptyUsers": "There are no users",
-  "LoadingLabel": "Loading... Please wait...",
-  "CustomAllGroups": "All {{ groupsCaption, lowercase }}"
+  "SearchUsersPlaceholder": "Search users"
 }

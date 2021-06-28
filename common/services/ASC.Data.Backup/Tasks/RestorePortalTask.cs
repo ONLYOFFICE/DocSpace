@@ -169,7 +169,7 @@ namespace ASC.Data.Backup.Tasks
         private void RestoreFromDump(IDataReadOperator dataReader)
         {
             var keyBase = KeyHelper.GetDatabaseSchema();
-            var keys = dataReader.Entries.Where(r => r.StartsWith(keyBase)).ToList();
+            var keys = dataReader.GetEntries(keyBase).Select(r => Path.GetFileName(r)).ToList();
             var upgrades = new List<string>();
 
             if (!string.IsNullOrEmpty(UpgradesPath) && Directory.Exists(UpgradesPath))
@@ -203,7 +203,7 @@ namespace ASC.Data.Backup.Tasks
 
                 for (var j = 0; j < TasksLimit && i + j < keys.Count; j++)
                 {
-                    var key1 = keys[i + j];
+                    var key1 = Path.Combine(KeyHelper.GetDatabaseSchema(), keys[i + j]);
                     tasks.Add(RestoreFromDumpFile(dataReader, key1).ContinueWith(r => RestoreFromDumpFile(dataReader, KeyHelper.GetDatabaseData(key1.Substring(keyBase.Length + 1)))));
                 }
 

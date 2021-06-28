@@ -9,12 +9,12 @@ import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
-  const { t } = useTranslation("Home");
+  const { t } = useTranslation(["Home", "Common"]);
 
-  const title = isEmptyGroup ? "EmptyGroupTitle" : "NotFoundTitle";
+  const title = isEmptyGroup ? t("EmptyGroupTitle") : t("NotFoundTitle");
   const description = isEmptyGroup
-    ? "EmptyGroupDescription"
-    : "NotFoundDescription";
+    ? t("EmptyGroupDescription")
+    : t("NotFoundDescription");
 
   const onResetFilter = () => {
     setIsLoading(true);
@@ -25,8 +25,8 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
     <EmptyScreenContainer
       imageSrc="images/empty_screen_filter.png"
       imageAlt="Empty Screen Filter image"
-      headerText={t(title)}
-      descriptionText={t(description)}
+      headerText={title}
+      descriptionText={description}
       buttons={
         <Grid
           marginProp="13px 0"
@@ -53,7 +53,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
                   color="#555f65"
                   onClick={onResetFilter}
                 >
-                  {t("ClearButton")}
+                  {t("Common:ClearButton")}
                 </Link>
               </Box>{" "}
             </>
@@ -64,8 +64,13 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   );
 };
 
-export default inject(({ peopleStore }) => ({
-  resetFilter: peopleStore.resetFilter,
-  isEmptyGroup: peopleStore.selectedGroupStore.isEmptyGroup,
-  setIsLoading: peopleStore.setIsLoading,
-}))(observer(EmptyScreen));
+export default inject(({ peopleStore }) => {
+  const { loadingStore, resetFilter, selectedGroupStore } = peopleStore;
+  const { isEmptyGroup } = selectedGroupStore;
+  const { setIsLoading } = loadingStore;
+  return {
+    resetFilter,
+    isEmptyGroup,
+    setIsLoading,
+  };
+})(observer(EmptyScreen));

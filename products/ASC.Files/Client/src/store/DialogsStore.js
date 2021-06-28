@@ -1,6 +1,11 @@
+import { getNewFiles } from "@appserver/common/api/files";
 import { makeAutoObservable } from "mobx";
 
 class DialogsStore {
+  treeFoldersStore;
+  filesStore;
+  selectedFolderStore;
+
   sharingPanelVisible = false;
   ownerPanelVisible = false;
   moveToPanelVisible = false;
@@ -14,16 +19,25 @@ class DialogsStore {
   thirdPartyDialogVisible = false;
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
+  convertDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
   destFolderId = null;
   newFilesIds = null;
+  newFiles = null;
   conflictResolveDialogData = null;
   conflictResolveDialogItems = null;
+  removeMediaItem = null;
+  unsubscribe = null;
+  convertItem = null;
 
-  constructor() {
+  constructor(treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
+
+    this.treeFoldersStore = treeFoldersStore;
+    this.filesStore = filesStore;
+    this.selectedFolderStore = selectedFolderStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -84,13 +98,49 @@ class DialogsStore {
     this.destFolderId = destFolderId;
   };
 
-  setNewFilesPanelVisible = (newFilesPanelVisible) => {
-    if (!newFilesPanelVisible) this.setNewFilesIds(null);
+  setNewFilesPanelVisible = async (visible, newIds, item) => {
+    const id = newIds && newIds[newIds.length - 1];
+    let newFilesPanelVisible = visible;
+
+    if (visible) {
+      const files = await getNewFiles(id);
+      if (files && files.length) {
+        this.setNewFiles(files);
+        this.setNewFilesIds(newIds);
+      } else {
+        newFilesPanelVisible = false;
+        const {
+          getRootFolder,
+          updateRootBadge,
+          treeFolders,
+        } = this.treeFoldersStore;
+        const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
+
+        if (item) {
+          const { rootFolderType, id } = item;
+          const rootFolder = getRootFolder(rootFolderType);
+          updateRootBadge(rootFolder.id, item.new);
+          updateFolderBadge(id, item.new);
+        } else {
+          const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
+          updateRootBadge(rootFolder.id, rootFolder.new);
+          if (this.selectedFolderStore.id === rootFolder.id)
+            updateFoldersBadge();
+        }
+      }
+    } else {
+      this.setNewFilesIds(null);
+    }
+
     this.newFilesPanelVisible = newFilesPanelVisible;
   };
 
   setNewFilesIds = (newFilesIds) => {
     this.newFilesIds = newFilesIds;
+  };
+
+  setNewFiles = (files) => {
+    this.newFiles = files;
   };
 
   setConflictResolveDialogVisible = (conflictResolveDialogVisible) => {
@@ -104,6 +154,22 @@ class DialogsStore {
   setConflictResolveDialogItems = (items) => {
     this.conflictResolveDialogItems = items;
   };
+
+  setRemoveMediaItem = (removeMediaItem) => {
+    this.removeMediaItem = removeMediaItem;
+  };
+
+  setUnsubscribe = (unsubscribe) => {
+    this.unsubscribe = unsubscribe;
+  };
+
+  setConvertDialogVisible = (visible) => {
+    this.convertDialogVisible = visible;
+  };
+
+  setConvertItem = (item) => {
+    this.convertItem = item;
+  };
 }
 
-export default new DialogsStore();
+export default DialogsStore;

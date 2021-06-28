@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { getFoldersTree } from "@appserver/common/api/files";
+import { getFoldersTree, getSubfolders } from "@appserver/common/api/files";
 import { FolderType } from "@appserver/common/constants";
 
 class TreeFoldersStore {
@@ -20,6 +20,8 @@ class TreeFoldersStore {
     this.setTreeFolders(treeFolders);
     return treeFolders;
   };
+
+  getFoldersTree = () => getFoldersTree();
 
   setTreeFolders = (treeFolders) => {
     this.treeFolders = treeFolders;
@@ -47,6 +49,15 @@ class TreeFoldersStore {
     const rootItem = this.treeFolders.find((x) => x.id === id);
     if (rootItem) rootItem.newItems -= count;
   };
+
+  isCommon = (commonType) => commonType === FolderType.COMMON;
+  isShare = (shareType) => shareType === FolderType.SHARE;
+
+  getRootFolder = (rootFolderType) => {
+    return this.treeFolders.find((x) => x.rootFolderType === rootFolderType);
+  };
+
+  getSubfolders = (folderId) => getSubfolders(folderId);
 
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderName === "@my");

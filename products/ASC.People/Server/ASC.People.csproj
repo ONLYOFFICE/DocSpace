@@ -2,12 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
     <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-      <AssemblyTitle>ASC.People</AssemblyTitle>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+    <AssemblyTitle>ASC.People</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.People</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
@@ -22,12 +21,16 @@
     <DebugSymbols>false</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\..\..\common\ASC.Data.Reassigns\ASC.Data.Reassigns.csproj" />
-    <ProjectReference Include="..\..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
-    <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
   
   <ItemGroup>

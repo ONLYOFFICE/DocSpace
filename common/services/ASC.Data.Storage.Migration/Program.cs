@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
@@ -11,6 +12,7 @@ using ASC.Common.Utils;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,10 +21,19 @@ namespace ASC.Data.Storage.Migration
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            await Host.CreateDefaultBuilder(args)
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunAsync();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+             Host.CreateDefaultBuilder(args)
+                .UseSystemd()
+                .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -64,10 +75,6 @@ namespace ASC.Data.Storage.Migration
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration);
-                })
-                .UseConsoleLifetime()
-                .Build()
-                .RunAsync();
-        }
+                });
     }
 }

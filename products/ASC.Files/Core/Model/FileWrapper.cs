@@ -41,7 +41,6 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Utility;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Api.Documents
 {
     /// <summary>
@@ -97,6 +96,13 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         public bool? Encrypted { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public string ThumbnailUrl { get; set; }
+
+
+        public Thumbnail ThumbnailStatus { get; set; }
 
         /// <summary>
         /// </summary>
@@ -228,6 +234,13 @@ namespace ASC.Api.Documents
                 result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
 
                 result.WebUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID, file.Version));
+
+                result.ThumbnailStatus = file.ThumbnailStatus;
+
+                if (file.ThumbnailStatus == Thumbnail.Created)
+                {
+                    result.ThumbnailUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileThumbnailUrl(file.ID, file.Version));
+                }
             }
             catch (Exception)
             {

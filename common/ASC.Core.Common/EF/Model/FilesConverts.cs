@@ -54,6 +54,11 @@ namespace ASC.Core.Common.EF.Model
                new FilesConverts { Input = ".epub", Output = ".pdf" },
                new FilesConverts { Input = ".epub", Output = ".rtf" },
                new FilesConverts { Input = ".epub", Output = ".txt" },
+               new FilesConverts { Input = ".fb2", Output = ".docx" },
+               new FilesConverts { Input = ".fb2", Output = ".odt" },
+               new FilesConverts { Input = ".fb2", Output = ".pdf" },
+               new FilesConverts { Input = ".fb2", Output = ".rtf" },
+               new FilesConverts { Input = ".fb2", Output = ".txt" },
                new FilesConverts { Input = ".fodp", Output = ".odp" },
                new FilesConverts { Input = ".fodp", Output = ".pdf" },
                new FilesConverts { Input = ".fodp", Output = ".pptx" },
@@ -177,13 +182,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("input")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Output)
                     .HasColumnName("output")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddFilesConverts(this ModelBuilder modelBuilder)

@@ -8,6 +8,7 @@ import LoadingButton from "./LoadingButton";
 import ShareButton from "./ShareButton";
 import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
 import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
 
 const StyledFileRow = styled(Row)`
   margin: 0 16px;
@@ -67,6 +68,7 @@ const FileRow = (props) => {
     item,
     uploaded,
     cancelCurrentUpload,
+    cancelCurrentFileConversion,
     //onMediaClick,
     currentFileUploadProgress,
     fileIcon,
@@ -77,8 +79,11 @@ const FileRow = (props) => {
 
   const onCancelCurrentUpload = (e) => {
     //console.log("cancel upload ", e);
-    const id = e.currentTarget.dataset.id;
-    return cancelCurrentUpload(id);
+    const { id, action, fileId } = e.currentTarget.dataset;
+
+    return action === "convert"
+      ? cancelCurrentFileConversion(fileId)
+      : cancelCurrentUpload(id);
   };
 
   // const onMediaClick = (id) => {
@@ -86,6 +91,10 @@ const FileRow = (props) => {
   //   const item = { visible: true, id: id };
   //   this.props.setMediaViewerData(item);
   // };
+
+  const onCancelClick = !item.inConversion
+    ? { onClick: onCancelCurrentUpload }
+    : {};
 
   return (
     <>
@@ -98,7 +107,9 @@ const FileRow = (props) => {
         }
       >
         <>
-          {item.fileId ? (
+          {item.fileId &&
+          item.action !== "convert" &&
+          item.action !== "converted" ? (
             isMedia ? (
               <Text
                 fontWeight="600"
@@ -132,19 +143,36 @@ const FileRow = (props) => {
           ) : (
             <></>
           )}
-          {item.fileId ? (
-            <ShareButton uniqueId={item.uniqueId} />
+          {item.fileId && !item.error ? (
+            item.action === "upload" ? (
+              <ShareButton uniqueId={item.uniqueId} />
+            ) : item.action === "convert" ? (
+              <div
+                className="upload_panel-icon"
+                data-id={item.uniqueId}
+                data-file-id={item.fileId}
+                data-action={item.action}
+                {...onCancelClick}
+              >
+                <LoadingButton
+                  isConversion
+                  inConversion={item.inConversion}
+                  percent={item.convertProgress}
+                />
+              </div>
+            ) : (
+              <></>
+            )
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
-              {" "}
               <LoadErrorIcon
                 size="medium"
                 data-for="errorTooltip"
-                data-tip={item.error || t("UnknownError")}
+                data-tip={item.error || t("Common:UnknownError")}
               />
               <Tooltip
                 id="errorTooltip"
-                offsetTop={64}
+                offsetTop={0}
                 getContent={(dataTip) => <Text fontSize="13px">{dataTip}</Text>}
                 effect="float"
                 place="left"
@@ -187,6 +215,7 @@ export default inject(
       uploaded,
       primaryProgressDataStore,
       cancelCurrentUpload,
+      cancelCurrentFileConversion,
     } = uploadDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
     const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
@@ -209,6 +238,7 @@ export default inject(
       loadingFile,
 
       cancelCurrentUpload,
+      cancelCurrentFileConversion,
     };
   }
-)(observer(FileRow));
+)(withTranslation("UploadPanel")(observer(FileRow)));

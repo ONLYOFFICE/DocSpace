@@ -93,6 +93,7 @@ const getItems = (data) => {
 class ArticleBodyContent extends React.Component {
   componentDidMount() {
     this.changeTitleDocument();
+    this.props.setFirstLoad(false);
   }
 
   getTreeGroups = (groups, departments) => {
@@ -171,7 +172,6 @@ class ArticleBodyContent extends React.Component {
     const { history, selectGroup } = this.props;
 
     this.changeTitleDocument(groupId);
-
 
     if (window.location.pathname.indexOf("/people/filter") > 0) {
       selectGroup(groupId);
@@ -253,9 +253,8 @@ export default inject(({ auth, peopleStore }) => {
     groupsStore,
     selectedGroupStore,
     editingFormStore,
-    setIsLoading,
-    isLoading,
     filterStore,
+    loadingStore,
   } = peopleStore;
   const { filter } = filterStore;
   const { groups } = groupsStore;
@@ -263,6 +262,7 @@ export default inject(({ auth, peopleStore }) => {
   const { isEdit, setIsVisibleDataLossDialog } = editingFormStore;
   const { selectedGroup, selectGroup } = selectedGroupStore;
   const selectedKeys = selectedGroup ? [selectedGroup] : ["root"];
+  const { setFirstLoad, isLoading } = loadingStore;
   return {
     setDocumentTitle,
     isLoaded,
@@ -275,8 +275,8 @@ export default inject(({ auth, peopleStore }) => {
     selectGroup,
     isEdit,
     setIsVisibleDataLossDialog,
-    setIsLoading,
     isLoading,
     filter,
+    setFirstLoad,
   };
 })(observer(BodyContent));
