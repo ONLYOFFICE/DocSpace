@@ -57,10 +57,12 @@ const SectionBodyContent = (props) => {
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
 
   const onMouseDown = (e) => {
+    console.log(e.target);
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      e.target.tagName !== "path"
+      e.target.tagName !== "path" &&
+      !e.target.closest(".modal-dialog-aside-body")
     )
       setSelection([]);
   };
