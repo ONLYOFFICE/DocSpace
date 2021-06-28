@@ -195,7 +195,11 @@ class Tile extends React.PureComponent {
     return (
       <Link type="page" onClick={thumbnailClick}>
         {thumbnail ? (
-          <img src={thumbnail || temporaryIcon} className="thumbnail-image" />
+          <img
+            src={thumbnail || temporaryIcon}
+            className="thumbnail-image"
+            alt="Thumbnail-img"
+          />
         ) : (
           <ReactSVG className="temporary-icon" src={icon} loading={svgLoader} />
         )}
