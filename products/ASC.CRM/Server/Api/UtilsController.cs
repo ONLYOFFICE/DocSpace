@@ -447,8 +447,13 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"{entityType:regex(contact|opportunity|case|task)}/import/start")]
-        public string StartImportFromCSV([FromRoute] string entityType, [FromForm] string csvFileURI, [FromForm] string jsonSettings)
+        public string StartImportFromCSV(
+            [FromRoute] string entityType, 
+            [FromBody] StartImportFromCSVRequestDto inDto )
         {
+            var csvFileURI = inDto.CsvFileURI;
+            var jsonSettings = inDto.JsonSettings;
+
             EntityType entityTypeObj;
 
             if (string.IsNullOrEmpty(entityType) || string.IsNullOrEmpty(csvFileURI) || string.IsNullOrEmpty(jsonSettings)) throw new ArgumentException();
@@ -519,8 +524,11 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"import/uploadfake")]
-        public FileUploadResult ProcessUploadFake([FromForm] string csvFileURI, [FromForm] string jsonSettings)
+        public FileUploadResult ProcessUploadFake([FromBody] ProcessUploadFakeRequestDto inDto)
         {
+            var csvFileURI = inDto.CsvFileURI;
+            var jsonSettings = inDto.JsonSettings;
+
             return _importFromCSVManager.ProcessUploadFake(csvFileURI, jsonSettings);
         }
 
@@ -577,7 +585,7 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"export/partial/{entityType:regex(contact|opportunity|case|task|invoiceitem)}/start")]
-        public IProgressItem StartPartialExport([FromRoute] string entityType, [FromForm] string base64FilterString)
+        public IProgressItem StartPartialExport([FromRoute] string entityType, [FromBody] string base64FilterString)
         {
             if (string.IsNullOrEmpty(base64FilterString)) throw new ArgumentException();
 
