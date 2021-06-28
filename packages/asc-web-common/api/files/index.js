@@ -707,10 +707,17 @@ export function getEncryptionAccess(fileId) {
   });
 }
 
-export function getFiles(folderId, pageCount = 30, startIndex) {
+export function getFiles(
+  folderId,
+  filterType,
+  filterValue,
+  withSubfolders,
+  pageCount = 30,
+  startIndex = 0
+) {
   return request({
     method: "get",
-    url: `files/${folderId}?count=${pageCount}&filterType=10&withSubfolders=true&startIndex=${startIndex}&filterType=FilesOnly`,
+    url: `files/${folderId}?count=${pageCount}&withSubfolders=${withSubfolders}&startIndex=${startIndex}&filterType=${filterType}&filterValue=${filterValue}`,
   });
 }
 

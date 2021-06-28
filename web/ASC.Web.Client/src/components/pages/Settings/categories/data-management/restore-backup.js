@@ -16,6 +16,11 @@ import Documents from "./sub-components-restore-backup/documents";
 import ThirdPartyResources from "./sub-components-restore-backup/thirdPartyResources";
 import ThirdPartyStorages from "./sub-components-restore-backup/thirdPartyStorages";
 import { StyledRestoreModules } from "./styled-backup";
+
+const ICON_URL = "/images/icons/24/file_archive.svg";
+const FILTER_TYPE = 10;
+const FILTER_VALUE = "gz";
+const WITH_SUBFOLDERS = true;
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -251,11 +256,16 @@ class RestoreBackup extends React.Component {
             className="backup_radio-button"
           />
         </StyledRestoreModules>
+
         {isCheckedDocuments && (
           <Documents
             isPanelVisible={isPanelVisible}
             onClose={this.onPanelClose}
             onClickInput={this.onClickInput}
+            iconUrl={ICON_URL}
+            filterType={FILTER_TYPE}
+            filterValue={FILTER_VALUE}
+            withSubfolders={WITH_SUBFOLDERS}
           />
         )}
         {isCheckedThirdParty && (
@@ -263,6 +273,10 @@ class RestoreBackup extends React.Component {
             isPanelVisible={isPanelVisible}
             onClose={this.onPanelClose}
             onClickInput={this.onClickInput}
+            iconUrl={ICON_URL}
+            filterType={FILTER_TYPE}
+            filterValue={FILTER_VALUE}
+            withSubfolders={WITH_SUBFOLDERS}
           />
         )}
         {isCheckedThirdPartyStorage && <ThirdPartyStorages />}

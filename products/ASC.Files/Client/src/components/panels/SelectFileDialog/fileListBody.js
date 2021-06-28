@@ -8,8 +8,8 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { inject, observer } from "mobx-react";
 import ListRow from "./listRow";
+
 const FileListBody = ({
-  children,
   filesList,
   onSelectFile,
   loadNextPage,
@@ -20,6 +20,8 @@ const FileListBody = ({
   listHeight,
   needRowSelection,
   emptyFilesList,
+  loadingLabel,
+  iconUrl,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   // Every row is loaded except for our loading indicator row.
@@ -45,47 +47,66 @@ const FileListBody = ({
     [isNextPageLoading, filesList]
   );
 
-  const Item = useCallback(
-    ({ index, style }) => {
-      const file = filesList[index];
-      const fileName = file && file.title;
-      const fileOwner = file
-        ? file.createdBy &&
-          ((viewer.id === file.createdBy.id && t("Common:MeLabel")) ||
-            file.createdBy.displayName)
-        : "";
-
+  const renderLoader = useCallback(
+    (style) => {
       return (
-        <div style={style}>
-          {!isItemLoaded(index) ? (
-            <div key="loader">
-              <Loader
-                type="oval"
-                size="16px"
-                style={{
-                  display: "inline",
-                  marginRight: "10px",
-                }}
-              />
-              <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                "Common:LoadingDescription"
-              )}`}</Text>
-            </div>
-          ) : (
-            <ListRow
-              displayType={displayType}
-              needRowSelection={needRowSelection}
-              index={index}
-              onSelectFile={onSelectFile}
-              fileName={fileName}
-              fileOwner={fileOwner}
-              children={children}
+        <div style={style} className="row-option">
+          <div key="loader">
+            <Loader
+              type="oval"
+              size="16px"
+              style={{
+                display: "inline",
+                marginRight: "10px",
+              }}
             />
-          )}
+            <Text as="span">{"Hello"}</Text>
+          </div>
         </div>
       );
     },
-    [filesList]
+    [loadingLabel]
+  );
+  const Item = useCallback(
+    ({ index, style }) => {
+      const isLoaded = isItemLoaded(index);
+
+      if (!isLoaded) {
+        return renderLoader(style);
+      }
+
+      const file = filesList[index];
+      const fileName = file.title;
+      const fileExst = file.fileExst;
+      const modifyFileName = fileName.substring(
+        0,
+        fileName.indexOf(`${fileExst}`)
+      );
+
+      const fileOwner =
+        file.createdBy &&
+        ((viewer.id === file.createdBy.id && t("Common:MeLabel")) ||
+          file.createdBy.displayName);
+
+      return (
+        <div style={style}>
+          <ListRow
+            displayType={displayType}
+            needRowSelection={needRowSelection}
+            index={index}
+            onSelectFile={onSelectFile}
+            fileName={modifyFileName}
+            fileExst={fileExst}
+            iconUrl={iconUrl}
+          >
+            <Text data-index={index} className="files-list_file-owner">
+              {fileOwner}
+            </Text>
+          </ListRow>
+        </div>
+      );
+    },
+    [filesList, renderLoader]
   );
   return (
     <>

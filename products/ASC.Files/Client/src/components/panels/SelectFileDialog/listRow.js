@@ -11,8 +11,9 @@ const ListRow = ({
   index,
   onSelectFile,
   fileName,
-  fileOwner,
   children,
+  fileExst,
+  iconUrl,
 }) => (
   <StyledFilesList
     displayType={displayType}
@@ -24,33 +25,24 @@ const ListRow = ({
       onClick={onSelectFile}
     >
       <ReactSVG
-        src={`${config.homepage}/images/icons/24/file_archive.svg`}
+        src={`${config.homepage}/${iconUrl}`}
         className="select-file-dialog_icon"
       />
       <div data-index={index} className="files-list_full-name">
         <Text data-index={index} className="entry-title">
-          {fileName && fileName.substring(0, fileName.indexOf(".gz"))}
+          {fileName}
         </Text>
 
         <div data-index={index} className="file-exst">
-          {".gz"}
+          {fileExst}
         </div>
       </div>
-      <div className="files-list_file-owner_wrapper">
-        {children ? (
-          children
-        ) : (
-          <Text data-index={index} className="files-list_file-owner">
-            {fileOwner}
-          </Text>
-        )}
-      </div>
+      <div className="files-list_file-owner_wrapper">{children}</div>
     </div>
   </StyledFilesList>
 );
 
 ListRow.defaultProps = {
-  fileOwner: "",
   needRowSelection: true,
 };
 

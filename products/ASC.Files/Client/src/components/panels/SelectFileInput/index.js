@@ -48,6 +48,10 @@ class SelectFile extends React.PureComponent {
       isSavingProcess,
       isDisabled,
       foldersType,
+      iconUrl,
+      filterType,
+      filterValue,
+      withSubfolders,
     } = this.props;
     const { isLoading, fileName } = this.state;
     const zIndex = 310;
@@ -71,6 +75,10 @@ class SelectFile extends React.PureComponent {
             foldersType={foldersType}
             onSetFileName={this.onSetFileName}
             isCommonWithoutProvider={isCommonWithoutProvider}
+            iconUrl={iconUrl}
+            filterValue={filterValue}
+            withSubfolders={withSubfolders}
+            filterType={filterType}
           />
         )}
       </StyledComponent>

@@ -99,6 +99,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       isNextPageLoading,
       loadNextPage,
       selectedFolder,
+      iconUrl,
     } = this.props;
     const { isLoading, selectedKeys } = this.state;
     console.log("filesList", filesList);
@@ -139,6 +140,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                         isNextPageLoading={isNextPageLoading}
                         loadNextPage={loadNextPage}
                         selectedFolder={selectedFolder}
+                        iconUrl={iconUrl}
                       />
                     )}
                   </div>

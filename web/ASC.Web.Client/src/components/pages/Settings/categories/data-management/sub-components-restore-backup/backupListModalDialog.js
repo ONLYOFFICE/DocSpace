@@ -8,11 +8,11 @@ import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
 
-import IconButton from "@appserver/components/icon-button";
 import utils from "@appserver/components/utils";
 import Link from "@appserver/components/link";
 import { StyledBackupList } from "../styled-backup";
 import {
+  deleteBackup,
   deleteBackupHistory,
   getBackupHistory,
 } from "../../../../../../../../../packages/asc-web-common/api/portal";
@@ -72,6 +72,14 @@ class BackupListModalDialog extends React.Component {
         .finally(() => this.setState({ isLoading: false }));
     });
   };
+  onDeleteClick = (e) => {
+    console.log("delete");
+
+    //deleteBackup(filesList[index].id)
+  };
+  onRestoreClick = (e) => {
+    console.log("restore");
+  };
   render() {
     const { onModalClose, isVisibleDialog, t } = this.props;
     const { filesList, displayType, isLoading } = this.state;
@@ -96,24 +104,13 @@ class BackupListModalDialog extends React.Component {
               {!isLoading ? (
                 filesList.length > 0 ? (
                   <BackupListBody
+                    t={t}
                     displayType={displayType}
                     needRowSelection={false}
                     filesList={filesList}
-                  >
-                    <div className="backup-list_options">
-                      <Link className="backup-list_restore-link">
-                        {t("RestoreBackup")}
-                      </Link>
-
-                      <IconButton
-                        className="backup-list_trash-icon"
-                        size={16}
-                        color="#657077"
-                        iconName="/static/images/button.trash.react.svg"
-                        onClick={undefined}
-                      />
-                    </div>
-                  </BackupListBody>
+                    onIconClick={this.onDeleteClick}
+                    onRestoreClick={this.onRestoreClick}
+                  />
                 ) : (
                   <Text>{t("EmptyBackupList")}</Text>
                 )

@@ -125,6 +125,10 @@ export function deleteBackupHistory() {
   return request({ method: "delete", url: "/portal/deletebackuphistory" });
 }
 
+export function deleteBackup(id) {
+  return request({ method: "delete", url: `/portal/deletebackup/${id}` });
+}
+
 export function getBackupHistory() {
   return request({ method: "get", url: "/portal/getbackuphistory" });
 }

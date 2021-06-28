@@ -70,7 +70,7 @@ class SelectFileDialogBody extends React.Component {
     const { onSetFileName, onClose } = this.props;
     const { filesList } = this.state;
     const index = e.target.dataset.index;
-  
+
     if (!index) return;
     this.setState(
       {
@@ -113,14 +113,26 @@ class SelectFileDialogBody extends React.Component {
   };
   loadNextPage = ({ startIndex = 0 }) => {
     //debugger;
-    console.log(`loadNextPage(startIndex=${startIndex}")`);
+    const { filter, filterValue, filterType, withSubfolders } = this.props;
     const { selectedFolder } = this.state;
+
+   
+    console.log(`loadNextPage(startIndex=${startIndex}")`);
+
     const pageCount = 30;
+
     console.log("selectedFolder", selectedFolder);
+
     this.setState({ isNextPageLoading: true }, () => {
-      getFiles(selectedFolder, pageCount, startIndex)
+      getFiles(
+        selectedFolder,
+        filterType,
+        filterValue,
+        withSubfolders,
+        pageCount,
+        startIndex
+      )
         .then((response) => {
-          //debugger;
           let newFilesList = startIndex
             ? this.state.filesList.concat(response.files)
             : response.files;
@@ -143,6 +155,7 @@ class SelectFileDialogBody extends React.Component {
       zIndex,
       foldersType,
       isCommonWithoutProvider,
+      iconUrl,
     } = this.props;
     const {
       isVisible,
@@ -174,6 +187,7 @@ class SelectFileDialogBody extends React.Component {
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
+        iconUrl={iconUrl}
       />
     ) : (
       <SelectFileDialogModalView
@@ -191,6 +205,7 @@ class SelectFileDialogBody extends React.Component {
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
         isCommonWithoutProvider={isCommonWithoutProvider}
+        iconUrl={iconUrl}
       />
     );
   }

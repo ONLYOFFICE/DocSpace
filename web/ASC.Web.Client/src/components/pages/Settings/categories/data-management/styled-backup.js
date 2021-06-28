@@ -141,7 +141,13 @@ const StyledBackupList = styled.div`
   .backup-list_options {
     display: flex;
   }
-
+  .backup-list_trash-icon {
+    width: 16px;
+    height: 16px;
+    path {
+      fill: #657077;
+    }
+  }
   .backup-list_aside-header_title {
     margin: 0px;
     line-height: 56px;
