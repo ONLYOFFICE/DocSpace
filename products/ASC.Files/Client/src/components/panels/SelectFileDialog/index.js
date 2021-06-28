@@ -1,6 +1,5 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
-import { inject, observer } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
@@ -127,7 +126,7 @@ class SelectFileDialogBody extends React.Component {
   };
   loadNextPage = ({ startIndex = 0 }) => {
     //debugger;
-    const { filter, filterValue, filterType, withSubfolders } = this.props;
+    const { filterValue, filterType, withSubfolders } = this.props;
     const { selectedFolder } = this.state;
 
     console.log(`loadNextPage(startIndex=${startIndex}")`);
@@ -224,23 +223,11 @@ class SelectFileDialogBody extends React.Component {
   }
 }
 
-const SelectFileDialogWrapper = inject(
-  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { filter } = filesStore;
-    const { expandedPanelKeys } = treeFoldersStore;
-    return {
-      expandedKeys: expandedPanelKeys
-        ? expandedPanelKeys
-        : selectedFolderStore.pathParts,
-      filter,
-    };
-  }
-)(
-  observer(
-    withTranslation(["SelectFile", "Common", "Home"])(SelectFileDialogBody)
-  )
-);
-
+const SelectFileDialogWrapper = withTranslation([
+  "SelectFile",
+  "Common",
+  "Home",
+])(SelectFileDialogBody);
 class SelectFileDialog extends React.Component {
   render() {
     return (
