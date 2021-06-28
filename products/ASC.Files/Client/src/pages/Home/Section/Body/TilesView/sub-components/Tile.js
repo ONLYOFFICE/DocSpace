@@ -35,6 +35,7 @@ const StyledTile = styled.div`
   border: 1px solid #d0d5da;
   border-radius: 3px;
   ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => props.isFolder && FolderStyles}

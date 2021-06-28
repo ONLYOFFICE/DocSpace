@@ -22,12 +22,12 @@ const StyledTileContent = styled.div`
 
   ${(props) =>
     !props.disableSideInfo &&
-    `
-    @media (max-width: 1024px) {
-      display: block;
-      height: 56px;
-    }
-  `};
+    css`
+      @media (max-width: 1024px) {
+        display: block;
+        height: 56px;
+      }
+    `};
 `;
 
 const MainContainerWrapper = styled.div`
@@ -39,17 +39,16 @@ const MainContainerWrapper = styled.div`
 
   ${(props) =>
     !props.disableSideInfo &&
-    `
-    @media (max-width: 1024px) {
-      margin-right: 8px;
-      margin-top: 8px;
-    }
-  `};
+    css`
+      @media (max-width: 1024px) {
+        margin-right: 8px;
+        margin-top: 8px;
+      }
+    `};
 `;
 
 const MainContainer = styled.div`
   height: 20px;
-  //margin-right: 8px;
 
   .badge-ext {
     margin: 0px !important;
@@ -96,11 +95,11 @@ const SideContainerWrapper = styled.div`
 
   ${(props) =>
     !props.disableSideInfo &&
-    `
-    @media (max-width: 1024px) {
-      display: none;
-    }
-  `};
+    css`
+      @media (max-width: 1024px) {
+        display: none;
+      }
+    `};
 `;
 
 const TabletSideInfo = styled.div`
