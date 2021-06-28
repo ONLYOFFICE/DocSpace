@@ -1,4 +1,4 @@
-# Rows Loader
+# Tile Loader
 
 Component that displays tile loader
 
