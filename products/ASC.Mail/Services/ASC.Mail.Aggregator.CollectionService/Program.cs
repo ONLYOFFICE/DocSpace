@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
@@ -26,7 +28,7 @@ namespace ASC.Mail.Aggregator.CollectionService
         public async static Task Main(string[] args)
         {
 #if DEBUG
-            //Thread.Sleep(30_000); //to have time to attach the process
+            Debugger.Launch();
 #endif
             var host = CreateHostBuilder(args).Build();
 
@@ -41,7 +43,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var builder = webBuilder.UseStartup<Startup>();
+                    var builder = webBuilder.UseStartup<BaseWorkerStartup>();
 
                     builder.ConfigureKestrel((hostingContext, serverOptions) =>
                     {
@@ -77,10 +79,14 @@ namespace ASC.Mail.Aggregator.CollectionService
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
+                        .AddJsonFile($"storage.{env}.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("backup.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile("mail.json")
+                        .AddJsonFile($"mail.{env}.json")
+                        .AddJsonFile("elastic.json")
+                        .AddJsonFile($"elastic.{env}.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)

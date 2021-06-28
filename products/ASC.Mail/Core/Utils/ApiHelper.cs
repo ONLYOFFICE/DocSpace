@@ -26,13 +26,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Authentication;
 using System.Web;
+
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
@@ -45,12 +45,16 @@ using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Web.Core;
+
 using DotNetOpenAuth.Messaging;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using RestSharp;
 
 namespace ASC.Mail.Utils
@@ -121,6 +125,32 @@ namespace ASC.Mail.Utils
                 (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
+        public ApiHelper(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            CoreSettings coreSettings,
+            ApiDateTimeHelper apiDateTimeHelper,
+            MailSettings mailSettings,
+            IConfiguration configuration,
+            IOptionsMonitor<ILog> option)
+        {
+            MailSettings = mailSettings;
+            Configuration = configuration;
+            Log = option.Get("ASC.Mail.ApiHelper");
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            CoreSettings = coreSettings;
+            ApiDateTimeHelper = apiDateTimeHelper;
+            Scheme = mailSettings.DefaultApiSchema ?? Uri.UriSchemeHttp;
+            MailSettings = mailSettings;
+
+            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorPermit)
+                return;
+
+            ServicePointManager.ServerCertificateValidationCallback =
+                (sender, certificate, chain, sslPolicyErrors) => true;
+        }
+
         private void Setup()
         {
             var user = SecurityContext.CurrentAccount;
@@ -128,8 +158,8 @@ namespace ASC.Mail.Utils
             Log.DebugFormat("ApiHelper->Setup: Tenant={0} User='{1}' IsAuthenticated={2} Scheme='{3}' HttpContext is {4}",
                       Tenant.TenantId, user.ID, user.IsAuthenticated, Scheme,
                       HttpContext != null
-                          ? string.Format("not null and UrlRewriter = {0}, RequestUrl = {1}", 
-                            HttpContext.Request.GetUrlRewriter().ToString(), 
+                          ? string.Format("not null and UrlRewriter = {0}, RequestUrl = {1}",
+                            HttpContext.Request.GetUrlRewriter().ToString(),
                             HttpContext.Request.Url().ToString())
                           : "null");
 
@@ -478,7 +508,7 @@ namespace ASC.Mail.Utils
         public object UploadToCrm(Stream fileStream, string filename, string contentType,
                                       CrmContactData entity)
         {
-            if(entity == null)
+            if (entity == null)
                 throw new ArgumentNullException("entity");
 
             var request = new RestRequest("crm/{entityType}/{entityId}/files/upload.json", Method.POST);

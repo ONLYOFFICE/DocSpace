@@ -1,18 +1,20 @@
-﻿using ASC.Api.Core;
-using ASC.Common.Logging;
-using ASC.Web.Api.Routing;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using ASC.Core;
+﻿using System;
+using System.Configuration;
+
+using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.Logging;
+using ASC.Common.Threading;
+using ASC.Core;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Web.Mail.Resources;
-using ASC.Common.Threading;
-using System.Configuration;
+using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
-using System;
-using ASC.Mail.Configuration;
+using ASC.Web.Mail.Resources;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Controllers
 {
@@ -152,97 +154,97 @@ namespace ASC.Mail.Controllers
             switch (type)
             {
                 case MailOperationType.DownloadAllAttachments:
+                {
+                    var progress = op.GetProperty<MailOperationDownloadAllAttachmentsProgress>(MailOperation.PROGRESS);
+                    switch (progress)
                     {
-                        var progress = op.GetProperty<MailOperationDownloadAllAttachmentsProgress>(MailOperation.PROGRESS);
-                        switch (progress)
-                        {
-                            case MailOperationDownloadAllAttachmentsProgress.Init:
-                                return MailApiResource.SetupTenantAndUserHeader;
-                            case MailOperationDownloadAllAttachmentsProgress.GetAttachments:
-                                return MailApiResource.GetAttachmentsHeader;
-                            case MailOperationDownloadAllAttachmentsProgress.Zipping:
-                                return MailApiResource.ZippingAttachmentsHeader;
-                            case MailOperationDownloadAllAttachmentsProgress.ArchivePreparation:
-                                return MailApiResource.PreparationArchiveHeader;
-                            case MailOperationDownloadAllAttachmentsProgress.CreateLink:
-                                return MailApiResource.CreatingLinkHeader;
-                            case MailOperationDownloadAllAttachmentsProgress.Finished:
-                                return MailApiResource.FinishedHeader;
-                            default:
-                                return status;
-                        }
+                        case MailOperationDownloadAllAttachmentsProgress.Init:
+                            return MailApiResource.SetupTenantAndUserHeader;
+                        case MailOperationDownloadAllAttachmentsProgress.GetAttachments:
+                            return MailApiResource.GetAttachmentsHeader;
+                        case MailOperationDownloadAllAttachmentsProgress.Zipping:
+                            return MailApiResource.ZippingAttachmentsHeader;
+                        case MailOperationDownloadAllAttachmentsProgress.ArchivePreparation:
+                            return MailApiResource.PreparationArchiveHeader;
+                        case MailOperationDownloadAllAttachmentsProgress.CreateLink:
+                            return MailApiResource.CreatingLinkHeader;
+                        case MailOperationDownloadAllAttachmentsProgress.Finished:
+                            return MailApiResource.FinishedHeader;
+                        default:
+                            return status;
                     }
+                }
                 case MailOperationType.RemoveMailbox:
+                {
+                    var progress = op.GetProperty<MailOperationRemoveMailboxProgress>(MailOperation.PROGRESS);
+                    switch (progress)
                     {
-                        var progress = op.GetProperty<MailOperationRemoveMailboxProgress>(MailOperation.PROGRESS);
-                        switch (progress)
-                        {
-                            case MailOperationRemoveMailboxProgress.Init:
-                                return "Setup tenant and user";
-                            case MailOperationRemoveMailboxProgress.RemoveFromDb:
-                                return "Remove mailbox from Db";
-                            case MailOperationRemoveMailboxProgress.FreeQuota:
-                                return "Decrease newly freed quota space";
-                            case MailOperationRemoveMailboxProgress.RecalculateFolder:
-                                return "Recalculate folders counters";
-                            case MailOperationRemoveMailboxProgress.ClearCache:
-                                return "Clear accounts cache";
-                            case MailOperationRemoveMailboxProgress.Finished:
-                                return "Finished";
-                            default:
-                                return status;
-                        }
+                        case MailOperationRemoveMailboxProgress.Init:
+                            return "Setup tenant and user";
+                        case MailOperationRemoveMailboxProgress.RemoveFromDb:
+                            return "Remove mailbox from Db";
+                        case MailOperationRemoveMailboxProgress.FreeQuota:
+                            return "Decrease newly freed quota space";
+                        case MailOperationRemoveMailboxProgress.RecalculateFolder:
+                            return "Recalculate folders counters";
+                        case MailOperationRemoveMailboxProgress.ClearCache:
+                            return "Clear accounts cache";
+                        case MailOperationRemoveMailboxProgress.Finished:
+                            return "Finished";
+                        default:
+                            return status;
                     }
+                }
                 case MailOperationType.RecalculateFolders:
+                {
+                    var progress = op.GetProperty<MailOperationRecalculateMailboxProgress>(MailOperation.PROGRESS);
+                    switch (progress)
                     {
-                        var progress = op.GetProperty<MailOperationRecalculateMailboxProgress>(MailOperation.PROGRESS);
-                        switch (progress)
-                        {
-                            case MailOperationRecalculateMailboxProgress.Init:
-                                return "Setup tenant and user";
-                            case MailOperationRecalculateMailboxProgress.CountUnreadMessages:
-                                return "Calculate unread messages";
-                            case MailOperationRecalculateMailboxProgress.CountTotalMessages:
-                                return "Calculate total messages";
-                            case MailOperationRecalculateMailboxProgress.CountUreadConversation:
-                                return "Calculate unread conversations";
-                            case MailOperationRecalculateMailboxProgress.CountTotalConversation:
-                                return "Calculate total conversations";
-                            case MailOperationRecalculateMailboxProgress.UpdateFoldersCounters:
-                                return "Update folders counters";
-                            case MailOperationRecalculateMailboxProgress.CountUnreadUserFolderMessages:
-                                return "Calculate unread messages in user folders";
-                            case MailOperationRecalculateMailboxProgress.CountTotalUserFolderMessages:
-                                return "Calculate total messages in user folders";
-                            case MailOperationRecalculateMailboxProgress.CountUreadUserFolderConversation:
-                                return "Calculate unread conversations in user folders";
-                            case MailOperationRecalculateMailboxProgress.CountTotalUserFolderConversation:
-                                return "Calculate total conversations in user folders";
-                            case MailOperationRecalculateMailboxProgress.UpdateUserFoldersCounters:
-                                return "Update user folders counters";
-                            case MailOperationRecalculateMailboxProgress.Finished:
-                                return "Finished";
-                            default:
-                                return status;
-                        }
+                        case MailOperationRecalculateMailboxProgress.Init:
+                            return "Setup tenant and user";
+                        case MailOperationRecalculateMailboxProgress.CountUnreadMessages:
+                            return "Calculate unread messages";
+                        case MailOperationRecalculateMailboxProgress.CountTotalMessages:
+                            return "Calculate total messages";
+                        case MailOperationRecalculateMailboxProgress.CountUreadConversation:
+                            return "Calculate unread conversations";
+                        case MailOperationRecalculateMailboxProgress.CountTotalConversation:
+                            return "Calculate total conversations";
+                        case MailOperationRecalculateMailboxProgress.UpdateFoldersCounters:
+                            return "Update folders counters";
+                        case MailOperationRecalculateMailboxProgress.CountUnreadUserFolderMessages:
+                            return "Calculate unread messages in user folders";
+                        case MailOperationRecalculateMailboxProgress.CountTotalUserFolderMessages:
+                            return "Calculate total messages in user folders";
+                        case MailOperationRecalculateMailboxProgress.CountUreadUserFolderConversation:
+                            return "Calculate unread conversations in user folders";
+                        case MailOperationRecalculateMailboxProgress.CountTotalUserFolderConversation:
+                            return "Calculate total conversations in user folders";
+                        case MailOperationRecalculateMailboxProgress.UpdateUserFoldersCounters:
+                            return "Update user folders counters";
+                        case MailOperationRecalculateMailboxProgress.Finished:
+                            return "Finished";
+                        default:
+                            return status;
                     }
+                }
                 case MailOperationType.RemoveUserFolder:
+                {
+                    var progress = op.GetProperty<MailOperationRemoveUserFolderProgress>(MailOperation.PROGRESS);
+                    switch (progress)
                     {
-                        var progress = op.GetProperty<MailOperationRemoveUserFolderProgress>(MailOperation.PROGRESS);
-                        switch (progress)
-                        {
-                            case MailOperationRemoveUserFolderProgress.Init:
-                                return "Setup tenant and user";
-                            case MailOperationRemoveUserFolderProgress.MoveMailsToTrash:
-                                return "Move mails into Trash folder";
-                            case MailOperationRemoveUserFolderProgress.DeleteFolders:
-                                return "Delete folder";
-                            case MailOperationRemoveUserFolderProgress.Finished:
-                                return "Finished";
-                            default:
-                                return status;
-                        }
+                        case MailOperationRemoveUserFolderProgress.Init:
+                            return "Setup tenant and user";
+                        case MailOperationRemoveUserFolderProgress.MoveMailsToTrash:
+                            return "Move mails into Trash folder";
+                        case MailOperationRemoveUserFolderProgress.DeleteFolders:
+                            return "Delete folder";
+                        case MailOperationRemoveUserFolderProgress.Finished:
+                            return "Finished";
+                        default:
+                            return status;
                     }
+                }
                 default:
                     return status;
             }

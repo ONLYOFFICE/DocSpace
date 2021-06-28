@@ -26,19 +26,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -58,6 +60,7 @@ namespace ASC.Mail.Core.Engine
         private StorageManager StorageManager { get; }
 
         public int AutoreplyDaysInterval { get; set; }
+        private MailSettings MailSettings { get; }
 
         public AutoreplyEngine(
             SecurityContext securityContext,
@@ -67,7 +70,8 @@ namespace ASC.Mail.Core.Engine
             CacheEngine cacheEngine,
             ApiHelper apiHelper,
             StorageManager storageManager,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            MailSettings mailSettings)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -76,8 +80,9 @@ namespace ASC.Mail.Core.Engine
             CacheEngine = cacheEngine;
             ApiHelper = apiHelper;
             StorageManager = storageManager;
+            MailSettings = mailSettings;
 
-            AutoreplyDaysInterval = Convert.ToInt32(ConfigurationManager.AppSettings["mail.autoreply-days-interval"] ?? "1");
+            AutoreplyDaysInterval = MailSettings.AutoreplyDaysInterval;
         }
 
         public MailAutoreplyData SaveAutoreply(int mailboxId, bool turnOn, bool onlyContacts,
@@ -313,7 +318,7 @@ namespace ASC.Mail.Core.Engine
             var emails = DaoFactory.MailboxAutoreplyHistoryDao
                 .GetAutoreplyHistorySentEmails(account.MailBoxId, email, AutoreplyDaysInterval);
 
-            if (!emails.Any()) 
+            if (!emails.Any())
                 return false;
 
             account.MailAutoreplyHistory.Add(email);

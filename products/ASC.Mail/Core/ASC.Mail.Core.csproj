@@ -13,6 +13,9 @@
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Mail</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -57,7 +60,40 @@
     <ProjectReference Include="..\..\..\common\services\ASC.ElasticSearch\ASC.ElasticSearch.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\..\ASC.Files\Server\ASC.Files.csproj" />
-    <ProjectReference Include="..\Core\ASC.Mail.Core.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Resources\MailResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\MailResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MailResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.ru.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.de.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.es.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.fr.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.it.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Protobuf Include="protos\AccountCacheItem.proto" />
   </ItemGroup>
   
 </Project>

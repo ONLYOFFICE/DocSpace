@@ -35,7 +35,7 @@
     <ProjectReference Include="..\..\..\..\common\ASC.Data.Encryption\ASC.Data.Encryption.csproj" />
     <ProjectReference Include="..\..\..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
     <ProjectReference Include="..\..\..\..\common\services\ASC.ElasticSearch\ASC.ElasticSearch.csproj" />
-    <ProjectReference Include="..\..\Server\ASC.Mail.csproj" />
+    <ProjectReference Include="..\..\Core\ASC.Mail.Core.csproj" />
   </ItemGroup>
 
 </Project>

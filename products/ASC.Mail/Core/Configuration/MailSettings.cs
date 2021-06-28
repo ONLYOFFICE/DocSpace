@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Utils;
@@ -104,6 +102,11 @@ namespace ASC.Mail.Configuration
         /// </summary>
         public int DefaultServerLoginDelay { get; set; }
 
+        /// <summary>
+        /// mail.autoreply-days-interval
+        /// </summary>
+        public int AutoreplyDaysInterval { get; set; }
+
         public bool NeedProxyHttp { get; set; }
 
         public string DefaultServerLoginDelayStr { get; set; }
@@ -196,7 +199,7 @@ namespace ASC.Mail.Configuration
             All,
             External,
             Internal
-        };       
+        };
 
         /// <summary>
         /// web.enable-signalr
@@ -216,7 +219,7 @@ namespace ASC.Mail.Configuration
         /// <summary>
         /// mail.max-tasks-count
         /// </summary>
-        public int MaxTasksAtOnce { get; set; }       
+        public int MaxTasksAtOnce { get; set; }
 
         /// <summary>
         /// mail.inactive-mailboxes-ratio
@@ -246,7 +249,7 @@ namespace ASC.Mail.Configuration
         /// <summary>
         /// mail.tcp-timeout
         /// </summary>
-        public int TcpTimeout { get; set; }     
+        public int TcpTimeout { get; set; }
 
         /// <summary>
         /// mail.protocol-log-path
@@ -281,7 +284,7 @@ namespace ASC.Mail.Configuration
 
         public static MailSettings Current;
 
-        public MailSettings() 
+        public MailSettings()
         {
             Current = this;
         }
@@ -289,7 +292,7 @@ namespace ASC.Mail.Configuration
         public MailSettings(ConfigurationExtension configuration)
         {
             var c = configuration.GetSetting<MailSettings>("mail");
-            
+
             //ApiPort = c.ApiPort ?? 0;
 
             UseDump = c.UseDump;
@@ -373,6 +376,8 @@ namespace ASC.Mail.Configuration
             DefaultApiSchema = Uri.UriSchemeHttp;
 
             DefaultServerLoginDelay = c.DefaultServerLoginDelay == default(int) ? 30 : c.DefaultServerLoginDelay;
+
+            AutoreplyDaysInterval = c.AutoreplyDaysInterval == default(int) ? 1 : c.AutoreplyDaysInterval;
 
             NeedProxyHttp = SetupInfo.IsVisibleSettings("ProxyHttpContent");
 

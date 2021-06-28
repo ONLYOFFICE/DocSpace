@@ -5,11 +5,11 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../../../../../Data",
-        "log__name": "mail.agg",
         "log__dir": "../../../../../../../Logs",
-        "core__products__folder": "../../../../../../",
+        "log__name": "mail.agg",
         "ASPNETCORE_URLS": "http://localhost:5024",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "core__products__folder": "../../../../../../"
       }
     },
     "WSL 2 : Ubuntu 20.04": {
@@ -17,11 +17,11 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../../../../../Data",
-        "log__name": "mail.agg",
         "log__dir": "../../../../../../../Logs",
-        "core__products__folder": "../../../../../../",
+        "log__name": "mail.agg",
         "ASPNETCORE_URLS": "http://localhost:5024",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "core__products__folder": "../../../../../../"
       },
       "distributionName": "Ubuntu-20.04"
     }
