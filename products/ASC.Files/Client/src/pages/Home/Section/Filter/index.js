@@ -10,6 +10,7 @@ import { withLayoutSize } from "@appserver/common/utils";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -288,38 +289,45 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-export default inject(({ auth, filesStore, selectedFolderStore }) => {
-  const {
-    fetchFiles,
-    filter,
-    setIsLoading,
-    setViewAs,
-    viewAs,
-    files,
-    folders,
-  } = filesStore;
+export default inject(
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const {
+      fetchFiles,
+      filter,
+      setIsLoading,
+      setViewAs,
+      viewAs,
+      files,
+      folders,
+    } = filesStore;
 
-  const { user } = auth.userStore;
-  const { customNames, culture } = auth.settingsStore;
+    const { user } = auth.userStore;
+    const { customNames, culture } = auth.settingsStore;
 
-  const { search, filterType, authorType } = filter;
-  const isFiltered =
-    !!files.length || !!folders.length || search || filterType || authorType;
+    const { search, filterType, authorType } = filter;
+    const isFiltered =
+      (!!files.length ||
+        !!folders.length ||
+        search ||
+        filterType ||
+        authorType) &&
+      !(treeFoldersStore.isPrivacyFolder && isMobile);
 
-  return {
-    customNames,
-    user,
-    selectedFolderId: selectedFolderStore.id,
-    selectedItem: filter.selectedItem,
-    filter,
-    viewAs,
-    isFiltered,
+    return {
+      customNames,
+      user,
+      selectedFolderId: selectedFolderStore.id,
+      selectedItem: filter.selectedItem,
+      filter,
+      viewAs,
+      isFiltered,
 
-    setIsLoading,
-    fetchFiles,
-    setViewAs,
-  };
-})(
+      setIsLoading,
+      fetchFiles,
+      setViewAs,
+    };
+  }
+)(
   withRouter(
     withLayoutSize(
       withTranslation(["Home", "Common", "Translations"])(
