@@ -4,13 +4,16 @@ import { inject, observer } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+import throttle from "lodash/throttle";
 
 import stores from "../../../store/index";
 import i18n from "../SelectFileInput/i18n";
 import SelectFileDialogModalView from "./modalView";
 import SelectFileDialogAsideView from "./asideView";
 import { getFiles } from "@appserver/common/api/files";
+import utils from "@appserver/components/utils";
 
+const { desktop } = utils.device;
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
@@ -27,25 +30,36 @@ class SelectFileDialogBody extends React.Component {
       isChecked: false,
       hasNextPage: true,
       isNextPageLoading: false,
+      displayType: this.getDisplayType(),
     };
-    this.timeoutId = null;
+    this.throttledResize = throttle(this.setDisplayType, 300);
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.updateWidth);
+    const { isPanelVisible } = this.props;
+    if (isPanelVisible) {
+      window.addEventListener("resize", this.throttledResize);
+    }
+  }
+  componentWillUnmount() {
+    if (this.throttledResize) {
+      this.throttledResize && this.throttledResize.cancel();
+      window.removeEventListener("resize", this.throttledResize);
+    }
   }
 
-  updateWidth = () => {
-    clearTimeout(this.timeoutId);
-    this.timeoutId = setTimeout(
-      () => this.setState({ width: window.innerWidth }),
-      150
-    );
+  getDisplayType = () => {
+    const displayType =
+      window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "modal";
+
+    return displayType;
   };
 
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateWidth);
-  }
+  setDisplayType = () => {
+    const displayType = this.getDisplayType();
+
+    this.setState({ displayType: displayType });
+  };
 
   onClickInput = () => {
     this.setState({
@@ -116,7 +130,6 @@ class SelectFileDialogBody extends React.Component {
     const { filter, filterValue, filterType, withSubfolders } = this.props;
     const { selectedFolder } = this.state;
 
-   
     console.log(`loadNextPage(startIndex=${startIndex}")`);
 
     const pageCount = 30;
@@ -161,13 +174,13 @@ class SelectFileDialogBody extends React.Component {
       isVisible,
       filesList,
       isLoadingData,
-      width,
       hasNextPage,
       isNextPageLoading,
       selectedFolder,
+      displayType,
     } = this.state;
 
-    return width < 1025 ? (
+    return displayType === "aside" ? (
       <SelectFileDialogAsideView
         t={t}
         isPanelVisible={isPanelVisible}
