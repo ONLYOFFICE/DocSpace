@@ -381,16 +381,25 @@ const Base = {
   //   arrowColor: grayMid,
   // },
 
-  // switchButton: {
-  //   fillColor: white,
-  //   checkedFillColor: gray,
+  switchButton: {
+    fillColor: white,
+    checkedFillColor: gray,
+    fillColorDisabled: grayLight,
+    disabledFillColor: grayLightMid,
+    disabledFillColorInner: grayMid,
+    hoverBorderColor: gray,
+    borderColor: grayLight,
+  },
 
-  //   fillColorDisabled: grayLight,
-  //   disabledFillColor: grayLightMid,
-  //   disabledFillColorInner: grayMid,
-
-  //   hoverBorderColor: gray,
-  // },
+  viewSelector: {
+    fillColor: white,
+    checkedFillColor: gray,
+    fillColorDisabled: grayLight,
+    disabledFillColor: grayLightMid,
+    disabledFillColorInner: grayMid,
+    hoverBorderColor: gray,
+    borderColor: grayMid,
+  },
 
   radioButton: {
     textColor: black,
@@ -1559,17 +1568,6 @@ const Base = {
     transparentBorder: "1px solid transparent",
     acceptBackground: lightMediumGoldenrod,
     background: lightCumulus,
-  },
-
-  switchButton: {
-    fillColor: white,
-    checkedFillColor: gray,
-
-    fillColorDisabled: grayLight,
-    disabledFillColor: grayLightMid,
-    disabledFillColorInner: grayMid,
-
-    hoverBorderColor: gray,
   },
 
   // phoneInput: {
