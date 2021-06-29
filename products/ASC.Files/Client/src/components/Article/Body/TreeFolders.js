@@ -243,12 +243,7 @@ class TreeFolders extends React.Component {
           key={item.id}
           className={className}
           title={item.title}
-          needTopMargin={
-            item.rootFolderType === FolderType.TRASH ||
-            (item.rootFolderType === FolderType.Privacy &&
-              !this.props.isDesktop &&
-              this.props.needUpdate)
-          }
+          needTopMargin={item.rootFolderType === FolderType.TRASH}
           dragging={dragging}
           isLeaf={
             (item.rootFolderType === FolderType.Privacy &&
