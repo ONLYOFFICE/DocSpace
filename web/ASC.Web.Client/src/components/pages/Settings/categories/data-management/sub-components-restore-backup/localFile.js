@@ -17,7 +17,13 @@ const LocalFile = ({ onSetRestoreParams }) => {
 
     onSetRestoreParams(backupId, storageType, storageParams);
   };
-  return <FileInput onInput={onInputFileHandler} />;
+  return (
+    <FileInput
+      onInput={onInputFileHandler}
+      scale
+      className="restore-backup_input"
+    />
+  );
 };
 
 export default LocalFile;

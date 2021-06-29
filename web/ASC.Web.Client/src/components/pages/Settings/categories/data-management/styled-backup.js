@@ -75,6 +75,10 @@ const StyledComponent = styled.div`
     text-decoration: underline;
     cursor: pointer;
   }
+  .restore-backup_input {
+    margin: 16px 0;
+    max-width: 820px;
+  }
 `;
 const StyledModules = styled.div`
   margin-bottom: 40px;
