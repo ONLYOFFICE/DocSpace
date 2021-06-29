@@ -418,6 +418,7 @@ class UploadDataStore {
         fileInfo: null,
         cancel: false,
         needConvert,
+        encrypted: file.encrypted,
       };
 
       needConvert
@@ -635,7 +636,13 @@ class UploadDataStore {
       ? file.webkitRelativePath.slice(0, -file.name.length)
       : "";
 
-    return startUploadSession(toFolderId, fileName, fileSize, relativePath)
+    return startUploadSession(
+      toFolderId,
+      fileName,
+      fileSize,
+      relativePath,
+      file.encrypted
+    )
       .then((res) => {
         const location = res.data.location;
 
