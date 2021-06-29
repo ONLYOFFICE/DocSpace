@@ -1242,7 +1242,7 @@ class FilesStore {
       }
     }
 
-    this.selected === "close" && this.setSelected("none");
+    //this.selected === "close" && this.setSelected("none");
     this.setSelection(newSelection);
     //}
   };
