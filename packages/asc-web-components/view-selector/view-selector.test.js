@@ -9,13 +9,13 @@ const baseProps = {
   viewAs: "row",
   viewSettings: [
     {
-      key: "row",
+      value: "row",
     },
     {
-      key: "tile",
+      value: "tile",
     },
     {
-      key: "some",
+      value: "some",
     },
   ],
 };

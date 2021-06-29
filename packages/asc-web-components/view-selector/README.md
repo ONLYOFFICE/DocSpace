@@ -13,11 +13,11 @@ import { ViewSelector } from "app-components";
 ```js
 const viewSettings = [
   {
-    key: "row",
+    value: "row",
     icon: "/static/images/row.react.svg",
   },
   {
-    key: "tile",
+    value: "tile",
 
     icon: "/static/images/tile.react.svg",
     callback: createThumbnails,

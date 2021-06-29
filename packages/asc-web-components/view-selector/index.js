@@ -19,7 +19,7 @@ const ViewSelector = ({
 
     const view = el.dataset.view;
     if (view !== currentView) {
-      const option = viewSettings.find((setting) => view === setting.key);
+      const option = viewSettings.find((setting) => view === setting.value);
       option.callback && option.callback();
       setCurrentView(view);
       onChangeView(view);
@@ -36,17 +36,17 @@ const ViewSelector = ({
     >
       {viewSettings &&
         viewSettings.map((el, indx) => {
-          const { key, icon } = el;
+          const { value, icon } = el;
 
           return (
             <IconWrapper
               isDisabled={isDisabled}
-              isChecked={currentView === key}
+              isChecked={currentView === value}
               firstItem={indx === 0}
               lastItem={indx === lastIndx}
-              key={key}
+              key={value}
               className="view-selector-icon"
-              data-view={key}
+              data-view={value}
             >
               <ReactSVG src={icon} />
             </IconWrapper>

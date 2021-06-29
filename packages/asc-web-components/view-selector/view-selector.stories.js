@@ -49,16 +49,16 @@ export const Default = Template.bind({});
 Default.args = {
   viewSettings: [
     {
-      key: "row",
+      value: "row",
       icon: "/static/images/view-rows.react.svg",
     },
     {
-      key: "tile",
+      value: "tile",
       icon: "/static/images/view-tiles.react.svg",
       callback: () => console.log("callback tile click"),
     },
     {
-      key: "some",
+      value: "some",
       icon: "/static/images/eye.react.svg",
       callback: () => console.log("callback some click"),
     },

@@ -212,33 +212,7 @@ class SectionFilterContent extends React.Component {
       { key: "Author", label: t("ByAuthor"), default: true },
     ];
 
-    const viewSettings = [
-      {
-        key: "row",
-        label: t("ViewList"),
-        isSetting: true,
-        default: true,
-        icon: ViewRowsIcon,
-      },
-      {
-        key: "tile",
-        label: t("ViewTiles"),
-        isSetting: true,
-        default: true,
-        icon: ViewTilesIcon,
-      },
-      {
-        key: "tile",
-        label: t("ViewTiles"),
-        isSetting: true,
-        default: true,
-        icon: ViewTilesIcon,
-      },
-    ];
-    //TODO: Need use mobile detect for better result
-    return window.innerWidth < 460
-      ? [...commonOptions, ...viewSettings]
-      : commonOptions;
+    return commonOptions;
   };
 
   getViewSettingsData = () => {
@@ -246,14 +220,14 @@ class SectionFilterContent extends React.Component {
 
     const viewSettings = [
       {
-        key: "row",
+        value: "row",
         label: t("ViewList"),
         isSetting: isMobileOnly,
         default: true,
         icon: "/static/images/view-rows.react.svg",
       },
       {
-        key: "tile",
+        value: "tile",
         label: t("ViewTiles"),
         isSetting: isMobileOnly,
         default: true,

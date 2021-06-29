@@ -911,6 +911,7 @@ class FilterInput extends React.Component {
         <div ref={this.rectComboBoxRef}>
           <SortComboBox
             options={getSortData()}
+            viewSettings={this.state.viewSettings}
             isDisabled={isDisabled}
             onChangeSortId={this.onClickSortItem}
             onChangeView={this.props.onChangeViewAs}
