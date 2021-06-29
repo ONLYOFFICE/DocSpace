@@ -32,6 +32,7 @@ using ASC.Api.CRM;
 using ASC.Api.Documents;
 using ASC.Common.Web;
 using ASC.Core.Common.Settings;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
@@ -163,11 +164,12 @@ namespace ASC.CRM.Api
         /// <returns>Object</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Create(@"report/check")]
-        public object CheckReportData(
-            [FromForm] ReportType type,
-            [FromForm] ReportTimePeriod timePeriod,
-            [FromForm] Guid[] managers)
+        public object CheckReportData([FromBody] ReportDataRequestDto inDto)
         {
+            var type = inDto.Type;
+            var timePeriod = inDto.TimePeriod;
+            var managers = inDto.Managers;
+
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
@@ -187,8 +189,12 @@ namespace ASC.CRM.Api
         /// <returns>Report state</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Create(@"report/generate")]
-        public ReportState GenerateReport([FromForm] ReportType type, [FromForm] ReportTimePeriod timePeriod, [FromForm] Guid[] managers)
+        public ReportState GenerateReport([FromBody] ReportDataRequestDto inDto)
         {
+            var type = inDto.Type;
+            var timePeriod = inDto.TimePeriod;
+            var managers = inDto.Managers;
+
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 

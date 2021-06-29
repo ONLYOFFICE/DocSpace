@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Api.CRM;
 using ASC.Common.Web;
 using ASC.CRM.ApiModels;
+
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
@@ -76,13 +77,14 @@ namespace ASC.CRM.Api
         ///    Opportunity stage
         /// </returns>
         [Create(@"opportunity/stage")]
-        public DealMilestoneDto CreateDealMilestone(
-            [FromForm] string title,
-            [FromForm] string description,
-            [FromForm] string color,
-            [FromForm] int successProbability,
-            [FromForm] DealMilestoneStatus stageType)
+        public DealMilestoneDto CreateDealMilestone([FromBody] CreateOrUpdateDealMilestoneRequestDto inDto)
         {
+            var title = inDto.Title;
+            var successProbability = inDto.SuccessProbability;
+            var description = inDto.Description;
+            var color = inDto.Color;
+            var stageType = inDto.StageType;
+
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
@@ -121,14 +123,14 @@ namespace ASC.CRM.Api
         ///    Opportunity stage
         /// </returns>
         [Update(@"opportunity/stage/{id:int}")]
-        public DealMilestoneDto UpdateDealMilestone(
-            int id,
-            string title,
-            string description,
-            string color,
-            int successProbability,
-            DealMilestoneStatus stageType)
+        public DealMilestoneDto UpdateDealMilestone([FromRoute] int id, [FromBody] CreateOrUpdateDealMilestoneRequestDto inDto)
         {
+            var title = inDto.Title;
+            var successProbability = inDto.SuccessProbability;
+            var description = inDto.Description;
+            var color = inDto.Color;
+            var stageType = inDto.StageType;
+
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
@@ -167,7 +169,7 @@ namespace ASC.CRM.Api
         ///    Opportunity stage
         /// </returns>
         [Update(@"opportunity/stage/{id:int}/color")]
-        public DealMilestoneDto UpdateDealMilestoneColor(int id, string color)
+        public DealMilestoneDto UpdateDealMilestoneColor([FromRoute] int id, [FromBody] string color)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -256,12 +258,14 @@ namespace ASC.CRM.Api
         ///<returns>History category</returns>
         ///<exception cref="ArgumentException"></exception>
         [Create(@"history/category")]
-        public HistoryCategoryDto CreateHistoryCategory(
-            [FromForm] string title,
-            [FromForm] string description,
-            [FromForm] string imageName,
-            [FromForm] int sortOrder)
+        public HistoryCategoryDto CreateHistoryCategory([FromBody] CreateListItemCategoryRequestDto inDto)
         {
+
+            var title = inDto.Title;
+            var description = inDto.Description;
+            var sortOrder = inDto.SortOrder;
+            var imageName = inDto.ImageName;
+
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
@@ -428,19 +432,16 @@ namespace ASC.CRM.Api
         ///</returns>
         [Create(@"task/category")]
         public TaskCategoryDto CreateTaskCategory(
-            [FromForm] string title,
-            [FromForm] string description,
-            [FromForm] string imageName,
-            [FromForm] int sortOrder)
+            [FromBody] CreateListItemCategoryRequestDto inDto)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             var listItem = new ListItem
             {
-                Title = title,
-                Description = description,
-                SortOrder = sortOrder,
-                AdditionalParams = imageName
+                Title = inDto.Title,
+                Description = inDto.Description,
+                SortOrder = inDto.SortOrder,
+                AdditionalParams =inDto.ImageName
             };
 
             listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.TaskCategory, listItem);
@@ -536,7 +537,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Update(@"task/category/reorder")]
-        public IEnumerable<TaskCategoryDto> UpdateTaskCategoriesOrder(IEnumerable<string> titles)
+        public IEnumerable<TaskCategoryDto> UpdateTaskCategoriesOrder([FromBody] IEnumerable<string> titles)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -562,7 +563,7 @@ namespace ASC.CRM.Api
         ///<exception cref="ItemNotFoundException"></exception>
         ///<exception cref="SecurityException"></exception>
         [Delete(@"task/category/{categoryid:int}")]
-        public TaskCategoryDto DeleteTaskCategory(int categoryid, int newcategoryid)
+        public TaskCategoryDto DeleteTaskCategory([FromRoute] int categoryid, [FromBody] int newcategoryid)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -599,11 +600,14 @@ namespace ASC.CRM.Api
         /// </returns>
         [Create(@"contact/status")]
         public ContactStatusDto CreateContactStatus(
-            [FromForm] string title,
-            [FromForm] string description,
-            [FromForm] string color,
-            [FromForm] int sortOrder)
+            [FromBody] CreateOrUpdateContactStatusRequestDto inDto)
         {
+
+            var title = inDto.Title;
+            var description = inDto.Description;
+            var color = inDto.Color;
+            var sortOrder = inDto.SortOrder;
+
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             var listItem = new ListItem
@@ -638,8 +642,16 @@ namespace ASC.CRM.Api
         ///    Contact status
         /// </returns>
         [Update(@"contact/status/{id:int}")]
-        public ContactStatusDto UpdateContactStatus(int id, string title, string description, string color, int sortOrder)
+        public ContactStatusDto UpdateContactStatus(
+            [FromRoute] int id,
+            [FromBody] CreateOrUpdateContactStatusRequestDto inDto)
         {
+
+            var title = inDto.Title;
+            var description = inDto.Description;
+            var color = inDto.Color;
+            var sortOrder = inDto.SortOrder;
+
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
@@ -675,7 +687,7 @@ namespace ASC.CRM.Api
         ///    Contact status
         /// </returns>
         [Update(@"contact/status/{id:int}/color")]
-        public ContactStatusDto UpdateContactStatusColor(int id, string color)
+        public ContactStatusDto UpdateContactStatusColor([FromRoute] int id, [FromBody] string color)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -707,7 +719,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Update(@"contact/status/reorder")]
-        public IEnumerable<ContactStatusDto> UpdateContactStatusesOrder(IEnumerable<string> titles)
+        public IEnumerable<ContactStatusDto> UpdateContactStatusesOrder([FromBody] IEnumerable<string> titles)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -790,8 +802,11 @@ namespace ASC.CRM.Api
         ///    Contact type
         /// </returns>
         [Create(@"contact/type")]
-        public ContactTypeDto CreateContactType([FromForm] string title, [FromForm] int sortOrder)
+        public ContactTypeDto CreateContactType([FromBody] CreateOrUpdateContactTypeRequestDto inDto)
         {
+            var title = inDto.Title;
+            var sortOrder = inDto.SortOrder;
+
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             var listItem = new ListItem
@@ -823,8 +838,11 @@ namespace ASC.CRM.Api
         ///    Contact type
         /// </returns>
         [Update(@"contact/type/{id:int}")]
-        public ContactTypeDto UpdateContactType(int id, string title, int sortOrder)
+        public ContactTypeDto UpdateContactType(int id, [FromBody] CreateOrUpdateContactTypeRequestDto inDto)
         {
+            var title = inDto.Title;
+            var sortOrder = inDto.SortOrder;
+
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
@@ -860,7 +878,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Update(@"contact/type/reorder")]
-        public IEnumerable<ContactTypeDto> UpdateContactTypesOrder(IEnumerable<string> titles)
+        public IEnumerable<ContactTypeDto> UpdateContactTypesOrder([FromBody] IEnumerable<string> titles)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 

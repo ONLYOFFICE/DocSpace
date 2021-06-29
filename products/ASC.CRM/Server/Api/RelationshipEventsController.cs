@@ -251,9 +251,11 @@ namespace ASC.CRM.Api
         public FileWrapper<int> CreateTextFile(
             [FromRoute] string entityType,
             [FromRoute] int entityid,
-            [FromForm] string title,
-            [FromForm] string content)
+            [FromBody] RelationshipEventCreateTextFileRequestDto inDto)
         {
+            var title = inDto.Title;
+            var content = inDto.Content;
+
             if (title == null) throw new ArgumentNullException("title");
             if (content == null) throw new ArgumentNullException("content");
 
