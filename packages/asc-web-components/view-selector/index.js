@@ -33,6 +33,7 @@ const ViewSelector = ({
       {...rest}
       isDisabled={isDisabled}
       onClick={onChangeViewHandler}
+      countItems={viewSettings.length}
     >
       {viewSettings &&
         viewSettings.map((el, indx) => {

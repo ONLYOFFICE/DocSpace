@@ -3,26 +3,39 @@ import Base from "../themes/base";
 
 const StyledViewSelector = styled.div`
   height: 32px;
+  width: ${(props) => `calc(${props.countItems} * 32px)`};
   position: relative;
   box-sizing: border-box;
   display: flex;
+
+  ${(props) =>
+    props.countItems > 2
+      ? css`
+          .view-selector-icon:hover {
+            z-index: 2;
+          }
+          .view-selector-icon:not(:first-child) {
+            margin-left: -1px;
+          }
+        `
+      : css`
+          .view-selector-icon:first-child {
+            border-right: none;
+          }
+          .view-selector-icon:last-child {
+            border-left: none;
+          }
+        `}
 `;
 
 const firstItemStyle = css`
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
-  border-right: 1px solid rgba(255, 255, 255, 0);
 `;
 
 const lastItemStyle = css`
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
-  border-left: 1px solid rgba(255, 255, 255, 0);
-`;
-
-const middleItemsStyle = css`
-  border-left: 1px solid rgba(255, 255, 255, 0);
-  border-right: 1px solid rgba(255, 255, 255, 0);
 `;
 
 const IconWrapper = styled.div`
@@ -33,6 +46,8 @@ const IconWrapper = styled.div`
   box-sizing: border-box;
   border: 1px solid;
 
+  ${(props) => props.isChecked && `z-index: 1;`}
+
   border-color: ${(props) =>
     props.isDisabled
       ? props.theme.viewSelector.disabledFillColor
@@ -40,7 +55,6 @@ const IconWrapper = styled.div`
       ? props.theme.viewSelector.checkedFillColor
       : props.theme.viewSelector.borderColor};
 
-  ${(props) => !props.firstItem && !props.lastItem && middleItemsStyle}
   ${(props) => props.firstItem && firstItemStyle}
   ${(props) => props.lastItem && lastItemStyle}
 
