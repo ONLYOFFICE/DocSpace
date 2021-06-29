@@ -123,7 +123,7 @@ const SectionBodyContent = (props) => {
   };
 
   const onDropEvent = () => {
-    dragging && setDragging(false);
+    setDragging(false);
   };
 
   const onDragOver = (e) => {
