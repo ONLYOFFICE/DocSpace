@@ -13,6 +13,7 @@ import GoogleCloudStorage from "./googleCloudStorage";
 import RackspaceStorage from "./rackspaceStorage";
 import SelectelStorage from "./selectelStorage";
 import AmazonStorage from "./amazonStorage";
+import { getOptions } from "../utils/getOptions";
 
 const StyledComponent = styled.div`
   .backup_combo {
@@ -63,7 +64,24 @@ class ThirdPartyStorageModule extends React.PureComponent {
       },
       function () {
         getBackupStorage()
-          .then((storageBackup) => this.getOptions(storageBackup))
+          .then((storageBackup) => {
+            const parameters = getOptions(storageBackup);
+
+            const {
+              options,
+              availableStorage,
+              selectedStorage,
+              selectedId,
+            } = parameters;
+
+            this.setState({
+              availableOptions: options,
+              availableStorage: availableStorage,
+
+              selectedStorage: selectedStorage,
+              selectedId: selectedId,
+            });
+          })
           .finally(() => {
             onSetLoadingData && onSetLoadingData(false);
             this.setState({ isLoading: false });
@@ -75,59 +93,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
   componentWillUnmount() {
     this._isMounted = false;
   }
-  getOptions = (storageBackup) => {
-    this.setState({
-      isLoading: true,
-    });
-    let options = [];
-    let availableStorage = {};
-
-    //debugger;
-    for (let item = 0; item < storageBackup.length; item++) {
-      // debugger;
-      let obj = {
-        [storageBackup[item].id]: {
-          isSet: storageBackup[item].isSet,
-          properties: storageBackup[item].properties,
-          title: storageBackup[item].title,
-          id: storageBackup[item].id,
-        },
-      };
-      let titleObj = {
-        key: storageBackup[item].id,
-        label: storageBackup[item].title,
-        disabled: false,
-      };
-      options.push(titleObj);
-
-      availableStorage = { ...availableStorage, ...obj };
-
-      if (!this.isFirstSet && storageBackup[item].isSet) {
-        this.isFirstSet = true;
-        this.firstSetId = storageBackup[item].id;
-      }
-    }
-
-    if (!this.isFirstSet) {
-      this.setState({
-        selectedStorage: availableStorage[googleStorageId].title,
-        selectedId: availableStorage[googleStorageId].id,
-      });
-    }
-
-    if (this.isFirstSet) {
-      this.setState({
-        selectedStorage: availableStorage[this.firstSetId].title,
-        selectedId: availableStorage[this.firstSetId].id,
-      });
-    }
-
-    this.setState({
-      availableOptions: options,
-      availableStorage: availableStorage,
-      isLoading: false,
-    });
-  };
 
   onSelect = (option) => {
     const selectedStorageId = option.key;
