@@ -287,18 +287,19 @@ namespace ASC.CRM.Api
         /// <returns>Task</returns>
         [Create(@"task")]
         public TaskDto CreateTask(
-            [FromForm] string title,
-            [FromForm] string description,
-            [FromForm] ApiDateTime deadline,
-            [FromForm] Guid responsibleId,
-            [FromForm] int categoryId,
-            [FromForm] int contactId,
-            [FromForm] string entityType,
-            [FromForm] int entityId,
-            [FromForm] bool isNotify,
-            [FromForm] int alertValue
-            )
+[FromBody] CreateOrUpdateTaskRequestDto inDto)
         {
+            var entityType = inDto.EntityType;
+            var categoryId = inDto.CategoryId;
+            var title = inDto.Title;
+            var description = inDto.Description;
+            var deadline = inDto.Deadline;
+            var responsibleId = inDto.ResponsibleId;
+            var contactId = inDto.ContactId;
+            var entityId = inDto.EntityId;
+            var alertValue = inDto.AlertValue;
+            var isNotify = inDto.isNotify;
+
             if (!string.IsNullOrEmpty(entityType) &&
                 !(
                      string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
@@ -377,18 +378,21 @@ namespace ASC.CRM.Api
         /// <returns>Tasks</returns>
         /// <visible>false</visible>
         [Create(@"contact/task/group")]
-        public IEnumerable<TaskDto> CreateTaskGroup(
-            [FromForm] string title,
-            [FromForm] string description,
-            [FromForm] ApiDateTime deadline,
-            [FromForm] Guid responsibleId,
-            [FromForm] int categoryId,
-            [FromForm] int[] contactId,
-            [FromForm] string entityType,
-            [FromForm] int entityId,
-            [FromForm] bool isNotify,
-            [FromForm] int alertValue)
+        public IEnumerable<TaskDto> CreateTaskGroup([FromBody] CreateTaskGroupRequestDto inDto)
         {
+            var entityType = inDto.EntityType;
+            var contactId = inDto.ContactIds;
+            var title = inDto.Title;
+            var description = inDto.Description;
+            var responsibleId = inDto.ResponsibleId;
+            var entityId = inDto.EntityId;
+            var categoryId = inDto.CategoryId;
+            var alertValue = inDto.AlertValue;
+            var deadline = inDto.Deadline;
+            var isNotify = inDto.isNotify;
+
+
+
             var tasks = new List<Task>();
 
             if (
@@ -488,18 +492,20 @@ namespace ASC.CRM.Api
         /// <returns>Task</returns>
         [Update(@"task/{taskid:int}")]
         public TaskDto UpdateTask(
-            int taskid,
-            string title,
-            string description,
-            ApiDateTime deadline,
-            Guid responsibleid,
-            int categoryid,
-            int contactid,
-            string entityType,
-            int entityid,
-            bool isNotify,
-            int alertValue)
+            [FromRoute] int taskid,
+[FromBody] CreateOrUpdateTaskRequestDto inDto)
         {
+            var entityType = inDto.EntityType;
+            var categoryid = inDto.CategoryId;
+            var title = inDto.Title;
+            var description = inDto.Description;
+            var deadline = inDto.Deadline;
+            var responsibleid = inDto.ResponsibleId;
+            var contactid = inDto.ContactId;
+            var entityid = inDto.EntityId;
+            var alertValue = inDto.AlertValue;
+            var isNotify = inDto.isNotify;
+
             if (!string.IsNullOrEmpty(entityType) &&
                 !(string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
                   string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0

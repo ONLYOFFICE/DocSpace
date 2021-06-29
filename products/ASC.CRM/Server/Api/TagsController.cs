@@ -196,8 +196,12 @@ namespace ASC.CRM.Api
         ///    Tag
         /// </returns> 
         [Create(@"{entityType:regex(contact|opportunity|case)}/taglist")]
-        public string AddTagToBatch([FromRoute] string entityType, [FromForm] IEnumerable<int> entityid, [FromForm] string tagName)
+        public string AddTagToBatch([FromRoute] string entityType,
+                                    [FromBody] AddTagToBatchRequestDto inDto)
         {
+            var entityid = inDto.Entityid;
+            var tagName = inDto.TagName;
+
             var ids = entityid.ToList();
             if (entityid == null || !ids.Any()) throw new ArgumentException();
 
@@ -226,14 +230,16 @@ namespace ASC.CRM.Api
         /// </returns> 
         [Create(@"contact/filter/taglist")]
         public string AddTagToBatchContacts(
-           [FromForm] IEnumerable<string> tags,
-           [FromForm] int contactStage,
-           [FromForm] int contactType,
-           [FromForm] ContactListViewType contactListView,
-           [FromForm] ApiDateTime fromDate,
-           [FromForm] ApiDateTime toDate,
-           [FromForm] string tagName)
+         [FromBody] AddTagToBatchContactsRequestDto inDto)
         {
+            var tags = inDto.Tags;
+            var contactStage = inDto.ContactStage;
+            var contactType = inDto.ContactType;
+            var contactListView = inDto.ContactListView;
+            var fromDate = inDto.FromDate;
+            var toDate = inDto.ToDate;
+            var tagName = inDto.TagName;
+
             var contacts = _daoFactory
                 .GetContactDao()
                 .GetContacts(_apiContext.FilterValue,
@@ -275,16 +281,18 @@ namespace ASC.CRM.Api
         /// </returns> 
         [Create(@"opportunity/filter/taglist")]
         public string AddTagToBatchDeals(
-            [FromForm] Guid responsibleid,
-            [FromForm] int opportunityStagesid,
-            [FromForm] IEnumerable<string> tags,
-            [FromForm] int contactid,
-            [FromForm] DealMilestoneStatus? stageType,
-            [FromForm] bool? contactAlsoIsParticipant,
-            [FromForm] ApiDateTime fromDate,
-            [FromForm] ApiDateTime toDate,
-            [FromForm] string tagName)
+         [FromBody]  AddTagToBatchDealsRequestDto inDto)
         {
+            var responsibleid = inDto.Responsibleid;
+            var opportunityStagesid = inDto.OpportunityStagesid;
+            var tags = inDto.Tags;
+            var contactid = inDto.Contactid;
+            var stageType = inDto.StageType;
+            var contactAlsoIsParticipant = inDto.ContactAlsoIsParticipant;
+            var fromDate = inDto.FromDate;
+            var toDate = inDto.ToDate;
+            var tagName = inDto.TagName;
+
             var deals = _daoFactory
                 .GetDealDao()
                 .GetDeals(
@@ -318,12 +326,13 @@ namespace ASC.CRM.Api
         ///    Tag
         /// </returns> 
         [Create(@"case/filter/taglist")]
-        public string AddTagToBatchCases(
-            [FromForm] int contactid,
-            [FromForm] bool? isClosed,
-            [FromForm] IEnumerable<string> tags,
-            [FromForm] string tagName)
+        public string AddTagToBatchCases([FromBody] AddTagToBatchCasesRequestDto inDto)
         {
+            var contactid = inDto.ContactId;
+            var tagName = inDto.TagName;
+            var tags = inDto.Tags;
+            var isClosed = inDto.isClosed;
+
             var caseses = _daoFactory.GetCasesDao().GetCases(_apiContext.FilterValue, contactid, isClosed, tags, 0, 0, null)
                 .Where(_crmSecurity.CanAccessTo).ToList();
 

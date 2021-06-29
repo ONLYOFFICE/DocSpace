@@ -38,6 +38,8 @@ namespace ASC.Api.Core
         public virtual JsonConverter[] Converters { get; }
         public virtual bool ConfirmAddScheme { get; } = false;
         protected DIHelper DIHelper { get; }
+        protected bool LoadProducts { get; } = true;
+        protected bool LoadConsumers { get; } = true;
 
         public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
@@ -155,7 +157,7 @@ namespace ASC.Api.Core
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.Register(Configuration);
+            builder.Register(Configuration, LoadProducts, LoadConsumers);
         }
     }
 }
