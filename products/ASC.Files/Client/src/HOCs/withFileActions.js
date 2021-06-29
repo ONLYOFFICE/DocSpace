@@ -209,7 +209,7 @@ export default function withFileActions(WrappedFileItem) {
     render() {
       const {
         item,
-        isRecycleBin,
+        isTrashFolder,
         draggable,
         canShare,
         isPrivacy,
@@ -227,7 +227,7 @@ export default function withFileActions(WrappedFileItem) {
       const isEdit =
         !!actionType && actionId === id && fileExst === actionExtension;
 
-      const isDragging = isFolder && access < 2 && !isRecycleBin;
+      const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
       let className = isDragging ? " droppable" : "";
       if (draggable) className += " draggable not-selectable";
