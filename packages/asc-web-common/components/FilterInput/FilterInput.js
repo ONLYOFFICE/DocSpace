@@ -8,6 +8,7 @@ import ViewSelector from "@appserver/components/view-selector";
 import map from "lodash/map";
 import clone from "lodash/clone";
 import StyledFilterInput from "./StyledFilterInput";
+import { isMobileOnly } from "react-device-detect";
 
 const cloneObjectsArray = function (props) {
   return map(props, clone);
@@ -928,7 +929,7 @@ class FilterInput extends React.Component {
             directionDescLabel={directionDescLabel}
           />
         </div>
-        {viewAs && (
+        {viewAs && !isMobileOnly && (
           <ViewSelector
             className="view-selector-button"
             isDisabled={isDisabled}
