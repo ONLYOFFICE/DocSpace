@@ -10,6 +10,10 @@ import { withLayoutSize } from "@appserver/common/utils";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { ReactSVG } from "react-svg";
+
+import ViewTilesIcon from "../../../../../../../../public/images/view-tiles.react.svg";
+import ViewRowsIcon from "../../../../../../../../public/images/view-rows.react.svg";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -93,10 +97,7 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    const { setViewAs, createThumbnails } = this.props;
-    if (view === "tile") {
-      createThumbnails();
-    }
+    const { setViewAs } = this.props;
     setViewAs(view);
   };
 
@@ -212,13 +213,56 @@ class SectionFilterContent extends React.Component {
     ];
 
     const viewSettings = [
-      { key: "row", label: t("ViewList"), isSetting: true, default: true },
-      { key: "tile", label: t("ViewTiles"), isSetting: true, default: true },
+      {
+        key: "row",
+        label: t("ViewList"),
+        isSetting: true,
+        default: true,
+        icon: ViewRowsIcon,
+      },
+      {
+        key: "tile",
+        label: t("ViewTiles"),
+        isSetting: true,
+        default: true,
+        icon: ViewTilesIcon,
+      },
+      {
+        key: "tile",
+        label: t("ViewTiles"),
+        isSetting: true,
+        default: true,
+        icon: ViewTilesIcon,
+      },
     ];
     //TODO: Need use mobile detect for better result
     return window.innerWidth < 460
       ? [...commonOptions, ...viewSettings]
       : commonOptions;
+  };
+
+  getViewSettingsData = () => {
+    const { t, createThumbnails } = this.props;
+
+    const viewSettings = [
+      {
+        key: "row",
+        label: t("ViewList"),
+        isSetting: isMobileOnly,
+        default: true,
+        icon: "/static/images/view-rows.react.svg",
+      },
+      {
+        key: "tile",
+        label: t("ViewTiles"),
+        isSetting: isMobileOnly,
+        default: true,
+        icon: "/static/images/view-tiles.react.svg",
+        callback: createThumbnails,
+      },
+    ];
+
+    return viewSettings;
   };
 
   getSelectedFilterData = () => {
@@ -276,6 +320,7 @@ class SectionFilterContent extends React.Component {
         sectionWidth={sectionWidth}
         getFilterData={this.getData}
         getSortData={this.getSortData}
+        getViewSettingsData={this.getViewSettingsData}
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}

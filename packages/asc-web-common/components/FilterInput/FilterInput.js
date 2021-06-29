@@ -4,7 +4,7 @@ import SearchInput from "@appserver/components/search-input";
 import equal from "fast-deep-equal/react";
 import FilterBlock from "./sub-components/FilterBlock";
 import SortComboBox from "./sub-components/SortComboBox";
-import ViewSelector from "./sub-components/ViewSelector";
+import ViewSelector from "@appserver/components/view-selector";
 import map from "lodash/map";
 import clone from "lodash/clone";
 import StyledFilterInput from "./StyledFilterInput";
@@ -90,9 +90,15 @@ class FilterInput extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedFilterData, getSortData, value } = props;
+    const {
+      selectedFilterData,
+      getSortData,
+      value,
+      getViewSettingsData,
+    } = props;
     const { sortDirection, sortId, inputValue } = selectedFilterData;
     const sortData = getSortData();
+    const viewSettings = getViewSettingsData(); // ???
 
     const filterValues = selectedFilterData ? this.getDefaultFilterData() : [];
 
@@ -111,6 +117,7 @@ class FilterInput extends React.Component {
       hiddenFilterItems: [],
       needUpdateFilter: false,
       asideView: false,
+      viewSettings,
     };
 
     this.searchWrapper = React.createRef();
@@ -278,16 +285,6 @@ class FilterInput extends React.Component {
       key ? "desc" : "asc"
     );
     this.setState({ sortDirection: !!key });
-  };
-  onClickViewSelector = (checked) => {
-    let viewAs;
-    if (typeof checked === "string") {
-      viewAs = checked;
-    } else {
-      viewAs = checked ? "tile" : "row";
-    }
-
-    this.props.onChangeViewAs(viewAs);
   };
 
   onClickSortItem = (key) => {
@@ -832,6 +829,7 @@ class FilterInput extends React.Component {
       contextMenuHeader,
       isMobile,
       sectionWidth,
+      getViewSettingsData,
     } = this.props;
     /* eslint-enable react/prop-types */
 
@@ -915,7 +913,7 @@ class FilterInput extends React.Component {
             options={getSortData()}
             isDisabled={isDisabled}
             onChangeSortId={this.onClickSortItem}
-            onChangeView={this.onClickViewSelector}
+            onChangeView={this.props.onChangeViewAs}
             onChangeSortDirection={this.onChangeSortDirection}
             selectedOption={
               getSortData().length > 0
@@ -931,9 +929,11 @@ class FilterInput extends React.Component {
         </div>
         {viewAs && (
           <ViewSelector
+            className="view-selector-button"
             isDisabled={isDisabled}
-            onClickViewSelector={this.onClickViewSelector}
+            onChangeView={this.props.onChangeViewAs}
             viewAs={viewAs}
+            viewSettings={this.state.viewSettings}
           />
         )}
       </StyledFilterInput>
@@ -958,6 +958,7 @@ FilterInput.propTypes = {
   sectionWidth: PropTypes.number,
   getSortData: PropTypes.func,
   value: PropTypes.string,
+  getViewSettingsData: PropTypes.func,
 };
 
 FilterInput.defaultProps = {
