@@ -15,8 +15,10 @@ import BackupListModalDialog from "./sub-components-restore-backup/backupListMod
 import Documents from "./sub-components-restore-backup/documents";
 import ThirdPartyResources from "./sub-components-restore-backup/thirdPartyResources";
 import ThirdPartyStorages from "./sub-components-restore-backup/thirdPartyStorages";
+import LocalFile from "./sub-components-restore-backup/localFile";
 import { StyledRestoreModules } from "./styled-backup";
-
+import toastr from "@appserver/components/toast/toastr";
+import { startRestore } from "../../../../../../../../packages/asc-web-common/api/portal";
 const ICON_URL = "/images/icons/24/file_archive.svg";
 const FILTER_TYPE = 10;
 const FILTER_VALUE = "gz";
@@ -33,7 +35,12 @@ class RestoreBackup extends React.Component {
       isCheckedDocuments: true,
       isCheckedThirdParty: false,
       isCheckedThirdPartyStorage: false,
+      isCheckedLocalFile: false,
+      selectedFileId: "",
     };
+    this.backupId = "";
+    this.storageType = "";
+    this.storageParams = "";
   }
 
   componentDidMount() {
@@ -93,6 +100,7 @@ class RestoreBackup extends React.Component {
       isCheckedDocuments,
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
+      isCheckedLocalFile,
     } = this.state;
     const name = e.target.name;
 
@@ -116,6 +124,12 @@ class RestoreBackup extends React.Component {
             isCheckedTemporaryStorage: true,
           });
         }
+        if (isCheckedLocalFile) {
+          this.setState({
+            isCheckedLocalFile: false,
+            isCheckedTemporaryStorage: true,
+          });
+        }
         break;
       case 1:
         if (isCheckedTemporaryStorage) {
@@ -133,6 +147,12 @@ class RestoreBackup extends React.Component {
         if (isCheckedThirdPartyStorage) {
           this.setState({
             isCheckedThirdPartyStorage: false,
+            isCheckedDocuments: true,
+          });
+        }
+        if (isCheckedLocalFile) {
+          this.setState({
+            isCheckedLocalFile: false,
             isCheckedDocuments: true,
           });
         }
@@ -157,9 +177,15 @@ class RestoreBackup extends React.Component {
             isCheckedThirdParty: true,
           });
         }
+        if (isCheckedLocalFile) {
+          this.setState({
+            isCheckedLocalFile: false,
+            isCheckedThirdParty: true,
+          });
+        }
         break;
 
-      default:
+      case 3:
         if (isCheckedTemporaryStorage) {
           this.setState({
             isCheckedTemporaryStorage: false,
@@ -178,8 +204,74 @@ class RestoreBackup extends React.Component {
             isCheckedThirdPartyStorage: true,
           });
         }
+        if (isCheckedLocalFile) {
+          this.setState({
+            isCheckedLocalFile: false,
+            isCheckedThirdPartyStorage: true,
+          });
+        }
+        break;
+      default:
+        if (isCheckedTemporaryStorage) {
+          this.setState({
+            isCheckedTemporaryStorage: false,
+            isCheckedLocalFile: true,
+          });
+        }
+        if (isCheckedDocuments) {
+          this.setState({
+            isCheckedDocuments: false,
+            isCheckedLocalFile: true,
+          });
+        }
+        if (isCheckedThirdParty) {
+          this.setState({
+            isCheckedThirdParty: false,
+            isCheckedLocalFile: true,
+          });
+        }
+        if (isCheckedThirdPartyStorage) {
+          this.setState({
+            isCheckedThirdPartyStorage: false,
+            isCheckedLocalFile: true,
+          });
+        }
         break;
     }
+  };
+
+  onSelectFile = (id) => {
+    this.setState({
+      selectedFileId: id,
+    });
+  };
+
+  onSetRestoreParams = (backupId, storageType, storageParams) => {
+    this.backupId = backupId;
+    this.storageType = storageType;
+    this.storageParams = storageParams;
+  };
+
+  onRestoreClick = () => {
+    console.log("restore button");
+    const { isNotify, isCheckedDocuments, selectedFileId } = this.state;
+
+    if (isCheckedDocuments) {
+      this.backupId = "";
+      this.storageType = "0";
+      this.storageParams = [
+        {
+          key: "filePath",
+          value: selectedFileId,
+        },
+      ];
+    }
+    startRestore(
+      this.backupId,
+      this.storageType,
+      this.storageParams,
+      isNotify
+    ).catch((error) => toastr.error(error));
   };
   render() {
     const { t } = this.props;
@@ -192,6 +284,7 @@ class RestoreBackup extends React.Component {
       isCheckedDocuments,
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
+      isCheckedLocalFile,
     } = this.state;
 
     return isLoading ? (
@@ -257,6 +350,21 @@ class RestoreBackup extends React.Component {
           />
         </StyledRestoreModules>
 
+        <StyledRestoreModules>
+          <RadioButton
+            fontSize="13px"
+            fontWeight="400"
+            label={t("LocalFile")}
+            name={"4"}
+            key={1}
+            onClick={this.onClickShowStorage}
+            isChecked={isCheckedLocalFile}
+            isDisabled={false}
+            value="value"
+            className="backup_radio-button"
+          />
+        </StyledRestoreModules>
+
         {isCheckedDocuments && (
           <Documents
             isPanelVisible={isPanelVisible}
@@ -266,6 +374,8 @@ class RestoreBackup extends React.Component {
             filterType={FILTER_TYPE}
             filterValue={FILTER_VALUE}
             withSubfolders={WITH_SUBFOLDERS}
+            onSelectFile={this.onSelectFile}
+     
           />
         )}
         {isCheckedThirdParty && (
@@ -277,10 +387,16 @@ class RestoreBackup extends React.Component {
             filterType={FILTER_TYPE}
             filterValue={FILTER_VALUE}
             withSubfolders={WITH_SUBFOLDERS}
+            onSelectFile={this.onSelectFile}
           />
         )}
         {isCheckedThirdPartyStorage && <ThirdPartyStorages />}
-
+        {isCheckedLocalFile && (
+          <LocalFile
+            onSelectFile={this.onSelectFile}
+            onSetRestoreParams={this.onSetRestoreParams}
+          />
+        )}
         <Text className="restore-backup_list" onClick={this.onClickBackupList}>
           {t("BackupList")}
         </Text>
@@ -321,7 +437,7 @@ class RestoreBackup extends React.Component {
         />
         <Button
           label={t("RestoreButton")}
-          onClick={() => console.log("click")}
+          onClick={this.onRestoreClick}
           primary
           isDisabled={!isChecked}
           size="medium"

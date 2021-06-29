@@ -12,6 +12,8 @@ class Documents extends React.Component {
       filterType,
       filterValue,
       withSubfolders,
+      onSelectFile,
+      onSetRestoreParams,
     } = this.props;
     return (
       <SelectFileInput
@@ -24,6 +26,8 @@ class Documents extends React.Component {
         filterValue={filterValue}
         withSubfolders={withSubfolders}
         filterType={filterType}
+        onSelectFile={onSelectFile}
+        onSetRestoreParams={onSetRestoreParams}
       />
     );
   }

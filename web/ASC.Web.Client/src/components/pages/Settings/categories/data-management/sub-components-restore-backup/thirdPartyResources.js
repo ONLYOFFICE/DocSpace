@@ -13,6 +13,7 @@ class ThirdPartyResources extends React.Component {
       filterType,
       filterValue,
       withSubfolders,
+      onSelectFile,
     } = this.props;
     return (
       <SelectFileInput
@@ -23,6 +24,7 @@ class ThirdPartyResources extends React.Component {
         filterValue={filterValue}
         withSubfolders={withSubfolders}
         filterType={filterType}
+        onSelectFile={onSelectFile}
         foldersType="third-party"
       />
     );

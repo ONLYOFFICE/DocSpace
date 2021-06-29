@@ -52,6 +52,7 @@ class SelectFile extends React.PureComponent {
       filterType,
       filterValue,
       withSubfolders,
+      onSelectFile,
     } = this.props;
     const { isLoading, fileName } = this.state;
     const zIndex = 310;
@@ -79,6 +80,7 @@ class SelectFile extends React.PureComponent {
             filterValue={filterValue}
             withSubfolders={withSubfolders}
             filterType={filterType}
+            onSelectFile={onSelectFile}
           />
         )}
       </StyledComponent>

@@ -132,3 +132,20 @@ export function deleteBackup(id) {
 export function getBackupHistory() {
   return request({ method: "get", url: "/portal/getbackuphistory" });
 }
+
+export function startRestore(backupId, storageType, storageParams, notify) {
+  return request({
+    method: "post",
+    url: `/portal/startrestore`,
+    data: {
+      backupId,
+      storageType,
+      storageParams: storageParams,
+      notify,
+    },
+  });
+}
+
+export function getRestoreProgress() {
+  return request({ method: "get", url: "/portal/getrestoreprogress" });
+}

@@ -128,5 +128,6 @@
   "CopyingError": "An error has been encountered. Please contact your administrator.",
   "RestoreBackup": "Restore",
   "ClearList": "Clear the list.",
-  "EmptyBackupList": "No backups have been created yet. Create one or more backups for them to appear in this list."
+  "EmptyBackupList": "No backups have been created yet. Create one or more backups for them to appear in this list.",
+  "LocalFile": "Local file"
 }
