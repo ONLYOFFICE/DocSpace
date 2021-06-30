@@ -6,6 +6,11 @@ const BannerWrapper = styled.div`
   border-radius: 5px;
   padding: 15px;
 
+  a {
+    text-decoration: none;
+    color: #000;
+  }
+
   .banner-btn {
     width: 100%;
     color: #fff;

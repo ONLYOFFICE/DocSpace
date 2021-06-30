@@ -13,22 +13,21 @@ const onButtonClick = (url) => {
 };
 
 const CampaignsBanner = (props) => {
-  const { headerLabel, textLabel, img, btnLabel, btnLink } = props;
+  const { headerLabel, subHeaderLabel, img, btnLabel, link } = props;
   return (
     <BannerWrapper>
-      <BannerHeader>{headerLabel}</BannerHeader>
-      <BannerText>{textLabel}</BannerText>
-
-      <div>
+      <a href={link}>
+        <BannerHeader>{headerLabel}</BannerHeader>
+        <BannerText>{subHeaderLabel}</BannerText>
         <img src={img} />
-      </div>
+      </a>
 
       <Button
         className="banner-btn"
         size="big"
         isDisabled={false}
         label={btnLabel}
-        onClick={() => onButtonClick(btnLink)}
+        onClick={() => onButtonClick(link)}
       />
     </BannerWrapper>
   );
@@ -39,10 +38,10 @@ CampaignsBanner.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   headerLabel: PropTypes.string,
-  textLabel: PropTypes.string,
+  subHeaderLabel: PropTypes.string,
   img: PropTypes.string,
   btnLabel: PropTypes.string,
-  btnLink: PropTypes.string,
+  link: PropTypes.string,
 };
 
 CampaignsBanner.defaultProps = {

@@ -19,9 +19,9 @@ export const Default = Template.bind({});
 
 Default.args = {
   headerLabel: "ONLYOFFICE for business",
-  textLabel: "Docs, projects, clients & emails",
+  subHeaderLabel: "Docs, projects, clients & emails",
   img: "static/images/campaign.cloud.png",
   btnLabel: "START FREE TRIAL",
-  btnLink:
+  link:
     "https://www.onlyoffice.com/ru/registration.aspx?utm_source=personal&utm_campaign=BannerPersonalCloud",
 };
