@@ -718,10 +718,10 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public ItemDictionary<string, string> CheckEditing(List<T> filesId)
+        public Dictionary<string, string> CheckEditing(List<T> filesId)
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-            var result = new ItemDictionary<string, string>();
+            var result = new Dictionary<string, string>();
 
             var fileDao = GetFileDao();
             var ids = filesId.Where(FileTracker.IsEditing).Select(id => id).ToList();
