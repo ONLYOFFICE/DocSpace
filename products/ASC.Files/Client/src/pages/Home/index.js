@@ -136,7 +136,6 @@ class PureHome extends React.Component {
 
   onDrop = (files, uploadToFolder) => {
     const { t, startUpload, setDragging, dragging } = this.props;
-
     dragging && setDragging(false);
     startUpload(files, uploadToFolder, t);
   };
@@ -242,7 +241,6 @@ class PureHome extends React.Component {
       isLoading,
       dragging,
     } = this.props;
-
     return (
       <>
         <MediaViewer />
@@ -273,6 +271,7 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           isLoading={isLoading}
+          dragging={dragging}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

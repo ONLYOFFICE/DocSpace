@@ -13,6 +13,7 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { loopTreeFolders } from "../helpers/files-helpers";
+import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
 
 const { FilesFilter } = api;
@@ -28,7 +29,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = "row";
+  viewAs = localStorage.getItem("viewAs") || "row";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
@@ -73,6 +74,7 @@ class FilesStore {
 
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
+    localStorage.setItem("viewAs", viewAs);
   };
 
   setDragging = (dragging) => {
@@ -325,6 +327,7 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
+          this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
         .catch(() => {
@@ -1029,6 +1032,8 @@ class FilesStore {
         viewUrl,
         webUrl,
         providerKey,
+        thumbnailUrl,
+        thumbnailStatus,
       } = item;
 
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
@@ -1038,7 +1043,15 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const icon = getIcon(24, fileExst, providerKey, contentLength);
+      const icon =
+        this.viewAs !== "tile"
+          ? getIcon(24, fileExst, providerKey, contentLength)
+          : getIcon(32, fileExst, providerKey, contentLength);
+
+      let isFolder = false;
+      this.folders.map((x) => {
+        if (x.id === item.id) isFolder = true;
+      });
 
       return {
         access,
@@ -1057,7 +1070,7 @@ class FilesStore {
         foldersCount,
         icon,
         id,
-        //isFolder,
+        isFolder,
         locked,
         new: item.new,
         parentId,
@@ -1076,6 +1089,8 @@ class FilesStore {
         canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
+        thumbnailUrl,
+        thumbnailStatus,
       };
     });
 
@@ -1347,6 +1362,19 @@ class FilesStore {
               )
         );
     }
+  };
+
+  createThumbnails = () => {
+    const filesList = this.filesList;
+    const fileIds = [];
+
+    filesList.map((file) => {
+      const { thumbnailStatus } = file;
+
+      if (thumbnailStatus === thumbnailStatuses.WAITING) fileIds.push(file.id);
+    });
+
+    if (fileIds.length) return api.files.createThumbnails(fileIds);
   };
 }
 

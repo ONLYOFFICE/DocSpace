@@ -254,7 +254,7 @@ namespace ASC.Web.Files.Services.DocumentService
             get { return File.CreateOnString; }
         }
 
-        public ItemList<AceShortWrapper> SharingSettings
+        public List<AceShortWrapper> SharingSettings
         {
             set { }
             get
