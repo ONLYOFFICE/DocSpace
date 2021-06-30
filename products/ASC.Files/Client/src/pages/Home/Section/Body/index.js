@@ -60,8 +60,7 @@ const SectionBodyContent = (props) => {
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      e.target.tagName !== "path" &&
-      !e.target.closest(".aside")
+      !e.target.closest(".not-selectable")
     )
       setSelection([]);
   };
