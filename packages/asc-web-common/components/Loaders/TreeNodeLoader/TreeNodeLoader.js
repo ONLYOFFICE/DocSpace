@@ -4,6 +4,7 @@ import CircleLoader from "../CircleLoader";
 
 const TreeNodeLoader = ({
   title,
+  borderRadius,
   backgroundColor,
   foregroundColor,
   backgroundOpacity,
