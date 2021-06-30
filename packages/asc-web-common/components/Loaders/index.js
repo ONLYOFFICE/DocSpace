@@ -12,6 +12,8 @@ import ProfileView from "./ProfileViewLoader";
 import SettingsFiles from "./SettingsFilesLoader";
 import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
+import DialogLoader from "./DialogLoader";
+import DialogAsideLoader from "./DialogAsideLoader";
 
 export default {
   Rectangle,
@@ -28,4 +30,6 @@ export default {
   SettingsFiles,
   Group,
   HistoryRows,
+  DialogLoader,
+  DialogAsideLoader,
 };
