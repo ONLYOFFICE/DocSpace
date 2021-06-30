@@ -280,6 +280,10 @@ export const StyledHideFilterButton = styled.div`
   :active {
     background-color: ${(props) => (props.isDisabled ? "#F8F9F9" : "#ECEEF1")};
   }
+
+  @media (max-width: 375px) {
+    height: 25px;
+  }
 `;
 
 export const StyledIconButton = styled.div`
