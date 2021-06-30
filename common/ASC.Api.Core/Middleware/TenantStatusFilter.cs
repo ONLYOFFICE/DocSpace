@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -15,6 +17,8 @@ namespace ASC.Api.Core.Middleware
     public class TenantStatusFilter : IResourceFilter
     {
         private readonly ILog log;
+        private readonly string[] passthroughtRequestEndings = new[] { ".js", ".css", ".less", ".ico", ".png", "PreparationPortal.aspx", "TenantLogo.ashx", "getrestoreprogress", "capabilities" };
+
 
         public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
         {
@@ -42,6 +46,18 @@ namespace ASC.Api.Core.Middleware
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
                 log.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
+                return;
+            }
+
+            if (tenant.Status == TenantStatus.Transfering || tenant.Status == TenantStatus.Restoring)
+            {
+                if (passthroughtRequestEndings.Any(path => context.HttpContext.Request.Path.ToString().EndsWith(path, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    return;
+                }
+                context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
+                log.WarnFormat("Tenant {0} is {1}", tenant.TenantId, tenant.Status);
+                context.HttpContext.Response.Redirect("~/PreparationPortal.aspx?type=" + (tenant.Status == TenantStatus.Transfering ? "0" : "1"));
                 return;
             }
         }
