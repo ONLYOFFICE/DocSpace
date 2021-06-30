@@ -280,7 +280,7 @@ namespace ASC.Data.Backup
             return result;
         }
 
-        private void DemandPermissionsRestore()
+        public void DemandPermissionsRestore()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

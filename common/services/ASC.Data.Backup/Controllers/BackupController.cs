@@ -267,5 +267,24 @@ namespace ASC.Data.Backup.Controllers
 
             return BackupHandler.GetTmpFolder();
         }
+
+        ///<visible>false</visible>
+        [Read("enablerestore")]
+        public bool EnableRestore()
+        {
+            try
+            {
+                if (CoreBaseSettings.Standalone)
+                {
+                    TenantExtra.DemandControlPanelPermission();
+                }
+                BackupHandler.DemandPermissionsRestore();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
