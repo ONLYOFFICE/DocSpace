@@ -61,7 +61,7 @@ const SectionBodyContent = (props) => {
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
       e.target.tagName !== "path" &&
-      !e.target.closest(".modal-dialog-aside-body")
+      !e.target.closest(".aside")
     )
       setSelection([]);
   };
