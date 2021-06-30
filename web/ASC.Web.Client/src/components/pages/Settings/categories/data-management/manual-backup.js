@@ -103,6 +103,14 @@ class ManualBackup extends React.Component {
                   getFromSessionStorage("selectedFolder") &&
                     saveToSessionStorage("selectedFolder", "");
                 }
+              } else {
+                saveToSessionStorage("selectedManualStorageType", "");
+
+                getFromSessionStorage("selectedFolderPath") &&
+                  saveToSessionStorage("selectedFolderPath", "");
+
+                getFromSessionStorage("selectedFolder") &&
+                  saveToSessionStorage("selectedFolder", "");
               }
             }
           })
