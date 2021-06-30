@@ -12,6 +12,7 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import config from "../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import Loaders from "@appserver/common/components/Loaders";
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -85,6 +86,7 @@ const PureTreeSettings = ({
   history,
   setIsLoading,
   t,
+  tReady,
   isVisitor,
 }) => {
   const { setting } = match.params;
@@ -189,7 +191,9 @@ const PureTreeSettings = ({
 
   const nodes = renderTreeNode();
 
-  return (
+  return !tReady ? (
+    <Loaders.TreeSettingsLoader />
+  ) : (
     <StyledTreeMenu
       expandedKeys={expandedSetting}
       selectedKeys={selectedTreeNode}

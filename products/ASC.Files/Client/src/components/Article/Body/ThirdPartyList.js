@@ -9,6 +9,7 @@ import { withRouter } from "react-router";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
+import Loaders from "@appserver/common/components/Loaders";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -71,6 +72,10 @@ const StyledThirdParty = styled.div`
   }
 `;
 
+const StyledRectangleLoader = styled(Loaders.Rectangle)`
+  margin-top: 42px;
+`;
+
 const ServiceItem = (props) => {
   const { capability, src, ...rest } = props;
 
@@ -92,6 +97,7 @@ const ServiceItem = (props) => {
 
 const PureThirdPartyListContainer = ({
   t,
+  tReady,
   googleConnectItem,
   boxConnectItem,
   dropboxConnectItem,
@@ -153,7 +159,9 @@ const PureThirdPartyListContainer = ({
     redirectAction();
   };
 
-  return (
+  return !tReady ? (
+    <StyledRectangleLoader />
+  ) : (
     <StyledThirdParty>
       <Link
         color="#555F65"

@@ -64,9 +64,16 @@ class PureArticleMainButtonContent extends React.Component {
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, canCreate, isDisabled, firstLoad, isPrivacy } = this.props;
+    const {
+      t,
+      tReady,
+      canCreate,
+      isDisabled,
+      firstLoad,
+      isPrivacy,
+    } = this.props;
 
-    return firstLoad ? (
+    return firstLoad || !tReady ? (
       <Loaders.Rectangle />
     ) : (
       <MainButton
