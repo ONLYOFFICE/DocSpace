@@ -8,7 +8,14 @@ import Button from "@appserver/components/button";
 const ErrorContainer = (props) => {
   //console.log("ErrorContainer render");
 
-  const { headerText, bodyText, buttonText, buttonUrl, ...rest } = props;
+  const {
+    headerText,
+    bodyText,
+    buttonText,
+    buttonUrl,
+    children,
+    ...rest
+  } = props;
 
   return (
     <StyledErrorContainer {...rest}>
@@ -330,6 +337,7 @@ const ErrorContainer = (props) => {
           {headerText}
         </Headline>
       )}
+      {children}
       {bodyText && <Text id="text">{bodyText}</Text>}
       {buttonText && buttonUrl && (
         <div id="button-container">
