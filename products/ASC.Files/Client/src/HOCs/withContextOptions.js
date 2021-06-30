@@ -109,7 +109,7 @@ export default function withContextOptions(WrappedComponent) {
         setConvertItem(item);
         setConvertDialogVisible(true);
       } else {
-        onPreviewClick();
+        this.onPreviewClick();
       }
     };
 

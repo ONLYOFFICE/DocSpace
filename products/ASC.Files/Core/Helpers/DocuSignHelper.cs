@@ -454,7 +454,7 @@ namespace ASC.Web.Files.Helpers
 
         public string Name { get; set; }
 
-        public ItemList<Guid> Users { get; set; }
+        public List<Guid> Users { get; set; }
     }
 
     public enum DocuSignStatus

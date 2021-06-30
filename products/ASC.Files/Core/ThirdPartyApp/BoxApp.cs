@@ -218,13 +218,13 @@ namespace ASC.Web.Files.ThirdPartyApp
             var modifiedBy = jsonFile.Value<JObject>("modified_by");
             if (modifiedBy != null)
             {
-                file.ModifiedByString = modifiedBy.Value<string>("name");
+                file._modifiedByString = modifiedBy.Value<string>("name");
             }
 
             var createdBy = jsonFile.Value<JObject>("created_by");
             if (createdBy != null)
             {
-                file.CreateByString = createdBy.Value<string>("name");
+                file._createByString = createdBy.Value<string>("name");
             }
 
 

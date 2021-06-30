@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Api.CRM;
 using ASC.Common.Web;
 using ASC.CRM.ApiModels;
+
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
@@ -108,7 +109,7 @@ namespace ASC.CRM.Api
             [FromRoute] string entityType,
             [FromRoute] int entityid,
             [FromRoute] int fieldid,
-            [FromForm] string fieldValue)
+            [FromBody] string fieldValue)
         {
             var customField = _daoFactory.GetCustomFieldDao().GetFieldDescription(fieldid);
 
@@ -217,12 +218,17 @@ namespace ASC.CRM.Api
         [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield")]
         public CustomFieldDto CreateCustomFieldValue(
             [FromRoute] string entityType,
-            [FromForm] string label,
-            [FromForm] int fieldType,
-            [FromForm] int position,
-            [FromForm] string mask)
+            [FromBody] CreateOrUpdateCustomFieldValueRequestDto inDto
+         )
         {
+
+            var label = inDto.Label;
+            var fieldType = inDto.FieldType;
+            var position = inDto.Position;
+            var mask = inDto.Mask;
+
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
+
             var entityTypeObj = ToEntityType(entityType);
             var fieldID = _daoFactory.GetCustomFieldDao().CreateField(entityTypeObj, label, (CustomFieldType)fieldType, mask);
             var wrapper = _daoFactory.GetCustomFieldDao().GetFieldDescription(fieldID);

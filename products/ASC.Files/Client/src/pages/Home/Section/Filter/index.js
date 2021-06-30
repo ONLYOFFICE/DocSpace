@@ -10,6 +10,10 @@ import { withLayoutSize } from "@appserver/common/utils";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { ReactSVG } from "react-svg";
+
+import ViewTilesIcon from "../../../../../../../../public/images/view-tiles.react.svg";
+import ViewRowsIcon from "../../../../../../../../public/images/view-rows.react.svg";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -93,7 +97,8 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    this.props.setViewAs(view);
+    const { setViewAs } = this.props;
+    setViewAs(view);
   };
 
   getData = () => {
@@ -207,14 +212,31 @@ class SectionFilterContent extends React.Component {
       { key: "Author", label: t("ByAuthor"), default: true },
     ];
 
+    return commonOptions;
+  };
+
+  getViewSettingsData = () => {
+    const { t, createThumbnails } = this.props;
+
     const viewSettings = [
-      { key: "row", label: t("ViewList"), isSetting: true, default: true },
-      { key: "tile", label: t("ViewTiles"), isSetting: true, default: true },
+      {
+        value: "row",
+        label: t("ViewList"),
+        isSetting: isMobileOnly,
+        default: true,
+        icon: "/static/images/view-rows.react.svg",
+      },
+      {
+        value: "tile",
+        label: t("ViewTiles"),
+        isSetting: isMobileOnly,
+        default: true,
+        icon: "/static/images/view-tiles.react.svg",
+        callback: createThumbnails,
+      },
     ];
-    //TODO: Need use mobile detect for better result
-    return window.innerWidth < 460
-      ? [...commonOptions, ...viewSettings]
-      : commonOptions;
+
+    return viewSettings;
   };
 
   getSelectedFilterData = () => {
@@ -261,7 +283,7 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, sectionWidth, tReady, isFiltered } = this.props;
+    const { t, sectionWidth, tReady, isFiltered, viewAs } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
 
@@ -272,10 +294,11 @@ class SectionFilterContent extends React.Component {
         sectionWidth={sectionWidth}
         getFilterData={this.getData}
         getSortData={this.getSortData}
+        getViewSettingsData={this.getViewSettingsData}
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
-        viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
+        viewAs={viewAs}
         directionAscLabel={t("Common:DirectionAscLabel")}
         directionDescLabel={t("Common:DirectionDescLabel")}
         placeholder={t("Common:Search")}
@@ -288,38 +311,41 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-export default inject(({ auth, filesStore, selectedFolderStore }) => {
-  const {
-    fetchFiles,
-    filter,
-    setIsLoading,
-    setViewAs,
-    viewAs,
-    files,
-    folders,
-  } = filesStore;
+export default inject(
+  ({ auth, filesStore, selectedFolderStore, thumbnailsStore }) => {
+    const {
+      fetchFiles,
+      filter,
+      setIsLoading,
+      setViewAs,
+      viewAs,
+      files,
+      folders,
+      createThumbnails,
+    } = filesStore;
 
-  const { user } = auth.userStore;
-  const { customNames, culture } = auth.settingsStore;
+    const { user } = auth.userStore;
+    const { customNames, culture } = auth.settingsStore;
 
-  const { search, filterType, authorType } = filter;
-  const isFiltered =
-    !!files.length || !!folders.length || search || filterType || authorType;
+    const { search, filterType, authorType } = filter;
+    const isFiltered =
+      !!files.length || !!folders.length || search || filterType || authorType;
 
-  return {
-    customNames,
-    user,
-    selectedFolderId: selectedFolderStore.id,
-    selectedItem: filter.selectedItem,
-    filter,
-    viewAs,
-    isFiltered,
-
-    setIsLoading,
-    fetchFiles,
-    setViewAs,
-  };
-})(
+    return {
+      customNames,
+      user,
+      selectedFolderId: selectedFolderStore.id,
+      selectedItem: filter.selectedItem,
+      filter,
+      viewAs,
+      isFiltered,
+      setIsLoading,
+      fetchFiles,
+      setViewAs,
+      createThumbnails,
+    };
+  }
+)(
   withRouter(
     withLayoutSize(
       withTranslation(["Home", "Common", "Translations"])(

@@ -114,15 +114,18 @@ namespace ASC.Web.Files.HttpHandlers
 
         public async Task Invoke(HttpContext context)
         {
-            var uploadSession = ChunkedUploadSessionHolder.GetSession(context.Request.Query["uid"]);
-
-            if (uploadSession as ChunkedUploadSession<int> != null)
+            try
             {
-                await Invoke<int>(context);
-                return;
+                var uploadSession = ChunkedUploadSessionHolder.GetSession<int>(context.Request.Query["uid"]);
+                if (uploadSession != null)
+                {
+                    await Invoke<int>(context);
+                }
             }
-
-            await Invoke<string>(context);
+            catch (Exception)
+            {
+                await Invoke<string>(context);
+            }
         }
 
         public async Task Invoke<T>(HttpContext context)
@@ -206,7 +209,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (!string.IsNullOrEmpty(request.UploadId))
             {
-                var uploadSession = ChunkedUploadSessionHolder.GetSession(request.UploadId);
+                var uploadSession = ChunkedUploadSessionHolder.GetSession<T>(request.UploadId);
                 if (uploadSession != null)
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);

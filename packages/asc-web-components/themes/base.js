@@ -381,16 +381,15 @@ const Base = {
   //   arrowColor: grayMid,
   // },
 
-  // switchButton: {
-  //   fillColor: white,
-  //   checkedFillColor: gray,
-
-  //   fillColorDisabled: grayLight,
-  //   disabledFillColor: grayLightMid,
-  //   disabledFillColorInner: grayMid,
-
-  //   hoverBorderColor: gray,
-  // },
+  viewSelector: {
+    fillColor: white,
+    checkedFillColor: gray,
+    fillColorDisabled: grayLight,
+    disabledFillColor: grayLightMid,
+    disabledFillColorInner: grayMid,
+    hoverBorderColor: gray,
+    borderColor: grayMid,
+  },
 
   radioButton: {
     textColor: black,

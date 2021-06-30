@@ -36,7 +36,7 @@ const Badges = ({
         <IconButton
           onClick={setConvertDialogVisible}
           iconName="/static/images/refresh.react.svg"
-          className="badge"
+          className="badge icons-group can-convert"
           size="small"
           isfill={true}
           color="#A3A9AE"
@@ -44,6 +44,7 @@ const Badges = ({
         />
       )}
       {canWebEdit &&
+        !isEditing &&
         !isTrashFolder &&
         accessToEdit &&
         showEditBadge &&
@@ -69,7 +70,7 @@ const Badges = ({
       )}
       {(isFavorite || isNewWithFav) && !isTrashFolder && (
         <StyledFavoriteIcon
-          className="favorite icons-group"
+          className="favorite icons-group badge"
           size="small"
           data-action="remove"
           data-id={id}
@@ -78,7 +79,11 @@ const Badges = ({
         />
       )}
       {isEditing && (
-        <StyledFileActionsConvertEditDocIcon className="badge" size="small" />
+        <StyledFileActionsConvertEditDocIcon
+          onClick={onFilesClick}
+          className="badge icons-group is-editing"
+          size="small"
+        />
       )}
       {versionGroup > 1 && (
         <Badge

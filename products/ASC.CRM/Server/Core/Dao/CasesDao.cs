@@ -295,7 +295,8 @@ namespace ASC.CRM.Core.Dao
 
             CrmDbContext.Cases.RemoveRange(caseses.ConvertAll(x => new DbCase
             {
-                Id = x.ID
+                Id = x.ID,
+                TenantId = TenantID
             }));
 
             CrmDbContext.SaveChanges();

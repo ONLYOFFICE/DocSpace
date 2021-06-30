@@ -13,6 +13,7 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { loopTreeFolders } from "../helpers/files-helpers";
+import { thumbnailStatuses } from "../helpers/constants";
 
 const { FilesFilter } = api;
 
@@ -27,7 +28,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = "row";
+  viewAs = localStorage.getItem("viewAs") || "row";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
@@ -72,6 +73,7 @@ class FilesStore {
 
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
+    localStorage.setItem("viewAs", viewAs);
   };
 
   setDragging = (dragging) => {
@@ -331,6 +333,7 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
+          this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
         .catch(() => {
@@ -1006,6 +1009,8 @@ class FilesStore {
         viewUrl,
         webUrl,
         providerKey,
+        thumbnailUrl,
+        thumbnailStatus,
       } = item;
 
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
@@ -1015,7 +1020,15 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const icon = getIcon(24, fileExst, providerKey, contentLength);
+      const icon =
+        this.viewAs !== "tile"
+          ? getIcon(24, fileExst, providerKey, contentLength)
+          : getIcon(32, fileExst, providerKey, contentLength);
+
+      let isFolder = false;
+      this.folders.map((x) => {
+        if (x.id === item.id) isFolder = true;
+      });
 
       return {
         access,
@@ -1033,7 +1046,7 @@ class FilesStore {
         foldersCount,
         icon,
         id,
-        //isFolder,
+        isFolder,
         locked,
         new: item.new,
         parentId,
@@ -1052,6 +1065,8 @@ class FilesStore {
         canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
+        thumbnailUrl,
+        thumbnailStatus,
       };
     });
 
@@ -1194,14 +1209,28 @@ class FilesStore {
   setSelections = (items) => {
     if (!items.length && !this.selection.length) return;
 
-    if (items.length !== this.selection.length) {
-      this.setSelection(items);
-    } else if (items.length === 0) {
-      const item = this.selection.find(
-        (x) => x.id === item[0].id && x.fileExst === item.fileExst
-      );
-      if (!item) this.setSelection(items);
+    //if (items.length !== this.selection.length) {
+    const newSelection = [];
+
+    for (let item of items) {
+      const value = item.getAttribute("value");
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      const id =
+        splitValue[splitValue.length - 1] === "draggable"
+          ? splitValue.slice(1, -1).join("_")
+          : splitValue.slice(1).join("_");
+
+      if (fileType === "file") {
+        newSelection.push(this.files.find((f) => f.id == id && f.fileExst));
+      } else {
+        newSelection.push(this.folders.find((f) => f.id == id && !f.fileExst));
+      }
     }
+
+    this.setSelection(newSelection);
+    //}
   };
 
   getShareUsers(folderIds, fileIds) {
@@ -1304,6 +1333,19 @@ class FilesStore {
               )
         );
     }
+  };
+
+  createThumbnails = () => {
+    const filesList = this.filesList;
+    const fileIds = [];
+
+    filesList.map((file) => {
+      const { thumbnailStatus } = file;
+
+      if (thumbnailStatus === thumbnailStatuses.WAITING) fileIds.push(file.id);
+    });
+
+    if (fileIds.length) return api.files.createThumbnails(fileIds);
   };
 }
 

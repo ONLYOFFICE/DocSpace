@@ -155,7 +155,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers")]
-        public VoipPhone BuyNumber([FromForm] string number)
+        public VoipPhone BuyNumber([FromBody] string number)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
@@ -176,7 +176,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers/link")]
-        public VoipPhone LinkNumber([FromForm] string id)
+        public VoipPhone LinkNumber([FromBody] string id)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
@@ -643,8 +643,11 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/call")]
-        public VoipCallDto MakeCall([FromForm] string to, [FromForm] string contactId)
+        public VoipCallDto MakeCall([FromBody] CreateMakeCallRequestDto inDto)
         {
+            var to = inDto.To;
+            var contactId = inDto.ContactId;
+
             var number = _daoFactory.GetVoipDao().GetCurrentNumber().NotFoundIfNull();
 
             if (!number.Settings.Caller.AllowOutgoingCalls) throw new SecurityException(CRMErrorsResource.AccessDenied);
@@ -722,7 +725,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         [Create(@"voip/call/{callId:regex(\w+)}/redirect")]
-        public VoipCallDto ReditectCall([FromRoute] string callId, [FromForm] string to)
+        public VoipCallDto ReditectCall([FromRoute] string callId, [FromBody] string to)
         {
             var dao = _daoFactory.GetVoipDao();
             var call = dao.GetCall(callId).NotFoundIfNull();
@@ -754,13 +757,16 @@ namespace ASC.CRM.Api
         [Create(@"voip/call/{callId:regex(\w+)}")]
         public VoipCallDto SaveCall(
             [FromRoute] string callId,
-            [FromForm] string from,
-            [FromForm] string to,
-            [FromForm] Guid answeredBy,
-            [FromForm] VoipCallStatus? status,
-            [FromForm] string contactId,
-            [FromForm] decimal? price)
+            [FromBody] CreateVoipCallRequestDto inDto)
         {
+
+            var from = inDto.From;
+            var to = inDto.To;
+            var answeredBy = inDto.AnsweredBy;
+            var contactId = inDto.ContactId;
+            var status = inDto.Status;
+            var price = inDto.Price;
+
             var dao = _daoFactory.GetVoipDao();
 
             var call = dao.GetCall(callId) ?? new VoipCall();

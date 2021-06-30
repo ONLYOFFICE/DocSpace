@@ -251,9 +251,11 @@ namespace ASC.CRM.Api
         public FileWrapper<int> CreateTextFile(
             [FromRoute] string entityType,
             [FromRoute] int entityid,
-            [FromForm] string title,
-            [FromForm] string content)
+            [FromBody] RelationshipEventCreateTextFileRequestDto inDto)
         {
+            var title = inDto.Title;
+            var content = inDto.Content;
+
             if (title == null) throw new ArgumentNullException("title");
             if (content == null) throw new ArgumentNullException("content");
 
@@ -305,7 +307,7 @@ namespace ASC.CRM.Api
         /// File info
         /// </returns>
         [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/upload")]
-        public FileWrapper<int> UploadFileInCRM([FromForm] UploadFileInCRMRequestDto inDto)
+        public FileWrapper<int> UploadFileInCRM([FromBody] UploadFileInCRMRequestDto inDto)
         {
             string entityType = inDto.EntityType;
             int entityid = inDto.Entityid;
@@ -372,7 +374,7 @@ namespace ASC.CRM.Api
         ///   Created event
         /// </returns>
         [Create(@"history")]
-        public RelationshipEventDto AddHistoryTo([FromForm] AddHistoryToRequestDto inDto)
+        public RelationshipEventDto AddHistoryTo([FromBody] AddHistoryToRequestDto inDto)
         {
             string entityType = inDto.EntityType;
             int entityId = inDto.EntityId;
@@ -506,7 +508,7 @@ namespace ASC.CRM.Api
         public RelationshipEventDto AttachFiles(
             [FromRoute] string entityType,
             [FromRoute] int entityid,
-            [FromForm] IEnumerable<int> fileids)
+            [FromBody] IEnumerable<int> fileids)
         {
             if (entityid <= 0 || fileids == null) throw new ArgumentException();
 
