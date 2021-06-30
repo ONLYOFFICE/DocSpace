@@ -84,7 +84,7 @@ namespace ASC.Calendar.BusinessObjects
         }
 
         public static List<EventWrapper> GetEventWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate, EventWrapperHelper eventWrapperHelper)
-        {
+        {new List<EventWrapper>();
             var result = new List<EventWrapper>();
             if (calendar != null)
             {
@@ -99,30 +99,20 @@ namespace ASC.Calendar.BusinessObjects
 
             return result;
         }
-        public static List<TodoWrapper> GetTodoWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate)
+        public static List<TodoWrapper> GetTodoWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate, TodoWrapperHelper todoWrapperHelper)
         {
-            /*var result = new List<TodoWrapper>();
+            var result = new List<TodoWrapper>();
             if (calendar != null)
             {
-                using (var provider = new DataProvider())
+                var events = calendar.LoadTodos(userId, startDate.UtcTime, endDate.UtcTime);
+                foreach (var e in events)
                 {
-                    var cal = provider.GetCalendarById(Convert.ToInt32(calendar.Id));
-                    if (cal != null)
-                    {
-                        var todos = provider.LoadTodos(Convert.ToInt32(calendar.Id), userId, cal.TenantId, startDate,endDate)
-                                .Cast<ITodo>()
-                                .ToList();
-                        foreach (var t in todos)
-                        {
-                            var wrapper = new TodoWrapper(t, userId, calendar.TimeZone);
-                            var listWrapper = wrapper.GetList();
-                            result.AddRange(listWrapper);
-                        }
-                        return result;
-                    }
+                    var wrapper = todoWrapperHelper.Get(e, userId, calendar.TimeZone);
+                    result.Add(wrapper);
                 }
-            }*/
-            return null;
+            }
+            return result;
+           
         }
     }
 
@@ -223,6 +213,27 @@ namespace ASC.Calendar.BusinessObjects
 
             return DataProvider.LoadEvents(Convert.ToInt32(this.Id), userId, TenantId, utcStartDate, utcEndDate)
                         .Cast<IEvent>()
+                        .ToList();
+
+        }
+
+        public override List<ITodo> LoadTodos(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
+        {
+            if (!String.IsNullOrEmpty(iCalUrl))
+            {
+                try
+                {
+                    var cal = ICalendar.GetFromUrl(iCalUrl, this.Id);
+                    return cal.LoadTodos(userId, utcStartDate, utcEndDate);
+                }
+                catch
+                {
+                    return new List<ITodo>();
+                }
+            }
+
+            return DataProvider.LoadTodos(Convert.ToInt32(this.Id), userId, TenantId, utcStartDate, utcEndDate)
+                        .Cast<ITodo>()
                         .ToList();
 
         }

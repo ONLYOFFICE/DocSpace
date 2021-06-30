@@ -175,5 +175,9 @@ namespace ASC.Calendar.iCalParser
         {
             return Events.Cast<IEvent>().ToList();
         }
+        public override List<ITodo> LoadTodos(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
+        {
+            return new List<ITodo>();
+        }
     }
 }

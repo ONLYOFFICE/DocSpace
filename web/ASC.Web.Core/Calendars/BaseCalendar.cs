@@ -56,6 +56,7 @@ namespace ASC.Web.Core.Calendars
         public virtual EventAlertType EventAlertType { get; set; }
 
         public abstract List<IEvent> LoadEvents(Guid userId, DateTime utcStartDate, DateTime utcEndDate);
+        public abstract List<ITodo> LoadTodos(Guid userId, DateTime utcStartDate, DateTime utcEndDate);
 
         public virtual SharingOptions SharingOptions { get; set; }
 

@@ -441,21 +441,25 @@ namespace ASC.Calendar.Controllers
                                     .FindAll(c => c.IsAcceptedSubscription);
 
 
-            extCalendarsWrappers.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper));
+            extCalendarsWrappers.ForEach(c => 
+                {
+                    c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
+                    c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, TodoWrapperHelper);
+                });
 
             var sharedEvents = extCalendarsWrappers.Find(c => String.Equals(c.Id, SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase));
             if (sharedEvents != null)
                 result.ForEach(c =>
                 {
                     c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
-                    c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                    c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, TodoWrapperHelper);
                     c.Events.RemoveAll(e => sharedEvents.Events.Exists(sEv => string.Equals(sEv.Id, e.Id, StringComparison.InvariantCultureIgnoreCase)));
                 });
             else
                 result.ForEach(c =>
                 {
                     c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
-                    c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                    c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, TodoWrapperHelper);
                 });
 
             result.AddRange(extCalendarsWrappers);
@@ -4550,7 +4554,7 @@ namespace ASC.Calendar.Controllers
                                           icalendar.TimeZone);
                     }
 
-                    var todos = icalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, new ApiDateTime(DateTime.MinValue, icalendar.TimeZone.GetOffset()), new ApiDateTime(DateTime.MaxValue, icalendar.TimeZone.GetOffset()));
+                    var todos = icalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, new ApiDateTime(DateTime.MinValue, icalendar.TimeZone.GetOffset()), new ApiDateTime(DateTime.MaxValue, icalendar.TimeZone.GetOffset()), TodoWrapperHelper);
                     foreach (var td in todos)
                     {
                         ddayCalendar = DDayICalParser.ConvertCalendar(icalendar);

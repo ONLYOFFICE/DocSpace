@@ -78,7 +78,7 @@ namespace ASC.Calendar.Notification
             DisplayUserSettingsHelper = displayUserSettingsHelper;
 
             NotifyContext = new NotifyContext(serviceProvider);
-            _notifyClient = WorkContext.NotifyContext.NotifyService.RegisterClient(CalendarNotifySource, ServiceProvider.CreateScope());
+            _notifyClient = NotifyContext.NotifyService.RegisterClient(CalendarNotifySource, ServiceProvider.CreateScope());
         }
 
         public void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar)

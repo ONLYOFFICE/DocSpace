@@ -66,6 +66,10 @@ namespace ASC.Calendar.ExternalCalendars
             return ievents;
             
         }
+        public override List<ITodo> LoadTodos(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
+        {
+            return new List<ITodo>();
+        }
 
         private string _name;
         public override string Name
