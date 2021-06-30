@@ -97,6 +97,7 @@ class BackupListModalDialog extends React.Component {
   };
   onRestoreClick = (e) => {
     const { filesList } = this.state;
+    const { isNotify } = this.props;
     const index =
       e.target.dataset.index ||
       (e.target.farthestViewportElement &&
@@ -112,7 +113,7 @@ class BackupListModalDialog extends React.Component {
           value: filesList[+index].id,
         },
       ];
-      startRestore(backupId, storageType, storageParams, true)
+      startRestore(backupId, storageType, storageParams, isNotify)
         .then(() => getRestoreProgress())
         .catch((error) => console.log("backup list error", error))
         .finally(() => this.setState({ isLoading: false }));

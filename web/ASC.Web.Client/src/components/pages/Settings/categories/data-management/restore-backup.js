@@ -375,7 +375,6 @@ class RestoreBackup extends React.Component {
             filterValue={FILTER_VALUE}
             withSubfolders={WITH_SUBFOLDERS}
             onSelectFile={this.onSelectFile}
-     
           />
         )}
         {isCheckedThirdParty && (
@@ -407,6 +406,7 @@ class RestoreBackup extends React.Component {
             isLoading={isLoading}
             iconUrl={ICON_URL}
             onModalClose={this.onModalClose}
+            isNotify={isNotify}
           />
         )}
         <Checkbox
