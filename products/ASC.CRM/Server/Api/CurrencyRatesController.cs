@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Api.CRM;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
+
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Resources;
@@ -194,9 +195,11 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         [Create(@"currency/setrates")]
         public List<CurrencyRateDto> SetCurrencyRates(
-             [FromForm] String currency,
-             [FromForm] List<CurrencyRate> rates)
+             SetCurrencyRatesRequestDto inDto)
         {
+            var currency = inDto.Currency;
+            var rates = inDto.Rates;
+
             if (!_crmSecurity.IsAdmin)
                 throw _crmSecurity.CreateSecurityException();
 

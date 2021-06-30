@@ -34,6 +34,7 @@ using ASC.Api.Documents;
 using ASC.Common.Web;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
+
 using ASC.CRM.Classes;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
@@ -800,11 +801,13 @@ namespace ASC.CRM.Api
         /// <category>Invoices</category>
         /// <returns>ConverterData</returns>
         [Create(@"invoice/converter/data")]
-        public ConverterData GetInvoiceConverterData(
-            [FromForm] int invoiceId,
-            [FromForm] string storageUrl,
-            [FromForm] string revisionId)
+        public ConverterData CreateInvoiceConverterData(
+    [FromBody] CreateInvoiceConverterDataRequestDto inDto)
         {
+            var invoiceId = inDto.InvoiceId;
+            var storageUrl = inDto.StorageUrl;
+            var revisionId = inDto.RevisionId;
+
             if (invoiceId <= 0) throw new ArgumentException();
 
             var invoice = _daoFactory.GetInvoiceDao().GetByID(invoiceId);
