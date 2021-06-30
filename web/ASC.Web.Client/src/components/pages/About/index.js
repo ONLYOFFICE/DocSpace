@@ -2,12 +2,19 @@
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import PageLayout from "@appserver/common/components/PageLayout";
+import Loader from "@appserver/components/loader";
 import { I18nextProvider, Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
 import config from "../../../../package.json";
+
+const StyledLoader = styled(Loader)`
+  position: fixed;
+  left: calc(50% - 20px);
+  top: 35%;
+`;
 
 const BodyStyle = styled.div`
   margin-top: ${isMobile ? "80px" : "24px"};
@@ -75,7 +82,7 @@ const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
 
-const Body = ({ t }) => {
+const Body = ({ t, tReady }) => {
   useEffect(() => {
     setDocumentTitle(t("Common:About"));
   }, [t]);
@@ -103,7 +110,9 @@ const Body = ({ t }) => {
     </Text>
   );
 
-  return (
+  return !tReady ? (
+    <StyledLoader type="rombs" />
+  ) : (
     <BodyStyle>
       <p className="avatar">
         <img

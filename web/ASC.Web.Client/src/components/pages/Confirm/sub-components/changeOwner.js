@@ -7,6 +7,7 @@ import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { tryRedirectTo } from "@appserver/common/utils";
+import Loader from "@appserver/components/loader";
 import { inject, observer } from "mobx-react";
 
 const BodyStyle = styled.div`
@@ -69,9 +70,11 @@ class Form extends React.PureComponent {
   };
 
   render() {
-    const { t, greetingTitle } = this.props;
+    const { t, tReady, greetingTitle } = this.props;
 
-    return (
+    return !tReady ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : (
       <BodyStyle>
         <div className="owner-container">
           <div className="owner-wrapper">

@@ -9,6 +9,7 @@ import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { deleteSelf } from "@appserver/common/api/people"; //TODO: Move inside UserStore
+import Loader from "@appserver/components/loader";
 
 const ProfileRemoveContainer = styled.div`
   display: flex;
@@ -58,9 +59,11 @@ class ProfileRemove extends React.PureComponent {
 
   render() {
     console.log("profileRemove render");
-    const { t, greetingTitle } = this.props;
+    const { t, tReady, greetingTitle } = this.props;
     const { isProfileDeleted } = this.state;
-    return (
+    return !tReady ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : (
       <ProfileRemoveContainer>
         <div className="start-basis">
           <div className="confirm-row full-width break-word">

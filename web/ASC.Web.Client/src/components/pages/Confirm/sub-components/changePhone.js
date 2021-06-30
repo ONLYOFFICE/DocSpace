@@ -7,6 +7,7 @@ import TextInput from "@appserver/components/text-input";
 import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
+import Loader from "@appserver/components/loader";
 
 const BodyStyle = styled.div`
   margin: 70px auto 0 auto;
@@ -37,7 +38,7 @@ const BodyStyle = styled.div`
 `;
 
 const PhoneForm = (props) => {
-  const { t, currentPhone, greetingTitle } = props;
+  const { t, tReady, currentPhone, greetingTitle } = props;
 
   const [phone, setPhone] = useState(currentPhone);
   // eslint-disable-next-line no-unused-vars
@@ -61,7 +62,9 @@ const PhoneForm = (props) => {
 
   const simplePhoneMask = new Array(15).fill(/\d/);
 
-  return (
+  return !tReady ? (
+    <Loader className="pageLoader" type="rombs" size="40px" />
+  ) : (
     <BodyStyle>
       <div className="edit-header">
         <img className="header-logo" src="images/dark_general.png" alt="Logo" />

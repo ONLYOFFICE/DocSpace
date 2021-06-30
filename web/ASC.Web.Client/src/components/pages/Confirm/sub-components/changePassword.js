@@ -131,10 +131,10 @@ class Form extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   render() {
-    const { settings, t, greetingTitle } = this.props;
+    const { settings, t, tReady, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
-    return !settings ? (
+    return !settings || !tReady ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <BodyStyle>
