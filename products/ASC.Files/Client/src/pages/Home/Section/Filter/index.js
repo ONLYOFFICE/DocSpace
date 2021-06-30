@@ -10,10 +10,6 @@ import { withLayoutSize } from "@appserver/common/utils";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import { ReactSVG } from "react-svg";
-
-import ViewTilesIcon from "../../../../../../../../public/images/view-tiles.react.svg";
-import ViewRowsIcon from "../../../../../../../../public/images/view-rows.react.svg";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -311,41 +307,39 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-export default inject(
-  ({ auth, filesStore, selectedFolderStore, thumbnailsStore }) => {
-    const {
-      fetchFiles,
-      filter,
-      setIsLoading,
-      setViewAs,
-      viewAs,
-      files,
-      folders,
-      createThumbnails,
-    } = filesStore;
+export default inject(({ auth, filesStore, selectedFolderStore }) => {
+  const {
+    fetchFiles,
+    filter,
+    setIsLoading,
+    setViewAs,
+    viewAs,
+    files,
+    folders,
+    createThumbnails,
+  } = filesStore;
 
-    const { user } = auth.userStore;
-    const { customNames, culture } = auth.settingsStore;
+  const { user } = auth.userStore;
+  const { customNames, culture } = auth.settingsStore;
 
-    const { search, filterType, authorType } = filter;
-    const isFiltered =
-      !!files.length || !!folders.length || search || filterType || authorType;
+  const { search, filterType, authorType } = filter;
+  const isFiltered =
+    !!files.length || !!folders.length || search || filterType || authorType;
 
-    return {
-      customNames,
-      user,
-      selectedFolderId: selectedFolderStore.id,
-      selectedItem: filter.selectedItem,
-      filter,
-      viewAs,
-      isFiltered,
-      setIsLoading,
-      fetchFiles,
-      setViewAs,
-      createThumbnails,
-    };
-  }
-)(
+  return {
+    customNames,
+    user,
+    selectedFolderId: selectedFolderStore.id,
+    selectedItem: filter.selectedItem,
+    filter,
+    viewAs,
+    isFiltered,
+    setIsLoading,
+    fetchFiles,
+    setViewAs,
+    createThumbnails,
+  };
+})(
   withRouter(
     withLayoutSize(
       withTranslation(["Home", "Common", "Translations"])(
