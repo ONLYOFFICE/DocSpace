@@ -4,6 +4,7 @@ import Header from "./HeaderLoader";
 import SectionHeader from "./SectionHeaderLoader";
 import ArticleHeader from "./ArticleHeaderLoader";
 import TreeFolders from "./TreeFolderLoader";
+import TreeSettingsLoader from "./TreeSettingsLoader";
 import Row from "./RowLoader";
 import Rows from "./RowsLoader";
 import Text from "./TextLoader";
@@ -22,6 +23,7 @@ export default {
   SectionHeader,
   ArticleHeader,
   TreeFolders,
+  TreeSettingsLoader,
   Row,
   Rows,
   Text,
