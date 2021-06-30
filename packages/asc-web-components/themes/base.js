@@ -381,16 +381,6 @@ const Base = {
   //   arrowColor: grayMid,
   // },
 
-  switchButton: {
-    fillColor: white,
-    checkedFillColor: gray,
-    fillColorDisabled: grayLight,
-    disabledFillColor: grayLightMid,
-    disabledFillColorInner: grayMid,
-    hoverBorderColor: gray,
-    borderColor: grayLight,
-  },
-
   viewSelector: {
     fillColor: white,
     checkedFillColor: gray,
