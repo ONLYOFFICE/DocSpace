@@ -33,9 +33,11 @@ using ASC.Core.Users;
 using ASC.Api.Core;
 using ASC.Web.Core.Users;
 using ASC.Common.Utils;
+using System.Runtime.Serialization;
 
 namespace ASC.Calendar.ExternalCalendars
 {
+    [DataContract(Name = "birthdayCalendar", Namespace = "")]
     public sealed class BirthdayReminderCalendar : BaseCalendar
     {
         public readonly static string CalendarId = "users_birthdays";

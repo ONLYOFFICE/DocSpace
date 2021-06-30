@@ -37,6 +37,7 @@ using ASC.Common.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common;
+using System.Text.Json.Serialization;
 
 namespace ASC.Calendar.Models
 {
@@ -45,6 +46,8 @@ namespace ASC.Calendar.Models
     {
         internal UserViewSettings _userViewSettings;
         internal Guid _userId;
+
+        [System.Text.Json.Serialization.JsonIgnore]
         public BaseCalendar UserCalendar { get; set; }
 
         [DataMember(Name = "isSubscription", Order = 80)]
@@ -100,7 +103,7 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "todos", Order = 160)]
         public List<TodoWrapper> Todos { get; set; }
 
-        [DataMember(Name = "defaultAlert", Order = 160)]
+        [JsonPropertyName("defaultAlert")]
         public EventAlertWrapper DefaultAlertType { get; set; }
 
         [DataMember(Name = "timeZone", Order = 160)]

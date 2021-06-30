@@ -31,10 +31,11 @@ using ASC.Calendar.BusinessObjects;
 using ASC.Core;
 using ASC.Common.Utils;
 using ASC.Web.Core.Calendars;
+using System.Runtime.Serialization;
 
 namespace ASC.Calendar.ExternalCalendars
 {
-
+    [DataContract(Name = "sharedEventsCalendar", Namespace = "")]
     public sealed class SharedEventsCalendar : BaseCalendar
     {
         public static string CalendarId { get { return "shared_events"; } }

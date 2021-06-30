@@ -27,6 +27,8 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 using ASC.Calendar.BusinessObjects;
 using ASC.Calendar.iCalParser;
 using ASC.Common;
@@ -59,7 +61,7 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "ics", Order = 60)]
         public string Ics { get; set; }
 
-        [DataMember(Name = "timeZone", Order = 70)]
+        [JsonPropertyName("timeZone")]
         public TimeZoneWrapper TimeZoneInfo { get; set; }
 
         [DataMember(Name = "calendarName", Order = 80)]
