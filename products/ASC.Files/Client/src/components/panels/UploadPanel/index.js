@@ -13,6 +13,7 @@ import {
 } from "../StyledPanels";
 import FileList from "./FileList";
 import { inject, observer } from "mobx-react";
+import Loaders from "@appserver/common/components/Loaders";
 
 class UploadPanelComponent extends React.Component {
   constructor(props) {
@@ -66,6 +67,7 @@ class UploadPanelComponent extends React.Component {
     //console.log("UploadPanel render");
     const {
       t,
+      tReady,
       uploadPanelVisible,
       /* sharingPanelVisible, */ uploaded,
       converted,
@@ -87,46 +89,56 @@ class UploadPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
-            <StyledHeaderContent className="upload-panel_header-content">
-              <Heading className="upload_panel-header" size="medium" truncate>
-                {t("Uploads")}
-              </Heading>
-              <div className="upload_panel-icons-container">
-                <div className="upload_panel-remove-icon">
-                  {uploaded && converted ? (
-                    <IconButton
-                      size="20"
-                      iconName="images/clear.active.react.svg"
-                      color="#A3A9AE"
-                      isClickable
-                      onClick={this.clearUploadPanel}
-                    />
-                  ) : (
-                    <IconButton
-                      size="20"
-                      iconName="images/button.cancel.react.svg"
-                      color={"#A3A9AE"}
-                      isClickable
-                      onClick={uploaded ? cancelConversion : cancelUpload}
-                    />
-                  )}
-                </div>
-                {/*<div className="upload_panel-vertical-dots-icon">
+            {!tReady ? (
+              <Loaders.DialogAsideLoader isPanel />
+            ) : (
+              <>
+                <StyledHeaderContent className="upload-panel_header-content">
+                  <Heading
+                    className="upload_panel-header"
+                    size="medium"
+                    truncate
+                  >
+                    {t("Uploads")}
+                  </Heading>
+                  <div className="upload_panel-icons-container">
+                    <div className="upload_panel-remove-icon">
+                      {uploaded && converted ? (
+                        <IconButton
+                          size="20"
+                          iconName="images/clear.active.react.svg"
+                          color="#A3A9AE"
+                          isClickable
+                          onClick={this.clearUploadPanel}
+                        />
+                      ) : (
+                        <IconButton
+                          size="20"
+                          iconName="images/button.cancel.react.svg"
+                          color={"#A3A9AE"}
+                          isClickable
+                          onClick={uploaded ? cancelConversion : cancelUpload}
+                        />
+                      )}
+                    </div>
+                    {/*<div className="upload_panel-vertical-dots-icon">
                   <IconButton
                     size="20"
                     iconName="static/images/vertical-dots.react.svg"
                     color="#A3A9AE"
                   />
                   </div>*/}
-              </div>
-            </StyledHeaderContent>
-            <StyledBody
-              stype="mediumBlack"
-              className="upload-panel_body"
-              style={{ height: `calc(100vh - 64px)` }}
-            >
-              <FileList />
-            </StyledBody>
+                  </div>
+                </StyledHeaderContent>
+                <StyledBody
+                  stype="mediumBlack"
+                  className="upload-panel_body"
+                  style={{ height: `calc(100vh - 64px)` }}
+                >
+                  <FileList />
+                </StyledBody>
+              </>
+            )}
           </StyledContent>
         </Aside>
         {/* sharingPanelVisible && <SharingPanel /> */}

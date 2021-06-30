@@ -14,6 +14,7 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import AccessComboBox from "../SharingPanel/AccessComboBox";
+import Loaders from "@appserver/common/components/Loaders";
 
 class AddUsersPanelComponent extends React.Component {
   constructor(props) {
@@ -116,6 +117,7 @@ class AddUsersPanelComponent extends React.Component {
   render() {
     const {
       t,
+      tReady,
       visible,
       groupsCaption,
       accessOptions,
@@ -151,46 +153,54 @@ class AddUsersPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent>
-              <IconButton
-                size="16"
-                iconName="/static/images/arrow.path.react.svg"
-                onClick={this.onArrowClick}
-                color="#A3A9AE"
-              />
-              <Heading
-                className="header_aside-panel-header"
-                size="medium"
-                truncate
-              >
-                {isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")}
-              </Heading>
-              {/*<IconButton
+            {!tReady ? (
+              <Loaders.DialogAsideLoader isPanel />
+            ) : (
+              <>
+                <StyledHeaderContent>
+                  <IconButton
+                    size="16"
+                    iconName="/static/images/arrow.path.react.svg"
+                    onClick={this.onArrowClick}
+                    color="#A3A9AE"
+                  />
+                  <Heading
+                    className="header_aside-panel-header"
+                    size="medium"
+                    truncate
+                  >
+                    {isMultiSelect
+                      ? t("LinkText")
+                      : t("Translations:OwnerChange")}
+                  </Heading>
+                  {/*<IconButton
                 size="16"
                 iconName="PlusIcon"
                 className="header_aside-panel-plus-icon"
                 onClick={() => console.log("onPlusClick")}
               />*/}
-            </StyledHeaderContent>
+                </StyledHeaderContent>
 
-            <StyledBody ref={this.scrollRef}>
-              <PeopleSelector
-                className="peopleSelector"
-                role={isMultiSelect ? null : "user"}
-                employeeStatus={1}
-                displayType="aside"
-                withoutAside
-                isOpen={visible}
-                isMultiSelect={isMultiSelect}
-                onSelect={
-                  isMultiSelect ? this.onPeopleSelect : this.onOwnerSelect
-                }
-                {...embeddedComponent}
-                groupsCaption={groupsCaption}
-                showCounter
-                //onCancel={onClose}
-              />
-            </StyledBody>
+                <StyledBody ref={this.scrollRef}>
+                  <PeopleSelector
+                    className="peopleSelector"
+                    role={isMultiSelect ? null : "user"}
+                    employeeStatus={1}
+                    displayType="aside"
+                    withoutAside
+                    isOpen={visible}
+                    isMultiSelect={isMultiSelect}
+                    onSelect={
+                      isMultiSelect ? this.onPeopleSelect : this.onOwnerSelect
+                    }
+                    {...embeddedComponent}
+                    groupsCaption={groupsCaption}
+                    showCounter
+                    //onCancel={onClose}
+                  />
+                </StyledBody>
+              </>
+            )}
           </StyledContent>
         </Aside>
       </StyledAddUsersPanelPanel>

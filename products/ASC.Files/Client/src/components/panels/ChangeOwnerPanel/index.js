@@ -17,6 +17,7 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
+import Loaders from "@appserver/common/components/Loaders";
 
 class ChangeOwnerComponent extends React.Component {
   constructor(props) {
@@ -72,7 +73,14 @@ class ChangeOwnerComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, selection, groupsCaption, isLoading } = this.props;
+    const {
+      visible,
+      t,
+      tReady,
+      selection,
+      groupsCaption,
+      isLoading,
+    } = this.props;
     const { showPeopleSelector, owner } = this.state;
 
     const ownerName = owner.displayName ? owner.displayName : owner.label;
@@ -91,35 +99,45 @@ class ChangeOwnerComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent>
-              <Heading className="sharing_panel-header" size="medium" truncate>
-                {t("ChangeOwner", { fileName })}
-              </Heading>
-            </StyledHeaderContent>
-            <StyledBody>
-              <div className="change-owner_body">
-                <Link
-                  className="change-owner_owner-label"
-                  isHovered
-                  type="action"
-                  onClick={this.onShowPeopleSelector}
-                >
-                  {ownerName}
-                </Link>
-                <Text>{t("ChangeOwnerDescription")}</Text>
-              </div>
-            </StyledBody>
+            {!tReady ? (
+              <Loaders.DialogAsideLoader isPanel />
+            ) : (
+              <>
+                <StyledHeaderContent>
+                  <Heading
+                    className="sharing_panel-header"
+                    size="medium"
+                    truncate
+                  >
+                    {t("ChangeOwner", { fileName })}
+                  </Heading>
+                </StyledHeaderContent>
+                <StyledBody>
+                  <div className="change-owner_body">
+                    <Link
+                      className="change-owner_owner-label"
+                      isHovered
+                      type="action"
+                      onClick={this.onShowPeopleSelector}
+                    >
+                      {ownerName}
+                    </Link>
+                    <Text>{t("ChangeOwnerDescription")}</Text>
+                  </div>
+                </StyledBody>
+                <StyledFooter>
+                  <Button
+                    label={t("Common:SaveButton")}
+                    size="medium"
+                    scale
+                    primary
+                    onClick={this.onOwnerChange}
+                    isDisabled={disableSaveButton || isLoading}
+                  />
+                </StyledFooter>
+              </>
+            )}
           </StyledContent>
-          <StyledFooter>
-            <Button
-              label={t("Common:SaveButton")}
-              size="medium"
-              scale
-              primary
-              onClick={this.onOwnerChange}
-              isDisabled={disableSaveButton || isLoading}
-            />
-          </StyledFooter>
         </Aside>
         {showPeopleSelector && (
           <OwnerSelector
@@ -128,7 +146,7 @@ class ChangeOwnerComponent extends React.Component {
             groupsCaption={groupsCaption}
             onOwnerSelect={this.onOwnerSelect}
             onClose={this.onClose}
-            onClosePanels={this.onClosePanels}
+            onClosePanel={this.onShowPeopleSelector}
           />
         )}
       </StyledAsidePanel>
