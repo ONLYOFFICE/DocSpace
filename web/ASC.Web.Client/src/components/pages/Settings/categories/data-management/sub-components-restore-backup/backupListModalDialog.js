@@ -15,6 +15,8 @@ import {
   deleteBackup,
   deleteBackupHistory,
   getBackupHistory,
+  getRestoreProgress,
+  startRestore,
 } from "../../../../../../../../../packages/asc-web-common/api/portal";
 import BackupListBody from "./backupListBody";
 
@@ -94,7 +96,27 @@ class BackupListModalDialog extends React.Component {
     });
   };
   onRestoreClick = (e) => {
-    console.log("restore");
+    const { filesList } = this.state;
+    const index =
+      e.target.dataset.index ||
+      (e.target.farthestViewportElement &&
+        e.target.farthestViewportElement.dataset.index);
+    if (!index) return;
+
+    this.setState({ isLoading: true }, function () {
+      const backupId = filesList[+index].id;
+      const storageType = "0";
+      const storageParams = [
+        {
+          key: "fileId",
+          value: filesList[+index].id,
+        },
+      ];
+      startRestore(backupId, storageType, storageParams, true)
+        .then(() => getRestoreProgress())
+        .catch((error) => console.log("backup list error", error))
+        .finally(() => this.setState({ isLoading: false }));
+    });
   };
   render() {
     const { onModalClose, isVisibleDialog, t, iconUrl } = this.props;
