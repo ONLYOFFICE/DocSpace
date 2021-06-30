@@ -192,7 +192,6 @@ class IconFormatsStore {
         isSoundItem,
         isHtmlItem
       );
-
       return icon;
     } else {
       return this.getFolderIcon(providerKey, size);

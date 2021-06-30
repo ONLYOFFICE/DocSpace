@@ -13,7 +13,7 @@ const Aside = React.memo((props) => {
       visible={visible}
       scale={scale}
       zIndex={zIndex}
-      className={`${className} not-selectable`}
+      className={`${className} not-selectable aside`}
     >
       <Scrollbar>{children}</Scrollbar>
     </StyledAside>
