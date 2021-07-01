@@ -14,6 +14,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import { thumbnailStatuses } from "../helpers/constants";
+import { isMobile } from "react-device-detect";
 
 const { FilesFilter } = api;
 
@@ -266,26 +267,26 @@ class FilesStore {
     } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
 
-    if (privacyFolder && privacyFolder.id === +folderId) {
-      if (!this.settingsStore.isEncryptionSupport) {
-        filterData.total = 0;
-        this.setFilesFilter(filterData); //TODO: FILTER
-        if (clearFilter) {
-          this.setFolders([]);
-          this.setFiles([]);
-          this.fileActionStore.setAction({ type: null });
-          this.setSelected("close");
+    // if (privacyFolder && privacyFolder.id === +folderId) {
+    //   if (!this.settingsStore.isEncryptionSupport) {
+    //     filterData.total = 0;
+    //     this.setFilesFilter(filterData); //TODO: FILTER
+    //     if (clearFilter) {
+    //       this.setFolders([]);
+    //       this.setFiles([]);
+    //       this.fileActionStore.setAction({ type: null });
+    //       this.setSelected("close");
 
-          this.selectedFolderStore.setSelectedFolder({
-            folders: [],
-            ...privacyFolder,
-            pathParts: privacyFolder.pathParts,
-            ...{ new: 0 },
-          });
-        }
-        return Promise.resolve();
-      }
-    }
+    //       this.selectedFolderStore.setSelectedFolder({
+    //         folders: [],
+    //         ...privacyFolder,
+    //         pathParts: privacyFolder.pathParts,
+    //         ...{ new: 0 },
+    //       });
+    //     }
+    //     return Promise.resolve();
+    //   }
+    // }
 
     //TODO: fix @my
     let requestCounter = 1;
@@ -308,16 +309,9 @@ class FilesStore {
 
           filterData.total = data.total;
           this.setFilesFilter(filterData); //TODO: FILTER
-          this.setFolders(
-            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-              ? []
-              : data.folders
-          );
-          this.setFiles(
-            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-              ? []
-              : data.files
-          );
+          this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
+          this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
             this.setSelected("close");
@@ -393,6 +387,7 @@ class FilesStore {
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
     const isEditing = false; //TODO: need this prop;
+    const isFileOwner = item.createdBy.id === this.userStore.user.id;
 
     const {
       isRecycleBinFolder,
@@ -526,7 +521,7 @@ class FilesStore {
         }
       }
 
-      if (isFavoritesFolder || isPrivacyFolder || isRecentFolder) {
+      if (isFavoritesFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "copy",
           "move-to",
@@ -641,8 +636,27 @@ class FilesStore {
             "delete",
           ]);
         }
-      } else {
+      } else if (!isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, ["unsubscribe"]);
+      }
+
+      if (isPrivacyFolder) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "preview",
+          "view",
+          "separator0",
+          "copy",
+          "download-as",
+        ]);
+
+        if (!this.authStore.settingsStore.isDesktopClient) {
+          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+        }
+
+        fileOptions = this.removeOptions(
+          fileOptions,
+          isFileOwner ? ["unsubscribe"] : ["move-to", "delete"]
+        );
       }
 
       return fileOptions;
@@ -668,7 +682,15 @@ class FilesStore {
       ];
 
       if (isPrivacyFolder) {
-        folderOptions = this.removeOptions(folderOptions, ["copy"]);
+        folderOptions = this.removeOptions(folderOptions, [
+          "sharing-settings",
+          "copy",
+          "copy-to",
+        ]);
+
+        if (!this.authStore.settingsStore.isDesktopClient) {
+          folderOptions = this.removeOptions(folderOptions, ["rename"]);
+        }
       }
 
       if (isShareItem) {
@@ -989,6 +1011,7 @@ class FilesStore {
         contentLength,
         created,
         createdBy,
+        encrypted,
         fileExst,
         filesCount,
         fileStatus,
@@ -1038,6 +1061,7 @@ class FilesStore {
         contextOptions,
         created,
         createdBy,
+        encrypted,
         fileExst,
         filesCount,
         fileStatus,
@@ -1172,6 +1196,10 @@ class FilesStore {
       canWebFilterEditing,
     } = this.formatsStore.docserviceStore;
 
+    if (selection[0].encrypted) {
+      return ["FullAccess", "DenyAccess"];
+    }
+
     let AccessOptions = [];
 
     AccessOptions.push("ReadOnly", "DenyAccess");
@@ -1229,6 +1257,7 @@ class FilesStore {
       }
     }
 
+    //this.selected === "close" && this.setSelected("none");
     this.setSelection(newSelection);
     //}
   };
