@@ -11,7 +11,7 @@ const FolderTreeBody = ({
   onSelect,
   isCommonWithoutProvider,
   certainFolders,
-  isAvailableFolders,
+  isAvailable,
   filter,
   selectedKeys,
 }) => {
@@ -19,7 +19,7 @@ const FolderTreeBody = ({
   return (
     <>
       {!isLoadingData ? (
-        isAvailableFolders ? (
+        isAvailable ? (
           <TreeFolders
             expandedPanelKeys={expandedKeys}
             data={folderList}
@@ -46,7 +46,7 @@ const FolderTreeBody = ({
 };
 
 FolderTreeBody.defaultProps = {
-  isAvailableFolders: true,
+  isAvailable: true,
   isLoadingData: false,
 };
 

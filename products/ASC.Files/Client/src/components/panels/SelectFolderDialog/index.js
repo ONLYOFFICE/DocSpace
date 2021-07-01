@@ -23,7 +23,7 @@ class SelectFolderModalDialog extends React.Component {
     super(props);
     this.state = {
       isLoadingData: false,
-      isAvailableFolders: true,
+      isAvailable: true,
       certainFolders: true,
     };
   }
@@ -69,8 +69,7 @@ class SelectFolderModalDialog extends React.Component {
             )
             .then(
               () =>
-                folderList.length === 0 &&
-                this.setState({ isAvailableFolders: false })
+                folderList.length === 0 && this.setState({ isAvailable: false })
             )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
@@ -106,7 +105,7 @@ class SelectFolderModalDialog extends React.Component {
       isCommonWithoutProvider,
       isNeedArrowIcon,
     } = this.props;
-    const { isLoadingData, isAvailableFolders, certainFolders } = this.state;
+    const { isLoadingData, isAvailable, certainFolders } = this.state;
 
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -136,7 +135,7 @@ class SelectFolderModalDialog extends React.Component {
               onSelect={this.onSelect}
               isCommonWithoutProvider={isCommonWithoutProvider}
               certainFolders={certainFolders}
-              isAvailableFolders={isAvailableFolders}
+              isAvailable={isAvailable}
             />
           </ModalDialog.Body>
         </ModalDialog>
