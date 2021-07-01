@@ -14,10 +14,10 @@ const CampaignsBanner = (props) => {
   return (
     <BannerWrapper>
       <a href={link}>
-        <Text fontWeight="700" fontSize="13">
+        <Text fontWeight="700" fontSize="13px">
           {headerLabel}
         </Text>
-        <Text fontWeight="500" fontSize="12">
+        <Text fontWeight="500" fontSize="12px">
           {subHeaderLabel}
         </Text>
 

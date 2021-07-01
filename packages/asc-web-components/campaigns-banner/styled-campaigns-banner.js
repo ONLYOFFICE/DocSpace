@@ -26,6 +26,12 @@ const BannerWrapper = styled.div`
     border: none;
     border-radius: 5px;
   }
+
+  .banner-btn:active {
+    color: #fff;
+    background: #ed7309;
+    border: none;
+  }
 `;
 
 export default BannerWrapper;
