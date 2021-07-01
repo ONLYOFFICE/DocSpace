@@ -48,7 +48,6 @@ export function getFolder(folderId, filter) {
     filter && filter instanceof FilesFilter
       ? `${folderId}?${filter.toApiUrlParams()}`
       : folderId;
-
   const options = {
     method: "get",
     url: `/files/${params}`,
@@ -749,4 +748,14 @@ export function getSubfolders(folderId) {
     method: "get",
     url: `files/${folderId}/subfolders`,
   });
+}
+
+export function createThumbnails(fileIds) {
+  const options = {
+    method: "post",
+    url: "/files/thumbnails",
+    data: { fileIds: fileIds },
+  };
+
+  return request(options);
 }

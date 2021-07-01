@@ -527,22 +527,22 @@ namespace ASC.CRM.Core.Dao
                 switch ((RelationshipEventByType)orderBy.SortedBy)
                 {
                     case RelationshipEventByType.Category:
-                        sqlQuery = sqlQuery.OrderBy(x => x.CategoryId);
+                        sqlQuery = sqlQuery.OrderBy("CategoryId", orderBy.IsAsc);
                         break;
                     case RelationshipEventByType.Content:
-                        sqlQuery = sqlQuery.OrderBy(x => x.Content);
+                        sqlQuery = sqlQuery.OrderBy("Content", orderBy.IsAsc);
                         break;
                     case RelationshipEventByType.CreateBy:
-                        sqlQuery = sqlQuery.OrderBy(x => x.CreateBy);
+                        sqlQuery = sqlQuery.OrderBy("CreateBy", orderBy.IsAsc);
                         break;
                     case RelationshipEventByType.Created:
-                        sqlQuery = sqlQuery.OrderBy(x => x.CreateOn);
+                        sqlQuery = sqlQuery.OrderBy("CreateOn", orderBy.IsAsc);
                         break;
                 }
             }
             else
             {
-                sqlQuery = sqlQuery.OrderBy(x => x.CreateOn);
+                sqlQuery = sqlQuery.OrderBy("CreateOn", orderBy.IsAsc);
             }
 
             return _mapper.Map<List<DbRelationshipEvent>, List<RelationshipEvent>>(sqlQuery.ToList());

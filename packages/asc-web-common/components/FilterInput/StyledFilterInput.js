@@ -126,19 +126,21 @@ const StyledFilterInput = styled.div`
       color: #a3a9ae;
     }
   }
+
+  .view-selector-button {
+    display: flex;
+    float: left;
+
+    margin-left: 8px;
+
+    @media (max-width: 460px) {
+      display: none;
+    }
+  }
 `;
 
 export const StyledViewSelector = styled.div`
-  display: flex;
-  float: left;
-  width: 64px;
-  margin-left: 8px;
-
-  @media (max-width: 460px) {
-    display: none;
-  }
-
-  .view-selector-button {
+  
     border: 1px solid ${(props) => (props.isDisabled ? "#ECEEF1" : "#D0D5DA")};
     border-radius: 3px;
     padding: 7px;
