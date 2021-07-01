@@ -110,8 +110,6 @@ class SelectFolderModalDialog extends React.Component {
       isPanelVisible,
       zIndex,
       onClose,
-      expandedKeys,
-      filter,
       withoutProvider,
       isNeedArrowIcon,
       id,
