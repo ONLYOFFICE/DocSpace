@@ -76,6 +76,8 @@ class SettingsStore {
 
   customSchemaList = [];
 
+  tenantStatus = null;
+
   constructor() {
     makeAutoObservable(this);
   }

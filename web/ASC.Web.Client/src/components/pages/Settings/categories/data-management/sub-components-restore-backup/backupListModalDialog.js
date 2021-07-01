@@ -19,9 +19,12 @@ import {
   startRestore,
 } from "../../../../../../../../../packages/asc-web-common/api/portal";
 import BackupListBody from "./backupListBody";
-
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../../../../package.json";
+import history from "@appserver/common/history";
 const { desktop } = utils.device;
-
+const homepage = config.homepage;
 class BackupListModalDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -114,9 +117,16 @@ class BackupListModalDialog extends React.Component {
         },
       ];
       startRestore(backupId, storageType, storageParams, isNotify)
-        .then(() => getRestoreProgress())
-        .catch((error) => console.log("backup list error", error))
-        .finally(() => this.setState({ isLoading: false }));
+        .then(() =>
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              homepage,
+              "/preparation-portal"
+            )
+          )
+        )
+        .catch((error) => console.log("backup list error", error));
     });
   };
   render() {

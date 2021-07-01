@@ -16,9 +16,11 @@ class PreparationPortal extends React.Component {
     this.timerId = null;
   }
   componentDidMount() {
-    this.timerId = setInterval(() => this.getProgress, 1000);
+    this.timerId = setInterval(() => this.getProgress(), 1000);
   }
-
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+  }
   getProgress = () => {
     getRestoreProgress().then((response) => {
       if (response) {
@@ -44,6 +46,7 @@ class PreparationPortal extends React.Component {
   render() {
     const { t } = this.props;
     const { percent } = this.state;
+    console.log("percent", percent);
     return (
       <ErrorContainer
         headerText={t("PreparationPortalTitle")}

@@ -24,12 +24,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     modules,
     currentProductId,
     wizardCompleted,
+    tenantStatus,
   } = rest;
 
   const { params, path } = computedMatch;
   const { userId } = params;
 
   const renderComponent = (props) => {
+    console.log("tenantStatus", tenantStatus);
     if (isLoaded && !isAuthenticated) {
       console.log("PrivateRoute render Redirect to login", rest);
       return (
@@ -38,6 +40,20 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
             pathname: combineUrl(
               AppServerConfig.proxyURL,
               wizardCompleted ? "/login" : "/wizard"
+            ),
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (isLoaded && isAuthenticated && tenantStatus === 4) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              AppServerConfig.proxyURL,
+              "/preparation-portal"
             ),
             state: { from: props.location },
           }}
@@ -142,7 +158,7 @@ export default inject(({ auth }) => {
   } = auth;
   const { user } = userStore;
   const { modules } = moduleStore;
-  const { setModuleInfo, wizardCompleted } = settingsStore;
+  const { setModuleInfo, wizardCompleted, tenantStatus } = settingsStore;
 
   return {
     modules,
@@ -152,5 +168,6 @@ export default inject(({ auth }) => {
     isLoaded,
     setModuleInfo,
     wizardCompleted,
+    tenantStatus,
   };
 })(observer(PrivateRoute));
