@@ -503,6 +503,15 @@ const StyledLinkRow = styled.div`
   }
 `;
 
+const StyledSelectFolderPanel = styled.div`
+  .modal-dialog_header {
+    display: flex;
+    align-items: center;
+  }
+  .modal-dialog_header-title {
+    ${(props) => props.isNeedArrowIcon && `margin-left:16px;`}
+  }
+`;
 export {
   StyledAsidePanel,
   StyledAddGroupsPanel,
@@ -515,4 +524,5 @@ export {
   StyledSharingBody,
   StyledFooter,
   StyledLinkRow,
+  StyledSelectFolderPanel,
 };
