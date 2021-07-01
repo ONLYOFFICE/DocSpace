@@ -34,8 +34,15 @@ const FolderTreeBody = ({
           <Text as="span">{t("NotAvailableFolder")}</Text>
         )
       ) : (
-        <div key="loader" className="panel-loader-wrapper">
-          <Loader type="oval" size="16px" className="panel-loader" />
+        <div key="loader">
+          <Loader
+            type="oval"
+            size="16px"
+            style={{
+              display: "inline",
+              marginRight: "10px",
+            }}
+          />
           <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
             "Common:LoadingDescription"
           )}`}</Text>
