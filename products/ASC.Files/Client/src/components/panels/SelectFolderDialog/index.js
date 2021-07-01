@@ -5,14 +5,14 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import stores from "../../../store/index";
 import { getCommonThirdPartyList } from "@appserver/common/api/settings";
-import ModalDialog from "@appserver/components/modal-dialog";
-import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
-import FolderTreeBody from "../FolderTreeBody";
 import {
   getCommonFolderList,
   getFolderPath,
 } from "@appserver/common/api/files";
 import IconButton from "@appserver/components/icon-button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
+import FolderTreeBody from "../FolderTreeBody";
 import SelectFolderModal from "../SelectFolderInput";
 import i18n from "../SelectFolderInput/i18n";
 
@@ -25,6 +25,7 @@ class SelectFolderModalDialog extends React.Component {
       isLoadingData: false,
       isAvailable: true,
       certainFolders: true,
+      folderId: "",
     };
   }
   componentDidMount() {
@@ -49,6 +50,11 @@ class SelectFolderModalDialog extends React.Component {
                 folderPath.length === 0 &&
                 onSelectFolder &&
                 onSelectFolder(`${folderList[0].id}`)
+            )
+            .then(() =>
+              this.setState({
+                folderId: `${folderList[0].id}`,
+              })
             )
             .then(
               () =>
@@ -85,6 +91,10 @@ class SelectFolderModalDialog extends React.Component {
   onSelect = (folder) => {
     const { onSelectFolder, onClose, onSetFullPath } = this.props;
 
+    this.setState({
+      folderId: folder[0],
+    });
+
     getFolderPath(folder)
       .then(
         (foldersArray) =>
@@ -104,8 +114,9 @@ class SelectFolderModalDialog extends React.Component {
       filter,
       withoutProvider,
       isNeedArrowIcon,
+      id,
     } = this.props;
-    const { isLoadingData, isAvailable, certainFolders } = this.state;
+    const { isLoadingData, isAvailable, certainFolders, folderId } = this.state;
 
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -136,6 +147,7 @@ class SelectFolderModalDialog extends React.Component {
               withoutProvider={withoutProvider}
               certainFolders={certainFolders}
               isAvailable={isAvailable}
+              selectedKeys={[id ? id : folderId]}
             />
           </ModalDialog.Body>
         </ModalDialog>
@@ -149,9 +161,11 @@ SelectFolderModalDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   foldersType: PropTypes.oneOf(["common", "third-party"]),
+  id: PropTypes.string,
 };
 SelectFolderModalDialog.defaultProps = {
   isNeedArrowIcon: false,
+  id: "",
 };
 
 const SelectFolderDialogWrapper = withTranslation(["SelectFolder", "Common"])(
