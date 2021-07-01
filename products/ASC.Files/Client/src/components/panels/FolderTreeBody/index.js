@@ -9,7 +9,7 @@ const FolderTreeBody = ({
   expandedKeys,
   folderList,
   onSelect,
-  isCommonWithoutProvider,
+  withoutProvider,
   certainFolders,
   isAvailable,
   filter,
@@ -25,7 +25,7 @@ const FolderTreeBody = ({
             data={folderList}
             filter={filter}
             onSelect={onSelect}
-            withoutProvider={isCommonWithoutProvider}
+            withoutProvider={withoutProvider}
             certainFolders={certainFolders}
             selectedKeys={selectedKeys}
             needUpdate={false}

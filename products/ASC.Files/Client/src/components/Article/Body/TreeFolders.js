@@ -197,6 +197,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
+    const { withoutProvider } = this.props;
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -204,8 +205,13 @@ class TreeFolders extends React.Component {
         ? item.newItems > 0 && this.props.needUpdate
         : false;
 
+      const provider = item.providerKey;
+
       const serviceFolder = !!item.providerKey;
       let className = `tree-drag tree-id_${item.id}`;
+
+      if (withoutProvider && provider) return;
+
       if (dragging) className += " dragging";
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (

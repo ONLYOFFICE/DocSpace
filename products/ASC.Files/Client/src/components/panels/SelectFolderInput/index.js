@@ -74,7 +74,7 @@ class SelectFolder extends React.PureComponent {
       name,
       onClickInput,
       isPanelVisible,
-      isCommonWithoutProvider,
+      withoutProvider,
       onClose,
       isError,
       isSavingProcess,
@@ -108,7 +108,7 @@ class SelectFolder extends React.PureComponent {
           onSelectFolder={onSelectFolder}
           onSetLoadingData={onSetLoadingData}
           foldersType={foldersType}
-          isCommonWithoutProvider={isCommonWithoutProvider}
+          withoutProvider={withoutProvider}
           onSetFullPath={this.onSetFullPath}
           onSetBaseFolderPath={this.onSetBaseFolderPath}
           onSetLoadingData={onSetLoadingData}
@@ -124,7 +124,7 @@ SelectFolder.propTypes = {
 };
 
 SelectFolder.defaultProps = {
-  isCommonWithoutProvider: false,
+  withoutProvider: false,
   isDisabled: false,
   folderList: "",
   folderPath: "",

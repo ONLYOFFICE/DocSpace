@@ -102,7 +102,7 @@ class SelectFolderModalDialog extends React.Component {
       onClose,
       expandedKeys,
       filter,
-      isCommonWithoutProvider,
+      withoutProvider,
       isNeedArrowIcon,
     } = this.props;
     const { isLoadingData, isAvailable, certainFolders } = this.state;
@@ -133,7 +133,7 @@ class SelectFolderModalDialog extends React.Component {
               isLoadingData={isLoadingData}
               folderList={folderList}
               onSelect={this.onSelect}
-              isCommonWithoutProvider={isCommonWithoutProvider}
+              withoutProvider={withoutProvider}
               certainFolders={certainFolders}
               isAvailable={isAvailable}
             />
