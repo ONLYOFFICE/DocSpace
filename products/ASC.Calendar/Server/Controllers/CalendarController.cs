@@ -2709,16 +2709,6 @@ namespace ASC.Calendar.Controllers
             return events;
         }
 
-        public class CreateTodoModel
-        {
-            public string ics { get; set; }
-            public string todoUid { get; set; }
-            public string todoId { get; set; }
-            public string calendarId { get; set; }
-            public bool fromCalDavServer { get; set; }
-
-        }
-
         /// <summary>
         /// Creates the new task in the selected calendar with the parameters specified in the request
         /// </summary>

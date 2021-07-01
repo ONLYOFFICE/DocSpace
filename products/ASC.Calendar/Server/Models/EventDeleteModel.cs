@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static ASC.Calendar.Controllers.CalendarController;
 
@@ -18,7 +19,7 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "date", Order = 0)]
         public ApiDateTime Date { get; set; }
 
-        [DataMember(Name = "type", Order = 2)]
+        [JsonPropertyName("type")]
         public EventRemoveType Type { get; set; }
 
         [DataMember(Name = "uri", Order = 50)]
@@ -26,16 +27,6 @@ namespace ASC.Calendar.Models
 
         [DataMember(Name = "from_caldav_server", Order = 200)]
         public bool FromCaldavServer { get; set; }
-
-
-
-        /*public static object GetSample()
-        {
-            return new
-            {
-                
-            };
-        }*/
 
     }
 }
