@@ -93,7 +93,8 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    this.props.setViewAs(view);
+    const { setViewAs } = this.props;
+    setViewAs(view);
   };
 
   getData = () => {
@@ -207,14 +208,31 @@ class SectionFilterContent extends React.Component {
       { key: "Author", label: t("ByAuthor"), default: true },
     ];
 
+    return commonOptions;
+  };
+
+  getViewSettingsData = () => {
+    const { t, createThumbnails } = this.props;
+
     const viewSettings = [
-      { key: "row", label: t("ViewList"), isSetting: true, default: true },
-      { key: "tile", label: t("ViewTiles"), isSetting: true, default: true },
+      {
+        value: "row",
+        label: t("ViewList"),
+        isSetting: isMobileOnly,
+        default: true,
+        icon: "/static/images/view-rows.react.svg",
+      },
+      {
+        value: "tile",
+        label: t("ViewTiles"),
+        isSetting: isMobileOnly,
+        default: true,
+        icon: "/static/images/view-tiles.react.svg",
+        callback: createThumbnails,
+      },
     ];
-    //TODO: Need use mobile detect for better result
-    return window.innerWidth < 460
-      ? [...commonOptions, ...viewSettings]
-      : commonOptions;
+
+    return viewSettings;
   };
 
   getSelectedFilterData = () => {
@@ -261,7 +279,7 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, sectionWidth, tReady, isFiltered } = this.props;
+    const { t, sectionWidth, tReady, isFiltered, viewAs } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
 
@@ -272,10 +290,11 @@ class SectionFilterContent extends React.Component {
         sectionWidth={sectionWidth}
         getFilterData={this.getData}
         getSortData={this.getSortData}
+        getViewSettingsData={this.getViewSettingsData}
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
-        viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
+        viewAs={viewAs}
         directionAscLabel={t("Common:DirectionAscLabel")}
         directionDescLabel={t("Common:DirectionDescLabel")}
         placeholder={t("Common:Search")}
@@ -297,6 +316,7 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
     viewAs,
     files,
     folders,
+    createThumbnails,
   } = filesStore;
 
   const { user } = auth.userStore;
@@ -314,10 +334,10 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
     filter,
     viewAs,
     isFiltered,
-
     setIsLoading,
     fetchFiles,
     setViewAs,
+    createThumbnails,
   };
 })(
   withRouter(

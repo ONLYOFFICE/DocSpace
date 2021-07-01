@@ -369,9 +369,9 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start)
         {
-            return FileStorageService.CheckConversion(new ItemList<ItemList<string>>
+            return FileStorageService.CheckConversion(new List<List<string>>
             {
-                new ItemList<string> { fileId.ToString(), "0", start.ToString() }
+                new List<string> { fileId.ToString(), "0", start.ToString() }
             })
             .Select(r =>
             {
@@ -550,7 +550,7 @@ namespace ASC.Files.Helpers
         {
             if (share != null && share.Any())
             {
-                var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
+                var list = new List<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
                 var aceCollection = new AceCollection<T>
                 {
                     Files = fileIds,
@@ -578,7 +578,7 @@ namespace ASC.Files.Helpers
             var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             if (sharedInfo == null || sharedInfo.Share != share)
             {
-                var list = new ItemList<AceWrapper>
+                var list = new List<AceWrapper>
                     {
                         new AceWrapper
                             {

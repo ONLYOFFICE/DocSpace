@@ -13,6 +13,8 @@ import ProfileView from "./ProfileViewLoader";
 import SettingsFiles from "./SettingsFilesLoader";
 import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
+import Tile from "./TileLoader";
+import Tiles from "./TilesLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
 
@@ -32,6 +34,8 @@ export default {
   SettingsFiles,
   Group,
   HistoryRows,
+  Tile,
+  Tiles,
   DialogLoader,
   DialogAsideLoader,
 };

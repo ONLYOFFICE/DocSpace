@@ -151,10 +151,7 @@ namespace ASC.CRM.Core.Dao
 
             contactInfo.ID = id;
 
-            var dbEntity = Query(CrmDbContext.ContactsInfo)
-                                        .AsNoTracking()
-                                        .Where(x => x.ContactId == contactInfo.ID)
-                                        .Single();
+            var dbEntity = CrmDbContext.ContactsInfo.Find(id);
 
             _factoryIndexerContactInfo.Index(dbEntity);
 
