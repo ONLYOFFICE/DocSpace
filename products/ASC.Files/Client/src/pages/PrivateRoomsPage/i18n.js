@@ -1,7 +1,7 @@
 import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import { LANGUAGE } from "@appserver/common/constants";
-import config from "../../../../package.json";
+import config from "../../../package.json";
 import { loadLanguagePath } from "@appserver/common/utils";
 
 const newInstance = i18n.createInstance();
@@ -21,11 +21,8 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: loadLanguagePath(config.homepage),
+    loadPath: loadLanguagePath(config.homepage, "PrivacyPage"),
   },
-
-  ns: ["SharingPanel", "Common", "Translations"],
-  defaultNS: "SharingPanel",
 
   react: {
     useSuspense: false,

@@ -126,6 +126,7 @@ const SectionHeaderContent = (props) => {
     group,
     isAdmin,
     t,
+    tReady,
     history,
     customNames,
     homepage,
@@ -462,7 +463,7 @@ const SectionHeaderContent = (props) => {
             </div>
           ) : (
             <div className="header-container">
-              {!isLoaded ? (
+              {!isLoaded || !tReady ? (
                 <Loaders.SectionHeader />
               ) : group ? (
                 <>

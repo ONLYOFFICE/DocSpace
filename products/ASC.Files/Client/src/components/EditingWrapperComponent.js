@@ -131,7 +131,7 @@ const EditingWrapperComponent = (props) => {
         data-itemid={itemId}
       />
       <Button
-        className="edit-button"
+        className="edit-button not-selectable"
         size="medium"
         isDisabled={isLoading}
         onClick={onClickUpdateItem}
@@ -142,7 +142,7 @@ const EditingWrapperComponent = (props) => {
         isHovered={OkIconIsHovered}
       />
       <Button
-        className="edit-button"
+        className="edit-button not-selectable"
         size="medium"
         isDisabled={isLoading}
         onClick={cancelUpdateItem}

@@ -59,6 +59,7 @@ class PureArticleMainButtonContent extends React.Component {
     //console.log("People ArticleMainButtonContent render");
     const {
       t,
+      tReady,
       isLoaded,
       isAdmin,
       homepage,
@@ -71,7 +72,7 @@ class PureArticleMainButtonContent extends React.Component {
 
     return (
       isAdmin &&
-      (!isLoaded ? (
+      (!isLoaded || !tReady ? (
         <Loaders.Rectangle />
       ) : (
         <>
