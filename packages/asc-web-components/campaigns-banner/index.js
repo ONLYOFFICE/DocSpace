@@ -17,7 +17,7 @@ const CampaignsBanner = (props) => {
         <Text fontWeight="700" fontSize="13px">
           {headerLabel}
         </Text>
-        <Text fontWeight="500" fontSize="12px">
+        <Text className="banner-sub-header" fontWeight="500" fontSize="12px">
           {subHeaderLabel}
         </Text>
 

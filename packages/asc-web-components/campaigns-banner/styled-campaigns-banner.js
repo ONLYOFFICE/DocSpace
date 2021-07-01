@@ -22,6 +22,10 @@ const BannerWrapper = styled.div`
     margin-top: 10px;
   }
 
+  .banner-sub-header {
+    line-height: 1.5;
+  }
+
   .banner-btn {
     width: 100%;
     color: #fff;
