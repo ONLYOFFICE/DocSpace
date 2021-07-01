@@ -759,3 +759,17 @@ export function createThumbnails(fileIds) {
 
   return request(options);
 }
+
+export function getFiles(
+  folderId,
+  filterType,
+  filterValue,
+  withSubfolders,
+  pageCount = 30,
+  startIndex = 0
+) {
+  return request({
+    method: "get",
+    url: `files/${folderId}?count=${pageCount}&withSubfolders=${withSubfolders}&startIndex=${startIndex}&filterType=${filterType}&filterValue=${filterValue}`,
+  });
+}
