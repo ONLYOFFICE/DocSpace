@@ -31,7 +31,7 @@ class SelectFile extends React.PureComponent {
       name,
       onClickInput,
       isPanelVisible,
-      isCommonWithoutProvider,
+      withoutProvider,
       onClose,
       isError,
       isSavingProcess,
@@ -64,7 +64,7 @@ class SelectFile extends React.PureComponent {
             isPanelVisible={isPanelVisible}
             foldersType={foldersType}
             onSetFileName={this.onSetFileName}
-            isCommonWithoutProvider={isCommonWithoutProvider}
+            withoutProvider={withoutProvider}
             iconUrl={iconUrl}
             filterValue={filterValue}
             withSubfolders={withSubfolders}
@@ -79,10 +79,11 @@ class SelectFile extends React.PureComponent {
 
 SelectFile.propTypes = {
   onClickInput: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 SelectFile.defaultProps = {
-  isCommonWithoutProvider: false,
+  withoutProvider: false,
   isDisabled: false,
 };
 const SelectFileWrapper = withTranslation(["SelectedFolder", "Common"])(
