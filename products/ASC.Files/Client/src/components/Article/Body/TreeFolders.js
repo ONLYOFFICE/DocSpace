@@ -76,22 +76,22 @@ class TreeFolders extends React.Component {
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        iconUrl = "images/catalog.user.react.svg";
+        iconUrl = "/static/images/catalog.user.react.svg";
         break;
       case FolderType.SHARE:
-        iconUrl = "images/catalog.shared.react.svg";
+        iconUrl = "/static/images/catalog.shared.react.svg";
         break;
       case FolderType.COMMON:
-        iconUrl = "images/catalog.portfolio.react.svg";
+        iconUrl = "/static/images/catalog.portfolio.react.svg";
         break;
       case FolderType.Favorites:
-        iconUrl = "images/catalog.favorites.react.svg";
+        iconUrl = "/static/images/catalog.favorites.react.svg";
         break;
       case FolderType.Recent:
-        iconUrl = "images/catalog.recent.react.svg";
+        iconUrl = "/static/images/catalog.recent.react.svg";
         break;
       case FolderType.Privacy:
-        iconUrl = "images/catalog.private.react.svg";
+        iconUrl = "/static/images/catalog.private.react.svg";
         break;
       case FolderType.TRASH:
         iconUrl = "/static/images/catalog.trash.react.svg";
@@ -100,38 +100,39 @@ class TreeFolders extends React.Component {
         break;
     }
 
-    if (item.parentId !== 0) iconUrl = "images/catalog.folder.react.svg";
+    if (item.parentId !== 0)
+      iconUrl = "/static/images/catalog.folder.react.svg";
 
     switch (item.providerKey) {
       case "GoogleDrive":
-        iconUrl = "images/cloud.services.google.drive.react.svg";
+        iconUrl = "/static/images/cloud.services.google.drive.react.svg";
         break;
       case "Box":
-        iconUrl = "images/cloud.services.box.react.svg";
+        iconUrl = "/static/images/cloud.services.box.react.svg";
         break;
       case "DropboxV2":
-        iconUrl = "images/cloud.services.dropbox.react.svg";
+        iconUrl = "/static/images/cloud.services.dropbox.react.svg";
         break;
       case "OneDrive":
-        iconUrl = "images/cloud.services.onedrive.react.svg";
+        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "SharePoint":
-        iconUrl = "images/cloud.services.onedrive.react.svg";
+        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "kDrive":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "Yandex":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "NextCloud":
-        iconUrl = "images/cloud.services.nextcloud.react.svg";
+        iconUrl = "/static/images/cloud.services.nextcloud.react.svg";
         break;
       case "OwnCloud":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "WebDav":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       default:
         break;
