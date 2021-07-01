@@ -1,12 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  BannerWrapper,
-  BannerHeader,
-  BannerText,
-} from "./styled-campaigns-banner";
+import BannerWrapper from "./styled-campaigns-banner";
 
 import Button from "../button";
+import Text from "../text";
 
 const onButtonClick = (url) => {
   window.location = url;
@@ -17,8 +14,13 @@ const CampaignsBanner = (props) => {
   return (
     <BannerWrapper>
       <a href={link}>
-        <BannerHeader>{headerLabel}</BannerHeader>
-        <BannerText>{subHeaderLabel}</BannerText>
+        <Text fontWeight="700" fontSize="13">
+          {headerLabel}
+        </Text>
+        <Text fontWeight="500" fontSize="12">
+          {subHeaderLabel}
+        </Text>
+
         <img src={img} />
       </a>
 
