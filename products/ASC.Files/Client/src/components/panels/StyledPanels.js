@@ -566,7 +566,8 @@ const StyledSelectFilePanel = styled.div`
     grid-template-columns: 240px 1fr;
     height: 300px;
     .modal-dialog_tree-body {
-      margin-top: 16px;
+      padding-top: 16px;
+      border-right: 1px solid #dee2e6;
     }
   }
 `;
