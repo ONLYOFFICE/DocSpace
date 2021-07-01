@@ -73,13 +73,11 @@ class SelectFileDialogModalViewBody extends React.Component {
     });
   };
   onSelect = (folder) => {
-    const { onSelectFolder } = this.props;
-    const { isLoading, selectedKeys } = this.state;
+    const { onSelectFolder, selectedKeys } = this.props;
 
     if (isArrayEqual(folder, selectedKeys)) {
       return;
     }
-    this.setState({ selectedKeys: folder });
 
     onSelectFolder && onSelectFolder(folder[0]);
   };
@@ -100,9 +98,11 @@ class SelectFileDialogModalViewBody extends React.Component {
       loadNextPage,
       selectedFolder,
       iconUrl,
+      selectedKeys,
+      folderId,
     } = this.props;
-    const { isLoading, selectedKeys } = this.state;
-    console.log("filesList", filesList);
+    const { isLoading } = this.state;
+    console.log("selectedKeys", selectedKeys);
     return (
       <StyledAsidePanel visible={isPanelVisible}>
         <ModalDialog
@@ -127,7 +127,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                       certainFolders
                       isAvailableFolders
                       filter={filter}
-                      selectedKeys={selectedKeys}
+                      selectedKeys={[folderId ? folderId : selectedKeys]}
                     />
                   </div>
                   <div className="modal-dialog_files-body">

@@ -30,6 +30,7 @@ class SelectFileDialogBody extends React.Component {
       hasNextPage: true,
       isNextPageLoading: false,
       displayType: this.getDisplayType(),
+      selectedKeys: "",
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
   }
@@ -71,11 +72,13 @@ class SelectFileDialogBody extends React.Component {
       isVisible: false,
     });
   };
+
   onSelectFolder = (id) => {
     this.setState({
       selectedFolder: id,
       hasNextPage: true,
       filesList: [],
+      selectedKeys: id,
     });
   };
 
@@ -168,6 +171,7 @@ class SelectFileDialogBody extends React.Component {
       foldersType,
       isCommonWithoutProvider,
       iconUrl,
+      folderId,
     } = this.props;
     const {
       isVisible,
@@ -177,6 +181,7 @@ class SelectFileDialogBody extends React.Component {
       isNextPageLoading,
       selectedFolder,
       displayType,
+      selectedKeys,
     } = this.state;
 
     return displayType === "aside" ? (
@@ -218,6 +223,8 @@ class SelectFileDialogBody extends React.Component {
         selectedFolder={selectedFolder}
         isCommonWithoutProvider={isCommonWithoutProvider}
         iconUrl={iconUrl}
+        selectedKeys={selectedKeys}
+        folderId={folderId}
       />
     );
   }

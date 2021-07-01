@@ -42,6 +42,7 @@ class SelectFile extends React.PureComponent {
       filterValue,
       withSubfolders,
       onSelectFile,
+      folderId,
     } = this.props;
     const { isLoading, fileName } = this.state;
     const zIndex = 310;
@@ -57,21 +58,20 @@ class SelectFile extends React.PureComponent {
           onClickInput={onClickInput}
         />
 
-        {isPanelVisible && (
-          <SelectFileDialog
-            zIndex={zIndex}
-            onClose={onClose}
-            isPanelVisible={isPanelVisible}
-            foldersType={foldersType}
-            onSetFileName={this.onSetFileName}
-            withoutProvider={withoutProvider}
-            iconUrl={iconUrl}
-            filterValue={filterValue}
-            withSubfolders={withSubfolders}
-            filterType={filterType}
-            onSelectFile={onSelectFile}
-          />
-        )}
+        <SelectFileDialog
+          zIndex={zIndex}
+          onClose={onClose}
+          isPanelVisible={isPanelVisible}
+          foldersType={foldersType}
+          onSetFileName={this.onSetFileName}
+          withoutProvider={withoutProvider}
+          iconUrl={iconUrl}
+          filterValue={filterValue}
+          withSubfolders={withSubfolders}
+          filterType={filterType}
+          onSelectFile={onSelectFile}
+          folderId={folderId}
+        />
       </StyledComponent>
     );
   }
