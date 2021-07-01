@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const BannerWrapper = styled.div`
-  width: 180px;
+  width: 212px;
   border: 1px solid #d1d1d1;
   border-radius: 5px;
   padding: 15px;
@@ -27,14 +27,15 @@ const BannerWrapper = styled.div`
   }
 `;
 
-const BannerHeader = styled.h1`
+const BannerHeader = styled.div`
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
 `;
 
-const BannerText = styled.p`
+const BannerText = styled.div`
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 600;
+  padding-bottom: 10px;
 `;
 
 export { BannerWrapper, BannerHeader, BannerText };
