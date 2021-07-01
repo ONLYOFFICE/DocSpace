@@ -2,33 +2,14 @@ import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
 import PropTypes from "prop-types";
 import i18n from "./i18n";
 import stores from "../../../store/index";
 import FileInputWithFolderPath from "./fileInputWithFolderPath";
 import SelectFolderDialog from "../SelectFolderDialog/index";
+import StyledComponent from "./styledSelectFolderInput";
 
 let path = "";
-
-const StyledComponent = styled.div`
-  .input-with-folder-path {
-    margin-top: 16px;
-  }
-  .input-with-folder-path,
-  .text-input-with-folder-path {
-    width: 100%;
-    max-width: 820px;
-  }
-  .panel-loader-wrapper {
-    margin-top: 8px;
-    padding-left: 32px;
-  }
-  .panel-loader {
-    display: inline;
-    margin-right: 10px;
-  }
-`;
 
 class SelectFolder extends React.PureComponent {
   constructor(props) {
