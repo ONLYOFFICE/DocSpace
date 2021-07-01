@@ -511,6 +511,13 @@ const StyledSelectFolderPanel = styled.div`
   .modal-dialog_header-title {
     ${(props) => props.isNeedArrowIcon && `margin-left:16px;`}
   }
+  .select-folder-dialog_tree-folder {
+    height: 325px;
+    overflow: hidden;
+  }
+  .rc-tree-child-tree-open {
+    width: fit-content;
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   ${(props) =>

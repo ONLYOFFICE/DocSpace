@@ -11,6 +11,7 @@ import {
 } from "@appserver/common/api/files";
 import IconButton from "@appserver/components/icon-button";
 import ModalDialog from "@appserver/components/modal-dialog";
+import Scrollbar from "@appserver/components/scrollbar";
 import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
 import FolderTreeBody from "../FolderTreeBody";
 import SelectFolderModal from "../SelectFolderInput";
@@ -118,7 +119,12 @@ class SelectFolderModalDialog extends React.Component {
 
     return (
       <StyledAsidePanel visible={isPanelVisible}>
-        <ModalDialog visible={isPanelVisible} zIndex={zIndex} onClose={onClose}>
+        <ModalDialog
+          visible={isPanelVisible}
+          zIndex={zIndex}
+          onClose={onClose}
+          contentHeight="400px"
+        >
           <ModalDialog.Header>
             <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
               <div className="modal-dialog_header">
@@ -138,15 +144,21 @@ class SelectFolderModalDialog extends React.Component {
           </ModalDialog.Header>
 
           <ModalDialog.Body>
-            <FolderTreeBody
-              isLoadingData={isLoadingData}
-              folderList={folderList}
-              onSelect={this.onSelect}
-              withoutProvider={withoutProvider}
-              certainFolders={certainFolders}
-              isAvailable={isAvailable}
-              selectedKeys={[id ? id : folderId]}
-            />
+            <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
+              <div className="select-folder-dialog_tree-folder">
+                <Scrollbar stype="mediumBlack">
+                  <FolderTreeBody
+                    isLoadingData={isLoadingData}
+                    folderList={folderList}
+                    onSelect={this.onSelect}
+                    withoutProvider={withoutProvider}
+                    certainFolders={certainFolders}
+                    isAvailable={isAvailable}
+                    selectedKeys={[id ? id : folderId]}
+                  />
+                </Scrollbar>
+              </div>
+            </StyledSelectFolderPanel>
           </ModalDialog.Body>
         </ModalDialog>
       </StyledAsidePanel>
