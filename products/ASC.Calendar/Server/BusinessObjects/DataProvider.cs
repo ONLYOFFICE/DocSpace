@@ -1388,6 +1388,7 @@ namespace ASC.Calendar.BusinessObjects
             {
                 Id = eventId,
                 Uid = eventUid,
+                Tenant = TenantManager.GetCurrentTenant().TenantId,
                 Name = name,
                 Description = description,
                 CalendarId = calendarId,

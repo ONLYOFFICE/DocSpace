@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ASC.Calendar.Models
 {
@@ -36,7 +37,7 @@ namespace ASC.Calendar.Models
     [DataContract(Name = "permissions", Namespace = "")]
     public class Permissions
     {
-        [DataMember(Name = "users")]
+        [JsonPropertyName("users")]
         public List<UserParams> UserParams { get; set; }
 
         public Permissions()
@@ -53,7 +54,7 @@ namespace ASC.Calendar.Models
     [DataContract(Name = "userparams", Namespace = "")]
     public class UserParams
     {
-        [DataMember(Name = "objectId")]
+        [JsonPropertyName("objectId")]
         public Guid Id { get; set; }
 
         [DataMember(Name = "name")]

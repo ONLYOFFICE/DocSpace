@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static ASC.Calendar.Controllers.CalendarController;
 
@@ -22,10 +23,10 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "tenant", Order = 200)]
         public int Tenant { get; set; }
 
-        [DataMember(Name = "owner_id", Order = 1)]
+        [JsonPropertyName("owner_id")]
         public Guid OwnerId { get; set; }
 
-        [DataMember(Name = "alert_type", Order = 1)]
+        [JsonPropertyName("alert_type")]
         public EventAlertType AlertType { get; set; }
 
         [DataMember(Name = "time_zone", Order = 60)]
@@ -46,12 +47,13 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "is_todo", Order = 60)]
         public int IsTodo { get; set; }
 
-        [DataMember(Name = "sharing_options", Order = 60)]
+        [JsonPropertyName("sharing_options")]
         public List<SharingParam> SharingOptions { get; set; }
-        [DataMember(Name = "hide_events", Order = 60)]
+
+        [JsonPropertyName("hide_events")]
         public bool HideEvents { get; set; }
 
-        /*public static object GetSample()
+        public static object GetSample()
         {
             return new
             {
@@ -73,7 +75,7 @@ namespace ASC.Calendar.Models
                 isiCalStream = false,
                 isSubscription = false
             };
-        }*/
+        }
 
     }
 }

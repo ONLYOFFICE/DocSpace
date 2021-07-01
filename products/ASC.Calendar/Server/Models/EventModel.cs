@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static ASC.Calendar.Controllers.CalendarController;
 
@@ -37,7 +38,7 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "allDay", Order = 60)]
         public bool AllDayLong { get; set; }
 
-        [DataMember(Name = "alert_type", Order = 50)]
+        [JsonPropertyName("alert_type")]
         public EventAlertType AlertType { get; set; }
 
         [DataMember(Name = "sharing_options", Order = 200)]
@@ -51,15 +52,5 @@ namespace ASC.Calendar.Models
 
         [DataMember(Name = "owner_id", Order = 1)]
         public string OwnerId { get; set; }
-
-
-        /*public static object GetSample()
-        {
-            return new
-            {
-                
-            };
-        }*/
-
     }
 }

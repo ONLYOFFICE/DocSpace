@@ -24,14 +24,5 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "background_color", Order = 50)]
         public string BackgroundColor { get; set; }
 
-
-        /*public static object GetSample()
-        {
-            return new
-            {
-                
-            };
-        }*/
-
     }
 }
