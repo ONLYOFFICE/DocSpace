@@ -172,6 +172,7 @@ class SelectFileDialogBody extends React.Component {
       isCommonWithoutProvider,
       iconUrl,
       folderId,
+      header,
     } = this.props;
     const {
       isVisible,
@@ -205,6 +206,7 @@ class SelectFileDialogBody extends React.Component {
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
         iconUrl={iconUrl}
+        header={header}
       />
     ) : (
       <SelectFileDialogModalView
@@ -225,6 +227,7 @@ class SelectFileDialogBody extends React.Component {
         iconUrl={iconUrl}
         selectedKeys={selectedKeys}
         folderId={folderId}
+        header={header}
       />
     );
   }

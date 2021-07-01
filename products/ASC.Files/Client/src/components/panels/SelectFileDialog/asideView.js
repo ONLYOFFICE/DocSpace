@@ -31,6 +31,7 @@ const SelectFileDialogAsideView = ({
   loadNextPage,
   selectedFolder,
   iconUrl,
+  header,
 }) => {
   console.log("isLoadingData", isLoadingData, "selectedFolder", selectedFolder);
   return (
@@ -48,7 +49,7 @@ const SelectFileDialogAsideView = ({
               size="medium"
               className="select-file-dialog_aside-header_title"
             >
-              {t("SelectFile")}
+              {header ? header : t("SelectFile")}
             </Heading>
           </StyledHeaderContent>
 

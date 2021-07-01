@@ -565,6 +565,7 @@ const StyledSelectFilePanel = styled.div`
     display: grid;
     grid-template-columns: 240px 1fr;
     height: 300px;
+    grid-gap: 8px;
     .modal-dialog_tree-body {
       padding-top: 16px;
       border-right: 1px solid #dee2e6;

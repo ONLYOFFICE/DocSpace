@@ -100,6 +100,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       iconUrl,
       selectedKeys,
       folderId,
+      header,
     } = this.props;
     const { isLoading } = this.state;
     console.log("selectedKeys", selectedKeys);
@@ -113,7 +114,9 @@ class SelectFileDialogModalViewBody extends React.Component {
           style={{ maxWidth: "890px" }}
           displayType="modal"
         >
-          <ModalDialog.Header>{t("SelectFile")}</ModalDialog.Header>
+          <ModalDialog.Header>
+            {header ? header : t("SelectFile")}
+          </ModalDialog.Header>
           <ModalDialog.Body className="select-file_body-modal-dialog">
             <StyledSelectFilePanel>
               {!isLoading ? (

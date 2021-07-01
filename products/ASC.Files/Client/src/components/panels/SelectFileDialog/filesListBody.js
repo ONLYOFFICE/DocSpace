@@ -141,7 +141,7 @@ const FilesListBody = ({
   );
 };
 FilesListBody.defaultProps = {
-  listHeight: 320,
+  listHeight: 300,
 };
 export default inject(({ auth }) => {
   const { user } = auth.userStore;
