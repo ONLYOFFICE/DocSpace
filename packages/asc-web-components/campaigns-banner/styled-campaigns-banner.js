@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const BannerWrapper = styled.div`
-  width: 180px;
+  width: 185px;
   border: 1px solid #d1d1d1;
   border-radius: 5px;
   padding: 15px;
