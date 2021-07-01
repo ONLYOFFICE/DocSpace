@@ -7,6 +7,10 @@ const BannerWrapper = styled.div`
   padding: 15px;
   margin-top: 20px;
 
+  @media screen and (max-width: 1024px) {
+    width: 196px;
+  }
+
   a {
     text-decoration: none;
     color: #000;
