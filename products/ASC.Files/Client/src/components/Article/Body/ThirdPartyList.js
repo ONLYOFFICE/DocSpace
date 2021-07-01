@@ -19,7 +19,11 @@ const StyledThirdParty = styled.div`
   .tree-thirdparty-list {
     padding-top: 3px;
     display: flex;
-    max-width: 200px;
+    max-width: 218px;
+
+    @media screen and (max-width: 1024px) {
+      max-width: 228px;
+    }
 
     div {
       height: 26px;
