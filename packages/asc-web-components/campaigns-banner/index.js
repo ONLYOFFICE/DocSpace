@@ -26,6 +26,7 @@ const CampaignsBanner = (props) => {
         className="banner-btn"
         size="big"
         isDisabled={false}
+        disableHover={true}
         label={btnLabel}
         onClick={() => onButtonClick(link)}
       />
