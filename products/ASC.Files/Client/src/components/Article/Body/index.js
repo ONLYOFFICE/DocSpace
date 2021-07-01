@@ -85,6 +85,7 @@ class ArticleBodyContent extends React.Component {
       selectedTreeNode,
       enableThirdParty,
       isVisitor,
+      firstLoad,
     } = this.props;
 
     return isEmpty(treeFolders) ? (
