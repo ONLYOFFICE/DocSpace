@@ -7,6 +7,7 @@ import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
@@ -98,6 +99,8 @@ class ArticleBodyContent extends React.Component {
         />
         <TreeSettings />
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
+
+        <Banner />
       </>
     );
   }
