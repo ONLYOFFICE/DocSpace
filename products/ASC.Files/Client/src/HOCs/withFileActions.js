@@ -21,7 +21,7 @@ export default function withFileActions(WrappedFileItem) {
     }
     onContentFileSelect = (checked, file) => {
       const { selectRowAction } = this.props;
-      if (!file) return;
+      if (!file || file.id === -1) return;
       selectRowAction(checked, file);
     };
 
@@ -33,7 +33,8 @@ export default function withFileActions(WrappedFileItem) {
 
     fileContextClick = () => {
       const { onSelectItem, item } = this.props;
-      onSelectItem(item);
+
+      item.id !== -1 && onSelectItem(item);
     };
 
     getSharedButton = (shared) => {
@@ -156,11 +157,11 @@ export default function withFileActions(WrappedFileItem) {
       } else {
         if (checked) {
           this.onContentFileSelect(!checked, item);
-          this.fileContextClick(item);
+          this.fileContextClick();
         } else {
           if (!isMouseDown) return;
           this.onContentFileSelect(true, item);
-          this.fileContextClick(item);
+          this.fileContextClick();
         }
       }
       this.setState({ isMouseDown: false });
