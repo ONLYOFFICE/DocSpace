@@ -17,7 +17,7 @@ namespace ASC.Api.Core.Middleware
     public class TenantStatusFilter : IResourceFilter
     {
         private readonly ILog log;
-        private readonly string[] passthroughtRequestEndings = new[] { ".js", ".css", ".less", ".ico", ".png", "PreparationPortal.aspx", "TenantLogo.ashx", "getrestoreprogress", "capabilities" };
+        private readonly string[] passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings" }; //TODO add or update when "preparation-portal" will be done
 
 
         public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
@@ -55,9 +55,8 @@ namespace ASC.Api.Core.Middleware
                 {
                     return;
                 }
-                context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
+                context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
                 log.WarnFormat("Tenant {0} is {1}", tenant.TenantId, tenant.Status);
-                context.HttpContext.Response.Redirect("~/PreparationPortal.aspx?type=" + (tenant.Status == TenantStatus.Transfering ? "0" : "1"));
                 return;
             }
         }
