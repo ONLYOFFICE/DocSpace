@@ -63,7 +63,7 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     getItemIcon = (isEdit) => {
-      const { item, isPrivacy } = this.props;
+      const { item, isPrivacy, viewAs } = this.props;
       const { icon, fileExst } = item;
       return (
         <>
@@ -72,7 +72,9 @@ export default function withFileActions(WrappedFileItem) {
             src={icon}
             loading={svgLoader}
           />
-          {isPrivacy && fileExst && <EncryptedFileIcon isEdit={isEdit} />}
+          {isPrivacy && fileExst && (
+            <EncryptedFileIcon isEdit={isEdit && viewAs !== "tile"} />
+          )}
         </>
       );
     };
@@ -105,7 +107,7 @@ export default function withFileActions(WrappedFileItem) {
 
       this.setState({ isMouseDown: true });
 
-      if (!draggable|| isPrivacy) return;
+      if (!draggable || isPrivacy) return;
 
       if (window.innerWidth < 1025 || notSelectable) {
         return;
@@ -259,7 +261,7 @@ export default function withFileActions(WrappedFileItem) {
       const { fileExst, access, contentLength, id, shared } = item;
 
       const isEdit =
-        !!actionType && actionId === id && fileExst === actionExtension;
+        actionType !== null && actionId === id && fileExst === actionExtension;
 
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
@@ -305,6 +307,7 @@ export default function withFileActions(WrappedFileItem) {
           checkedProps={checkedProps}
           element={element}
           dragging={dragging}
+          isEdit={isEdit}
           {...this.props}
         />
       );
