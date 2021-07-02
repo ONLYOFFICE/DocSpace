@@ -5,7 +5,7 @@ const BannerWrapper = styled.div`
   border: 1px solid #d1d1d1;
   border-radius: 5px;
   padding: 15px;
-  margin-top: 20px;
+  margin: 20px 0px 50px 0px;
 
   @media screen and (max-width: 1024px) {
     max-width: inherit;
@@ -17,7 +17,7 @@ const BannerWrapper = styled.div`
   }
 
   img {
-    max-width: 180px;
+    max-width: 100%;
     height: auto;
     margin-top: 10px;
   }
