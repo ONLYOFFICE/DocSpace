@@ -171,7 +171,9 @@ export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
 })(
   withRouter(
     withTranslation(["Article", "Common"])(
-      withLoader(observer(ArticleMainButtonContent))(<Loaders.Rectangle />)
+      withLoader(observer(ArticleMainButtonContent))(
+        <Loaders.Rectangle width="217px" />
+      )
     )
   )
 );

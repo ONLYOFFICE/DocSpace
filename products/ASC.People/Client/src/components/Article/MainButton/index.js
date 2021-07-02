@@ -143,7 +143,9 @@ export default withRouter(
     groupCaption: auth.settingsStore.customNames.groupCaption,
   }))(
     withTranslation(["Article", "Common", "Translations"])(
-      withLoader(observer(ArticleMainButtonContent))(<Loaders.Rectangle />)
+      withLoader(observer(ArticleMainButtonContent))(
+        <Loaders.Rectangle width="217px" />
+      )
     )
   )
 );
