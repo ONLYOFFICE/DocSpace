@@ -6,7 +6,6 @@ import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./RowsView/FilesRowContainer";
 import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
-
 import withLoader from "../../../../HOCs/withLoader";
 
 let currentDroppable = null;
@@ -203,7 +202,7 @@ export default inject(
 )(
   withRouter(
     withTranslation(["Home", "Translations"])(
-      withLoader(observer(SectionBodyContent))
+      withLoader(observer(SectionBodyContent))()
     )
   )
 );

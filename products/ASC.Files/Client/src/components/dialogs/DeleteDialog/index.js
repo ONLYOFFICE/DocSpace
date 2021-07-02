@@ -99,7 +99,14 @@ class DeleteDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, isLoading, unsubscribe, isPrivacyFolder } = this.props;
+    const {
+      visible,
+      t,
+      tReady,
+      isLoading,
+      unsubscribe,
+      isPrivacyFolder,
+    } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
     const checkedSelections = selection.filter((x) => x.checked === true);
@@ -122,6 +129,12 @@ class DeleteDialogComponent extends React.Component {
         : t("MoveToTrashOneFolderNote")
       : t("MoveToTrashItemsNote");
 
+    const accessButtonLabel = isPrivacyFolder
+      ? t("Common:OKButton")
+      : unsubscribe
+      ? t("UnsubscribeButton")
+      : t("MoveToTrashButton");
+
     const accuracy = 20;
     let filesHeight = 25 * filesList.length + accuracy + 8;
     let foldersHeight = 25 * foldersList.length + accuracy + 8;
@@ -135,7 +148,11 @@ class DeleteDialogComponent extends React.Component {
     const height = filesHeight + foldersHeight;
 
     return (
-      <ModalDialogContainer visible={visible} onClose={this.onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={this.onClose}
+      >
         <ModalDialog.Header>{title}</ModalDialog.Header>
         <ModalDialog.Body>
           <div className="modal-dialog-content">
@@ -181,9 +198,7 @@ class DeleteDialogComponent extends React.Component {
           <Button
             className="button-dialog-accept"
             key="OkButton"
-            label={
-              unsubscribe ? t("UnsubscribeButton") : t("MoveToTrashButton")
-            }
+            label={accessButtonLabel}
             size="medium"
             primary
             onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}

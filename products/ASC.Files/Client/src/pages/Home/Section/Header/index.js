@@ -453,6 +453,7 @@ class SectionHeaderContent extends React.Component {
 
     const {
       t,
+      tReady,
       isHeaderVisible,
       isHeaderChecked,
       isHeaderIndeterminate,
@@ -493,7 +494,7 @@ class SectionHeaderContent extends React.Component {
               </div>
             ) : (
               <div className="header-container">
-                {!title ? (
+                {!title || !tReady ? (
                   <Loaders.SectionHeader />
                 ) : (
                   <>

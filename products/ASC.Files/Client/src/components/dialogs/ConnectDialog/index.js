@@ -14,6 +14,7 @@ const PureConnectDialogContainer = (props) => {
   const {
     visible,
     t,
+    tReady,
     item,
     treeFolders,
     fetchThirdPartyProviders,
@@ -185,7 +186,12 @@ const PureConnectDialogContainer = (props) => {
   }, [setToken, token]);
 
   return (
-    <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
+    <ModalDialog
+      isLoading={!tReady}
+      visible={visible}
+      zIndex={310}
+      onClose={onClose}
+    >
       <ModalDialog.Header>
         {t("Translations:ConnectingAccount")}
       </ModalDialog.Header>

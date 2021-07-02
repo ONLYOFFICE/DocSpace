@@ -155,14 +155,7 @@ export default function withFileActions(WrappedFileItem) {
 
         this.onFilesClick();
       } else {
-        if (checked) {
-          this.onContentFileSelect(!checked, item);
-          this.fileContextClick();
-        } else {
-          if (!isMouseDown) return;
-          this.onContentFileSelect(true, item);
-          this.fileContextClick();
-        }
+        this.fileContextClick();
       }
       this.setState({ isMouseDown: false });
     };
@@ -208,7 +201,7 @@ export default function withFileActions(WrappedFileItem) {
           addExpandedKeys(parentFolder + "");
         }
 
-        fetchFiles(id, filter)
+        fetchFiles(id)
           .then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
