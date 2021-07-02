@@ -21,7 +21,6 @@ const FilesListBody = ({
   needRowSelection,
   emptyFilesList,
   loadingLabel,
-  iconUrl,
   selectedFolder,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
@@ -104,7 +103,6 @@ const FilesListBody = ({
             onSelectFile={onSelectFile}
             fileName={modifyFileName}
             fileExst={fileExst}
-            iconUrl={iconUrl}
           >
             <Text data-index={index} className="files-list_file-owner">
               {fileOwner}

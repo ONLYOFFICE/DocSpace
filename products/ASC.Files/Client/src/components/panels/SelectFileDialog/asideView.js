@@ -30,7 +30,6 @@ const SelectFileDialogAsideView = ({
   isNextPageLoading,
   loadNextPage,
   selectedFolder,
-  iconUrl,
   header,
 }) => {
   console.log("isLoadingData", isLoadingData, "selectedFolder", selectedFolder);
@@ -71,7 +70,6 @@ const SelectFileDialogAsideView = ({
 
               {selectedFolder && (
                 <FilesListBody
-                  isLoadingData={isLoadingData}
                   filesList={filesList}
                   onSelectFile={onSelectFile}
                   hasNextPage={hasNextPage}
@@ -79,7 +77,6 @@ const SelectFileDialogAsideView = ({
                   loadNextPage={loadNextPage}
                   selectedFolder={selectedFolder}
                   displayType={DISPLAY_TYPE}
-                  iconUrl={iconUrl}
                 />
               )}
             </div>

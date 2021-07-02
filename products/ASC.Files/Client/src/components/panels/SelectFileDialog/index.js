@@ -122,7 +122,7 @@ class SelectFileDialogBody extends React.Component {
     if (!index) return;
     this.setState(
       {
-        selectedFile: filesList[index].id,
+        selectedFile: filesList[index].id, //object sent
       },
       function () {
         onClose && onClose();
@@ -202,7 +202,6 @@ class SelectFileDialogBody extends React.Component {
       zIndex,
       foldersType,
       isCommonWithoutProvider,
-      iconUrl,
       folderId,
       header,
       modalHeightContent,
@@ -238,7 +237,6 @@ class SelectFileDialogBody extends React.Component {
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
-        iconUrl={iconUrl}
         header={header}
       />
     ) : (
@@ -257,7 +255,6 @@ class SelectFileDialogBody extends React.Component {
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
         isCommonWithoutProvider={isCommonWithoutProvider}
-        iconUrl={iconUrl}
         selectedKeys={selectedKeys}
         folderId={folderId}
         header={header}

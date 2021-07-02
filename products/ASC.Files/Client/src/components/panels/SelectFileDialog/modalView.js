@@ -97,12 +97,10 @@ class SelectFileDialogModalViewBody extends React.Component {
       filter,
       onSelectFile,
       filesList,
-      isLoadingData,
       hasNextPage,
       isNextPageLoading,
       loadNextPage,
       selectedFolder,
-      iconUrl,
       selectedKeys,
       folderId,
       header,
@@ -144,14 +142,12 @@ class SelectFileDialogModalViewBody extends React.Component {
                   <div className="modal-dialog_files-body">
                     {selectedFolder && (
                       <FilesListBody
-                        isLoadingData={isLoadingData}
                         filesList={filesList}
                         onSelectFile={onSelectFile}
                         hasNextPage={hasNextPage}
                         isNextPageLoading={isNextPageLoading}
                         loadNextPage={loadNextPage}
                         selectedFolder={selectedFolder}
-                        iconUrl={iconUrl}
                       />
                     )}
                   </div>
