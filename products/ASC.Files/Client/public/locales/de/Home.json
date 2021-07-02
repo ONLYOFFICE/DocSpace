@@ -18,7 +18,6 @@
   "EmptyFile": "Leere Datei",
   "EmptyFilterDescriptionText": "Keine Dateien oder Ordner entsprechen diesem Filter. Versuchen Sie einen anderen Filter oder entfernen Sie diesen, um alle Dateien zu sehen.",
   "EmptyFilterSubheadingText": "Hier gibt es keine Dateien, die diesem Filter entsprechen",
-  "EmptyFolderHeader": "Keine Dateien in diesem Ordner",
   "EmptyRecycleBin": "Papierkorb leeren",
   "FavoritesEmptyContainerDescription": "Benutzen Sie das Kontext-Menü, um Dateien als Favoriten zu kennzeichnen oder sie aus dieser Liste zu entfernen.",
   "FileCreated": "Neue Datei <strong>{{itemTitle}}.{{exst}}</strong> wurde erstellt",

@@ -18,7 +18,6 @@
   "EmptyFile": "ເອກະສານຫວ່າງເປົ່າ",
   "EmptyFilterDescriptionText": "ບໍ່ມີໄຟລ໌ ຫລື ແຟ້ມໃດທີ່ກົງກັບຕົວກອງນີ້. ລອງໃຊ້ຕົວກັ່ນຕອງອື່ນ ຫຼື ລຶບລ້າງຂໍ້ມູນເພື່ອເບິ່ງເອກະສານທັງໝົດ.",
   "EmptyFilterSubheadingText": "ບໍ່ມີເອກະສານທີ່ສະແດງສຳລັບຕົວກອງຢູ່ທີ່ນີ້",
-  "EmptyFolderHeader": "ບໍ່ມີເອກະສານຢູ່ໃນແຟ້ມນີ້",
   "EmptyRecycleBin": "ຖັງຂີ້ເຫຍື້ອຫວ່າງເປົ່າ",
   "FavoritesEmptyContainerDescription": "ຖ້າຕ້ອງການເຮັດເຄື່ອງໝາຍໄຟລ໌ເປັນລາຍການໂປດ ຫຼື ລົບອອກຈາກລາຍການນີ້ໃຫ້ໃຊ້ເມນູ context ",
   "FileCreated": "ເອກະສານໃໝ່ <strong>{{itemTitle}}.{{exst}}</strong> ຖືກສ້າງຂື້ນ",

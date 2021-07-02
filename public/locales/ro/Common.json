@@ -73,5 +73,6 @@
   "Version": "Versiune",
   "View": "Vizualizare",
   "ViewWeb": "Accesați versiunea online",
-  "Warning": "Avertisment"
+  "Warning": "Avertisment",
+  "EmptyFolderHeader": "Niciun fișier în dosarul"
 }

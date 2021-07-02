@@ -18,7 +18,6 @@
   "EmptyFile": "Fișier gol",
   "EmptyFilterDescriptionText": "Niciun fișier sau dosar nu corespunde setărilor filtru. Aplicați un alt filtru sau îl eliminați ca să afișați toate fișiere.",
   "EmptyFilterSubheadingText": "Niciun fișier corespunzător de afișat ",
-  "EmptyFolderHeader": "Niciun fișier în dosarul",
   "EmptyRecycleBin": "Golire Coş de gunoi",
   "FavoritesEmptyContainerDescription": "Marcați fișiere ca preferate sau le ștergeți din lista prin intermediu meniului contextual. ",
   "FileCreated": "A fost creat un fișier nou <strong>{{itemTitle}}.{{exst}}</strong>",

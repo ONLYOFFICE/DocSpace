@@ -18,7 +18,6 @@
   "EmptyFile": "Arquivo vazio",
   "EmptyFilterDescriptionText": "Nenhum arquivo ou pasta corresponde a este filtro. Tente um filtro diferente ou transparente para visualizar todos os arquivos. ",
   "EmptyFilterSubheadingText": "Não há arquivos a serem exibidos para este filtro aqui",
-  "EmptyFolderHeader": "Não há arquivos nesta pasta",
   "EmptyRecycleBin": "Esvaziar lixeira",
   "FavoritesEmptyContainerDescription": "Para marcar os arquivos como favoritos ou removê-los desta lista, use o menu de contexto.",
   "FileCreated": "Novo arquivo <strong>{{itemTitle}}.{{exst}}</strong> é criado",

@@ -91,5 +91,6 @@
   "View": "Просмотр",
   "ViewWeb": "Просмотреть веб-версию",
   "Warning": "Внимание",
-  "ResetApplication": "Сбросить приложение"
+  "ResetApplication": "Сбросить приложение",
+  "EmptyFolderHeader": "В этой папке нет файлов"
 }

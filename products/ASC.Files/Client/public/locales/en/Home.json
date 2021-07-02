@@ -18,7 +18,6 @@
   "EmptyFile": "Empty file",
   "EmptyFilterDescriptionText": "No files or folders match this filter. Try a different one or clear filter to view all files. ",
   "EmptyFilterSubheadingText": "No files to be displayed for this filter here",
-  "EmptyFolderHeader": "No files in this folder",
   "EmptyRecycleBin": "Empty Trash",
   "FavoritesEmptyContainerDescription": "To mark files as favorites or remove them from this list, use the context menu.",
   "FileCreated": "New file <strong>{{itemTitle}}.{{exst}}</strong> is created",
