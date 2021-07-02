@@ -385,7 +385,8 @@ class SectionHeaderContent extends React.Component {
           isFavoritesFolder ||
           isRecentFolder ||
           !isAccessedSelected ||
-          (isPrivacy && (isOnlyFoldersSelected || selectionCount > 1)),
+          isOnlyFoldersSelected ||
+          selectionCount > 1,
         onClick: this.onOpenSharingPanel,
       },
       {
@@ -436,8 +437,9 @@ class SectionHeaderContent extends React.Component {
     }
 
     if (isPrivacy) {
+      menu.splice(1, 1);
+      menu.splice(2, 1);
       menu.splice(3, 1);
-      menu.splice(4, 1);
     }
 
     if (isShareFolder) {
@@ -456,6 +458,7 @@ class SectionHeaderContent extends React.Component {
 
     const {
       t,
+      tReady,
       isHeaderVisible,
       isHeaderChecked,
       isHeaderIndeterminate,
@@ -497,7 +500,7 @@ class SectionHeaderContent extends React.Component {
               </div>
             ) : (
               <div className="header-container">
-                {!title ? (
+                {!title || !tReady ? (
                   <Loaders.SectionHeader />
                 ) : (
                   <>

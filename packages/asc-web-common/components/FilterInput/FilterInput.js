@@ -99,7 +99,8 @@ class FilterInput extends React.Component {
     } = props;
     const { sortDirection, sortId, inputValue } = selectedFilterData;
     const sortData = getSortData();
-    const viewSettings = getViewSettingsData();
+    let viewSettings = null;
+    viewSettings = getViewSettingsData && getViewSettingsData();
 
     const filterValues = selectedFilterData ? this.getDefaultFilterData() : [];
 

@@ -112,7 +112,7 @@ const RootFolderContainer = (props) => {
         <Text fontSize="12px">
           <Trans t={t} i18nKey="PrivateRoomSupport" ns="Home">
             Work in Private Room is available via {{ organizationName }} desktop
-            app.{" "}
+            app.
             <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
               Instructions
             </Link>

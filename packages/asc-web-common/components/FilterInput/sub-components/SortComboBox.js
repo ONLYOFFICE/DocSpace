@@ -124,7 +124,7 @@ class SortComboBox extends React.Component {
             spacing="0px"
           />
         </DropDownItem>
-        {viewSettings.length !== 0 && viewAs && isMobileOnly && (
+        {viewSettings && viewSettings.length && viewAs && isMobileOnly && (
           <>
             <DropDownItem isSeparator />
             <DropDownItem noHover>

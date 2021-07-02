@@ -17,6 +17,8 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 class ChangeOwnerComponent extends React.Component {
   constructor(props) {
@@ -109,17 +111,17 @@ class ChangeOwnerComponent extends React.Component {
                 <Text>{t("ChangeOwnerDescription")}</Text>
               </div>
             </StyledBody>
+            <StyledFooter>
+              <Button
+                label={t("Common:SaveButton")}
+                size="medium"
+                scale
+                primary
+                onClick={this.onOwnerChange}
+                isDisabled={disableSaveButton || isLoading}
+              />
+            </StyledFooter>
           </StyledContent>
-          <StyledFooter>
-            <Button
-              label={t("Common:SaveButton")}
-              size="medium"
-              scale
-              primary
-              onClick={this.onOwnerChange}
-              isDisabled={disableSaveButton || isLoading}
-            />
-          </StyledFooter>
         </Aside>
         {showPeopleSelector && (
           <OwnerSelector
@@ -128,7 +130,7 @@ class ChangeOwnerComponent extends React.Component {
             groupsCaption={groupsCaption}
             onOwnerSelect={this.onOwnerSelect}
             onClose={this.onClose}
-            onClosePanels={this.onClosePanels}
+            onClosePanel={this.onShowPeopleSelector}
           />
         )}
       </StyledAsidePanel>
@@ -137,7 +139,7 @@ class ChangeOwnerComponent extends React.Component {
 }
 
 const ChangeOwnerPanel = withTranslation(["ChangeOwnerPanel", "Common"])(
-  ChangeOwnerComponent
+  withLoader(ChangeOwnerComponent)(<Loaders.DialogAsideLoader isPanel />)
 );
 
 export default inject(({ auth, filesStore, dialogsStore }) => {

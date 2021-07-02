@@ -7,11 +7,12 @@ import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import Loaders from "@appserver/common/components/Loaders";
 
 const ConvertDialogComponent = (props) => {
   const {
     t,
-    //tReady,
+    tReady,
     visible,
     folderId,
     convertFile,
@@ -48,10 +49,12 @@ const ConvertDialogComponent = (props) => {
     }
   };
 
-  const tReady = true;
-
-  return tReady ? (
-    <ModalDialogContainer visible={visible} onClose={onClose}>
+  return (
+    <ModalDialogContainer
+      isLoading={!tReady}
+      visible={visible}
+      onClose={onClose}
+    >
       <ModalDialog.Header>
         {convertSingleFile ? t("ConvertAndOpenTitle") : t("ConversionTitle")}
       </ModalDialog.Header>
@@ -105,8 +108,6 @@ const ConvertDialogComponent = (props) => {
         </div>
       </ModalDialog.Footer>
     </ModalDialogContainer>
-  ) : (
-    <></>
   );
 };
 

@@ -11,6 +11,7 @@ const SectionPagingContent = ({
   setIsLoading,
   selectedCount,
   isLoaded,
+  tReady,
 }) => {
   const { t } = useTranslation("Home");
   const onNextClick = useCallback(
@@ -125,7 +126,7 @@ const SectionPagingContent = ({
   //console.log("SectionPagingContent render", filter);
 
   return isLoaded ? (
-    !filter || filter.total < filter.pageCount ? (
+    !filter || filter.total < filter.pageCount || !tReady ? (
       <></>
     ) : (
       <Paging

@@ -8,12 +8,8 @@ import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
 //import equal from "fast-deep-equal/react";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import { ReactSVG } from "react-svg";
-
-import ViewTilesIcon from "../../../../../../../../public/images/view-tiles.react.svg";
-import ViewRowsIcon from "../../../../../../../../public/images/view-rows.react.svg";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -323,7 +319,7 @@ class SectionFilterContent extends React.Component {
 }
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, thumbnailsStore }) => {
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
   const {
     fetchFiles,
     filter,
@@ -340,7 +336,12 @@ export default inject(
 
   const { search, filterType, authorType } = filter;
   const isFiltered =
-    !!files.length || !!folders.length || search || filterType || authorType;
+      (!!files.length ||
+        !!folders.length ||
+        search ||
+        filterType ||
+        authorType) &&
+      !(treeFoldersStore.isPrivacyFolder && isMobile);
 
   return {
     customNames,
@@ -350,6 +351,7 @@ export default inject(
     filter,
     viewAs,
     isFiltered,
+
     setIsLoading,
     fetchFiles,
     setViewAs,

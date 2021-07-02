@@ -390,4 +390,6 @@ export default inject(({ auth }) => {
     getPortalPasswordSettings,
     login: auth.login,
   };
-})(withRouter(withTranslation("Confirm")(observer(ActivateUserForm))));
+})(
+  withRouter(withTranslation(["Confirm", "Common"])(observer(ActivateUserForm)))
+);

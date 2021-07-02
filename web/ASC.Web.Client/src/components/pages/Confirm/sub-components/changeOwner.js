@@ -8,6 +8,7 @@ import toastr from "@appserver/components/toast/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
+import withLoader from "../withLoader";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -132,5 +133,9 @@ export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   defaultPage: auth.settingsStore.defaultPage,
 }))(
-  withRouter(withTranslation(["Confirm", "Common"])(observer(ChangeOwnerForm)))
+  withRouter(
+    withTranslation(["Confirm", "Common"])(
+      withLoader(observer(ChangeOwnerForm))
+    )
+  )
 );
