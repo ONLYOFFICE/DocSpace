@@ -36,7 +36,7 @@ using System.Linq;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class ContactDao : BaseDao, IContactDao
+    public class ContactDao : BaseMailDao, IContactDao
     {
         public ContactDao(
              TenantManager tenantManager,

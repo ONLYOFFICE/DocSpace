@@ -36,7 +36,7 @@ using ASC.Mail.Core.Entities;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class ServerGroupDao : BaseDao, IServerGroupDao
+    public class ServerGroupDao : BaseMailDao, IServerGroupDao
     {
         public ServerGroupDao(
              TenantManager tenantManager,

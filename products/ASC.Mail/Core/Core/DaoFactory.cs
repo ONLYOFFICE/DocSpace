@@ -27,8 +27,10 @@
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
-using Microsoft.EntityFrameworkCore.Storage;
+using ASC.Mail.Core.Dao.Interfaces;
+
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ASC.Mail.Core
 {
@@ -72,7 +74,7 @@ namespace ASC.Mail.Core
         public AttachmentDao AttachmentDao { get; }
         public FolderDao FolderDao { get; }
         public ImapFlagsDao ImapFlagsDao { get; }
-        public ImapSpecialMailboxDao ImapSpecialMailboxDao { get; }
+        public IImapSpecialMailboxDao ImapSpecialMailboxDao { get; }
 
         public DaoFactory(
             DbContextManager<MailDbContext> dbContext,
@@ -89,7 +91,7 @@ namespace ASC.Mail.Core
             FilterDao filterDao,
             FolderDao folderDao,
             ImapFlagsDao imapFlagsDao,
-            ImapSpecialMailboxDao imapSpecialMailboxDao,
+            IImapSpecialMailboxDao imapSpecialMailboxDao,
             MailboxAutoreplyDao mailboxAutoreplyDao,
             MailboxAutoreplyHistoryDao mailboxAutoreplyHistoryDao,
             MailboxDao mailboxDao,
@@ -150,7 +152,8 @@ namespace ASC.Mail.Core
             ImapSpecialMailboxDao = imapSpecialMailboxDao;
         }
 
-        public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel? level = null) {
+        public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel? level = null)
+        {
             return level.HasValue ? MailDb.Database.BeginTransaction(level.Value) : MailDb.Database.BeginTransaction();
         }
     }

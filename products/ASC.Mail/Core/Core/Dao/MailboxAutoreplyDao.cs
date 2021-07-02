@@ -37,7 +37,7 @@ using ASC.Mail.Core.Entities;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class MailboxAutoreplyDao : BaseDao, IMailboxAutoreplyDao
+    public class MailboxAutoreplyDao : BaseMailDao, IMailboxAutoreplyDao
     {
         public MailboxAutoreplyDao(
              TenantManager tenantManager,

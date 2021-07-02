@@ -35,7 +35,7 @@ using ASC.Mail.Core.Dao.Interfaces;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class TagAddressDao: BaseDao, ITagAddressDao
+    public class TagAddressDao: BaseMailDao, ITagAddressDao
     {
         public TagAddressDao(
              TenantManager tenantManager,

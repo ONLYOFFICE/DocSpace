@@ -218,21 +218,51 @@ namespace ASC.Mail.Utils
             return response;
         }
 
-        public DefineConstants.TariffType GetTenantTariff(int tenantOverdueDays)
+        public IRestResponse ExecuteWithLog(RestRequest request, ILog log)
         {
+            Setup();
+
+            log.DebugFormat("ApiHelper->Execute: request url: {0}/{1}", BaseUrl.Uri.ToString(), request.Resource);
+
+            var client = new RestClient { BaseUrl = BaseUrl.Uri };
+
+            request.AddHeader("Authorization", Token);
+
+            var response = client.ExecuteSafe(request);
+
+            log.Debug($"ApiHelper->Response status code {response.StatusCode}");
+
+            if (response.ErrorException is ApiHelperException)
+                return response;
+
+            if (response.ErrorException != null)
+                throw new ApplicationException(ERR_MESSAGE, response.ErrorException);
+
+            return response;
+        }
+
+        public DefineConstants.TariffType GetTenantTariffLogged(int tenantOverdueDays, ILog log)
+        {
+            log.Debug("ApiHelper -> Create tariff request...");
             var request = new RestRequest("portal/tariff.json", Method.GET);
 
             request.AddHeader("Payment-Info", "false");
 
-            var response = Execute(request);
+            log.Debug("ApiHelper -> Execute tariff request...");
+            var response = ExecuteWithLog(request, log);
 
             if (response.StatusCode == HttpStatusCode.PaymentRequired)
+            {
+                log.Debug("ApiHelper -> HttpStatusCode: PaymentRequired. TariffType: LongDead");
                 return DefineConstants.TariffType.LongDead;
+            }
+
 
             if (response.ResponseStatus != ResponseStatus.Completed ||
                 (response.StatusCode != HttpStatusCode.Created &&
                  response.StatusCode != HttpStatusCode.OK))
             {
+                log.Debug($"ApiHelper -> Cannot get tariff by request. Status code: {response.StatusCode}");
                 throw new ApiHelperException("Get tenant tariff failed.", response.StatusCode, response.Content);
             }
 

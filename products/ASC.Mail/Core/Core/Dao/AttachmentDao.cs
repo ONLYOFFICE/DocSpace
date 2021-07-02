@@ -38,7 +38,7 @@ using System.Linq;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class AttachmentDao : BaseDao, IAttachmentDao
+    public class AttachmentDao : BaseMailDao, IAttachmentDao
     {
         public AttachmentDao(
              TenantManager tenantManager,

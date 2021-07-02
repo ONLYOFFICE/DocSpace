@@ -26,6 +26,11 @@
 
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Mail;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -40,13 +45,8 @@ using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
-using DocuSign.eSign.Model;
 
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -79,7 +79,7 @@ namespace ASC.Mail.Core.Engine
             CacheEngine cacheEngine,
             IndexEngine indexEngine,
             IOptionsMonitor<ILog> option,
-            MailSettings mailSettings) : base (mailSettings)
+            MailSettings mailSettings) : base(mailSettings)
         {
             TenantManager = tenantManager;
             SecurityContext = securityContext;
@@ -111,7 +111,7 @@ namespace ASC.Mail.Core.Engine
         public List<Tuple<MailBoxData, Mailbox>> GetMailboxFullInfoList(IMailboxesExp exp)
         {
             var list = new List<Tuple<MailBoxData, Mailbox>>();
-            
+
             var mailboxes = DaoFactory.MailboxDao.GetMailBoxes(exp);
 
             list.AddRange(mailboxes.Select(GetMailbox).Where(tuple => tuple != null));
@@ -494,6 +494,12 @@ namespace ASC.Mail.Core.Engine
                     mailboxes.AddRange(GetInactiveMailboxesForProcessing(mailSettings, difference));
             }
 
+
+            foreach (var box in mailboxes)
+            {
+                Log.Debug($"{box.MailBoxId}:\tIsEnabled={box.Enabled}\tIsRemoved={box.IsRemoved}\tTenant={box.TenantId}\tId={box.UserId}");
+            }
+
             return mailboxes;
         }
 
@@ -615,6 +621,11 @@ namespace ASC.Mail.Core.Engine
         public bool DisableMailboxes(IMailboxExp exp)
         {
             return DaoFactory.MailboxDao.Enable(exp, false);
+        }
+
+        public bool LoggedDisableMailboxes(IMailboxExp exp, ILog log)
+        {
+            return DaoFactory.MailboxDao.LoggedEnable(exp, false, log);
         }
 
         public bool SetNextLoginDelay(IMailboxExp exp, TimeSpan delay)

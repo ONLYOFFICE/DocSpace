@@ -70,7 +70,8 @@ namespace ASC.Core
         private Constants Constants { get; }
 
         private Tenant tenant;
-        private Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
+        //private Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
+        private Tenant Tenant { get { return TenantManager.GetCurrentTenant(); } }
 
         public UserManager()
         {
@@ -204,6 +205,7 @@ namespace ASC.Core
             var u = UserService.GetUser(Tenant.TenantId, id);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
+
         public UserInfo GetUser(Guid id, Expression<Func<User, UserInfo>> exp)
         {
             if (IsSystemUser(id)) return SystemUsers[id];
@@ -350,7 +352,7 @@ namespace ASC.Core
             if (u.Status == EmployeeStatus.Terminated && u.ID == TenantManager.GetCurrentTenant().OwnerId)
             {
                 throw new InvalidOperationException("Can not disable tenant owner.");
-}
+            }
 
             var newUser = UserService.SaveUser(TenantManager.GetCurrentTenant().TenantId, u);
 

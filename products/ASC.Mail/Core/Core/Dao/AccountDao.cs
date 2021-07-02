@@ -25,25 +25,26 @@
 
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
-using ASC.Common;
 
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class AccountDao : BaseDao, IAccountDao
+    public class AccountDao : BaseMailDao, IAccountDao
     {
-         public AccountDao(
-             TenantManager tenantManager, 
-             SecurityContext securityContext,
-             DbContextManager<MailDbContext> dbContext)
-            : base(tenantManager, securityContext, dbContext)
+        public AccountDao(
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+           : base(tenantManager, securityContext, dbContext)
         {
         }
 

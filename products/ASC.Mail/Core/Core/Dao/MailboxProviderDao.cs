@@ -35,7 +35,7 @@ using ASC.Mail.Core.Entities;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class MailboxProviderDao : BaseDao, IMailboxProviderDao
+    public class MailboxProviderDao : BaseMailDao, IMailboxProviderDao
     {
         public MailboxProviderDao(
              TenantManager tenantManager,

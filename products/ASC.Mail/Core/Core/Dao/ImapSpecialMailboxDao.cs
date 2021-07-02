@@ -26,17 +26,16 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Mail.Models;
-using ASC.Common;
+
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Enums;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao
 {
-    [Scope]
-    public class ImapSpecialMailboxDao : BaseDao, IImapSpecialMailboxDao
+    public class ImapSpecialMailboxDao : BaseMailDao, IImapSpecialMailboxDao
     {
         public ImapSpecialMailboxDao(
              TenantManager tenantManager,

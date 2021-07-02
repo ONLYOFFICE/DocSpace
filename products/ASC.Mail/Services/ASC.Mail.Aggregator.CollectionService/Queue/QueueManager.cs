@@ -6,19 +6,18 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Aggregator.CollectionService.Queue.Data;
-using ASC.Mail.Core;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Models;
+using ASC.Mail.Core.Engine;
 using ASC.Mail.Extensions;
+using ASC.Mail.Models;
+using ASC.Mail.Utils;
 
 using LiteDB;
-using ASC.Mail.Configuration;
-using ASC.Common;
-using ASC.Mail.Utils;
-using ASC.Mail.Core.Engine;
 
 using Microsoft.Extensions.Options;
 
@@ -54,9 +53,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         public ManualResetEvent CancelHandler { get; set; }
 
         public QueueManager(
-            MailSettings mailSettings, 
+            MailSettings mailSettings,
             IOptionsMonitor<ILog> optionsMonitor,
-            TenantManager tenantManager, 
+            TenantManager tenantManager,
             SecurityContext securityContext,
             ApiHelper apiHelper,
             UserManager userManager,
@@ -484,7 +483,31 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void RemoveFromQueue(int tenant, string user)
         {
-            var mbList = _mailBoxQueue.Where(mb => mb.TenantId != tenant && mb.UserId != user).Select(mb => mb).ToList();
+
+            _log.Debug("RemoveFromQueue()");
+            var list = _mailBoxQueue.ToList();
+
+            foreach (var b in list)
+            {
+                if (b.UserId == user)
+                    _log.Debug($"Next mailbox will be removed from queue: {b.MailBoxId}");
+            }
+
+            var mbList = _mailBoxQueue.Where(mb => mb.UserId != user).Select(mb => mb).ToList();
+
+            foreach (var box in list.Except(mbList))
+            {
+                _log.Debug($"Mailbox with id |{box.MailBoxId}| for user {box.UserId} from tenant {box.TenantId} was removed from queue");
+            }
+
+            string boxes = "";
+            foreach (var b in mbList)
+            {
+                boxes += $"{b.MailBoxId} | ";
+            }
+
+            _log.Debug($"Now in queue next mailboxes: {boxes}");
+
             ReloadQueue(mbList);
         }
 
@@ -538,7 +561,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                                 return false;
 
-                            default:
+                            case DefineConstants.TariffType.Active:
                                 _log.InfoFormat("Tenant {0} is paid.", mailbox.TenantId);
 
                                 var expired = DateTime.UtcNow.Add(MailSettings.TenantCachingPeriod);
@@ -553,6 +576,13 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                                 AddTenantToCache(tenantData);
 
                                 break;
+                            default:
+                                _log.InfoFormat($"Cannot get tariff type for {mailbox.MailBoxId} mailbox");
+                                MailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
+                                    MailSettings.OverdueAccountDelay);
+
+                                RemoveFromQueue(mailbox.TenantId);
+                                break;
                         }
                     }
                     catch (Exception e)
@@ -565,14 +595,19 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     _log.DebugFormat("Tenant {0} is in cache", mailbox.TenantId);
                 }
 
-                if (mailbox.IsUserTerminated(TenantManager, UserManager) || mailbox.IsUserRemoved(TenantManager, UserManager))
-                {
-                    _log.InfoFormat("User '{0}' was terminated. Tenant = {1}. Disable mailboxes for user.",
-                              mailbox.UserId,
-                              mailbox.TenantId);
+                var isUserTerminated = mailbox.IsUserTerminated(TenantManager, UserManager, _log);
+                var isUserRemoved = mailbox.IsUserRemoved(TenantManager, UserManager, _log);
 
-                    MailboxEngine.DisableMailboxes(
-                        new UserMailboxExp(mailbox.TenantId, mailbox.UserId));
+                if (isUserTerminated || isUserRemoved)
+                {
+                    string userStatus = "";
+                    if (isUserRemoved) userStatus = "removed";
+                    else if (isUserTerminated) userStatus = "terminated";
+
+                    _log.InfoFormat($"User '{mailbox.UserId}' was {userStatus}. Tenant = {mailbox.TenantId}. Disable mailboxes for user.");
+
+                    MailboxEngine.LoggedDisableMailboxes(
+                        new UserMailboxExp(mailbox.TenantId, mailbox.UserId), _log);
 
                     AlertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId,
                         new List<string> { mailbox.UserId });

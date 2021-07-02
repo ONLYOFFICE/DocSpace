@@ -100,7 +100,12 @@ namespace ASC.Mail.Aggregator.CollectionService
             {
                 services.AddMemoryCache();
                 var diHelper = new DIHelper(services);
-                LogNLogExtension.ConfigureLog(diHelper, "ASC.Mail.Aggregator", "ASC.Mail.MainThread", "ASC.Mail.Stat", "ASC.Mail.MailboxEngine");
+                LogNLogExtension.ConfigureLog(diHelper,
+                    "ASC.Mail.Aggregator",
+                    "ASC.Mail.MainThread",
+                    "ASC.Mail.Stat",
+                    "ASC.Mail.MailboxEngine",
+                    "ASC.Core.Common.Cache");
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 services.AddSingleton(new ConsoleParser(args));
                 diHelper.TryAdd<AggregatorServiceLauncher>();

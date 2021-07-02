@@ -22,7 +22,6 @@ using ASC.Mail.Configuration;
 using ASC.Mail.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine;
-using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
 using ASC.Mail.Storage;
 using ASC.Mail.Utils;
@@ -373,6 +372,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         {
             Log.InfoFormat("CreateTasks(need {0} tasks).", needCount);
 
+            //var QueueManager = ServiceProvider.CreateScope().ServiceProvider.GetService<AggregatorServiceScope>().QueueManager;
+
             var mailboxes = Scope.QueueManager.GetLockedMailboxes(needCount).ToList();
 
             var tasks = new List<TaskData>();
@@ -429,7 +430,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             try
             {
-                var serverFolderAccessInfos = Scope.DaoFactory.ImapSpecialMailboxDao.GetServerFolderAccessInfoList();
+                var scope = ServiceProvider
+                    .CreateScope().ServiceProvider
+                    .GetService<AggregatorServiceScope>();
+
+                var serverFolderAccessInfos = scope
+                    .MailDaoFactory.GetImapSpecialMailboxDao()
+                    .GetServerFolderAccessInfoList();
+
                 client = new MailClient(mailbox, cancelToken, serverFolderAccessInfos, MailSettings.TcpTimeout,
                    mailbox.IsTeamlab || MailSettings.SslCertificatesErrorPermit, MailSettings.ProtocolLogPath, log, true);
 
@@ -439,7 +447,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 if (!mailbox.Imap)
                 {
                     client.FuncGetPop3NewMessagesIDs =
-                        uidls => MessageEngine.GetPop3NewMessagesIDs(Scope.DaoFactory, mailbox, uidls, MailSettings.ChunkOfPop3Uidl);
+                        uidls => MessageEngine.GetPop3NewMessagesIDs(scope.MailDaoFactory, mailbox, uidls, MailSettings.ChunkOfPop3Uidl);
                 }
 
                 client.Authenticated += ClientOnAuthenticated;
@@ -555,8 +563,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
         private void ProcessMailbox(MailClient client, MailSettings mailSettings)
         {
-            var scope
-                    = ServiceProvider.CreateScope().ServiceProvider.GetService<AggregatorServiceScope>();
+            var scope = ServiceProvider.CreateScope().ServiceProvider.GetService<AggregatorServiceScope>();
 
             var mailbox = client.Account;
 
@@ -659,12 +666,13 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             mailClientEventArgs.Mailbox.AuthErrorDate = null;
 
-            //var engine = new EngineFactory(mailClientEventArgs.Mailbox.TenantId);
             Scope.MailEnginesFactory.MailboxEngine.SetMaiboxAuthError(mailClientEventArgs.Mailbox.MailBoxId, mailClientEventArgs.Mailbox.AuthErrorDate);
         }
 
         private void ClientOnGetMessage(object sender, MailClientMessageEventArgs mailClientMessageEventArgs)
         {
+            //throw new Exception();
+
             var log = Log;
 
             Stopwatch watch = null;
@@ -746,8 +754,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             {
                 log.Debug("GetMailBoxState()");
 
-                //var engine = new EngineFactory(-1);
-                var status = (MailboxStatus)Scope.MailEnginesFactory.MailboxEngine.GetMailboxStatus(new СoncreteUserMailboxExp(mailbox.MailBoxId, mailbox.TenantId, mailbox.UserId, null));
+                var status = mailFactory.MailboxEngine.GetMailboxStatus(new СoncreteUserMailboxExp(mailbox.MailBoxId, mailbox.TenantId, mailbox.UserId, null));
 
                 if (mailbox.BeginDate != status.BeginDate)
                 {
@@ -1026,7 +1033,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         internal SecurityContext SecurityContext { get; }
         internal ApiHelper ApiHelper { get; }
         internal SignalrWorker SignalrWorker { get; }
-        internal DaoFactory DaoFactory { get; }
+        internal IMailDaoFactory MailDaoFactory { get; }
 
         public AggregatorServiceScope(
             TenantManager tenantManager,
@@ -1038,7 +1045,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             ApiHelper apiHelper,
             QueueManager queueManager,
             SignalrWorker signalrWorker,
-            DaoFactory daoFactory)
+            IMailDaoFactory mailDaoFactory)
         {
             TenantManager = tenantManager;
             MailQueueItemSettings = mailQueueItemSettings;
@@ -1049,7 +1056,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             ApiHelper = apiHelper;
             QueueManager = queueManager;
             SignalrWorker = signalrWorker;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
         }
 
         public void Deconstruct(

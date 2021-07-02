@@ -26,27 +26,29 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Storage;
 using ASC.Mail.Extensions;
 using ASC.Mail.Iterators;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
+
 using Microsoft.Extensions.Options;
-using System.Data;
-using ASC.Common.Threading;
-using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -229,7 +231,7 @@ namespace ASC.Mail.Core.Engine
             }
             catch (Exception ex)
             {
-                Log.Error(string.Format("GetTenantStatus(tenant='{0}') failed. Exception: {1}", tenant, ex.ToString()));
+                Log.Error($"GetTenantStatus(tenant='{tenant}') failed. Exception: {ex}");
             }
 
             return TenantStatus.Active;

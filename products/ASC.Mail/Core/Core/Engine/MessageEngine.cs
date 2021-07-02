@@ -32,34 +32,37 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+
+using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Web;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.ElasticSearch;
+using ASC.Files.Core.Security;
+using ASC.Mail.Configuration;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Expressions;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Storage;
 using ASC.Mail.Enums;
+using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
-using Microsoft.Extensions.Options;
-using MimeKit;
-using Microsoft.Extensions.DependencyInjection;
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Mail.Core.Dao.Expressions;
-using ASC.Files.Core.Security;
-using ASC.Web.Files.Utils;
-using ASC.Common.Web;
-using ASC.Mail.Exceptions;
 using ASC.Web.Core.Files;
+using ASC.Web.Files.Utils;
+
 using Microsoft.EntityFrameworkCore;
-using ASC.Mail.Core.Dao.Entities;
-using ASC.Mail.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+using MimeKit;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -597,12 +600,12 @@ namespace ASC.Mail.Core.Engine
                 var folderRestore = keyPair.Key;
                 var totalRestore = keyPair.Value;
 
-                totalMessDiff = totalRestore != 0 ? totalRestore : (int?) null;
+                totalMessDiff = totalRestore != 0 ? totalRestore : (int?)null;
 
                 int unreadRestore;
                 unreadMessagesCountCollection.TryGetValue(folderRestore, out unreadRestore);
 
-                unreadMessDiff = unreadRestore != 0 ? unreadRestore : (int?) null;
+                unreadMessDiff = unreadRestore != 0 ? unreadRestore : (int?)null;
 
                 FolderEngine.ChangeFolderCounters(folderRestore, null,
                     unreadMessDiff, totalMessDiff);
@@ -613,8 +616,8 @@ namespace ASC.Mail.Core.Engine
 
             // Subtract the restored number of messages in the previous folder
 
-            unreadMessDiff = prevTotalUnreadCount != 0 ? prevTotalUnreadCount : (int?) null;
-            totalMessDiff = prevTotalCount != 0 ? prevTotalCount : (int?) null;
+            unreadMessDiff = prevTotalUnreadCount != 0 ? prevTotalUnreadCount : (int?)null;
+            totalMessDiff = prevTotalCount != 0 ? prevTotalCount : (int?)null;
 
             FolderEngine.ChangeFolderCounters(prevInfo[0].folder, null,
                 unreadMessDiff, totalMessDiff);
@@ -682,7 +685,7 @@ namespace ASC.Mail.Core.Engine
             if (!mailsInfo.Any())
                 return;
 
-            if(toUserFolderId.HasValue && UserFolderEngine.Get(toUserFolderId.Value) == null)
+            if (toUserFolderId.HasValue && UserFolderEngine.Get(toUserFolderId.Value) == null)
                 throw new ArgumentException("Folder not found");
 
             var messages = mailsInfo.ConvertAll(x =>
@@ -708,7 +711,7 @@ namespace ASC.Mail.Core.Engine
             .Where(m => m.folder != toFolder || m.userFolderId != toUserFolderId)
             .ToList();
 
-            if(!messages.Any())
+            if (!messages.Any())
                 return;
 
             var uniqueChainInfo = messages
@@ -762,12 +765,12 @@ namespace ASC.Mail.Core.Engine
                     Tenant, User);
             }
 
-            var totalMessages = prevInfo.GroupBy(x => new {x.folder, x.userFolderId})
-                .Select(group => new {group.Key, Count = group.Count()});
+            var totalMessages = prevInfo.GroupBy(x => new { x.folder, x.userFolderId })
+                .Select(group => new { group.Key, Count = group.Count() });
 
             var unreadMessages = prevInfo.Where(x => x.unread)
-                .GroupBy(x => new {x.folder, x.userFolderId})
-                .Select(group => new {group.Key, Count = group.Count()})
+                .GroupBy(x => new { x.folder, x.userFolderId })
+                .Select(group => new { group.Key, Count = group.Count() })
                 .ToList();
 
             UpdateChainFields(Tenant, User, ids);
@@ -786,10 +789,10 @@ namespace ASC.Mail.Core.Engine
                 var unreadItem = unreadMessages.FirstOrDefault(
                         x => x.Key.folder == srcFolder && x.Key.userFolderId == srcUserFolder);
 
-                var unreadMove = unreadItem != null ? unreadItem.Count : 0;  
+                var unreadMove = unreadItem != null ? unreadItem.Count : 0;
 
-                unreadMessDiff = unreadMove != 0 ? unreadMove*(-1) : (int?) null;
-                totalMessDiff = totalMove != 0 ? totalMove*(-1) : (int?) null;
+                unreadMessDiff = unreadMove != 0 ? unreadMove * (-1) : (int?)null;
+                totalMessDiff = totalMove != 0 ? totalMove * (-1) : (int?)null;
 
                 FolderEngine.ChangeFolderCounters(srcFolder, srcUserFolder,
                     unreadMessDiff, totalMessDiff);
@@ -798,8 +801,8 @@ namespace ASC.Mail.Core.Engine
                 movedTotalCount += totalMove;
             }
 
-            unreadMessDiff = movedTotalUnreadCount != 0 ? movedTotalUnreadCount : (int?) null;
-            totalMessDiff = movedTotalCount != 0 ? movedTotalCount : (int?) null;
+            unreadMessDiff = movedTotalUnreadCount != 0 ? movedTotalUnreadCount : (int?)null;
+            totalMessDiff = movedTotalCount != 0 ? movedTotalCount : (int?)null;
 
             FolderEngine.ChangeFolderCounters(toFolder, toUserFolderId,
                 unreadMessDiff, totalMessDiff);
@@ -814,7 +817,7 @@ namespace ASC.Mail.Core.Engine
             if (userFolderIds.Count() == 0 && !toUserFolderId.HasValue) // Only for movement from/to UserFolders
                 return;
 
-            if(toUserFolderId.HasValue)
+            if (toUserFolderId.HasValue)
                 userFolderIds.Add((int)toUserFolderId.Value);
 
             UserFolderEngine.RecalculateCounters(daoFactory, userFolderIds);
@@ -1189,7 +1192,7 @@ namespace ASC.Mail.Core.Engine
 
                         if (chainSubject.Equals(messageSubject))
                         {
-                            chainId =  chainAndSubject.chain_id;
+                            chainId = chainAndSubject.chain_id;
                             chainDate = chainAndSubject.chainDate;
                         }
                         else
@@ -1221,7 +1224,7 @@ namespace ASC.Mail.Core.Engine
 
         //TODO: Need refactoring
         public MailMessageData Save(
-            MailBoxData mailbox, MimeMessage mimeMessage, string uidl, Models.MailFolder folder, 
+            MailBoxData mailbox, MimeMessage mimeMessage, string uidl, Models.MailFolder folder,
             int? userFolderId, bool unread = true, ILog log = null)
         {
             if (mailbox == null)
@@ -1357,7 +1360,7 @@ namespace ASC.Mail.Core.Engine
             }
         }
         //TODO: Need refactoring
-        public static Dictionary<int, string> GetPop3NewMessagesIDs(DaoFactory daoFactory, MailBoxData mailBox, Dictionary<int, string> uidls,
+        public static Dictionary<int, string> GetPop3NewMessagesIDs(IMailDaoFactory daoFactory, MailBoxData mailBox, Dictionary<int, string> uidls,
             int chunk)
         {
             var newMessages = new Dictionary<int, string>();
@@ -1373,7 +1376,7 @@ namespace ASC.Mail.Core.Engine
             {
                 var checkList = chunkUidls.Select(u => u.Value).Distinct().ToList();
 
-                var existingUidls = daoFactory.MailDao.GetExistingUidls(mailBox.MailBoxId, checkList);
+                var existingUidls = daoFactory.GetMailDao().GetExistingUidls(mailBox.MailBoxId, checkList);
 
                 if (!existingUidls.Any())
                 {
@@ -1406,10 +1409,10 @@ namespace ASC.Mail.Core.Engine
             return newMessages;
         }
 
-        private void UpdateMessagesChains(IDaoFactory daoFactory, MailBoxData mailbox, string mimeMessageId, 
+        private void UpdateMessagesChains(IDaoFactory daoFactory, MailBoxData mailbox, string mimeMessageId,
             string chainId, FolderType folder, int? userFolderId)
         {
-            var chainsForUpdate = new[] {new {id = chainId, folder}};
+            var chainsForUpdate = new[] { new { id = chainId, folder } };
 
             // if mime_message_id == chain_id - message is first in chain, because it isn't reply
             if (!string.IsNullOrEmpty(mimeMessageId) && mimeMessageId != chainId)
@@ -1420,7 +1423,7 @@ namespace ASC.Mail.Core.Engine
                     .Build();
 
                 var chains = DaoFactory.ChainDao.GetChains(query)
-                    .Select(x => new {id = x.Id, folder = x.Folder})
+                    .Select(x => new { id = x.Id, folder = x.Folder })
                     .ToArray();
 
                 if (chains.Any())
@@ -1572,60 +1575,60 @@ namespace ASC.Mail.Core.Engine
                 return false;
             }
 
-                var builder = SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId, null)
-                    .SetMailboxId(mailbox.MailBoxId);
+            var builder = SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId, null)
+                .SetMailboxId(mailbox.MailBoxId);
 
-                var exp = (string.IsNullOrEmpty(mimeMessageId)
-                    ? builder.SetMd5(md5)
-                    : builder.SetMimeMessageId(mimeMessageId))
+            var exp = (string.IsNullOrEmpty(mimeMessageId)
+                ? builder.SetMd5(md5)
+                : builder.SetMimeMessageId(mimeMessageId))
+                .Build();
+
+            var messagesInfo = DaoFactory.MailInfoDao.GetMailInfoList(exp);
+
+            if (!messagesInfo.Any() && folder == FolderType.Sent)
+            {
+                exp = SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId, null)
+                    .SetMailboxId(mailbox.MailBoxId)
+                    .SetFolder((int)FolderType.Sent)
+                    .SetSubject(subject)
+                    .SetDateSent(dateSent)
                     .Build();
 
-                var messagesInfo = DaoFactory.MailInfoDao.GetMailInfoList(exp);
+                messagesInfo = DaoFactory.MailInfoDao.GetMailInfoList(exp);
+            }
 
-                if (!messagesInfo.Any() && folder == FolderType.Sent)
+            if (!messagesInfo.Any())
+                return false;
+
+            var idList = messagesInfo.Where(m => !m.IsRemoved).Select(m => m.Id).ToList();
+            if (!idList.Any())
+            {
+                log.Info("Message already exists and it was removed from portal.");
+                return true;
+            }
+
+            if (mailbox.Imap)
+            {
+                if (tagsIds != null) // Add new tags to existing messages
                 {
-                    exp = SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId, null)
-                        .SetMailboxId(mailbox.MailBoxId)
-                        .SetFolder((int)FolderType.Sent)
-                        .SetSubject(subject)
-                        .SetDateSent(dateSent)
-                        .Build();
-
-                    messagesInfo = DaoFactory.MailInfoDao.GetMailInfoList(exp);
-                }
-
-                if (!messagesInfo.Any())
-                    return false;
-
-                var idList = messagesInfo.Where(m => !m.IsRemoved).Select(m => m.Id).ToList();
-                if (!idList.Any())
-                {
-                    log.Info("Message already exists and it was removed from portal.");
-                    return true;
-                }
-
-                if (mailbox.Imap)
-                {
-                    if (tagsIds != null) // Add new tags to existing messages
+                    using (var tx = DaoFactory.BeginTransaction())
                     {
-                        using (var tx = DaoFactory.BeginTransaction())
+                        if (tagsIds.Any(tagId => !TagEngine.SetMessagesTag(DaoFactory, idList, tagId)))
                         {
-                            if (tagsIds.Any(tagId => !TagEngine.SetMessagesTag(DaoFactory, idList, tagId)))
-                            {
-                                tx.Rollback();
-                                return false;
-                            }
-
-                            tx.Commit();
+                            tx.Rollback();
+                            return false;
                         }
-                    }
 
-                    if ((!fromThisMailBox || !toThisMailBox) && messagesInfo.Exists(m => m.FolderRestore == folder))
-                    {
-                        var clone = messagesInfo.FirstOrDefault(m => m.FolderRestore == folder && m.Uidl == uidl);
-                        if (clone != null)
-                            log.InfoFormat("Message already exists: mailId={0}. Clone", clone.Id);
-                        else
+                        tx.Commit();
+                    }
+                }
+
+                if ((!fromThisMailBox || !toThisMailBox) && messagesInfo.Exists(m => m.FolderRestore == folder))
+                {
+                    var clone = messagesInfo.FirstOrDefault(m => m.FolderRestore == folder && m.Uidl == uidl);
+                    if (clone != null)
+                        log.InfoFormat("Message already exists: mailId={0}. Clone", clone.Id);
+                    else
                     {
                         var existMessage = messagesInfo.First();
 
@@ -1647,56 +1650,56 @@ namespace ASC.Mail.Core.Engine
 
 
                     return true;
-                    }
                 }
-                else
+            }
+            else
+            {
+                if (!fromThisMailBox && toThisMailBox && messagesInfo.Count == 1)
                 {
-                    if (!fromThisMailBox && toThisMailBox && messagesInfo.Count == 1)
+                    log.InfoFormat("Message already exists: mailId={0}. Outbox clone", messagesInfo.First().Id);
+                    return true;
+                }
+            }
+
+            if (folder == FolderType.Sent)
+            {
+                var sentCloneForUpdate =
+                    messagesInfo.FirstOrDefault(
+                        m => m.FolderRestore == FolderType.Sent && string.IsNullOrEmpty(m.Uidl));
+
+                if (sentCloneForUpdate != null)
+                {
+                    if (!sentCloneForUpdate.IsRemoved)
                     {
-                        log.InfoFormat("Message already exists: mailId={0}. Outbox clone", messagesInfo.First().Id);
-                        return true;
+                        DaoFactory.MailInfoDao.SetFieldValue(
+                            SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
+                                .SetMessageId(sentCloneForUpdate.Id)
+                                .Build(),
+                            "Uidl",
+                            uidl);
                     }
-                }
 
-                if (folder == FolderType.Sent)
-                {
-                    var sentCloneForUpdate =
-                        messagesInfo.FirstOrDefault(
-                            m => m.FolderRestore == FolderType.Sent && string.IsNullOrEmpty(m.Uidl));
-
-                    if (sentCloneForUpdate != null)
-                    {
-                        if (!sentCloneForUpdate.IsRemoved)
-                        {
-                            DaoFactory.MailInfoDao.SetFieldValue(
-                                SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
-                                    .SetMessageId(sentCloneForUpdate.Id)
-                                    .Build(),
-                                "Uidl",
-                                uidl);
-                        }
-
-                        log.InfoFormat("Message already exists: mailId={0}. Outbox clone", sentCloneForUpdate.Id);
-
-                        return true;
-                    }
-                }
-
-                if (folder == FolderType.Spam)
-                {
-                    var first = messagesInfo.First();
-
-                    log.InfoFormat("Message already exists: mailId={0}. It was moved to spam on server", first.Id);
+                    log.InfoFormat("Message already exists: mailId={0}. Outbox clone", sentCloneForUpdate.Id);
 
                     return true;
                 }
+            }
 
-                var fullClone = messagesInfo.FirstOrDefault(m => m.FolderRestore == folder && m.Uidl == uidl);
-                if (fullClone == null)
-                    return false;
+            if (folder == FolderType.Spam)
+            {
+                var first = messagesInfo.First();
 
-                log.InfoFormat("Message already exists: mailId={0}. Full clone", fullClone.Id);
+                log.InfoFormat("Message already exists: mailId={0}. It was moved to spam on server", first.Id);
+
                 return true;
+            }
+
+            var fullClone = messagesInfo.FirstOrDefault(m => m.FolderRestore == folder && m.Uidl == uidl);
+            if (fullClone == null)
+                return false;
+
+            log.InfoFormat("Message already exists: mailId={0}. Full clone", fullClone.Id);
+            return true;
 
         }
 
@@ -1798,7 +1801,8 @@ namespace ASC.Mail.Core.Engine
             var ids = mailInfoList.Select(m => m.Id).ToList();
 
             var messages =
-                ids.ConvertAll<MailMessageData>(id => {
+                ids.ConvertAll<MailMessageData>(id =>
+                {
                     return GetMessage(id,
                         new MailMessageData.Options
                         {
@@ -2189,7 +2193,8 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public class TempData {
+        public class TempData
+        {
             public long Length { get; set; }
             public DateTime Date { get; set; }
             public int Unread { get; set; }
@@ -2262,8 +2267,9 @@ namespace ASC.Mail.Core.Engine
 
             //var chainInfo = chainQuery.FirstOrDefault();
 
-            if (chainInfo == null) {
-              throw new InvalidDataException("Conversation is absent in MAIL_MAIL");
+            if (chainInfo == null)
+            {
+                throw new InvalidDataException("Conversation is absent in MAIL_MAIL");
             }
 
             var query = SimpleConversationsExp.CreateBuilder(tenant, user)

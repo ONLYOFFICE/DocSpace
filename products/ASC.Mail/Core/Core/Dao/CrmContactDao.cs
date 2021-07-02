@@ -35,7 +35,7 @@ using ASC.Mail.Enums;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class CrmContactDao : BaseDao, ICrmContactDao
+    public class CrmContactDao : BaseMailDao, ICrmContactDao
     {
         public CrmContactDao(
              TenantManager tenantManager,

@@ -35,7 +35,7 @@ using ASC.Mail.Core.Dao.Interfaces;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class ServerDao : BaseDao, IServerDao
+    public class ServerDao : BaseMailDao, IServerDao
     {
         public ServerDao(
              TenantManager tenantManager,

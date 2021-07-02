@@ -37,7 +37,7 @@ using ASC.Mail.Enums;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class FolderDao : BaseDao, IFolderDao
+    public class FolderDao : BaseMailDao, IFolderDao
     {
         public FolderDao(
              TenantManager tenantManager,

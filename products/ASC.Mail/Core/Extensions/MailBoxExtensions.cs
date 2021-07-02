@@ -26,6 +26,7 @@
 
 using System;
 using System.Security.Authentication;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -39,8 +40,10 @@ namespace ASC.Mail.Extensions
     public static class MailBoxExtensions
     {
         public static bool IsUserTerminated(this MailBoxData mailbox,
-            TenantManager tenantManager, UserManager userManager)
+            TenantManager tenantManager, UserManager userManager, ILog log = null)
         {
+            log = log ?? new NullLog();
+
             try
             {
                 tenantManager.SetCurrentTenant(mailbox.TenantId);
@@ -49,15 +52,18 @@ namespace ASC.Mail.Extensions
 
                 return user.Status == EmployeeStatus.Terminated;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                log.Debug($"IsUserTerminated(). Cannot detect user status. Exception:\n{ex}\nreturn false.");
                 return false;
             }
         }
 
         public static bool IsUserRemoved(this MailBoxData mailbox,
-            TenantManager tenantManager, UserManager userManager)
+            TenantManager tenantManager, UserManager userManager, ILog log = null)
         {
+            log = log ?? new NullLog();
+
             try
             {
                 tenantManager.SetCurrentTenant(mailbox.TenantId);
@@ -67,8 +73,9 @@ namespace ASC.Mail.Extensions
 
                 return !userManager.UserExists(user) || userManager.IsSystemUser(user);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                log.Debug($"IsUserRemoved(). Cannot detect user remove status. Exception:\n{ex}\nreturn false.");
                 return false;
             }
         }
@@ -99,23 +106,29 @@ namespace ASC.Mail.Extensions
 
             try
             {
+                log.Debug($"Attempt to set current tenant. Tenant {mailbox.TenantId}...");
                 tenantManager.SetCurrentTenant(mailbox.TenantId);
 
+                log.Debug($"Attempt to get current tenant info.");
                 var tenantInfo = tenantManager.GetCurrentTenant();
+
+                log.Debug($"Returned tenant status: {tenantInfo.Status}. TenantId: {tenantInfo.TenantId}. OwnerId: {tenantInfo.OwnerId}");
 
                 if (tenantInfo.Status == TenantStatus.RemovePending)
                     return DefineConstants.TariffType.LongDead;
 
                 try
                 {
+                    log.Debug("Authentication attempt by OwnerId for tenant");
                     securityContext.AuthenticateMe(tenantInfo.OwnerId);
                 }
                 catch (InvalidCredentialException)
                 {
+                    log.Debug("Authentication failed. Authentication attempt by mailbox UserId");
                     securityContext.AuthenticateMe(new Guid(mailbox.UserId));
                 }
 
-                type = apiHelper.GetTenantTariff(tenantOverdueDays);
+                type = apiHelper.GetTenantTariffLogged(tenantOverdueDays, log);
             }
             catch (Exception ex)
             {
@@ -146,7 +159,7 @@ namespace ASC.Mail.Extensions
             }
             catch (Exception ex)
             {
-                log.ErrorFormat("IsQuotaExhausted(Tenant={0}) Exception: {1}", mailbox.TenantId, ex.Message);
+                log.ErrorFormat($"IsQuotaExhausted(Tenant={mailbox.TenantId}) Exception: {ex.Message} StackTrace: \n{ex.StackTrace}");
             }
 
             return quotaEnded;

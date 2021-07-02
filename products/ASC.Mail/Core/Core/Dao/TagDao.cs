@@ -37,7 +37,7 @@ using System.Linq;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class TagDao : BaseDao, ITagDao
+    public class TagDao : BaseMailDao, ITagDao
     {
         public TagDao(
              TenantManager tenantManager,

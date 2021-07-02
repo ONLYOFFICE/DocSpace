@@ -24,8 +24,12 @@
 */
 
 
-using ASC.Api.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Configuration;
@@ -37,17 +41,10 @@ using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
-
-using ASC.Mail.Utils;
-
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class MailboxDao : BaseDao, IMailboxDao
+    public class MailboxDao : BaseMailDao, IMailboxDao
     {
         private InstanceCrypto InstanceCrypto { get; }
         private MailSettings MailSettings { get; }
@@ -69,7 +66,7 @@ namespace ASC.Mail.Core.Dao
                 .AsNoTracking()
                 .Where(exp.GetExpression())
                 .Select(ToMailbox)
-                .SingleOrDefault();
+                .FirstOrDefault();
 
             return mailbox;
         }
@@ -78,7 +75,7 @@ namespace ASC.Mail.Core.Dao
         {
             var query = MailDb.MailMailbox
                  .Where(exp.GetExpression())
-                 .Select(ToMailbox);
+                 .Select(ToMailbox).ToList();
 
             if (!string.IsNullOrEmpty(exp.OrderBy) && exp.OrderAsc.HasValue)
             {
@@ -225,12 +222,11 @@ namespace ASC.Mail.Core.Dao
 
         public bool Enable(IMailboxExp exp, bool enabled)
         {
-            var mailboxes = MailDb.MailMailbox
-                .Where(exp.GetExpression()).ToList();
-            //.FirstOrDefault();
+            var mailboxes = MailDb.MailMailbox.Where(exp.GetExpression()).ToList();
 
             if (!mailboxes.Any())
                 return false;
+
             foreach (var mb in mailboxes)
             {
                 mb.Enabled = enabled;
@@ -239,7 +235,38 @@ namespace ASC.Mail.Core.Dao
                     mb.DateAuthError = null;
                 }
             }
+
             var result = MailDb.SaveChanges();
+
+            return result > 0;
+        }
+
+        public bool LoggedEnable(IMailboxExp exp, bool enabled, ILog log)
+        {
+            var mailboxes = MailDb.MailMailbox.Where(exp.GetExpression()).ToList();
+
+            if (!mailboxes.Any())
+                return false;
+
+            foreach (var mb in mailboxes)
+            {
+                mb.Enabled = enabled;
+                if (enabled)
+                {
+                    mb.DateAuthError = null;
+                }
+            }
+
+            var result = MailDb.SaveChanges();
+
+            if (result > 0)
+            {
+                log.Debug($"Successfuly disabled mailbox(es)");
+            }
+            else if (result == 0)
+            {
+                log.Debug($"Failed to disable mailbox(es)");
+            }
 
             return result > 0;
         }
@@ -449,7 +476,7 @@ namespace ASC.Mail.Core.Dao
             var status = MailDb.MailMailbox
                .Where(exp.GetExpression())
                .Select(ToMailboxStatus)
-               .SingleOrDefault();
+               .FirstOrDefault();
 
             return status;
         }

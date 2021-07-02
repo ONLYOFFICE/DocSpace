@@ -39,7 +39,7 @@ using ASC.Mail.Utils;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class MailDao : BaseDao, IMailDao
+    public class MailDao : BaseMailDao, IMailDao
     {
         public MailDao(
              TenantManager tenantManager,

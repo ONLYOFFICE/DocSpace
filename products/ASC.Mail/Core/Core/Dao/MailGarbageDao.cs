@@ -27,15 +27,17 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class MailGarbageDao: BaseDao
+    public class MailGarbageDao : BaseMailDao, IMailGarbageDao
     {
         public MailGarbageDao(
              TenantManager tenantManager,
@@ -110,8 +112,8 @@ namespace ASC.Mail.Core.Dao
         public List<MailMessageGarbage> GetMailboxMessages(MailBoxData mailBoxData, int limit)
         {
             var list = MailDb.MailMail
-                .Where(m => m.IdMailbox == mailBoxData.MailBoxId 
-                    && m.TenantId == mailBoxData.TenantId 
+                .Where(m => m.IdMailbox == mailBoxData.MailBoxId
+                    && m.TenantId == mailBoxData.TenantId
                     && m.IdUser == mailBoxData.UserId)
                 .Select(r => new MailMessageGarbage(mailBoxData.UserId, r.Id, r.Stream))
                 .Take(limit)

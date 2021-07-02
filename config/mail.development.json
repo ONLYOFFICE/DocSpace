@@ -5,7 +5,7 @@
 			  "TcpTimeout": 30000,
 			  "UseDump": false,
 			  "QuotaRest": 26214400,
-			  "SslCertificatesErrorsPermit": false,
+			  "SslCertificatesErrorsPermit": true,
 			  "WorkOnUsersOnly": "",
 			  "AuthErrorWarningTimeout": "00:05:00",
 			  "AuthErrorDisableMailboxTimeout": "00:30:00",

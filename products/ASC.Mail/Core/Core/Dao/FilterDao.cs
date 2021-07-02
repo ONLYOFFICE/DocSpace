@@ -37,7 +37,7 @@ using System.Linq;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class FilterDao : BaseDao, IFilterDao
+    public class FilterDao : BaseMailDao, IFilterDao
     {
         public FilterDao(
              TenantManager tenantManager,

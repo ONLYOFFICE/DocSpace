@@ -36,7 +36,7 @@ using ASC.Mail.Core.Entities;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class UserFolderXMailDao : BaseDao, IUserFolderXMailDao
+    public class UserFolderXMailDao : BaseMailDao, IUserFolderXMailDao
     {
         public UserFolderXMailDao(
              TenantManager tenantManager,

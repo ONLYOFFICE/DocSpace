@@ -39,7 +39,7 @@ using System.Linq;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class UserFolderTreeDao : BaseDao, IUserFolderTreeDao
+    public class UserFolderTreeDao : BaseMailDao, IUserFolderTreeDao
     {
         public UserFolderTreeDao(
              TenantManager tenantManager,

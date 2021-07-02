@@ -36,7 +36,7 @@ using ASC.Mail.Core.Entities;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class ImapFlagsDao : BaseDao, IImapFlagsDao
+    public class ImapFlagsDao : BaseMailDao, IImapFlagsDao
     {
         public ImapFlagsDao(
              TenantManager tenantManager,

@@ -41,7 +41,7 @@ using ASC.Mail.Enums;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class ChainDao : BaseDao, IChainDao
+    public class ChainDao : BaseMailDao, IChainDao
     {
         public ChainDao(
              TenantManager tenantManager,

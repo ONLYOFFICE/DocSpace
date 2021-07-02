@@ -37,7 +37,7 @@ using System.Linq;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class MailboxAutoreplyHistoryDao : BaseDao, IMailboxAutoreplyHistoryDao
+    public class MailboxAutoreplyHistoryDao : BaseMailDao, IMailboxAutoreplyHistoryDao
     {
         public MailboxAutoreplyHistoryDao(
              TenantManager tenantManager,

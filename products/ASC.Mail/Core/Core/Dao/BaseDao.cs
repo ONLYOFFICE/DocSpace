@@ -24,13 +24,12 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
 
 namespace ASC.Mail.Core.Dao
 {
-    public abstract class BaseDao
+    public abstract class BaseMailDao
     {
         protected int Tenant => TenantManager.GetCurrentTenant().TenantId;
         protected string UserId => SecurityContext.CurrentAccount.ID.ToString();
@@ -40,7 +39,7 @@ namespace ASC.Mail.Core.Dao
 
         public MailDbContext MailDb { get; }
 
-        protected BaseDao(
+        protected BaseMailDao(
             TenantManager tenantManager,
             SecurityContext securityContext,
             DbContextManager<MailDbContext> dbContext)

@@ -37,7 +37,7 @@ using System.Linq;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class MailboxSignatureDao : BaseDao, IMailboxSignatureDao
+    public class MailboxSignatureDao : BaseMailDao, IMailboxSignatureDao
     {
         public MailboxSignatureDao(
              TenantManager tenantManager,

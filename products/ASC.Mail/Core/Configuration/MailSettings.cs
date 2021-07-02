@@ -373,7 +373,7 @@ namespace ASC.Mail.Configuration
 
             CollectStatistics = c.CollectStatistics;
 
-            DefaultApiSchema = Uri.UriSchemeHttp;
+            DefaultApiSchema = c.DefaultApiSchema == "https" ? c.DefaultApiSchema : Uri.UriSchemeHttp;
 
             DefaultServerLoginDelay = c.DefaultServerLoginDelay == default(int) ? 30 : c.DefaultServerLoginDelay;
 

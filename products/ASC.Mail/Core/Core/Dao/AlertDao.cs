@@ -38,7 +38,7 @@ using ASC.Common;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class AlertDao : BaseDao, IAlertDao
+    public class AlertDao : BaseMailDao, IAlertDao
     {
         public AlertDao(
              TenantManager tenantManager,

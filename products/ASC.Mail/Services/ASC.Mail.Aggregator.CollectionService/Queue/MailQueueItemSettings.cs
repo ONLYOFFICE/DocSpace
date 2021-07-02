@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 
-using ASC.Mail.Models;
-using ASC.Mail.Core;
 using ASC.Common;
-using System.Configuration;
 using ASC.Mail.Core.Dao;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Aggregator.CollectionService.Queue
 {
@@ -18,7 +18,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         public Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>> SpecialDomainFolders { get; private set; }
         public Dictionary<string, int> DefaultFolders { get; private set; }
 
-        public MailQueueItemSettings(ImapFlagsDao imapFlagsDao, ImapSpecialMailboxDao imapSpecialMailboxDao)
+        public MailQueueItemSettings(ImapFlagsDao imapFlagsDao, IImapSpecialMailboxDao imapSpecialMailboxDao)
         {
             var imapFlags = imapFlagsDao.GetImapFlags();
 

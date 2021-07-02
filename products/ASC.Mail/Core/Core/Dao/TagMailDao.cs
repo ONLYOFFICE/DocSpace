@@ -36,7 +36,7 @@ using ASC.Mail.Enums;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class TagMailDao : BaseDao, ITagMailDao
+    public class TagMailDao : BaseMailDao, ITagMailDao
     {
         public TagMailDao(
              TenantManager tenantManager,

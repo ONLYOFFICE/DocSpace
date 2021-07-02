@@ -36,7 +36,7 @@ using ASC.Mail.Models;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class CrmLinkDao : BaseDao, ICrmLinkDao
+    public class CrmLinkDao : BaseMailDao, ICrmLinkDao
     {
         public CrmLinkDao(
              TenantManager tenantManager,
