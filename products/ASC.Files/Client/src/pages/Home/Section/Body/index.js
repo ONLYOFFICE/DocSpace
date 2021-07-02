@@ -202,7 +202,7 @@ export default inject(
 )(
   withRouter(
     withTranslation(["Home", "Translations"])(
-      withLoader(observer(SectionBodyContent))(null)
+      withLoader(observer(SectionBodyContent))()
     )
   )
 );
