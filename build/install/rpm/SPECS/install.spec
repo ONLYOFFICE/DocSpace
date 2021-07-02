@@ -67,6 +67,7 @@ cp -rf %{_builddir}/%{sourcename}/config/nginx/includes/onlyoffice*.conf "%{buil
 cp -rf %{_builddir}/%{sourcename}/config/nginx/onlyoffice*.conf "%{buildroot}%{_sysconfdir}/nginx/conf.d/"
 cp -rf %{_builddir}/%{sourcename}/products/ASC.CRM/Client/dist/* "%{buildroot}%{buildpath}/products/ASC.CRM/client/"
 cp -rf %{_builddir}/%{sourcename}/products/ASC.Files/Client/dist/* "%{buildroot}%{buildpath}/products/ASC.Files/client/"
+cp -rf %{_builddir}/%{sourcename}/products/ASC.Files/Server/DocStore "%{buildroot}%{buildpath}/products/ASC.Files/server/"
 cp -rf %{_builddir}/%{sourcename}/products/ASC.People/Client/dist/* "%{buildroot}%{buildpath}/products/ASC.People/client/"
 cp -rf %{_builddir}/%{sourcename}/products/ASC.Projects/Client/dist/* "%{buildroot}%{buildpath}/products/ASC.Projects/client/"
 cp -rf %{_builddir}/%{sourcename}/products/ASC.Calendar/Client/dist/* "%{buildroot}%{buildpath}/products/ASC.Calendar/client/"
