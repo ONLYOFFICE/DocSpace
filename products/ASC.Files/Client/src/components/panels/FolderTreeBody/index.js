@@ -25,7 +25,7 @@ const FolderTreeBody = ({
         isAvailable ? (
           <StyledSelectFolderPanel heightContent={heightContent}>
             <div className="select-folder-dialog_tree-folder">
-              <Scrollbar stype="mediumBlack">
+              <Scrollbar>
                 <TreeFolders
                   expandedPanelKeys={expandedKeys}
                   data={folderList}
