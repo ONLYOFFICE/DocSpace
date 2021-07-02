@@ -8,7 +8,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { inject, observer } from "mobx-react";
 import ListRow from "./listRow";
-
+import EmptyContainer from "../../EmptyContainer/EmptyContainer";
 const FilesListBody = ({
   filesList,
   onSelectFile,
@@ -134,7 +134,14 @@ const FilesListBody = ({
         )}
       </AutoSizer>
 
-      {!hasNextPage && itemCount === 0 && <Text>{emptyFilesList}</Text>}
+      {!hasNextPage && itemCount === 0 && (
+        <div className="select-file-dialog_empty-container">
+          <EmptyContainer
+            headerText={t("Common:EmptyFolderHeader")}
+            imageSrc="/static/images/empty_screen.png"
+          />
+        </div>
+      )}
     </>
   );
 };
