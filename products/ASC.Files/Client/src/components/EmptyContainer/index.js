@@ -4,6 +4,7 @@ import RootFolderContainer from "./RootFolderContainer";
 import EmptyFilterContainer from "./EmptyFilterContainer";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import { FileAction } from "@appserver/common/constants";
+import { isMobile } from "react-device-detect";
 
 const linkStyles = {
   isHovered: true,
@@ -32,7 +33,7 @@ const EmptyContainer = ({
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
-  ) : parentId === 0 || (isPrivacyFolder && !isEncryptionSupport) ? (
+  ) : parentId === 0 ? (
     <RootFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
   ) : (
     <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
@@ -47,13 +48,16 @@ export default inject(
       withSubfolders,
       filterType,
     } = filesStore.filter;
-    const isFiltered = authorType || search || !withSubfolders || filterType;
+    const isPrivacyFolder = treeFoldersStore.isPrivacyFolder;
+    const isFiltered =
+      (authorType || search || !withSubfolders || filterType) &&
+      !(isPrivacyFolder && isMobile);
 
     return {
       isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
       isFiltered,
       setAction: filesStore.fileActionStore.setAction,
-      isPrivacyFolder: treeFoldersStore.isPrivacyFolder,
+      isPrivacyFolder,
       parentId: selectedFolderStore.parentId,
     };
   }

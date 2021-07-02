@@ -313,7 +313,10 @@ class FilesActionStore {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
-    if (this.settingsStore.confirmDelete) {
+    if (
+      this.settingsStore.confirmDelete ||
+      this.treeFoldersStore.isPrivacyFolder
+    ) {
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
       setSecondaryProgressBarData({

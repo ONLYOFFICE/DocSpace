@@ -99,14 +99,16 @@ class DeleteDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, isLoading, unsubscribe } = this.props;
+    const { visible, t, isLoading, unsubscribe, isPrivacyFolder } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    const title = unsubscribe
+    const title = isPrivacyFolder
+      ? t("ConfirmRemove")
+      : unsubscribe
       ? t("UnsubscribeTitle")
-      : checkedSelections.length === 1
+      : checkedSelections.length === 1 || isPrivacyFolder
       ? checkedSelections[0].fileExst
         ? t("MoveToTrashOneFileTitle")
         : t("MoveToTrashOneFolderTitle")
@@ -114,7 +116,7 @@ class DeleteDialogComponent extends React.Component {
 
     const noteText = unsubscribe
       ? t("UnsubscribeNote")
-      : checkedSelections.length === 1
+      : checkedSelections.length === 1 || isPrivacyFolder
       ? checkedSelections[0].fileExst
         ? t("MoveToTrashOneFileNote")
         : t("MoveToTrashOneFolderNote")
@@ -208,9 +210,16 @@ const DeleteDialog = withTranslation([
 ])(DeleteDialogComponent);
 
 export default inject(
-  ({ filesStore, selectedFolderStore, dialogsStore, filesActionsStore }) => {
+  ({
+    filesStore,
+    selectedFolderStore,
+    dialogsStore,
+    filesActionsStore,
+    treeFoldersStore,
+  }) => {
     const { selection, isLoading } = filesStore;
     const { deleteAction, unsubscribeAction } = filesActionsStore;
+    const { isPrivacyFolder } = treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
@@ -225,6 +234,7 @@ export default inject(
       isLoading,
       isRootFolder: selectedFolderStore.isRootFolder,
       visible,
+      isPrivacyFolder,
 
       setDeleteDialogVisible,
       deleteAction,

@@ -397,6 +397,7 @@ class SharingPanelComponent extends React.Component {
       uploadPanelVisible,
       documentTitle,
       sharingPanelVisible,
+      isPrivacy,
     } = this.props;
     const {
       showActionPanel,
@@ -416,7 +417,12 @@ class SharingPanelComponent extends React.Component {
     const visible = sharingPanelVisible;
     const zIndex = 310;
     const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
-    const internalLink = selection.length === 1 && this.getInternalLink();
+
+    const isEncrypted =
+      isPrivacy || (selection.length && selection[0].encrypted);
+
+    const internalLink =
+      selection.length === 1 && !isEncrypted && this.getInternalLink();
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -462,10 +468,12 @@ class SharingPanelComponent extends React.Component {
                       label={t("LinkText")}
                       onClick={this.onShowUsersPanel}
                     />
-                    <DropDownItem
-                      label={t("AddGroupsForSharingButton")}
-                      onClick={this.onShowGroupsPanel}
-                    />
+                    {!isEncrypted && (
+                      <DropDownItem
+                        label={t("AddGroupsForSharingButton")}
+                        onClick={this.onShowGroupsPanel}
+                      />
+                    )}
                   </DropDown>
                 </div>
 
@@ -552,6 +560,7 @@ class SharingPanelComponent extends React.Component {
             groupsCaption={groupsCaption}
             accessOptions={accessOptions}
             isMultiSelect
+            isEncrypted={isEncrypted}
           />
         )}
 
