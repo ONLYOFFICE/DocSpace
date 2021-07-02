@@ -180,7 +180,7 @@ class ModalDialog extends React.Component {
           >
             <Content contentHeight={contentHeight} contentWidth={contentWidth}>
               {isLoading ? (
-                <Loaders.DialogAsideLoader />
+                <Loaders.DialogAsideLoader withoutAside />
               ) : (
                 <>
                   <StyledHeader className="modal-dialog-aside-header">

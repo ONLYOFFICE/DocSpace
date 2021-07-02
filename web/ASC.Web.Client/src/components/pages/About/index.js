@@ -9,6 +9,7 @@ import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
 import config from "../../../../package.json";
+import withLoader from "../Confirm/withLoader";
 
 const StyledLoader = styled(Loader)`
   position: fixed;
@@ -82,7 +83,7 @@ const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
 
-const Body = ({ t, tReady }) => {
+const Body = ({ t }) => {
   useEffect(() => {
     setDocumentTitle(t("Common:About"));
   }, [t]);
@@ -110,9 +111,7 @@ const Body = ({ t, tReady }) => {
     </Text>
   );
 
-  return !tReady ? (
-    <StyledLoader type="rombs" />
-  ) : (
+  return (
     <BodyStyle>
       <p className="avatar">
         <img
@@ -198,7 +197,7 @@ const Body = ({ t, tReady }) => {
   );
 };
 
-const BodyWrapper = withTranslation(["About", "Common"])(Body);
+const BodyWrapper = withTranslation(["About", "Common"])(withLoader(Body));
 
 const About = (props) => {
   return (

@@ -25,6 +25,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
 import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 class NewFilesPanel extends React.Component {
   state = { readingFiles: [] };
@@ -153,7 +154,7 @@ class NewFilesPanel extends React.Component {
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, tReady, visible, isLoading, newFiles } = this.props;
+    const { t, visible, isLoading, newFiles } = this.props;
     const zIndex = 310;
 
     return (
@@ -166,74 +167,68 @@ class NewFilesPanel extends React.Component {
         />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
-            {!tReady ? (
-              <Loaders.DialogAsideLoader isPanel />
+            <StyledHeaderContent>
+              <Heading
+                className="files-operations-header"
+                size="medium"
+                truncate
+              >
+                {t("NewFiles")}
+              </Heading>
+            </StyledHeaderContent>
+            {!isLoading ? (
+              <StyledBody className="files-operations-body">
+                <RowContainer useReactWindow>
+                  {newFiles.map((file) => {
+                    const element = this.getItemIcon(file);
+                    return (
+                      <Row key={file.id} element={element}>
+                        <Box
+                          onClick={this.onNewFileClick.bind(this, file)}
+                          marginProp="auto 0"
+                        >
+                          <Link
+                            containerWidth="100%"
+                            type="page"
+                            fontWeight="bold"
+                            color="#333"
+                            isTextOverflow
+                            truncate
+                            title={file.title}
+                            fontSize="14px"
+                            className="files-new-link"
+                          >
+                            {file.title}
+                          </Link>
+                        </Box>
+                      </Row>
+                    );
+                  })}
+                </RowContainer>
+              </StyledBody>
             ) : (
-              <>
-                <StyledHeaderContent>
-                  <Heading
-                    className="files-operations-header"
-                    size="medium"
-                    truncate
-                  >
-                    {t("NewFiles")}
-                  </Heading>
-                </StyledHeaderContent>
-                {!isLoading ? (
-                  <StyledBody className="files-operations-body">
-                    <RowContainer useReactWindow>
-                      {newFiles.map((file) => {
-                        const element = this.getItemIcon(file);
-                        return (
-                          <Row key={file.id} element={element}>
-                            <Box
-                              onClick={this.onNewFileClick.bind(this, file)}
-                              marginProp="auto 0"
-                            >
-                              <Link
-                                containerWidth="100%"
-                                type="page"
-                                fontWeight="bold"
-                                color="#333"
-                                isTextOverflow
-                                truncate
-                                title={file.title}
-                                fontSize="14px"
-                                className="files-new-link"
-                              >
-                                {file.title}
-                              </Link>
-                            </Box>
-                          </Row>
-                        );
-                      })}
-                    </RowContainer>
-                  </StyledBody>
-                ) : (
-                  <div key="loader" className="panel-loader-wrapper">
-                    <Loader type="oval" size="16px" className="panel-loader" />
-                    <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                      "Common:LoadingDescription"
-                    )}`}</Text>
-                  </div>
-                )}
-                <StyledFooter>
-                  <Button
-                    className="new_files_panel-button"
-                    label={t("MarkAsRead")}
-                    size="big"
-                    primary
-                    onClick={this.onMarkAsRead}
-                  />
-                  <Button
-                    className="sharing_panel-button"
-                    label={t("Common:CloseButton")}
-                    size="big"
-                    onClick={this.onClose}
-                  />
-                </StyledFooter>
-              </>
+              <div key="loader" className="panel-loader-wrapper">
+                <Loader type="oval" size="16px" className="panel-loader" />
+                <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                  "Common:LoadingDescription"
+                )}`}</Text>
+              </div>
             )}
+            <StyledFooter>
+              <Button
+                className="new_files_panel-button"
+                label={t("MarkAsRead")}
+                size="big"
+                primary
+                onClick={this.onMarkAsRead}
+              />
+              <Button
+                className="sharing_panel-button"
+                label={t("Common:CloseButton")}
+                size="big"
+                onClick={this.onClose}
+              />
+            </StyledFooter>
           </StyledContent>
         </Aside>
       </StyledAsidePanel>
@@ -298,6 +293,8 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["NewFilesPanel", "Common"])(observer(NewFilesPanel))
+    withTranslation(["NewFilesPanel", "Common"])(
+      withLoader(observer(NewFilesPanel))(<Loaders.DialogAsideLoader isPanel />)
+    )
   )
 );

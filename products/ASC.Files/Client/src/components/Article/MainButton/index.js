@@ -11,8 +11,9 @@ import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
+import withLoader from "../../../HOCs/withLoader";
 
-class PureArticleMainButtonContent extends React.Component {
+class ArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
     // this.goToHomePage();
     const format = e.currentTarget.dataset.format || null;
@@ -73,9 +74,7 @@ class PureArticleMainButtonContent extends React.Component {
       isPrivacy,
     } = this.props;
 
-    return firstLoad || !tReady ? (
-      <Loaders.Rectangle />
-    ) : (
+    return (
       <MainButton
         isDisabled={isDisabled ? isDisabled : !canCreate}
         isDropdown={true}
@@ -150,10 +149,6 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContent = withTranslation(["Article", "Common"])(
-  PureArticleMainButtonContent
-);
-
 ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
@@ -173,4 +168,10 @@ export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
     setAction: fileActionStore.setAction,
     startUpload,
   };
-})(withRouter(observer(ArticleMainButtonContent)));
+})(
+  withRouter(
+    withTranslation(["Article", "Common"])(
+      withLoader(observer(ArticleMainButtonContent))(<Loaders.Rectangle />)
+    )
+  )
+);

@@ -2,6 +2,21 @@ import styled, { css } from "styled-components";
 
 const StyledDialogAsideLoader = styled.div`
   ${(props) =>
+    props.isPanel &&
+    css`
+      .dialog-aside-loader {
+        padding: 0;
+        transform: translateX(${(props) => (props.visible ? "0" : "500px")});
+        width: 500px;
+
+        @media (max-width: 550px) {
+          width: 320px;
+          transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+        }
+      }
+    `}
+
+  ${(props) =>
     props.isPanel
       ? css`
           .dialog-loader-header {

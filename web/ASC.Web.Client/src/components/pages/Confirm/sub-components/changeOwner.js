@@ -7,8 +7,8 @@ import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { tryRedirectTo } from "@appserver/common/utils";
-import Loader from "@appserver/components/loader";
 import { inject, observer } from "mobx-react";
+import withLoader from "../withLoader";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -70,11 +70,9 @@ class Form extends React.PureComponent {
   };
 
   render() {
-    const { t, tReady, greetingTitle } = this.props;
+    const { t, greetingTitle } = this.props;
 
-    return !tReady ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
+    return (
       <BodyStyle>
         <div className="owner-container">
           <div className="owner-wrapper">
@@ -135,5 +133,9 @@ export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   defaultPage: auth.settingsStore.defaultPage,
 }))(
-  withRouter(withTranslation(["Confirm", "Common"])(observer(ChangeOwnerForm)))
+  withRouter(
+    withTranslation(["Confirm", "Common"])(
+      withLoader(observer(ChangeOwnerForm))
+    )
+  )
 );

@@ -13,6 +13,7 @@ import config from "../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -86,7 +87,6 @@ const PureTreeSettings = ({
   history,
   setIsLoading,
   t,
-  tReady,
   isVisitor,
 }) => {
   const { setting } = match.params;
@@ -191,9 +191,7 @@ const PureTreeSettings = ({
 
   const nodes = renderTreeNode();
 
-  return !tReady ? (
-    <Loaders.TreeSettingsLoader />
-  ) : (
+  return (
     <StyledTreeMenu
       expandedKeys={expandedSetting}
       selectedKeys={selectedTreeNode}
@@ -214,7 +212,7 @@ const PureTreeSettings = ({
 };
 
 const TreeSettings = withTranslation(["Settings", "Common"])(
-  withRouter(PureTreeSettings)
+  withRouter(withLoader(PureTreeSettings)(<Loaders.TreeSettingsLoader />))
 );
 
 export default inject(

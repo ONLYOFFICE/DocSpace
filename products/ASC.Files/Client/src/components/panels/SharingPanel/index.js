@@ -28,6 +28,7 @@ import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -435,136 +436,119 @@ class SharingPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent isDisabled={isLoading}>
-            {!tReady ? (
-              <Loaders.DialogAsideLoader isPanel />
-            ) : (
-              <>
-                <StyledHeaderContent>
-                  {uploadPanelVisible && (
-                    <IconButton
-                      size="16"
-                      iconName="/static/images/arrow.path.react.svg"
-                      onClick={this.onClose}
-                      color="A3A9AE"
-                    />
-                  )}
-                  <Heading
-                    className="sharing_panel-header"
-                    size="medium"
-                    truncate
+            <StyledHeaderContent>
+              {uploadPanelVisible && (
+                <IconButton
+                  size="16"
+                  iconName="/static/images/arrow.path.react.svg"
+                  onClick={this.onClose}
+                  color="A3A9AE"
+                />
+              )}
+              <Heading className="sharing_panel-header" size="medium" truncate>
+                {t("SharingSettingsTitle")}
+              </Heading>
+              <div className="sharing_panel-icons-container">
+                <div ref={this.ref} className="sharing_panel-drop-down-wrapper">
+                  <IconButton
+                    size="17"
+                    iconName="/static/images/actions.header.touch.react.svg"
+                    className="sharing_panel-plus-icon"
+                    {...onPlusClickProp}
+                    color="A3A9AE"
+                    isDisabled={isLoading}
+                  />
+
+                  <DropDown
+                    directionX="right"
+                    className="sharing_panel-drop-down"
+                    open={showActionPanel}
+                    manualY="30px"
+                    clickOutsideAction={this.onCloseActionPanel}
                   >
-                    {t("SharingSettingsTitle")}
-                  </Heading>
-                  <div className="sharing_panel-icons-container">
-                    <div
-                      ref={this.ref}
-                      className="sharing_panel-drop-down-wrapper"
-                    >
-                      <IconButton
-                        size="17"
-                        iconName="/static/images/actions.header.touch.react.svg"
-                        className="sharing_panel-plus-icon"
-                        {...onPlusClickProp}
-                        color="A3A9AE"
-                        isDisabled={isLoading}
+                    <DropDownItem
+                      label={t("LinkText")}
+                      onClick={this.onShowUsersPanel}
+                    />
+                    {!isEncrypted && (
+                      <DropDownItem
+                        label={t("AddGroupsForSharingButton")}
+                        onClick={this.onShowGroupsPanel}
                       />
+                    )}
+                  </DropDown>
+                </div>
 
-                      <DropDown
-                        directionX="right"
-                        className="sharing_panel-drop-down"
-                        open={showActionPanel}
-                        manualY="30px"
-                        clickOutsideAction={this.onCloseActionPanel}
-                      >
-                        <DropDownItem
-                          label={t("LinkText")}
-                          onClick={this.onShowUsersPanel}
-                        />
-                        {!isEncrypted && (
-                          <DropDownItem
-                            label={t("AddGroupsForSharingButton")}
-                            onClick={this.onShowGroupsPanel}
-                          />
-                        )}
-                      </DropDown>
-                    </div>
-
-                    {/*<IconButton
+                {/*<IconButton
                   size="16"
                   iconName="images/key.react.svg"
                   onClick={this.onKeyClick}
                 />*/}
-                  </div>
-                </StyledHeaderContent>
-                <StyledSharingBody
-                  ref={this.scrollRef}
-                  stype="mediumBlack"
-                  style={SharingBodyStyle}
-                >
-                  {!isLoading ? (
-                    shareDataItems.map((item, index) => (
-                      <SharingRow
-                        t={t}
-                        index={index}
-                        key={`${item.sharedTo.id}_${index}`}
-                        selection={selection}
-                        item={item}
-                        isMyId={isMyId}
-                        accessOptions={accessOptions}
-                        externalAccessOptions={externalAccessOptions}
-                        canShareOwnerChange={canShareOwnerChange}
-                        onChangeItemAccess={this.onChangeItemAccess}
-                        internalLink={internalLink}
-                        onRemoveUserClick={this.onRemoveUserItemClick}
-                        onShowEmbeddingPanel={this.onShowEmbeddingPanel}
-                        onToggleLink={this.onToggleLink}
-                        onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                        isLoading={isLoading}
-                        documentTitle={documentTitle}
-                      />
-                    ))
-                  ) : (
-                    <div key="loader" className="panel-loader-wrapper">
-                      <Loader
-                        type="oval"
-                        size="16px"
-                        className="panel-loader"
-                      />
-                      <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                        "Common:LoadingDescription"
-                      )}`}</Text>
-                    </div>
-                  )}
-                  {isNotifyUsers && (
-                    <div className="sharing_panel-text-area">
-                      <Textarea
-                        placeholder={t("AddShareMessage")}
-                        onChange={this.onChangeMessage}
-                        value={message}
-                        isDisabled={isLoading}
-                      />
-                    </div>
-                  )}
-                </StyledSharingBody>
-                <StyledFooter>
-                  <Checkbox
-                    isChecked={isNotifyUsers}
-                    label={t("Notify users")}
-                    onChange={this.onNotifyUsersChange}
-                    className="sharing_panel-checkbox"
+              </div>
+            </StyledHeaderContent>
+            <StyledSharingBody
+              ref={this.scrollRef}
+              stype="mediumBlack"
+              style={SharingBodyStyle}
+            >
+              {!isLoading ? (
+                shareDataItems.map((item, index) => (
+                  <SharingRow
+                    t={t}
+                    index={index}
+                    key={`${item.sharedTo.id}_${index}`}
+                    selection={selection}
+                    item={item}
+                    isMyId={isMyId}
+                    accessOptions={accessOptions}
+                    externalAccessOptions={externalAccessOptions}
+                    canShareOwnerChange={canShareOwnerChange}
+                    onChangeItemAccess={this.onChangeItemAccess}
+                    internalLink={internalLink}
+                    onRemoveUserClick={this.onRemoveUserItemClick}
+                    onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                    onToggleLink={this.onToggleLink}
+                    onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
+                    isLoading={isLoading}
+                    documentTitle={documentTitle}
+                  />
+                ))
+              ) : (
+                <div key="loader" className="panel-loader-wrapper">
+                  <Loader type="oval" size="16px" className="panel-loader" />
+                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                    "Common:LoadingDescription"
+                  )}`}</Text>
+                </div>
+              )}
+              {isNotifyUsers && (
+                <div className="sharing_panel-text-area">
+                  <Textarea
+                    placeholder={t("AddShareMessage")}
+                    onChange={this.onChangeMessage}
+                    value={message}
                     isDisabled={isLoading}
                   />
-                  <Button
-                    className="sharing_panel-button"
-                    label={t("Common:SaveButton")}
-                    size="big"
-                    primary
-                    onClick={this.onSaveClick}
-                    isDisabled={isLoading}
-                  />
-                </StyledFooter>
-              </>
-            )}
+                </div>
+              )}
+            </StyledSharingBody>
+            <StyledFooter>
+              <Checkbox
+                isChecked={isNotifyUsers}
+                label={t("Notify users")}
+                onChange={this.onNotifyUsersChange}
+                className="sharing_panel-checkbox"
+                isDisabled={isLoading}
+              />
+              <Button
+                className="sharing_panel-button"
+                label={t("Common:SaveButton")}
+                size="big"
+                primary
+                onClick={this.onSaveClick}
+                isDisabled={isLoading}
+              />
+            </StyledFooter>
           </StyledContent>
         </Aside>
 
@@ -678,7 +662,7 @@ const SharingPanel = inject(
 )(
   observer(
     withTranslation(["SharingPanel", "Common", "Translations"])(
-      SharingPanelComponent
+      withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
     )
   )
 );

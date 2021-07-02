@@ -12,7 +12,6 @@ import Box from "@appserver/components/box";
 import toastr from "studio/toastr";
 import withLoader from "../withLoader";
 import { mobile, tablet } from "@appserver/components/utils/device";
-import Loader from "@appserver/components/loader";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
@@ -47,14 +46,7 @@ const StyledForm = styled(Box)`
 `;
 
 const TfaAuthForm = withLoader((props) => {
-  const {
-    t,
-    tReady,
-    loginWithCode,
-    loginWithCodeAndCookie,
-    location,
-    history,
-  } = props;
+  const { t, loginWithCode, loginWithCodeAndCookie, location, history } = props;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -86,9 +78,7 @@ const TfaAuthForm = withLoader((props) => {
 
   const width = window.innerWidth;
 
-  return !tReady ? (
-    <Loader className="pageLoader" type="rombs" size="40px" />
-  ) : (
+  return (
     <StyledForm className="app-code-container">
       <Box className="app-code-description" marginProp="0 0 32px 0">
         <Text isBold fontSize="14px" className="app-code-text">

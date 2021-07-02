@@ -14,7 +14,6 @@ import toastr from "studio/toastr";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import { mobile, tablet } from "@appserver/components/utils/device";
 import Link from "@appserver/components/link";
-import Loader from "@appserver/components/loader";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
@@ -59,7 +58,6 @@ const StyledForm = styled(Box)`
 const TfaActivationForm = withLoader((props) => {
   const {
     t,
-    tReady,
     secretKey,
     qrCode,
     loginWithCode,
@@ -98,9 +96,7 @@ const TfaActivationForm = withLoader((props) => {
 
   const width = window.innerWidth;
 
-  return !tReady ? (
-    <Loader className="pageLoader" type="rombs" size="40px" />
-  ) : (
+  return (
     <PageLayout>
       <PageLayout.SectionBody>
         <StyledForm className="set-app-container">

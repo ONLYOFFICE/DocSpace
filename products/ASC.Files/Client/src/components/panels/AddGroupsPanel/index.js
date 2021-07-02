@@ -15,6 +15,7 @@ import {
 } from "../StyledPanels";
 import AccessComboBox from "../SharingPanel/AccessComboBox";
 import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 class AddGroupsPanelComponent extends React.Component {
   constructor(props) {
@@ -103,7 +104,7 @@ class AddGroupsPanelComponent extends React.Component {
   // }
 
   render() {
-    const { t, tReady, visible, accessOptions } = this.props;
+    const { t, visible, accessOptions } = this.props;
     const { accessRight } = this.state;
 
     const zIndex = 310;
@@ -119,55 +120,49 @@ class AddGroupsPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            {!tReady ? (
-              <Loaders.DialogAsideLoader isPanel />
-            ) : (
-              <>
-                <StyledHeaderContent>
-                  <IconButton
-                    size="16"
-                    iconName="/static/images/arrow.path.react.svg"
-                    onClick={this.onArrowClick}
-                    color="A3A9AE"
-                  />
-                  <Heading
-                    className="header_aside-panel-header"
-                    size="medium"
-                    truncate
-                  >
-                    {t("AddGroupsForSharingButton")}
-                  </Heading>
-                  {/*<IconButton
+            <StyledHeaderContent>
+              <IconButton
+                size="16"
+                iconName="/static/images/arrow.path.react.svg"
+                onClick={this.onArrowClick}
+                color="A3A9AE"
+              />
+              <Heading
+                className="header_aside-panel-header"
+                size="medium"
+                truncate
+              >
+                {t("AddGroupsForSharingButton")}
+              </Heading>
+              {/*<IconButton
                 size="16"
                 iconName="static/images/actions.header.touch.react.svg"
                 className="header_aside-panel-plus-icon"
                 onClick={this.onPLusClick}
               />*/}
-                </StyledHeaderContent>
+            </StyledHeaderContent>
 
-                <StyledBody ref={this.scrollRef}>
-                  <GroupSelector
-                    className="groupSelector"
-                    isOpen={visible}
-                    isMultiSelect
-                    displayType="aside"
-                    withoutAside
-                    onSelect={this.onSelectGroups}
-                    embeddedComponent={
-                      <AccessComboBox
-                        t={t}
-                        access={accessRight}
-                        directionX="right"
-                        onAccessChange={this.onAccessChange}
-                        accessOptions={accessOptions}
-                        arrowIconColor="#000000"
-                      />
-                    }
-                    showCounter
+            <StyledBody ref={this.scrollRef}>
+              <GroupSelector
+                className="groupSelector"
+                isOpen={visible}
+                isMultiSelect
+                displayType="aside"
+                withoutAside
+                onSelect={this.onSelectGroups}
+                embeddedComponent={
+                  <AccessComboBox
+                    t={t}
+                    access={accessRight}
+                    directionX="right"
+                    onAccessChange={this.onAccessChange}
+                    accessOptions={accessOptions}
+                    arrowIconColor="#000000"
                   />
-                </StyledBody>
-              </>
-            )}
+                }
+                showCounter
+              />
+            </StyledBody>
           </StyledContent>
         </Aside>
       </StyledAddGroupsPanel>
@@ -181,4 +176,6 @@ AddGroupsPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation("SharingPanel")(AddGroupsPanelComponent);
+export default withTranslation("SharingPanel")(
+  withLoader(AddGroupsPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+);
