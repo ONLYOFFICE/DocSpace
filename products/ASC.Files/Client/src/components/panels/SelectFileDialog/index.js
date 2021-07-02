@@ -168,8 +168,6 @@ class SelectFileDialogBody extends React.Component {
 
     const pageCount = 30;
 
-    console.log("selectedFolder", selectedFolder);
-    console.log("filterParams", filterParams);
     this.setState({ isNextPageLoading: true }, () => {
       getFiles(
         selectedFolder,
@@ -201,7 +199,7 @@ class SelectFileDialogBody extends React.Component {
       onClose,
       zIndex,
       foldersType,
-      isCommonWithoutProvider,
+      withoutProvider,
       folderId,
       header,
       modalHeightContent,
@@ -224,7 +222,7 @@ class SelectFileDialogBody extends React.Component {
         zIndex={zIndex}
         onClose={onClose}
         isVisible={isVisible}
-        isCommonWithoutProvider={isCommonWithoutProvider}
+        withoutProvider={withoutProvider}
         foldersType={foldersType}
         filesList={filesList}
         isLoadingData={isLoadingData}
@@ -254,7 +252,7 @@ class SelectFileDialogBody extends React.Component {
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
-        isCommonWithoutProvider={isCommonWithoutProvider}
+        withoutProvider={withoutProvider}
         selectedKeys={selectedKeys}
         folderId={folderId}
         header={header}
@@ -263,6 +261,22 @@ class SelectFileDialogBody extends React.Component {
     );
   }
 }
+SelectFileDialogBody.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  isPanelVisible: PropTypes.bool.isRequired,
+  foldersType: PropTypes.oneOf(["common", "third-party"]),
+  folderId: PropTypes.string,
+  withoutProvider: PropTypes.bool,
+  header: PropTypes.string,
+  zIndex: PropTypes.number,
+};
+
+SelectFileDialogModalView.defaultProps = {
+  folderId: "",
+  header: "",
+  withoutProvider: false,
+  zIndex: 310,
+};
 
 const SelectFileDialogWrapper = withTranslation(["SelectFile", "Common"])(
   SelectFileDialogBody

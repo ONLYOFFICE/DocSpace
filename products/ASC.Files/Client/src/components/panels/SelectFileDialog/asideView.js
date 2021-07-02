@@ -17,7 +17,7 @@ const SelectFileDialogAsideView = ({
   zIndex,
   onClose,
   isVisible,
-  isCommonWithoutProvider,
+  withoutProvider,
   foldersType,
   isLoadingData,
   onSelectFile,
@@ -65,7 +65,7 @@ const SelectFileDialogAsideView = ({
                 isPanelVisible={isVisible}
                 foldersType={foldersType}
                 isNeedArrowIcon
-                isCommonWithoutProvider={isCommonWithoutProvider}
+                withoutProvider={withoutProvider}
               />
 
               {selectedFolder && (

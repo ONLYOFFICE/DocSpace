@@ -16,7 +16,6 @@ class SelectFile extends React.PureComponent {
     super(props);
     this.inputRef = React.createRef();
     this.state = {
-      isLoading: false,
       fileName: "",
     };
   }
@@ -51,7 +50,7 @@ class SelectFile extends React.PureComponent {
       isTablesOnly,
       isMediaOnly,
     } = this.props;
-    const { isLoading, fileName } = this.state;
+    const { fileName } = this.state;
     const zIndex = 310;
 
     return (

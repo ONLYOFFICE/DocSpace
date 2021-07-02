@@ -92,7 +92,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       isPanelVisible,
       onClose,
       zIndex,
-      isCommonWithoutProvider,
+      withoutProvider,
       expandedKeys,
       filter,
       onSelectFile,
@@ -131,7 +131,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                       expandedKeys={expandedKeys}
                       folderList={this.folderList}
                       onSelect={this.onSelect}
-                      isCommonWithoutProvider={isCommonWithoutProvider}
+                      withoutProvider={withoutProvider}
                       certainFolders
                       isAvailableFolders
                       filter={filter}
@@ -181,6 +181,12 @@ class SelectFileDialogModalViewBody extends React.Component {
   }
 }
 
+SelectFileDialogModalViewBody.propTypes = {
+  modalHeightContent: PropTypes.string,
+};
+SelectFileDialogModalViewBody.defaultProps = {
+  modalHeightContent: "280px",
+};
 class SelectFileDialogModalView extends React.Component {
   render() {
     return (
@@ -193,9 +199,4 @@ class SelectFileDialogModalView extends React.Component {
   }
 }
 
-SelectFileDialogModalView.defaultProps = {
-  isNeedArrowIcon: false,
-  id: "",
-  modalHeightContent: "280px",
-};
 export default SelectFileDialogModalView;

@@ -188,12 +188,19 @@ SelectFolderModalDialog.propTypes = {
   isPanelVisible: PropTypes.bool.isRequired,
   foldersType: PropTypes.oneOf(["common", "third-party"]),
   id: PropTypes.string,
+  zIndex: PropTypes.number,
+  withoutProvider: PropTypes.bool,
+  isNeedArrowIcon: PropTypes.bool,
+  modalHeightContent: PropTypes.string,
+  asideHeightContent: PropTypes.string,
 };
 SelectFolderModalDialog.defaultProps = {
   isNeedArrowIcon: false,
   id: "",
   modalHeightContent: "325px",
   asideHeightContent: "calc(100vh - 86px)",
+  zIndex: 310,
+  withoutProvider: false,
 };
 
 const SelectFolderDialogWrapper = withTranslation(["SelectFolder", "Common"])(

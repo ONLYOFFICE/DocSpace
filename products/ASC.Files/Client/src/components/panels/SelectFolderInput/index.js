@@ -121,12 +121,21 @@ class SelectFolder extends React.PureComponent {
 
 SelectFolder.propTypes = {
   onClickInput: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSelectFolder: PropTypes.func.isRequired,
+  onSetLoadingData: PropTypes.func,
+  isPanelVisible: PropTypes.bool.isRequired,
+  name: PropTypes.string,
+  withoutProvider: PropTypes.bool,
+  isError: PropTypes.bool,
+  isSavingProcess: PropTypes.bool,
+  foldersType: PropTypes.oneOf(["common", "third-party"]),
 };
 
 SelectFolder.defaultProps = {
   withoutProvider: false,
   isDisabled: false,
-  folderList: "",
+  isError: false,
   folderPath: "",
 };
 const SelectFolderWrapper = withTranslation(["SelectFolder", "Common"])(
