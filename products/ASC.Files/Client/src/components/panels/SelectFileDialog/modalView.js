@@ -105,6 +105,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       folderId,
       header,
       modalHeightContent,
+      loadingText,
     } = this.props;
     const { isLoading } = this.state;
     console.log("this.folderList", this.folderList);
@@ -148,6 +149,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                         isNextPageLoading={isNextPageLoading}
                         loadNextPage={loadNextPage}
                         selectedFolder={selectedFolder}
+                        loadingText={loadingText}
                       />
                     )}
                   </div>
@@ -155,7 +157,7 @@ class SelectFileDialogModalViewBody extends React.Component {
               ) : (
                 <div
                   key="loader"
-                  className="select-file-dialog_modal-loader panel-loader-wrapper "
+                  className="select-file-dialog_modal-loader panel-loader-wrapper"
                 >
                   <Loader type="oval" size="16px" className="panel-loader" />
                   <Text as="span">{`${t("Common:LoadingProcessing")} ${t(

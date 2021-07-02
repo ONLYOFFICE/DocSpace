@@ -203,6 +203,7 @@ class SelectFileDialogBody extends React.Component {
       folderId,
       header,
       modalHeightContent,
+      loadingLabel,
     } = this.props;
     const {
       isVisible,
@@ -214,7 +215,9 @@ class SelectFileDialogBody extends React.Component {
       displayType,
       selectedKeys,
     } = this.state;
-
+    const loadingText = loadingLabel
+      ? loadingLabel
+      : `${t("Common:LoadingProcessing")} ${t("Common:LoadingDescription")}`;
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
         t={t}
@@ -236,6 +239,7 @@ class SelectFileDialogBody extends React.Component {
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
         header={header}
+        loadingText={loadingText}
       />
     ) : (
       <SelectFileDialogModalView
@@ -257,6 +261,7 @@ class SelectFileDialogBody extends React.Component {
         folderId={folderId}
         header={header}
         modalHeightContent={modalHeightContent}
+        loadingText={loadingText}
       />
     );
   }

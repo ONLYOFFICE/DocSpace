@@ -49,6 +49,7 @@ class SelectFile extends React.PureComponent {
       isPresentationOnly,
       isTablesOnly,
       isMediaOnly,
+      loadingLabel,
     } = this.props;
     const { fileName } = this.state;
     const zIndex = 310;
@@ -85,6 +86,7 @@ class SelectFile extends React.PureComponent {
           isPresentation={isPresentationOnly}
           isTables={isTablesOnly}
           isMediaOnly={isMediaOnly}
+          loadingLabel={loadingLabel}
         />
       </StyledComponent>
     );

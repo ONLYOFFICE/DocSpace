@@ -20,7 +20,7 @@ const FilesListBody = ({
   listHeight,
   needRowSelection,
   emptyFilesList,
-  loadingLabel,
+  loadingText,
   selectedFolder,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
@@ -56,22 +56,15 @@ const FilesListBody = ({
   const renderLoader = useCallback(
     (style) => {
       return (
-        <div style={style} className="row-option">
-          <div key="loader">
-            <Loader
-              type="oval"
-              size="16px"
-              style={{
-                display: "inline",
-                marginRight: "10px",
-              }}
-            />
-            <Text as="span">{"Hello"}</Text>
+        <div style={style}>
+          <div key="loader" className="panel-loader-wrapper">
+            <Loader type="oval" size="16px" className="panel-loader" />
+            <Text as="span">{loadingText}</Text>
           </div>
         </div>
       );
     },
-    [loadingLabel]
+    [loadingText]
   );
   const Item = useCallback(
     ({ index, style }) => {
