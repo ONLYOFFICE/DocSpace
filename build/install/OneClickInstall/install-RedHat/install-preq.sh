@@ -140,7 +140,7 @@ ${package_manager} -y install epel-release \
 			make \
 			yarn \
 			dotnet-sdk-5.0 \
-			elasticsearch-7.8.1 --enablerepo=elasticsearch \
+			elasticsearch-7.13.1 --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
 			supervisor \
