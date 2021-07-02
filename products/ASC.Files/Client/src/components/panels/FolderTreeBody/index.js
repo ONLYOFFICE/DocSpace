@@ -3,7 +3,9 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
+import Scrollbar from "@appserver/components/scrollbar";
 import TreeFolders from "../../Article/Body/TreeFolders";
+import { StyledSelectFolderPanel } from "../StyledPanels";
 const FolderTreeBody = ({
   isLoadingData,
   expandedKeys,
@@ -14,22 +16,29 @@ const FolderTreeBody = ({
   isAvailable,
   filter,
   selectedKeys,
+  heightContent,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
   return (
     <>
       {!isLoadingData ? (
         isAvailable ? (
-          <TreeFolders
-            expandedPanelKeys={expandedKeys}
-            data={folderList}
-            filter={filter}
-            onSelect={onSelect}
-            withoutProvider={withoutProvider}
-            certainFolders={certainFolders}
-            selectedKeys={selectedKeys}
-            needUpdate={false}
-          />
+          <StyledSelectFolderPanel heightContent={heightContent}>
+            <div className="select-folder-dialog_tree-folder">
+              <Scrollbar stype="mediumBlack">
+                <TreeFolders
+                  expandedPanelKeys={expandedKeys}
+                  data={folderList}
+                  filter={filter}
+                  onSelect={onSelect}
+                  withoutProvider={withoutProvider}
+                  certainFolders={certainFolders}
+                  selectedKeys={selectedKeys}
+                  needUpdate={false}
+                />
+              </Scrollbar>
+            </div>
+          </StyledSelectFolderPanel>
         ) : (
           <Text as="span">{t("NotAvailableFolder")}</Text>
         )

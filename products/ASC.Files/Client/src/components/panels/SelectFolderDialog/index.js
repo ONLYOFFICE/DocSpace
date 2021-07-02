@@ -114,6 +114,7 @@ class SelectFolderModalDialog extends React.Component {
       withoutProvider,
       isNeedArrowIcon,
       id,
+      heightContent,
     } = this.props;
     const { isLoadingData, isAvailable, certainFolders, folderId } = this.state;
 
@@ -145,19 +146,16 @@ class SelectFolderModalDialog extends React.Component {
 
           <ModalDialog.Body>
             <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
-              <div className="select-folder-dialog_tree-folder">
-                <Scrollbar stype="mediumBlack">
-                  <FolderTreeBody
-                    isLoadingData={isLoadingData}
-                    folderList={folderList}
-                    onSelect={this.onSelect}
-                    withoutProvider={withoutProvider}
-                    certainFolders={certainFolders}
-                    isAvailable={isAvailable}
-                    selectedKeys={[id ? id : folderId]}
-                  />
-                </Scrollbar>
-              </div>
+              <FolderTreeBody
+                isLoadingData={isLoadingData}
+                folderList={folderList}
+                onSelect={this.onSelect}
+                withoutProvider={withoutProvider}
+                certainFolders={certainFolders}
+                isAvailable={isAvailable}
+                selectedKeys={[id ? id : folderId]}
+                heightContent={heightContent}
+              />
             </StyledSelectFolderPanel>
           </ModalDialog.Body>
         </ModalDialog>
@@ -176,6 +174,7 @@ SelectFolderModalDialog.propTypes = {
 SelectFolderModalDialog.defaultProps = {
   isNeedArrowIcon: false,
   id: "",
+  heightContent: "325px",
 };
 
 const SelectFolderDialogWrapper = withTranslation(["SelectFolder", "Common"])(

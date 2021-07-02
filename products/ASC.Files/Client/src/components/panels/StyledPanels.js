@@ -512,7 +512,7 @@ const StyledSelectFolderPanel = styled.div`
     ${(props) => props.isNeedArrowIcon && `margin-left:16px;`}
   }
   .select-folder-dialog_tree-folder {
-    height: 325px;
+    height: ${(props) => props.heightContent && props.heightContent};
     overflow: hidden;
   }
   .rc-tree-child-tree-open {

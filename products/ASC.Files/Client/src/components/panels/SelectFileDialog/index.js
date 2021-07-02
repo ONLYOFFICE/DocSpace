@@ -173,6 +173,7 @@ class SelectFileDialogBody extends React.Component {
       iconUrl,
       folderId,
       header,
+      heightContent,
     } = this.props;
     const {
       isVisible,
@@ -228,6 +229,7 @@ class SelectFileDialogBody extends React.Component {
         selectedKeys={selectedKeys}
         folderId={folderId}
         header={header}
+        heightContent={heightContent}
       />
     );
   }
