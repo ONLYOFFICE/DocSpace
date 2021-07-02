@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import CampaignsBanner from "@appserver/components/campaigns-banner";
 import Loaders from "@appserver/common/components/Loaders";
 
-const PureBanner = ({ t, tReady, getBannerType }) => {
-  const bannerType = getBannerType();
+const PureBanner = ({ t, tReady, getBannerType, bannerTypes }) => {
+  const [bannerType, setBannerType] = useState("");
+
+  useEffect(() => {
+    if (!localStorage.getItem("banner")) {
+      localStorage.setItem("banner", 0);
+    }
+
+    const index = Number(localStorage.getItem("banner"));
+    const banner = getBannerType(index);
+
+    if (index + 1 === bannerTypes.length) {
+      localStorage.setItem("banner", 0);
+    } else {
+      localStorage.setItem("banner", Number(index + 1));
+    }
+
+    setBannerType(banner);
+  }, []);
 
   if (tReady)
     return (
@@ -30,7 +47,7 @@ const Banner = withTranslation([
 ])(withRouter(PureBanner));
 
 export default inject(({ bannerStore }) => {
-  const { getBannerType } = bannerStore;
+  const { getBannerType, bannerTypes } = bannerStore;
 
-  return { getBannerType };
+  return { getBannerType, bannerTypes };
 })(observer(Banner));

@@ -7,10 +7,8 @@ class BannerStore {
     makeAutoObservable(this);
   }
 
-  getBannerType = () => {
-    return this.bannerTypes[
-      Math.floor(Math.random() * this.bannerTypes.length)
-    ];
+  getBannerType = (index) => {
+    return this.bannerTypes[index];
   };
 }
 
