@@ -97,7 +97,7 @@ class ArticleBodyContent extends React.Component {
         {!personal && <TreeSettings />}
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
 
-        {(isDesktop || isTablet) && <Banner />}
+        {(isDesktop || isTablet) && personal && <Banner />}
       </>
     );
   }
