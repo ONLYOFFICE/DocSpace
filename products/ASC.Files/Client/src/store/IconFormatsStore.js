@@ -234,7 +234,8 @@ class IconFormatsStore {
     sound = false,
     html = false
   ) => {
-    const folderPath = `images/icons/${size}`;
+    const folderPath =
+      size === 24 ? `/static/images/icons/${size}` : `images/icons/${size}`;
 
     if (archive) return `${folderPath}/file_archive.svg`;
 
@@ -315,7 +316,8 @@ class IconFormatsStore {
   };
 
   getIconSrc = (ext, size = 24) => {
-    const folderPath = `images/icons/${size}`;
+    const folderPath =
+      size === 24 ? `/static/images/icons/${size}` : `images/icons/${size}`;
 
     if (presentInArray(this.archive, ext, true))
       return `${folderPath}/file_archive.svg`;
