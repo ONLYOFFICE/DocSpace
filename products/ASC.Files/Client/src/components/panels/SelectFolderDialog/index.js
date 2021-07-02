@@ -3,19 +3,22 @@ import { Provider as MobxProvider } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import stores from "../../../store/index";
+import throttle from "lodash/throttle";
+
 import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 import {
   getCommonFolderList,
   getFolderPath,
 } from "@appserver/common/api/files";
-import IconButton from "@appserver/components/icon-button";
-import ModalDialog from "@appserver/components/modal-dialog";
-import Scrollbar from "@appserver/components/scrollbar";
-import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
-import FolderTreeBody from "../FolderTreeBody";
+
 import SelectFolderModal from "../SelectFolderInput";
 import i18n from "../SelectFolderInput/i18n";
+import SelectFolderDialogAsideView from "./asideView";
+import SelectFolderDialogModalView from "./modalView";
+import stores from "../../../store/index";
+import utils from "@appserver/components/utils";
+
+const { desktop } = utils.device;
 
 let pathName = "";
 let folderList;
@@ -27,8 +30,11 @@ class SelectFolderModalDialog extends React.Component {
       isAvailable: true,
       certainFolders: true,
       folderId: "",
+      displayType: this.getDisplayType(),
     };
+    this.throttledResize = throttle(this.setDisplayType, 300);
   }
+
   componentDidMount() {
     const {
       folderPath,
@@ -36,7 +42,10 @@ class SelectFolderModalDialog extends React.Component {
       onSetLoadingData,
       onSetBaseFolderPath,
       foldersType,
+      isPanelVisible,
     } = this.props;
+
+    window.addEventListener("resize", this.throttledResize);
 
     this.setState({ isLoadingData: true }, function () {
       onSetLoadingData && onSetLoadingData(true);
@@ -89,6 +98,25 @@ class SelectFolderModalDialog extends React.Component {
       }
     });
   }
+  componentWillUnmount() {
+    if (this.throttledResize) {
+      this.throttledResize && this.throttledResize.cancel();
+      window.removeEventListener("resize", this.throttledResize);
+    }
+  }
+  getDisplayType = () => {
+    const displayType =
+      window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "modal";
+
+    return displayType;
+  };
+
+  setDisplayType = () => {
+    const displayType = this.getDisplayType();
+
+    this.setState({ displayType: displayType });
+  };
+
   onSelect = (folder) => {
     const { onSelectFolder, onClose, onSetFullPath } = this.props;
 
@@ -114,52 +142,42 @@ class SelectFolderModalDialog extends React.Component {
       withoutProvider,
       isNeedArrowIcon,
       id,
-      heightContent,
+      modalHeightContent,
+      asideHeightContent,
     } = this.props;
-    const { isLoadingData, isAvailable, certainFolders, folderId } = this.state;
+    const { isAvailable, certainFolders, folderId, displayType } = this.state;
 
-    return (
-      <StyledAsidePanel visible={isPanelVisible}>
-        <ModalDialog
-          visible={isPanelVisible}
-          zIndex={zIndex}
-          onClose={onClose}
-          contentHeight="400px"
-        >
-          <ModalDialog.Header>
-            <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
-              <div className="modal-dialog_header">
-                {isNeedArrowIcon && (
-                  <IconButton
-                    size="16"
-                    iconName="/static/images/arrow.path.react.svg"
-                    onClick={onClose}
-                    color="#A3A9AE"
-                  />
-                )}
-                <div className="modal-dialog_header-title">
-                  {t("ChooseFolder")}
-                </div>
-              </div>
-            </StyledSelectFolderPanel>
-          </ModalDialog.Header>
-
-          <ModalDialog.Body>
-            <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
-              <FolderTreeBody
-                isLoadingData={isLoadingData}
-                folderList={folderList}
-                onSelect={this.onSelect}
-                withoutProvider={withoutProvider}
-                certainFolders={certainFolders}
-                isAvailable={isAvailable}
-                selectedKeys={[id ? id : folderId]}
-                heightContent={heightContent}
-              />
-            </StyledSelectFolderPanel>
-          </ModalDialog.Body>
-        </ModalDialog>
-      </StyledAsidePanel>
+    return displayType === "aside" ? (
+      <SelectFolderDialogAsideView
+        t={t}
+        isPanelVisible={isPanelVisible}
+        zIndex={zIndex}
+        onClose={onClose}
+        withoutProvider={withoutProvider}
+        isNeedArrowIcon={isNeedArrowIcon}
+        id={id}
+        asideHeightContent={asideHeightContent}
+        isAvailable={isAvailable}
+        certainFolders={certainFolders}
+        folderId={folderId}
+        folderList={folderList}
+        onSelect={this.onSelect}
+      />
+    ) : (
+      <SelectFolderDialogModalView
+        t={t}
+        isPanelVisible={isPanelVisible}
+        zIndex={zIndex}
+        onClose={onClose}
+        withoutProvider={withoutProvider}
+        id={id}
+        modalHeightContent={modalHeightContent}
+        isAvailable={isAvailable}
+        certainFolders={certainFolders}
+        folderId={folderId}
+        folderList={folderList}
+        onSelect={this.onSelect}
+      />
     );
   }
 }
@@ -174,7 +192,8 @@ SelectFolderModalDialog.propTypes = {
 SelectFolderModalDialog.defaultProps = {
   isNeedArrowIcon: false,
   id: "",
-  heightContent: "325px",
+  modalHeightContent: "325px",
+  asideHeightContent: "calc(100vh - 86px)",
 };
 
 const SelectFolderDialogWrapper = withTranslation(["SelectFolder", "Common"])(

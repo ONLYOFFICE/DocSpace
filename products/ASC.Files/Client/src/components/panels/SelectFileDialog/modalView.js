@@ -101,7 +101,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       selectedKeys,
       folderId,
       header,
-      heightContent,
+      modalHeightContent,
     } = this.props;
     const { isLoading } = this.state;
     console.log("selectedKeys", selectedKeys);
@@ -132,7 +132,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                       isAvailableFolders
                       filter={filter}
                       selectedKeys={[folderId ? folderId : selectedKeys]}
-                      heightContent={heightContent}
+                      heightContent={modalHeightContent}
                     />
                   </div>
                   <div className="modal-dialog_files-body">
@@ -194,6 +194,6 @@ class SelectFileDialogModalView extends React.Component {
 SelectFileDialogModalView.defaultProps = {
   isNeedArrowIcon: false,
   id: "",
-  heightContent: "296px",
+  modalHeightContent: "296px",
 };
 export default SelectFileDialogModalView;

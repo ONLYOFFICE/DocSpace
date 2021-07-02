@@ -3,6 +3,7 @@ import styled from "styled-components";
 const StyledComponent = styled.div`
   .input-with-folder-path {
     margin-top: 16px;
+    margin-bottom: 16px;
   }
   .input-with-folder-path,
   .text-input-with-folder-path {

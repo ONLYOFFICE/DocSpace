@@ -520,6 +520,13 @@ const StyledSelectFolderPanel = styled.div`
   }
 `;
 const StyledSelectFilePanel = styled.div`
+  .select-file-dialog_header {
+    display: flex;
+    align-items: center;
+  }
+  .select-file-dialog_header-icon {
+    margin-right: 16px;
+  }
   ${(props) =>
     props.displayType === "aside" &&
     css`

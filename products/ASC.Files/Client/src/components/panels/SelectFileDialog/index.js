@@ -37,9 +37,8 @@ class SelectFileDialogBody extends React.Component {
 
   componentDidMount() {
     const { isPanelVisible } = this.props;
-    if (isPanelVisible) {
-      window.addEventListener("resize", this.throttledResize);
-    }
+
+    window.addEventListener("resize", this.throttledResize);
   }
   componentWillUnmount() {
     if (this.throttledResize) {
@@ -173,7 +172,7 @@ class SelectFileDialogBody extends React.Component {
       iconUrl,
       folderId,
       header,
-      heightContent,
+      modalHeightContent,
     } = this.props;
     const {
       isVisible,
@@ -229,7 +228,7 @@ class SelectFileDialogBody extends React.Component {
         selectedKeys={selectedKeys}
         folderId={folderId}
         header={header}
-        heightContent={heightContent}
+        modalHeightContent={modalHeightContent}
       />
     );
   }
