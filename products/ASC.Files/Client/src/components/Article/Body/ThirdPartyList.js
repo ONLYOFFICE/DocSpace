@@ -21,11 +21,7 @@ const StyledThirdParty = styled.div`
   .tree-thirdparty-list {
     padding-top: 3px;
     display: flex;
-    max-width: 218px;
-
-    @media screen and (max-width: 1024px) {
-      max-width: 228px;
-    }
+    max-width: inherit;
 
     div {
       height: 26px;
