@@ -36,7 +36,9 @@ class SelectFileDialogModalViewBody extends React.Component {
             .then((commonFolder) => {
               this.folderList = commonFolder;
             })
-
+            .then(
+              () => onSelectFolder && onSelectFolder(`${this.folderList[0].id}`)
+            )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
 
@@ -53,6 +55,9 @@ class SelectFileDialogModalViewBody extends React.Component {
             .then(
               (commonThirdPartyArray) =>
                 (this.folderList = commonThirdPartyArray)
+            )
+            .then(
+              () => onSelectFolder && onSelectFolder(`${this.folderList[0].id}`)
             )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
@@ -104,7 +109,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       modalHeightContent,
     } = this.props;
     const { isLoading } = this.state;
-    console.log("selectedKeys", selectedKeys);
+    console.log("this.folderList", this.folderList);
     return (
       <StyledAsidePanel visible={isPanelVisible}>
         <ModalDialog
