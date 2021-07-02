@@ -9,6 +9,8 @@ import { withRouter } from "react-router";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -73,6 +75,10 @@ const StyledThirdParty = styled.div`
       }
     }
   }
+`;
+
+const StyledRectangleLoader = styled(Loaders.Rectangle)`
+  margin-top: 42px;
 `;
 
 const ServiceItem = (props) => {
@@ -216,7 +222,7 @@ const PureThirdPartyListContainer = ({
 };
 
 const ThirdPartyList = withTranslation(["Article", "Translations"])(
-  withRouter(PureThirdPartyListContainer)
+  withRouter(withLoader(PureThirdPartyListContainer)(<StyledRectangleLoader />))
 );
 
 export default inject(

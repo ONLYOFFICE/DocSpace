@@ -11,6 +11,7 @@ import { Consumer } from "@appserver/components/utils/context";
 import Headline from "@appserver/common/components/Headline";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../../HOCs/withLoader";
 import {
   EmployeeType,
   EmployeeStatus,
@@ -463,9 +464,7 @@ const SectionHeaderContent = (props) => {
             </div>
           ) : (
             <div className="header-container">
-              {!isLoaded || !tReady ? (
-                <Loaders.SectionHeader />
-              ) : group ? (
+              {group ? (
                 <>
                   <Headline
                     className="headline-header"
@@ -557,8 +556,8 @@ export default withRouter(
     group: peopleStore.selectedGroupStore.group,
     isTabletView: auth.settingsStore.isTabletView,
   }))(
-    observer(
-      withTranslation(["Home", "Common", "Translations"])(SectionHeaderContent)
+    withTranslation(["Home", "Common", "Translations"])(
+      withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
     )
   )
 );

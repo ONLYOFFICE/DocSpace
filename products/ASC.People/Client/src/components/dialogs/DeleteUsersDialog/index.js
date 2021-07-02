@@ -72,7 +72,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, onClose, visible } = this.props;
+    const { t, tReady, onClose, visible } = this.props;
     const { isRequestRunning, userIds, listUsers } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -109,7 +109,11 @@ class DeleteGroupUsersDialogComponent extends React.Component {
 
     //console.log("DeleteGroupUsersDialog render");
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>
           {t("DeleteGroupUsersMessageHeader")}
         </ModalDialog.Header>

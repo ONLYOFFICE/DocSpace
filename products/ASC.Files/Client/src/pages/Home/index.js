@@ -240,6 +240,7 @@ class PureHome extends React.Component {
 
       isLoading,
       dragging,
+      tReady,
     } = this.props;
     return (
       <>
@@ -297,7 +298,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
-            <SectionPagingContent />
+            <SectionPagingContent tReady={tReady} />
           </PageLayout.SectionPaging>
         </PageLayout>
       </>
