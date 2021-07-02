@@ -208,7 +208,7 @@ export default function withFileActions(WrappedFileItem) {
           addExpandedKeys(parentFolder + "");
         }
 
-        fetchFiles(id, filter)
+        fetchFiles(id)
           .then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);

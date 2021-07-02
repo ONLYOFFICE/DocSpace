@@ -5,7 +5,7 @@ import { isMobile } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
 
 let loadTimeout = null;
-const WithLoader = (WrappedComponent) => (Loader) => {
+const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
     const { tReady, firstLoad, isLoaded, isLoading, viewAs } = props;
     const [inLoad, setInLoad] = useState(false);
@@ -56,4 +56,4 @@ const WithLoader = (WrappedComponent) => (Loader) => {
     };
   })(observer(withLoader));
 };
-export default WithLoader;
+export default withLoader;
