@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
 const BannerWrapper = styled.div`
-  width: 185px;
+  max-width: 185px;
   border: 1px solid #d1d1d1;
   border-radius: 5px;
   padding: 15px;
   margin-top: 20px;
 
   @media screen and (max-width: 1024px) {
-    width: 196px;
+    max-width: inherit;
   }
 
   a {
