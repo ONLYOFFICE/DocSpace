@@ -7,12 +7,14 @@ import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
 import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
+import { isDesktop, isTablet } from "react-device-detect";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -94,6 +96,8 @@ class ArticleBodyContent extends React.Component {
         />
         {!personal && <TreeSettings />}
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
+
+        {(isDesktop || isTablet) && <Banner />}
       </>
     );
   }
