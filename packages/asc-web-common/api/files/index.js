@@ -764,12 +764,14 @@ export function getFiles(
   folderId,
   filterType,
   filterValue,
-  withSubfolders,
-  pageCount = 30,
-  startIndex = 0
+  pageCount,
+  startIndex,
+  withSubfolders = true
 ) {
   return request({
     method: "get",
-    url: `files/${folderId}?count=${pageCount}&withSubfolders=${withSubfolders}&startIndex=${startIndex}&filterType=${filterType}&filterValue=${filterValue}`,
+    url: `files/${folderId}?count=${pageCount}&withSubfolders=${withSubfolders}&startIndex=${startIndex}&filterType=${filterType}${
+      filterValue ? `&filterValue=${filterValue}` : ""
+    }`,
   });
 }

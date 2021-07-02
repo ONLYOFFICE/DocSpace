@@ -34,7 +34,6 @@ class SelectFile extends React.PureComponent {
       withoutProvider,
       onClose,
       isError,
-      isSavingProcess,
       isDisabled,
       foldersType,
       iconUrl,
@@ -44,6 +43,13 @@ class SelectFile extends React.PureComponent {
       onSelectFile,
       folderId,
       header,
+      isImageOnly,
+      isArchiveOnly,
+      isDocumentsOnly,
+      searchParam,
+      isPresentationOnly,
+      isTablesOnly,
+      isMediaOnly,
     } = this.props;
     const { isLoading, fileName } = this.state;
     const zIndex = 310;
@@ -73,6 +79,13 @@ class SelectFile extends React.PureComponent {
           onSelectFile={onSelectFile}
           folderId={folderId}
           header={header}
+          searchParam={searchParam}
+          isImageOnly={isImageOnly}
+          isArchiveOnly={isArchiveOnly}
+          isDocumentsOnly={isDocumentsOnly}
+          isPresentation={isPresentationOnly}
+          isTables={isTablesOnly}
+          isMediaOnly={isMediaOnly}
         />
       </StyledComponent>
     );

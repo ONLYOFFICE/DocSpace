@@ -31,9 +31,42 @@ class SelectFileDialogBody extends React.Component {
       isNextPageLoading: false,
       displayType: this.getDisplayType(),
       selectedKeys: "",
+      filterParams: this.getFilterParameters(),
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
   }
+
+  getFilterParameters = () => {
+    const {
+      isImageOnly,
+      isDocumentsOnly,
+      isArchiveOnly,
+      isPresentationOnly,
+      isTablesOnly,
+      isMediaOnly,
+      searchParam = "",
+    } = this.props;
+
+    if (isImageOnly) {
+      return { filterType: "7", filterValue: searchParam };
+    }
+    if (isDocumentsOnly) {
+      return { filterType: "3", filterValue: searchParam };
+    }
+    if (isArchiveOnly) {
+      return { filterType: "10", filterValue: searchParam };
+    }
+    if (isPresentationOnly) {
+      return { filterType: "4", filterValue: searchParam };
+    }
+    if (isTablesOnly) {
+      return { filterType: "5", filterValue: searchParam };
+    }
+    if (isMediaOnly) {
+      return { filterType: "12", filterValue: searchParam };
+    }
+    return { filterType: "1", filterValue: "" };
+  };
 
   componentDidMount() {
     const { isPanelVisible } = this.props;
@@ -128,23 +161,23 @@ class SelectFileDialogBody extends React.Component {
   };
   loadNextPage = ({ startIndex }) => {
     //debugger;
-    const { filterValue, filterType, withSubfolders } = this.props;
-    const { selectedFolder } = this.state;
+    const { withSubfolders } = this.props;
+    const { selectedFolder, filterParams } = this.state;
 
     console.log(`loadNextPage(startIndex=${startIndex}")`);
 
     const pageCount = 30;
 
     console.log("selectedFolder", selectedFolder);
-
+    console.log("filterParams", filterParams);
     this.setState({ isNextPageLoading: true }, () => {
       getFiles(
         selectedFolder,
-        filterType,
-        filterValue,
-        withSubfolders,
+        filterParams.filterType,
+        filterParams.filterValue,
         pageCount,
-        startIndex
+        startIndex,
+        withSubfolders
       )
         .then((response) => {
           let newFilesList = startIndex
