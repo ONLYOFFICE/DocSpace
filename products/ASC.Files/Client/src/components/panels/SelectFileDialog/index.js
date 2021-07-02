@@ -126,7 +126,7 @@ class SelectFileDialogBody extends React.Component {
       isLoadingData: loading,
     });
   };
-  loadNextPage = ({ startIndex = 0 }) => {
+  loadNextPage = ({ startIndex }) => {
     //debugger;
     const { filterValue, filterType, withSubfolders } = this.props;
     const { selectedFolder } = this.state;

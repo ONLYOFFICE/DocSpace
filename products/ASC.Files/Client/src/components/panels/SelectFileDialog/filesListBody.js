@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { useTranslation, withTranslation } from "react-i18next";
@@ -22,14 +22,21 @@ const FilesListBody = ({
   emptyFilesList,
   loadingLabel,
   iconUrl,
+  selectedFolder,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
+  const filesListRef = useRef(null);
+  useEffect(() => {
+    if (filesListRef && filesListRef.current) {
+      filesListRef.current.resetloadMoreItemsCache(true);
+    }
+  }, [selectedFolder]);
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
     (index) => {
       return !hasNextPage || index < filesList.length;
     },
-    [hasNextPage, filesList]
+    [filesList, hasNextPage]
   );
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasNextPage ? filesList.length + 1 : filesList.length;
@@ -113,7 +120,7 @@ const FilesListBody = ({
       <AutoSizer>
         {({ width, height }) => (
           <InfiniteLoader
-            //ref={listOptionsRef}
+            ref={filesListRef}
             isItemLoaded={isItemLoaded}
             itemCount={itemCount}
             loadMoreItems={loadMoreItems}
