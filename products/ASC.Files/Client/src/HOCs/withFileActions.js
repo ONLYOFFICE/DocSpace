@@ -155,14 +155,7 @@ export default function withFileActions(WrappedFileItem) {
 
         this.onFilesClick();
       } else {
-        if (checked) {
-          this.onContentFileSelect(!checked, item);
-          this.fileContextClick();
-        } else {
-          if (!isMouseDown) return;
-          this.onContentFileSelect(true, item);
-          this.fileContextClick();
-        }
+        this.fileContextClick();
       }
       this.setState({ isMouseDown: false });
     };
