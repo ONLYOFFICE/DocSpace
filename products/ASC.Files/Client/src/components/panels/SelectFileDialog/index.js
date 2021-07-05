@@ -118,41 +118,23 @@ class SelectFileDialogBody extends React.Component {
   };
 
   onSelectFile = (e) => {
-    const { onSetFileName, onClose, onSelectFile } = this.props;
     const { filesList } = this.state;
-    const index = e.target.dataset.index;
+    const index = e.target.dataset.index || e.target.name;
 
     if (!index) return;
     this.setState({
-      selectedFile: filesList[index],
-      fileName: filesList[index].title,
-    });
-    // onSelectFile && onSelectFile(filesList[index]);
-    //onClose && onClose();
-    //onSetFileName & onSetFileName(filesList[index].title);
-  };
-
-  onClickFile = (e) => {
-    const { filesList } = this.state;
-    const index = +e.target.id;
-
-    this.setState({
-      selectedFile: filesList[index].id,
-      fileName: filesList[index].title,
+      selectedFile: filesList[+index],
+      fileName: filesList[+index].title,
     });
   };
+
   onClickSave = () => {
-    const { onSetFileName, onClose, onSetFileId } = this.props;
+    const { onSetFileName, onClose, onSelectFile } = this.props;
     const { fileName, selectedFile } = this.state;
-    onSetFileName & onSetFileName(fileName);
-    onSetFileId & onSetFileId(selectedFile);
-    onClose && onClose();
-  };
 
-  onCloseModalView = () => {
-    this.setState({
-      isChecked: false,
-    });
+    onSetFileName & onSetFileName(fileName);
+    onSelectFile && onSelectFile(selectedFile);
+    onClose && onClose();
   };
 
   onSetLoadingData = (loading) => {
@@ -234,6 +216,7 @@ class SelectFileDialogBody extends React.Component {
         isLoadingData={isLoadingData}
         onSelectFile={this.onSelectFile}
         onClickInput={this.onClickInput}
+        onClickSave={this.onClickSave}
         onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
         onSelectFolder={this.onSelectFolder}
         onSetLoadingData={this.onSetLoadingData}
@@ -253,7 +236,7 @@ class SelectFileDialogBody extends React.Component {
         onSelectFolder={this.onSelectFolder}
         onSelectFile={this.onSelectFile}
         foldersType={foldersType}
-        onClickFile={this.onClickFile}
+        onClickSave={this.onClickSave}
         filesList={filesList}
         isLoadingData={isLoadingData}
         hasNextPage={hasNextPage}

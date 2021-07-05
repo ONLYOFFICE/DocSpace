@@ -42,13 +42,13 @@ const ListRow = ({
           />
         ) : (
           <RadioButton
+         
             fontSize="13px"
             fontWeight="400"
-            name="name"
+            name={`${index}`}
             label=""
-            onChange={() => {}}
             isChecked={isChecked}
-            onClick={function noRefCheck() {}}
+            onClick={onSelectFile}
             value=""
             className="select-file-dialog_checked"
           />

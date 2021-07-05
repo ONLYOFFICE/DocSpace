@@ -107,6 +107,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       modalHeightContent,
       loadingText,
       selectedFile,
+      onClickSave,
     } = this.props;
     const { isLoading } = this.state;
     console.log("this.folderList", this.folderList);
@@ -177,15 +178,13 @@ class SelectFileDialogModalViewBody extends React.Component {
                   primary
                   size="medium"
                   label={t("Common:SaveButton")}
-                  tabIndex={1}
-                  onClick={onClose}
+                  onClick={onClickSave}
                 />
                 <Button
                   className="modal-dialog-button"
                   primary
                   size="medium"
                   label={t("Common:CloseButton")}
-                  tabIndex={1}
                   onClick={onClose}
                 />
               </div>

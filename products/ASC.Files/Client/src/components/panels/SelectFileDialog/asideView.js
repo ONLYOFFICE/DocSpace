@@ -34,6 +34,7 @@ const SelectFileDialogAsideView = ({
   header,
   loadingText,
   selectedFile,
+  onClickSave,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -92,14 +93,12 @@ const SelectFileDialogAsideView = ({
               primary
               size="medium"
               label={t("Common:SaveButton")}
-              tabIndex={1}
-              onClick={onClose}
+              onClick={onClickSave}
             />
             <Button
               primary
               size="medium"
               label={t("Common:CloseButton")}
-              tabIndex={1}
               onClick={onClose}
             />
           </div>
