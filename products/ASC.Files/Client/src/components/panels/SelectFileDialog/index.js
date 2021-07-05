@@ -180,7 +180,6 @@ class SelectFileDialogBody extends React.Component {
     const {
       isVisible,
       filesList,
-      isLoadingData,
       hasNextPage,
       isNextPageLoading,
       selectedFolder,
@@ -208,7 +207,6 @@ class SelectFileDialogBody extends React.Component {
         onClickSave={this.onClickSave}
         onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
         onSelectFolder={this.onSelectFolder}
-        onSetLoadingData={this.onSetLoadingData}
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
