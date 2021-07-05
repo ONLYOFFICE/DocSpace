@@ -179,6 +179,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                   size="medium"
                   label={t("Common:SaveButton")}
                   onClick={onClickSave}
+                  isDisabled={selectedFile.length === 0}
                 />
                 <Button
                   className="modal-dialog-button"

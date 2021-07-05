@@ -93,6 +93,7 @@ const SelectFileDialogAsideView = ({
               size="medium"
               label={t("Common:SaveButton")}
               onClick={onClickSave}
+              isDisabled={selectedFile.length === 0}
             />
             <Button
               primary
