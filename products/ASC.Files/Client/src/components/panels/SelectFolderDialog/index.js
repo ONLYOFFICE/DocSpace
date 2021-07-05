@@ -66,7 +66,7 @@ class SelectFolderModalDialog extends React.Component {
                 folderId: `${folderList[0].id}`,
               })
             )
-            .then(() => id && setExpandedKeys([`${folderList[0].id}`]))
+            //.then(() => id && setExpandedKeys([`${folderList[0].id}`]))
             .then(
               () =>
                 onSetBaseFolderPath && onSetBaseFolderPath(folderList[0].title)
