@@ -42,7 +42,7 @@ class SelectFolderModalDialog extends React.Component {
       onSetLoadingData,
       onSetBaseFolderPath,
       foldersType,
-      isPanelVisible,
+      isSetFolderImmediately,
     } = this.props;
 
     window.addEventListener("resize", this.throttledResize);
@@ -86,6 +86,28 @@ class SelectFolderModalDialog extends React.Component {
             .then(
               () =>
                 folderList.length === 0 && this.setState({ isAvailable: false })
+            )
+            .then(
+              () =>
+                isSetFolderImmediately &&
+                folderList.length !== 0 &&
+                onSelectFolder &&
+                onSelectFolder(`${folderList[0].id}`)
+            )
+            .then(
+              () =>
+                isSetFolderImmediately &&
+                folderList.length !== 0 &&
+                this.setState({
+                  folderId: `${folderList[0].id}`,
+                })
+            )
+            .then(
+              () =>
+                isSetFolderImmediately &&
+                folderList.length !== 0 &&
+                onSetBaseFolderPath &&
+                onSetBaseFolderPath(folderList[0].title)
             )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
@@ -195,6 +217,7 @@ SelectFolderModalDialog.propTypes = {
   asideHeightContent: PropTypes.string,
 };
 SelectFolderModalDialog.defaultProps = {
+  isSetFolderImmediately: false,
   isNeedArrowIcon: false,
   id: "",
   modalHeightContent: "325px",

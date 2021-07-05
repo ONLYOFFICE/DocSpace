@@ -67,6 +67,7 @@ const SelectFileDialogAsideView = ({
                 foldersType={foldersType}
                 isNeedArrowIcon
                 withoutProvider={withoutProvider}
+                isSetFolderImmediately
               />
 
               {selectedFolder && (
