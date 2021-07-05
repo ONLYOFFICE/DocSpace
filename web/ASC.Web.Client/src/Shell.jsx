@@ -300,6 +300,18 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     }
   };
 
+  const fetchBanners = () => {
+    if (!FirebaseHelper.isEnabled) return;
+
+    FirebaseHelper.checkCampaigns()
+      .then((data) => {
+        localStorage.setItem("campaigns", data.campaigns);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -308,6 +320,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (!FirebaseHelper.isEnabled) return;
 
     fetchMaintenance();
+    fetchBanners();
     fbInterval = setInterval(fetchMaintenance, 60000);
 
     return () => {

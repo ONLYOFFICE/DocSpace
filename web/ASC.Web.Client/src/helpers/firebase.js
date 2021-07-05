@@ -71,7 +71,6 @@ class FirebaseHelper {
       this.config &&
       this.config["apiKey"] &&
       this.config["authDomain"] &&
-      this.config["databaseURL"] &&
       this.config["projectId"] &&
       this.config["storageBucket"] &&
       this.config["messagingSenderId"] &&
@@ -90,6 +89,18 @@ class FirebaseHelper {
       return Promise.resolve(null);
     }
     return await Promise.resolve(JSON.parse(maintenance.asString()));
+  }
+
+  async checkCampaigns() {
+    if (!this.isEnabled) return Promise.reject("Not enabled");
+
+    const res = await this.remoteConfig.fetchAndActivate();
+
+    const campaigns = this.remoteConfig.getValue("campaigns");
+    if (!campaigns) {
+      return Promise.resolve(null);
+    }
+    return await Promise.resolve(JSON.parse(campaigns.asString()));
   }
 }
 
