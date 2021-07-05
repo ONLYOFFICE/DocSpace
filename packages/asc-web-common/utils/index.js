@@ -272,20 +272,8 @@ export function loadLanguagePath(homepage, fixedNS = null) {
     if (ns.length > 0 && ns[0] === "Common") {
       return `/static/locales/${language}/Common.json`;
     }
-    if (ns.length > 0 && ns[0] === "CampaignPersonalCloud") {
-      return `/static/locales/${language}/CampaignPersonalCloud.json`;
-    }
-    if (ns.length > 0 && ns[0] === "CampaignPersonalDesktop") {
-      return `/static/locales/${language}/CampaignPersonalDesktop.json`;
-    }
-    if (ns.length > 0 && ns[0] === "CampaignPersonalEducation") {
-      return `/static/locales/${language}/CampaignPersonalEducation.json`;
-    }
-    if (ns.length > 0 && ns[0] === "CampaignPersonalEnterprise") {
-      return `/static/locales/${language}/CampaignPersonalEnterprise.json`;
-    }
-    if (ns.length > 0 && ns[0] === "CampaignPersonalIntegration") {
-      return `/static/locales/${language}/CampaignPersonalIntegration.json`;
+    if (ns.length > 0 && ns[0].includes("Campaign")) {
+      return `/static/locales/${language}/${ns[0]}.json`;
     }
     return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
   };
