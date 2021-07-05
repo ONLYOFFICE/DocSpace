@@ -5,10 +5,9 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import i18n from "./i18n";
 import stores from "../../../store/index";
-import FileInput from "./fileInput";
 import SelectFileDialog from "../SelectFileDialog";
 import StyledComponent from "./styledSelectFileInput";
-
+import SimpleFileInput from "../../SimpleFileInput";
 let path = "";
 
 class SelectFile extends React.PureComponent {
@@ -56,10 +55,11 @@ class SelectFile extends React.PureComponent {
 
     return (
       <StyledComponent>
-        <FileInput
+     
+        <SimpleFileInput
           name={name}
           className="file-input"
-          fileName={fileName}
+          textField={fileName}
           isDisabled={isDisabled}
           isError={isError}
           onClickInput={onClickInput}

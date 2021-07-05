@@ -3,24 +3,41 @@ import PropTypes from "prop-types";
 
 import IconButton from "@appserver/components/icon-button";
 import TextInput from "@appserver/components/text-input";
-import StyledFileInput from "@appserver/components/file-input/styled-file-input";
+import StyledFileInput from "./styledSimpleFileInput";
 
-const FileInput = (
-  {
-    size,
-    placeholder,
-    isDisabled,
-    scale,
-    isError,
-    hasWarning,
-    id,
-    onClickInput,
-    name,
-    className,
-    fileName,
-  },
+let iconSize;
+const SimpleFileInput = ({
+  size,
+  placeholder,
+  isDisabled,
+  scale,
+  isError,
+  hasWarning,
+  id,
+  onClickInput,
+  name,
+  className,
+  textField,
   ...rest
-) => {
+}) => {
+  switch (size) {
+    case "base":
+      iconSize = 15;
+      break;
+    case "middle":
+      iconSize = 15;
+      break;
+    case "big":
+      iconSize = 16;
+      break;
+    case "huge":
+      iconSize = 16;
+      break;
+    case "large":
+      iconSize = 16;
+      break;
+  }
+
   return (
     <StyledFileInput
       size={size}
@@ -35,7 +52,7 @@ const FileInput = (
         id={id}
         className="file-text-input"
         placeholder={placeholder}
-        value={fileName}
+        value={textField}
         size={size}
         isDisabled={isDisabled}
         hasError={isError}
@@ -52,12 +69,13 @@ const FileInput = (
           iconName={"/static/images/catalog.folder.react.svg"}
           color={"#A3A9AE"}
           isDisabled={isDisabled}
+          size={iconSize}
         />
       </div>
     </StyledFileInput>
   );
 };
-FileInput.propTypes = {
+SimpleFileInput.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Placeholder text for the input */
@@ -80,7 +98,7 @@ FileInput.propTypes = {
   name: PropTypes.string,
 };
 
-FileInput.defaultProps = {
+SimpleFileInput.defaultProps = {
   size: "base",
   scale: false,
   hasWarning: false,
@@ -89,4 +107,4 @@ FileInput.defaultProps = {
   baseFolder: "",
 };
 
-export default FileInput;
+export default SimpleFileInput;

@@ -5,9 +5,9 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import i18n from "./i18n";
 import stores from "../../../store/index";
-import FileInputWithFolderPath from "./fileInputWithFolderPath";
 import SelectFolderDialog from "../SelectFolderDialog/index";
 import StyledComponent from "./styledSelectFolderInput";
+import SimpleFileInput from "../../SimpleFileInput";
 
 let path = "";
 
@@ -91,11 +91,10 @@ class SelectFolder extends React.PureComponent {
 
     return (
       <StyledComponent>
-        <FileInputWithFolderPath
+        <SimpleFileInput
           name={name}
           className="input-with-folder-path"
-          baseFolderPath={baseFolderPath}
-          folderPath={fullFolderPath}
+          textField={fullFolderPath || baseFolderPath}
           isDisabled={isLoading || isSavingProcess || isDisabled}
           isError={isError}
           onClickInput={onClickInput}
