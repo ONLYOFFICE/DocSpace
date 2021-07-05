@@ -10,6 +10,9 @@ const StyledComponent = styled.div`
     width: 100%;
     max-width: 820px;
   }
+  .icon {
+    background: white;
+  }
   .panel-loader-wrapper {
     margin-top: 8px;
     padding-left: 32px;
