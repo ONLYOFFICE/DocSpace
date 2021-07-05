@@ -59,7 +59,7 @@ const SelectFolderDialogAsideView = ({
             </div>
           </StyledHeaderContent>
 
-          <div className="select-file-dialog_aside-body_wrapper">
+          <div className="select-folder-dialog_aside-body_wrapper">
             <div className="select-file-dialog_aside_body">
               <FolderTreeBody
                 isLoadingData={isLoadingData}
@@ -70,6 +70,7 @@ const SelectFolderDialogAsideView = ({
                 isAvailable={isAvailable}
                 selectedKeys={[id ? id : folderId]}
                 heightContent={asideHeightContent}
+                displayType={DISPLAY_TYPE}
               />
             </div>
           </div>

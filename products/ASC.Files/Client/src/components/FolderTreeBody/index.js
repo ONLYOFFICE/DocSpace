@@ -17,13 +17,17 @@ const FolderTreeBody = ({
   filter,
   selectedKeys,
   heightContent,
+  displayType,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
   return (
     <>
       {!isLoadingData ? (
         isAvailable ? (
-          <StyledSelectFolderPanel heightContent={heightContent}>
+          <StyledSelectFolderPanel
+            heightContent={heightContent}
+            displayType={displayType}
+          >
             <div className="select-folder-dialog_tree-folder">
               <Scrollbar>
                 <TreeFolders

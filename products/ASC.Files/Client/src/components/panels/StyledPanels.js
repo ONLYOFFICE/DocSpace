@@ -504,6 +504,12 @@ const StyledLinkRow = styled.div`
 `;
 
 const StyledSelectFolderPanel = styled.div`
+  ${(props) =>
+    props.displayType === "aside" &&
+    css`
+      height: 100%;
+      overflow: hidden;
+    `}
   .modal-dialog_header {
     display: flex;
     align-items: center;
@@ -535,8 +541,14 @@ const StyledSelectFilePanel = styled.div`
     `}
   .select-file-dialog_aside-body_wrapper {
     height: calc(100% - 200px);
+  }
+  .select-file-dialog_aside-body_wrapper,
+  .select-folder-dialog_aside-body_wrapper {
     width: 320px;
     padding: 0 16px;
+  }
+  .select-folder-dialog_aside-body_wrapper {
+    height: 100%;
   }
   .select-file-dialog_aside_body {
     margin-top: 16px;

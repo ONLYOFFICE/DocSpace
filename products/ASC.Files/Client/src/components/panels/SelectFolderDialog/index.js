@@ -66,6 +66,7 @@ class SelectFolderModalDialog extends React.Component {
                 folderId: `${folderList[0].id}`,
               })
             )
+            .then(() => id && setExpandedKeys([`${folderList[0].id}`]))
             .then(
               () =>
                 onSetBaseFolderPath && onSetBaseFolderPath(folderList[0].title)
@@ -221,7 +222,7 @@ SelectFolderModalDialog.defaultProps = {
   isNeedArrowIcon: false,
   id: "",
   modalHeightContent: "325px",
-  asideHeightContent: "calc(100vh - 86px)",
+  asideHeightContent: "calc(100% - 86px)",
   zIndex: 310,
   withoutProvider: false,
 };
