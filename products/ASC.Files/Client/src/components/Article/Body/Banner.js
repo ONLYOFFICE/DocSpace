@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import CampaignsBanner from "@appserver/components/campaigns-banner";
 import Loaders from "@appserver/common/components/Loaders";
 
-const PureBanner = ({ t, tReady, getBannerType, bannerTypes }) => {
+const PureBanner = ({ t, tReady }) => {
   const [bannerType, setBannerType] = useState("");
 
   useEffect(() => {
@@ -14,9 +14,10 @@ const PureBanner = ({ t, tReady, getBannerType, bannerTypes }) => {
     }
 
     const index = Number(localStorage.getItem("banner"));
-    const banner = getBannerType(index);
+    const campaigns = localStorage.getItem("campaigns").split(",");
+    const banner = campaigns[index];
 
-    if (index + 1 === bannerTypes.length) {
+    if (index + 1 === campaigns.length) {
       localStorage.setItem("banner", 0);
     } else {
       localStorage.setItem("banner", Number(index + 1));
@@ -46,8 +47,4 @@ const Banner = withTranslation([
   "CampaignPersonalIntegration",
 ])(withRouter(PureBanner));
 
-export default inject(({ bannerStore }) => {
-  const { getBannerType, bannerTypes } = bannerStore;
-
-  return { getBannerType, bannerTypes };
-})(observer(Banner));
+export default Banner;
