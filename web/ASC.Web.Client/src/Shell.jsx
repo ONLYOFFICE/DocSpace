@@ -304,8 +304,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (!FirebaseHelper.isEnabled) return;
 
     FirebaseHelper.checkCampaigns()
-      .then((data) => {
-        localStorage.setItem("campaigns", data.campaigns);
+      .then((campaigns) => {
+        localStorage.setItem("campaigns", campaigns);
       })
       .catch((err) => {
         console.error(err);

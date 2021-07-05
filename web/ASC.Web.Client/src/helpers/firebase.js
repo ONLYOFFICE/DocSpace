@@ -96,11 +96,22 @@ class FirebaseHelper {
 
     const res = await this.remoteConfig.fetchAndActivate();
 
-    const campaigns = this.remoteConfig.getValue("campaigns");
-    if (!campaigns) {
-      return Promise.resolve(null);
+    const campaignsValue = this.remoteConfig.getValue("campaigns");
+    const campaignsString = campaignsValue && campaignsValue.asString();
+
+    if (!campaignsValue || !campaignsString) {
+      return Promise.resolve([]);
     }
-    return await Promise.resolve(JSON.parse(campaigns.asString()));
+
+    const list = JSON.parse(campaignsString);
+
+    if (!list || !(list instanceof Array)) return Promise.resolve([]);
+
+    const campaigns = list.filter((element) => {
+      return typeof element === "string" && element.length > 0;
+    });
+
+    return await Promise.resolve(campaigns);
   }
 }
 
