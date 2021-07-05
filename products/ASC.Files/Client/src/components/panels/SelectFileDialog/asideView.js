@@ -10,6 +10,7 @@ import FilesListBody from "./filesListBody";
 import Aside from "@appserver/components/aside";
 import Heading from "@appserver/components/heading";
 import Backdrop from "@appserver/components/backdrop";
+import Button from "@appserver/components/button";
 const DISPLAY_TYPE = "aside";
 const SelectFileDialogAsideView = ({
   t,
@@ -32,8 +33,8 @@ const SelectFileDialogAsideView = ({
   selectedFolder,
   header,
   loadingText,
+  selectedFile,
 }) => {
-  console.log("isLoadingData", isLoadingData, "selectedFolder", selectedFolder);
   return (
     <StyledAsidePanel visible={isPanelVisible}>
       <Backdrop
@@ -80,9 +81,27 @@ const SelectFileDialogAsideView = ({
                   selectedFolder={selectedFolder}
                   displayType={DISPLAY_TYPE}
                   loadingText={loadingText}
+                  selectedFile={selectedFile}
                 />
               )}
             </div>
+          </div>
+          <div className="select-file-dialog-aside_buttons">
+            <Button
+              className="select-file-dialog-buttons-save"
+              primary
+              size="medium"
+              label={t("Common:SaveButton")}
+              tabIndex={1}
+              onClick={onClose}
+            />
+            <Button
+              primary
+              size="medium"
+              label={t("Common:CloseButton")}
+              tabIndex={1}
+              onClick={onClose}
+            />
           </div>
         </StyledSelectFilePanel>
       </Aside>

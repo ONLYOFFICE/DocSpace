@@ -26,7 +26,6 @@ class SelectFileDialogBody extends React.Component {
       defaultFileName: "",
       filesList: [],
       width: window.innerWidth,
-      isChecked: false,
       hasNextPage: true,
       isNextPageLoading: false,
       displayType: this.getDisplayType(),
@@ -119,20 +118,18 @@ class SelectFileDialogBody extends React.Component {
   };
 
   onSelectFile = (e) => {
-    const { onSetFileName, onClose } = this.props;
+    const { onSetFileName, onClose, onSelectFile } = this.props;
     const { filesList } = this.state;
     const index = e.target.dataset.index;
 
     if (!index) return;
-    this.setState(
-      {
-        selectedFile: filesList[index].id, //object sent
-      },
-      function () {
-        onClose && onClose();
-        onSetFileName & onSetFileName(filesList[index].title);
-      }
-    );
+    this.setState({
+      selectedFile: filesList[index],
+      fileName: filesList[index].title,
+    });
+    // onSelectFile && onSelectFile(filesList[index]);
+    //onClose && onClose();
+    //onSetFileName & onSetFileName(filesList[index].title);
   };
 
   onClickFile = (e) => {
@@ -218,7 +215,9 @@ class SelectFileDialogBody extends React.Component {
       selectedFolder,
       displayType,
       selectedKeys,
+      selectedFile,
     } = this.state;
+
     const loadingText = loadingLabel
       ? loadingLabel
       : `${t("Common:LoadingProcessing")} ${t("Common:LoadingDescription")}`;
@@ -244,6 +243,7 @@ class SelectFileDialogBody extends React.Component {
         selectedFolder={selectedFolder}
         header={header}
         loadingText={loadingText}
+        selectedFile={selectedFile}
       />
     ) : (
       <SelectFileDialogModalView
@@ -266,6 +266,7 @@ class SelectFileDialogBody extends React.Component {
         header={header}
         modalHeightContent={modalHeightContent}
         loadingText={loadingText}
+        selectedFile={selectedFile}
       />
     );
   }
@@ -273,6 +274,7 @@ class SelectFileDialogBody extends React.Component {
 SelectFileDialogBody.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
+  onSelectFile: PropTypes.func.isRequired,
   foldersType: PropTypes.oneOf(["common", "third-party"]),
   folderId: PropTypes.string,
   withoutProvider: PropTypes.bool,

@@ -3,7 +3,8 @@ import { StyledFilesList } from "../StyledPanels";
 import { ReactSVG } from "react-svg";
 import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
-
+import Checkbox from "@appserver/components/checkbox";
+import RadioButton from "@appserver/components/radio-button";
 const ListRow = ({
   displayType,
   needRowSelection,
@@ -13,17 +14,45 @@ const ListRow = ({
   children,
   fileExst,
   iconSrc,
+  isMultiSelect,
+  isChecked,
 }) => {
+  console.log("isChecked", isChecked);
   return (
     <StyledFilesList
       displayType={displayType}
       needRowSelection={needRowSelection}
+      isChecked={isChecked}
     >
       <div
         data-index={index}
         className="modal-dialog_file-name"
         onClick={onSelectFile}
       >
+        {isMultiSelect ? (
+          <Checkbox
+            id={option.key}
+            value={`${index}`}
+            label={option.label}
+            isChecked={isChecked}
+            className="option_checkbox"
+            truncate={true}
+            title={option.label}
+            onChange={onOptionChange}
+          />
+        ) : (
+          <RadioButton
+            fontSize="13px"
+            fontWeight="400"
+            name="name"
+            label=""
+            onChange={() => {}}
+            isChecked={isChecked}
+            onClick={function noRefCheck() {}}
+            value=""
+            className="select-file-dialog_checked"
+          />
+        )}
         <ReactSVG src={iconSrc} className="select-file-dialog_icon" />
         <div data-index={index} className="files-list_full-name">
           <Text data-index={index} className="entry-title">

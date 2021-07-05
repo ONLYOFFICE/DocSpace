@@ -19,9 +19,10 @@ const FilesListBody = ({
   viewer,
   listHeight,
   needRowSelection,
-  emptyFilesList,
   loadingText,
   selectedFolder,
+  isMultiSelect,
+  selectedFile,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   const filesListRef = useRef(null);
@@ -66,6 +67,13 @@ const FilesListBody = ({
     },
     [loadingText]
   );
+  const isFileChecked = useCallback(
+    (file) => {
+      const checked = selectedFile ? file.id === selectedFile.id : false;
+      return checked;
+    },
+    [selectedFile]
+  );
   const Item = useCallback(
     ({ index, style }) => {
       const isLoaded = isItemLoaded(index);
@@ -87,6 +95,8 @@ const FilesListBody = ({
         ((viewer.id === file.createdBy.id && t("Common:MeLabel")) ||
           file.createdBy.displayName);
 
+      const isChecked = isFileChecked(file);
+
       return (
         <div style={style}>
           <ListRow
@@ -96,6 +106,8 @@ const FilesListBody = ({
             onSelectFile={onSelectFile}
             fileName={modifyFileName}
             fileExst={fileExst}
+            isMultiSelect={isMultiSelect}
+            isChecked={isChecked}
           >
             <Text data-index={index} className="files-list_file-owner">
               {fileOwner}
@@ -104,7 +116,7 @@ const FilesListBody = ({
         </div>
       );
     },
-    [filesList, renderLoader]
+    [filesList, selectedFile, renderLoader]
   );
   return (
     <>
@@ -147,6 +159,7 @@ const FilesListBody = ({
 };
 FilesListBody.defaultProps = {
   listHeight: 300,
+  isMultiSelect: false,
 };
 export default inject(({ auth }) => {
   const { user } = auth.userStore;

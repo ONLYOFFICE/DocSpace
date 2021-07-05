@@ -585,6 +585,14 @@ const StyledSelectFilePanel = styled.div`
       border-right: 1px solid #dee2e6;
     }
   }
+  .select-file-dialog-aside_buttons {
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 8px;
+  }
+  .select-file-dialog-buttons-save {
+    margin: 0 8px;
+  }
 `;
 
 const StyledFilesList = styled.div`
@@ -600,7 +608,7 @@ const StyledFilesList = styled.div`
   }
   .files-list_file-owner {
     margin-left: auto;
-    max-width: 280px;
+    max-width: 260px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -616,7 +624,6 @@ const StyledFilesList = styled.div`
   }
   .modal-dialog_file-name:hover {
     background-color: #eceef1;
-    border-radius: 3px;
   }
   .files-list_full-name {
     grid-area: full-name;
@@ -630,6 +637,9 @@ const StyledFilesList = styled.div`
   .select-file-dialog_icon {
     grid-area: icon-name;
   }
+  .select-file-dialog_checked {
+    grid-area: checked-button;
+  }
   .files-list_file-owner_wrapper {
     grid-area: owner-name;
     margin-right: 16px;
@@ -640,6 +650,8 @@ const StyledFilesList = styled.div`
       `}
   }
   .modal-dialog_file-name {
+    border-radius: 3px;
+    ${(props) => props.isChecked && `background:#eceef1;`}
     cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
     border-bottom: 1px solid #eceef1;
     align-items: center;
@@ -648,13 +660,13 @@ const StyledFilesList = styled.div`
       props.displayType === "aside"
         ? css`
             height: 56px;
-            grid-template-areas: "icon-name full-name full-name" "icon-name owner-name owner-name";
+            grid-template-areas: "checked-button icon-name full-name full-name" "checked-button icon-name owner-name owner-name";
           `
         : css`
             height: 36px;
-            grid-template-areas: "icon-name full-name owner-name";
+            grid-template-areas: "checked-button icon-name full-name owner-name";
           `}
-    grid-template-columns: 32px 1fr;
+    grid-template-columns: 16px 32px 1fr;
   }
 `;
 export {

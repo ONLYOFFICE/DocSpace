@@ -106,6 +106,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       header,
       modalHeightContent,
       loadingText,
+      selectedFile,
     } = this.props;
     const { isLoading } = this.state;
     console.log("this.folderList", this.folderList);
@@ -150,6 +151,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                         loadNextPage={loadNextPage}
                         selectedFolder={selectedFolder}
                         loadingText={loadingText}
+                        selectedFile={selectedFile}
                       />
                     )}
                   </div>
@@ -168,14 +170,26 @@ class SelectFileDialogModalViewBody extends React.Component {
             </StyledSelectFilePanel>
           </ModalDialog.Body>
           <ModalDialog.Footer>
-            <Button
-              className="modal-dialog-button"
-              primary
-              size="big"
-              label={t("Common:CloseButton")}
-              tabIndex={1}
-              onClick={onClose}
-            />
+            <StyledSelectFilePanel>
+              <div className="select-file-dialog-modal_buttons">
+                <Button
+                  className="select-file-dialog-buttons-save"
+                  primary
+                  size="medium"
+                  label={t("Common:SaveButton")}
+                  tabIndex={1}
+                  onClick={onClose}
+                />
+                <Button
+                  className="modal-dialog-button"
+                  primary
+                  size="medium"
+                  label={t("Common:CloseButton")}
+                  tabIndex={1}
+                  onClick={onClose}
+                />
+              </div>
+            </StyledSelectFilePanel>
           </ModalDialog.Footer>
         </ModalDialog>
       </StyledAsidePanel>
