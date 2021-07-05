@@ -4,7 +4,7 @@ import IconButton from "@appserver/components/icon-button";
 import Aside from "@appserver/components/aside";
 import Heading from "@appserver/components/heading";
 import Backdrop from "@appserver/components/backdrop";
-import FolderTreeBody from "../FolderTreeBody";
+import FolderTreeBody from "../../FolderTreeBody";
 import {
   StyledAsidePanel,
   StyledSelectFilePanel,

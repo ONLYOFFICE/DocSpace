@@ -9,7 +9,7 @@ import i18n from "../SelectFileInput/i18n";
 import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import ModalDialog from "@appserver/components/modal-dialog";
 import SelectFolderDialog from "../SelectFolderDialog";
-import FolderTreeBody from "../FolderTreeBody";
+import FolderTreeBody from "../../FolderTreeBody";
 import FilesListBody from "./filesListBody";
 import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";

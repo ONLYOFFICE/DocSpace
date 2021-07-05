@@ -2,7 +2,7 @@ import React from "react";
 
 import ModalDialog from "@appserver/components/modal-dialog";
 import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
-import FolderTreeBody from "../FolderTreeBody";
+import FolderTreeBody from "../../FolderTreeBody";
 
 const SelectFolderDialogModalView = ({
   t,
