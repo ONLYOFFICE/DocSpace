@@ -17,8 +17,6 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
 
-import BannerStore from "./BannerStore";
-
 import store from "studio/store";
 
 const formatsStore = new FormatsStore(
@@ -73,8 +71,6 @@ const filesActionsStore = new FilesActionsStore(
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 
-const bannerStore = new BannerStore();
-
 const stores = {
   filesStore,
   settingsStore,
@@ -86,7 +82,6 @@ const stores = {
   treeFoldersStore,
   selectedFolderStore,
   filesActionsStore,
-  bannerStore,
 };
 
 export default stores;

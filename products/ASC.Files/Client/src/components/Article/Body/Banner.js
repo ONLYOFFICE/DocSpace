@@ -1,50 +1,50 @@
-import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
-import CampaignsBanner from "@appserver/components/campaigns-banner";
-import Loaders from "@appserver/common/components/Loaders";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-const PureBanner = ({ t, tReady }) => {
-  const [bannerType, setBannerType] = useState("");
+import CampaignsBanner from "@appserver/components/campaigns-banner";
+
+const Banner = () => {
+  const campaigns = (localStorage.getItem("campaigns") || "")
+    .split(",")
+    .filter((campaign) => campaign.length > 0);
+
+  const [bannerName, setBannerName] = useState();
 
   useEffect(() => {
-    if (!localStorage.getItem("banner")) {
-      localStorage.setItem("banner", 0);
-    }
+    let index = Number(localStorage.getItem("bannerIndex") || 0);
+    const campaign = campaigns[index];
 
-    const index = Number(localStorage.getItem("banner"));
-    const campaigns = localStorage.getItem("campaigns").split(",");
-    const banner = campaigns[index];
-
-    if (index + 1 === campaigns.length) {
-      localStorage.setItem("banner", 0);
+    if (campaigns.length < 1 || index + 1 >= campaigns.length) {
+      index = 0;
     } else {
-      localStorage.setItem("banner", Number(index + 1));
+      index++;
     }
 
-    setBannerType(banner);
+    localStorage.setItem("bannerIndex", index);
+    setBannerName(campaign);
   }, []);
 
-  if (tReady)
-    return (
-      <CampaignsBanner
-        headerLabel={t(`CampaignPersonal${bannerType}:Header`)}
-        subHeaderLabel={t(`CampaignPersonal${bannerType}:SubHeader`)}
-        img={`/static/images/campaigns.${bannerType}.png`}
-        btnLabel={t(`CampaignPersonal${bannerType}:ButtonLabel`)}
-        link={t(`CampaignPersonal${bannerType}:Link`)}
-      />
-    );
-  else return <Loaders.Rectangle />;
-};
+  const { t, i18n, ready } = useTranslation(`CampaignPersonal${bannerName}`, {
+    useSuspense: false,
+  });
 
-const Banner = withTranslation([
-  "CampaignPersonalCloud",
-  "CampaignPersonalDesktop",
-  "CampaignPersonalEducation",
-  "CampaignPersonalEnterprise",
-  "CampaignPersonalIntegration",
-])(withRouter(PureBanner));
+  if (
+    !campaigns.length ||
+    !ready ||
+    !i18n.exists(`CampaignPersonal${bannerName}:Header`)
+  ) {
+    return <></>;
+  }
+
+  return (
+    <CampaignsBanner
+      headerLabel={t(`CampaignPersonal${bannerName}:Header`)}
+      subHeaderLabel={t(`CampaignPersonal${bannerName}:SubHeader`)}
+      img={`/static/images/campaigns.${bannerName}.png`}
+      btnLabel={t(`CampaignPersonal${bannerName}:ButtonLabel`)}
+      link={t(`CampaignPersonal${bannerName}:Link`)}
+    />
+  );
+};
 
 export default Banner;
