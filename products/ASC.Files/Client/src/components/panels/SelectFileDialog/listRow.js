@@ -14,7 +14,7 @@ const ListRow = ({
   children,
   fileExst,
   iconSrc,
-  isMultiSelect,
+  isMultiSelect, // it will be needed
   isChecked,
 }) => {
   console.log("isChecked", isChecked);
@@ -29,20 +29,14 @@ const ListRow = ({
         className="modal-dialog_file-name"
         onClick={onSelectFile}
       >
-        {isMultiSelect ? (
+        {false ? ( // this will be "isMultiSelect" param
           <Checkbox
-            id={option.key}
-            value={`${index}`}
-            label={option.label}
+            label=""
             isChecked={isChecked}
-            className="option_checkbox"
-            truncate={true}
-            title={option.label}
-            onChange={onOptionChange}
+            className="select-file-dialog_checked"
           />
         ) : (
           <RadioButton
-         
             fontSize="13px"
             fontWeight="400"
             name={`${index}`}

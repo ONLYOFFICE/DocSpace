@@ -20,7 +20,6 @@ const SelectFileDialogAsideView = ({
   isVisible,
   withoutProvider,
   foldersType,
-  isLoadingData,
   onSelectFile,
   onClickInput,
   onCloseSelectFolderDialog,

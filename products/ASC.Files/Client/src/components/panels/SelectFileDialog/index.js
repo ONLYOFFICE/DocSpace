@@ -17,15 +17,11 @@ class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoadingData: false,
       isVisible: false,
       selectedFolder: "",
       selectedFile: "",
-      defaultSelectedFile: "",
       fileName: "",
-      defaultFileName: "",
       filesList: [],
-      width: window.innerWidth,
       hasNextPage: true,
       isNextPageLoading: false,
       displayType: this.getDisplayType(),
@@ -137,13 +133,7 @@ class SelectFileDialogBody extends React.Component {
     onClose && onClose();
   };
 
-  onSetLoadingData = (loading) => {
-    this.setState({
-      isLoadingData: loading,
-    });
-  };
   loadNextPage = ({ startIndex }) => {
-    //debugger;
     const { withSubfolders } = this.props;
     const { selectedFolder, filterParams } = this.state;
 
@@ -164,7 +154,6 @@ class SelectFileDialogBody extends React.Component {
           let newFilesList = startIndex
             ? this.state.filesList.concat(response.files)
             : response.files;
-          console.log("newFilesList", newFilesList);
 
           this.setState({
             hasNextPage: newFilesList.length < response.total,
@@ -203,6 +192,7 @@ class SelectFileDialogBody extends React.Component {
     const loadingText = loadingLabel
       ? loadingLabel
       : `${t("Common:LoadingProcessing")} ${t("Common:LoadingDescription")}`;
+
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
         t={t}
@@ -213,7 +203,6 @@ class SelectFileDialogBody extends React.Component {
         withoutProvider={withoutProvider}
         foldersType={foldersType}
         filesList={filesList}
-        isLoadingData={isLoadingData}
         onSelectFile={this.onSelectFile}
         onClickInput={this.onClickInput}
         onClickSave={this.onClickSave}
@@ -238,7 +227,6 @@ class SelectFileDialogBody extends React.Component {
         foldersType={foldersType}
         onClickSave={this.onClickSave}
         filesList={filesList}
-        isLoadingData={isLoadingData}
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}

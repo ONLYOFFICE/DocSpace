@@ -110,7 +110,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       onClickSave,
     } = this.props;
     const { isLoading } = this.state;
-    console.log("this.folderList", this.folderList);
+
     return (
       <StyledAsidePanel visible={isPanelVisible}>
         <ModalDialog
