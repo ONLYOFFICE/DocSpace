@@ -93,6 +93,7 @@ const SelectFileDialogAsideView = ({
                   displayType={DISPLAY_TYPE}
                   loadingText={loadingText}
                   selectedFile={selectedFile}
+                  isLoadingDate={isLoadingDate}
                 />
               )}
             </div>

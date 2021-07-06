@@ -23,6 +23,7 @@ const FilesListBody = ({
   selectedFolder,
   isMultiSelect,
   selectedFile,
+  isLoadingDate,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   const filesListRef = useRef(null);
@@ -30,7 +31,7 @@ const FilesListBody = ({
     if (filesListRef && filesListRef.current) {
       filesListRef.current.resetloadMoreItemsCache(true);
     }
-  }, [selectedFolder, displayType]);
+  }, [selectedFolder, displayType, isLoadingDate]);
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
     (index) => {
