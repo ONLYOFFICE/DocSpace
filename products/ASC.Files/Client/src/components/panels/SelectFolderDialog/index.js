@@ -99,7 +99,9 @@ class SelectFolderModalDialog extends React.Component {
               )
               .then(() => getFolder(id))
               .then((data) => {
-                const newPathParts = this.convertPathParts(data.pathParts);
+                const newPathParts = SelectFolderDialog.convertPathParts(
+                  data.pathParts
+                );
                 setSelectedFolder({
                   folders: data.folders,
                   ...data.current,
@@ -146,6 +148,7 @@ class SelectFolderModalDialog extends React.Component {
             )
             .then(
               () =>
+                !id &&
                 isSetFolderImmediately &&
                 folderList.length !== 0 &&
                 onSetBaseFolderPath &&
@@ -172,7 +175,9 @@ class SelectFolderModalDialog extends React.Component {
               )
               .then(() => getFolder(id))
               .then((data) => {
-                const newPathParts = this.convertPathParts(data.pathParts);
+                const newPathParts = SelectFolderDialog.convertPathParts(
+                  data.pathParts
+                );
                 setSelectedFolder({
                   folders: data.folders,
                   ...data.current,
@@ -195,17 +200,6 @@ class SelectFolderModalDialog extends React.Component {
     });
   }
 
-  convertPathParts = (pathParts) => {
-    let newPathParts = [];
-    for (let i = 0; i < pathParts.length - 1; i++) {
-      if (typeof pathParts[i] === "number") {
-        newPathParts.push(String(pathParts[i]));
-      } else {
-        newPathParts.push(pathParts[i]);
-      }
-    }
-    return newPathParts;
-  };
   componentWillUnmount() {
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
@@ -371,7 +365,17 @@ class SelectFolderDialog extends React.Component {
 
     return convertFoldersArray;
   };
-
+  static convertPathParts = (pathParts) => {
+    let newPathParts = [];
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      if (typeof pathParts[i] === "number") {
+        newPathParts.push(String(pathParts[i]));
+      } else {
+        newPathParts.push(pathParts[i]);
+      }
+    }
+    return newPathParts;
+  };
   render() {
     return (
       <MobxProvider {...stores}>
