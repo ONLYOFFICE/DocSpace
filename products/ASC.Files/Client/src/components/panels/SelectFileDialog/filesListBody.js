@@ -30,7 +30,7 @@ const FilesListBody = ({
     if (filesListRef && filesListRef.current) {
       filesListRef.current.resetloadMoreItemsCache(true);
     }
-  }, [selectedFolder]);
+  }, [selectedFolder, displayType]);
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
     (index) => {
@@ -51,7 +51,7 @@ const FilesListBody = ({
 
       loadNextPage && loadNextPage(options);
     },
-    [isNextPageLoading, filesList]
+    [isNextPageLoading, filesList, displayType]
   );
 
   const renderLoader = useCallback(
@@ -116,7 +116,7 @@ const FilesListBody = ({
         </div>
       );
     },
-    [filesList, selectedFile, renderLoader]
+    [filesList, selectedFile, displayType, renderLoader]
   );
   return (
     <>

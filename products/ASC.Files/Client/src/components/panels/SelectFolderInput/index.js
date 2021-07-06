@@ -118,7 +118,6 @@ class SelectFolder extends React.PureComponent {
           withoutProvider={withoutProvider}
           onSetFullPath={this.onSetFullPath}
           onSetBaseFolderPath={this.onSetBaseFolderPath}
-          onSetLoadingData={onSetLoadingData}
           onSetLoadingInput={this.onSetLoadingInput}
           isNeedArrowIcon={isNeedArrowIcon}
           isSetFolderImmediately={isSetFolderImmediately}

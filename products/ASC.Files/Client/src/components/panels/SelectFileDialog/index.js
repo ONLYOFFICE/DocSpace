@@ -16,16 +16,17 @@ const { desktop } = utils.device;
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
+    const { folderId } = this.props;
     this.state = {
       isVisible: false,
-      selectedFolder: "",
+      selectedFolder: folderId || "",
       selectedFile: "",
       fileName: "",
       filesList: [],
       hasNextPage: true,
       isNextPageLoading: false,
       displayType: this.getDisplayType(),
-      selectedKeys: "",
+
       filterParams: this.getFilterParameters(),
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
@@ -109,7 +110,6 @@ class SelectFileDialogBody extends React.Component {
       selectedFolder: id,
       hasNextPage: true,
       filesList: [],
-      selectedKeys: id,
     });
   };
 
@@ -172,10 +172,10 @@ class SelectFileDialogBody extends React.Component {
       zIndex,
       foldersType,
       withoutProvider,
-      folderId,
       header,
       modalHeightContent,
       loadingLabel,
+      folderId,
     } = this.props;
     const {
       isVisible,
@@ -184,7 +184,6 @@ class SelectFileDialogBody extends React.Component {
       isNextPageLoading,
       selectedFolder,
       displayType,
-      selectedKeys,
       selectedFile,
     } = this.state;
 
@@ -214,6 +213,7 @@ class SelectFileDialogBody extends React.Component {
         header={header}
         loadingText={loadingText}
         selectedFile={selectedFile}
+        folderId={folderId}
       />
     ) : (
       <SelectFileDialogModalView
@@ -230,12 +230,11 @@ class SelectFileDialogBody extends React.Component {
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
         withoutProvider={withoutProvider}
-        selectedKeys={selectedKeys}
-        folderId={folderId}
         header={header}
         modalHeightContent={modalHeightContent}
         loadingText={loadingText}
         selectedFile={selectedFile}
+        folderId={folderId}
       />
     );
   }

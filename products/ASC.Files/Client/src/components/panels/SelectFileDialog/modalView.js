@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
+import { inject, observer, Provider as MobxProvider } from "mobx-react";
 
 import { I18nextProvider } from "react-i18next";
 
@@ -15,6 +15,7 @@ import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
+import { getFolder } from "@appserver/common/api/files";
 class SelectFileDialogModalViewBody extends React.Component {
   constructor(props) {
     super(props);
@@ -27,37 +28,76 @@ class SelectFileDialogModalViewBody extends React.Component {
   }
 
   componentDidMount() {
-    const { foldersType, onSetLoadingData, onSelectFolder } = this.props;
+    const {
+      foldersType,
+      onSetLoadingData,
+      onSelectFolder,
+      setSelectedNode,
+      setSelectedFolder,
+      folderId,
+    } = this.props;
 
     switch (foldersType) {
       case "common":
         this.setState({ isLoading: true }, function () {
+          onSetLoadingData && onSetLoadingData(true);
           SelectFolderDialog.getCommonFolders()
             .then((commonFolder) => {
               this.folderList = commonFolder;
             })
             .then(
-              () => onSelectFolder && onSelectFolder(`${this.folderList[0].id}`)
+              () =>
+                onSelectFolder &&
+                onSelectFolder(`${folderId ? folderId : this.folderList[0].id}`)
             )
             .finally(() => {
-              onSetLoadingData && onSetLoadingData(false);
+              if (!folderId) {
+                onSetLoadingData && onSetLoadingData(false);
 
-              this.setState({
-                isLoading: false,
-              });
+                this.setState({
+                  isLoading: false,
+                });
+              }
             });
+
+          if (folderId) {
+            setSelectedNode([folderId + ""]);
+            getFolder(folderId)
+              .then((data) => {
+                const newPathParts = SelectFolderDialog.convertPathParts(
+                  data.pathParts
+                );
+                setSelectedFolder({
+                  folders: data.folders,
+                  ...data.current,
+                  pathParts: newPathParts,
+                  ...{ new: data.new },
+                });
+              })
+              .catch((error) => console.log("error", error))
+              .finally(() => {
+                onSetLoadingData && onSetLoadingData(false);
+
+                this.setState({
+                  isLoading: false,
+                });
+              });
+          }
         });
 
         break;
       case "third-party":
         this.setState({ isLoading: true }, function () {
+          onSetLoadingData && onSetLoadingData(true);
           SelectFolderDialog.getCommonThirdPartyList()
             .then(
               (commonThirdPartyArray) =>
                 (this.folderList = commonThirdPartyArray)
             )
             .then(
-              () => onSelectFolder && onSelectFolder(`${this.folderList[0].id}`)
+              () =>
+                onSelectFolder &&
+                onSelectFolder(`${folderId ? folderId : this.folderList[0].id}`)
             )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
@@ -66,6 +106,30 @@ class SelectFileDialogModalViewBody extends React.Component {
                 isLoading: false,
               });
             });
+
+          if (folderId) {
+            setSelectedNode([folderId + ""]);
+            getFolder(folderId)
+              .then((data) => {
+                const newPathParts = SelectFolderDialog.convertPathParts(
+                  data.pathParts
+                );
+                setSelectedFolder({
+                  folders: data.folders,
+                  ...data.current,
+                  pathParts: newPathParts,
+                  ...{ new: data.new },
+                });
+              })
+              .catch((error) => console.log("error", error))
+              .finally(() => {
+                onSetLoadingData && onSetLoadingData(false);
+
+                this.setState({
+                  isLoading: false,
+                });
+              });
+          }
         });
 
         break;
@@ -101,8 +165,6 @@ class SelectFileDialogModalViewBody extends React.Component {
       isNextPageLoading,
       loadNextPage,
       selectedFolder,
-      selectedKeys,
-      folderId,
       header,
       modalHeightContent,
       loadingText,
@@ -138,7 +200,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                       certainFolders
                       isAvailableFolders
                       filter={filter}
-                      selectedKeys={[folderId ? folderId : selectedKeys]}
+                      selectedKeys={[selectedFolder]}
                       heightContent={modalHeightContent}
                     />
                   </div>
@@ -203,12 +265,23 @@ SelectFileDialogModalViewBody.propTypes = {
 SelectFileDialogModalViewBody.defaultProps = {
   modalHeightContent: "280px",
 };
+const SelectFileDialogModalViewBodyWrapper = inject(
+  ({ treeFoldersStore, selectedFolderStore }) => {
+    const { setSelectedNode } = treeFoldersStore;
+
+    const { setSelectedFolder } = selectedFolderStore;
+    return {
+      setSelectedFolder,
+      setSelectedNode,
+    };
+  }
+)(observer(SelectFileDialogModalViewBody));
 class SelectFileDialogModalView extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
         <I18nextProvider i18n={i18n}>
-          <SelectFileDialogModalViewBody {...this.props} />
+          <SelectFileDialogModalViewBodyWrapper {...this.props} />
         </I18nextProvider>
       </MobxProvider>
     );

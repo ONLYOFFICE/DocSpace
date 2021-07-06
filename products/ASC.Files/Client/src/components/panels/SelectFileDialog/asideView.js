@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyledAsidePanel,
   StyledSelectFilePanel,
@@ -24,7 +24,6 @@ const SelectFileDialogAsideView = ({
   onClickInput,
   onCloseSelectFolderDialog,
   onSelectFolder,
-  onSetLoadingData,
   filesList,
   hasNextPage,
   isNextPageLoading,
@@ -34,7 +33,18 @@ const SelectFileDialogAsideView = ({
   loadingText,
   selectedFile,
   onClickSave,
+  folderId,
 }) => {
+  const [isLoadingDate, setIsLoadingDate] = useState(false);
+  const onSetLoadingData = (loading) => {
+    setIsLoadingDate(loading);
+  };
+  console.log(
+    "aside view selectedFolder",
+    selectedFolder,
+    "isLoadingDate",
+    isLoadingDate
+  );
   return (
     <StyledAsidePanel visible={isPanelVisible}>
       <Backdrop
@@ -69,9 +79,10 @@ const SelectFileDialogAsideView = ({
                 isNeedArrowIcon
                 withoutProvider={withoutProvider}
                 isSetFolderImmediately
+                id={folderId}
               />
 
-              {selectedFolder && (
+              {selectedFolder && !isLoadingDate && (
                 <FilesListBody
                   filesList={filesList}
                   onSelectFile={onSelectFile}
