@@ -34,6 +34,7 @@ class SelectFolderModalDialog extends React.Component {
       displayType: this.getDisplayType(),
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
+    this.folderTitle = "";
   }
 
   componentDidMount() {
@@ -47,12 +48,14 @@ class SelectFolderModalDialog extends React.Component {
       id,
       setSelectedFolder,
       setSelectedNode,
+      onSetLoadingInput,
     } = this.props;
 
     window.addEventListener("resize", this.throttledResize);
 
     this.setState({ isLoadingData: true }, function () {
       onSetLoadingData && onSetLoadingData(true);
+      onSetLoadingInput && onSetLoadingInput(true);
       switch (foldersType) {
         case "common":
           SelectFolderDialog.getCommonFolders()
@@ -70,35 +73,51 @@ class SelectFolderModalDialog extends React.Component {
                 folderId: `${id ? id : folderList[0].id}`,
               })
             )
-            .then(() => {
-              id && setSelectedNode([id + ""]);
-            })
             .then(
               () =>
-                id &&
-                getFolder(id).then((data) => {
-                  const newPathParts = this.convertPathParts(data.pathParts);
-
-                  setSelectedFolder({
-                    folders: data.folders,
-                    ...data.current,
-                    pathParts: newPathParts,
-                    ...{ new: data.new },
-                  });
-                })
-            )
-            .then(
-              () =>
-                onSetBaseFolderPath && onSetBaseFolderPath(folderList[0].title)
+                !id &&
+                onSetBaseFolderPath &&
+                onSetBaseFolderPath(folderList[0].title)
             )
             .finally(() => {
-              onSetLoadingData && onSetLoadingData(false);
-
-              this.setState({
-                isLoadingData: false,
-              });
+              if (!id) {
+                onSetLoadingData && onSetLoadingData(false);
+                onSetLoadingInput && onSetLoadingInput(false);
+                this.setState({
+                  isLoadingData: false,
+                });
+              }
             });
+
+          if (id) {
+            setSelectedNode([id + ""]);
+            SelectFolderDialog.getFolderPath(id)
+              .then((folderPath) => (this.folderTitle = folderPath))
+              .then(
+                () =>
+                  onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle)
+              )
+              .then(() => getFolder(id))
+              .then((data) => {
+                const newPathParts = this.convertPathParts(data.pathParts);
+                setSelectedFolder({
+                  folders: data.folders,
+                  ...data.current,
+                  pathParts: newPathParts,
+                  ...{ new: data.new },
+                });
+              })
+              .catch((error) => console.log("error", error))
+              .finally(() => {
+                onSetLoadingData && onSetLoadingData(false);
+                onSetLoadingInput && onSetLoadingInput(false);
+                this.setState({
+                  isLoadingData: false,
+                });
+              });
+          }
           break;
+
         case "third-party":
           SelectFolderDialog.getCommonThirdPartyList()
             .then(
@@ -108,6 +127,8 @@ class SelectFolderModalDialog extends React.Component {
               () =>
                 folderList.length === 0 && this.setState({ isAvailable: false })
             )
+            .then(() => SelectFolderDialog.getFolderPath(folderList[0].id))
+            .then((folderPath) => (this.folderTitle = folderPath))
             .then(
               () =>
                 isSetFolderImmediately &&
@@ -128,32 +149,47 @@ class SelectFolderModalDialog extends React.Component {
                 isSetFolderImmediately &&
                 folderList.length !== 0 &&
                 onSetBaseFolderPath &&
-                onSetBaseFolderPath(folderList[0].title)
+                onSetBaseFolderPath(this.folderTitle)
             )
-            .then(() => {
-              id && setSelectedNode([id + ""]);
-            })
-            .then(
-              () =>
-                id &&
-                getFolder(id).then((data) => {
-                  const newPathParts = this.convertPathParts(data.pathParts);
-
-                  setSelectedFolder({
-                    folders: data.folders,
-                    ...data.current,
-                    pathParts: newPathParts,
-                    ...{ new: data.new },
-                  });
-                })
-            )
+            .catch((error) => console.log("error", error))
             .finally(() => {
-              onSetLoadingData && onSetLoadingData(false);
-
-              this.setState({
-                isLoadingData: false,
-              });
+              if (!id) {
+                onSetLoadingData && onSetLoadingData(false);
+                onSetLoadingInput && onSetLoadingInput(false);
+                this.setState({
+                  isLoadingData: false,
+                });
+              }
             });
+
+          if (id) {
+            setSelectedNode([id + ""]);
+            SelectFolderDialog.getFolderPath(id)
+              .then((folderPath) => (this.folderTitle = folderPath))
+              .then(
+                () =>
+                  onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle)
+              )
+              .then(() => getFolder(id))
+              .then((data) => {
+                const newPathParts = this.convertPathParts(data.pathParts);
+                setSelectedFolder({
+                  folders: data.folders,
+                  ...data.current,
+                  pathParts: newPathParts,
+                  ...{ new: data.new },
+                });
+              })
+              .catch((error) => console.log("error", error))
+              .finally(() => {
+                onSetLoadingData && onSetLoadingData(false);
+                onSetLoadingInput && onSetLoadingInput(false);
+                this.setState({
+                  isLoadingData: false,
+                });
+              });
+          }
+
           break;
       }
     });

@@ -69,6 +69,12 @@ class SelectFolder extends React.PureComponent {
       baseFolderPath: pathName,
     });
   };
+
+  onSetLoadingInput = (loading) => {
+    this.setState({
+      isLoading: loading,
+    });
+  };
   render() {
     const {
       name,
@@ -85,6 +91,7 @@ class SelectFolder extends React.PureComponent {
       folderPath,
       isNeedArrowIcon,
       isSetFolderImmediately,
+      id,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
     const zIndex = 310;
@@ -112,8 +119,10 @@ class SelectFolder extends React.PureComponent {
           onSetFullPath={this.onSetFullPath}
           onSetBaseFolderPath={this.onSetBaseFolderPath}
           onSetLoadingData={onSetLoadingData}
+          onSetLoadingInput={this.onSetLoadingInput}
           isNeedArrowIcon={isNeedArrowIcon}
           isSetFolderImmediately={isSetFolderImmediately}
+          id={id}
         />
       </StyledComponent>
     );
