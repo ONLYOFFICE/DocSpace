@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
+import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
@@ -8,6 +8,7 @@ import throttle from "lodash/throttle";
 import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 import {
   getCommonFolderList,
+  getFolder,
   getFolderPath,
 } from "@appserver/common/api/files";
 
@@ -43,6 +44,9 @@ class SelectFolderModalDialog extends React.Component {
       onSetBaseFolderPath,
       foldersType,
       isSetFolderImmediately,
+      id,
+      setSelectedFolder,
+      setSelectedNode,
     } = this.props;
 
     window.addEventListener("resize", this.throttledResize);
@@ -59,14 +63,30 @@ class SelectFolderModalDialog extends React.Component {
               () =>
                 folderPath.length === 0 &&
                 onSelectFolder &&
-                onSelectFolder(`${folderList[0].id}`)
+                onSelectFolder(`${id ? id : folderList[0].id}`)
             )
             .then(() =>
               this.setState({
-                folderId: `${folderList[0].id}`,
+                folderId: `${id ? id : folderList[0].id}`,
               })
             )
-            //.then(() => id && setExpandedKeys([`${folderList[0].id}`]))
+            .then(() => {
+              id && setSelectedNode([id + ""]);
+            })
+            .then(
+              () =>
+                id &&
+                getFolder(id).then((data) => {
+                  const newPathParts = this.convertPathParts(data.pathParts);
+
+                  setSelectedFolder({
+                    folders: data.folders,
+                    ...data.current,
+                    pathParts: newPathParts,
+                    ...{ new: data.new },
+                  });
+                })
+            )
             .then(
               () =>
                 onSetBaseFolderPath && onSetBaseFolderPath(folderList[0].title)
@@ -93,14 +113,14 @@ class SelectFolderModalDialog extends React.Component {
                 isSetFolderImmediately &&
                 folderList.length !== 0 &&
                 onSelectFolder &&
-                onSelectFolder(`${folderList[0].id}`)
+                onSelectFolder(`${id ? id : folderList[0].id}`)
             )
             .then(
               () =>
                 isSetFolderImmediately &&
                 folderList.length !== 0 &&
                 this.setState({
-                  folderId: `${folderList[0].id}`,
+                  folderId: `${id ? id : folderList[0].id}`,
                 })
             )
             .then(
@@ -109,6 +129,23 @@ class SelectFolderModalDialog extends React.Component {
                 folderList.length !== 0 &&
                 onSetBaseFolderPath &&
                 onSetBaseFolderPath(folderList[0].title)
+            )
+            .then(() => {
+              id && setSelectedNode([id + ""]);
+            })
+            .then(
+              () =>
+                id &&
+                getFolder(id).then((data) => {
+                  const newPathParts = this.convertPathParts(data.pathParts);
+
+                  setSelectedFolder({
+                    folders: data.folders,
+                    ...data.current,
+                    pathParts: newPathParts,
+                    ...{ new: data.new },
+                  });
+                })
             )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
@@ -121,6 +158,18 @@ class SelectFolderModalDialog extends React.Component {
       }
     });
   }
+
+  convertPathParts = (pathParts) => {
+    let newPathParts = [];
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      if (typeof pathParts[i] === "number") {
+        newPathParts.push(String(pathParts[i]));
+      } else {
+        newPathParts.push(pathParts[i]);
+      }
+    }
+    return newPathParts;
+  };
   componentWillUnmount() {
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
@@ -164,12 +213,11 @@ class SelectFolderModalDialog extends React.Component {
       onClose,
       withoutProvider,
       isNeedArrowIcon,
-      id,
       modalHeightContent,
       asideHeightContent,
     } = this.props;
     const { isAvailable, certainFolders, folderId, displayType } = this.state;
-
+    console.log("folderId", folderId);
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
         t={t}
@@ -178,7 +226,6 @@ class SelectFolderModalDialog extends React.Component {
         onClose={onClose}
         withoutProvider={withoutProvider}
         isNeedArrowIcon={isNeedArrowIcon}
-        id={id}
         asideHeightContent={asideHeightContent}
         isAvailable={isAvailable}
         certainFolders={certainFolders}
@@ -193,7 +240,6 @@ class SelectFolderModalDialog extends React.Component {
         zIndex={zIndex}
         onClose={onClose}
         withoutProvider={withoutProvider}
-        id={id}
         modalHeightContent={modalHeightContent}
         isAvailable={isAvailable}
         certainFolders={certainFolders}
@@ -227,8 +273,18 @@ SelectFolderModalDialog.defaultProps = {
   withoutProvider: false,
 };
 
-const SelectFolderDialogWrapper = withTranslation(["SelectFolder", "Common"])(
-  SelectFolderModalDialog
+const SelectFolderDialogWrapper = inject(
+  ({ treeFoldersStore, selectedFolderStore }) => {
+    const { setSelectedNode } = treeFoldersStore;
+
+    const { setSelectedFolder } = selectedFolderStore;
+    return {
+      setSelectedFolder,
+      setSelectedNode,
+    };
+  }
+)(
+  observer(withTranslation(["SelectFolder", "Common"])(SelectFolderModalDialog))
 );
 
 class SelectFolderDialog extends React.Component {

@@ -19,7 +19,6 @@ const SelectFolderDialogAsideView = ({
   onClose,
   withoutProvider,
   isNeedArrowIcon,
-  id,
   asideHeightContent,
   isAvailable,
   certainFolders,
@@ -68,7 +67,7 @@ const SelectFolderDialogAsideView = ({
                 withoutProvider={withoutProvider}
                 certainFolders={certainFolders}
                 isAvailable={isAvailable}
-                selectedKeys={[id ? id : folderId]}
+                selectedKeys={[folderId]}
                 heightContent={asideHeightContent}
                 displayType={DISPLAY_TYPE}
               />

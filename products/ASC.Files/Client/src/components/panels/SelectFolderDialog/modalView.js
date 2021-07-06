@@ -11,7 +11,6 @@ const SelectFolderDialogModalView = ({
   onClose,
   withoutProvider,
   isNeedArrowIcon,
-  id,
   modalHeightContent,
   isAvailable,
   certainFolders,
@@ -39,7 +38,7 @@ const SelectFolderDialogModalView = ({
               withoutProvider={withoutProvider}
               certainFolders={certainFolders}
               isAvailable={isAvailable}
-              selectedKeys={[id ? id : folderId]}
+              selectedKeys={[folderId]}
               heightContent={modalHeightContent}
             />
           </StyledSelectFolderPanel>
