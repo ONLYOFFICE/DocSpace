@@ -35,6 +35,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       setSelectedNode,
       setSelectedFolder,
       folderId,
+      selectedFolder,
     } = this.props;
 
     switch (foldersType) {
@@ -48,10 +49,18 @@ class SelectFileDialogModalViewBody extends React.Component {
             .then(
               () =>
                 onSelectFolder &&
-                onSelectFolder(`${folderId ? folderId : this.folderList[0].id}`)
+                onSelectFolder(
+                  `${
+                    selectedFolder
+                      ? selectedFolder
+                      : folderId
+                      ? folderId
+                      : this.folderList[0].id
+                  }`
+                )
             )
             .finally(() => {
-              if (!folderId) {
+              if (!folderId && !selectedFolder) {
                 onSetLoadingData && onSetLoadingData(false);
 
                 this.setState({
@@ -60,7 +69,31 @@ class SelectFileDialogModalViewBody extends React.Component {
               }
             });
 
-          if (folderId) {
+          if (selectedFolder) {
+            setSelectedNode([selectedFolder + ""]);
+            getFolder(selectedFolder)
+              .then((data) => {
+                const newPathParts = SelectFolderDialog.convertPathParts(
+                  data.pathParts
+                );
+                setSelectedFolder({
+                  folders: data.folders,
+                  ...data.current,
+                  pathParts: newPathParts,
+                  ...{ new: data.new },
+                });
+              })
+              .catch((error) => console.log("error", error))
+              .finally(() => {
+                onSetLoadingData && onSetLoadingData(false);
+
+                this.setState({
+                  isLoading: false,
+                });
+              });
+          }
+
+          if (folderId && !selectedFolder) {
             setSelectedNode([folderId + ""]);
             getFolder(folderId)
               .then((data) => {
@@ -97,7 +130,15 @@ class SelectFileDialogModalViewBody extends React.Component {
             .then(
               () =>
                 onSelectFolder &&
-                onSelectFolder(`${folderId ? folderId : this.folderList[0].id}`)
+                onSelectFolder(
+                  `${
+                    selectedFolder
+                      ? selectedFolder
+                      : folderId
+                      ? folderId
+                      : this.folderList[0].id
+                  }`
+                )
             )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
@@ -106,8 +147,30 @@ class SelectFileDialogModalViewBody extends React.Component {
                 isLoading: false,
               });
             });
+          if (selectedFolder) {
+            setSelectedNode([selectedFolder + ""]);
+            getFolder(selectedFolder)
+              .then((data) => {
+                const newPathParts = SelectFolderDialog.convertPathParts(
+                  data.pathParts
+                );
+                setSelectedFolder({
+                  folders: data.folders,
+                  ...data.current,
+                  pathParts: newPathParts,
+                  ...{ new: data.new },
+                });
+              })
+              .catch((error) => console.log("error", error))
+              .finally(() => {
+                onSetLoadingData && onSetLoadingData(false);
 
-          if (folderId) {
+                this.setState({
+                  isLoading: false,
+                });
+              });
+          }
+          if (folderId && !selectedFolder) {
             setSelectedNode([folderId + ""]);
             getFolder(folderId)
               .then((data) => {

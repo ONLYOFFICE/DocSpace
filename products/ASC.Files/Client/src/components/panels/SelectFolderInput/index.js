@@ -92,6 +92,7 @@ class SelectFolder extends React.PureComponent {
       isNeedArrowIcon,
       isSetFolderImmediately,
       id,
+      selectedFolderId,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
     const zIndex = 310;
@@ -122,6 +123,7 @@ class SelectFolder extends React.PureComponent {
           isNeedArrowIcon={isNeedArrowIcon}
           isSetFolderImmediately={isSetFolderImmediately}
           id={id}
+          selectedFolderId={selectedFolderId}
         />
       </StyledComponent>
     );

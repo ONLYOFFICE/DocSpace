@@ -39,12 +39,7 @@ const SelectFileDialogAsideView = ({
   const onSetLoadingData = (loading) => {
     setIsLoadingDate(loading);
   };
-  console.log(
-    "aside view selectedFolder",
-    selectedFolder,
-    "isLoadingDate",
-    isLoadingDate
-  );
+
   return (
     <StyledAsidePanel visible={isPanelVisible}>
       <Backdrop
@@ -80,6 +75,7 @@ const SelectFileDialogAsideView = ({
                 withoutProvider={withoutProvider}
                 isSetFolderImmediately
                 id={folderId}
+                selectedFolderId={selectedFolder}
               />
 
               {selectedFolder && !isLoadingDate && (

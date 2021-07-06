@@ -17,7 +17,6 @@ const ListRow = ({
   isMultiSelect, // it will be needed
   isChecked,
 }) => {
-  console.log("isChecked", isChecked);
   return (
     <StyledFilesList
       displayType={displayType}
