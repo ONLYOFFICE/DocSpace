@@ -165,7 +165,7 @@ class SortComboBox extends React.Component {
             iconName="/static/images/z-a.sorting.react.svg"
             isDisabled={isDisabled}
             isFill={true}
-            //onClick={this.onButtonClick}
+            onClick={this.onToggleAction}
             size={10}
           />
         </StyledIconButton>
