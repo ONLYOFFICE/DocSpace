@@ -26,12 +26,15 @@ let folderList;
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
+    const { isSetFolderImmediately, id } = this.props;
+    const isNeedFolder = id ? true : isSetFolderImmediately;
     this.state = {
       isLoadingData: false,
       isAvailable: true,
       certainFolders: true,
       folderId: "",
       displayType: this.getDisplayType(),
+      isSetFolderImmediately: isNeedFolder,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.folderTitle = "";
@@ -44,13 +47,13 @@ class SelectFolderModalDialog extends React.Component {
       onSetLoadingData,
       onSetBaseFolderPath,
       foldersType,
-      isSetFolderImmediately,
+
       id,
       setSelectedFolder,
       setSelectedNode,
       onSetLoadingInput,
     } = this.props;
-
+    const { isSetFolderImmediately } = this.state;
     window.addEventListener("resize", this.throttledResize);
 
     this.setState({ isLoadingData: true }, function () {
