@@ -345,16 +345,17 @@ const Dark = {
     hoverIndeterminateColor: black,
   },
 
-  // switchButton: {
-  //   fillColor: white,
-  //   checkedFillColor: gray,
+  viewSelector: {
+    fillColor: white,
+    checkedFillColor: gray,
 
-  //   fillColorDisabled: grayLight,
-  //   disabledFillColor: grayLightMid,
-  //   disabledFillColorInner: grayMid,
+    fillColorDisabled: grayLight,
+    disabledFillColor: grayLightMid,
+    disabledFillColorInner: grayMid,
 
-  //   hoverBorderColor: gray,
-  // },
+    hoverBorderColor: gray,
+    borderColor: grayLight,
+  },
 
   radioButton: {
     color: white,

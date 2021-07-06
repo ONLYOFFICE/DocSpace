@@ -6,7 +6,6 @@ import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./RowsView/FilesRowContainer";
 import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
-
 import withLoader from "../../../../HOCs/withLoader";
 
 let currentDroppable = null;
@@ -16,7 +15,6 @@ const SectionBodyContent = (props) => {
     t,
     tReady,
     fileActionId,
-    viewAs,
     isEmptyFilesList,
     folderId,
     dragging,
@@ -26,6 +24,8 @@ const SectionBodyContent = (props) => {
     setTooltipPosition,
     isRecycleBinFolder,
     moveDragItems,
+    viewAs,
+    setSelection,
   } = props;
 
   useEffect(() => {
@@ -37,6 +37,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
+    !isMobile && window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 
@@ -44,6 +45,7 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
     return () => {
+      window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mousemove", onMouseMove);
 
@@ -51,7 +53,16 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  }, [onMouseUp, onMouseMove, startDrag, folderId]);
+  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
+
+  const onMouseDown = (e) => {
+    if (
+      e.target.closest(".scroll-body") &&
+      !e.target.closest(".files-item") &&
+      !e.target.closest(".not-selectable")
+    )
+      setSelection([]);
+  };
 
   const onMouseMove = (e) => {
     if (!dragging) {
@@ -60,13 +71,12 @@ const SectionBodyContent = (props) => {
     }
 
     setTooltipPosition(e.pageX, e.pageY);
-
     const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
     if (!wrapperElement) {
       return;
     }
-    const droppable = wrapperElement.closest(".droppable");
 
+    const droppable = wrapperElement.closest(".droppable");
     if (currentDroppable !== droppable) {
       if (currentDroppable) {
         currentDroppable.classList.remove("droppable-hover");
@@ -123,7 +133,7 @@ const SectionBodyContent = (props) => {
   };
 
   const onDropEvent = () => {
-    dragging && setDragging(false);
+    setDragging(false);
   };
 
   const onDragOver = (e) => {
@@ -144,11 +154,10 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
-
   return (!fileActionId && isEmptyFilesList) || null ? (
     <EmptyContainer />
   ) : viewAs === "tile" ? (
-    <FilesTileContainer />
+    <FilesTileContainer t={t} />
   ) : (
     <FilesRowContainer tReady={tReady} />
   );
@@ -166,16 +175,18 @@ export default inject(
       filesList,
       dragging,
       setDragging,
-      startDrag,
-      setStartDrag,
       viewAs,
       setTooltipPosition,
+      startDrag,
+      setStartDrag,
+      setSelection,
     } = filesStore;
 
     return {
       dragging,
+      startDrag,
+      setStartDrag,
       fileActionId: fileActionStore.id,
-      viewAs,
       isEmptyFilesList: filesList.length <= 0,
       setDragging,
       startDrag,
@@ -184,12 +195,14 @@ export default inject(
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
       moveDragItems: filesActionsStore.moveDragItems,
+      viewAs,
+      setSelection,
     };
   }
 )(
   withRouter(
     withTranslation(["Home", "Translations"])(
-      withLoader(observer(SectionBodyContent))
+      withLoader(observer(SectionBodyContent))()
     )
   )
 );

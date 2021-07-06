@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
-import { Trans, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import toastr from "studio/toastr";
 
@@ -40,11 +40,21 @@ class BackupCodesDialogComponent extends React.Component {
 
   render() {
     //console.log("Render BackupCodesDialog");
-    const { t, visible, onClose, backupCodes, backupCodesCount } = this.props;
-    let count = 0;
+    const {
+      t,
+      tReady,
+      visible,
+      onClose,
+      backupCodes,
+      backupCodesCount,
+    } = this.props;
 
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>{t("BackupCodesTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <div id="backup-codes-print-content">

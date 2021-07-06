@@ -12,6 +12,7 @@ import { ConflictResolveType } from "@appserver/common/constants";
 const ConflictResolveDialog = (props) => {
   const {
     t,
+    tReady,
     visible,
     setConflictResolveDialogVisible,
     conflictResolveDialogData,
@@ -110,7 +111,11 @@ const ConflictResolveDialog = (props) => {
   const file = items[0].title;
 
   return (
-    <ModalDialogContainer visible={visible} onClose={onClose}>
+    <ModalDialogContainer
+      isLoading={!tReady}
+      visible={visible}
+      onClose={onClose}
+    >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text className="conflict-resolve-dialog-text">

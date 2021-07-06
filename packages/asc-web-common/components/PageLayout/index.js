@@ -224,7 +224,6 @@ class PageLayout extends React.Component {
       isLoading,
       dragging,
     } = this.props;
-
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
     let articleBodyContent = null;
@@ -467,8 +466,8 @@ class PageLayout extends React.Component {
           <StyledSelectoWrapper>
             <Selecto
               dragContainer={".main"}
-              selectableTargets={[".files-row"]}
-              hitRate={1}
+              selectableTargets={[".files-item"]}
+              hitRate={0}
               selectByClick={false}
               selectFromInside={true}
               ratio={0}

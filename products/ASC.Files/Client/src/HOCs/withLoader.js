@@ -5,9 +5,9 @@ import { isMobile } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
 
 let loadTimeout = null;
-export default function withLoader(WrappedComponent, type) {
+const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
-    const { tReady, firstLoad, isLoaded, isLoading } = props;
+    const { tReady, firstLoad, isLoaded, isLoading, viewAs } = props;
     const [inLoad, setInLoad] = useState(false);
 
     const cleanTimer = () => {
@@ -34,18 +34,26 @@ export default function withLoader(WrappedComponent, type) {
     }, [isLoading]);
 
     return firstLoad || !isLoaded || (isMobile && inLoad) || !tReady ? (
-      <Loaders.Rows />
+      Loader ? (
+        Loader
+      ) : viewAs === "tile" ? (
+        <Loaders.Tiles />
+      ) : (
+        <Loaders.Rows />
+      )
     ) : (
       <WrappedComponent {...props} />
     );
   };
 
   return inject(({ auth, filesStore }) => {
-    const { firstLoad, isLoading } = filesStore;
+    const { firstLoad, isLoading, viewAs } = filesStore;
     return {
       firstLoad,
       isLoaded: auth.isLoaded,
       isLoading,
+      viewAs,
     };
   })(observer(withLoader));
-}
+};
+export default withLoader;
