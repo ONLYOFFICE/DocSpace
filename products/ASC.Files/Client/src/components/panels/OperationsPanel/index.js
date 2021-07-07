@@ -10,6 +10,7 @@ import toastr from "studio/toastr";
 const OperationsPanelComponent = (props) => {
   const {
     t,
+    tReady,
     filter,
     isCopy,
     visible,
@@ -104,6 +105,7 @@ const OperationsPanelComponent = (props) => {
         displayType="aside"
         zIndex={zIndex}
         onClose={onClose}
+        isLoading={!tReady}
       >
         <ModalDialog.Header>
           {isRecycleBin

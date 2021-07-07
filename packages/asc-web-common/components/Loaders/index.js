@@ -4,6 +4,7 @@ import Header from "./HeaderLoader";
 import SectionHeader from "./SectionHeaderLoader";
 import ArticleHeader from "./ArticleHeaderLoader";
 import TreeFolders from "./TreeFolderLoader";
+import TreeSettingsLoader from "./TreeSettingsLoader";
 import Row from "./RowLoader";
 import Rows from "./RowsLoader";
 import Text from "./TextLoader";
@@ -14,6 +15,8 @@ import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
 import Tile from "./TileLoader";
 import Tiles from "./TilesLoader";
+import DialogLoader from "./DialogLoader";
+import DialogAsideLoader from "./DialogAsideLoader";
 
 export default {
   Rectangle,
@@ -22,6 +25,7 @@ export default {
   SectionHeader,
   ArticleHeader,
   TreeFolders,
+  TreeSettingsLoader,
   Row,
   Rows,
   Text,
@@ -32,4 +36,6 @@ export default {
   HistoryRows,
   Tile,
   Tiles,
+  DialogLoader,
+  DialogAsideLoader,
 };

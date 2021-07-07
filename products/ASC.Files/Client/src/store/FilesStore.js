@@ -292,7 +292,7 @@ class FilesStore {
     let requestCounter = 1;
     const request = () =>
       api.files
-        .getFolder(folderId, filter)
+        .getFolder(folderId, filterData)
         .then(async (data) => {
           const isRecycleBinFolder =
             data.current.rootFolderType === FolderType.TRASH;

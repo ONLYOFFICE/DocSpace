@@ -75,7 +75,7 @@ class SendInviteDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, onClose, visible } = this.props;
+    const { t, tReady, onClose, visible } = this.props;
     const { listUsers, isRequestRunning, userIds } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -112,7 +112,11 @@ class SendInviteDialogComponent extends React.Component {
 
     //console.log("SendInviteDialog render");
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>
           {t("Translations:SendInviteAgain")}
         </ModalDialog.Header>

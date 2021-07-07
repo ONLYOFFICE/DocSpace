@@ -35,11 +35,15 @@ class DeleteSelfProfileDialogComponent extends React.Component {
 
   render() {
     console.log("DeleteSelfProfileDialog render");
-    const { t, visible, email, onClose } = this.props;
+    const { t, tReady, visible, email, onClose } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>{t("DeleteProfileTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text fontSize="13px">
