@@ -55,7 +55,6 @@ class SelectFile extends React.PureComponent {
 
     return (
       <StyledComponent>
-     
         <SimpleFileInput
           name={name}
           className="file-input"
@@ -65,29 +64,31 @@ class SelectFile extends React.PureComponent {
           onClickInput={onClickInput}
         />
 
-        <SelectFileDialog
-          zIndex={zIndex}
-          onClose={onClose}
-          isPanelVisible={isPanelVisible}
-          foldersType={foldersType}
-          onSetFileName={this.onSetFileName}
-          withoutProvider={withoutProvider}
-          iconUrl={iconUrl}
-          filterValue={filterValue}
-          withSubfolders={withSubfolders}
-          filterType={filterType}
-          onSelectFile={onSelectFile}
-          folderId={folderId}
-          header={header}
-          searchParam={searchParam}
-          isImageOnly={isImageOnly}
-          isArchiveOnly={isArchiveOnly}
-          isDocumentsOnly={isDocumentsOnly}
-          isPresentation={isPresentationOnly}
-          isTables={isTablesOnly}
-          isMediaOnly={isMediaOnly}
-          loadingLabel={loadingLabel}
-        />
+        {isPanelVisible && (
+          <SelectFileDialog
+            zIndex={zIndex}
+            onClose={onClose}
+            isPanelVisible={isPanelVisible}
+            foldersType={foldersType}
+            onSetFileName={this.onSetFileName}
+            withoutProvider={withoutProvider}
+            iconUrl={iconUrl}
+            filterValue={filterValue}
+            withSubfolders={withSubfolders}
+            filterType={filterType}
+            onSelectFile={onSelectFile}
+            folderId={folderId}
+            header={header}
+            searchParam={searchParam}
+            isImageOnly={isImageOnly}
+            isArchiveOnly={isArchiveOnly}
+            isDocumentsOnly={isDocumentsOnly}
+            isPresentation={isPresentationOnly}
+            isTables={isTablesOnly}
+            isMediaOnly={isMediaOnly}
+            loadingLabel={loadingLabel}
+          />
+        )}
       </StyledComponent>
     );
   }

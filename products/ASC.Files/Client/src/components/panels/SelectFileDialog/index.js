@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
+import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
@@ -16,12 +16,13 @@ const { desktop } = utils.device;
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
-    const { folderId } = this.props;
+    const { folderId, storeFolderId, fileInfo } = this.props;
+
     this.state = {
       isVisible: false,
-      selectedFolder: folderId || "",
-      selectedFile: "",
-      fileName: "",
+      selectedFolder: storeFolderId || folderId || "",
+      selectedFile: fileInfo || "",
+      fileName: (fileInfo && fileInfo.title) || "",
       filesList: [],
       hasNextPage: true,
       isNextPageLoading: false,
@@ -70,6 +71,7 @@ class SelectFileDialogBody extends React.Component {
     window.addEventListener("resize", this.throttledResize);
   }
   componentWillUnmount() {
+    console.log("Unmount");
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
       window.removeEventListener("resize", this.throttledResize);
@@ -106,6 +108,9 @@ class SelectFileDialogBody extends React.Component {
   };
 
   onSelectFolder = (id) => {
+    const { setFolderId } = this.props;
+    setFolderId(id);
+
     this.setState({
       selectedFolder: id,
       hasNextPage: true,
@@ -115,9 +120,11 @@ class SelectFileDialogBody extends React.Component {
 
   onSelectFile = (e) => {
     const { filesList } = this.state;
+    const { setFile } = this.props;
     const index = e.target.dataset.index || e.target.name;
 
     if (!index) return;
+    setFile(filesList[+index]);
     this.setState({
       selectedFile: filesList[+index],
       fileName: filesList[+index].title,
@@ -137,7 +144,7 @@ class SelectFileDialogBody extends React.Component {
     const { withSubfolders } = this.props;
     const { selectedFolder, filterParams } = this.state;
 
-    console.log(`loadNextPage(startIndex=${startIndex}")`);
+    //console.log(`loadNextPage(startIndex=${startIndex}")`);
 
     const pageCount = 30;
 
@@ -176,6 +183,7 @@ class SelectFileDialogBody extends React.Component {
       modalHeightContent,
       loadingLabel,
       folderId,
+      onSetFileName,
     } = this.props;
     const {
       isVisible,
@@ -185,6 +193,7 @@ class SelectFileDialogBody extends React.Component {
       selectedFolder,
       displayType,
       selectedFile,
+      fileName,
     } = this.state;
 
     const loadingText = loadingLabel
@@ -214,6 +223,8 @@ class SelectFileDialogBody extends React.Component {
         loadingText={loadingText}
         selectedFile={selectedFile}
         folderId={folderId}
+        onSetFileName={onSetFileName}
+        fileName={fileName}
       />
     ) : (
       <SelectFileDialogModalView
@@ -257,9 +268,21 @@ SelectFileDialogModalView.defaultProps = {
   zIndex: 310,
 };
 
-const SelectFileDialogWrapper = withTranslation(["SelectFile", "Common"])(
-  SelectFileDialogBody
-);
+const SelectFileDialogWrapper = inject(({ selectedFilesStore }) => {
+  const {
+    folderId: storeFolderId,
+    fileInfo,
+    setFolderId,
+    setFile,
+  } = selectedFilesStore;
+  //console.log("folderId", folderId, "file", fileInfo);
+  return {
+    storeFolderId,
+    fileInfo,
+    setFile,
+    setFolderId,
+  };
+})(observer(withTranslation(["SelectFile", "Common"])(SelectFileDialogBody)));
 class SelectFileDialog extends React.Component {
   render() {
     return (

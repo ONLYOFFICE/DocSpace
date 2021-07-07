@@ -33,7 +33,8 @@ const SelectFileDialogAsideView = ({
   loadingText,
   selectedFile,
   onClickSave,
-  folderId,
+  onSetFileName,
+  fileName,
 }) => {
   const [isLoadingDate, setIsLoadingDate] = useState(false);
   const onSetLoadingData = (loading) => {
@@ -74,8 +75,9 @@ const SelectFileDialogAsideView = ({
                 isNeedArrowIcon
                 withoutProvider={withoutProvider}
                 isSetFolderImmediately
-                id={folderId}
-                selectedFolderId={selectedFolder}
+                id={selectedFolder}
+                onSetFileName={onSetFileName}
+                fileName={fileName}
               />
 
               {selectedFolder && !isLoadingDate && (

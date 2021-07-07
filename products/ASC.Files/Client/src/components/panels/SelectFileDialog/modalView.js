@@ -92,30 +92,6 @@ class SelectFileDialogModalViewBody extends React.Component {
                 });
               });
           }
-
-          if (folderId && !selectedFolder) {
-            setSelectedNode([folderId + ""]);
-            getFolder(folderId)
-              .then((data) => {
-                const newPathParts = SelectFolderDialog.convertPathParts(
-                  data.pathParts
-                );
-                setSelectedFolder({
-                  folders: data.folders,
-                  ...data.current,
-                  pathParts: newPathParts,
-                  ...{ new: data.new },
-                });
-              })
-              .catch((error) => console.log("error", error))
-              .finally(() => {
-                onSetLoadingData && onSetLoadingData(false);
-
-                this.setState({
-                  isLoading: false,
-                });
-              });
-          }
         });
 
         break;
@@ -150,29 +126,6 @@ class SelectFileDialogModalViewBody extends React.Component {
           if (selectedFolder) {
             setSelectedNode([selectedFolder + ""]);
             getFolder(selectedFolder)
-              .then((data) => {
-                const newPathParts = SelectFolderDialog.convertPathParts(
-                  data.pathParts
-                );
-                setSelectedFolder({
-                  folders: data.folders,
-                  ...data.current,
-                  pathParts: newPathParts,
-                  ...{ new: data.new },
-                });
-              })
-              .catch((error) => console.log("error", error))
-              .finally(() => {
-                onSetLoadingData && onSetLoadingData(false);
-
-                this.setState({
-                  isLoading: false,
-                });
-              });
-          }
-          if (folderId && !selectedFolder) {
-            setSelectedNode([folderId + ""]);
-            getFolder(folderId)
               .then((data) => {
                 const newPathParts = SelectFolderDialog.convertPathParts(
                   data.pathParts
