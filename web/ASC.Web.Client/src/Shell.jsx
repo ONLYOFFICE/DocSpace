@@ -317,7 +317,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     updateTempContent();
 
-    if (!FirebaseHelper.isEnabled) return;
+    if (!FirebaseHelper.isEnabled) {
+      localStorage.setItem("campaigns", "");
+      return;
+    }
 
     fetchMaintenance();
     fetchBanners();
