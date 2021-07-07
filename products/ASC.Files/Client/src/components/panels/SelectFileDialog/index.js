@@ -175,6 +175,7 @@ class SelectFileDialogBody extends React.Component {
       loadingLabel,
       folderId,
       onSetFileName,
+      tReady,
     } = this.props;
     const {
       isVisible,
@@ -217,6 +218,7 @@ class SelectFileDialogBody extends React.Component {
         onSetFileName={onSetFileName}
         fileName={fileName}
         displayType={displayType}
+        isTranslationsReady={tReady}
       />
     ) : (
       <SelectFileDialogModalView
