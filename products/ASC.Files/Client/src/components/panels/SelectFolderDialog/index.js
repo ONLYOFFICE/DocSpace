@@ -13,7 +13,7 @@ import {
 } from "@appserver/common/api/files";
 
 import SelectFolderModal from "../SelectFolderInput";
-import i18n from "../SelectFolderInput/i18n";
+import i18n from "./i18n";
 import SelectFolderDialogAsideView from "./asideView";
 import SelectFolderDialogModalView from "./modalView";
 import stores from "../../../store/index";
@@ -304,7 +304,11 @@ const SelectFolderDialogWrapper = inject(
     };
   }
 )(
-  observer(withTranslation(["SelectFolder", "Common"])(SelectFolderModalDialog))
+  observer(
+    withTranslation(["SelectFolder", "Common", "Translations"])(
+      SelectFolderModalDialog
+    )
+  )
 );
 
 class SelectFolderDialog extends React.Component {

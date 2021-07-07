@@ -276,7 +276,13 @@ const SelectFileDialogWrapper = inject(({ selectedFilesStore }) => {
     setFile,
     setFolderId,
   };
-})(observer(withTranslation(["SelectFile", "Common"])(SelectFileDialogBody)));
+})(
+  observer(
+    withTranslation(["SelectFile", "Common", "Translations"])(
+      SelectFileDialogBody
+    )
+  )
+);
 class SelectFileDialog extends React.Component {
   render() {
     return (

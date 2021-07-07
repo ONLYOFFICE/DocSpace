@@ -27,7 +27,9 @@ const SelectFolderDialogModalView = ({
         onClose={onClose}
         contentHeight="400px"
       >
-        <ModalDialog.Header>{t("ChooseFolder")}</ModalDialog.Header>
+        <ModalDialog.Header>
+          {t("Translations:SelectFolder")}
+        </ModalDialog.Header>
 
         <ModalDialog.Body>
           <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>

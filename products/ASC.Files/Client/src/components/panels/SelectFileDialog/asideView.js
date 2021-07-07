@@ -66,7 +66,7 @@ const SelectFileDialogAsideView = ({
 
             <div className="select-file-dialog_aside-body_wrapper">
               <Text fontWeight="600" fontSize="14px">
-                {t("ChooseFolderByUser")}
+                {t("Translations:SelectFolder")}
               </Text>
               <div className="select-file-dialog_aside_body">
                 <SelectFolderInput

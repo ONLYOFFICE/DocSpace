@@ -53,7 +53,7 @@ const SelectFolderDialogAsideView = ({
                 size="medium"
                 className="select-file-dialog_aside-header_title"
               >
-                {t("ChooseFolder")}
+                {t("Translations:SelectFolder")}
               </Heading>
             </div>
           </StyledHeaderContent>

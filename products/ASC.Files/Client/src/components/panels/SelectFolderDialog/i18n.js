@@ -24,8 +24,8 @@ newInstance.use(Backend).init({
     loadPath: loadLanguagePath(config.homepage),
   },
 
-  ns: ["SelectFile", "Common", "Home", "Translations"],
-  defaultNS: "SelectFile",
+  ns: ["SelectFolder", "Common", "Translations"],
+  defaultNS: "SelectFolder",
 
   react: {
     useSuspense: false,
