@@ -18,6 +18,7 @@
   "EmptyFile": "File vuoto",
   "EmptyFilterDescriptionText": "Nessun file o cartella corrisponde a questo filtro. Provane uno diverso o cancella il filtro per visualizzare tutti i file.",
   "EmptyFilterSubheadingText": "Nessun file da visualizzare per con l'uso di filtro qui",
+  "EmptyFolderHeader": "Non ci sono file in questa cartella",
   "EmptyRecycleBin": "Svuota cestino",
   "FavoritesEmptyContainerDescription": "Non hai ancora preferiti. Per contrassegnare i file come preferiti o rimuoverli da questo elenco, utilizzare il menù contestuale.",
   "FileCreated": "Nuovo file <strong>{{itemTitle}}.{{exst}}</strong> è stato creato",
