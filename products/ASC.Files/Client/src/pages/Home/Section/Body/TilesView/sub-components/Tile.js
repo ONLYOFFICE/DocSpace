@@ -166,6 +166,9 @@ const StyledElement = styled.div`
   margin-right: 4px;
   user-select: none;
   margin-top: 3px;
+
+  height: 32px;
+  width: 32px;
 `;
 
 const StyledOptionButton = styled.div`

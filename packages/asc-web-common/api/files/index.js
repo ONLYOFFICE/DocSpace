@@ -445,8 +445,14 @@ export function setFileOwner(folderIds, fileIds, userId) {
   });
 }
 
-export function startUploadSession(folderId, fileName, fileSize, relativePath) {
-  const data = { fileName, fileSize, relativePath };
+export function startUploadSession(
+  folderId,
+  fileName,
+  fileSize,
+  relativePath,
+  encrypted
+) {
+  const data = { fileName, fileSize, relativePath, encrypted };
   return request({
     method: "post",
     url: `/files/${folderId}/upload/create_session.json`,

@@ -10,7 +10,6 @@ import DropDownItem from "@appserver/components/drop-down-item";
 import Textarea from "@appserver/components/textarea";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
-import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import toastr from "studio/toastr";
 import { ShareAccessRights } from "@appserver/common/constants";
@@ -28,6 +27,8 @@ import config from "../../../../package.json";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { isMobile } from "react-device-detect";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -380,7 +381,7 @@ class SharingPanelComponent extends React.Component {
       this.onClose();
     }
 
-    if (this.state.message === prevState.message) {
+    if (this.state.message === prevState.message && this.scrollRef.current) {
       this.scrollRef.current.view.focus();
     }
   }
@@ -389,6 +390,7 @@ class SharingPanelComponent extends React.Component {
     //console.log("Sharing panel render");
     const {
       t,
+      tReady,
       isMyId,
       selection,
       groupsCaption,
@@ -397,6 +399,7 @@ class SharingPanelComponent extends React.Component {
       uploadPanelVisible,
       documentTitle,
       sharingPanelVisible,
+      isPrivacy,
     } = this.props;
     const {
       showActionPanel,
@@ -416,7 +419,12 @@ class SharingPanelComponent extends React.Component {
     const visible = sharingPanelVisible;
     const zIndex = 310;
     const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
-    const internalLink = selection.length === 1 && this.getInternalLink();
+
+    const isEncrypted =
+      isPrivacy || (selection.length && selection[0].encrypted);
+
+    const internalLink =
+      selection.length === 1 && !isEncrypted && this.getInternalLink();
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -462,10 +470,12 @@ class SharingPanelComponent extends React.Component {
                       label={t("LinkText")}
                       onClick={this.onShowUsersPanel}
                     />
-                    <DropDownItem
-                      label={t("AddGroupsForSharingButton")}
-                      onClick={this.onShowGroupsPanel}
-                    />
+                    {!isEncrypted && (
+                      <DropDownItem
+                        label={t("AddGroupsForSharingButton")}
+                        onClick={this.onShowGroupsPanel}
+                      />
+                    )}
                   </DropDown>
                 </div>
 
@@ -552,6 +562,7 @@ class SharingPanelComponent extends React.Component {
             groupsCaption={groupsCaption}
             accessOptions={accessOptions}
             isMultiSelect
+            isEncrypted={isEncrypted}
           />
         )}
 
@@ -651,7 +662,7 @@ const SharingPanel = inject(
 )(
   observer(
     withTranslation(["SharingPanel", "Common", "Translations"])(
-      SharingPanelComponent
+      withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
     )
   )
 );

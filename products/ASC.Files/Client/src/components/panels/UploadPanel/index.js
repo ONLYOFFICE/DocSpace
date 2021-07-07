@@ -13,6 +13,8 @@ import {
 } from "../StyledPanels";
 import FileList from "./FileList";
 import { inject, observer } from "mobx-react";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 class UploadPanelComponent extends React.Component {
   constructor(props) {
@@ -135,7 +137,9 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-const UploadPanel = withTranslation("UploadPanel")(UploadPanelComponent);
+const UploadPanel = withTranslation("UploadPanel")(
+  withLoader(UploadPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+);
 
 export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
   //const { sharingPanelVisible } = dialogsStore;

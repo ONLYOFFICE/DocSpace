@@ -14,6 +14,7 @@ import { regDesktop } from "@appserver/common/desktop";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import VersionHistory from "./pages/VersionHistory";
+import PrivateRoomsPage from "./pages/PrivateRoomsPage";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -26,6 +27,7 @@ const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/");
 const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
 const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
+const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
 
 if (!window.AppServer) {
@@ -36,6 +38,7 @@ window.AppServer.files = {
   HOME_URL,
   SETTINGS_URL,
   HISTORY_URL,
+  PRIVATE_ROOMS_URL,
   FILTER_URL,
 };
 
@@ -86,6 +89,7 @@ class FilesContent extends React.Component {
         encryptionKeys,
         setEncryptionKeys,
         this.isEditor,
+        null,
         this.props.t
       );
       console.log(
@@ -106,6 +110,7 @@ class FilesContent extends React.Component {
         <Switch>
           <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
           <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
+          <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
           <PrivateRoute exact path={HOME_URL} component={Home} />
           <PrivateRoute path={FILTER_URL} component={Home} />
           <PrivateRoute component={Error404Route} />

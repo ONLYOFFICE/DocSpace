@@ -13,6 +13,8 @@ const Badges = ({
   item,
   canWebEdit,
   isTrashFolder,
+  isPrivacyFolder,
+  isDesktopClient,
   canConvert,
   accessToEdit,
   showNew,
@@ -29,6 +31,7 @@ const Badges = ({
   const isEditing = fileStatus === 1;
   const isNewWithFav = fileStatus === 34;
   const showEditBadge = !locked || item.access === 0;
+  const isPrivacy = isPrivacyFolder && isDesktopClient;
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -46,6 +49,7 @@ const Badges = ({
       {canWebEdit &&
         !isEditing &&
         !isTrashFolder &&
+        isPrivacy &&
         accessToEdit &&
         showEditBadge &&
         !canConvert && (

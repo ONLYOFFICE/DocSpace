@@ -1,4 +1,5 @@
 import { runInAction } from "mobx";
+import { EDITOR_PROTOCOL } from "./constants";
 
 export const presentInArray = (array, search, caseInsensitive = false) => {
   let pattern = caseInsensitive ? search.toLowerCase() : search;
@@ -142,3 +143,26 @@ export const loopTreeFolders = (
     }
   });
 };
+
+export const checkProtocol = (fileId, withRedirect) =>
+  new Promise((resolve, reject) => {
+    const onBlur = () => {
+      clearTimeout(timeout);
+      window.removeEventListener("blur", onBlur);
+      resolve();
+    };
+
+    const timeout = setTimeout(() => {
+      reject();
+      window.removeEventListener("blur", onBlur);
+      withRedirect &&
+        window.open(`/products/files/private?fileId=${fileId}`, "_blank");
+    }, 1000);
+
+    window.addEventListener("blur", onBlur);
+
+    window.open(
+      `${EDITOR_PROTOCOL}:${window.location.origin}/products/files/doceditor?fileId=${fileId}`,
+      "_self"
+    );
+  });

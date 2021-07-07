@@ -12,24 +12,22 @@ import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import PasswordInput from "@appserver/components/password-input";
 import toastr from "@appserver/components/toast/toastr";
-import Loader from "@appserver/components/loader";
 import SocialButton from "@appserver/components/social-button";
 import FacebookButton from "@appserver/components/facebook-button";
 import EmailInput from "@appserver/components/email-input";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import PageLayout from "@appserver/common/components/PageLayout";
 import {
-  combineUrl,
   createPasswordHash,
   getProviderTranslation,
 } from "@appserver/common/utils";
 import {
-  AppServerConfig,
   providersData,
   PasswordLimitSpecialCharacters,
 } from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
 import { desktop } from "@appserver/components/utils/device";
+import withLoader from "../withLoader";
 
 const inputWidth = "400px";
 
@@ -347,15 +345,6 @@ class Confirm extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   componentDidMount() {
-    const { history, getSettings, getPortalPasswordSettings } = this.props;
-
-    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
-
-    axios.all(requests).catch((e) => {
-      console.error("get settings error", e);
-      history.push(combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`));
-    });
-
     this.setProviders();
     window.authCallback = this.authCallback;
 
@@ -404,9 +393,7 @@ class Confirm extends React.PureComponent {
     const { email, password } = this.state;
     const showCopyLink = !!email.trim() || !!password.trim();
 
-    return !settings ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
+    return (
       <ConfirmContainer>
         <div className="start-basis">
           <div className="margin-left">
@@ -594,5 +581,7 @@ export default inject(({ auth }) => {
     providers,
   };
 })(
-  withRouter(withTranslation(["Confirm", "Common"])(observer(CreateUserForm)))
+  withRouter(
+    withTranslation(["Confirm", "Common"])(withLoader(observer(CreateUserForm)))
+  )
 );

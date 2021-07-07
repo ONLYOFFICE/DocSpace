@@ -202,7 +202,7 @@ export default function withContent(WrappedContent) {
             .then(() => {
               const exst = item.fileExst;
               return toastr.success(
-                <Trans i18nKey="FileCreated" ns="Home">
+                <Trans t={t} i18nKey="FileCreated" ns="Home">
                   New file {{ itemTitle }}.{{ exst }} is created
                 </Trans>
               );
