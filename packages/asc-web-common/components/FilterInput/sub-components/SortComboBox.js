@@ -159,9 +159,7 @@ class SortComboBox extends React.Component {
       >
         <StyledIconButton sortDirection={!!sortDirection}>
           <IconButton
-            clickColor={"#333"}
             color={"#A3A9AE"}
-            hoverColor={"#333"}
             iconName="/static/images/z-a.sorting.react.svg"
             isDisabled={isDisabled}
             isFill={true}
