@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -27,9 +26,6 @@ namespace ASC.Mail.Aggregator.CollectionService
     {
         public async static Task Main(string[] args)
         {
-#if DEBUG
-            Debugger.Launch();
-#endif
             var host = CreateHostBuilder(args).Build();
 
             await host.RunAsync();
@@ -105,7 +101,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                     "ASC.Mail.MainThread",
                     "ASC.Mail.Stat",
                     "ASC.Mail.MailboxEngine",
-                    "ASC.Core.Common.Cache");
+                    "ASC.Mail.SignalrWorker");
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 services.AddSingleton(new ConsoleParser(args));
                 diHelper.TryAdd<AggregatorServiceLauncher>();

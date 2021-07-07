@@ -70,8 +70,7 @@ namespace ASC.Core
         private Constants Constants { get; }
 
         private Tenant tenant;
-        //private Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
-        private Tenant Tenant { get { return TenantManager.GetCurrentTenant(); } }
+        private Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
 
         public UserManager()
         {

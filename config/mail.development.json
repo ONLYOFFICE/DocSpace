@@ -42,7 +42,7 @@
 			  "ServerDnsDefaultTtl": 300,
 			  "MaximumMessageBodySize": 524288,
 			  "IsAttachmentsGroupOperationsAvailable": true,
-			  "EnableSignalr": false,
+			  "EnableSignalr": true,
 			  "WebHubInternal": "http://localhost:9899",
 			  "WebHub": "",
 			  "CleanerTimerWaitMinutes": 60,

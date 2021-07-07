@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -37,6 +38,7 @@ using ASC.Mail.Core.Dao.Expressions.UserFolder;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -66,9 +68,9 @@ namespace ASC.Mail.Core.Engine
         public FolderEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            DaoFactory daoFactory,
             UserFolderEngine userFolderEngine,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            DaoFactory daoFactory)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -172,7 +174,7 @@ namespace ASC.Mail.Core.Engine
                             TimeModified = DateTime.UtcNow
                         });
 
-                        if(res == 0)
+                        if (res == 0)
                             throw new Exception("Need recalculation");
                     }
                     else
@@ -339,13 +341,13 @@ namespace ASC.Mail.Core.Engine
             }
 
             tx.Commit();
-        }        
+        }
 
         public static List<FolderType> DefaultFolders
         {
             get
             {
-                return ((FolderType[]) Enum.GetValues(typeof(FolderType)))
+                return ((FolderType[])Enum.GetValues(typeof(FolderType)))
                     .Where(folderType => folderType != FolderType.Sending && folderType != FolderType.UserFolder)
                     .ToList();
             }

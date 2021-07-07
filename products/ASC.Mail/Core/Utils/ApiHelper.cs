@@ -59,7 +59,7 @@ using RestSharp;
 
 namespace ASC.Mail.Utils
 {
-    [Transient]
+    [Scope]
     public class ApiHelper
     {
         private const int MAIL_CRM_HISTORY_CATEGORY = -3;

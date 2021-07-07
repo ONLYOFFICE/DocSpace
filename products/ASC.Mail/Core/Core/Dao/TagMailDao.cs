@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -66,14 +67,25 @@ namespace ASC.Mail.Core.Dao
                     IdTag = tagId
                 });
 
-                if ((i % 100 != 0 || i == 0) && i + 1 != messagessLen) 
+                if ((i % 100 != 0 || i == 0) && i + 1 != messagessLen)
                     continue;
 
-                MailDb.MailTagMail.AddRange(items);
+                var tagsNotInDb = new List<MailTagMail>();
 
-                MailDb.SaveChanges();
+                tagsNotInDb = items
+                    .FindAll(t =>
+                    !MailDb.MailTagMail.ToList().Exists(nt =>
+                    t.IdMail == nt.IdMail && t.IdTag == nt.IdTag && t.IdUser == nt.IdUser && t.Tenant == nt.Tenant));
+
+                if (tagsNotInDb.Any())
+                {
+                    MailDb.MailTagMail.AddRange(tagsNotInDb);
+
+                    MailDb.SaveChanges();
+                }
 
                 items = new List<MailTagMail>();
+                tagsNotInDb = new List<MailTagMail>();
             }
         }
 
@@ -111,8 +123,9 @@ namespace ASC.Mail.Core.Dao
         public List<int> GetTagIds(int mailboxId)
         {
             var tagIds = MailDb.MailTagMail
-                .Join(MailDb.MailMail, tm => tm.IdMail, m => m.Id, 
-                (tm, m) => new { 
+                .Join(MailDb.MailMail, tm => tm.IdMail, m => m.Id,
+                (tm, m) => new
+                {
                     TagMail = tm,
                     Mail = m
                 })
@@ -172,7 +185,8 @@ namespace ASC.Mail.Core.Dao
         {
             var deleteQuery = MailDb.MailTagMail
                .Join(MailDb.MailMail, tm => tm.IdMail, m => m.Id,
-                (tm, m) => new {
+                (tm, m) => new
+                {
                     TagMail = tm,
                     Mail = m
                 })

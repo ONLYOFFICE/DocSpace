@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Notify.Signalr;
 using ASC.Core.Users;
-using ASC.Mail.Core;
-using ASC.Mail.Models;
-using ASC.Mail.Enums;
-using Microsoft.Extensions.Options;
-using ASC.Common;
 using ASC.Mail.Core.Engine;
+using ASC.Mail.Enums;
+using ASC.Mail.Models;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Aggregator.CollectionService.Queue
 {
-    [Scope]
+    [Singletone(Additional = typeof(SignalrWorkerExtension))]
     public class SignalrWorker : IDisposable
     {
         private readonly Queue<MailBoxData> _processingQueue;
@@ -28,24 +29,18 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private ILog _log { get; }
         private SignalrServiceClient SignalrServiceClient { get; }
-        private TenantManager TenantManager { get; }
-        private UserManager UserManager { get; }
-        private FolderEngine FolderEngine { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public SignalrWorker(
-            IOptionsMonitor<ILog> optionsMonitor, 
+            IOptionsMonitor<ILog> optionsMonitor,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
-            TenantManager tenantManager,
-            UserManager userManager,
-            FolderEngine folderEngine)
+            IServiceProvider serviceProvider)
         {
             _log = optionsMonitor.Get("ASC.Mail.SignalrWorker");
             SignalrServiceClient = optionsSnapshot.Get("mail");
-            TenantManager = tenantManager;
-            UserManager = userManager;
-            FolderEngine = folderEngine;
+            ServiceProvider = serviceProvider;
 
-            _workerTerminateSignal = false;            
+            _workerTerminateSignal = false;
             _processingQueue = new Queue<MailBoxData>();
             _waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             _timeSpan = TimeSpan.FromSeconds(10);
@@ -166,17 +161,26 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         {
             try
             {
-                //var engineFactory = new EngineFactory(tenant, userId);
+                var scope = ServiceProvider.CreateScope();
 
-                var mailFolderInfos = FolderEngine.GetFolders();
+                var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var userManager = scope.ServiceProvider.GetService<UserManager>();
+
+                _log.Debug($"SendUnreadUser(). Try set tenant |{tenant}| for user |{userId}|...");
+
+                tenantManager.SetCurrentTenant(tenant);
+
+                _log.Debug($"SendUnreadUser(). Now current tennant = {tenantManager.GetCurrentTenant().TenantId}");
+
+                var mailFolderInfos = folderEngine.GetFolders();
 
                 var count = (from mailFolderInfo in mailFolderInfos
                              where mailFolderInfo.id == FolderType.Inbox
                              select mailFolderInfo.unreadMessages)
                     .FirstOrDefault();
 
-                TenantManager.SetCurrentTenant(tenant);
-                var userInfo = UserManager.GetUsers(Guid.Parse(userId));
+                var userInfo = userManager.GetUsers(Guid.Parse(userId));
                 if (userInfo.ID != Constants.LostUser.ID)
                 {
                     // sendMailsCount
@@ -188,6 +192,32 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 _log.ErrorFormat("Unknown Error. {0}, {1}", e.ToString(),
                     e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
+        }
+    }
+
+    [Scope]
+    internal class SignalrWorkerScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal UserManager UserManager { get; }
+        internal FolderEngine FolderEngine { get; }
+
+        public SignalrWorkerScope(
+            TenantManager tenantManager,
+            UserManager userManager,
+            FolderEngine folderEngine)
+        {
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            FolderEngine = folderEngine;
+        }
+    }
+
+    public class SignalrWorkerExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<SignalrWorkerScope>();
         }
     }
 }

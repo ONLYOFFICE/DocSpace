@@ -19,11 +19,12 @@ using ASC.Mail.Utils;
 
 using LiteDB;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Aggregator.CollectionService.Queue
 {
-    [Scope]
+    [Singletone(Additional = typeof(QueueManagerExtension))]
     public class QueueManager : IDisposable
     {
         private readonly int _maxItemsLimit;
@@ -43,36 +44,21 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
 
         private MailSettings MailSettings { get; }
-        private TenantManager TenantManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private ApiHelper ApiHelper { get; }
-        private UserManager UserManager { get; }
-        private MailboxEngine MailboxEngine { get; }
-        private AlertEngine AlertEngine { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public ManualResetEvent CancelHandler { get; set; }
 
         public QueueManager(
             MailSettings mailSettings,
             IOptionsMonitor<ILog> optionsMonitor,
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            ApiHelper apiHelper,
-            UserManager userManager,
-            MailboxEngine mailboxEngine,
-            AlertEngine alertEngine)
+            IServiceProvider serviceProvider)
         {
             _maxItemsLimit = mailSettings.MaxTasksAtOnce;
             _mailBoxQueue = new Queue<MailBoxData>();
             _lockedMailBoxList = new List<MailBoxData>();
 
             MailSettings = mailSettings;
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-            ApiHelper = apiHelper;
-            UserManager = userManager;
-            MailboxEngine = mailboxEngine;
-            AlertEngine = alertEngine;
+            ServiceProvider = serviceProvider;
 
             _log = optionsMonitor.Get("ASC.Mail.MainThread");
             _loadQueueTime = DateTime.UtcNow;
@@ -159,9 +145,15 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                 _log.InfoFormat("QueueManager->ReleaseMailbox(MailboxId = {0} Address '{1}')", mailBoxData.MailBoxId, mailBoxData.EMail);
 
-                TenantManager.SetCurrentTenant(mailBoxData.TenantId);
+                var scope = ServiceProvider.CreateScope();
 
-                MailboxEngine.ReleaseMaibox(mailBoxData, MailSettings);
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+                tenantManager.SetCurrentTenant(mailBoxData.TenantId);
+
+                var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+
+                mailboxEngine.ReleaseMaibox(mailBoxData, MailSettings);
 
                 _lockedMailBoxList.Remove(mailBoxData);
 
@@ -453,7 +445,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         {
             try
             {
-                var mbList = MailboxEngine.GetMailboxesForProcessing(MailSettings, _maxItemsLimit).ToList();
+                var scope = ServiceProvider.CreateScope();
+                var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+                var mbList = mailboxEngine.GetMailboxesForProcessing(MailSettings, _maxItemsLimit).ToList();
 
                 ReloadQueue(mbList);
             }
@@ -526,26 +520,34 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             {
                 var contains = _tenantMemCache.Contains(mailbox.TenantId.ToString(CultureInfo.InvariantCulture));
 
+                var scope = ServiceProvider.CreateScope();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                var apiHelper = scope.ServiceProvider.GetService<ApiHelper>();
+                var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+                var alertEngine = scope.ServiceProvider.GetService<AlertEngine>();
+                var userManager = scope.ServiceProvider.GetService<UserManager>();
+
                 if (!contains)
                 {
                     _log.DebugFormat("Tenant {0} isn't in cache", mailbox.TenantId);
                     try
                     {
-                        var type = mailbox.GetTenantStatus(TenantManager, SecurityContext, ApiHelper, (int)MailSettings.TenantOverdueDays, _log);
+                        var type = mailbox.GetTenantStatus(tenantManager, securityContext, apiHelper, (int)MailSettings.TenantOverdueDays, _log);
 
                         switch (type)
                         {
                             case DefineConstants.TariffType.LongDead:
                                 _log.InfoFormat("Tenant {0} is not paid. Disable mailboxes.", mailbox.TenantId);
 
-                                MailboxEngine.DisableMailboxes(
+                                mailboxEngine.DisableMailboxes(
                                     new TenantMailboxExp(mailbox.TenantId));
 
                                 var userIds =
-                                    MailboxEngine.GetMailUsers(new TenantMailboxExp(mailbox.TenantId))
+                                    mailboxEngine.GetMailUsers(new TenantMailboxExp(mailbox.TenantId))
                                         .ConvertAll(t => t.Item2);
 
-                                AlertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId, userIds);
+                                alertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId, userIds);
 
                                 RemoveFromQueue(mailbox.TenantId);
 
@@ -554,7 +556,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                             case DefineConstants.TariffType.Overdue:
                                 _log.InfoFormat("Tenant {0} is not paid. Stop processing mailboxes.", mailbox.TenantId);
 
-                                MailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
+                                mailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
                                     MailSettings.OverdueAccountDelay);
 
                                 RemoveFromQueue(mailbox.TenantId);
@@ -578,7 +580,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                                 break;
                             default:
                                 _log.InfoFormat($"Cannot get tariff type for {mailbox.MailBoxId} mailbox");
-                                MailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
+                                mailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
                                     MailSettings.OverdueAccountDelay);
 
                                 RemoveFromQueue(mailbox.TenantId);
@@ -595,8 +597,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     _log.DebugFormat("Tenant {0} is in cache", mailbox.TenantId);
                 }
 
-                var isUserTerminated = mailbox.IsUserTerminated(TenantManager, UserManager, _log);
-                var isUserRemoved = mailbox.IsUserRemoved(TenantManager, UserManager, _log);
+                var isUserTerminated = mailbox.IsUserTerminated(tenantManager, userManager, _log);
+                var isUserRemoved = mailbox.IsUserRemoved(tenantManager, userManager, _log);
 
                 if (isUserTerminated || isUserRemoved)
                 {
@@ -606,10 +608,10 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                     _log.InfoFormat($"User '{mailbox.UserId}' was {userStatus}. Tenant = {mailbox.TenantId}. Disable mailboxes for user.");
 
-                    MailboxEngine.LoggedDisableMailboxes(
+                    mailboxEngine.LoggedDisableMailboxes(
                         new UserMailboxExp(mailbox.TenantId, mailbox.UserId), _log);
 
-                    AlertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId,
+                    alertEngine.CreateDisableAllMailboxesAlert(mailbox.TenantId,
                         new List<string> { mailbox.UserId });
 
                     RemoveFromQueue(mailbox.TenantId, mailbox.UserId);
@@ -617,14 +619,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     return false;
                 }
 
-                if (mailbox.IsTenantQuotaEnded(TenantManager, (int)MailSettings.TenantMinQuotaBalance, _log))
+                if (mailbox.IsTenantQuotaEnded(tenantManager, (int)MailSettings.TenantMinQuotaBalance, _log))
                 {
                     _log.InfoFormat("Tenant = {0} User = {1}. Quota is ended.", mailbox.TenantId, mailbox.UserId);
 
                     if (!mailbox.QuotaError)
-                        AlertEngine.CreateQuotaErrorWarningAlert(mailbox.TenantId, mailbox.UserId);
+                        alertEngine.CreateQuotaErrorWarningAlert(mailbox.TenantId, mailbox.UserId);
 
-                    MailboxEngine.SetNextLoginDelay(new UserMailboxExp(mailbox.TenantId, mailbox.UserId),
+                    mailboxEngine.SetNextLoginDelay(new UserMailboxExp(mailbox.TenantId, mailbox.UserId),
                                     MailSettings.QuotaEndedDelay);
 
                     RemoveFromQueue(mailbox.TenantId, mailbox.UserId);
@@ -632,7 +634,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     return false;
                 }
 
-                return MailboxEngine.LockMaibox(mailbox.MailBoxId);
+                return mailboxEngine.LockMaibox(mailbox.MailBoxId);
 
             }
             catch (Exception ex)
@@ -669,6 +671,41 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 _db.Dispose();
                 _db = null;
             }
+        }
+    }
+
+    [Scope]
+    internal class QueueManagerScope
+    {
+        internal TenantManager TenantManager { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal ApiHelper ApiHelper { get; }
+        internal UserManager UserManager { get; }
+        internal MailboxEngine MailboxEngine { get; }
+        internal AlertEngine AlertEngine { get; }
+
+        public QueueManagerScope(
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            ApiHelper apiHelper,
+            UserManager userManager,
+            MailboxEngine mailboxEngine,
+            AlertEngine alertEngine)
+        {
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            ApiHelper = apiHelper;
+            UserManager = userManager;
+            MailboxEngine = mailboxEngine;
+            AlertEngine = alertEngine;
+        }
+    }
+
+    public class QueueManagerExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<QueueManagerScope>();
         }
     }
 }

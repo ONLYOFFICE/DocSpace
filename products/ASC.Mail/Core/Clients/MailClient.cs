@@ -28,27 +28,33 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Security;
 using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+
 using ASC.Common.Logging;
-using ASC.Mail.Models;
 using ASC.Mail.Clients.Imap;
+using ASC.Mail.Configuration;
+using ASC.Mail.Core.Engine;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
+using ASC.Mail.Models;
+
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Net.Pop3;
 using MailKit.Net.Smtp;
 using MailKit.Search;
 using MailKit.Security;
+
 using MimeKit;
+
 using AuthenticationException = MailKit.Security.AuthenticationException;
 using MailFolder = ASC.Mail.Models.MailFolder;
 using Pop3Client = MailKit.Net.Pop3.Pop3Client;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
-using ASC.Mail.Core.Engine;
-using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Clients
 {
@@ -66,7 +72,7 @@ namespace ASC.Mail.Clients
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
 
-        private const int CONNECT_TIMEOUT = 60000;
+        private const int CONNECT_TIMEOUT = 15000;
         private const int ENABLE_UTF8_TIMEOUT = 10000;
         private const int LOGIN_TIMEOUT = 30000;
 
@@ -123,7 +129,7 @@ namespace ASC.Mail.Clients
 
         #region .Constructor
 
-        public MailClient(MailBoxData mailbox, 
+        public MailClient(MailBoxData mailbox,
             CancellationToken cancelToken,
             List<ServerFolderAccessInfo> serverFolderAccessInfos,
             int tcpTimeout = 30000,
@@ -151,6 +157,8 @@ namespace ASC.Mail.Clients
                     Timeout = tcpTimeout
                 };
 
+                Imap.ServerCertificateValidationCallback = CertificateValidationCallback;
+
                 Pop = null;
             }
             else
@@ -171,7 +179,7 @@ namespace ASC.Mail.Clients
             if (enableDsn)
             {
                 Smtp = new DsnSmtpClient(protocolLogger,
-                    DeliveryStatusNotification.Success | 
+                    DeliveryStatusNotification.Success |
                     DeliveryStatusNotification.Failure |
                     DeliveryStatusNotification.Delay)
                 {
@@ -189,6 +197,51 @@ namespace ASC.Mail.Clients
 
         #endregion
 
+        static bool IsUnableToCheckRevocation(X509Chain chain)
+        {
+            foreach (var status in chain.ChainStatus)
+            {
+                if (status.Status == X509ChainStatusFlags.NoError || status.Status == X509ChainStatusFlags.OfflineRevocation || status.Status == X509ChainStatusFlags.RevocationStatusUnknown)
+                    continue;
+
+                return false;
+            }
+
+            return true;
+        }
+
+        bool CertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            Log.Debug($"CertificateValidationCallback(). Certificate callback: {certificate.Subject}.");
+
+            const SslPolicyErrors mask = SslPolicyErrors.RemoteCertificateNotAvailable | SslPolicyErrors.RemoteCertificateNameMismatch;
+
+            if (sslPolicyErrors == SslPolicyErrors.None)
+            {
+                Log.Debug("CertificateValidationCallback(). No Ssl policy errors...");
+                return true;
+            }
+
+
+            if ((sslPolicyErrors & mask) == 0)
+            {
+                if (IsUnableToCheckRevocation(chain))
+                {
+                    Log.Debug("Revocation check error, ignore it.");
+                    return true;
+                }
+                else
+                {
+                    Log.Debug("No revocation check error.");
+                }
+
+            }
+
+            return false;
+        }
+
+
+
         public MimeMessage GetInboxMessage(string uidl)
         {
             if (string.IsNullOrEmpty(uidl))
@@ -197,14 +250,14 @@ namespace ASC.Mail.Clients
             if (Account.Imap)
             {
                 if (!Imap.IsAuthenticated)
-                    LoginImap();
+                    LoginImapAsync();
 
                 var elements = uidl.Split('-');
 
                 var index = Convert.ToInt32(elements[0]);
                 var folderId = Convert.ToInt32(elements[1]);
 
-                if (folderId != (int) FolderType.Inbox)
+                if (folderId != (int)FolderType.Inbox)
                     throw new ArgumentException("uidl is invalid. Only INBOX folder is supported.");
 
                 var inbox = Imap.Inbox;
@@ -336,7 +389,7 @@ namespace ASC.Mail.Clients
             if (Account.Imap)
             {
                 if (!Imap.IsAuthenticated)
-                    LoginImap();
+                    LoginImapAsync();
             }
             else
             {
@@ -357,7 +410,7 @@ namespace ASC.Mail.Clients
                 if (Account.Imap)
                 {
                     if (!Imap.IsAuthenticated)
-                        LoginImap(false);
+                        LoginImapAsync(false);
                 }
                 else
                 {
@@ -391,7 +444,7 @@ namespace ASC.Mail.Clients
 
         public static MimeMessage ParseMimeMessage(Stream emlStream)
         {
-           var options = new ParserOptions
+            var options = new ParserOptions
             {
                 AddressParserComplianceMode = RfcComplianceMode.Loose,
                 ParameterComplianceMode = RfcComplianceMode.Loose,
@@ -421,7 +474,7 @@ namespace ASC.Mail.Clients
 
         #region .IMAP
 
-        private void LoginImap(bool enableUtf8 = true)
+        private void LoginImapAsync(bool enableUtf8 = true)
         {
             var secureSocketOptions = SecureSocketOptions.Auto;
             var sslProtocols = SslProtocols.Default;
@@ -430,7 +483,7 @@ namespace ASC.Mail.Clients
             {
                 case EncryptionType.StartTLS:
                     secureSocketOptions = SecureSocketOptions.StartTlsWhenAvailable;
-                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
+                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
                     break;
                 case EncryptionType.SSL:
                     secureSocketOptions = SecureSocketOptions.SslOnConnect;
@@ -507,7 +560,7 @@ namespace ASC.Mail.Clients
         private void AggregateImap(MailSettings mailSettings, int limitMessages = -1)
         {
             if (!Imap.IsAuthenticated)
-                LoginImap();
+                LoginImapAsync();
 
             try
             {
@@ -570,7 +623,7 @@ namespace ASC.Mail.Clients
             Func<IMailFolder, bool> isInbox = (f) => f.Attributes.HasFlag(FolderAttributes.Inbox) ||
                                                      f.Name.Equals("inbox", StringComparison.InvariantCultureIgnoreCase);
 
-            Func<IMailFolder, bool> isSent = (f) => f.Attributes.HasFlag(FolderAttributes.Sent) || 
+            Func<IMailFolder, bool> isSent = (f) => f.Attributes.HasFlag(FolderAttributes.Sent) ||
                                                     f.Name.Equals("sent", StringComparison.InvariantCultureIgnoreCase) ||
                                                     f.Name.Equals("sent items", StringComparison.InvariantCultureIgnoreCase);
 
@@ -646,7 +699,7 @@ namespace ASC.Mail.Clients
 
                 return subfolders;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.ErrorFormat("GetImapSubFolders: {0} Exception: {1}", folder.Name, ex.Message);
             }
@@ -707,7 +760,7 @@ namespace ASC.Mail.Clients
                     : Math.Max(uidsInterval.To, first));
 
                 var infoList = GetMessagesSummaryInfo(folder,
-                    limitMessages > 0 ? uidsCollection.Take(limitMessages*3).ToList() : uidsCollection);
+                    limitMessages > 0 ? uidsCollection.Take(limitMessages * 3).ToList() : uidsCollection);
 
                 foreach (var uid in uidsCollection)
                 {
@@ -911,7 +964,7 @@ namespace ASC.Mail.Clients
             }
 
             if (mailSettings.DefaultFolders == null || !mailSettings.DefaultFolders.ContainsKey(folderName))
-                return new MailFolder(FolderType.Inbox, folder.Name, new[] {folder.FullName});
+                return new MailFolder(FolderType.Inbox, folder.Name, new[] { folder.FullName });
 
             folderId = (FolderType)mailSettings.DefaultFolders[folderName];
             return new MailFolder(folderId, folder.Name);
@@ -938,16 +991,16 @@ namespace ASC.Mail.Clients
 
                 var serverInfo = ServerFolderAccessInfos.FirstOrDefault(f => f.Server == Account.Server);
 
-                if(serverInfo == null)
+                if (serverInfo == null)
                     continue;
 
-                if(!serverInfo.FolderAccessList.TryGetValue(folderName, out ServerFolderAccessInfo.FolderInfo folderInfo))
+                if (!serverInfo.FolderAccessList.TryGetValue(folderName, out ServerFolderAccessInfo.FolderInfo folderInfo))
                     continue;
 
-                if(folderInfo.skip)
+                if (folderInfo.skip)
                     continue;
 
-                if (folderInfo.folder_id != FolderType.Sent) 
+                if (folderInfo.folder_id != FolderType.Sent)
                     continue;
 
                 sendFolder = folder;
@@ -968,7 +1021,7 @@ namespace ASC.Mail.Clients
             try
             {
                 if (!Imap.IsAuthenticated)
-                    LoginImap();
+                    LoginImapAsync();
 
                 var sendFolder = GetSentFolder();
 
