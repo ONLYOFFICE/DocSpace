@@ -167,8 +167,8 @@ install_json() {
 	
 		set_core_machinekey
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
-		-e "this.urlshortener={ 'path': 'client/index.js' }" -e "this.thumb={ 'path': 'client/' }" \
-		-e "this.socket={ 'path': '../ASC.Socket.IO' }" >/dev/null 2>&1
+		-e "this.urlshortener={ 'path': ../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
+		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" >/dev/null 2>&1
 		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" >/dev/null 2>&1
 		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
 		

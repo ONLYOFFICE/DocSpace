@@ -76,17 +76,17 @@ reassign_values (){
 	;;
 	urlshortener )
 		SERVICE_PORT="9999"
-		WORK_DIR="${BASE_DIR}/services/ASC.UrlShortener/"
+		WORK_DIR="${BASE_DIR}/services/ASC.UrlShortener.Svc/"
 		EXEC_FILE="ASC.UrlShortener.Svc.dll"
 	;;
 	thumbnails )
 		SERVICE_PORT="9800"
-		WORK_DIR="${BASE_DIR}/services/ASC.Thumbnails/"
+		WORK_DIR="${BASE_DIR}/services/ASC.Thumbnails.Svc/"
 		EXEC_FILE="ASC.Thumbnails.Svc.dll"
 	;;
 	socket )
 		SERVICE_PORT="9899"
-		WORK_DIR="${BASE_DIR}/services/ASC.Socket.IO/"
+		WORK_DIR="${BASE_DIR}/services/ASC.Socket.IO.Svc/"
 		EXEC_FILE="ASC.Socket.IO.Svc.dll"
 	;;
 	studio-notify )
