@@ -8,6 +8,7 @@ import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
 import config from "../../../../package.json";
+import withLoader from "../Confirm/withLoader";
 
 const BodyStyle = styled.div`
   margin-top: ${isMobile ? "80px" : "24px"};
@@ -189,7 +190,7 @@ const Body = ({ t }) => {
   );
 };
 
-const BodyWrapper = withTranslation(["About", "Common"])(Body);
+const BodyWrapper = withTranslation(["About", "Common"])(withLoader(Body));
 
 const About = (props) => {
   return (

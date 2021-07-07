@@ -381,13 +381,15 @@ namespace ASC.CRM.Core.Dao
                 {
                     case DealSortedByType.Title:
                     {
-                        sqlQuery = sqlQuery.OrderBy("x.x.Title", orderBy.IsAsc);
+                        sqlQuery = orderBy.IsAsc ? sqlQuery.OrderBy(x => x.x.Title) 
+                                                 : sqlQuery.OrderByDescending(x => x.x.Title);
 
                         break;
                     }
                     case DealSortedByType.BidValue:
                     {
-                        sqlQuery = sqlQuery.OrderBy("x.x.BidValue", orderBy.IsAsc);
+                        sqlQuery = orderBy.IsAsc ? sqlQuery.OrderBy(x => x.x.BidValue)
+                                                 : sqlQuery.OrderByDescending(x => x.x.BidValue);
 
                         break;
                     }

@@ -116,12 +116,13 @@ class InviteDialogComponent extends React.Component {
 
   render() {
     console.log("InviteDialog render");
-    const { t, visible, hasShortenService, guestsCaption } = this.props;
+    const { t, tReady, visible, hasShortenService, guestsCaption } = this.props;
     const { LinkCopySuccess, ChangeTextAnim } = this.state;
 
     return (
       this.state.visible && (
         <ModalDialogContainer
+          isLoading={!tReady}
           ChangeTextAnim={ChangeTextAnim}
           visible={visible}
           onClose={this.onClose}

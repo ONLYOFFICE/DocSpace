@@ -61,6 +61,7 @@ const ServiceItem = (props) => {
 const ThirdPartyDialog = (props) => {
   const {
     t,
+    tReady,
     isAdmin,
     googleConnectItem,
     boxConnectItem,
@@ -120,6 +121,7 @@ const ThirdPartyDialog = (props) => {
 
   return (
     <ModalDialog
+      isLoading={!tReady}
       visible={visible}
       scale={false}
       displayType="auto"
