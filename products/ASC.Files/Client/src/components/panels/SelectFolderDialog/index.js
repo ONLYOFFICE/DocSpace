@@ -47,10 +47,7 @@ class SelectFolderModalDialog extends React.Component {
       onSetLoadingData,
       onSetBaseFolderPath,
       foldersType,
-
       id,
-      setSelectedFolder,
-      setSelectedNode,
       onSetLoadingInput,
       onSetFileName,
       fileName,
@@ -98,34 +95,7 @@ class SelectFolderModalDialog extends React.Component {
             });
 
           if (id) {
-            setSelectedNode([id + ""]);
-            SelectFolderDialog.getFolderPath(id)
-              .then((folderPath) => (this.folderTitle = folderPath))
-              .then(
-                () =>
-                  onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle)
-              )
-
-              .then(() => getFolder(id))
-              .then((data) => {
-                const newPathParts = SelectFolderDialog.convertPathParts(
-                  data.pathParts
-                );
-                setSelectedFolder({
-                  folders: data.folders,
-                  ...data.current,
-                  pathParts: newPathParts,
-                  ...{ new: data.new },
-                });
-              })
-              .catch((error) => console.log("error", error))
-              .finally(() => {
-                onSetLoadingData && onSetLoadingData(false);
-                onSetLoadingInput && onSetLoadingInput(false);
-                this.setState({
-                  isLoadingData: false,
-                });
-              });
+            this.setSelectedFolderToTee(id);
           }
 
           break;
@@ -179,40 +149,46 @@ class SelectFolderModalDialog extends React.Component {
             });
 
           if (id) {
-            setSelectedNode([id + ""]);
-            SelectFolderDialog.getFolderPath(id)
-              .then((folderPath) => (this.folderTitle = folderPath))
-              .then(
-                () =>
-                  onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle)
-              )
-              .then(() => getFolder(id))
-              .then((data) => {
-                const newPathParts = SelectFolderDialog.convertPathParts(
-                  data.pathParts
-                );
-                setSelectedFolder({
-                  folders: data.folders,
-                  ...data.current,
-                  pathParts: newPathParts,
-                  ...{ new: data.new },
-                });
-              })
-              .catch((error) => console.log("error", error))
-              .finally(() => {
-                onSetLoadingData && onSetLoadingData(false);
-                onSetLoadingInput && onSetLoadingInput(false);
-                this.setState({
-                  isLoadingData: false,
-                });
-              });
+            this.setSelectedFolderToTee(id);
           }
 
           break;
       }
     });
   }
-
+  setSelectedFolderToTee = (id) => {
+    const {
+      setSelectedNode,
+      setSelectedFolder,
+      onSetLoadingData,
+      onSetLoadingInput,
+      onSetBaseFolderPath,
+    } = this.props;
+    setSelectedNode([id + ""]);
+    SelectFolderDialog.getFolderPath(id)
+      .then((folderPath) => (this.folderTitle = folderPath))
+      .then(() => onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle))
+      .then(() => getFolder(id))
+      .then((data) => {
+        const newPathParts = SelectFolderDialog.convertPathParts(
+          data.pathParts
+        );
+        setSelectedFolder({
+          folders: data.folders,
+          ...data.current,
+          pathParts: newPathParts,
+          ...{ new: data.new },
+        });
+      })
+      .catch((error) => console.log("error", error))
+      .finally(() => {
+        onSetLoadingData && onSetLoadingData(false);
+        onSetLoadingInput && onSetLoadingInput(false);
+        this.setState({
+          isLoadingData: false,
+        });
+      });
+  };
   componentWillUnmount() {
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();

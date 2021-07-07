@@ -32,9 +32,6 @@ class SelectFileDialogModalViewBody extends React.Component {
       foldersType,
       onSetLoadingData,
       onSelectFolder,
-      setSelectedNode,
-      setSelectedFolder,
-      folderId,
       selectedFolder,
     } = this.props;
 
@@ -50,17 +47,11 @@ class SelectFileDialogModalViewBody extends React.Component {
               () =>
                 onSelectFolder &&
                 onSelectFolder(
-                  `${
-                    selectedFolder
-                      ? selectedFolder
-                      : folderId
-                      ? folderId
-                      : this.folderList[0].id
-                  }`
+                  `${selectedFolder ? selectedFolder : this.folderList[0].id}`
                 )
             )
             .finally(() => {
-              if (!folderId && !selectedFolder) {
+              if (!selectedFolder) {
                 onSetLoadingData && onSetLoadingData(false);
 
                 this.setState({
@@ -70,27 +61,7 @@ class SelectFileDialogModalViewBody extends React.Component {
             });
 
           if (selectedFolder) {
-            setSelectedNode([selectedFolder + ""]);
-            getFolder(selectedFolder)
-              .then((data) => {
-                const newPathParts = SelectFolderDialog.convertPathParts(
-                  data.pathParts
-                );
-                setSelectedFolder({
-                  folders: data.folders,
-                  ...data.current,
-                  pathParts: newPathParts,
-                  ...{ new: data.new },
-                });
-              })
-              .catch((error) => console.log("error", error))
-              .finally(() => {
-                onSetLoadingData && onSetLoadingData(false);
-
-                this.setState({
-                  isLoading: false,
-                });
-              });
+            this.setSelectedFolderToTee(selectedFolder);
           }
         });
 
@@ -107,13 +78,7 @@ class SelectFileDialogModalViewBody extends React.Component {
               () =>
                 onSelectFolder &&
                 onSelectFolder(
-                  `${
-                    selectedFolder
-                      ? selectedFolder
-                      : folderId
-                      ? folderId
-                      : this.folderList[0].id
-                  }`
+                  `${selectedFolder ? selectedFolder : this.folderList[0].id}`
                 )
             )
             .finally(() => {
@@ -124,33 +89,38 @@ class SelectFileDialogModalViewBody extends React.Component {
               });
             });
           if (selectedFolder) {
-            setSelectedNode([selectedFolder + ""]);
-            getFolder(selectedFolder)
-              .then((data) => {
-                const newPathParts = SelectFolderDialog.convertPathParts(
-                  data.pathParts
-                );
-                setSelectedFolder({
-                  folders: data.folders,
-                  ...data.current,
-                  pathParts: newPathParts,
-                  ...{ new: data.new },
-                });
-              })
-              .catch((error) => console.log("error", error))
-              .finally(() => {
-                onSetLoadingData && onSetLoadingData(false);
-
-                this.setState({
-                  isLoading: false,
-                });
-              });
+            this.setSelectedFolderToTee(selectedFolder);
           }
         });
 
         break;
     }
   }
+
+  setSelectedFolderToTee = (selectedFolder) => {
+    const { setSelectedNode, setSelectedFolder, onSetLoadingData } = this.props;
+    setSelectedNode([selectedFolder + ""]);
+    getFolder(selectedFolder)
+      .then((data) => {
+        const newPathParts = SelectFolderDialog.convertPathParts(
+          data.pathParts
+        );
+        setSelectedFolder({
+          folders: data.folders,
+          ...data.current,
+          pathParts: newPathParts,
+          ...{ new: data.new },
+        });
+      })
+      .catch((error) => console.log("error", error))
+      .finally(() => {
+        onSetLoadingData && onSetLoadingData(false);
+
+        this.setState({
+          isLoading: false,
+        });
+      });
+  };
 
   onSetLoadingData = (loading) => {
     this.setState({
