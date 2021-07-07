@@ -1,14 +1,11 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
-import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import i18n from "./i18n";
+
 import stores from "../../../store/index";
 import SelectFileDialog from "../SelectFileDialog";
 import StyledComponent from "./styledSelectFileInput";
 import SimpleFileInput from "../../SimpleFileInput";
-let path = "";
 
 class SelectFile extends React.PureComponent {
   constructor(props) {
@@ -103,17 +100,12 @@ SelectFile.defaultProps = {
   withoutProvider: false,
   isDisabled: false,
 };
-const SelectFileWrapper = withTranslation(["SelectedFolder", "Common"])(
-  SelectFile
-);
 
 class SelectFileModal extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <I18nextProvider i18n={i18n}>
-          <SelectFileWrapper {...this.props} />
-        </I18nextProvider>
+        <SelectFile {...this.props} />
       </MobxProvider>
     );
   }

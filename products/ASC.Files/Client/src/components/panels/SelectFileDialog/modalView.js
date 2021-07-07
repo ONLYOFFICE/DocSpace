@@ -1,11 +1,7 @@
 import React from "react";
 import { inject, observer, Provider as MobxProvider } from "mobx-react";
-
-import { I18nextProvider } from "react-i18next";
-
 import PropTypes from "prop-types";
 import stores from "../../../store/index";
-import i18n from "../SelectFileInput/i18n";
 import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import ModalDialog from "@appserver/components/modal-dialog";
 import SelectFolderDialog from "../SelectFolderDialog";
@@ -266,9 +262,7 @@ class SelectFileDialogModalView extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <I18nextProvider i18n={i18n}>
-          <SelectFileDialogModalViewBodyWrapper {...this.props} />
-        </I18nextProvider>
+        <SelectFileDialogModalViewBodyWrapper {...this.props} />
       </MobxProvider>
     );
   }

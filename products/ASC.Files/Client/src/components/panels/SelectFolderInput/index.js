@@ -1,9 +1,8 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
-import { withTranslation } from "react-i18next";
+
 import PropTypes from "prop-types";
-import i18n from "./i18n";
+
 import stores from "../../../store/index";
 import SelectFolderDialog from "../SelectFolderDialog/index";
 import StyledComponent from "./styledSelectFolderInput";
@@ -151,9 +150,6 @@ SelectFolder.defaultProps = {
   isError: false,
   folderPath: "",
 };
-const SelectFolderWrapper = withTranslation(["SelectFolder", "Common"])(
-  SelectFolder
-);
 
 class SelectFolderModal extends React.Component {
   static setFullFolderPath = (foldersArray) => {
@@ -174,9 +170,7 @@ class SelectFolderModal extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <I18nextProvider i18n={i18n}>
-          <SelectFolderWrapper {...this.props} />
-        </I18nextProvider>
+        <SelectFolder {...this.props} />
       </MobxProvider>
     );
   }
