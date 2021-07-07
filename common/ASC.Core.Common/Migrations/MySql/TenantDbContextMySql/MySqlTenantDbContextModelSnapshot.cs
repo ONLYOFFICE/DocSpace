@@ -493,22 +493,6 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                             Tenant = 1,
                             UserName = "administrator",
                             WorkFromDate = new DateTime(2021, 3, 9, 17, 46, 59, 90, DateTimeKind.Utc).AddTicks(8614)
-                        },
-                        new
-                        {
-                            Id = "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5",
-                            ActivationStatus = 0,
-                            CreateOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "test@gmail.com",
-                            FirstName = "Test",
-                            LastModified = new DateTime(2021, 3, 9, 17, 46, 59, 90, DateTimeKind.Utc).AddTicks(9616),
-                            LastName = "User",
-                            PhoneActivation = 0,
-                            Removed = false,
-                            Status = 1,
-                            Tenant = 1,
-                            UserName = "TestUser",
-                            WorkFromDate = new DateTime(2021, 3, 9, 17, 46, 59, 90, DateTimeKind.Utc).AddTicks(9613)
                         });
                 });
 
@@ -600,16 +584,7 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                         {
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
                             LastModified = new DateTime(2021, 3, 9, 17, 46, 59, 101, DateTimeKind.Utc).AddTicks(8498),
-                            PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                            PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
-                            Tenant = 1
-                        },
-                        new
-                        {
-                            UserId = "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5",
-                            LastModified = new DateTime(2021, 3, 9, 17, 46, 59, 101, DateTimeKind.Utc).AddTicks(8834),
-                            PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                            PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
+                            PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                             Tenant = 1
                         });
                 });
