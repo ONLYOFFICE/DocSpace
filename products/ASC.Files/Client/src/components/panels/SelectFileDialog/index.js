@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
 
 import stores from "../../../store/index";
-import i18n from "../SelectFileInput/i18n";
+import i18n from "./i18n";
 import SelectFileDialogModalView from "./modalView";
 import SelectFileDialogAsideView from "./asideView";
 import { getFiles } from "@appserver/common/api/files";

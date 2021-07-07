@@ -9,6 +9,10 @@ import { FixedSizeList as List } from "react-window";
 import { inject, observer } from "mobx-react";
 import ListRow from "./listRow";
 import EmptyContainer from "../../EmptyContainer/EmptyContainer";
+import i18n from "./i18n";
+
+import { I18nextProvider } from "react-i18next";
+
 const FilesListBody = ({
   filesList,
   onSelectFile,
@@ -150,7 +154,7 @@ const FilesListBody = ({
       {!hasNextPage && itemCount === 0 && (
         <div className="select-file-dialog_empty-container">
           <EmptyContainer
-            headerText={t("Common:EmptyFolderHeader")}
+            headerText={t("Home:EmptyFolderHeader")}
             imageSrc="/static/images/empty_screen.png"
           />
         </div>
@@ -162,9 +166,21 @@ FilesListBody.defaultProps = {
   listHeight: 300,
   isMultiSelect: false,
 };
-export default inject(({ auth }) => {
+const FilesListBodyWrapper = inject(({ auth }) => {
   const { user } = auth.userStore;
   return {
     viewer: user,
   };
-})(observer(withTranslation("Common")(FilesListBody)));
+})(observer(withTranslation(["Common", "Home"])(FilesListBody)));
+
+class FilesList extends React.Component {
+  render() {
+    return (
+      <I18nextProvider i18n={i18n}>
+        <FilesListBodyWrapper {...this.props} />
+      </I18nextProvider>
+    );
+  }
+}
+
+export default FilesList;
