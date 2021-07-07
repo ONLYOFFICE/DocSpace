@@ -57,7 +57,7 @@ cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Data.Storage.Migration/se
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Studio.Notify/service/* "%{buildroot}%{buildpath}/services/ASC.Studio.Notify/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.TelegramService/service/* "%{buildroot}%{buildpath}/services/ASC.TelegramService/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Thumbnails/service/* "%{buildroot}%{buildpath}/services/ASC.Thumbnails/"
-cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Thumbnails.Svc/service/* "%{buildroot}%{buildpath}/services/services/ASC.Thumbnails.Svc/"
+cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Thumbnails.Svc/service/* "%{buildroot}%{buildpath}/services/ASC.Thumbnails.Svc/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.UrlShortener/service/* "%{buildroot}%{buildpath}/services/ASC.UrlShortener/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.UrlShortener.Svc/service/* "%{buildroot}%{buildpath}/services/ASC.UrlShortener.Svc/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Api/service/* "%{buildroot}%{buildpath}/studio/api/"
