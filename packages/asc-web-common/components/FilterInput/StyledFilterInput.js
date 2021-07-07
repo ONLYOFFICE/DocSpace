@@ -26,9 +26,9 @@ const StyledFilterInput = styled.div`
 
   .styled-filter-block {
     display: flex;
-
     .filter-button {
       svg {
+        height: 25px;
         path:not(:first-child) {
           stroke: #a3a9ae;
         }
@@ -264,7 +264,7 @@ export const StyledHideFilterButton = styled.div`
   align-items: center;
   font-weight: 600;
   font-size: 16px;
-  height: 25.22px;
+  height: 25px;
   border: 1px solid #eceef1;
   border-radius: 3px;
   background-color: #f8f9f9;
