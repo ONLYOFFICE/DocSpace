@@ -66,16 +66,13 @@ class SelectFileDialogBody extends React.Component {
   };
 
   componentDidMount() {
-    const { isPanelVisible } = this.props;
-
     window.addEventListener("resize", this.throttledResize);
   }
   componentWillUnmount() {
     console.log("Unmount");
-    if (this.throttledResize) {
-      this.throttledResize && this.throttledResize.cancel();
-      window.removeEventListener("resize", this.throttledResize);
-    }
+
+    this.throttledResize && this.throttledResize.cancel();
+    window.removeEventListener("resize", this.throttledResize);
   }
 
   getDisplayType = () => {
@@ -225,6 +222,7 @@ class SelectFileDialogBody extends React.Component {
         folderId={folderId}
         onSetFileName={onSetFileName}
         fileName={fileName}
+        displayType={displayType}
       />
     ) : (
       <SelectFileDialogModalView

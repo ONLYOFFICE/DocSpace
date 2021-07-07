@@ -93,6 +93,7 @@ class SelectFolder extends React.PureComponent {
       isSetFolderImmediately,
       id,
       selectedFolderId,
+      displayType,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
     const zIndex = 310;
@@ -124,6 +125,7 @@ class SelectFolder extends React.PureComponent {
           isSetFolderImmediately={isSetFolderImmediately}
           id={id}
           selectedFolderId={selectedFolderId}
+          displayType={displayType}
         />
       </StyledComponent>
     );

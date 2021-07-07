@@ -35,6 +35,7 @@ const SelectFileDialogAsideView = ({
   onClickSave,
   onSetFileName,
   fileName,
+  displayType,
 }) => {
   const [isLoadingDate, setIsLoadingDate] = useState(false);
   const onSetLoadingData = (loading) => {
@@ -78,6 +79,7 @@ const SelectFileDialogAsideView = ({
                 id={selectedFolder}
                 onSetFileName={onSetFileName}
                 fileName={fileName}
+                displayType={displayType}
               />
 
               {selectedFolder && !isLoadingDate && (

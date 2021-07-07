@@ -26,14 +26,14 @@ let folderList;
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
-    const { isSetFolderImmediately, id } = this.props;
+    const { isSetFolderImmediately, id, displayType } = this.props;
     const isNeedFolder = id ? true : isSetFolderImmediately;
     this.state = {
       isLoadingData: false,
       isAvailable: true,
       certainFolders: true,
       folderId: "",
-      displayType: this.getDisplayType(),
+      displayType: displayType || this.getDisplayType(),
       isSetFolderImmediately: isNeedFolder,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
@@ -54,9 +54,11 @@ class SelectFolderModalDialog extends React.Component {
       onSetLoadingInput,
       onSetFileName,
       fileName,
+      displayType,
     } = this.props;
     const { isSetFolderImmediately } = this.state;
-    window.addEventListener("resize", this.throttledResize);
+
+    !displayType && window.addEventListener("resize", this.throttledResize);
 
     this.setState({ isLoadingData: true }, function () {
       onSetLoadingData && onSetLoadingData(true);
@@ -226,7 +228,7 @@ class SelectFolderModalDialog extends React.Component {
 
   setDisplayType = () => {
     const displayType = this.getDisplayType();
-
+    console.log("set");
     this.setState({ displayType: displayType });
   };
 
@@ -297,6 +299,7 @@ SelectFolderModalDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   foldersType: PropTypes.oneOf(["common", "third-party"]),
+  displayType: PropTypes.oneOf(["aside", "modal"]),
   id: PropTypes.string,
   zIndex: PropTypes.number,
   withoutProvider: PropTypes.bool,
