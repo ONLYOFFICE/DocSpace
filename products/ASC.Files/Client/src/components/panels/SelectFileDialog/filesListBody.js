@@ -45,7 +45,7 @@ const FilesListBody = ({
   const loadMoreItems = useCallback(
     (startIndex) => {
       if (isNextPageLoading) return;
-      console.log("startIndex", startIndex);
+
       const options = {
         startIndex: startIndex || 0,
       };

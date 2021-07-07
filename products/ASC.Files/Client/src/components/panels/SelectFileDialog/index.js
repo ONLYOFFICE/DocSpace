@@ -69,8 +69,6 @@ class SelectFileDialogBody extends React.Component {
     window.addEventListener("resize", this.throttledResize);
   }
   componentWillUnmount() {
-    console.log("Unmount");
-
     this.throttledResize && this.throttledResize.cancel();
     window.removeEventListener("resize", this.throttledResize);
   }
@@ -269,7 +267,7 @@ const SelectFileDialogWrapper = inject(({ selectedFilesStore }) => {
     setFolderId,
     setFile,
   } = selectedFilesStore;
-  //console.log("folderId", folderId, "file", fileInfo);
+
   return {
     storeFolderId,
     fileInfo,
