@@ -83,12 +83,8 @@ class SelectFileDialogBody extends React.Component {
   };
 
   setDisplayType = () => {
-    const { displayType: stateDisplay } = this.state;
-    const { onClose } = this.props;
     const displayType = this.getDisplayType();
-    if (stateDisplay !== displayType) {
-      onClose && onClose();
-    }
+
     this.setState({ displayType: displayType });
   };
 
