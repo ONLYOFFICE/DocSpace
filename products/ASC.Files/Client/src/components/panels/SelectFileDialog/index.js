@@ -9,7 +9,7 @@ import stores from "../../../store/index";
 import i18n from "./i18n";
 import SelectFileDialogModalView from "./modalView";
 import SelectFileDialogAsideView from "./asideView";
-import { getFiles } from "@appserver/common/api/files";
+
 import utils from "@appserver/components/utils";
 import SelectFolderDialog from "../SelectFolderDialog";
 import { getFolder } from "@appserver/common/api/files";
@@ -17,7 +17,7 @@ const { desktop } = utils.device;
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
-    const { folderId, storeFolderId, fileInfo } = this.props;
+    const { folderId, storeFolderId, fileInfo, filter } = this.props;
 
     this.state = {
       isVisible: false,
@@ -29,10 +29,11 @@ class SelectFileDialogBody extends React.Component {
       hasNextPage: true,
       isNextPageLoading: false,
       displayType: this.getDisplayType(),
-
+      page: 0,
       filterParams: this.getFilterParameters(),
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
+    this.newFilter = filter.clone();
   }
 
   getFilterParameters = () => {
@@ -67,8 +68,18 @@ class SelectFileDialogBody extends React.Component {
     return { filterType: "1", filterValue: "" };
   };
 
+  setFilter = () => {
+    const { filterParams } = this.state;
+    const { withSubfolders } = this.props;
+
+    this.newFilter.filterType = filterParams.filterType;
+    this.newFilter.search = filterParams.filterValue;
+    this.newFilter.withSubfolders = withSubfolders;
+  };
+
   componentDidMount() {
     window.addEventListener("resize", this.throttledResize);
+    this.setFilter();
   }
   componentWillUnmount() {
     this.throttledResize && this.throttledResize.cancel();
@@ -108,6 +119,7 @@ class SelectFileDialogBody extends React.Component {
       selectedFolder: id,
       hasNextPage: true,
       filesList: [],
+      page: 0,
     });
   };
 
@@ -133,47 +145,41 @@ class SelectFileDialogBody extends React.Component {
     onClose && onClose();
   };
 
-  loadNextPage = ({ startIndex, selectedFolder: folder }) => {
-    const { withSubfolders, setSelectedNode, setSelectedFolder } = this.props;
-    const { selectedFolder, filterParams } = this.state;
+  loadNextPage = () => {
+    const { setSelectedNode, setSelectedFolder } = this.props;
+    const { selectedFolder, page } = this.state;
 
-    console.log(`loadNextPage(startIndex=${startIndex}")`);
+    //console.log(`loadNextPage(startIndex=${page}")`);
 
     const pageCount = 30;
-
+    this.newFilter.page = page;
+    this.newFilter.pageCount = pageCount;
     this.setState({ isNextPageLoading: true }, () => {
-      getFiles(
-        selectedFolder,
-        filterParams.filterType,
-        filterParams.filterValue,
-        pageCount,
-        startIndex,
-        withSubfolders
-      )
-        .then((response) => {
-          let newFilesList = startIndex
-            ? this.state.filesList.concat(response.files)
-            : response.files;
-
-          this.setState({
-            hasNextPage: newFilesList.length < response.total,
-            isNextPageLoading: false,
-            filesList: newFilesList,
-          });
-        })
-        .then(() => getFolder(selectedFolder))
+      getFolder(selectedFolder, this.newFilter)
         .then((data) => {
+          let newFilesList = page
+            ? this.state.filesList.concat(data.files)
+            : data.files;
+
           setSelectedNode([selectedFolder + ""]);
           const newPathParts = SelectFolderDialog.convertPathParts(
             data.pathParts
           );
+
           setSelectedFolder({
             folders: data.folders,
             ...data.current,
             pathParts: newPathParts,
             ...{ new: data.new },
           });
+          this.setState({
+            hasNextPage: newFilesList.length < data.total,
+            isNextPageLoading: false,
+            filesList: newFilesList,
+            page: page + 1,
+          });
         })
+
         .catch((error) => console.log(error));
     });
   };
@@ -207,7 +213,7 @@ class SelectFileDialogBody extends React.Component {
     const loadingText = loadingLabel
       ? loadingLabel
       : `${t("Common:LoadingProcessing")} ${t("Common:LoadingDescription")}`;
-    console.log("filesList", filesList);
+
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
         t={t}
@@ -281,7 +287,12 @@ SelectFileDialogModalView.defaultProps = {
 };
 
 const SelectFileDialogWrapper = inject(
-  ({ selectedFilesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    filesStore,
+    selectedFilesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const {
       folderId: storeFolderId,
       fileInfo,
@@ -289,7 +300,7 @@ const SelectFileDialogWrapper = inject(
       setFile,
     } = selectedFilesStore;
     const { setSelectedNode } = treeFoldersStore;
-
+    const { filter } = filesStore;
     const { setSelectedFolder } = selectedFolderStore;
     return {
       storeFolderId,
@@ -298,6 +309,7 @@ const SelectFileDialogWrapper = inject(
       setFolderId,
       setSelectedFolder,
       setSelectedNode,
+      filter,
     };
   }
 )(

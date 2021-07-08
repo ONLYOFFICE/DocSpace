@@ -44,7 +44,7 @@ const SelectFileDialogAsideView = ({
   const onSetLoadingData = (loading) => {
     setIsLoadingDate(loading);
   };
-  console.log("isTranslationsReady", isTranslationsReady);
+
   return (
     <StyledAsidePanel visible={isPanelVisible}>
       <Backdrop

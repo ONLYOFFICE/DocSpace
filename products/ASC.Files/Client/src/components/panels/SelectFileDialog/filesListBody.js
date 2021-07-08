@@ -27,15 +27,15 @@ const FilesListBody = ({
   selectedFolder,
   isMultiSelect,
   selectedFile,
-  isLoadingDate,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   const filesListRef = useRef(null);
+
   useEffect(() => {
     if (filesListRef && filesListRef.current) {
       filesListRef.current.resetloadMoreItemsCache(true);
     }
-  }, [selectedFolder, displayType, isLoadingDate]);
+  }, [selectedFolder, displayType]);
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
     (index) => {
@@ -46,18 +46,10 @@ const FilesListBody = ({
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasNextPage ? filesList.length + 1 : filesList.length;
 
-  const loadMoreItems = useCallback(
-    (startIndex) => {
-      if (isNextPageLoading) return;
-
-      const options = {
-        startIndex: startIndex || 0,
-      };
-
-      loadNextPage && loadNextPage(options);
-    },
-    [isNextPageLoading, filesList, displayType]
-  );
+  const loadMoreItems = useCallback(() => {
+    if (isNextPageLoading) return;
+    loadNextPage && loadNextPage();
+  }, [isNextPageLoading, filesList, displayType]);
 
   const renderLoader = useCallback(
     (style) => {
