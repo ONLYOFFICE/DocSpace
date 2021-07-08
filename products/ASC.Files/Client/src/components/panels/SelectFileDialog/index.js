@@ -70,7 +70,7 @@ class SelectFileDialogBody extends React.Component {
 
   setFilter = () => {
     const { filterParams } = this.state;
-    const { withSubfolders } = this.props;
+    const { withSubfolders = true } = this.props;
 
     this.newFilter.filterType = filterParams.filterType;
     this.newFilter.search = filterParams.filterValue;
