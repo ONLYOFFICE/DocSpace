@@ -146,7 +146,7 @@ class SelectFileDialogBody extends React.Component {
     const { onSetFileName, onClose, onSelectFile } = this.props;
     const { fileName, selectedFile } = this.state;
 
-    onSetFileName & onSetFileName(fileName);
+    onSetFileName && onSetFileName(fileName);
     onSelectFile && onSelectFile(selectedFile);
     onClose && onClose();
   };
