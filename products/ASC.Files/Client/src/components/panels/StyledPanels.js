@@ -625,8 +625,8 @@ const StyledFilesList = styled.div`
       props.displayType === "aside" ? "240px" : "250px"};
   }
   .files-list_file-owner {
-    margin-left: auto;
-    max-width: 260px;
+    //margin-left: auto;
+    max-width: 207px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -657,8 +657,9 @@ const StyledFilesList = styled.div`
   }
   .select-file-dialog_checked {
     grid-area: checked-button;
+    padding-left: 6px;
   }
-  .files-list_file-owner_wrapper {
+  .files-list_file-children_wrapper {
     grid-area: owner-name;
     margin-right: 16px;
     ${(props) =>
@@ -684,7 +685,7 @@ const StyledFilesList = styled.div`
             height: 36px;
             grid-template-areas: "checked-button icon-name full-name owner-name";
           `}
-    grid-template-columns: 16px 32px 1fr;
+    grid-template-columns: 22px 32px 1fr;
   }
 `;
 export {

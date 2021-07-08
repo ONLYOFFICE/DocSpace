@@ -56,7 +56,7 @@ const ListRow = ({
             {fileExst}
           </div>
         </div>
-        <div className="files-list_file-owner_wrapper">{children}</div>
+        <div className="files-list_file-children_wrapper">{children}</div>
       </div>
     </StyledFilesList>
   );
