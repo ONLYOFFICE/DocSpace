@@ -11,5 +11,6 @@ namespace ASC.Webhooks.Dao.Models
         public string Data { get; set; }
         public DateTime CreationTime { get; set; }
         public EventName Event { get; set; }
+        public ProcessStatus Status { get; set; }
     }
 }

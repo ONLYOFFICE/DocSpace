@@ -1,66 +1,84 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Webhooks.Dao.Models;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Webhooks
 {
     [Scope]
     public class WebhookSender
     {
+        private const int repeatCount = 5;
+
+        private static readonly HttpClient httpClient = new HttpClient();
+        private ILog Log { get; }
         private DbWorker DbWorker { get; }
-        private TenantManager TenantManager { get; }
-        public WebhookSender(DbWorker dbWorker, TenantManager tenantManager)
+        public WebhookSender(IOptionsMonitor<ILog> option, DbWorker dbWorker)
         {
             DbWorker = dbWorker;
-            TenantManager = tenantManager;
+            Log = option.Get("ASC.Webhooks");
         }
-
-        public bool Send(EventName eventName)
+        public async Task Send(WebhooksQueueEntry webhooksQueueEntry)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
-            var requestURIList = DbWorker.GetWebhookUri(tenantId);
-            foreach (var requestUrl in requestURIList)
+            var URI = webhooksQueueEntry.Uri;
+            var secretKey = webhooksQueueEntry.SecretKey;
+
+            for (int i = 0; i < repeatCount; i++)
             {
                 try
                 {
-                    var webRequest = WebRequest.Create(requestUrl);
-                    webRequest.Method = "POST";
-                    webRequest.ContentType = "application/json";
-                    webRequest.Headers.Add("Secret", GetSecret("secretKey"));
+                    var request = new HttpRequestMessage(HttpMethod.Post, URI);
+                    request.Headers.Add("Accept", "*/*");
+                    request.Headers.Add("Secret","SHA256=" + GetSecretHash(secretKey, webhooksQueueEntry.Data));//*retry
 
-                    var data = JsonSerializer.Serialize(eventName);
+                    request.Content = new StringContent(
+                        webhooksQueueEntry.Data,
+                        Encoding.UTF8,
+                        "application/json");
 
-                    var encoding = new UTF8Encoding();
-                    byte[] bytes = encoding.GetBytes(data);
-                    webRequest.ContentLength = bytes.Length;
-                    using (var writeStream = webRequest.GetRequestStream())
+                    var response = await httpClient.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        writeStream.Write(bytes, 0, bytes.Length);
-                    }
-
-                    using (var webResponse = webRequest.GetResponse())
-                    using (var reader = new StreamReader(webResponse.GetResponseStream()))
-                    {
-                        string responseFromServer = reader.ReadToEnd();
-                        return true;
+                        DbWorker.UpdateStatus(webhooksQueueEntry.Id, ProcessStatus.Success);
+                        break;
                     }
                 }
                 catch (Exception ex)
                 {
+                    if(i == repeatCount)
+                    {
+                        DbWorker.UpdateStatus(webhooksQueueEntry.Id, ProcessStatus.Failed);
+                    }
+
+                    Log.Error("ERROR: " + ex.Message);
                     continue;
                 }
             }
-            return false;
         }
-
-        private string GetSecret(string secretKey)
+        private string GetSecretHash(string secretKey, string body)
         {
-            return "";
+            string computedSignature;
+            var secretBytes = Encoding.UTF8.GetBytes(secretKey);
+
+            using (var hasher = new HMACSHA256(secretBytes))
+            {
+                var data = Encoding.UTF8.GetBytes(body);
+                computedSignature = BitConverter.ToString(hasher.ComputeHash(data));
+            }
+
+            return computedSignature;
         }
     }
 }

@@ -6,5 +6,6 @@ namespace ASC.Webhooks.Dao.Models
     {
         public int TenantId { get; set; }
         public string Uri { get; set; }
+        public string SecretKey { get; set; }
     }
 }

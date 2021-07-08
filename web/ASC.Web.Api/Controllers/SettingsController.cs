@@ -82,6 +82,8 @@ using ASC.Web.Studio.UserControls.FirstTime;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
+using ASC.Webhooks;
+using ASC.Webhooks.Dao.Models;
 
 using Google.Authenticator;
 
@@ -166,6 +168,7 @@ namespace ASC.Api.Settings
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
         private PaymentManager PaymentManager { get; }
+        private DbWorker WebhookDbWorker { get; }
         public Constants Constants { get; }
 
         public SettingsController(
@@ -228,6 +231,7 @@ namespace ASC.Api.Settings
             EncryptionWorker encryptionWorker,
             PasswordHasher passwordHasher,
             PaymentManager paymentManager,
+            DbWorker dbWorker,
             Constants constants)
         {
             Log = option.Get("ASC.Api");
@@ -289,6 +293,7 @@ namespace ASC.Api.Settings
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
             PaymentManager = paymentManager;
+            WebhookDbWorker = dbWorker;
             Constants = constants;
         }
 
@@ -2909,6 +2914,16 @@ namespace ASC.Api.Settings
         public void TelegramDisconnect()
         {
             TelegramHelper.Disconnect(AuthContext.CurrentAccount.ID, Tenant.TenantId);
+        }
+
+        /// <summary>
+        /// Add new config for webhooks
+        /// </summary>
+        [Create("webhook")]
+        public void CreateWebhook(WebhooksConfig model)
+        {
+            model.TenantId = TenantManager.GetCurrentTenant().TenantId;
+            WebhookDbWorker.AddWebhookConfig(model);
         }
 
         private readonly int maxCount = 10;

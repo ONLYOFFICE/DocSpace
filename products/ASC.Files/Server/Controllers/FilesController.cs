@@ -57,6 +57,7 @@ using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
+using ASC.Webhooks;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -99,6 +100,7 @@ namespace ASC.Api.Documents
         private ProductEntryPoint ProductEntryPoint { get; }
         private TenantManager TenantManager { get; }
         private FileUtility FileUtility { get; }
+        private WebhookPublisher WebhookPublisher { get; }
 
         /// <summary>
         /// </summary>
@@ -127,7 +129,8 @@ namespace ASC.Api.Documents
             ProductEntryPoint productEntryPoint,
             TenantManager tenantManager,
             FileUtility fileUtility,
-            ConsumerFactory consumerFactory)
+            ConsumerFactory consumerFactory,
+            WebhookPublisher webhookPublisher)
         {
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
@@ -152,6 +155,7 @@ namespace ASC.Api.Documents
             ProductEntryPoint = productEntryPoint;
             TenantManager = tenantManager;
             FileUtility = fileUtility;
+            WebhookPublisher = webhookPublisher;
         }
 
         [Read("info")]
@@ -1015,7 +1019,9 @@ namespace ASC.Api.Documents
         [Create("{folderId:int}/file")]
         public FileWrapper<int> CreateFileFromBody(int folderId, [FromBody]CreateFileModel<int> model)
         {
-            return FilesControllerHelperInt.CreateFile(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
+            var response = FilesControllerHelperInt.CreateFile(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
+            WebhookPublisher.Publish(EventName.NewFileCreated, response);
+            return response;
         }
 
         [Create("{folderId:int}/file")]

@@ -45,6 +45,11 @@ namespace ASC.Webhooks.Dao
                     .HasMaxLength(50)
                     .HasColumnName("URI")
                     .HasDefaultValueSql("''");
+
+                entity.Property(e => e.SecretKey)
+                    .HasMaxLength(50)
+                    .HasColumnName("SecretKey")
+                    .HasDefaultValueSql("''");
             });
 
             modelBuilder.Entity<WebhooksPayload>(entity =>

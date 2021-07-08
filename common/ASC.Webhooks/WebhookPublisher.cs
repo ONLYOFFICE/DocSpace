@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
 using ASC.Webhooks.Dao.Models;
+
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Webhooks
 {
@@ -21,29 +24,37 @@ namespace ASC.Webhooks
             WebhookSender = webhookSender;
         }
 
-        public void Publish(EventName name)
+        public void Publish(EventName eventName, object data)
         {
-            var result = WebhookSender.Send(name);
+            var content = JsonSerializer.Serialize(data);
 
-            if (result)
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var webhookConfigs = DbWorker.GetWebhookConfigs(tenantId);
+            foreach (var config in webhookConfigs)
             {
-                var tenantId = TenantManager.GetCurrentTenant().TenantId;
-
                 var webhooksPayload = new WebhooksPayload
                 {
                     TenantId = tenantId,
-                    Event = name,
+                    Event = eventName,
                     CreationTime = DateTime.UtcNow,
-                    Data = JsonSerializer.Serialize(name),
+                    Data = content,
+                    Status = ProcessStatus.InProcess
                 };
 
                 DbWorker.WriteToJournal(webhooksPayload);
             }
         }
     }
-    public struct EventName
+    public enum EventName
     {
-        public const string NewUserRegistered = "NewUserRegistered";
-        public const string TenantDeleted = "TenantDeleted";
+        NewFileCreated,
+        FileUpdated
+    }
+
+    public enum ProcessStatus
+    {
+        InProcess,
+        Success,
+        Failed
     }
 }
