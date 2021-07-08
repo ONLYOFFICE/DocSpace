@@ -52,6 +52,7 @@ class SelectFolderModalDialog extends React.Component {
       onSetFileName,
       fileName,
       displayType,
+      selectedFolderId,
     } = this.props;
     const { isSetFolderImmediately } = this.state;
 
@@ -69,23 +70,31 @@ class SelectFolderModalDialog extends React.Component {
             .then(
               () =>
                 folderPath.length === 0 &&
+                !selectedFolderId &&
                 onSelectFolder &&
                 onSelectFolder(`${id ? id : folderList[0].id}`)
             )
             .then(() =>
               this.setState({
-                folderId: `${id ? id : folderList[0].id}`,
+                folderId: `${
+                  selectedFolderId
+                    ? selectedFolderId
+                    : id
+                    ? id
+                    : folderList[0].id
+                }`,
               })
             )
             .then(
               () =>
                 !id &&
+                !selectedFolderId &&
                 onSetBaseFolderPath &&
                 onSetBaseFolderPath(folderList[0].title)
             )
             .then(() => fileName && onSetFileName && onSetFileName(fileName))
             .finally(() => {
-              if (!id) {
+              if (!id && !selectedFolderId) {
                 onSetLoadingData && onSetLoadingData(false);
                 onSetLoadingInput && onSetLoadingInput(false);
                 this.setState({
@@ -94,7 +103,11 @@ class SelectFolderModalDialog extends React.Component {
               }
             });
 
-          if (id) {
+          if (selectedFolderId) {
+            this.setSelectedFolder(selectedFolderId);
+          }
+
+          if (id && !selectedFolderId) {
             this.setSelectedFolderToTee(id);
           }
 
@@ -117,20 +130,36 @@ class SelectFolderModalDialog extends React.Component {
               () =>
                 isSetFolderImmediately &&
                 folderList.length !== 0 &&
+                !selectedFolderId &&
                 onSelectFolder &&
-                onSelectFolder(`${id ? id : folderList[0].id}`)
+                onSelectFolder(
+                  `${
+                    selectedFolderId
+                      ? selectedFolderId
+                      : id
+                      ? id
+                      : folderList[0].id
+                  }`
+                )
             )
             .then(
               () =>
                 isSetFolderImmediately &&
                 folderList.length !== 0 &&
                 this.setState({
-                  folderId: `${id ? id : folderList[0].id}`,
+                  folderId: `${
+                    selectedFolderId
+                      ? selectedFolderId
+                      : id
+                      ? id
+                      : folderList[0].id
+                  }`,
                 })
             )
             .then(
               () =>
                 !id &&
+                !selectedFolderId &&
                 isSetFolderImmediately &&
                 folderList.length !== 0 &&
                 onSetBaseFolderPath &&
@@ -139,7 +168,7 @@ class SelectFolderModalDialog extends React.Component {
             .then(() => fileName && onSetFileName && onSetFileName(fileName))
             .catch((error) => console.log("error", error))
             .finally(() => {
-              if (!id) {
+              if (!id && !selectedFolderId) {
                 onSetLoadingData && onSetLoadingData(false);
                 onSetLoadingInput && onSetLoadingInput(false);
                 this.setState({
@@ -148,7 +177,10 @@ class SelectFolderModalDialog extends React.Component {
               }
             });
 
-          if (id) {
+          if (selectedFolderId) {
+            this.setSelectedFolder(selectedFolderId);
+          }
+          if (id && !selectedFolderId) {
             this.setSelectedFolderToTee(id);
           }
 
@@ -156,6 +188,26 @@ class SelectFolderModalDialog extends React.Component {
       }
     });
   }
+  setSelectedFolder = (selectedFolderId) => {
+    const {
+      onSetLoadingData,
+      onSetLoadingInput,
+      onSetBaseFolderPath,
+    } = this.props;
+    SelectFolderDialog.getFolderPath(selectedFolderId)
+      .then((folderPath) => (this.folderTitle = folderPath))
+      .then(() => onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle))
+
+      .catch((error) => console.log("error", error))
+      .finally(() => {
+        onSetLoadingData && onSetLoadingData(false);
+        onSetLoadingInput && onSetLoadingInput(false);
+        this.setState({
+          isLoadingData: false,
+        });
+      });
+  };
+
   setSelectedFolderToTee = (id) => {
     const {
       setSelectedNode,

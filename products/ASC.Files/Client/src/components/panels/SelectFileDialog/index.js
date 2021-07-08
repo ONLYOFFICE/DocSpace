@@ -11,7 +11,8 @@ import SelectFileDialogModalView from "./modalView";
 import SelectFileDialogAsideView from "./asideView";
 import { getFiles } from "@appserver/common/api/files";
 import utils from "@appserver/components/utils";
-
+import SelectFolderDialog from "../SelectFolderDialog";
+import { getFolder } from "@appserver/common/api/files";
 const { desktop } = utils.device;
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class SelectFileDialogBody extends React.Component {
 
     this.state = {
       isVisible: false,
-      selectedFolder: storeFolderId || folderId || "",
+      selectedFolder: storeFolderId || "",
+      passedId: folderId,
       selectedFile: fileInfo || "",
       fileName: (fileInfo && fileInfo.title) || "",
       filesList: [],
@@ -101,7 +103,7 @@ class SelectFileDialogBody extends React.Component {
   onSelectFolder = (id) => {
     const { setFolderId } = this.props;
     setFolderId(id);
-
+    console.log("onSelectFolder");
     this.setState({
       selectedFolder: id,
       hasNextPage: true,
@@ -131,11 +133,11 @@ class SelectFileDialogBody extends React.Component {
     onClose && onClose();
   };
 
-  loadNextPage = ({ startIndex }) => {
-    const { withSubfolders } = this.props;
+  loadNextPage = ({ startIndex, selectedFolder: folder }) => {
+    const { withSubfolders, setSelectedNode, setSelectedFolder } = this.props;
     const { selectedFolder, filterParams } = this.state;
 
-    //console.log(`loadNextPage(startIndex=${startIndex}")`);
+    console.log(`loadNextPage(startIndex=${startIndex}")`);
 
     const pageCount = 30;
 
@@ -157,6 +159,19 @@ class SelectFileDialogBody extends React.Component {
             hasNextPage: newFilesList.length < response.total,
             isNextPageLoading: false,
             filesList: newFilesList,
+          });
+        })
+        .then(() => getFolder(selectedFolder))
+        .then((data) => {
+          setSelectedNode([selectedFolder + ""]);
+          const newPathParts = SelectFolderDialog.convertPathParts(
+            data.pathParts
+          );
+          setSelectedFolder({
+            folders: data.folders,
+            ...data.current,
+            pathParts: newPathParts,
+            ...{ new: data.new },
           });
         })
         .catch((error) => console.log(error));
@@ -186,12 +201,13 @@ class SelectFileDialogBody extends React.Component {
       displayType,
       selectedFile,
       fileName,
+      passedId,
     } = this.state;
 
     const loadingText = loadingLabel
       ? loadingLabel
       : `${t("Common:LoadingProcessing")} ${t("Common:LoadingDescription")}`;
-
+    console.log("filesList", filesList);
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
         t={t}
@@ -219,6 +235,7 @@ class SelectFileDialogBody extends React.Component {
         fileName={fileName}
         displayType={displayType}
         isTranslationsReady={tReady}
+        passedId={passedId}
       />
     ) : (
       <SelectFileDialogModalView
@@ -240,6 +257,7 @@ class SelectFileDialogBody extends React.Component {
         loadingText={loadingText}
         selectedFile={selectedFile}
         folderId={folderId}
+        passedId={passedId}
       />
     );
   }
@@ -262,21 +280,27 @@ SelectFileDialogModalView.defaultProps = {
   zIndex: 310,
 };
 
-const SelectFileDialogWrapper = inject(({ selectedFilesStore }) => {
-  const {
-    folderId: storeFolderId,
-    fileInfo,
-    setFolderId,
-    setFile,
-  } = selectedFilesStore;
+const SelectFileDialogWrapper = inject(
+  ({ selectedFilesStore, treeFoldersStore, selectedFolderStore }) => {
+    const {
+      folderId: storeFolderId,
+      fileInfo,
+      setFolderId,
+      setFile,
+    } = selectedFilesStore;
+    const { setSelectedNode } = treeFoldersStore;
 
-  return {
-    storeFolderId,
-    fileInfo,
-    setFile,
-    setFolderId,
-  };
-})(
+    const { setSelectedFolder } = selectedFolderStore;
+    return {
+      storeFolderId,
+      fileInfo,
+      setFile,
+      setFolderId,
+      setSelectedFolder,
+      setSelectedNode,
+    };
+  }
+)(
   observer(
     withTranslation(["SelectFile", "Common", "Translations"])(
       SelectFileDialogBody

@@ -16,7 +16,7 @@ class SelectFileDialogModalViewBody extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: true,
     };
     this.backupList;
     this.convertedData = [];
@@ -29,6 +29,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       onSetLoadingData,
       onSelectFolder,
       selectedFolder,
+      passedId,
     } = this.props;
 
     switch (foldersType) {
@@ -41,13 +42,20 @@ class SelectFileDialogModalViewBody extends React.Component {
             })
             .then(
               () =>
+                !selectedFolder &&
                 onSelectFolder &&
                 onSelectFolder(
-                  `${selectedFolder ? selectedFolder : this.folderList[0].id}`
+                  `${
+                    selectedFolder
+                      ? selectedFolder
+                      : passedId
+                      ? passedId
+                      : this.folderList[0].id
+                  }`
                 )
             )
             .finally(() => {
-              if (!selectedFolder) {
+              if (selectedFolder || !passedId) {
                 onSetLoadingData && onSetLoadingData(false);
 
                 this.setState({
@@ -56,8 +64,8 @@ class SelectFileDialogModalViewBody extends React.Component {
               }
             });
 
-          if (selectedFolder) {
-            this.setSelectedFolderToTee(selectedFolder);
+          if (passedId && !selectedFolder) {
+            this.setSelectedFolderToTee(passedId);
           }
         });
 
@@ -74,21 +82,29 @@ class SelectFileDialogModalViewBody extends React.Component {
               () =>
                 onSelectFolder &&
                 onSelectFolder(
-                  `${selectedFolder ? selectedFolder : this.folderList[0].id}`
+                  `${
+                    selectedFolder
+                      ? selectedFolder
+                      : passedId
+                      ? passedId
+                      : this.folderList[0].id
+                  }`
                 )
             )
             .finally(() => {
-              onSetLoadingData && onSetLoadingData(false);
+              if (selectedFolder || !passedId) {
+                onSetLoadingData && onSetLoadingData(false);
 
-              this.setState({
-                isLoading: false,
-              });
+                this.setState({
+                  isLoading: false,
+                });
+              }
             });
-          if (selectedFolder) {
-            this.setSelectedFolderToTee(selectedFolder);
+
+          if (passedId && !selectedFolder) {
+            this.setSelectedFolderToTee(passedId);
           }
         });
-
         break;
     }
   }
@@ -154,7 +170,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       onClickSave,
     } = this.props;
     const { isLoading } = this.state;
-
+    console.log("isLoading", isLoading);
     return (
       <StyledAsidePanel visible={isPanelVisible}>
         <ModalDialog
