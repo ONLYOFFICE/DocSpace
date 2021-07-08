@@ -30,7 +30,7 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import SelectFileInput from "files/SelectFileInput";
+import SelectFileDialog from "files/SelectFileDialog";
 
 import i18n from "./i18n";
 
@@ -411,7 +411,7 @@ const Editor = () => {
             />
           )}
 
-          <SelectFileInput
+          <SelectFileDialog
             onClickInput={onClickInput}
             onSelectFile={onSelectFile}
             isPanelVisible={isInsertImageDialogVisible}
