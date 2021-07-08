@@ -14,6 +14,11 @@ import utils from "@appserver/components/utils";
 import SelectFolderDialog from "../SelectFolderDialog";
 import { getFolder } from "@appserver/common/api/files";
 const { desktop } = utils.device;
+
+import store from "studio/store";
+
+const { auth: authStore } = store;
+
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
@@ -78,6 +83,7 @@ class SelectFileDialogBody extends React.Component {
   };
 
   componentDidMount() {
+    authStore.init();
     window.addEventListener("resize", this.throttledResize);
     this.setFilter();
   }
@@ -322,7 +328,7 @@ const SelectFileDialogWrapper = inject(
 class SelectFileDialog extends React.Component {
   render() {
     return (
-      <MobxProvider {...stores}>
+      <MobxProvider auth={authStore} {...stores}>
         <I18nextProvider i18n={i18n}>
           <SelectFileDialogWrapper {...this.props} />
         </I18nextProvider>
