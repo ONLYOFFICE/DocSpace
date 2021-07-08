@@ -224,7 +224,7 @@ class SelectFolderModalDialog extends React.Component {
       onSetLoadingInput,
       onSetBaseFolderPath,
     } = this.props;
-    console.log("setSelectedFolderToTee");
+
     setSelectedNode([id + ""]);
     SelectFolderDialog.getFolderPath(id)
       .then((folderPath) => (this.folderTitle = folderPath))
