@@ -114,7 +114,7 @@ class SelectFileDialogBody extends React.Component {
   onSelectFolder = (id) => {
     const { setFolderId } = this.props;
     setFolderId(id);
-    console.log("onSelectFolder");
+
     this.setState({
       selectedFolder: id,
       hasNextPage: true,
