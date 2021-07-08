@@ -85,6 +85,7 @@ const SelectFileDialogAsideView = ({
                   onSetFileName={onSetFileName}
                   fileName={fileName}
                   displayType={displayType}
+                  dialogWithFiles
                 />
 
                 {selectedFolder && !isLoadingData && (

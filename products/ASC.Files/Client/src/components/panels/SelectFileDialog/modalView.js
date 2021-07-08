@@ -11,7 +11,7 @@ import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
-import { getFolder } from "@appserver/common/api/files";
+
 class SelectFileDialogModalViewBody extends React.Component {
   constructor(props) {
     super(props);
@@ -53,18 +53,12 @@ class SelectFileDialogModalViewBody extends React.Component {
                 )
             )
             .finally(() => {
-              if (selectedFolder || !passedId) {
-                onSetLoadingData && onSetLoadingData(false);
+              onSetLoadingData && onSetLoadingData(false);
 
-                this.setState({
-                  isLoading: false,
-                });
-              }
+              this.setState({
+                isLoading: false,
+              });
             });
-
-          if (passedId && !selectedFolder) {
-            this.setSelectedFolderToTee(passedId);
-          }
         });
 
         break;
@@ -90,53 +84,17 @@ class SelectFileDialogModalViewBody extends React.Component {
                 )
             )
             .finally(() => {
-              if (selectedFolder || !passedId) {
-                onSetLoadingData && onSetLoadingData(false);
+              onSetLoadingData && onSetLoadingData(false);
 
-                this.setState({
-                  isLoading: false,
-                });
-              }
+              this.setState({
+                isLoading: false,
+              });
             });
-
-          if (passedId && !selectedFolder) {
-            this.setSelectedFolderToTee(passedId);
-          }
         });
         break;
     }
   }
 
-  setSelectedFolderToTee = (selectedFolder) => {
-    const { setSelectedNode, setSelectedFolder, onSetLoadingData } = this.props;
-    setSelectedNode([selectedFolder + ""]);
-    getFolder(selectedFolder)
-      .then((data) => {
-        const newPathParts = SelectFolderDialog.convertPathParts(
-          data.pathParts
-        );
-        setSelectedFolder({
-          folders: data.folders,
-          ...data.current,
-          pathParts: newPathParts,
-          ...{ new: data.new },
-        });
-      })
-      .catch((error) => console.log("error", error))
-      .finally(() => {
-        onSetLoadingData && onSetLoadingData(false);
-
-        this.setState({
-          isLoading: false,
-        });
-      });
-  };
-
-  onSetLoadingData = (loading) => {
-    this.setState({
-      isLoadingData: loading,
-    });
-  };
   onSelect = (folder) => {
     const { onSelectFolder, selectedKeys } = this.props;
 

@@ -93,6 +93,7 @@ class SelectFolder extends React.PureComponent {
       id,
       selectedFolderId,
       displayType,
+      dialogWithFiles,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
     const zIndex = 310;
@@ -125,6 +126,7 @@ class SelectFolder extends React.PureComponent {
           id={id}
           selectedFolderId={selectedFolderId}
           displayType={displayType}
+          dialogWithFiles={dialogWithFiles}
         />
       </StyledComponent>
     );
