@@ -18,8 +18,6 @@ class SelectFileDialogModalViewBody extends React.Component {
     this.state = {
       isLoading: true,
     };
-    this.backupList;
-    this.convertedData = [];
     this.folderList = "";
   }
 
@@ -170,7 +168,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       onClickSave,
     } = this.props;
     const { isLoading } = this.state;
-    console.log("isLoading", isLoading);
+
     return (
       <StyledAsidePanel visible={isPanelVisible}>
         <ModalDialog

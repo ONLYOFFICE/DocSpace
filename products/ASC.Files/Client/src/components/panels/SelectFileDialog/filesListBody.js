@@ -127,7 +127,6 @@ const FilesListBody = ({
           >
             {({ onItemsRendered, ref }) => (
               <List
-                className="options_list"
                 height={displayType === "aside" ? height : listHeight}
                 itemCount={itemCount}
                 itemSize={displayType === "aside" ? 56 : 36}

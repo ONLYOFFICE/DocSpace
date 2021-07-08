@@ -40,9 +40,9 @@ const SelectFileDialogAsideView = ({
   isTranslationsReady,
   passedId,
 }) => {
-  const [isLoadingDate, setIsLoadingDate] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   const onSetLoadingData = (loading) => {
-    setIsLoadingDate(loading);
+    setIsLoadingData(loading);
   };
 
   return (
@@ -87,7 +87,7 @@ const SelectFileDialogAsideView = ({
                   displayType={displayType}
                 />
 
-                {selectedFolder && !isLoadingDate && (
+                {selectedFolder && !isLoadingData && (
                   <FilesListBody
                     filesList={filesList}
                     onSelectFile={onSelectFile}
@@ -98,7 +98,6 @@ const SelectFileDialogAsideView = ({
                     displayType={DISPLAY_TYPE}
                     loadingText={loadingText}
                     selectedFile={selectedFile}
-                    isLoadingDate={isLoadingDate}
                   />
                 )}
               </div>
