@@ -10,7 +10,7 @@ import SimpleFileInput from "../../SimpleFileInput";
 class SelectFileInputBody extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef();
+
     this.state = {
       fileName: "",
     };

@@ -28,7 +28,7 @@ const FilesListRow = ({
         className="modal-dialog_file-name"
         onClick={onSelectFile}
       >
-        {false ? ( // this will be "isMultiSelect" param
+        {isMultiSelect ? ( //  it will be needed
           <Checkbox
             label=""
             isChecked={isChecked}
@@ -64,6 +64,7 @@ const FilesListRow = ({
 
 FilesListRow.defaultProps = {
   needRowSelection: true,
+  isMultiSelect: false,
 };
 
 export default inject(({ formatsStore }, { fileExst }) => {

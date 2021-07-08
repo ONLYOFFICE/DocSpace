@@ -13,7 +13,7 @@ let path = "";
 class SelectFolderInputBody extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef();
+
     this.state = {
       isLoading: false,
       baseFolderPath: "",
