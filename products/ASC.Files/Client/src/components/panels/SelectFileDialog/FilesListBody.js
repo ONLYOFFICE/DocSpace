@@ -7,7 +7,7 @@ import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { inject, observer } from "mobx-react";
-import ListRow from "./listRow";
+import FilesListRow from "./FilesListRow";
 import EmptyContainer from "../../EmptyContainer/EmptyContainer";
 import i18n from "./i18n";
 
@@ -96,7 +96,7 @@ const FilesListBody = ({
 
       return (
         <div style={style}>
-          <ListRow
+          <FilesListRow
             displayType={displayType}
             needRowSelection={needRowSelection}
             index={index}
@@ -109,7 +109,7 @@ const FilesListBody = ({
             <Text data-index={index} className="files-list_file-owner">
               {fileOwner}
             </Text>
-          </ListRow>
+          </FilesListRow>
         </div>
       );
     },

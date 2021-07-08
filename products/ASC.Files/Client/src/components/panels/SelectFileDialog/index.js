@@ -7,8 +7,8 @@ import throttle from "lodash/throttle";
 
 import stores from "../../../store/index";
 import i18n from "./i18n";
-import SelectFileDialogModalView from "./modalView";
-import SelectFileDialogAsideView from "./asideView";
+import SelectFileDialogModalView from "./ModalView";
+import SelectFileDialogAsideView from "./AsideView";
 
 import utils from "@appserver/components/utils";
 import SelectFolderDialog from "../SelectFolderDialog";

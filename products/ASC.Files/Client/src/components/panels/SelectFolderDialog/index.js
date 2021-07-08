@@ -14,8 +14,8 @@ import {
 
 import SelectFolderInput from "../SelectFolderInput";
 import i18n from "./i18n";
-import SelectFolderDialogAsideView from "./asideView";
-import SelectFolderDialogModalView from "./modalView";
+import SelectFolderDialogAsideView from "./AsideView";
+import SelectFolderDialogModalView from "./ModalView";
 import stores from "../../../store/index";
 import utils from "@appserver/components/utils";
 

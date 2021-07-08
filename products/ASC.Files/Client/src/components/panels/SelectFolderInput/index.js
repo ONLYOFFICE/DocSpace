@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 import stores from "../../../store/index";
 import SelectFolderDialog from "../SelectFolderDialog/index";
-import StyledComponent from "./styledSelectFolderInput";
+import StyledComponent from "./StyledSelectFolderInput";
 import SimpleFileInput from "../../SimpleFileInput";
 
 let path = "";

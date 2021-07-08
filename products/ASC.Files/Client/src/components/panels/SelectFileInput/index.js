@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import stores from "../../../store/index";
 import SelectFileDialog from "../SelectFileDialog";
-import StyledComponent from "./styledSelectFileInput";
+import StyledComponent from "./StyledSelectFileInput";
 import SimpleFileInput from "../../SimpleFileInput";
 
 class SelectFileInputBody extends React.PureComponent {
