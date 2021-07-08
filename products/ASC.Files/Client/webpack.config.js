@@ -157,6 +157,7 @@ var config = {
       exposes: {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
+        "./SelectFileDialog": "./src/components/panels/SelectFileDialog",
       },
       shared: {
         ...deps,
