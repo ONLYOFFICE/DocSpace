@@ -376,16 +376,11 @@ const Editor = () => {
   };
 
   const onRequestInsertImage = () => {
-    console.log("Insert Image");
     setIsInsertImageDialogVisible(true);
   };
 
-  const onClickInput = () => {
-    console.log("onClickInput");
-  };
-
-  const onSelectFile = () => {
-    console.log("onSelectFile");
+  const onSelectFile = (e) => {
+    console.log("onSelectFile", e);
   };
 
   const onClose = () => {
@@ -412,7 +407,6 @@ const Editor = () => {
           )}
 
           <SelectFileDialog
-            onClickInput={onClickInput}
             onSelectFile={onSelectFile}
             isPanelVisible={isInsertImageDialogVisible}
             onClose={onClose}
