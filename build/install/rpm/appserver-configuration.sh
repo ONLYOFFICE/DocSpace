@@ -31,7 +31,6 @@ ELK_PORT="9200"
 
 JSON="json -I -f"
 JSON_USERCONF="$JSON $USER_CONF -e"
-JSON_DSCONF="$JSON $DS_CONF -e"
 
 [ $(id -u) -ne 0 ] && { echo "Root privileges required"; exit 1; }
 
@@ -115,6 +114,10 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-q | --quiet )
+			STDOUT=">/dev/null 2>&1"
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash ${PRODUCT}-configuration.sh [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -129,7 +132,8 @@ while [ "$1" != "" ]; do
 			echo "      -zkp, --zookeeperport               zookeeper port (default 2181)"
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
-			echo "      -e, --environment                 	environment (default 'production')"
+			echo "      -e, --environment                   environment (default 'production')"
+			echo "      -q, --quiet                         turn off output"
 			echo "      -?, -h, --help                      this help"
 			echo
 			exit 0
@@ -156,7 +160,7 @@ install_json() {
 
 	if [ ! -e /usr/bin/json ]; then
 		echo -n "Install json package... "
-		npm i json -g >/dev/null 2>&1
+		npm i json -g $STDOUT
 		echo "OK"
 	fi
 
@@ -167,10 +171,10 @@ install_json() {
 	
 		set_core_machinekey
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
-		-e "this.urlshortener={ 'path': ../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
-		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" >/dev/null 2>&1
-		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" >/dev/null 2>&1
-		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
+		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
+		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" $STDOUT
+		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" $STDOUT
+		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" $STDOUT
 		
 	fi
 }
@@ -178,22 +182,20 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
+	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service $STDOUT
+	systemctl daemon-reload
+
 	for SVC in nginx mysqld ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
 	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
 	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
 	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
 	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
 	do
-		sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service >/dev/null 2>&1
-		
 		if systemctl is-active $SVC | grep -q "active"; then
-			systemctl restart $SVC.service >/dev/null 2>&1
+			systemctl restart $SVC.service $STDOUT
 		else
-			systemctl enable $SVC.service  >/dev/null 2>&1
-			systemctl start $SVC.service  >/dev/null 2>&1
-		fi
-		if systemctl is-active $SVC | grep -v "active" >/dev/null; then
-			echo -e "\033[31m $SVC not started \033[0m"
+			systemctl enable $SVC.service  $STDOUT
+			systemctl start $SVC.service  $STDOUT
 		fi
 	done
 	echo "OK"
@@ -228,29 +230,29 @@ input_db_params(){
 establish_mysql_conn(){
 	echo -n "Trying to establish MySQL connection... "
 
-	command -v mysql >/dev/null 2>&1 || { echo "MySQL client not found"; exit 1; }
+	command -v mysql $STDOUT || { echo "MySQL client not found"; exit 1; }
 
 	MYSQL="mysql -h$DB_HOST -u$DB_USER"
 	if [ -n "$DB_PWD" ]; then
 		MYSQL="$MYSQL -p$DB_PWD"
 	fi
 
-	$MYSQL -e ";" >/dev/null 2>&1
+	$MYSQL -e ";" $STDOUT
 	ERRCODE=$?
 	if [ $ERRCODE -ne 0 ]; then
-		systemctl mysqld start >/dev/null 2>&1
-		$MYSQL -e ";" >/dev/null 2>&1 || { echo "FAILURE"; exit 1; }
+		systemctl mysqld start $STDOUT
+		$MYSQL -e ";" $STDOUT || { echo "FAILURE"; exit 1; }
 	fi
 
     #Save db settings in .json
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \
-	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" >/dev/null 2>&1
+	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" $STDOUT
 
 	echo "OK"
 }
 
 mysql_check_connection() {
-	while ! $MYSQL -e ";" >/dev/null 2>&1; do
+	while ! $MYSQL -e ";" $STDOUT; do
     		sleep 1
 	done
 }
@@ -335,8 +337,8 @@ change_mysql_config(){
 		sed "s/LimitMEMLOCK.*/LimitMEMLOCK = infinity/" -i ${CNF_SERVICE_PATH} || true # ignore errors
 	fi
 
-    systemctl daemon-reload >/dev/null 2>&1
-	systemctl restart mysqld >/dev/null 2>&1
+    systemctl daemon-reload $STDOUT
+	systemctl restart mysqld $STDOUT
 }
 
 execute_mysql_script(){
@@ -347,7 +349,7 @@ execute_mysql_script(){
     
     if [ "$DB_USER" = "root" ] && [ ! "$(mysql -V | grep ' 5.5.')" ]; then
 	   # allow connect via mysql_native_password with root and empty password
-	   $MYSQL -D "mysql" -e "update user set plugin='mysql_native_password' where user='root';ALTER USER '${DB_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_PWD}';" >/dev/null 2>&1
+	   $MYSQL -D "mysql" -e "update user set plugin='mysql_native_password' where user='root';ALTER USER '${DB_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_PWD}';" $STDOUT
 	fi
 
 	#Checking the quantity of the tables created in the db
@@ -360,19 +362,19 @@ execute_mysql_script(){
 
 		#Adding data to the db
 		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql
-		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
+		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" $STDOUT
 		echo 'CREATE TABLE IF NOT EXISTS `Tenants` ( `id` varchar(200) NOT NULL, `Status` varchar(200) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> $SQL_DIR/onlyoffice.sql #Fix non-existent tables Tenants
-		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" $STDOUT
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" $STDOUT
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" $STDOUT
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" $STDOUT
 		for i in $(ls $SQL_DIR/*upgrade*.sql); do
-			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
+			$MYSQL "$DB_NAME" < ${i} $STDOUT
 		done
 	else
 		echo -n "Upgrading MySQL database... "
 		for i in $(ls $SQL_DIR/*upgrade*.sql); do
-			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
+			$MYSQL "$DB_NAME" < ${i} $STDOUT
 		done
     fi
     echo "OK"
@@ -381,13 +383,13 @@ execute_mysql_script(){
 setup_nginx(){
 	echo -n "Configuring nginx... "
 
-	mv -f $NGINX_CONF/default.conf $NGINX_CONF/default.conf.old >/dev/null 2>&1
+	mv -f $NGINX_CONF/default.conf $NGINX_CONF/default.conf.old $STDOUT
 
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
 
     shopt -s nocasematch
     PORTS=()
-	if $(getenforce) >/dev/null 2>&1; then
+	if $(getenforce) $STDOUT; then
 		case $(getenforce) in
 			enforcing|permissive)
 				PORTS+=('8081') #Storybook
@@ -405,8 +407,8 @@ setup_nginx(){
 		esac
 
 		for PORT in ${PORTS[@]}; do
-			semanage port -a -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
-			semanage port -m -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
+			semanage port -a -t http_port_t -p tcp $PORT $STDOUT || \
+			semanage port -m -t http_port_t -p tcp $PORT $STDOUT || \
 			true
 		done
 	fi
@@ -418,6 +420,7 @@ setup_nginx(){
 setup_docs() {
 	echo -n "Configuring Docs... "
 	local DS_CONF="/etc/onlyoffice/documentserver/local.json"
+	local JSON_DSCONF="$JSON $DS_CONF -e"
 
 	#Changing the Docs port in nginx conf
 	sed -i "s/0.0.0.0:.*;/0.0.0.0:$DOCUMENT_SERVER_PORT;/" $NGINX_CONF/ds.conf
@@ -425,9 +428,9 @@ setup_docs() {
 	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/onlyoffice.conf 	
 
 	#Enable JWT validation for Docs
-	$JSON_DSCONF "this.services.CoAuthoring.token.enable.browser='true'" >/dev/null 2>&1 
-	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.inbox='true'" >/dev/null 2>&1
-	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.outbox='true'" >/dev/null 2>&1
+	$JSON_DSCONF "this.services.CoAuthoring.token.enable.browser='true'" $STDOUT 
+	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.inbox='true'" $STDOUT
+	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.outbox='true'" $STDOUT
 	
 	local DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | json services.CoAuthoring.secret.inbox.string)
 	local DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | json services.CoAuthoring.token.inbox.header)
@@ -435,11 +438,11 @@ setup_docs() {
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
-	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
+	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" $STDOUT
 	
 	#Enable ds-example autostart
 	sudo sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini
-	sudo supervisorctl start ds:example >/dev/null 2>&1
+	sudo supervisorctl start ds:example $STDOUT
 	
 	echo "OK"
 }
@@ -504,7 +507,7 @@ setup_elasticsearch() {
 	echo -n "Configuring elasticsearch... "
 
 	#Save elasticsearch parameters in .json
-	$JSON $APP_DIR/elastic.json -e "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\",'Threads': \"1\" }" >/dev/null 2>&1
+	$JSON $APP_DIR/elastic.json -e "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\",'Threads': \"1\" }" $STDOUT
 
 	change_elasticsearch_config
 	
@@ -530,7 +533,7 @@ setup_kafka() {
 		echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
 		
 		#Save kafka parameters in .json
-		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
+		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" $STDOUT
 
 		echo "OK"
 	fi
