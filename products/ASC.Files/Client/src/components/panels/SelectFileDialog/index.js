@@ -155,7 +155,7 @@ class SelectFileDialogBody extends React.Component {
     const { setSelectedNode, setSelectedFolder } = this.props;
     const { selectedFolder, page } = this.state;
 
-    console.log(`loadNextPage(startIndex=${page}")`);
+    //console.log(`loadNextPage(startIndex=${page}")`);
 
     const pageCount = 30;
     this.newFilter.page = page;

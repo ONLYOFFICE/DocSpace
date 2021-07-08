@@ -53,6 +53,7 @@ class SelectFolderModalDialog extends React.Component {
       fileName,
       displayType,
       selectedFolderId,
+      dialogWithFiles,
     } = this.props;
     const { isSetFolderImmediately } = this.state;
 
@@ -108,7 +109,10 @@ class SelectFolderModalDialog extends React.Component {
           }
 
           if (id && !selectedFolderId) {
-            this.setSelectedFolderToTee(id);
+            if (!dialogWithFiles) this.setSelectedFolderToTee(id);
+            else {
+              this.setSelectedFolder(id);
+            }
           }
 
           break;
@@ -180,8 +184,12 @@ class SelectFolderModalDialog extends React.Component {
           if (selectedFolderId) {
             this.setSelectedFolder(selectedFolderId);
           }
+
           if (id && !selectedFolderId) {
-            this.setSelectedFolderToTee(id);
+            if (!dialogWithFiles) this.setSelectedFolderToTee(id);
+            else {
+              this.setSelectedFolder(id);
+            }
           }
 
           break;
@@ -216,6 +224,7 @@ class SelectFolderModalDialog extends React.Component {
       onSetLoadingInput,
       onSetBaseFolderPath,
     } = this.props;
+    console.log("setSelectedFolderToTee");
     setSelectedNode([id + ""]);
     SelectFolderDialog.getFolderPath(id)
       .then((folderPath) => (this.folderTitle = folderPath))
@@ -332,11 +341,13 @@ SelectFolderModalDialog.propTypes = {
   zIndex: PropTypes.number,
   withoutProvider: PropTypes.bool,
   isNeedArrowIcon: PropTypes.bool,
+  dialogWithFiles: PropTypes.bool,
   modalHeightContent: PropTypes.string,
   asideHeightContent: PropTypes.string,
 };
 SelectFolderModalDialog.defaultProps = {
   isSetFolderImmediately: false,
+  dialogWithFiles: false,
   isNeedArrowIcon: false,
   id: "",
   modalHeightContent: "325px",
