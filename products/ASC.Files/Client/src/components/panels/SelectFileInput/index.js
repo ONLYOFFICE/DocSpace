@@ -31,9 +31,6 @@ class SelectFile extends React.PureComponent {
       isError,
       isDisabled,
       foldersType,
-      iconUrl,
-      filterType,
-      filterValue,
       withSubfolders,
       onSelectFile,
       folderId,
@@ -69,10 +66,7 @@ class SelectFile extends React.PureComponent {
             foldersType={foldersType}
             onSetFileName={this.onSetFileName}
             withoutProvider={withoutProvider}
-            iconUrl={iconUrl}
-            filterValue={filterValue}
             withSubfolders={withSubfolders}
-            filterType={filterType}
             onSelectFile={onSelectFile}
             folderId={folderId}
             header={header}
