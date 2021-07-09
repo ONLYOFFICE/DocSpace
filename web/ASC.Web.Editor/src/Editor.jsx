@@ -30,6 +30,8 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
+import SelectFileDialog from "files/SelectFileDialog";
+import SelectFolderDialog from "files/SelectFolderDialog";
 
 import i18n from "./i18n";
 
@@ -299,6 +301,8 @@ const Editor = () => {
           onWarning: onSDKWarning,
           onError: onSDKError,
           onRequestSharingSettings,
+          onRequestInsertImage,
+          onRequestSaveAs,
         },
       };
 
@@ -324,6 +328,8 @@ const Editor = () => {
   };
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isFileDialogVisible, setIsFileDialogVisible] = useState(false);
+  const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
@@ -370,6 +376,30 @@ const Editor = () => {
     }
   };
 
+  const onRequestInsertImage = () => {
+    setIsFileDialogVisible(true);
+  };
+
+  const onSelectFile = (e) => {
+    console.log("onSelectFile", e);
+  };
+
+  const onCloseFileDialog = () => {
+    setIsFileDialogVisible(false);
+  };
+
+  const onRequestSaveAs = () => {
+    setIsFolderDialogVisible(true);
+  };
+
+  const onSelectFolder = (e) => {
+    console.log("onSelectFolder", e);
+  };
+
+  const onCloseFolderDialog = () => {
+    setIsFolderDialogVisible(false);
+  };
+
   return (
     <Box
       widthProp="100vw"
@@ -388,6 +418,21 @@ const Editor = () => {
               onSuccess={updateUsersRightsList}
             />
           )}
+
+          <SelectFileDialog
+            onSelectFile={onSelectFile}
+            isPanelVisible={isFileDialogVisible}
+            onClose={onCloseFileDialog}
+            foldersType="common"
+            isImageOnly
+          />
+
+          <SelectFolderDialog
+            onSelectFolder={onSelectFolder}
+            isPanelVisible={isFolderDialogVisible}
+            onClose={onCloseFolderDialog}
+            foldersType="common"
+          />
         </>
       ) : (
         <Box paddingProp="16px">
