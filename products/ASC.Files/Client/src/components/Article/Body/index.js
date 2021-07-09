@@ -83,6 +83,10 @@ class ArticleBodyContent extends React.Component {
       personal,
     } = this.props;
 
+    const campaigns = (localStorage.getItem("campaigns") || "")
+      .split(",")
+      .filter((campaign) => campaign.length > 0);
+
     return isEmpty(treeFolders) ? (
       <Loaders.TreeFolders />
     ) : (
@@ -97,7 +101,9 @@ class ArticleBodyContent extends React.Component {
         {!personal && <TreeSettings />}
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
 
-        {(isDesktop || isTablet) && personal && <Banner />}
+        {(isDesktop || isTablet) && personal && campaigns.length > 0 && (
+          <Banner />
+        )}
       </>
     );
   }
