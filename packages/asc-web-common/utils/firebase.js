@@ -1,10 +1,12 @@
 import firebase from "firebase/app";
 import "firebase/remote-config";
-import firebaseConfig from "../../firebase.json";
 
 class FirebaseHelper {
   remoteConfig = null;
-  constructor() {
+  firebaseConfig = null;
+  constructor(settings) {
+    this.firebaseConfig = settings;
+
     if (!this.isEnabled) return;
     firebase.initializeApp(this.config);
 
@@ -30,7 +32,7 @@ class FirebaseHelper {
   }
 
   get config() {
-    return firebaseConfig;
+    return this.firebaseConfig;
   }
 
   get isEnabled() {
@@ -82,4 +84,4 @@ class FirebaseHelper {
   }
 }
 
-export default new FirebaseHelper();
+export default FirebaseHelper;

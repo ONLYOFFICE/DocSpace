@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 import { combineUrl } from "../utils";
+import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
 const { proxyURL } = AppServerConfig;
 
@@ -72,6 +73,15 @@ class SettingsStore {
   hasShortenService = false;
 
   customSchemaList = [];
+  firebase = {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: "",
+  };
 
   constructor() {
     makeAutoObservable(this);
@@ -292,6 +302,10 @@ class SettingsStore {
   setArticleVisibleOnUnpin = (visible) => {
     this.isArticleVisibleOnUnpin = visible;
   };
+
+  get firebaseHelper() {
+    return new FirebaseHelper(this.firebase);
+  }
 }
 
 export default SettingsStore;

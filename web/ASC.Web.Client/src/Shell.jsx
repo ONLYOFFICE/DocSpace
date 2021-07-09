@@ -21,10 +21,8 @@ import i18n from "./i18n";
 import AppLoader from "@appserver/common/components/AppLoader";
 import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
-import FirebaseHelper from "./helpers/firebase";
 import { Snackbar } from "@appserver/components/snackbar";
 import moment from "moment";
-import { isMobile } from "react-device-detect";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -148,7 +146,14 @@ const MyProfileRoute = (props) => (
 );
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
-  const { isLoaded, loadBaseInfo, modules, isDesktop, language } = rest;
+  const {
+    isLoaded,
+    loadBaseInfo,
+    modules,
+    isDesktop,
+    language,
+    FirebaseHelper,
+  } = rest;
 
   useEffect(() => {
     try {
@@ -242,6 +247,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     }
 
     setSnackBarTimer(campaign);
+
+    if (!document.getElementById("main-bar")) return;
 
     const campaignStr = JSON.stringify(campaign);
     let skipRender = lastCampaignStr === campaignStr;
@@ -431,6 +438,7 @@ const ShellWrapper = inject(({ auth }) => {
     isLoaded,
     modules: auth.moduleStore.modules,
     isDesktop: auth.settingsStore.isDesktopClient,
+    FirebaseHelper: auth.settingsStore.firebaseHelper,
   };
 })(observer(Shell));
 
