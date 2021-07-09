@@ -514,12 +514,14 @@ setup_kafka() {
 
 	local KAFKA_SERVICE=$(systemctl --type=service | grep 'kafka' | tr -d '●' | awk '{print $1;}')
 
-	if [ $KAFKA_SERVICE ]; then
+	if [ -n ${KAFKA_SERVICE} ]; then
 
 		echo -n "Configuring kafka... "
+		
+		local KAFKA_DIR="$(cat $SYSTEMD_DIR/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)"
+		local KAFKA_CONFDIR="${KAFKA_DIR}/config"
 
 		#Change kafka config
-		local KAFKA_CONF="$(cat $SYSTEMD_DIR/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)/config"
 		sed -i "s/clientPort=.*/clientPort=${ZOOKEEPER_PORT}/g" $KAFKA_CONF/zookeeper.properties
 		sed -i "s/zookeeper.connect=.*/zookeeper.connect=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}/g" $KAFKA_CONF/server.properties
 		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/consumer.properties
@@ -529,7 +531,20 @@ setup_kafka() {
 		echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
 		
 		#Save kafka parameters in .json
-		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" $STDOUT
+		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
+
+		#Add topics for kafka
+		KAFKA_TOPICS=( ascchannelQuotaCacheItemAny
+			ascchannelTariffCacheItemRemove
+			ascchannelTenantCacheItemInsertOrUpdate
+			ascchannelTenantSettingRemove )
+
+		for i in "${KAFKA_TOPICS[@]}" 
+		do
+			${KAFKA_DIR}/bin/kafka-topics.sh --create --zookeeper ${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT} --topic $i --replication-factor 1 --partitions 3
+		done
+
+		
 
 		echo "OK"
 	fi
