@@ -75,17 +75,17 @@ reassign_values (){
 		EXEC_FILE="ASC.ApiSystem.dll"
 	;;
 	urlshortener )
-		SERVICE_PORT="9999"
+		SERVICE_PORT="9998"
 		WORK_DIR="${BASE_DIR}/services/ASC.UrlShortener.Svc/"
 		EXEC_FILE="ASC.UrlShortener.Svc.dll"
 	;;
 	thumbnails )
-		SERVICE_PORT="9800"
+		SERVICE_PORT="9799"
 		WORK_DIR="${BASE_DIR}/services/ASC.Thumbnails.Svc/"
 		EXEC_FILE="ASC.Thumbnails.Svc.dll"
 	;;
 	socket )
-		SERVICE_PORT="9899"
+		SERVICE_PORT="9898"
 		WORK_DIR="${BASE_DIR}/services/ASC.Socket.IO.Svc/"
 		EXEC_FILE="ASC.Socket.IO.Svc.dll"
 	;;
