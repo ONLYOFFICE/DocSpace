@@ -7,8 +7,8 @@ import throttle from "lodash/throttle";
 
 import stores from "../../../store/index";
 import i18n from "./i18n";
-import SelectFileDialogModalView from "./modalView";
-import SelectFileDialogAsideView from "./asideView";
+import SelectFileDialogModalView from "./ModalView";
+import SelectFileDialogAsideView from "./AsideView";
 
 import utils from "@appserver/components/utils";
 import SelectFolderDialog from "../SelectFolderDialog";
@@ -75,7 +75,7 @@ class SelectFileDialogBody extends React.Component {
 
   setFilter = () => {
     const { filterParams } = this.state;
-    const { withSubfolders } = this.props;
+    const { withSubfolders = true } = this.props;
 
     this.newFilter.filterType = filterParams.filterType;
     this.newFilter.search = filterParams.filterValue;

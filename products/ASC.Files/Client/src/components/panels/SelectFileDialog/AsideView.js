@@ -6,7 +6,7 @@ import {
 } from "../StyledPanels";
 import Text from "@appserver/components/text";
 import SelectFolderInput from "../SelectFolderInput";
-import FilesListBody from "./filesListBody";
+import FilesListBody from "./FilesListBody";
 import Aside from "@appserver/components/aside";
 import Heading from "@appserver/components/heading";
 import Backdrop from "@appserver/components/backdrop";

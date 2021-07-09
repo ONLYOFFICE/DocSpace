@@ -6,7 +6,7 @@ import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import ModalDialog from "@appserver/components/modal-dialog";
 import SelectFolderDialog from "../SelectFolderDialog";
 import FolderTreeBody from "../../FolderTreeBody";
-import FilesListBody from "./filesListBody";
+import FilesListBody from "./FilesListBody";
 import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";

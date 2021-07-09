@@ -12,10 +12,10 @@ import {
   getFolderPath,
 } from "@appserver/common/api/files";
 
-import SelectFolderModal from "../SelectFolderInput";
+import SelectFolderInput from "../SelectFolderInput";
 import i18n from "./i18n";
-import SelectFolderDialogAsideView from "./asideView";
-import SelectFolderDialogModalView from "./modalView";
+import SelectFolderDialogAsideView from "./AsideView";
+import SelectFolderDialogModalView from "./ModalView";
 import stores from "../../../store/index";
 import utils from "@appserver/components/utils";
 
@@ -265,7 +265,7 @@ class SelectFolderModalDialog extends React.Component {
 
   setDisplayType = () => {
     const displayType = this.getDisplayType();
-    console.log("set");
+
     this.setState({ displayType: displayType });
   };
 
@@ -279,7 +279,7 @@ class SelectFolderModalDialog extends React.Component {
     getFolderPath(folder)
       .then(
         (foldersArray) =>
-          (pathName = SelectFolderModal.setFullFolderPath(foldersArray))
+          (pathName = SelectFolderInput.setFullFolderPath(foldersArray))
       )
       .then(() => onSetFullPath && onSetFullPath(pathName))
       .then(() => onSelectFolder && onSelectFolder(folder[0]))
@@ -416,7 +416,7 @@ class SelectFolderDialog extends React.Component {
 
   static getFolderPath = async (folderId) => {
     const foldersArray = await getFolderPath(folderId);
-    const convertFoldersArray = SelectFolderModal.setFullFolderPath(
+    const convertFoldersArray = SelectFolderInput.setFullFolderPath(
       foldersArray
     );
 

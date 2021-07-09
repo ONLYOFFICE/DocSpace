@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import RadioButton from "@appserver/components/radio-button";
-const ListRow = ({
+const FilesListRow = ({
   displayType,
   needRowSelection,
   index,
@@ -28,7 +28,7 @@ const ListRow = ({
         className="modal-dialog_file-name"
         onClick={onSelectFile}
       >
-        {false ? ( // this will be "isMultiSelect" param
+        {isMultiSelect ? ( //  it will be needed
           <Checkbox
             label=""
             isChecked={isChecked}
@@ -62,8 +62,9 @@ const ListRow = ({
   );
 };
 
-ListRow.defaultProps = {
+FilesListRow.defaultProps = {
   needRowSelection: true,
+  isMultiSelect: false,
 };
 
 export default inject(({ formatsStore }, { fileExst }) => {
@@ -72,4 +73,4 @@ export default inject(({ formatsStore }, { fileExst }) => {
   return {
     iconSrc,
   };
-})(observer(ListRow));
+})(observer(FilesListRow));

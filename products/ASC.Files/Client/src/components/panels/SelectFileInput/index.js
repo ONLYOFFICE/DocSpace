@@ -4,13 +4,13 @@ import PropTypes from "prop-types";
 
 import stores from "../../../store/index";
 import SelectFileDialog from "../SelectFileDialog";
-import StyledComponent from "./styledSelectFileInput";
+import StyledComponent from "./StyledSelectFileInput";
 import SimpleFileInput from "../../SimpleFileInput";
 
-class SelectFile extends React.PureComponent {
+class SelectFileInputBody extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef();
+
     this.state = {
       fileName: "",
     };
@@ -85,24 +85,24 @@ class SelectFile extends React.PureComponent {
   }
 }
 
-SelectFile.propTypes = {
+SelectFileInputBody.propTypes = {
   onClickInput: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-SelectFile.defaultProps = {
+SelectFileInputBody.defaultProps = {
   withoutProvider: false,
   isDisabled: false,
 };
 
-class SelectFileModal extends React.Component {
+class SelectFileInput extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <SelectFile {...this.props} />
+        <SelectFileInputBody {...this.props} />
       </MobxProvider>
     );
   }
 }
 
-export default SelectFileModal;
+export default SelectFileInput;

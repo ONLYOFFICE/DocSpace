@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import IconButton from "@appserver/components/icon-button";
 import TextInput from "@appserver/components/text-input";
-import StyledFileInput from "./styledSimpleFileInput";
+import StyledFileInput from "./StyledSimpleFileInput";
 
 let iconSize;
 const SimpleFileInput = ({

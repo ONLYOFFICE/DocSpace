@@ -5,15 +5,15 @@ import PropTypes from "prop-types";
 
 import stores from "../../../store/index";
 import SelectFolderDialog from "../SelectFolderDialog/index";
-import StyledComponent from "./styledSelectFolderInput";
+import StyledComponent from "./StyledSelectFolderInput";
 import SimpleFileInput from "../../SimpleFileInput";
 
 let path = "";
 
-class SelectFolder extends React.PureComponent {
+class SelectFolderInputBody extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef();
+
     this.state = {
       isLoading: false,
       baseFolderPath: "",
@@ -133,7 +133,7 @@ class SelectFolder extends React.PureComponent {
   }
 }
 
-SelectFolder.propTypes = {
+SelectFolderInputBody.propTypes = {
   onClickInput: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSelectFolder: PropTypes.func.isRequired,
@@ -146,14 +146,14 @@ SelectFolder.propTypes = {
   foldersType: PropTypes.oneOf(["common", "third-party"]),
 };
 
-SelectFolder.defaultProps = {
+SelectFolderInputBody.defaultProps = {
   withoutProvider: false,
   isDisabled: false,
   isError: false,
   folderPath: "",
 };
 
-class SelectFolderModal extends React.Component {
+class SelectFolderInput extends React.Component {
   static setFullFolderPath = (foldersArray) => {
     path = "";
     if (foldersArray.length > 1) {
@@ -172,10 +172,10 @@ class SelectFolderModal extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <SelectFolder {...this.props} />
+        <SelectFolderInputBody {...this.props} />
       </MobxProvider>
     );
   }
 }
 
-export default SelectFolderModal;
+export default SelectFolderInput;
