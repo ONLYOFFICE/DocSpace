@@ -328,9 +328,7 @@ const Editor = () => {
   };
 
   const [isVisible, setIsVisible] = useState(false);
-  const [isInsertImageDialogVisible, setIsInsertImageDialogVisible] = useState(
-    false
-  );
+  const [isFileDialogVisible, setIsFileDialogVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
 
   const onSDKRequestSharingSettings = () => {
@@ -379,15 +377,15 @@ const Editor = () => {
   };
 
   const onRequestInsertImage = () => {
-    setIsInsertImageDialogVisible(true);
+    setIsFileDialogVisible(true);
   };
 
   const onSelectFile = (e) => {
     console.log("onSelectFile", e);
   };
 
-  const onClose = () => {
-    setIsInsertImageDialogVisible(false);
+  const onCloseFileDialog = () => {
+    setIsFileDialogVisible(false);
   };
 
   const onRequestSaveAs = () => {
@@ -423,8 +421,8 @@ const Editor = () => {
 
           <SelectFileDialog
             onSelectFile={onSelectFile}
-            isPanelVisible={isInsertImageDialogVisible}
-            onClose={onClose}
+            isPanelVisible={isFileDialogVisible}
+            onClose={onCloseFileDialog}
             foldersType="common"
             isImageOnly
           />
