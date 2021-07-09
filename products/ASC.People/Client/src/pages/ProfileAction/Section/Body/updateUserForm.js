@@ -313,10 +313,12 @@ class UpdateUserForm extends React.Component {
       history,
       isEditTargetUser,
       profile,
-      personal
+      personal,
     } = this.props;
 
-    if (isEditTargetUser || document.referrer || personal) {
+    if (personal) {
+      history.push(combineUrl(AppServerConfig.proxyURL, "/my"));
+    } else if (isEditTargetUser || document.referrer) {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
