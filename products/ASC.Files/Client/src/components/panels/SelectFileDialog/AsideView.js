@@ -39,12 +39,13 @@ const SelectFileDialogAsideView = ({
   displayType,
   isTranslationsReady,
   passedId,
+  children,
 }) => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const onSetLoadingData = (loading) => {
     setIsLoadingData(loading);
   };
-
+  const isHeaderChildren = !!children;
   return (
     <StyledAsidePanel visible={isPanelVisible}>
       <Backdrop
@@ -55,7 +56,10 @@ const SelectFileDialogAsideView = ({
       />
       <Aside visible={isPanelVisible} zIndex={zIndex}>
         {isTranslationsReady ? (
-          <StyledSelectFilePanel displayType={DISPLAY_TYPE}>
+          <StyledSelectFilePanel
+            displayType={DISPLAY_TYPE}
+            isHeaderChildren={isHeaderChildren}
+          >
             <StyledHeaderContent className="select-file-dialog_aside-header">
               <Heading
                 size="medium"
@@ -66,6 +70,9 @@ const SelectFileDialogAsideView = ({
             </StyledHeaderContent>
 
             <div className="select-file-dialog_aside-body_wrapper">
+              <div className="select-file-dialog_aside-children">
+                {children}
+              </div>
               <Text fontWeight="600" fontSize="14px">
                 {t("Translations:SelectFolder")}
               </Text>

@@ -518,7 +518,12 @@ const StyledSelectFolderPanel = styled.div`
     ${(props) => props.isNeedArrowIcon && `margin-left:16px;`}
   }
   .select-folder-dialog_tree-folder {
-    height: ${(props) => props.heightContent && props.heightContent};
+    height: ${(props) =>
+      props.heightContent
+        ? props.heightContent
+        : props.isHeaderChildren
+        ? "252px"
+        : "280px"};
     overflow: hidden;
   }
   .rc-tree-child-tree-open {
@@ -546,7 +551,8 @@ const StyledSelectFilePanel = styled.div`
       overflow: hidden;
     `}
   .select-file-dialog_aside-body_wrapper {
-    height: calc(100% - 200px);
+    height: ${(props) =>
+      props.isHeaderChildren ? "calc(100% - 260px);" : "calc(100% - 212px);"};
   }
   .select-file-dialog_aside-body_wrapper,
   .select-folder-dialog_aside-body_wrapper {
@@ -555,6 +561,9 @@ const StyledSelectFilePanel = styled.div`
   }
   .select-folder-dialog_aside-body_wrapper {
     height: 100%;
+  }
+  .select-file-dialog_aside-children {
+    ${(props) => props.isHeaderChildren && `padding-bottom: 16px;`}
   }
   .select-file-dialog_aside_body {
     margin-top: 16px;
@@ -593,20 +602,37 @@ const StyledSelectFilePanel = styled.div`
     display: inline;
     margin-right: 10px;
   }
+
+  .modal-dialog_children {
+    grid-area: children;
+    ${(props) => props.isHeaderChildren && `padding: 16px 0;`}
+  }
+  .modal-dialog_tree-body {
+    grid-area: tree;
+  }
+  .modal-dialog_files-body {
+    grid-area: files-list;
+  }
+
   .modal-dialog_body {
     display: grid;
     grid-template-columns: 240px 1fr;
     height: 300px;
-    grid-gap: 8px;
+    grid-column-gap: 8px;
+    grid-template-areas: "children children" "tree files-list";
     .modal-dialog_tree-body {
-      padding-top: 16px;
+      ${(props) =>
+        props.isHeaderChildren ? `padding-top: 0;` : `padding-top: 16px;`}
       border-right: 1px solid #dee2e6;
     }
   }
   .select-file-dialog-aside_buttons {
     position: fixed;
     bottom: 0;
-    margin-bottom: 8px;
+    padding-top: 8px;
+    background-color: white;
+    height: 40px;
+    width: 100%;
   }
   .select-file-dialog-buttons-save {
     margin: 0 8px;

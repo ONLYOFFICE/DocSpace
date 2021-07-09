@@ -192,11 +192,11 @@ class SelectFileDialogBody extends React.Component {
       foldersType,
       withoutProvider,
       header,
-      modalHeightContent,
       loadingLabel,
       folderId,
       onSetFileName,
       tReady,
+      children,
     } = this.props;
     const {
       isVisible,
@@ -242,6 +242,7 @@ class SelectFileDialogBody extends React.Component {
         displayType={displayType}
         isTranslationsReady={tReady}
         passedId={passedId}
+        children={children}
       />
     ) : (
       <SelectFileDialogModalView
@@ -259,11 +260,11 @@ class SelectFileDialogBody extends React.Component {
         selectedFolder={selectedFolder}
         withoutProvider={withoutProvider}
         header={header}
-        modalHeightContent={modalHeightContent}
         loadingText={loadingText}
         selectedFile={selectedFile}
         folderId={folderId}
         passedId={passedId}
+        children={children}
       />
     );
   }

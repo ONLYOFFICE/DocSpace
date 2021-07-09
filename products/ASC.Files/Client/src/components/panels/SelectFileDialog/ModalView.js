@@ -120,12 +120,15 @@ class SelectFileDialogModalViewBody extends React.Component {
       loadNextPage,
       selectedFolder,
       header,
-      modalHeightContent,
       loadingText,
       selectedFile,
       onClickSave,
+      children,
     } = this.props;
+
     const { isLoading } = this.state;
+
+    const isHeaderChildren = !!children;
 
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -142,9 +145,10 @@ class SelectFileDialogModalViewBody extends React.Component {
             {header ? header : t("SelectFile")}
           </ModalDialog.Header>
           <ModalDialog.Body className="select-file_body-modal-dialog">
-            <StyledSelectFilePanel>
+            <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
               {!isLoading ? (
                 <div className="modal-dialog_body">
+                  <div className="modal-dialog_children">{children}</div>
                   <div className="modal-dialog_tree-body">
                     <FolderTreeBody
                       expandedKeys={expandedKeys}
@@ -155,7 +159,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                       isAvailableFolders
                       filter={filter}
                       selectedKeys={[selectedFolder]}
-                      heightContent={modalHeightContent}
+                      isHeaderChildren={isHeaderChildren}
                     />
                   </div>
                   <div className="modal-dialog_files-body">
@@ -169,6 +173,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                         selectedFolder={selectedFolder}
                         loadingText={loadingText}
                         selectedFile={selectedFile}
+                        listHeight={isHeaderChildren ? 250 : 300}
                       />
                     )}
                   </div>
@@ -213,12 +218,6 @@ class SelectFileDialogModalViewBody extends React.Component {
   }
 }
 
-SelectFileDialogModalViewBody.propTypes = {
-  modalHeightContent: PropTypes.string,
-};
-SelectFileDialogModalViewBody.defaultProps = {
-  modalHeightContent: "280px",
-};
 const SelectFileDialogModalViewBodyWrapper = inject(
   ({ treeFoldersStore, selectedFolderStore }) => {
     const { setSelectedNode } = treeFoldersStore;

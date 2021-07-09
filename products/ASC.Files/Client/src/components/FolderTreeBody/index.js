@@ -18,6 +18,7 @@ const FolderTreeBody = ({
   selectedKeys,
   heightContent,
   displayType,
+  isHeaderChildren,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
   return (
@@ -27,6 +28,7 @@ const FolderTreeBody = ({
           <StyledSelectFolderPanel
             heightContent={heightContent}
             displayType={displayType}
+            isHeaderChildren={isHeaderChildren}
           >
             <div className="select-folder-dialog_tree-folder">
               <Scrollbar>

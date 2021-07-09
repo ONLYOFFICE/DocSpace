@@ -43,6 +43,7 @@ class SelectFileInputBody extends React.PureComponent {
       isTablesOnly,
       isMediaOnly,
       loadingLabel,
+      children,
     } = this.props;
     const { fileName } = this.state;
     const zIndex = 310;
@@ -78,6 +79,7 @@ class SelectFileInputBody extends React.PureComponent {
             isTables={isTablesOnly}
             isMediaOnly={isMediaOnly}
             loadingLabel={loadingLabel}
+            children={children}
           />
         )}
       </StyledComponent>
