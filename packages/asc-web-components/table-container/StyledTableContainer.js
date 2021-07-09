@@ -15,16 +15,17 @@ const StyledTableContainer = styled.div`
     position: absolute;
     cursor: ew-resize;
     height: 10px;
-    width: 7px;
     right: 4px;
-    top: 4px;
+    top: 14px;
     z-index: 1;
-    border-right: 2px solid transparent;
-    border-color: #d0d5da;
+    border-right: 2px solid #d0d5da;
   }
 
   .header-container {
-    border-bottom: 2px solid grey;
+    height: 38px;
+    border-bottom: 1px solid #eceef1;
+    display: flex;
+    align-items: center;
   }
 
   .content-container {

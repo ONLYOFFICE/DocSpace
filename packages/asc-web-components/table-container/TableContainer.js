@@ -3,7 +3,13 @@ import { StyledTableContainer } from "./StyledTableContainer";
 import PropTypes from "prop-types";
 
 const TableContainer = (props) => {
-  return <StyledTableContainer ref={props.forwardedRef} {...props} />;
+  return (
+    <StyledTableContainer
+      style={{ marginTop: -18 }}
+      ref={props.forwardedRef}
+      {...props}
+    />
+  );
 };
 
 TableContainer.propTypes = {

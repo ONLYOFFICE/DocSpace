@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import Text from "../text";
 import PropTypes from "prop-types";
+import globalColors from "@appserver/components/utils/globalColors";
 
 const Column = ({
   id,
@@ -81,10 +83,13 @@ const Column = ({
       className={`${className} table-column`}
       {...rest}
     >
-      <div className="header-container">
+      <Text
+        fontWeight={600}
+        color={globalColors.gray}
+        className="header-container"
+      >
         {title}
-        {index}
-      </div>
+      </Text>
       <div className="content-container">{children}</div>
       {resizable && (
         <div

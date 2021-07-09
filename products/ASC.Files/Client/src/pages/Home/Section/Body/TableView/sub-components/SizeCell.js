@@ -1,11 +1,8 @@
 import React from "react";
 import Text from "@appserver/components/text";
-import globalColors from "@appserver/components/utils/globalColors";
-
-const sideColor = globalColors.gray;
 
 const SizeCell = (props) => {
-  const { t, item } = props;
+  const { t, item, sideColor } = props;
   const {
     fileExst,
     contentLength,
