@@ -1164,10 +1164,6 @@ class FilesStore {
     );
   }
 
-  get isOnlyFoldersSelected() {
-    return this.selection.every((selected) => selected.fileExst === undefined);
-  }
-
   get isThirdPartySelection() {
     const withProvider = this.selection.find((x) => !x.providerKey);
     return !withProvider && this.selectedFolderStore.isRootFolder;
