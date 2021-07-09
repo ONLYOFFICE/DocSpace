@@ -31,6 +31,7 @@ import { homepage } from "../package.json";
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
 import SelectFileDialog from "files/SelectFileDialog";
+import SelectFolderDialog from "files/SelectFolderDialog";
 
 import i18n from "./i18n";
 
@@ -301,6 +302,7 @@ const Editor = () => {
           onError: onSDKError,
           onRequestSharingSettings,
           onRequestInsertImage,
+          onRequestSaveAs,
         },
       };
 
@@ -329,6 +331,7 @@ const Editor = () => {
   const [isInsertImageDialogVisible, setIsInsertImageDialogVisible] = useState(
     false
   );
+  const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
@@ -387,6 +390,18 @@ const Editor = () => {
     setIsInsertImageDialogVisible(false);
   };
 
+  const onRequestSaveAs = () => {
+    setIsFolderDialogVisible(true);
+  };
+
+  const onSelectFolder = (e) => {
+    console.log("onSelectFolder", e);
+  };
+
+  const onCloseFolderDialog = () => {
+    setIsFolderDialogVisible(false);
+  };
+
   return (
     <Box
       widthProp="100vw"
@@ -412,6 +427,13 @@ const Editor = () => {
             onClose={onClose}
             foldersType="common"
             isImageOnly
+          />
+
+          <SelectFolderDialog
+            onSelectFolder={onSelectFolder}
+            isPanelVisible={isFolderDialogVisible}
+            onClose={onCloseFolderDialog}
+            foldersType="common"
           />
         </>
       ) : (
