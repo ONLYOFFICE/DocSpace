@@ -19,6 +19,10 @@ import SelectFolderDialogModalView from "./ModalView";
 import stores from "../../../store/index";
 import utils from "@appserver/components/utils";
 
+import store from "studio/store";
+
+const { auth: authStore } = store;
+
 const { desktop } = utils.device;
 
 let pathName = "";
@@ -55,6 +59,9 @@ class SelectFolderModalDialog extends React.Component {
       selectedFolderId,
       dialogWithFiles,
     } = this.props;
+
+    authStore.init();
+
     const { isSetFolderImmediately } = this.state;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -435,7 +442,7 @@ class SelectFolderDialog extends React.Component {
   };
   render() {
     return (
-      <MobxProvider {...stores}>
+      <MobxProvider auth={authStore} {...stores}>
         <I18nextProvider i18n={i18n}>
           <SelectFolderDialogWrapper {...this.props} />
         </I18nextProvider>
