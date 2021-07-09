@@ -340,7 +340,7 @@ class SectionBodyContent extends React.PureComponent {
       isSelf,
       providers,
       backupCodes,
-      personal
+      personal,
     } = this.props;
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -535,13 +535,13 @@ export default withRouter(
       backupCodes,
       setBackupCodes,
       setIsEditTargetUser,
-      personal: auth.settingsStore.personal
+      personal: auth.settingsStore.personal,
     };
   })(
     observer(
       withTranslation(["Profile", "Common", "Translations"])(
         withLoader(SectionBodyContent)(<Loaders.ProfileView />)
+      )
     )
-  )
   )
 );
