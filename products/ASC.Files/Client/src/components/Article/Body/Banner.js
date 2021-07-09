@@ -8,7 +8,8 @@ const Banner = () => {
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  const [bannerName, setBannerName] = useState();
+  const defaultBannerName = "Cloud";
+  const [bannerName, setBannerName] = useState(defaultBannerName);
 
   useEffect(() => {
     let index = Number(localStorage.getItem("bannerIndex") || 0);
