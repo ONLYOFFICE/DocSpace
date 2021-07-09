@@ -48,7 +48,7 @@ const Header = styled.header`
     font-size: 21px;
     line-height: 0;
     margin-top: -5px;
-    cursor: "pointer";
+    cursor: pointer;
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-drag: none;
