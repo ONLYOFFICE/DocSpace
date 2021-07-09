@@ -8,6 +8,8 @@ import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 
+import TableView from "./TableView/TableContainer";
+
 let currentDroppable = null;
 
 const SectionBodyContent = (props) => {
@@ -157,7 +159,9 @@ const SectionBodyContent = (props) => {
   return (!fileActionId && isEmptyFilesList) || null ? (
     <EmptyContainer />
   ) : viewAs === "tile" ? (
-    <FilesTileContainer t={t} />
+    <FilesTileContainer />
+  ) : viewAs === "table" || viewAs === "row" ? (
+    <TableView />
   ) : (
     <FilesRowContainer tReady={tReady} />
   );
