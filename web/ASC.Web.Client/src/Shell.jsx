@@ -246,10 +246,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     const campaignStr = JSON.stringify(campaign);
     let skipRender = lastCampaignStr === campaignStr;
 
-    if (!isMobile) {
-      skipRender =
-        skipRender && document.getElementById("main-bar").hasChildNodes();
-    }
+    skipRender =
+      skipRender && document.getElementById("main-bar").hasChildNodes();
 
     if (skipRender) return;
 
@@ -270,9 +268,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       },
     };
 
-    if (!isMobile) {
-      barConfig.parentElementId = "main-bar";
-    }
+    barConfig.parentElementId = "main-bar";
 
     Snackbar.show(barConfig);
   };

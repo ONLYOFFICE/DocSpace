@@ -351,7 +351,6 @@ class PageLayout extends React.Component {
                     unpinArticle={this.unpinArticle}
                     pinned={this.state.isArticlePinned}
                   >
-                    <div id="main-bar" style={{ display: "grid" }}></div>
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
@@ -362,12 +361,16 @@ class PageLayout extends React.Component {
                           : null}
                       </SubSectionHeader>
                     )}
+
                     {isSectionFilterAvailable && (
-                      <SubSectionFilter className="section-header_filter">
-                        {sectionFilterContent
-                          ? sectionFilterContent.props.children
-                          : null}
-                      </SubSectionFilter>
+                      <>
+                        <div id="main-bar" style={{ display: "grid" }}></div>
+                        <SubSectionFilter className="section-header_filter">
+                          {sectionFilterContent
+                            ? sectionFilterContent.props.children
+                            : null}
+                        </SubSectionFilter>
+                      </>
                     )}
                     {isSectionBodyAvailable && (
                       <>
