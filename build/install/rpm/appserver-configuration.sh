@@ -519,7 +519,7 @@ setup_kafka() {
 		echo -n "Configuring kafka... "
 		
 		local KAFKA_DIR="$(cat $SYSTEMD_DIR/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)"
-		local KAFKA_CONFDIR="${KAFKA_DIR}/config"
+		local KAFKA_CONF="${KAFKA_DIR}/config"
 
 		#Change kafka config
 		sed -i "s/clientPort=.*/clientPort=${ZOOKEEPER_PORT}/g" $KAFKA_CONF/zookeeper.properties
