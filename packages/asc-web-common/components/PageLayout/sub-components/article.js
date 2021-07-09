@@ -21,7 +21,7 @@ const StyledArticle = styled.article`
     min-width: 265px;
     height: 100% !important;
     max-width: ${(props) =>
-      props.isLoading ? "calc(100vw - 368px)" : "265px"};
+      props.firstLoad ? "265px" : "calc(100vw - 368px)"};
     box-sizing: border-box;
     overflow: hidden auto;
     display: flex;

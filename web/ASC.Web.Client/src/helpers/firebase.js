@@ -1,39 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/remote-config";
 import firebaseConfig from "../../firebase.json";
-//import "firebase/database";
-
-// Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
-
-// const remoteConfig = firebase.remoteConfig();
-// remoteConfig.settings = {
-//   fetchTimeMillis: 60000,
-//   minimumFetchIntervalMillis: 1,
-// };
-
-// remoteConfig.defaultConfig = {
-//   maintenance: null,
-// };
-
-// remoteConfig
-//   .ensureInitialized()
-//   .then(() => {
-//     console.log("Firebase Remote Config is initialized");
-//   })
-//   .catch((err) => {
-//     console.error("Firebase Remote Config failed to initialize", err);
-//   });
-
-// export const checkMaintenance = async () => {
-//   const res = await remoteConfig.fetchAndActivate();
-//   //console.log("fetchAndActivate", res);
-//   const maintenance = remoteConfig.getValue("maintenance");
-//   if (!maintenance) {
-//     return Promise.resolve(null);
-//   }
-//   return await Promise.resolve(JSON.parse(maintenance.asString()));
-// };
 
 class FirebaseHelper {
   remoteConfig = null;

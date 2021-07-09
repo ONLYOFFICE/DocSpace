@@ -320,7 +320,6 @@ class SectionHeaderContent extends React.Component {
       isRecycleBin,
       isThirdPartySelection,
       isPrivacy,
-      isOnlyFoldersSelected,
       isFavoritesFolder,
       isRecentFolder,
       isShareFolder,
@@ -385,7 +384,6 @@ class SectionHeaderContent extends React.Component {
           isFavoritesFolder ||
           isRecentFolder ||
           !isAccessedSelected ||
-          isOnlyFoldersSelected ||
           selectionCount > 1,
         onClick: this.onOpenSharingPanel,
       },
@@ -597,7 +595,6 @@ export default inject(
       isHeaderChecked,
       userAccess,
       isAccessedSelected,
-      isOnlyFoldersSelected,
       isThirdPartySelection,
       isWebEditSelected,
       setIsLoading,
@@ -640,7 +637,6 @@ export default inject(
       isHeaderChecked,
       deleteDialogVisible: userAccess,
       isAccessedSelected,
-      isOnlyFoldersSelected,
       isThirdPartySelection,
       isWebEditSelected,
       isTabletView: auth.settingsStore.isTabletView,
