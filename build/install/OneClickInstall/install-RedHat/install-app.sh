@@ -165,9 +165,9 @@ expect << EOF
 		log_user 1
 
 		if { "${UPDATE}" == "true" } {
-			spawn ${product}-configuration.sh -q -e ${ENVIRONMENT}
+			spawn ${product}-configuration.sh -e ${ENVIRONMENT}
 		} else {
-			spawn ${product}-configuration.sh -q
+			spawn ${product}-configuration.sh
 		}
 
 		expect -re "Database host:"
