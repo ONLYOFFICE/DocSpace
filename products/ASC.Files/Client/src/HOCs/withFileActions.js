@@ -156,7 +156,7 @@ export default function withFileActions(WrappedFileItem) {
         this.onFilesClick();
       } else {
         this.fileContextClick();
-        }
+      }
       this.setState({ isMouseDown: false });
     };
     onFilesClick = (e) => {
@@ -250,7 +250,8 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
-        isDesktop,        personal,
+        isDesktop,
+        personal,
         canWebEdit,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
