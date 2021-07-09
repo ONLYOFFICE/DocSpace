@@ -97,6 +97,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Mail.Aggregator.Collect
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Mail.Core", "products\ASC.Mail\Core\ASC.Mail.Core.csproj", "{C8245D05-8D7B-410D-AA0F-0FC8FF3C296B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Mail.ImapSync", "products\ASC.Mail\Services\ASC.Mail.ImapSync\ASC.Mail.ImapSync.csproj", "{301FF85E-69A7-489B-B63D-E9F34FAE8F37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -275,6 +277,10 @@ Global
 		{C8245D05-8D7B-410D-AA0F-0FC8FF3C296B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8245D05-8D7B-410D-AA0F-0FC8FF3C296B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8245D05-8D7B-410D-AA0F-0FC8FF3C296B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{301FF85E-69A7-489B-B63D-E9F34FAE8F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{301FF85E-69A7-489B-B63D-E9F34FAE8F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{301FF85E-69A7-489B-B63D-E9F34FAE8F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{301FF85E-69A7-489B-B63D-E9F34FAE8F37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
