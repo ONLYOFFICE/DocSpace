@@ -81,7 +81,7 @@ const PureTreeSettings = ({
   isLoading,
   setSelectedNode,
   setExpandSettingsTree,
-  getFilesSettings,
+
   setSelectedFolder,
   //selectedFolder,
   history,
@@ -93,11 +93,9 @@ const PureTreeSettings = ({
 
   useEffect(() => {
     setIsLoading(true);
-    getFilesSettings().then(() => {
-      setIsLoading(false);
-      setSelectedNode([setting]);
-    });
-  }, [getFilesSettings, setting, setIsLoading, setSelectedNode]);
+    setSelectedNode([setting]);
+    setIsLoading(false);
+  }, [setting, setIsLoading, setSelectedNode]);
 
   useEffect(() => {
     const { setting } = match.params;
@@ -227,7 +225,6 @@ export default inject(
     const { setSelectedFolder } = selectedFolderStore;
     const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
     const {
-      getFilesSettings,
       enableThirdParty,
       expandedSetting,
       setExpandSettingsTree,
@@ -244,7 +241,6 @@ export default inject(
       setIsLoading,
       setSelectedFolder,
       setSelectedNode,
-      getFilesSettings,
       setExpandSettingsTree,
     };
   }

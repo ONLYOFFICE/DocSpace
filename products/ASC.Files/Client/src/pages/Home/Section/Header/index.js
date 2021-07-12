@@ -323,6 +323,7 @@ class SectionHeaderContent extends React.Component {
       isFavoritesFolder,
       isRecentFolder,
       isShareFolder,
+      personal,
     } = this.props;
 
     let menu = [
@@ -443,6 +444,10 @@ class SectionHeaderContent extends React.Component {
       menu.splice(4, 1);
     }
 
+    if ((personal && !isWebEditSelected) || selectionCount > 1) {
+      menu.splice(1, 1);
+    }
+
     return menu;
   };
 
@@ -460,6 +465,7 @@ class SectionHeaderContent extends React.Component {
       canCreate,
       isDesktop,
       isTabletView,
+      personal,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -527,17 +533,19 @@ class SectionHeaderContent extends React.Component {
                           getData={this.getContextOptionsPlus}
                           isDisabled={false}
                         />
-                        <ContextMenuButton
-                          className="option-button"
-                          directionX="right"
-                          iconName="images/vertical-dots.react.svg"
-                          size={17}
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill
-                          getData={this.getContextOptionsFolder}
-                          isDisabled={false}
-                        />
+                        {!personal && (
+                          <ContextMenuButton
+                            className="option-button"
+                            directionX="right"
+                            iconName="images/vertical-dots.react.svg"
+                            size={17}
+                            color="#A3A9AE"
+                            hoverColor="#657077"
+                            isFill
+                            getData={this.getContextOptionsFolder}
+                            isDisabled={false}
+                          />
+                        )}
                       </>
                     ) : (
                       canCreate && (
@@ -633,6 +641,7 @@ export default inject(
       isWebEditSelected,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
+      personal: auth.settingsStore.personal,
 
       setSelected,
       setAction,

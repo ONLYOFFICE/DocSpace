@@ -9,10 +9,10 @@ import {
   FilesFormats,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
+import { loopTreeFolders } from "../helpers/files-helpers";
 import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
-import { loopTreeFolders } from "../helpers/files-helpers";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
 
@@ -26,6 +26,7 @@ class FilesStore {
   selectedFolderStore;
   treeFoldersStore;
   formatsStore;
+  filesSettingsStore;
 
   isLoaded = false;
   isLoading = false;
@@ -53,7 +54,8 @@ class FilesStore {
     fileActionStore,
     selectedFolderStore,
     treeFoldersStore,
-    formatsStore
+    formatsStore,
+    filesSettingsStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -66,6 +68,7 @@ class FilesStore {
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
     this.formatsStore = formatsStore;
+    this.filesSettingsStore = filesSettingsStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -123,6 +126,7 @@ class FilesStore {
     if (this.isInit) return;
 
     const { isAuthenticated } = this.authStore;
+    const { getFilesSettings } = this.filesSettingsStore;
 
     const {
       getPortalCultures,
@@ -153,6 +157,7 @@ class FilesStore {
         requests.push(getIsEncryptionSupport(), getEncryptionKeys());
       }
     }
+    requests.push(getFilesSettings());
 
     return Promise.all(requests).then(() => (this.isInit = true));
   };
@@ -406,7 +411,7 @@ class FilesStore {
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
-    const { isDesktopClient } = this.settingsStore;
+    const { isDesktopClient, personal } = this.settingsStore;
 
     if (isFile) {
       let fileOptions = [
@@ -443,6 +448,20 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (personal) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "owner-change",
+          "link-for-portal-users",
+          "docu-sign",
+          "mark-read",
+          "unsubscribe",
+        ]);
+
+        if (!this.isWebEditSelected) {
+          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+        }
+      }
 
       if (!this.isWebEditSelected) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
@@ -680,6 +699,18 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (personal) {
+        folderOptions = this.removeOptions(folderOptions, [
+          "sharing-settings",
+          "owner-change",
+          "link-for-portal-users",
+          "separator1",
+          "docu-sign",
+          "mark-read",
+          "unsubscribe",
+        ]);
+      }
 
       if (isPrivacyFolder) {
         folderOptions = this.removeOptions(folderOptions, [

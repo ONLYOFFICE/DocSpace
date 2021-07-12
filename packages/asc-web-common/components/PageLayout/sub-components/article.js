@@ -16,7 +16,7 @@ const StyledArticle = styled.article`
       `}
   }
   .resizable-block {
-    padding: 0 24px;
+    padding: 0 20px;
     background: #f8f9f9;
     min-width: 265px;
     height: 100% !important;

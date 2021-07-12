@@ -75,6 +75,7 @@ const FileRow = (props) => {
     isMedia,
     ext,
     name,
+    isPersonal,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -144,25 +145,26 @@ const FileRow = (props) => {
             <></>
           )}
           {item.fileId && !item.error ? (
-            item.action === "upload" ? (
-              <ShareButton uniqueId={item.uniqueId} />
-            ) : item.action === "convert" ? (
-              <div
-                className="upload_panel-icon"
-                data-id={item.uniqueId}
-                data-file-id={item.fileId}
-                data-action={item.action}
-                {...onCancelClick}
-              >
-                <LoadingButton
-                  isConversion
-                  inConversion={item.inConversion}
-                  percent={item.convertProgress}
-                />
-              </div>
-            ) : (
-              <></>
-            )
+            <>
+              {item.action === "upload" && !isPersonal && (
+                <ShareButton uniqueId={item.uniqueId} />
+              )}
+              {item.action === "convert" && (
+                <div
+                  className="upload_panel-icon"
+                  data-id={item.uniqueId}
+                  data-file-id={item.fileId}
+                  data-action={item.action}
+                  {...onCancelClick}
+                >
+                  <LoadingButton
+                    isConversion
+                    inConversion={item.inConversion}
+                    percent={item.convertProgress}
+                  />
+                </div>
+              )}
+            </>
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
               <LoadErrorIcon
@@ -196,7 +198,7 @@ const FileRow = (props) => {
 };
 
 export default inject(
-  ({ filesStore, formatsStore, uploadDataStore }, { item }) => {
+  ({ auth, filesStore, formatsStore, uploadDataStore }, { item }) => {
     let ext;
     let name;
     let splitted;
@@ -210,6 +212,7 @@ export default inject(
       name = splitted[0];
     }
 
+    const { personal } = auth.settingsStore;
     const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
     const {
       uploaded,
@@ -229,6 +232,7 @@ export default inject(
         : null;
 
     return {
+      isPersonal: personal,
       currentFileUploadProgress,
       uploaded,
       isMedia,
