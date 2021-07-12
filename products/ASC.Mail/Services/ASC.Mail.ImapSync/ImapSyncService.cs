@@ -21,31 +21,65 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using ASC.Core.Common.Caching;
-using ASC.Mail.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using MailKit.Security;
 using MailKit.Net.Imap;
 using MailKit.Net.Pop3;
 using ILog = ASC.Common.Logging.ILog;
-using System.ServiceProcess;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
+using ASC.Core;
+using ASC.Mail.ImapSyncService;
+using ASC.Data.Storage;
+using ASC.Mail.Core.Engine;
+using ASC.Mail.Utils;
+using ASC.Mail.Core;
+using ASC.Mail.Configuration;
 
 namespace ASC.Mail.ImapSync
 {
     public class ImapSyncService : IHostedService
     {
         private readonly ILog _log;
+        private readonly IOptionsMonitor<ILog> _options;
         private readonly CancellationTokenSource _cancelTokenSource;
         private readonly ConcurrentDictionary<string,MailImapClient> clients;
+        private readonly MailSettings _mailSettings;
 
         private readonly SemaphoreSlim CreateClientSemaphore;
         private ManualResetEvent _resetEvent;
+        
 
-        public ImapSyncService(IOptionsMonitor<ILog> options)
+        internal TenantManager TenantManager { get; }
+        internal CoreBaseSettings CoreBaseSettings { get; }
+        internal QueueManager QueueManager { get; }
+        internal MailQueueItemSettings MailQueueItemSettings { get; }
+        internal StorageFactory StorageFactory { get; }
+        internal MailEnginesFactory MailEnginesFactory { get; }
+        internal SecurityContext SecurityContext { get; }
+        internal ApiHelper ApiHelper { get; }
+        internal IMailDaoFactory MailDaoFactory { get; }
+
+        public ImapSyncService(IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            StorageFactory storageFactory,
+            MailEnginesFactory mailEnginesFactory,
+            SecurityContext securityContext,
+            ApiHelper apiHelper,
+            IMailDaoFactory mailDaoFactory)
         {
+            _options = options;
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
+            StorageFactory = storageFactory;
+            MailEnginesFactory = mailEnginesFactory;
+            SecurityContext = securityContext;
+            ApiHelper = apiHelper;
+            MailDaoFactory = mailDaoFactory;
+
             CreateClientSemaphore = new SemaphoreSlim(1, 1);
             try
             {
@@ -126,11 +160,9 @@ namespace ASC.Mail.ImapSync
 
                 if (clients.Keys.Contains(clientKey)) return;
 
-                var _engineFactory = new EngineFactory(-1);
-
                 var userMailboxesExp = new UserMailboxesExp(cashedTenantUserMailBox.Tenant, cashedTenantUserMailBox.UserName, onlyTeamlab: true);
 
-                var mailboxes = _engineFactory.MailboxEngine.GetMailboxDataList(userMailboxesExp);
+                var mailboxes = MailEnginesFactory.MailboxEngine.GetMailboxDataList(userMailboxesExp);
 
                 var mailbox = mailboxes.FirstOrDefault(x => x.MailBoxId == cashedTenantUserMailBox.MailBoxId);
 
@@ -150,7 +182,7 @@ namespace ASC.Mail.ImapSync
 
         private void CreateMailClient(MailBoxData mailbox, string clientKey)
         {
-            var log = LogManager.GetLogger($"ASC.Mail.ImapSyncService.Mbox_{mailbox.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}");
+            var log = _options.Get($"ASC.Mail.ImapSyncService.Mbox_{mailbox.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}");
 
             MailImapClient client = null;
 
@@ -158,8 +190,7 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                client = new MailImapClient(mailbox, _cancelTokenSource.Token, _tasksConfig,
-                   mailbox.IsTeamlab || _tasksConfig.SslCertificateErrorsPermit, _tasksConfig.ProtocolLogPath, log);
+                client = new MailImapClient(mailbox, _cancelTokenSource.Token, MailEnginesFactory, log);
 
                 log.DebugFormat("MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1} Address = '{2}')",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
@@ -240,7 +271,7 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private static void SetMailboxAuthError(MailBoxData mailbox, ILog log)
+        private void SetMailboxAuthError(MailBoxData mailbox, ILog log)
         {
             try
             {
@@ -249,8 +280,7 @@ namespace ASC.Mail.ImapSync
 
                 mailbox.AuthErrorDate = DateTime.UtcNow;
 
-                var engine = new EngineFactory(mailbox.TenantId);
-                engine.MailboxEngine.SetMaiboxAuthError(mailbox.MailBoxId, mailbox.AuthErrorDate.Value);
+                MailEnginesFactory.MailboxEngine.SetMaiboxAuthError(mailbox.MailBoxId, mailbox.AuthErrorDate.Value);
             }
             catch (Exception ex)
             {
