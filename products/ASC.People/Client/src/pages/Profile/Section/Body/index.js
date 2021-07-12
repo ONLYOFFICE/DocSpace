@@ -340,8 +340,8 @@ class SectionBodyContent extends React.PureComponent {
       isSelf,
       providers,
       backupCodes,
+      personal,
     } = this.props;
-
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
     const socialContacts =
@@ -393,7 +393,7 @@ class SectionBodyContent extends React.PureComponent {
           //culture={culture}
         />
 
-        {isSelf && this.oauthDataExists() && (
+        {!personal && isSelf && this.oauthDataExists() && (
           <ToggleWrapper>
             <ToggleContent label={t("LoginSettings")} isOpen={true}>
               <ProviderButtonsWrapper>
@@ -402,7 +402,7 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {isSelf && false && (
+        {!personal && isSelf && false && (
           <ToggleWrapper isSelf={true}>
             <ToggleContent label={t("Subscriptions")} isOpen={true}>
               <Text as="span">
@@ -535,6 +535,7 @@ export default withRouter(
       backupCodes,
       setBackupCodes,
       setIsEditTargetUser,
+      personal: auth.settingsStore.personal,
     };
   })(
     observer(

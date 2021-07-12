@@ -64,13 +64,13 @@ namespace ASC.Core
             get
             {
                 //TODO:if (CustomMode && HttpContext.Current != null && HttpContext.Current.Request.SailfishApp()) return true;
-                return personal ?? (bool)(personal = Configuration["core.personal"] == "true");
+                return personal ?? (bool)(personal = string.Compare(Configuration["core:personal"], "true", true) == 0);
             }
         }
 
         public bool CustomMode
         {
-            get { return customMode ?? (bool)(customMode = Configuration["core.custom-mode"] == "true"); }
+            get { return customMode ?? (bool)(customMode = string.Compare(Configuration["core:custom-mode"], "true", true) == 0); }
         }
     }
 
@@ -268,7 +268,7 @@ namespace ASC.Core
                 return personalMaxSpace.Value;
 
 
-            if (!long.TryParse(Configuration["core.personal.maxspace"], out var value))
+            if (!long.TryParse(Configuration["core:personal.maxspace"], out var value))
                 value = long.MaxValue;
 
             personalMaxSpace = value;

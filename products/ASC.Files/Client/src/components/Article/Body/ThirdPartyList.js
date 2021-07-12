@@ -21,7 +21,7 @@ const StyledThirdParty = styled.div`
   .tree-thirdparty-list {
     padding-top: 3px;
     display: flex;
-    max-width: 200px;
+    max-width: inherit;
 
     div {
       height: 26px;
