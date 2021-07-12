@@ -189,6 +189,8 @@ namespace ASC.Mail.Configuration
 
         public int ImapClienLifeTimeSecond { get; set; }
 
+        public string RedisConnectionString { get; set; }
+
         #endregion
 
         #region from taskConfig
@@ -437,9 +439,11 @@ namespace ASC.Mail.Configuration
 
             ImapBoxPerInstance = c.ImapBoxPerInstance==0 ? 100: c.ImapBoxPerInstance;
 
-            ImapClienLifeTimeSecond = c.ImapClienLifeTimeSecond==0 ? 600: c.ImapClienLifeTimeSecond;
+            ImapClienLifeTimeSecond = c.ImapClienLifeTimeSecond==0 ? 600000: c.ImapClienLifeTimeSecond;
 
-        //Set values from MailQueueItemSettings later
+            RedisConnectionString = string.IsNullOrEmpty(c.RedisConnectionString) ? "localhost:6379" : c.RedisConnectionString;
+
+            //Set values from MailQueueItemSettings later
             ImapFlags = new Dictionary<string, int>();
             SkipImapFlags = new string[] { };
             SpecialDomainFolders = new Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>>();

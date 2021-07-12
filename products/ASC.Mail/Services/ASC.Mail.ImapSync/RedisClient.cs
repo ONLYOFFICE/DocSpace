@@ -6,7 +6,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Mail.Configuration;
 
 using Microsoft.Extensions.Options;
 
@@ -18,8 +20,10 @@ using StackExchange.Redis.Extensions.Core;
 
 namespace ASC.Mail.ImapSync
 {
+    [Singletone]
     public class RedisClient
     {
+        private readonly MailSettings _mailSettings;
         private readonly StackExchangeRedisCacheClient redis;
 
         private ILog _log;
@@ -28,11 +32,13 @@ namespace ASC.Mail.ImapSync
         public const string RedisClientQueuesKey = RedisClientPrefix + "Queues";
 
 
-        public RedisClient(IOptionsMonitor<ILog> options)
+        public RedisClient(IOptionsMonitor<ILog> options, MailSettings mailSettings)
         {
             _log = options.Get("ASC.Mail.RedisClient");
 
-            redis = new StackExchangeRedisCacheClient();
+            _mailSettings = mailSettings;
+
+            redis = new StackExchangeRedisCacheClient(new Serializer(), _mailSettings.RedisConnectionString);
         }
 
         public string CreateQueueKey(int MailBoxId)

@@ -102,6 +102,7 @@ namespace ASC.Mail.ImapSync
                 diHelper.TryAdd<ImapSyncService>();
                 services.AddSingleton<ImapSyncService>();
                 services.AddHostedService<ImapSyncService>();
+                services.AddSingleton<RedisClient>();
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 services.AddStackExchangeRedisCache(options =>
                 {

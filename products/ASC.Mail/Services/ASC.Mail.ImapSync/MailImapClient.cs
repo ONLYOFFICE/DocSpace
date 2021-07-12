@@ -43,6 +43,7 @@ using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Security;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using MimeKit;
@@ -57,6 +58,7 @@ namespace ASC.Mail.ImapSync
         private readonly MailSettings _mailSettings;
         private readonly MailInfoDao _mailInfoDao;
         private readonly IOptionsMonitor<ILog> _options;
+        private readonly IServiceProvider _serviceProvider;
 
         const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Flags | MessageSummaryItems.Envelope|MessageSummaryItems.BodyStructure;
 
@@ -113,7 +115,7 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        public async void CheckRedis(int folderActivity, IEnumerable<int> tags)
+        public async void CheckRedis(int folderActivity, IEnumerable<int> tags, RedisClient _redisClient)
         {
             var activFolder = (FolderType)folderActivity;
 
@@ -127,16 +129,16 @@ namespace ASC.Mail.ImapSync
 
             if (ClientIsReadyToWork)
             {
-                await ProcessActionFromRedis();
+                await ProcessActionFromRedis(_redisClient);
             }
         }
 
-        public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailEnginesFactory mailEnginesFactory, MailSettings mailSettings, MailInfoDao mailInfoDao, IOptionsMonitor<ILog> options, ILog log = null)
+        public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailEnginesFactory mailEnginesFactory, MailSettings mailSettings, MailInfoDao mailInfoDao, IOptionsMonitor<ILog> options,IServiceProvider serviceProvider, ILog log = null)
         {
             _options = options;
-            _mailEnginesFactory = mailEnginesFactory;
             _mailSettings = mailSettings;
-            _mailInfoDao = mailInfoDao;
+
+            var clientScope = serviceProvider.CreateScope().ServiceProvider;
 
             var protocolLogger = !string.IsNullOrEmpty(_mailSettings.ProtocolLogPath)
                 ? (IProtocolLogger)
@@ -146,6 +148,18 @@ namespace ASC.Mail.ImapSync
             imapMessagesToUpdate = new ConcurrentQueue<int>();
             imapFoldersToUpdate = new ConcurrentQueue<IMailFolder>();
             //simpleImapClients = new List<SimpleImapClient>();
+
+            var tenantManager = clientScope.GetService<TenantManager>();
+
+            tenantManager.SetCurrentTenant(mailbox.TenantId);
+
+            var securityContext= clientScope.GetService<SecurityContext>();
+            securityContext.AuthenticateMe(new Guid(mailbox.UserId));
+
+            _mailEnginesFactory = clientScope.GetService<MailEnginesFactory>();
+            _mailInfoDao = clientScope.GetService<MailInfoDao>();
+
+            //securityContext.AuthenticateMe(new Guid(mailbox.UserId));
 
             Account = mailbox;
 
@@ -164,7 +178,7 @@ namespace ASC.Mail.ImapSync
 
 
             //if (certificatePermit)
-                Imap.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+            //    Imap.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
             Imap.Disconnected += Imap_Disconnected;
 
@@ -198,6 +212,10 @@ namespace ASC.Mail.ImapSync
                 {
                     await SynchronizeMailFolderFromImap(foldersDictionaryItem.Key, foldersDictionaryItem.Value);
                 }
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"CreateConnection->Error: {ex.Message}");
             }
             finally
             {
@@ -418,9 +436,9 @@ namespace ASC.Mail.ImapSync
             return new List<IMailFolder>();
         }
 
-        private async Task ProcessActionFromRedis()
+        private async Task ProcessActionFromRedis(RedisClient _redisClient)
         {
-            var cache = new RedisClient(_options);
+            var cache = _redisClient;
 
             if (cache == null) return;
 
@@ -832,24 +850,21 @@ namespace ASC.Mail.ImapSync
 
                 Log.Info($"Get message (UIDL: '{uidl}', MailboxId = {Account.MailBoxId}, Address = '{Account.EMail}')");
 
-                //CoreContext.TenantManager.SetCurrentTenant(Account.TenantId);
-                //SecurityContext.AuthenticateMe(new Guid(Account.UserId));
+                var messageDB = _mailEnginesFactory.MessageEngine.Save(Account, message, uidl, folder, null, unread, Log);
 
-                //var messageDB = MessageEngine.Save(Account, message, uidl, folder, null, unread, Log);
+                if (messageDB == null || messageDB.Id <= 0)
+                {
+                    result = false;
+                    return result;
+                }
 
-                //if (messageDB == null || messageDB.Id <= 0)
-                //{
-                //    result = false;
-                //    return result;
-                //}
+                Log.Info($"Message saved (id: {messageDB.Id}, From: '{messageDB.From}', Subject: '{messageDB.Subject}', Unread: {messageDB.IsNew})");
 
-                //Log.Info($"Message saved (id: {messageDB.Id}, From: '{messageDB.From}', Subject: '{messageDB.Subject}', Unread: {messageDB.IsNew})");
+                Log.Info("DoOptionalOperations->START");
 
-                //Log.Info("DoOptionalOperations->START");
+                DoOptionalOperations(messageDB, message, Account, folder, Log);
 
-                //DoOptionalOperations(messageDB, message, Account, folder, Log);
-
-                //Log.Info("DoOptionalOperations->END");
+                Log.Info("DoOptionalOperations->END");
             }
             catch (Exception ex)
             {
@@ -1050,7 +1065,7 @@ namespace ASC.Mail.ImapSync
                 new KeyValuePair<string, object>("isFailed", failed));
         }
 
-        private void DoOptionalOperations(MailMessageData message, MimeMessage mimeMessage, MailBoxData mailbox, MailFolder folder, ILog log, MailEnginesFactory mailFactory)
+        private void DoOptionalOperations(MailMessageData message, MimeMessage mimeMessage, MailBoxData mailbox, MailFolder folder, ILog log)
         {
             try
             {
@@ -1060,7 +1075,7 @@ namespace ASC.Mail.ImapSync
                 {
                     log.Debug("DoOptionalOperations->GetOrCreateTags()");
 
-                    tagIds = mailFactory.TagEngine.GetOrCreateTags(mailbox.TenantId, mailbox.UserId, folder.Tags);
+                    tagIds = _mailEnginesFactory.TagEngine.GetOrCreateTags(mailbox.TenantId, mailbox.UserId, folder.Tags);
                 }
 
                 log.Debug("DoOptionalOperations->IsCrmAvailable()");
@@ -1094,7 +1109,7 @@ namespace ASC.Mail.ImapSync
 
                 var wrapper = message.ToMailWrapper(mailbox.TenantId, new Guid(mailbox.UserId));
 
-                mailFactory.IndexEngine.Add(wrapper);
+                _mailEnginesFactory.IndexEngine.Add(wrapper);
 
                 foreach (var tagId in tagIds)
                 {
@@ -1102,7 +1117,7 @@ namespace ASC.Mail.ImapSync
                     {
                         log.DebugFormat("DoOptionalOperations->SetMessagesTag(tagId: {0})", tagId);
 
-                        mailFactory.TagEngine.SetMessagesTag(new List<int> { message.Id }, tagId);
+                        _mailEnginesFactory.TagEngine.SetMessagesTag(new List<int> { message.Id }, tagId);
                     }
                     catch (Exception e)
                     {
@@ -1115,21 +1130,21 @@ namespace ASC.Mail.ImapSync
 
                 log.Debug("DoOptionalOperations->AddRelationshipEventForLinkedAccounts()");
 
-                mailFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message, _mailSettings.DefaultApiSchema);
+                _mailEnginesFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message, _mailSettings.DefaultApiSchema);
 
                 log.Debug("DoOptionalOperations->SaveEmailInData()");
 
-                mailFactory.EmailInEngine.SaveEmailInData(mailbox, message, _mailSettings.DefaultApiSchema);
+                _mailEnginesFactory.EmailInEngine.SaveEmailInData(mailbox, message, _mailSettings.DefaultApiSchema);
 
                 log.Debug("DoOptionalOperations->SendAutoreply()");
 
-                mailFactory.AutoreplyEngine.SendAutoreply(mailbox, message, _mailSettings.DefaultApiSchema, log);
+                _mailEnginesFactory.AutoreplyEngine.SendAutoreply(mailbox, message, _mailSettings.DefaultApiSchema, log);
 
                 log.Debug("DoOptionalOperations->UploadIcsToCalendar()");
 
                 if (folder.Folder != Enums.FolderType.Spam)
                 {
-                    mailFactory
+                    _mailEnginesFactory
                         .CalendarEngine
                         .UploadIcsToCalendar(mailbox, message.CalendarId, message.CalendarUid, message.CalendarEventIcs,
                             message.CalendarEventCharset, message.CalendarEventMimeType, mailbox.EMail.Address,

@@ -51,6 +51,8 @@ namespace ASC.Mail.ImapSync
         private readonly ConcurrentDictionary<string,MailImapClient> clients;
         private readonly MailSettings _mailSettings;
         private readonly MailInfoDao _mailInfoDao;
+        private readonly RedisClient _redisClient;
+        private readonly IServiceProvider _serviceProvider;
 
         private readonly SemaphoreSlim CreateClientSemaphore;
         private ManualResetEvent _resetEvent;
@@ -72,10 +74,16 @@ namespace ASC.Mail.ImapSync
             SecurityContext securityContext,
             ApiHelper apiHelper,
             IMailDaoFactory mailDaoFactory,
-            MailInfoDao mailInfoDao)
+            MailInfoDao mailInfoDao,
+            RedisClient redisClient,
+            MailSettings mailSettings,
+            IServiceProvider serviceProvider)
         {
             _mailInfoDao = mailInfoDao;
             _options = options;
+            _redisClient = redisClient;
+            _mailSettings = mailSettings;
+            _serviceProvider = serviceProvider;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             StorageFactory = storageFactory;
@@ -110,7 +118,7 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                var cache = new RedisClient(_options);
+                var cache = _redisClient;
 
                 if (cache == null)
                 {
@@ -139,7 +147,7 @@ namespace ASC.Mail.ImapSync
             {
                 if(clients[clientKey]!=null)
                 {
-                    clients[clientKey]?.CheckRedis(cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
+                    clients[clientKey]?.CheckRedis(cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags, _redisClient);
 
                     _log.Info($"ImapSyncService. User Activity -> {cashedTenantUserMailBox.MailBoxId}, clients.Count={clients.Count} ");
 
@@ -186,7 +194,9 @@ namespace ASC.Mail.ImapSync
 
         private void CreateMailClient(MailBoxData mailbox, string clientKey)
         {
-            var log = _options.Get($"ASC.Mail.ImapSyncService.Mbox_{mailbox.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}");
+            var log = _options.Get("ACS");
+
+            log.Name = $"ASC.Mail.ImapSync.Mbox_{mailbox.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}";
 
             MailImapClient client = null;
 
@@ -194,7 +204,7 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                client = new MailImapClient(mailbox, _cancelTokenSource.Token, MailEnginesFactory, _mailSettings, _mailInfoDao, _options, log);
+                client = new MailImapClient(mailbox, _cancelTokenSource.Token, MailEnginesFactory, _mailSettings, _mailInfoDao, _options, _serviceProvider, log);
 
                 log.DebugFormat("MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1} Address = '{2}')",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
