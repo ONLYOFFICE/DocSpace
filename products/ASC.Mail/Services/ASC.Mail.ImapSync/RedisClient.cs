@@ -13,6 +13,9 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+using StackExchange.Redis;
+using StackExchange.Redis.Extensions.Core;
+
 namespace ASC.Mail.ImapSync
 {
     public class RedisClient
@@ -28,6 +31,8 @@ namespace ASC.Mail.ImapSync
         public RedisClient(IOptionsMonitor<ILog> options)
         {
             _log = options.Get("ASC.Mail.RedisClient");
+
+            redis = new StackExchangeRedisCacheClient();
         }
 
         public string CreateQueueKey(int MailBoxId)
@@ -155,7 +160,7 @@ namespace ASC.Mail.ImapSync
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC").Error("RedisClient Serialize", e);
+                    //LogManager.GetLogger("ASC").Error("RedisClient Serialize", e);
                     throw;
                 }
             }
@@ -171,7 +176,7 @@ namespace ASC.Mail.ImapSync
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC").Error("RedisClient Deserialize", e);
+                    //LogManager.GetLogger("ASC").Error("RedisClient Deserialize", e);
                     throw;
                 }
             }
@@ -187,7 +192,7 @@ namespace ASC.Mail.ImapSync
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC").Error("RedisClient Deserialize<T>", e);
+                    //LogManager.GetLogger("ASC").Error("RedisClient Deserialize<T>", e);
                     throw;
                 }
             }

@@ -71,15 +71,15 @@ namespace ASC.Mail.ImapSync
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
-                        .AddJsonFile($"storage.{env}.json")
+                        //.AddJsonFile($"storage.{env}.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("backup.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile("mail.json")
-                        .AddJsonFile($"mail.{env}.json")
+                        //.AddJsonFile($"mail.{env}.json")
                         .AddJsonFile("elastic.json")
-                        .AddJsonFile($"elastic.{env}.json")
-                        .AddJsonFile($"kafka.{env}.json", true)
+                        //.AddJsonFile($"elastic.{env}.json")
+                        //.AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
@@ -100,6 +100,7 @@ namespace ASC.Mail.ImapSync
                     "ASC.Core.Common.Cache");
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 diHelper.TryAdd<ImapSyncService>();
+                services.AddSingleton<ImapSyncService>();
                 services.AddHostedService<ImapSyncService>();
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 services.AddStackExchangeRedisCache(options =>

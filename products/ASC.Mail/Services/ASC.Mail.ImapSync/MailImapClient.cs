@@ -30,6 +30,7 @@ using ASC.Core;
 using ASC.Core.Common.Caching;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core;
+using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Entities;
@@ -42,9 +43,11 @@ using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Security;
 
+using Microsoft.Extensions.Options;
+
 using MimeKit;
 
-using MailFolder = ASC.Mail.Data.Contracts.MailFolder;
+using MailFolder = ASC.Mail.Models.MailFolder;
 
 namespace ASC.Mail.ImapSync
 {
@@ -52,6 +55,8 @@ namespace ASC.Mail.ImapSync
     {
         private readonly MailEnginesFactory _mailEnginesFactory;
         private readonly MailSettings _mailSettings;
+        private readonly MailInfoDao _mailInfoDao;
+        private readonly IOptionsMonitor<ILog> _options;
 
         const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Flags | MessageSummaryItems.Envelope|MessageSummaryItems.BodyStructure;
 
@@ -126,10 +131,12 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailEnginesFactory mailEnginesFactory, MailSettings mailSettings, ILog log = null)
+        public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailEnginesFactory mailEnginesFactory, MailSettings mailSettings, MailInfoDao mailInfoDao, IOptionsMonitor<ILog> options, ILog log = null)
         {
+            _options = options;
             _mailEnginesFactory = mailEnginesFactory;
             _mailSettings = mailSettings;
+            _mailInfoDao = mailInfoDao;
 
             var protocolLogger = !string.IsNullOrEmpty(_mailSettings.ProtocolLogPath)
                 ? (IProtocolLogger)
@@ -144,7 +151,7 @@ namespace ASC.Mail.ImapSync
 
             Log = log ?? new NullLog();
 
-            crmAvailable = mailbox.IsCrmAvailable(_mailSettings.DefaultApiSchema, Log);
+            crmAvailable = false;// mailbox.IsCrmAvailable(_mailSettings.DefaultApiSchema, Log);
 
             StopTokenSource = new CancellationTokenSource();
 
@@ -156,14 +163,14 @@ namespace ASC.Mail.ImapSync
             };
 
 
-            if (certificatePermit)
+            //if (certificatePermit)
                 Imap.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
             Imap.Disconnected += Imap_Disconnected;
 
             ImapSemaphore = new SemaphoreSlim(1, 1);
 
-            _deathTimer = new Timer(_deathTimer_Elapsed, this, _mailSettings.ClientLifetime, -1);
+            _deathTimer = new Timer(_deathTimer_Elapsed, this, _mailSettings.ImapClienLifeTimeSecond, -1);
 
             _ = CreateConnection();
         }
@@ -413,7 +420,7 @@ namespace ASC.Mail.ImapSync
 
         private async Task ProcessActionFromRedis()
         {
-            var cache = new RedisClient();
+            var cache = new RedisClient(_options);
 
             if (cache == null) return;
 
@@ -469,15 +476,11 @@ namespace ASC.Mail.ImapSync
 
                 var imap_SplittedUids = imap_messages.Select(x => new SplittedUidl(folder, x.UniqueId)).ToList();
 
-                using (DaoFactory daoFactory = new DaoFactory())
-                {
-                    var daoMailInfo = daoFactory.CreateMailInfoDao(Account.TenantId, Account.UserId);
-
                     var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
                         .SetMessageUids(imap_SplittedUids.Select(x => x.Uidl).ToList())
                         .SetMailboxId(Account.MailBoxId);
 
-                    var db_messages = daoMailInfo.GetMailInfoList(exp.Build()).ToList();
+                    var db_messages = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
 
                     foreach (var imap_message in imap_messages)
                     {
@@ -488,7 +491,7 @@ namespace ASC.Mail.ImapSync
                         SynchronizeMessageFlagsFromImap(imap_message, db_message);
                     }
 
-                }
+                
             }
             catch (Exception ex)
             {
@@ -510,97 +513,91 @@ namespace ASC.Mail.ImapSync
 
                 var imap_SplittedUids = imap_messages.Select(x => new SplittedUidl(dbFolder.Folder, x.UniqueId)).ToList();
 
-                EngineFactory engineFactory = new EngineFactory(Account.TenantId, Account.UserId);
+                var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                    .SetMessageUids(imap_SplittedUids.Select(x => x.Uidl).ToList())
+                    .SetMailboxId(Account.MailBoxId);
 
-                using (DaoFactory daoFactory = new DaoFactory())
+                var db_messages = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
+
+                Log.Debug($"SynchronizeMailFolderFromImap is Begin: imap_messages={imap_messages.Count}, db_messages={db_messages.Count}");
+
+                foreach (var imap_message in imap_messages)
                 {
-                    var daoMailInfo = daoFactory.CreateMailInfoDao(Account.TenantId, Account.UserId);
+                    var db_message = db_messages.FirstOrDefault(x => x.Uidl == SplittedUidl.ToUidl(dbFolder.Folder, imap_message.UniqueId));
 
-                    var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                        .SetMessageUids(imap_SplittedUids.Select(x => x.Uidl).ToList())
+                    if (db_message != null)
+                    {
+                        SynchronizeMessageFlagsFromImap(imap_message, db_message);
+
+                        if (db_message.Folder != dbFolder.Folder)
+                        {
+                            _mailEnginesFactory.MessageEngine.SetFolder(new List<int>() { db_message.Id }, dbFolder.Folder);
+                        }
+
+                        db_messages.Remove(db_message);
+
+                        continue;
+                    }
+
+                    string md5 = await GetMessageMD5FromIMAP(imap_message, imapFolder);
+
+                    var expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                        .SetMd5(md5)
                         .SetMailboxId(Account.MailBoxId);
 
-                    var db_messages = daoMailInfo.GetMailInfoList(exp.Build()).ToList();
+                    db_message = _mailInfoDao.GetMailInfoList(expMd5.Build()).FirstOrDefault();
 
-                    Log.Debug($"SynchronizeMailFolderFromImap is Begin: imap_messages={imap_messages.Count}, db_messages={db_messages.Count}");
-
-                    foreach (var imap_message in imap_messages)
+                    if (db_message == null)
                     {
-                        var db_message = db_messages.FirstOrDefault(x => x.Uidl == SplittedUidl.ToUidl(dbFolder.Folder, imap_message.UniqueId));
+                        expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId, true)
+                            .SetMd5(md5)
+                            .SetMailboxId(Account.MailBoxId);
 
-                        if (db_message != null)
+                        db_message = _mailInfoDao.GetMailInfoList(expMd5.Build()).FirstOrDefault();
+                        if (db_message == null)
                         {
-                            SynchronizeMessageFlagsFromImap(imap_message, db_message);
+                            Log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. md5={expMd5}");
 
-                            if (db_message.Folder != dbFolder.Folder)
-                            {
-                                engineFactory.MessageEngine.SetFolder(new List<int>() { db_message.Id }, dbFolder.Folder);
-                            }
-
-                            db_messages.Remove(db_message);
+                            await CreateMessageInDB(imap_message, imapFolder);
 
                             continue;
                         }
 
-                        string md5 = await GetMessageMD5FromIMAP(imap_message, imapFolder);
-
-                        var expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                            .SetMd5(md5)
-                            .SetMailboxId(Account.MailBoxId);
-
-                        db_message = daoMailInfo.GetMailInfoList(expMd5.Build()).FirstOrDefault();
-
-                        if (db_message == null)
-                        {
-                            expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId, true)
-                                .SetMd5(md5)
-                                .SetMailboxId(Account.MailBoxId);
-
-                            db_message = daoMailInfo.GetMailInfoList(expMd5.Build()).FirstOrDefault();
-                            if (db_message == null)
-                            {
-                                Log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. md5={expMd5}");
-
-                                await CreateMessageInDB(imap_message, imapFolder);
-
-                                continue;
-                            }
-                            
-                        }
-
-                        if (db_message.IsRemoved)
-                        {
-                            Log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} was remove in DB. md5={expMd5}");
-
-                            var restoreQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                                .SetMessageId(db_message.Id)
-                                .Build();
-
-                            daoMailInfo.SetFieldValue(restoreQuery, MailTable.Columns.IsRemoved, false);
-
-                            engineFactory.MessageEngine.Restore(new List<int>() { db_message.Id });
-                        }
-
-                        if (db_message.Folder != dbFolder.Folder)
-                        {
-                            engineFactory.MessageEngine.SetFolder(new List<int>() { db_message.Id }, dbFolder.Folder);
-                        }
-
-                        var updateQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                                .SetMessageId(db_message.Id)
-                                .Build();
-
-                        daoMailInfo.SetFieldValue(updateQuery, MailTable.Columns.Uidl, SplittedUidl.ToUidl(dbFolder.Folder, imap_message.UniqueId));
-
-                        SynchronizeMessageFlagsFromImap(imap_message, db_message);
                     }
 
-                    var messageToRemove = db_messages.Select(x => x.Id).ToList();
+                    if (db_message.IsRemoved)
+                    {
+                        Log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} was remove in DB. md5={expMd5}");
 
-                    if(messageToRemove.Any()) engineFactory.MessageEngine.SetRemoved(messageToRemove);
+                        var restoreQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                            .SetMessageId(db_message.Id)
+                            .Build();
+
+                        //_mailInfoDao.SetFieldValue(restoreQuery, MailTable.Columns.IsRemoved, false);
+
+                        _mailEnginesFactory.MessageEngine.Restore(new List<int>() { db_message.Id });
+                    }
+
+                    if (db_message.Folder != dbFolder.Folder)
+                    {
+                        _mailEnginesFactory.MessageEngine.SetFolder(new List<int>() { db_message.Id }, dbFolder.Folder);
+                    }
+
+                    var updateQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                            .SetMessageId(db_message.Id)
+                            .Build();
+
+                    _mailInfoDao.SetFieldValue(updateQuery, "Uidl", SplittedUidl.ToUidl(dbFolder.Folder, imap_message.UniqueId));
+
+                    SynchronizeMessageFlagsFromImap(imap_message, db_message);
                 }
+
+                var messageToRemove = db_messages.Select(x => x.Id).ToList();
+
+                if (messageToRemove.Any()) _mailEnginesFactory.MessageEngine.SetRemoved(messageToRemove);
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error($"SynchronizeMailFolderFromImap(IMailFolder={imapFolder.Name}, MailFolder={dbFolder.Name})->{ex.Message}");
 
@@ -635,7 +632,7 @@ namespace ASC.Mail.ImapSync
 
         public async Task<bool> MoveMessageInImap(List<SplittedUidl> uidlListSplitted, int destination)
         {
-            if (uidlListSplitted.Count==0) return false;
+            if (uidlListSplitted.Count == 0) return false;
 
             DoneToken?.Cancel();
 
@@ -647,7 +644,7 @@ namespace ASC.Mail.ImapSync
 
                 if (imapFolder == null) return false;
 
-                var imapFolderDestination= foldersDictionary.Where(x => x.Value.Folder == (FolderType)destination).Select(x => x.Key).FirstOrDefault();
+                var imapFolderDestination = foldersDictionary.Where(x => x.Value.Folder == (FolderType)destination).Select(x => x.Key).FirstOrDefault();
 
                 if (imapFolderDestination == null) return false;
 
@@ -657,32 +654,26 @@ namespace ASC.Mail.ImapSync
                 Imap.Inbox.MessageFlagsChanged -= ImapMessageFlagsChanged;
 
 
-                var returnedUidl=await imapFolder.MoveToAsync(uidlListSplitted.Select(x=>x.UniqueId).ToList(), imapFolderDestination);
+                var returnedUidl = await imapFolder.MoveToAsync(uidlListSplitted.Select(x => x.UniqueId).ToList(), imapFolderDestination);
 
-                using (DaoFactory daoFactory = new DaoFactory())
+                var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                    .SetMessageUids(uidlListSplitted.Select(x => x.Uidl).ToList())
+                    .SetMailboxId(Account.MailBoxId);
+
+                var db_messages = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
+
+                foreach (var item in returnedUidl)
                 {
-                    var daoMailInfo = daoFactory.CreateMailInfoDao(Account.TenantId, Account.UserId);
+                    var db_message = db_messages.FirstOrDefault(x => x.Uidl.StartsWith(item.Key.ToString()));
 
-                    var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                        .SetMessageUids(uidlListSplitted.Select(x => x.Uidl).ToList())
-                        .SetMailboxId(Account.MailBoxId);
+                    if (db_message == null) continue;
 
-                    var db_messages = daoMailInfo.GetMailInfoList(exp.Build()).ToList();
+                    var updateQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                        .SetMessageId(db_message.Id)
+                        .Build();
 
-                    foreach (var item in returnedUidl)
-                    {
-                        var db_message = db_messages.FirstOrDefault(x => x.Uidl.StartsWith(item.Key.ToString()));
-
-                        if (db_message == null) continue;
-
-                        var updateQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                            .SetMessageId(db_message.Id)
-                            .Build();
-
-                        daoMailInfo.SetFieldValue(updateQuery, "uidl", SplittedUidl.ToUidl((FolderType)destination, item.Value));
-                    }
+                    _mailInfoDao.SetFieldValue(updateQuery, "uidl", SplittedUidl.ToUidl((FolderType)destination, item.Value));
                 }
-                
 
                 Log.Debug($"MoveMessageInImap->{Account.MailBoxId} MoveTo {imapFolder}. MessagesCount={uidlListSplitted.Count}, MessagesMoved.Count: {returnedUidl.Count}");
 
@@ -787,21 +778,16 @@ namespace ASC.Mail.ImapSync
         {
             try
             {
-                using (var daoFactory = new DaoFactory())
+                var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                    .SetMailboxId(Account.MailBoxId)
+                    .SetFolder((int)dbFolder.Folder);
+
+                if (!String.IsNullOrEmpty(md5))
                 {
-                    var daoMailInfo = daoFactory.CreateMailInfoDao(Account.TenantId, Account.UserId);
-
-                    var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                        .SetMailboxId(Account.MailBoxId)
-                        .SetFolder((int)dbFolder.Folder);
-
-                    if (!String.IsNullOrEmpty(md5))
-                    {
-                        exp = exp.SetMd5(md5);
-                    }
-
-                    return daoMailInfo.GetMailInfoList(exp.Build()).ToList();
+                    exp = exp.SetMd5(md5);
                 }
+
+                return _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
             }
             catch (Exception ex)
             {
@@ -846,24 +832,24 @@ namespace ASC.Mail.ImapSync
 
                 Log.Info($"Get message (UIDL: '{uidl}', MailboxId = {Account.MailBoxId}, Address = '{Account.EMail}')");
 
-                CoreContext.TenantManager.SetCurrentTenant(Account.TenantId);
-                SecurityContext.AuthenticateMe(new Guid(Account.UserId));
+                //CoreContext.TenantManager.SetCurrentTenant(Account.TenantId);
+                //SecurityContext.AuthenticateMe(new Guid(Account.UserId));
 
-                var messageDB = MessageEngine.Save(Account, message, uidl, folder, null, unread, Log);
+                //var messageDB = MessageEngine.Save(Account, message, uidl, folder, null, unread, Log);
 
-                if (messageDB == null || messageDB.Id <= 0)
-                {
-                    result = false;
-                    return result;
-                }
+                //if (messageDB == null || messageDB.Id <= 0)
+                //{
+                //    result = false;
+                //    return result;
+                //}
 
-                Log.Info($"Message saved (id: {messageDB.Id}, From: '{messageDB.From}', Subject: '{messageDB.Subject}', Unread: {messageDB.IsNew})");
+                //Log.Info($"Message saved (id: {messageDB.Id}, From: '{messageDB.From}', Subject: '{messageDB.Subject}', Unread: {messageDB.IsNew})");
 
-                Log.Info("DoOptionalOperations->START");
+                //Log.Info("DoOptionalOperations->START");
 
-                DoOptionalOperations(messageDB, message, Account, folder, Log);
+                //DoOptionalOperations(messageDB, message, Account, folder, Log);
 
-                Log.Info("DoOptionalOperations->END");
+                //Log.Info("DoOptionalOperations->END");
             }
             catch (Exception ex)
             {
@@ -936,18 +922,18 @@ namespace ASC.Mail.ImapSync
                 return null; // Skip folders
             }
 
-            if (tasksConfig.ImapFlags != null &&
-                tasksConfig.ImapFlags.Any() &&
-                tasksConfig.ImapFlags.ContainsKey(folderName))
+            if (_mailSettings.ImapFlags != null &&
+                _mailSettings.ImapFlags.Any() &&
+                _mailSettings.ImapFlags.ContainsKey(folderName))
             {
-                folderId = (FolderType)tasksConfig.ImapFlags[folderName];
+                folderId = (FolderType)_mailSettings.ImapFlags[folderName];
                 return new MailFolder(folderId, folder.Name);
             }
 
-            if (tasksConfig.SpecialDomainFolders.Any() &&
-                tasksConfig.SpecialDomainFolders.ContainsKey(Account.Server))
+            if (_mailSettings.SpecialDomainFolders.Any() &&
+                _mailSettings.SpecialDomainFolders.ContainsKey(Account.Server))
             {
-                var domainSpecialFolders = tasksConfig.SpecialDomainFolders[Account.Server];
+                var domainSpecialFolders = _mailSettings.SpecialDomainFolders[Account.Server];
 
                 if (domainSpecialFolders.Any() &&
                     domainSpecialFolders.ContainsKey(folderName))
@@ -957,10 +943,10 @@ namespace ASC.Mail.ImapSync
                 }
             }
 
-            if (tasksConfig.DefaultFolders == null || !tasksConfig.DefaultFolders.ContainsKey(folderName))
+            if (_mailSettings.DefaultFolders == null || !_mailSettings.DefaultFolders.ContainsKey(folderName))
                 return new MailFolder(FolderType.Inbox, folder.Name, new[] { folder.FullName });
 
-            folderId = (FolderType)tasksConfig.DefaultFolders[folderName];
+            folderId = (FolderType)_mailSettings.DefaultFolders[folderName];
             return new MailFolder(folderId, folder.Name);
         }
 
@@ -1015,7 +1001,7 @@ namespace ASC.Mail.ImapSync
 
                 if (Imap.Capabilities.HasFlag(ImapCapabilities.Idle))
                 {
-                    _deathTimer.Change(_mailSettings.ClientLifetime, -1);
+                    _deathTimer.Change(_mailSettings.ImapClienLifeTimeSecond, -1);
 
                     DoneToken = new CancellationTokenSource(new TimeSpan(0, 10, 0));
 
@@ -1079,20 +1065,20 @@ namespace ASC.Mail.ImapSync
 
                 log.Debug("DoOptionalOperations->IsCrmAvailable()");
 
-                if (IsCrmAvailable(mailbox, log))
-                {
-                    log.Debug("DoOptionalOperations->GetCrmTags()");
+                //if (IsCrmAvailable(mailbox, log))
+                //{
+                //    log.Debug("DoOptionalOperations->GetCrmTags()");
 
-                    var crmTagIds = mailFactory.TagEngine.GetCrmTags(message.FromEmail);
+                //    var crmTagIds = mailFactory.TagEngine.GetCrmTags(message.FromEmail);
 
-                    if (crmTagIds.Any())
-                    {
-                        if (tagIds == null)
-                            tagIds = new List<int>();
+                //    if (crmTagIds.Any())
+                //    {
+                //        if (tagIds == null)
+                //            tagIds = new List<int>();
 
-                        tagIds.AddRange(crmTagIds.Select(t => t.Id));
-                    }
-                }
+                //        tagIds.AddRange(crmTagIds.Select(t => t.Id));
+                //    }
+                //}
 
                 if (tagIds.Any())
                 {
@@ -1129,15 +1115,15 @@ namespace ASC.Mail.ImapSync
 
                 log.Debug("DoOptionalOperations->AddRelationshipEventForLinkedAccounts()");
 
-                mailFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message, MailSettings.DefaultApiSchema);
+                mailFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message, _mailSettings.DefaultApiSchema);
 
                 log.Debug("DoOptionalOperations->SaveEmailInData()");
 
-                mailFactory.EmailInEngine.SaveEmailInData(mailbox, message, MailSettings.DefaultApiSchema);
+                mailFactory.EmailInEngine.SaveEmailInData(mailbox, message, _mailSettings.DefaultApiSchema);
 
                 log.Debug("DoOptionalOperations->SendAutoreply()");
 
-                mailFactory.AutoreplyEngine.SendAutoreply(mailbox, message, MailSettings.DefaultApiSchema, log);
+                mailFactory.AutoreplyEngine.SendAutoreply(mailbox, message, _mailSettings.DefaultApiSchema, log);
 
                 log.Debug("DoOptionalOperations->UploadIcsToCalendar()");
 
@@ -1147,10 +1133,10 @@ namespace ASC.Mail.ImapSync
                         .CalendarEngine
                         .UploadIcsToCalendar(mailbox, message.CalendarId, message.CalendarUid, message.CalendarEventIcs,
                             message.CalendarEventCharset, message.CalendarEventMimeType, mailbox.EMail.Address,
-                            MailSettings.DefaultApiSchema);
+                            _mailSettings.DefaultApiSchema);
                 }
 
-                if (MailSettings.SaveOriginalMessage)
+                if (_mailSettings.SaveOriginalMessage)
                 {
                     log.Debug("DoOptionalOperations->StoreMailEml()");
                     StoreMailEml(mailbox.TenantId, mailbox.UserId, message.StreamId, mimeMessage, log);
@@ -1158,13 +1144,13 @@ namespace ASC.Mail.ImapSync
 
                 log.Debug("DoOptionalOperations->ApplyFilters()");
 
-                var filters = GetFilters(mailFactory, log);
+                //var filters = GetFilters(mailFactory, log);
 
-                mailFactory.FilterEngine.ApplyFilters(message, mailbox, folder, filters);
+                //mailFactory.FilterEngine.ApplyFilters(message, mailbox, folder, filters);
 
-                log.Debug("DoOptionalOperations->NotifySignalrIfNeed()");
+                //log.Debug("DoOptionalOperations->NotifySignalrIfNeed()");
 
-                NotifySignalrIfNeed(mailbox, log);
+                //NotifySignalrIfNeed(mailbox, log);
             }
             catch (Exception ex)
             {
@@ -1178,8 +1164,8 @@ namespace ASC.Mail.ImapSync
                 return string.Empty;
 
             // Using id_user as domain in S3 Storage - allows not to add quota to tenant.
-            var savePath = MailStoragePathCombiner.GetEmlKey(user, streamId);
-            var storage = Scope.StorageFactory.GetMailStorage(tenant);
+            //var savePath = MailStoragePathCombiner.GetEmlKey(user, streamId);
+            //var storage = Scope.StorageFactory.GetMailStorage(tenant);
 
             try
             {
@@ -1187,11 +1173,11 @@ namespace ASC.Mail.ImapSync
                 {
                     message.WriteTo(stream);
 
-                    var res = storage.Save(savePath, stream, MailStoragePathCombiner.EML_FILE_NAME).ToString();
+                    //var res = storage.Save(savePath, stream, MailStoragePathCombiner.EML_FILE_NAME).ToString();
 
-                    log.InfoFormat("StoreMailEml() tenant='{0}', user_id='{1}', save_eml_path='{2}' Result: {3}", tenant, user, savePath, res);
+                    //log.InfoFormat("StoreMailEml() tenant='{0}', user_id='{1}', save_eml_path='{2}' Result: {3}", tenant, user, savePath, res);
 
-                    return res;
+                    //return res;
                 }
             }
             catch (Exception ex)
@@ -1215,7 +1201,7 @@ namespace ASC.Mail.ImapSync
                 else
                 {
                     Account.AuthErrorDate =null;
-                    engine.MailboxEngine.SetMaiboxAuthError(Account.MailBoxId, null);
+                    _mailEnginesFactory.MailboxEngine.SetMaiboxAuthError(Account.MailBoxId, null);
                 }
             }
             catch (Exception ex)

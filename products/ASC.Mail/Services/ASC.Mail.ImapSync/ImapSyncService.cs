@@ -37,9 +37,12 @@ using ASC.Mail.Core.Engine;
 using ASC.Mail.Utils;
 using ASC.Mail.Core;
 using ASC.Mail.Configuration;
+using ASC.Mail.Core.Dao;
+using ASC.Common;
 
 namespace ASC.Mail.ImapSync
 {
+    [Singletone]
     public class ImapSyncService : IHostedService
     {
         private readonly ILog _log;
@@ -47,6 +50,7 @@ namespace ASC.Mail.ImapSync
         private readonly CancellationTokenSource _cancelTokenSource;
         private readonly ConcurrentDictionary<string,MailImapClient> clients;
         private readonly MailSettings _mailSettings;
+        private readonly MailInfoDao _mailInfoDao;
 
         private readonly SemaphoreSlim CreateClientSemaphore;
         private ManualResetEvent _resetEvent;
@@ -54,8 +58,6 @@ namespace ASC.Mail.ImapSync
 
         internal TenantManager TenantManager { get; }
         internal CoreBaseSettings CoreBaseSettings { get; }
-        internal QueueManager QueueManager { get; }
-        internal MailQueueItemSettings MailQueueItemSettings { get; }
         internal StorageFactory StorageFactory { get; }
         internal MailEnginesFactory MailEnginesFactory { get; }
         internal SecurityContext SecurityContext { get; }
@@ -69,8 +71,10 @@ namespace ASC.Mail.ImapSync
             MailEnginesFactory mailEnginesFactory,
             SecurityContext securityContext,
             ApiHelper apiHelper,
-            IMailDaoFactory mailDaoFactory)
+            IMailDaoFactory mailDaoFactory,
+            MailInfoDao mailInfoDao)
         {
+            _mailInfoDao = mailInfoDao;
             _options = options;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
@@ -106,7 +110,7 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                var cache = new RedisClient();
+                var cache = new RedisClient(_options);
 
                 if (cache == null)
                 {
@@ -190,7 +194,7 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                client = new MailImapClient(mailbox, _cancelTokenSource.Token, MailEnginesFactory, log);
+                client = new MailImapClient(mailbox, _cancelTokenSource.Token, MailEnginesFactory, _mailSettings, _mailInfoDao, _options, log);
 
                 log.DebugFormat("MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1} Address = '{2}')",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);

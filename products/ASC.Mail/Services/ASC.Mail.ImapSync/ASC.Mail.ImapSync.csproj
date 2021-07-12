@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
+    <PackageReference Include="StackExchange.Redis.Extensions.LegacyConfiguration" Version="5.4.0" />
   </ItemGroup>
 
   <ItemGroup>

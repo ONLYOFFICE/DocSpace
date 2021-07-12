@@ -183,6 +183,12 @@ namespace ASC.Mail.Configuration
         /// </summary>
         public bool IsAttachmentsGroupOperationsAvailable { get; set; }
 
+        public int ImapClienPerBox { get; set; }
+
+        public int ImapBoxPerInstance { get; set; }
+
+        public int ImapClienLifeTimeSecond { get; set; }
+
         #endregion
 
         #region from taskConfig
@@ -427,7 +433,13 @@ namespace ASC.Mail.Configuration
 
             WebHubInternal = c.WebHubInternal == string.Empty ? "http://localhost:9899" : c.WebHubInternal;
 
-            //Set values from MailQueueItemSettings later
+            ImapClienPerBox = c.ImapClienPerBox==0 ? 5: c.ImapClienPerBox;
+
+            ImapBoxPerInstance = c.ImapBoxPerInstance==0 ? 100: c.ImapBoxPerInstance;
+
+            ImapClienLifeTimeSecond = c.ImapClienLifeTimeSecond==0 ? 600: c.ImapClienLifeTimeSecond;
+
+        //Set values from MailQueueItemSettings later
             ImapFlags = new Dictionary<string, int>();
             SkipImapFlags = new string[] { };
             SpecialDomainFolders = new Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>>();
