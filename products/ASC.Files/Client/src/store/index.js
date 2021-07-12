@@ -25,6 +25,9 @@ const formatsStore = new FormatsStore(
   docserviceStore
 );
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
+
+const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
+
 const filesStore = new FilesStore(
   store.auth,
   store.auth.settingsStore,
@@ -33,10 +36,11 @@ const filesStore = new FilesStore(
   selectedFolderStore,
   treeFoldersStore,
   formatsStore,
+  settingsStore,
   selectedFilesStore
 );
 const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
-const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
+
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
 

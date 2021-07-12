@@ -391,6 +391,7 @@ class SharingPanelComponent extends React.Component {
     const {
       t,
       tReady,
+      isPersonal,
       isMyId,
       selection,
       groupsCaption,
@@ -448,43 +449,48 @@ class SharingPanelComponent extends React.Component {
               <Heading className="sharing_panel-header" size="medium" truncate>
                 {t("SharingSettingsTitle")}
               </Heading>
-              <div className="sharing_panel-icons-container">
-                <div ref={this.ref} className="sharing_panel-drop-down-wrapper">
-                  <IconButton
-                    size="17"
-                    iconName="/static/images/actions.header.touch.react.svg"
-                    className="sharing_panel-plus-icon"
-                    {...onPlusClickProp}
-                    color="A3A9AE"
-                    isDisabled={isLoading}
-                  />
-
-                  <DropDown
-                    directionX="right"
-                    className="sharing_panel-drop-down"
-                    open={showActionPanel}
-                    manualY="30px"
-                    clickOutsideAction={this.onCloseActionPanel}
+              {!isPersonal && (
+                <div className="sharing_panel-icons-container">
+                  <div
+                    ref={this.ref}
+                    className="sharing_panel-drop-down-wrapper"
                   >
-                    <DropDownItem
-                      label={t("LinkText")}
-                      onClick={this.onShowUsersPanel}
+                    <IconButton
+                      size="17"
+                      iconName="/static/images/actions.header.touch.react.svg"
+                      className="sharing_panel-plus-icon"
+                      {...onPlusClickProp}
+                      color="A3A9AE"
+                      isDisabled={isLoading}
                     />
+
+                    <DropDown
+                      directionX="right"
+                      className="sharing_panel-drop-down"
+                      open={showActionPanel}
+                      manualY="30px"
+                      clickOutsideAction={this.onCloseActionPanel}
+                    >
+                      <DropDownItem
+                        label={t("LinkText")}
+                        onClick={this.onShowUsersPanel}
+                      />
                     {!isEncrypted && (
                       <DropDownItem
                         label={t("AddGroupsForSharingButton")}
                         onClick={this.onShowGroupsPanel}
                       />
                     )}
-                  </DropDown>
-                </div>
+                    </DropDown>
+                  </div>
 
-                {/*<IconButton
+                  {/*<IconButton
                   size="16"
                   iconName="images/key.react.svg"
                   onClick={this.onKeyClick}
                 />*/}
-              </div>
+                </div>
+              )}
             </StyledHeaderContent>
             <StyledSharingBody
               ref={this.scrollRef}
@@ -495,6 +501,7 @@ class SharingPanelComponent extends React.Component {
                 shareDataItems.map((item, index) => (
                   <SharingRow
                     t={t}
+                    isPersonal={isPersonal}
                     index={index}
                     key={`${item.sharedTo.id}_${index}`}
                     selection={selection}
@@ -533,13 +540,15 @@ class SharingPanelComponent extends React.Component {
               )}
             </StyledSharingBody>
             <StyledFooter>
-              <Checkbox
-                isChecked={isNotifyUsers}
-                label={t("Notify users")}
-                onChange={this.onNotifyUsersChange}
-                className="sharing_panel-checkbox"
-                isDisabled={isLoading}
-              />
+              {!isPersonal && (
+                <Checkbox
+                  isChecked={isNotifyUsers}
+                  label={t("Notify users")}
+                  onChange={this.onNotifyUsersChange}
+                  className="sharing_panel-checkbox"
+                  isDisabled={isLoading}
+                />
+              )}
               <Button
                 className="sharing_panel-button"
                 label={t("Common:SaveButton")}
@@ -607,7 +616,7 @@ const SharingPanel = inject(
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const { customNames, isDesktopClient } = auth.settingsStore;
+    const { personal, customNames, isDesktopClient } = auth.settingsStore;
 
     const {
       selection,
@@ -632,6 +641,7 @@ const SharingPanel = inject(
     } = uploadDataStore;
 
     return {
+      isPersonal: personal,
       isMyId: auth.userStore.user && auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,

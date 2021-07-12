@@ -24,7 +24,7 @@ const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 
 const StyledNav = styled.nav`
   display: flex;
-  padding: 0 24px 0 16px;
+  padding: 0 20px 0 16px;
   align-items: center;
   position: absolute;
   right: 0;
@@ -60,11 +60,14 @@ const HeaderNav = ({
   logout,
   isAuthenticated,
   peopleAvailable,
+  isPersonal,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common"]);
 
   const onProfileClick = useCallback(() => {
-    history.push(peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL);
+    peopleAvailable
+      ? history.push(PROFILE_SELF_URL)
+      : window.open(PROFILE_MY_URL, "_blank");
   }, []);
 
   const onAboutClick = useCallback(() => history.push(ABOUT_URL), []);
@@ -91,10 +94,12 @@ const HeaderNav = ({
       },
       {
         key: "SwitchToBtn",
-        label: t("TurnOnDesktopVersion"),
-        onClick: onSwitchToDesktopClick,
-        url: `${window.location.origin}?desktop_view=true`,
-        target: "_self",
+        ...(!isPersonal && {
+          label: t("TurnOnDesktopVersion"),
+          onClick: onSwitchToDesktopClick,
+          url: `${window.location.origin}?desktop_view=true`,
+          target: "_self",
+        }),
       },
       {
         key: "AboutBtn",
@@ -162,10 +167,11 @@ export default withRouter(
       language,
       logout,
     } = auth;
-    const { defaultPage } = settingsStore;
+    const { defaultPage, personal: isPersonal } = settingsStore;
     const { user } = userStore;
     const modules = auth.availableModules;
     return {
+      isPersonal,
       user,
       isAuthenticated,
       isLoaded,

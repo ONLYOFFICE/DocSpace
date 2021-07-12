@@ -98,7 +98,7 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { t, customNames, user, filter } = this.props;
+    const { t, customNames, user, filter, personal } = this.props;
     const { selectedItem } = filter;
     const { usersCaption, groupsCaption } = customNames;
 
@@ -151,33 +151,38 @@ class SectionFilterContent extends React.Component {
       },
     ];
 
-    const filterOptions = [
-      ...options,
-      {
-        key: "filter-author",
-        group: "filter-author",
-        label: t("ByAuthor"),
-        isHeader: true,
-      },
-      {
-        key: "user",
-        group: "filter-author",
-        label: usersCaption,
-        isSelector: true,
-        defaultOptionLabel: t("Common:MeLabel"),
-        defaultSelectLabel: t("Common:Select"),
-        groupsCaption,
-        defaultOption: user,
-        selectedItem,
-      },
-      {
-        key: "group",
-        group: "filter-author",
-        label: groupsCaption,
-        defaultSelectLabel: t("Common:Select"),
-        isSelector: true,
-        selectedItem,
-      },
+    const filterOptions = [...options];
+
+    if (!personal)
+      filterOptions.push(
+        {
+          key: "filter-author",
+          group: "filter-author",
+          label: t("ByAuthor"),
+          isHeader: true,
+        },
+        {
+          key: "user",
+          group: "filter-author",
+          label: usersCaption,
+          isSelector: true,
+          defaultOptionLabel: t("Common:MeLabel"),
+          defaultSelectLabel: t("Common:Select"),
+          groupsCaption,
+          defaultOption: user,
+          selectedItem,
+        },
+        {
+          key: "group",
+          group: "filter-author",
+          label: groupsCaption,
+          defaultSelectLabel: t("Common:Select"),
+          isSelector: true,
+          selectedItem,
+        }
+      );
+
+    filterOptions.push(
       {
         key: "filter-folders",
         group: "filter-folders",
@@ -188,8 +193,8 @@ class SectionFilterContent extends React.Component {
         key: "false",
         group: "filter-folders",
         label: t("NoSubfolders"),
-      },
-    ];
+      }
+    );
 
     //console.log("getData (filterOptions)", filterOptions);
 
@@ -197,7 +202,7 @@ class SectionFilterContent extends React.Component {
   };
 
   getSortData = () => {
-    const { t } = this.props;
+    const { t, personal } = this.props;
 
     const commonOptions = [
       { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
@@ -205,8 +210,14 @@ class SectionFilterContent extends React.Component {
       { key: "AZ", label: t("ByTitle"), default: true },
       { key: "Type", label: t("Common:Type"), default: true },
       { key: "Size", label: t("Common:Size"), default: true },
-      { key: "Author", label: t("ByAuthor"), default: true },
     ];
+
+      if (!personal)
+          commonOptions.push({
+            key: "Author",
+            label: t("ByAuthor"),
+            default: true,
+          });
 
     return commonOptions;
   };
@@ -279,9 +290,9 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, sectionWidth, tReady, isFiltered, viewAs } = this.props;
+    const { t, sectionWidth, tReady, isFiltered, viewAs, personal } = this.props;
     const filterColumnCount =
-      window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
+      window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
 
     return !isFiltered ? null : !tReady ? (
       <Loaders.Filter />
@@ -309,22 +320,22 @@ class SectionFilterContent extends React.Component {
 
 export default inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const {
-      fetchFiles,
-      filter,
-      setIsLoading,
-      setViewAs,
-      viewAs,
-      files,
-      folders,
+  const {
+    fetchFiles,
+    filter,
+    setIsLoading,
+    setViewAs,
+    viewAs,
+    files,
+    folders,
       createThumbnails,
-    } = filesStore;
+  } = filesStore;
 
-    const { user } = auth.userStore;
-    const { customNames, culture } = auth.settingsStore;
+  const { user } = auth.userStore;
+  const { customNames, culture, personal } = auth.settingsStore;
 
-    const { search, filterType, authorType } = filter;
-    const isFiltered =
+  const { search, filterType, authorType } = filter;
+  const isFiltered =
       (!!files.length ||
         !!folders.length ||
         search ||
@@ -332,20 +343,22 @@ export default inject(
         authorType) &&
       !(treeFoldersStore.isPrivacyFolder && isMobile);
 
-    return {
-      customNames,
-      user,
-      selectedFolderId: selectedFolderStore.id,
-      selectedItem: filter.selectedItem,
-      filter,
-      viewAs,
-      isFiltered,
+  return {
+    customNames,
+    user,
+    selectedFolderId: selectedFolderStore.id,
+    selectedItem: filter.selectedItem,
+    filter,
+    viewAs,
+    isFiltered,
 
-      setIsLoading,
-      fetchFiles,
-      setViewAs,
-      createThumbnails,
-    };
+    setIsLoading,
+    fetchFiles,
+    setViewAs,
+    createThumbnails,
+
+    personal,
+  };
   }
 )(
   withRouter(
