@@ -1398,7 +1398,7 @@ const Base = {
 
       maxWidth: "175px",
 
-      lineHeightWithoutBorder: "15px",
+      lineHeightWithoutBorder: "16px",
       lineHeightTextDecoration: "underline dashed transparent",
     },
 

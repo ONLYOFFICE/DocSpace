@@ -57,6 +57,10 @@ class SharingModal extends React.Component {
     );
   };
 
+  componentDidMount() {
+    authStore.init();
+  }
+
   render() {
     return (
       <MobxProvider auth={authStore} {...stores}>

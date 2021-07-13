@@ -1264,17 +1264,15 @@ namespace ASC.Files.Core.Data
         {
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
-                .Select(r => r.TenantId)
-                .GroupBy(r => r)
-                .Where(r => r.Any())
+                .GroupBy(r => r.TenantId)
+                .Where(r => r.Count() > 0)
                 .Select(r => r.Key)
                 .ToList();
 
             var q2 = FilesDbContext.Security
                 .Where(r => r.TimeStamp > fromTime)
-                .Select(r => r.TenantId)
-                .GroupBy(r => r)
-                .Where(r => r.Any())
+                .GroupBy(r => r.TenantId)
+                .Where(r => r.Count() > 0)
                 .Select(r => r.Key)
                 .ToList();
 
