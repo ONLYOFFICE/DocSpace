@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
 using ASC.Core;
-using ASC.Mail.ImapSyncService;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Utils;
@@ -50,52 +49,34 @@ namespace ASC.Mail.ImapSync
         private readonly CancellationTokenSource _cancelTokenSource;
         private readonly ConcurrentDictionary<string,MailImapClient> clients;
         private readonly MailSettings _mailSettings;
-        private readonly MailInfoDao _mailInfoDao;
         private readonly RedisClient _redisClient;
         private readonly IServiceProvider _serviceProvider;
 
+        private int clientIdCounter;
+
         private readonly SemaphoreSlim CreateClientSemaphore;
         private ManualResetEvent _resetEvent;
-        
-
-        internal TenantManager TenantManager { get; }
-        internal CoreBaseSettings CoreBaseSettings { get; }
-        internal StorageFactory StorageFactory { get; }
         internal MailEnginesFactory MailEnginesFactory { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal ApiHelper ApiHelper { get; }
-        internal IMailDaoFactory MailDaoFactory { get; }
 
         public ImapSyncService(IOptionsMonitor<ILog> options,
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            StorageFactory storageFactory,
             MailEnginesFactory mailEnginesFactory,
-            SecurityContext securityContext,
-            ApiHelper apiHelper,
-            IMailDaoFactory mailDaoFactory,
-            MailInfoDao mailInfoDao,
             RedisClient redisClient,
             MailSettings mailSettings,
             IServiceProvider serviceProvider)
         {
-            _mailInfoDao = mailInfoDao;
             _options = options;
             _redisClient = redisClient;
             _mailSettings = mailSettings;
             _serviceProvider = serviceProvider;
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
-            StorageFactory = storageFactory;
             MailEnginesFactory = mailEnginesFactory;
-            SecurityContext = securityContext;
-            ApiHelper = apiHelper;
-            MailDaoFactory = mailDaoFactory;
+
+            clientIdCounter = 0;
 
             CreateClientSemaphore = new SemaphoreSlim(1, 1);
             try
             {
                 _log = options.Get("ASC.Mail.ImapSyncService");
+                _log.Name = "ASC.Mail.ImapSyncService";
 
                 clients = new ConcurrentDictionary<string, MailImapClient>();
 
@@ -196,7 +177,7 @@ namespace ASC.Mail.ImapSync
         {
             var log = _options.Get("ACS");
 
-            log.Name = $"ASC.Mail.ImapSync.Mbox_{mailbox.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}";
+            log.Name = $"ASC.Mail.ImapSync.Mbox_{mailbox.MailBoxId}.Counter_{++clientIdCounter}";
 
             MailImapClient client = null;
 
@@ -204,7 +185,7 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                client = new MailImapClient(mailbox, _cancelTokenSource.Token, MailEnginesFactory, _mailSettings, _mailInfoDao, _options, _serviceProvider, log);
+                client = new MailImapClient(mailbox, _cancelTokenSource.Token, _mailSettings, _serviceProvider, log);
 
                 log.DebugFormat("MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1} Address = '{2}')",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);

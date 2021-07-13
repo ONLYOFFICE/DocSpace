@@ -28,8 +28,10 @@ using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Caching;
+using ASC.Core.Notify.Signalr;
+using ASC.Core.Users;
+using ASC.Data.Storage;
 using ASC.Mail.Configuration;
-using ASC.Mail.Core;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Engine;
@@ -37,6 +39,7 @@ using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
 
 using MailKit;
@@ -54,11 +57,17 @@ namespace ASC.Mail.ImapSync
 {
     public class MailImapClient : IDisposable
     {
+        public ConcurrentDictionary<string, List<MailSieveFilterData>> Filters { get; set; }
+
+        private const int SIGNALR_WAIT_SECONDS = 30;
+
         private readonly MailEnginesFactory _mailEnginesFactory;
         private readonly MailSettings _mailSettings;
         private readonly MailInfoDao _mailInfoDao;
-        private readonly IOptionsMonitor<ILog> _options;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly StorageFactory _storageFactory;
+        private readonly FolderEngine _folderEngine;
+        private readonly UserManager _userManager;
+        private readonly SignalrServiceClient _signalrServiceClient;
 
         const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Flags | MessageSummaryItems.Envelope|MessageSummaryItems.BodyStructure;
 
@@ -76,8 +85,6 @@ namespace ASC.Mail.ImapSync
         private readonly SemaphoreSlim ImapSemaphore;
 
         private Dictionary<IMailFolder, MailFolder> foldersDictionary;
-
-        //private List<SimpleImapClient> simpleImapClients;
 
         private bool ClientIsReadyToWork = false;
 
@@ -119,7 +126,13 @@ namespace ASC.Mail.ImapSync
         {
             var activFolder = (FolderType)folderActivity;
 
-            var activFolderImap = foldersDictionary.FirstOrDefault(x => x.Value.Folder == activFolder).Key;
+            if (foldersDictionary == null) return;
+
+            var folderFromDictionary = foldersDictionary.FirstOrDefault(x => x.Value.Folder == activFolder);
+
+            //if (folderFromDictionary. == null) return;
+
+            var activFolderImap = folderFromDictionary.Key;
 
             if(activFolderImap!=null&&WorkFolder != activFolderImap)
             {
@@ -131,11 +144,12 @@ namespace ASC.Mail.ImapSync
             {
                 await ProcessActionFromRedis(_redisClient);
             }
+
+            DoneTokenUpdate();
         }
 
-        public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailEnginesFactory mailEnginesFactory, MailSettings mailSettings, MailInfoDao mailInfoDao, IOptionsMonitor<ILog> options,IServiceProvider serviceProvider, ILog log = null)
+        public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailSettings mailSettings, IServiceProvider serviceProvider, ILog log = null)
         {
-            _options = options;
             _mailSettings = mailSettings;
 
             var clientScope = serviceProvider.CreateScope().ServiceProvider;
@@ -147,7 +161,8 @@ namespace ASC.Mail.ImapSync
 
             imapMessagesToUpdate = new ConcurrentQueue<int>();
             imapFoldersToUpdate = new ConcurrentQueue<IMailFolder>();
-            //simpleImapClients = new List<SimpleImapClient>();
+
+            Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
 
             var tenantManager = clientScope.GetService<TenantManager>();
 
@@ -158,8 +173,10 @@ namespace ASC.Mail.ImapSync
 
             _mailEnginesFactory = clientScope.GetService<MailEnginesFactory>();
             _mailInfoDao = clientScope.GetService<MailInfoDao>();
-
-            //securityContext.AuthenticateMe(new Guid(mailbox.UserId));
+            _storageFactory= clientScope.GetService<StorageFactory>();
+            _folderEngine = clientScope.GetService<FolderEngine>();
+            _userManager = clientScope.GetService<UserManager>();
+            _signalrServiceClient= clientScope.GetService<IOptionsSnapshot<SignalrServiceClient>>().Get("mail");
 
             Account = mailbox;
 
@@ -983,17 +1000,23 @@ namespace ASC.Mail.ImapSync
 
         public void DoneTokenUpdate()
         {
-            if ((DoneToken != null) && ClientIsReadyToWork)
+            if(imapFoldersToUpdate.Any()|| imapMessagesToUpdate.Any())
             {
-                DoneToken?.Cancel();
-                SetIdleState();
+                if ((DoneToken != null) && ClientIsReadyToWork)
+                {
+                    DoneToken?.Cancel();
+                    SetIdleState();
+                }
             }
-            else return;
         }
 
         public async void SetIdleState()
         {
+            Log.Debug("SetClientTask->Wait for Semaphore");
+
             await ImapSemaphore.WaitAsync();
+
+            Log.Debug("SetClientTask->Catch Semaphore");
 
             while (imapFoldersToUpdate.TryDequeue(out IMailFolder imapFolderToUpdate))
             {
@@ -1159,18 +1182,67 @@ namespace ASC.Mail.ImapSync
 
                 log.Debug("DoOptionalOperations->ApplyFilters()");
 
-                //var filters = GetFilters(mailFactory, log);
+                var filters = GetFilters(_mailEnginesFactory, log);
 
-                //mailFactory.FilterEngine.ApplyFilters(message, mailbox, folder, filters);
+                _mailEnginesFactory.FilterEngine.ApplyFilters(message, mailbox, folder, filters);
 
-                //log.Debug("DoOptionalOperations->NotifySignalrIfNeed()");
+                log.Debug("DoOptionalOperations->NotifySignalrIfNeed()");
 
-                //NotifySignalrIfNeed(mailbox, log);
+                SendUnreadUser();
             }
             catch (Exception ex)
             {
                 log.ErrorFormat("DoOptionalOperations() Exception:\r\n{0}\r\n", ex.ToString());
             }
+        }
+
+        private void SendUnreadUser()
+        {
+            try
+            {
+                var mailFolderInfos = _folderEngine.GetFolders();
+
+                var count = (from mailFolderInfo in mailFolderInfos
+                             where mailFolderInfo.id == FolderType.Inbox
+                             select mailFolderInfo.unreadMessages)
+                    .FirstOrDefault();
+
+                if (Account.UserId != Constants.LostUser.ID.ToString())
+                {
+                    _signalrServiceClient.SendUnreadUser(Account.TenantId, Account.UserId, count);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.ErrorFormat("Unknown Error. {0}, {1}", e.ToString(),
+                    e.InnerException != null ? e.InnerException.Message : string.Empty);
+            }
+        }
+
+
+        private List<MailSieveFilterData> GetFilters(MailEnginesFactory factory, ILog log)
+        {
+            var user = factory.UserId;
+
+            if (string.IsNullOrEmpty(user))
+                return new List<MailSieveFilterData>();
+
+            try
+            {
+                if (Filters.ContainsKey(user)) return Filters[user];
+
+                var filters = factory.FilterEngine.GetList();
+
+                Filters.TryAdd(user, filters);
+
+                return filters;
+            }
+            catch (Exception ex)
+            {
+                log.Error("GetFilters failed", ex);
+            }
+
+            return new List<MailSieveFilterData>();
         }
 
         public string StoreMailEml(int tenant, string user, string streamId, MimeMessage message, ILog log)
@@ -1179,8 +1251,9 @@ namespace ASC.Mail.ImapSync
                 return string.Empty;
 
             // Using id_user as domain in S3 Storage - allows not to add quota to tenant.
-            //var savePath = MailStoragePathCombiner.GetEmlKey(user, streamId);
-            //var storage = Scope.StorageFactory.GetMailStorage(tenant);
+            var savePath = MailStoragePathCombiner.GetEmlKey(user, streamId);
+
+            var storage = _storageFactory.GetMailStorage(tenant);
 
             try
             {
@@ -1188,11 +1261,11 @@ namespace ASC.Mail.ImapSync
                 {
                     message.WriteTo(stream);
 
-                    //var res = storage.Save(savePath, stream, MailStoragePathCombiner.EML_FILE_NAME).ToString();
+                    var res = storage.Save(savePath, stream, MailStoragePathCombiner.EML_FILE_NAME).ToString();
 
-                    //log.InfoFormat("StoreMailEml() tenant='{0}', user_id='{1}', save_eml_path='{2}' Result: {3}", tenant, user, savePath, res);
+                    log.InfoFormat("StoreMailEml() tenant='{0}', user_id='{1}', save_eml_path='{2}' Result: {3}", tenant, user, savePath, res);
 
-                    //return res;
+                    return res;
                 }
             }
             catch (Exception ex)
