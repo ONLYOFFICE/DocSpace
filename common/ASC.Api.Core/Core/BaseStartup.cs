@@ -8,7 +8,6 @@ using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Mapping;
 
 using Autofac;
@@ -34,7 +33,6 @@ namespace ASC.Api.Core
     {
         public IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
-        public virtual string[] LogParams { get; }
         public virtual JsonConverter[] Converters { get; }
         public virtual bool ConfirmAddScheme { get; } = false;
         protected DIHelper DIHelper { get; }
@@ -111,11 +109,6 @@ namespace ASC.Api.Core
             if (ConfirmAddScheme)
             {
                 authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
-            }
-
-            if (LogParams != null)
-            {
-                LogNLogExtension.ConfigureLog(DIHelper, LogParams);
             }
 
             services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
