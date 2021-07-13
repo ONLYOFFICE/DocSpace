@@ -543,9 +543,7 @@ setup_kafka() {
 		do
 			${KAFKA_DIR}/bin/kafka-topics.sh --create --zookeeper ${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT} --topic $i --replication-factor 1 --partitions 3 >/dev/null 2>&1
 		done
-
 		
-
 		echo "OK"
 	fi
 
