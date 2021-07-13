@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
 import TableContainer from "@appserver/components/table-container";
 import { inject, observer } from "mobx-react";
-import Column from "@appserver/components/table-container/Column";
-import TableCell from "./TableCell";
+import TableRow from "./TableRow";
+import TableHeader from "@appserver/components/table-container/TableHeader";
+import TableBody from "@appserver/components/table-container/TableBody";
 
 const Table = ({ filesList }) => {
   const columns = [
@@ -54,24 +55,12 @@ const Table = ({ filesList }) => {
 
   return (
     <TableContainer forwardedRef={ref}>
-      {columns.map((column, index) => {
-        const { key, title, resizable } = column;
-
-        return (
-          <Column
-            id={`column_${index}`}
-            index={index}
-            key={key}
-            title={title}
-            resizable={resizable}
-            containerRef={ref}
-          >
-            {filesList.map((item) => (
-              <TableCell column={column} key={item.id} item={item} />
-            ))}
-          </Column>
-        );
-      })}
+      <TableHeader containerRef={ref} columns={columns} />
+      <TableBody>
+        {filesList.map((item) => (
+          <TableRow key={item.id} item={item} />
+        ))}
+      </TableBody>
     </TableContainer>
   );
 };

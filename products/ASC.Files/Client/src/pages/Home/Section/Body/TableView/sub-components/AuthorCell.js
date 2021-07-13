@@ -1,11 +1,10 @@
 import React from "react";
 import Text from "@appserver/components/text";
 
-const AuthorCell = (props) => {
-  const { fileOwner, sideColor } = props;
-
+const AuthorCell = ({ fileOwner, sideColor }) => {
   return (
     <Text
+      style={{ minWidth: 120, maxWidth: 200 }}
       as="div"
       color={sideColor}
       fontSize="12px"

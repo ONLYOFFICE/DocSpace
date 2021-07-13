@@ -1,8 +1,10 @@
 import styled from "styled-components";
 
-const StyledTableContainer = styled.div`
+const StyledTableContainer = styled.table`
   width: 100%;
-  display: flex;
+  max-width: 100%;
+  margin-top: -18px;
+  border-collapse: collapse;
 
   .table-column {
     user-select: none;
@@ -12,18 +14,15 @@ const StyledTableContainer = styled.div`
 
   .resize-handle {
     display: block;
-    position: absolute;
     cursor: ew-resize;
     height: 10px;
-    right: 4px;
-    top: 14px;
+    margin: 14px 4px 0 auto;
     z-index: 1;
     border-right: 2px solid #d0d5da;
   }
 
   .header-container {
     height: 38px;
-    border-bottom: 1px solid #eceef1;
     display: flex;
     align-items: center;
   }
@@ -43,12 +42,20 @@ const StyledTableContainer = styled.div`
   }
 `;
 
-const StyledTableCell = styled.div`
+const StyledTableRow = styled.tr`
   height: 47px;
   max-height: 47px;
-  display: flex;
-  align-items: center;
   border-bottom: 1px solid #eceef1;
 `;
 
-export { StyledTableContainer, StyledTableCell };
+const StyledTableHeader = styled.thead``;
+const StyledTableBody = styled.tbody``;
+const StyledTableCell = styled.td``;
+
+export {
+  StyledTableContainer,
+  StyledTableRow,
+  StyledTableBody,
+  StyledTableHeader,
+  StyledTableCell,
+};

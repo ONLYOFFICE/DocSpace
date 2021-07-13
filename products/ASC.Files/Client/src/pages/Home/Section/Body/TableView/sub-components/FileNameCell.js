@@ -2,11 +2,11 @@ import React from "react";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
-const FileNameCell = (props) => {
-  const { item, titleWithoutExt, linkStyles } = props;
+const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
   const { fileExst } = item;
   return (
     <Link
+      style={{ minWidth: 120, maxWidth: 200 }}
       type="page"
       title={titleWithoutExt}
       fontWeight="600"
