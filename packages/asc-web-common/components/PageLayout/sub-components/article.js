@@ -16,12 +16,12 @@ const StyledArticle = styled.article`
       `}
   }
   .resizable-block {
-    padding: 0 24px;
+    padding: 0 20px;
     background: #f8f9f9;
     min-width: 265px;
     height: 100% !important;
     max-width: ${(props) =>
-      props.isLoading ? "calc(100vw - 368px)" : "265px"};
+      props.firstLoad ? "265px" : "calc(100vw - 368px)"};
     box-sizing: border-box;
     overflow: hidden auto;
     display: flex;

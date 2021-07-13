@@ -251,6 +251,8 @@ export default function withFileActions(WrappedFileItem) {
         dragging,
         isFolder,
         isDesktop,
+        personal,
+        canWebEdit,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -275,7 +277,12 @@ export default function withFileActions(WrappedFileItem) {
       const showShare = isPrivacy && (!isDesktop || !fileExst) ? false : true;
 
       const sharedButton =
-        !canShare || !showShare || isEdit || id <= 0 || isMobile
+        !canShare ||
+        !showShare ||
+        (personal && !canWebEdit) ||
+        isEdit ||
+        id <= 0 ||
+        isMobile
           ? null
           : this.getSharedButton(shared);
 
@@ -423,6 +430,7 @@ export default function withFileActions(WrappedFileItem) {
         setConvertItem,
         setConvertDialogVisible,
         isDesktop: auth.settingsStore.isDesktopClient,
+        personal: auth.settingsStore.personal,
       };
     }
   )(observer(WithFileActions));

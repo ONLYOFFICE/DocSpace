@@ -361,12 +361,16 @@ class PageLayout extends React.Component {
                           : null}
                       </SubSectionHeader>
                     )}
+
                     {isSectionFilterAvailable && (
-                      <SubSectionFilter className="section-header_filter">
-                        {sectionFilterContent
-                          ? sectionFilterContent.props.children
-                          : null}
-                      </SubSectionFilter>
+                      <>
+                        <div id="main-bar" style={{ display: "grid" }}></div>
+                        <SubSectionFilter className="section-header_filter">
+                          {sectionFilterContent
+                            ? sectionFilterContent.props.children
+                            : null}
+                        </SubSectionFilter>
+                      </>
                     )}
                     {isSectionBodyAvailable && (
                       <>
