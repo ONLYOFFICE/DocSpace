@@ -129,7 +129,6 @@ while [ "$1" != "" ]; do
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
 			echo "      -e, --environment                   environment (default 'production')"
-			echo "      -q, --quiet                         turn off output"
 			echo "      -?, -h, --help                      this help"
 			echo
 			exit 0
