@@ -71,6 +71,7 @@ namespace ASC.Mail.Clients
         public SmtpClient Smtp { get; private set; }
 
         public bool IsConnected { get; private set; }
+        public bool IsAuthenticated { get; private set; }
 
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
@@ -200,6 +201,7 @@ namespace ASC.Mail.Clients
             }
 
             IsConnected = false;
+            IsAuthenticated = false;
         }
 
         #endregion
@@ -482,8 +484,8 @@ namespace ASC.Mail.Clients
                 if (string.IsNullOrEmpty(Account.OAuthToken))
                 {
                     Log.DebugFormat($"Imap: Authentication({Account.Account}).");
-
                     t = Imap.AuthenticateAsync(Account.Account, Account.Password, CancelToken);
+                    IsAuthenticated = true;
                 }
                 else
                 {
@@ -498,10 +500,12 @@ namespace ASC.Mail.Clients
                 {
                     Imap.Authenticated -= ImapOnAuthenticated;
                     Log.Debug("Imap: Failed authentication: Timeout.");
+                    IsAuthenticated = false;
                     throw new TimeoutException("Imap: AuthenticateAsync timeout.");
                 }
                 else
                 {
+                    IsAuthenticated = true;
                     Log.Debug("Imap: Successfull authentication.");
                 }
 

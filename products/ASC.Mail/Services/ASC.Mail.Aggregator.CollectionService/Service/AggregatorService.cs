@@ -381,7 +381,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 var client = CreateMailClient(mailbox, taskLogger, commonCancelToken);
 
-                if (client == null || !client.IsConnected)
+                if (client == null || !client.IsConnected || !client.IsAuthenticated)
                 {
                     taskLogger.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
                                mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
