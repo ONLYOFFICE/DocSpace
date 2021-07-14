@@ -1,9 +1,13 @@
 import { Workbox } from "workbox-window";
 import { Snackbar } from "@appserver/components/snackbar";
+import { useTranslation } from "react-i18next";
 
 export function registerSW(homepage) {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     const wb = new Workbox(`${homepage}/sw.js`);
+    const { t } = useTranslation("Common", {
+      useSuspense: false,
+    });
 
     //TODO: watch https://developers.google.com/web/tools/workbox/guides/advanced-recipes and https://github.com/webmaxru/prog-web-news/blob/5ff94b45c9d317409c21c0fbb7d76e92f064471b/src/app/app-shell/app-shell.component.ts
 
@@ -14,10 +18,10 @@ export function registerSW(homepage) {
       );
 
       const barConfig = {
-        textBody: "A new version of the website available",
+        textBody: t("NewVersionAvailable"),
         pos: "top_center",
         showSecondButton: true,
-        secondButtonText: "Reload",
+        secondButtonText: t("Reload"),
 
         onSecondButtonClick: (element) => {
           element.style.opacity = 0;
