@@ -62,12 +62,15 @@ namespace ASC.Mail.Clients
     {
         public MailBoxData Account { get; private set; }
         public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; }
+        public bool CertificatePermit { get; }
         public FolderEngine FolderEngine { get; }
         public ILog Log { get; set; }
 
         public ImapClient Imap { get; private set; }
         public Pop3Client Pop { get; private set; }
         public SmtpClient Smtp { get; private set; }
+
+        public bool IsConnected { get; private set; }
 
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
@@ -143,12 +146,14 @@ namespace ASC.Mail.Clients
 
             Account = mailbox;
             ServerFolderAccessInfos = serverFolderAccessInfos;
-
+            CertificatePermit = certificatePermit;
             Log = log ?? new NullLog();
 
             StopTokenSource = new CancellationTokenSource();
 
             CancelToken = CancellationTokenSource.CreateLinkedTokenSource(cancelToken, StopTokenSource.Token).Token;
+
+            Log.Debug($"MailClient Constructor -> CertificatePermit: {CertificatePermit}.");
 
             if (Account.Imap)
             {
@@ -193,28 +198,15 @@ namespace ASC.Mail.Clients
                     Timeout = tcpTimeout
                 };
             }
+
+            IsConnected = false;
         }
 
         #endregion
 
-        static bool IsUnableToCheckRevocation(X509Chain chain)
-        {
-            foreach (var status in chain.ChainStatus)
-            {
-                if (status.Status == X509ChainStatusFlags.NoError || status.Status == X509ChainStatusFlags.OfflineRevocation || status.Status == X509ChainStatusFlags.RevocationStatusUnknown)
-                    continue;
-
-                return false;
-            }
-
-            return true;
-        }
-
         bool CertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             Log.Debug($"CertificateValidationCallback(). Certificate callback: {certificate.Subject}.");
-
-            const SslPolicyErrors mask = SslPolicyErrors.RemoteCertificateNotAvailable | SslPolicyErrors.RemoteCertificateNameMismatch;
 
             if (sslPolicyErrors == SslPolicyErrors.None)
             {
@@ -222,25 +214,8 @@ namespace ASC.Mail.Clients
                 return true;
             }
 
-
-            if ((sslPolicyErrors & mask) == 0)
-            {
-                if (IsUnableToCheckRevocation(chain))
-                {
-                    Log.Debug("Revocation check error, ignore it.");
-                    return true;
-                }
-                else
-                {
-                    Log.Debug("No revocation check error.");
-                }
-
-            }
-
-            return false;
+            return CertificatePermit;
         }
-
-
 
         public MimeMessage GetInboxMessage(string uidl)
         {
@@ -384,7 +359,7 @@ namespace ASC.Mail.Clients
             }
         }
 
-        public void LoginImapPop()
+        public void LoginClient()
         {
             if (Account.Imap)
             {
@@ -476,36 +451,21 @@ namespace ASC.Mail.Clients
 
         private void LoginImapAsync(bool enableUtf8 = true)
         {
-            var secureSocketOptions = SecureSocketOptions.Auto;
-            var sslProtocols = SslProtocols.Default;
-
-            switch (Account.Encryption)
-            {
-                case EncryptionType.StartTLS:
-                    secureSocketOptions = SecureSocketOptions.StartTlsWhenAvailable;
-                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
-                    break;
-                case EncryptionType.SSL:
-                    secureSocketOptions = SecureSocketOptions.SslOnConnect;
-                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
-                    break;
-                case EncryptionType.None:
-                    secureSocketOptions = SecureSocketOptions.None;
-                    sslProtocols = SslProtocols.None;
-                    break;
-            }
-
-            Log.DebugFormat("Imap.Connect({0}:{1}, {2})", Account.Server, Account.Port,
-                Enum.GetName(typeof(SecureSocketOptions), secureSocketOptions));
+            Log.DebugFormat("Imap.Connect({0}:{1}, SecureSocketOptions: Auto)", Account.Server, Account.Port);
 
             try
             {
-                Imap.SslProtocols = sslProtocols;
-
-                var t = Imap.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
+                var t = Imap.ConnectAsync(Account.Server, Account.Port, SecureSocketOptions.Auto, CancelToken);
 
                 if (!t.Wait(CONNECT_TIMEOUT, CancelToken))
+                {
                     throw new TimeoutException("Imap.ConnectAsync timeout");
+                }
+                else
+                {
+                    IsConnected = true;
+                    Log.Debug("Successfull connection. Working on!");
+                }
 
                 if (enableUtf8 && (Imap.Capabilities & ImapCapabilities.UTF8Accept) != ImapCapabilities.None)
                 {

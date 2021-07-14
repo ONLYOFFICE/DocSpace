@@ -172,7 +172,7 @@ namespace ASC.Mail.Core.Engine
 
             DaemonLabels = daemonLabels ?? DeliveryFailureMessageTranslates.Defauilt;
 
-            _sslCertificatePermit = MailSettings.SslCertificatesErrorPermit;
+            _sslCertificatePermit = MailSettings.SslCertificatesErrorsPermit;
 
             if (_signalrServiceClient != null) return;
             _signalrServiceClient = optionsSnapshot.Get("mail");

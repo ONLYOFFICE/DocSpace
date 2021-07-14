@@ -22,6 +22,7 @@ using ASC.Mail.Configuration;
 using ASC.Mail.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine;
+using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Storage;
 using ASC.Mail.Utils;
@@ -42,7 +43,7 @@ using ILog = ASC.Common.Logging.ILog;
 
 namespace ASC.Mail.Aggregator.CollectionService.Service
 {
-    [Singletone(Additional = typeof(AggregatorServiceExtension))]
+    [Singletone]
     public class AggregatorService
     {
         public const string ASC_MAIL_COLLECTION_SERVICE_NAME = "ASC Mail Collection Service";
@@ -382,7 +383,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 var client = CreateMailClient(mailbox, taskLogger, commonCancelToken);
 
-                if (client == null)
+                if (client == null || !client.IsConnected)
                 {
                     taskLogger.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
                                mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
@@ -425,10 +426,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 var serverFolderAccessInfos = factory.GetImapSpecialMailboxDao().GetServerFolderAccessInfoList();
 
+                log.Debug($"Create Mail client with SslCertificatesErrorPermit = {MailSettings.SslCertificatesErrorsPermit}");
                 client = new MailClient(mailbox, cancelToken, serverFolderAccessInfos, MailSettings.TcpTimeout,
-                   mailbox.IsTeamlab || MailSettings.SslCertificatesErrorPermit, MailSettings.ProtocolLogPath, log, true);
+                   mailbox.IsTeamlab || MailSettings.SslCertificatesErrorsPermit, MailSettings.ProtocolLogPath, log, true);
 
-                log.DebugFormat("MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1} Address = '{2}')",
+                log.DebugFormat("MailClient.LoginClient(Tenant = {0}, MailboxId = {1} Address = '{2}')",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
 
                 if (!mailbox.Imap)
@@ -439,7 +441,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 client.Authenticated += ClientOnAuthenticated;
 
-                client.LoginImapPop();
+                client.LoginClient();
             }
             catch (System.TimeoutException exTimeout)
             {
@@ -550,7 +552,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, ex.Message);
             }
         }
-        object sync = new object();
+
         private void ProcessMailbox(MailClient client, MailSettings mailSettings)
         {
             var scope = ServiceProvider.CreateScope();
@@ -580,6 +582,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             try
             {
+                if (client.Log != null)
+                    client.Log = null;
+
                 client.Log = taskLogger;
 
                 client.GetMessage += ClientOnGetMessage;
@@ -667,7 +672,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
         private void ClientOnGetMessage(object sender, MailClientMessageEventArgs mailClientMessageEventArgs)
         {
-
             var log = Log;
 
             Stopwatch watch = null;
@@ -694,7 +698,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 log.InfoFormat("Found message (UIDL: '{0}', MailboxId = {1}, Address = '{2}')",
                     uidl, mailbox.MailBoxId, mailbox.EMail);
 
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
@@ -783,22 +787,26 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         private readonly ConcurrentDictionary<string, bool> _userCrmAvailabeDictionary = new ConcurrentDictionary<string, bool>();
         private readonly object _locker = new object();
 
-        //TODO Change ApiHelper
         private bool IsCrmAvailable(MailBoxData mailbox, ILog log)
         {
-            /*bool crmAvailable;
+            bool crmAvailable;
+
+            var tempScope = ServiceProvider.CreateScope();
+
+            var tenantManager = tempScope.ServiceProvider.GetService<TenantManager>();
+            var securityContext = tempScope.ServiceProvider.GetService<SecurityContext>();
+            var apiHelper = tempScope.ServiceProvider.GetService<ApiHelper>();
 
             lock (_locker)
             {
                 if (_userCrmAvailabeDictionary.TryGetValue(mailbox.UserId, out crmAvailable))
                     return crmAvailable;
 
-                crmAvailable = mailbox.IsCrmAvailable(_scope.TenantManager, _scope.SecurityContext, _scope.ApiHelper, log);
+                crmAvailable = mailbox.IsCrmAvailable(tenantManager, securityContext, apiHelper, log);
                 _userCrmAvailabeDictionary.GetOrAdd(mailbox.UserId, crmAvailable);
             }
 
-            return crmAvailable;*/
-            return false;
+            return crmAvailable;
         }
 
         private List<MailSieveFilterData> GetFilters(MailEnginesFactory factory, ILog log)
@@ -1023,44 +1031,4 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         #endregion
     }
 
-    [Scope]
-    internal class AggregatorServiceScope
-    {
-        internal TenantManager TenantManager { get; }
-        internal CoreBaseSettings CoreBaseSettings { get; }
-        internal MailQueueItemSettings MailQueueItemSettings { get; }
-        internal StorageFactory StorageFactory { get; }
-        internal MailEnginesFactory MailEnginesFactory { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal ApiHelper ApiHelper { get; }
-        internal IMailDaoFactory MailDaoFactory { get; }
-
-        public AggregatorServiceScope(
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            MailQueueItemSettings mailQueueItemSettings,
-            StorageFactory storageFactory,
-            MailEnginesFactory mailEnginesFactory,
-            SecurityContext securityContext,
-            ApiHelper apiHelper,
-            IMailDaoFactory mailDaoFactory)
-        {
-            TenantManager = tenantManager;
-            MailQueueItemSettings = mailQueueItemSettings;
-            CoreBaseSettings = coreBaseSettings;
-            StorageFactory = storageFactory;
-            MailEnginesFactory = mailEnginesFactory;
-            SecurityContext = securityContext;
-            ApiHelper = apiHelper;
-            MailDaoFactory = mailDaoFactory;
-        }
-    }
-
-    public class AggregatorServiceExtension
-    {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<AggregatorServiceScope>();
-        }
-    }
 }

@@ -17,7 +17,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Aggregator.CollectionService.Queue
 {
-    [Singletone(Additional = typeof(SignalrWorkerExtension))]
+    [Singletone]
     public class SignalrWorker : IDisposable
     {
         private readonly Queue<MailBoxData> _processingQueue;
@@ -192,32 +192,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 _log.ErrorFormat("Unknown Error. {0}, {1}", e.ToString(),
                     e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
-        }
-    }
-
-    [Scope]
-    internal class SignalrWorkerScope
-    {
-        internal TenantManager TenantManager { get; }
-        internal UserManager UserManager { get; }
-        internal FolderEngine FolderEngine { get; }
-
-        public SignalrWorkerScope(
-            TenantManager tenantManager,
-            UserManager userManager,
-            FolderEngine folderEngine)
-        {
-            TenantManager = tenantManager;
-            UserManager = userManager;
-            FolderEngine = folderEngine;
-        }
-    }
-
-    public class SignalrWorkerExtension
-    {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<SignalrWorkerScope>();
         }
     }
 }

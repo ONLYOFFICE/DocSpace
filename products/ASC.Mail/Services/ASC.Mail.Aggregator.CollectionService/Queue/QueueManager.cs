@@ -24,7 +24,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Aggregator.CollectionService.Queue
 {
-    [Singletone(Additional = typeof(QueueManagerExtension))]
+    [Singletone]
     public class QueueManager : IDisposable
     {
         private readonly int _maxItemsLimit;
@@ -671,41 +671,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 _db.Dispose();
                 _db = null;
             }
-        }
-    }
-
-    [Scope]
-    internal class QueueManagerScope
-    {
-        internal TenantManager TenantManager { get; }
-        internal SecurityContext SecurityContext { get; }
-        internal ApiHelper ApiHelper { get; }
-        internal UserManager UserManager { get; }
-        internal MailboxEngine MailboxEngine { get; }
-        internal AlertEngine AlertEngine { get; }
-
-        public QueueManagerScope(
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            ApiHelper apiHelper,
-            UserManager userManager,
-            MailboxEngine mailboxEngine,
-            AlertEngine alertEngine)
-        {
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-            ApiHelper = apiHelper;
-            UserManager = userManager;
-            MailboxEngine = mailboxEngine;
-            AlertEngine = alertEngine;
-        }
-    }
-
-    public class QueueManagerExtension
-    {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<QueueManagerScope>();
         }
     }
 }

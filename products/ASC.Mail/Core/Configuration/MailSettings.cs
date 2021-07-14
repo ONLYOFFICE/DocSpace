@@ -90,7 +90,7 @@ namespace ASC.Mail.Configuration
         /// <summary>
         /// mail.certificate-permit
         /// </summary>
-        public bool SslCertificatesErrorPermit { get; set; }
+        public bool SslCertificatesErrorsPermit { get; set; }
 
         /// <summary>
         /// mail.default-api-scheme
@@ -365,7 +365,7 @@ namespace ASC.Mail.Configuration
 
             SaveOriginalMessage = c.SaveOriginalMessage;
 
-            SslCertificatesErrorPermit = c.SslCertificatesErrorPermit;
+            SslCertificatesErrorsPermit = c.SslCertificatesErrorsPermit;
 
             TcpTimeout = c.TcpTimeout == default(int) ? 30000 : c.TcpTimeout;
 

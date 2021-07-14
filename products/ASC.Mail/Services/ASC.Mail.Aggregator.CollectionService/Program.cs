@@ -11,6 +11,7 @@ using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Mail.Aggregator.CollectionService.Console;
+using ASC.Mail.Aggregator.CollectionService.Service;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -105,6 +106,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 services.AddSingleton(new ConsoleParser(args));
                 diHelper.TryAdd<AggregatorServiceLauncher>();
+                diHelper.TryAdd<AggregatorServiceScope>();
                 services.AddHostedService<AggregatorServiceLauncher>();
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
 

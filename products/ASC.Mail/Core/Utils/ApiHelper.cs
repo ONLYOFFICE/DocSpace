@@ -118,7 +118,7 @@ namespace ASC.Mail.Utils
             //TenantManager.GetCurrentTenant();
             MailSettings = mailSettings;
 
-            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorPermit)
+            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorsPermit)
                 return;
 
             ServicePointManager.ServerCertificateValidationCallback =
@@ -144,7 +144,7 @@ namespace ASC.Mail.Utils
             Scheme = mailSettings.DefaultApiSchema ?? Uri.UriSchemeHttp;
             MailSettings = mailSettings;
 
-            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorPermit)
+            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorsPermit)
                 return;
 
             ServicePointManager.ServerCertificateValidationCallback =
