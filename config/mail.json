@@ -51,6 +51,10 @@
 			  "CleanerTenantCacheDays": 1,
 			  "CleanerTenantOverdueDays": 30,
 			  "CleanerGarbageOverdueDays": 30,
-			  "CleanerMaxFilesToRemoveAtOnce": 100
+			  "CleanerMaxFilesToRemoveAtOnce": 100,
+			  "ImapClienPerBox":5,
+			  "ImapBoxPerInstance":100,
+			  "ImapClienLifeTimeSecond":50000,
+			  "RedisConnectionString":"localhost:6379"
      	}
 }
