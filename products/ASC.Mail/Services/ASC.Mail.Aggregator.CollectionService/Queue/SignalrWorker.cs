@@ -27,7 +27,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         private readonly TimeSpan _timeSpan;
         public bool StartImmediately { get; set; } = true;
 
-        private ILog _log { get; }
+        private ILog Log { get; }
         private SignalrServiceClient SignalrServiceClient { get; }
         private IServiceProvider ServiceProvider { get; }
 
@@ -36,7 +36,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
             IServiceProvider serviceProvider)
         {
-            _log = optionsMonitor.Get("ASC.Mail.SignalrWorker");
+            Log = optionsMonitor.Get("ASC.Mail.SignalrWorker");
             SignalrServiceClient = optionsSnapshot.Get("mail");
             ServiceProvider = serviceProvider;
 
@@ -57,9 +57,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             {
                 if (!HasQueuedMailbox)
                 {
-                    _log.Debug("No items, waiting.");
+                    Log.Debug("No items, waiting.");
                     _waitHandle.WaitOne();
-                    _log.Debug("Waking up...");
+                    Log.Debug("Waking up...");
                 }
 
                 var mailbox = NextQueuedMailBoxData;
@@ -68,15 +68,13 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                 try
                 {
-                    _log.DebugFormat("signalrServiceClient.SendUnreadUser(UserId = {0} TenantId = {1})", mailbox.UserId,
-                        mailbox.TenantId);
+                    Log.DebugFormat($"SignalrWorker -> SendUnreadUser(UserId = {mailbox.UserId} TenantId = {mailbox.TenantId})");
 
                     SendUnreadUser(mailbox.TenantId, mailbox.UserId);
                 }
                 catch (Exception ex)
                 {
-                    _log.ErrorFormat("signalrServiceClient.SendUnreadUser(UserId = {0} TenantId = {1}) Exception: {2}", mailbox.UserId,
-                        mailbox.TenantId, ex.ToString());
+                    Log.ErrorFormat($"SignalrWorker -> SendUnreadUser(UserId = {mailbox.UserId} TenantId = {mailbox.TenantId})\r\nException: \r\n{ex}");
                 }
 
                 _waitHandle.Reset();
@@ -145,11 +143,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
             if (_worker.IsAlive)
             {
-                _log.Info("Stop SignalrWorker.");
+                Log.Info("Stop SignalrWorker.");
 
                 if (!_worker.Join(_timeSpan))
                 {
-                    _log.Info("SignalrWorker busy, aborting the thread.");
+                    Log.Info("SignalrWorker busy, aborting the thread.");
                     _worker.Abort();
                 }
             }
@@ -167,11 +165,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 var userManager = scope.ServiceProvider.GetService<UserManager>();
 
-                _log.Debug($"SendUnreadUser(). Try set tenant |{tenant}| for user |{userId}|...");
+                Log.Debug($"SignalrWorker -> SendUnreadUser(). Try set tenant |{tenant}| for user |{userId}|...");
 
                 tenantManager.SetCurrentTenant(tenant);
 
-                _log.Debug($"SendUnreadUser(). Now current tennant = {tenantManager.GetCurrentTenant().TenantId}");
+                Log.Debug($"SignalrWorker -> SendUnreadUser(). Now current tennant = {tenantManager.GetCurrentTenant().TenantId}");
 
                 var mailFolderInfos = folderEngine.GetFolders();
 
@@ -189,7 +187,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             }
             catch (Exception e)
             {
-                _log.ErrorFormat("Unknown Error. {0}, {1}", e.ToString(),
+                Log.ErrorFormat("SignalrWorker -> Unknown Error. {0}, {1}", e.ToString(),
                     e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
         }

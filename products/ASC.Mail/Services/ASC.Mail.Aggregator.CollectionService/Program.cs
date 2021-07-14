@@ -51,9 +51,9 @@ namespace ASC.Mail.Aggregator.CollectionService
 
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                         {
-                            if (!String.IsNullOrWhiteSpace(unixSocket))
+                            if (!string.IsNullOrWhiteSpace(unixSocket))
                             {
-                                unixSocket = String.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
+                                unixSocket = string.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
 
                                 serverOptions.ListenUnixSocket(unixSocket);
                             }
@@ -96,12 +96,6 @@ namespace ASC.Mail.Aggregator.CollectionService
             {
                 services.AddMemoryCache();
                 var diHelper = new DIHelper(services);
-                //LogNLogExtension.ConfigureLog(diHelper,
-                //    "ASC.Mail.Aggregator",
-                //    "ASC.Mail.MainThread",
-                //    "ASC.Mail.Stat",
-                //    "ASC.Mail.MailboxEngine",
-                //    "ASC.Mail.SignalrWorker");
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 services.AddSingleton(new ConsoleParser(args));
                 diHelper.TryAdd<AggregatorServiceLauncher>();

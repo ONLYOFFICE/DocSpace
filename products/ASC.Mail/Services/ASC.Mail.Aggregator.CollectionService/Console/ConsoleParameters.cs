@@ -3,7 +3,6 @@
 using ASC.Common;
 
 using CommandLine;
-using CommandLine.Text;
 
 namespace ASC.Mail.Aggregator.CollectionService.Console
 {
@@ -23,11 +22,5 @@ namespace ASC.Mail.Aggregator.CollectionService.Console
 
         [Option("unlimit", Required = false, HelpText = "Unlimit messages per mailbox session")]
         public bool NoMessagesLimit { get; set; }
-
-        //[HelpOption]
-        //public string GetUsage()
-        //{
-        //    return HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
-        //}
     }
 }

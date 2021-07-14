@@ -233,7 +233,7 @@ namespace ASC.Mail.Clients
                 var folderId = Convert.ToInt32(elements[1]);
 
                 if (folderId != (int)FolderType.Inbox)
-                    throw new ArgumentException("uidl is invalid. Only INBOX folder is supported.");
+                    throw new ArgumentException("Uidl is invalid. Only INBOX folder is supported.");
 
                 var inbox = Imap.Inbox;
 
@@ -293,13 +293,13 @@ namespace ASC.Mail.Clients
 
         public void Cancel()
         {
-            Log.Info("MailClient->Cancel()");
+            Log.Info("MailClient -> Cancel()");
             StopTokenSource.Cancel();
         }
 
         public void Dispose()
         {
-            Log.Info("MailClient->Dispose()");
+            Log.Info("MailClient -> Dispose()");
 
             try
             {
@@ -309,7 +309,7 @@ namespace ASC.Mail.Clients
                     {
                         if (Imap.IsConnected)
                         {
-                            Log.Debug("Imap->Disconnect()");
+                            Log.Debug("Imap -> Disconnect()");
                             Imap.Disconnect(true, CancelToken);
                         }
 
@@ -323,7 +323,7 @@ namespace ASC.Mail.Clients
                     {
                         if (Pop.IsConnected)
                         {
-                            Log.Debug("Pop->Disconnect()");
+                            Log.Debug("Pop -> Disconnect()");
                             Pop.Disconnect(true, CancelToken);
                         }
 
@@ -337,7 +337,7 @@ namespace ASC.Mail.Clients
                     {
                         if (Smtp.IsConnected)
                         {
-                            Log.Debug("Smtp->Disconnect()");
+                            Log.Debug("Smtp -> Disconnect()");
                             Smtp.Disconnect(true, CancelToken);
                         }
 
@@ -354,8 +354,7 @@ namespace ASC.Mail.Clients
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("MailClient->Dispose(Mb_Id={0} Mb_Addres: '{1}') Exception: {2}", Account.MailBoxId,
-                    Account.EMail.Address, ex.Message);
+                Log.ErrorFormat($"MailClient -> Dispose(MailboxId={Account.MailBoxId} MailboxAddres: '{Account.EMail.Address}')\r\nException: {ex.Message}\r\n");
             }
         }
 
@@ -451,7 +450,7 @@ namespace ASC.Mail.Clients
 
         private void LoginImapAsync(bool enableUtf8 = true)
         {
-            Log.DebugFormat("Imap.Connect({0}:{1}, SecureSocketOptions: Auto)", Account.Server, Account.Port);
+            Log.DebugFormat($"Imap: Connect({Account.Server}:{Account.Port}, SecureSocketOptions: Auto)");
 
             try
             {
@@ -459,35 +458,36 @@ namespace ASC.Mail.Clients
 
                 if (!t.Wait(CONNECT_TIMEOUT, CancelToken))
                 {
-                    throw new TimeoutException("Imap.ConnectAsync timeout");
+                    Log.Debug("Imap: Failed connect: Timeout.");
+                    throw new TimeoutException("Imap: ConnectAsync() timeout.");
                 }
                 else
                 {
                     IsConnected = true;
-                    Log.Debug("Successfull connection. Working on!");
+                    Log.Debug("Imap: Successfull connection. Working on!");
                 }
 
                 if (enableUtf8 && (Imap.Capabilities & ImapCapabilities.UTF8Accept) != ImapCapabilities.None)
                 {
-                    Log.Debug("Imap.EnableUTF8");
+                    Log.Debug("Imap: EnableUTF8().");
 
                     t = Imap.EnableUTF8Async(CancelToken);
 
                     if (!t.Wait(ENABLE_UTF8_TIMEOUT, CancelToken))
-                        throw new TimeoutException("Imap.EnableUTF8Async timeout");
+                        throw new TimeoutException("Imap: EnableUTF8Async() timeout.");
                 }
 
                 Imap.Authenticated += ImapOnAuthenticated;
 
                 if (string.IsNullOrEmpty(Account.OAuthToken))
                 {
-                    Log.DebugFormat("Imap.Authentication({0})", Account.Account);
+                    Log.DebugFormat($"Imap: Authentication({Account.Account}).");
 
                     t = Imap.AuthenticateAsync(Account.Account, Account.Password, CancelToken);
                 }
                 else
                 {
-                    Log.DebugFormat("Imap.AuthenticationByOAuth({0})", Account.Account);
+                    Log.DebugFormat("Imap: AuthenticationByOAuth({Account.Account})."); ;
 
                     var oauth2 = new SaslMechanismOAuth2(Account.Account, Account.AccessToken);
 
@@ -497,7 +497,12 @@ namespace ASC.Mail.Clients
                 if (!t.Wait(LOGIN_TIMEOUT, CancelToken))
                 {
                     Imap.Authenticated -= ImapOnAuthenticated;
-                    throw new TimeoutException("Imap.AuthenticateAsync timeout");
+                    Log.Debug("Imap: Failed authentication: Timeout.");
+                    throw new TimeoutException("Imap: AuthenticateAsync timeout.");
+                }
+                else
+                {
+                    Log.Debug("Imap: Successfull authentication.");
                 }
 
                 Imap.Authenticated -= ImapOnAuthenticated;
@@ -506,8 +511,10 @@ namespace ASC.Mail.Clients
             {
                 if (aggEx.InnerException != null)
                 {
+                    Log.ErrorFormat($"Imap: Exception while logging\r\nException: {aggEx.InnerException}\r\n.");
                     throw aggEx.InnerException;
                 }
+                Log.ErrorFormat($"Imap: Exception while logging\r\nException: {aggEx}\r\n.");
                 throw new Exception("LoginImap failed", aggEx);
             }
         }

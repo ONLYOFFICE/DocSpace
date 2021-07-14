@@ -31,7 +31,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
             SpecialDomainFolders = new Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>>();
 
-            foreach (var specialMB in serverFolderAccessInfos) // { string Server, Dictionary<name, {folder_id, skip}> }
+            foreach (var specialMB in serverFolderAccessInfos)
             {
                 foreach (var boxInfoPair in specialMB.FolderAccessList)
                 {
@@ -56,22 +56,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 }
             }
 
-            //serverFolderAccessInfos.ForEach(r =>
-            //{
-            //    var mb = new MailBoxData.MailboxInfo
-            //    {
-            //        folder_id = r.FolderId,
-            //        skip = r.Skip
-            //    };
-            //    if (SpecialDomainFolders.Keys.Contains(r.Server))
-            //        SpecialDomainFolders[r.Server][r.MailboxName] = mb;
-            //    else
-            //        SpecialDomainFolders[r.Server] = new Dictionary<string, MailBoxData.MailboxInfo>
-            //        {
-            //                {r.MailboxName, mb}
-            //        };
-            //});
-
             DefaultFolders = GetDefaultFolders();
         }
 
@@ -92,7 +76,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             try
             {
                 if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["mail.folders-mapping"]))
-                // "sent:2|"drafts:3|trash:4|spam:5|junk:5"
                 {
                     list = ConfigurationManager.AppSettings["mail.folders-mapping"]
                         .Split('|')
