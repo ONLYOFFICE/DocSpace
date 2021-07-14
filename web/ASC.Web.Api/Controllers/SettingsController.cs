@@ -300,7 +300,8 @@ namespace ASC.Api.Settings
             {
                 Culture = Tenant.GetCulture().ToString(),
                 GreetingSettings = Tenant.Name,
-                Personal = CoreBaseSettings.Personal
+                Personal = CoreBaseSettings.Personal,
+                Version = Configuration["version:number"] ?? ""
             };
 
             if (AuthContext.IsAuthenticated)
