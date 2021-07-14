@@ -54,7 +54,8 @@
 			  "CleanerMaxFilesToRemoveAtOnce": 100,
 			  "ImapClienPerBox":5,
 			  "ImapBoxPerInstance":100,
-			  "ImapClienLifeTimeSecond":50000,
+			  "ImapClienLifeTimeSecond":500000,
+			  "ImapMessagePerFolder":25,
 			  "RedisConnectionString":"localhost:6379"
      	}
 }

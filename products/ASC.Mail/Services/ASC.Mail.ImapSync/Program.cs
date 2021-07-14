@@ -102,13 +102,13 @@ namespace ASC.Mail.ImapSync
                 diHelper.TryAdd<ImapSyncService>();
                 services.AddSingleton<ImapSyncService>();
                 services.AddHostedService<ImapSyncService>();
-                services.AddSingleton<RedisClient>();
+//                services.AddSingleton<RedisClient>();
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = hostContext.Configuration.GetConnectionString("Redis");
-                    options.InstanceName = "ASC.Mail.ImapSync";
-                });
+                //services.AddStackExchangeRedisCache(options =>
+                //{
+                //    options.Configuration = hostContext.Configuration.GetConnectionString("Redis");
+                //    options.InstanceName = "ASC.Mail.ImapSync";
+                //});
             })
             .ConfigureContainer<ContainerBuilder>((context, builder) =>
             {

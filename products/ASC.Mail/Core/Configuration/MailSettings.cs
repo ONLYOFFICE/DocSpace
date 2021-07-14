@@ -189,6 +189,8 @@ namespace ASC.Mail.Configuration
 
         public int ImapClienLifeTimeSecond { get; set; }
 
+        public int ImapMessagePerFolder { get; set; }
+
         public string RedisConnectionString { get; set; }
 
         #endregion
@@ -440,6 +442,8 @@ namespace ASC.Mail.Configuration
             ImapBoxPerInstance = c.ImapBoxPerInstance==0 ? 100: c.ImapBoxPerInstance;
 
             ImapClienLifeTimeSecond = c.ImapClienLifeTimeSecond==0 ? 600000: c.ImapClienLifeTimeSecond;
+
+            ImapMessagePerFolder = c.ImapMessagePerFolder == 0 ? 25 : c.ImapMessagePerFolder;
 
             RedisConnectionString = string.IsNullOrEmpty(c.RedisConnectionString) ? "localhost:6379" : c.RedisConnectionString;
 
