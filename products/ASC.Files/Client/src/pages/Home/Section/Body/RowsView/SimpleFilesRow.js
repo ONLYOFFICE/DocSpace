@@ -41,6 +41,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .styled-element {
+    height: 32px;
+    width: ${(props) => (props.isEdit ? "52px" : "24px")};
     margin-right: 7px;
   }
 `;
@@ -50,8 +52,8 @@ const SimpleFilesRow = (props) => {
     item,
     sectionWidth,
     dragging,
-    onContentRowSelect,
-    rowContextClick,
+    onContentFileSelect,
+    fileContextClick,
     onDrop,
     onMouseDown,
     className,
@@ -64,6 +66,8 @@ const SimpleFilesRow = (props) => {
     checkedProps,
     element,
     onFilesClick,
+    onMouseUp,
+    isEdit,
   } = props;
 
   return (
@@ -71,7 +75,7 @@ const SimpleFilesRow = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-row ${className}`}
+        className={`files-item ${className}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -80,12 +84,15 @@ const SimpleFilesRow = (props) => {
         <StyledSimpleFilesRow
           key={item.id}
           data={item}
+          isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
           contentElement={sharedButton}
-          onSelect={onContentRowSelect}
-          rowContextClick={rowContextClick}
+          onSelect={onContentFileSelect}
+          rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
+          onMouseUp={onMouseUp}
+          onDoubleClick={onFilesClick}
           {...checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}

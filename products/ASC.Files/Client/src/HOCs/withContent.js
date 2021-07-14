@@ -125,7 +125,6 @@ export default function withContent(WrappedContent) {
 
     onClickUpdateItem = (e) => {
       const { fileActionType } = this.props;
-
       fileActionType === FileAction.Create
         ? this.createItem(e)
         : this.updateItem(e);
@@ -203,7 +202,7 @@ export default function withContent(WrappedContent) {
             .then(() => {
               const exst = item.fileExst;
               return toastr.success(
-                <Trans i18nKey="FileCreated" ns="Home">
+                <Trans t={t} i18nKey="FileCreated" ns="Home">
                   New file {{ itemTitle }}.{{ exst }} is created
                 </Trans>
               );
@@ -256,6 +255,7 @@ export default function withContent(WrappedContent) {
         t,
         isTrashFolder,
         onFilesClick,
+        viewAs,
       } = this.props;
       const { id, fileExst, updated, createdBy, access, fileStatus } = item;
 
@@ -283,9 +283,11 @@ export default function withContent(WrappedContent) {
 
       return isEdit ? (
         <EditingWrapperComponent
+          className={"editing-wrapper-component"}
           itemTitle={itemTitle}
           itemId={id}
           isLoading={isLoading}
+          viewAs={viewAs}
           renameTitle={this.renameTitle}
           onClickUpdateItem={this.onClickUpdateItem}
           cancelUpdateItem={this.cancelUpdateItem}
@@ -318,6 +320,7 @@ export default function withContent(WrappedContent) {
         createFile,
         createFolder,
         isLoading,
+        viewAs,
       } = filesStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -349,6 +352,7 @@ export default function withContent(WrappedContent) {
         culture,
         homepage: config.homepage,
         viewer: auth.userStore.user,
+        viewAs,
       };
     }
   )(observer(WithContent));

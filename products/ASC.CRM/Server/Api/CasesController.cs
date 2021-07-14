@@ -617,7 +617,7 @@ namespace ASC.CRM.Api
             var contacts = _daoFactory.GetContactDao().GetContacts(contactIDs);
 
             return contactIDs == null
-                       ? new ItemList<ContactDto>()
+                       ? new List<ContactDto>()
                        : _mapper.Map<List<Contact>, List<ContactDto>>(contacts);
         }
 

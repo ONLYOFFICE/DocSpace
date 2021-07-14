@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Api.CRM;
 using ASC.Common.Web;
 using ASC.CRM.ApiModels;
+
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
@@ -221,15 +222,16 @@ namespace ASC.CRM.Api
         [Create(@"tasktemplatecontainer/{containerid:int}/tasktemplate")]
         public TaskTemplateDto CreateTaskTemplate(
             [FromRoute] int containerid,
-            [FromForm] string title,
-            [FromForm] string description,
-            [FromForm] Guid responsibleid,
-            [FromForm] int categoryid,
-            [FromForm] bool isNotify,
-            [FromForm] long offsetTicks,
-            [FromForm] bool deadLineIsFixed
-            )
+            [FromBody] CreateOrUpdateTaskTemplateRequestDto inDto)
         {
+            var title = inDto.Title;
+            var categoryid = inDto.Categoryid;
+            var deadLineIsFixed = inDto.DeadLineIsFixed;
+            var description = inDto.Description;
+            var isNotify = inDto.isNotify;
+            var responsibleid = inDto.Responsibleid;
+            var offsetTicks = inDto.OffsetTicks;
+
             if (containerid <= 0 || string.IsNullOrEmpty(title) || categoryid <= 0) throw new ArgumentException();
 
             var container = _daoFactory.GetTaskTemplateContainerDao().GetByID(containerid);
@@ -245,6 +247,7 @@ namespace ASC.CRM.Api
                 ResponsibleID = responsibleid,
                 Title = title,
                 Offset = TimeSpan.FromTicks(offsetTicks)
+                
             };
 
             item.ID = _daoFactory.GetTaskTemplateDao().SaveOrUpdate(item);
@@ -270,19 +273,21 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         /// <visible>false</visible>
-        [Update(@"tasktemplatecontainer/{containerid:int}/tasktemplate")]
+        [Update(@"tasktemplatecontainer/{containerid:int}/tasktemplate/{id:int}")]
         public TaskTemplateDto UpdateTaskTemplate(
-            int id,
-            int containerid,
-            string title,
-            string description,
-            Guid responsibleid,
-            int categoryid,
-            bool isNotify,
-            long offsetTicks,
-            bool deadLineIsFixed
-            )
+            [FromRoute] int id,
+            [FromRoute] int containerid,
+            [FromBody] CreateOrUpdateTaskTemplateRequestDto inDto)
         {
+
+            var title = inDto.Title;
+            var categoryid = inDto.Categoryid;
+            var deadLineIsFixed = inDto.DeadLineIsFixed;
+            var description = inDto.Description;
+            var isNotify = inDto.isNotify;
+            var responsibleid = inDto.Responsibleid;
+            var offsetTicks = inDto.OffsetTicks;
+          
             if (containerid <= 0 || string.IsNullOrEmpty(title) || categoryid <= 0) throw new ArgumentException();
 
             var updatingItem = _daoFactory.GetTaskTemplateDao().GetByID(id);

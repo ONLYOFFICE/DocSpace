@@ -160,11 +160,14 @@ namespace ASC.CRM.Api
         [Create(@"contact/{contactid:int}/data")]
         public ContactInfoDto CreateContactInfo(
             [FromRoute] int contactid,
-            [FromForm] ContactInfoType infoType,
-            [FromForm] string data,
-            [FromForm] bool isPrimary,
-            [FromForm] string category)
+            [FromBody] CreateContactInfoRequestDto inDto)
         {
+
+            var data = inDto.Data;
+            var infoType = inDto.InfoType;
+            var category = inDto.Category;
+            var isPrimary = inDto.IsPrimary;
+
             if (string.IsNullOrEmpty(data) || contactid <= 0) throw new ArgumentException();
             var contact = _daoFactory.GetContactDao().GetByID(contactid);
             if (contact == null) throw new ItemNotFoundException();

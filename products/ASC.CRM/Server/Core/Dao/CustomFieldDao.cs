@@ -113,7 +113,7 @@ namespace ASC.CRM.Core.Dao
                                                 x.EntityType == entityType &&
                                                 x.FieldId == fieldID);
 
-            if (string.IsNullOrEmpty(fieldValue))
+            if (string.IsNullOrEmpty(fieldValue) && dbEntity != null)
             {
                 _factoryIndexer.Delete(dbEntity);
 
@@ -121,14 +121,29 @@ namespace ASC.CRM.Core.Dao
             }
             else
             {
+                if (dbEntity == null)
+                {
+                    dbEntity = new DbFieldValue
+                    {
+                        EntityId = entityID,
+                        FieldId = fieldID,
+                        EntityType = entityType,
+                        TenantId = TenantID
+                    };
+
+                    CrmDbContext.Add(dbEntity);
+                }
+
+
                 dbEntity.Value = fieldValue;
                 dbEntity.LastModifedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
                 dbEntity.LastModifedBy = _securityContext.CurrentAccount.ID;
 
+                CrmDbContext.SaveChanges();
+
                 _factoryIndexer.Index(dbEntity);
             }
 
-            CrmDbContext.SaveChanges();
         }
 
         private string GetValidMask(CustomFieldType customFieldType, String mask)

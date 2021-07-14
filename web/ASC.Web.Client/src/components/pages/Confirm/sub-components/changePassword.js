@@ -7,13 +7,13 @@ import styled from "styled-components";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import PasswordInput from "@appserver/components/password-input";
-import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import Heading from "@appserver/components/heading";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { PasswordLimitSpecialCharacters } from "@appserver/common/constants";
 import { inject, observer } from "mobx-react";
+import withLoader from "../withLoader";
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
@@ -110,15 +110,6 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { defaultPage, getSettings, getPortalPasswordSettings } = this.props;
-
-    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
-
-    axios.all(requests).catch((error) => {
-      toastr.error(this.props.t(`${error}`));
-      tryRedirectTo(defaultPage);
-    });
-
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
   }
@@ -134,9 +125,7 @@ class Form extends React.PureComponent {
     const { settings, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
-    return !settings ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
+    return (
       <BodyStyle>
         <div className="password-header">
           <img
@@ -241,6 +230,8 @@ export default inject(({ auth, setup }) => {
   };
 })(
   withRouter(
-    withTranslation(["Confirm", "Common"])(observer(ChangePasswordForm))
+    withTranslation(["Confirm", "Common"])(
+      withLoader(observer(ChangePasswordForm))
+    )
   )
 );

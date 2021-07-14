@@ -8,7 +8,6 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Mail.Aggregator.CollectionService.Console;
 using ASC.Mail.Aggregator.CollectionService.Service;
@@ -97,12 +96,12 @@ namespace ASC.Mail.Aggregator.CollectionService
             {
                 services.AddMemoryCache();
                 var diHelper = new DIHelper(services);
-                LogNLogExtension.ConfigureLog(diHelper,
-                    "ASC.Mail.Aggregator",
-                    "ASC.Mail.MainThread",
-                    "ASC.Mail.Stat",
-                    "ASC.Mail.MailboxEngine",
-                    "ASC.Mail.SignalrWorker");
+                //LogNLogExtension.ConfigureLog(diHelper,
+                //    "ASC.Mail.Aggregator",
+                //    "ASC.Mail.MainThread",
+                //    "ASC.Mail.Stat",
+                //    "ASC.Mail.MailboxEngine",
+                //    "ASC.Mail.SignalrWorker");
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 services.AddSingleton(new ConsoleParser(args));
                 diHelper.TryAdd<AggregatorServiceLauncher>();

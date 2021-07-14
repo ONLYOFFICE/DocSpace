@@ -16,11 +16,13 @@ import ThemeProvider from "@appserver/components/theme-provider";
 import { Base } from "@appserver/components/themes";
 import store from "studio/store";
 import config from "../package.json";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import AppLoader from "@appserver/common/components/AppLoader";
 import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
+import { Snackbar } from "@appserver/components/snackbar";
+import moment from "moment";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -144,7 +146,14 @@ const MyProfileRoute = (props) => (
 );
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
-  const { isLoaded, loadBaseInfo, modules, isDesktop } = rest;
+  const {
+    isLoaded,
+    loadBaseInfo,
+    modules,
+    isDesktop,
+    language,
+    FirebaseHelper,
+  } = rest;
 
   useEffect(() => {
     try {
@@ -171,8 +180,161 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     }
   }, []);
 
+  const { t } = useTranslation("Common");
+
+  let snackTimer = null;
+  let fbInterval = null;
+  let lastCampaignStr = null;
+  const LS_CAMPAIGN_DATE = "maintenance_to_date";
+  const DATE_FORMAT = "YYYY-MM-DD";
+  const SNACKBAR_TIMEOUT = 10000;
+
+  const setSnackBarTimer = (campaign) => {
+    snackTimer = setTimeout(() => showSnackBar(campaign), SNACKBAR_TIMEOUT);
+  };
+
+  const clearSnackBarTimer = () => {
+    if (!snackTimer) return;
+
+    clearTimeout(snackTimer);
+    snackTimer = null;
+  };
+
+  const showSnackBar = (campaign) => {
+    clearSnackBarTimer();
+
+    const { fromDate, toDate, desktop } = campaign;
+
+    console.log(
+      `FB: 'bar/maintenance' desktop=${desktop} fromDate=${fromDate} toDate=${toDate}`
+    );
+
+    if (!campaign || !fromDate || !toDate) {
+      console.log("Skip snackBar by empty campaign params");
+      return;
+    }
+
+    const to = moment(toDate).local();
+
+    const watchedCampaignDateStr = localStorage.getItem(LS_CAMPAIGN_DATE);
+    const campaignDateStr = to.format(DATE_FORMAT);
+    if (campaignDateStr == watchedCampaignDateStr) {
+      console.log("Skip snackBar by already watched");
+      return;
+    }
+
+    const from = moment(fromDate).local();
+    const now = moment();
+
+    if (now.isBefore(from)) {
+      setSnackBarTimer(campaign);
+
+      Snackbar.close();
+      console.log(`Show snackBar has been delayed for 1 minute`, now);
+      return;
+    }
+
+    if (now.isAfter(to)) {
+      console.log("Skip snackBar by current date", now);
+      Snackbar.close();
+      return;
+    }
+
+    if (isDesktop && !desktop) {
+      console.log("Skip snackBar by desktop", desktop);
+      Snackbar.close();
+      return;
+    }
+
+    setSnackBarTimer(campaign);
+
+    if (!document.getElementById("main-bar")) return;
+
+    const campaignStr = JSON.stringify(campaign);
+    let skipRender = lastCampaignStr === campaignStr;
+
+    skipRender =
+      skipRender && document.getElementById("main-bar").hasChildNodes();
+
+    if (skipRender) return;
+
+    lastCampaignStr = campaignStr;
+
+    const targetDate = to.locale(language).format("LL");
+
+    const barConfig = {
+      textBody: `${t("BarMaintenanceDescription", {
+        targetDate: `<b>${targetDate}</b>`,
+        productName: "ONLYOFFICE Personal",
+      })} ${t("BarMaintenanceDisclaimer")}`,
+      pos: "top_center",
+      showAction: true,
+      onActionClick: (element) => {
+        element.style.opacity = 0;
+        localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
+      },
+    };
+
+    barConfig.parentElementId = "main-bar";
+
+    Snackbar.show(barConfig);
+  };
+
+  const fetchMaintenance = () => {
+    try {
+      if (!FirebaseHelper.isEnabled) return;
+
+      FirebaseHelper.checkMaintenance()
+        .then((campaign) => {
+          console.log("checkMaintenance", campaign);
+          if (!campaign) {
+            clearSnackBarTimer();
+            Snackbar.close();
+            return;
+          }
+
+          showSnackBar(campaign);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const fetchBanners = () => {
+    if (!FirebaseHelper.isEnabled) return;
+
+    FirebaseHelper.checkCampaigns()
+      .then((campaigns) => {
+        localStorage.setItem("campaigns", campaigns);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   useEffect(() => {
-    if (isLoaded) updateTempContent();
+    if (!isLoaded) return;
+
+    updateTempContent();
+
+    if (!FirebaseHelper.isEnabled) {
+      localStorage.setItem("campaigns", "");
+      return;
+    }
+
+    fetchMaintenance();
+    fetchBanners();
+    fbInterval = setInterval(fetchMaintenance, 60000);
+
+    return () => {
+      if (fbInterval) {
+        clearInterval(fbInterval);
+      }
+      clearSnackBarTimer();
+    };
   }, [isLoaded]);
 
   useEffect(() => {
@@ -272,9 +434,11 @@ const ShellWrapper = inject(({ auth }) => {
         document.body.classList.add("desktop");
       }
     },
+    language: auth.language,
     isLoaded,
     modules: auth.moduleStore.modules,
     isDesktop: auth.settingsStore.isDesktopClient,
+    FirebaseHelper: auth.settingsStore.firebaseHelper,
   };
 })(observer(Shell));
 

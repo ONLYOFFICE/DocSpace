@@ -8,6 +8,9 @@ import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
 import config from "../../../../package.json";
+import withLoader from "../Confirm/withLoader";
+import { inject, observer } from "mobx-react";
+import { ReactSVG } from "react-svg";
 
 const BodyStyle = styled.div`
   margin-top: ${isMobile ? "80px" : "24px"};
@@ -75,7 +78,7 @@ const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
 
-const Body = ({ t }) => {
+const Body = ({ t, personal }) => {
   useEffect(() => {
     setDocumentTitle(t("Common:About"));
   }, [t]);
@@ -105,15 +108,19 @@ const Body = ({ t }) => {
 
   return (
     <BodyStyle>
-      <p className="avatar">
-        <img
-          className="logo-img"
-          src="images/dark_general.png"
-          width="320"
-          height="181"
-          alt="Logo"
-        />
-      </p>
+      <div className="avatar">
+        {personal ? (
+          <ReactSVG src="images/logo_personal_about.svg" />
+        ) : (
+          <img
+            className="logo-img"
+            src="images/dark_general.png"
+            width="320"
+            height="181"
+            alt="Logo"
+          />
+        )}
+      </div>
 
       <VersionStyle>
         <Text className="text_style" fontSize="14px" color="#A3A9AE">
@@ -189,7 +196,9 @@ const Body = ({ t }) => {
   );
 };
 
-const BodyWrapper = withTranslation(["About", "Common"])(Body);
+const BodyWrapper = inject(({ auth }) => ({
+  personal: auth.settingsStore,
+}))(withTranslation(["About", "Common"])(withLoader(observer(Body))));
 
 const About = (props) => {
   return (

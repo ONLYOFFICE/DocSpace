@@ -12,6 +12,7 @@ const SectionPagingContent = ({
   setIsLoading,
   selectedCount,
   selectedFolderId,
+  tReady,
 }) => {
   const { t } = useTranslation("Home");
   const onNextClick = useCallback(
@@ -140,7 +141,7 @@ const SectionPagingContent = ({
       );
   }, [files, folders, filter, pageItems]);
 
-  return filter.total < filter.pageCount && filter.total < 26 ? (
+  return !tReady || (filter.total < filter.pageCount && filter.total < 26) ? (
     <></>
   ) : (
     <Paging

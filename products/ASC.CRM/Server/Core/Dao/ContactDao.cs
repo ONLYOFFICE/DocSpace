@@ -341,7 +341,7 @@ namespace ASC.CRM.Core.Dao
 
             var ids = new List<int>();
 
- //           List<int> contactsIds;
+            //           List<int> contactsIds;
 
             IReadOnlyCollection<DbContactInfo> dbContactInfos;
 
@@ -837,32 +837,36 @@ namespace ASC.CRM.Core.Dao
 
                         break;
                     case ContactSortedByType.FirstName:
-                    {
-                        dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc);
-                        dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc);
-                    }
-
-                    break;
+                        dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc)
+                                                         .ThenBy("LastName", orderBy.IsAsc);
+                        break;
                     case ContactSortedByType.LastName:
-                    {
-                        dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc);
-                        dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc);
-                    }
-                    break;
+                        dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc)
+                                                         .ThenBy("FirstName", orderBy.IsAsc);
+
+                        break;
                     case ContactSortedByType.History:
                     {
-                        dbContactsQuery = dbContactsQuery.GroupJoin(Query(CrmDbContext.RelationshipEvent),
+                        var dbContactsQueryPart = dbContactsQuery.GroupJoin(Query(CrmDbContext.RelationshipEvent)
+                                                                      .Where(x => x.ContactId > 0)
+                                                                      .GroupBy(x => x.ContactId)
+                                                                      .Select(x => new { ContactId = x.Key, LastModifedOn = x.Max(y => y.LastModifedOn) }),
                                                                       x => x.Id,
                                                                       y => y.ContactId,
                                                                       (x, y) => new { x, y })
-                                                          .OrderBy(x => x.y.Max(x => x.LastModifedOn))
-                                                          .ThenBy(x => x.x.CreateOn)
-                                                          .Select(x => x.x);
+                                       .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { DbContact = x.x, DbRelationshipEvent = y });
 
 
+                        dbContactsQueryPart = orderBy.IsAsc ? dbContactsQueryPart.OrderBy(x => x.DbRelationshipEvent.LastModifedOn)
+                                                                                 .ThenBy(x => x.DbContact.CreateOn)
+                                                             : dbContactsQueryPart.OrderByDescending(x => x.DbRelationshipEvent.LastModifedOn)
+                                                                                  .ThenByDescending(x => x.DbContact.CreateOn);
+
+
+                        dbContactsQuery = dbContactsQueryPart.Select(x => x.DbContact);
+
+                        break;
                     }
-
-                    break;
                     default:
                     {
                         dbContactsQuery = dbContactsQuery.OrderBy("DisplayName", orderBy.IsAsc);
@@ -1405,7 +1409,8 @@ namespace ASC.CRM.Core.Dao
                 DisplayName = displayName,
                 IsShared = contact.ShareType,
                 ContactTypeId = contact.ContactTypeID,
-                Currency = contact.Currency
+                Currency = contact.Currency,
+                TenantId = TenantID
             };
 
             CrmDbContext.Contacts.Add(itemToInsert);
@@ -1859,7 +1864,8 @@ namespace ASC.CRM.Core.Dao
 
                 CrmDbContext.Contacts.Remove(new DbContact
                 {
-                    Id = fromContactID
+                    Id = fromContactID,
+                    TenantId = TenantID
                 });
 
                 CrmDbContext.SaveChanges();

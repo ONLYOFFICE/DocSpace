@@ -320,10 +320,10 @@ class SectionHeaderContent extends React.Component {
       isRecycleBin,
       isThirdPartySelection,
       isPrivacy,
-      isOnlyFoldersSelected,
       isFavoritesFolder,
       isRecentFolder,
       isShareFolder,
+      personal,
     } = this.props;
 
     let menu = [
@@ -384,7 +384,7 @@ class SectionHeaderContent extends React.Component {
           isFavoritesFolder ||
           isRecentFolder ||
           !isAccessedSelected ||
-          (isPrivacy && (isOnlyFoldersSelected || selectionCount > 1)),
+          selectionCount > 1,
         onClick: this.onOpenSharingPanel,
       },
       {
@@ -435,12 +435,17 @@ class SectionHeaderContent extends React.Component {
     }
 
     if (isPrivacy) {
+      menu.splice(1, 1);
+      menu.splice(2, 1);
       menu.splice(3, 1);
-      menu.splice(4, 1);
     }
 
     if (isShareFolder) {
       menu.splice(4, 1);
+    }
+
+    if ((personal && !isWebEditSelected) || selectionCount > 1) {
+      menu.splice(1, 1);
     }
 
     return menu;
@@ -451,6 +456,7 @@ class SectionHeaderContent extends React.Component {
 
     const {
       t,
+      tReady,
       isHeaderVisible,
       isHeaderChecked,
       isHeaderIndeterminate,
@@ -459,6 +465,7 @@ class SectionHeaderContent extends React.Component {
       canCreate,
       isDesktop,
       isTabletView,
+      personal,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -491,7 +498,7 @@ class SectionHeaderContent extends React.Component {
               </div>
             ) : (
               <div className="header-container">
-                {!title ? (
+                {!title || !tReady ? (
                   <Loaders.SectionHeader />
                 ) : (
                   <>
@@ -526,17 +533,19 @@ class SectionHeaderContent extends React.Component {
                           getData={this.getContextOptionsPlus}
                           isDisabled={false}
                         />
-                        <ContextMenuButton
-                          className="option-button"
-                          directionX="right"
-                          iconName="images/vertical-dots.react.svg"
-                          size={17}
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill
-                          getData={this.getContextOptionsFolder}
-                          isDisabled={false}
-                        />
+                        {!personal && (
+                          <ContextMenuButton
+                            className="option-button"
+                            directionX="right"
+                            iconName="images/vertical-dots.react.svg"
+                            size={17}
+                            color="#A3A9AE"
+                            hoverColor="#657077"
+                            isFill
+                            getData={this.getContextOptionsFolder}
+                            isDisabled={false}
+                          />
+                        )}
                       </>
                     ) : (
                       canCreate && (
@@ -586,7 +595,6 @@ export default inject(
       isHeaderChecked,
       userAccess,
       isAccessedSelected,
-      isOnlyFoldersSelected,
       isThirdPartySelection,
       isWebEditSelected,
       setIsLoading,
@@ -629,11 +637,11 @@ export default inject(
       isHeaderChecked,
       deleteDialogVisible: userAccess,
       isAccessedSelected,
-      isOnlyFoldersSelected,
       isThirdPartySelection,
       isWebEditSelected,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
+      personal: auth.settingsStore.personal,
 
       setSelected,
       setAction,

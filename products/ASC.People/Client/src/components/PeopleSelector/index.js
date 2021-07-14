@@ -231,6 +231,8 @@ class PeopleSelector extends React.Component {
       showCounter,
     } = this.props;
 
+    console.log("CustomAllGroups", t("CustomAllGroups", { groupsCaption }));
+
     console.log("PeopleSelector render");
     return (
       <AdvancedSelector

@@ -136,7 +136,6 @@ class PureHome extends React.Component {
 
   onDrop = (files, uploadToFolder) => {
     const { t, startUpload, setDragging, dragging } = this.props;
-
     dragging && setDragging(false);
     startUpload(files, uploadToFolder, t);
   };
@@ -226,6 +225,7 @@ class PureHome extends React.Component {
       fileActionId,
       firstLoad,
       isHeaderVisible,
+      isPrivacyFolder,
       isRecycleBinFolder,
 
       primaryProgressDataVisible,
@@ -240,8 +240,8 @@ class PureHome extends React.Component {
 
       isLoading,
       dragging,
+      tReady,
     } = this.props;
-
     return (
       <>
         <MediaViewer />
@@ -251,7 +251,7 @@ class PureHome extends React.Component {
           withBodyScroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
-          onDrop={isRecycleBinFolder ? null : this.onDrop}
+          onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
           showPrimaryProgressBar={primaryProgressDataVisible}
@@ -272,6 +272,8 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           isLoading={isLoading}
+          firstLoad={firstLoad}
+          dragging={dragging}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -297,7 +299,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
-            <SectionPagingContent />
+            <SectionPagingContent tReady={tReady} />
           </PageLayout.SectionPaging>
         </PageLayout>
       </>
@@ -330,6 +332,7 @@ export default inject(
     const { id } = fileActionStore;
     const {
       isRecycleBinFolder,
+      isPrivacyFolder,
       expandedKeys,
       setExpandedKeys,
     } = treeFoldersStore;
@@ -372,6 +375,7 @@ export default inject(
       uploaded,
       converted,
       isRecycleBinFolder,
+      isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
       expandedKeys,
 

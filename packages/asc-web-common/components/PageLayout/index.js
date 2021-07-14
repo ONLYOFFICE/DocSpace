@@ -224,7 +224,6 @@ class PageLayout extends React.Component {
       isLoading,
       dragging,
     } = this.props;
-
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
     let articleBodyContent = null;
@@ -362,12 +361,16 @@ class PageLayout extends React.Component {
                           : null}
                       </SubSectionHeader>
                     )}
+
                     {isSectionFilterAvailable && (
-                      <SubSectionFilter className="section-header_filter">
-                        {sectionFilterContent
-                          ? sectionFilterContent.props.children
-                          : null}
-                      </SubSectionFilter>
+                      <>
+                        <div id="main-bar" style={{ display: "grid" }}></div>
+                        <SubSectionFilter className="section-header_filter">
+                          {sectionFilterContent
+                            ? sectionFilterContent.props.children
+                            : null}
+                        </SubSectionFilter>
+                      </>
                     )}
                     {isSectionBodyAvailable && (
                       <>
@@ -467,8 +470,8 @@ class PageLayout extends React.Component {
           <StyledSelectoWrapper>
             <Selecto
               dragContainer={".main"}
-              selectableTargets={[".files-row"]}
-              hitRate={1}
+              selectableTargets={[".files-item"]}
+              hitRate={0}
               selectByClick={false}
               selectFromInside={true}
               ratio={0}

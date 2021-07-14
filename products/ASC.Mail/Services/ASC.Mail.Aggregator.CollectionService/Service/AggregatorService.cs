@@ -377,9 +377,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 var commonCancelToken =
                     CancellationTokenSource.CreateLinkedTokenSource(cancelToken, timeoutCancel.Token).Token;
 
-                var taskLogger = LogOptions.Get("");
-                taskLogger.Name = string.Empty;
-                taskLogger.Name += $"Mbox_{mailbox.MailBoxId}";
+                var taskLogger = LogOptions.Get($"Mbox_{mailbox.MailBoxId}");
 
                 var client = CreateMailClient(mailbox, taskLogger, commonCancelToken);
 
@@ -571,9 +569,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             var failed = false;
 
-            var taskLogger = LogOptions.Get("");
-            taskLogger.Name = string.Empty;
-            taskLogger.Name += $"ASC.Mail Mbox_{mailbox.MailBoxId} Task_{Task.CurrentId}";
+            var taskLogger = LogOptions.Get($"ASC.Mail Mbox_{mailbox.MailBoxId} Task_{Task.CurrentId}");
 
             taskLogger.InfoFormat(
                 "ProcessMailbox(Tenant = {0}, MailboxId = {1} Address = '{2}') Is {3}",
@@ -582,9 +578,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             try
             {
-                if (client.Log != null)
-                    client.Log = null;
-
                 client.Log = taskLogger;
 
                 client.GetMessage += ClientOnGetMessage;
