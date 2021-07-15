@@ -159,8 +159,8 @@ const SectionBodyContent = (props) => {
   return (!fileActionId && isEmptyFilesList) || null ? (
     <EmptyContainer />
   ) : viewAs === "tile" ? (
-    <FilesTileContainer />
-  ) : viewAs === "table" || viewAs === "row" ? (
+    <FilesTileContainer t={t} />
+  ) : viewAs === "table" ? (
     <TableView />
   ) : (
     <FilesRowContainer tReady={tReady} />
