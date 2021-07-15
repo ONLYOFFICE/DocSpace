@@ -2,11 +2,11 @@ import React, { useRef } from "react";
 import TableContainer from "@appserver/components/table-container";
 import { inject, observer } from "mobx-react";
 import TableRow from "./TableRow";
-import TableHeader from "@appserver/components/table-container/TableHeader";
+import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import Checkbox from "@appserver/components/checkbox";
 
-const Table = ({ filesList, isHeaderVisible, setSelected }) => {
+const Table = ({ filesList, setSelected }) => {
   const onChange = (checked) => {
     setSelected(checked ? "all" : "none");
   };
@@ -68,11 +68,7 @@ const Table = ({ filesList, isHeaderVisible, setSelected }) => {
 
   return (
     <TableContainer forwardedRef={ref}>
-      <TableHeader
-        isHeaderVisible={isHeaderVisible}
-        containerRef={ref}
-        columns={columns}
-      />
+      <TableHeader containerRef={ref} columns={columns} />
       <TableBody>
         {filesList.map((item, index) => (
           <TableRow key={item.id} item={item} index={index} />
@@ -83,19 +79,10 @@ const Table = ({ filesList, isHeaderVisible, setSelected }) => {
 };
 
 export default inject(({ filesStore }) => {
-  const {
-    filesList,
-    setSelected,
-    isHeaderVisible,
-    isHeaderIndeterminate,
-    isHeaderChecked,
-  } = filesStore;
+  const { filesList, setSelected } = filesStore;
 
   return {
     filesList,
     setSelected,
-    isHeaderVisible,
-    isHeaderIndeterminate,
-    isHeaderChecked,
   };
 })(observer(Table));
