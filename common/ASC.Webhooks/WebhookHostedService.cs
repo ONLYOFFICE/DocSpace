@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Web.Webhooks;
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,48 +22,39 @@ namespace ASC.Webhooks
         private TenantManager TenantManager { get; }
         private WebhookSender WebhookSender { get; }
 
+        private ICacheNotify<WebhookRequest> CacheNotify { get; }
+
         public WebhookHostedService(IOptionsMonitor<ILog> option, 
             DbWorker dbWorker, 
             TenantManager tenantManager, 
-            WebhookSender webhookSender)
+            WebhookSender webhookSender,
+            ICacheNotify<WebhookRequest> cacheNotify)
         {
             Log = option.Get("ASC.Webhooks");
             DbWorker = dbWorker;
             TenantManager = tenantManager;
             WebhookSender = webhookSender;
+            CacheNotify = cacheNotify;
         }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             Log.Debug(
-               $"WebhookHostedService is starting.{Environment.NewLine}");
+               $"WebhookHostedService is starting.");
 
             stoppingToken.Register(() =>
             Log.Debug($"WebhookHostedService is stopping."));
 
-            await BackgroundProcessing(stoppingToken);
+            CacheNotify.Subscribe(BackgroundProcessing, CacheNotifyAction.Update);
         }
 
-        private async Task BackgroundProcessing(CancellationToken stoppingToken)
+        public void Stop()
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                try
-                {
-                    var webhooks = DbWorker.GetWebhookQueue();
+            CacheNotify.Unsubscribe(CacheNotifyAction.Update);
+        }
 
-                    foreach (var wh in webhooks)
-                    {
-                        WebhookSender.Send(wh);
-                    }
-
-                    await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("ERROR: " + ex.Message);
-                }
-            }
+        private void BackgroundProcessing(WebhookRequest request)// горизонтальная, вертикальная кластеризация, добавление в очередь из паблишера
+        {
+            WebhookSender.Send(request);
         }
     }
 }

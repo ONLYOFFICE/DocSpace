@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Web.Webhooks;
 using ASC.Webhooks.Dao.Models;
 
 using Microsoft.Extensions.Options;
@@ -24,15 +25,15 @@ namespace ASC.Webhooks
         private static readonly HttpClient httpClient = new HttpClient();
         private ILog Log { get; }
         private DbWorker DbWorker { get; }
-        public WebhookSender(IOptionsMonitor<ILog> option, DbWorker dbWorker)
+        public WebhookSender(IOptionsMonitor<ILog> options, DbWorker dbWorker)
         {
             DbWorker = dbWorker;
-            Log = option.Get("ASC.Webhooks");
+            Log = options.Get("ASC.Webhooks");
         }
-        public async Task Send(WebhooksQueueEntry webhooksQueueEntry)
+        public async Task Send(WebhookRequest webhookRequest)
         {
-            var URI = webhooksQueueEntry.Uri;
-            var secretKey = webhooksQueueEntry.SecretKey;
+            var URI = webhookRequest.URI;
+            var secretKey = webhookRequest.SecretKey;
 
             for (int i = 0; i < repeatCount; i++)
             {
@@ -40,10 +41,10 @@ namespace ASC.Webhooks
                 {
                     var request = new HttpRequestMessage(HttpMethod.Post, URI);
                     request.Headers.Add("Accept", "*/*");
-                    request.Headers.Add("Secret","SHA256=" + GetSecretHash(secretKey, webhooksQueueEntry.Data));//*retry
+                    request.Headers.Add("Secret","SHA256=" + GetSecretHash(secretKey, webhookRequest.Data));//*retry
 
                     request.Content = new StringContent(
-                        webhooksQueueEntry.Data,
+                        webhookRequest.Data,
                         Encoding.UTF8,
                         "application/json");
 
@@ -51,7 +52,7 @@ namespace ASC.Webhooks
 
                     if (response.IsSuccessStatusCode)
                     {
-                        DbWorker.UpdateStatus(webhooksQueueEntry.Id, ProcessStatus.Success);
+                        DbWorker.UpdateStatus(webhookRequest.Id, ProcessStatus.Success);
                         break;
                     }
                 }
@@ -59,7 +60,7 @@ namespace ASC.Webhooks
                 {
                     if(i == repeatCount)
                     {
-                        DbWorker.UpdateStatus(webhooksQueueEntry.Id, ProcessStatus.Failed);
+                        DbWorker.UpdateStatus(webhookRequest.Id, ProcessStatus.Failed);
                     }
 
                     Log.Error("ERROR: " + ex.Message);

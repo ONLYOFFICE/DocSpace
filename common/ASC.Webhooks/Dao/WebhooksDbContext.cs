@@ -70,7 +70,12 @@ namespace ASC.Webhooks.Dao
 
                 entity.Property(e => e.Event)
                     .HasColumnType("varchar")
-                    .HasColumnName("EventID")
+                    .HasColumnName("Event")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Status)
+                    .HasColumnType("varchar")
+                    .HasColumnName("Status")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.TenantId)

@@ -18,10 +18,11 @@ namespace ASC.Webhooks
             webhooksContext = dbContext.Get("webhooks");
         }
 
-        public void WriteToJournal(WebhooksPayload webhook)
+        public int WriteToJournal(WebhooksPayload webhook)
         {
-            webhooksContext.WebhooksPayloads.Add(webhook);
+            var entity = webhooksContext.WebhooksPayloads.Add(webhook);
             webhooksContext.SaveChanges();
+            return entity.Entity.Id;
         }
 
         public void AddWebhookConfig(WebhooksConfig webhooksConfig)
@@ -52,6 +53,16 @@ namespace ASC.Webhooks
         {
             return webhooksContext.WebhooksPayloads
                 .Where(t => t.Status == ProcessStatus.InProcess)
+                .Join(webhooksContext.WebhooksConfigs, t => t.TenantId, t => t.TenantId, (payload, config) => new { payload, config })
+                .Select(t => new WebhooksQueueEntry { Id = t.payload.Id, Data = t.payload.Data, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
+                .OrderBy(t => t.Id)
+                .ToList();
+        }
+
+        public List<WebhooksQueueEntry> GetTenantWebhooks(EventName eventName)
+        {
+            return webhooksContext.WebhooksPayloads
+                .Where(t => t.Status == ProcessStatus.InProcess && t.Event == eventName)
                 .Join(webhooksContext.WebhooksConfigs, t => t.TenantId, t => t.TenantId, (payload, config) => new { payload, config })
                 .Select(t => new WebhooksQueueEntry { Id = t.payload.Id, Data = t.payload.Data, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
                 .OrderBy(t => t.Id)

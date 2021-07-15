@@ -1,12 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
+using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Web.Webhooks;
 using ASC.Webhooks.Dao.Models;
 
+using Confluent.Kafka;
+
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Webhooks
 {
@@ -15,33 +23,47 @@ namespace ASC.Webhooks
     {
         private DbWorker DbWorker { get; }
         private TenantManager TenantManager { get; }
-        private WebhookSender WebhookSender { get; }
-
-        public WebhookPublisher(DbWorker dbWorker, TenantManager tenantManager, WebhookSender webhookSender)
+        private ICacheNotify<WebhookRequest> WebhookNotify { get; }
+        private ILog Log { get; }
+        public WebhookPublisher(
+            DbWorker dbWorker, 
+            TenantManager tenantManager,
+            IOptionsMonitor<ILog> options,
+            ICacheNotify<WebhookRequest> webhookNotify)
         {
             DbWorker = dbWorker;
             TenantManager = tenantManager;
-            WebhookSender = webhookSender;
+            Log = options.Get("ASC.Webhooks");
+            WebhookNotify = webhookNotify;
         }
 
         public void Publish(EventName eventName, object data)
         {
             var content = JsonSerializer.Serialize(data);
-
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            var webhooksPayload = new WebhooksPayload
+            {
+                TenantId = tenantId,
+                Event = eventName,
+                CreationTime = DateTime.UtcNow,
+                Data = content,
+                Status = ProcessStatus.InProcess
+            };
+            var DbId = DbWorker.WriteToJournal(webhooksPayload);
+
             var webhookConfigs = DbWorker.GetWebhookConfigs(tenantId);
             foreach (var config in webhookConfigs)
             {
-                var webhooksPayload = new WebhooksPayload
+                var request = new WebhookRequest()
                 {
-                    TenantId = tenantId,
-                    Event = eventName,
-                    CreationTime = DateTime.UtcNow,
+                    Id = DbId,
+                    SecretKey = config.SecretKey,
                     Data = content,
-                    Status = ProcessStatus.InProcess
+                    URI = config.Uri
                 };
 
-                DbWorker.WriteToJournal(webhooksPayload);
+                WebhookNotify.Publish(request, CacheNotifyAction.Update);
             }
         }
     }
