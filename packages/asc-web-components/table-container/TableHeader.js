@@ -1,105 +1,195 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import PropTypes from "prop-types";
+import throttle from "lodash.throttle";
 import Text from "../text";
 import globalColors from "../utils/globalColors";
-import { StyledTableHeader } from "./StyledTableContainer";
+import { StyledSettingsIcon, StyledTableHeader } from "./StyledTableContainer";
 import TableRow from "./TableRow";
 
-const TableHeader = ({ columns, containerRef, ...rest }) => {
-  const style = { minWidth: "10%", width: "16%" };
+const TABLE_SIZE = "tableSize";
 
-  const [columnIndex, setColumnIndex] = useState(null);
+class TableHeader extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const getSubstring = (str) => str.substring(0, str.length - 1);
+    this.state = { columnIndex: null };
 
-  const onMouseMove = (e) => {
+    this.headerRef = React.createRef();
+    this.throttledResize = throttle(this.onResize, 0);
+  }
+
+  componentDidMount() {
+    //this.onResize();
+    window.addEventListener("resize", this.throttledResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.throttledResize);
+  }
+
+  getSubstring = (str) => str.substring(0, str.length - 2);
+
+  onMouseMove = (e) => {
+    const { columnIndex } = this.state;
+    const { containerRef } = this.props;
     if (!columnIndex) return;
     const column = document.getElementById("column_" + columnIndex);
-
     const columnSize = column.getBoundingClientRect();
     const newWidth = e.clientX - columnSize.left;
-    const percentWidth = (newWidth / containerRef.current.clientWidth) * 100;
 
-    const { width, minWidth } = column.style;
+    const tableContainer = containerRef.current.style.gridTemplateColumns;
+    const widths = tableContainer.split(" ");
 
-    const clearPercent = getSubstring(width);
+    //getSubstring(widths[+columnIndex])
+    if (newWidth <= 150) {
+      widths[+columnIndex] = widths[+columnIndex];
+    } else {
+      const offset = +this.getSubstring(widths[+columnIndex]) - newWidth;
+      const column2Width = +this.getSubstring(widths[+columnIndex + 1]);
 
-    if (percentWidth - 2 <= getSubstring(minWidth)) {
-      return;
+      //getSubstring(widths[+columnIndex])
+      if (column2Width + offset >= 150) {
+        widths[+columnIndex] = newWidth + "px";
+        widths[+columnIndex + 1] = column2Width + offset + "px";
+      }
     }
 
-    const offset = +percentWidth.toFixed(3) - clearPercent;
-    const column2 = document.getElementById("column_" + (+columnIndex + 1));
-    const column2Width = column2 && getSubstring(column2.style.width);
+    containerRef.current.style.gridTemplateColumns = widths.join(" ");
+    this.headerRef.current.style.gridTemplateColumns = widths.join(" ");
+  };
 
-    if (column2) {
-      if (+percentWidth.toFixed(3) < clearPercent) {
-        const width2 = column2Width - offset;
-        column2.style.width = width2 + "%";
-      } else if (+percentWidth.toFixed(3) > clearPercent) {
-        const width2 = +column2Width - offset;
+  onMouseUp = () => {
+    localStorage.setItem(
+      TABLE_SIZE,
+      this.props.containerRef.current.style.gridTemplateColumns
+    );
 
-        if (width2 - 2 <= getSubstring(column2.style.minWidth)) {
-          return;
+    window.removeEventListener("mousemove", this.onMouseMove);
+    window.removeEventListener("mouseup", this.onMouseUp);
+  };
+
+  onMouseDown = (event) => {
+    this.setState({ columnIndex: event.target.dataset.column });
+
+    window.addEventListener("mousemove", this.onMouseMove);
+    window.addEventListener("mouseup", this.onMouseUp);
+  };
+
+  onResize = () => {
+    const { containerRef } = this.props;
+
+    const storageSize = localStorage.getItem(TABLE_SIZE);
+    const tableContainer = storageSize
+      ? storageSize.split(" ")
+      : containerRef.current.style.gridTemplateColumns.split(" ");
+
+    const containerWidth = +containerRef.current.clientWidth;
+    const newContainerWidth = containerWidth - 32 - 80 - 24;
+
+    let str = "";
+
+    if (tableContainer.length > 1) {
+      const gridTemplateColumns = [];
+
+      const oldWidth = tableContainer
+        .map((column) => +this.getSubstring(column))
+        .reduce((x, y) => x + y);
+
+      for (let index in tableContainer) {
+        const item = tableContainer[index];
+
+        if (item !== "24px" && item !== "32px" && item !== "80px") {
+          const percent = (+this.getSubstring(item) / oldWidth) * 100;
+          const newItemWidth = (containerWidth * percent) / 100 + "px";
+
+          gridTemplateColumns.push(newItemWidth);
+        } else {
+          gridTemplateColumns.push(item);
         }
 
-        column2.style.width = width2 + "%";
-      } else return;
+        str = gridTemplateColumns.join(" ");
+      }
+    } else {
+      const column = (newContainerWidth * 40) / 100 + "px";
+      const otherColumns = (newContainerWidth * 20) / 100 + "px";
+
+      str = `32px ${column} ${otherColumns} ${otherColumns} ${otherColumns} 80px 24px`;
     }
+    containerRef.current.style.gridTemplateColumns = str;
+    this.headerRef.current.style.gridTemplateColumns = str;
 
-    column.style.width = percentWidth + "%";
+    localStorage.setItem(TABLE_SIZE, str);
   };
 
-  const onMouseUp = () => {
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("mouseup", onMouseUp);
+  renderFakeHeader = () => {
+    const style = { padding: "0 4px 0 4px" };
+    return (
+      <StyledTableHeader
+        className="table-container_header"
+        style={{ display: "flex", flexDirection: "row" }}
+      >
+        <button style={style}>Share</button>
+        <button style={style}>Download</button>
+        <button style={style}>Download as</button>
+        <button style={style}>Move</button>
+        <button style={style}>Copy</button>
+        <button style={style}>Delete</button>
+      </StyledTableHeader>
+    );
   };
 
-  const onMouseDown = (event) => {
-    setColumnIndex(event.target.dataset.column);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-  };
+  render() {
+    const { columns, isHeaderVisible, ...rest } = this.props;
 
-  // useEffect(() => {
-  //   if (columnIndex !== null) {
-  //     window.addEventListener("mousemove", onMouseMove);
-  //     window.addEventListener("mouseup", onMouseUp);
-  //   }
-
-  //   return () => {
-  //     window.removeEventListener("mousemove", onMouseMove);
-  //     window.removeEventListener("mouseup", onMouseUp);
-  //   };
-  // }, [columnIndex, onMouseMove, onMouseUp]);
-
-  return (
-    <StyledTableHeader {...rest}>
-      <TableRow>
-        {columns.map((column, index) => {
-          return (
-            <th id={`column_${index}`} style={style} key={column.key}>
-              <div style={{ display: "flex" }}>
-                <Text
-                  fontWeight={600}
-                  color={globalColors.gray}
-                  className="header-container"
-                >
-                  {column.title}
-                </Text>
-                {column.resizable && (
-                  <div
-                    data-column={`${index}`}
-                    className="resize-handle not-selectable"
-                    onMouseDown={onMouseDown}
-                  />
-                )}
+    return isHeaderVisible ? (
+      this.renderFakeHeader()
+    ) : (
+      <StyledTableHeader
+        className="table-container_header"
+        ref={this.headerRef}
+        {...rest}
+      >
+        <TableRow>
+          {columns.map((column, index) => {
+            return (
+              <div
+                className="table-container_header-cell"
+                id={`column_${index}`}
+                key={column.key}
+              >
+                <div style={{ display: "flex", userSelect: "none" }}>
+                  <Text
+                    fontWeight={600}
+                    color={globalColors.gray}
+                    className="header-container"
+                  >
+                    {column.title}
+                  </Text>
+                  {column.resizable && (
+                    <div
+                      data-column={`${index}`}
+                      className="resize-handle not-selectable"
+                      onMouseDown={this.onMouseDown}
+                    />
+                  )}
+                </div>
               </div>
-            </th>
-          );
-        })}
-      </TableRow>
-    </StyledTableHeader>
-  );
+            );
+          })}
+
+          <div className="table-container_header-cell">
+            <StyledSettingsIcon />
+          </div>
+        </TableRow>
+      </StyledTableHeader>
+    );
+  }
+}
+
+TableHeader.propTypes = {
+  containerRef: PropTypes.shape({ current: PropTypes.any }),
+  columns: PropTypes.array,
+  isHeaderVisible: PropTypes.bool,
 };
 
 export default TableHeader;

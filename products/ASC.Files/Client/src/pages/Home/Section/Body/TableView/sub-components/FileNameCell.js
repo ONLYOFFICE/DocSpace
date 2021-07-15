@@ -6,7 +6,6 @@ const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
   const { fileExst } = item;
   return (
     <Link
-      style={{ minWidth: 120, maxWidth: 200 }}
       type="page"
       title={titleWithoutExt}
       fontWeight="600"

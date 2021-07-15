@@ -26,8 +26,14 @@ const CheckboxCell = (props) => {
     onContentFileSelect && onContentFileSelect(e.target.checked, item);
   };
 
+  const style = props.index === 0 ? { style: { marginTop: 40 } } : {};
+
   return (
-    <TableCell onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter}>
+    <TableCell
+      {...style}
+      onMouseLeave={onMouseLeave}
+      onMouseEnter={onMouseEnter}
+    >
       {iconVisible ? (
         element
       ) : (

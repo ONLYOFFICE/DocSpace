@@ -1,10 +1,20 @@
 import styled from "styled-components";
+import SettingsIcon from "./svg/settings.react.svg";
 
-const StyledTableContainer = styled.table`
+const StyledTableContainer = styled.div`
   width: 100%;
   max-width: 100%;
   margin-top: -18px;
-  border-collapse: collapse;
+
+  display: grid;
+  grid-template-columns:
+    32px
+    minmax(180px, 2fr)
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    80px
+    24px;
 
   .table-column {
     user-select: none;
@@ -42,15 +52,39 @@ const StyledTableContainer = styled.table`
   }
 `;
 
-const StyledTableRow = styled.tr`
-  height: 47px;
-  max-height: 47px;
-  border-bottom: 1px solid #eceef1;
+const StyledTableRow = styled.div`
+  display: contents;
 `;
 
-const StyledTableHeader = styled.thead``;
-const StyledTableBody = styled.tbody``;
-const StyledTableCell = styled.td``;
+const StyledTableHeader = styled.div`
+  display: grid;
+  position: fixed;
+  background: #fff;
+  z-index: 1;
+
+  .table-container_header-cell {
+    border-bottom: 1px solid #eceef1;
+  }
+`;
+const StyledTableBody = styled.div`
+  display: contents;
+`;
+const StyledTableCell = styled.div`
+  height: 40px;
+  max-height: 40px;
+  border-bottom: 1px solid #eceef1;
+
+  display: flex;
+  align-items: center;
+
+  .react-svg-icon svg {
+    margin-top: 2px;
+  }
+`;
+
+const StyledSettingsIcon = styled(SettingsIcon)`
+  margin-top: 12px;
+`;
 
 export {
   StyledTableContainer,
@@ -58,4 +92,5 @@ export {
   StyledTableBody,
   StyledTableHeader,
   StyledTableCell,
+  StyledSettingsIcon,
 };

@@ -4,12 +4,25 @@ import { inject, observer } from "mobx-react";
 import TableRow from "./TableRow";
 import TableHeader from "@appserver/components/table-container/TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
+import Checkbox from "@appserver/components/checkbox";
 
-const Table = ({ filesList }) => {
+const Table = ({ filesList, isHeaderVisible, setSelected }) => {
+  const onChange = (checked) => {
+    setSelected(checked ? "all" : "none");
+  };
+
   const columns = [
     {
       key: -1,
-      title: "Checkbox",
+      //title: "Checkbox",
+      //title: "",
+      title: (
+        <Checkbox
+          onChange={onChange}
+          // checked={isHeaderChecked}
+          // isIndeterminate={isHeaderIndeterminate}
+        />
+      ),
       includes: ["checked"],
       resizable: false,
     },
@@ -41,11 +54,11 @@ const Table = ({ filesList }) => {
       key: 4,
       title: "Size",
       includes: ["contentLength"],
-      resizable: true,
+      resizable: false,
     },
     {
       key: 5,
-      title: "Settings$#",
+      title: "",
       includes: [""],
       resizable: false,
     },
@@ -55,10 +68,14 @@ const Table = ({ filesList }) => {
 
   return (
     <TableContainer forwardedRef={ref}>
-      <TableHeader containerRef={ref} columns={columns} />
+      <TableHeader
+        isHeaderVisible={isHeaderVisible}
+        containerRef={ref}
+        columns={columns}
+      />
       <TableBody>
-        {filesList.map((item) => (
-          <TableRow key={item.id} item={item} />
+        {filesList.map((item, index) => (
+          <TableRow key={item.id} item={item} index={index} />
         ))}
       </TableBody>
     </TableContainer>
@@ -66,6 +83,19 @@ const Table = ({ filesList }) => {
 };
 
 export default inject(({ filesStore }) => {
-  const { filesList } = filesStore;
-  return { filesList };
+  const {
+    filesList,
+    setSelected,
+    isHeaderVisible,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+  } = filesStore;
+
+  return {
+    filesList,
+    setSelected,
+    isHeaderVisible,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+  };
 })(observer(Table));

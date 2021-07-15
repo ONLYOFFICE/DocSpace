@@ -11,7 +11,6 @@ const SizeCell = ({ t, item, sideColor }) => {
   } = item;
   return (
     <Text
-      style={{ minWidth: 120, maxWidth: 200 }}
       as="div"
       color={sideColor}
       fontSize="12px"

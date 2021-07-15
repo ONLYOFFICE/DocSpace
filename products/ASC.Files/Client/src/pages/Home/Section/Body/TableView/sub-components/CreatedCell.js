@@ -1,12 +1,11 @@
 import React from "react";
 import Text from "@appserver/components/text";
 
-const AuthorCell = ({ updatedDate, sideColor, item }) => {
+const CreatedCell = ({ updatedDate, sideColor, item }) => {
   const { fileExst, contentLength, providerKey } = item;
 
   return (
     <Text
-      style={{ minWidth: 120, maxWidth: 200 }}
       title={updatedDate}
       fontSize="12px"
       fontWeight={400}
@@ -20,4 +19,4 @@ const AuthorCell = ({ updatedDate, sideColor, item }) => {
   );
 };
 
-export default AuthorCell;
+export default CreatedCell;
