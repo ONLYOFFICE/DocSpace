@@ -3,8 +3,11 @@ import PropTypes from "prop-types";
 import throttle from "lodash.throttle";
 import Text from "../text";
 import globalColors from "../utils/globalColors";
-import { StyledSettingsIcon, StyledTableHeader } from "./StyledTableContainer";
-import TableRow from "./TableRow";
+import {
+  StyledSettingsIcon,
+  StyledTableHeader,
+  StyledTableRow,
+} from "./StyledTableContainer";
 
 const TABLE_SIZE = "tableSize";
 
@@ -149,7 +152,7 @@ class TableHeader extends React.Component {
         ref={this.headerRef}
         {...rest}
       >
-        <TableRow>
+        <StyledTableRow>
           {columns.map((column, index) => {
             return (
               <div
@@ -180,7 +183,7 @@ class TableHeader extends React.Component {
           <div className="table-container_header-cell">
             <StyledSettingsIcon />
           </div>
-        </TableRow>
+        </StyledTableRow>
       </StyledTableHeader>
     );
   }

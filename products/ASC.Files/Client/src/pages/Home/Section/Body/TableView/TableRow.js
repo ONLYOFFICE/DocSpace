@@ -7,16 +7,12 @@ import withContextOptions from "../../../../../HOCs/withContextOptions";
 import { withTranslation } from "react-i18next";
 import TableRow from "@appserver/components/table-container/TableRow";
 import TableCell from "@appserver/components/table-container/TableCell";
-import CheckboxCell from "./sub-components/CheckboxCell";
 import FileNameCell from "./sub-components/FileNameCell";
 import SizeCell from "./sub-components/SizeCell";
 import AuthorCell from "./sub-components/AuthorCell";
 import CreatedCell from "./sub-components/CreatedCell";
 import globalColors from "@appserver/components/utils/globalColors";
 import styled from "styled-components";
-
-import ContextMenu from "@appserver/components/context-menu";
-import ContextMenuButton from "@appserver/components/context-menu-button";
 
 const sideColor = globalColors.gray;
 
@@ -43,34 +39,27 @@ const StyledShare = styled.div`
 `;
 
 const FilesTableRow = (props) => {
-  const { contextOptionsProps, fileContextClick } = props;
-
-  const cm = useRef();
-  const row = useRef();
-
-  const onContextMenu = (e) => {
-    props.rowContextClick && props.rowContextClick();
-    if (cm.current && !cm.current.menuRef.current) {
-      row.current.click(e); //TODO: need fix context menu to global
-    }
-    cm.current.show(e);
-  };
-
-  const renderContext =
-    Object.prototype.hasOwnProperty.call(props, "contextOptionsProps") &&
-    props.contextOptionsProps.contextOptions.length > 0;
-
-  const getOptions = () => {
-    props.rowContextClick && props.rowContextClick();
-    return props.contextOptionsProps.contextOptions;
-  };
+  const {
+    contextOptionsProps,
+    fileContextClick,
+    element,
+    item,
+    onContentFileSelect,
+    checkedProps,
+  } = props;
 
   const style = props.index === 0 ? { style: { marginTop: 40 } } : {};
 
   return (
-    <TableRow rowContextClick={fileContextClick} {...contextOptionsProps}>
-      <CheckboxCell index={props.index} {...props} />
-
+    <TableRow
+      style={style}
+      item={item}
+      element={element}
+      fileContextClick={fileContextClick}
+      onContentFileSelect={onContentFileSelect}
+      {...contextOptionsProps}
+      {...checkedProps}
+    >
       <TableCell {...style}>
         <FileNameCell index={props.index} {...props} />
       </TableCell>
@@ -85,27 +74,6 @@ const FilesTableRow = (props) => {
       </TableCell>
       <TableCell {...style}>
         <StyledShare index={props.index}> {props.sharedButton}</StyledShare>
-      </TableCell>
-      <TableCell {...style} forwardedRef={row} onContextMenu={onContextMenu}>
-        <div index={props.index}>
-          <ContextMenu
-            ref={cm}
-            model={props.contextOptionsProps.contextOptions}
-          ></ContextMenu>
-          {renderContext ? (
-            <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
-              className="expandButton"
-              getData={getOptions}
-              directionX="right"
-              isNew={true}
-              onClick={onContextMenu}
-            />
-          ) : (
-            <div className="expandButton"> </div>
-          )}
-        </div>
       </TableCell>
     </TableRow>
   );
