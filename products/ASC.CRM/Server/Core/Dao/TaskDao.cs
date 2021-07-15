@@ -52,10 +52,12 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class TaskDao : AbstractDao
     {
-        private readonly UserDbContext _userDbContext;
         private readonly FactoryIndexerTask _factoryIndexer;
         private readonly TenantUtil _tenantUtil;
         private readonly CrmSecurity _crmSecurity;
+
+        private Lazy<UserDbContext> LazyUserDbContext { get; }
+        private UserDbContext _userDbContext { get => LazyUserDbContext.Value; }
 
         public TaskDao(DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
@@ -77,7 +79,7 @@ namespace ASC.CRM.Core.Dao
             _crmSecurity = crmSecurity;
             _tenantUtil = tenantUtil;
             _factoryIndexer = factoryIndexer;
-            _userDbContext = userDbContext.Value;
+            LazyUserDbContext = new Lazy<UserDbContext>(() => userDbContext.Value);
             _mapper = mapper;
         }
 

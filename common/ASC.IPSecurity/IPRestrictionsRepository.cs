@@ -24,6 +24,7 @@
 */
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,11 +40,12 @@ namespace ASC.IPSecurity
     {
         private const string dbId = "core";
 
-        private TenantDbContext TenantDbContext { get; }
+        private Lazy<TenantDbContext> LazyTenantDbContext { get; }
+        private TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
 
         public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager)
         {
-            TenantDbContext = dbContextManager.Get(dbId);
+            LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Get(dbId));
         }
 
         public List<IPRestriction> Get(int tenant)
