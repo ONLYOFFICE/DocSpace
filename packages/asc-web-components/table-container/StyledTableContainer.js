@@ -1,5 +1,14 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import SettingsIcon from "./svg/settings.react.svg";
+
+const HeaderStyles = css`
+  height: 39px;
+  position: fixed;
+  background: #fff;
+  z-index: 1;
+  width: 79%;
+  border-bottom: 1px solid #eceef1;
+`;
 
 const StyledTableContainer = styled.div`
   width: 100%;
@@ -52,23 +61,31 @@ const StyledTableContainer = styled.div`
   }
 `;
 
-const StyledTableRow = styled.div`
-  display: contents;
+const StyledTableGroupMenu = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  ${HeaderStyles}
+
+  .table-container_group-menu_button {
+    margin-right: 8px;
+  }
 `;
 
 const StyledTableHeader = styled.div`
   display: grid;
-  position: fixed;
-  background: #fff;
-  z-index: 1;
-
-  .table-container_header-cell {
-    border-bottom: 1px solid #eceef1;
-  }
+  ${HeaderStyles}
 `;
+
 const StyledTableBody = styled.div`
   display: contents;
 `;
+
+const StyledTableRow = styled.div`
+  display: contents;
+`;
+
 const StyledTableCell = styled.div`
   height: 40px;
   max-height: 40px;
@@ -93,4 +110,5 @@ export {
   StyledTableHeader,
   StyledTableCell,
   StyledSettingsIcon,
+  StyledTableGroupMenu,
 };
