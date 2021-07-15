@@ -36,11 +36,12 @@ namespace ASC.VoipService.Dao
     {
         private readonly string dbid = "default";
 
-        protected VoipDbContext VoipDbContext { get; set; }
+        private Lazy<VoipDbContext> LazyVoipDbContext { get; }
+        protected VoipDbContext VoipDbContext { get => LazyVoipDbContext.Value; }
 
         protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, TenantManager tenantManager)
         {
-            VoipDbContext = dbOptions.Get(dbid);
+            LazyVoipDbContext = new Lazy<VoipDbContext>(() => dbOptions.Get(dbid));
             TenantID = tenantManager.GetCurrentTenant().TenantId;
         }
 
