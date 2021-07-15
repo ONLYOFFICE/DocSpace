@@ -7,7 +7,7 @@ import Box from "../box";
 import Heading from "../heading";
 import Text from "../text";
 
-const SnackBar = ({ text, headerText, onAction, ...rest }) => {
+const SnackBar = ({ text, headerText, btnText, onAction, ...rest }) => {
   const onActionClick = useCallback(
     (e) => {
       onAction && onAction(e);
@@ -34,7 +34,7 @@ const SnackBar = ({ text, headerText, onAction, ...rest }) => {
         <Text>{text}</Text>
       </Box>
       <button className="action" onClick={onActionClick}>
-        <StyledCrossIcon size="medium" />
+        {btnText ? btnText : <StyledCrossIcon size="medium" />}
       </button>
     </StyledSnackBar>
   );
@@ -43,6 +43,7 @@ const SnackBar = ({ text, headerText, onAction, ...rest }) => {
 SnackBar.propTypes = {
   text: PropType.string,
   headerText: PropType.string,
+  btnText: PropType.string,
   onAction: PropType.func,
 };
 
