@@ -635,6 +635,82 @@ class FilesActionStore {
       this.uploadDataStore.itemOperationToFolder(operationData);
     }
   };
+
+  getHeaderMenu = (t) => {
+    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
+    const {
+      selection,
+      isAccessedSelected,
+      isWebEditSelected,
+      isThirdPartySelection,
+      userAccess,
+    } = this.filesStore;
+
+    const {
+      setSharingPanelVisible,
+      setDownloadDialogVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setDeleteDialogVisible,
+    } = this.dialogsStore;
+
+    const selectionCount = selection.length;
+
+    const headerMenu = [
+      {
+        label: t("Share"),
+        disabled: isFavoritesFolder || isRecentFolder || !isAccessedSelected,
+        onClick: () => setSharingPanelVisible(true),
+      },
+      {
+        label: t("Common:Download"),
+        disabled: !selectionCount,
+        onClick: () =>
+          this.downloadAction(t("Translations:ArchivingData")).catch((err) =>
+            toastr.error(err)
+          ),
+      },
+      {
+        label: t("Translations:DownloadAs"),
+        disabled: !selectionCount || !isWebEditSelected,
+        onClick: () => setDownloadDialogVisible(true),
+      },
+      {
+        label: t("MoveTo"),
+        disabled:
+          isFavoritesFolder ||
+          isRecentFolder ||
+          !isAccessedSelected ||
+          !selectionCount ||
+          isThirdPartySelection,
+        onClick: () => setMoveToPanelVisible(true),
+      },
+      {
+        label: t("Translations:Copy"),
+        disabled: !selectionCount,
+        onClick: () => setCopyPanelVisible(true),
+      },
+      {
+        label: t("Common:Delete"),
+        disabled: !selectionCount || !userAccess || isThirdPartySelection,
+        onClick: () => {
+          if (this.settingsStore.confirmDelete) {
+            setDeleteDialogVisible(true);
+          } else {
+            const translations = {
+              deleteOperation: t("Translations:DeleteOperation"),
+              deleteFromTrash: t("Translations:DeleteFromTrash"),
+              deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+            };
+
+            this.deleteAction(translations).catch((err) => toastr.error(err));
+          }
+        },
+      },
+    ];
+
+    return headerMenu;
+  };
 }
 
 export default FilesActionStore;

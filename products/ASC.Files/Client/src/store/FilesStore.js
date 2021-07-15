@@ -975,7 +975,7 @@ class FilesStore {
   }
 
   get isHeaderVisible() {
-    return this.selection.length > 0 || this.selected !== "close";
+    return this.selection.length > 0;
   }
 
   get isHeaderIndeterminate() {
