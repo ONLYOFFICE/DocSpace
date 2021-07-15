@@ -38,7 +38,7 @@ const StyledSnackBar = styled(Box)`
     display: inline-block;
     border: none;
     font-size: inherit;
-    color: #4caf50;
+    color: #0f4071;
     margin: 0 0 0 24px;
     padding: 0;
     min-width: min-content;
