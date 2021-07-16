@@ -42,7 +42,7 @@ const TableRow = (props) => {
 
   const [iconVisible, setIconVisible] = useState(!checked);
 
-  const onMouseEnter = () => {
+  const onMouseOver = () => {
     if (checked) return;
     setIconVisible(false);
   };
@@ -70,7 +70,7 @@ const TableRow = (props) => {
         {...selectionProp}
         {...props.style}
         onMouseLeave={onMouseLeave}
-        onMouseEnter={onMouseEnter}
+        onMouseOver={onMouseOver}
       >
         {iconVisible ? (
           element

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 const TableContainer = (props) => {
   return (
     <StyledTableContainer
+      id="table-container"
       className="table-container"
       ref={props.forwardedRef}
       {...props}

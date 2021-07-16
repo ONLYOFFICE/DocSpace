@@ -6,7 +6,6 @@ const HeaderStyles = css`
   position: fixed;
   background: #fff;
   z-index: 1;
-  width: 79%;
   border-bottom: 1px solid #eceef1;
 `;
 
@@ -96,6 +95,7 @@ const StyledTableRow = styled.div`
 `;
 
 const StyledTableCell = styled.div`
+  padding-right: 8px;
   height: 40px;
   max-height: 40px;
   border-bottom: 1px solid #eceef1;

@@ -1,12 +1,12 @@
 import React from "react";
 import { StyledTableCell } from "./StyledTableContainer";
 
-const TableCell = (props) => {
+const TableCell = ({ className, forwardedRef, ...rest }) => {
   return (
     <StyledTableCell
-      className="table-container_cell"
-      ref={props.forwardedRef}
-      {...props}
+      className={`${className} table-container_cell`}
+      ref={forwardedRef}
+      {...rest}
     />
   );
 };

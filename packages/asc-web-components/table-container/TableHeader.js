@@ -23,7 +23,7 @@ class TableHeader extends React.Component {
   }
 
   componentDidMount() {
-    //this.onResize();
+    this.onResize();
     window.addEventListener("resize", this.throttledResize);
   }
 
@@ -82,12 +82,16 @@ class TableHeader extends React.Component {
   onResize = () => {
     const { containerRef } = this.props;
 
+    const container = containerRef.current
+      ? containerRef.current
+      : document.getElementById("table-container");
+
     const storageSize = localStorage.getItem(TABLE_SIZE);
     const tableContainer = storageSize
       ? storageSize.split(" ")
-      : containerRef.current.style.gridTemplateColumns.split(" ");
+      : container.style.gridTemplateColumns.split(" ");
 
-    const containerWidth = +containerRef.current.clientWidth;
+    const containerWidth = +container.clientWidth;
     const newContainerWidth = containerWidth - 32 - 80 - 24;
 
     let str = "";
@@ -119,8 +123,9 @@ class TableHeader extends React.Component {
 
       str = `32px ${column} ${otherColumns} ${otherColumns} ${otherColumns} 80px 24px`;
     }
-    containerRef.current.style.gridTemplateColumns = str;
+    container.style.gridTemplateColumns = str;
     this.headerRef.current.style.gridTemplateColumns = str;
+    this.headerRef.current.style.width = containerWidth + "px";
 
     localStorage.setItem(TABLE_SIZE, str);
   };
