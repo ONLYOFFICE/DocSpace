@@ -31,24 +31,27 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Web;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Notify.Signalr;
 using ASC.Data.Storage;
+using ASC.Mail.Configuration;
+using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Expressions.Message;
-using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Models.Base;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
+
 using Microsoft.Extensions.Options;
+
 using MailMessage = ASC.Mail.Models.MailMessageData;
-using ASC.Mail.Core.Dao.Entities;
-using ASC.Common;
-using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -71,7 +74,7 @@ namespace ASC.Mail.Core.Engine
         private QuotaEngine QuotaEngine { get; }
         private protected IndexEngine IndexEngine { get; }
         private FolderEngine FolderEngine { get; }
-        private protected DaoFactory DaoFactory { get; }
+        private protected IMailDaoFactory MailDaoFactory { get; }
         private protected StorageManager StorageManager { get; }
         private SecurityContext SecurityContext { get; }
         private protected TenantManager TenantManager { get; }
@@ -142,7 +145,7 @@ namespace ASC.Mail.Core.Engine
             QuotaEngine quotaEngine,
             IndexEngine indexEngine,
             FolderEngine folderEngine,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             StorageManager storageManager,
             SecurityContext securityContext,
             TenantManager tenantManager,
@@ -159,7 +162,7 @@ namespace ASC.Mail.Core.Engine
             QuotaEngine = quotaEngine;
             IndexEngine = indexEngine;
             FolderEngine = folderEngine;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             StorageManager = storageManager;
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -238,10 +241,10 @@ namespace ASC.Mail.Core.Engine
 
             var fromAddress = MailUtil.CreateFullEmail(mbox.Name, mbox.EMail.Address);
 
-            var compose = new MailDraftData(model.Id, mbox, fromAddress, model.To, model.Cc, model.Bcc, model.Subject, mimeMessageId, 
-                    model.MimeReplyToId, model.Importance, model.Tags, model.Body, streamId, model.Attachments, model.CalendarIcs) 
-            { 
-                PreviousMailboxId = previousMailboxId 
+            var compose = new MailDraftData(model.Id, mbox, fromAddress, model.To, model.Cc, model.Bcc, model.Subject, mimeMessageId,
+                    model.MimeReplyToId, model.Importance, model.Tags, model.Body, streamId, model.Attachments, model.CalendarIcs)
+            {
+                PreviousMailboxId = previousMailboxId
             };
 
             DaemonLabels = translates ?? DeliveryFailureMessageTranslates.Defauilt;
@@ -275,7 +278,7 @@ namespace ASC.Mail.Core.Engine
 
             long usedQuota;
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 compose.Id = MessageEngine.MailSave(compose.Mailbox, message, compose.Id, message.Folder, message.Folder, null,
                     string.Empty, string.Empty, false, out usedQuota);
@@ -290,7 +293,7 @@ namespace ASC.Mail.Core.Engine
 
                 if (compose.Id > 0 && needRestoreAttachments)
                 {
-                    var existingAttachments = DaoFactory.AttachmentDao.GetAttachments(
+                    var existingAttachments = MailDaoFactory.GetAttachmentDao().GetAttachments(
                         new ConcreteMessageAttachmentsExp(compose.Id, compose.Mailbox.TenantId, compose.Mailbox.UserId));
 
                     foreach (var attachment in message.Attachments)
@@ -303,16 +306,16 @@ namespace ASC.Mail.Core.Engine
                         var attach = attachment.ToAttachmnet(compose.Id);
                         attach.Id = 0;
 
-                        var newId = DaoFactory.AttachmentDao.SaveAttachment(attach);
+                        var newId = MailDaoFactory.GetAttachmentDao().SaveAttachment(attach);
                         attachment.fileId = newId;
                     }
 
                     if (message.Attachments.Any())
                     {
-                        var count = DaoFactory.AttachmentDao.GetAttachmentsCount(
+                        var count = MailDaoFactory.GetAttachmentDao().GetAttachmentsCount(
                             new ConcreteMessageAttachmentsExp(compose.Id, compose.Mailbox.TenantId, compose.Mailbox.UserId));
 
-                        DaoFactory.MailInfoDao.SetFieldValue(
+                        MailDaoFactory.GetMailInfoDao().SetFieldValue(
                             SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
                                 .SetMessageId(compose.Id)
                                 .Build(),
@@ -325,16 +328,16 @@ namespace ASC.Mail.Core.Engine
                 {
                     foreach (var attachment in embededAttachmentsForSaving)
                     {
-                        var newId = DaoFactory.AttachmentDao.SaveAttachment(attachment.ToAttachmnet(compose.Id));
+                        var newId = MailDaoFactory.GetAttachmentDao().SaveAttachment(attachment.ToAttachmnet(compose.Id));
                         attachment.fileId = newId;
                     }
 
                     if (message.Attachments.Any())
                     {
-                        var count = DaoFactory.AttachmentDao.GetAttachmentsCount(
+                        var count = MailDaoFactory.GetAttachmentDao().GetAttachmentsCount(
                             new ConcreteMessageAttachmentsExp(compose.Id, compose.Mailbox.TenantId, compose.Mailbox.UserId));
 
-                        DaoFactory.MailInfoDao.SetFieldValue(
+                        MailDaoFactory.GetMailInfoDao().SetFieldValue(
                             SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
                                 .SetMessageId(compose.Id)
                                 .Build(),
@@ -344,12 +347,12 @@ namespace ASC.Mail.Core.Engine
                 }
 
                 MessageEngine
-                    .UpdateChain(message.ChainId, message.Folder, null, 
+                    .UpdateChain(message.ChainId, message.Folder, null,
                     compose.Mailbox.MailBoxId, compose.Mailbox.TenantId, compose.Mailbox.UserId);
 
                 if (compose.AccountChanged)
                 {
-                    DaoFactory.CrmLinkDao.UpdateCrmLinkedMailboxId(message.ChainId, compose.PreviousMailboxId,
+                    MailDaoFactory.GetCrmLinkDao().UpdateCrmLinkedMailboxId(message.ChainId, compose.PreviousMailboxId,
                         compose.Mailbox.MailBoxId);
                 }
 

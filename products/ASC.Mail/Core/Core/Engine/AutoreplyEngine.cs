@@ -53,7 +53,7 @@ namespace ASC.Mail.Core.Engine
 
         private SecurityContext SecurityContext { get; }
         private TenantManager TenantManager { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private ServerEngine ServerEngine { get; }
         private CacheEngine CacheEngine { get; }
         private ApiHelper ApiHelper { get; }
@@ -65,7 +65,7 @@ namespace ASC.Mail.Core.Engine
         public AutoreplyEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             ServerEngine serverEngine,
             CacheEngine cacheEngine,
             ApiHelper apiHelper,
@@ -75,7 +75,7 @@ namespace ASC.Mail.Core.Engine
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             ServerEngine = serverEngine;
             CacheEngine = cacheEngine;
             ApiHelper = apiHelper;
@@ -115,13 +115,13 @@ namespace ASC.Mail.Core.Engine
                 TurnOn = turnOn
             };
 
-            if (!DaoFactory.MailboxDao.CanAccessTo(
+            if (!MailDaoFactory.GetMailboxDao().CanAccessTo(
                 new СoncreteUserMailboxExp(mailboxId, Tenant, UserId)))
             {
                 throw new AccessViolationException("Mailbox is not owned by user.");
             }
 
-            var result = DaoFactory.MailboxAutoreplyDao.SaveAutoreply(autoreply);
+            var result = MailDaoFactory.GetMailboxAutoreplyDao().SaveAutoreply(autoreply);
 
             if (result <= 0)
                 throw new InvalidOperationException();
@@ -151,12 +151,12 @@ namespace ASC.Mail.Core.Engine
                 TurnOn = account.MailAutoreply.TurnOn
             };
 
-            var result = DaoFactory.MailboxAutoreplyDao.SaveAutoreply(autoreply);
+            var result = MailDaoFactory.GetMailboxAutoreplyDao().SaveAutoreply(autoreply);
 
             if (result <= 0)
                 throw new InvalidOperationException();
 
-            result = DaoFactory.MailboxAutoreplyHistoryDao.DeleteAutoreplyHistory(account.MailBoxId);
+            result = MailDaoFactory.GetMailboxAutoreplyHistoryDao().DeleteAutoreplyHistory(account.MailBoxId);
 
             if (result <= 0)
                 throw new InvalidOperationException();
@@ -261,7 +261,7 @@ namespace ASC.Mail.Core.Engine
                 Tenant = account.TenantId
             };
 
-            DaoFactory.MailboxAutoreplyHistoryDao.SaveAutoreplyHistory(autoReplyHistory);
+            MailDaoFactory.GetMailboxAutoreplyHistoryDao().SaveAutoreplyHistory(autoReplyHistory);
         }
 
         #region .Private
@@ -282,7 +282,7 @@ namespace ASC.Mail.Core.Engine
 
             if (account.MailSignature == null)
             {
-                var signature = DaoFactory.MailboxSignatureDao.GetSignature(account.MailBoxId);
+                var signature = MailDaoFactory.GetMailboxSignatureDao().GetSignature(account.MailBoxId);
 
                 if (signature != null)
                 {
@@ -315,7 +315,7 @@ namespace ASC.Mail.Core.Engine
             if (account.MailAutoreplyHistory.Contains(email))
                 return true;
 
-            var emails = DaoFactory.MailboxAutoreplyHistoryDao
+            var emails = MailDaoFactory.GetMailboxAutoreplyHistoryDao()
                 .GetAutoreplyHistorySentEmails(account.MailBoxId, email, AutoreplyDaysInterval);
 
             if (!emails.Any())

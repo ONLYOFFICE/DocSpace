@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
@@ -37,7 +38,9 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Mail.Storage;
+
 using Microsoft.Extensions.Options;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Mail.Core.Engine.Operations.Base
@@ -76,17 +79,17 @@ namespace ASC.Mail.Core.Engine.Operations.Base
         public abstract MailOperationType OperationType { get; }
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
-        public DaoFactory DaoFactory { get; }
+        public IMailDaoFactory MailDaoFactory { get; }
         public CoreSettings CoreSettings { get; }
         public StorageManager StorageManager { get; }
         public StorageFactory StorageFactory { get; }
 
         protected MailOperation(
-            TenantManager tenantManager, 
+            TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             CoreSettings coreSettings,
-            StorageManager storageManager,            
+            StorageManager storageManager,
             IOptionsMonitor<ILog> option, StorageFactory storageFactory = null)
         {
             CurrentTenant = tenantManager.GetCurrentTenant();
@@ -103,7 +106,7 @@ namespace ASC.Mail.Core.Engine.Operations.Base
             TaskInfo = new DistributedTask();
             TenantManager = tenantManager;
             SecurityContext = securityContext;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             CoreSettings = coreSettings;
             StorageManager = storageManager;
             StorageFactory = storageFactory;

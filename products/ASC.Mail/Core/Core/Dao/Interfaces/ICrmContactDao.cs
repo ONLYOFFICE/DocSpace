@@ -26,8 +26,11 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(CrmContactDao))]
     public interface ICrmContactDao
     {
         List<int> GetCrmContactIds(string email);

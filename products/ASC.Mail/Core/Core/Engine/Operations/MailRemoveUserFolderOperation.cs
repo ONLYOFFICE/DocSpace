@@ -26,19 +26,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.UserFolder;
 using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Mail.Storage;
 using ASC.Mail.Enums;
-using Microsoft.Extensions.Options;
+using ASC.Mail.Storage;
+
 using Microsoft.Extensions.DependencyInjection;
-using ASC.Mail.Models;
-using ASC.ElasticSearch;
-using System.Data;
-using ASC.Mail.Core.Dao.Entities;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -60,7 +61,7 @@ namespace ASC.Mail.Core.Engine.Operations
         public MailRemoveUserFolderOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             UserFolderEngine userFolderEngine,
             MessageEngine messageEngine,
             IndexEngine indexEngine,
@@ -70,7 +71,7 @@ namespace ASC.Mail.Core.Engine.Operations
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> optionsMonitor,
             int userFolderId)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor)
         {
             UserFolderEngine = userFolderEngine;
             MessageEngine = messageEngine;
@@ -86,17 +87,17 @@ namespace ASC.Mail.Core.Engine.Operations
         {
             try
             {
-                SetProgress((int?) MailOperationRemoveUserFolderProgress.Init, "Setup tenant and user");
+                SetProgress((int?)MailOperationRemoveUserFolderProgress.Init, "Setup tenant and user");
 
                 TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SecurityContext.AuthenticateMe(CurrentUser);
 
-                SetProgress((int?) MailOperationRemoveUserFolderProgress.DeleteFolders, "Delete folders");
+                SetProgress((int?)MailOperationRemoveUserFolderProgress.DeleteFolders, "Delete folders");
 
                 Delete(_userFolderId);
 
-                SetProgress((int?) MailOperationRemoveUserFolderProgress.Finished);
+                SetProgress((int?)MailOperationRemoveUserFolderProgress.Finished);
             }
             catch (Exception e)
             {
@@ -112,18 +113,18 @@ namespace ASC.Mail.Core.Engine.Operations
             //TODO: Check or increase timeout for DB connection
             //using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RecalculateFoldersTimeout))
 
-            var folder = DaoFactory.UserFolderDao.Get(folderId);
+            var folder = MailDaoFactory.GetUserFolderDao().Get(folderId);
             if (folder == null)
                 return;
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 //Find folder sub-folders
                 var expTree = SimpleUserFoldersTreeExp.CreateBuilder()
                     .SetParent(folder.Id)
                     .Build();
 
-                var removeFolderIds = DaoFactory.UserFolderTreeDao.Get(expTree)
+                var removeFolderIds = MailDaoFactory.GetUserFolderTreeDao().Get(expTree)
                     .ConvertAll(f => f.FolderId);
 
                 if (!removeFolderIds.Contains(folderId))
@@ -134,35 +135,35 @@ namespace ASC.Mail.Core.Engine.Operations
                     .SetIds(removeFolderIds)
                     .Build();
 
-                DaoFactory.UserFolderDao.Remove(expFolders);
+                MailDaoFactory.GetUserFolderDao().Remove(expFolders);
 
                 //Remove folder tree info
                 expTree = SimpleUserFoldersTreeExp.CreateBuilder()
                     .SetIds(removeFolderIds)
                     .Build();
 
-                DaoFactory.UserFolderTreeDao.Remove(expTree);
+                MailDaoFactory.GetUserFolderTreeDao().Remove(expTree);
 
                 //Move mails to trash
                 foreach (var id in removeFolderIds)
                 {
-                    var listMailIds = DaoFactory.UserFolderXMailDao.GetMailIds(id);
+                    var listMailIds = MailDaoFactory.GetUserFolderXMailDao().GetMailIds(id);
 
                     if (!listMailIds.Any()) continue;
 
                     affectedIds.AddRange(listMailIds);
 
                     //Move mails to trash
-                    MessageEngine.SetFolder(DaoFactory, listMailIds, FolderType.Trash);
+                    MessageEngine.SetFolder(MailDaoFactory, listMailIds, FolderType.Trash);
 
                     //Remove listMailIds from 'mail_user_folder_x_mail'
-                    DaoFactory.UserFolderXMailDao.Remove(listMailIds);
+                    MailDaoFactory.GetUserFolderXMailDao().Remove(listMailIds);
                 }
 
                 tx.Commit();
             }
 
-            DaoFactory.UserFolderDao.RecalculateFoldersCount(folder.ParentId);
+            MailDaoFactory.GetUserFolderDao().RecalculateFoldersCount(folder.ParentId);
 
             var t = ServiceProvider.GetService<MailMail>();
             if (!FactoryIndexer.Support(t) || !affectedIds.Any())

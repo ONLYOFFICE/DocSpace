@@ -49,7 +49,7 @@ namespace ASC.Mail.Core.Dao
 
         public UserFolder Get(int id)
         {
-            var userFolder = MailDb.MailUserFolder
+            var userFolder = MailDbContext.MailUserFolder
                 .Where(f => f.TenantId == Tenant && f.IdUser == UserId && f.Id == id)
                 .Select(ToUserFolder)
                 .SingleOrDefault();
@@ -59,7 +59,7 @@ namespace ASC.Mail.Core.Dao
 
         public UserFolder GetByMail(uint mailId)
         {
-            var folderId = MailDb.MailUserFolderXMail
+            var folderId = MailDbContext.MailUserFolderXMail
                 .Where(ufxm => ufxm.IdMail == mailId)
                 .Select(ufxm => ufxm.IdFolder)
                 .Distinct()
@@ -68,7 +68,7 @@ namespace ASC.Mail.Core.Dao
             if (folderId == 0)
                 return null;
 
-            var userFolder = MailDb.MailUserFolder
+            var userFolder = MailDbContext.MailUserFolder
                 .Where(f => f.Id == folderId)
                 .Select(ToUserFolder)
                 .SingleOrDefault();
@@ -78,7 +78,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<UserFolder> GetList(IUserFoldersExp exp)
         {
-            var query = MailDb.MailUserFolder
+            var query = MailDbContext.MailUserFolder
                 .Where(exp.GetExpression())
                 .Select(ToUserFolder);
 
@@ -117,7 +117,7 @@ namespace ASC.Mail.Core.Dao
 
         public UserFolder GetRootFolder(int folderId)
         {
-            var parentId = MailDb.MailUserFolderTree
+            var parentId = MailDbContext.MailUserFolderTree
                 .Where(t => t.FolderId == folderId)
                 .OrderByDescending(t => t.Level)
                 .Select(t => t.ParentId)
@@ -127,7 +127,7 @@ namespace ASC.Mail.Core.Dao
             if (parentId == 0)
                 return null;
 
-            var userFolder = MailDb.MailUserFolder
+            var userFolder = MailDbContext.MailUserFolder
                 .Where(f => f.Id == parentId)
                 .Select(ToUserFolder)
                 .SingleOrDefault();
@@ -137,7 +137,7 @@ namespace ASC.Mail.Core.Dao
 
         public UserFolder GetRootFolderByMailId(int mailId)
         {
-            var folderId = MailDb.MailUserFolderXMail
+            var folderId = MailDbContext.MailUserFolderXMail
                 .Where(ufxm => ufxm.IdMail == mailId)
                 .Select(ufxm => ufxm.IdFolder)
                 .Distinct()
@@ -151,8 +151,8 @@ namespace ASC.Mail.Core.Dao
 
         public List<UserFolder> GetParentFolders(int folderId)
         {
-            var list = MailDb.MailUserFolder
-                .Join(MailDb.MailUserFolderTree, uf => uf.Id, t => t.ParentId,
+            var list = MailDbContext.MailUserFolder
+                .Join(MailDbContext.MailUserFolderTree, uf => uf.Id, t => t.ParentId,
                 (uf, t) => new
                 {
                     UserFolder = uf,
@@ -183,9 +183,9 @@ namespace ASC.Mail.Core.Dao
                 ModifiedOn = folder.TimeModified
             };
 
-            var entry = MailDb.AddOrUpdate(t => t.MailUserFolder, mailUserFolder);
+            var entry = MailDbContext.AddOrUpdate(t => t.MailUserFolder, mailUserFolder);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
@@ -199,28 +199,28 @@ namespace ASC.Mail.Core.Dao
                 IdUser = UserId,
             };
 
-            MailDb.MailUserFolder.Remove(mailUserFolder);
+            MailDbContext.MailUserFolder.Remove(mailUserFolder);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
 
         public int Remove(IUserFoldersExp exp)
         {
-            var deleteQuery = MailDb.MailUserFolder.Where(exp.GetExpression());
+            var deleteQuery = MailDbContext.MailUserFolder.Where(exp.GetExpression());
 
-            MailDb.MailUserFolder.RemoveRange(deleteQuery);
+            MailDbContext.MailUserFolder.RemoveRange(deleteQuery);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
 
         public void RecalculateFoldersCount(int id)
         {
-            var toUpdate = MailDb.MailUserFolder
-                .Where(uf => MailDb.MailUserFolderTree
+            var toUpdate = MailDbContext.MailUserFolder
+                .Where(uf => MailDbContext.MailUserFolderTree
                     .Where(t=> t.FolderId == (int)id)
                     .Select(t => t.ParentId)
                     .Any(pId => pId == uf.Id)
@@ -229,14 +229,14 @@ namespace ASC.Mail.Core.Dao
 
             foreach (var f in toUpdate)
             {
-                var count = MailDb.MailUserFolderTree
+                var count = MailDbContext.MailUserFolderTree
                     .Where(r => r.ParentId == f.Id)
                     .Count() - 1;
 
                 f.FoldersCount = (uint)count;
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
         }
 
         public int SetFolderCounters(int folderId, int? unreadMess = null, int? totalMess = null,
@@ -250,7 +250,7 @@ namespace ASC.Mail.Core.Dao
                 return -1;
             }
 
-            var userFolder = MailDb.MailUserFolder
+            var userFolder = MailDbContext.MailUserFolder
                 .Where(uf => uf.TenantId == Tenant && uf.IdUser == UserId && uf.Id == folderId)
                 .SingleOrDefault();
 
@@ -269,7 +269,7 @@ namespace ASC.Mail.Core.Dao
             if (totalConv.HasValue)
                 userFolder.TotalConversationsCount = (uint)totalConv.Value;
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -285,7 +285,7 @@ namespace ASC.Mail.Core.Dao
                 return -1;
             }
 
-            var userFolder = MailDb.MailUserFolder
+            var userFolder = MailDbContext.MailUserFolder
                 .Where(uf => uf.TenantId == Tenant && uf.IdUser == UserId && uf.Id == folderId)
                 .SingleOrDefault();
 
@@ -324,7 +324,7 @@ namespace ASC.Mail.Core.Dao
                     userFolder.TotalConversationsCount += (uint)totalConvDiff.Value;
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

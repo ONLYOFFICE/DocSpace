@@ -28,15 +28,17 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Expressions.UserFolder;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Models;
 using ASC.Mail.Exceptions;
-using ASC.Core;
+using ASC.Mail.Models;
+
 using Microsoft.Extensions.Options;
-using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -47,32 +49,32 @@ namespace ASC.Mail.Core.Engine
         private string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
         private ILog Log { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private SecurityContext SecurityContext { get; }
         private TenantManager TenantManager { get; }
 
         public UserFolderEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             Log = option.Get("ASC.Mail.UserFolderEngine");
         }
 
         public MailUserFolderData Get(int id)
         {
-            var userFolder = DaoFactory.UserFolderDao.Get(id);
+            var userFolder = MailDaoFactory.GetUserFolderDao().Get(id);
 
             return ToMailUserFolderData(userFolder);
         }
 
         public MailUserFolderData GetByMail(uint mailId)
         {
-            var userFolder = DaoFactory.UserFolderDao.GetByMail(mailId);
+            var userFolder = MailDaoFactory.GetUserFolderDao().GetByMail(mailId);
 
             return ToMailUserFolderData(userFolder);
         }
@@ -93,7 +95,7 @@ namespace ASC.Mail.Core.Engine
 
             var exp = builder.Build();
 
-            var userFolderDataList = DaoFactory.UserFolderDao.GetList(exp)
+            var userFolderDataList = MailDaoFactory.GetUserFolderDao().GetList(exp)
                 .ConvertAll(ToMailUserFolderData);
 
             return userFolderDataList;
@@ -118,7 +120,7 @@ namespace ASC.Mail.Core.Engine
 
             if (parentId > 0)
             {
-                var parentUserFolder = DaoFactory.UserFolderDao.Get(parentId);
+                var parentUserFolder = MailDaoFactory.GetUserFolderDao().Get(parentId);
 
                 if (parentUserFolder == null)
                     throw new ArgumentException(@"Parent folder not found", "parentId");
@@ -130,9 +132,9 @@ namespace ASC.Mail.Core.Engine
                     string.Format("Folder with name \"{0}\" already exists", newUserFolder.Name));
             }
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                newUserFolder.Id = DaoFactory.UserFolderDao.Save(newUserFolder);
+                newUserFolder.Id = MailDaoFactory.GetUserFolderDao().Save(newUserFolder);
 
                 if (newUserFolder.Id <= 0)
                     throw new Exception("Save user folder failed");
@@ -145,15 +147,15 @@ namespace ASC.Mail.Core.Engine
                 };
 
                 //itself link
-                DaoFactory.UserFolderTreeDao.Save(userFolderTreeItem);
+                MailDaoFactory.GetUserFolderTreeDao().Save(userFolderTreeItem);
 
                 //full path to root
-                DaoFactory.UserFolderTreeDao.InsertFullPathToRoot(newUserFolder.Id, newUserFolder.ParentId);
+                MailDaoFactory.GetUserFolderTreeDao().InsertFullPathToRoot(newUserFolder.Id, newUserFolder.ParentId);
 
                 tx.Commit();
             }
 
-            DaoFactory.UserFolderDao.RecalculateFoldersCount(newUserFolder.Id);
+            MailDaoFactory.GetUserFolderDao().RecalculateFoldersCount(newUserFolder.Id);
 
             return ToMailUserFolderData(newUserFolder);
         }
@@ -169,7 +171,7 @@ namespace ASC.Mail.Core.Engine
             if (parentId.HasValue && id == parentId.Value)
                 throw new ArgumentException(@"id equals to parentId", "parentId");
 
-            var oldUserFolder = DaoFactory.UserFolderDao.Get(id);
+            var oldUserFolder = MailDaoFactory.GetUserFolderDao().Get(id);
 
             if (oldUserFolder == null)
                 throw new ArgumentException("Folder not found");
@@ -210,14 +212,14 @@ namespace ASC.Mail.Core.Engine
                 }
             }
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 newUserFolder.TimeModified = utsNow;
-                DaoFactory.UserFolderDao.Save(newUserFolder);
+                MailDaoFactory.GetUserFolderDao().Save(newUserFolder);
 
                 if (newUserFolder.ParentId != oldUserFolder.ParentId)
                 {
-                    DaoFactory.UserFolderTreeDao.Move(newUserFolder.Id, newUserFolder.ParentId);
+                    MailDaoFactory.GetUserFolderTreeDao().Move(newUserFolder.Id, newUserFolder.ParentId);
                 }
 
                 tx.Commit();
@@ -237,7 +239,7 @@ namespace ASC.Mail.Core.Engine
 
             recalcFolders.ForEach(fid =>
             {
-                DaoFactory.UserFolderDao.RecalculateFoldersCount(fid);
+                MailDaoFactory.GetUserFolderDao().RecalculateFoldersCount(fid);
             });
 
             return ToMailUserFolderData(newUserFolder);
@@ -245,22 +247,22 @@ namespace ASC.Mail.Core.Engine
 
         public void SetFolderMessages(int userFolderId, List<int> ids)
         {
-            DaoFactory.UserFolderXMailDao.Remove(ids);
+            MailDaoFactory.GetUserFolderXMailDao().Remove(ids);
 
-            DaoFactory.UserFolderXMailDao.SetMessagesFolder(ids, userFolderId);
+            MailDaoFactory.GetUserFolderXMailDao().SetMessagesFolder(ids, userFolderId);
         }
 
-        public void DeleteFolderMessages(IDaoFactory daoFactory, List<int> ids)
+        public void DeleteFolderMessages(IMailDaoFactory daoFactory, List<int> ids)
         {
-            DaoFactory.UserFolderXMailDao.Remove(ids);
+            MailDaoFactory.GetUserFolderXMailDao().Remove(ids);
         }
 
-        public void RecalculateCounters(IDaoFactory daoFactory, List<int> userFolderIds)
+        public void RecalculateCounters(IMailDaoFactory mailDaoFactory, List<int> userFolderIds)
         {
-            var totalUfMessList = DaoFactory.MailInfoDao.GetMailUserFolderCount(userFolderIds);
-            var unreadUfMessUfList = DaoFactory.MailInfoDao.GetMailUserFolderCount(userFolderIds, true);
-            var totalUfConvList = DaoFactory.ChainDao.GetChainUserFolderCount(userFolderIds);
-            var unreadUfConvUfList = DaoFactory.ChainDao.GetChainUserFolderCount(userFolderIds, true);
+            var totalUfMessList = MailDaoFactory.GetMailInfoDao().GetMailUserFolderCount(userFolderIds);
+            var unreadUfMessUfList = MailDaoFactory.GetMailInfoDao().GetMailUserFolderCount(userFolderIds, true);
+            var totalUfConvList = MailDaoFactory.GetChainDao().GetChainUserFolderCount(userFolderIds);
+            var unreadUfConvUfList = MailDaoFactory.GetChainDao().GetChainUserFolderCount(userFolderIds, true);
 
             foreach (var id in userFolderIds)
             {
@@ -286,7 +288,7 @@ namespace ASC.Mail.Core.Engine
         {
             try
             {
-                var res = DaoFactory.UserFolderDao
+                var res = MailDaoFactory.GetUserFolderDao()
                     .SetFolderCounters(userFolderId, unreadMess, totalMess, unreadConv,
                         totalConv);
 
@@ -311,7 +313,7 @@ namespace ASC.Mail.Core.Engine
         {
             try
             {
-                var res = DaoFactory.UserFolderDao
+                var res = MailDaoFactory.GetUserFolderDao()
                     .ChangeFolderCounters(userFolderId, unreadMessDiff, totalMessDiff, unreadConvDiff,
                         totalConvDiff);
 
@@ -334,7 +336,7 @@ namespace ASC.Mail.Core.Engine
                 .SetParent(newUserFolder.ParentId)
                 .Build();
 
-            var listExistinFolders = DaoFactory.UserFolderDao.GetList(exp);
+            var listExistinFolders = MailDaoFactory.GetUserFolderDao().GetList(exp);
 
             return listExistinFolders.Any(existinFolder => existinFolder.Name.Equals(newUserFolder.Name,
                 StringComparison.InvariantCultureIgnoreCase));
@@ -345,10 +347,10 @@ namespace ASC.Mail.Core.Engine
             //Find folder sub-folders
             var exp = SimpleUserFoldersExp.CreateBuilder(Tenant, UserId)
                 .SetParent(newUserFolder.Id)
-                .SetIds(new List<int> { newUserFolder.ParentId})
+                .SetIds(new List<int> { newUserFolder.ParentId })
                 .Build();
 
-            var listExistinFolders = DaoFactory.UserFolderDao.GetList(exp);
+            var listExistinFolders = MailDaoFactory.GetUserFolderDao().GetList(exp);
 
             return !listExistinFolders.Any();
         }

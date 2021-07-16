@@ -26,14 +26,16 @@
 
 using System;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Mail.Models;
-using ASC.Mail.Enums.Filter;
-using Microsoft.Extensions.Options;
-using ASC.Mail.Storage;
 using ASC.Data.Storage;
+using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Enums.Filter;
+using ASC.Mail.Models;
+using ASC.Mail.Storage;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -50,17 +52,17 @@ namespace ASC.Mail.Core.Engine.Operations
         public MessageEngine MessageEngine { get; }
 
         public ApplyFilterOperation(
-            TenantManager tenantManager, 
+            TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             FilterEngine filterEngine,
             MessageEngine messageEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             StorageFactory storageFactory,
-            IOptionsMonitor<ILog> optionsMonitor, 
+            IOptionsMonitor<ILog> optionsMonitor,
             int filterId)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor, storageFactory)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor, storageFactory)
         {
             FilterEngine = filterEngine;
             MessageEngine = messageEngine;
@@ -90,7 +92,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 while (messages.Any())
                 {
-                    SetProgress((int?) MailOperationApplyFilterProgress.FilteringAndApplying, "Filtering and applying action");
+                    SetProgress((int?)MailOperationApplyFilterProgress.FilteringAndApplying, "Filtering and applying action");
 
                     var ids = messages.Select(m => m.Id).ToList();
 
@@ -99,7 +101,7 @@ namespace ASC.Mail.Core.Engine.Operations
                         FilterEngine.ApplyAction(ids, action);
                     }
 
-                    if(messages.Count < size)
+                    if (messages.Count < size)
                         break;
 
                     if (!Filter.Actions.Exists(a => a.Action == ActionType.DeleteForever || a.Action == ActionType.MoveTo))
@@ -110,7 +112,7 @@ namespace ASC.Mail.Core.Engine.Operations
                     messages = MessageEngine.GetFilteredMessages(Filter, page, size, out total);
                 }
 
-                SetProgress((int?) MailOperationApplyFilterProgress.Finished);
+                SetProgress((int?)MailOperationApplyFilterProgress.Finished);
             }
             catch (Exception e)
             {

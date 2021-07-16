@@ -47,8 +47,8 @@ namespace ASC.Mail.Core.Dao
 
         public List<int> GetTagIds(string email)
         {
-            var tagIds = MailDb.MailTagAddresses
-                .Join(MailDb.MailTag, ta => (int)ta.IdTag, t => t.Id,
+            var tagIds = MailDbContext.MailTagAddresses
+                .Join(MailDbContext.MailTag, ta => (int)ta.IdTag, t => t.Id,
                 (ta, t) => new
                 {
                     TagAddress = ta,
@@ -65,7 +65,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<string> GetTagAddresses(int tagId)
         {
-            var list = MailDb.MailTagAddresses
+            var list = MailDbContext.MailTagAddresses
                 .Where(a => a.IdTag == tagId && a.Tenant == Tenant)
                 .Select(a => a.Address)
                 .ToList();
@@ -82,36 +82,36 @@ namespace ASC.Mail.Core.Dao
                 Tenant = Tenant
             };
 
-            MailDb.AddOrUpdate(t => t.MailTagAddresses, mailTagAddress);
+            MailDbContext.AddOrUpdate(t => t.MailTagAddresses, mailTagAddress);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int Delete(int tagId, string email = null)
         {
-            var queryDelete = MailDb.MailTagAddresses.Where(a => a.IdTag == tagId && a.Tenant == Tenant);
+            var queryDelete = MailDbContext.MailTagAddresses.Where(a => a.IdTag == tagId && a.Tenant == Tenant);
 
             if (!string.IsNullOrEmpty(email))
             {
                 queryDelete.Where(a => a.Address == email);
             }
 
-            MailDb.MailTagAddresses.RemoveRange(queryDelete);
+            MailDbContext.MailTagAddresses.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int DeleteAll()
         {
-            var queryDelete = MailDb.MailTagAddresses.Where(a => a.Tenant == Tenant);
+            var queryDelete = MailDbContext.MailTagAddresses.Where(a => a.Tenant == Tenant);
 
-            MailDb.MailTagAddresses.RemoveRange(queryDelete);
+            MailDbContext.MailTagAddresses.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

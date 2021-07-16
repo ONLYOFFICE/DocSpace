@@ -26,20 +26,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.CRM.Core;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Message;
-using ASC.Mail.Storage;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Data;
+
+using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -53,64 +59,72 @@ namespace ASC.Mail.Core.Engine
         private SecurityContext SecurityContext { get; }
         private TenantManager TenantManager { get; }
         private ApiHelper ApiHelper { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private MessageEngine MessageEngine { get; }
         private StorageFactory StorageFactory { get; }
+        private CrmSecurity CrmSecurity { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public CrmLinkEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             ApiHelper apiHelper,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             MessageEngine messageEngine,
             StorageFactory storageFactory,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            CrmSecurity crmSecurity,
+            IServiceProvider serviceProvider)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             ApiHelper = apiHelper;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             MessageEngine = messageEngine;
             StorageFactory = storageFactory;
+
+            CrmSecurity = crmSecurity;
+
+            ServiceProvider = serviceProvider;
+
             Log = option.Get("ASC.Mail.CrmLinkEngine");
         }
 
         public List<CrmContactData> GetLinkedCrmEntitiesId(int messageId)
         {
-                var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
+            var mail = MailDaoFactory.GetMailDao().GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 
-                return DaoFactory.CrmLinkDao.GetLinkedCrmContactEntities(mail.ChainId, mail.MailboxId);
+            return MailDaoFactory.GetCrmLinkDao().GetLinkedCrmContactEntities(mail.ChainId, mail.MailboxId);
         }
 
         public void LinkChainToCrm(int messageId, List<CrmContactData> contactIds, string httpContextScheme)
         {
-            //TODO: fix
-            /*using (var scope = DIHelper.Resolve())
+            using (var scope = ServiceProvider.CreateScope())
             {
-                var factory = scope.Resolve<CRM.Core.Dao.DaoFactory>();
+                var factory = scope.ServiceProvider.GetService<CrmDaoFactory>();
                 foreach (var crmContactEntity in contactIds)
                 {
                     switch (crmContactEntity.Type)
                     {
                         case CrmContactData.EntityTypes.Contact:
-                            var crmContact = factory.ContactDao.GetByID(crmContactEntity.Id);
-                            CRMSecurity.DemandAccessTo(crmContact);
+                            var crmContact = factory.GetContactDao().GetByID(crmContactEntity.Id);
+                            CrmSecurity.DemandAccessTo(crmContact);
                             break;
                         case CrmContactData.EntityTypes.Case:
-                            var crmCase = factory.CasesDao.GetByID(crmContactEntity.Id);
-                            CRMSecurity.DemandAccessTo(crmCase);
+                            var crmCase = factory.GetCasesDao().GetByID(crmContactEntity.Id);
+                            CrmSecurity.DemandAccessTo(crmCase);
                             break;
                         case CrmContactData.EntityTypes.Opportunity:
-                            var crmOpportunity = factory.DealDao.GetByID(crmContactEntity.Id);
-                            CRMSecurity.DemandAccessTo(crmOpportunity);
+                            var crmOpportunity = factory.GetDealDao().GetByID(crmContactEntity.Id);
+                            CrmSecurity.DemandAccessTo(crmOpportunity);
                             break;
                     }
                 }
-            }*/
+            }
 
-            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
+            var mail = MailDaoFactory.GetMailDao().GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 
-            var chainedMessages = DaoFactory.MailInfoDao.GetMailInfoList(
+            var chainedMessages = MailDaoFactory.GetMailInfoDao().GetMailInfoList(
                 SimpleMessagesExp.CreateBuilder(Tenant, User)
                     .SetChainId(mail.ChainId)
                     .Build());
@@ -136,9 +150,9 @@ namespace ASC.Mail.Core.Engine
 
             }
 
-            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            DaoFactory.CrmLinkDao.SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
+            MailDaoFactory.GetCrmLinkDao().SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
 
             foreach (var message in linkingMessages)
             {
@@ -158,22 +172,22 @@ namespace ASC.Mail.Core.Engine
 
         public void MarkChainAsCrmLinked(int messageId, List<CrmContactData> contactIds)
         {
-            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
+            var mail = MailDaoFactory.GetMailDao().GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 
-            DaoFactory.CrmLinkDao.SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
+            MailDaoFactory.GetCrmLinkDao().SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
 
             tx.Commit();
         }
 
         public void UnmarkChainAsCrmLinked(int messageId, IEnumerable<CrmContactData> contactIds)
         {
-            using var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
+            var mail = MailDaoFactory.GetMailDao().GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 
-            DaoFactory.CrmLinkDao.RemoveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
+            MailDaoFactory.GetCrmLinkDao().RemoveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
 
             tx.Commit();
         }
@@ -201,7 +215,7 @@ namespace ASC.Mail.Core.Engine
         {
             try
             {
-                messageItem.LinkedCrmEntityIds = DaoFactory.CrmLinkDao
+                messageItem.LinkedCrmEntityIds = MailDaoFactory.GetCrmLinkDao()
                     .GetLinkedCrmContactEntities(messageItem.ChainId, mailbox.MailBoxId);
 
                 if (!messageItem.LinkedCrmEntityIds.Any()) return;

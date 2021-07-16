@@ -24,35 +24,36 @@
 */
 
 
-using ASC.Common;
 using System.Collections.Generic;
+
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
     public class DisplayImagesAddressEngine
     {
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
 
-        public DisplayImagesAddressEngine(DaoFactory daoFactory)
+        public DisplayImagesAddressEngine(IMailDaoFactory mailDaoFactory)
         {
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
         }
 
         public IEnumerable<string> Get()
         {
-            return DaoFactory.DisplayImagesAddressDao.GetDisplayImagesAddresses();
+            return MailDaoFactory.GetDisplayImagesAddressDao().GetDisplayImagesAddresses();
         }
 
         public void Add(string address)
         {
-            DaoFactory.DisplayImagesAddressDao.AddDisplayImagesAddress(address);
+            MailDaoFactory.GetDisplayImagesAddressDao().AddDisplayImagesAddress(address);
 
         }
 
         public void Remove(string address)
         {
-            DaoFactory.DisplayImagesAddressDao.RemovevDisplayImagesAddress(address);
+            MailDaoFactory.GetDisplayImagesAddressDao().RemovevDisplayImagesAddress(address);
         }
     }
 }

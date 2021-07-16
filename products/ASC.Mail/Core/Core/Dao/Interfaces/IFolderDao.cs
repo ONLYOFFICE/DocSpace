@@ -25,11 +25,14 @@
 
 
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(FolderDao))]
     public interface IFolderDao
     {
         /// <summary>

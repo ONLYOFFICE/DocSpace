@@ -53,13 +53,13 @@ namespace ASC.Mail.Core.Dao
 
         public List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false)
         {
-            var query = MailDb.MailMail
+            var query = MailDbContext.MailMail
                 .Where(exp.GetExpression());
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
                 query = query.Where(m => 
-                    MailDb.MailTagMail
+                    MailDbContext.MailTagMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId)
                         .Count() == exp.TagIds.Count);
             }
@@ -67,7 +67,7 @@ namespace ASC.Mail.Core.Dao
             if (exp.UserFolderId.HasValue)
             {
                 query = query.Where(m =>
-                    MailDb.MailUserFolderXMail
+                    MailDbContext.MailUserFolderXMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId && t.IdFolder == exp.UserFolderId.Value)
                         .FirstOrDefault() != null);
             }
@@ -105,7 +105,7 @@ namespace ASC.Mail.Core.Dao
             var list = query
                 .Select(m => new { 
                     Mail = m,
-                    LabelsString = skipSelectTags ? "" : string.Join(",", MailDb.MailTagMail.Where(t => t.IdMail == m.Id).Select(t => t.IdTag))
+                    LabelsString = skipSelectTags ? "" : string.Join(",", MailDbContext.MailTagMail.Where(t => t.IdMail == m.Id).Select(t => t.IdTag))
                 })
                 .Select(x => ToMailInfo(x.Mail, x.LabelsString))
                 .ToList();
@@ -115,13 +115,13 @@ namespace ASC.Mail.Core.Dao
 
         public long GetMailInfoTotal(IMessagesExp exp)
         {
-            var query = MailDb.MailMail
+            var query = MailDbContext.MailMail
                 .Where(exp.GetExpression());
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
                 query = query.Where(m =>
-                    MailDb.MailTagMail
+                    MailDbContext.MailTagMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId)
                         .Count() == exp.TagIds.Count);
             }
@@ -129,7 +129,7 @@ namespace ASC.Mail.Core.Dao
             if (exp.UserFolderId.HasValue)
             {
                 query = query.Where(m =>
-                    MailDb.MailUserFolderXMail
+                    MailDbContext.MailUserFolderXMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId && t.IdFolder == exp.UserFolderId.Value)
                         .FirstOrDefault() != null);
             }
@@ -141,7 +141,7 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetMailCount(IMessagesExp exp)
         {
-            var dictionary = MailDb.MailMail
+            var dictionary = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .GroupBy(m => m.Folder)
                 .Select(g => new
@@ -156,8 +156,8 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+            var query = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
@@ -181,8 +181,8 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetMailUserFolderCount(bool? unread = null)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+            var query = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
@@ -208,11 +208,11 @@ namespace ASC.Mail.Core.Dao
         {
             //TODO: fix: make one query
 
-            var max = MailDb.MailMail
+            var max = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .Max(m => m.Id);
 
-            var min = MailDb.MailMail
+            var min = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .Min(m => m.Id);
 
@@ -231,7 +231,7 @@ namespace ASC.Mail.Core.Dao
             var body = Expression.PropertyOrField(x, field);
             var lambda = Expression.Lambda<Func<MailMail, T>>(body, x);
 
-            var max = MailDb.MailMail
+            var max = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .Select(lambda.Compile())
                 .DefaultIfEmpty<T>()
@@ -248,7 +248,7 @@ namespace ASC.Mail.Core.Dao
             if (pi == null)
                 throw new ArgumentException("Field not found");
 
-            var mails = MailDb.MailMail
+            var mails = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .ToList();
 
@@ -257,7 +257,7 @@ namespace ASC.Mail.Core.Dao
                 pi.SetValue(mail, Convert.ChangeType(value, pi.PropertyType), null);
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -274,7 +274,7 @@ namespace ASC.Mail.Core.Dao
             if (piTo == null)
                 throw new ArgumentException("FieldTo not found");
 
-            var mails = MailDb.MailMail
+            var mails = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .ToList();
 
@@ -285,7 +285,7 @@ namespace ASC.Mail.Core.Dao
                 piTo.SetValue(mail, Convert.ChangeType(value, piFrom.PropertyType), null);
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

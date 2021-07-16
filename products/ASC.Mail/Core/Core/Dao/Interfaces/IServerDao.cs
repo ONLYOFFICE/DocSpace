@@ -26,8 +26,11 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(ServerDao))]
     public interface IServerDao
     {
         Core.Entities.Server Get(int tenant);

@@ -60,23 +60,23 @@ namespace ASC.Mail.Core.Dao
                 HasPhoto = contact.HasPhoto
             };
 
-           var entity = MailDb.AddOrUpdate(t => t.MailContacts, mailContact);
+           var entity = MailDbContext.AddOrUpdate(t => t.MailContacts, mailContact);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return (int)entity.Id;
         }
 
         public int RemoveContacts(List<int> ids)
         {
-            var queryDelete = MailDb.MailContactInfo
+            var queryDelete = MailDbContext.MailContactInfo
                 .Where(c => c.TenantId == Tenant 
                     && c.IdUser == UserId 
                     && ids.Contains((int)c.IdContact));
 
-            MailDb.MailContactInfo.RemoveRange(queryDelete);
+            MailDbContext.MailContactInfo.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

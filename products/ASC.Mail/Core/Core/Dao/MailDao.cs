@@ -92,16 +92,16 @@ namespace ASC.Mail.Core.Dao
             if (!string.IsNullOrEmpty(mail.CalendarUid))
                 mailMail.CalendarUid = mail.CalendarUid;
 
-            var entry = MailDb.AddOrUpdate(m => m.MailMail, mailMail);
+            var entry = MailDbContext.AddOrUpdate(m => m.MailMail, mailMail);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
 
         public Core.Entities.Mail GetMail(IMessageExp exp)
         {
-            var mail = MailDb.MailMail.Where(exp.GetExpression())
+            var mail = MailDbContext.MailMail.Where(exp.GetExpression())
                 .Select(ToMail)
                 .SingleOrDefault();
 
@@ -110,7 +110,7 @@ namespace ASC.Mail.Core.Dao
 
         public Core.Entities.Mail GetNextMail(IMessageExp exp)
         {
-            var mail = MailDb.MailMail.Where(exp.GetExpression())
+            var mail = MailDbContext.MailMail.Where(exp.GetExpression())
                 .OrderBy(m => m.Id)
                 .Take(1)
                 .Select(ToMail)
@@ -121,7 +121,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<string> GetExistingUidls(int mailboxId, List<string> uidlList)
         {
-            var existingUidls = MailDb.MailMail
+            var existingUidls = MailDbContext.MailMail
                 .Where(m => m.IdMailbox == mailboxId && uidlList.Contains(m.Uidl))
                 .Select(m => m.Uidl)
                 .ToList();
@@ -133,14 +133,14 @@ namespace ASC.Mail.Core.Dao
         {
             var now = DateTime.UtcNow;
 
-            var mails = MailDb.MailMail.Where(m => ids.Contains(m.Id));
+            var mails = MailDbContext.MailMail.Where(m => ids.Contains(m.Id));
 
             foreach (var mail in mails)
             {
                 mail.TimeModified = now;
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

@@ -54,7 +54,7 @@ namespace ASC.Mail.Core.Dao
             //try
             //{
 
-            var contactList = MailDb.CrmContact.Join(MailDb.CrmContactInfo, c => c.Id, ci => ci.ContactId,
+            var contactList = MailDbContext.CrmContact.Join(MailDbContext.CrmContactInfo, c => c.Id, ci => ci.ContactId,
                 (c, ci) => new { 
                     Contact = c,
                     Info = ci

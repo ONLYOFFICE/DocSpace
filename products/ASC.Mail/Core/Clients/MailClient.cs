@@ -154,7 +154,7 @@ namespace ASC.Mail.Clients
 
             CancelToken = CancellationTokenSource.CreateLinkedTokenSource(cancelToken, StopTokenSource.Token).Token;
 
-            Log.Debug($"MailClient Constructor -> CertificatePermit: {CertificatePermit}.");
+            Log.Debug($"MailClient: Constructor -> CertificatePermit: {CertificatePermit}.");
 
             if (Account.Imap)
             {
@@ -227,7 +227,7 @@ namespace ASC.Mail.Clients
             if (Account.Imap)
             {
                 if (!Imap.IsAuthenticated)
-                    LoginImapAsync();
+                    LoginImap();
 
                 var elements = uidl.Split('-');
 
@@ -365,7 +365,7 @@ namespace ASC.Mail.Clients
             if (Account.Imap)
             {
                 if (!Imap.IsAuthenticated)
-                    LoginImapAsync();
+                    LoginImap();
             }
             else
             {
@@ -386,7 +386,7 @@ namespace ASC.Mail.Clients
                 if (Account.Imap)
                 {
                     if (!Imap.IsAuthenticated)
-                        LoginImapAsync(false);
+                        LoginImap(false);
                 }
                 else
                 {
@@ -450,7 +450,7 @@ namespace ASC.Mail.Clients
 
         #region .IMAP
 
-        private void LoginImapAsync(bool enableUtf8 = true)
+        private void LoginImap(bool enableUtf8 = true)
         {
             Log.DebugFormat($"Imap: Connect({Account.Server}:{Account.Port}, SecureSocketOptions: Auto)");
 
@@ -494,6 +494,7 @@ namespace ASC.Mail.Clients
                     var oauth2 = new SaslMechanismOAuth2(Account.Account, Account.AccessToken);
 
                     t = Imap.AuthenticateAsync(oauth2, CancelToken);
+                    IsAuthenticated = true;
                 }
 
                 if (!t.Wait(LOGIN_TIMEOUT, CancelToken))
@@ -531,7 +532,7 @@ namespace ASC.Mail.Clients
         private void AggregateImap(MailSettings mailSettings, int limitMessages = -1)
         {
             if (!Imap.IsAuthenticated)
-                LoginImapAsync();
+                LoginImap();
 
             try
             {
@@ -992,7 +993,7 @@ namespace ASC.Mail.Clients
             try
             {
                 if (!Imap.IsAuthenticated)
-                    LoginImapAsync();
+                    LoginImap();
 
                 var sendFolder = GetSentFolder();
 

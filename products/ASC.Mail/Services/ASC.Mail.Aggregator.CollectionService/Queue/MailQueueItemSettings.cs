@@ -4,8 +4,7 @@ using System.Configuration;
 using System.Linq;
 
 using ASC.Common;
-using ASC.Mail.Core.Dao;
-using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core;
 using ASC.Mail.Models;
 
 namespace ASC.Mail.Aggregator.CollectionService.Queue
@@ -18,16 +17,16 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         public Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>> SpecialDomainFolders { get; private set; }
         public Dictionary<string, int> DefaultFolders { get; private set; }
 
-        public MailQueueItemSettings(ImapFlagsDao imapFlagsDao, IImapSpecialMailboxDao imapSpecialMailboxDao)
+        public MailQueueItemSettings(IMailDaoFactory mailDaoFactory)
         {
-            var imapFlags = imapFlagsDao.GetImapFlags();
+            var imapFlags = mailDaoFactory.GetImapFlagsDao().GetImapFlags();
 
             SkipImapFlags = imapFlags.FindAll(i => i.Skip).ConvertAll(i => i.Name).ToArray();
 
             ImapFlags = new Dictionary<string, int>();
             imapFlags.FindAll(i => !i.Skip).ForEach(i => { ImapFlags[i.Name] = i.FolderId; });
 
-            var serverFolderAccessInfos = imapSpecialMailboxDao.GetServerFolderAccessInfoList();
+            var serverFolderAccessInfos = mailDaoFactory.GetImapSpecialMailboxDao().GetServerFolderAccessInfoList();
 
             SpecialDomainFolders = new Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>>();
 

@@ -49,7 +49,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Filter> GetList()
         {
-            var filters = MailDb.MailFilter
+            var filters = MailDbContext.MailFilter
                 .Where(f => f.Tenant == Tenant && f.IdUser == UserId)
                 .Select(ToFilter)
                 .ToList();
@@ -59,7 +59,7 @@ namespace ASC.Mail.Core.Dao
 
         public Filter Get(int id)
         {
-            var filter = MailDb.MailFilter
+            var filter = MailDbContext.MailFilter
                 .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Id == id)
                 .Select(ToFilter)
                 .SingleOrDefault();
@@ -86,22 +86,22 @@ namespace ASC.Mail.Core.Dao
                 mailFilter.DateCreated = now;
             }
 
-            var entry = MailDb.AddOrUpdate(t => t.MailFilter, mailFilter);
+            var entry = MailDbContext.AddOrUpdate(t => t.MailFilter, mailFilter);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
 
         public int Delete(int id)
         {
-            var filter = MailDb.MailFilter
+            var filter = MailDbContext.MailFilter
                .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Id == id)
                .SingleOrDefault();
 
-            MailDb.MailFilter.Remove(filter);
+            MailDbContext.MailFilter.Remove(filter);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

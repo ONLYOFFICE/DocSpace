@@ -28,15 +28,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Storage;
 using ASC.Mail.Enums;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
+
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Mail.Core.Engine
@@ -48,13 +51,13 @@ namespace ASC.Mail.Core.Engine
 
         private StorageFactory StorageFactory { get; }
         private TenantManager TenantManager { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private ApiHelper ApiHelper { get; }
         private ILog Log { get; }
 
         public SpamEngine(
             TenantManager tenantManager,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             ApiHelper apiHelper,
             IOptionsMonitor<ILog> option)
         {
@@ -62,7 +65,7 @@ namespace ASC.Mail.Core.Engine
             Log = option.Get("ASC.Mail.SpamEngine");
             TenantManager = tenantManager;
 
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             ApiHelper = apiHelper;
         }
 
@@ -96,14 +99,14 @@ namespace ASC.Mail.Core.Engine
             var streamList = new Dictionary<int, string>();
 
             var tlMailboxes =
-                DaoFactory.MailboxDao.GetMailBoxes(new UserMailboxesExp(tenant, user, false, true));
+                MailDaoFactory.GetMailboxDao().GetMailBoxes(new UserMailboxesExp(tenant, user, false, true));
 
             var tlMailboxesIds = tlMailboxes.ConvertAll(mb => mb.Id);
 
             if (!tlMailboxesIds.Any())
                 return streamList;
 
-            streamList = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids)
+            streamList = MailDaoFactory.GetMailInfoDao().GetChainedMessagesInfo(ids)
                 .Where(r => r.FolderRestore != FolderType.Sent)
                 .Where(r => tlMailboxesIds.Contains(r.MailboxId))
                 .ToDictionary(r => r.Id, r => r.Stream);
@@ -117,8 +120,8 @@ namespace ASC.Mail.Core.Engine
             if (!tlMails.Any())
                 return;
 
-            var serverInfo = DaoFactory.MailDb.MailServerServer
-                    .Join(DaoFactory.MailDb.MailServerServerXTenant, s => s.Id, sxt => sxt.IdServer,
+            var serverInfo = MailDaoFactory.GetContext().MailServerServer
+                    .Join(MailDaoFactory.GetContext().MailServerServerXTenant, s => s.Id, sxt => sxt.IdServer,
                         (s, x) => new
                         {
                             Server = s,

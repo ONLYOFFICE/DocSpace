@@ -49,7 +49,7 @@ namespace ASC.Mail.Core.Dao
 
         public Folder GetFolder(FolderType folderType)
         {
-            var folder = MailDb.MailFolderCounters
+            var folder = MailDbContext.MailFolderCounters
                 .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Folder == folderType)
                 .Select(ToFolder)
                 .SingleOrDefault();
@@ -59,7 +59,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Folder> GetFolders()
         {
-            var folders = MailDb.MailFolderCounters
+            var folders = MailDbContext.MailFolderCounters
                 .Where(f => f.Tenant == Tenant && f.IdUser == UserId)
                 .Select(ToFolder)
                 .ToList();
@@ -80,9 +80,9 @@ namespace ASC.Mail.Core.Dao
                 TotalConversationsCount = (uint)folder.TotalChainCount
             };
 
-            MailDb.AddOrUpdate(t => t.MailFolderCounters, mailFolder);
+            MailDbContext.AddOrUpdate(t => t.MailFolderCounters, mailFolder);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -102,7 +102,7 @@ namespace ASC.Mail.Core.Dao
                 return -1;
             }
 
-            var mailFolder = MailDb.MailFolderCounters
+            var mailFolder = MailDbContext.MailFolderCounters
                 .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Folder == folder)
                 .SingleOrDefault();
 
@@ -141,19 +141,19 @@ namespace ASC.Mail.Core.Dao
                     mailFolder.TotalConversationsCount += (uint)totalConvDiff.Value;
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int Delete()
         {
-            var queryDelete = MailDb.MailFolderCounters
+            var queryDelete = MailDbContext.MailFolderCounters
                 .Where(f => f.Tenant == Tenant && f.IdUser == UserId);
 
-            MailDb.MailFolderCounters.RemoveRange(queryDelete);
+            MailDbContext.MailFolderCounters.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

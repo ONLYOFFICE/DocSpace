@@ -48,7 +48,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<string> GetDisplayImagesAddresses()
         {
-            var query = MailDb.MailDisplayImages
+            var query = MailDbContext.MailDisplayImages
                 .Where(r => r.Tenant == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Select(r => r.Address);
@@ -63,7 +63,7 @@ namespace ASC.Mail.Core.Dao
             if (string.IsNullOrEmpty(address))
                 throw new ArgumentException(@"Invalid address. Address can't be empty.", "address");
 
-            using var tr = MailDb.Database.BeginTransaction();
+            using var tr = MailDbContext.Database.BeginTransaction();
 
             var dbAddress = new MailDisplayImages
             {
@@ -72,9 +72,9 @@ namespace ASC.Mail.Core.Dao
                 Address = address
             };
 
-            MailDb.MailDisplayImages.Add(dbAddress);
+            MailDbContext.MailDisplayImages.Add(dbAddress);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             tr.Commit();
         }
@@ -84,14 +84,14 @@ namespace ASC.Mail.Core.Dao
             if (string.IsNullOrEmpty(address))
                 throw new ArgumentException(@"Invalid address. Address can't be empty.", "address");
 
-            using var tr = MailDb.Database.BeginTransaction();
+            using var tr = MailDbContext.Database.BeginTransaction();
 
-            var range = MailDb.MailDisplayImages
+            var range = MailDbContext.MailDisplayImages
                 .Where(r => r.IdUser == UserId && r.Tenant == Tenant && r.Address == address);
 
-            MailDb.MailDisplayImages.RemoveRange(range);
+            MailDbContext.MailDisplayImages.RemoveRange(range);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             tr.Commit();
         }

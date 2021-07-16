@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Security;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Mail.Core.Entities;
@@ -36,6 +37,7 @@ using ASC.Mail.Models;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Mail.Core.Engine
@@ -48,21 +50,21 @@ namespace ASC.Mail.Core.Engine
 
         private SecurityContext SecurityContext { get; }
         private TenantManager TenantManager { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private CacheEngine CacheEngine { get; }
         private WebItemSecurity WebItemSecurity { get; }
 
         public ServerMailgroupEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             CacheEngine cacheEngine,
             WebItemSecurity webItemSecurity)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
 
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             CacheEngine = cacheEngine;
             WebItemSecurity = webItemSecurity;
         }
@@ -72,17 +74,17 @@ namespace ASC.Mail.Core.Engine
             if (!IsAdmin)
                 throw new SecurityException("Need admin privileges.");
 
-            var domains = DaoFactory.ServerDomainDao.GetDomains();
+            var domains = MailDaoFactory.GetServerDomainDao().GetDomains();
 
-            var groups = DaoFactory.ServerGroupDao.GetList();
+            var groups = MailDaoFactory.GetServerGroupDao().GetList();
 
             var list = from serverGroup in groups
-                       let address = DaoFactory.ServerAddressDao.Get(serverGroup.AddressId)
+                       let address = MailDaoFactory.GetServerAddressDao().Get(serverGroup.AddressId)
                        let domain = domains.FirstOrDefault(d => d.Id == address.DomainId)
                        where domain != null
                        let serverGroupAddress = ServerMailboxEngine.ToServerDomainAddressData(address, domain)
                        let serverGroupAddresses =
-                           DaoFactory.ServerAddressDao.GetGroupAddresses(serverGroup.Id)
+                           MailDaoFactory.GetServerAddressDao().GetGroupAddresses(serverGroup.Id)
                                .ConvertAll(a => ServerMailboxEngine.ToServerDomainAddressData(a, domain))
                        select ToServerDomainGroupData(serverGroup.Id, serverGroupAddress, serverGroupAddresses);
 
@@ -112,12 +114,12 @@ namespace ASC.Mail.Core.Engine
 
             var mailgroupName = name.ToLowerInvariant();
 
-            var serverDomain = DaoFactory.ServerDomainDao.GetDomain(domainId);
+            var serverDomain = MailDaoFactory.GetServerDomainDao().GetDomain(domainId);
 
             if (serverDomain.Tenant == DefineConstants.SHARED_TENANT_ID)
                 throw new InvalidOperationException("Creating mail group is not allowed for shared domain.");
 
-            if (DaoFactory.ServerAddressDao.IsAddressAlreadyRegistered(mailgroupName, serverDomain.Name))
+            if (MailDaoFactory.GetServerAddressDao().IsAddressAlreadyRegistered(mailgroupName, serverDomain.Name))
             {
                 throw new DuplicateNameException("You want to create a group with already existing address.");
             }
@@ -140,7 +142,7 @@ namespace ASC.Mail.Core.Engine
 
             var groupAddressData = ServerMailboxEngine.ToServerDomainAddressData(address, groupEmail);
 
-            var newGroupMembers = DaoFactory.ServerAddressDao.GetList(addressIds);
+            var newGroupMembers = MailDaoFactory.GetServerAddressDao().GetList(addressIds);
 
             var newGroupMemberIds = newGroupMembers.ConvertAll(m => m.Id);
 
@@ -152,7 +154,7 @@ namespace ASC.Mail.Core.Engine
             var goTo = string.Join(",",
                 newGroupMembers.Select(m => string.Format("{0}@{1}", m.AddressName, serverDomain.Name)));
 
-            var server = DaoFactory.ServerDao.Get(Tenant);
+            var server = MailDaoFactory.GetServerDao().Get(Tenant);
 
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
@@ -165,15 +167,15 @@ namespace ASC.Mail.Core.Engine
                 DateCreated = utcNow
             };
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                address.Id = DaoFactory.ServerAddressDao.Save(address);
+                address.Id = MailDaoFactory.GetServerAddressDao().Save(address);
 
                 group.AddressId = address.Id;
 
-                group.Id = DaoFactory.ServerGroupDao.Save(group);
+                group.Id = MailDaoFactory.GetServerGroupDao().Save(group);
 
-                DaoFactory.ServerAddressDao.AddAddressesToMailGroup(group.Id, newGroupMemberIds);
+                MailDaoFactory.GetServerAddressDao().AddAddressesToMailGroup(group.Id, newGroupMemberIds);
 
                 var serverAddress = new Alias
                 {
@@ -208,22 +210,22 @@ namespace ASC.Mail.Core.Engine
             if (mailgroupId < 0)
                 throw new ArgumentException(@"Invalid mailgroup id.", "mailgroupId");
 
-            var group = DaoFactory.ServerGroupDao.Get(mailgroupId);
+            var group = MailDaoFactory.GetServerGroupDao().Get(mailgroupId);
 
             if (group == null)
                 throw new Exception("Group not found");
 
-            var groupMembers = DaoFactory.ServerAddressDao.GetGroupAddresses(mailgroupId);
+            var groupMembers = MailDaoFactory.GetServerAddressDao().GetGroupAddresses(mailgroupId);
 
             if (groupMembers.Exists(a => a.Id == addressId))
                 throw new DuplicateNameException("Member already exists");
 
-            var newMemberAddress = DaoFactory.ServerAddressDao.Get(addressId);
+            var newMemberAddress = MailDaoFactory.GetServerAddressDao().Get(addressId);
 
             if (newMemberAddress == null)
                 throw new Exception("Member not found");
 
-            var server = DaoFactory.ServerDao.Get(Tenant);
+            var server = MailDaoFactory.GetServerDao().Get(Tenant);
 
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
@@ -233,15 +235,15 @@ namespace ASC.Mail.Core.Engine
             string groupEmail;
             List<ServerDomainAddressData> newGroupMemberDataList;
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                DaoFactory.ServerAddressDao.AddAddressesToMailGroup(mailgroupId, new List<int> { addressId });
+                MailDaoFactory.GetServerAddressDao().AddAddressesToMailGroup(mailgroupId, new List<int> { addressId });
 
                 groupMembers.Add(newMemberAddress);
 
-                groupAddress = DaoFactory.ServerAddressDao.Get(group.AddressId);
+                groupAddress = MailDaoFactory.GetServerAddressDao().Get(group.AddressId);
 
-                var serverDomain = DaoFactory.ServerDomainDao.GetDomain(groupAddress.DomainId);
+                var serverDomain = MailDaoFactory.GetServerDomainDao().GetDomain(groupAddress.DomainId);
 
                 var goTo = string.Join(",",
                     groupMembers.Select(m => string.Format("{0}@{1}", m.AddressName, serverDomain.Name)));
@@ -288,12 +290,12 @@ namespace ASC.Mail.Core.Engine
             if (mailgroupId < 0)
                 throw new ArgumentException(@"Invalid mailgroup id.", "mailgroupId");
 
-            var group = DaoFactory.ServerGroupDao.Get(mailgroupId);
+            var group = MailDaoFactory.GetServerGroupDao().Get(mailgroupId);
 
             if (group == null)
                 throw new Exception("Group not found");
 
-            var groupMembers = DaoFactory.ServerAddressDao.GetGroupAddresses(mailgroupId);
+            var groupMembers = MailDaoFactory.GetServerAddressDao().GetGroupAddresses(mailgroupId);
 
             var removeMember = groupMembers.FirstOrDefault(a => a.Id == addressId);
 
@@ -305,19 +307,19 @@ namespace ASC.Mail.Core.Engine
             if (groupMembers.Count == 0)
                 throw new Exception("Can't remove last member; Remove group.");
 
-            var server = DaoFactory.ServerDao.Get(Tenant);
+            var server = MailDaoFactory.GetServerDao().Get(Tenant);
 
-            var groupAddress = DaoFactory.ServerAddressDao.Get(group.AddressId);
+            var groupAddress = MailDaoFactory.GetServerAddressDao().Get(group.AddressId);
 
-            var serverDomain = DaoFactory.ServerDomainDao.GetDomain(groupAddress.DomainId);
+            var serverDomain = MailDaoFactory.GetServerDomainDao().GetDomain(groupAddress.DomainId);
 
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
             var utcNow = DateTime.UtcNow;
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                DaoFactory.ServerAddressDao.DeleteAddressFromMailGroup(mailgroupId, addressId);
+                MailDaoFactory.GetServerAddressDao().DeleteAddressFromMailGroup(mailgroupId, addressId);
 
                 var goTo = string.Join(",",
                     groupMembers.Select(m => string.Format("{0}@{1}", m.AddressName, serverDomain.Name)));
@@ -352,22 +354,22 @@ namespace ASC.Mail.Core.Engine
             if (id < 0)
                 throw new ArgumentException(@"Invalid mailgroup id.", "id");
 
-            var group = DaoFactory.ServerGroupDao.Get(id);
+            var group = MailDaoFactory.GetServerGroupDao().Get(id);
 
             if (group == null)
                 throw new Exception("Group not found");
 
-            var server = DaoFactory.ServerDao.Get(Tenant);
+            var server = MailDaoFactory.GetServerDao().Get(Tenant);
 
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                DaoFactory.ServerGroupDao.Delete(id);
+                MailDaoFactory.GetServerGroupDao().Delete(id);
 
-                DaoFactory.ServerAddressDao.DeleteAddressesFromMailGroup(id);
+                MailDaoFactory.GetServerAddressDao().DeleteAddressesFromMailGroup(id);
 
-                DaoFactory.ServerAddressDao.Delete(group.AddressId);
+                MailDaoFactory.GetServerAddressDao().Delete(group.AddressId);
 
                 engine.RemoveAlias(group.Address);
 

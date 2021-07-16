@@ -29,40 +29,32 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.ElasticSearch;
-using ASC.Mail.Models;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
+
 using ASC.Common;
+using ASC.Common.Logging;
+using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Models;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
     public class IndexEngine
     {
-        private SecurityContext SecurityContext { get; }
-        private TenantManager TenantManager { get; }
-        private DaoFactory DaoFactory { get; }
         private FactoryIndexer<MailMail> FactoryIndexerHelper { get; }
         private FactoryIndexer FactoryIndexerCommon { get; }
         private IServiceProvider ServiceProvider { get; }
         private ILog Log { get; }
 
         public IndexEngine(
-            SecurityContext securityContext,
-            TenantManager tenantManager,
-            DaoFactory daoFactory,
             FactoryIndexer<MailMail> factoryIndexerHelper,
             FactoryIndexer factoryIndexerCommon,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
-            SecurityContext = securityContext;
-            TenantManager = tenantManager;
-            DaoFactory = daoFactory;
             FactoryIndexerHelper = factoryIndexerHelper;
             FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;

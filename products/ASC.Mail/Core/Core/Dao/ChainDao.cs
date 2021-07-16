@@ -53,7 +53,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Chain> GetChains(IConversationsExp exp)
         {
-            var chains = MailDb.MailChain
+            var chains = MailDbContext.MailChain
                 .Where(exp.GetExpression())
                 .Select(ToChain)
                 .ToList();
@@ -63,7 +63,7 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetChainCount(IConversationsExp exp)
         {
-            var dictionary = MailDb.MailChain
+            var dictionary = MailDbContext.MailChain
                     .Where(exp.GetExpression())
                     .GroupBy(c => c.Folder, (folderId, c) =>
                     new
@@ -78,14 +78,14 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetChainUserFolderCount(bool? unread = null)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+            var query = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
                     Mail = m
                 })
-                .Join(MailDb.MailChain, x => x.Mail.ChainId, c => c.Id,
+                .Join(MailDbContext.MailChain, x => x.Mail.ChainId, c => c.Id,
                 (x, c) => new
                 {
                     x.UFxMail,
@@ -112,14 +112,14 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+            var query = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
                     Mail = m
                 })
-                .Join(MailDb.MailChain, x => x.Mail.ChainId, c => c.Id, 
+                .Join(MailDbContext.MailChain, x => x.Mail.ChainId, c => c.Id, 
                 (x, c) => new 
                 {
                     x.UFxMail,
@@ -160,20 +160,20 @@ namespace ASC.Mail.Core.Dao
                 Tags = chain.Tags
             };
 
-            var entry = MailDb.AddOrUpdate(c => c.MailChain, mailChain);
+            var entry = MailDbContext.AddOrUpdate(c => c.MailChain, mailChain);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
 
         public int Delete(IConversationsExp exp)
         {
-            var query = MailDb.MailChain.Where(exp.GetExpression());
+            var query = MailDbContext.MailChain.Where(exp.GetExpression());
 
-            MailDb.MailChain.RemoveRange(query);
+            MailDbContext.MailChain.RemoveRange(query);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
@@ -186,7 +186,7 @@ namespace ASC.Mail.Core.Dao
             if (pi == null)
                 throw new ArgumentException("Field not found");
 
-            var chains = MailDb.MailChain
+            var chains = MailDbContext.MailChain
                 .Where(exp.GetExpression())
                 .ToList();
 
@@ -195,7 +195,7 @@ namespace ASC.Mail.Core.Dao
                 pi.SetValue(chain, Convert.ChangeType(value, pi.PropertyType), null);
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

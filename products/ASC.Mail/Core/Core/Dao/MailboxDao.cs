@@ -62,7 +62,7 @@ namespace ASC.Mail.Core.Dao
 
         public Mailbox GetMailBox(IMailboxExp exp)
         {
-            var mailbox = MailDb.MailMailbox
+            var mailbox = MailDbContext.MailMailbox
                 .AsNoTracking()
                 .Where(exp.GetExpression())
                 .Select(ToMailbox)
@@ -73,7 +73,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Mailbox> GetMailBoxes(IMailboxesExp exp)
         {
-            var query = MailDb.MailMailbox
+            var query = MailDbContext.MailMailbox
                  .Where(exp.GetExpression())
                  .Select(ToMailbox).ToList();
 
@@ -102,7 +102,7 @@ namespace ASC.Mail.Core.Dao
 
         public Mailbox GetNextMailBox(IMailboxExp exp)
         {
-            var mailbox = MailDb.MailMailbox
+            var mailbox = MailDbContext.MailMailbox
                  .Where(exp.GetExpression())
                  .OrderBy(mb => mb.Id)
                  .Select(ToMailbox)
@@ -114,7 +114,7 @@ namespace ASC.Mail.Core.Dao
 
         public Tuple<int, int> GetRangeMailboxes(IMailboxExp exp)
         {
-            var mbIds = MailDb.MailMailbox
+            var mbIds = MailDbContext.MailMailbox
                  .Where(exp.GetExpression())
                  .OrderBy(mb => mb.Id)
                  .Select(mb => (int)mb.Id)
@@ -132,7 +132,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Tuple<int, string>> GetMailUsers(IMailboxExp exp)
         {
-            var list = MailDb.MailMailbox
+            var list = MailDbContext.MailMailbox
                 .Where(exp.GetExpression())
                 .Select(mb => new Tuple<int, string>(mb.Tenant, mb.IdUser))
                 .ToList();
@@ -180,12 +180,12 @@ namespace ASC.Mail.Core.Dao
                 DateCreated = mailbox.DateCreated
             };
 
-            var result = MailDb.Entry(mailMailbox);
+            var result = MailDbContext.Entry(mailMailbox);
             result.State = mailMailbox.Id == 0
                 ? EntityState.Added
                 : EntityState.Modified;
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return (int)result.Entity.Id;
         }
@@ -198,10 +198,10 @@ namespace ASC.Mail.Core.Dao
                 IsRemoved = true
             };
 
-            MailDb.MailMailbox.Attach(mailMailbox);
-            MailDb.Entry(mailMailbox).Property(x => x.IsRemoved).IsModified = true;
+            MailDbContext.MailMailbox.Attach(mailMailbox);
+            MailDbContext.Entry(mailMailbox).Property(x => x.IsRemoved).IsModified = true;
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
@@ -213,16 +213,16 @@ namespace ASC.Mail.Core.Dao
                 Id = (uint)mailbox.Id
             };
 
-            MailDb.MailMailbox.Remove(mailMailbox);
+            MailDbContext.MailMailbox.Remove(mailMailbox);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
 
         public bool Enable(IMailboxExp exp, bool enabled)
         {
-            var mailboxes = MailDb.MailMailbox.Where(exp.GetExpression()).ToList();
+            var mailboxes = MailDbContext.MailMailbox.Where(exp.GetExpression()).ToList();
 
             if (!mailboxes.Any())
                 return false;
@@ -236,14 +236,14 @@ namespace ASC.Mail.Core.Dao
                 }
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
 
         public bool LoggedEnable(IMailboxExp exp, bool enabled, ILog log)
         {
-            var mailboxes = MailDb.MailMailbox.Where(exp.GetExpression()).ToList();
+            var mailboxes = MailDbContext.MailMailbox.Where(exp.GetExpression()).ToList();
 
             if (!mailboxes.Any())
                 return false;
@@ -257,7 +257,7 @@ namespace ASC.Mail.Core.Dao
                 }
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             if (result > 0)
             {
@@ -273,7 +273,7 @@ namespace ASC.Mail.Core.Dao
 
         public bool SetNextLoginDelay(IMailboxExp exp, TimeSpan delay)
         {
-            var mailbox = MailDb.MailMailbox
+            var mailbox = MailDbContext.MailMailbox
                 .Where(exp.GetExpression())
                 .FirstOrDefault();
 
@@ -283,14 +283,14 @@ namespace ASC.Mail.Core.Dao
             mailbox.IsProcessed = false;
             mailbox.DateLoginDelayExpires = DateTime.UtcNow.Add(delay);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
 
         public bool SetMailboxEmailIn(Mailbox mailbox, string emailInFolder)
         {
-            var mailMailbox = MailDb.MailMailbox
+            var mailMailbox = MailDbContext.MailMailbox
                 .Where(mb => mb.Id == mailbox.Id
                     && mb.Tenant == mailbox.Tenant
                     && mb.IdUser == mailbox.User
@@ -302,14 +302,14 @@ namespace ASC.Mail.Core.Dao
 
             mailMailbox.EmailInFolder = "" != emailInFolder ? emailInFolder : null;
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
 
         public bool SetMailboxesActivity(int tenant, string user, bool userOnline = true)
         {
-            var mailMailbox = MailDb.MailMailbox
+            var mailMailbox = MailDbContext.MailMailbox
                 .Where(mb => mb.Tenant == tenant
                     && mb.IdUser == user
                     && mb.IsRemoved == false)
@@ -321,7 +321,7 @@ namespace ASC.Mail.Core.Dao
             mailMailbox.DateUserChecked = DateTime.UtcNow;
             mailMailbox.UserOnline = userOnline;
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
@@ -338,7 +338,7 @@ namespace ASC.Mail.Core.Dao
 
         public bool SetMailboxInProcess(int id)
         {
-            var mailMailbox = MailDb.MailMailbox
+            var mailMailbox = MailDbContext.MailMailbox
                 .Where(mb => mb.Id == id
                     && mb.IsProcessed == false
                     && mb.IsRemoved == false)
@@ -350,7 +350,7 @@ namespace ASC.Mail.Core.Dao
             mailMailbox.IsProcessed = true;
             mailMailbox.DateChecked = DateTime.UtcNow;
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
@@ -362,7 +362,7 @@ namespace ASC.Mail.Core.Dao
             if (nextLoginDelay < MailSettings.DefaultServerLoginDelay)
                 nextLoginDelay = MailSettings.DefaultServerLoginDelay;
 
-            var mailMailbox = MailDb.MailMailbox.FirstOrDefault(mb => mb.Id == mailbox.Id);
+            var mailMailbox = MailDbContext.MailMailbox.FirstOrDefault(mb => mb.Id == mailbox.Id);
 
             if (mailMailbox == null)
                 return false;
@@ -411,14 +411,14 @@ namespace ASC.Mail.Core.Dao
                 }
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
 
         public bool SetMailboxAuthError(int id, DateTime? authErrorDate)
         {
-            var query = MailDb.MailMailbox
+            var query = MailDbContext.MailMailbox
                 .Where(mb => mb.Id == id);
 
             if (authErrorDate.HasValue)
@@ -434,7 +434,7 @@ namespace ASC.Mail.Core.Dao
             mailMailbox.DateAuthError = authErrorDate;
             mailMailbox.DateChecked = DateTime.UtcNow;
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
@@ -444,7 +444,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<int> SetMailboxesProcessed(int timeoutInMinutes)
         {
-            var mailboxes = MailDb.MailMailbox
+            var mailboxes = MailDbContext.MailMailbox
                 .Where(mb => mb.IsProcessed == true
                     && mb.DateChecked != null
                     && (DateTime.UtcNow - mb.DateChecked).GetValueOrDefault().TotalMinutes > timeoutInMinutes);
@@ -457,14 +457,14 @@ namespace ASC.Mail.Core.Dao
                 mbox.IsProcessed = false;
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return mailboxes.Select(mb => (int)mb.Id).ToList();
         }
 
         public bool CanAccessTo(IMailboxExp exp)
         {
-            var foundIds = MailDb.MailMailbox
+            var foundIds = MailDbContext.MailMailbox
                .Where(exp.GetExpression())
                .Select(mb => mb.Id).ToList();
 
@@ -473,7 +473,7 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxStatus GetMailBoxStatus(IMailboxExp exp)
         {
-            var status = MailDb.MailMailbox
+            var status = MailDbContext.MailMailbox
                .Where(exp.GetExpression())
                .Select(ToMailboxStatus)
                .FirstOrDefault();

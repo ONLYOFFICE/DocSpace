@@ -24,11 +24,14 @@
 */
 
 
-using ASC.Mail.Enums;
 using System.Collections.Generic;
+
+using ASC.Common;
+using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(TagMailDao))]
     public interface ITagMailDao
     {
         /// <summary>

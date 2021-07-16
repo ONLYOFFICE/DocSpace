@@ -26,11 +26,15 @@
 
 using System;
 using System.Collections.Generic;
+
+using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(MailboxDao))]
     public interface IMailboxDao
     {
         Mailbox GetMailBox(IMailboxExp exp);
@@ -69,5 +73,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
         bool CanAccessTo(IMailboxExp exp);
 
         MailboxStatus GetMailBoxStatus(IMailboxExp exp);
+
+        public bool LoggedEnable(IMailboxExp exp, bool enabled, ILog log);
     }
 }

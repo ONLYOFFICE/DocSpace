@@ -50,7 +50,7 @@ namespace ASC.Mail.Core.Dao
 
         public Alert GetAlert(long id)
         {
-            var alert = MailDb.MailAlerts
+            var alert = MailDbContext.MailAlerts
                 .Where(r => r.Tenant == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Where(r => r.Id == id)
@@ -67,7 +67,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Alert> GetAlerts(int mailboxId = -1, MailAlertTypes type = MailAlertTypes.Empty)
         {
-            var alerts = MailDb.MailAlerts
+            var alerts = MailDbContext.MailAlerts
                 .Where(r => r.Tenant == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Select(r => new Alert
@@ -96,7 +96,7 @@ namespace ASC.Mail.Core.Dao
                 }
             }
 
-            using var tr = MailDb.Database.BeginTransaction();
+            using var tr = MailDbContext.Database.BeginTransaction();
 
             var dbAlert = new MailAlert()
             {
@@ -108,9 +108,9 @@ namespace ASC.Mail.Core.Dao
                 Data = alert.Data
             };
 
-            var saveResult = MailDb.MailAlerts.Add(dbAlert).Entity;
+            var saveResult = MailDbContext.MailAlerts.Add(dbAlert).Entity;
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             tr.Commit();
 
@@ -119,13 +119,13 @@ namespace ASC.Mail.Core.Dao
 
         public int DeleteAlert(long id)
         {
-            using var tr = MailDb.Database.BeginTransaction();
+            using var tr = MailDbContext.Database.BeginTransaction();
 
-            var range = MailDb.MailAlerts.Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.Id == id);
+            var range = MailDbContext.MailAlerts.Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.Id == id);
 
-            MailDb.MailAlerts.RemoveRange(range);
+            MailDbContext.MailAlerts.RemoveRange(range);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             tr.Commit();
 
@@ -134,14 +134,14 @@ namespace ASC.Mail.Core.Dao
 
         public int DeleteAlerts(int mailboxId)
         {
-            using var tr = MailDb.Database.BeginTransaction();
+            using var tr = MailDbContext.Database.BeginTransaction();
 
-            var range = MailDb.MailAlerts
+            var range = MailDbContext.MailAlerts
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdMailbox == mailboxId);
 
-            MailDb.MailAlerts.RemoveRange(range);
+            MailDbContext.MailAlerts.RemoveRange(range);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             tr.Commit();
 
@@ -150,15 +150,15 @@ namespace ASC.Mail.Core.Dao
 
         public int DeleteAlerts(List<int> ids)
         {
-            using var tr = MailDb.Database.BeginTransaction();
+            using var tr = MailDbContext.Database.BeginTransaction();
 
-            var range = MailDb.MailAlerts
+            var range = MailDbContext.MailAlerts
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
                 .Where(r => ids.Contains(r.Id));
 
-            MailDb.MailAlerts.RemoveRange(range);
+            MailDbContext.MailAlerts.RemoveRange(range);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             tr.Commit();
 

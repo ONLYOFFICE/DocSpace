@@ -50,8 +50,8 @@ namespace ASC.Mail.Core.Dao
 
         public Core.Entities.Server Get(int tenant)
         {
-            var server = MailDb.MailServerServer
-                .Join(MailDb.MailServerServerXTenant, s => s.Id, x => x.IdServer, 
+            var server = MailDbContext.MailServerServer
+                .Join(MailDbContext.MailServerServerXTenant, s => s.Id, x => x.IdServer, 
                     (s, x) => new { 
                         Server = s,
                         Xtenant = x
@@ -65,7 +65,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Core.Entities.Server> GetList()
         {
-            var list = MailDb.MailServerServer.Select(ToServer).ToList();
+            var list = MailDbContext.MailServerServer.Select(ToServer).ToList();
 
             return list;
         }
@@ -78,9 +78,9 @@ namespace ASC.Mail.Core.Dao
                 IdTenant = tenant
             };
 
-            MailDb.AddOrUpdate(t => t.MailServerServerXTenant, xItem);
+            MailDbContext.AddOrUpdate(t => t.MailServerServerXTenant, xItem);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -93,9 +93,9 @@ namespace ASC.Mail.Core.Dao
                 IdTenant = tenant
             };
 
-            MailDb.MailServerServerXTenant.Remove(deleteItem);
+            MailDbContext.MailServerServerXTenant.Remove(deleteItem);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -112,9 +112,9 @@ namespace ASC.Mail.Core.Dao
                 ImapSettingsId = server.ImapSettingsId
             };
 
-            var entry = MailDb.AddOrUpdate(t => t.MailServerServer, mailServer);
+            var entry = MailDbContext.AddOrUpdate(t => t.MailServerServer, mailServer);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
@@ -126,18 +126,18 @@ namespace ASC.Mail.Core.Dao
                 IdServer = id
             };
 
-            MailDb.MailServerServerXTenant.Remove(deleteItem);
+            MailDbContext.MailServerServerXTenant.Remove(deleteItem);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             var mailServer = new MailServerServer
             {
                 Id = id
             };
 
-            MailDb.MailServerServer.Remove(mailServer);
+            MailDbContext.MailServerServer.Remove(mailServer);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

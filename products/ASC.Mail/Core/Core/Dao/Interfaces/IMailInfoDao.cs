@@ -26,15 +26,18 @@
 
 using System;
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(MailInfoDao))]
     public interface IMailInfoDao
     {
         List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false);
-        
+
         long GetMailInfoTotal(IMessagesExp exp);
 
         Dictionary<int, int> GetMailCount(IMessagesExp exp);
@@ -50,5 +53,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
         int SetFieldValue<T>(IMessagesExp exp, string field, T value);
 
         int SetFieldsEqual(IMessagesExp exp, string fieldFrom, string fieldTo);
+
+        public List<MailInfo> GetChainedMessagesInfo(List<int> ids);
     }
 }

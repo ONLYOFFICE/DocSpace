@@ -27,20 +27,23 @@
 using System;
 using System.Linq;
 using System.Net.Mail;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Notify.Signalr;
+using ASC.Data.Storage;
+using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Models;
-using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
+using ASC.Mail.Models;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
-using MailMessage = ASC.Mail.Models.MailMessageData;
-using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
-using ASC.Common;
-using ASC.Mail.Configuration;
+
+using MailMessage = ASC.Mail.Models.MailMessageData;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -50,7 +53,7 @@ namespace ASC.Mail.Core.Engine
         public TemplateEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             AccountEngine accountEngine,
             MailboxEngine mailboxEngine,
             MessageEngine messageEngine,
@@ -61,7 +64,7 @@ namespace ASC.Mail.Core.Engine
             CoreSettings coreSettings,
             StorageFactory storageFactory,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
-            IOptionsMonitor<ILog> option, 
+            IOptionsMonitor<ILog> option,
             MailSettings mailSettings,
             DeliveryFailureMessageTranslates daemonLabels = null)
             : base(
@@ -71,7 +74,7 @@ namespace ASC.Mail.Core.Engine
             quotaEngine,
             indexEngine,
             folderEngine,
-            daoFactory,
+            mailDaoFactory,
             storageManager,
             securityContext,
             tenantManager,
@@ -153,11 +156,11 @@ namespace ASC.Mail.Core.Engine
 
             var fromAddress = MailUtil.CreateFullEmail(mbox.Name, mbox.EMail.Address);
 
-            var template = new MailTemplateData(model.Id, mbox, fromAddress, model.To, model.Cc, model.Bcc, model.Subject, 
+            var template = new MailTemplateData(model.Id, mbox, fromAddress, model.To, model.Cc, model.Bcc, model.Subject,
                     mimeMessageId, model.MimeReplyToId, model.Importance,
-                    model.Tags, model.Body, streamId, model.Attachments, model.CalendarIcs) 
-            { 
-                PreviousMailboxId = previousMailboxId 
+                    model.Tags, model.Body, streamId, model.Attachments, model.CalendarIcs)
+            {
+                PreviousMailboxId = previousMailboxId
             };
 
             DaemonLabels = translates ?? DeliveryFailureMessageTranslates.Defauilt;

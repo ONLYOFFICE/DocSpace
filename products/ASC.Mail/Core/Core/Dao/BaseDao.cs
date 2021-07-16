@@ -37,7 +37,7 @@ namespace ASC.Mail.Core.Dao
         private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
 
-        public MailDbContext MailDb { get; }
+        public MailDbContext MailDbContext { get; }
 
         protected BaseMailDao(
             TenantManager tenantManager,
@@ -46,7 +46,7 @@ namespace ASC.Mail.Core.Dao
         {
             TenantManager = tenantManager;
             SecurityContext = securityContext;
-            MailDb = dbContext.Get("mail");
+            MailDbContext = dbContext.Get("mail");
         }
     }
 }

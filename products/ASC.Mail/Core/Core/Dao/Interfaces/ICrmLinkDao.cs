@@ -24,11 +24,14 @@
 */
 
 
-using ASC.Mail.Models;
 using System.Collections.Generic;
+
+using ASC.Common;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(CrmLinkDao))]
     public interface ICrmLinkDao
     {
         List<CrmContactData> GetLinkedCrmContactEntities(string chainId, int mailboxId);

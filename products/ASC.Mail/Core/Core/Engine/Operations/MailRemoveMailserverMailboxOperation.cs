@@ -25,11 +25,13 @@
 
 
 using System;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Mail.Storage;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
@@ -51,7 +53,7 @@ namespace ASC.Mail.Core.Engine.Operations
         public MailRemoveMailserverMailboxOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             ServerMailboxEngine serverMailboxEngine,
             OperationEngine operationEngine,
             CacheEngine cacheEngine,
@@ -60,7 +62,7 @@ namespace ASC.Mail.Core.Engine.Operations
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             MailBoxData mailBox)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor)
         {
             ServerMailboxEngine = serverMailboxEngine;
             OperationEngine = operationEngine;

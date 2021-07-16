@@ -28,12 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Mail.Storage;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
@@ -54,7 +56,7 @@ namespace ASC.Mail.Core.Engine.Operations
         public MailRemoveMailserverDomainOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             MailboxEngine mailboxEngine,
             CacheEngine cacheEngine,
             IndexEngine indexEngine,
@@ -62,7 +64,7 @@ namespace ASC.Mail.Core.Engine.Operations
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             ServerDomainData domain)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor)
         {
             MailboxEngine = mailboxEngine;
             CacheEngine = cacheEngine;
@@ -98,18 +100,18 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 // using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveDomainTimeout))
 
-                using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+                using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    var groups = DaoFactory.ServerGroupDao.GetList(_domain.Id);
+                    var groups = MailDaoFactory.GetServerGroupDao().GetList(_domain.Id);
 
                     foreach (var serverGroup in groups)
                     {
-                        DaoFactory.ServerAddressDao.DeleteAddressesFromMailGroup(serverGroup.Id);
-                        DaoFactory.ServerAddressDao.Delete(serverGroup.AddressId);
-                        DaoFactory.ServerGroupDao.Delete(serverGroup.Id);
+                        MailDaoFactory.GetServerAddressDao().DeleteAddressesFromMailGroup(serverGroup.Id);
+                        MailDaoFactory.GetServerAddressDao().Delete(serverGroup.AddressId);
+                        MailDaoFactory.GetServerGroupDao().Delete(serverGroup.Id);
                     }
 
-                    var serverAddresses = DaoFactory.ServerAddressDao.GetDomainAddresses(_domain.Id);
+                    var serverAddresses = MailDaoFactory.GetServerAddressDao().GetDomainAddresses(_domain.Id);
 
                     var serverMailboxAddresses = serverAddresses.Where(a => a.MailboxId > -1 && !a.IsAlias);
 
@@ -127,11 +129,11 @@ namespace ASC.Mail.Core.Engine.Operations
                         MailboxEngine.RemoveMailBox(mailbox, false);
                     }
 
-                    DaoFactory.ServerAddressDao.Delete(serverAddresses.Select(a => a.Id).ToList());
+                    MailDaoFactory.GetServerAddressDao().Delete(serverAddresses.Select(a => a.Id).ToList());
 
-                    DaoFactory.ServerDomainDao.Delete(_domain.Id);
+                    MailDaoFactory.GetServerDomainDao().Delete(_domain.Id);
 
-                    var server = DaoFactory.ServerDao.Get(tenant);
+                    var server = MailDaoFactory.GetServerDao().Get(tenant);
 
                     var serverEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 

@@ -25,10 +25,13 @@
 
 
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(TagDao))]
     public interface ITagDao
     {
         /// <summary>

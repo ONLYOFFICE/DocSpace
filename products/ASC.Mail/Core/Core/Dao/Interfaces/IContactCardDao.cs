@@ -25,11 +25,14 @@
 
 
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(ContactCardDao))]
     public interface IContactCardDao
     {
         ContactCard GetContactCard(int id);

@@ -24,14 +24,16 @@
 */
 
 
+using System;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Storage;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
+
 using Microsoft.Extensions.Options;
-using System;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -43,14 +45,14 @@ namespace ASC.Mail.Core.Engine
 
         private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private CacheEngine CacheEngine { get; }
         private StorageManager StorageManager { get; }
 
         public SignatureEngine(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             CacheEngine cacheEngine,
             StorageManager storageManager,
             IOptionsMonitor<ILog> option)
@@ -58,14 +60,14 @@ namespace ASC.Mail.Core.Engine
             TenantManager = tenantManager;
             SecurityContext = securityContext;
 
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             CacheEngine = cacheEngine;
             StorageManager = storageManager;
         }
 
         public MailSignatureData GetSignature(int mailboxId)
         {
-            return ToMailMailSignature(DaoFactory.MailboxSignatureDao.GetSignature(mailboxId));
+            return ToMailMailSignature(MailDaoFactory.GetMailboxSignatureDao().GetSignature(mailboxId));
         }
 
         public MailSignatureData SaveSignature(int mailboxId, string html, bool isActive)
@@ -85,7 +87,7 @@ namespace ASC.Mail.Core.Engine
                 IsActive = isActive
             };
 
-            var result = DaoFactory.MailboxSignatureDao.SaveSignature(signature);
+            var result = MailDaoFactory.GetMailboxSignatureDao().SaveSignature(signature);
 
             if (result <= 0)
                 throw new Exception("Save failed");

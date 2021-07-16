@@ -34,23 +34,24 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
-using ASC.Mail.Resources;
-using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Data.Storage;
+using ASC.Files.Core;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
+using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Extensions;
+using ASC.Mail.Resources;
 using ASC.Mail.Storage;
 using ASC.Web.Core.Files;
-using ASC.Files.Core;
-using ASC.Data.Storage;
+using ASC.Web.Core.PublicResources;
 
 using Ionic.Zip;
 using Ionic.Zlib;
+
 using Microsoft.Extensions.Options;
-using ASC.Web.Core.PublicResources;
-using ASC.Mail.Extensions;
 //using Resources;
 
 namespace ASC.Mail.Core.Engine.Operations
-{    
+{
     public class MailDownloadAllAttachmentsOperation : MailOperation
     {
         private MessageEngine MessageEngine { get; }
@@ -67,7 +68,7 @@ namespace ASC.Mail.Core.Engine.Operations
         public MailDownloadAllAttachmentsOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             MessageEngine messageEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
@@ -75,7 +76,7 @@ namespace ASC.Mail.Core.Engine.Operations
             IOptionsMonitor<ILog> optionsMonitor,
             TempStream tempStream,
             int messageId)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor, storageFactory)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor, storageFactory)
         {
             MessageEngine = messageEngine;
             MessageId = messageId;
@@ -86,7 +87,7 @@ namespace ASC.Mail.Core.Engine.Operations
         {
             try
             {
-                SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.Init);
+                SetProgress((int?)MailOperationDownloadAllAttachmentsProgress.Init);
 
                 TenantManager.SetCurrentTenant(CurrentTenant);
 
@@ -100,7 +101,7 @@ namespace ASC.Mail.Core.Engine.Operations
                     Logger.Error(Error);
                 }
 
-                SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.GetAttachments);
+                SetProgress((int?)MailOperationDownloadAllAttachmentsProgress.GetAttachments);
 
                 var attachments =
                     MessageEngine.GetAttachments(new ConcreteMessageAttachmentsExp(MessageId,
@@ -113,7 +114,7 @@ namespace ASC.Mail.Core.Engine.Operations
                     throw new Exception(Error);
                 }
 
-                SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.Zipping);
+                SetProgress((int?)MailOperationDownloadAllAttachmentsProgress.Zipping);
 
                 var damagedAttachments = 0;
 
@@ -129,10 +130,10 @@ namespace ASC.Mail.Core.Engine.Operations
                             Encoding.GetEncoding(Thread.CurrentThread.CurrentCulture.TextInfo.OEMCodePage);
 
                         var attachmentsCount = attachments.Count;
-                        var progressMaxValue = (int) MailOperationDownloadAllAttachmentsProgress.ArchivePreparation;
-                        var progressMinValue = (int) MailOperationDownloadAllAttachmentsProgress.Zipping;
+                        var progressMaxValue = (int)MailOperationDownloadAllAttachmentsProgress.ArchivePreparation;
+                        var progressMinValue = (int)MailOperationDownloadAllAttachmentsProgress.Zipping;
                         var progresslength = progressMaxValue - progressMinValue;
-                        var progressStep = (double) progresslength/attachmentsCount;
+                        var progressStep = (double)progresslength / attachmentsCount;
                         var zippingProgress = 0.0;
 
                         foreach (var attachment in attachments)
@@ -157,11 +158,11 @@ namespace ASC.Mail.Core.Engine.Operations
 
                             zippingProgress += progressStep;
 
-                            SetProgress(progressMinValue + (int?) zippingProgress);
+                            SetProgress(progressMinValue + (int?)zippingProgress);
                         }
                     }
 
-                    SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.ArchivePreparation);
+                    SetProgress((int?)MailOperationDownloadAllAttachmentsProgress.ArchivePreparation);
 
                     if (stream.Length == 0)
                     {
@@ -174,7 +175,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                     var path = mailStorage.Save(
                         FileConstant.StorageDomainTmp,
-                        string.Format(@"{0}\{1}", ((IAccount) Thread.CurrentPrincipal.Identity).ID, DefineConstants.ARCHIVE_NAME),
+                        string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, DefineConstants.ARCHIVE_NAME),
                         stream,
                         "application/zip",
                         "attachment; filename=\"" + DefineConstants.ARCHIVE_NAME + "\"");
@@ -182,9 +183,9 @@ namespace ASC.Mail.Core.Engine.Operations
                     Log.DebugFormat("Zipped archive has been stored to {0}", path.ToString());
                 }
 
-                SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.CreateLink);
+                SetProgress((int?)MailOperationDownloadAllAttachmentsProgress.CreateLink);
 
-                var baseDomain =  CoreSettings.BaseDomain;
+                var baseDomain = CoreSettings.BaseDomain;
 
                 var source = string.Format("{0}?{1}=bulk",
                     "/products/files/httphandlers/filehandler.ashx",

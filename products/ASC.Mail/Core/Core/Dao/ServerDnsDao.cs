@@ -50,7 +50,7 @@ namespace ASC.Mail.Core.Dao
         {
             var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
-            var dns = MailDb.MailServerDns
+            var dns = MailDbContext.MailServerDns
                 .Where(d => tenants.Contains(d.Tenant))
                 .Where(d => d.IdDomain == domainId)
                 .Select(ToServerDns)
@@ -61,7 +61,7 @@ namespace ASC.Mail.Core.Dao
 
         public ServerDns GetById(int id)
         {
-            var dns = MailDb.MailServerDns
+            var dns = MailDbContext.MailServerDns
                .Where(d => d.Tenant == Tenant)
                .Where(d => d.Id == id)
                .Select(ToServerDns)
@@ -72,7 +72,7 @@ namespace ASC.Mail.Core.Dao
 
         public ServerDns GetFree()
         {
-            var dns = MailDb.MailServerDns
+            var dns = MailDbContext.MailServerDns
                .Where(d => d.Tenant == Tenant)
                .Where(d => d.IdUser == UserId)
                .Where(d => d.IdDomain == DefineConstants.UNUSED_DNS_SETTING_DOMAIN_ID)
@@ -107,9 +107,9 @@ namespace ASC.Mail.Core.Dao
                 TimeModified = dns.TimeModified
             };
 
-            var entry = MailDb.AddOrUpdate(t => t.MailServerDns, mailDns);
+            var entry = MailDbContext.AddOrUpdate(t => t.MailServerDns, mailDns);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return (int)entry.Id;
         }
@@ -123,9 +123,9 @@ namespace ASC.Mail.Core.Dao
                 IdUser = UserId
             };
 
-            MailDb.MailServerDns.Remove(mailDns);
+            MailDbContext.MailServerDns.Remove(mailDns);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

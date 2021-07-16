@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -39,7 +40,9 @@ using ASC.Mail.Enums.Filter;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
+
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -59,12 +62,12 @@ namespace ASC.Mail.Core.Engine
         private TagEngine TagEngine { get; }
         private SecurityContext SecurityContext { get; }
         private TenantManager TenantManager { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
 
         public FilterEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             MessageEngine messageEngine,
             UserFolderEngine userFolderEngine,
             TagEngine tagEngine,
@@ -76,21 +79,21 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
             TenantManager = tenantManager;
 
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
 
             Log = option.Get("ASC.Mail.FilterEngine");
         }
 
         public MailSieveFilterData Get(int id)
         {
-            var filter = DaoFactory.FilterDao.Get(id);
+            var filter = MailDaoFactory.GetFilterDao().Get(id);
 
             return ToFilterData(filter);
         }
 
         public List<MailSieveFilterData> GetList()
         {
-            var filters = DaoFactory.FilterDao.GetList();
+            var filters = MailDaoFactory.GetFilterDao().GetList();
 
             return filters
                 .ConvertAll(ToFilterData)
@@ -143,13 +146,13 @@ namespace ASC.Mail.Core.Engine
             if (filterData.Options.ApplyTo.Folders == null || !filterData.Options.ApplyTo.Folders.Any())
                 throw new ArgumentException("No folders in options");
 
-            var aceptedFolders = new[] {(int) FolderType.Inbox, (int) FolderType.Sent, (int) FolderType.Spam};
+            var aceptedFolders = new[] { (int)FolderType.Inbox, (int)FolderType.Sent, (int)FolderType.Spam };
 
             if (filterData.Options.ApplyTo.Folders.Any(f => !aceptedFolders.Contains(f)))
                 throw new ArgumentException("Some folder is not accepted in the options");
 
             if (filterData.Options.ApplyTo.Mailboxes == null)
-                filterData.Options.ApplyTo.Mailboxes = new int[] {};
+                filterData.Options.ApplyTo.Mailboxes = new int[] { };
 
             validFilter.Options = filterData.Options;
 
@@ -270,14 +273,14 @@ namespace ASC.Mail.Core.Engine
                 Position = filterData.Position
             };
 
-            var id = DaoFactory.FilterDao.Save(filter);
+            var id = MailDaoFactory.GetFilterDao().Save(filter);
 
             return id;
         }
 
         public bool Delete(int id)
         {
-            var res = DaoFactory.FilterDao.Delete(id);
+            var res = MailDaoFactory.GetFilterDao().Delete(id);
 
             return res > 0;
         }
@@ -330,7 +333,7 @@ namespace ASC.Mail.Core.Engine
 
                         success = address == null
                             ? isSucceed(condition.Operation, message.From, condition.Value)
-                            : compareToFilter(new List<MailAddress> {address}, condition.Operation, condition.Value);
+                            : compareToFilter(new List<MailAddress> { address }, condition.Operation, condition.Value);
                         break;
                     case ConditionKeyType.ToOrCc:
                         success = compareToFilter(message.ToList, condition.Operation, condition.Value) ||
@@ -373,7 +376,7 @@ namespace ASC.Mail.Core.Engine
                     continue;
 
                 if (filter.Options.ApplyTo.Folders.Any() &&
-                    !filter.Options.ApplyTo.Folders.Contains((int) folder.Folder))
+                    !filter.Options.ApplyTo.Folders.Contains((int)folder.Folder))
                 {
                     continue;
                 }
@@ -434,7 +437,7 @@ namespace ASC.Mail.Core.Engine
                                 ? " id=" + action.Data
                                 : "");
 
-                        ApplyAction(new List<int> {message.Id}, action);
+                        ApplyAction(new List<int> { message.Id }, action);
                     }
                     catch (NotFoundFilterDataException ex)
                     {
@@ -495,11 +498,11 @@ namespace ASC.Mail.Core.Engine
                     }
                     else
                     {
-                        folderId = (int) folderType;
+                        folderId = (int)folderType;
                     }
 
                     MessageEngine.SetFolder(ids, folderType,
-                        folderType == FolderType.UserFolder ? folderId : (int?) null);
+                        folderType == FolderType.UserFolder ? folderId : null);
                     break;
                 case ActionType.MarkTag:
                     var tagId = Convert.ToInt32(action.Data);

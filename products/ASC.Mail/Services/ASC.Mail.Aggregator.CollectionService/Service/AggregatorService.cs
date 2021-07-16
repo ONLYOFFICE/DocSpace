@@ -39,8 +39,6 @@ using MimeKit;
 
 using NLog;
 
-using ILog = ASC.Common.Logging.ILog;
-
 namespace ASC.Mail.Aggregator.CollectionService.Service
 {
     [Singletone]
@@ -127,68 +125,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
         #region methods
 
-        private void ConfigureLogNLog(IConfiguration configuration, ConfigurationExtension configurationExtension)
-        {
-            var fileName = CrossPlatform.PathCombine(configuration["pathToNlogConf"], "nlog.config");
-
-            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(fileName);
-            LogManager.ThrowConfigExceptions = false;
-
-            var settings = configurationExtension.GetSetting<NLogSettings>("log");
-            if (!string.IsNullOrEmpty(settings.Name))
-            {
-                LogManager.Configuration.Variables["name"] = settings.Name;
-            }
-
-            if (!string.IsNullOrEmpty(settings.Dir))
-            {
-                LogManager.Configuration.Variables["dir"] = settings.Dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
-            }
-
-            NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
-        }
 
         public ConcurrentDictionary<string, List<MailSieveFilterData>> Filters { get; set; }
-
-        internal void StartTimer(bool immediately = false)
-        {
-            if (WorkTimer == null)
-                return;
-
-            Log.DebugFormat("Setup Work timer to {0} seconds", MailSettings.CheckTimerInterval.TotalSeconds);
-
-            if (immediately)
-            {
-                WorkTimer.Change(0, Timeout.Infinite);
-            }
-            else
-            {
-                WorkTimer.Change(MailSettings.CheckTimerInterval, MailSettings.CheckTimerInterval);
-            }
-        }
-
-        private void StopTimer()
-        {
-            if (WorkTimer == null)
-                return;
-
-            Log.Debug("Setup Work timer to Timeout.Infinite");
-            WorkTimer.Change(Timeout.Infinite, Timeout.Infinite);
-        }
-
-        internal void StopService()
-        {
-            if (CancelTokenSource != null)
-                CancelTokenSource.Cancel();
-
-            if (QueueManager != null)
-            {
-                QueueManager.CancelHandler.WaitOne();
-            }
-
-            StopTimer();
-            DisposeWorkers();
-        }
 
         private void WorkTimerElapsed(object state)
         {
@@ -304,6 +242,46 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             StartTimer();
         }
 
+        internal void StartTimer(bool immediately = false)
+        {
+            if (WorkTimer == null)
+                return;
+
+            Log.DebugFormat("Setup Work timer to {0} seconds", MailSettings.CheckTimerInterval.TotalSeconds);
+
+            if (immediately)
+            {
+                WorkTimer.Change(0, Timeout.Infinite);
+            }
+            else
+            {
+                WorkTimer.Change(MailSettings.CheckTimerInterval, MailSettings.CheckTimerInterval);
+            }
+        }
+
+        private void StopTimer()
+        {
+            if (WorkTimer == null)
+                return;
+
+            Log.Debug("Setup Work timer to Timeout.Infinite");
+            WorkTimer.Change(Timeout.Infinite, Timeout.Infinite);
+        }
+
+        internal void StopService()
+        {
+            if (CancelTokenSource != null)
+                CancelTokenSource.Cancel();
+
+            if (QueueManager != null)
+            {
+                QueueManager.CancelHandler.WaitOne();
+            }
+
+            StopTimer();
+            DisposeWorkers();
+        }
+
         private void DisposeWorkers()
         {
             if (WorkTimer != null)
@@ -317,49 +295,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             if (SignalrWorker != null)
                 SignalrWorker.Dispose();
-        }
-
-        private void NotifySignalrIfNeed(MailBoxData mailbox, ILog log)
-        {
-            if (!MailSettings.EnableSignalr)
-            {
-                log.Debug("Skip NotifySignalrIfNeed: EnableSignalr == false");
-
-                return;
-            }
-
-            var now = DateTime.UtcNow;
-
-            try
-            {
-                if (mailbox.LastSignalrNotify.HasValue &&
-                    !((now - mailbox.LastSignalrNotify.Value).TotalSeconds > SIGNALR_WAIT_SECONDS))
-                {
-                    mailbox.LastSignalrNotifySkipped = true;
-
-                    log.InfoFormat(
-                        "Skip NotifySignalrIfNeed: last notification has occurend less then {0} seconds ago",
-                        SIGNALR_WAIT_SECONDS);
-
-                    return;
-                }
-
-                if (SignalrWorker == null)
-                    throw new NullReferenceException("SignalrWorker");
-
-                SignalrWorker.AddMailbox(mailbox);
-
-                log.InfoFormat("NotifySignalrIfNeed(UserId = {0} TenantId = {1}) has been succeeded",
-                    mailbox.UserId, mailbox.TenantId);
-            }
-            catch (Exception ex)
-            {
-                log.ErrorFormat("NotifySignalrIfNeed(UserId = {0} TenantId = {1}) Exception: {2}", mailbox.UserId,
-                    mailbox.TenantId, ex.ToString());
-            }
-
-            mailbox.LastSignalrNotify = now;
-            mailbox.LastSignalrNotifySkipped = false;
         }
 
         public List<TaskData> CreateTasks(int needCount, CancellationToken cancelToken)
@@ -377,7 +312,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 var commonCancelToken =
                     CancellationTokenSource.CreateLinkedTokenSource(cancelToken, timeoutCancel.Token).Token;
 
-                var taskLogger = LogOptions.Get($"Mbox_{mailbox.MailBoxId}");
+                var taskLogger = LogOptions.Get($"ASC.Mail Mbox_{mailbox.MailBoxId}");
 
                 var client = CreateMailClient(mailbox, taskLogger, commonCancelToken);
 
@@ -504,6 +439,49 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             return client;
         }
 
+        private void NotifySignalrIfNeed(MailBoxData mailbox, ILog log)
+        {
+            if (!MailSettings.EnableSignalr)
+            {
+                log.Debug("Skip NotifySignalrIfNeed: EnableSignalr == false");
+
+                return;
+            }
+
+            var now = DateTime.UtcNow;
+
+            try
+            {
+                if (mailbox.LastSignalrNotify.HasValue &&
+                    !((now - mailbox.LastSignalrNotify.Value).TotalSeconds > SIGNALR_WAIT_SECONDS))
+                {
+                    mailbox.LastSignalrNotifySkipped = true;
+
+                    log.InfoFormat(
+                        "Skip NotifySignalrIfNeed: last notification has occurend less then {0} seconds ago",
+                        SIGNALR_WAIT_SECONDS);
+
+                    return;
+                }
+
+                if (SignalrWorker == null)
+                    throw new NullReferenceException("SignalrWorker");
+
+                SignalrWorker.AddMailbox(mailbox);
+
+                log.InfoFormat("NotifySignalrIfNeed(UserId = {0} TenantId = {1}) has been succeeded",
+                    mailbox.UserId, mailbox.TenantId);
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("NotifySignalrIfNeed(UserId = {0} TenantId = {1}) Exception: {2}", mailbox.UserId,
+                    mailbox.TenantId, ex.ToString());
+            }
+
+            mailbox.LastSignalrNotify = now;
+            mailbox.LastSignalrNotifySkipped = false;
+        }
+
         private void SetMailboxAuthError(MailBoxData mailbox, ILog log)
         {
             try
@@ -549,7 +527,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         private void ProcessMailbox(MailClient client, MailSettings mailSettings)
         {
             var scope = ServiceProvider.CreateScope();
-
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(client.Account.TenantId);
             var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
             var mailbox = client.Account;
@@ -686,10 +665,12 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 using var scope = ServiceProvider.CreateScope();
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
+
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var mailEnginesFactory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
-                tenantManager.SetCurrentTenant(mailbox.TenantId);
+
                 securityContext.AuthenticateMe(new Guid(mailbox.UserId));
 
                 var message = mailEnginesFactory.MessageEngine.Save(mailbox, mimeMessage, uidl, folder, null, unread, log);
@@ -999,6 +980,27 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             {
                 Log.Error("Try forget Filters for user failed");
             }
+        }
+
+        private void ConfigureLogNLog(IConfiguration configuration, ConfigurationExtension configurationExtension)
+        {
+            var fileName = CrossPlatform.PathCombine(configuration["pathToNlogConf"], "nlog.config");
+
+            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(fileName);
+            LogManager.ThrowConfigExceptions = false;
+
+            var settings = configurationExtension.GetSetting<NLogSettings>("log");
+            if (!string.IsNullOrEmpty(settings.Name))
+            {
+                LogManager.Configuration.Variables["name"] = settings.Name;
+            }
+
+            if (!string.IsNullOrEmpty(settings.Dir))
+            {
+                LogManager.Configuration.Variables["dir"] = settings.Dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
+            }
+
+            NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
         }
 
         private void LogStatistic(string method, MailBoxData mailBoxData, TimeSpan duration, bool failed)

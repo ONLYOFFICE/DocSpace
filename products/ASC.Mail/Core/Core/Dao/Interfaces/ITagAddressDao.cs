@@ -26,8 +26,11 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(TagAddressDao))]
     public interface ITagAddressDao
     {
         List<int> GetTagIds(string email);

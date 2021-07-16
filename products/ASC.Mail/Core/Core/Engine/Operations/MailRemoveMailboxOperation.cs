@@ -25,16 +25,18 @@
 
 
 using System;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Mail.Storage;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
-    public class MailRemoveMailboxOperation: MailOperation
+    public class MailRemoveMailboxOperation : MailOperation
     {
         private readonly MailBoxData _mailBoxData;
 
@@ -59,12 +61,12 @@ namespace ASC.Mail.Core.Engine.Operations
             FolderEngine folderEngine,
             CacheEngine cacheEngine,
             IndexEngine indexEngine,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             MailBoxData mailBoxData)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor)
         {
             MailboxEngine = mailboxEngine;
             QuotaEngine = quotaEngine;
@@ -80,7 +82,7 @@ namespace ASC.Mail.Core.Engine.Operations
         {
             try
             {
-                SetProgress((int?) MailOperationRemoveMailboxProgress.Init, "Setup tenant and user");
+                SetProgress((int?)MailOperationRemoveMailboxProgress.Init, "Setup tenant and user");
 
                 TenantManager.SetCurrentTenant(CurrentTenant);
 
@@ -115,6 +117,6 @@ namespace ASC.Mail.Core.Engine.Operations
             }
         }
 
-        
+
     }
 }

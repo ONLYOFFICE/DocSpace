@@ -74,14 +74,14 @@ namespace ASC.Mail.Core.Dao
 
                 tagsNotInDb = items
                     .FindAll(t =>
-                    !MailDb.MailTagMail.ToList().Exists(nt =>
+                    !MailDbContext.MailTagMail.ToList().Exists(nt =>
                     t.IdMail == nt.IdMail && t.IdTag == nt.IdTag && t.IdUser == nt.IdUser && t.Tenant == nt.Tenant));
 
                 if (tagsNotInDb.Any())
                 {
-                    MailDb.MailTagMail.AddRange(tagsNotInDb);
+                    MailDbContext.MailTagMail.AddRange(tagsNotInDb);
 
-                    MailDb.SaveChanges();
+                    MailDbContext.SaveChanges();
                 }
 
                 items = new List<MailTagMail>();
@@ -91,7 +91,7 @@ namespace ASC.Mail.Core.Dao
 
         public int CalculateTagCount(int id)
         {
-            var count = MailDb.MailTagMail
+            var count = MailDbContext.MailTagMail
                 .Where(t => t.Tenant == Tenant && t.IdUser == UserId && t.IdTag == id)
                 .Count();
 
@@ -100,7 +100,7 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, List<int>> GetMailTagsDictionary(List<int> mailIds)
         {
-            var dictionary = MailDb.MailTagMail
+            var dictionary = MailDbContext.MailTagMail
                 .Where(t => t.Tenant == Tenant && t.IdUser == UserId && mailIds.Contains(t.IdMail))
                 .Select(t => new { t.IdMail, t.IdTag })
                 .GroupBy(t => t.IdMail)
@@ -111,7 +111,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<int> GetTagIds(List<int> mailIds)
         {
-            var tagIds = MailDb.MailTagMail
+            var tagIds = MailDbContext.MailTagMail
                 .Where(t => t.Tenant == Tenant && t.IdUser == UserId && mailIds.Contains(t.IdMail))
                 .Select(t => t.IdTag)
                 .Distinct()
@@ -122,8 +122,8 @@ namespace ASC.Mail.Core.Dao
 
         public List<int> GetTagIds(int mailboxId)
         {
-            var tagIds = MailDb.MailTagMail
-                .Join(MailDb.MailMail, tm => tm.IdMail, m => m.Id,
+            var tagIds = MailDbContext.MailTagMail
+                .Join(MailDbContext.MailMail, tm => tm.IdMail, m => m.Id,
                 (tm, m) => new
                 {
                     TagMail = tm,
@@ -139,7 +139,7 @@ namespace ASC.Mail.Core.Dao
 
         public string GetChainTags(string chainId, FolderType folder, int mailboxId)
         {
-            var tags = MailDb.MailTagMail.Join(MailDb.MailMail, t => t.IdMail, m => m.Id,
+            var tags = MailDbContext.MailTagMail.Join(MailDbContext.MailMail, t => t.IdMail, m => m.Id,
                 (t, m) => new
                 {
                     Tag = t,
@@ -157,34 +157,34 @@ namespace ASC.Mail.Core.Dao
 
         public int Delete(int tagId, List<int> mailIds)
         {
-            var deleteQuery = MailDb.MailTagMail
+            var deleteQuery = MailDbContext.MailTagMail
                 .Where(t => t.Tenant == Tenant && t.IdUser == UserId && t.IdTag == tagId)
                 .Where(t => mailIds.Contains(t.IdMail));
 
-            MailDb.MailTagMail.RemoveRange(deleteQuery);
+            MailDbContext.MailTagMail.RemoveRange(deleteQuery);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int DeleteByTagId(int tagId)
         {
-            var deleteQuery = MailDb.MailTagMail
+            var deleteQuery = MailDbContext.MailTagMail
                 .Where(t => t.Tenant == Tenant && t.IdUser == UserId)
                 .Where(t => t.IdTag == tagId);
 
-            MailDb.MailTagMail.RemoveRange(deleteQuery);
+            MailDbContext.MailTagMail.RemoveRange(deleteQuery);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int DeleteByMailboxId(int mailboxId)
         {
-            var deleteQuery = MailDb.MailTagMail
-               .Join(MailDb.MailMail, tm => tm.IdMail, m => m.Id,
+            var deleteQuery = MailDbContext.MailTagMail
+               .Join(MailDbContext.MailMail, tm => tm.IdMail, m => m.Id,
                 (tm, m) => new
                 {
                     TagMail = tm,
@@ -193,22 +193,22 @@ namespace ASC.Mail.Core.Dao
                 .Where(t => t.Mail.IdMailbox == mailboxId)
                 .Select(t => t.TagMail);
 
-            MailDb.MailTagMail.RemoveRange(deleteQuery);
+            MailDbContext.MailTagMail.RemoveRange(deleteQuery);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int DeleteByMailIds(List<int> mailIds)
         {
-            var deleteQuery = MailDb.MailTagMail
+            var deleteQuery = MailDbContext.MailTagMail
                 .Where(t => t.Tenant == Tenant && t.IdUser == UserId)
                 .Where(t => mailIds.Contains(t.IdMail));
 
-            MailDb.MailTagMail.RemoveRange(deleteQuery);
+            MailDbContext.MailTagMail.RemoveRange(deleteQuery);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

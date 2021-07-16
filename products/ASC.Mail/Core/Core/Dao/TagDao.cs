@@ -52,7 +52,7 @@ namespace ASC.Mail.Core.Dao
             if (id < 0)
                 return GetCrmTag(id);
 
-            var tag = MailDb.MailTag
+            var tag = MailDbContext.MailTag
                 .Where(r => r.TenantId == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Where(r => r.Id == id)
@@ -76,7 +76,7 @@ namespace ASC.Mail.Core.Dao
         {
             var crmTagId = id < 0 ? -id : id;
 
-            var crmTag = MailDb.CrmTag
+            var crmTag = MailDbContext.CrmTag
                 .Where(r => r.IdTenant == Tenant)
                 .Where(r => r.EntityType == (int)EntityType.Contact)
                 .Where(r => r.Id == crmTagId)
@@ -97,7 +97,7 @@ namespace ASC.Mail.Core.Dao
 
         public Tag GetTag(string name)
         {
-            var tag = MailDb.MailTag
+            var tag = MailDbContext.MailTag
                 .Where(r => r.TenantId == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Where(r => r.Name == name)
@@ -119,7 +119,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Tag> GetTags()
         {
-            var tags = MailDb.MailTag
+            var tags = MailDbContext.MailTag
                 .Where(r => r.TenantId == Tenant)
                 .Where(r => r.IdUser == UserId)
                 .Select(r => new Tag
@@ -153,7 +153,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Tag> GetCrmTags()
         {
-            var crmTags = MailDb.CrmTag
+            var crmTags = MailDbContext.CrmTag
                 .Where(r => r.IdTenant == Tenant)
                 .Where(r => r.EntityType == (int)EntityType.Contact)
                 .Select(r => new Tag
@@ -173,8 +173,8 @@ namespace ASC.Mail.Core.Dao
 
         public List<Tag> GetCrmTags(List<int> contactIds)
         {
-            var query = MailDb.CrmEntityTag
-                .Join(MailDb.CrmTag,
+            var query = MailDbContext.CrmEntityTag
+                .Join(MailDbContext.CrmTag,
                     cet => cet.TagId,
                     ct => (int)ct.Id,
                     (cet, ct) => new Tag
@@ -215,32 +215,32 @@ namespace ASC.Mail.Core.Dao
                 CrmId = tag.CrmId
             };
 
-            var entry = MailDb.AddOrUpdate(t => t.MailTag, dbTag);
+            var entry = MailDbContext.AddOrUpdate(t => t.MailTag, dbTag);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
 
         public int DeleteTag(int id)
         {
-            var range = MailDb.MailTag
+            var range = MailDbContext.MailTag
                 .Where(r => r.TenantId == Tenant && r.IdUser == UserId && r.Id == id);
 
-            MailDb.MailTag.RemoveRange(range);
+            MailDbContext.MailTag.RemoveRange(range);
 
-            return MailDb.SaveChanges();
+            return MailDbContext.SaveChanges();
         }
 
         public int DeleteTags(List<int> tagIds)
         {
-            var range = MailDb.MailTag
+            var range = MailDbContext.MailTag
                 .Where(r => r.TenantId == Tenant && r.IdUser == UserId)
                 .Where(r => tagIds.Contains(r.Id)); ;
 
-            MailDb.MailTag.RemoveRange(range);
+            MailDbContext.MailTag.RemoveRange(range);
 
-            return MailDb.SaveChanges();
+            return MailDbContext.SaveChanges();
         }
     }
 }

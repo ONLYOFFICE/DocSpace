@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Mapping;
 using ASC.Common.Utils;
 using ASC.Mail.Aggregator.CollectionService.Console;
 using ASC.Mail.Aggregator.CollectionService.Service;
@@ -24,7 +26,7 @@ namespace ASC.Mail.Aggregator.CollectionService
 {
     class Program
     {
-        public async static Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
@@ -100,6 +102,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                 services.AddSingleton(new ConsoleParser(args));
                 diHelper.TryAdd<AggregatorServiceLauncher>();
                 diHelper.TryAdd<AggregatorServiceScope>();
+                services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
                 services.AddHostedService<AggregatorServiceLauncher>();
                 services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
 

@@ -25,10 +25,13 @@
 
 
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Mail.Core.Dao.Expressions.Message;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(MailDao))]
     public interface IMailDao
     {
         int Save(Core.Entities.Mail mail);

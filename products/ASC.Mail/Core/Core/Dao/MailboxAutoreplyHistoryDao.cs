@@ -49,7 +49,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<string> GetAutoreplyHistorySentEmails(int mailboxId, string email, int autoreplyDaysInterval)
         {
-            var emails = MailDb.MailMailboxAutoreplyHistory
+            var emails = MailDbContext.MailMailboxAutoreplyHistory
                 .Where(h => h.IdMailbox == mailboxId
                     && h.SendingEmail == email
                     && (DateTime.UtcNow - h.SendingDate).TotalDays <= autoreplyDaysInterval)
@@ -69,9 +69,9 @@ namespace ASC.Mail.Core.Dao
                 SendingDate = autoreplyHistory.SendingDate
             };
 
-            MailDb.MailMailboxAutoreplyHistory.Add(model);
+            MailDbContext.MailMailboxAutoreplyHistory.Add(model);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
@@ -84,9 +84,9 @@ namespace ASC.Mail.Core.Dao
                 Tenant = Tenant
             };
 
-            MailDb.MailMailboxAutoreplyHistory.Remove(model);
+            MailDbContext.MailMailboxAutoreplyHistory.Remove(model);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
