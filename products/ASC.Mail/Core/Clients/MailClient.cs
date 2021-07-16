@@ -522,6 +522,10 @@ namespace ASC.Mail.Clients
                 Log.ErrorFormat($"Imap: Exception while logging\r\nException: {aggEx}\r\n.");
                 throw new Exception("LoginImap failed", aggEx);
             }
+            finally
+            {
+                Imap.Authenticated -= ImapOnAuthenticated;
+            }
         }
 
         private void ImapOnAuthenticated(object sender, AuthenticatedEventArgs authenticatedEventArgs)
