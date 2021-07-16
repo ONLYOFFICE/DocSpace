@@ -7,7 +7,6 @@ import { withTranslation } from "react-i18next";
 const FilesTableHeader = (props) => {
   const {
     t,
-    columns,
     containerRef,
     isHeaderVisible,
     isHeaderChecked,
@@ -15,6 +14,39 @@ const FilesTableHeader = (props) => {
     getHeaderMenu,
     setSelected,
   } = props;
+
+  const columns = [
+    {
+      key: 0,
+      title: t("Common:Name"),
+      resizable: true,
+    },
+    {
+      key: 1,
+      title: t("ByAuthor"),
+      resizable: true,
+    },
+    {
+      key: 2,
+      title: t("ByCreationDate"),
+      resizable: true,
+    },
+    // {
+    //   key: 3,
+    //   title: t("Common:Type"),
+    //   resizable: true,
+    // },
+    {
+      key: 4,
+      title: t("Common:Size"),
+      resizable: false,
+    },
+    {
+      key: 5,
+      title: "",
+      resizable: false,
+    },
+  ];
 
   const onChange = (checked) => {
     setSelected(checked ? "all" : "none");
@@ -28,7 +60,11 @@ const FilesTableHeader = (props) => {
       headerMenu={getHeaderMenu(t)}
     />
   ) : (
-    <TableHeader containerRef={containerRef} columns={columns} />
+    <TableHeader
+      setSelected={setSelected}
+      containerRef={containerRef}
+      columns={columns}
+    />
   );
 };
 

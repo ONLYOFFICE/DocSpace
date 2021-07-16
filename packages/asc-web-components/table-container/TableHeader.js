@@ -8,6 +8,7 @@ import {
   StyledTableHeader,
   StyledTableRow,
 } from "./StyledTableContainer";
+import Checkbox from "../checkbox";
 
 const TABLE_SIZE = "tableSize";
 
@@ -124,40 +125,27 @@ class TableHeader extends React.Component {
     localStorage.setItem(TABLE_SIZE, str);
   };
 
-  renderFakeHeader = () => {
-    const style = { padding: "0 4px 0 4px" };
-    return (
-      <StyledTableHeader
-        className="table-container_header"
-        style={{ display: "flex", flexDirection: "row" }}
-      >
-        <button style={style}>Share</button>
-        <button style={style}>Download</button>
-        <button style={style}>Download as</button>
-        <button style={style}>Move</button>
-        <button style={style}>Copy</button>
-        <button style={style}>Delete</button>
-      </StyledTableHeader>
-    );
+  onChange = (checked) => {
+    this.props.setSelected(checked ? "all" : "none");
   };
 
   render() {
-    const { columns, isHeaderVisible, ...rest } = this.props;
+    const { columns, ...rest } = this.props;
 
-    return isHeaderVisible ? (
-      this.renderFakeHeader()
-    ) : (
+    return (
       <StyledTableHeader
         className="table-container_header"
         ref={this.headerRef}
         {...rest}
       >
         <StyledTableRow>
+          <Checkbox onChange={this.onChange} checked={false} />
+
           {columns.map((column, index) => {
             return (
               <div
                 className="table-container_header-cell"
-                id={`column_${index}`}
+                id={`column_${index + 1}`}
                 key={column.key}
               >
                 <div style={{ display: "flex", userSelect: "none" }}>
@@ -170,7 +158,7 @@ class TableHeader extends React.Component {
                   </Text>
                   {column.resizable && (
                     <div
-                      data-column={`${index}`}
+                      data-column={`${index + 1}`}
                       className="resize-handle not-selectable"
                       onMouseDown={this.onMouseDown}
                     />
@@ -192,7 +180,7 @@ class TableHeader extends React.Component {
 TableHeader.propTypes = {
   containerRef: PropTypes.shape({ current: PropTypes.any }),
   columns: PropTypes.array,
-  isHeaderVisible: PropTypes.bool,
+  setSelected: PropTypes.func,
 };
 
 export default TableHeader;
