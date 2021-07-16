@@ -75,6 +75,15 @@ const StyledTableGroupMenu = styled.div`
 
 const StyledTableHeader = styled.div`
   display: grid;
+  grid-template-columns:
+    32px
+    minmax(180px, 2fr)
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    80px
+    24px;
+
   ${HeaderStyles}
 `;
 
