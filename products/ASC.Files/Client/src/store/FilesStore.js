@@ -1285,7 +1285,13 @@ class FilesStore {
     }
 
     //this.selected === "close" && this.setSelected("none");
-    this.setSelection(newSelection);
+
+    //need fo table view
+    const clearSelection = Object.values(
+      newSelection.reduce((item, n) => ((item[n.id] = n), item), {})
+    );
+
+    this.setSelection(clearSelection);
     //}
   };
 

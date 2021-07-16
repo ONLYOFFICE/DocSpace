@@ -83,7 +83,6 @@ const SimpleFilesRow = (props) => {
       >
         <StyledSimpleFilesRow
           key={item.id}
-          data={item}
           isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}

@@ -15,6 +15,8 @@ const TableRow = (props) => {
     element,
     onContentFileSelect,
     item,
+    className,
+    selectionProp,
     ...rest
   } = props;
 
@@ -61,10 +63,11 @@ const TableRow = (props) => {
   return (
     <StyledTableRow
       onContextMenu={onContextMenu}
-      className="table-container_row"
+      className={`${className} table-container_row`}
       {...rest}
     >
       <TableCell
+        {...selectionProp}
         {...props.style}
         onMouseLeave={onMouseLeave}
         onMouseEnter={onMouseEnter}
@@ -106,6 +109,7 @@ TableRow.propTypes = {
   element: PropTypes.any,
   onContentFileSelect: PropTypes.func,
   item: PropTypes.object,
+  selectionProp: PropTypes.object,
 
   style: PropTypes.any,
 };

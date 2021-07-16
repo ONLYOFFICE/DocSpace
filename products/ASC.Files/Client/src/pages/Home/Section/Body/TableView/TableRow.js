@@ -46,13 +46,22 @@ const FilesTableRow = (props) => {
     item,
     onContentFileSelect,
     checkedProps,
+    className,
+    value,
   } = props;
 
   const style = props.index === 0 ? { style: { marginTop: 40 } } : {};
 
+  const selectionProp = {
+    className: `files-item ${className}`,
+    value,
+  };
+
   return (
     <TableRow
+      selectionProp={selectionProp}
       style={style}
+      key={item.id}
       item={item}
       element={element}
       fileContextClick={fileContextClick}
@@ -60,19 +69,19 @@ const FilesTableRow = (props) => {
       {...contextOptionsProps}
       {...checkedProps}
     >
-      <TableCell {...style}>
+      <TableCell {...selectionProp} {...style}>
         <FileNameCell index={props.index} {...props} />
       </TableCell>
-      <TableCell {...style}>
+      <TableCell {...selectionProp} {...style}>
         <AuthorCell index={props.index} sideColor={sideColor} {...props} />
       </TableCell>
-      <TableCell {...style}>
+      <TableCell {...selectionProp} {...style}>
         <CreatedCell index={props.index} sideColor={sideColor} {...props} />
       </TableCell>
-      <TableCell {...style}>
+      <TableCell {...selectionProp} {...style}>
         <SizeCell index={props.index} sideColor={sideColor} {...props} />
       </TableCell>
-      <TableCell {...style}>
+      <TableCell {...selectionProp} {...style}>
         <StyledShare index={props.index}> {props.sharedButton}</StyledShare>
       </TableCell>
     </TableRow>
