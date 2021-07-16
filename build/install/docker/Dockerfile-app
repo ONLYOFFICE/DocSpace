@@ -42,7 +42,6 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     DATE="$(date "+%Y-%m-%d %H:%M")" && \
     sed -i "s/\"number\".*,/\"number\": \"${DATE}\",/g" /app/onlyoffice/config/appsettings.json && \
-    cat /app/onlyoffice/config/appsettings.json && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd ${SRC_PATH}/build/install/common/ && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
