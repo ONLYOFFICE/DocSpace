@@ -30,13 +30,8 @@ using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
-using ASC.Core;
-using ASC.Data.Storage;
 using ASC.Mail.Core.Engine;
-using ASC.Mail.Utils;
-using ASC.Mail.Core;
 using ASC.Mail.Configuration;
-using ASC.Mail.Core.Dao;
 using ASC.Common;
 
 namespace ASC.Mail.ImapSync
@@ -51,8 +46,6 @@ namespace ASC.Mail.ImapSync
         private readonly MailSettings _mailSettings;
         private readonly RedisClient _redisClient;
         private readonly IServiceProvider _serviceProvider;
-
-        private int clientIdCounter;
 
         private readonly SemaphoreSlim CreateClientSemaphore;
         private ManualResetEvent _resetEvent;
@@ -69,8 +62,6 @@ namespace ASC.Mail.ImapSync
             _mailSettings = mailSettings;
             _serviceProvider = serviceProvider;
             MailEnginesFactory = mailEnginesFactory;
-
-            clientIdCounter = 0;
 
             CreateClientSemaphore = new SemaphoreSlim(1, 1);
             try
@@ -128,9 +119,9 @@ namespace ASC.Mail.ImapSync
             {
                 if(clients[clientKey]!=null)
                 {
-                    clients[clientKey]?.CheckRedis(cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags, _redisClient);
+                    clients[clientKey]?.CheckRedis(cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
 
-                    _log.Info($"ImapSyncService. User Activity -> {cashedTenantUserMailBox.MailBoxId}, clients.Count={clients.Count} ");
+                    _log.Info($"ImapSyncService. User Activity -> {cashedTenantUserMailBox.MailBoxId}, clients.Count={clients.Count}. ");
 
                     return;
                 }
@@ -142,7 +133,7 @@ namespace ASC.Mail.ImapSync
                     }
                     else
                     {
-                        _log.Info($"ImapSyncService. MailImapClient {clientKey} died, bud wasn`t remove");
+                        _log.Info($"ImapSyncService. MailImapClient {clientKey} died, bud wasn`t remove.");
                     }
                 }
             }
@@ -159,13 +150,20 @@ namespace ASC.Mail.ImapSync
 
                 var mailbox = mailboxes.FirstOrDefault(x => x.MailBoxId == cashedTenantUserMailBox.MailBoxId);
 
-                if (mailbox == null) return;
+                if (mailbox == null)
+                {
+                    _log.Info($"ImapSyncService. MailImapClient {clientKey} didn`t found MailBoxData.");
+
+                    return;
+                }
 
                 clients.TryAdd(clientKey, null);
 
-                Thread thread = new Thread(() => CreateMailClient(mailbox, clientKey));
+                CreateMailClient(mailbox, clientKey);
 
-                thread.Start();
+                //Thread thread = new Thread(() => CreateMailClient(mailbox, clientKey));
+
+                //thread.Start();
             }
             finally
             {
@@ -175,24 +173,20 @@ namespace ASC.Mail.ImapSync
 
         private void CreateMailClient(MailBoxData mailbox, string clientKey)
         {
-            var log = _options.Get("ACS");
-
-            log.Name = $"ASC.Mail.ImapSync.Mbox_{mailbox.MailBoxId}.Counter_{++clientIdCounter}";
-
             MailImapClient client = null;
 
             var connectError = false;
 
             try
             {
-                client = new MailImapClient(mailbox, _cancelTokenSource.Token, _mailSettings, _serviceProvider, log);
+                client = new MailImapClient(mailbox, _cancelTokenSource.Token, _mailSettings, _serviceProvider);
 
-                log.DebugFormat("MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1} Address = '{2}')",
+                _log.DebugFormat("MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1} Address = '{2}')",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
 
                 if (client == null)
                 {
-                    log.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
+                    _log.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
                                mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
                     //ReleaseMailbox(mailbox);
                 }
@@ -204,7 +198,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (System.TimeoutException exTimeout)
             {
-                log.WarnFormat(
+                _log.WarnFormat(
                     "[TIMEOUT] CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}') Exception: {3}",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, exTimeout.ToString());
 
@@ -212,13 +206,13 @@ namespace ASC.Mail.ImapSync
             }
             catch (OperationCanceledException)
             {
-                log.InfoFormat(
+                _log.InfoFormat(
                     "[CANCEL] CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}')",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
             }
             catch (AuthenticationException authEx)
             {
-                log.ErrorFormat(
+                _log.ErrorFormat(
                     "CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}')\r\nException: {3}\r\n",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, authEx.ToString());
 
@@ -226,7 +220,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (WebException webEx)
             {
-                log.ErrorFormat(
+                _log.ErrorFormat(
                     "CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}')\r\nException: {3}\r\n",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, webEx.ToString());
 
@@ -234,7 +228,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                log.ErrorFormat(
+                _log.ErrorFormat(
                     "CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}')\r\nException: {3}\r\n",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail,
                     ex is ImapProtocolException || ex is Pop3ProtocolException ? ex.Message : ex.ToString());
@@ -243,7 +237,7 @@ namespace ASC.Mail.ImapSync
             {
                 if (connectError)
                 {
-                    SetMailboxAuthError(mailbox, log);
+                    SetMailboxAuthError(mailbox);
                 }
             }
         }
@@ -266,7 +260,7 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private void SetMailboxAuthError(MailBoxData mailbox, ILog log)
+        private void SetMailboxAuthError(MailBoxData mailbox)
         {
             try
             {
@@ -279,7 +273,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                log.ErrorFormat(
+                _log.ErrorFormat(
                     "CreateTasks->SetMailboxAuthError(Tenant = {0}, MailboxId = {1}, Address = '{2}') Exception: {3}",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, ex.Message);
             }

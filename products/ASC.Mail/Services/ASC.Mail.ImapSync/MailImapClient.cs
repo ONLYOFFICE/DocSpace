@@ -69,13 +69,14 @@ namespace ASC.Mail.ImapSync
         private readonly FolderEngine _folderEngine;
         private readonly UserManager _userManager;
         private readonly SignalrServiceClient _signalrServiceClient;
+        private readonly RedisClient _redisClient;
+        private readonly ILog _log;
 
         const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Flags | MessageSummaryItems.Envelope | MessageSummaryItems.BodyStructure;
 
         readonly bool crmAvailable;
 
         public MailBoxData Account { get; private set; }
-        public ILog Log { get; set; }
 
         protected ImapClient Imap { get; private set; }
 
@@ -103,7 +104,7 @@ namespace ASC.Mail.ImapSync
         {
             if (sender is IMailFolder imap_folder)
             {
-                Log.Debug($"ImapMessageFlagsChanged. Folder={imap_folder.FullName} Index={e.Index} Flags={e.Flags}. imapMessagesToUpdate.Count={imapMessagesToUpdate.Count}");
+                _log.Debug($"ImapMessageFlagsChanged. Folder={imap_folder.FullName} Index={e.Index} Flags={e.Flags}. imapMessagesToUpdate.Count={imapMessagesToUpdate.Count}");
 
                 imapMessagesToUpdate.Enqueue(e.Index);
 
@@ -115,7 +116,7 @@ namespace ASC.Mail.ImapSync
         {
             if (sender is IMailFolder imap_folder)
             {
-                Log.Debug($"ImapCountChanged. Folder={imap_folder.FullName} Count={imap_folder.Count}.");
+                _log.Debug($"ImapCountChanged. Folder={imap_folder.FullName} Count={imap_folder.Count}.");
 
                 imapFoldersToUpdate.Enqueue(imap_folder);
 
@@ -123,54 +124,50 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        public async void CheckRedis(int folderActivity, IEnumerable<int> tags, RedisClient _redisClient)
+        public async void CheckRedis(int folderActivity, IEnumerable<int> tags)
         {
-            var activFolder = (FolderType)folderActivity;
-
             if (foldersDictionary == null) return;
 
-            var folderFromDictionary = foldersDictionary.FirstOrDefault(x => x.Value.Folder == activFolder);
-
-            //if (folderFromDictionary. == null) return;
+            var folderFromDictionary = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity);
 
             var activFolderImap = folderFromDictionary.Key;
 
             if (activFolderImap != null && WorkFolder != activFolderImap)
             {
                 WorkFolder = activFolderImap;
-                Log.Debug($"CheckRedis. WorkFolder change to {WorkFolder.FullName} Count={WorkFolder.Count}.");
+
+                _log.Debug($"CheckRedis. WorkFolder change to {WorkFolder.FullName} Count={WorkFolder.Count}.");
             }
 
             if (ClientIsReadyToWork)
             {
-                await ProcessActionFromRedis(_redisClient);
+                await ProcessActionFromRedis();
             }
 
             DoneTokenUpdate();
         }
 
-        public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailSettings mailSettings, IServiceProvider serviceProvider, ILog log = null)
+        public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailSettings mailSettings, IServiceProvider serviceProvider)
         {
+            Account = mailbox;
             _mailSettings = mailSettings;
 
             var clientScope = serviceProvider.CreateScope().ServiceProvider;
 
             var protocolLogger = !string.IsNullOrEmpty(_mailSettings.ProtocolLogPath)
                 ? (IProtocolLogger)
-                    new ProtocolLogger(_mailSettings.ProtocolLogPath + $"\\imap_{mailbox.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log", true)
+                    new ProtocolLogger(_mailSettings.ProtocolLogPath + $"\\imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log", true)
                 : new NullProtocolLogger();
 
             imapMessagesToUpdate = new ConcurrentQueue<int>();
             imapFoldersToUpdate = new ConcurrentQueue<IMailFolder>();
-
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
 
             var tenantManager = clientScope.GetService<TenantManager>();
-
-            tenantManager.SetCurrentTenant(mailbox.TenantId);
+            tenantManager.SetCurrentTenant(Account.TenantId);
 
             var securityContext = clientScope.GetService<SecurityContext>();
-            securityContext.AuthenticateMe(new Guid(mailbox.UserId));
+            securityContext.AuthenticateMe(new Guid(Account.UserId));
 
             _mailEnginesFactory = clientScope.GetService<MailEnginesFactory>();
             _mailInfoDao = clientScope.GetService<MailInfoDao>();
@@ -178,10 +175,10 @@ namespace ASC.Mail.ImapSync
             _folderEngine = clientScope.GetService<FolderEngine>();
             _userManager = clientScope.GetService<UserManager>();
             _signalrServiceClient = clientScope.GetService<IOptionsSnapshot<SignalrServiceClient>>().Get("mail");
+            _redisClient= clientScope.GetService<RedisClient>();
+            _log= clientScope.GetService<ILog>();
 
-            Account = mailbox;
-
-            Log = log ?? new NullLog();
+            _log.Name = $"ASC.Mail.ImapSync.Mbox_{mailbox.MailBoxId}";
 
             crmAvailable = false;// mailbox.IsCrmAvailable(_mailSettings.DefaultApiSchema, Log);
 
@@ -209,7 +206,7 @@ namespace ASC.Mail.ImapSync
 
         private void _deathTimer_Elapsed(object state)
         {
-            Log.Debug($"Client {Imap}: Death timer elapsed.");
+            _log.Debug($"Client {Account.MailBoxId}-{Account.Name}: Death timer elapsed.");
 
             DoneToken?.Cancel();
 
@@ -228,14 +225,16 @@ namespace ASC.Mail.ImapSync
 
                 await LoadFoldersFromIMAP(workFolder);
 
-                foreach (var foldersDictionaryItem in foldersDictionary)
+                var inboxFolder = foldersDictionary.Where(x => x.Value.Folder == FolderType.Inbox);
+
+                foreach (var foldersDictionaryItem in inboxFolder)
                 {
                     await SynchronizeMailFolderFromImap(foldersDictionaryItem.Key, foldersDictionaryItem.Value);
                 }
             }
             catch (Exception ex)
             {
-                Log.Error($"CreateConnection->Error: {ex.Message}");
+                _log.Error($"CreateConnection->Error: {ex.Message}");
             }
             finally
             {
@@ -251,7 +250,7 @@ namespace ASC.Mail.ImapSync
         {
             ClientIsReadyToWork = false;
 
-            Log.Debug($"Client {Imap} disconected.");
+            _log.Debug($"Client {Imap} disconected.");
 
             Imap.Inbox.MessageFlagsChanged -= ImapMessageFlagsChanged;
             Imap.Inbox.CountChanged -= ImapCountChanged;
@@ -262,7 +261,7 @@ namespace ASC.Mail.ImapSync
             }
             else
             {
-                Log.Info("MailClient->Dispose()");
+                _log.Info("MailClient->Dispose()");
 
                 DoneToken?.Cancel();
 
@@ -274,7 +273,7 @@ namespace ASC.Mail.ImapSync
 
         public void Dispose()
         {
-            Log.Info("MailClient->Dispose()");
+            _log.Info("MailClient->Dispose()");
 
             ClientIsReadyToWork = false;
 
@@ -297,7 +296,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("MailClient->Dispose(Mb_Id={0} Mb_Addres: '{1}') Exception: {2}", Account.MailBoxId,
+                _log.ErrorFormat("MailClient->Dispose(Mb_Id={0} Mb_Addres: '{1}') Exception: {2}", Account.MailBoxId,
                     Account.EMail.Address, ex.Message);
             }
         }
@@ -325,7 +324,7 @@ namespace ASC.Mail.ImapSync
                     break;
             }
 
-            Log.DebugFormat("Imap.Connect({0}:{1}, {2})", Account.Server, Account.Port,
+            _log.DebugFormat("Imap.Connect({0}:{1}, {2})", Account.Server, Account.Port,
                 Enum.GetName(typeof(SecureSocketOptions), secureSocketOptions));
 
             Imap.SslProtocols = sslProtocols;
@@ -336,20 +335,20 @@ namespace ASC.Mail.ImapSync
             {
                 if (enableUtf8 && (Imap.Capabilities & ImapCapabilities.UTF8Accept) != ImapCapabilities.None)
                 {
-                    Log.Debug("Imap.EnableUTF8");
+                    _log.Debug("Imap.EnableUTF8");
 
                     await Imap.EnableUTF8Async(CancelToken);
                 }
 
                 if (string.IsNullOrEmpty(Account.OAuthToken))
                 {
-                    Log.DebugFormat("Imap.Authentication({0})", Account.Account);
+                    _log.DebugFormat("Imap.Authentication({0})", Account.Account);
 
                     await Imap.AuthenticateAsync(Account.Account, Account.Password, CancelToken);
                 }
                 else
                 {
-                    Log.DebugFormat("Imap.AuthenticationByOAuth({0})", Account.Account);
+                    _log.DebugFormat("Imap.AuthenticationByOAuth({0})", Account.Account);
 
                     var oauth2 = new SaslMechanismOAuth2(Account.Account, Account.AccessToken);
 
@@ -399,14 +398,14 @@ namespace ASC.Mail.ImapSync
 
                     if (dbFolder == null)
                     {
-                        Log.Debug($"{folderIMAP.Name}-> skipped");
+                        _log.Debug($"{folderIMAP.Name}-> skipped");
                         continue;
                     }
 
                     foldersDictionary.Add(folderIMAP, dbFolder);
                 }
 
-                var inboxFolders = foldersDictionary.Where(x => x.Value.Folder == FolderType.Inbox && x.Key != WorkFolder).ToList();
+                //var inboxFolders = foldersDictionary.Where(x => x.Value.Folder == FolderType.Inbox && x.Key != WorkFolder).ToList();
 
                 //foreach(var inboxFolder in inboxFolders)
                 //{
@@ -450,13 +449,13 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.Error($"GetImapSubFolders: {folder.Name} Exception: {ex.Message}");
+                _log.Error($"GetImapSubFolders: {folder.Name} Exception: {ex.Message}");
             }
 
             return new List<IMailFolder>();
         }
 
-        private async Task ProcessActionFromRedis(RedisClient _redisClient)
+        private async Task ProcessActionFromRedis()
         {
             var cache = _redisClient;
 
@@ -464,7 +463,7 @@ namespace ASC.Mail.ImapSync
 
             var key = cache.CreateQueueKey(Account.MailBoxId);
 
-            Log.Debug($"ProcessActionFromRedis->Begin with key: {key}");
+            _log.Debug($"ProcessActionFromRedis->Begin with key: {key}");
 
             int iterationCount = 0;
 
@@ -488,16 +487,16 @@ namespace ASC.Mail.ImapSync
                 {
                     if (await SetFlagsInImap(actionSplittedList, actionFromCache.Action))
                     {
-                        Log.Debug($"ProcessActionFromRedis->{Account.MailBoxId} SetFlag {actionFromCache.Uidls} {actionFromCache.Action}");
+                        _log.Debug($"ProcessActionFromRedis->{Account.MailBoxId} SetFlag {actionFromCache.Uidls} {actionFromCache.Action}");
                     }
                     else
                     {
-                        Log.Debug($"ProcessActionFromRedis->{Account.MailBoxId} Can`t setFlag {actionFromCache.Uidls} {actionFromCache.Action}");
+                        _log.Debug($"ProcessActionFromRedis->{Account.MailBoxId} Can`t setFlag {actionFromCache.Uidls} {actionFromCache.Action}");
                     }
                 }
             }
 
-            Log.Debug($"ProcessActionFromRedis->End: read {iterationCount} keys.");
+            _log.Debug($"ProcessActionFromRedis->End: read {iterationCount} keys.");
         }
 
         public async Task<List<int>> UpdateMessageFlagInDb(List<int> indexes, IMailFolder imapFolder)
@@ -533,7 +532,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.Error($"UpdateMessageFlagInDb({imapFolder.FullName}, Message.Count={indexes.Count})->{ex.Message}");
+                _log.Error($"UpdateMessageFlagInDb({imapFolder.FullName}, Message.Count={indexes.Count})->{ex.Message}");
             }
 
             return indexes;
@@ -557,7 +556,7 @@ namespace ASC.Mail.ImapSync
 
                 var db_messages = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
 
-                Log.Debug($"SynchronizeMailFolderFromImap is Begin: imap_messages={imap_messages.Count()}, db_messages={db_messages.Count}");
+                _log.Debug($"SynchronizeMailFolderFromImap is Begin: imap_messages={imap_messages.Count()}, db_messages={db_messages.Count}");
 
                 foreach (var imap_message in imap_messages)
                 {
@@ -594,7 +593,7 @@ namespace ASC.Mail.ImapSync
                         db_message = _mailInfoDao.GetMailInfoList(expMd5.Build()).FirstOrDefault();
                         if (db_message == null)
                         {
-                            Log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. md5={expMd5}");
+                            _log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. md5={expMd5}");
 
                             await CreateMessageInDB(imap_message, imapFolder);
 
@@ -605,7 +604,7 @@ namespace ASC.Mail.ImapSync
 
                     if (db_message.IsRemoved)
                     {
-                        Log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} was remove in DB. md5={expMd5}");
+                        _log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} was remove in DB. md5={expMd5}");
 
                         var restoreQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
                             .SetMessageId(db_message.Id)
@@ -637,7 +636,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.Error($"SynchronizeMailFolderFromImap(IMailFolder={imapFolder.Name}, MailFolder={dbFolder.Name})->{ex.Message}");
+                _log.Error($"SynchronizeMailFolderFromImap(IMailFolder={imapFolder.Name}, MailFolder={dbFolder.Name})->{ex.Message}");
 
                 return false;
             }
@@ -662,7 +661,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.Error($"SynchronizeMessageFlagsFromImap({imap_message.UniqueId},{db_message})->{ex.Message}");
+                _log.Error($"SynchronizeMessageFlagsFromImap({imap_message.UniqueId},{db_message})->{ex.Message}");
 
                 return false;
             }
@@ -713,12 +712,12 @@ namespace ASC.Mail.ImapSync
                     _mailInfoDao.SetFieldValue(updateQuery, "uidl", SplittedUidl.ToUidl((FolderType)destination, item.Value));
                 }
 
-                Log.Debug($"MoveMessageInImap->{Account.MailBoxId} MoveTo {imapFolder}. MessagesCount={uidlListSplitted.Count}, MessagesMoved.Count: {returnedUidl.Count}");
+                _log.Debug($"MoveMessageInImap->{Account.MailBoxId} MoveTo {imapFolder}. MessagesCount={uidlListSplitted.Count}, MessagesMoved.Count: {returnedUidl.Count}");
 
             }
             catch (Exception ex)
             {
-                Log.Error($"MoveMessageInImap(messageCount={uidlListSplitted.Count}, destination={destination})->{ex.Message}");
+                _log.Error($"MoveMessageInImap(messageCount={uidlListSplitted.Count}, destination={destination})->{ex.Message}");
 
                 return false;
             }
@@ -762,7 +761,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.Error($"SetMessageFlagIMAP->{Account.MailBoxId}, {mailUserAction}->{ex.Message}");
+                _log.Error($"SetMessageFlagIMAP->{Account.MailBoxId}, {mailUserAction}->{ex.Message}");
 
                 return false;
             }
@@ -804,11 +803,11 @@ namespace ASC.Mail.ImapSync
                         await imapFolder.AddFlagsAsync(uids, MessageFlags.Deleted, true);
                         break;
                 }
-                Log.Debug($"SetMessageFlagIMAP->{Account.MailBoxId}.{imapFolder.FullName} MessageCount={uids.Count}, {mailUserAction}");
+                _log.Debug($"SetMessageFlagIMAP->{Account.MailBoxId}.{imapFolder.FullName} MessageCount={uids.Count}, {mailUserAction}");
             }
             catch (Exception ex)
             {
-                Log.Error($"SetMessageFlagIMAP->{Account.MailBoxId}.{imapFolder.FullName} MessageCount={uids.Count}, {mailUserAction}->{ex.Message}");
+                _log.Error($"SetMessageFlagIMAP->{Account.MailBoxId}.{imapFolder.FullName} MessageCount={uids.Count}, {mailUserAction}->{ex.Message}");
             }
         }
 
@@ -829,7 +828,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.Error($"GetMessageFromDB(MailFolder={dbFolder.Name})->{ex.Message}");
+                _log.Error($"GetMessageFromDB(MailFolder={dbFolder.Name})->{ex.Message}");
 
                 return new List<MailInfo>();
             }
@@ -841,7 +840,7 @@ namespace ASC.Mail.ImapSync
 
             var message = await imapFolder.GetMessageAsync(imap_message.UniqueId, CancelToken);
 
-            message.FixDateIssues(imap_message?.InternalDate, Log);
+            message.FixDateIssues(imap_message?.InternalDate, _log);
 
             bool unread = false, important = false;
 
@@ -851,7 +850,7 @@ namespace ASC.Mail.ImapSync
                 important = imap_message.Flags.Value.HasFlag(MessageFlags.Flagged);
             }
 
-            message.FixEncodingIssues(Log);
+            message.FixEncodingIssues(_log);
 
             var uid = imap_message.UniqueId.ToString();
             var folder = foldersDictionary[imapFolder];
@@ -868,9 +867,9 @@ namespace ASC.Mail.ImapSync
             {
                 var uidl = string.Format("{0}-{1}", uid, (int)folder.Folder);
 
-                Log.Info($"Get message (UIDL: '{uidl}', MailboxId = {Account.MailBoxId}, Address = '{Account.EMail}')");
+                _log.Info($"Get message (UIDL: '{uidl}', MailboxId = {Account.MailBoxId}, Address = '{Account.EMail}')");
 
-                var messageDB = _mailEnginesFactory.MessageEngine.Save(Account, message, uidl, folder, null, unread, Log);
+                var messageDB = _mailEnginesFactory.MessageEngine.Save(Account, message, uidl, folder, null, unread, _log);
 
                 if (messageDB == null || messageDB.Id <= 0)
                 {
@@ -878,17 +877,17 @@ namespace ASC.Mail.ImapSync
                     return result;
                 }
 
-                Log.Info($"Message saved (id: {messageDB.Id}, From: '{messageDB.From}', Subject: '{messageDB.Subject}', Unread: {messageDB.IsNew})");
+                _log.Info($"Message saved (id: {messageDB.Id}, From: '{messageDB.From}', Subject: '{messageDB.Subject}', Unread: {messageDB.IsNew})");
 
-                Log.Info("DoOptionalOperations->START");
+                _log.Info("DoOptionalOperations->START");
 
-                DoOptionalOperations(messageDB, message, Account, folder, Log);
+                DoOptionalOperations(messageDB, message, Account, folder);
 
-                Log.Info("DoOptionalOperations->END");
+                _log.Info("DoOptionalOperations->END");
             }
             catch (Exception ex)
             {
-                Log.Error($"CreateMessageInDB Exception:{ex.Message}");
+                _log.Error($"CreateMessageInDB Exception:{ex.Message}");
 
                 result = false;
             }
@@ -993,11 +992,11 @@ namespace ASC.Mail.ImapSync
             {
                 await imapFolder.OpenAsync(FolderAccess.ReadWrite);
 
-                Log.Debug($"ChangeWorkFolder -> OpenImapFolders({imapFolder.Name})");
+                _log.Debug($"ChangeWorkFolder -> OpenImapFolders({imapFolder.Name})");
             }
             catch (Exception ex)
             {
-                Log.Error($"ChangeWorkFolder(IMailFolder={imapFolder.Name})->{ex.Message}");
+                _log.Error($"ChangeWorkFolder(IMailFolder={imapFolder.Name})->{ex.Message}");
             }
         }
 
@@ -1015,11 +1014,11 @@ namespace ASC.Mail.ImapSync
 
         public async void SetIdleState()
         {
-            Log.Debug("SetClientTask->Wait for Semaphore");
+            _log.Debug("SetClientTask->Wait for Semaphore");
 
             await ImapSemaphore.WaitAsync();
 
-            Log.Debug("SetClientTask->Catch Semaphore");
+            _log.Debug("SetClientTask->Catch Semaphore");
 
             while (imapFoldersToUpdate.TryDequeue(out IMailFolder imapFolderToUpdate))
             {
@@ -1046,7 +1045,7 @@ namespace ASC.Mail.ImapSync
 
                     DoneToken = new CancellationTokenSource(new TimeSpan(0, 10, 0));
 
-                    Log.Debug($"Go to Idle.");
+                    _log.Debug($"Go to Idle.");
 
                     Imap.Idle(DoneToken.Token);
                 }
@@ -1058,7 +1057,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.Error($"SetClientTask, Error:{ex.Message}");
+                _log.Error($"SetClientTask, Error:{ex.Message}");
             }
             finally
             {
@@ -1070,11 +1069,11 @@ namespace ASC.Mail.ImapSync
                 {
                     ImapSemaphore.Release();
 
-                    Log.Debug($"Return from SetClientTask, ImapSemaphore release.");
+                    _log.Debug($"Return from SetClientTask, ImapSemaphore release.");
                 }
                 else
                 {
-                    Log.Debug($"Return from SetClientTask without ImapSemaphore release.");
+                    _log.Debug($"Return from SetClientTask without ImapSemaphore release.");
                 }
             }
         }
@@ -1084,14 +1083,14 @@ namespace ASC.Mail.ImapSync
             if (!_mailSettings.CollectStatistics)
                 return;
 
-            Log.DebugWithProps(method,
+            _log.DebugWithProps(method,
                 new KeyValuePair<string, object>("duration", duration.TotalMilliseconds),
                 new KeyValuePair<string, object>("mailboxId", Account.MailBoxId),
                 new KeyValuePair<string, object>("address", Account.EMail.ToString()),
                 new KeyValuePair<string, object>("isFailed", failed));
         }
 
-        private void DoOptionalOperations(MailMessageData message, MimeMessage mimeMessage, MailBoxData mailbox, MailFolder folder, ILog log)
+        private void DoOptionalOperations(MailMessageData message, MimeMessage mimeMessage, MailBoxData mailbox, MailFolder folder)
         {
             try
             {
@@ -1099,12 +1098,12 @@ namespace ASC.Mail.ImapSync
 
                 if (folder.Tags.Any())
                 {
-                    log.Debug("DoOptionalOperations->GetOrCreateTags()");
+                    _log.Debug("DoOptionalOperations->GetOrCreateTags()");
 
                     tagIds = _mailEnginesFactory.TagEngine.GetOrCreateTags(mailbox.TenantId, mailbox.UserId, folder.Tags);
                 }
 
-                log.Debug("DoOptionalOperations->IsCrmAvailable()");
+                _log.Debug("DoOptionalOperations->IsCrmAvailable()");
 
                 //if (IsCrmAvailable(mailbox, log))
                 //{
@@ -1131,7 +1130,7 @@ namespace ASC.Mail.ImapSync
                     message.TagIds = message.TagIds.Distinct().ToList();
                 }
 
-                log.Debug("DoOptionalOperations->AddMessageToIndex()");
+                _log.Debug("DoOptionalOperations->AddMessageToIndex()");
 
                 var wrapper = message.ToMailWrapper(mailbox.TenantId, new Guid(mailbox.UserId));
 
@@ -1141,32 +1140,32 @@ namespace ASC.Mail.ImapSync
                 {
                     try
                     {
-                        log.DebugFormat("DoOptionalOperations->SetMessagesTag(tagId: {0})", tagId);
+                        _log.DebugFormat("DoOptionalOperations->SetMessagesTag(tagId: {0})", tagId);
 
                         _mailEnginesFactory.TagEngine.SetMessagesTag(new List<int> { message.Id }, tagId);
                     }
                     catch (Exception e)
                     {
-                        log.ErrorFormat(
+                        _log.ErrorFormat(
                             "SetMessagesTag(tenant={0}, userId='{1}', messageId={2}, tagid = {3}) Exception:\r\n{4}\r\n",
                             mailbox.TenantId, mailbox.UserId, message.Id, e.ToString(),
                             tagIds != null ? string.Join(",", tagIds) : "null");
                     }
                 }
 
-                log.Debug("DoOptionalOperations->AddRelationshipEventForLinkedAccounts()");
+                _log.Debug("DoOptionalOperations->AddRelationshipEventForLinkedAccounts()");
 
                 _mailEnginesFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message, _mailSettings.DefaultApiSchema);
 
-                log.Debug("DoOptionalOperations->SaveEmailInData()");
+                _log.Debug("DoOptionalOperations->SaveEmailInData()");
 
                 _mailEnginesFactory.EmailInEngine.SaveEmailInData(mailbox, message, _mailSettings.DefaultApiSchema);
 
-                log.Debug("DoOptionalOperations->SendAutoreply()");
+                _log.Debug("DoOptionalOperations->SendAutoreply()");
 
-                _mailEnginesFactory.AutoreplyEngine.SendAutoreply(mailbox, message, _mailSettings.DefaultApiSchema, log);
+                _mailEnginesFactory.AutoreplyEngine.SendAutoreply(mailbox, message, _mailSettings.DefaultApiSchema, _log);
 
-                log.Debug("DoOptionalOperations->UploadIcsToCalendar()");
+                _log.Debug("DoOptionalOperations->UploadIcsToCalendar()");
 
                 if (folder.Folder != Enums.FolderType.Spam)
                 {
@@ -1179,23 +1178,23 @@ namespace ASC.Mail.ImapSync
 
                 if (_mailSettings.SaveOriginalMessage)
                 {
-                    log.Debug("DoOptionalOperations->StoreMailEml()");
-                    StoreMailEml(mailbox.TenantId, mailbox.UserId, message.StreamId, mimeMessage, log);
+                    _log.Debug("DoOptionalOperations->StoreMailEml()");
+                    StoreMailEml(mailbox.TenantId, mailbox.UserId, message.StreamId, mimeMessage);
                 }
 
-                log.Debug("DoOptionalOperations->ApplyFilters()");
+                _log.Debug("DoOptionalOperations->ApplyFilters()");
 
-                var filters = GetFilters(_mailEnginesFactory, log);
+                var filters = GetFilters(_mailEnginesFactory, _log);
 
                 _mailEnginesFactory.FilterEngine.ApplyFilters(message, mailbox, folder, filters);
 
-                log.Debug("DoOptionalOperations->NotifySignalrIfNeed()");
+                _log.Debug("DoOptionalOperations->NotifySignalrIfNeed()");
 
                 SendUnreadUser();
             }
             catch (Exception ex)
             {
-                log.ErrorFormat("DoOptionalOperations() Exception:\r\n{0}\r\n", ex.ToString());
+                _log.ErrorFormat("DoOptionalOperations() Exception:\r\n{0}\r\n", ex.ToString());
             }
         }
 
@@ -1217,7 +1216,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception e)
             {
-                Log.ErrorFormat("Unknown Error. {0}, {1}", e.ToString(),
+                _log.ErrorFormat("Unknown Error. {0}, {1}", e.ToString(),
                     e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
         }
@@ -1248,7 +1247,7 @@ namespace ASC.Mail.ImapSync
             return new List<MailSieveFilterData>();
         }
 
-        public string StoreMailEml(int tenant, string user, string streamId, MimeMessage message, ILog log)
+        public string StoreMailEml(int tenant, string user, string streamId, MimeMessage message)
         {
             if (message == null)
                 return string.Empty;
@@ -1266,14 +1265,14 @@ namespace ASC.Mail.ImapSync
 
                     var res = storage.Save(savePath, stream, MailStoragePathCombiner.EML_FILE_NAME).ToString();
 
-                    log.InfoFormat("StoreMailEml() tenant='{0}', user_id='{1}', save_eml_path='{2}' Result: {3}", tenant, user, savePath, res);
+                    _log.InfoFormat("StoreMailEml() tenant='{0}', user_id='{1}', save_eml_path='{2}' Result: {3}", tenant, user, savePath, res);
 
                     return res;
                 }
             }
             catch (Exception ex)
             {
-                log.ErrorFormat("StoreMailEml Exception: {0}", ex.ToString());
+                _log.ErrorFormat("StoreMailEml Exception: {0}", ex.ToString());
             }
 
             return string.Empty;
@@ -1297,7 +1296,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                Log.Error($"SetMailboxAuthError({Account.EMail}): Exception: {ex.Message}");
+                _log.Error($"SetMailboxAuthError({Account.EMail}): Exception: {ex.Message}");
             }
         }
     }
