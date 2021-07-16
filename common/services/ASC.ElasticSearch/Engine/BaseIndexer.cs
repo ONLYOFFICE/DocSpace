@@ -93,7 +93,8 @@ namespace ASC.ElasticSearch
         private BaseIndexerHelper BaseIndexerHelper { get; }
         private Settings Settings { get; }
         private IServiceProvider ServiceProvider { get; }
-        private WebstudioDbContext WebstudioDbContext { get; }
+        private Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; }
+        private WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
 
         public BaseIndexer(
             Client client,
@@ -110,7 +111,7 @@ namespace ASC.ElasticSearch
             BaseIndexerHelper = baseIndexerHelper;
             Settings = settings;
             ServiceProvider = serviceProvider;
-            WebstudioDbContext = dbContextManager.Value;
+            LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }
 
         internal void Index(T data, bool immediately = true)

@@ -81,7 +81,10 @@ namespace ASC.Api.Core
 
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
-            DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+            if (LoadProducts)
+            {
+                DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+            }
 
             var builder = services.AddMvcCore(config =>
             {
