@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 
+using System;
 using System.Collections.Generic;
 
 namespace ASC.Files.Tests
@@ -94,6 +95,11 @@ namespace ASC.Files.Tests
         public static IEnumerable<TestCaseData> GetSharedFolderInfoReadAndWrite()
         {
             yield return new TestCaseData("TestFolderReadAndWrite");
+        }
+
+        public static IEnumerable<TestCaseData> UserForWizard()
+        {
+            yield return new TestCaseData("testuser@onlyoffice.com", "WacaC6U46yIxDoPLdvRQEKL+E4Du7qne582F/0Dzu8DAKvOovki5t5DoLP59zsHp43f2duqCKge/9mOSJqubGA==", "en-US", "UTC", "", "", false);
         }
     }
 }
