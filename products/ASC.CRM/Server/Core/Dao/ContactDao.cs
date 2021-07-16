@@ -326,7 +326,7 @@ namespace ASC.CRM.Core.Dao
             }
             if (result > 0)
             {
-                _cache.Insert(cacheKey, result, TimeSpan.FromMinutes(1));
+                _cache.Insert(cacheKey, result.ToString(), TimeSpan.FromMinutes(1));
             }
 
             return result;
