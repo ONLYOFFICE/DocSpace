@@ -5,8 +5,7 @@ ARG REPO_TAG=5.0.202-focal-amd64
 ARG REPO=mcr.microsoft.com/dotnet/sdk
 
 FROM $REPO:$REPO_TAG AS base
-# ARG RELEASE_DATE="2016-06-21"
-ARG RELEASE_DATE="$(date "+%Y-%m-%d")"
+ARG RELEASE_DATE="2016-06-21"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_BRANCH=master
 ARG SRC_PATH
