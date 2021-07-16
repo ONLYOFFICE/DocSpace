@@ -491,7 +491,10 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 mailbox.AuthErrorDate = DateTime.UtcNow;
 
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
+
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
 
                 var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
@@ -526,9 +529,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
         private void ProcessMailbox(MailClient client, MailSettings mailSettings)
         {
-            var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceProvider.CreateScope();
+
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             tenantManager.SetCurrentTenant(client.Account.TenantId);
+
             var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
             var mailbox = client.Account;
@@ -628,7 +633,10 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             mailClientEventArgs.Mailbox.AuthErrorDate = null;
 
-            var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceProvider.CreateScope();
+
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(mailClientEventArgs.Mailbox.TenantId);
 
             var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
@@ -668,6 +676,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 tenantManager.SetCurrentTenant(mailbox.TenantId);
 
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
                 var mailEnginesFactory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
 
