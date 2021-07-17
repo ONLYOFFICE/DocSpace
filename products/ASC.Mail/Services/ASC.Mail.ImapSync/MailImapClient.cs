@@ -90,8 +90,6 @@ namespace ASC.Mail.ImapSync
 
         private bool ClientIsReadyToWork = false;
 
-        private ConcurrentQueue<IMailFolder> imapFoldersToUpdate;
-
         private ConcurrentQueue<int> imapMessagesToUpdate;
 
         public IMailFolder WorkFolder;
@@ -99,6 +97,8 @@ namespace ASC.Mail.ImapSync
         private Timer _deathTimer;
 
         public event EventHandler DeleteClient;
+
+        public ClientState ClientCurrentState { get; private set; }
 
         private void ImapMessageFlagsChanged(object sender, MessageFlagsChangedEventArgs e)
         {
@@ -118,9 +118,7 @@ namespace ASC.Mail.ImapSync
             {
                 _log.Debug($"ImapCountChanged. Folder={imap_folder.FullName} Count={imap_folder.Count}.");
 
-                imapFoldersToUpdate.Enqueue(imap_folder);
-
-                DoneTokenUpdate();
+                SynchronizeMailFolderFromImap(imap_folder);
             }
         }
 
@@ -128,23 +126,47 @@ namespace ASC.Mail.ImapSync
         {
             if (foldersDictionary == null) return;
 
-            var folderFromDictionary = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity);
+            var folderKeyValue = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity);
 
-            var activFolderImap = folderFromDictionary.Key;
-
-            if (activFolderImap != null && WorkFolder != activFolderImap)
+            if (folderKeyValue.Key != null && WorkFolder != folderKeyValue.Key)
             {
-                WorkFolder = activFolderImap;
+                WorkFolder = folderKeyValue.Key;
 
                 _log.Debug($"CheckRedis. WorkFolder change to {WorkFolder.FullName} Count={WorkFolder.Count}.");
             }
 
             if (ClientIsReadyToWork)
             {
-                await ProcessActionFromRedis();
-            }
+                var key = _redisClient.CreateQueueKey(Account.MailBoxId);
 
-            DoneTokenUpdate();
+                _log.Debug($"ProcessActionFromRedis. Begin read key: {key}");
+
+                int iterationCount = 0;
+
+                while (true)
+                {
+                    var actionFromCache = await _redisClient.PopFromQueue<CashedMailUserAction>(key);
+
+                    if (actionFromCache == null) break;
+
+                    var actionSplittedList = actionFromCache.Uidls.Select(x => new SplittedUidl(x)).ToList();
+
+                    if (!actionSplittedList.Any()) continue;
+
+                    iterationCount++;
+
+                    if (actionFromCache.Action == MailUserAction.MoveTo)
+                    {
+                        await MoveMessageInImap(actionSplittedList, actionFromCache.Destination);
+                    }
+                    else
+                    {
+                        await SetFlagsInImap(actionSplittedList, actionFromCache.Action);
+                    };
+                }
+
+                _log.Debug($"ProcessActionFromRedis. {iterationCount} keys readed.");
+            }
         }
 
         public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailSettings mailSettings, IServiceProvider serviceProvider)
@@ -160,7 +182,6 @@ namespace ASC.Mail.ImapSync
                 : new NullProtocolLogger();
 
             imapMessagesToUpdate = new ConcurrentQueue<int>();
-            imapFoldersToUpdate = new ConcurrentQueue<IMailFolder>();
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
 
             var tenantManager = clientScope.GetService<TenantManager>();
@@ -237,7 +258,7 @@ namespace ASC.Mail.ImapSync
 
                 foreach (var foldersDictionaryItem in inboxFolder)
                 {
-                    await SynchronizeMailFolderFromImap(foldersDictionaryItem.Key, foldersDictionaryItem.Value);
+                    await SynchronizeMailFolderFromImap(foldersDictionaryItem.Key);
                 }
             }
             catch (Exception ex)
@@ -482,46 +503,13 @@ namespace ASC.Mail.ImapSync
             return new List<IMailFolder>();
         }
 
-        private async Task ProcessActionFromRedis()
-        {
-            var key = _redisClient.CreateQueueKey(Account.MailBoxId);
-
-            _log.Debug($"ProcessActionFromRedis. Begin read key: {key}");
-
-            int iterationCount = 0;
-
-            while (true)
-            {
-                var actionFromCache = await _redisClient.PopFromQueue<CashedMailUserAction>(key);
-
-                if (actionFromCache == null) break;
-
-                var actionSplittedList = actionFromCache.Uidls.Select(x => new SplittedUidl(x)).ToList();
-
-                if (!actionSplittedList.Any()) continue;
-
-                iterationCount++;
-
-                if (actionFromCache.Action == MailUserAction.MoveTo)
-                {
-                    await MoveMessageInImap(actionSplittedList, actionFromCache.Destination);
-                }
-                else
-                {
-                    await SetFlagsInImap(actionSplittedList, actionFromCache.Action);
-                };
-            }
-
-            _log.Debug($"ProcessActionFromRedis. {iterationCount} keys readed.");
-        }
-
         public async Task<List<int>> UpdateMessageFlagInDb(List<int> indexes, IMailFolder imapFolder)
         {
             if (indexes.Count == 0) return new List<int>();
 
             try
             {
-                await ChangeWorkFolderIMAP(imapFolder);
+                await OpenFolderWithOutWaiter(imapFolder);
 
                 var imap_messages = await imapFolder.FetchAsync(indexes, SummaryItems);
 
@@ -543,8 +531,6 @@ namespace ASC.Mail.ImapSync
 
                     SynchronizeMessageFlagsFromImap(imap_message, db_message);
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -554,11 +540,17 @@ namespace ASC.Mail.ImapSync
             return indexes;
         }
 
-        public async Task<bool> SynchronizeMailFolderFromImap(IMailFolder imapFolder, MailFolder dbFolder)
+        public async Task<bool> SynchronizeMailFolderFromImap(IMailFolder imapFolder)
         {
-            if (imapFolder == null || dbFolder == null) return false;
+            if (imapFolder == null) return false;
 
-            await ChangeWorkFolderIMAP(imapFolder);
+            MailFolder dbFolder = foldersDictionary[imapFolder];
+
+            if (dbFolder == null) return false;
+
+            sdf
+
+            await OpenFolderWithOutWaiter(imapFolder);
 
             try
             {
@@ -572,7 +564,7 @@ namespace ASC.Mail.ImapSync
 
                 var db_messages = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
 
-                _log.Debug($"SynchronizeMailFolderFromImap is Begin: imap_messages={imap_messages.Count()}, db_messages={db_messages.Count}");
+                _log.Debug($"SynchronizeMailFolderFromImap begin: imap_messages={imap_messages.Count()}, db_messages={db_messages.Count}");
 
                 foreach (var imap_message in imap_messages)
                 {
@@ -701,7 +693,7 @@ namespace ASC.Mail.ImapSync
 
                 if (imapFolderDestination == null) return false;
 
-                await ChangeWorkFolderIMAP(imapFolder);
+                await OpenFolderWithOutWaiter(imapFolder);
 
                 Imap.Inbox.CountChanged -= ImapCountChanged;
                 Imap.Inbox.MessageFlagsChanged -= ImapMessageFlagsChanged;
@@ -798,7 +790,7 @@ namespace ASC.Mail.ImapSync
         {
             try
             {
-                await ChangeWorkFolderIMAP(imapFolder);
+                await OpenFolderWithOutWaiter(imapFolder);
 
                 switch (mailUserAction)
                 {
@@ -925,7 +917,7 @@ namespace ASC.Mail.ImapSync
 
         public async Task<string> GetMessageMD5FromIMAP(IMessageSummary message, IMailFolder imapFolder)
         {
-            await ChangeWorkFolderIMAP(imapFolder);
+            await OpenFolderWithOutWaiter(imapFolder);
 
             var mimeMessage = await imapFolder.GetMessageAsync(message.UniqueId);
 
@@ -1003,7 +995,7 @@ namespace ASC.Mail.ImapSync
             return new MailFolder(folderId, folder.Name);
         }
 
-        private async Task ChangeWorkFolderIMAP(IMailFolder imapFolder)
+        private async Task OpenFolderWithOutWaiter(IMailFolder imapFolder)
         {
             if (imapFolder.IsOpen) return;
 
@@ -1019,44 +1011,40 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        public void DoneTokenUpdate()
-        {
-            if (imapFoldersToUpdate.Any() || imapMessagesToUpdate.Any())
-            {
-                if ((DoneToken != null) && ClientIsReadyToWork)
-                {
-                    DoneToken?.Cancel();
-                    SetIdleState();
-                }
-            }
-        }
 
-        public async void SetIdleState()
+        public async void SetCurrentState(ClientState requredClientState=ClientState.Idle)
         {
-            _log.Debug("SetClientTask->Wait for Semaphore");
+            if (requredClientState == ClientCurrentState) return;
+
+            DoneToken?.Cancel();
 
             await ImapSemaphore.WaitAsync();
 
-            _log.Debug("SetClientTask->Catch Semaphore");
-
-            while (imapFoldersToUpdate.TryDequeue(out IMailFolder imapFolderToUpdate))
+            if (imapMessagesToUpdate.Any())
             {
-                if (foldersDictionary.TryGetValue(imapFolderToUpdate, out MailFolder db_folder))
+                var indexList = new List<int>();
+
+                while (imapMessagesToUpdate.TryDequeue(out int index))
                 {
-                    await SynchronizeMailFolderFromImap(imapFolderToUpdate, db_folder);
+                    indexList.Add(index);
                 }
+                await UpdateMessageFlagInDb(indexList, WorkFolder);
             }
-            var indexList = new List<int>();
 
-            while (imapMessagesToUpdate.TryDequeue(out int index))
+            if(requredClientState!= ClientState.Idle)
             {
-                indexList.Add(index);
+                ClientCurrentState = requredClientState;
+
+                _log.Debug($"New state {ClientCurrentState}.");
+
+                ImapSemaphore.Release();
+
+                return;
             }
-            await UpdateMessageFlagInDb(indexList, WorkFolder);
 
             try
             {
-                await ChangeWorkFolderIMAP(WorkFolder);
+                await OpenFolderWithOutWaiter(WorkFolder);
 
                 if (Imap.Capabilities.HasFlag(ImapCapabilities.Idle))
                 {
