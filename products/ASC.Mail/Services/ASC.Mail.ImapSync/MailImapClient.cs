@@ -191,6 +191,14 @@ namespace ASC.Mail.ImapSync
                 Timeout = _mailSettings.TcpTimeout
             };
 
+            if (_redisClient == null)
+            {
+                _log.Error($"Ctor: _redisClient == null.");
+
+                DeleteClient?.Invoke(this, EventArgs.Empty);
+
+                return;
+            }
 
             //if (certificatePermit)
             //    Imap.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
@@ -206,7 +214,7 @@ namespace ASC.Mail.ImapSync
 
         private void _deathTimer_Elapsed(object state)
         {
-            _log.Debug($"Client {Account.MailBoxId}-{Account.Name}: Death timer elapsed.");
+            _log.Debug($"DeathTimer: Death timer elapsed.");
 
             DoneToken?.Cancel();
 
@@ -234,7 +242,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                _log.Error($"CreateConnection->Error: {ex.Message}");
+                _log.Error($"CreateConnection: {ex.Message}.");
             }
             finally
             {
@@ -250,30 +258,32 @@ namespace ASC.Mail.ImapSync
         {
             ClientIsReadyToWork = false;
 
-            _log.Debug($"Client {Imap} disconected.");
+            _log.Debug($"Imap_Disconnected.");
 
             Imap.Inbox.MessageFlagsChanged -= ImapMessageFlagsChanged;
             Imap.Inbox.CountChanged -= ImapCountChanged;
 
             if (e.IsRequested)
             {
+                _log.Info("Try reconnect to IMAP...");
+
                 _ = CreateConnection();
             }
             else
             {
-                _log.Info("MailClient->Dispose()");
+                _log.Info("DisconnectedEventArgs.IsRequested=false.");
 
                 DoneToken?.Cancel();
 
                 StopTokenSource.Cancel();
 
-                Dispose();
+                DeleteClient?.Invoke(this, EventArgs.Empty);
             }
         }
 
         public void Dispose()
         {
-            _log.Info("MailClient->Dispose()");
+            _log.Info("Dispose.");
 
             ClientIsReadyToWork = false;
 
@@ -296,7 +306,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                _log.ErrorFormat("MailClient->Dispose(Mb_Id={0} Mb_Addres: '{1}') Exception: {2}", Account.MailBoxId,
+                _log.ErrorFormat("Dispose(Mb_Id={0} Mb_Addres: '{1}') Exception: {2}", Account.MailBoxId,
                     Account.EMail.Address, ex.Message);
             }
         }
@@ -370,12 +380,21 @@ namespace ASC.Mail.ImapSync
                 }
                 throw new Exception("LoginImap failed", aggEx);
             }
+
+            _log.Debug("Imap logged in.");
         }
 
         public async Task LoadFoldersFromIMAP(int workFolder = 1)
         {
+            _log.Debug("Load folders from IMAP.");
+
             if (foldersDictionary == null) foldersDictionary = new Dictionary<IMailFolder, MailFolder>();
-            else return;
+            else
+            {
+                _log.Debug("IMAP folders already loaded.");
+
+                return;
+            }
 
             try
             {
@@ -390,6 +409,8 @@ namespace ASC.Mail.ImapSync
 
                 WorkFolder = Imap.Inbox;
 
+                _log.Debug($"Find {foldersIMAP.Count} folders in IMAP.");
+
                 foreach (var folderIMAP in foldersIMAP)
                 {
                     if (CancelToken.IsCancellationRequested) return;
@@ -401,9 +422,15 @@ namespace ASC.Mail.ImapSync
                         _log.Debug($"{folderIMAP.Name}-> skipped");
                         continue;
                     }
+                    else
+                    {
+                        _log.Debug($"{folderIMAP.Name}-> ready to work.");
+                    }
 
                     foldersDictionary.Add(folderIMAP, dbFolder);
                 }
+
+                _log.Debug($"Loaded {foldersDictionary.Count} folders for work.");
 
                 //var inboxFolders = foldersDictionary.Where(x => x.Value.Folder == FolderType.Inbox && x.Key != WorkFolder).ToList();
 
@@ -457,19 +484,15 @@ namespace ASC.Mail.ImapSync
 
         private async Task ProcessActionFromRedis()
         {
-            var cache = _redisClient;
+            var key = _redisClient.CreateQueueKey(Account.MailBoxId);
 
-            if (cache == null) return;
-
-            var key = cache.CreateQueueKey(Account.MailBoxId);
-
-            _log.Debug($"ProcessActionFromRedis->Begin with key: {key}");
+            _log.Debug($"ProcessActionFromRedis. Begin read key: {key}");
 
             int iterationCount = 0;
 
             while (true)
             {
-                var actionFromCache = await cache.PopFromQueue<CashedMailUserAction>(key);
+                var actionFromCache = await _redisClient.PopFromQueue<CashedMailUserAction>(key);
 
                 if (actionFromCache == null) break;
 
@@ -485,18 +508,11 @@ namespace ASC.Mail.ImapSync
                 }
                 else
                 {
-                    if (await SetFlagsInImap(actionSplittedList, actionFromCache.Action))
-                    {
-                        _log.Debug($"ProcessActionFromRedis->{Account.MailBoxId} SetFlag {actionFromCache.Uidls} {actionFromCache.Action}");
-                    }
-                    else
-                    {
-                        _log.Debug($"ProcessActionFromRedis->{Account.MailBoxId} Can`t setFlag {actionFromCache.Uidls} {actionFromCache.Action}");
-                    }
-                }
+                    await SetFlagsInImap(actionSplittedList, actionFromCache.Action);
+                };
             }
 
-            _log.Debug($"ProcessActionFromRedis->End: read {iterationCount} keys.");
+            _log.Debug($"ProcessActionFromRedis. {iterationCount} keys readed.");
         }
 
         public async Task<List<int>> UpdateMessageFlagInDb(List<int> indexes, IMailFolder imapFolder)
@@ -690,7 +706,6 @@ namespace ASC.Mail.ImapSync
                 Imap.Inbox.CountChanged -= ImapCountChanged;
                 Imap.Inbox.MessageFlagsChanged -= ImapMessageFlagsChanged;
 
-
                 var returnedUidl = await imapFolder.MoveToAsync(uidlListSplitted.Select(x => x.UniqueId).ToList(), imapFolderDestination);
 
                 var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
@@ -703,17 +718,21 @@ namespace ASC.Mail.ImapSync
                 {
                     var db_message = db_messages.FirstOrDefault(x => x.Uidl.StartsWith(item.Key.ToString()));
 
-                    if (db_message == null) continue;
+                    if (db_message == null)
+                    {
+                        _log.Debug($"MoveMessageInImap->Don`t found in DB: {imapFolder}-{item.Key} move to {imapFolderDestination}-{item.Value}.");
+
+                        continue;
+                    }
 
                     var updateQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
                         .SetMessageId(db_message.Id)
                         .Build();
 
                     _mailInfoDao.SetFieldValue(updateQuery, "uidl", SplittedUidl.ToUidl((FolderType)destination, item.Value));
+
+                    _log.Debug($"MoveMessageInImap->Update in DB: {imapFolder}-{item.Key} move to {imapFolderDestination}-{item.Value}.");
                 }
-
-                _log.Debug($"MoveMessageInImap->{Account.MailBoxId} MoveTo {imapFolder}. MessagesCount={uidlListSplitted.Count}, MessagesMoved.Count: {returnedUidl.Count}");
-
             }
             catch (Exception ex)
             {
@@ -803,11 +822,11 @@ namespace ASC.Mail.ImapSync
                         await imapFolder.AddFlagsAsync(uids, MessageFlags.Deleted, true);
                         break;
                 }
-                _log.Debug($"SetMessageFlagIMAP->{Account.MailBoxId}.{imapFolder.FullName} MessageCount={uids.Count}, {mailUserAction}");
+                _log.Debug($"SetFlagsInImap. In {imapFolder} set {mailUserAction} for {uids.Count} messages.");
             }
             catch (Exception ex)
             {
-                _log.Error($"SetMessageFlagIMAP->{Account.MailBoxId}.{imapFolder.FullName} MessageCount={uids.Count}, {mailUserAction}->{ex.Message}");
+                _log.Error($"SetFlagsInImap. In {imapFolder} set {mailUserAction} for {uids.Count} messages. {ex.Message}"); ;
             }
         }
 
@@ -992,11 +1011,11 @@ namespace ASC.Mail.ImapSync
             {
                 await imapFolder.OpenAsync(FolderAccess.ReadWrite);
 
-                _log.Debug($"ChangeWorkFolder -> OpenImapFolders({imapFolder.Name})");
+                _log.Debug($"Imap Folder {imapFolder.Name} was open.");
             }
             catch (Exception ex)
             {
-                _log.Error($"ChangeWorkFolder(IMailFolder={imapFolder.Name})->{ex.Message}");
+                _log.Error($"Imap Folder { imapFolder.Name} didn`t open. {ex.Message}");
             }
         }
 
