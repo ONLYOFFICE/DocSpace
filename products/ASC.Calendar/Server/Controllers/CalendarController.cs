@@ -23,100 +23,56 @@
  *
 */
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 
 using ASC.Api.Core;
+using ASC.Calendar.BusinessObjects;
+using ASC.Calendar.Configuration;
+using ASC.Calendar.Core;
+using ASC.Calendar.ExternalCalendars;
+using ASC.Calendar.iCalParser;
+using ASC.Calendar.Models;
+using ASC.Calendar.Notification;
+using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Security;
 using ASC.Common.Utils;
+using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Calendar.Models;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Routing;
+using ASC.Web.Core.Calendars;
 using ASC.Web.Core.Users;
+using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
 
+using Ical.Net.CalendarComponents;
+using Ical.Net.DataTypes;
+
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-using SecurityContext = ASC.Core.SecurityContext;
-using ASC.Calendar.Core;
-using ASC.Calendar.BusinessObjects;
-using ASC.Web.Core.Calendars;
-using ASC.Calendar.ExternalCalendars;
-using System.Linq;
-using System;
-using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
-using System.Web;
-using ASC.Calendar.Notification;
-using ASC.Common;
-using System.Net;
-using System.IO;
-using ASC.Calendar.iCalParser;
-using ASC.Common.Security;
-using System.Globalization;
-using Ical.Net.DataTypes;
-using System.Threading;
-using System.Text;
-using ASC.Common.Web;
-using System.Net.Mime;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
-using System.Security;
-using Ical.Net.CalendarComponents;
-
-using System.Threading.Tasks;
-using ASC.Web.Studio.Core;
-using System.Text.Json;
-using ASC.Calendar.Configuration;
+using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Calendar.Controllers
 {
-    public interface IApiContentResponce
-    {
-        Stream ContentStream { get; }
-        ContentType ContentType { get; }
-        Encoding ContentEncoding { get; }
-        ContentDisposition ContentDisposition { get; }
-    }
-    public class iCalApiContentResponse : IApiContentResponce
-    {
-        private Stream _stream;
-        private string _fileName;
-
-        public iCalApiContentResponse(Stream stream, string fileName)
-        {
-            _stream = stream;
-            _fileName = fileName;
-        }
-
-        #region IApiContentResponce Members
-
-        public Encoding ContentEncoding
-        {
-            get { return Encoding.UTF8; }
-        }
-
-        public Stream ContentStream
-        {
-            get { return _stream; }
-        }
-
-        public System.Net.Mime.ContentType ContentType
-        {
-            get { return new System.Net.Mime.ContentType("text/calendar; charset=UTF-8"); }
-        }
-
-        public System.Net.Mime.ContentDisposition ContentDisposition
-        {
-            get { return new System.Net.Mime.ContentDisposition { Inline = true, FileName = _fileName }; }
-        }
-
-        #endregion
-    }
-
     [DefaultRoute]
     [ApiController]
     [Scope]
@@ -1171,7 +1127,7 @@ namespace ASC.Calendar.Controllers
         /// <remarks>To get the feed you need to use the method returning the iCal feed link (it will generate the necessary signature)</remarks>
         /// <returns>Calendar iCal feed</returns>
         [Read("{calendarId}/ical/{signature}", false)] //NOTE: this method doesn't requires auth!!!
-        public iCalApiContentResponse GetCalendariCalStream(string calendarId, string signature)
+        public IActionResult GetCalendariCalStream(string calendarId, string signature)
         {
             try
             {
@@ -1206,7 +1162,7 @@ namespace ASC.Calendar.Controllers
             }
 
 
-            iCalApiContentResponse resp = null;
+            FileStreamResult resp = null;
             var userId = Signature.Read<Guid>(signature, calendarId);
             if (UserManager.GetUsers(userId).ID != Constants.LostUser.ID)
             {
@@ -1221,7 +1177,10 @@ namespace ASC.Calendar.Controllers
                     SecurityContext.AuthenticateMe(userId);
                     var icalFormat = GetCalendariCalString(calendarId);
                     if (icalFormat != null)
-                        resp = new iCalApiContentResponse(new MemoryStream(Encoding.UTF8.GetBytes(icalFormat)), calendarId + ".ics");
+                    {
+                        resp = new FileStreamResult(new MemoryStream(Encoding.UTF8.GetBytes(icalFormat)),  "text/calendar");
+                        resp.FileDownloadName = calendarId + ".ics";
+                    }
                 }
                 finally
                 {
@@ -2308,7 +2267,7 @@ namespace ASC.Calendar.Controllers
                     var myUri = HttpContext.Request.GetUrlRewriter();
                     var currentUserEmail = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email.ToLower();                  
 
-                    var isFullAccess = PermissionContext.PermissionResolver.Check(AuthContext.CurrentAccount, (ISecurityObject)evt, null,
+                    var isFullAccess = PermissionContext.PermissionResolver.Check(AuthContext.CurrentAccount, evt, null,
                                                                               CalendarAccessRights.FullAccessAction);
                     var isShared = false;
                     if (calendarId == BirthdayReminderCalendar.CalendarId ||
@@ -2627,7 +2586,7 @@ namespace ASC.Calendar.Controllers
 
                         targetCalendar.Events.Clear();
 
-                        var convertedEvent = DDayICalParser.ConvertEvent(evt as BaseEvent);
+                        var convertedEvent = DDayICalParser.ConvertEvent(evt);
                         convertedEvent.ExceptionDates.Clear();
 
                         foreach (var exDate in evt.RecurrenceRule.ExDates)
@@ -3981,7 +3940,7 @@ namespace ASC.Calendar.Controllers
                         
 
                         isFullAccess = calendarId != BirthdayReminderCalendar.CalendarId && calendarId != "crm_calendar" ?
-                                            evt != null ? PermissionContext.PermissionResolver.Check(currentUser, (ISecurityObject)evt, null, CalendarAccessRights.FullAccessAction) : isFullAccess
+                                            evt != null ? PermissionContext.PermissionResolver.Check(currentUser, evt, null, CalendarAccessRights.FullAccessAction) : isFullAccess
                                             : isFullAccess;
                         var uid = e.Uid;
                         string[] split = uid.Split(new Char[] { '@' });
