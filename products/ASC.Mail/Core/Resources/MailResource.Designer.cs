@@ -22,7 +22,7 @@ namespace ASC.Mail.Core.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MailResource {
+    public class MailResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ASC.Mail.Core.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Mail.Core.Resources.MailResource", typeof(MailResource).Assembly);
@@ -51,7 +51,7 @@ namespace ASC.Mail.Core.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Mail.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Do the same as Mail user|Manage Mail Server|Manage the general Mail settings.
         /// </summary>
-        internal static string AddonAdminOpportunities {
+        public static string AddonAdminOpportunities {
             get {
                 return ResourceManager.GetString("AddonAdminOpportunities", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Mail.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Manage own mail accounts, receive and send letters|Manage own Mail settings|Manage the tags and address book.
         /// </summary>
-        internal static string AddonUserOpportunities {
+        public static string AddonUserOpportunities {
             get {
                 return ResourceManager.GetString("AddonUserOpportunities", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace ASC.Mail.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
-        internal static string MailDescription {
+        public static string MailDescription {
             get {
                 return ResourceManager.GetString("MailDescription", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace ASC.Mail.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Mail.
         /// </summary>
-        internal static string ProductName {
+        public static string ProductName {
             get {
                 return ResourceManager.GetString("ProductName", resourceCulture);
             }

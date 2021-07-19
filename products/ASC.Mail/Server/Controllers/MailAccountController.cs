@@ -1,16 +1,18 @@
-﻿using ASC.Mail.Core.Dao.Expressions.Mailbox;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Mail;
+
+using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Core.Resources;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
-using ASC.Web.Mail.Resources;
+
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
 
 namespace ASC.Mail.Controllers
 {

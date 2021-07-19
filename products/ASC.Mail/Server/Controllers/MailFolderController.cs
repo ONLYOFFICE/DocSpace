@@ -1,14 +1,17 @@
-﻿using ASC.Mail.Core.Engine.Operations.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Core.Resources;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Mail.Resources;
+
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.Mail.Controllers
 {

@@ -9,9 +9,9 @@ using ASC.Core;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Core.Resources;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
-using ASC.Web.Mail.Resources;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

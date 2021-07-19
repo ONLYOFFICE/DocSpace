@@ -64,20 +64,29 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="Resources\MailResource.Designer.cs">
+    <Protobuf Include="protos\AccountCacheItem.proto" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Resources\MailApiResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DependentUpon>MailApiResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\MailResource.Designer.cs">
       <DependentUpon>MailResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Update="Resources\MailResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MailResource.Designer.cs</LastGenOutput>
+    <EmbeddedResource Update="Resources\MailApiResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MailApiResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MailResource.ru.resx">
-      <DependentUpon>MailResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\MailCoreResource.resx">
+      <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\MailResource.de.resx">
       <DependentUpon>MailResource.resx</DependentUpon>
@@ -91,10 +100,13 @@
     <EmbeddedResource Update="Resources\MailResource.it.resx">
       <DependentUpon>MailResource.resx</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Protobuf Include="protos\AccountCacheItem.proto" />
+    <EmbeddedResource Update="Resources\MailResource.resx">
+      <LastGenOutput>MailResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.ru.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   
 </Project>
