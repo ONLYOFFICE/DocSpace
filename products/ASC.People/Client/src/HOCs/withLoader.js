@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
 
 let loadTimeout = null;
-const WithLoader = (WrappedComponent) => (Loader) => {
+const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
     const { tReady, isLoaded, isLoading, firstLoad, profileLoaded } = props;
     const [inLoad, setInLoad] = useState(true);
@@ -16,12 +16,12 @@ const WithLoader = (WrappedComponent) => (Loader) => {
       if (isLoading) {
         cleanTimer();
         loadTimeout = setTimeout(() => {
-          console.log("inLoad", true);
+          //console.log("inLoad", true);
           setInLoad(true);
         }, 500);
       } else {
         cleanTimer();
-        console.log("inLoad", false);
+        //console.log("inLoad", false);
         setInLoad(false);
       }
 
@@ -50,4 +50,4 @@ const WithLoader = (WrappedComponent) => (Loader) => {
   })(observer(withLoader));
 };
 
-export default WithLoader;
+export default withLoader;

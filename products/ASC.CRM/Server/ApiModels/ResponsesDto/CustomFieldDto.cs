@@ -64,13 +64,17 @@ namespace ASC.CRM.ApiModels
         {
             profile.CreateMap<CustomField, CustomFieldDto>()
                    .ConvertUsing<CustomFieldDtoTypeConverter>();
+
+            profile.CreateMap<CustomField, CustomFieldBaseDto>()
+                .ForMember(dest => dest.FieldType, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.FieldValue, opt => opt.MapFrom(src => src.Value));
         }
     }
 
     /// <summary>
     ///  User custom fields
     /// </summary>
-    public class CustomFieldBaseDto : IMapFrom<CustomField>
+    public class CustomFieldBaseDto 
     {
         public CustomFieldBaseDto()
         {
@@ -95,5 +99,6 @@ namespace ASC.CRM.ApiModels
                 Mask = ""
             };
         }
+
     }
 }

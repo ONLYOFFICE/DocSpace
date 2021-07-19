@@ -381,16 +381,15 @@ const Base = {
   //   arrowColor: grayMid,
   // },
 
-  // switchButton: {
-  //   fillColor: white,
-  //   checkedFillColor: gray,
-
-  //   fillColorDisabled: grayLight,
-  //   disabledFillColor: grayLightMid,
-  //   disabledFillColorInner: grayMid,
-
-  //   hoverBorderColor: gray,
-  // },
+  viewSelector: {
+    fillColor: white,
+    checkedFillColor: gray,
+    fillColorDisabled: grayLight,
+    disabledFillColor: grayLightMid,
+    disabledFillColorInner: grayMid,
+    hoverBorderColor: gray,
+    borderColor: grayMid,
+  },
 
   radioButton: {
     textColor: black,
@@ -1399,7 +1398,7 @@ const Base = {
 
       maxWidth: "175px",
 
-      lineHeightWithoutBorder: "15px",
+      lineHeightWithoutBorder: "16px",
       lineHeightTextDecoration: "underline dashed transparent",
     },
 

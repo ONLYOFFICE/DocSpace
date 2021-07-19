@@ -76,7 +76,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, onClose, t, userType } = this.props;
+    const { visible, onClose, t, tReady, userType } = this.props;
     const { isRequestRunning, listUsers, userIds } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -114,7 +114,11 @@ class ChangeUserTypeDialogComponent extends React.Component {
     const firstType = userType === 1 ? t("Common:Guest") : t("Common:User");
     const secondType = userType === 1 ? t("Common:User") : t("Common:Guest");
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>

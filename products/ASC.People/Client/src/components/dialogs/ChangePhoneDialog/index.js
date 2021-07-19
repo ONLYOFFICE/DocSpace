@@ -26,11 +26,11 @@ class ChangePhoneDialogComponent extends React.Component {
 
   render() {
     console.log("ChangePhoneDialog render");
-    const { t, visible, onClose } = this.props;
+    const { t, tReady, visible, onClose } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog visible={visible} onClose={onClose}>
+      <ModalDialog isLoading={!tReady} visible={visible} onClose={onClose}>
         <ModalDialog.Header>{t("MobilePhoneChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("MobilePhoneEraseDescription")}</Text>

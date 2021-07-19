@@ -14,6 +14,7 @@ const PureConnectDialogContainer = (props) => {
   const {
     visible,
     t,
+    tReady,
     item,
     treeFolders,
     fetchThirdPartyProviders,
@@ -27,6 +28,7 @@ const PureConnectDialogContainer = (props) => {
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
+    personal,
     getSubfolders,
   } = props;
   const {
@@ -185,7 +187,12 @@ const PureConnectDialogContainer = (props) => {
   }, [setToken, token]);
 
   return (
-    <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
+    <ModalDialog
+      isLoading={!tReady}
+      visible={visible}
+      zIndex={310}
+      onClose={onClose}
+    >
       <ModalDialog.Header>
         {t("Translations:ConnectingAccount")}
       </ModalDialog.Header>
@@ -275,12 +282,14 @@ const PureConnectDialogContainer = (props) => {
             onChange={onChangeFolderName}
           />
         </FieldContainer>
-        <Checkbox
-          label={t("ConnectMakeShared")}
-          isChecked={isCorporate}
-          onChange={onChangeMakeShared}
-          isDisabled={isLoading}
-        />
+        {!personal && (
+          <Checkbox
+            label={t("ConnectMakeShared")}
+            isChecked={isCorporate}
+            onChange={onChangeMakeShared}
+            isDisabled={isLoading}
+          />
+        )}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -319,7 +328,7 @@ export default inject(
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
     const { fetchFiles } = filesStore;
-    const { getOAuthToken } = auth.settingsStore;
+    const { getOAuthToken, personal } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -351,6 +360,8 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
       setConnectDialogVisible,
+
+      personal,
     };
   }
 )(observer(ConnectDialog));

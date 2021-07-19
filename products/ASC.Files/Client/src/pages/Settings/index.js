@@ -19,6 +19,7 @@ const PureSettings = ({
   isLoading,
   isLoadedSettingsTree,
   setFirstLoad,
+  tReady,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
@@ -42,7 +43,7 @@ const PureSettings = ({
         setTitle(t("CommonSettings"));
         break;
     }
-  }, [setting]);
+  }, [setting, t, tReady]);
 
   useEffect(() => {
     if (isLoading) {
@@ -74,7 +75,7 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {(!isLoadedSettingsTree && isLoading) || isLoading ? (
+          {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
             <Loaders.SectionHeader />
           ) : (
             <SectionHeaderContent title={title} />
@@ -82,7 +83,7 @@ const PureSettings = ({
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {(!isLoadedSettingsTree && isLoading) || isLoading ? (
+          {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
             setting === "thirdParty" ? (
               <Loaders.Rows />
             ) : (

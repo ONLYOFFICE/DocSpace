@@ -73,6 +73,8 @@ namespace ASC.Web.Api.Controllers
         private TimeZoneConverter TimeZoneConverter { get; }
         private SmsKeyStorage SmsKeyStorage { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
+        private ApiContext ApiContext { get; }
+        private AuthContext AuthContext { get; }
         private UserManagerWrapper UserManagerWrapper { get; }
 
         public AuthenticationController(
@@ -103,7 +105,9 @@ namespace ASC.Web.Api.Controllers
             TfaManager tfaManager,
             TimeZoneConverter timeZoneConverter,
             SmsKeyStorage smsKeyStorage,
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            ApiContext apiContext,
+            AuthContext authContext)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -132,6 +136,8 @@ namespace ASC.Web.Api.Controllers
             TimeZoneConverter = timeZoneConverter;
             SmsKeyStorage = smsKeyStorage;
             CommonLinkUtility = commonLinkUtility;
+            ApiContext = apiContext;
+            AuthContext = authContext;
             UserManagerWrapper = userManagerWrapper;
         }
 
@@ -188,22 +194,25 @@ namespace ASC.Web.Api.Controllers
             return EmailValidationKeyModelHelper.Validate(model);
         }
 
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
         [Create("setphone", false)]
-        public AuthenticationTokenData SaveMobilePhoneFromBody([FromBody]AuthModel model)
+        public AuthenticationTokenData SaveMobilePhoneFromBody([FromBody] MobileModel model)
         {
             return SaveMobilePhone(model);
         }
 
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
         [Create("setphone", false)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData SaveMobilePhoneFromForm([FromForm]AuthModel model)
+        public AuthenticationTokenData SaveMobilePhoneFromForm([FromForm] MobileModel model)
         {
             return SaveMobilePhone(model);
         }
 
-        private AuthenticationTokenData SaveMobilePhone(AuthModel model)
+        private AuthenticationTokenData SaveMobilePhone(MobileModel model)
         {
-            var user = GetUser(model, out _);
+            ApiContext.AuthByClaim();
+            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
             model.MobilePhone = SmsManager.SaveMobilePhone(user, model.MobilePhone);
             MessageService.Send(MessageAction.UserUpdatedMobileNumber, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper), model.MobilePhone);
 

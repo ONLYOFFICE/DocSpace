@@ -11,7 +11,6 @@ namespace ASC.People
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.Api", "ASC.Web" }; }
         public override bool ConfirmAddScheme { get => true; }
 
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)

@@ -63,7 +63,8 @@ namespace ASC.Data.Backup.Tasks
         private bool Dump { get; set; }
         private TenantManager TenantManager { get; set; }
         private TempStream TempStream { get; }
-        private BackupsContext BackupRecordContext { get; set; }
+        private Lazy<BackupsContext> LazyBackupsContext { get; }
+        private BackupsContext BackupRecordContext { get => LazyBackupsContext.Value; }
 
         public BackupPortalTask(DbFactory dbFactory, DbContextManager<BackupsContext> dbContextManager, IOptionsMonitor<ILog> options, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, TempStream tempStream)
             : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
@@ -71,7 +72,7 @@ namespace ASC.Data.Backup.Tasks
             Dump = coreBaseSettings.Standalone;
             TenantManager = tenantManager;
             TempStream = tempStream;
-            BackupRecordContext = dbContextManager.Get(DbFactory.ConnectionStringSettings.ConnectionString);
+            LazyBackupsContext = new Lazy<BackupsContext>(() => dbContextManager.Get(DbFactory.ConnectionStringSettings.ConnectionString));
         }
 
         public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)

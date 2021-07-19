@@ -40,10 +40,12 @@ namespace ASC.Core.Data
     {
         private Expression<Func<Subscription, SubscriptionRecord>> FromSubscriptionToSubscriptionRecord { get; set; }
         private Expression<Func<DbSubscriptionMethod, SubscriptionMethod>> FromDbSubscriptionMethodToSubscriptionMethod { get; set; }
-        private UserDbContext UserDbContext { get; set; }
+        private Lazy<UserDbContext> LazyUserDbContext { get; }
+        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
+
         public DbSubscriptionService(DbContextManager<UserDbContext> dbContextManager)
         {
-            UserDbContext = dbContextManager.Value;
+            LazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
 
             FromSubscriptionToSubscriptionRecord = r => new SubscriptionRecord
             {

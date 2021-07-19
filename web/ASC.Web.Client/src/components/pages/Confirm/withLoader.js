@@ -1,13 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
 import Loader from "@appserver/components/loader";
-//import { isMobile } from "react-device-detect";
+import axios from "axios";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 let loadTimeout = null;
-export default function withLoader(WrappedComponent, type) {
+export default function withLoader(WrappedComponent) {
   const withLoader = (props) => {
-    const { tReady, isLoaded, isLoading } = props;
+    const {
+      tReady,
+      isLoading,
+      linkData,
+      passwordSettings,
+      getSettings,
+      getPortalPasswordSettings,
+      history,
+    } = props;
     const [inLoad, setInLoad] = useState(false);
+
+    const type = linkData ? linkData.type : null;
+    const confirmHeader = linkData ? linkData.confirmHeader : null;
+
+    useEffect(() => {
+      if (
+        (type === "ChangePasswordForm" || type === "LinkInvite") &&
+        !passwordSettings
+      ) {
+        axios
+          .all([getSettings(), getPortalPasswordSettings(confirmHeader)])
+          .catch((error) => {
+            console.error(error);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, `/login/error=${error}`)
+            );
+          });
+      }
+    }, [passwordSettings]);
+
+    const isLoaded =
+      type === "TfaActivation" || type === "TfaAuth"
+        ? props.isLoaded
+        : type === "ChangePasswordForm" || type === "LinkInvite"
+        ? !!passwordSettings
+        : true;
 
     const cleanTimer = () => {
       loadTimeout && clearTimeout(loadTimeout);
@@ -30,17 +66,27 @@ export default function withLoader(WrappedComponent, type) {
       };
     }, [isLoading]);
 
-    return !isLoaded || !tReady || inLoad ? (
+    return !isLoaded || !tReady ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <WrappedComponent {...props} />
     );
   };
 
-  return inject(({ confirm }) => {
+  return inject(({ auth, confirm }) => {
+    const { isLoaded, isLoading } = confirm;
+    const {
+      passwordSettings,
+      getSettings,
+      getPortalPasswordSettings,
+    } = auth.settingsStore;
+
     return {
-      isLoaded: confirm.isLoaded,
-      isLoading: confirm.isLoading,
+      isLoaded,
+      isLoading,
+      getSettings,
+      passwordSettings,
+      getPortalPasswordSettings,
     };
   })(observer(withLoader));
 }
