@@ -14,11 +14,8 @@ export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
     constructor(props) {
       super(props);
-
-      this.state = {
-        isMouseDown: false,
-      };
     }
+
     onContentFileSelect = (checked, file) => {
       const { selectRowAction } = this.props;
       if (!file || file.id === -1) return;
@@ -106,8 +103,6 @@ export default function withFileActions(WrappedFileItem) {
       } = this.props;
       const notSelectable = e.target.classList.contains("not-selectable");
 
-      this.setState({ isMouseDown: true });
-
       if (!draggable || isPrivacy) return;
 
       if (window.innerWidth < 1025 || notSelectable) {
@@ -130,8 +125,7 @@ export default function withFileActions(WrappedFileItem) {
     onMarkAsRead = (id) =>
       this.props.markAsRead([], [`${id}`], this.props.item);
 
-    onMouseUpHandler = (e) => {
-      const { isMouseDown } = this.state;
+    onMouseClick = (e) => {
       const { viewAs, checked, item } = this.props;
 
       if (
@@ -146,18 +140,13 @@ export default function withFileActions(WrappedFileItem) {
         return;
 
       if (viewAs === "tile") {
-        if (
-          !isMouseDown ||
-          e.target.closest(".edit-button") ||
-          e.target.tagName === "IMG"
-        )
+        if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
 
         this.onFilesClick();
       } else {
         this.fileContextClick();
       }
-      this.setState({ isMouseDown: false });
     };
     onFilesClick = (e) => {
       const {
@@ -297,7 +286,7 @@ export default function withFileActions(WrappedFileItem) {
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
-          onMouseUp={this.onMouseUpHandler}
+          onMouseClick={this.onMouseClick}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}

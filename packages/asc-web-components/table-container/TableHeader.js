@@ -3,12 +3,9 @@ import PropTypes from "prop-types";
 import throttle from "lodash.throttle";
 import Text from "../text";
 import globalColors from "../utils/globalColors";
-import {
-  StyledSettingsIcon,
-  StyledTableHeader,
-  StyledTableRow,
-} from "./StyledTableContainer";
+import { StyledTableHeader, StyledTableRow } from "./StyledTableContainer";
 import Checkbox from "../checkbox";
+import TableSettings from "./TableSettings";
 
 const TABLE_SIZE = "tableSize";
 
@@ -174,7 +171,7 @@ class TableHeader extends React.Component {
           })}
 
           <div className="table-container_header-cell">
-            <StyledSettingsIcon />
+            <TableSettings columns={columns} />
           </div>
         </StyledTableRow>
       </StyledTableHeader>
@@ -184,7 +181,7 @@ class TableHeader extends React.Component {
 
 TableHeader.propTypes = {
   containerRef: PropTypes.shape({ current: PropTypes.any }),
-  columns: PropTypes.array,
+  columns: PropTypes.array.isRequired,
   setSelected: PropTypes.func,
 };
 

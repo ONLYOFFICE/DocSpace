@@ -38,6 +38,26 @@ const StyledShare = styled.div`
   }
 `;
 
+const StyledBadgesContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 19px;
+  margin-left: 8px;
+
+  .badges {
+    display: flex;
+    align-items: center;
+    height: 19px;
+  }
+
+  .badge {
+    cursor: pointer;
+    height: 14px;
+    width: 14px;
+    margin-right: 6px;
+  }
+`;
+
 const FilesTableRow = (props) => {
   const {
     contextOptionsProps,
@@ -48,6 +68,8 @@ const FilesTableRow = (props) => {
     checkedProps,
     className,
     value,
+    onMouseClick,
+    badgesComponent,
   } = props;
 
   const style = props.index === 0 ? { style: { marginTop: 40 } } : {};
@@ -66,11 +88,13 @@ const FilesTableRow = (props) => {
       element={element}
       fileContextClick={fileContextClick}
       onContentFileSelect={onContentFileSelect}
+      onClick={onMouseClick}
       {...contextOptionsProps}
       {...checkedProps}
     >
       <TableCell {...selectionProp} {...style}>
         <FileNameCell index={props.index} {...props} />
+        <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
       </TableCell>
       <TableCell {...selectionProp} {...style}>
         <AuthorCell index={props.index} sideColor={sideColor} {...props} />

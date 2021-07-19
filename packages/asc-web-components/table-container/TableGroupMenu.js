@@ -5,14 +5,24 @@ import { StyledTableGroupMenu } from "./StyledTableContainer";
 import Button from "../button";
 
 const TableGroupMenu = (props) => {
-  const { isChecked, isIndeterminate, headerMenu, onChange } = props;
+  const {
+    isChecked,
+    isIndeterminate,
+    headerMenu,
+    containerRef,
+    onChange,
+  } = props;
 
   const onCheckboxChange = (e) => {
     onChange && onChange(e.target && e.target.checked);
   };
 
+  const width = containerRef.current
+    ? containerRef.current.clientWidth + "px"
+    : "100%";
+
   return (
-    <StyledTableGroupMenu className="table-container_group-menu">
+    <StyledTableGroupMenu width={width} className="table-container_group-menu">
       <Checkbox
         onChange={onCheckboxChange}
         isChecked={isChecked}
@@ -40,6 +50,7 @@ TableGroupMenu.propTypes = {
   headerMenu: PropTypes.arrayOf(PropTypes.object),
   onClick: PropTypes.func,
   onChange: PropTypes.func,
+  containerRef: PropTypes.shape({ current: PropTypes.any }),
 };
 
 export default TableGroupMenu;

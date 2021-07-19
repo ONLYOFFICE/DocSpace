@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TableHeader from "@appserver/components/table-container/TableHeader";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import { inject, observer } from "mobx-react";
@@ -15,38 +15,70 @@ const FilesTableHeader = (props) => {
     setSelected,
   } = props;
 
-  const columns = [
+  const onColumnChange = (e) => {
+    const key = e.currentTarget.dataset.key;
+    const columnIndex = columns.findIndex((c) => c.key === key);
+
+    if (columnIndex === -1) return;
+
+    columns[columnIndex].enable = !columns[columnIndex].enable;
+    setColumns([...columns]);
+  };
+
+  const defaultColumns = [
     {
-      key: 0,
+      key: "Name",
       title: t("Common:Name"),
       resizable: true,
+      enable: true,
+      default: true,
+      onChange: onColumnChange,
     },
     {
-      key: 1,
+      key: "Author",
       title: t("ByAuthor"),
+      enable: true,
       resizable: true,
+      onChange: onColumnChange,
     },
     {
-      key: 2,
+      key: "Created",
       title: t("ByCreationDate"),
+      enable: true,
       resizable: true,
+      onChange: onColumnChange,
     },
     // {
-    //   key: 3,
+    //   key: "Modified",
     //   title: t("Common:Type"),
+    //   enable: true,
     //   resizable: true,
+    //   onChange: onColumnChange,
     // },
     {
-      key: 4,
+      key: "Size",
       title: t("Common:Size"),
+      enable: true,
       resizable: false,
+      onChange: onColumnChange,
     },
+    // {
+    //   key: "Type",
+    //   title: t("Common:Type"),
+    //   enable: true,
+    //   resizable: true,
+    //   onChange: onColumnChange,
+    // },
     {
       key: 5,
       title: "",
+      enable: true,
       resizable: false,
+      onChange: onColumnChange,
     },
   ];
+
+  const [columns, setColumns] = useState(defaultColumns);
 
   const onChange = (checked) => {
     setSelected(checked ? "all" : "none");
@@ -54,6 +86,7 @@ const FilesTableHeader = (props) => {
 
   return isHeaderVisible ? (
     <TableGroupMenu
+      containerRef={containerRef}
       onChange={onChange}
       isChecked={isHeaderChecked}
       isIndeterminate={isHeaderIndeterminate}

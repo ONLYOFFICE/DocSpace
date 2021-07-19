@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import SettingsIcon from "./svg/settings.react.svg";
 
 const HeaderStyles = css`
   height: 39px;
@@ -64,6 +63,7 @@ const StyledTableGroupMenu = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: ${(props) => props.width};
 
   ${HeaderStyles}
 
@@ -108,8 +108,16 @@ const StyledTableCell = styled.div`
   }
 `;
 
-const StyledSettingsIcon = styled(SettingsIcon)`
-  margin-top: 12px;
+const StyledTableSettings = styled.div`
+  margin: 14px 0 0px 8px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  .table-container_settings-checkbox {
+    padding: 8px 16px;
+  }
 `;
 
 export {
@@ -118,6 +126,6 @@ export {
   StyledTableBody,
   StyledTableHeader,
   StyledTableCell,
-  StyledSettingsIcon,
+  StyledTableSettings,
   StyledTableGroupMenu,
 };

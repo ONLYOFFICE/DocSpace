@@ -932,7 +932,7 @@ class FilterInput extends React.Component {
         </div>
         {viewAs && !isMobileOnly && (
           <ViewSelector
-            className="view-selector-button"
+            className="view-selector-button not-selectable"
             isDisabled={isDisabled}
             onChangeView={this.props.onChangeViewAs}
             viewAs={viewAs}

@@ -66,7 +66,7 @@ const SimpleFilesRow = (props) => {
     checkedProps,
     element,
     onFilesClick,
-    onMouseUp,
+    onMouseClick,
     isEdit,
   } = props;
 
@@ -90,7 +90,7 @@ const SimpleFilesRow = (props) => {
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
-          onMouseUp={onMouseUp}
+          onClick={onMouseClick}
           onDoubleClick={onFilesClick}
           {...checkedProps}
           {...contextOptionsProps}
