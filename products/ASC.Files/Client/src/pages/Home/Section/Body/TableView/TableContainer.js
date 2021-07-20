@@ -12,8 +12,8 @@ const Table = ({ filesList }) => {
     <TableContainer forwardedRef={ref}>
       <TableHeader containerRef={ref} />
       <TableBody>
-        {filesList.map((item, index) => (
-          <TableRow key={item.id} item={item} index={index} />
+        {filesList.map((item) => (
+          <TableRow key={item.id} item={item} />
         ))}
       </TableBody>
     </TableContainer>

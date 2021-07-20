@@ -182,8 +182,6 @@ export default inject(
     } = filesStore;
     const { getHeaderMenu } = filesActionsStore;
 
-    console.log("filter", filter);
-
     return {
       isHeaderVisible,
       isHeaderIndeterminate,

@@ -256,6 +256,7 @@ export default function withContent(WrappedContent) {
         isTrashFolder,
         onFilesClick,
         viewAs,
+        element,
       } = this.props;
       const { id, fileExst, updated, createdBy, access, fileStatus } = item;
 
@@ -284,6 +285,7 @@ export default function withContent(WrappedContent) {
       return isEdit ? (
         <EditingWrapperComponent
           className={"editing-wrapper-component"}
+          elementIcon={element}
           itemTitle={itemTitle}
           itemId={id}
           isLoading={isLoading}

@@ -72,8 +72,6 @@ const FilesTableRow = (props) => {
     badgesComponent,
   } = props;
 
-  const style = props.index === 0 ? { style: { marginTop: 40 } } : {};
-
   const selectionProp = {
     className: `files-item ${className}`,
     value,
@@ -82,7 +80,6 @@ const FilesTableRow = (props) => {
   return (
     <TableRow
       selectionProp={selectionProp}
-      style={style}
       key={item.id}
       item={item}
       element={element}
@@ -92,21 +89,21 @@ const FilesTableRow = (props) => {
       {...contextOptionsProps}
       {...checkedProps}
     >
-      <TableCell {...selectionProp} {...style}>
-        <FileNameCell index={props.index} {...props} />
+      <TableCell {...selectionProp}>
+        <FileNameCell {...props} />
         <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
       </TableCell>
-      <TableCell {...selectionProp} {...style}>
-        <AuthorCell index={props.index} sideColor={sideColor} {...props} />
+      <TableCell {...selectionProp}>
+        <AuthorCell sideColor={sideColor} {...props} />
       </TableCell>
-      <TableCell {...selectionProp} {...style}>
-        <CreatedCell index={props.index} sideColor={sideColor} {...props} />
+      <TableCell {...selectionProp}>
+        <CreatedCell sideColor={sideColor} {...props} />
       </TableCell>
-      <TableCell {...selectionProp} {...style}>
-        <SizeCell index={props.index} sideColor={sideColor} {...props} />
+      <TableCell {...selectionProp}>
+        <SizeCell sideColor={sideColor} {...props} />
       </TableCell>
-      <TableCell {...selectionProp} {...style}>
-        <StyledShare index={props.index}> {props.sharedButton}</StyledShare>
+      <TableCell {...selectionProp}>
+        <StyledShare> {props.sharedButton}</StyledShare>
       </TableCell>
     </TableRow>
   );
