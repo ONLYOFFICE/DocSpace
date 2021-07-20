@@ -25,6 +25,7 @@ const StyledSnackBar = styled(Box)`
   }
 
   .text-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 5px;

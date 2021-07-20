@@ -14,6 +14,9 @@ const SnackBar = ({
   onAction,
   textColor,
   showIcon,
+  fontSize,
+  fontWeight,
+  textAlign,
   ...rest
 }) => {
   const onActionClick = useCallback(
@@ -40,10 +43,19 @@ const SnackBar = ({
           className="text-header"
           style={headerStyles}
           color={textColor}
+          textAlign={textAlign}
         >
           {headerText}
         </Heading>
-        <Text color={textColor}>{text}</Text>
+        <Text
+          as="p"
+          color={textColor}
+          fontSize={fontSize}
+          fontWeight={fontWeight}
+          textAlign={textAlign}
+        >
+          {text}
+        </Text>
       </Box>
       <button className="action" onClick={onActionClick}>
         {btnText ? (
@@ -65,12 +77,18 @@ SnackBar.propTypes = {
   textColor: PropType.string,
   showIcon: PropType.bool,
   onAction: PropType.func,
+  fontSize: PropType.string,
+  fontWeight: PropType.string,
+  textAlign: PropType.string,
 };
 
 SnackBar.defaultProps = {
   backgroundColor: "#f8f7bf",
   textColor: "#000",
   showIcon: true,
+  fontSize: "13px",
+  fontWeight: "400",
+  textAlign: "left",
 };
 
 export default SnackBar;

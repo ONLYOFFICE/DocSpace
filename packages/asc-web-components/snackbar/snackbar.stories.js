@@ -44,4 +44,7 @@ base.args = {
   text:
     "We apologize for any short-term technical issues in service functioning, that may appear on 22.06.2021 during the update of Onlyoffice Personal.",
   showIcon: true,
+  fontSize: "13px",
+  fontWeight: "400",
+  textAlign: "left",
 };
