@@ -39,6 +39,13 @@ namespace ASC.Web.Api.Tests
             Scope = host.Services.CreateScope();
         }
 
+        [OneTimeTearDown]
+        public void DropDb()
+        {
+            var context = Scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+            context.Value.Database.EnsureDeleted();
+        }
+
 
         private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
         {
