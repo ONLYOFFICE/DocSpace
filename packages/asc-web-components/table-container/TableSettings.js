@@ -42,16 +42,19 @@ const TableSettings = ({ columns }) => {
         clickOutsideAction={clickOutsideAction}
         withBackdrop={false}
       >
-        {columns.map((column) => (
-          <Checkbox
-            className="table-container_settings-checkbox"
-            isChecked={column.enable}
-            data-key={column.key}
-            onChange={column.onChange}
-            key={column.key}
-            label={column.title}
-          />
-        ))}
+        {columns.map(
+          (column) =>
+            !column.default && (
+              <Checkbox
+                className="table-container_settings-checkbox"
+                isChecked={column.enable}
+                data-key={column.key}
+                onChange={column.onChange}
+                key={column.key}
+                label={column.title}
+              />
+            )
+        )}
       </DropDown>
     </StyledTableSettings>
   );

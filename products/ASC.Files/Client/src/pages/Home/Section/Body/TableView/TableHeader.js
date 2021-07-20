@@ -3,16 +3,22 @@ import TableHeader from "@appserver/components/table-container/TableHeader";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import { FilterType } from "@appserver/common/constants";
+import DropDownItem from "@appserver/components/drop-down-item";
 
 const FilesTableHeader = (props) => {
   const {
     t,
+    filter,
+    selectedFolderId,
     containerRef,
     isHeaderVisible,
     isHeaderChecked,
     isHeaderIndeterminate,
     getHeaderMenu,
     setSelected,
+    setIsLoading,
+    fetchFiles,
   } = props;
 
   const onColumnChange = (e) => {
@@ -25,6 +31,14 @@ const FilesTableHeader = (props) => {
     setColumns([...columns]);
   };
 
+  const onNameClick = (val) => {
+    const newFilter = filter.clone();
+    newFilter.sortOrder = val ? "ascending" : "descending";
+
+    setIsLoading(true);
+    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
   const defaultColumns = [
     {
       key: "Name",
@@ -32,6 +46,7 @@ const FilesTableHeader = (props) => {
       resizable: true,
       enable: true,
       default: true,
+      onClick: onNameClick,
       onChange: onColumnChange,
     },
     {
@@ -48,13 +63,13 @@ const FilesTableHeader = (props) => {
       resizable: true,
       onChange: onColumnChange,
     },
-    // {
-    //   key: "Modified",
-    //   title: t("Common:Type"),
-    //   enable: true,
-    //   resizable: true,
-    //   onChange: onColumnChange,
-    // },
+    {
+      key: "Modified",
+      title: t("Common:Type"),
+      enable: false,
+      resizable: true,
+      onChange: onColumnChange,
+    },
     {
       key: "Size",
       title: t("Common:Size"),
@@ -62,13 +77,13 @@ const FilesTableHeader = (props) => {
       resizable: false,
       onChange: onColumnChange,
     },
-    // {
-    //   key: "Type",
-    //   title: t("Common:Type"),
-    //   enable: true,
-    //   resizable: true,
-    //   onChange: onColumnChange,
-    // },
+    {
+      key: "Type",
+      title: t("Common:Type"),
+      enable: false,
+      resizable: true,
+      onChange: onColumnChange,
+    },
     {
       key: 5,
       title: "",
@@ -84,9 +99,62 @@ const FilesTableHeader = (props) => {
     setSelected(checked ? "all" : "none");
   };
 
+  const onSelect = (e) => {
+    const key = e.currentTarget.dataset.key;
+    setSelected(key);
+  };
+
+  const checkboxOptions = (
+    <>
+      <DropDownItem label={t("All")} data-key="all" onClick={onSelect} />
+      <DropDownItem
+        label={t("Translations:Folders")}
+        data-key={FilterType.FoldersOnly}
+        onClick={onSelect}
+      />
+      <DropDownItem
+        label={t("Common:Documents")}
+        data-key={FilterType.DocumentsOnly}
+        onClick={onSelect}
+      />
+      <DropDownItem
+        label={t("Translations:Presentations")}
+        data-key={FilterType.PresentationsOnly}
+        onClick={onSelect}
+      />
+      <DropDownItem
+        label={t("Translations:Spreadsheets")}
+        data-key={FilterType.SpreadsheetsOnly}
+        onClick={onSelect}
+      />
+      <DropDownItem
+        label={t("Images")}
+        data-key={FilterType.ImagesOnly}
+        onClick={onSelect}
+      />
+      <DropDownItem
+        label={t("Media")}
+        data-key={FilterType.MediaOnly}
+        onClick={onSelect}
+      />
+      <DropDownItem
+        label={t("Archives")}
+        data-key={FilterType.ArchiveOnly}
+        onClick={onSelect}
+      />
+      <DropDownItem
+        label={t("AllFiles")}
+        data-key={FilterType.FilesOnly}
+        onClick={onSelect}
+      />
+    </>
+  );
+
   return isHeaderVisible ? (
     <TableGroupMenu
+      checkboxOptions={checkboxOptions}
       containerRef={containerRef}
+      onSelect={onSelect}
       onChange={onChange}
       isChecked={isHeaderChecked}
       isIndeterminate={isHeaderIndeterminate}
@@ -101,24 +169,35 @@ const FilesTableHeader = (props) => {
   );
 };
 
-export default inject(({ filesStore, filesActionsStore }) => {
-  const {
-    setSelected,
-    isHeaderVisible,
-    isHeaderIndeterminate,
-    isHeaderChecked,
-  } = filesStore;
-  const { getHeaderMenu } = filesActionsStore;
+export default inject(
+  ({ filesStore, filesActionsStore, selectedFolderStore }) => {
+    const {
+      setSelected,
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      setIsLoading,
+      filter,
+      fetchFiles,
+    } = filesStore;
+    const { getHeaderMenu } = filesActionsStore;
 
-  return {
-    setSelected,
-    isHeaderVisible,
-    isHeaderIndeterminate,
-    isHeaderChecked,
+    console.log("filter", filter);
 
-    getHeaderMenu,
-  };
-})(
+    return {
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      filter,
+      selectedFolderId: selectedFolderStore.id,
+
+      setSelected,
+      setIsLoading,
+      fetchFiles,
+      getHeaderMenu,
+    };
+  }
+)(
   withTranslation(["Home", "Common", "Translations"])(
     observer(FilesTableHeader)
   )

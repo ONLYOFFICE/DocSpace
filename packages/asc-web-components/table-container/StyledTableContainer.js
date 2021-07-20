@@ -38,12 +38,6 @@ const StyledTableContainer = styled.div`
     border-right: 2px solid #d0d5da;
   }
 
-  .header-container {
-    height: 38px;
-    display: flex;
-    align-items: center;
-  }
-
   .content-container {
     overflow: hidden;
   }
@@ -56,6 +50,41 @@ const StyledTableContainer = styled.div`
   .table-cell {
     height: 47px;
     border-bottom: 1px solid #eceef1;
+  }
+
+  .table-container_group-menu {
+    .table-container_group-menu-checkbox {
+      width: 22px;
+    }
+
+    .table-container_group-menu-combobox {
+      height: 24px;
+      width: 16px;
+      margin-bottom: 16px;
+
+      .combo-button {
+        height: 24px;
+        margin-top: 8px;
+        width: 16px;
+
+        .combo-buttons_arrow-icon {
+          margin: 8px 16px 0 0;
+
+          /* svg {
+            path {
+              fill: #333;
+            }
+          } */
+        }
+      }
+    }
+
+    .table-container_group-menu-separator {
+      border-right: 1px solid #eceef1;
+      width: 2px;
+      height: 10px;
+      margin: 0 8px;
+    }
   }
 `;
 
@@ -84,6 +113,35 @@ const StyledTableHeader = styled.div`
     24px;
 
   ${HeaderStyles}
+`;
+
+const StyledTableHeaderCell = styled.div`
+  .table-container_header-item {
+    display: flex;
+    user-select: none;
+  }
+
+  .header-container-text-wrapper {
+    display: flex;
+    cursor: pointer;
+
+    .header-container-text-icon {
+      padding: 2px 0 0 4px;
+
+      ${(props) =>
+        props.sorted &&
+        css`
+          transform: scale(1, -1);
+          padding: 0 0 0 4px;
+        `}
+    }
+  }
+
+  .header-container-text {
+    height: 38px;
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const StyledTableBody = styled.div`
@@ -125,6 +183,7 @@ export {
   StyledTableRow,
   StyledTableBody,
   StyledTableHeader,
+  StyledTableHeaderCell,
   StyledTableCell,
   StyledTableSettings,
   StyledTableGroupMenu,

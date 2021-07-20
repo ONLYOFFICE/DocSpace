@@ -1,11 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import throttle from "lodash.throttle";
-import Text from "../text";
-import globalColors from "../utils/globalColors";
 import { StyledTableHeader, StyledTableRow } from "./StyledTableContainer";
 import Checkbox from "../checkbox";
 import TableSettings from "./TableSettings";
+import TableHeaderCell from "./TableHeaderCell";
 
 const TABLE_SIZE = "tableSize";
 
@@ -141,32 +140,18 @@ class TableHeader extends React.Component {
         {...rest}
       >
         <StyledTableRow>
-          <Checkbox onChange={this.onChange} checked={false} />
+          <Checkbox onChange={this.onChange} isChecked={false} />
 
           {columns.map((column, index) => {
             return (
-              <div
-                className="table-container_header-cell"
-                id={`column_${index + 1}`}
-                key={column.key}
-              >
-                <div style={{ display: "flex", userSelect: "none" }}>
-                  <Text
-                    fontWeight={600}
-                    color={globalColors.gray}
-                    className="header-container"
-                  >
-                    {column.title}
-                  </Text>
-                  {column.resizable && (
-                    <div
-                      data-column={`${index + 1}`}
-                      className="resize-handle not-selectable"
-                      onMouseDown={this.onMouseDown}
-                    />
-                  )}
-                </div>
-              </div>
+              column.enable && (
+                <TableHeaderCell
+                  key={column.key}
+                  index={index}
+                  column={column}
+                  onMouseDown={this.onMouseDown}
+                />
+              )
             );
           })}
 
