@@ -85,6 +85,7 @@ namespace ASC.Mail.ImapSync
         private CancellationTokenSource StopTokenSource { get; set; }
 
         private readonly SemaphoreSlim ImapSemaphore;
+        private readonly SemaphoreSlim RequestCountSemaphore;
 
         private Dictionary<IMailFolder, MailFolder> foldersDictionary;
 
@@ -106,9 +107,7 @@ namespace ASC.Mail.ImapSync
             {
                 _log.Debug($"ImapMessageFlagsChanged. Folder={imap_folder.FullName} Index={e.Index} Flags={e.Flags}. imapMessagesToUpdate.Count={imapMessagesToUpdate.Count}");
 
-                imapMessagesToUpdate.Enqueue(e.Index);
-
-                DoneTokenUpdate();
+                _= UpdateMessageFlagInDb(new List<int>() {e.Index }, WorkFolder);
             }
         }
 
@@ -118,7 +117,7 @@ namespace ASC.Mail.ImapSync
             {
                 _log.Debug($"ImapCountChanged. Folder={imap_folder.FullName} Count={imap_folder.Count}.");
 
-                SynchronizeMailFolderFromImap(imap_folder);
+                _ = SynchronizeMailFolderFromImap(imap_folder);
             }
         }
 
@@ -131,6 +130,8 @@ namespace ASC.Mail.ImapSync
             if (folderKeyValue.Key != null && WorkFolder != folderKeyValue.Key)
             {
                 WorkFolder = folderKeyValue.Key;
+
+                await SynchronizeMailFolderFromImap(WorkFolder);
 
                 _log.Debug($"CheckRedis. WorkFolder change to {WorkFolder.FullName} Count={WorkFolder.Count}.");
             }
@@ -227,6 +228,7 @@ namespace ASC.Mail.ImapSync
             Imap.Disconnected += Imap_Disconnected;
 
             ImapSemaphore = new SemaphoreSlim(1, 1);
+            RequestCountSemaphore=new SemaphoreSlim(10,10);
 
             _deathTimer = new Timer(_deathTimer_Elapsed, this, _mailSettings.ImapClienLifeTimeSecond, -1);
 
@@ -246,20 +248,13 @@ namespace ASC.Mail.ImapSync
 
         private async Task CreateConnection(int workFolder = 1)
         {
-            await ImapSemaphore.WaitAsync();
+            await GetImapSemaphore();
 
             try
             {
                 if (!Imap.IsConnected || !Imap.IsAuthenticated) await LoginImap();
 
                 await LoadFoldersFromIMAP(workFolder);
-
-                var inboxFolder = foldersDictionary.Where(x => x.Value.Folder == FolderType.Inbox);
-
-                foreach (var foldersDictionaryItem in inboxFolder)
-                {
-                    await SynchronizeMailFolderFromImap(foldersDictionaryItem.Key);
-                }
             }
             catch (Exception ex)
             {
@@ -267,12 +262,16 @@ namespace ASC.Mail.ImapSync
             }
             finally
             {
-                ImapSemaphore.Release();
+                await ReturnImapSemaphore(false);
             }
-
             ClientIsReadyToWork = true;
 
-            SetIdleState();
+            await SynchronizeMailFolderFromImap(WorkFolder);
+
+            //foreach (var foldersDictionaryItem in foldersDictionary)
+            //{
+            //    await SynchronizeMailFolderFromImap(foldersDictionaryItem.Key);
+            //}
         }
 
         private void Imap_Disconnected(object sender, DisconnectedEventArgs e)
@@ -452,19 +451,6 @@ namespace ASC.Mail.ImapSync
                 }
 
                 _log.Debug($"Loaded {foldersDictionary.Count} folders for work.");
-
-                //var inboxFolders = foldersDictionary.Where(x => x.Value.Folder == FolderType.Inbox && x.Key != WorkFolder).ToList();
-
-                //foreach(var inboxFolder in inboxFolders)
-                //{
-                //    var log = LogManager.GetLogger($"ASC.Mail.ImapSyncService.Mbox_{Account.MailBoxId}_{inboxFolder.Key.FullName}");
-
-                //    SimpleImapClient simpleImapClient = new SimpleImapClient(Account, inboxFolder.Value, CancelToken, tasksConfig,
-                //            Account.IsTeamlab || tasksConfig.SslCertificateErrorsPermit, tasksConfig.ProtocolLogPath, log);
-
-                //    if (simpleImapClient != null) simpleImapClients.Add(simpleImapClient);
-                //}
-
             }
             catch (AggregateException aggEx)
             {
@@ -507,6 +493,8 @@ namespace ASC.Mail.ImapSync
         {
             if (indexes.Count == 0) return new List<int>();
 
+            await GetImapSemaphore();
+
             try
             {
                 await OpenFolderWithOutWaiter(imapFolder);
@@ -536,7 +524,10 @@ namespace ASC.Mail.ImapSync
             {
                 _log.Error($"UpdateMessageFlagInDb({imapFolder.FullName}, Message.Count={indexes.Count})->{ex.Message}");
             }
-
+            finally
+            {
+                await ReturnImapSemaphore();
+            }
             return indexes;
         }
 
@@ -548,13 +539,13 @@ namespace ASC.Mail.ImapSync
 
             if (dbFolder == null) return false;
 
-            sdf
-
-            await OpenFolderWithOutWaiter(imapFolder);
+            await GetImapSemaphore();
 
             try
             {
-                var imap_messages = (await imapFolder.FetchAsync(1, -1, SummaryItems)).OrderBy(x=>x.UniqueId.Id).Take(_mailSettings.ImapMessagePerFolder);
+                await OpenFolderWithOutWaiter(imapFolder);
+
+                var imap_messages = (await imapFolder.FetchAsync(1, -1, SummaryItems));//.OrderBy(x=>x.UniqueId.Id).Take(_mailSettings.ImapMessagePerFolder);
 
                 var imap_SplittedUids = imap_messages.Select(x => new SplittedUidl(dbFolder.Folder, x.UniqueId)).ToList();
 
@@ -618,7 +609,7 @@ namespace ASC.Mail.ImapSync
                             .SetMessageId(db_message.Id)
                             .Build();
 
-                        //_mailInfoDao.SetFieldValue(restoreQuery, MailTable.Columns.IsRemoved, false);
+                        _mailInfoDao.SetFieldValue(restoreQuery, "is_removed", false);
 
                         _mailEnginesFactory.MessageEngine.Restore(new List<int>() { db_message.Id });
                     }
@@ -647,6 +638,10 @@ namespace ASC.Mail.ImapSync
                 _log.Error($"SynchronizeMailFolderFromImap(IMailFolder={imapFolder.Name}, MailFolder={dbFolder.Name})->{ex.Message}");
 
                 return false;
+            }
+            finally
+            {
+                await ReturnImapSemaphore();
             }
 
             return true;
@@ -679,9 +674,7 @@ namespace ASC.Mail.ImapSync
         {
             if (uidlListSplitted.Count == 0) return false;
 
-            DoneToken?.Cancel();
-
-            await ImapSemaphore.WaitAsync();
+            await GetImapSemaphore();
 
             try
             {
@@ -734,13 +727,11 @@ namespace ASC.Mail.ImapSync
             }
             finally
             {
-                ImapSemaphore.Release();
-
                 Imap.Inbox.CountChanged += ImapCountChanged;
                 Imap.Inbox.MessageFlagsChanged += ImapMessageFlagsChanged;
-            }
 
-            SetIdleState();
+                await ReturnImapSemaphore();
+            }
 
             return true;
         }
@@ -749,9 +740,7 @@ namespace ASC.Mail.ImapSync
         {
             if (uidlListSplitted.Count == 0) return false;
 
-            DoneToken?.Cancel();
-
-            await ImapSemaphore.WaitAsync();
+            await GetImapSemaphore();
 
             try
             {
@@ -778,10 +767,8 @@ namespace ASC.Mail.ImapSync
             }
             finally
             {
-                ImapSemaphore.Release();
+                await ReturnImapSemaphore();
             }
-
-            SetIdleState();
 
             return true;
         }
@@ -1011,36 +998,33 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-
-        public async void SetCurrentState(ClientState requredClientState=ClientState.Idle)
+        public async Task GetImapSemaphore()
         {
-            if (requredClientState == ClientCurrentState) return;
+            await RequestCountSemaphore.WaitAsync();
 
             DoneToken?.Cancel();
 
             await ImapSemaphore.WaitAsync();
+        }
 
-            if (imapMessagesToUpdate.Any())
+        public async Task ReturnImapSemaphore(bool goToIdle=true)
+        {
+            RequestCountSemaphore.Release();
+
+            _log.Debug($"ReturnImapSemaphore {RequestCountSemaphore.CurrentCount}.");
+
+            ImapSemaphore.Release();
+
+            if (RequestCountSemaphore.CurrentCount != 10)
             {
-                var indexList = new List<int>();
-
-                while (imapMessagesToUpdate.TryDequeue(out int index))
-                {
-                    indexList.Add(index);
-                }
-                await UpdateMessageFlagInDb(indexList, WorkFolder);
-            }
-
-            if(requredClientState!= ClientState.Idle)
-            {
-                ClientCurrentState = requredClientState;
-
-                _log.Debug($"New state {ClientCurrentState}.");
-
-                ImapSemaphore.Release();
-
                 return;
             }
+
+            if (!goToIdle) return;
+
+            DoneToken?.Cancel();
+
+            await ImapSemaphore.WaitAsync();
 
             try
             {
@@ -1064,7 +1048,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                _log.Error($"SetClientTask, Error:{ex.Message}");
+                _log.Error($"ReturnImapSemaphore, Error:{ex.Message}");
             }
             finally
             {
@@ -1076,11 +1060,11 @@ namespace ASC.Mail.ImapSync
                 {
                     ImapSemaphore.Release();
 
-                    _log.Debug($"Return from SetClientTask, ImapSemaphore release.");
+                    _log.Debug($"Return from ReturnImapSemaphore, ImapSemaphore release.");
                 }
                 else
                 {
-                    _log.Debug($"Return from SetClientTask without ImapSemaphore release.");
+                    _log.Debug($"Return from ReturnImapSemaphore without ImapSemaphore release.");
                 }
             }
         }
