@@ -45,8 +45,7 @@ const EditingWrapper = styled.div`
 
       border-bottom: 1px solid #eceef1;
       padding-bottom: 4px;
-
-      margin-top: ${props.isCreate ? "44px" : "4px"};
+      margin-top: 4px;
     `}
 
   ${(props) =>
@@ -147,7 +146,7 @@ const EditingWrapperComponent = (props) => {
   const onFocus = (e) => e.target.select();
 
   return (
-    <EditingWrapper isCreate={itemId === -1} viewAs={viewAs}>
+    <EditingWrapper viewAs={viewAs}>
       {isTable && elementIcon}
       <TextInput
         className="edit-text"
