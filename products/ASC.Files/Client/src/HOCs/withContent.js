@@ -227,7 +227,7 @@ export default function withContent(WrappedContent) {
     };
 
     getStatusByDate = () => {
-      const { culture, t, item, sectionWidth } = this.props;
+      const { culture, t, item, sectionWidth, viewAs } = this.props;
       const { created, updated, version, fileExst } = item;
 
       const title =
@@ -239,7 +239,8 @@ export default function withContent(WrappedContent) {
 
       const date = fileExst ? updated : created;
       const dateLabel = new Date(date).toLocaleString(culture);
-      const mobile = (sectionWidth && sectionWidth <= 375) || isMobile;
+      const mobile =
+        (sectionWidth && sectionWidth <= 375) || isMobile || viewAs === "table";
 
       return mobile ? dateLabel : `${title}: ${dateLabel}`;
     };
