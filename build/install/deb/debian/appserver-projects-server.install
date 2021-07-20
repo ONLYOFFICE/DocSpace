@@ -1,1 +1,2 @@
 src/var/www/products/ASC.Projects/server var/www/appserver/products/ASC.Projects/
+debian/appserver-projects-server.service etc/systemd/system/

@@ -1,1 +1,2 @@
-src/var/www/services/ASC.Web.Api/service/* var/www/studio/api/
+src/var/www/services/ASC.Web.Api/service/* var/www/appserver/studio/api/
+debian/appserver-api.service etc/systemd/system/

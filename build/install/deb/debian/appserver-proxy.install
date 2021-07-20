@@ -1,5 +1,5 @@
 ## COPY PUBLIC ##
-../../../public/*              var/www/public/
-../../../public/images/*       var/www/public/images/
-../../../public/offline/*      var/www/public/offline/
-../../../public/thirdparty/*   var/www/public/thirdparty/
+../../../public/*              var/www/appserver/public/
+../../../public/images/*       var/www/appserver/public/images/
+../../../public/offline/*      var/www/appserver/public/offline/
+../../../public/thirdparty/*   var/www/appserver/public/thirdparty/

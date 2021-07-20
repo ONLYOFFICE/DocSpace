@@ -3,7 +3,7 @@ Section: web
 Priority: optional
 Maintainer: onlyoffice
 Build-Depends: debhelper (>= 10), nodejs (>=10), dotnet-sdk-5.0, yarn
-Standards-Version: 1.0-0
+Standards-Version: 0.1-10
 Homepage: https://www.onlyoffice.com/
 Architecture: any
 

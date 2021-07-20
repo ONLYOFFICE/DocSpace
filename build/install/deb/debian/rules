@@ -33,6 +33,9 @@ override_dh_auto_build:
 	bash build-frontend.sh -sp ${SRC_PATH}; \
 	bash build-backend.sh -sp ${SRC_PATH} -ar "--disable-parallel"; \
 	bash publish-backend.sh -sp ${SRC_PATH} -bp ${CURRENT_PATH}/src/${BUILD_PATH} -ar "--disable-parallel"
+
+	sed -i "s@var/www@var/www/${PRODUCT}@" ${SRC_PATH}/config/nginx/onlyoffice-*.conf 
+	sed -i "s@var/www@var/www/${PRODUCT}@" ${SRC_PATH}/config/nginx/includes/onlyoffice-*.conf
 	
 override_dh_auto_install:
 	
