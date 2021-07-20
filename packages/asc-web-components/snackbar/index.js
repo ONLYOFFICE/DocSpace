@@ -17,6 +17,7 @@ const SnackBar = ({ text, headerText, btnText, onAction, ...rest }) => {
 
   const headerStyles = headerText ? {} : { display: "none" };
 
+  console.log("Snackbar render");
   return (
     <StyledSnackBar {...rest}>
       <Box className="logo">
@@ -44,6 +45,7 @@ SnackBar.propTypes = {
   text: PropType.string,
   headerText: PropType.string,
   btnText: PropType.string,
+  backgroundImg: PropType.string,
   onAction: PropType.func,
 };
 
