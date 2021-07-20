@@ -30,7 +30,6 @@ using ASC.ApiSystem.Controllers;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 
 using Autofac;
 
@@ -82,8 +81,6 @@ namespace ASC.ApiSystem
             services.AddAuthentication()
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
-
-            LogNLogExtension.ConfigureLog(diHelper, "ASC.Apisystem");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

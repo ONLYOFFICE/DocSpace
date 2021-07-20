@@ -27,9 +27,12 @@
 using System;
 
 using ASC.Common.Mapping;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+
+using AutoMapper;
 
 namespace ASC.CRM.Core
 {
@@ -77,6 +80,13 @@ namespace ASC.CRM.Core
                 default:
                     return typeof(ContactInfoBaseCategory);
             }
+        }
+        
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbContactInfo, ContactInfo>()
+                .ForMember(x => x.InfoType, opt => opt.MapFrom(x => x.Type));
+
         }
     }
 }

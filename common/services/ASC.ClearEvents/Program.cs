@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 
 using Autofac;
@@ -84,7 +83,6 @@ namespace ASC.Thumbnails.Svc
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.ClearEvents");
                     services.AddHostedService<ClearEventsServiceLauncher>();
                     diHelper.TryAdd<ClearEventsServiceLauncher>();
                 })
