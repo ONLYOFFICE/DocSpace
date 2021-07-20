@@ -1,8 +1,8 @@
 import { Workbox } from "workbox-window";
 
-export function registerSW(homepage) {
+export function registerSW() {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
-    const wb = new Workbox(`${homepage}/sw.js`);
+    const wb = new Workbox(`/sw.js`);
 
     //TODO: watch https://developers.google.com/web/tools/workbox/guides/advanced-recipes and https://github.com/webmaxru/prog-web-news/blob/5ff94b45c9d317409c21c0fbb7d76e92f064471b/src/app/app-shell/app-shell.component.ts
 
