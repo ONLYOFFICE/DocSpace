@@ -13,6 +13,7 @@ const SnackBar = ({
   btnText,
   onAction,
   textColor,
+  showIcon,
   ...rest
 }) => {
   const onActionClick = useCallback(
@@ -27,9 +28,11 @@ const SnackBar = ({
   console.log("Snackbar render");
   return (
     <StyledSnackBar {...rest}>
-      <Box className="logo">
-        <StyledLogoIcon size="medium" color={textColor} />
-      </Box>
+      {showIcon && (
+        <Box className="logo">
+          <StyledLogoIcon size="medium" color={textColor} />
+        </Box>
+      )}
       <Box className="text-container">
         <Heading
           size="xsmall"
@@ -60,12 +63,14 @@ SnackBar.propTypes = {
   backgroundImg: PropType.string,
   backgroundColor: PropType.string,
   textColor: PropType.string,
+  showIcon: PropType.bool,
   onAction: PropType.func,
 };
 
 SnackBar.defaultProps = {
   backgroundColor: "#f8f7bf",
   textColor: "#000",
+  showIcon: true,
 };
 
 export default SnackBar;

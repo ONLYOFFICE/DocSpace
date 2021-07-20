@@ -18,6 +18,7 @@ export default {
     },
     textColor: { control: "color" },
     backgroundColor: { control: "color" },
+    showIcon: { control: "boolean" },
   },
 };
 
@@ -42,4 +43,5 @@ base.args = {
   headerText: "Attention",
   text:
     "We apologize for any short-term technical issues in service functioning, that may appear on 22.06.2021 during the update of Onlyoffice Personal.",
+  showIcon: true,
 };
