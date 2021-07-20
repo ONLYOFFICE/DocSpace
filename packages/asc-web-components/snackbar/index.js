@@ -28,7 +28,7 @@ const SnackBar = ({
   return (
     <StyledSnackBar {...rest}>
       <Box className="logo">
-        <StyledLogoIcon size="medium" textColor={textColor} />
+        <StyledLogoIcon size="medium" color={textColor} />
       </Box>
       <Box className="text-container">
         <Heading
@@ -43,7 +43,11 @@ const SnackBar = ({
         <Text color={textColor}>{text}</Text>
       </Box>
       <button className="action" onClick={onActionClick}>
-        {btnText ? btnText : <StyledCrossIcon size="medium" />}
+        {btnText ? (
+          <Text color={textColor}>{btnText}</Text>
+        ) : (
+          <StyledCrossIcon size="medium" />
+        )}
       </button>
     </StyledSnackBar>
   );

@@ -6,7 +6,7 @@ const StyledLogoIcon = styled(InfoIcon)`
   ${commonIconsStyles}
 
   path {
-    fill: ${(props) => props.textColor};
+    fill: ${(props) => props.color};
   }
 `;
 
