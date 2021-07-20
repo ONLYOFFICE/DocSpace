@@ -71,6 +71,7 @@ namespace ASC.Mail.ImapSync
         private readonly SignalrServiceClient _signalrServiceClient;
         private readonly RedisClient _redisClient;
         private readonly ILog _log;
+        private readonly IndexEngine _indexEngine;
 
         const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Flags | MessageSummaryItems.Envelope | MessageSummaryItems.BodyStructure;
 
@@ -191,14 +192,16 @@ namespace ASC.Mail.ImapSync
             var securityContext = clientScope.GetService<SecurityContext>();
             securityContext.AuthenticateMe(new Guid(Account.UserId));
 
-            _mailEnginesFactory = clientScope.GetService<MailEnginesFactory>();
             _mailInfoDao = clientScope.GetService<MailInfoDao>();
+            _mailEnginesFactory = clientScope.GetService<MailEnginesFactory>();
+            _indexEngine = clientScope.GetService<IndexEngine>();
             _storageFactory = clientScope.GetService<StorageFactory>();
             _folderEngine = clientScope.GetService<FolderEngine>();
             _userManager = clientScope.GetService<UserManager>();
             _signalrServiceClient = clientScope.GetService<IOptionsSnapshot<SignalrServiceClient>>().Get("mail");
             _redisClient= clientScope.GetService<RedisClient>();
             _log= clientScope.GetService<ILog>();
+            
 
             _log.Name = $"ASC.Mail.ImapSync.Mbox_{mailbox.MailBoxId}";
 

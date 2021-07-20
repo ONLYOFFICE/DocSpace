@@ -2139,7 +2139,7 @@ namespace ASC.Mail.Core.Engine
 
         private void UpdateMessageChainFlag(int tenant, string user, int messageId, string fieldFrom, string fieldTo)
         {
-            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, tenant, user));
+            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, tenant, user,false));
 
             if (mail == null)
                 return;
