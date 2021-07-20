@@ -14,7 +14,6 @@ namespace ASC.Web.Api.Tests
     {
         private TenantManager tenantManager { get; set; }
         private SettingsManager settingsManager { get; set; }
-        public FirstTimeTenantSettings FirstTimeTenantSettings { get; set; }
 
         public WizardSettings wizardSettings { get; set; }
 
@@ -41,13 +40,24 @@ namespace ASC.Web.Api.Tests
                 SubscribeFromSite = subscribeFromSite
             };
 
-            var wizard = FirstTimeTenantSettings.SaveData(wizardModel);
+            var wizard = firstTimeTenantSettings.SaveData(wizardModel);
 
             Assert.IsTrue(wizard.Completed);
 
         }
 
+        [TestCaseSource(typeof(ApiTestsData), nameof(ApiTestsData.WizardGetSettings))]
+        [Category("Wizard")]
+        public void WizardGetSettings(string ownerId, string lng, string timeZone)
+        {
+            var trustedDomains = CurrentTenant.TrustedDomains;
 
+            var wizardsettings = settingsController.GetSettings();
+
+            Assert.AreEqual(lng, wizardsettings.Culture);
+            Assert.AreEqual(timeZone, wizardsettings.Timezone);
+            Assert.AreEqual(trustedDomains, wizardsettings.TrustedDomains);
+        }
 
     }
 }

@@ -8,6 +8,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.Web.Api.Controllers;
+using ASC.Web.Studio.UserControls.FirstTime;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -38,12 +39,6 @@ namespace ASC.Web.Api.Tests
             Scope = host.Services.CreateScope();
         }
 
-        [OneTimeTearDown]
-        public void DropDb()
-        {
-            var context = Scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
-            context.Value.Database.EnsureDeleted();
-        }
 
         private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
         {
@@ -71,6 +66,13 @@ namespace ASC.Web.Api.Tests
         protected SecurityContext SecurityContext { get; set; }
         protected UserOptions UserOptions { get; set; }
         protected IServiceScope scope { get; set; }
+        protected AuthenticationController authenticationController { get; set; }
+
+
+        protected ModulesController modulesController { get; set; }
+        protected SmtpSettingsController smtpSettingsController { get; set; }
+
+        protected FirstTimeTenantSettings firstTimeTenantSettings { get; set; }
 
         public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
         public virtual void SetUp()
@@ -87,7 +89,11 @@ namespace ASC.Web.Api.Tests
             tenantManager.SetCurrentTenant(tenant);
             CurrentTenant = tenant;
 
+            firstTimeTenantSettings = scope.ServiceProvider.GetService<FirstTimeTenantSettings>();
+            authenticationController = scope.ServiceProvider.GetService<AuthenticationController>();
+            modulesController = scope.ServiceProvider.GetService<ModulesController>();
             settingsController = scope.ServiceProvider.GetService<SettingsController>();
+            smtpSettingsController = scope.ServiceProvider.GetService<SmtpSettingsController>();
             portalController = scope.ServiceProvider.GetService<PortalController>();
             securityController = scope.ServiceProvider.GetService<SecurityController>();
             UserManager = scope.ServiceProvider.GetService<UserManager>();
