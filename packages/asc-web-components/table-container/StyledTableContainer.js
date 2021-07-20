@@ -178,6 +178,12 @@ const StyledTableSettings = styled.div`
   }
 `;
 
+const StyledEmptyTableContainer = styled.div`
+  grid-column-start: 1;
+  grid-column-end: -1;
+  height: 40px;
+`;
+
 export {
   StyledTableContainer,
   StyledTableRow,
@@ -187,4 +193,5 @@ export {
   StyledTableCell,
   StyledTableSettings,
   StyledTableGroupMenu,
+  StyledEmptyTableContainer,
 };

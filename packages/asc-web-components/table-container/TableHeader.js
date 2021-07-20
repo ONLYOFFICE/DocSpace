@@ -1,7 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import throttle from "lodash.throttle";
-import { StyledTableHeader, StyledTableRow } from "./StyledTableContainer";
+import {
+  StyledTableHeader,
+  StyledTableRow,
+  StyledEmptyTableContainer,
+} from "./StyledTableContainer";
 import Checkbox from "../checkbox";
 import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
@@ -134,32 +138,35 @@ class TableHeader extends React.Component {
     const { columns, ...rest } = this.props;
 
     return (
-      <StyledTableHeader
-        className="table-container_header"
-        ref={this.headerRef}
-        {...rest}
-      >
-        <StyledTableRow>
-          <Checkbox onChange={this.onChange} isChecked={false} />
+      <>
+        <StyledTableHeader
+          className="table-container_header"
+          ref={this.headerRef}
+          {...rest}
+        >
+          <StyledTableRow>
+            <Checkbox onChange={this.onChange} isChecked={false} />
 
-          {columns.map((column, index) => {
-            return (
-              column.enable && (
-                <TableHeaderCell
-                  key={column.key}
-                  index={index}
-                  column={column}
-                  onMouseDown={this.onMouseDown}
-                />
-              )
-            );
-          })}
+            {columns.map((column, index) => {
+              return (
+                column.enable && (
+                  <TableHeaderCell
+                    key={column.key}
+                    index={index}
+                    column={column}
+                    onMouseDown={this.onMouseDown}
+                  />
+                )
+              );
+            })}
 
-          <div className="table-container_header-cell">
-            <TableSettings columns={columns} />
-          </div>
-        </StyledTableRow>
-      </StyledTableHeader>
+            <div className="table-container_header-cell">
+              <TableSettings columns={columns} />
+            </div>
+          </StyledTableRow>
+        </StyledTableHeader>
+        <StyledEmptyTableContainer />
+      </>
     );
   }
 }

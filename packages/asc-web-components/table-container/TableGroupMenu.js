@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
-import { StyledTableGroupMenu } from "./StyledTableContainer";
+import {
+  StyledTableGroupMenu,
+  StyledEmptyTableContainer,
+} from "./StyledTableContainer";
 import Button from "../button";
 import ComboBox from "../combobox";
 
@@ -24,33 +27,39 @@ const TableGroupMenu = (props) => {
     : "100%";
 
   return (
-    <StyledTableGroupMenu width={width} className="table-container_group-menu">
-      <Checkbox
-        className="table-container_group-menu-checkbox"
-        onChange={onCheckboxChange}
-        isChecked={isChecked}
-        isIndeterminate={isIndeterminate}
-      />
-      <ComboBox
-        advancedOptions={checkboxOptions}
-        className="table-container_group-menu-combobox not-selectable"
-        options={[]}
-        selectedOption={{}}
-      />
-      <div className="table-container_group-menu-separator" />
-      {headerMenu.map((item, index) => {
-        const { label, disabled, onClick } = item;
-        return (
-          <Button
-            key={index}
-            className="table-container_group-menu_button not-selectable"
-            isDisabled={disabled}
-            onClick={onClick}
-            label={label}
-          />
-        );
-      })}
-    </StyledTableGroupMenu>
+    <>
+      <StyledTableGroupMenu
+        width={width}
+        className="table-container_group-menu"
+      >
+        <Checkbox
+          className="table-container_group-menu-checkbox"
+          onChange={onCheckboxChange}
+          isChecked={isChecked}
+          isIndeterminate={isIndeterminate}
+        />
+        <ComboBox
+          advancedOptions={checkboxOptions}
+          className="table-container_group-menu-combobox not-selectable"
+          options={[]}
+          selectedOption={{}}
+        />
+        <div className="table-container_group-menu-separator" />
+        {headerMenu.map((item, index) => {
+          const { label, disabled, onClick } = item;
+          return (
+            <Button
+              key={index}
+              className="table-container_group-menu_button not-selectable"
+              isDisabled={disabled}
+              onClick={onClick}
+              label={label}
+            />
+          );
+        })}
+      </StyledTableGroupMenu>
+      <StyledEmptyTableContainer />
+    </>
   );
 };
 
