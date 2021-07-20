@@ -17,6 +17,7 @@ const SnackBar = ({
   fontSize,
   fontWeight,
   textAlign,
+  headerAlign,
   ...rest
 }) => {
   const onActionClick = useCallback(
@@ -43,7 +44,7 @@ const SnackBar = ({
           className="text-header"
           style={headerStyles}
           color={textColor}
-          textAlign={textAlign}
+          textAlign={headerAlign}
         >
           {headerText}
         </Heading>
@@ -80,6 +81,7 @@ SnackBar.propTypes = {
   fontSize: PropType.string,
   fontWeight: PropType.string,
   textAlign: PropType.string,
+  headerAlign: PropType.string,
 };
 
 SnackBar.defaultProps = {
@@ -89,6 +91,7 @@ SnackBar.defaultProps = {
   fontSize: "13px",
   fontWeight: "400",
   textAlign: "left",
+  headerAlign: "left",
 };
 
 export default SnackBar;
