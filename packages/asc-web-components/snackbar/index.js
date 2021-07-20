@@ -7,7 +7,14 @@ import Box from "../box";
 import Heading from "../heading";
 import Text from "../text";
 
-const SnackBar = ({ text, headerText, btnText, onAction, ...rest }) => {
+const SnackBar = ({
+  text,
+  headerText,
+  btnText,
+  onAction,
+  textColor,
+  ...rest
+}) => {
   const onActionClick = useCallback(
     (e) => {
       onAction && onAction(e);
@@ -21,7 +28,7 @@ const SnackBar = ({ text, headerText, btnText, onAction, ...rest }) => {
   return (
     <StyledSnackBar {...rest}>
       <Box className="logo">
-        <StyledLogoIcon size="medium" />
+        <StyledLogoIcon size="medium" textColor={textColor} />
       </Box>
       <Box className="text-container">
         <Heading
@@ -29,10 +36,11 @@ const SnackBar = ({ text, headerText, btnText, onAction, ...rest }) => {
           isInline={true}
           className="text-header"
           style={headerStyles}
+          color={textColor}
         >
           {headerText}
         </Heading>
-        <Text>{text}</Text>
+        <Text color={textColor}>{text}</Text>
       </Box>
       <button className="action" onClick={onActionClick}>
         {btnText ? btnText : <StyledCrossIcon size="medium" />}
@@ -46,7 +54,14 @@ SnackBar.propTypes = {
   headerText: PropType.string,
   btnText: PropType.string,
   backgroundImg: PropType.string,
+  backgroundColor: PropType.string,
+  textColor: PropType.string,
   onAction: PropType.func,
+};
+
+SnackBar.defaultProps = {
+  backgroundColor: "#f8f7bf",
+  textColor: "#000",
 };
 
 export default SnackBar;

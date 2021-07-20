@@ -16,7 +16,7 @@ const StyledSnackBar = styled(Box)`
   margin: 0 0 8px 0;
   opacity: ${(props) => props.opacity || 0};
   width: 100%;
-  background-color: #f8f7bf;
+  background-color: ${(props) => props.backgroundColor};
   background-image: url(${(props) => props.backgroundImg || ""});
   border-radius: 6px;
 

@@ -16,6 +16,8 @@ export default {
     onAction: {
       action: "onAction",
     },
+    textColor: { control: "color" },
+    backgroundColor: { control: "color" },
   },
 };
 
@@ -34,6 +36,8 @@ const BaseTemplate = (args) => (
 export const base = BaseTemplate.bind({});
 base.args = {
   backgroundImg: "",
+  backgroundColor: "#f8f7bf",
+  textColor: "#000",
   opacity: 1,
   headerText: "Attention",
   text:
