@@ -93,14 +93,17 @@ END
 
 #install kafka
 PRODUCT_DIR="/var/www/${product}"
-mkdir -p ${PRODUCT_DIR}/services/
-getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
-cd ${PRODUCT_DIR}/services/kafka
-wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
-tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
-chown -R kafka ${PRODUCT_DIR}/services/kafka
-cd -
+if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
+	mkdir -p ${PRODUCT_DIR}/services/
+	getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
+	cd ${PRODUCT_DIR}/services/kafka
+	wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
+	tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
+	chown -R kafka ${PRODUCT_DIR}/services/kafka
+	cd -
+fi
 
+if [ ! -e /etc/systemd/system/zookeeper.service ]; then
 cat > /etc/systemd/system/zookeeper.service <<END
 [Unit]
 Requires=network.target remote-fs.target
@@ -114,7 +117,9 @@ Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
 END
+fi
 
+if [ ! -e /etc/systemd/system/kafka.service ]; then
 cat > /etc/systemd/system/kafka.service <<END
 [Unit]
 Requires=zookeeper.service
@@ -128,6 +133,7 @@ Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
 END
+fi
 
 # add nginx repo
 cat > /etc/yum.repos.d/nginx.repo <<END
@@ -176,7 +182,8 @@ ${package_manager} -y install epel-release \
 			postgresql \
 			postgresql-server \
 			rabbitmq-server$rabbitmq_version \
-			redis --enablerepo=remi
+			redis --enablerepo=remi \
+			java
 	
 postgresql-setup initdb	|| true
 
