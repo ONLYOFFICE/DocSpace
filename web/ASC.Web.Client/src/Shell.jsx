@@ -268,7 +268,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
-      onAction: () => snackbarButtonClick,
+      onAction: () => snackbarButtonClick(),
       opacity: 1,
     };
 
