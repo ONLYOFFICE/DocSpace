@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+import React from "react";
+import ReactDOM from "react-dom";
 import PropType from "prop-types";
 import StyledSnackBar from "./styled-snackbar";
 import StyledCrossIcon from "./styled-snackbar-action";
@@ -7,67 +8,92 @@ import Box from "../box";
 import Heading from "../heading";
 import Text from "../text";
 
-const SnackBar = ({
-  text,
-  headerText,
-  btnText,
-  onAction,
-  textColor,
-  showIcon,
-  fontSize,
-  fontWeight,
-  textAlign,
-  headerAlign,
-  ...rest
-}) => {
-  const onActionClick = useCallback(
-    (e) => {
-      onAction && onAction(e);
-    },
-    [onAction]
-  );
+class SnackBar extends React.Component {
+  static show(barConfig) {
+    const { parentElementId, ...rest } = barConfig;
 
-  const headerStyles = headerText ? {} : { display: "none" };
+    let parentElementNode =
+      parentElementId && document.getElementById(parentElementId);
 
-  console.log("Snackbar render");
-  return (
-    <StyledSnackBar {...rest}>
-      {showIcon && (
-        <Box className="logo">
-          <StyledLogoIcon size="medium" color={textColor} />
-        </Box>
-      )}
-      <Box className="text-container">
-        <Heading
-          size="xsmall"
-          isInline={true}
-          className="text-header"
-          style={headerStyles}
-          color={textColor}
-          textAlign={headerAlign}
-        >
-          {headerText}
-        </Heading>
-        <Text
-          as="p"
-          color={textColor}
-          fontSize={fontSize}
-          fontWeight={fontWeight}
-          textAlign={textAlign}
-        >
-          {text}
-        </Text>
-      </Box>
-      <button className="action" onClick={onActionClick}>
-        {btnText ? (
-          <Text color={textColor}>{btnText}</Text>
-        ) : (
-          <StyledCrossIcon size="medium" />
+    if (!parentElementNode) {
+      const snackbarNode = document.createElement("div");
+      snackbarNode.id = "snackbar";
+      document.body.appendChild(snackbarNode);
+      parentElementNode = snackbarNode;
+    }
+
+    window.snackbar = barConfig;
+
+    ReactDOM.render(<SnackBar {...rest} />, parentElementNode);
+  }
+
+  static close() {
+    if (window.snackbar && window.snackbar.parentElementId) {
+      ReactDOM.unmountComponentAtNode(window.snackbar.parentElementId);
+    } else {
+      console.error("Not found snackbar");
+    }
+  }
+
+  onActionClick = (e) => {
+    this.props.onAction && this.props.onAction(e);
+  };
+
+  render() {
+    const {
+      text,
+      headerText,
+      btnText,
+      textColor,
+      showIcon,
+      fontSize,
+      fontWeight,
+      textAlign,
+      headerAlign,
+      ...rest
+    } = this.props;
+
+    const headerStyles = headerText ? {} : { display: "none" };
+
+    return (
+      <StyledSnackBar {...rest}>
+        {showIcon && (
+          <Box className="logo">
+            <StyledLogoIcon size="medium" color={textColor} />
+          </Box>
         )}
-      </button>
-    </StyledSnackBar>
-  );
-};
+        <Box className="text-container">
+          <Heading
+            size="xsmall"
+            isInline={true}
+            className="text-header"
+            style={headerStyles}
+            color={textColor}
+            textAlign={headerAlign}
+          >
+            {headerText}
+          </Heading>
+          <Text
+            as="p"
+            color={textColor}
+            fontSize={fontSize}
+            fontWeight={fontWeight}
+            textAlign={textAlign}
+          >
+            {text}
+          </Text>
+        </Box>
+        <button className="action" onClick={this.onActionClick}>
+          {btnText ? (
+            <Text color={textColor}>{btnText}</Text>
+          ) : (
+            <StyledCrossIcon size="medium" />
+          )}
+        </button>
+      </StyledSnackBar>
+    );
+  }
+}
 
 SnackBar.propTypes = {
   text: PropType.string,
