@@ -165,7 +165,8 @@ apt-get install -yq wget \
 				postgresql \
 				redis-server \
 				rabbitmq-server \
-				nginx-extras
+				nginx-extras \
+				default-jdk
 		
 if [ -e /etc/redis/redis.conf ]; then
  sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis/redis.conf

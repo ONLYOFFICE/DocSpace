@@ -64,7 +64,7 @@ cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Api/service/* "%{buil
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Studio/service/* "%{buildroot}%{buildpath}/studio/server/"
 cp -rf %{_builddir}/%{sourcename}/build/install/common/systemd/modules/* "%{buildroot}%{_sysconfdir}/systemd/system/"
 cp -rf %{_builddir}/%{sourcename}/build/install/docker/config/*.sql "%{buildroot}%{buildpath}/sql/"
-cp -rf %{_builddir}/%{sourcename}/build/install/rpm/*.sh "%{buildroot}%{_bindir}/"
+cp -rf %{_builddir}/%{sourcename}/build/install/common/%{product}-configuration.sh "%{buildroot}%{_bindir}/"
 cp -rf %{_builddir}/%{sourcename}/config/* "%{buildroot}%{_sysconfdir}/onlyoffice/%{product}/"
 cp -rf %{_builddir}/%{sourcename}/config/nginx/includes/onlyoffice*.conf "%{buildroot}%{_sysconfdir}/nginx/includes/"
 cp -rf %{_builddir}/%{sourcename}/config/nginx/onlyoffice*.conf "%{buildroot}%{_sysconfdir}/nginx/conf.d/"
