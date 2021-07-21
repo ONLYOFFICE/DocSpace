@@ -1,5 +1,8 @@
+using System;
+
 using ASC.Core;
 using ASC.Core.Common.Settings;
+using ASC.Core.Users;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Tests.Infrastructure;
 using ASC.Web.Core.Utility.Settings;
@@ -12,21 +15,19 @@ namespace ASC.Web.Api.Tests
     [TestFixture]
     class WizardTest : BaseApiTests
     {
-        private TenantManager tenantManager { get; set; }
-        private SettingsManager settingsManager { get; set; }
-
-        public WizardSettings wizardSettings { get; set; }
-
+        public UserInfo NewUser { get; set; }
 
         [OneTimeSetUp]
         public override void SetUp()
         {
             base.SetUp();
+            NewUser = UserManager.GetUsers(CurrentTenant.OwnerId);
         }
 
-
+       
         [TestCaseSource(typeof(ApiTestsData), nameof(ApiTestsData.UserForWizard))]
         [Category("Wizard")]
+        [Order(1)]
         public void WizardSaveDataTest(string email, string passwordHash, string lng, string timeZone, string promocode, string amiid, bool subscribeFromSite)
         {
             var wizardModel = new WizardModel
@@ -39,25 +40,12 @@ namespace ASC.Web.Api.Tests
                 AmiId = amiid,
                 SubscribeFromSite = subscribeFromSite
             };
-
             var wizard = firstTimeTenantSettings.SaveData(wizardModel);
-
+            SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
             Assert.IsTrue(wizard.Completed);
-
+            Assert.Throws<Exception>(() => firstTimeTenantSettings.SaveData(wizardModel));
         }
 
-        [TestCaseSource(typeof(ApiTestsData), nameof(ApiTestsData.WizardGetSettings))]
-        [Category("Wizard")]
-        public void WizardGetSettings(string ownerId, string lng, string timeZone)
-        {
-            var trustedDomains = CurrentTenant.TrustedDomains;
-
-            var wizardsettings = settingsController.GetSettings();
-
-            Assert.AreEqual(lng, wizardsettings.Culture);
-            Assert.AreEqual(timeZone, wizardsettings.Timezone);
-            Assert.AreEqual(trustedDomains, wizardsettings.TrustedDomains);
-        }
 
     }
 }

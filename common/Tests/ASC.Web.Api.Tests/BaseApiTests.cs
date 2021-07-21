@@ -6,8 +6,10 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Web.Api.Controllers;
+using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Studio.UserControls.FirstTime;
 
 using Microsoft.AspNetCore.Identity;
@@ -64,20 +66,13 @@ namespace ASC.Web.Api.Tests
     class BaseApiTests
     {
         protected ILog Log { get; set; }
-
-        protected SettingsController settingsController { get; set; }
-        protected PortalController portalController { get; set; }
-        protected SecurityController securityController { get; set; }
         protected UserManager UserManager { get; set; }
         protected Tenant CurrentTenant { get; set; }
         protected SecurityContext SecurityContext { get; set; }
         protected UserOptions UserOptions { get; set; }
         protected IServiceScope scope { get; set; }
-        protected AuthenticationController authenticationController { get; set; }
-
-
-        protected ModulesController modulesController { get; set; }
-        protected SmtpSettingsController smtpSettingsController { get; set; }
+        protected WizardSettings wizardSettings { get; set; }
+        protected SettingsManager settingsManager { get; set; }
 
         protected FirstTimeTenantSettings firstTimeTenantSettings { get; set; }
 
@@ -97,12 +92,8 @@ namespace ASC.Web.Api.Tests
             CurrentTenant = tenant;
 
             firstTimeTenantSettings = scope.ServiceProvider.GetService<FirstTimeTenantSettings>();
-            authenticationController = scope.ServiceProvider.GetService<AuthenticationController>();
-            modulesController = scope.ServiceProvider.GetService<ModulesController>();
-            settingsController = scope.ServiceProvider.GetService<SettingsController>();
-            smtpSettingsController = scope.ServiceProvider.GetService<SmtpSettingsController>();
-            portalController = scope.ServiceProvider.GetService<PortalController>();
-            securityController = scope.ServiceProvider.GetService<SecurityController>();
+            settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+            wizardSettings = scope.ServiceProvider.GetService<WizardSettings>();
             UserManager = scope.ServiceProvider.GetService<UserManager>();
             SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
             UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
