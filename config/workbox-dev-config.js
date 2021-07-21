@@ -1,7 +1,7 @@
 module.exports = {
 	globDirectory: 'build/deploy/',
 	globPatterns: [
-		'**/*.{ico,woff2,svg,html,json,js,txt,png}'
+		'**/*.{ico,woff2,svg,html,json,js,png}'
 	],
 	ignoreURLParametersMatching: [
 		/^utm_/,
