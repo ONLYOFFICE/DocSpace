@@ -1,4 +1,5 @@
 import { Workbox } from "workbox-window";
+import SnackBar from "@appserver/components/snackbar";
 
 export function registerSW() {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
@@ -12,15 +13,27 @@ export function registerSW() {
           `until all tabs running the current version have fully unloaded.`
       );
 
-      // Assuming the user accepted the update, set up a listener
-      // that will reload the page as soon as the previously waiting
-      // service worker has taken control.
-      wb.addEventListener("controlling", () => {
-        window.location.reload();
-      });
+      const barConfig = {
+        parentElementId: "snackbar",
+        text: "New Version Available",
+        btnText: "Reload",
+        onAction: () => onButtonClick(),
+        opacity: 1,
+      };
 
-      // This will postMessage() to the waiting service worker.
-      wb.messageSkipWaiting();
+      SnackBar.show(barConfig);
+
+      const onButtonClick = () => {
+        // Assuming the user accepted the update, set up a listener
+        // that will reload the page as soon as the previously waiting
+        // service worker has taken control.
+        wb.addEventListener("controlling", () => {
+          window.location.reload();
+        });
+
+        // This will postMessage() to the waiting service worker.
+        wb.messageSkipWaiting();
+      };
 
       // let snackBarRef = this.snackBar.open(
 
