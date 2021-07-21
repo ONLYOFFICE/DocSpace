@@ -6,7 +6,7 @@ import globalColors from "../utils/globalColors";
 import { StyledTableHeaderCell } from "./StyledTableContainer";
 
 const TableHeaderCell = ({ column, index, onMouseDown }) => {
-  const [sorted, setSorted] = useState(false);
+  const [sorted, setSorted] = useState(column.sorted);
 
   const onClick = (e) => {
     column.onClick(sorted, e);

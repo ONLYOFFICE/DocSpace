@@ -46,6 +46,7 @@ const FilesTableHeader = (props) => {
       resizable: true,
       enable: true,
       default: true,
+      sorted: filter.sortOrder === "descending",
       onClick: onNameClick,
       onChange: onColumnChange,
     },

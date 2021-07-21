@@ -215,7 +215,6 @@ class PageLayout extends React.Component {
       //withBodyAutoFocus,
       withBodyScroll,
       children,
-      isLoaded,
       isHeaderVisible,
       //headerBorderBottom,
       onOpenUploadPanel,
@@ -299,7 +298,6 @@ class PageLayout extends React.Component {
             <Article
               visible={this.state.isArticleVisible}
               pinned={this.state.isArticlePinned}
-              isLoaded={isLoaded}
               firstLoad={firstLoad}
               isLoading={!isLoading}
             >
@@ -505,7 +503,6 @@ PageLayout.propTypes = {
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   hideAside: PropTypes.bool,
-  isLoaded: PropTypes.bool,
   viewAs: PropTypes.string,
   uploadPanelVisible: PropTypes.bool,
   onOpenUploadPanel: PropTypes.func,
