@@ -6,6 +6,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Web.Api.Controllers;
@@ -71,8 +72,8 @@ namespace ASC.Web.Api.Tests
         protected SecurityContext SecurityContext { get; set; }
         protected UserOptions UserOptions { get; set; }
         protected IServiceScope scope { get; set; }
-        protected WizardSettings wizardSettings { get; set; }
         protected SettingsManager settingsManager { get; set; }
+        protected DbWebstudioSettings dbWebStudioSettings { get; set; }
 
         protected FirstTimeTenantSettings firstTimeTenantSettings { get; set; }
 
@@ -93,12 +94,14 @@ namespace ASC.Web.Api.Tests
 
             firstTimeTenantSettings = scope.ServiceProvider.GetService<FirstTimeTenantSettings>();
             settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-            wizardSettings = scope.ServiceProvider.GetService<WizardSettings>();
+            dbWebStudioSettings = scope.ServiceProvider.GetService<DbWebstudioSettings>();
             UserManager = scope.ServiceProvider.GetService<UserManager>();
             SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
             UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
             Log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
+
+
     }
 }
