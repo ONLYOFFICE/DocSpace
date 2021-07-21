@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
+using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Core.Search;
@@ -16,7 +15,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ASC.Common.DependencyInjection;
 
 
 namespace ASC.CRM.BackgroundTasks
@@ -73,9 +71,6 @@ namespace ASC.CRM.BackgroundTasks
                  
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
-
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
-     
                     diHelper.TryAdd<FactoryIndexerCase>();
                     diHelper.TryAdd<FactoryIndexerContact>();
                     diHelper.TryAdd<FactoryIndexerContactInfo>();

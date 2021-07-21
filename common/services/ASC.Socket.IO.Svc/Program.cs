@@ -32,7 +32,6 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 
 using Autofac;
@@ -94,7 +93,6 @@ namespace ASC.Socket.IO.Svc
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Socket.IO.Svc");
                     services.AddHostedService<SocketServiceLauncher>();
                     diHelper.TryAdd<SocketServiceLauncher>();
                 })
