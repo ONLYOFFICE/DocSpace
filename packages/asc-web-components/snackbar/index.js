@@ -29,7 +29,9 @@ class SnackBar extends React.Component {
 
   static close() {
     if (window.snackbar && window.snackbar.parentElementId) {
-      ReactDOM.unmountComponentAtNode(window.snackbar.parentElementId);
+      const bar = document.querySelector(`#${window.snackbar.parentElementId}`);
+      bar.remove();
+      //ReactDOM.unmountComponentAtNode(window.snackbar.parentElementId);
     } else {
       console.error("Not found snackbar");
     }
