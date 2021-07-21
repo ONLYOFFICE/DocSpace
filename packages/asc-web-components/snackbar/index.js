@@ -50,6 +50,7 @@ class SnackBar extends React.Component {
       fontWeight,
       textAlign,
       headerAlign,
+      htmlContent,
       ...rest
     } = this.props;
 
@@ -57,32 +58,42 @@ class SnackBar extends React.Component {
 
     return (
       <StyledSnackBar {...rest}>
-        {showIcon && (
-          <Box className="logo">
-            <StyledLogoIcon size="medium" color={textColor} />
-          </Box>
+        {htmlContent ? (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: htmlContent,
+            }}
+          />
+        ) : (
+          <>
+            {showIcon && (
+              <Box className="logo">
+                <StyledLogoIcon size="medium" color={textColor} />
+              </Box>
+            )}
+            <Box className="text-container">
+              <Heading
+                size="xsmall"
+                isInline={true}
+                className="text-header"
+                style={headerStyles}
+                color={textColor}
+                textAlign={headerAlign}
+              >
+                {headerText}
+              </Heading>
+              <Text
+                as="p"
+                color={textColor}
+                fontSize={fontSize}
+                fontWeight={fontWeight}
+                textAlign={textAlign}
+              >
+                {text}
+              </Text>
+            </Box>
+          </>
         )}
-        <Box className="text-container">
-          <Heading
-            size="xsmall"
-            isInline={true}
-            className="text-header"
-            style={headerStyles}
-            color={textColor}
-            textAlign={headerAlign}
-          >
-            {headerText}
-          </Heading>
-          <Text
-            as="p"
-            color={textColor}
-            fontSize={fontSize}
-            fontWeight={fontWeight}
-            textAlign={textAlign}
-          >
-            {text}
-          </Text>
-        </Box>
         <button className="action" onClick={this.onActionClick}>
           {btnText ? (
             <Text color={textColor}>{btnText}</Text>
@@ -90,6 +101,7 @@ class SnackBar extends React.Component {
             <StyledCrossIcon size="medium" />
           )}
         </button>
+        )
       </StyledSnackBar>
     );
   }
@@ -108,6 +120,7 @@ SnackBar.propTypes = {
   fontWeight: PropType.string,
   textAlign: PropType.string,
   headerAlign: PropType.string,
+  htmlContent: PropType.string,
 };
 
 SnackBar.defaultProps = {
@@ -118,6 +131,7 @@ SnackBar.defaultProps = {
   fontWeight: "400",
   textAlign: "left",
   headerAlign: "left",
+  htmlContent: "",
 };
 
 export default SnackBar;
