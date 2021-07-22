@@ -42,7 +42,7 @@ const SnackBarWrapper = (props) => {
     const barConfig = {
       parentElementId: "snackbar",
       text: t("NewVersionAvailable"),
-      btnText: t("Reload"),
+      btnText: t("Load"),
       onAction: () => props.onButtonClick(),
       opacity: 1,
     };
