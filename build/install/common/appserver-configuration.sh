@@ -577,12 +577,15 @@ if command -v yum >/dev/null 2>&1; then
 	PACKAGE_MANAGER="rpm -q"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
-	PACKAGE_MANAGER="dpkg -l | grep -q"
+	PACKAGE_MANAGER="dpkg -l"
+	chown -R onlyoffice:onlyoffice /var/www/appserver/
+	chown -R onlyoffice:onlyoffice /var/log/onlyoffice/appserver/
+	chown -R onlyoffice:onlyoffice /etc/onlyoffice/appserver/
 fi
 
 install_json
 
-if $PACKAGE_MANAGER mysql-client || $PACKAGE_MANAGER mysql-community-client >/dev/null 2>&1; then
+if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-community-client >/dev/null 2>&1; then
     input_db_params
     establish_mysql_conn || exit $?
     execute_mysql_script || exit $?

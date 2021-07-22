@@ -1,5 +1,3 @@
-../../../config/*.json etc/onlyoffice/appserver
-../../../config/*.config etc/onlyoffice/appserver
-../../../config/nginx/*.conf etc/nginx/conf.d
-../../../config/nginx/includes/*.conf etc/nginx/includes
-../docker/config/*.sql var/www/appserver/sql
+../../../config/*.json      etc/onlyoffice/appserver
+../../../config/*.config    etc/onlyoffice/appserver
+../docker/config/*.sql      var/www/appserver/sql

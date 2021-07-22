@@ -19,7 +19,7 @@ override_dh_auto_clean:
 	dh_testdir 
 	rm -rf ${CURRENT_PATH}/src
 	rm -rf ${CURRENT_PATH}/debian/*.service
-	rm -rf ${SRC_PATH}/build/install/appserver*
+	rm -rf ${SRC_PATH}/build/install/${PRODUCT}*
 
 override_dh_auto_configure:
 	@echo "RULES.$@"
