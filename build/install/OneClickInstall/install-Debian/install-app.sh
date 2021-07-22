@@ -12,7 +12,7 @@ EOF
 apt-get -y update
 
 if [ "$COMMUNITY_SERVER_INSTALLED" = "true" ]; then	
-	ENVIRONMENT="$(cat /etc/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
+	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
 	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
 	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')

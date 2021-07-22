@@ -5,7 +5,7 @@ ENVIRONMENT="production"
 APP_DIR="/etc/onlyoffice/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_CONF="/etc/nginx/conf.d"
-SYSTEMD_DIR="/etc/systemd/system"
+SYSTEMD_DIR="/lib/systemd/system"
 
 MYSQL=""
 DB_HOST=""

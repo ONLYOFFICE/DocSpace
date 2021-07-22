@@ -65,8 +65,8 @@ if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 	cd -
 fi
 
-if [ ! -e /etc/systemd/system/zookeeper.service ]; then
-cat > /etc/systemd/system/zookeeper.service <<END
+if [ ! -e /lib/systemd/system/zookeeper.service ]; then
+cat > /lib/systemd/system/zookeeper.service <<END
 [Unit]
 Requires=network.target remote-fs.target
 After=network.target remote-fs.target
@@ -81,8 +81,8 @@ WantedBy=multi-user.target
 END
 fi
 
-if [ ! -e /etc/systemd/system/kafka.service ]; then
-cat > /etc/systemd/system/kafka.service <<END
+if [ ! -e /lib/systemd/system/kafka.service ]; then
+cat > /lib/systemd/system/kafka.service <<END
 [Unit]
 Requires=zookeeper.service
 After=zookeeper.service

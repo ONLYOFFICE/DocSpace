@@ -9,8 +9,7 @@ Architecture: any
 
 Package: appserver
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends},
-         appserver-api-system,
+Depends: appserver-api-system,
          appserver-backup,
          appserver-calendar,
          appserver-crm,
