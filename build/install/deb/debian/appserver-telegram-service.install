@@ -1,2 +1,1 @@
-src/var/www/services/ASC.TelegramService/service var/www/appserver/services/ASC.TelegramService/
-debian/appserver-telegram-service.service etc/systemd/system/
+src/var/www/services/ASC.TelegramService/service/* var/www/appserver/services/ASC.TelegramService/

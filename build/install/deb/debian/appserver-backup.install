@@ -1,2 +1,1 @@
-src/var/www/services/ASC.Data.Backup/service var/www/appserver/services/ASC.Data.Backup/
-debian/appserver-backup.service etc/systemd/system/
+src/var/www/services/ASC.Data.Backup/service/* var/www/appserver/services/ASC.Data.Backup/

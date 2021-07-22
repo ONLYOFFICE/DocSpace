@@ -1,2 +1,1 @@
 src/var/www/products/ASC.Calendar/server var/www/appserver/products/ASC.Calendar/
-debian/appserver-calendar.service etc/systemd/system/

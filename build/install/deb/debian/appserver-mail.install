@@ -1,2 +1,1 @@
 src/var/www/products/ASC.Mail/server var/www/appserver/products/ASC.Mail/
-debian/appserver-mail.service etc/systemd/system/
