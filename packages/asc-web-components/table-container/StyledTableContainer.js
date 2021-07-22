@@ -14,14 +14,6 @@ const StyledTableContainer = styled.div`
   margin-top: -18px;
 
   display: grid;
-  grid-template-columns:
-    32px
-    minmax(180px, 2fr)
-    minmax(150px, 1fr)
-    minmax(150px, 1fr)
-    minmax(150px, 1fr)
-    80px
-    24px;
 
   .table-column {
     user-select: none;
@@ -103,16 +95,12 @@ const StyledTableGroupMenu = styled.div`
 
 const StyledTableHeader = styled.div`
   display: grid;
-  grid-template-columns:
-    32px
-    minmax(180px, 2fr)
-    minmax(150px, 1fr)
-    minmax(150px, 1fr)
-    minmax(150px, 1fr)
-    80px
-    24px;
 
   ${HeaderStyles}
+
+  .table-container_header-cell {
+    overflow: hidden;
+  }
 `;
 
 const StyledTableHeaderCell = styled.div`
@@ -153,10 +141,11 @@ const StyledTableRow = styled.div`
 `;
 
 const StyledTableCell = styled.div`
-  padding-right: 8px;
+  /* padding-right: 8px; */
   height: 40px;
   max-height: 40px;
   border-bottom: 1px solid #eceef1;
+  overflow: hidden;
 
   display: flex;
   align-items: center;

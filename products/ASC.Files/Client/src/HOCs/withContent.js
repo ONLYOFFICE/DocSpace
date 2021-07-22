@@ -245,6 +245,11 @@ export default function withContent(WrappedContent) {
       return mobile ? dateLabel : `${title}: ${dateLabel}`;
     };
 
+    getTableStatusByDate = (create) => {
+      const { created, updated } = this.props.item;
+      return create ? created : updated;
+    };
+
     render() {
       const { itemTitle } = this.state;
       const {
@@ -265,7 +270,11 @@ export default function withContent(WrappedContent) {
 
       const isEdit = id === fileActionId && fileExst === fileActionExt;
 
-      const updatedDate = updated && this.getStatusByDate();
+      const updatedDate =
+        viewAs === "table"
+          ? this.getTableStatusByDate(false)
+          : updated && this.getStatusByDate();
+      const createdDate = this.getTableStatusByDate(true);
 
       const fileOwner =
         createdBy &&
@@ -299,6 +308,7 @@ export default function withContent(WrappedContent) {
         <WrappedContent
           titleWithoutExt={titleWithoutExt}
           updatedDate={updatedDate}
+          createdDate={createdDate}
           fileOwner={fileOwner}
           accessToEdit={accessToEdit}
           linkStyles={linkStyles}

@@ -31,7 +31,32 @@ class TableHeader extends React.Component {
     window.removeEventListener("resize", this.throttledResize);
   }
 
-  getSubstring = (str) => str.substring(0, str.length - 2);
+  componentDidUpdate() {
+    this.onResize();
+  }
+
+  getSubstring = (str) => +str.substring(0, str.length - 2);
+
+  getNextColumn = (array, index) => {
+    let i = 1;
+    while (array.length !== i) {
+      const item = array[index + i];
+
+      if (!item) return null;
+      else if (!item.enable) i++;
+      else return item;
+    }
+  };
+
+  getColumn = (array, index) => {
+    let i = 1;
+    while (array.length !== i) {
+      const item = array[index + i];
+      if (!item) return [0, i];
+      else if (item === "0px") i++;
+      else return [this.getSubstring(item), i];
+    }
+  };
 
   onMouseMove = (e) => {
     const { columnIndex } = this.state;
@@ -48,13 +73,16 @@ class TableHeader extends React.Component {
     if (newWidth <= 150) {
       widths[+columnIndex] = widths[+columnIndex];
     } else {
-      const offset = +this.getSubstring(widths[+columnIndex]) - newWidth;
-      const column2Width = +this.getSubstring(widths[+columnIndex + 1]);
+      const offset = this.getSubstring(widths[+columnIndex]) - newWidth;
+
+      const result = this.getColumn(widths, +columnIndex);
+      const column2Width = result[0];
+      const index = result[1];
 
       //getSubstring(widths[+columnIndex])
       if (column2Width + offset >= 150) {
         widths[+columnIndex] = newWidth + "px";
-        widths[+columnIndex + 1] = column2Width + offset + "px";
+        widths[+columnIndex + index] = column2Width + offset + "px";
       }
     }
 
@@ -94,23 +122,63 @@ class TableHeader extends React.Component {
     const containerWidth = +container.clientWidth;
     const newContainerWidth = containerWidth - 32 - 80 - 24;
 
+    const enableColumns = this.props.columns
+      .filter((x) => !x.default)
+      .filter((x) => x.enable);
+
+    const isSingleTable = enableColumns.length > 0;
+
     let str = "";
+    let disableColumnWidth = 0;
 
     if (tableContainer.length > 1) {
       const gridTemplateColumns = [];
 
       const oldWidth = tableContainer
-        .map((column) => +this.getSubstring(column))
+        .map((column) => this.getSubstring(column))
         .reduce((x, y) => x + y);
 
       for (let index in tableContainer) {
         const item = tableContainer[index];
 
-        if (item !== "24px" && item !== "32px" && item !== "80px") {
-          const percent = (+this.getSubstring(item) / oldWidth) * 100;
-          const newItemWidth = (containerWidth * percent) / 100 + "px";
+        //TODO: need refactoring this code
+        const column = document.getElementById("column_" + index);
+        const enable =
+          index == 0 ||
+          index == tableContainer.length - 1 ||
+          index == tableContainer.length - 2 ||
+          (column && column.dataset.enable === "true");
 
-          gridTemplateColumns.push(newItemWidth);
+        const isActiveNow = item === "0px" && enable;
+
+        if (!enable) {
+          gridTemplateColumns.push("0px");
+          gridTemplateColumns[1] =
+            this.getSubstring(gridTemplateColumns[1]) +
+            this.getSubstring(item) +
+            "px";
+        } else if (item !== "24px" && item !== "32px" && item !== "80px") {
+          const percent = (this.getSubstring(item) / oldWidth) * 100;
+
+          if (index == 1) {
+            const newItemWidth =
+              (containerWidth * percent) / 100 + disableColumnWidth + "px";
+            gridTemplateColumns.push(newItemWidth);
+          } else {
+            const newItemWidth =
+              percent === 0 ? "80px" : (containerWidth * percent) / 100 + "px";
+
+            if (isActiveNow) {
+              //add logic to new columns widths
+              gridTemplateColumns[1] =
+                this.getSubstring(gridTemplateColumns[1]) -
+                this.getSubstring(newItemWidth) +
+                "px";
+            }
+
+            gridTemplateColumns.push(newItemWidth);
+          }
+          //TODO: need refactoring this code
         } else {
           gridTemplateColumns.push(item);
         }
@@ -118,10 +186,19 @@ class TableHeader extends React.Component {
         str = gridTemplateColumns.join(" ");
       }
     } else {
-      const column = (newContainerWidth * 40) / 100 + "px";
-      const otherColumns = (newContainerWidth * 20) / 100 + "px";
+      const column =
+        (newContainerWidth * (isSingleTable ? 60 : 100)) / 100 + "px";
+      const percent = 40 / enableColumns.length;
+      const otherColumns = (newContainerWidth * percent) / 100 + "px";
 
-      str = `32px ${column} ${otherColumns} ${otherColumns} ${otherColumns} 80px 24px`;
+      str = `32px ${column} `;
+      for (let col of this.props.columns) {
+        if (!col.default) {
+          str += col.enable ? `${otherColumns} ` : "0px ";
+        }
+      }
+
+      str += "80px 24px";
     }
     container.style.gridTemplateColumns = str;
     this.headerRef.current.style.gridTemplateColumns = str;
@@ -137,6 +214,8 @@ class TableHeader extends React.Component {
   render() {
     const { columns, ...rest } = this.props;
 
+    //console.log("TABLE HEADER RENDER", columns);
+
     return (
       <>
         <StyledTableHeader
@@ -148,19 +227,21 @@ class TableHeader extends React.Component {
             <Checkbox onChange={this.onChange} isChecked={false} />
 
             {columns.map((column, index) => {
+              const nextColumn = this.getNextColumn(columns, index);
+              const resizable = nextColumn ? nextColumn.resizable : false;
+
               return (
-                column.enable && (
-                  <TableHeaderCell
-                    key={column.key}
-                    index={index}
-                    column={column}
-                    onMouseDown={this.onMouseDown}
-                  />
-                )
+                <TableHeaderCell
+                  key={column.key}
+                  index={column.enable ? index : -1}
+                  column={column}
+                  resizable={resizable}
+                  onMouseDown={this.onMouseDown}
+                />
               );
             })}
 
-            <div className="table-container_header-cell">
+            <div className="table-container_header-settings">
               <TableSettings columns={columns} />
             </div>
           </StyledTableRow>

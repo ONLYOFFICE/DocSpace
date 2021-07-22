@@ -10,7 +10,7 @@ import TableCell from "@appserver/components/table-container/TableCell";
 import FileNameCell from "./sub-components/FileNameCell";
 import SizeCell from "./sub-components/SizeCell";
 import AuthorCell from "./sub-components/AuthorCell";
-import CreatedCell from "./sub-components/CreatedCell";
+import DateCell from "./sub-components/DateCell";
 import globalColors from "@appserver/components/utils/globalColors";
 import styled from "styled-components";
 
@@ -97,11 +97,17 @@ const FilesTableRow = (props) => {
         <AuthorCell sideColor={sideColor} {...props} />
       </TableCell>
       <TableCell {...selectionProp}>
-        <CreatedCell sideColor={sideColor} {...props} />
+        <DateCell create sideColor={sideColor} {...props} />
+      </TableCell>
+      <TableCell {...selectionProp}>
+        <DateCell sideColor={sideColor} {...props} />
       </TableCell>
       <TableCell {...selectionProp}>
         <SizeCell sideColor={sideColor} {...props} />
       </TableCell>
+
+      <TableCell {...selectionProp}>TYPE?</TableCell>
+
       <TableCell {...selectionProp}>
         <StyledShare> {props.sharedButton}</StyledShare>
       </TableCell>
