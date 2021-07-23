@@ -3,8 +3,10 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
+const getUTCString = require("@appserver/common/utils/getUTCString");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 
 const path = require("path");
@@ -131,11 +133,11 @@ var config = {
     new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "crm",
-      filename: "remoteEntry.js",
+      filename: `remoteEntry.js?__hash=${getUTCString()}`,
       remotes: {
         studio: `studio@${combineUrl(
           AppServerConfig.proxyURL,
-          "/remoteEntry.js"
+          `/remoteEntry.js?__hash=${getUTCString()}`
         )}`,
       },
       exposes: {
@@ -153,6 +155,7 @@ var config = {
         },
       },
     }),
+    new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
       publicPath: homepage,
