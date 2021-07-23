@@ -598,6 +598,8 @@ namespace ASC.Mail.ImapSync
 
                 foreach (var imap_message in imap_messages)
                 {
+                    _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, folder={imap_message.Folder.Name}.");
+
                     var db_message = db_messages.FirstOrDefault(x => x.Uidl == SplittedUidl.ToUidl(dbFolder.Folder, imap_message.UniqueId));
 
                     if (db_message != null)
@@ -606,6 +608,8 @@ namespace ASC.Mail.ImapSync
 
                         if (db_message.Folder != dbFolder.Folder)
                         {
+                            _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, setFolderTo={dbFolder.Folder}.");
+
                             _mailEnginesFactory.MessageEngine.SetFolder(new List<int>() { db_message.Id }, dbFolder.Folder);
                         }
 
@@ -615,6 +619,8 @@ namespace ASC.Mail.ImapSync
                     }
 
                     string md5 = await GetMessageMD5FromIMAP(imap_message, imapFolder);
+
+                    _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, Try find by md5={md5}.");
 
                     var expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
                         .SetMd5(md5)
@@ -628,10 +634,12 @@ namespace ASC.Mail.ImapSync
                             .SetMd5(md5)
                             .SetMailboxId(Account.MailBoxId);
 
+                        _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, Try find in deleted.");
+
                         db_message = _mailInfoDao.GetMailInfoList(expMd5.Build()).FirstOrDefault();
                         if (db_message == null)
                         {
-                            _log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. md5={md5}");
+                            _log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. Try create.");
 
                             await CreateMessageInDB(imap_message, imapFolder);
 
@@ -655,12 +663,16 @@ namespace ASC.Mail.ImapSync
 
                     if (db_message.Folder != dbFolder.Folder)
                     {
+                        _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, setFolderTo={dbFolder.Folder}.");
+
                         _mailEnginesFactory.MessageEngine.SetFolder(new List<int>() { db_message.Id }, dbFolder.Folder);
                     }
 
                     var updateQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
                             .SetMessageId(db_message.Id)
                             .Build();
+
+                    _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, setUidlTo={SplittedUidl.ToUidl(dbFolder.Folder, imap_message.UniqueId)}.");
 
                     _mailInfoDao.SetFieldValue(updateQuery, "Uidl", SplittedUidl.ToUidl(dbFolder.Folder, imap_message.UniqueId));
 
@@ -691,6 +703,9 @@ namespace ASC.Mail.ImapSync
             if (imap_message == null || db_message == null) return false;
             try
             {
+                _log.Debug("SynchronizeMessageFlagsFromImap begin.");
+                _log.Debug($"SynchronizeMessageFlagsFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, flag={imap_message.Flags.Value.ToString()}.");
+                _log.Debug($"SynchronizeMessageFlagsFromImap: db_message={db_message.Uidl}, folder={db_message.Folder}, IsRemoved={db_message.IsRemoved}.");
                 bool unread = !imap_message.Flags.Value.HasFlag(MessageFlags.Seen);
                 bool important = imap_message.Flags.Value.HasFlag(MessageFlags.Flagged);
                 bool removed = imap_message.Flags.Value.HasFlag(MessageFlags.Deleted);
@@ -698,7 +713,7 @@ namespace ASC.Mail.ImapSync
                 if (db_message.IsNew ^ unread) _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { db_message.Id }, unread, true);
                 if (db_message.Importance ^ important) _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { db_message.Id }, important);
                 if (removed) _mailEnginesFactory.MessageEngine.SetRemoved(new List<int>() { db_message.Id });
-
+                _log.Debug("SynchronizeMessageFlagsFromImap finish.");
                 return true;
             }
             catch (Exception ex)
@@ -885,23 +900,6 @@ namespace ASC.Mail.ImapSync
         {
             bool result = true;
 
-            var message = await imapFolder.GetMessageAsync(imap_message.UniqueId, CancelToken);
-
-            message.FixDateIssues(imap_message?.InternalDate, _log);
-
-            bool unread = false, important = false;
-
-            if ((imap_message != null) && imap_message.Flags.HasValue)
-            {
-                unread = !imap_message.Flags.Value.HasFlag(MessageFlags.Seen);
-                important = imap_message.Flags.Value.HasFlag(MessageFlags.Flagged);
-            }
-
-            message.FixEncodingIssues(_log);
-
-            var uid = imap_message.UniqueId.ToString();
-            var folder = foldersDictionary[imapFolder];
-
             Stopwatch watch = null;
 
             if (_mailSettings.CollectStatistics)
@@ -912,6 +910,22 @@ namespace ASC.Mail.ImapSync
 
             try
             {
+                var message = await imapFolder.GetMessageAsync(imap_message.UniqueId, CancelToken);
+
+                message.FixDateIssues(imap_message?.InternalDate, _log);
+
+                bool unread = false, important = false;
+
+                if ((imap_message != null) && imap_message.Flags.HasValue)
+                {
+                    unread = !imap_message.Flags.Value.HasFlag(MessageFlags.Seen);
+                    important = imap_message.Flags.Value.HasFlag(MessageFlags.Flagged);
+                }
+
+                message.FixEncodingIssues(_log);
+
+                var uid = imap_message.UniqueId.ToString();
+                var folder = foldersDictionary[imapFolder];
                 var uidl = string.Format("{0}-{1}", uid, (int)folder.Folder);
 
                 _log.Info($"Get message (UIDL: '{uidl}', MailboxId = {Account.MailBoxId}, Address = '{Account.EMail}')");
@@ -920,6 +934,7 @@ namespace ASC.Mail.ImapSync
 
                 if (messageDB == null || messageDB.Id <= 0)
                 {
+                    _log.Debug("CreateMessageInDB: failed.");
                     result = false;
                     return result;
                 }
@@ -946,6 +961,8 @@ namespace ASC.Mail.ImapSync
 
                     LogStat("CreateMessageInDB", watch.Elapsed, result);
                 }
+
+                _log.Debug($"CreateMessageInDB time={watch.Elapsed.TotalMilliseconds} ms.");
             }
 
             return result;
