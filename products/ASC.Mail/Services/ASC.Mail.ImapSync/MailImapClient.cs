@@ -76,6 +76,7 @@ namespace ASC.Mail.ImapSync
         const MessageSummaryItems SummaryItems = MessageSummaryItems.UniqueId | MessageSummaryItems.Flags | MessageSummaryItems.Envelope | MessageSummaryItems.BodyStructure;
 
         readonly bool crmAvailable;
+        private bool IMAPEventInProgress;
 
         public MailBoxData Account { get; private set; }
 
@@ -108,7 +109,7 @@ namespace ASC.Mail.ImapSync
             {
                 _log.Debug($"ImapMessageFlagsChanged. Folder={imap_folder.FullName} Index={e.Index} Flags={e.Flags}. imapMessagesToUpdate.Count={imapMessagesToUpdate.Count}");
 
-                _= UpdateMessageFlagInDb(new List<int>() {e.Index }, WorkFolder);
+                _= UpdateMessageFlagInDb(e.Index, WorkFolder);
             }
         }
 
@@ -173,6 +174,8 @@ namespace ASC.Mail.ImapSync
 
         public MailImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailSettings mailSettings, IServiceProvider serviceProvider)
         {
+            IMAPEventInProgress = false;
+
             Account = mailbox;
             _mailSettings = mailSettings;
 
@@ -492,9 +495,43 @@ namespace ASC.Mail.ImapSync
             return new List<IMailFolder>();
         }
 
-        public async Task<List<int>> UpdateMessageFlagInDb(List<int> indexes, IMailFolder imapFolder)
+        public async Task UpdateMessageFlagInDb(int index, IMailFolder imapFolder)
         {
-            if (indexes.Count == 0) return new List<int>();
+            if (index== 0) return;
+
+            if (WorkFolder != imapFolder)
+            {
+                imapMessagesToUpdate = new ConcurrentQueue<int>();
+
+                _log.Debug($"UpdateMessageFlagInDb: clear queue couse workfolder changed.");
+            }
+
+            imapMessagesToUpdate.Enqueue(index);
+
+            if (!IMAPEventInProgress)
+            {
+                IMAPEventInProgress = true;
+            }
+            else return;
+
+            await Task.Delay(2000);
+
+            var indexes = new List<int>();
+
+            try
+            {
+                while(imapMessagesToUpdate.TryDequeue(out int currenValue))
+                {
+                    indexes.Add(currenValue);
+                }
+            }
+
+            catch(Exception ex)
+            {
+                _log.Error($"UpdateMessageFlagInDb({imapFolder.FullName}, Message.Count={indexes.Count})->{ex.Message}");
+            }
+
+            IMAPEventInProgress = false;
 
             await GetImapSemaphore();
 
@@ -531,7 +568,6 @@ namespace ASC.Mail.ImapSync
             {
                 await ReturnImapSemaphore();
             }
-            return indexes;
         }
 
         public async Task<bool> SynchronizeMailFolderFromImap(IMailFolder imapFolder)
@@ -558,7 +594,7 @@ namespace ASC.Mail.ImapSync
 
                 var db_messages = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
 
-                _log.Debug($"SynchronizeMailFolderFromImap begin: imap_messages={imap_messages.Count()}, db_messages={db_messages.Count}");
+                _log.Debug($"SynchronizeMailFolderFromImap begin: imap_messages={imap_messages.Count()}, db_messages={db_messages.Count()}");
 
                 foreach (var imap_message in imap_messages)
                 {
@@ -595,7 +631,7 @@ namespace ASC.Mail.ImapSync
                         db_message = _mailInfoDao.GetMailInfoList(expMd5.Build()).FirstOrDefault();
                         if (db_message == null)
                         {
-                            _log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. md5={expMd5}");
+                            _log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. md5={md5}");
 
                             await CreateMessageInDB(imap_message, imapFolder);
 
@@ -683,11 +719,21 @@ namespace ASC.Mail.ImapSync
             {
                 var imapFolder = foldersDictionary.Where(x => x.Value.Folder == uidlListSplitted[0].FolderType).Select(x => x.Key).FirstOrDefault();
 
-                if (imapFolder == null) return false;
+                if (imapFolder == null)
+                {
+                    _log.Debug($"MoveMessageInImap->Don`t found source folder: {uidlListSplitted[0].FolderType}.");
+
+                    return false;
+                }
 
                 var imapFolderDestination = foldersDictionary.Where(x => x.Value.Folder == (FolderType)destination).Select(x => x.Key).FirstOrDefault();
 
-                if (imapFolderDestination == null) return false;
+                if (imapFolderDestination == null)
+                {
+                    _log.Debug($"MoveMessageInImap->Don`t found destination folder: {imapFolderDestination}.");
+
+                    return false;
+                }
 
                 await OpenFolderWithOutWaiter(imapFolder);
 

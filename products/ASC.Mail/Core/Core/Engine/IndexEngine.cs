@@ -71,18 +71,18 @@ namespace ASC.Mail.Core.Engine
 
         public bool IsIndexAvailable()
         {
-            var t = ServiceProvider.GetService<MailMail>();
-            if (!FactoryIndexerHelper.Support(t))
-            {
-                Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer<MailWrapper>.Support == false");
-                return false;
-            }
+            //var t = ServiceProvider.GetService<MailMail>();
+            //if (!FactoryIndexerHelper.Support(t))
+            //{
+            //    Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer<MailWrapper>.Support == false");
+            //    return false;
+            //}
 
-            if (!FactoryIndexerCommon.CheckState(false))
-            {
-                Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer.CheckState(false) == false");
-                return false;
-            }
+            //if (!FactoryIndexerCommon.CheckState(false))
+            //{
+            //    Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer.CheckState(false) == false");
+            //    return false;
+            //}
 
             return true;
         }
