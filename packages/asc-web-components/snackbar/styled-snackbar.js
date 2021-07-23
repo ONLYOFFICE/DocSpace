@@ -47,6 +47,7 @@ const StyledSnackBar = styled(Box)`
     cursor: pointer;
     margin-left: auto;
     padding-left: 8px;
+    text-decoration: underline;
   }
 `;
 
