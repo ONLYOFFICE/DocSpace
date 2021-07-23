@@ -109,7 +109,7 @@ const FilesTableRow = (props) => {
       <TableCell {...selectionProp}>TYPE?</TableCell>
 
       <TableCell {...selectionProp}>
-        <StyledShare> {props.sharedButton}</StyledShare>
+        <StyledShare>{props.sharedButton}</StyledShare>
       </TableCell>
     </TableRow>
   );

@@ -12,7 +12,7 @@ class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, filter } = props;
+    const { t, filter, withContent } = props;
 
     const defaultColumns = [
       {
@@ -61,9 +61,9 @@ class FilesTableHeader extends React.Component {
         onChange: this.onColumnChange,
       },
       {
-        key: "Share!",
+        key: "Share",
         title: "",
-        enable: true,
+        enable: withContent,
         default: true,
         resizable: false,
         onChange: this.onColumnChange,
@@ -73,6 +73,17 @@ class FilesTableHeader extends React.Component {
     const columns = this.getColumns(defaultColumns);
 
     this.state = { columns };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { columns } = this.state;
+    if (this.props.withContent !== prevProps.withContent) {
+      const columnIndex = columns.findIndex((c) => c.key === "Share");
+      if (columnIndex === -1) return;
+
+      columns[columnIndex].enable = this.props.withContent;
+      this.setState({ columns });
+    }
   }
 
   getColumns = (defaultColumns) => {
@@ -206,7 +217,12 @@ class FilesTableHeader extends React.Component {
 }
 
 export default inject(
-  ({ filesStore, filesActionsStore, selectedFolderStore }) => {
+  ({
+    filesStore,
+    filesActionsStore,
+    selectedFolderStore,
+    treeFoldersStore,
+  }) => {
     const {
       setSelected,
       isHeaderVisible,
@@ -215,8 +231,12 @@ export default inject(
       setIsLoading,
       filter,
       fetchFiles,
+      canShare,
     } = filesStore;
     const { getHeaderMenu } = filesActionsStore;
+    const { isPrivacyFolder } = treeFoldersStore;
+
+    const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
 
     return {
       isHeaderVisible,
@@ -224,6 +244,7 @@ export default inject(
       isHeaderChecked,
       filter,
       selectedFolderId: selectedFolderStore.id,
+      withContent,
 
       setSelected,
       setIsLoading,

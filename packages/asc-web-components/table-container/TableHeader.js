@@ -146,7 +146,6 @@ class TableHeader extends React.Component {
         const enable =
           index == 0 ||
           index == tableContainer.length - 1 ||
-          index == tableContainer.length - 2 ||
           (column && column.dataset.enable === "true");
 
         const isActiveNow = item === "0px" && enable;
