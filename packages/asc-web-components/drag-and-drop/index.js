@@ -12,9 +12,19 @@ const DragAndDrop = (props) => {
     acceptedFiles.length && props.onDrop && props.onDrop(acceptedFiles);
   };
 
+  const onDragOver = (e) => {
+    props.onDragOver && props.onDragOver(isDragActive, e);
+  };
+
+  const onDragLeave = (e) => {
+    props.onDragLeave && props.onDragLeave(e);
+  };
+
   const { getRootProps, isDragActive } = useDropzone({
     noDragEventsBubbling: !isDropZone,
     onDrop,
+    onDragOver,
+    onDragLeave,
   });
 
   return (
@@ -44,6 +54,8 @@ DragAndDrop.propTypes = {
   onMouseDown: PropTypes.func,
   /** Occurs when the dragged element is dropped on the drop target */
   onDrop: PropTypes.func,
+  onDragOver: PropTypes.func,
+  onDragLeave: PropTypes.func,
 };
 
 export default DragAndDrop;

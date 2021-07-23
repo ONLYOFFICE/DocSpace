@@ -79,7 +79,6 @@ const SimpleFilesRow = (props) => {
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
-        {...contextOptionsProps}
       >
         <StyledSimpleFilesRow
           key={item.id}
