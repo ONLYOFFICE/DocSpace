@@ -126,7 +126,7 @@ export default function withFileActions(WrappedFileItem) {
       this.props.markAsRead([], [`${id}`], this.props.item);
 
     onMouseClick = (e) => {
-      const { viewAs, checked, item } = this.props;
+      const { viewAs, isItemsSelected } = this.props;
 
       if (
         e.target.closest(".checkbox") ||
@@ -135,7 +135,8 @@ export default function withFileActions(WrappedFileItem) {
         e.target.tagName === "A" ||
         e.target.closest(".expandButton") ||
         e.target.closest(".badges") ||
-        e.button !== 0
+        e.button !== 0 ||
+        isItemsSelected
       )
         return;
 
@@ -251,7 +252,7 @@ export default function withFileActions(WrappedFileItem) {
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
       let className = isDragging ? " droppable" : "";
-      if (draggable) className += " draggable not-selectable";
+      if (draggable) className += " draggable";
 
       let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
@@ -420,6 +421,7 @@ export default function withFileActions(WrappedFileItem) {
         setConvertDialogVisible,
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
+        isItemsSelected: selection.length > 0,
       };
     }
   )(observer(WithFileActions));

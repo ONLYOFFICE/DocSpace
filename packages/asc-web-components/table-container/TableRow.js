@@ -16,6 +16,7 @@ const TableRow = (props) => {
     onContentFileSelect,
     item,
     className,
+    style,
     selectionProp,
     ...rest
   } = props;
@@ -68,7 +69,7 @@ const TableRow = (props) => {
     >
       <TableCell
         {...selectionProp}
-        {...props.style}
+        style={style}
         onMouseLeave={onMouseLeave}
         onMouseOver={onMouseOver}
       >
@@ -80,7 +81,7 @@ const TableRow = (props) => {
       </TableCell>
       {children}
       <div>
-        <TableCell {...props.style} forwardedRef={row}>
+        <TableCell style={style} forwardedRef={row}>
           <ContextMenu ref={cm} model={contextOptions}></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
@@ -110,8 +111,8 @@ TableRow.propTypes = {
   onContentFileSelect: PropTypes.func,
   item: PropTypes.object,
   selectionProp: PropTypes.object,
-
-  style: PropTypes.any,
+  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  style: PropTypes.object,
 };
 
 export default TableRow;

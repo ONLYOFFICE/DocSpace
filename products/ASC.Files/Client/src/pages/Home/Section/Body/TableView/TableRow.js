@@ -84,7 +84,7 @@ const FilesTableRow = (props) => {
   } = props;
 
   const selectionProp = {
-    className: `files-item ${className}`,
+    className: `files-item ${className} ${value}`,
     value,
   };
 
@@ -123,6 +123,7 @@ const FilesTableRow = (props) => {
       onDragLeave={onDragLeave}
     >
       <TableRow
+        {...dragStyles}
         selectionProp={selectionProp}
         key={item.id}
         item={item}

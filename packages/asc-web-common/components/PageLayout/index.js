@@ -190,7 +190,11 @@ class PageLayout extends React.Component {
       (x) => x.classList && x.classList.contains("not-selectable")
     );
 
-    if (notSelectablePath || isBackdrop) {
+    const isDraggable = path.some(
+      (x) => x.classList && x.classList.contains("draggable")
+    );
+
+    if (notSelectablePath || isBackdrop || isDraggable) {
       return false;
     } else return true;
   };

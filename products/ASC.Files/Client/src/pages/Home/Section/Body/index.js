@@ -81,13 +81,32 @@ const SectionBodyContent = (props) => {
     const droppable = wrapperElement.closest(".droppable");
     if (currentDroppable !== droppable) {
       if (currentDroppable) {
-        currentDroppable.classList.remove("droppable-hover");
+        if (viewAs === "table") {
+          const value = currentDroppable.getAttribute("value");
+          const classElements = document.getElementsByClassName(value);
+
+          for (let cl of classElements) {
+            cl.classList.remove("droppable-hover");
+          }
+        } else {
+          currentDroppable.classList.remove("droppable-hover");
+        }
       }
       currentDroppable = droppable;
 
       if (currentDroppable) {
-        currentDroppable.classList.add("droppable-hover");
-        currentDroppable = droppable;
+        if (viewAs === "table") {
+          const value = currentDroppable.getAttribute("value");
+          const classElements = document.getElementsByClassName(value);
+
+          for (let cl of classElements) {
+            cl.classList.add("droppable-hover");
+          }
+
+          currentDroppable.classList.add("droppable-hover");
+        } else {
+          currentDroppable = droppable;
+        }
       }
     }
   };

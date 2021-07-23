@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import Base from "../themes/base";
 
 const HeaderStyles = css`
   height: 39px;
@@ -138,6 +139,11 @@ const StyledTableBody = styled.div`
 
 const StyledTableRow = styled.div`
   display: contents;
+
+  .droppable-hover {
+    background: ${(props) =>
+      props.theme.dragAndDrop.acceptBackground} !important;
+  }
 `;
 
 const StyledTableCell = styled.div`
@@ -172,6 +178,8 @@ const StyledEmptyTableContainer = styled.div`
   grid-column-end: -1;
   height: 40px;
 `;
+
+StyledTableRow.defaultProps = { theme: Base };
 
 export {
   StyledTableContainer,
