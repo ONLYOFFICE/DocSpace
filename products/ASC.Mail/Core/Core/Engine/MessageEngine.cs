@@ -1262,7 +1262,7 @@ namespace ASC.Mail.Core.Engine
                 tagsIds = TagEngine.GetOrCreateTags(mailbox.TenantId, mailbox.UserId, folder.Tags);
             }
 
-            log.Debug("UpdateExistingMessages()");
+            log.Debug($"UpdateExistingMessages(md5={md5})");
 
             var found = UpdateExistingMessages(mailbox, folder.Folder, uidl, md5,
                 mimeMessage.MessageId, MailUtil.NormalizeStringForMySql(mimeMessage.Subject), mimeMessage.Date.UtcDateTime, fromThisMailBox, toThisMailBox, tagsIds, log);
@@ -1271,14 +1271,14 @@ namespace ASC.Mail.Core.Engine
             if (!needSave)
                 return null;
 
-            log.Debug("DetectChainId()");
+            log.Debug($"DetectChainId(md5={md5}))");
 
             var chainInfo = DetectChain(mailbox, mimeMessage.MessageId, mimeMessage.InReplyTo,
                 mimeMessage.Subject);
 
             var streamId = MailUtil.CreateStreamId();
 
-            log.Debug("Convert MimeMessage->MailMessage");
+            log.Debug($"Convert MimeMessage->MailMessage (md5={md5})");
 
             var message = mimeMessage.ConvertToMailMessage(
                 TenantManager, CoreSettings,
@@ -1286,14 +1286,14 @@ namespace ASC.Mail.Core.Engine
                 chainInfo.ChainDate, streamId,
                 mailbox.MailBoxId, true, log);
 
-            log.Debug("TryStoreMailData()");
+            log.Debug($"TryStoreMailData(md5={md5})");
 
             if (!TryStoreMailData(message, mailbox, log))
             {
                 throw new Exception("Failed to save message");
             }
 
-            log.Debug("MailSave()");
+            log.Debug($"MailSave(md5={md5})");
 
             if (TrySaveMail(mailbox, message, folder, userFolderId, uidl, md5, log))
             {
@@ -1603,7 +1603,7 @@ namespace ASC.Mail.Core.Engine
             var idList = messagesInfo.Where(m => !m.IsRemoved).Select(m => m.Id).ToList();
             if (!idList.Any())
             {
-                log.Info("Message already exists and it was removed from portal.");
+                log.Info($"Message already exists and it was removed from portal. (md5={md5})");
                 return true;
             }
 
@@ -1627,7 +1627,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     var clone = messagesInfo.FirstOrDefault(m => m.FolderRestore == folder && m.Uidl == uidl);
                     if (clone != null)
-                        log.InfoFormat("Message already exists: mailId={0}. Clone", clone.Id);
+                        log.Info($"Message already exists: mailId={clone.Id}. (md5={md5}) Clone");
                     else
                     {
                         var existMessage = messagesInfo.First();
@@ -1645,9 +1645,8 @@ namespace ASC.Mail.Core.Engine
                             }
                         }
 
-                        log.Info("Message already exists by MD5|MimeMessageId|Subject|DateSent");
+                        log.Info($"Message already exists by (md5={md5})|MimeMessageId|Subject|DateSent ");
                     }
-
 
                     return true;
                 }
@@ -1656,7 +1655,7 @@ namespace ASC.Mail.Core.Engine
             {
                 if (!fromThisMailBox && toThisMailBox && messagesInfo.Count == 1)
                 {
-                    log.InfoFormat("Message already exists: mailId={0}. Outbox clone", messagesInfo.First().Id);
+                    log.Info($"Message already exists: mailId={messagesInfo.First().Id} (md5={md5}). Outbox clone");
                     return true;
                 }
             }
@@ -1679,7 +1678,7 @@ namespace ASC.Mail.Core.Engine
                             uidl);
                     }
 
-                    log.InfoFormat("Message already exists: mailId={0}. Outbox clone", sentCloneForUpdate.Id);
+                    log.Info($"Message already exists: mailId={sentCloneForUpdate.Id} (md5={md5}). Outbox clone");
 
                     return true;
                 }
@@ -1689,7 +1688,7 @@ namespace ASC.Mail.Core.Engine
             {
                 var first = messagesInfo.First();
 
-                log.InfoFormat("Message already exists: mailId={0}. It was moved to spam on server", first.Id);
+                log.Info($"Message already exists: mailId={first.Id} (md5={md5}). It was moved to spam on server");
 
                 return true;
             }
@@ -1698,9 +1697,8 @@ namespace ASC.Mail.Core.Engine
             if (fullClone == null)
                 return false;
 
-            log.InfoFormat("Message already exists: mailId={0}. Full clone", fullClone.Id);
+            log.Info($"Message already exists: mailId={fullClone.Id} (md5={md5}). Full clone");
             return true;
-
         }
 
         public List<Chain> GetChainsById(string id)
