@@ -1,8 +1,8 @@
 using System;
-using Newtonsoft.Json;
 using ASC.Core;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
+using System.Text.Json;
 using ASC.Core.Data;
 using ASC.Core.Users;
 using ASC.Web.Api.Models;
@@ -12,6 +12,12 @@ using NUnit.Framework;
 
 namespace ASC.Web.Api.Tests
 {
+    [Serializable]
+    public class WizardData
+    {
+        public bool Completed { get; set; }
+    } 
+
     [TestFixture]
     class WizardTest : BaseApiTests
     {
@@ -45,9 +51,12 @@ namespace ASC.Web.Api.Tests
             };
 
             var wizard = settingsManager.Load<WizardSettings>();
-            var json = JsonConvert.SerializeObject(wizard.Completed);
-            var jsonString = "{\"" + $"Completed\":{json}" + "}";
-            Assert.AreEqual(WebStudioData.Data, jsonString);
+            var WizardSet = new WizardData
+            {
+                Completed = wizard.Completed
+            };
+            var json = JsonSerializer.Serialize(WizardSet);
+            Assert.AreEqual(WebStudioData.Data, json);
         }
 
 
@@ -73,4 +82,5 @@ namespace ASC.Web.Api.Tests
         }
 
     }
+    
 }
