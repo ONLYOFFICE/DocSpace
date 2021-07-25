@@ -326,16 +326,6 @@ namespace ASC.Mail.Core.Dao
             return result > 0;
         }
 
-        /*private const string SET_DATE_CHECKED = MailboxTable.Columns.DateChecked + " = UTC_TIMESTAMP()";
-        private const string SET_DATE_USER_CHECKED = MailboxTable.Columns.DateUserChecked + " = UTC_TIMESTAMP()";
-
-        private const string SET_LOGIN_DELAY_EXPIRES =
-            MailboxTable.Columns.DateLoginDelayExpires + " = DATE_ADD(UTC_TIMESTAMP(), INTERVAL {0} SECOND)";
-
-        private static readonly string SetDefaultLoginDelayExpires =
-            MailboxTable.Columns.DateLoginDelayExpires + " = DATE_ADD(UTC_TIMESTAMP(), INTERVAL " +
-            Defines.DefaultServerLoginDelayStr + " SECOND)";*/
-
         public bool SetMailboxInProcess(int id)
         {
             var mailMailbox = MailDbContext.MailMailbox

@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ASC.Api.Core;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -92,8 +92,7 @@ namespace ASC.Mail.Core.Dao
                     x.Mail,
                     Chain = c
                 })
-                .Where(t => t.UFxMail.Tenant == Tenant)
-                .Where(t => t.UFxMail.IdUser == UserId);
+                .Where(t => t.UFxMail.Tenant == Tenant && t.UFxMail.IdUser == UserId);
 
             if (unread.HasValue)
             {
@@ -119,16 +118,18 @@ namespace ASC.Mail.Core.Dao
                     UFxMail = x,
                     Mail = m
                 })
-                .Join(MailDbContext.MailChain, x => x.Mail.ChainId, c => c.Id, 
-                (x, c) => new 
+                .Join(MailDbContext.MailChain, x => x.Mail.ChainId, c => c.Id,
+                (x, c) => new
                 {
                     x.UFxMail,
                     x.Mail,
                     Chain = c
                 })
-                .Where(t => t.UFxMail.Tenant == Tenant)
-                .Where(t => t.UFxMail.IdUser == UserId)
-                .Where(t => userFolderIds.Contains((int)t.UFxMail.IdFolder));
+                .Where(t =>
+                t.UFxMail.Tenant == Tenant
+                && t.UFxMail.IdUser == UserId
+                && userFolderIds.Contains(t.UFxMail.IdFolder));
+
 
             if (unread.HasValue)
             {
@@ -147,7 +148,8 @@ namespace ASC.Mail.Core.Dao
 
         public int SaveChain(Chain chain)
         {
-            var mailChain = new MailChain { 
+            var mailChain = new MailChain
+            {
                 Id = chain.Id,
                 IdMailbox = (uint)chain.MailboxId,
                 Tenant = (uint)chain.Tenant,
@@ -208,7 +210,7 @@ namespace ASC.Mail.Core.Dao
                 MailboxId = (int)r.IdMailbox,
                 Tenant = (int)r.Tenant,
                 User = r.IdUser,
-                Folder = (FolderType) r.Folder,
+                Folder = (FolderType)r.Folder,
                 Length = (int)r.Length,
                 Unread = r.Unread,
                 HasAttachments = r.HasAttachments,

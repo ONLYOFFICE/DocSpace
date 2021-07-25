@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -49,7 +50,8 @@ namespace ASC.Mail.Core.Dao
 
         public int Save(ServerDomain domain)
         {
-            var mailServerDomain = new MailServerDomain { 
+            var mailServerDomain = new MailServerDomain
+            {
                 Id = domain.Id,
                 Name = domain.Name,
                 Tenant = domain.Tenant,
@@ -119,8 +121,7 @@ namespace ASC.Mail.Core.Dao
             var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
             var domain = MailDbContext.MailServerDomain
-                .Where(d => tenants.Contains(d.Tenant))
-                .Where(d => d.Id == id)
+                .Where(d => tenants.Contains(d.Tenant) && d.Id == id)
                 .Select(ToServerDomain)
                 .SingleOrDefault();
 

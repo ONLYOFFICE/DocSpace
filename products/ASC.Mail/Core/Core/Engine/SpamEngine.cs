@@ -107,8 +107,7 @@ namespace ASC.Mail.Core.Engine
                 return streamList;
 
             streamList = MailDaoFactory.GetMailInfoDao().GetChainedMessagesInfo(ids)
-                .Where(r => r.FolderRestore != FolderType.Sent)
-                .Where(r => tlMailboxesIds.Contains(r.MailboxId))
+                .Where(r => r.FolderRestore != FolderType.Sent && tlMailboxesIds.Contains(r.MailboxId))
                 .ToDictionary(r => r.Id, r => r.Stream);
 
             return streamList;

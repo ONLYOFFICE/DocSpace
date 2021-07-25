@@ -24,6 +24,8 @@
 */
 
 
+using System;
+
 using ASC.Core;
 using ASC.Core.Common.EF;
 
@@ -33,11 +35,10 @@ namespace ASC.Mail.Core.Dao
     {
         protected int Tenant => TenantManager.GetCurrentTenant().TenantId;
         protected string UserId => SecurityContext.CurrentAccount.ID.ToString();
-
         private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
-
-        public MailDbContext MailDbContext { get; }
+        public Lazy<MailDbContext> LazyMailDbContext { get; }
+        public MailDbContext MailDbContext => LazyMailDbContext.Value;
 
         protected BaseMailDao(
             TenantManager tenantManager,
@@ -46,7 +47,7 @@ namespace ASC.Mail.Core.Dao
         {
             TenantManager = tenantManager;
             SecurityContext = securityContext;
-            MailDbContext = dbContext.Get("mail");
+            LazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("mail"));
         }
     }
 }

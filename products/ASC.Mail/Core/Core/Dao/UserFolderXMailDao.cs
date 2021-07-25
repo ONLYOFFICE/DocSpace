@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -98,7 +99,8 @@ namespace ASC.Mail.Core.Dao
             {
                 var messageId = (uint)idMessages[i];
 
-                items.Add(new MailUserFolderXMail { 
+                items.Add(new MailUserFolderXMail
+                {
                     Tenant = Tenant,
                     IdUser = UserId,
                     IdMail = messageId,
@@ -158,8 +160,7 @@ namespace ASC.Mail.Core.Dao
         public int Remove(List<int> mailIds)
         {
             var query = MailDbContext.MailUserFolderXMail
-                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
-                .Where(r => mailIds.Contains((int)r.IdMail));
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && mailIds.Contains((int)r.IdMail));
 
             MailDbContext.MailUserFolderXMail.RemoveRange(query);
 

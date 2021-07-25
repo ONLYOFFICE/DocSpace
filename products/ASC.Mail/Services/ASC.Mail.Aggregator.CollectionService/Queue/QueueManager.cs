@@ -661,12 +661,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         public void Dispose()
         {
-            _tenantMemCache.Dispose();
+            if (_tenantMemCache != null)
+                _tenantMemCache.Dispose();
             _tenantMemCache = null;
 
             if (MailSettings.UseDump)
             {
-                _db.Dispose();
+                if (_db != null)
+                    _db.Dispose();
                 _db = null;
             }
         }

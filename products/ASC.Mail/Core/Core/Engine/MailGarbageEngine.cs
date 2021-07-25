@@ -36,7 +36,6 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
@@ -83,7 +82,6 @@ namespace ASC.Mail.Core.Engine
             OperationEngine operationEngine,
             ApiHelper apiHelper,
             StorageFactory storageFactory,
-            //MailGarbageEraserConfig config, //TODO: think about setup config
             MailSettings mailSettings,
             IOptionsMonitor<ILog> option) : base(mailSettings)
         {
@@ -99,13 +97,11 @@ namespace ASC.Mail.Core.Engine
             ApiHelper = apiHelper;
             StorageFactory = storageFactory;
 
-            //Config = MailGarbageEraserConfig.FromConfig();
-
             Log = option.Get("ASC.Mail.GarbageEngine");
 
             TenantMemCache = new MemoryCache("GarbageEraserTenantCache");
 
-            var scheduler = new LimitedConcurrencyLevelTaskScheduler(MailSettings.MaxTasksAtOnce);
+            var scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, MailSettings.MaxTasksAtOnce).ConcurrentScheduler;
 
             TaskFactory = new TaskFactory(scheduler);
 

@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -49,8 +50,7 @@ namespace ASC.Mail.Core.Dao
         public ServerGroup Get(int id)
         {
             var group = MailDbContext.MailServerMailGroup
-                .Where(g => g.IdTenant == Tenant)
-                .Where(g => g.Id == id)
+                .Where(g => g.IdTenant == Tenant && g.Id == id)
                 .Select(ToServerGroup)
                 .SingleOrDefault();
 
@@ -70,13 +70,13 @@ namespace ASC.Mail.Core.Dao
         public List<ServerGroup> GetList(int domainId)
         {
             var groups = MailDbContext.MailServerMailGroup
-                .Join(MailDbContext.MailServerAddress, g => g.IdAddress, a => a.Id, 
-                    (g, a) => new { 
+                .Join(MailDbContext.MailServerAddress, g => g.IdAddress, a => a.Id,
+                    (g, a) => new
+                    {
                         Group = g,
                         Address = a
                     })
-                .Where(o => o.Group.IdTenant == Tenant)
-                .Where(o => o.Address.IdDomain == domainId && o.Address.IsMailGroup == true)
+                .Where(o => o.Group.IdTenant == Tenant && o.Address.IdDomain == domainId && o.Address.IsMailGroup)
                 .Select(o => ToServerGroup(o.Group))
                 .ToList();
 
@@ -85,7 +85,8 @@ namespace ASC.Mail.Core.Dao
 
         public int Save(ServerGroup @group)
         {
-            var mailServerGroup = new MailServerMailGroup { 
+            var mailServerGroup = new MailServerMailGroup
+            {
                 Id = group.Id,
                 IdTenant = group.Tenant,
                 Address = group.Address,

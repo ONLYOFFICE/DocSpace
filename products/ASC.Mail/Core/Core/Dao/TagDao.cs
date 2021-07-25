@@ -24,15 +24,15 @@
 */
 
 
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Enums;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -53,9 +53,7 @@ namespace ASC.Mail.Core.Dao
                 return GetCrmTag(id);
 
             var tag = MailDbContext.MailTag
-                .Where(r => r.TenantId == Tenant)
-                .Where(r => r.IdUser == UserId)
-                .Where(r => r.Id == id)
+                .Where(r => r.TenantId == Tenant && r.IdUser == UserId && r.Id == id)
                 .Select(r => new Tag
                 {
                     Id = r.Id,
@@ -77,9 +75,7 @@ namespace ASC.Mail.Core.Dao
             var crmTagId = id < 0 ? -id : id;
 
             var crmTag = MailDbContext.CrmTag
-                .Where(r => r.IdTenant == Tenant)
-                .Where(r => r.EntityType == (int)EntityType.Contact)
-                .Where(r => r.Id == crmTagId)
+                .Where(r => r.IdTenant == Tenant && r.EntityType == (int)EntityType.Contact && r.Id == crmTagId)
                 .Select(r => new Tag
                 {
                     Id = -r.Id,
@@ -98,9 +94,7 @@ namespace ASC.Mail.Core.Dao
         public Tag GetTag(string name)
         {
             var tag = MailDbContext.MailTag
-                .Where(r => r.TenantId == Tenant)
-                .Where(r => r.IdUser == UserId)
-                .Where(r => r.Name == name)
+                .Where(r => r.TenantId == Tenant && r.IdUser == UserId && r.Name == name)
                 .Select(r => new Tag
                 {
                     Id = r.Id,
@@ -120,8 +114,7 @@ namespace ASC.Mail.Core.Dao
         public List<Tag> GetTags()
         {
             var tags = MailDbContext.MailTag
-                .Where(r => r.TenantId == Tenant)
-                .Where(r => r.IdUser == UserId)
+                .Where(r => r.TenantId == Tenant && r.IdUser == UserId)
                 .Select(r => new Tag
                 {
                     Id = r.Id,
@@ -154,8 +147,7 @@ namespace ASC.Mail.Core.Dao
         public List<Tag> GetCrmTags()
         {
             var crmTags = MailDbContext.CrmTag
-                .Where(r => r.IdTenant == Tenant)
-                .Where(r => r.EntityType == (int)EntityType.Contact)
+                .Where(r => r.IdTenant == Tenant && r.EntityType == (int)EntityType.Contact)
                 .Select(r => new Tag
                 {
                     Id = -r.Id,
@@ -176,15 +168,14 @@ namespace ASC.Mail.Core.Dao
             var query = MailDbContext.CrmEntityTag
                 .Join(MailDbContext.CrmTag,
                     cet => cet.TagId,
-                    ct => (int)ct.Id,
+                    ct => ct.Id,
                     (cet, ct) => new Tag
                     {
                         Id = ct.Id,
                         TagName = ct.Title,
                         CrmId = cet.EntityId
                     })
-                .Where(r => r.CrmId == (int)EntityType.Contact)
-                .Where(r => contactIds.Contains(r.CrmId))
+                .Where(r => r.CrmId == (int)EntityType.Contact && contactIds.Contains(r.CrmId))
                 .ToList();
 
             return query;
@@ -235,8 +226,7 @@ namespace ASC.Mail.Core.Dao
         public int DeleteTags(List<int> tagIds)
         {
             var range = MailDbContext.MailTag
-                .Where(r => r.TenantId == Tenant && r.IdUser == UserId)
-                .Where(r => tagIds.Contains(r.Id)); ;
+                .Where(r => r.TenantId == Tenant && r.IdUser == UserId && tagIds.Contains(r.Id));
 
             MailDbContext.MailTag.RemoveRange(range);
 

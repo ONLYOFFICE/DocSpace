@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -62,8 +63,9 @@ namespace ASC.Mail.Core.Dao
 
         public int SaveCrmLinks(string chainId, int mailboxId, IEnumerable<CrmContactData> crmContactEntities)
         {
-            var list = crmContactEntities.Select(x => 
-                new MailChainXCrmEntity { 
+            var list = crmContactEntities.Select(x =>
+                new MailChainXCrmEntity
+                {
                     IdChain = chainId,
                     IdMailbox = mailboxId,
                     IdTenant = Tenant,
@@ -75,7 +77,7 @@ namespace ASC.Mail.Core.Dao
             MailDbContext.MailChainXCrmEntity.AddRange(list);
 
             var result = MailDbContext.SaveChanges();
-            
+
             return result;
         }
 

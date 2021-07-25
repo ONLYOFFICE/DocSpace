@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -88,8 +89,9 @@ namespace ASC.Mail.Core.Dao
         {
             var list = MailDbContext.MailServerAddress
                 .Where(a => a.Tenant == Tenant)
-               .Join(MailDbContext.MailServerMailGroupXMailServerAddress, a => a.Id, g => g.IdAddress, 
-                (a, g) => new { 
+               .Join(MailDbContext.MailServerMailGroupXMailServerAddress, a => a.Id, g => g.IdAddress,
+                (a, g) => new
+                {
                     Address = a,
                     Xgroup = g
                 }
@@ -160,7 +162,8 @@ namespace ASC.Mail.Core.Dao
 
         public int Save(ServerAddress address)
         {
-            var mailServerAddress = new MailServerAddress { 
+            var mailServerAddress = new MailServerAddress
+            {
                 Id = address.Id,
                 Name = address.AddressName,
                 Tenant = address.Tenant,
@@ -226,8 +229,7 @@ namespace ASC.Mail.Core.Dao
                     Address = a,
                     Domain = d
                 })
-                .Where(ad => ad.Address.Name == addressName && tenants.Contains(ad.Address.Tenant))
-                .Where(ad => ad.Domain.Name == domainName)
+                .Where(ad => ad.Address.Name == addressName && tenants.Contains(ad.Address.Tenant) && ad.Domain.Name == domainName)
                 .Select(ad => ad.Address.Id)
                 .Any();
 

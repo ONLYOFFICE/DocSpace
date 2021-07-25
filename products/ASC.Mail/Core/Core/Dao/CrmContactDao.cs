@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -55,21 +56,22 @@ namespace ASC.Mail.Core.Dao
             //{
 
             var contactList = MailDbContext.CrmContact.Join(MailDbContext.CrmContactInfo, c => c.Id, ci => ci.ContactId,
-                (c, ci) => new { 
+                (c, ci) => new
+                {
                     Contact = c,
                     Info = ci
                 })
-                .Where(o => o.Contact.TenantId == Tenant)
-                .Where(o => o.Info.Type == (int)ContactInfoType.Email && o.Info.Data == email)
-                .Select(o => new {
+                .Where(o => o.Contact.TenantId == Tenant && o.Info.Type == (int)ContactInfoType.Email && o.Info.Data == email)
+                .Select(o => new
+                {
                     o.Contact.Id,
                     Company = o.Contact.IsCompany,
                     ShareType = (ShareType)o.Contact.IsShared
                 })
                 .ToList();
 
-                if (!contactList.Any())
-                    return ids;
+            if (!contactList.Any())
+                return ids;
 
             //TODO: Fix check access rights 
             ids.AddRange(contactList.Select(c => c.Id));

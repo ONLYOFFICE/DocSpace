@@ -145,8 +145,13 @@ namespace ASC.Mail.Core.Dao
                     Tag = t,
                     Mail = m
                 })
-                .Where(g => g.Mail.ChainId == chainId && g.Mail.IsRemoved == false && g.Mail.Folder == (int)folder && g.Mail.IdMailbox == mailboxId)
-                .Where(g => g.Tag.Tenant == Tenant && g.Tag.IdUser == UserId)
+                .Where(g =>
+                g.Mail.ChainId == chainId
+                && g.Mail.IsRemoved == false
+                && g.Mail.Folder == (int)folder
+                && g.Mail.IdMailbox == mailboxId
+                && g.Tag.Tenant == Tenant
+                && g.Tag.IdUser == UserId)
                 .OrderBy(g => g.Tag.TimeCreated)
                 .GroupBy(g => g.Tag.IdTag)
                 .Select(g => g.Key)
@@ -158,8 +163,7 @@ namespace ASC.Mail.Core.Dao
         public int Delete(int tagId, List<int> mailIds)
         {
             var deleteQuery = MailDbContext.MailTagMail
-                .Where(t => t.Tenant == Tenant && t.IdUser == UserId && t.IdTag == tagId)
-                .Where(t => mailIds.Contains(t.IdMail));
+                .Where(t => t.Tenant == Tenant && t.IdUser == UserId && t.IdTag == tagId && mailIds.Contains(t.IdMail));
 
             MailDbContext.MailTagMail.RemoveRange(deleteQuery);
 
@@ -171,8 +175,7 @@ namespace ASC.Mail.Core.Dao
         public int DeleteByTagId(int tagId)
         {
             var deleteQuery = MailDbContext.MailTagMail
-                .Where(t => t.Tenant == Tenant && t.IdUser == UserId)
-                .Where(t => t.IdTag == tagId);
+                .Where(t => t.Tenant == Tenant && t.IdUser == UserId && t.IdTag == tagId);
 
             MailDbContext.MailTagMail.RemoveRange(deleteQuery);
 
@@ -203,8 +206,7 @@ namespace ASC.Mail.Core.Dao
         public int DeleteByMailIds(List<int> mailIds)
         {
             var deleteQuery = MailDbContext.MailTagMail
-                .Where(t => t.Tenant == Tenant && t.IdUser == UserId)
-                .Where(t => mailIds.Contains(t.IdMail));
+                .Where(t => t.Tenant == Tenant && t.IdUser == UserId && mailIds.Contains(t.IdMail));
 
             MailDbContext.MailTagMail.RemoveRange(deleteQuery);
 

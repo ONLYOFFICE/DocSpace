@@ -25,15 +25,16 @@
 
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
-using ASC.Mail.Core.Dao.Entities;
-using ASC.Common;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -51,9 +52,7 @@ namespace ASC.Mail.Core.Dao
         public Alert GetAlert(long id)
         {
             var alert = MailDbContext.MailAlerts
-                .Where(r => r.Tenant == Tenant)
-                .Where(r => r.IdUser == UserId)
-                .Where(r => r.Id == id)
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.Id == id)
                 .Select(r => new Alert
                 {
                     Id = r.Id,
@@ -68,8 +67,7 @@ namespace ASC.Mail.Core.Dao
         public List<Alert> GetAlerts(int mailboxId = -1, MailAlertTypes type = MailAlertTypes.Empty)
         {
             var alerts = MailDbContext.MailAlerts
-                .Where(r => r.Tenant == Tenant)
-                .Where(r => r.IdUser == UserId)
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
                 .Select(r => new Alert
                 {
                     Id = r.Id,
@@ -153,8 +151,7 @@ namespace ASC.Mail.Core.Dao
             using var tr = MailDbContext.Database.BeginTransaction();
 
             var range = MailDbContext.MailAlerts
-                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
-                .Where(r => ids.Contains(r.Id));
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && ids.Contains(r.Id));
 
             MailDbContext.MailAlerts.RemoveRange(range);
 

@@ -28,10 +28,7 @@ namespace ASC.Mail.Aggregator.CollectionService
     {
         public static async Task Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
-
-            await host.RunAsync();
-
+            await CreateHostBuilder(args).Build().RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

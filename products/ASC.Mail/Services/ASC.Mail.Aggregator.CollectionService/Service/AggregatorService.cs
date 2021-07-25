@@ -116,15 +116,12 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             if (MailSettings.EnableSignalr) SignalrWorker = signalrWorker;
 
-            WorkTimer = new Timer(WorkTimerElapsed, CancelTokenSource.Token, Timeout.Infinite, Timeout.Infinite);
-
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
 
             Log.Info("Service is ready.");
         }
 
         #region methods
-
 
         public ConcurrentDictionary<string, List<MailSieveFilterData>> Filters { get; set; }
 
@@ -239,13 +236,13 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             QueueManager.CancelHandler.Set();
 
-            StartTimer();
+            StartTimer(cancelToken);
         }
 
-        internal void StartTimer(bool immediately = false)
+        internal Task StartTimer(CancellationToken token, bool immediately = false)
         {
             if (WorkTimer == null)
-                return;
+                WorkTimer = new Timer(WorkTimerElapsed, token, Timeout.Infinite, Timeout.Infinite);
 
             Log.DebugFormat("Setup Work timer to {0} seconds", MailSettings.CheckTimerInterval.TotalSeconds);
 
@@ -256,7 +253,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             else
             {
                 WorkTimer.Change(MailSettings.CheckTimerInterval, MailSettings.CheckTimerInterval);
-            }
+            }            
+            return Task.CompletedTask;
         }
 
         private void StopTimer()
@@ -268,10 +266,10 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             WorkTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        internal void StopService()
+        internal void StopService(CancellationTokenSource tokenSource)
         {
-            if (CancelTokenSource != null)
-                CancelTokenSource.Cancel();
+            if (tokenSource != null)
+                tokenSource.Cancel();
 
             if (QueueManager != null)
             {

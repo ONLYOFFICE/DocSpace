@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -35,7 +36,7 @@ using ASC.Mail.Core.Dao.Interfaces;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class TagAddressDao: BaseMailDao, ITagAddressDao
+    public class TagAddressDao : BaseMailDao, ITagAddressDao
     {
         public TagAddressDao(
              TenantManager tenantManager,
@@ -54,8 +55,7 @@ namespace ASC.Mail.Core.Dao
                     TagAddress = ta,
                     Tag = t
                 })
-                .Where(o => o.TagAddress.Address == email)
-                .Where(o => o.Tag.TenantId == Tenant && o.Tag.IdUser == UserId)
+                .Where(o => o.TagAddress.Address == email && o.Tag.TenantId == Tenant && o.Tag.IdUser == UserId)
                 .Select(o => (int)o.TagAddress.IdTag)
                 .Distinct()
                 .ToList();

@@ -97,32 +97,12 @@ namespace ASC.Mail.Utils
             MailSettings mailSettings,
             IConfiguration configuration,
             IOptionsMonitor<ILog> option)
+            : this(securityContext, tenantManager, coreSettings, apiDateTimeHelper, mailSettings, configuration, option)
         {
             if (httpContextAccessor != null || httpContextAccessor.HttpContext != null)
             {
                 HttpContext = httpContextAccessor.HttpContext;
             }
-
-            /*if (!scheme.Equals(Uri.UriSchemeHttps) && !scheme.Equals(Uri.UriSchemeHttp))
-                throw new ApiHelperException("ApiHelper: url scheme not setup", HttpStatusCode.InternalServerError, "");*/
-            MailSettings = mailSettings;
-            Configuration = configuration;
-            Log = option.Get("ASC.Mail.ApiHelper");
-            SecurityContext = securityContext;
-            TenantManager = tenantManager;
-            CoreSettings = coreSettings;
-            ApiDateTimeHelper = apiDateTimeHelper;
-            Scheme = mailSettings.DefaultApiSchema ?? Uri.UriSchemeHttp;
-            //TODO: FIX!
-            //Tenant = new Tenant(1, "");
-            //TenantManager.GetCurrentTenant();
-            MailSettings = mailSettings;
-
-            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorsPermit)
-                return;
-
-            ServicePointManager.ServerCertificateValidationCallback =
-                (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
         public ApiHelper(
@@ -142,7 +122,9 @@ namespace ASC.Mail.Utils
             CoreSettings = coreSettings;
             ApiDateTimeHelper = apiDateTimeHelper;
             Scheme = mailSettings.DefaultApiSchema ?? Uri.UriSchemeHttp;
-            MailSettings = mailSettings;
+
+            if (!Scheme.Equals(Uri.UriSchemeHttps) && !Scheme.Equals(Uri.UriSchemeHttp))
+                throw new ApiHelperException("ApiHelper: url scheme not setup", HttpStatusCode.InternalServerError, "");
 
             if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorsPermit)
                 return;

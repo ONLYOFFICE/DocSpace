@@ -58,12 +58,6 @@ namespace ASC.Mail.Core.Dao.Entities
             get => Tables.Contact;
         }
 
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
-        {
-            get => (a) => new[] { Name, Address };
-        }
-
-
         public override object[] GetKeys()
         {
             return new object[] { Id };
@@ -71,7 +65,7 @@ namespace ASC.Mail.Core.Dao.Entities
 
         public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            throw new NotImplementedException();
+            return (a) => new[] { Name, Address };
         }
     }
 

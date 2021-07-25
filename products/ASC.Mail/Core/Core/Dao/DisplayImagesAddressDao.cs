@@ -24,14 +24,15 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -49,8 +50,7 @@ namespace ASC.Mail.Core.Dao
         public List<string> GetDisplayImagesAddresses()
         {
             var query = MailDbContext.MailDisplayImages
-                .Where(r => r.Tenant == Tenant)
-                .Where(r => r.IdUser == UserId)
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
                 .Select(r => r.Address);
 
             List<string> addresses = query.ToList();

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -48,7 +49,7 @@ namespace ASC.Mail.Core.Dao
              SecurityContext securityContext,
              DbContextManager<MailDbContext> dbContext)
             : base(tenantManager, securityContext, dbContext)
-        { 
+        {
         }
 
         public List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false)
@@ -58,7 +59,7 @@ namespace ASC.Mail.Core.Dao
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
-                query = query.Where(m => 
+                query = query.Where(m =>
                     MailDbContext.MailTagMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId)
                         .Count() == exp.TagIds.Count);
@@ -103,7 +104,8 @@ namespace ASC.Mail.Core.Dao
             }
 
             var list = query
-                .Select(m => new { 
+                .Select(m => new
+                {
                     Mail = m,
                     LabelsString = skipSelectTags ? "" : string.Join(",", MailDbContext.MailTagMail.Where(t => t.IdMail == m.Id).Select(t => t.IdTag))
                 })
@@ -163,11 +165,10 @@ namespace ASC.Mail.Core.Dao
                     UFxMail = x,
                     Mail = m
                 })
-                .Where(t => t.UFxMail.Tenant == Tenant)
-                .Where(t => t.UFxMail.IdUser == UserId)
-                .Where(t => userFolderIds.Contains(t.UFxMail.IdFolder));
+                .Where(t => t.UFxMail.Tenant == Tenant && t.UFxMail.IdUser == UserId && userFolderIds.Contains(t.UFxMail.IdFolder));
 
-            if (unread.HasValue) {
+            if (unread.HasValue)
+            {
                 query = query.Where(t => t.Mail.Unread == unread.Value);
             }
 
@@ -188,8 +189,7 @@ namespace ASC.Mail.Core.Dao
                     UFxMail = x,
                     Mail = m
                 })
-                .Where(t => t.UFxMail.Tenant == Tenant)
-                .Where(t => t.UFxMail.IdUser == UserId);
+                .Where(t => t.UFxMail.Tenant == Tenant && t.UFxMail.IdUser == UserId);
 
             if (unread.HasValue)
             {
@@ -237,7 +237,7 @@ namespace ASC.Mail.Core.Dao
                 .DefaultIfEmpty<T>()
                 .Max();
 
-            return (T)max;
+            return max;
         }
 
         public int SetFieldValue<T>(IMessagesExp exp, string field, T value)
@@ -352,8 +352,8 @@ namespace ASC.Mail.Core.Dao
                 IsAnswered = r.IsAnswered,
                 IsForwarded = r.IsForwarded,
                 LabelsString = labelsString,
-                FolderRestore = (FolderType) r.FolderRestore,
-                Folder = (FolderType) r.Folder,
+                FolderRestore = (FolderType)r.FolderRestore,
+                Folder = (FolderType)r.Folder,
                 ChainId = r.ChainId,
                 ChainDate = r.ChainDate,
                 MailboxId = r.IdMailbox,

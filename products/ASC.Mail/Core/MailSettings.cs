@@ -293,7 +293,7 @@ namespace ASC.Mail.Configuration
         {
             var c = configuration.GetSetting<MailSettings>("mail");
 
-            //ApiPort = c.ApiPort ?? 0;
+            ApiPort = c.ApiPort ?? 0;
 
             UseDump = c.UseDump;
 

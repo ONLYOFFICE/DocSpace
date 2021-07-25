@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -51,8 +52,7 @@ namespace ASC.Mail.Core.Dao
             var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
             var dns = MailDbContext.MailServerDns
-                .Where(d => tenants.Contains(d.Tenant))
-                .Where(d => d.IdDomain == domainId)
+                .Where(d => tenants.Contains(d.Tenant) && d.IdDomain == domainId)
                 .Select(ToServerDns)
                 .SingleOrDefault();
 
@@ -62,8 +62,7 @@ namespace ASC.Mail.Core.Dao
         public ServerDns GetById(int id)
         {
             var dns = MailDbContext.MailServerDns
-               .Where(d => d.Tenant == Tenant)
-               .Where(d => d.Id == id)
+               .Where(d => d.Tenant == Tenant && d.Id == id)
                .Select(ToServerDns)
                .SingleOrDefault();
 
@@ -73,9 +72,7 @@ namespace ASC.Mail.Core.Dao
         public ServerDns GetFree()
         {
             var dns = MailDbContext.MailServerDns
-               .Where(d => d.Tenant == Tenant)
-               .Where(d => d.IdUser == UserId)
-               .Where(d => d.IdDomain == DefineConstants.UNUSED_DNS_SETTING_DOMAIN_ID)
+               .Where(d => d.Tenant == Tenant && d.IdUser == UserId && d.IdDomain == DefineConstants.UNUSED_DNS_SETTING_DOMAIN_ID)
                .Select(ToServerDns)
                .SingleOrDefault();
 
@@ -84,7 +81,8 @@ namespace ASC.Mail.Core.Dao
 
         public int Save(ServerDns dns)
         {
-            var mailDns = new MailServerDns { 
+            var mailDns = new MailServerDns
+            {
                 Id = (uint)dns.Id,
                 Tenant = dns.Tenant,
                 IdUser = dns.User,

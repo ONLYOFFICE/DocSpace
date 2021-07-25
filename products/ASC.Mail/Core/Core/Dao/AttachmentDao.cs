@@ -24,6 +24,9 @@
 */
 
 
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -31,9 +34,8 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -44,8 +46,8 @@ namespace ASC.Mail.Core.Dao
              TenantManager tenantManager,
              SecurityContext securityContext,
              DbContextManager<MailDbContext> dbContext)
-            : base(tenantManager, securityContext, dbContext) 
-        { 
+            : base(tenantManager, securityContext, dbContext)
+        {
         }
 
         public Attachment GetAttachment(IAttachmentExp exp)
@@ -81,14 +83,11 @@ namespace ASC.Mail.Core.Dao
 
         public int GetAttachmentsMaxFileNumber(IAttachmentsExp exp)
         {
-            var list = MailDbContext.MailAttachment
+            return MailDbContext.MailAttachment
                    .Where(exp.GetExpression())
                    .Select(a => a.FileNumber)
-                   .ToList();
-
-            var max = list.Any() ? list.Max() : 0;
-
-            return max;
+                   .DefaultIfEmpty()
+                   .Max();
         }
 
         public int GetAttachmentsCount(IAttachmentsExp exp)
