@@ -24,15 +24,18 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -52,7 +55,7 @@ namespace ASC.Mail.Core.Dao
             var emails = MailDbContext.MailMailboxAutoreplyHistory
                 .Where(h => h.IdMailbox == mailboxId
                     && h.SendingEmail == email
-                    && (DateTime.UtcNow - h.SendingDate).TotalDays <= autoreplyDaysInterval)
+                    && EF.Functions.DateDiffDay(h.SendingDate, DateTime.UtcNow) <= autoreplyDaysInterval)
                 .Select(h => h.SendingEmail)
                 .ToList();
 
