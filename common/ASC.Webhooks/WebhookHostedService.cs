@@ -1,60 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ASC.Common.Caching;
+using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Core;
 using ASC.Web.Webhooks;
 
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Webhooks
 {
-    public class WebhookHostedService : BackgroundService
+    [Singletone]
+    public class WebhookHostedService : IHostedService
     {
-        private ILog Log { get; }
-        private DbWorker DbWorker { get; }
-        private TenantManager TenantManager { get; }
+        private WorkerService workerService;
+        internal static readonly ConcurrentQueue<WebhookRequest> Queue = new ConcurrentQueue<WebhookRequest>();
+        private BuildQueueService BuildQueueService { get; }
         private WebhookSender WebhookSender { get; }
+        private ILog Logger { get; }
 
-        private ICacheNotify<WebhookRequest> CacheNotify { get; }
-
-        public WebhookHostedService(IOptionsMonitor<ILog> option, 
-            DbWorker dbWorker, 
-            TenantManager tenantManager, 
+        public WebhookHostedService(BuildQueueService buildQueueService,
             WebhookSender webhookSender,
-            ICacheNotify<WebhookRequest> cacheNotify)
+            IOptionsMonitor<ILog> options)
         {
-            Log = option.Get("ASC.Webhooks");
-            DbWorker = dbWorker;
-            TenantManager = tenantManager;
+            BuildQueueService = buildQueueService;
             WebhookSender = webhookSender;
-            CacheNotify = cacheNotify;
-        }
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            Log.Debug(
-               $"WebhookHostedService is starting.");
-
-            stoppingToken.Register(() =>
-            Log.Debug($"WebhookHostedService is stopping."));
-
-            CacheNotify.Subscribe(BackgroundProcessing, CacheNotifyAction.Update);
+            Logger = options.Get("ASC.Webhooks");
         }
 
-        public void Stop()
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            CacheNotify.Unsubscribe(CacheNotifyAction.Update);
+            workerService = new WorkerService(cancellationToken, WebhookSender, Logger);
+            workerService.Start();
+            BuildQueueService.Start();
+
+            return Task.CompletedTask;
         }
 
-        private void BackgroundProcessing(WebhookRequest request)// горизонтальная, вертикальная кластеризация, добавление в очередь из паблишера
+        public Task StopAsync(CancellationToken cancellationToken)
         {
-            WebhookSender.Send(request);
+
+            if (workerService != null)
+            {
+                workerService.Stop();
+                workerService = null;
+            }
+
+            if (BuildQueueService != null)
+            {
+                BuildQueueService.Stop();
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

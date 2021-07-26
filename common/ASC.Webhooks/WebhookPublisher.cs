@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Web.Webhooks;
 using ASC.Webhooks.Dao.Models;
 
-using Confluent.Kafka;
-
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Webhooks

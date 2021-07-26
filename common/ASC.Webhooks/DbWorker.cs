@@ -12,61 +12,42 @@ namespace ASC.Webhooks
     [Scope]
     public class DbWorker
     {
-        public WebhooksDbContext webhooksContext { get; }
-        public DbWorker(DbContextManager<WebhooksDbContext> dbContext)
+        private Lazy<WebhooksDbContext> LazyWebhooksDbContext { get; }
+        private WebhooksDbContext webhooksDbContext { get => LazyWebhooksDbContext.Value; }
+        public DbWorker(DbContextManager<WebhooksDbContext> webhooksDbContext)
         {
-            webhooksContext = dbContext.Get("webhooks");
+            LazyWebhooksDbContext = new Lazy<WebhooksDbContext>(() => webhooksDbContext.Value);
         }
 
         public int WriteToJournal(WebhooksPayload webhook)
         {
-            var entity = webhooksContext.WebhooksPayloads.Add(webhook);
-            webhooksContext.SaveChanges();
+            var entity = webhooksDbContext.WebhooksPayloads.Add(webhook);
+            webhooksDbContext.SaveChanges();
             return entity.Entity.Id;
         }
 
         public void AddWebhookConfig(WebhooksConfig webhooksConfig)
         {
-            webhooksContext.WebhooksConfigs.Add(webhooksConfig);
-            webhooksContext.SaveChanges();
+            webhooksDbContext.WebhooksConfigs.Add(webhooksConfig);
+            webhooksDbContext.SaveChanges();
         }
 
         public List<string> GetWebhookUri(int tenant)
         {
-            return webhooksContext.WebhooksConfigs.Where(t => t.TenantId == tenant).Select(it => it.Uri).ToList();
+            return webhooksDbContext.WebhooksConfigs.Where(t => t.TenantId == tenant).Select(it => it.Uri).ToList();
         }
 
         public List<WebhooksConfig> GetWebhookConfigs(int tenant)
         {
-            return webhooksContext.WebhooksConfigs.Where(t => t.TenantId == tenant).ToList();
+            return webhooksDbContext.WebhooksConfigs.Where(t => t.TenantId == tenant).ToList();
         }
 
         public void UpdateStatus(int id, ProcessStatus status)
         {
-            var webhook = webhooksContext.WebhooksPayloads.Where(t => t.Id == id).FirstOrDefault();
+            var webhook = webhooksDbContext.WebhooksPayloads.Where(t => t.Id == id).FirstOrDefault();
             webhook.Status = status;
-            webhooksContext.WebhooksPayloads.Update(webhook);
-            webhooksContext.SaveChanges();
-        }
-
-        public List<WebhooksQueueEntry> GetWebhookQueue()
-        {
-            return webhooksContext.WebhooksPayloads
-                .Where(t => t.Status == ProcessStatus.InProcess)
-                .Join(webhooksContext.WebhooksConfigs, t => t.TenantId, t => t.TenantId, (payload, config) => new { payload, config })
-                .Select(t => new WebhooksQueueEntry { Id = t.payload.Id, Data = t.payload.Data, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
-                .OrderBy(t => t.Id)
-                .ToList();
-        }
-
-        public List<WebhooksQueueEntry> GetTenantWebhooks(EventName eventName)
-        {
-            return webhooksContext.WebhooksPayloads
-                .Where(t => t.Status == ProcessStatus.InProcess && t.Event == eventName)
-                .Join(webhooksContext.WebhooksConfigs, t => t.TenantId, t => t.TenantId, (payload, config) => new { payload, config })
-                .Select(t => new WebhooksQueueEntry { Id = t.payload.Id, Data = t.payload.Data, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
-                .OrderBy(t => t.Id)
-                .ToList();
+            webhooksDbContext.WebhooksPayloads.Update(webhook);
+            webhooksDbContext.SaveChanges();
         }
     }
 }
