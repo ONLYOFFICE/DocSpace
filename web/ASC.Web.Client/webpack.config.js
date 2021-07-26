@@ -6,7 +6,6 @@ const ModuleFederationPlugin = require("webpack").container
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
-const getUTCString = require("@appserver/common/utils/getUTCString");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 
 const path = require("path");
@@ -130,19 +129,19 @@ const config = {
     new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "studio",
-      filename: `remoteEntry.js?__hash=${getUTCString()}`,
+      filename: "remoteEntry.js",
       remotes: {
         studio: `studio@${combineUrl(
           AppServerConfig.proxyURL,
-          `/remoteEntry.js?__hash=${getUTCString()}`
+          "/remoteEntry.js"
         )}`,
         login: `login@${combineUrl(
           AppServerConfig.proxyURL,
-          `/login/remoteEntry.js?__hash=${getUTCString()}`
+          "/login/remoteEntry.js"
         )}`,
         people: `people@${combineUrl(
           AppServerConfig.proxyURL,
-          `/products/people/remoteEntry.js?__hash=${getUTCString()}`
+          "/products/people/remoteEntry.js"
         )}`,
       },
       exposes: {
