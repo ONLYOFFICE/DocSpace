@@ -47,6 +47,5 @@ base.args = {
   fontSize: "13px",
   fontWeight: "400",
   textAlign: "left",
-  headerAlign: "left",
   htmlContent: "",
 };

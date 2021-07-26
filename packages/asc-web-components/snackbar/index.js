@@ -51,7 +51,6 @@ class SnackBar extends React.Component {
       fontSize,
       fontWeight,
       textAlign,
-      headerAlign,
       htmlContent,
       ...rest
     } = this.props;
@@ -73,36 +72,40 @@ class SnackBar extends React.Component {
                 <StyledLogoIcon size="medium" color={textColor} />
               </Box>
             )}
-            <Box className="text-container">
+            <Box className="text-container" textAlign={textAlign}>
               <Heading
                 size="xsmall"
                 isInline={true}
                 className="text-header"
                 style={headerStyles}
                 color={textColor}
-                textAlign={headerAlign}
               >
                 {headerText}
               </Heading>
-              <Text
-                as="p"
-                color={textColor}
-                fontSize={fontSize}
-                fontWeight={fontWeight}
-                textAlign={textAlign}
-              >
-                {text}
-              </Text>
+              <div className="text-body" textAlign={textAlign}>
+                <Text
+                  as="p"
+                  color={textColor}
+                  fontSize={fontSize}
+                  fontWeight={fontWeight}
+                >
+                  {text}
+                </Text>
+
+                {btnText && (
+                  <button className="button" onClick={this.onActionClick}>
+                    <Text color={textColor}>{btnText}</Text>
+                  </button>
+                )}
+              </div>
             </Box>
           </>
         )}
-        <button className="action" onClick={this.onActionClick}>
-          {btnText ? (
-            <Text color={textColor}>{btnText}</Text>
-          ) : (
+        {!btnText && (
+          <button className="action" onClick={this.onActionClick}>
             <StyledCrossIcon size="medium" />
-          )}
-        </button>
+          </button>
+        )}
         )
       </StyledSnackBar>
     );
@@ -121,7 +124,6 @@ SnackBar.propTypes = {
   fontSize: PropType.string,
   fontWeight: PropType.string,
   textAlign: PropType.string,
-  headerAlign: PropType.string,
   htmlContent: PropType.string,
 };
 
@@ -132,7 +134,6 @@ SnackBar.defaultProps = {
   fontSize: "13px",
   fontWeight: "400",
   textAlign: "left",
-  headerAlign: "left",
   htmlContent: "",
 };
 

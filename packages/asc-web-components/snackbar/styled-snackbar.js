@@ -29,9 +29,18 @@ const StyledSnackBar = styled(Box)`
     display: flex;
     flex-direction: column;
     gap: 5px;
+    text-align: ${(props) => props.textAlign};
 
     .text-header {
       margin: 0;
+    }
+
+    .text-body {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      justify-content: ${(props) => props.textAlign};
     }
   }
 
@@ -47,6 +56,16 @@ const StyledSnackBar = styled(Box)`
     cursor: pointer;
     margin-left: auto;
     padding-left: 8px;
+    text-decoration: underline;
+  }
+
+  .button {
+    background: inherit;
+    border: none;
+    font-size: 13px;
+    color: "#000";
+    cursor: pointer;
+    line-height: 12px;
     text-decoration: underline;
   }
 `;
