@@ -186,12 +186,8 @@ restart_services() {
 	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
 	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
 	do
-		if systemctl is-active $SVC | grep -q "active"; then
-			systemctl restart $SVC.service >/dev/null 2>&1
-		else
-			systemctl enable $SVC.service  >/dev/null 2>&1
-			systemctl start $SVC.service  >/dev/null 2>&1
-		fi
+		systemctl enable $SVC.service  >/dev/null 2>&1
+		systemctl restart $SVC.service  >/dev/null 2>&1
 	done
 	echo "OK"
 }
@@ -535,7 +531,7 @@ setup_elasticsearch() {
 
 setup_kafka() {
 
-	KAFKA_SERVICE=$(systemctl --type=service | grep 'kafka' | tr -d '●' | awk '{print $1;}')
+	KAFKA_SERVICE=$(systemctl list-units --all -t service --full --no-legend "*kafka*" | cut -f1 -d' ')
 
 	if [ -n ${KAFKA_SERVICE} ]; then
 
@@ -582,6 +578,9 @@ elif command -v apt >/dev/null 2>&1; then
 	chown -R onlyoffice:onlyoffice /var/www/appserver/
 	chown -R onlyoffice:onlyoffice /var/log/onlyoffice/appserver/
 	chown -R onlyoffice:onlyoffice /etc/onlyoffice/appserver/
+
+	chown -R kafka /var/www/appserver/services/kafka/
+	systemctl restart kafka zookeeper
 fi
 
 install_json
