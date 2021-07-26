@@ -23,6 +23,9 @@ import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
 import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
+import getUTCString from "../../../packages/asc-web-common/utils/getUTCString";
+
+const utcString = getUTCString();
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -355,7 +358,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     const remoteEntryURL = combineUrl(
       window.location.origin,
       appURL,
-      "remoteEntry.js"
+      `remoteEntry.js?__hash=${utcString}`
     );
 
     const system = {
