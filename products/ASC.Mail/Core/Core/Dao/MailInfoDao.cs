@@ -334,6 +334,28 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
+        public MailInfo GetMailInfoByMD5(string md5)
+        {
+            var query = MailDb.MailMail
+                .Where(x=>x.Md5.Equals(md5))
+                .Select(x=> ToMailInfo(x, string.Empty));
+
+            return query.FirstOrDefault();
+        }
+
+        public List<MailInfo> GetMailInfoByMailBox(int mailBoxId, int folder=0)
+        {
+            var query = MailDb.MailMail
+                .Where(x=>x.IdMailbox== mailBoxId);
+
+            if(folder!=0)
+            {
+                query = query.Where(x => x.Folder == folder);
+            }
+
+            return query.Select(x => ToMailInfo(x, string.Empty)).ToList();
+        }
+
         protected static MailInfo ToMailInfo(MailMail r, string labelsString)
         {
             var mailInfo = new MailInfo
