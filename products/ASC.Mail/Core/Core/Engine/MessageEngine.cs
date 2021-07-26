@@ -1645,7 +1645,7 @@ namespace ASC.Mail.Core.Engine
                             }
                         }
 
-                        log.Info($"Message already exists by (md5={md5})|MimeMessageId|Subject|DateSent ");
+                        log.Info($"Message already exists by (md5={md5})|{mimeMessageId}|Subject|DateSent ");
                     }
 
                     return true;

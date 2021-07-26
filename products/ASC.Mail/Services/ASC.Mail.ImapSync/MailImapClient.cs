@@ -105,7 +105,7 @@ namespace ASC.Mail.ImapSync
 
         private void ImapMessageFlagsChanged(object sender, MessageFlagsChangedEventArgs e)
         {
-            if (sender is IMailFolder imap_folder)
+            if (ClientIsReadyToWork && sender is IMailFolder imap_folder)
             {
                 _log.Debug($"ImapMessageFlagsChanged. Folder={imap_folder.FullName} Index={e.Index} Flags={e.Flags}. imapMessagesToUpdate.Count={imapMessagesToUpdate.Count}");
 
@@ -115,7 +115,7 @@ namespace ASC.Mail.ImapSync
 
         private void ImapCountChanged(object sender, EventArgs e)
         {
-            if (sender is IMailFolder imap_folder)
+            if (ClientIsReadyToWork && sender is IMailFolder imap_folder)
             {
                 _log.Debug($"ImapCountChanged. Folder={imap_folder.FullName} Count={imap_folder.Count}.");
 
@@ -127,19 +127,19 @@ namespace ASC.Mail.ImapSync
         {
             if (foldersDictionary == null) return;
 
-            var folderKeyValue = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity);
-
-            if (folderKeyValue.Key != null && WorkFolder != folderKeyValue.Key)
-            {
-                WorkFolder = folderKeyValue.Key;
-
-                await SynchronizeMailFolderFromImap(WorkFolder);
-
-                _log.Debug($"CheckRedis. WorkFolder change to {WorkFolder.FullName} Count={WorkFolder.Count}.");
-            }
-
             if (ClientIsReadyToWork)
             {
+                var folderKeyValue = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity);
+
+                if (folderKeyValue.Key != null && WorkFolder != folderKeyValue.Key)
+                {
+                    WorkFolder = folderKeyValue.Key;
+
+                    await SynchronizeMailFolderFromImap(WorkFolder);
+
+                    _log.Debug($"CheckRedis. WorkFolder change to {WorkFolder.FullName} Count={WorkFolder.Count}.");
+                }
+
                 var key = _redisClient.CreateQueueKey(Account.MailBoxId);
 
                 _log.Debug($"ProcessActionFromRedis. Begin read key: {key}");
@@ -231,12 +231,12 @@ namespace ASC.Mail.ImapSync
             //if (certificatePermit)
             //    Imap.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
-            Imap.Disconnected += Imap_Disconnected;
-
             ImapSemaphore = new SemaphoreSlim(1, 1);
             RequestCountSemaphore=new SemaphoreSlim(10,10);
 
-            _deathTimer = new Timer(_deathTimer_Elapsed, this, _mailSettings.ImapClienLifeTimeSecond, -1);
+            _deathTimer = new Timer(_deathTimer_Elapsed, this, _mailSettings.ImapClienLifeTimeSecond, System.Threading.Timeout.Infinite);
+
+            ClientIsReadyToWork = false;
 
             _ = CreateConnection();
         }
@@ -270,14 +270,12 @@ namespace ASC.Mail.ImapSync
             {
                 await ReturnImapSemaphore(false);
             }
-            ClientIsReadyToWork = true;
 
             await SynchronizeMailFolderFromImap(WorkFolder);
 
-            //foreach (var foldersDictionaryItem in foldersDictionary)
-            //{
-            //    await SynchronizeMailFolderFromImap(foldersDictionaryItem.Key);
-            //}
+            ClientIsReadyToWork = true;
+
+            Imap.Disconnected += Imap_Disconnected;
         }
 
         private void Imap_Disconnected(object sender, DisconnectedEventArgs e)
@@ -286,6 +284,7 @@ namespace ASC.Mail.ImapSync
 
             _log.Debug($"Imap_Disconnected.");
 
+            Imap.Disconnected -= Imap_Disconnected;
             Imap.Inbox.MessageFlagsChanged -= ImapMessageFlagsChanged;
             Imap.Inbox.CountChanged -= ImapCountChanged;
 
@@ -314,6 +313,7 @@ namespace ASC.Mail.ImapSync
             ClientIsReadyToWork = false;
 
             DoneToken?.Cancel();
+            StopTokenSource?.Cancel();
 
             try
             {
@@ -622,7 +622,7 @@ namespace ASC.Mail.ImapSync
 
                     _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, Try find by md5={md5}.");
 
-                    var expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                    var expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId,true)
                         .SetMd5(md5)
                         .SetMailboxId(Account.MailBoxId);
 
