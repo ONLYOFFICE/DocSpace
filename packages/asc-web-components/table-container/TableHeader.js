@@ -11,6 +11,7 @@ import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
 
 const TABLE_SIZE = "tableSize";
+const minColumnSize = 80;
 
 class TableHeader extends React.Component {
   constructor(props) {
@@ -58,6 +59,61 @@ class TableHeader extends React.Component {
     }
   };
 
+  moveToLeft = (widths, newWidth, index) => {
+    const { columnIndex } = this.state;
+
+    let leftColumn;
+    let colIndex = index ? index : columnIndex - 1;
+
+    if (colIndex === 0) return;
+
+    while (colIndex !== 0) {
+      leftColumn = document.getElementById("column_" + colIndex);
+      if (leftColumn) {
+        if (leftColumn.dataset.enable === "true") break;
+        else colIndex--;
+      } else return false;
+    }
+
+    if (leftColumn.clientWidth <= minColumnSize) {
+      if (colIndex === 1) return false;
+      return this.moveToLeft(widths, newWidth, colIndex - 1);
+    }
+
+    const offset = this.getSubstring(widths[+columnIndex]) - newWidth;
+    const column2Width = this.getSubstring(widths[colIndex]);
+
+    widths[colIndex] = column2Width - offset + "px";
+    widths[+columnIndex] =
+      this.getSubstring(widths[+columnIndex]) + offset + "px";
+  };
+
+  moveToRight = (widths, newWidth, index) => {
+    const { columnIndex } = this.state;
+
+    let rightColumn;
+    let colIndex = index ? index : +columnIndex + 1;
+
+    while (colIndex !== this.props.columns.length - 1) {
+      rightColumn = document.getElementById("column_" + colIndex);
+      if (rightColumn) {
+        if (rightColumn.dataset.enable === "true") break;
+        else colIndex++;
+      } else return false;
+    }
+
+    const offset = this.getSubstring(widths[+columnIndex]) - newWidth;
+    const column2Width = this.getSubstring(widths[colIndex]);
+
+    if (column2Width + offset >= minColumnSize) {
+      widths[+columnIndex] = newWidth + "px";
+      widths[colIndex] = column2Width + offset + "px";
+    } else {
+      if (colIndex === this.props.columns.length - 1) return false;
+      return this.moveToRight(widths, newWidth, colIndex + 1);
+    }
+  };
+
   onMouseMove = (e) => {
     const { columnIndex } = this.state;
     const { containerRef } = this.props;
@@ -70,20 +126,14 @@ class TableHeader extends React.Component {
     const widths = tableContainer.split(" ");
 
     //getSubstring(widths[+columnIndex])
-    if (newWidth <= 150) {
-      widths[+columnIndex] = widths[+columnIndex];
-    } else {
-      const offset = this.getSubstring(widths[+columnIndex]) - newWidth;
+    if (newWidth <= minColumnSize) {
+      const columnChanged = this.moveToLeft(widths, newWidth);
 
-      const result = this.getColumn(widths, +columnIndex);
-      const column2Width = result[0];
-      const index = result[1];
-
-      //getSubstring(widths[+columnIndex])
-      if (column2Width + offset >= 150) {
-        widths[+columnIndex] = newWidth + "px";
-        widths[+columnIndex + index] = column2Width + offset + "px";
+      if (!columnChanged) {
+        widths[+columnIndex] = widths[+columnIndex];
       }
+    } else {
+      this.moveToRight(widths, newWidth);
     }
 
     containerRef.current.style.gridTemplateColumns = widths.join(" ");
@@ -165,7 +215,9 @@ class TableHeader extends React.Component {
             gridTemplateColumns.push(newItemWidth);
           } else {
             const newItemWidth =
-              percent === 0 ? "80px" : (containerWidth * percent) / 100 + "px";
+              percent === 0
+                ? `${minColumnSize}px`
+                : (containerWidth * percent) / 100 + "px";
 
             if (isActiveNow) {
               //add logic to new columns widths
@@ -232,7 +284,7 @@ class TableHeader extends React.Component {
               return (
                 <TableHeaderCell
                   key={column.key}
-                  index={column.enable ? index : -1}
+                  index={index}
                   column={column}
                   resizable={resizable}
                   onMouseDown={this.onMouseDown}
