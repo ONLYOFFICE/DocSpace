@@ -33,7 +33,7 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-
+import { createNewFile, getDefaultFileName } from "files/utils";
 import i18n from "./i18n";
 
 let documentIsReady = false;
@@ -347,6 +347,7 @@ const Editor = () => {
 
       let onRequestSharingSettings;
       let onRequestRename;
+      let onRequestCreateNew;
 
       if (
         fileInfo &&
@@ -355,6 +356,10 @@ const Editor = () => {
       ) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
         onRequestRename = onSDKRequestRename;
+      }
+
+      if (fileInfo) {
+        onRequestCreateNew = onSDKRequestCreateNew;
       }
 
       const events = {
@@ -368,6 +373,7 @@ const Editor = () => {
           onError: onSDKError,
           onRequestSharingSettings,
           onRequestRename,
+          onRequestCreateNew,
         },
       };
 
@@ -396,6 +402,20 @@ const Editor = () => {
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
+  };
+
+  const onSDKRequestCreateNew = () => {
+    const documentType = config.documentType;
+    const fileExst =
+      documentType === "text"
+        ? "docx"
+        : documentType === "presentation"
+        ? "pptx"
+        : "xlsx";
+
+    const defaultFileName = getDefaultFileName(fileExst);
+
+    createNewFile(fileInfo.folderId, `${defaultFileName}.${fileExst}`);
   };
 
   const onSDKRequestRename = (event) => {

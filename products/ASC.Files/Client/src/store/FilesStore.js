@@ -15,6 +15,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
+import { openDocEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
 
@@ -1361,34 +1362,7 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    if (providerKey) {
-      tab
-        ? (tab.location = url)
-        : window.open(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              config.homepage,
-              `/doceditor?fileId=${id}`
-            ),
-            "_blank"
-          );
-    } else {
-      return this.addFileToRecentlyViewed(id)
-        .then(() => console.log("Pushed to recently viewed"))
-        .catch((e) => console.error(e))
-        .finally(
-          tab
-            ? (tab.location = url)
-            : window.open(
-                combineUrl(
-                  AppServerConfig.proxyURL,
-                  config.homepage,
-                  `/doceditor?fileId=${id}`
-                ),
-                "_blank"
-              )
-        );
-    }
+    return openDocEditor(id, providerKey, tab, url);
   };
 
   createThumbnails = () => {
