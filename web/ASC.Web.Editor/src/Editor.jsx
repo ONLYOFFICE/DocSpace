@@ -19,6 +19,8 @@ import {
   setEncryptionKeys,
   getEncryptionAccess,
   getFileInfo,
+  getRecentFolderList,
+  getFolderInfo,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -150,6 +152,55 @@ const Editor = () => {
           i18n.t
         );
       }
+      //console.log("config.document.info", config, "fileInfo", fileInfo);
+
+      if (fileInfo) {
+        const recentFolderList = await getRecentFolderList();
+
+        let recentFilesArray = [];
+
+        const filesArray = recentFolderList.files;
+
+        for (let i = 0; i < filesArray.length; i++) {
+          if (config.documentType === "text" && filesArray[i].fileType === 7) {
+            const folderInfo = await getFolderInfo(filesArray[i].folderId);
+
+            const convertedData = convertRecentData(filesArray[i], folderInfo);
+
+            if (Object.keys(convertedData).length !== 0)
+              recentFilesArray.push(convertedData);
+          }
+
+          if (
+            config.documentType === "spreadsheet" &&
+            filesArray[i].fileType === 5
+          ) {
+            const folderInfo = await getFolderInfo(filesArray[i].folderId);
+
+            const convertedData = convertRecentData(filesArray[i], folderInfo);
+
+            if (Object.keys(convertedData).length !== 0)
+              recentFilesArray.push(convertedData);
+          }
+
+          if (
+            config.documentType === "presentation" &&
+            filesArray[i].fileType === 6
+          ) {
+            const folderInfo = await getFolderInfo(filesArray[i].folderId);
+
+            const convertedData = convertRecentData(filesArray[i], folderInfo);
+
+            if (Object.keys(convertedData).length !== 0)
+              recentFilesArray.push(convertedData);
+          }
+        }
+
+        config.editorConfig = {
+          ...config.editorConfig,
+          recent: recentFilesArray,
+        };
+      }
 
       if (
         config &&
@@ -176,6 +227,20 @@ const Editor = () => {
         true
       );
     }
+  };
+
+  const convertRecentData = (file, folder) => {
+    let obj = {};
+    const folderName = folder.title;
+    const fileName = file.title;
+    const url = file.webUrl;
+    if (fileInfo.id !== file.id)
+      obj = {
+        folder: folderName,
+        title: fileName,
+        url: url,
+      };
+    return obj;
   };
 
   const isIPad = () => {
