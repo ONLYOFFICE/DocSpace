@@ -8,7 +8,12 @@ class FirebaseHelper {
     this.firebaseConfig = settings;
 
     if (!this.isEnabled) return;
-    firebase.initializeApp(this.config);
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(this.config);
+    } else {
+      firebase.app();
+    }
 
     this.remoteConfig = firebase.remoteConfig();
 
