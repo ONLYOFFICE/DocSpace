@@ -83,7 +83,11 @@ class TableHeader extends React.Component {
     const offset = this.getSubstring(widths[+columnIndex]) - newWidth;
     const column2Width = this.getSubstring(widths[colIndex]);
 
-    widths[colIndex] = column2Width - offset + "px";
+    const leftColumnWidth = column2Width - offset;
+    const newLeftWidth =
+      leftColumnWidth < minColumnSize ? minColumnSize : leftColumnWidth;
+
+    widths[colIndex] = newLeftWidth + "px";
     widths[+columnIndex] =
       this.getSubstring(widths[+columnIndex]) + offset + "px";
   };

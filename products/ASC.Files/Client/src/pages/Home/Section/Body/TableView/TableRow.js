@@ -12,6 +12,7 @@ import FileNameCell from "./sub-components/FileNameCell";
 import SizeCell from "./sub-components/SizeCell";
 import AuthorCell from "./sub-components/AuthorCell";
 import DateCell from "./sub-components/DateCell";
+import TypeCell from "./sub-components/TypeCell";
 import globalColors from "@appserver/components/utils/globalColors";
 import styled from "styled-components";
 import Base from "@appserver/components/themes/base";
@@ -152,7 +153,7 @@ const FilesTableRow = (props) => {
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          TYPE?
+          <TypeCell sideColor={sideColor} {...props} />
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>

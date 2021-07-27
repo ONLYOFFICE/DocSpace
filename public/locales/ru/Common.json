@@ -94,5 +94,14 @@
   "ViewWeb": "Просмотреть веб-версию",
   "Warning": "Внимание",
   "ResetApplication": "Сбросить приложение",
-  "Name": "Название"
+  "Name": "Название",
+  "Image": "Изображение",
+  "Unknown": "Неизвестный",
+  "Archive": "Архив",
+  "Video": "Видео",
+  "Audio": "Аудио",
+  "Spreadsheet": "Таблица",
+  "Presentation": "Презентация",
+  "Document": "Документ",
+  "Folder": "Папка"
 }

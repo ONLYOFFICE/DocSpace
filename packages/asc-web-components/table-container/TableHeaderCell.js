@@ -32,7 +32,7 @@ const TableHeaderCell = ({ column, index, onMouseDown, resizable }) => {
               data={options}
               noHover
             >
-              {title}
+              {enable ? title : ""}
             </Link>
             <img
               className="header-container-text-icon"
@@ -45,7 +45,7 @@ const TableHeaderCell = ({ column, index, onMouseDown, resizable }) => {
             color={globalColors.gray}
             className="header-container-text"
           >
-            {title}
+            {enable ? title : ""}
           </Text>
         )}
         {resizable && (

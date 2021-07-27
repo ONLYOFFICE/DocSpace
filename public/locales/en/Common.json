@@ -94,5 +94,14 @@
   "ViewWeb": "View web version",
   "Warning": "Warning",
   "ResetApplication": "Reset application",
-  "Name": "Name"
+  "Name": "Name",
+  "Image": "Image",
+  "Unknown": "Unknown",
+  "Archive": "Archive",
+  "Video": "Video",
+  "Audio": "Audio",
+  "Spreadsheet": "Spreadsheet",
+  "Presentation": "Presentation",
+  "Document": "Document",
+  "Folder": "Folder"
 }
