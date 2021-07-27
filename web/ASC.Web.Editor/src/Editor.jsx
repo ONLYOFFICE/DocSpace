@@ -40,6 +40,10 @@ import i18n from "./i18n";
 import { FolderType } from "@appserver/common/constants";
 let documentIsReady = false;
 
+const text = "text";
+const spreadSheet = "spreadsheet";
+const presentation = "presentation";
+
 let docTitle = null;
 let fileType = null;
 let config;
@@ -170,7 +174,7 @@ const Editor = () => {
 
         for (let i = 0; i < filesArray.length; i++) {
           if (
-            config.documentType === "text" &&
+            config.documentType === text &&
             filesArray[i].fileType === 7 &&
             filesArray[i].rootFolderType !== FolderType.SHARE
           ) {
@@ -183,7 +187,7 @@ const Editor = () => {
           }
 
           if (
-            config.documentType === "spreadsheet" &&
+            config.documentType === spreadSheet &&
             filesArray[i].fileType === 5 &&
             filesArray[i].rootFolderType !== FolderType.SHARE
           ) {
@@ -196,7 +200,7 @@ const Editor = () => {
           }
 
           if (
-            config.documentType === "presentation" &&
+            config.documentType === presentation &&
             filesArray[i].fileType === 6 &&
             filesArray[i].rootFolderType !== FolderType.SHARE
           ) {
@@ -419,9 +423,9 @@ const Editor = () => {
   const onSDKRequestCreateNew = () => {
     const documentType = config.documentType;
     const fileExst =
-      documentType === "text"
+      documentType === text
         ? "docx"
-        : documentType === "presentation"
+        : documentType === presentation
         ? "pptx"
         : "xlsx";
 
