@@ -92,7 +92,6 @@ namespace ASC.Radicale
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Radicale");
                     services.AddHostedService<RadicaleServiceLauncher>();
                     diHelper.TryAdd<RadicaleServiceLauncher>();
                 })

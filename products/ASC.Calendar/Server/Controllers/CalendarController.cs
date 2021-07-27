@@ -2561,7 +2561,7 @@ namespace ASC.Calendar.Controllers
                 {
                     var lastEventDate = evt.AllDayLong ? utcDate.Date : utcDate;
                     var dates = evt.RecurrenceRule
-                        .GetDates(evt.UtcStartDate, evt.UtcStartDate, evt.UtcStartDate.AddMonths(_monthCount), int.MaxValue, false)
+                        .GetDates(evt.UtcStartDate, evt.TimeZone, evt.AllDayLong, evt.UtcStartDate, evt.UtcStartDate.AddMonths(_monthCount), int.MaxValue, false)
                         .Where(x => x < lastEventDate)
                         .ToList();
 

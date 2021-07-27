@@ -1644,7 +1644,7 @@ namespace ASC.Calendar.BusinessObjects
             var offset = timeZone.GetOffset();
             var localFromDate = DateTime.UtcNow.Add(offset);
             var localStartDate = isAllDayLong ? utcStartDate : utcStartDate.Add(offset);
-            var dates = rrule.GetDates(localStartDate, localFromDate, 3);
+            var dates = rrule.GetDates(localStartDate, timeZone, isAllDayLong, localFromDate, 3);
             for (var i = 0; i < dates.Count; i++)
             {
                 dates[i] = dates[i].Subtract(offset);

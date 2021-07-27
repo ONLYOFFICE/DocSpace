@@ -286,7 +286,7 @@ namespace ASC.Calendar.Models
             }
             else
             {
-                recurenceDates = _baseEvent.RecurrenceRule.GetDates(_baseEvent.UtcStartDate, utcStartDate, utcEndDate);
+                recurenceDates = _baseEvent.RecurrenceRule.GetDates(_baseEvent.UtcStartDate, _baseEvent.TimeZone, _baseEvent.AllDayLong, utcStartDate, utcEndDate);
             }
 
             foreach (var d in recurenceDates)
