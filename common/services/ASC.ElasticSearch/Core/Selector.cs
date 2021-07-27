@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using ASC.Common;
+using ASC.ElasticSearch.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -202,7 +203,13 @@ namespace ASC.ElasticSearch
 
         public Selector<T> MatchAll(string value)
         {
-            Match(() => ((NewArrayExpression)(ServiceProvider.GetService<T>().SearchContentFields).Body).Expressions.ToArray(), value);
+            Match(() =>
+            {
+                var t = ServiceProvider.GetService<T>();
+                var searchSettingsHelper = ServiceProvider.GetService<SearchSettingsHelper>();
+                return ((NewArrayExpression)(t.GetSearchContentFields(searchSettingsHelper)).Body).Expressions.ToArray();
+            },
+            value);
 
             return this;
         }

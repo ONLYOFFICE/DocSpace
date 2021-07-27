@@ -7,11 +7,14 @@ import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
 import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import FilesFilter from "@appserver/common/api/files/filter";
+import { isDesktop, isTablet } from "react-device-detect";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -42,41 +45,32 @@ class ArticleBodyContent extends React.Component {
       history,
     } = this.props;
 
-    if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
-      setSelectedNode(data);
-      setIsLoading(true);
+    //if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
+    setSelectedNode(data);
+    setIsLoading(true);
 
-      const newFilter = filter.clone();
-      newFilter.page = 0;
-      newFilter.startIndex = 0;
-      newFilter.folder = data[0];
+    const selectedFolderTitle =
+      (e.node && e.node.props && e.node.props.title) || null;
 
-      const selectedFolderTitle =
-        (e.node && e.node.props && e.node.props.title) || null;
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
 
-      selectedFolderTitle
-        ? setDocumentTitle(selectedFolderTitle)
-        : setDocumentTitle();
-
-      if (window.location.pathname.indexOf("/filter") > 0) {
-        fetchFiles(data[0], newFilter)
-          .catch((err) => toastr.error(err))
-          .finally(() => {
-            setIsLoading(false);
-          });
-      } else {
-        newFilter.startIndex = 0;
-        const urlFilter = newFilter.toUrlParams();
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-        );
-      }
+    if (window.location.pathname.indexOf("/filter") > 0) {
+      fetchFiles(data[0])
+        .catch((err) => toastr.error(err))
+        .finally(() => setIsLoading(false));
+    } else {
+      const urlFilter = FilesFilter.getDefault().toUrlParams();
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
     }
+    //}
   };
 
   onShowNewFilesPanel = (folderId) => {
-    this.props.setNewFilesPanelVisible(true);
-    this.props.setNewFilesIds([folderId]);
+    this.props.setNewFilesPanelVisible(true, [folderId]);
   };
 
   render() {
@@ -86,7 +80,12 @@ class ArticleBodyContent extends React.Component {
       selectedTreeNode,
       enableThirdParty,
       isVisitor,
+      personal,
     } = this.props;
+
+    const campaigns = (localStorage.getItem("campaigns") || "")
+      .split(",")
+      .filter((campaign) => campaign.length > 0);
 
     return isEmpty(treeFolders) ? (
       <Loaders.TreeFolders />
@@ -99,8 +98,12 @@ class ArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        <TreeSettings />
+        {!personal && <TreeSettings />}
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
+
+        {(isDesktop || isTablet) && personal && campaigns.length > 0 && (
+          <Banner />
+        )}
       </>
     );
   }
@@ -127,7 +130,9 @@ export default inject(
         ? selectedNode
         : [selectedFolderStore.id + ""];
 
-    const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
+    const { setNewFilesPanelVisible } = dialogsStore;
+
+    const { personal } = auth.settingsStore;
 
     return {
       selectedFolderTitle: selectedFolderStore.title,
@@ -142,9 +147,10 @@ export default inject(
       setSelectedNode,
       setTreeFolders,
       setNewFilesPanelVisible,
-      setNewFilesIds,
 
       homepage: config.homepage,
+
+      personal,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));

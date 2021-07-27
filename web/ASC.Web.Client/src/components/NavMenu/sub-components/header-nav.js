@@ -16,14 +16,15 @@ const homepage = config.homepage;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-const PROFILE_URL = combineUrl(
+const PROFILE_SELF_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/products/people/view/@self"
 );
+const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 
 const StyledNav = styled.nav`
   display: flex;
-  padding: 0 24px 0 16px;
+  padding: 0 20px 0 16px;
   align-items: center;
   position: absolute;
   right: 0;
@@ -48,12 +49,25 @@ const StyledNav = styled.nav`
   @media ${tablet} {
     padding: 0 16px;
   }
+  .icon-profile-menu {
+    cursor: pointer;
+  }
 `;
-const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
-  const { t } = useTranslation("NavMenu");
+const HeaderNav = ({
+  history,
+  modules,
+  user,
+  logout,
+  isAuthenticated,
+  peopleAvailable,
+  isPersonal,
+}) => {
+  const { t } = useTranslation(["NavMenu", "Common"]);
 
   const onProfileClick = useCallback(() => {
-    history.push(PROFILE_URL);
+    peopleAvailable
+      ? history.push(PROFILE_SELF_URL)
+      : window.open(PROFILE_MY_URL, "_blank");
   }, []);
 
   const onAboutClick = useCallback(() => history.push(ABOUT_URL), []);
@@ -74,16 +88,18 @@ const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
     const currentUserActions = [
       {
         key: "ProfileBtn",
-        label: t("Profile"),
+        label: t("Common:Profile"),
         onClick: onProfileClick,
-        url: PROFILE_URL,
+        url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
       },
       {
         key: "SwitchToBtn",
-        label: t("TurnOnDesktopVersion"),
-        onClick: onSwitchToDesktopClick,
-        url: `${window.location.origin}?desktop_view=true`,
-        target: "_self",
+        ...(!isPersonal && {
+          label: t("TurnOnDesktopVersion"),
+          onClick: onSwitchToDesktopClick,
+          url: `${window.location.origin}?desktop_view=true`,
+          target: "_self",
+        }),
       },
       {
         key: "AboutBtn",
@@ -121,7 +137,6 @@ const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
             noHover={true}
           />
         ))}
-
       {isAuthenticated && user ? (
         <ProfileActions userActions={getCurrentUserActions()} user={user} />
       ) : (
@@ -152,17 +167,19 @@ export default withRouter(
       language,
       logout,
     } = auth;
-    const { defaultPage } = settingsStore;
+    const { defaultPage, personal: isPersonal } = settingsStore;
     const { user } = userStore;
-
+    const modules = auth.availableModules;
     return {
+      isPersonal,
       user,
       isAuthenticated,
       isLoaded,
       language,
       defaultPage: defaultPage || "/",
-      modules: auth.availableModules,
+      modules,
       logout,
+      peopleAvailable: modules.some((m) => m.appName === "people"),
     };
   })(observer(HeaderNav))
 );

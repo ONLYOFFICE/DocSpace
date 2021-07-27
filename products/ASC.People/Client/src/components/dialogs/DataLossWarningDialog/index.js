@@ -33,12 +33,13 @@ class DataLossWarningDialogComponent extends React.Component {
     }
   };
   render() {
-    const { t, isVisibleDataLossDialog } = this.props;
+    const { t, tReady, isVisibleDataLossDialog } = this.props;
 
     return (
       <ModalDialogContainer
         visible={isVisibleDataLossDialog}
         onClose={this.onClose}
+        isLoading={!tReady}
       >
         <ModalDialog.Header>{t("DataLossWarningHeader")}</ModalDialog.Header>
         <ModalDialog.Body>
@@ -55,7 +56,7 @@ class DataLossWarningDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             key="StayOnPage"
-            label={t("DataLossWarningCancelBtn")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={this.onClose}
           />

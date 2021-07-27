@@ -32,11 +32,11 @@ class ChangePasswordDialogComponent extends React.Component {
 
   render() {
     console.log("ChangePasswordDialog render");
-    const { t, visible, email, onClose } = this.props;
+    const { t, tReady, visible, email, onClose } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog visible={visible} onClose={onClose}>
+      <ModalDialog isLoading={!tReady} visible={visible} onClose={onClose}>
         <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text fontSize="13px">
@@ -62,7 +62,7 @@ class ChangePasswordDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t("SendButton")}
+            label={t("Common:SendButton")}
             size="medium"
             primary={true}
             onClick={this.onSendPasswordChangeInstructions}
@@ -74,9 +74,10 @@ class ChangePasswordDialogComponent extends React.Component {
   }
 }
 
-const ChangePasswordDialog = withTranslation("ChangePasswordDialog")(
-  ChangePasswordDialogComponent
-);
+const ChangePasswordDialog = withTranslation([
+  "ChangePasswordDialog",
+  "Common",
+])(ChangePasswordDialogComponent);
 
 ChangePasswordDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

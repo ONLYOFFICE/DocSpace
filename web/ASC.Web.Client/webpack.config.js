@@ -3,8 +3,8 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const { InjectManifest } = require("workbox-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 
@@ -171,6 +171,7 @@ const config = {
         },
       },
     }),
+    new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
       publicPath: homepage,
@@ -204,15 +205,6 @@ module.exports = (env, argv) => {
         }),
       ],
     };
-
-    config.plugins.push(
-      new InjectManifest({
-        mode: "production", //"development",
-        swSrc: "@appserver/common/utils/sw-template.js", // this is your sw template file
-        swDest: "sw.js", // this will be created in the build step
-        exclude: [/\.map$/, /manifest$/, /service-worker\.js$/],
-      })
-    );
   } else {
     config.devtool = "cheap-module-source-map";
   }

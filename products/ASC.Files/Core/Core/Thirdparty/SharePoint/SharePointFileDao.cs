@@ -63,8 +63,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             FileUtility fileUtility,
             CrossDao crossDao,
             SharePointDaoSelector sharePointDaoSelector,
-            IFileDao<int> fileDao)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFileDao<int> fileDao,
+            TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             SharePointDaoSelector = sharePointDaoSelector;
@@ -226,7 +227,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             return files.ToList();
         }
 
-        public Stream GetFileStream(File<string> file)
+        public override Stream GetFileStream(File<string> file)
         {
             return GetFileStream(file, 0);
         }
@@ -396,7 +397,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             return new ChunkedUploadSession<string>(FixId(file), contentLength) { UseChunks = false };
         }
 
-        public void UploadChunk(ChunkedUploadSession<string> uploadSession, Stream chunkStream, long chunkLength)
+        public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream chunkStream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {
@@ -405,7 +406,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
                 uploadSession.File = SaveFile(uploadSession.File, chunkStream);
                 uploadSession.BytesUploaded = chunkLength;
-                return;
+                return uploadSession.File;
             }
 
             throw new NotImplementedException();

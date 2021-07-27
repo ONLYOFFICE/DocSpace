@@ -2,15 +2,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,6 +32,7 @@ namespace ASC.Data.Storage.Migration
                 .UseSystemd()
                 .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -61,7 +63,6 @@ namespace ASC.Data.Storage.Migration
                 {
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Data.Storage.Migration", "ASC.Migration");
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);

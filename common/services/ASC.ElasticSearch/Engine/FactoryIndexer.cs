@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
@@ -47,7 +48,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Nest;
-
 namespace ASC.ElasticSearch
 {
     [Singletone]
@@ -182,9 +182,9 @@ namespace ASC.ElasticSearch
             return true;
         }
 
-        public bool CanSearchByContent()
+        public bool CanIndexByContent()
         {
-            return SearchSettingsHelper.CanSearchByContent<T>(TenantManager.GetCurrentTenant().TenantId);
+            return SearchSettingsHelper.CanIndexByContent<T>(TenantManager.GetCurrentTenant().TenantId);
         }
 
         public bool Index(T data, bool immediately = true)
@@ -204,7 +204,7 @@ namespace ASC.ElasticSearch
             return false;
         }
 
-        public void Index(List<T> data, bool immediately = true)
+        public void Index(List<T> data, bool immediately = true, int retry = 0)
         {
             var t = ServiceProvider.GetService<T>();
             if (!Support(t) || !data.Any()) return;
@@ -213,20 +213,126 @@ namespace ASC.ElasticSearch
             {
                 Indexer.Index(data, immediately);
             }
-            catch (AggregateException e)
+            catch (ElasticsearchClientException e)
+            {
+                Logger.Error(e);
+
+                if (e.Response != null)
+                {
+                    Logger.Error(e.Response.HttpStatusCode);
+
+                    if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
+                    {
+                        data.ForEach(r => Index(r, immediately));
+                    }
+                    else if (e.Response.HttpStatusCode == 429)
+                    {
+                        Thread.Sleep(60000);
+                        if (retry < 5)
+{
+                            Index(data, immediately, retry++);
+                            return;
+                        }
+
+                        throw;
+                    }
+                }
+            }
+            catch (AggregateException e) //ElasticsearchClientException
             {
                 if (e.InnerExceptions.Count == 0) throw;
 
                 var inner = e.InnerExceptions.OfType<ElasticsearchClientException>().FirstOrDefault();
-                Logger.Error(inner);
+
 
                 if (inner != null)
                 {
-                    Logger.Error("inner", inner.Response.OriginalException);
+                    Logger.Error(inner);
 
                     if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                     {
+                        Logger.Error(inner.Response.HttpStatusCode);
                         data.ForEach(r => Index(r, immediately));
+                    }
+                    else if (inner.Response.HttpStatusCode == 429)
+                    {
+                        Thread.Sleep(60000);
+                        if (retry < 5)
+                        {
+                            Index(data, immediately, retry++);
+                            return;
+                        }
+
+                        throw;
+                    }
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
+        {
+            var t = ServiceProvider.GetService<T>();
+            if (!Support(t) || !data.Any()) return;
+
+            try
+            {
+                await Indexer.IndexAsync(data, immediately).ConfigureAwait(false);
+            }
+            catch (ElasticsearchClientException e)
+            {
+                Logger.Error(e);
+
+                if (e.Response != null)
+                {
+                    Logger.Error(e.Response.HttpStatusCode);
+
+                    if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
+                    {
+                        data.ForEach(r => Index(r, immediately));
+                    }
+                    else if (e.Response.HttpStatusCode == 429)
+                    {
+                        await Task.Delay(60000);
+                        if (retry < 5)
+                        {
+                            await IndexAsync(data, immediately, retry++);
+                            return;
+                        }
+
+                        throw;
+                    }
+                }
+            }
+            catch (AggregateException e) //ElasticsearchClientException
+            {
+                if (e.InnerExceptions.Count == 0) throw;
+
+                var inner = e.InnerExceptions.OfType<ElasticsearchClientException>().FirstOrDefault();
+
+
+                if (inner != null)
+                {
+                    Logger.Error(inner);
+
+                    if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
+                    {
+                        Logger.Error(inner.Response.HttpStatusCode);
+                        data.ForEach(r => Index(r, immediately));
+                    }
+                    else if (inner.Response.HttpStatusCode == 429)
+                    {
+                        await Task.Delay(60000);
+                        if (retry < 5)
+                        {
+                            await IndexAsync(data, immediately, retry++);
+                            return;
+                        }
+
+                        throw;
                     }
                 }
                 else
@@ -331,13 +437,6 @@ namespace ASC.ElasticSearch
         }
 
         public async Task<bool> IndexAsync(T data, bool immediately = true)
-        {
-            var t = ServiceProvider.GetService<T>();
-            if (!await SupportAsync(t)) return false;
-            return await Queue(() => Indexer.Index(data, immediately));
-        }
-
-        public async Task<bool> IndexAsync(List<T> data, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
             if (!await SupportAsync(t)) return false;
@@ -585,30 +684,43 @@ namespace ASC.ElasticSearch
 
         public object GetState(TenantUtil tenantUtil)
         {
-            var indices = CoreBaseSettings.Standalone ?
-                Client.Instance.Cat.Indices(new CatIndicesRequest { SortByColumns = new[] { "index" } }).Records.Select(r => new
+            State state = null;
+            IEnumerable<object> indices = null;
+            Dictionary<string, long> count = null;
+
+            if (!CoreBaseSettings.Standalone)
+            {
+                return new
+                {
+                    state,
+                    indices,
+                    status = CheckState()
+                };
+            }
+
+            state = new State
+            {
+                Indexing = FactoryIndexerHelper.Indexing,
+                LastIndexed = FactoryIndexerHelper.LastIndexed != DateTime.MinValue ? FactoryIndexerHelper.LastIndexed : default(DateTime?)
+            };
+
+            if (state.LastIndexed.HasValue)
+            {
+                state.LastIndexed = tenantUtil.DateTimeFromUtc(state.LastIndexed.Value);
+            }
+
+            indices = Client.Instance.Cat.Indices(new CatIndicesRequest { SortByColumns = new[] { "index" } }).Records
+                .Select(r => new
                 {
                     r.Index,
-                    r.DocsCount,
+                    Count = count.ContainsKey(r.Index) ? count[r.Index] : 0,
+                    DocsCount = Client.Instance.Count(new CountRequest(r.Index)).Count,
                     r.StoreSize
-                }) :
-                null;
-
-            State state = null;
-
-            if (CoreBaseSettings.Standalone)
-            {
-                state = new State
+                })
+                .Where(r =>
                 {
-                    Indexing = FactoryIndexerHelper.Indexing,
-                    LastIndexed = FactoryIndexerHelper.LastIndexed != DateTime.MinValue ? FactoryIndexerHelper.LastIndexed : default(DateTime?)
-                };
-
-                if (state.LastIndexed.HasValue)
-                {
-                    state.LastIndexed = tenantUtil.DateTimeFromUtc(state.LastIndexed.Value);
-                }
-            }
+                    return r.Count > 0;
+                });
 
             return new
             {

@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 import { combineUrl } from "../utils";
+import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
 const { proxyURL } = AppServerConfig;
 
@@ -19,10 +20,7 @@ class SettingsStore {
   timezones = [];
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = combineUrl(
-    proxyURL,
-    window["AscDesktopEditor"] !== undefined ? "/products/files/" : "/"
-  );
+  defaultPage = "/";
   homepage = "";
   datePattern = "M/d/yyyy";
   datePatternJQ = "00/00/0000";
@@ -56,6 +54,8 @@ class SettingsStore {
   isEncryptionSupport = false;
   encryptionKeys = null;
 
+  personal = false;
+
   isHeaderVisible = false;
   isTabletView = false;
   isArticlePinned =
@@ -73,6 +73,15 @@ class SettingsStore {
   hasShortenService = false;
 
   customSchemaList = [];
+  firebase = {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: "",
+  };
 
   constructor() {
     makeAutoObservable(this);
@@ -99,8 +108,17 @@ class SettingsStore {
     this[key] = value;
   };
 
+  setDefaultPage = (defaultPage) => {
+    this.defaultPage = defaultPage;
+  };
+
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
+
+    if (window["AscDesktopEditor"] !== undefined || this.personal) {
+      const dp = combineUrl(proxyURL, "/products/files/");
+      this.setDefaultPage(dp);
+    }
 
     Object.keys(newSettings).map((key) => {
       if (key in this) {
@@ -212,7 +230,11 @@ class SettingsStore {
   };
 
   setModuleInfo = (homepage, productId) => {
-    if (this.homepage == homepage) return;
+    if (this.homepage === homepage || this.currentProductId === productId)
+      return;
+
+    console.log(`setModuleInfo('${homepage}', '${productId}')`);
+
     this.homepage = homepage;
     this.setCurrentProductId(productId);
 
@@ -223,7 +245,9 @@ class SettingsStore {
           ? homepage
           : `${homepage}/`
         : "/";
+
       console.log("SET base URL", baseUrl);
+
       baseElm[0].setAttribute("href", baseUrl);
     }
   };
@@ -278,6 +302,10 @@ class SettingsStore {
   setArticleVisibleOnUnpin = (visible) => {
     this.isArticleVisibleOnUnpin = visible;
   };
+
+  get firebaseHelper() {
+    return new FirebaseHelper(this.firebase);
+  }
 }
 
 export default SettingsStore;

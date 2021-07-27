@@ -28,7 +28,6 @@ import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
 
-import "./custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
 
@@ -147,7 +146,8 @@ const Editor = () => {
                   true
                 );
               });
-          }
+          },
+          i18n.t
         );
       }
 

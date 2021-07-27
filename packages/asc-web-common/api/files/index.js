@@ -48,7 +48,6 @@ export function getFolder(folderId, filter) {
     filter && filter instanceof FilesFilter
       ? `${folderId}?${filter.toApiUrlParams()}`
       : folderId;
-
   const options = {
     method: "get",
     url: `/files/${params}`,
@@ -147,19 +146,20 @@ export function getFoldersTree() {
           title: data.current.title,
           rootFolderType: type,
           rootFolderName: name,
-          folders: !isRecycleBinFolder
-            ? data.folders.map((folder) => {
-                return {
-                  id: folder.id,
-                  title: folder.title,
-                  access: folder.access,
-                  foldersCount: folder.foldersCount,
-                  rootFolderType: folder.rootFolderType,
-                  providerKey: folder.providerKey,
-                  newItems: folder.new,
-                };
-              })
-            : null,
+          // folders: !isRecycleBinFolder
+          //   ? data.folders.map((folder) => {
+          //       return {
+          //         id: folder.id,
+          //         title: folder.title,
+          //         access: folder.access,
+          //         foldersCount: folder.foldersCount,
+          //         rootFolderType: folder.rootFolderType,
+          //         providerKey: folder.providerKey,
+          //         newItems: folder.new,
+          //       };
+          //     })
+          //   : null,
+          folders: null,
           pathParts: data.pathParts,
           foldersCount: !isRecycleBinFolder ? data.current.foldersCount : null,
           newItems: data.new,
@@ -427,6 +427,15 @@ export function setShareFiles(
   });
 }
 
+export function removeShareFiles(fileIds, folderIds) {
+  const data = { fileIds, folderIds };
+  return request({
+    method: "delete",
+    url: "/files/share",
+    data,
+  });
+}
+
 export function setFileOwner(folderIds, fileIds, userId) {
   const data = { folderIds, fileIds, userId };
   return request({
@@ -436,8 +445,14 @@ export function setFileOwner(folderIds, fileIds, userId) {
   });
 }
 
-export function startUploadSession(folderId, fileName, fileSize, relativePath) {
-  const data = { fileName, fileSize, relativePath };
+export function startUploadSession(
+  folderId,
+  fileName,
+  fileSize,
+  relativePath,
+  encrypted
+) {
+  const data = { fileName, fileSize, relativePath, encrypted };
   return request({
     method: "post",
     url: `/files/${folderId}/upload/create_session.json`,
@@ -724,4 +739,29 @@ export function setRecentSetting(set) {
     url: "/files/displayRecent",
     data: { set },
   });
+}
+
+export function hideConfirmConvert(save) {
+  return request({
+    method: "put",
+    url: "/files/hideconfirmconvert.json",
+    data: { save },
+  });
+}
+
+export function getSubfolders(folderId) {
+  return request({
+    method: "get",
+    url: `files/${folderId}/subfolders`,
+  });
+}
+
+export function createThumbnails(fileIds) {
+  const options = {
+    method: "post",
+    url: "/files/thumbnails",
+    data: { fileIds: fileIds },
+  };
+
+  return request(options);
 }

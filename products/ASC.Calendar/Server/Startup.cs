@@ -15,7 +15,7 @@ namespace ASC.Calendar
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.Calendar" }; }
+
         public override bool ConfirmAddScheme { get => true; }
         public override bool AddControllersAsServices { get => true; }
         public override bool AddAndUseSession { get => true; }

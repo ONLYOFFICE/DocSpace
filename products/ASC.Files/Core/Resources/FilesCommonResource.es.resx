@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
     <value>Fuera de portal</value>
@@ -114,6 +114,9 @@
   </data>
   <data name="CommentEditEncrypt" xml:space="preserve">
     <value>Editado con encriptación</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Encriptado</value>
   </data>
   <data name="CommentForcesave" xml:space="preserve">
     <value>Guardado</value>
@@ -305,13 +308,17 @@
     <value>Archivo creado en la carpeta "{0}"</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Hacer lo mismo que el usuario|Enlazar cuentas de Dropbox, Box y otras cuentas con 'Documentos comunes'|Dar los derechos de acceso para los documentos y carpetas en sección 'Documentos comunes'</value>
+    <value>Haga lo mismo que un usuario|Enlace Dropbox, Box y otras cuentas en la sección 'Documentos comunes'|Configure derechos de acceso a los documentos y carpetas en la sección 'Documentos comunes'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Cree, edite, guarde y comparta documentos. Conecte sus cuentas de Google Drive, Dropbox y Box y tenga todos los documentos en un sólo lugar.</value>
+    <value>Cree, edite y comparta documentos de oficina. Colabore en ellos en tiempo real. Garantizado 100% de compatibilidad con docx, xlsx, pptx. </value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Cree, edite, guarde y comparta documentos. Conecte sus cuentas de Google Drive, Dropbox y Box y trabaje con todos los documentos en un sólo lugar.</value>
+    <value>Edite, comparta y colabore en documentos de oficina en tiempo real. Cree y gestione documentos comunes para que todo el equipo tenga acceso a ellos. 
+100% de compatibilidad con docx, xlsx, pptx. </value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Vea y descargue los documentos compartidos. Suba archivos a las carpetas compartidas. 100% de compatibilidad con docx, xlsx, pptx garantizada.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Documentos</value>

@@ -46,7 +46,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
       updateUserStatus(userStatus, userIds, true)
-        .then(() => toastr.success(t("SuccessChangeUserStatus")))
+        .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
@@ -75,7 +75,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, onClose, visible, userStatus } = this.props;
+    const { t, tReady, onClose, visible, userStatus } = this.props;
     const { listUsers, isRequestRunning, userIds } = this.state;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
     const itemSize = 25;
@@ -111,14 +111,20 @@ class ChangeUserStatusDialogComponent extends React.Component {
     );
 
     const statusTranslation =
-      userStatus === 1
+      userStatus === EmployeeStatus.Active
         ? t("ChangeUsersActiveStatus")
         : t("ChangeUsersDisableStatus");
     const userStatusTranslation =
-      userStatus === 1 ? t("DisabledEmployeeTitle") : t("ActiveEmployeeTitle");
+      userStatus === EmployeeStatus.Active
+        ? t("Translations:DisabledEmployeeStatus")
+        : t("Common:Active");
 
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>
           {t("ChangeUserStatusDialogHeader")}
         </ModalDialog.Header>
@@ -132,7 +138,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
           <Text>{t("ChangeUserStatusDialogMessage")}</Text>
           <ToggleContent
             className="toggle-content-dialog"
-            label={t("ShowUsersList")}
+            label={t("Common:ShowUsersList")}
           >
             <div style={containerStyles} className="modal-dialog-content">
               <AutoSizer>{renderList}</AutoSizer>
@@ -150,7 +156,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -161,9 +167,11 @@ class ChangeUserStatusDialogComponent extends React.Component {
   }
 }
 
-const ChangeUserStatusDialog = withTranslation("ChangeUserStatusDialog")(
-  ChangeUserStatusDialogComponent
-);
+const ChangeUserStatusDialog = withTranslation([
+  "ChangeUserStatusDialog",
+  "Common",
+  "Translations",
+])(ChangeUserStatusDialogComponent);
 
 ChangeUserStatusDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

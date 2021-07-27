@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 using ASC.Common.Utils;
 
@@ -8,9 +7,6 @@ namespace ASC.Data.Backup.Service
 {
     public class BackupSettings
     {
-
-        public string TempFolder { get; set; }
-
         public string UpgradesPath { get; set; }
 
         public int Limit { get; set; }

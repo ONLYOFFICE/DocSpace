@@ -51,7 +51,7 @@ const Base = {
   color: black,
   backgroundColor: white,
   fontFamily: "Open Sans, sans-serif, Arial",
-  fontSize: "30px",
+  fontSize: "13px",
 
   text: {
     color: black,
@@ -381,16 +381,15 @@ const Base = {
   //   arrowColor: grayMid,
   // },
 
-  // switchButton: {
-  //   fillColor: white,
-  //   checkedFillColor: gray,
-
-  //   fillColorDisabled: grayLight,
-  //   disabledFillColor: grayLightMid,
-  //   disabledFillColorInner: grayMid,
-
-  //   hoverBorderColor: gray,
-  // },
+  viewSelector: {
+    fillColor: white,
+    checkedFillColor: gray,
+    fillColorDisabled: grayLight,
+    disabledFillColor: grayLightMid,
+    disabledFillColorInner: grayMid,
+    hoverBorderColor: gray,
+    borderColor: grayMid,
+  },
 
   radioButton: {
     textColor: black,
@@ -1399,7 +1398,7 @@ const Base = {
 
       maxWidth: "175px",
 
-      lineHeightWithoutBorder: "15px",
+      lineHeightWithoutBorder: "16px",
       lineHeightTextDecoration: "underline dashed transparent",
     },
 

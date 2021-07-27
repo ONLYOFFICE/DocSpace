@@ -76,7 +76,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, onClose, t, userType } = this.props;
+    const { visible, onClose, t, tReady, userType } = this.props;
     const { isRequestRunning, listUsers, userIds } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -111,10 +111,14 @@ class ChangeUserTypeDialogComponent extends React.Component {
       </List>
     );
 
-    const firstType = userType === 1 ? t("GuestCaption") : t("UserCol");
-    const secondType = userType === 1 ? t("UserCol") : t("GuestCaption");
+    const firstType = userType === 1 ? t("Common:Guest") : t("Common:User");
+    const secondType = userType === 1 ? t("Common:User") : t("Common:Guest");
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>
@@ -127,7 +131,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
 
           <ToggleContent
             className="toggle-content-dialog"
-            label={t("ShowUsersList")}
+            label={t("Common:ShowUsersList")}
           >
             <div style={containerStyles} className="modal-dialog-content">
               <AutoSizer>{renderList}</AutoSizer>
@@ -145,7 +149,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -156,9 +160,10 @@ class ChangeUserTypeDialogComponent extends React.Component {
   }
 }
 
-const ChangeUserTypeDialog = withTranslation("ChangeUserTypeDialog")(
-  ChangeUserTypeDialogComponent
-);
+const ChangeUserTypeDialog = withTranslation([
+  "ChangeUserTypeDialog",
+  "Common",
+])(ChangeUserTypeDialogComponent);
 
 ChangeUserTypeDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

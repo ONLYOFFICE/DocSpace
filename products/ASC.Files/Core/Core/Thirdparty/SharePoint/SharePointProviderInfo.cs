@@ -67,12 +67,14 @@ namespace ASC.Files.Thirdparty.SharePoint
             IOptionsMonitor<ILog> options,
             IServiceProvider serviceProvider,
             TenantUtil tenantUtil,
-            SharePointProviderInfoHelper sharePointProviderInfoHelper)
+            SharePointProviderInfoHelper sharePointProviderInfoHelper,
+            TempStream tempStream)
         {
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
             TenantUtil = tenantUtil;
             SharePointProviderInfoHelper = sharePointProviderInfoHelper;
+            TempStream = tempStream;
         }
 
         public bool CheckAccess()
@@ -182,7 +184,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             var fileInfo = File.OpenBinaryDirect(clientContext, (string)id);
             clientContext.ExecuteQuery();
 
-            var tempBuffer = new FileStream(Path.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 8096, FileOptions.DeleteOnClose);
+            var tempBuffer = TempStream.Create();
             using (var str = fileInfo.Stream)
             {
                 if (str != null)
@@ -305,7 +307,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             //ContentLength = file.Length,
             result.CreateBy = Owner;
             result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
-            result.FileStatus = FileStatus.None;
             result.FolderID = MakeId(GetParentFolderId(file.ServerRelativeUrl));
             result.ModifiedBy = Owner;
             result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;
@@ -355,6 +356,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         private IServiceProvider ServiceProvider { get; }
         private TenantUtil TenantUtil { get; }
         public SharePointProviderInfoHelper SharePointProviderInfoHelper { get; }
+        public TempStream TempStream { get; }
 
         public Folder GetFolderById(object id)
         {

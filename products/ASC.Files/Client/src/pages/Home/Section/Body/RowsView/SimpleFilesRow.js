@@ -5,7 +5,6 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
-import { createSelectable } from "react-selectable-fast";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
@@ -42,17 +41,19 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .styled-element {
+    height: 32px;
+    width: ${(props) => (props.isEdit ? "52px" : "24px")};
     margin-right: 7px;
   }
 `;
 
-const SimpleFilesRow = createSelectable((props) => {
+const SimpleFilesRow = (props) => {
   const {
     item,
     sectionWidth,
     dragging,
-    onContentRowSelect,
-    rowContextClick,
+    onContentFileSelect,
+    fileContextClick,
     onDrop,
     onMouseDown,
     className,
@@ -65,6 +66,8 @@ const SimpleFilesRow = createSelectable((props) => {
     checkedProps,
     element,
     onFilesClick,
+    onMouseUp,
+    isEdit,
   } = props;
 
   return (
@@ -72,7 +75,7 @@ const SimpleFilesRow = createSelectable((props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={className}
+        className={`files-item ${className}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -81,12 +84,15 @@ const SimpleFilesRow = createSelectable((props) => {
         <StyledSimpleFilesRow
           key={item.id}
           data={item}
+          isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
           contentElement={sharedButton}
-          onSelect={onContentRowSelect}
-          rowContextClick={rowContextClick}
+          onSelect={onContentFileSelect}
+          rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
+          onMouseUp={onMouseUp}
+          onDoubleClick={onFilesClick}
           {...checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
@@ -100,8 +106,8 @@ const SimpleFilesRow = createSelectable((props) => {
       </DragAndDrop>
     </div>
   );
-});
+};
 
-export default withTranslation("Home")(
+export default withTranslation(["Home", "Translations"])(
   withFileActions(withRouter(withContextOptions(SimpleFilesRow)))
 );

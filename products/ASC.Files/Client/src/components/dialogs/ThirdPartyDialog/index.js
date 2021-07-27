@@ -61,6 +61,7 @@ const ServiceItem = (props) => {
 const ThirdPartyDialog = (props) => {
   const {
     t,
+    tReady,
     isAdmin,
     googleConnectItem,
     boxConnectItem,
@@ -120,13 +121,16 @@ const ThirdPartyDialog = (props) => {
 
   return (
     <ModalDialog
+      isLoading={!tReady}
       visible={visible}
       scale={false}
       displayType="auto"
       zIndex={310}
       onClose={onClose}
     >
-      <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("Translations:ConnectingAccount")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
         <Text as="div">
           {t("ConnectDescription")}
@@ -276,4 +280,4 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     getOAuthToken,
     openConnectWindow,
   };
-})(withTranslation("Settings")(observer(ThirdPartyDialog)));
+})(withTranslation(["Settings", "Translations"])(observer(ThirdPartyDialog)));

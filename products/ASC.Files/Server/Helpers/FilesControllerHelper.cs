@@ -218,7 +218,8 @@ namespace ASC.Files.Helpers
                     };
                 }
             }
-
+            
+            if (!configuration.Document.Info.File.Encrypted && !configuration.Document.Info.File.ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.File);
 
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
@@ -368,9 +369,9 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start)
         {
-            return FileStorageService.CheckConversion(new ItemList<ItemList<string>>
+            return FileStorageService.CheckConversion(new List<List<string>>
             {
-                new ItemList<string> { fileId.ToString(), "0", start.ToString() }
+                new List<string> { fileId.ToString(), "0", start.ToString() }
             })
             .Select(r =>
             {
@@ -522,6 +523,13 @@ namespace ASC.Files.Helpers
             return GetSecurityInfo(new List<T> { }, new List<T> { folderId });
         }
 
+        public IEnumerable<FileEntryWrapper> GetFolders(T folderId)
+        {
+            return FileStorageService.GetFolders(folderId)
+                                .Select(GetFileEntryWrapper)
+                                .ToList();
+        }
+
         public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
             var fileShares = FileStorageService.GetSharedInfo(fileIds, folderIds);
@@ -542,7 +550,7 @@ namespace ASC.Files.Helpers
         {
             if (share != null && share.Any())
             {
-                var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
+                var list = new List<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
                 var aceCollection = new AceCollection<T>
                 {
                     Files = fileIds,
@@ -570,7 +578,7 @@ namespace ASC.Files.Helpers
             var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             if (sharedInfo == null || sharedInfo.Share != share)
             {
-                var list = new ItemList<AceWrapper>
+                var list = new List<AceWrapper>
                     {
                         new AceWrapper
                             {
@@ -614,9 +622,10 @@ namespace ASC.Files.Helpers
 
         private FolderContentWrapper<T> ToFolderContentWrapper(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
         {
-            if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
+            OrderBy orderBy = null;
+            if (Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
             {
-                sortBy = SortedByType.AZ;
+                orderBy = new OrderBy(sortBy, !ApiContext.SortDescending);
             }
 
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
@@ -629,7 +638,7 @@ namespace ASC.Files.Helpers
                                                                                ApiContext.FilterValue,
                                                                                false,
                                                                                withSubFolders,
-                                                                               new OrderBy(sortBy, !ApiContext.SortDescending)),
+                                                                               orderBy),
                                             startIndex);
         }
 

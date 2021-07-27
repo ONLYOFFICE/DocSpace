@@ -8,13 +8,13 @@ import AppLoader from "@appserver/common/components/AppLoader";
 import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import stores from "./store/index";
-import "./custom.scss";
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 import { regDesktop } from "@appserver/common/desktop";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import VersionHistory from "./pages/VersionHistory";
+import PrivateRoomsPage from "./pages/PrivateRoomsPage";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -27,6 +27,7 @@ const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/");
 const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
 const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
+const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
 
 if (!window.AppServer) {
@@ -37,6 +38,7 @@ window.AppServer.files = {
   HOME_URL,
   SETTINGS_URL,
   HISTORY_URL,
+  PRIVATE_ROOMS_URL,
   FILTER_URL,
 };
 
@@ -86,7 +88,9 @@ class FilesContent extends React.Component {
         isEncryption,
         encryptionKeys,
         setEncryptionKeys,
-        this.isEditor
+        this.isEditor,
+        null,
+        this.props.t
       );
       console.log(
         "%c%s",
@@ -106,6 +110,7 @@ class FilesContent extends React.Component {
         <Switch>
           <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
           <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
+          <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
           <PrivateRoute exact path={HOME_URL} component={Home} />
           <PrivateRoute path={FILTER_URL} component={Home} />
           <PrivateRoute component={Error404Route} />
@@ -131,7 +136,7 @@ const Files = inject(({ auth, filesStore }) => {
       auth.setProductVersion(config.version);
     },
   };
-})(observer(FilesContent));
+})(withTranslation("Common")(observer(FilesContent)));
 
 export default () => (
   <FilesProvider {...stores}>

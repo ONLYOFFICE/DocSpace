@@ -12,6 +12,7 @@ import { ConflictResolveType } from "@appserver/common/constants";
 const ConflictResolveDialog = (props) => {
   const {
     t,
+    tReady,
     visible,
     setConflictResolveDialogVisible,
     conflictResolveDialogData,
@@ -110,7 +111,11 @@ const ConflictResolveDialog = (props) => {
   const file = items[0].title;
 
   return (
-    <ModalDialogContainer visible={visible} onClose={onClose}>
+    <ModalDialogContainer
+      isLoading={!tReady}
+      visible={visible}
+      onClose={onClose}
+    >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text className="conflict-resolve-dialog-text">
@@ -139,7 +144,7 @@ const ConflictResolveDialog = (props) => {
         <Button
           className="button-dialog-accept"
           key="OkButton"
-          label={t("OKButton")}
+          label={t("Common:OKButton")}
           size="medium"
           primary
           onClick={onAcceptType}
@@ -148,7 +153,7 @@ const ConflictResolveDialog = (props) => {
         <Button
           className="button-dialog"
           key="CancelButton"
-          label={t("CancelButton")}
+          label={t("Common:CancelButton")}
           size="medium"
           onClick={onClose}
           //isLoading={isLoading}
@@ -177,6 +182,8 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
   };
 })(
   withRouter(
-    withTranslation("ConflictResolveDialog")(observer(ConflictResolveDialog))
+    withTranslation(["ConflictResolveDialog", "Common"])(
+      observer(ConflictResolveDialog)
+    )
   )
 );

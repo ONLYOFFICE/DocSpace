@@ -2,14 +2,15 @@
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { I18nextProvider, useTranslation, Trans } from "react-i18next";
-import version from "../../../../package.json";
+import { I18nextProvider, Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
 import config from "../../../../package.json";
-import { inject } from "mobx-react";
+import withLoader from "../Confirm/withLoader";
+import { inject, observer } from "mobx-react";
+import { ReactSVG } from "react-svg";
 
 const BodyStyle = styled.div`
   margin-top: ${isMobile ? "80px" : "24px"};
@@ -77,11 +78,9 @@ const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
 
-const Body = () => {
-  const { t } = useTranslation("About");
-
+const Body = ({ t, personal }) => {
   useEffect(() => {
-    setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
+    setDocumentTitle(t("Common:About"));
   }, [t]);
 
   const gitHub = "GitHub";
@@ -109,19 +108,23 @@ const Body = () => {
 
   return (
     <BodyStyle>
-      <p className="avatar">
-        <img
-          className="logo-img"
-          src="images/dark_general.png"
-          width="320"
-          height="181"
-          alt="Logo"
-        />
-      </p>
+      <div className="avatar">
+        {personal ? (
+          <ReactSVG src="images/logo_personal_about.svg" />
+        ) : (
+          <img
+            className="logo-img"
+            src="images/dark_general.png"
+            width="320"
+            height="181"
+            alt="Logo"
+          />
+        )}
+      </div>
 
       <VersionStyle>
         <Text className="text_style" fontSize="14px" color="#A3A9AE">
-          {`${t("AboutCompanyVersion")}: ${version.version}`}
+          {`${t("Common:Version")}: ${config.version}`}
         </Text>
       </VersionStyle>
 
@@ -193,24 +196,20 @@ const Body = () => {
   );
 };
 
-const About = ({ language, setModuleInfo }) => {
-  useEffect(() => {
-    setModuleInfo(config.homepage, "home");
-  }, []);
+const BodyWrapper = inject(({ auth }) => ({
+  personal: auth.settingsStore,
+}))(withTranslation(["About", "Common"])(withLoader(observer(Body))));
 
+const About = (props) => {
   return (
     <I18nextProvider i18n={i18n}>
       <PageLayout>
         <PageLayout.SectionBody>
-          <Body language={language} />
+          <BodyWrapper {...props} />
         </PageLayout.SectionBody>
       </PageLayout>
     </I18nextProvider>
   );
 };
 
-export default inject(({ auth }) => {
-  return {
-    setModuleInfo: auth.settingsStore.setModuleInfo,
-  };
-})(About);
+export default About;

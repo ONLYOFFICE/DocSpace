@@ -10,6 +10,8 @@ import {
   downloadFiles,
   markAsRead,
   checkFileConflicts,
+  removeShareFiles,
+  getSubfolders,
 } from "@appserver/common/api/files";
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -139,16 +141,45 @@ class FilesActionStore {
             alert: false,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(this.selectedFolderStore.id, filter).then((data) => {
-            if (!isRecycleBinFolder) {
-              const path = data.selectedFolder.pathParts.slice(0);
-              const newTreeFolders = this.treeFoldersStore.treeFolders;
-              const folders = data.selectedFolder.folders;
-              const foldersCount = data.selectedFolder.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setTreeFolders(newTreeFolders);
-            }
+          fetchFiles(this.selectedFolderStore.id, filter, true, true);
+        }
+      })
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      });
+  };
+
+  loopFilesOperations = (id, translations) => {
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    getProgress()
+      .then((res) => {
+        const currentProcess = res.find((x) => x.id === id);
+        if (currentProcess && currentProcess.progress !== 100) {
+          setSecondaryProgressBarData({
+            icon: "file",
+            percent: currentProcess.progress,
+            label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
+            visible: true,
+            alert: false,
           });
+          setTimeout(() => this.loopFilesOperations(id, translations), 1000);
+        } else {
+          setSecondaryProgressBarData({
+            icon: "file",
+            percent: 100,
+            label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
+            visible: true,
+            alert: false,
+          });
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         }
       })
       .catch((err) => {
@@ -261,10 +292,9 @@ class FilesActionStore {
         const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
         if (!selectedItem.fileExst && !selectedItem.contentLength) {
           const path = data.selectedFolder.pathParts;
-          const newTreeFolders = treeFolders;
-          const folders = data.selectedFolder.folders;
-          loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-          setTreeFolders(newTreeFolders);
+          const folders = await getSubfolders(this.selectedFolderStore.id);
+          loopTreeFolders(path, treeFolders, folders, null, newItem);
+          setTreeFolders(treeFolders);
         }
       }
       setAction({ type: null, id: null, extension: null });
@@ -283,7 +313,10 @@ class FilesActionStore {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
-    if (this.settingsStore.confirmDelete) {
+    if (
+      this.settingsStore.confirmDelete ||
+      this.treeFoldersStore.isPrivacyFolder
+    ) {
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
       setSecondaryProgressBarData({
@@ -293,7 +326,6 @@ class FilesActionStore {
         label: translations.deleteOperation,
         alert: false,
       });
-
       isFile
         ? this.deleteFileAction(itemId, currentFolderId, translations)
         : this.deleteFolderAction(itemId, currentFolderId, translations);
@@ -323,6 +355,15 @@ class FilesActionStore {
       });
   };
 
+  unsubscribeAction = async (fileIds, folderIds) => {
+    const { setUnsubscribe } = this.dialogsStore;
+    const { filter, fetchFiles } = this.filesStore;
+
+    return removeShareFiles(fileIds, folderIds)
+      .then(() => setUnsubscribe(false))
+      .then(() => fetchFiles(this.selectedFolderStore.id, filter, true, true));
+  };
+
   deleteFolderAction = (folderId, currentFolderId, translations) => {
     const {
       setSecondaryProgressBarData,
@@ -347,11 +388,6 @@ class FilesActionStore {
 
   loopDeleteProgress = (id, folderId, isFolder, translations) => {
     const { filter, fetchFiles } = this.filesStore;
-    const {
-      treeFolders,
-      isRecycleBinFolder,
-      setTreeFolders,
-    } = this.treeFoldersStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -379,17 +415,7 @@ class FilesActionStore {
           label: translations.deleteOperation,
           alert: false,
         });
-        fetchFiles(folderId, filter)
-          .then((data) => {
-            if (!isRecycleBinFolder && isFolder) {
-              const path = data.selectedFolder.pathParts.slice(0);
-              const newTreeFolders = treeFolders;
-              const folders = data.selectedFolder.folders;
-              const foldersCount = data.selectedFolder.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setTreeFolders(newTreeFolders);
-            }
-          })
+        fetchFiles(folderId, filter, true, true)
           .catch((err) => {
             setSecondaryProgressBarData({
               visible: true,
@@ -477,7 +503,7 @@ class FilesActionStore {
 
   selectRowAction = (checked, file) => {
     const { selected, setSelected, selectFile, deselectFile } = this.filesStore;
-    selected === "close" && setSelected("none");
+    //selected === "close" && setSelected("none");
     if (checked) {
       selectFile(file);
     } else {
@@ -487,11 +513,10 @@ class FilesActionStore {
 
   openLocationAction = (locationId, isFolder) => {
     const locationFilter = isFolder ? this.filesStore.filter : null;
-
-    return this.filesStore.fetchFiles(locationId, locationFilter).then(() =>
+    return this.filesStore.fetchFiles(locationId, locationFilter);
+    /*.then(() =>
       //isFolder ? null : this.selectRowAction(!checked, item)
-      isFolder ? null : this.selectRowAction(false, item)
-    );
+    );*/
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -508,8 +533,38 @@ class FilesActionStore {
     setConnectItem({ ...provider, ...capability });
   };
 
-  markAsRead = (folderIds, fileId) => {
-    return markAsRead(folderIds, fileId);
+  setNewBadgeCount = (item) => {
+    const { getRootFolder, updateRootBadge } = this.treeFoldersStore;
+    const { updateFileBadge, updateFolderBadge } = this.filesStore;
+    const { rootFolderType, fileExst, id } = item;
+
+    const count = item.new ? item.new : 1;
+    const rootFolder = getRootFolder(rootFolderType);
+    updateRootBadge(rootFolder.id, count);
+
+    if (fileExst) updateFileBadge(id);
+    else updateFolderBadge(id, item.new);
+  };
+
+  markAsRead = (folderIds, fileId, item) => {
+    const {
+      setSecondaryProgressBarData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "file",
+      label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
+      percent: 0,
+      visible: true,
+    });
+
+    return markAsRead(folderIds, fileId)
+      .then((res) => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        this.loopFilesOperations(id);
+      })
+      .then(() => item && this.setNewBadgeCount(item))
+      .catch((err) => toastr.error(err));
   };
 
   moveDragItems = (destFolderId, folderTitle, translations) => {

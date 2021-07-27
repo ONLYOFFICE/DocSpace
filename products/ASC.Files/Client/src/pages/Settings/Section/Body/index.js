@@ -6,8 +6,8 @@ import Error403 from "studio/Error403";
 import Error520 from "studio/Error520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
-import { loopTreeFolders } from "../../../../helpers/files-helpers";
 import toastr from "@appserver/components/toast/toastr";
+import { runInAction } from "mobx";
 
 const StyledSettings = styled.div`
   display: grid;
@@ -44,10 +44,7 @@ const SectionBodyContent = ({
   setForceSave,
   isAdmin,
   isErrorSettings,
-  isLoadedSettingsTree,
   settingsIsLoaded,
-  getFoldersTree,
-  setTreeFolders,
   treeFolders,
   myFolderId,
   commonFolderId,
@@ -57,6 +54,7 @@ const SectionBodyContent = ({
   recentSection,
   setFavoritesSetting,
   setRecentSetting,
+  getSubfolders,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = useState(false);
@@ -66,35 +64,23 @@ const SectionBodyContent = ({
   };
 
   const onChangeThirdParty = () => {
-    setEnableThirdParty(!enableThirdParty, "enableThirdParty").then(() => {
-      getFoldersTree().then((data) => {
-        const commonFolder = data.find((x) => x.id === commonFolderId);
-        const myFolder = data.find((x) => x.id === myFolderId);
+    setEnableThirdParty(!enableThirdParty, "enableThirdParty").then(
+      async () => {
+        const myFolders = await getSubfolders(myFolderId);
+        const commonFolders = await getSubfolders(commonFolderId);
+        const myNode = treeFolders.find((x) => x.id === myFolderId);
+        const commonNode = treeFolders.find((x) => x.id === commonFolderId);
 
-        const newTreeFolders = treeFolders;
-
-        loopTreeFolders(
-          myFolder.pathParts,
-          newTreeFolders,
-          myFolder.folders,
-          myFolder.foldersCount,
-          null
-        );
-
-        loopTreeFolders(
-          commonFolder.pathParts,
-          newTreeFolders,
-          commonFolder.folders,
-          commonFolder.foldersCount,
-          null
-        );
-        setTreeFolders(newTreeFolders);
-      });
-    });
+        runInAction(() => {
+          myNode.folders = myFolders;
+          commonNode.folders = commonFolders;
+        });
+      }
+    );
   };
 
   const renderAdminSettings = () => {
-    return !isLoadedSettingsTree || isLoading ? null : (
+    return (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -143,7 +129,7 @@ const SectionBodyContent = ({
   };
 
   const renderCommonSettings = () => {
-    return !isLoadedSettingsTree || isLoading ? null : (
+    return (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -227,7 +213,6 @@ export default inject(
   ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
     const { isLoading } = filesStore;
     const {
-      isLoadedSettingsTree,
       storeOriginalFiles,
       confirmDelete,
       updateIfExist,
@@ -249,17 +234,15 @@ export default inject(
     } = settingsStore;
 
     const {
-      getFoldersTree,
-      setTreeFolders,
       treeFolders,
       myFolderId,
       commonFolderId,
+      getSubfolders,
     } = treeFoldersStore;
 
     return {
       isAdmin: auth.isAdmin,
       isLoading,
-      isLoadedSettingsTree,
       storeOriginalFiles,
       confirmDelete,
       updateIfExist,
@@ -280,10 +263,9 @@ export default inject(
       setStoreForceSave,
       setForceSave,
       settingsIsLoaded,
-      getFoldersTree,
-      setTreeFolders,
       setFavoritesSetting,
       setRecentSetting,
+      getSubfolders,
     };
   }
 )(observer(SectionBodyContent));

@@ -84,20 +84,32 @@ const UserContent = ({
   //widthProp,
   isMobile,
   sectionWidth,
+  fetchProfile,
 }) => {
   const { userName, displayName, title, mobilePhone, email, statusType } = user;
   const groups = getFormattedGroups(user, selectGroup);
 
+  const redirectToProfile = () => {
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${userName}`)
+    );
+  };
+
   const onUserNameClick = useCallback(
     (e) => {
+      const timer = setTimeout(() => redirectToProfile(), 500);
       e.preventDefault();
-      history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/view/${userName}`
+      fetchProfile(userName).finally(() => {
+        clearTimeout(timer);
+        if (
+          combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/view/${userName}`
+          ) !== window.location.pathname
         )
-      );
+          redirectToProfile();
+      });
     },
     [history, userName]
   );

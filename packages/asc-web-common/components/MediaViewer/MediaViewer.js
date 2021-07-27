@@ -489,7 +489,7 @@ class MediaViewer extends React.Component {
 MediaViewer.propTypes = {
   allowConvert: PropTypes.bool,
   visible: PropTypes.bool,
-  currentFileId: PropTypes.number,
+  currentFileId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   playlist: PropTypes.arrayOf(PropTypes.object),
   extsImagePreviewed: PropTypes.arrayOf(PropTypes.string),
   extsMediaPreviewed: PropTypes.arrayOf(PropTypes.string),

@@ -6,6 +6,7 @@ using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +46,7 @@ namespace ASC.Files.Core.EF
         public string Changes { get; set; }
         public bool Encrypted { get; set; }
         public ForcesaveType Forcesave { get; set; }
+        public Thumbnail Thumb { get; set; }
 
 
         [Nested]
@@ -58,10 +60,14 @@ namespace ASC.Files.Core.EF
 
         public Document Document { get; set; }
 
-        [Ignore]
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            get => (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
+            if (searchSettings.CanSearchByContent(GetType()))
+            {
+                return (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
+            }
+
+            return (a) => new[] { Title, Comment, Changes };
         }
 
         public override object[] GetKeys()
@@ -141,6 +147,8 @@ namespace ASC.Files.Core.EF
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
+
+                entity.Property(e => e.Thumb).HasColumnName("thumb");
 
                 entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
@@ -229,6 +237,8 @@ namespace ASC.Files.Core.EF
                 entity.Property(e => e.CreateOn).HasColumnName("create_on");
 
                 entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
+
+                entity.Property(e => e.Thumb).HasColumnName("thumb");
 
                 entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 

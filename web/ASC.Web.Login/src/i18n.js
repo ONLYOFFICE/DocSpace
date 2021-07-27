@@ -3,6 +3,7 @@ import { initReactI18next } from "react-i18next";
 import Backend from "i18next-http-backend";
 import config from "../package.json";
 import { LANGUAGE } from "@appserver/common/constants";
+import { loadLanguagePath } from "@appserver/common/utils";
 
 const newInstance = i18n.createInstance();
 
@@ -14,7 +15,7 @@ newInstance
   .init({
     lng: lng,
     fallbackLng: "en",
-    load: "languageOnly",
+    load: "all",
     //debug: true,
 
     interpolation: {
@@ -26,12 +27,12 @@ newInstance
     },
 
     backend: {
-      loadPath: `${config.homepage}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: loadLanguagePath(config.homepage),
       allowMultiLoading: true,
       crossDomain: false,
     },
 
-    ns: ["Login"],
+    ns: ["Login", "Common"],
     defaultNS: "Login",
 
     react: {

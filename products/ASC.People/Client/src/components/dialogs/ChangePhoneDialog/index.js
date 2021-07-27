@@ -17,20 +17,20 @@ class ChangePhoneDialogComponent extends React.Component {
 
   // TODO: add real api request for executing change phone
   onChangePhone = () => {
-    const { onClose } = this.props;
+    const { onClose, t } = this.props;
     this.setState({ isRequestRunning: true }, () => {
-      toastr.success("Context action: Change phone");
+      toastr.success(t("ChangePhoneInstructionSent"));
       this.setState({ isRequestRunning: false }, () => onClose());
     });
   };
 
   render() {
     console.log("ChangePhoneDialog render");
-    const { t, visible, onClose } = this.props;
+    const { t, tReady, visible, onClose } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog visible={visible} onClose={onClose}>
+      <ModalDialog isLoading={!tReady} visible={visible} onClose={onClose}>
         <ModalDialog.Header>{t("MobilePhoneChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("MobilePhoneEraseDescription")}</Text>
@@ -38,7 +38,7 @@ class ChangePhoneDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t("SendButton")}
+            label={t("Common:SendButton")}
             size="medium"
             primary={true}
             onClick={this.onChangePhone}
@@ -50,7 +50,7 @@ class ChangePhoneDialogComponent extends React.Component {
   }
 }
 
-const ChangePhoneDialog = withTranslation("ChangePhoneDialog")(
+const ChangePhoneDialog = withTranslation(["ChangePhoneDialog", "Common"])(
   ChangePhoneDialogComponent
 );
 

@@ -11,7 +11,6 @@ import Box from "@appserver/components/box";
 import RowContainer from "@appserver/components/row-container";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { getNewFiles, markAsRead } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
 import { ReactSVG } from "react-svg";
 import {
@@ -25,38 +24,25 @@ import { inject, observer } from "mobx-react";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
+
 class NewFilesPanel extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { files: [], readingFiles: [] };
-  }
-
-  componentDidMount() {
-    const { newFilesIds, setIsLoading } = this.props;
-    setIsLoading(true);
-    getNewFiles(newFilesIds[newFilesIds.length - 1])
-      .then((files) => this.setState({ files }))
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
-  }
+  state = { readingFiles: [] };
 
   onClose = () => {
     this.props.setNewFilesPanelVisible(false);
   };
 
-  getItemIcon = (item, isEdit) => {
+  getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? this.props.getFileIcon(extension, 24)
+      ? this.props.getIcon(24, extension)
       : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
       <ReactSVG
-        beforeInjection={(svg) => {
-          svg.setAttribute("style", "margin-top: 4px");
-          isEdit && svg.setAttribute("style", "margin-left: 24px");
-        }}
+        beforeInjection={(svg) => svg.setAttribute("style", "margin-top: 4px")}
         src={icon}
         loading={this.svgLoader}
       />
@@ -65,38 +51,34 @@ class NewFilesPanel extends React.Component {
 
   onMarkAsRead = () => {
     const fileIds = [];
+    const folderIds = [];
 
-    for (let item of this.state.files) {
-      fileIds.push(`${item.id}`);
+    for (let item of this.props.newFiles) {
+      if (item.fileExst) fileIds.push(item.id);
+      else folderIds.push(item.id);
     }
 
-    markAsRead([], fileIds)
+    this.props
+      .markAsRead(folderIds, fileIds)
       .then(() => this.setNewBadgeCount())
       .catch((err) => toastr.error(err))
       .finally(() => this.onClose());
   };
 
   onNewFileClick = (item) => {
-    const {
-      updateFileBadge,
-      updateFolderBadge,
-      updateRootBadge,
-      markAsRead,
-      newFilesIds,
-    } = this.props;
+    const { /* updateFolderBadge, */ markAsRead } = this.props;
+    const { /* folderId, */ fileExst, id } = item;
     const readingFiles = this.state.readingFiles;
 
-    markAsRead([], [item.id])
+    const fileIds = fileExst ? [id] : [];
+    const folderIds = fileExst ? [] : [id];
+
+    if (readingFiles.includes(id)) return this.onFileClick(item);
+    markAsRead(folderIds, fileIds, item)
       .then(() => {
-        // TODO: How update row folder badge count? Fetch?
+        //updateFolderBadge(folderId, 1);
 
-        if (readingFiles.includes(item.id)) return this.onFileClick(item);
-
-        updateRootBadge(+newFilesIds[0], 1);
-        updateFolderBadge(item.folderId, 1);
-        updateFileBadge(item.id);
-
-        readingFiles.push(item.id);
+        readingFiles.push(id);
         this.setState({ readingFiles });
         this.onFileClick(item);
       })
@@ -113,7 +95,9 @@ class NewFilesPanel extends React.Component {
     } = this.props;
 
     if (!fileExst) {
-      fetchFiles(id, filter).catch((err) => toastr.error(err));
+      fetchFiles(id, filter)
+        .catch((err) => toastr.error(err))
+        .finally(() => this.onClose());
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
       const isMedia = [2, 3, 4].includes(fileType);
@@ -152,9 +136,10 @@ class NewFilesPanel extends React.Component {
       updateRootBadge,
       updateFolderBadge,
       pathParts,
+      newFiles,
     } = this.props;
 
-    const filesCount = this.state.files.length;
+    const filesCount = newFiles.length;
     updateRootBadge(+newFilesIds[0], filesCount);
 
     if (newFilesIds.length <= 1) {
@@ -169,8 +154,7 @@ class NewFilesPanel extends React.Component {
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, onClose, isLoading } = this.props;
-    const { files } = this.state;
+    const { t, visible, isLoading, newFiles } = this.props;
     const zIndex = 310;
 
     return (
@@ -195,7 +179,7 @@ class NewFilesPanel extends React.Component {
             {!isLoading ? (
               <StyledBody className="files-operations-body">
                 <RowContainer useReactWindow>
-                  {files.map((file) => {
+                  {newFiles.map((file) => {
                     const element = this.getItemIcon(file);
                     return (
                       <Row key={file.id} element={element}>
@@ -225,7 +209,9 @@ class NewFilesPanel extends React.Component {
             ) : (
               <div key="loader" className="panel-loader-wrapper">
                 <Loader type="oval" size="16px" className="panel-loader" />
-                <Text as="span">{t("LoadingLabel")}</Text>
+                <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                  "Common:LoadingDescription"
+                )}`}</Text>
               </div>
             )}
             <StyledFooter>
@@ -238,7 +224,7 @@ class NewFilesPanel extends React.Component {
               />
               <Button
                 className="sharing_panel-button"
-                label={t("CloseButton")}
+                label={t("Common:CloseButton")}
                 size="big"
                 onClick={this.onClose}
               />
@@ -264,16 +250,15 @@ export default inject(
       fetchFiles,
       filter,
       addFileToRecentlyViewed,
-      setIsLoading,
+      //setIsLoading,
       isLoading,
-      updateFileBadge,
       updateFilesBadge,
       updateFolderBadge,
       updateFoldersBadge,
     } = filesStore;
     const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
-    const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
     const { markAsRead } = filesActionsStore;
     const { pathParts } = selectedFolderStore;
 
@@ -281,28 +266,35 @@ export default inject(
       setNewFilesPanelVisible,
       newFilesPanelVisible: visible,
       newFilesIds,
+      newFiles,
     } = dialogsStore;
 
     return {
       filter,
       pathParts,
       visible,
+      newFiles,
       newFilesIds,
-
       isLoading,
-      setIsLoading,
+
+      //setIsLoading,
       fetchFiles,
       setMediaViewerData,
       addFileToRecentlyViewed,
-      getFileIcon,
+      getIcon,
       getFolderIcon,
       markAsRead,
       setNewFilesPanelVisible,
       updateRootBadge,
-      updateFileBadge,
       updateFolderBadge,
       updateFoldersBadge,
       updateFilesBadge,
     };
   }
-)(withRouter(withTranslation("NewFilesPanel")(observer(NewFilesPanel))));
+)(
+  withRouter(
+    withTranslation(["NewFilesPanel", "Common"])(
+      withLoader(observer(NewFilesPanel))(<Loaders.DialogAsideLoader isPanel />)
+    )
+  )
+);

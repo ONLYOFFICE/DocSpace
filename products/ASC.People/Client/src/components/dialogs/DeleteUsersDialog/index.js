@@ -72,7 +72,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, onClose, visible } = this.props;
+    const { t, tReady, onClose, visible } = this.props;
     const { isRequestRunning, userIds, listUsers } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -109,22 +109,26 @@ class DeleteGroupUsersDialogComponent extends React.Component {
 
     //console.log("DeleteGroupUsersDialog render");
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>
           {t("DeleteGroupUsersMessageHeader")}
         </ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("DeleteGroupUsersMessage")}</Text>
-          <Text>{t("NotBeUndone")}</Text>
+          <Text>{t("Translations:NotBeUndone")}</Text>
           <br />
           <Text color="#c30" fontSize="18px">
-            {t("Warning")}
+            {t("Common:Warning")}!
           </Text>
           <br />
           <Text>{t("DeleteUserDataConfirmation")}</Text>
           <ToggleContent
             className="toggle-content-dialog"
-            label={t("ShowUsersList")}
+            label={t("Common:ShowUsersList")}
           >
             <div style={containerStyles} className="modal-dialog-content">
               <AutoSizer>{renderList}</AutoSizer>
@@ -133,7 +137,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            label={t("OKButton")}
+            label={t("Common:OKButton")}
             size="medium"
             primary
             onClick={this.onDeleteGroupUsers}
@@ -142,7 +146,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -153,9 +157,11 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   }
 }
 
-const DeleteUsersDialog = withTranslation("DeleteUsersDialog")(
-  DeleteGroupUsersDialogComponent
-);
+const DeleteUsersDialog = withTranslation([
+  "DeleteUsersDialog",
+  "Common",
+  "Translations",
+])(DeleteGroupUsersDialogComponent);
 
 DeleteUsersDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

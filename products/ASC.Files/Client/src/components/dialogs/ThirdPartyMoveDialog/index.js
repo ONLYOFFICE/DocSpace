@@ -15,6 +15,7 @@ const StyledOperationDialog = styled.div`
 
 const PureThirdPartyMoveContainer = ({
   t,
+  tReady,
   visible,
   provider,
   selection,
@@ -58,7 +59,12 @@ const PureThirdPartyMoveContainer = ({
 
   return (
     <StyledOperationDialog>
-      <ModalDialog visible={visible} zIndex={zIndex} onClose={onClose}>
+      <ModalDialog
+        isLoading={!tReady}
+        visible={visible}
+        zIndex={zIndex}
+        onClose={onClose}
+      >
         <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("MoveConfirmationMessage", { provider })}</Text>
@@ -69,7 +75,7 @@ const PureThirdPartyMoveContainer = ({
         <ModalDialog.Footer>
           <Button
             className="operation-button"
-            label={t("Move")}
+            label={t("Translations:Move")}
             size="big"
             primary
             onClick={startOperation}
@@ -77,13 +83,13 @@ const PureThirdPartyMoveContainer = ({
           <Button
             data-copy="copy"
             className="operation-button"
-            label={t("Copy")}
+            label={t("Translations:Copy")}
             size="big"
             onClick={startOperation}
           />
           <Button
             className="operation-button"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="big"
             onClick={onClose}
           />
@@ -113,5 +119,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     selection,
   };
 })(
-  withTranslation("ThirdPartyMoveDialog")(observer(PureThirdPartyMoveContainer))
+  withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(
+    observer(PureThirdPartyMoveContainer)
+  )
 );

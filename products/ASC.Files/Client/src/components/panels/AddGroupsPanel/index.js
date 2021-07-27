@@ -14,6 +14,8 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import AccessComboBox from "../SharingPanel/AccessComboBox";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 class AddGroupsPanelComponent extends React.Component {
   constructor(props) {
@@ -174,4 +176,6 @@ AddGroupsPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation("AddGroupsPanel")(AddGroupsPanelComponent);
+export default withTranslation("SharingPanel")(
+  withLoader(AddGroupsPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+);

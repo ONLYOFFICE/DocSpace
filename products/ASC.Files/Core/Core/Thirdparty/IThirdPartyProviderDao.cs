@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -67,6 +68,31 @@ namespace ASC.Files.Thirdparty
         public bool ContainChanges(string fileId, int fileVersion)
         {
             return false;
+        }
+
+        public void SaveThumbnail(File<string> file, Stream thumbnail)
+        {
+            //Do nothing
+        }
+
+        public Stream GetThumbnail(File<string> file)
+        {
+            return null;
+        }
+
+        public virtual Stream GetFileStream(File<string> file)
+        {
+            return null;
+        }
+
+        public Task<Stream> GetFileStreamAsync(File<string> file)
+        {
+            return Task.FromResult(GetFileStream(file));
+        }
+
+        public Task<bool> IsExistOnStorageAsync(File<string> file)
+        {
+            return Task.FromResult(IsExistOnStorage(file));
         }
 
         public string GetUniqFilePath(File<string> file, string fileTitle)
@@ -186,11 +212,12 @@ namespace ASC.Files.Thirdparty
         protected IServiceProvider ServiceProvider { get; }
         protected UserManager UserManager { get; }
         protected TenantUtil TenantUtil { get; }
-        protected FilesDbContext FilesDbContext { get; }
+        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+        protected FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         protected SetupInfo SetupInfo { get; }
         protected ILog Log { get; }
         protected FileUtility FileUtility { get; }
-
+        protected TempPath TempPath { get; }
         protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
         protected T ProviderInfo { get; set; }
         protected string PathPrefix { get; private set; }
@@ -205,15 +232,17 @@ namespace ASC.Files.Thirdparty
             DbContextManager<FilesDbContext> dbContextManager,
             SetupInfo setupInfo,
             IOptionsMonitor<ILog> monitor,
-            FileUtility fileUtility)
+            FileUtility fileUtility,
+            TempPath tempPath)
         {
             ServiceProvider = serviceProvider;
             UserManager = userManager;
             TenantUtil = tenantUtil;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             SetupInfo = setupInfo;
             Log = monitor.CurrentValue;
             FileUtility = fileUtility;
+            TempPath = tempPath;
             TenantID = tenantManager.GetCurrentTenant().TenantId;
         }
 
@@ -292,7 +321,6 @@ namespace ASC.Files.Thirdparty
             InitFileEntry(file);
 
             file.Access = FileShare.None;
-            file.FileStatus = FileStatus.None;
             file.Shared = false;
             file.Version = 1;
 

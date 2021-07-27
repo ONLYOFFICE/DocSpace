@@ -1,8 +1,6 @@
 {
-  "SearchPlaceholder": "Поиск групп",
   "AddDepartmentsButtonLabel": "Добавить группу",
-  "SelectAllLabel": "Выбрать все",
-  "EmptySearchOptionsLabel": "Нет такой группы",
   "EmptyOptionsLabel": "Нет групп",
-  "LoadingLabel": "Загрузка... Пожалуйста подождите..."
+  "EmptySearchOptionsLabel": "Нет такой группы",
+  "SearchPlaceholder": "Поиск групп"
 }

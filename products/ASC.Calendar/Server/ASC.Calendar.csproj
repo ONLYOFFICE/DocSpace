@@ -2,12 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>   
-      <AssemblyTitle>ASC.Calendar</AssemblyTitle>
-    <Company>Ascensio System SIA</Company>
-    <Product>ASC.Calendar</Product>
-    <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,6 +19,9 @@
   <ItemGroup>
     <PackageReference Include="Ical.Net" Version="4.1.11" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.5" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
   </ItemGroup>
   
   <ItemGroup>

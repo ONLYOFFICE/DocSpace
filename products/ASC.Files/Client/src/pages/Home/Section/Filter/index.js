@@ -8,7 +8,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
 //import equal from "fast-deep-equal/react";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 const getFilterType = (filterValues) => {
@@ -93,11 +93,12 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    this.props.setViewAs(view);
+    const { setViewAs } = this.props;
+    setViewAs(view);
   };
 
   getData = () => {
-    const { t, customNames, user, filter } = this.props;
+    const { t, customNames, user, filter, personal } = this.props;
     const { selectedItem } = filter;
     const { usersCaption, groupsCaption } = customNames;
 
@@ -105,28 +106,28 @@ class SectionFilterContent extends React.Component {
       {
         key: "filter-filterType",
         group: "filter-filterType",
-        label: t("Type"),
+        label: t("Common:Type"),
         isHeader: true,
       },
       {
         key: FilterType.FoldersOnly.toString(),
         group: "filter-filterType",
-        label: t("Folders"),
+        label: t("Translations:Folders"),
       },
       {
         key: FilterType.DocumentsOnly.toString(),
         group: "filter-filterType",
-        label: t("Documents"),
+        label: t("Common:Documents"),
       },
       {
         key: FilterType.PresentationsOnly.toString(),
         group: "filter-filterType",
-        label: t("Presentations"),
+        label: t("Translations:Presentations"),
       },
       {
         key: FilterType.SpreadsheetsOnly.toString(),
         group: "filter-filterType",
-        label: t("Spreadsheets"),
+        label: t("Translations:Spreadsheets"),
       },
       {
         key: FilterType.ImagesOnly.toString(),
@@ -150,45 +151,50 @@ class SectionFilterContent extends React.Component {
       },
     ];
 
-    const filterOptions = [
-      ...options,
-      {
-        key: "filter-author",
-        group: "filter-author",
-        label: t("Author"),
-        isHeader: true,
-      },
-      {
-        key: "user",
-        group: "filter-author",
-        label: usersCaption,
-        isSelector: true,
-        defaultOptionLabel: t("DefaultOptionLabel"),
-        defaultSelectLabel: t("LblSelect"),
-        groupsCaption,
-        defaultOption: user,
-        selectedItem,
-      },
-      {
-        key: "group",
-        group: "filter-author",
-        label: groupsCaption,
-        defaultSelectLabel: t("LblSelect"),
-        isSelector: true,
-        selectedItem,
-      },
+    const filterOptions = [...options];
+
+    if (!personal)
+      filterOptions.push(
+        {
+          key: "filter-author",
+          group: "filter-author",
+          label: t("ByAuthor"),
+          isHeader: true,
+        },
+        {
+          key: "user",
+          group: "filter-author",
+          label: usersCaption,
+          isSelector: true,
+          defaultOptionLabel: t("Common:MeLabel"),
+          defaultSelectLabel: t("Common:Select"),
+          groupsCaption,
+          defaultOption: user,
+          selectedItem,
+        },
+        {
+          key: "group",
+          group: "filter-author",
+          label: groupsCaption,
+          defaultSelectLabel: t("Common:Select"),
+          isSelector: true,
+          selectedItem,
+        }
+      );
+
+    filterOptions.push(
       {
         key: "filter-folders",
         group: "filter-folders",
-        label: t("Folders"),
+        label: t("Translations:Folders"),
         isHeader: true,
       },
       {
         key: "false",
         group: "filter-folders",
         label: t("NoSubfolders"),
-      },
-    ];
+      }
+    );
 
     //console.log("getData (filterOptions)", filterOptions);
 
@@ -196,25 +202,48 @@ class SectionFilterContent extends React.Component {
   };
 
   getSortData = () => {
-    const { t } = this.props;
+    const { t, personal } = this.props;
 
     const commonOptions = [
       { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
       { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
       { key: "AZ", label: t("ByTitle"), default: true },
-      { key: "Type", label: t("ByType"), default: true },
-      { key: "Size", label: t("BySize"), default: true },
-      { key: "Author", label: t("ByAuthor"), default: true },
+      { key: "Type", label: t("Common:Type"), default: true },
+      { key: "Size", label: t("Common:Size"), default: true },
     ];
 
+      if (!personal)
+          commonOptions.push({
+            key: "Author",
+            label: t("ByAuthor"),
+            default: true,
+          });
+
+    return commonOptions;
+  };
+
+  getViewSettingsData = () => {
+    const { t, createThumbnails } = this.props;
+
     const viewSettings = [
-      { key: "row", label: t("ViewList"), isSetting: true, default: true },
-      { key: "tile", label: t("ViewTiles"), isSetting: true, default: true },
+      {
+        value: "row",
+        label: t("ViewList"),
+        isSetting: isMobileOnly,
+        default: true,
+        icon: "/static/images/view-rows.react.svg",
+      },
+      {
+        value: "tile",
+        label: t("ViewTiles"),
+        isSetting: isMobileOnly,
+        default: true,
+        icon: "/static/images/view-tiles.react.svg",
+        callback: createThumbnails,
+      },
     ];
-    //TODO: Need use mobile detect for better result
-    return window.innerWidth < 460
-      ? [...commonOptions, ...viewSettings]
-      : commonOptions;
+
+    return viewSettings;
   };
 
   getSelectedFilterData = () => {
@@ -261,9 +290,9 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, sectionWidth, tReady, isFiltered } = this.props;
+    const { t, sectionWidth, tReady, isFiltered, viewAs, personal } = this.props;
     const filterColumnCount =
-      window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
+      window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
 
     return !isFiltered ? null : !tReady ? (
       <Loaders.Filter />
@@ -272,23 +301,25 @@ class SectionFilterContent extends React.Component {
         sectionWidth={sectionWidth}
         getFilterData={this.getData}
         getSortData={this.getSortData}
+        getViewSettingsData={this.getViewSettingsData}
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
-        viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
-        directionAscLabel={t("DirectionAscLabel")}
-        directionDescLabel={t("DirectionDescLabel")}
-        placeholder={t("Search")}
+        viewAs={viewAs}
+        directionAscLabel={t("Common:DirectionAscLabel")}
+        directionDescLabel={t("Common:DirectionDescLabel")}
+        placeholder={t("Common:Search")}
         isReady={this.state.isReady}
         {...filterColumnCount}
-        contextMenuHeader={t("AddFilter")}
+        contextMenuHeader={t("Common:AddFilter")}
         isMobile={isMobileOnly}
       />
     );
   }
 }
 
-export default inject(({ auth, filesStore, selectedFolderStore }) => {
+export default inject(
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
   const {
     fetchFiles,
     filter,
@@ -297,13 +328,20 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
     viewAs,
     files,
     folders,
+      createThumbnails,
   } = filesStore;
 
   const { user } = auth.userStore;
-  const { customNames, culture } = auth.settingsStore;
+  const { customNames, culture, personal } = auth.settingsStore;
 
-  const { search, filterType } = filter;
-  const isFiltered = !!files.length || !!folders.length || search || filterType;
+  const { search, filterType, authorType } = filter;
+  const isFiltered =
+      (!!files.length ||
+        !!folders.length ||
+        search ||
+        filterType ||
+        authorType) &&
+      !(treeFoldersStore.isPrivacyFolder && isMobile);
 
   return {
     customNames,
@@ -317,9 +355,17 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
     setIsLoading,
     fetchFiles,
     setViewAs,
+    createThumbnails,
+
+    personal,
   };
-})(
+  }
+)(
   withRouter(
-    withLayoutSize(withTranslation("Home")(observer(SectionFilterContent)))
+    withLayoutSize(
+      withTranslation(["Home", "Common", "Translations"])(
+        observer(SectionFilterContent)
+      )
+    )
   )
 );

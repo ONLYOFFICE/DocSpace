@@ -19,6 +19,7 @@ const PureSettings = ({
   isLoading,
   isLoadedSettingsTree,
   setFirstLoad,
+  tReady,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
@@ -30,19 +31,19 @@ const PureSettings = ({
   useEffect(() => {
     switch (setting) {
       case "common":
-        setTitle("CommonSettings");
+        setTitle(t("CommonSettings"));
         break;
       case "admin":
-        setTitle("AdminSettings");
+        setTitle(t("Common:AdminSettings"));
         break;
       case "thirdParty":
-        setTitle("ThirdPartySettings");
+        setTitle(t("ThirdPartySettings"));
         break;
       default:
-        setTitle("CommonSettings");
+        setTitle(t("CommonSettings"));
         break;
     }
-  }, [setting]);
+  }, [setting, t, tReady]);
 
   useEffect(() => {
     if (isLoading) {
@@ -55,7 +56,7 @@ const PureSettings = ({
   //console.log("render settings");
 
   useEffect(() => {
-    setDocumentTitle(t(`${title}`));
+    setDocumentTitle(title);
   }, [title, t]);
 
   return (
@@ -74,15 +75,15 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {(!isLoadedSettingsTree && isLoading) || isLoading ? (
+          {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
             <Loaders.SectionHeader />
           ) : (
-            <SectionHeaderContent title={t(`${title}`)} />
+            <SectionHeaderContent title={title} />
           )}
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {(!isLoadedSettingsTree && isLoading) || isLoading ? (
+          {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
             setting === "thirdParty" ? (
               <Loaders.Rows />
             ) : (
@@ -97,7 +98,7 @@ const PureSettings = ({
   );
 };
 
-const Settings = withTranslation("Settings")(PureSettings);
+const Settings = withTranslation(["Settings", "Common"])(PureSettings);
 
 export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
   const { setFirstLoad, isLoading } = filesStore;
