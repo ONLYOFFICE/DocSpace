@@ -7,6 +7,7 @@ import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
@@ -100,7 +101,7 @@ class ArticleBodyContent extends React.Component {
         />
         {!personal && <TreeSettings />}
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
-
+        <DownloadAppList />
         {(isDesktop || isTablet) && personal && campaigns.length > 0 && (
           <Banner />
         )}
