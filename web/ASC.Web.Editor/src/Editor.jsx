@@ -35,7 +35,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
 import { createNewFile, getDefaultFileName } from "files/utils";
 import i18n from "./i18n";
-
+import { FolderType } from "@appserver/common/constants";
 let documentIsReady = false;
 
 let docTitle = null;
@@ -163,7 +163,11 @@ const Editor = () => {
         const filesArray = recentFolderList.files;
 
         for (let i = 0; i < filesArray.length; i++) {
-          if (config.documentType === "text" && filesArray[i].fileType === 7) {
+          if (
+            config.documentType === "text" &&
+            filesArray[i].fileType === 7 &&
+            filesArray[i].rootFolderType !== FolderType.SHARE
+          ) {
             const folderInfo = await getFolderInfo(filesArray[i].folderId);
 
             const convertedData = convertRecentData(filesArray[i], folderInfo);
@@ -174,7 +178,8 @@ const Editor = () => {
 
           if (
             config.documentType === "spreadsheet" &&
-            filesArray[i].fileType === 5
+            filesArray[i].fileType === 5 &&
+            filesArray[i].rootFolderType !== FolderType.SHARE
           ) {
             const folderInfo = await getFolderInfo(filesArray[i].folderId);
 
@@ -186,7 +191,8 @@ const Editor = () => {
 
           if (
             config.documentType === "presentation" &&
-            filesArray[i].fileType === 6
+            filesArray[i].fileType === 6 &&
+            filesArray[i].rootFolderType !== FolderType.SHARE
           ) {
             const folderInfo = await getFolderInfo(filesArray[i].folderId);
 
