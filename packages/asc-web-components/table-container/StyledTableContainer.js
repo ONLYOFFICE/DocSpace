@@ -117,12 +117,19 @@ const StyledTableHeaderCell = styled.div`
     .header-container-text-icon {
       padding: 2px 0 0 4px;
 
+      display: ${(props) => (props.isActive ? "block" : "none")};
       ${(props) =>
         props.sorted &&
         css`
           transform: scale(1, -1);
           padding: 0 0 0 4px;
         `}
+    }
+
+    :hover {
+      .header-container-text-icon {
+        display: block;
+      }
     }
   }
 

@@ -267,7 +267,7 @@ class TableHeader extends React.Component {
   };
 
   render() {
-    const { columns, ...rest } = this.props;
+    const { columns, sortBy, ...rest } = this.props;
 
     //console.log("TABLE HEADER RENDER", columns);
 
@@ -290,6 +290,7 @@ class TableHeader extends React.Component {
                   key={column.key}
                   index={index}
                   column={column}
+                  sortBy={sortBy}
                   resizable={resizable}
                   onMouseDown={this.onMouseDown}
                 />
@@ -311,6 +312,7 @@ TableHeader.propTypes = {
   containerRef: PropTypes.shape({ current: PropTypes.any }),
   columns: PropTypes.array.isRequired,
   setSelected: PropTypes.func,
+  sortBy: PropTypes.string,
 };
 
 export default TableHeader;

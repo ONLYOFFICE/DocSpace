@@ -21,8 +21,9 @@ class FilesTableHeader extends React.Component {
         resizable: true,
         enable: true,
         default: true,
+        sortBy: "AZ",
         sorted: filter.sortOrder === "descending",
-        onClick: this.onNameClick,
+        onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
@@ -30,6 +31,8 @@ class FilesTableHeader extends React.Component {
         title: t("ByAuthor"),
         enable: true,
         resizable: true,
+        sortBy: "Author",
+        onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
@@ -37,6 +40,8 @@ class FilesTableHeader extends React.Component {
         title: t("ByCreationDate"),
         enable: false,
         resizable: true,
+        sortBy: "DateAndTimeCreation",
+        onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
@@ -44,6 +49,8 @@ class FilesTableHeader extends React.Component {
         title: t("ByLastModifiedDate"),
         enable: true,
         resizable: true,
+        sortBy: "DateAndTime",
+        onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
@@ -51,6 +58,8 @@ class FilesTableHeader extends React.Component {
         title: t("Common:Size"),
         enable: true,
         resizable: true,
+        sortBy: "Size",
+        onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
@@ -58,6 +67,8 @@ class FilesTableHeader extends React.Component {
         title: t("Common:Type"),
         enable: false,
         resizable: true,
+        sortBy: "Type",
+        onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
@@ -119,10 +130,16 @@ class FilesTableHeader extends React.Component {
     localStorage.setItem(TABLE_COLUMNS, tableColumns);
   };
 
-  onNameClick = (val) => {
+  onFilter = (sortBy) => {
     const { filter, selectedFolderId, setIsLoading, fetchFiles } = this.props;
     const newFilter = filter.clone();
-    newFilter.sortOrder = val ? "ascending" : "descending";
+
+    if (newFilter.sortBy !== sortBy) {
+      newFilter.sortBy = sortBy;
+    } else {
+      newFilter.sortOrder =
+        newFilter.sortOrder === "ascending" ? "descending" : "ascending";
+    }
 
     setIsLoading(true);
     fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
@@ -146,6 +163,7 @@ class FilesTableHeader extends React.Component {
       isHeaderIndeterminate,
       getHeaderMenu,
       setSelected,
+      filter,
     } = this.props;
 
     const { columns } = this.state;
@@ -208,6 +226,7 @@ class FilesTableHeader extends React.Component {
       />
     ) : (
       <TableHeader
+        sortBy={filter.sortBy}
         setSelected={setSelected}
         containerRef={containerRef}
         columns={columns}

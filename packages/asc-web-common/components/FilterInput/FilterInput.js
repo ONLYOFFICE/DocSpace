@@ -911,24 +911,26 @@ class FilterInput extends React.Component {
           </SearchInput>
         </div>
         <div ref={this.rectComboBoxRef}>
-          <SortComboBox
-            options={getSortData()}
-            viewSettings={this.state.viewSettings}
-            isDisabled={isDisabled}
-            onChangeSortId={this.onClickSortItem}
-            onChangeView={this.props.onChangeViewAs}
-            onChangeSortDirection={this.onChangeSortDirection}
-            selectedOption={
-              getSortData().length > 0
-                ? getSortData().find((x) => x.key === sortId)
-                : {}
-            }
-            onButtonClick={this.onSortDirectionClick}
-            viewAs={viewAs}
-            sortDirection={+sortDirection}
-            directionAscLabel={directionAscLabel}
-            directionDescLabel={directionDescLabel}
-          />
+          {viewAs !== "table" && (
+            <SortComboBox
+              options={getSortData()}
+              viewSettings={this.state.viewSettings}
+              isDisabled={isDisabled}
+              onChangeSortId={this.onClickSortItem}
+              onChangeView={this.props.onChangeViewAs}
+              onChangeSortDirection={this.onChangeSortDirection}
+              selectedOption={
+                getSortData().length > 0
+                  ? getSortData().find((x) => x.key === sortId)
+                  : {}
+              }
+              onButtonClick={this.onSortDirectionClick}
+              viewAs={viewAs}
+              sortDirection={+sortDirection}
+              directionAscLabel={directionAscLabel}
+              directionDescLabel={directionDescLabel}
+            />
+          )}
         </div>
         {viewAs && !isMobileOnly && (
           <ViewSelector
