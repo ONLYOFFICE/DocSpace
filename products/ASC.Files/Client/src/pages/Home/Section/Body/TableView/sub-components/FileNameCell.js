@@ -1,11 +1,11 @@
 import React from "react";
-import Link from "@appserver/components/link";
+import { StyledLink } from "./CellStyles";
 import Text from "@appserver/components/text";
 
 const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
   const { fileExst } = item;
   return (
-    <Link
+    <StyledLink
       type="page"
       title={titleWithoutExt}
       fontWeight="600"
@@ -28,7 +28,7 @@ const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
           {fileExst}
         </Text>
       ) : null}
-    </Link>
+    </StyledLink>
   );
 };
 

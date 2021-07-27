@@ -26,7 +26,7 @@ const StyledTableContainer = styled.div`
     display: block;
     cursor: ew-resize;
     height: 10px;
-    margin: 14px 4px 0 auto;
+    margin: 14px 8px 0 auto;
     z-index: 1;
     border-right: 2px solid #d0d5da;
   }

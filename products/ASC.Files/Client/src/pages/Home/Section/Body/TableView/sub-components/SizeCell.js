@@ -1,5 +1,5 @@
 import React from "react";
-import Text from "@appserver/components/text";
+import { StyledText } from "./CellStyles";
 
 const SizeCell = ({ t, item, sideColor }) => {
   const {
@@ -10,13 +10,12 @@ const SizeCell = ({ t, item, sideColor }) => {
     foldersCount,
   } = item;
   return (
-    <Text
-      as="div"
+    <StyledText
       color={sideColor}
       fontSize="12px"
       fontWeight={400}
       title=""
-      truncate={true}
+      truncate
     >
       {fileExst || contentLength
         ? contentLength
@@ -25,7 +24,7 @@ const SizeCell = ({ t, item, sideColor }) => {
             "TitleSubfolders"
           )}: ${foldersCount}`
         : ""}
-    </Text>
+    </StyledText>
   );
 };
 

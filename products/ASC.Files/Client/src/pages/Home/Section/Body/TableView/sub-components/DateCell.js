@@ -1,5 +1,5 @@
 import React from "react";
-import Text from "@appserver/components/text";
+import { StyledText } from "./CellStyles";
 
 const DateCell = ({ create, updatedDate, createdDate, sideColor, item }) => {
   const { fileExst, contentLength, providerKey } = item;
@@ -7,15 +7,16 @@ const DateCell = ({ create, updatedDate, createdDate, sideColor, item }) => {
   const date = create ? createdDate : updatedDate;
 
   return (
-    <Text
+    <StyledText
       title={date}
       fontSize="12px"
       fontWeight={400}
       color={sideColor}
       className="row_update-text"
+      truncate
     >
       {(fileExst || contentLength || !providerKey) && date && date}
-    </Text>
+    </StyledText>
   );
 };
 

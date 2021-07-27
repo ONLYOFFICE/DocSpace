@@ -1,5 +1,5 @@
 import React from "react";
-import Text from "@appserver/components/text";
+import { StyledText } from "./CellStyles";
 import { FileType } from "@appserver/common/constants";
 
 const TypeCell = ({ t, item, sideColor }) => {
@@ -32,9 +32,9 @@ const TypeCell = ({ t, item, sideColor }) => {
   const Exst = fileExst ? fileExst.slice(1).toUpperCase() : "";
 
   return (
-    <Text fontSize="12px" fontWeight="400" color={sideColor}>
+    <StyledText fontSize="12px" fontWeight="400" color={sideColor} truncate>
       {type} {Exst}
-    </Text>
+    </StyledText>
   );
 };
 export default TypeCell;
