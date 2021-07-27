@@ -56,6 +56,7 @@ const StyledBadgesContainer = styled.div`
     display: flex;
     align-items: center;
     height: 19px;
+    margin-right: 12px;
   }
 
   .badge {
