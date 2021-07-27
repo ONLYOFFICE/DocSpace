@@ -22,6 +22,8 @@ import {
   getRecentFolderList,
   getFolderInfo,
   updateFile,
+  removeFromFavorite,
+  markAsFavorite,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -76,6 +78,10 @@ const Editor = () => {
         sharingSettings,
       });
     });
+  };
+
+  const updateFavorite = (favorite) => {
+    docEditor.setFavorite(favorite);
   };
 
   const init = async () => {
@@ -464,10 +470,21 @@ const Editor = () => {
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
+    const favorite = event.data.favorite;
+
     if (newTitle && newTitle !== docTitle) {
       setDocumentTitle(newTitle);
       docTitle = newTitle;
     }
+
+    if (!newTitle)
+      favorite
+        ? markAsFavorite([+fileId])
+            .then(() => updateFavorite(favorite))
+            .catch((error) => console.log("error", error))
+        : removeFromFavorite([+fileId])
+            .then(() => updateFavorite(favorite))
+            .catch((error) => console.log("error", error));
   };
 
   return (
