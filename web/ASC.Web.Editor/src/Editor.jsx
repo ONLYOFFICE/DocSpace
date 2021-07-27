@@ -21,6 +21,7 @@ import {
   getFileInfo,
   getRecentFolderList,
   getFolderInfo,
+  updateFile,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -345,6 +346,7 @@ const Editor = () => {
       };
 
       let onRequestSharingSettings;
+      let onRequestRename;
 
       if (
         fileInfo &&
@@ -352,6 +354,7 @@ const Editor = () => {
         config.document.permissions.modifyFilter
       ) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
+        onRequestRename = onSDKRequestRename;
       }
 
       const events = {
@@ -364,6 +367,7 @@ const Editor = () => {
           onWarning: onSDKWarning,
           onError: onSDKError,
           onRequestSharingSettings,
+          onRequestRename,
         },
       };
 
@@ -392,6 +396,11 @@ const Editor = () => {
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
+  };
+
+  const onSDKRequestRename = (event) => {
+    const title = event.data;
+    updateFile(fileInfo.id, title);
   };
 
   const onCancel = () => {
