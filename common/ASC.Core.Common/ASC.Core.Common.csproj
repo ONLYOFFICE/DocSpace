@@ -80,4 +80,10 @@
     <Protobuf Include="protos\AzRecordCache.proto" />
     <Protobuf Include="protos\QuotaCacheItem.proto" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migrations\MySql\NotifyDbContextMySql\" />
+    <Folder Include="Migrations\MySql\TelegramDbContextMySql\" />
+    <Folder Include="Migrations\MySql\UserDbContextMySql\" />
+    <Folder Include="Migrations\MySql\WebstudioDbContextMySql\" />
+  </ItemGroup>
 </Project>

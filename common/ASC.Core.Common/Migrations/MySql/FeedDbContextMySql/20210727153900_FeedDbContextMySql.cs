@@ -7,6 +7,9 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "feed_aggregate",
                 columns: table => new
@@ -35,7 +38,8 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_feed_aggregate", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "feed_last",
@@ -48,7 +52,8 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.last_key);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "feed_readed",
@@ -64,7 +69,8 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.user_id, x.module });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "feed_users",
@@ -78,7 +84,8 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.feed_id, x.user_id });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "aggregated_date",

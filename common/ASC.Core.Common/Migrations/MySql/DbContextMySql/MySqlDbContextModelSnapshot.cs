@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbipLocation", b =>
                 {
@@ -142,19 +142,16 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Regions", b =>
                 {
-                    b.Property<string>("Region")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.Property<string>("ConnectionString")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasColumnName("connection_string");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Provider")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
-                    b.HasKey("Region");
+                    b.Property<string>("Region")
+                        .HasColumnType("longtext");
 
-                    b.ToTable("regions");
+                    b.ToTable("Regions");
                 });
 #pragma warning restore 612, 618
         }

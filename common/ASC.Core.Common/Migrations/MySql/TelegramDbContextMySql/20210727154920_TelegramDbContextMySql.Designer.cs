@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
 {
     [DbContext(typeof(MySqlTelegramDbContext))]
-    [Migration("20210309095003_TelegramDbContextMySql")]
+    [Migration("20210727154920_TelegramDbContextMySql")]
     partial class TelegramDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -16,7 +16,7 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.TelegramUser", b =>
                 {

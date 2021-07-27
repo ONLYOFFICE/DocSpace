@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
 {
     [DbContext(typeof(MySqlResourceDbContext))]
-    [Migration("20210309094839_ResourceDbContextMySql")]
+    [Migration("20210727154708_ResourceDbContextMySql")]
     partial class ResourceDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResAuthors", b =>
                 {

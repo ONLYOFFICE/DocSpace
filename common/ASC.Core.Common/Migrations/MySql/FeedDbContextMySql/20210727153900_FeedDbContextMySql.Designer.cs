@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
 {
     [DbContext(typeof(MySqlFeedDbContext))]
-    [Migration("20210309094059_FeedDbContextMySql")]
+    [Migration("20210727153900_FeedDbContextMySql")]
     partial class FeedDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FeedAggregate", b =>
                 {

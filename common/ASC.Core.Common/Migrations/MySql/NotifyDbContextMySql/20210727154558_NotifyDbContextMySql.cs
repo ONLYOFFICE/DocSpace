@@ -8,6 +8,9 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "notify_info",
                 columns: table => new
@@ -22,7 +25,8 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.notify_id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "notify_queue",
@@ -54,7 +58,8 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.notify_id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "state",

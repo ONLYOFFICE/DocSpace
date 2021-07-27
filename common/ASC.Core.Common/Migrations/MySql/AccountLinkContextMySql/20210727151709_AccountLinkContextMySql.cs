@@ -7,6 +7,9 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "account_links",
                 columns: table => new
@@ -24,7 +27,8 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.id, x.uid });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "uid",

@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -9,6 +8,9 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "files_bunch_objects",
                 columns: table => new
@@ -22,7 +24,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.right_node });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_file",
@@ -58,7 +61,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.id, x.version });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_folder",
@@ -83,7 +87,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_folder", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_folder_tree",
@@ -96,7 +101,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.parent_id, x.folder_id });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_security",
@@ -116,7 +122,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.entry_id, x.entry_type, x.subject });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_tag",
@@ -134,7 +141,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_tag", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_tag_link",
@@ -153,7 +161,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.tag_id, x.entry_id, x.entry_type });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_account",
@@ -167,7 +176,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .Annotation("MySql:CharSet", "utf8"),
                     user_name = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    password = table.Column<string>(type: "varchar(512)", nullable: false, collation: "utf8_general_ci")
+                    password = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     token = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
@@ -182,7 +191,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_thirdparty_account", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_app",
@@ -200,7 +210,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.user_id, x.app });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_id_mapping",
@@ -215,7 +226,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.hash_id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "left_node",
@@ -281,7 +293,6 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 name: "index_1",
                 table: "files_thirdparty_id_mapping",
                 columns: new[] { "tenant_id", "hash_id" });
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -315,7 +326,6 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 
             migrationBuilder.DropTable(
                 name: "files_thirdparty_id_mapping");
-
         }
     }
 }

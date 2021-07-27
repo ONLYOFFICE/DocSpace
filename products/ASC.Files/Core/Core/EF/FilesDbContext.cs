@@ -48,6 +48,7 @@ namespace ASC.Files.Core.EF
                 .AddDbFilesTag()
                 .AddDbDbFilesThirdpartyApp()
                 .AddDbTenant();
+            modelBuilder.Entity<DbTenant>().ToTable("tenants_tenants", t => t.ExcludeFromMigrations());
         }
     }
 

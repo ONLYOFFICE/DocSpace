@@ -38,6 +38,8 @@ namespace ASC.Core.Common.EF.Context
                 .AddAuditEvent()
                 .AddLoginEvents()
                 .AddDbFunction();
+            modelBuilder.Entity<DbTenant>().ToTable("tenants_tenants", t => t.ExcludeFromMigrations());
+            modelBuilder.Entity<DbWebstudioSettings>().ToTable("webstudio_settings", t => t.ExcludeFromMigrations());
         }
     }
 

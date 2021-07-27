@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
 {
     [DbContext(typeof(MySqlMailDbContext))]
-    [Migration("20210309094321_MailDbContextMySql")]
+    [Migration("20210727154325_MailDbContextMySql")]
     partial class MailDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.ApiKeys", b =>
                 {
@@ -26,25 +26,22 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("int");
 
                     b.Property<string>("AccessToken")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasColumnName("access_token");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("api_keys");
+                    b.ToTable("ApiKeys");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.GreyListingWhiteList", b =>
                 {
                     b.Property<string>("Comment")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Source")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
-                    b.HasKey("Comment");
-
-                    b.ToTable("greylisting_whitelist");
+                    b.ToTable("GreyListingWhiteList");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.Mailbox", b =>
@@ -149,8 +146,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnName("is_server_mailbox");
 
                     b.Property<bool>("IsTeamlabMailbox")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_teamlab_mailbox");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("LoginDelay")
                         .ValueGeneratedOnAdd()
@@ -1836,35 +1832,32 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                         .HasColumnType("int");
 
                     b.Property<string>("Authentication")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Hostname")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("IdProvider")
-                        .HasColumnType("int")
-                        .HasColumnName("id_provider");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsUserData")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("is_user_data");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("Port")
                         .HasColumnType("int");
 
                     b.Property<string>("SocketType")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasColumnName("socket_type");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Type")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("mail_mailbox_server");
+                    b.ToTable("MailboxServer");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.ServerServer", b =>

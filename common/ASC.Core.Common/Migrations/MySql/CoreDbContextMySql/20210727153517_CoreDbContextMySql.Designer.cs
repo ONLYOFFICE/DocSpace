@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
 {
     [DbContext(typeof(MySqlCoreDbContext))]
-    [Migration("20210309093641_CoreDbContextMySql")]
+    [Migration("20210727153517_CoreDbContextMySql")]
     partial class CoreDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
                 {
@@ -52,7 +52,7 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                     b.HasKey("Tenant", "Subject", "Action", "Object")
                         .HasName("PRIMARY");
 
-                    b.ToTable("core_acl");
+                    b.ToTable("core_acl", t => t.ExcludeFromMigrations());
 
                     b.HasData(
                         new
@@ -742,13 +742,13 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnName("create_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<DateTime>("Stamp")
-                        .HasColumnType("datetime")
-                        .HasColumnName("stamp");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
                         .HasColumnName("quantity");
+
+                    b.Property<DateTime>("Stamp")
+                        .HasColumnType("datetime")
+                        .HasColumnName("stamp");
 
                     b.Property<int>("Tariff")
                         .HasColumnType("int")

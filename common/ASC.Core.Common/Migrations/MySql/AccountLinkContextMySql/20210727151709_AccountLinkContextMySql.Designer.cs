@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
 {
     [DbContext(typeof(MySqlAccountLinkContext))]
-    [Migration("20210309093101_AccountLinkContextMySql")]
+    [Migration("20210727151709_AccountLinkContextMySql")]
     partial class AccountLinkContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.AccountLinks", b =>
                 {

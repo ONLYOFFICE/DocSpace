@@ -8,6 +8,9 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "res_authors",
                 columns: table => new
@@ -23,7 +26,8 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.login);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "res_authorsfile",
@@ -37,7 +41,8 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.authorLogin, x.fileid });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "res_authorslang",
@@ -51,7 +56,8 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.authorLogin, x.cultureTitle });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "res_cultures",
@@ -67,7 +73,8 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.title);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "res_data",
@@ -96,7 +103,8 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.fileid, x.cultureTitle, x.title });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "res_files",
@@ -117,7 +125,8 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_res_files", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "res_reserve",
@@ -137,7 +146,8 @@ namespace ASC.Core.Common.Migrations.MySql.ResourceDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.fileid, x.title, x.cultureTitle });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "res_authorsfile_FK2",

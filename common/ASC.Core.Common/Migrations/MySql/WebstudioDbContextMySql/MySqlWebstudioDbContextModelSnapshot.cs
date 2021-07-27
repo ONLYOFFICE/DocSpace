@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioIndex", b =>
                 {
@@ -120,6 +120,38 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                         .HasDatabaseName("visitdate");
 
                     b.ToTable("webstudio_uservisit");
+
+                    b.HasData(
+                        new
+                        {
+                            TenantId = 1,
+                            VisitDate = new DateTime(2021, 7, 27, 15, 59, 52, 157, DateTimeKind.Utc).AddTicks(9998),
+                            ProductId = "00000000-0000-0000-0000-000000000000",
+                            UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+                            FirstVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(2137),
+                            LastVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(2582),
+                            VisitCount = 3
+                        },
+                        new
+                        {
+                            TenantId = 1,
+                            VisitDate = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3001),
+                            ProductId = "00000000-0000-0000-0000-000000000000",
+                            UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+                            FirstVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3025),
+                            LastVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3027),
+                            VisitCount = 2
+                        },
+                        new
+                        {
+                            TenantId = 1,
+                            VisitDate = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3029),
+                            ProductId = "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
+                            UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+                            FirstVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3036),
+                            LastVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3037),
+                            VisitCount = 1
+                        });
                 });
 #pragma warning restore 612, 618
         }

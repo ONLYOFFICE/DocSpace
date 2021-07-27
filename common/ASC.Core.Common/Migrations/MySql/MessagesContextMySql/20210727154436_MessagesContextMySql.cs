@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -9,6 +8,9 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "audit_events",
                 columns: table => new
@@ -38,7 +40,8 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_audit_events", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "login_events",
@@ -67,7 +70,8 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_login_events", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "date",

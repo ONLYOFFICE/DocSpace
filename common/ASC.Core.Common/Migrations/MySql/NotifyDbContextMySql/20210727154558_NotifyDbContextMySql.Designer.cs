@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
 {
     [DbContext(typeof(MySqlNotifyDbContext))]
-    [Migration("20210309094710_NotifyDbContextMySql")]
+    [Migration("20210727154558_NotifyDbContextMySql")]
     partial class NotifyDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyInfo", b =>
                 {

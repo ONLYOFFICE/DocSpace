@@ -15,7 +15,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
                 {
@@ -139,7 +139,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                     b.HasIndex("Version")
                         .HasDatabaseName("version");
 
-                    b.ToTable("tenants_tenants");
+                    b.ToTable("tenants_tenants", t => t.ExcludeFromMigrations());
 
                     b.HasData(
                         new
@@ -147,11 +147,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                             Id = 1,
                             Alias = "localhost",
                             Calls = false,
-                            CreationDateTime = new DateTime(2021, 3, 9, 12, 51, 18, 985, DateTimeKind.Utc).AddTicks(8805),
+                            CreationDateTime = new DateTime(2021, 7, 27, 16, 20, 51, 477, DateTimeKind.Utc).AddTicks(8852),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Web Office",
                             OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            Public = false,
                             Spam = false,
                             Status = 0,
                             TrustedDomainsEnabled = 0,
@@ -241,6 +240,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .HasColumnType("datetime")
                         .HasColumnName("modified_on");
 
+                    b.Property<int>("Thumb")
+                        .HasColumnType("int")
+                        .HasColumnName("thumb");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("varchar(400)")
@@ -253,10 +256,6 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .HasColumnType("int")
                         .HasColumnName("version_group")
                         .HasDefaultValueSql("'1'");
-
-                    b.Property<bool>("Thumb")
-                        .HasColumnType("int")
-                        .HasColumnName("thumb");
 
                     b.HasKey("TenantId", "Id", "Version")
                         .HasName("PRIMARY");
@@ -452,7 +451,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varchar(512)")
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("password")
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");

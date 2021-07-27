@@ -8,6 +8,9 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "crm_contact",
                 columns: table => new
@@ -46,7 +49,8 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_crm_contact", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "crm_voip_number",
@@ -65,7 +69,8 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_crm_voip_number", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "crm_voip_calls",
@@ -104,7 +109,8 @@ namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
                         principalTable: "crm_contact",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "company_id",

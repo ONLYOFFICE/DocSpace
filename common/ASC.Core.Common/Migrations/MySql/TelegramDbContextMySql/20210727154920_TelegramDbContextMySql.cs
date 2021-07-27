@@ -6,6 +6,9 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "telegram_users",
                 columns: table => new
@@ -18,7 +21,8 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.portal_user_id });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "tgId",

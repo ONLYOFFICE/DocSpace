@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
@@ -8,6 +7,9 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "webstudio_index",
                 columns: table => new
@@ -19,7 +21,8 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.index_name);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "webstudio_settings",
@@ -36,7 +39,8 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.TenantID, x.ID, x.UserID });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "webstudio_uservisit",
@@ -55,12 +59,23 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenantid, x.visitdate, x.productid, x.userid });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
                 table: "webstudio_settings",
                 columns: new[] { "ID", "TenantID", "UserID", "Data" },
                 values: new object[] { "9a925891-1f92-4ed7-b277-d6f649739f06", 1, "00000000-0000-0000-0000-000000000000", "{\"Completed\":false}" });
+
+            migrationBuilder.InsertData(
+                table: "webstudio_uservisit",
+                columns: new[] { "productid", "tenantid", "userid", "visitdate", "firstvisittime", "lastvisittime", "visitcount" },
+                values: new object[,]
+                {
+                    { "00000000-0000-0000-0000-000000000000", 1, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 7, 27, 15, 59, 52, 157, DateTimeKind.Utc).AddTicks(9998), new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(2137), new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(2582), 3 },
+                    { "00000000-0000-0000-0000-000000000000", 1, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3001), new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3025), new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3027), 2 },
+                    { "e67be73d-f9ae-4ce1-8fec-1880cb518cb4", 1, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3029), new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3036), new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3037), 1 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "ID",

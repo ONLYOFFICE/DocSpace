@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
 {
     [DbContext(typeof(MySqlMessagesContext))]
-    [Migration("20210309094602_MessagesContextMySql")]
+    [Migration("20210727154436_MessagesContextMySql")]
     partial class MessagesContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.AuditEvent", b =>
                 {
@@ -217,7 +217,7 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                     b.HasIndex("Version")
                         .HasDatabaseName("version");
 
-                    b.ToTable("tenants_tenants");
+                    b.ToTable("tenants_tenants", t => t.ExcludeFromMigrations());
 
                     b.HasData(
                         new
@@ -225,15 +225,56 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                             Id = 1,
                             Alias = "localhost",
                             Calls = false,
-                            CreationDateTime = new DateTime(2021, 3, 9, 9, 46, 1, 830, DateTimeKind.Utc).AddTicks(546),
+                            CreationDateTime = new DateTime(2021, 7, 27, 15, 44, 35, 938, DateTimeKind.Utc).AddTicks(3177),
                             LastModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Web Office",
                             OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            Public = false,
                             Spam = false,
                             Status = 0,
                             TrustedDomainsEnabled = 0,
                             Version = 0
+                        });
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
+                {
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int")
+                        .HasColumnName("TenantID");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("ID")
+                        .UseCollation("utf8_general_ci")
+                        .HasCharSet("utf8");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("UserID")
+                        .UseCollation("utf8_general_ci")
+                        .HasCharSet("utf8");
+
+                    b.Property<string>("Data")
+                        .IsRequired()
+                        .HasColumnType("mediumtext")
+                        .UseCollation("utf8_general_ci")
+                        .HasCharSet("utf8");
+
+                    b.HasKey("TenantId", "Id", "UserId")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("Id")
+                        .HasDatabaseName("ID");
+
+                    b.ToTable("webstudio_settings", t => t.ExcludeFromMigrations());
+
+                    b.HasData(
+                        new
+                        {
+                            TenantId = 1,
+                            Id = "9a925891-1f92-4ed7-b277-d6f649739f06",
+                            UserId = "00000000-0000-0000-0000-000000000000",
+                            Data = "{\"Completed\":false}"
                         });
                 });
 
