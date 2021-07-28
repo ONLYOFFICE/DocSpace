@@ -45,7 +45,8 @@ namespace ASC.Web.Files
     [Scope]
     public class FilesSpaceUsageStatManager : SpaceUsageStatManager
     {
-        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
+        private Lazy<ASC.Files.Core.EF.FilesDbContext> LazyFilesDbContext { get; }
+        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         private TenantManager TenantManager { get; }
         private UserManager UserManager { get; }
         private UserPhotoManager UserPhotoManager { get; }
@@ -64,7 +65,7 @@ namespace ASC.Web.Files
             GlobalFolderHelper globalFolderHelper,
             PathProvider pathProvider)
         {
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
+            LazyFilesDbContext = new Lazy<ASC.Files.Core.EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             TenantManager = tenantManager;
             UserManager = userManager;
             UserPhotoManager = userPhotoManager;
@@ -127,14 +128,15 @@ namespace ASC.Web.Files
     [Scope]
     public class FilesUserSpaceUsage : IUserSpaceUsage
     {
-        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
+        private Lazy<ASC.Files.Core.EF.FilesDbContext> LazyFilesDbContext { get; }
+        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         private TenantManager TenantManager { get; }
 
         public FilesUserSpaceUsage(
             DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
             TenantManager tenantManager)
         {
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
+            LazyFilesDbContext = new Lazy<ASC.Files.Core.EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             TenantManager = tenantManager;
         }
 

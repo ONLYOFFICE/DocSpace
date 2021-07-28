@@ -374,6 +374,7 @@ namespace ASC.CRM.ApiModels
 
         protected ListItemDto(ListItem listItem)
         {
+            Id = listItem.ID;
             Title = listItem.Title;
             Description = listItem.Description;
             Color = listItem.Color;

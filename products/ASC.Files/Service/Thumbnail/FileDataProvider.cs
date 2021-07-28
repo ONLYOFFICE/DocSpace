@@ -35,8 +35,10 @@ namespace ASC.Files.ThumbnailBuilder
     {
         private readonly ThumbnailSettings thumbnailSettings;
         private readonly ICache cache;
-        private readonly FilesDbContext filesDbContext;
-        private readonly CoreDbContext coreDbContext;
+        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+        private FilesDbContext filesDbContext { get => LazyFilesDbContext.Value; }
+        private Lazy<CoreDbContext> LazyCoreDbContext { get; }
+        private CoreDbContext coreDbContext { get => LazyCoreDbContext.Value; }
         private readonly string cacheKey;
 
         public FileDataProvider(
@@ -48,8 +50,8 @@ namespace ASC.Files.ThumbnailBuilder
         {
             this.thumbnailSettings = thumbnailSettings;
             cache = ascCache;
-            filesDbContext = dbContextManager.Get(thumbnailSettings.ConnectionStringName);
-            coreDbContext = coredbContextManager.Get(thumbnailSettings.ConnectionStringName);
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
+            LazyCoreDbContext = new Lazy<CoreDbContext>(() => coredbContextManager.Get(thumbnailSettings.ConnectionStringName));
             cacheKey = "PremiumTenants";
         }
 

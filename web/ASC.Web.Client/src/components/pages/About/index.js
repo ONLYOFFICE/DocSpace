@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
-import config from "../../../../package.json";
 import withLoader from "../Confirm/withLoader";
 import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
@@ -78,7 +77,7 @@ const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
 
-const Body = ({ t, personal }) => {
+const Body = ({ t, personal, version }) => {
   useEffect(() => {
     setDocumentTitle(t("Common:About"));
   }, [t]);
@@ -124,7 +123,7 @@ const Body = ({ t, personal }) => {
 
       <VersionStyle>
         <Text className="text_style" fontSize="14px" color="#A3A9AE">
-          {`${t("Common:Version")}: ${config.version}`}
+          {`${t("Common:Version")}: ${version}`}
         </Text>
       </VersionStyle>
 
@@ -198,6 +197,7 @@ const Body = ({ t, personal }) => {
 
 const BodyWrapper = inject(({ auth }) => ({
   personal: auth.settingsStore,
+  version: auth.settingsStore.version,
 }))(withTranslation(["About", "Common"])(withLoader(observer(Body))));
 
 const About = (props) => {

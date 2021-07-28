@@ -4,6 +4,9 @@ import { isMobile } from "react-device-detect";
 
 import Loaders from "@appserver/common/components/Loaders";
 
+const pathname = window.location.pathname.toLowerCase();
+const isEditor = pathname.indexOf("doceditor") !== -1;
+
 let loadTimeout = null;
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
@@ -33,7 +36,10 @@ const withLoader = (WrappedComponent) => (Loader) => {
       };
     }, [isLoading]);
 
-    return firstLoad || !isLoaded || (isMobile && inLoad) || !tReady ? (
+    return (!isEditor && firstLoad) ||
+      !isLoaded ||
+      (isMobile && inLoad) ||
+      !tReady ? (
       Loader ? (
         Loader
       ) : viewAs === "tile" ? (

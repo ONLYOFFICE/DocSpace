@@ -41,7 +41,7 @@ const Banner = () => {
     <CampaignsBanner
       headerLabel={t(`CampaignPersonal${bannerName}:Header`)}
       subHeaderLabel={t(`CampaignPersonal${bannerName}:SubHeader`)}
-      img={`/static/images/campaigns.${bannerName}.png`}
+      img={`/static/images/campaigns.${bannerName.toLowerCase()}.png`}
       btnLabel={t(`CampaignPersonal${bannerName}:ButtonLabel`)}
       link={t(`CampaignPersonal${bannerName}:Link`)}
     />

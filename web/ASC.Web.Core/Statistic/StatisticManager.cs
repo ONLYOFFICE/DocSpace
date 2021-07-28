@@ -45,11 +45,12 @@ namespace ASC.Web.Studio.Core.Statistic
         private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
         private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
 
-        private WebstudioDbContext WebstudioDbContext { get; }
+        private Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; }
+        private WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
 
         public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager)
         {
-            WebstudioDbContext = dbContextManager.Value;
+            LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }
 
         public void SaveUserVisit(int tenantID, Guid userID, Guid productID)
