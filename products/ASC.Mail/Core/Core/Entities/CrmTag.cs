@@ -28,27 +28,22 @@ using System;
 
 namespace ASC.Mail.Core.Entities
 {
-    public class Tag : IEquatable<Tag>
+    public class CrmTag : IEquatable<CrmTag>
     {
-        public int Id { get; set; }
-        public int Tenant { get; set; }
-        public string User { get; set; }
-        public string TagName { get; set; }
-        public string Style { get; set; }
-        public string Addresses { get; set; }
-        public int Count { get; set; }
-        public int CrmId { get; set; }
-        public bool Equals(Tag other)
+        public int TagId { get; set; }
+        public int EntityType { get; set; }
+        public int TenantId { get; set; }
+        public string TagTitle { get; set; }
+        public int EntityId { get; set; }
+
+        public bool Equals(CrmTag other)
         {
             if (other == null) return false;
-            return Id == other.Id &&
-                   string.Equals(User, other.User, StringComparison.InvariantCultureIgnoreCase)
-                   && Tenant == other.Tenant
-                   && string.Equals(Style, other.Style, StringComparison.InvariantCultureIgnoreCase)
-                   && string.Equals(TagName, other.TagName, StringComparison.InvariantCultureIgnoreCase)
-                   && string.Equals(Addresses, other.Addresses, StringComparison.InvariantCultureIgnoreCase)
-                   && Count == other.Count
-                   && CrmId == other.CrmId;
+            return TagId == other.TagId
+                   && TenantId == other.TenantId
+                   && EntityId == other.EntityId
+                   && EntityType == other.EntityType
+                   && string.Equals(TagTitle, other.TagTitle, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override bool Equals(object obj)
@@ -56,14 +51,12 @@ namespace ASC.Mail.Core.Entities
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals(obj as Tag);
+            return Equals(obj as CrmTag);
         }
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode() ^ User.GetHashCode() ^ Tenant.GetHashCode() ^ TagName.GetHashCode() ^
-                   Style.GetHashCode() ^
-                   Addresses.GetHashCode() ^ Count.GetHashCode() ^ CrmId.GetHashCode();
+            return TagId.GetHashCode() ^ TenantId.GetHashCode() ^ EntityType.GetHashCode() ^ EntityId.GetHashCode() ^ TagTitle.GetHashCode();
         }
     }
 }

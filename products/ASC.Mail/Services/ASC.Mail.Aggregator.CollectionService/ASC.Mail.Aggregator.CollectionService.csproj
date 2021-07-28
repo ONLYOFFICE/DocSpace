@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="LiteDB" Version="5.0.10" />
-    <PackageReference Include="MailKit" Version="2.12.0" />
+    <PackageReference Include="MailKit" Version="2.14.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="SelectelSharp" Version="0.8.0" />

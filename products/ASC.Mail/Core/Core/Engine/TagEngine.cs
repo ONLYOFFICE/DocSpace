@@ -44,6 +44,8 @@ using ASC.Web.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using CrmTag = ASC.Mail.Core.Entities.CrmTag;
+
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
@@ -136,9 +138,9 @@ namespace ASC.Mail.Core.Engine
                 .ToList();
         }
 
-        public List<Tag> GetCrmTags(string email)
+        public List<CrmTag> GetCrmTags(string email)
         {
-            var tags = new List<Tag>();
+            var tags = new List<CrmTag>();
 
             var allowedContactIds = MailDaoFactory.GetCrmContactDao().GetCrmContactIds(email);
 
@@ -148,8 +150,8 @@ namespace ASC.Mail.Core.Engine
             tags = MailDaoFactory.GetTagDao().GetCrmTags(allowedContactIds);
 
             return tags
-                .Where(p => !string.IsNullOrEmpty(p.TagName))
-                .OrderByDescending(p => p.Id)
+                .Where(p => !string.IsNullOrEmpty(p.TagTitle))
+                .OrderByDescending(p => p.TagId)
                 .ToList();
         }
 

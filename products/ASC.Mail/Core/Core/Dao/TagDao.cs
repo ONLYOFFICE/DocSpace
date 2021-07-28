@@ -30,9 +30,12 @@ using System.Linq;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.CRM.Core.Enums;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+
+using CrmTag = ASC.Mail.Core.Entities.CrmTag;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -130,20 +133,6 @@ namespace ASC.Mail.Core.Dao
             return tags;
         }
 
-        public enum EntityType //TODO: Get from CRM.Core
-        {
-            Any = -1,
-            Contact = 0,
-            Opportunity = 1,
-            RelationshipEvent = 2,
-            Task = 3,
-            Company = 4,
-            Person = 5,
-            File = 6,
-            Case = 7,
-            Invoice = 8
-        }
-
         public List<Tag> GetCrmTags()
         {
             var crmTags = MailDbContext.CrmTag
@@ -163,34 +152,27 @@ namespace ASC.Mail.Core.Dao
             return crmTags;
         }
 
-        public List<Tag> GetCrmTags(List<int> contactIds)
+        public List<CrmTag> GetCrmTags(List<int> contactIds)
         {
             var query = MailDbContext.CrmEntityTag
                 .Join(MailDbContext.CrmTag,
                     cet => cet.TagId,
                     ct => ct.Id,
-                    (cet, ct) => new Tag
+                    (cet, ct) => new CrmTag
                     {
-                        Id = ct.Id,
-                        TagName = ct.Title,
-                        CrmId = cet.EntityId
+                        TagId = -ct.Id,
+                        TagTitle = ct.Title,
+                        TenantId = ct.IdTenant,
+                        EntityId = cet.EntityId,
+                        EntityType = cet.EntityType
                     })
-                .Where(r => r.CrmId == (int)EntityType.Contact && contactIds.Contains(r.CrmId))
+                .Where(r =>
+                r.EntityType == (int)EntityType.Contact
+                && contactIds.Contains(r.EntityId)
+                && r.TenantId == Tenant)
                 .ToList();
 
             return query;
-
-            //var query = new SqlQuery(CrmEntityTagTable.TABLE_NAME.Alias(cet))
-            //    .InnerJoin(CrmTagTable.TABLE_NAME.Alias(ct),
-            //        Exp.EqColumns(CrmEntityTagTable.Columns.TagId.Prefix(cet), CrmTagTable.Columns.Id.Prefix(ct)))
-            //    .Distinct()
-            //    .Select(CrmTagTable.Columns.Id.Prefix(ct), CrmTagTable.Columns.Title.Prefix(ct))
-            //    .Where(CrmTagTable.Columns.Tenant.Prefix(ct), Tenant)
-            //    .Where(CrmEntityTagTable.Columns.EntityType.Prefix(cet), (int) EntityType.Contact)
-            //    .Where(Exp.In(CrmEntityTagTable.Columns.EntityId.Prefix(cet), contactIds));
-
-            //return Db.ExecuteList(query)
-            //    .ConvertAll(ToCrmTag);
         }
         public int SaveTag(Tag tag)
         {

@@ -24,26 +24,40 @@
 */
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.CRM.Core;
+using ASC.CRM.Core.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Enums;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
     public class CrmContactDao : BaseMailDao, ICrmContactDao
     {
+        private ILog Log { get; }
+
+        private CrmSecurity CrmSecurity { get; }
+
         public CrmContactDao(
              TenantManager tenantManager,
              SecurityContext securityContext,
-             DbContextManager<MailDbContext> dbContext)
+             DbContextManager<MailDbContext> dbContext,
+             IOptionsMonitor<ILog> option,
+             CrmSecurity crmSecurity)
             : base(tenantManager, securityContext, dbContext)
         {
+            Log = option.Get("ASC.Mail.TagEngine");
+            CrmSecurity = crmSecurity;
         }
 
         public List<int> GetCrmContactIds(string email)
@@ -52,10 +66,9 @@ namespace ASC.Mail.Core.Dao
 
             if (string.IsNullOrEmpty(email))
                 return ids;
-            //try
-            //{
-
-            var contactList = MailDbContext.CrmContact.Join(MailDbContext.CrmContactInfo, c => c.Id, ci => ci.ContactId,
+            try
+            {
+                var contactList = MailDbContext.CrmContact.Join(MailDbContext.CrmContactInfo, c => c.Id, ci => ci.ContactId,
                 (c, ci) => new
                 {
                     Contact = c,
@@ -70,36 +83,31 @@ namespace ASC.Mail.Core.Dao
                 })
                 .ToList();
 
-            if (!contactList.Any())
-                return ids;
+                if (!contactList.Any())
+                    return ids;
 
-            //TODO: Fix check access rights 
-            ids.AddRange(contactList.Select(c => c.Id));
+                ids.AddRange(contactList.Select(c => c.Id));
 
-            //TODO: Fix
-            //CoreContext.TenantManager.SetCurrentTenant(Tenant);
-            //SecurityContext.AuthenticateMe(new Guid(CurrentUserId));
+                foreach (var info in contactList)
+                {
+                    var contact = info.Company
+                        ? new Company()
+                        : (Contact)new Person();
 
-            //foreach (var info in contactList)
-            //{
-            //    var contact = info.Company
-            //        ? new Company()
-            //        : (Contact) new Person();
+                    contact.ID = info.Id;
+                    contact.ShareType = (CRM.Core.Enums.ShareType)info.ShareType;
 
-            //    contact.ID = info.Id;
-            //    contact.ShareType = info.ShareType;
-
-            //    if (CRMSecurity.CanAccessTo(contact))
-            //    {
-            //        ids.Add(info.Id);
-            //    }
-            //}
-            //}
-            //catch (Exception e)
-            //{
-            //    Log.WarnFormat("GetCrmContactsId(tenandId='{0}', userId='{1}', email='{2}') Exception:\r\n{3}\r\n",
-            //        Tenant, CurrentUserId, email, e.ToString());
-            //}
+                    if (CrmSecurity.CanAccessTo(contact))
+                    {
+                        ids.Add(info.Id);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.WarnFormat("GetCrmContactsId(tenandId='{0}', userId='{1}', email='{2}') Exception:\r\n{3}\r\n",
+                    Tenant, UserId, email, e.ToString());
+            }
 
             return ids;
         }

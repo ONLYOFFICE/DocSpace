@@ -253,7 +253,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             else
             {
                 WorkTimer.Change(MailSettings.CheckTimerInterval, MailSettings.CheckTimerInterval);
-            }            
+            }
             return Task.CompletedTask;
         }
 
@@ -671,14 +671,13 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 using var scope = ServiceProvider.CreateScope();
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(mailbox.TenantId);
 
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-                var mailEnginesFactory = scope.ServiceProvider.GetService<MailEnginesFactory>();
-
-
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
                 securityContext.AuthenticateMe(new Guid(mailbox.UserId));
+
+                var mailEnginesFactory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
                 var message = mailEnginesFactory.MessageEngine.Save(mailbox, mimeMessage, uidl, folder, null, unread, log);
 
@@ -832,7 +831,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                         if (tagIds == null)
                             tagIds = new List<int>();
 
-                        tagIds.AddRange(crmTagIds.Select(t => t.Id));
+                        tagIds.AddRange(crmTagIds.Select(t => t.TagId));
                     }
                 }
 

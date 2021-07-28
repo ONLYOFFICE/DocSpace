@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -172,8 +173,8 @@ namespace ASC.Mail.Core.Dao
                 IsAnswered = r.IsAnswered,
                 IsForwarded = r.IsForwarded,
                 Stream = r.Stream,
-                Folder = (FolderType) r.Folder,
-                FolderRestore = (FolderType) r.FolderRestore,
+                Folder = (FolderType)r.Folder,
+                FolderRestore = (FolderType)r.FolderRestore,
                 Spam = r.Spam,
                 IsRemoved = r.IsRemoved,
                 TimeModified = r.TimeModified,
