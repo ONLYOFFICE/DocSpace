@@ -937,7 +937,7 @@ class FilterInput extends React.Component {
             className="view-selector-button not-selectable"
             isDisabled={isDisabled}
             onChangeView={this.props.onChangeViewAs}
-            viewAs={viewAs}
+            viewAs={viewAs === "table" ? "row" : viewAs}
             viewSettings={this.state.viewSettings}
           />
         )}
