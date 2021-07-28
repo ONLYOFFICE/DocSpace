@@ -33,7 +33,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       };
     }, [isLoading]);
 
-    return firstLoad || !isLoaded || (isMobile && inLoad) || !tReady ? (
+    return !isLoaded || (isMobile && inLoad) || !tReady ? (
       Loader ? (
         Loader
       ) : viewAs === "tile" ? (
