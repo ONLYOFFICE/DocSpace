@@ -21,7 +21,7 @@ import i18n from "./i18n";
 import AppLoader from "@appserver/common/components/AppLoader";
 import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
-import { Snackbar } from "@appserver/components/snackbar";
+import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
 
 const { proxyURL } = AppServerConfig;
@@ -265,21 +265,21 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     const targetDate = to.locale(language).format("LL");
 
     const barConfig = {
-      textBody: `${t("BarMaintenanceDescription", {
-        targetDate: `<b>${targetDate}</b>`,
+      parentElementId: "main-bar",
+      text: `${t("BarMaintenanceDescription", {
+        targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
-      pos: "top_center",
-      showAction: true,
-      onActionClick: (element) => {
-        element.style.opacity = 0;
-        localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
-      },
+      onAction: () => snackbarButtonClick(),
+      opacity: 1,
     };
 
-    barConfig.parentElementId = "main-bar";
-
     Snackbar.show(barConfig);
+  };
+
+  const snackbarButtonClick = () => {
+    Snackbar.close();
+    localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
   };
 
   const fetchMaintenance = () => {

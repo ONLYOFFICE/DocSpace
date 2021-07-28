@@ -67,6 +67,8 @@ namespace ASC.Api.Settings
 
         public FirebaseWrapper Firebase { get; set; }
 
+        public string Version { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper

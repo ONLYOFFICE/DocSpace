@@ -93,5 +93,7 @@
   "View": "Просмотр",
   "ViewWeb": "Просмотреть веб-версию",
   "Warning": "Внимание",
-  "ResetApplication": "Сбросить приложение"
+  "ResetApplication": "Сбросить приложение",
+  "NewVersionAvailable": "Доступна новая версия веб-сайта",
+  "Load": "Загрузить"
 }

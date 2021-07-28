@@ -68,7 +68,7 @@ for i in ${!servers_products_name_backend[@]}; do
   echo "== Publish ${servers_products_name_backend[$i]}.csproj project =="
   SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${servers_products_name_backend[$i]}".csproj)")"
   cd ${SERVICE_DIR}
-  dotnet publish -c Release --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/products/${servers_products_name_backend[$i]}/server/
+  dotnet publish -c Release --self-contained ${SELF_CONTAINED} ${ARGS} --no-build -o ${BUILD_PATH}/products/${servers_products_name_backend[$i]}/server/
 done
 
 # Array of names backend services
@@ -91,7 +91,7 @@ for i in ${!services_name_backend[@]}; do
   echo "== Publish ${services_name_backend[$i]}.csproj project =="
   SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${services_name_backend[$i]}".csproj)")"
   cd ${SERVICE_DIR}
-  dotnet publish -c Release --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/services/${services_name_backend[$i]}/service/
+  dotnet publish -c Release --self-contained ${SELF_CONTAINED} ${ARGS} --no-build -o ${BUILD_PATH}/services/${services_name_backend[$i]}/service/
 done
 
 # Array of names backend services in directory common (Nodejs)  
