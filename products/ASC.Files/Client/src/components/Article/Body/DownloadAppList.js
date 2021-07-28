@@ -26,6 +26,13 @@ const StyledRectangleLoader = styled(Loaders.Rectangle)`
 `;
 
 const DownloadAppListContainer = ({ t }) => {
+  const windowsLink =
+    "https://www.onlyoffice.com/download-desktop.aspx#windows";
+  const macLink = "https://www.onlyoffice.com/download-desktop.aspx#mac";
+  const linuxLink = "https://www.onlyoffice.com/download-desktop.aspx#linux";
+  const androidLink = "https://www.onlyoffice.com/office-for-android.aspx";
+  const iosLink = "https://www.onlyoffice.com/office-for-ios.aspx";
+
   return (
     <StyledDownloadAppList>
       <Text color="#555F65" fontSize="14px" fontWeight={600}>
@@ -33,11 +40,7 @@ const DownloadAppListContainer = ({ t }) => {
       </Text>
       <div className="download-app-list">
         <IconButton
-          onClick={() =>
-            window.open(
-              "https://www.onlyoffice.com/download-desktop.aspx#windows"
-            )
-          }
+          onClick={() => window.open(windowsLink)}
           className="icon-button"
           iconName="/static/images/windows.react.svg"
           size="25"
@@ -46,9 +49,7 @@ const DownloadAppListContainer = ({ t }) => {
           hoverColor="#3785D3"
         />
         <IconButton
-          onClick={() =>
-            window.open("https://www.onlyoffice.com/download-desktop.aspx#mac")
-          }
+          onClick={() => window.open(macLink)}
           className="icon-button"
           iconName="/static/images/macOS.react.svg"
           size="25"
@@ -57,11 +58,7 @@ const DownloadAppListContainer = ({ t }) => {
           hoverColor="#000000"
         />
         <IconButton
-          onClick={() =>
-            window.open(
-              "https://www.onlyoffice.com/download-desktop.aspx#linux"
-            )
-          }
+          onClick={() => window.open(linuxLink)}
           className="icon-button"
           iconName="/static/images/linux.react.svg"
           size="25"
@@ -70,9 +67,7 @@ const DownloadAppListContainer = ({ t }) => {
           hoverColor="#FFB800"
         />
         <IconButton
-          onClick={() =>
-            window.open("https://www.onlyoffice.com/office-for-android.aspx")
-          }
+          onClick={() => window.open(androidLink)}
           className="icon-button"
           iconName="/static/images/android.react.svg"
           size="25"
@@ -81,9 +76,7 @@ const DownloadAppListContainer = ({ t }) => {
           hoverColor="#9BD71C"
         />
         <IconButton
-          onClick={() =>
-            window.open("https://www.onlyoffice.com/office-for-ios.aspx")
-          }
+          onClick={() => window.open(iosLink)}
           className="icon-button"
           iconName="/static/images/iOS.react.svg"
           size="25"
