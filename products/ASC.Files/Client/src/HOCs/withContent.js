@@ -37,21 +37,6 @@ export default function withContent(WrappedContent) {
       }
     }
 
-    // getDefaultName = (format) => {
-    //   const { t } = this.props;
-
-    //   switch (format) {
-    //     case "docx":
-    //       return t("NewDocument");
-    //     case "xlsx":
-    //       return t("NewSpreadsheet");
-    //     case "pptx":
-    //       return t("NewPresentation");
-    //     default:
-    //       return t("NewFolder");
-    //   }
-    // };
-
     completeAction = (id) => {
       const { editCompleteAction, item } = this.props;
 
