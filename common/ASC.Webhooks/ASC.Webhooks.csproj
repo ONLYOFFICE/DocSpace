@@ -27,7 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
+    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
 
 </Project>

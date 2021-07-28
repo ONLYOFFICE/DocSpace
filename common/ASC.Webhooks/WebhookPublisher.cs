@@ -63,6 +63,7 @@ namespace ASC.Webhooks
     }
     public enum EventName
     {
+        UntrackedAction,
         NewFileCreated,
         FileUpdated
     }

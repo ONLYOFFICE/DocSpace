@@ -134,6 +134,8 @@ namespace ASC.Api.Core
 
             app.UseCultureMiddleware();
 
+            app.UseWebhooksMiddleware();
+
             app.UseDisposeMiddleware();
 
             app.UseEndpoints(endpoints =>
