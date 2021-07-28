@@ -17,30 +17,34 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly RequestDelegate _next;
         private WebhookPublisher WebhookPublisher { get; }
+        private WebhooksIdentifier WebhooksIdentifier { get; }
 
-        public WebhooksMiddleware(RequestDelegate next, WebhookPublisher webhookPublisher)
+        public WebhooksMiddleware(RequestDelegate next, WebhookPublisher webhookPublisher, WebhooksIdentifier webhooksIdentifier)
         {
             _next = next;
             WebhookPublisher = webhookPublisher;
+            WebhooksIdentifier = webhooksIdentifier;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
-            EventName eventName;
+            //EventName eventName;
             var action = context.GetRouteValue("action").ToString();
 
-            switch (action)
-            {
-                case "CreateFileFromBody":
-                case "CreateFileFromForm":
-                    eventName = EventName.NewFileCreated;
-                    break;
-                default:
-                    eventName = EventName.UntrackedAction;
-                    break;
-            }
+            //switch (action)
+            //{
+            //    case "CreateFileFromBody":
+            //    case "CreateFileFromForm":
+            //        eventName = EventName.NewFileCreated;
+            //        break;
+            //    default:
+            //        eventName = EventName.UntrackedAction;
+            //        break;
+            //}
 
-            if(eventName == EventName.UntrackedAction)
+            var eventName = WebhooksIdentifier.Identify(action);
+
+            if (eventName == EventName.UntrackedAction)
             {
                 await _next(context);
                 return;
@@ -53,7 +57,6 @@ namespace ASC.Api.Core.Middleware
                 context.Response.Body = ms;
                 await _next(context);
 
-                var pos = ms.Position;
                 ms.Position = 0;
                 var responseReader = new StreamReader(ms);
 
@@ -65,11 +68,6 @@ namespace ASC.Api.Core.Middleware
             }
 
             WebhookPublisher.Publish(eventName, responseContent);
-        }
-
-        private bool isWebhooks(HttpRequest request)
-        {
-            return true;
         }
     }
 
