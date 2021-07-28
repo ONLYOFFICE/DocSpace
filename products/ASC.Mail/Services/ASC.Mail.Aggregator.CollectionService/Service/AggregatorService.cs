@@ -762,7 +762,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         {
             bool crmAvailable;
 
-            var tempScope = ServiceProvider.CreateScope();
+            using var tempScope = ServiceProvider.CreateScope();
 
             var tenantManager = tempScope.ServiceProvider.GetService<TenantManager>();
             var securityContext = tempScope.ServiceProvider.GetService<SecurityContext>();
@@ -870,7 +870,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 log.Debug("DoOptionalOperations -> AddRelationshipEventForLinkedAccounts()");
 
-                mailFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message, MailSettings.DefaultApiSchema);
+                mailFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message);
 
                 log.Debug("DoOptionalOperations -> SaveEmailInData()");
 

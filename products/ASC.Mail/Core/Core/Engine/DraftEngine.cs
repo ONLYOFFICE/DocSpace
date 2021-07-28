@@ -306,7 +306,7 @@ namespace ASC.Mail.Core.Engine
 
                         ReleaseSendingDraftOnSuccess(draft, message);
 
-                        CrmLinkEngine.AddRelationshipEventForLinkedAccounts(draft.Mailbox, message, scheme);
+                        CrmLinkEngine.AddRelationshipEventForLinkedAccounts(draft.Mailbox, message);
 
                         EmailInEngine.SaveEmailInData(draft.Mailbox, message, scheme);
 

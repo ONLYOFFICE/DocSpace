@@ -158,7 +158,7 @@ namespace ASC.Mail.Core.Engine
             {
                 try
                 {
-                    AddRelationshipEvents(message, httpContextScheme);
+                    AddRelationshipEvents(message);
                 }
                 catch (ApiHelperException ex)
                 {
@@ -211,7 +211,7 @@ namespace ASC.Mail.Core.Engine
             AddRelationshipEvents(messageItem);
         }
 
-        public void AddRelationshipEventForLinkedAccounts(MailBoxData mailbox, MailMessageData messageItem, string httpContextScheme)
+        public void AddRelationshipEventForLinkedAccounts(MailBoxData mailbox, MailMessageData messageItem)
         {
             try
             {
@@ -220,7 +220,7 @@ namespace ASC.Mail.Core.Engine
 
                 if (!messageItem.LinkedCrmEntityIds.Any()) return;
 
-                AddRelationshipEvents(messageItem, httpContextScheme);
+                AddRelationshipEvents(messageItem, mailbox);
             }
             catch (Exception ex)
             {
@@ -228,29 +228,37 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public void AddRelationshipEvents(MailMessageData message, string httpContextScheme = null)
+        public void AddRelationshipEvents(MailMessageData message, MailBoxData mailbox = null)
         {
-            //TODO: fix
-            //using var scope = DIHelper.Resolve();
+            using var scope = ServiceProvider.CreateScope();
 
-            //var factory = scope.Resolve<CRM.Core.Dao.DaoFactory>();
+            if (mailbox != null)
+            {
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
+                securityContext.AuthenticateMe(new Guid(mailbox.UserId));
+            }
+
+            var factory = scope.ServiceProvider.GetService<CrmDaoFactory>();
             foreach (var contactEntity in message.LinkedCrmEntityIds)
             {
-                /*switch (contactEntity.Type)
+                switch (contactEntity.Type)
                 {
                     case CrmContactData.EntityTypes.Contact:
-                        var crmContact = factory.ContactDao.GetByID(contactEntity.Id);
-                        CRMSecurity.DemandAccessTo(crmContact);
+                        var crmContact = factory.GetContactDao().GetByID(contactEntity.Id);
+                        CrmSecurity.DemandAccessTo(crmContact);
                         break;
                     case CrmContactData.EntityTypes.Case:
-                        var crmCase = factory.CasesDao.GetByID(contactEntity.Id);
-                        CRMSecurity.DemandAccessTo(crmCase);
+                        var crmCase = factory.GetCasesDao().GetByID(contactEntity.Id);
+                        CrmSecurity.DemandAccessTo(crmCase);
                         break;
                     case CrmContactData.EntityTypes.Opportunity:
-                        var crmOpportunity = factory.DealDao.GetByID(contactEntity.Id);
-                        CRMSecurity.DemandAccessTo(crmOpportunity);
+                        var crmOpportunity = factory.GetDealDao().GetByID(contactEntity.Id);
+                        CrmSecurity.DemandAccessTo(crmOpportunity);
                         break;
-                }*/
+                }
 
                 var fileIds = new List<object>();
 
