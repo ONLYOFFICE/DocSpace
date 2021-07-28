@@ -432,7 +432,7 @@ const Editor = () => {
 
     const defaultFileName = getDefaultFileName(fileExst);
 
-    fileInfo
+    fileInfo && fileInfo.rootFolderType !== FolderType.SHARE
       ? createNewFile(
           fileInfo.folderId,
           `${defaultFileName}.${fileExst}`
