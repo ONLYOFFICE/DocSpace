@@ -16,8 +16,7 @@ using Microsoft.Extensions.Hosting;
 namespace ASC.Files
 {
     public class Startup : BaseStartup
-    {
-        public override string[] LogParams { get => new string[] { "ASC.Files" }; }
+    { 
         public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter() }; }
 
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)

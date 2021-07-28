@@ -212,7 +212,8 @@ namespace ASC.Files.Thirdparty
         protected IServiceProvider ServiceProvider { get; }
         protected UserManager UserManager { get; }
         protected TenantUtil TenantUtil { get; }
-        protected FilesDbContext FilesDbContext { get; }
+        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+        protected FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         protected SetupInfo SetupInfo { get; }
         protected ILog Log { get; }
         protected FileUtility FileUtility { get; }
@@ -237,7 +238,7 @@ namespace ASC.Files.Thirdparty
             ServiceProvider = serviceProvider;
             UserManager = userManager;
             TenantUtil = tenantUtil;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             SetupInfo = setupInfo;
             Log = monitor.CurrentValue;
             FileUtility = fileUtility;

@@ -99,6 +99,8 @@ namespace ASC.Common.Logging
 
         string LogDirectory { get; }
         string Name { get; set; }
+
+        void Configure(string name);
     }
 
     public class Log : ILog
@@ -108,7 +110,7 @@ namespace ASC.Common.Logging
             XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
         }
 
-        private readonly log4net.ILog loger;
+        private log4net.ILog loger;
 
         public bool IsDebugEnabled { get; private set; }
 
@@ -123,6 +125,11 @@ namespace ASC.Common.Logging
         public bool IsTraceEnabled { get; private set; }
 
         public Log(string name)
+        {
+            Configure(name);
+        }
+
+        public void Configure(string name)
         {
             loger = log4net.LogManager.GetLogger(Assembly.GetCallingAssembly(), name);
 
@@ -402,13 +409,20 @@ namespace ASC.Common.Logging
         }
 
         public void Configure(LogNLog options)
-        {
-
+{
+            options.Configure("ASC");
         }
 
         public void Configure(string name, LogNLog options)
         {
-            Configure(options);
+            if (string.IsNullOrEmpty(name))
+            {
+                Configure(options);
+            }
+            else
+            {
+                options.Configure(name);
+            }
         }
     }
 
@@ -444,6 +458,11 @@ namespace ASC.Common.Logging
         public bool IsFatalEnabled { get; private set; }
 
         public bool IsTraceEnabled { get; private set; }
+
+        public void Configure(string name)
+        {
+            Name = name;
+        }
 
         public void Trace(object message)
         {
@@ -852,17 +871,21 @@ namespace ASC.Common.Logging
         {
         }
 
+        public void Configure(string name)
+        {
+        }
+
         public string LogDirectory { get { return ""; } }
 
         public string Name { get; set; }
     }
-
 
     [Singletone]
     public class LogManager<T> : OptionsMonitor<T> where T : class, ILog, new()
     {
         public LogManager(IOptionsFactory<T> factory, IEnumerable<IOptionsChangeTokenSource<T>> sources, IOptionsMonitorCache<T> cache) : base(factory, sources, cache)
         {
+
         }
 
         public override T Get(string name)
@@ -882,20 +905,7 @@ namespace ASC.Common.Logging
     {
         public static void RegisterLog(DIHelper services)
         {
-            const string baseName = "ASC";
-            var baseSqlName = $"{baseName}.SQL";
-            services.Configure<T>(r => r.Name = baseName);
-            services.Configure<T>(baseName, r => r.Name = baseName);
-            services.Configure<T>(baseSqlName, r => r.Name = baseSqlName);
             services.TryAdd(typeof(IOptionsMonitor<ILog>), typeof(LogManager<T>));
-        }
-
-        public static void ConfigureLog(DIHelper services, params string[] additionalLoggers)
-        {
-            foreach (var l in additionalLoggers)
-            {
-                services.Configure<T>(l, r => r.Name = l);
-            }
         }
     }
 

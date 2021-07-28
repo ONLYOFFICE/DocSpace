@@ -6,7 +6,6 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.ElasticSearch;
 using ASC.Feed.Aggregator;
@@ -83,7 +82,6 @@ namespace ASC.Files.Service
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
 
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
                     //diHelper.TryAdd<FileConverter>();
                     diHelper.TryAdd<FactoryIndexerFile>();
                     diHelper.TryAdd<FactoryIndexerFolder>();

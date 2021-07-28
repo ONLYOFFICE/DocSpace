@@ -261,6 +261,8 @@ class IconFormatsStore {
         return `${folderPath}/epub.svg`;
       case ".pb2":
         return `${folderPath}/fb2.svg`;
+      case ".fb2":
+        return `${folderPath}/fb2.svg`;
       case ".flv":
         return `${folderPath}/flv.svg`;
       case ".iaf":
@@ -344,6 +346,8 @@ class IconFormatsStore {
       case ".epub":
         return `${folderPath}/epub.svg`;
       case ".pb2":
+        return `${folderPath}/fb2.svg`;
+      case ".fb2":
         return `${folderPath}/fb2.svg`;
       case ".flv":
         return `${folderPath}/flv.svg`;
