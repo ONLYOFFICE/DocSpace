@@ -13,7 +13,7 @@ const TableRow = (props) => {
     contextOptions,
     checked,
     element,
-    onContentFileSelect,
+    onContentSelect,
     item,
     className,
     style,
@@ -58,7 +58,7 @@ const TableRow = (props) => {
   }, [checked]);
 
   const onChange = (e) => {
-    onContentFileSelect && onContentFileSelect(e.target.checked, item);
+    onContentSelect && onContentSelect(e.target.checked, item);
   };
 
   return (
@@ -76,7 +76,11 @@ const TableRow = (props) => {
         {iconVisible ? (
           element
         ) : (
-          <Checkbox onChange={onChange} isChecked={checked} />
+          <Checkbox
+            className="table-checkbox"
+            onChange={onChange}
+            isChecked={checked}
+          />
         )}
       </TableCell>
       {children}
@@ -108,10 +112,10 @@ TableRow.propTypes = {
   contextOptions: PropTypes.array,
   checked: PropTypes.bool,
   element: PropTypes.any,
-  onContentFileSelect: PropTypes.func,
+  onContentSelect: PropTypes.func,
   item: PropTypes.object,
   selectionProp: PropTypes.object,
-  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
 };
 
