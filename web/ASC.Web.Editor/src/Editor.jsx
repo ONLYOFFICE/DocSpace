@@ -24,6 +24,7 @@ import {
   updateFile,
   removeFromFavorite,
   markAsFavorite,
+  createTextFileInMy,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -35,7 +36,7 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import { createNewFile, getDefaultFileName } from "files/utils";
+import { createNewFile, getDefaultFileName, openDocEditor } from "files/utils";
 import i18n from "./i18n";
 import { FolderType } from "@appserver/common/constants";
 let documentIsReady = false;
@@ -50,6 +51,7 @@ let config;
 let docSaved = null;
 let docEditor;
 let fileInfo;
+let successAuth;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -104,9 +106,9 @@ const Editor = () => {
       //showLoader();
 
       const docApiUrl = await getDocServiceUrl();
-      const success = await checkIsAuthenticated();
+      successAuth = await checkIsAuthenticated();
 
-      if (!doc && !success) {
+      if (!doc && !successAuth) {
         window.open(
           combineUrl(AppServerConfig.proxyURL, "/login"),
           "_self",
@@ -116,14 +118,14 @@ const Editor = () => {
         return;
       }
 
-      if (success) {
+      if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
         } catch (err) {
           console.error(err);
         }
 
-        setIsAuthenticated(success);
+        setIsAuthenticated(successAuth);
       }
 
       config = await openEdit(fileId, version, doc);
@@ -163,9 +165,8 @@ const Editor = () => {
           i18n.t
         );
       }
-      //console.log("config.document.info", config, "fileInfo", fileInfo);
 
-      if (fileInfo) {
+      if (successAuth) {
         const recentFolderList = await getRecentFolderList();
 
         let recentFilesArray = [];
@@ -251,7 +252,7 @@ const Editor = () => {
     const folderName = folder.title;
     const fileName = file.title;
     const url = file.webUrl;
-    if (fileInfo.id !== file.id)
+    if (fileId !== file.id)
       obj = {
         folder: folderName,
         title: fileName,
@@ -374,7 +375,7 @@ const Editor = () => {
         onRequestRename = onSDKRequestRename;
       }
 
-      if (fileInfo) {
+      if (successAuth) {
         onRequestCreateNew = onSDKRequestCreateNew;
       }
 
@@ -431,7 +432,11 @@ const Editor = () => {
 
     const defaultFileName = getDefaultFileName(fileExst);
 
-    createNewFile(fileInfo.folderId, `${defaultFileName}.${fileExst}`);
+    fileInfo
+      ? createNewFile(fileInfo.folderId, `${defaultFileName}.${fileExst}`)
+      : createTextFileInMy(`${defaultFileName}.${fileExst}`).then((file) =>
+          openDocEditor(file.id, file.providerKey)
+        );
   };
 
   const onSDKRequestRename = (event) => {
