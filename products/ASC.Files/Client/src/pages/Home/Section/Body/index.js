@@ -199,7 +199,7 @@ const SectionBodyContent = (props) => {
   ) : viewAs === "tile" ? (
     <FilesTileContainer t={t} />
   ) : viewAs === "table" ? (
-    <TableView />
+    <TableView tReady={tReady} />
   ) : (
     <FilesRowContainer tReady={tReady} />
   );

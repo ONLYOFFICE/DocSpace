@@ -135,8 +135,8 @@ export default function withFileActions(WrappedFileItem) {
         e.target.tagName === "A" ||
         e.target.closest(".expandButton") ||
         e.target.closest(".badges") ||
-        e.button !== 0 ||
-        isItemsSelected
+        e.button !== 0 /* ||
+        isItemsSelected */
       )
         return;
 
