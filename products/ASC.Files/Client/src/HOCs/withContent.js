@@ -14,7 +14,7 @@ import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
-
+import { getDefaultFileName } from "../helpers/utils";
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ export default function withContent(WrappedContent) {
       const { item, fileActionId, fileActionExt } = props;
       let titleWithoutExt = getTitleWithoutExst(item);
       if (fileActionId === -1 && item.id === fileActionId) {
-        titleWithoutExt = this.getDefaultName(fileActionExt);
+        titleWithoutExt = getDefaultFileName(fileActionExt);
       }
 
       this.state = { itemTitle: titleWithoutExt };
@@ -32,25 +32,10 @@ export default function withContent(WrappedContent) {
     componentDidUpdate(prevProps) {
       const { fileActionId, fileActionExt } = this.props;
       if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
-        const itemTitle = this.getDefaultName(fileActionExt);
+        const itemTitle = getDefaultFileName(fileActionExt);
         this.setState({ itemTitle });
       }
     }
-
-    getDefaultName = (format) => {
-      const { t } = this.props;
-
-      switch (format) {
-        case "docx":
-          return t("NewDocument");
-        case "xlsx":
-          return t("NewSpreadsheet");
-        case "pptx":
-          return t("NewPresentation");
-        default:
-          return t("NewFolder");
-      }
-    };
 
     completeAction = (id) => {
       const { editCompleteAction, item } = this.props;

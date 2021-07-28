@@ -1,6 +1,6 @@
 {
   "name": "@appserver/projects",
-  "version": "0.1.10",
+  "version": "1.0.0",
   "homepage": "/products/projects",
   "id": "1e044602-43b5-4d79-82f3-fd6208a11960",
   "title": "ONLYOFFICE",
@@ -24,6 +24,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^3.6.0",
+    "external-remotes-plugin": "^1.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "4.5.0",
     "json-loader": "^0.5.7",

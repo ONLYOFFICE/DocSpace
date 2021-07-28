@@ -195,8 +195,9 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       selectionLength,
       selectionTitle,
+      firstLoad,
     } = this.props;
-    if (isLoading !== prevProps.isLoading) {
+    if (isLoading !== prevProps.isLoading && !firstLoad) {
       if (isLoading) {
         showLoader();
       } else {
