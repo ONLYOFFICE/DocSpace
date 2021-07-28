@@ -5,16 +5,20 @@ import Link from "../link";
 import globalColors from "../utils/globalColors";
 import { StyledTableHeaderCell } from "./StyledTableContainer";
 
-const TableHeaderCell = ({ column, index, onMouseDown, resizable, sortBy }) => {
+const TableHeaderCell = ({
+  column,
+  index,
+  onMouseDown,
+  resizable,
+  sortBy,
+  sorted,
+}) => {
   const { options, title, enable } = column;
 
   const isActive = column.sortBy === sortBy;
 
-  const [sorted, setSorted] = useState(column.sorted);
-
   const onClick = (e) => {
     column.onClick(column.sortBy, e);
-    isActive && setSorted(!sorted);
   };
 
   return (
@@ -68,6 +72,7 @@ TableHeaderCell.propTypes = {
   index: PropTypes.number,
   onMouseDown: PropTypes.func,
   resizable: PropTypes.bool,
+  sorted: PropTypes.bool,
   sortBy: PropTypes.string,
 };
 

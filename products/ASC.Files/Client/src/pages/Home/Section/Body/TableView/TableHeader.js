@@ -22,7 +22,6 @@ class FilesTableHeader extends React.Component {
         enable: true,
         default: true,
         sortBy: "AZ",
-        sorted: filter.sortOrder === "descending",
         onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
@@ -166,6 +165,8 @@ class FilesTableHeader extends React.Component {
       filter,
     } = this.props;
 
+    const { sortBy, sortOrder } = filter;
+
     const { columns } = this.state;
 
     const checkboxOptions = (
@@ -226,7 +227,8 @@ class FilesTableHeader extends React.Component {
       />
     ) : (
       <TableHeader
-        sortBy={filter.sortBy}
+        sorted={sortOrder === "descending"}
+        sortBy={sortBy}
         setSelected={setSelected}
         containerRef={containerRef}
         columns={columns}
