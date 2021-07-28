@@ -10,6 +10,7 @@ import { withLayoutSize } from "@appserver/common/utils";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { isTabletView } from "@appserver/components/utils/device";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -94,7 +95,13 @@ class SectionFilterContent extends React.Component {
 
   onChangeViewAs = (view) => {
     const { setViewAs } = this.props;
-    setViewAs(view);
+    const tabletView = isTabletView();
+
+    if (view === "row") {
+      tabletView ? setViewAs("table") : setViewAs("row");
+    } else {
+      setViewAs(view);
+    }
   };
 
   getData = () => {
@@ -239,13 +246,6 @@ class SectionFilterContent extends React.Component {
       },
     ];
 
-    !isMobile &&
-      viewSettings.push({
-        value: "table",
-        label: t("ViewTables"),
-        icon: "/static/images/view-tiles.react.svg",
-      });
-
     return viewSettings;
   };
 
@@ -315,7 +315,7 @@ class SectionFilterContent extends React.Component {
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
-        viewAs={viewAs}
+        viewAs={viewAs === "table" ? "row" : viewAs}
         directionAscLabel={t("Common:DirectionAscLabel")}
         directionDescLabel={t("Common:DirectionDescLabel")}
         placeholder={t("Common:Search")}

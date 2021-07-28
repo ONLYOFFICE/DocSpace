@@ -9,6 +9,7 @@ import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 
 import TableView from "./TableView/TableContainer";
+import { isTabletView } from "@appserver/components/utils/device";
 
 let currentDroppable = null;
 
@@ -28,6 +29,7 @@ const SectionBodyContent = (props) => {
     moveDragItems,
     viewAs,
     setSelection,
+    setViewAs,
   } = props;
 
   useEffect(() => {
@@ -46,6 +48,9 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragover", onDragOver);
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
+
+    window.addEventListener("resize", onResize);
+
     return () => {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
@@ -54,8 +59,22 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragover", onDragOver);
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
+
+      window.removeEventListener("resize", onResize);
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
+
+  const onResize = () => {
+    if (viewAs !== "table" && viewAs !== "row") return;
+
+    const tabletView = isTabletView();
+
+    if (tabletView) {
+      viewAs !== "table" && setViewAs("table");
+    } else {
+      viewAs !== "row" && setViewAs("row");
+    }
+  };
 
   const onMouseDown = (e) => {
     if (
@@ -203,6 +222,7 @@ export default inject(
       startDrag,
       setStartDrag,
       setSelection,
+      setViewAs,
     } = filesStore;
 
     return {
@@ -220,6 +240,7 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
       setSelection,
+      setViewAs,
     };
   }
 )(
