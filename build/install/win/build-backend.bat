@@ -6,7 +6,6 @@ echo #####################
 
 pushd %~1
 
-call dotnet restore ASC.Web.sln
 call dotnet build ASC.Web.sln
 
 echo "== Build ASC.Thumbnails =="
