@@ -19,6 +19,12 @@ import {
   setEncryptionKeys,
   getEncryptionAccess,
   getFileInfo,
+  getRecentFolderList,
+  getFolderInfo,
+  updateFile,
+  removeFromFavorite,
+  markAsFavorite,
+  createTextFileInMy,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -30,10 +36,14 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-
+import { createNewFile, getDefaultFileName, openDocEditor } from "files/utils";
 import i18n from "./i18n";
-
+import { FolderType } from "@appserver/common/constants";
 let documentIsReady = false;
+
+const text = "text";
+const spreadSheet = "spreadsheet";
+const presentation = "presentation";
 
 let docTitle = null;
 let fileType = null;
@@ -41,6 +51,7 @@ let config;
 let docSaved = null;
 let docEditor;
 let fileInfo;
+let successAuth;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -75,6 +86,10 @@ const Editor = () => {
     });
   };
 
+  const updateFavorite = (favorite) => {
+    docEditor.setFavorite(favorite);
+  };
+
   const init = async () => {
     try {
       if (!fileId) return;
@@ -91,9 +106,9 @@ const Editor = () => {
       //showLoader();
 
       const docApiUrl = await getDocServiceUrl();
-      const success = await checkIsAuthenticated();
+      successAuth = await checkIsAuthenticated();
 
-      if (!doc && !success) {
+      if (!doc && !successAuth) {
         window.open(
           combineUrl(AppServerConfig.proxyURL, "/login"),
           "_self",
@@ -103,14 +118,14 @@ const Editor = () => {
         return;
       }
 
-      if (success) {
+      if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
         } catch (err) {
           console.error(err);
         }
 
-        setIsAuthenticated(success);
+        setIsAuthenticated(successAuth);
       }
 
       config = await openEdit(fileId, version, doc);
@@ -151,6 +166,60 @@ const Editor = () => {
         );
       }
 
+      if (successAuth) {
+        const recentFolderList = await getRecentFolderList();
+
+        let recentFilesArray = [];
+
+        const filesArray = recentFolderList.files;
+
+        for (let i = 0; i < filesArray.length; i++) {
+          if (
+            config.documentType === text &&
+            filesArray[i].fileType === 7 &&
+            filesArray[i].rootFolderType !== FolderType.SHARE
+          ) {
+            const folderInfo = await getFolderInfo(filesArray[i].folderId);
+
+            const convertedData = convertRecentData(filesArray[i], folderInfo);
+
+            if (Object.keys(convertedData).length !== 0)
+              recentFilesArray.push(convertedData);
+          }
+
+          if (
+            config.documentType === spreadSheet &&
+            filesArray[i].fileType === 5 &&
+            filesArray[i].rootFolderType !== FolderType.SHARE
+          ) {
+            const folderInfo = await getFolderInfo(filesArray[i].folderId);
+
+            const convertedData = convertRecentData(filesArray[i], folderInfo);
+
+            if (Object.keys(convertedData).length !== 0)
+              recentFilesArray.push(convertedData);
+          }
+
+          if (
+            config.documentType === presentation &&
+            filesArray[i].fileType === 6 &&
+            filesArray[i].rootFolderType !== FolderType.SHARE
+          ) {
+            const folderInfo = await getFolderInfo(filesArray[i].folderId);
+
+            const convertedData = convertRecentData(filesArray[i], folderInfo);
+
+            if (Object.keys(convertedData).length !== 0)
+              recentFilesArray.push(convertedData);
+          }
+        }
+
+        config.editorConfig = {
+          ...config.editorConfig,
+          recent: recentFilesArray,
+        };
+      }
+
       if (
         config &&
         config.document.permissions.edit &&
@@ -176,6 +245,20 @@ const Editor = () => {
         true
       );
     }
+  };
+
+  const convertRecentData = (file, folder) => {
+    let obj = {};
+    const folderName = folder.title;
+    const fileName = file.title;
+    const url = file.webUrl;
+    if (fileId !== file.id)
+      obj = {
+        folder: folderName,
+        title: fileName,
+        url: url,
+      };
+    return obj;
   };
 
   const isIPad = () => {
@@ -280,6 +363,8 @@ const Editor = () => {
       };
 
       let onRequestSharingSettings;
+      let onRequestRename;
+      let onRequestCreateNew;
 
       if (
         fileInfo &&
@@ -287,6 +372,11 @@ const Editor = () => {
         config.document.permissions.modifyFilter
       ) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
+        onRequestRename = onSDKRequestRename;
+      }
+
+      if (successAuth) {
+        onRequestCreateNew = onSDKRequestCreateNew;
       }
 
       const events = {
@@ -299,6 +389,8 @@ const Editor = () => {
           onWarning: onSDKWarning,
           onError: onSDKError,
           onRequestSharingSettings,
+          onRequestRename,
+          onRequestCreateNew,
         },
       };
 
@@ -327,6 +419,34 @@ const Editor = () => {
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
+  };
+
+  const onSDKRequestCreateNew = () => {
+    const documentType = config.documentType;
+    const fileExst =
+      documentType === text
+        ? "docx"
+        : documentType === presentation
+        ? "pptx"
+        : "xlsx";
+
+    const defaultFileName = getDefaultFileName(fileExst);
+
+    fileInfo && fileInfo.rootFolderType !== FolderType.SHARE
+      ? createNewFile(
+          fileInfo.folderId,
+          `${defaultFileName}.${fileExst}`
+        ).catch((error) => console.log("error", error))
+      : createTextFileInMy(`${defaultFileName}.${fileExst}`).then((file) =>
+          openDocEditor(file.id, file.providerKey).catch((error) =>
+            console.log("error", error)
+          )
+        );
+  };
+
+  const onSDKRequestRename = (event) => {
+    const title = event.data;
+    updateFile(fileInfo.id, title);
   };
 
   const onCancel = () => {
@@ -364,10 +484,21 @@ const Editor = () => {
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
+    const favorite = event.data.favorite;
+
     if (newTitle && newTitle !== docTitle) {
       setDocumentTitle(newTitle);
       docTitle = newTitle;
     }
+
+    if (!newTitle)
+      favorite
+        ? markAsFavorite([+fileId])
+            .then(() => updateFavorite(favorite))
+            .catch((error) => console.log("error", error))
+        : removeFromFavorite([+fileId])
+            .then(() => updateFavorite(favorite))
+            .catch((error) => console.log("error", error));
   };
 
   return (
