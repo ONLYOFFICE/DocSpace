@@ -415,6 +415,8 @@ class FilesStore {
     const { isDesktopClient, personal } = this.settingsStore;
 
     if (isFile) {
+      const isNotSupported = [0, 1].includes(item.fileType); //TODO: maybe dirty
+
       let fileOptions = [
         //"open",
         "edit",
@@ -677,6 +679,14 @@ class FilesStore {
           fileOptions,
           isFileOwner ? ["unsubscribe"] : ["move-to", "delete"]
         );
+      }
+
+      if (isNotSupported) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "edit",
+          "preview",
+          "separator0",
+        ]);
       }
 
       return fileOptions;

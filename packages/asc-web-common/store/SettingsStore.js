@@ -82,6 +82,7 @@ class SettingsStore {
     appId: "",
     measurementId: "",
   };
+  version = "";
 
   constructor() {
     makeAutoObservable(this);

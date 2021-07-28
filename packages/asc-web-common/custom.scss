@@ -109,3 +109,12 @@ body.desktop {
   -o-user-select: none;
   mozuserselect: none;
 }
+
+#snackbar {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: calc(100vw - 60px);
+  padding: 30px;
+  bottom: 15px;
+}
