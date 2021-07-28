@@ -433,9 +433,14 @@ const Editor = () => {
     const defaultFileName = getDefaultFileName(fileExst);
 
     fileInfo
-      ? createNewFile(fileInfo.folderId, `${defaultFileName}.${fileExst}`)
+      ? createNewFile(
+          fileInfo.folderId,
+          `${defaultFileName}.${fileExst}`
+        ).catch((error) => console.log("error", error))
       : createTextFileInMy(`${defaultFileName}.${fileExst}`).then((file) =>
-          openDocEditor(file.id, file.providerKey)
+          openDocEditor(file.id, file.providerKey).catch((error) =>
+            console.log("error", error)
+          )
         );
   };
 
