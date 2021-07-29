@@ -31,7 +31,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = localStorage.getItem("viewAs") || "row";
+  viewAs = localStorage.getItem("viewAs") || "table";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
