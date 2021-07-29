@@ -9,8 +9,8 @@ namespace ASC.Mail.ImapSync
     public enum ClientState
     {
         Creating,
-        ReadingFromRedis,
-        ReadingFromImap,
+        Disconected,
+        Working,
         Idle
     }
 }
