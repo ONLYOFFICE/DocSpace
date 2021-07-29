@@ -362,7 +362,6 @@ const Editor = () => {
       docTitle = config.document.title;
       fileType = config.document.fileType;
 
-    
       setFavicon(fileType);
       setDocumentTitle(docTitle);
 
@@ -613,7 +612,7 @@ const Editor = () => {
             showButtons
             isPanelVisible={isFolderDialogVisible}
             onClose={onCloseFolderDialog}
-            foldersType="common"
+            foldersType="editor"
             onSave={onClickSaveSelectFolder}
             header={
               <StyledSelectorFolder>
