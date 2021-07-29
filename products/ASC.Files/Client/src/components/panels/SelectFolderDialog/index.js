@@ -75,36 +75,49 @@ class SelectFolderModalDialog extends React.Component {
     } = this.props;
     switch (foldersType) {
       case "editor":
-        const foldersTree = await getFoldersTree();
-        folderList = this.convertFolders(foldersTree, editorExceptions);
-        this.setBaseSettings();
+        try {
+          const foldersTree = await getFoldersTree();
+          folderList = this.convertFolders(foldersTree, editorExceptions);
+          this.setBaseSettings();
+        } catch (err) {
+          console.error("error", error);
+        }
+
         break;
 
       case "common":
-        folderList = await SelectFolderDialog.getCommonFolders();
+        try {
+          folderList = await SelectFolderDialog.getCommonFolders();
+          folderPath.length === 0 &&
+            !selectedFolderId &&
+            onSelectFolder &&
+            onSelectFolder(`${id ? id : folderList[0].id}`);
 
-        folderPath.length === 0 &&
-          !selectedFolderId &&
-          onSelectFolder &&
-          onSelectFolder(`${id ? id : folderList[0].id}`);
+          this.setState({
+            folderId: `${
+              selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
+            }`,
+          });
 
-        this.setState({
-          folderId: `${
-            selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
-          }`,
-        });
+          !id &&
+            !selectedFolderId &&
+            onSetBaseFolderPath &&
+            onSetBaseFolderPath(folderList[0].title);
 
-        !id &&
-          !selectedFolderId &&
-          onSetBaseFolderPath &&
-          onSetBaseFolderPath(folderList[0].title);
+          this.setFolderInfo();
+        } catch (err) {
+          console.error("error", error);
+        }
 
-        this.setFolderInfo();
         break;
 
       case "third-party":
-        folderList = await SelectFolderDialog.getCommonThirdPartyList();
-        this.setBaseSettings();
+        try {
+          folderList = await SelectFolderDialog.getCommonThirdPartyList();
+          this.setBaseSettings();
+        } catch (err) {
+          console.error("error", error);
+        }
         break;
     }
   };
@@ -119,35 +132,38 @@ class SelectFolderModalDialog extends React.Component {
     } = this.props;
 
     folderList.length === 0 && this.setState({ isAvailable: false });
-
-    this.folderTitle = await SelectFolderDialog.getFolderPath(
-      id ? id : folderList[0].id
-    );
-
-    isSetFolderImmediately &&
-      folderList.length !== 0 &&
-      !selectedFolderId &&
-      onSelectFolder &&
-      onSelectFolder(
-        `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`
+    try {
+      this.folderTitle = await SelectFolderDialog.getFolderPath(
+        id ? id : folderList[0].id
       );
 
-    isSetFolderImmediately &&
-      folderList.length !== 0 &&
-      this.setState({
-        folderId: `${
-          selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
-        }`,
-      });
-
-    !id &&
-      !selectedFolderId &&
       isSetFolderImmediately &&
-      folderList.length !== 0 &&
-      onSetBaseFolderPath &&
-      onSetBaseFolderPath(this.folderTitle);
+        folderList.length !== 0 &&
+        !selectedFolderId &&
+        onSelectFolder &&
+        onSelectFolder(
+          `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`
+        );
 
-    this.setFolderInfo();
+      isSetFolderImmediately &&
+        folderList.length !== 0 &&
+        this.setState({
+          folderId: `${
+            selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
+          }`,
+        });
+
+      !id &&
+        !selectedFolderId &&
+        isSetFolderImmediately &&
+        folderList.length !== 0 &&
+        onSetBaseFolderPath &&
+        onSetBaseFolderPath(this.folderTitle);
+
+      this.setFolderInfo();
+    } catch (err) {
+      console.error("error", error);
+    }
   };
 
   setFolderInfo = () => {
