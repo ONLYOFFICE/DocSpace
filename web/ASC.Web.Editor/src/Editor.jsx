@@ -608,34 +608,37 @@ const Editor = () => {
             isImageOnly
           />
 
-          <SelectFolderDialog
-            showButtons
-            isPanelVisible={isFolderDialogVisible}
-            onClose={onCloseFolderDialog}
-            foldersType="editor"
-            onSave={onClickSaveSelectFolder}
-            header={
-              <StyledSelectorFolder>
-                <Text className="editor-selector-folder_text">
-                  {i18n.t("FileName")}
-                </Text>
-                <TextInput
-                  className="editor-selector-folder_text-input"
-                  scale
-                  onChange={onChangeInput}
-                  value={titleSelectorFolder}
+          {isFolderDialogVisible && (
+            <SelectFolderDialog
+              showButtons
+              isPanelVisible={isFolderDialogVisible}
+              id={`${fileInfo.folderId}`}
+              onClose={onCloseFolderDialog}
+              foldersType="editor"
+              onSave={onClickSaveSelectFolder}
+              header={
+                <StyledSelectorFolder>
+                  <Text className="editor-selector-folder_text">
+                    {i18n.t("FileName")}
+                  </Text>
+                  <TextInput
+                    className="editor-selector-folder_text-input"
+                    scale
+                    onChange={onChangeInput}
+                    value={titleSelectorFolder}
+                  />
+                </StyledSelectorFolder>
+              }
+              headerName={i18n.t("FolderForSave")}
+              footer={
+                <Checkbox
+                  label={i18n.t("OpenSavedDocument")}
+                  onChange={onClickCheckbox}
+                  isChecked={openNewTab}
                 />
-              </StyledSelectorFolder>
-            }
-            headerName={i18n.t("FolderForSave")}
-            footer={
-              <Checkbox
-                label={i18n.t("OpenSavedDocument")}
-                onChange={onClickCheckbox}
-                isChecked={openNewTab}
-              />
-            }
-          />
+              }
+            />
+          )}
         </>
       ) : (
         <Box paddingProp="16px">
