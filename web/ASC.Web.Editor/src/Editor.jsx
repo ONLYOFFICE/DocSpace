@@ -612,7 +612,7 @@ const Editor = () => {
             <SelectFolderDialog
               showButtons
               isPanelVisible={isFolderDialogVisible}
-              id={`${fileInfo.folderId}`}
+              //id={`${fileInfo.folderId}`}
               onClose={onCloseFolderDialog}
               foldersType="editor"
               onSave={onClickSaveSelectFolder}
