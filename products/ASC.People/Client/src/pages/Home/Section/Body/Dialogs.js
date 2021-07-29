@@ -5,7 +5,13 @@ import {
   ChangePasswordDialog,
   DeleteSelfProfileDialog,
   DeleteProfileEverDialog,
+  ChangeUserTypeDialog,
+  ChangeUserStatusDialog,
+  SendInviteDialog,
+  DeleteUsersDialog,
+  InviteDialog,
 } from "../../../../components/dialogs";
+import { EmployeeType, EmployeeStatus } from "@appserver/common/constants";
 
 const Dialogs = ({
   changeEmail,
@@ -14,7 +20,13 @@ const Dialogs = ({
   deleteProfileEver,
   data,
   closeDialogs,
-  filter,
+  employeeDialogVisible,
+  guestDialogVisible,
+  activeDialogVisible,
+  disableDialogVisible,
+  sendInviteDialogVisible,
+  deleteDialogVisible,
+  invitationDialogVisible,
 }) => {
   return (
     <>
@@ -46,15 +58,90 @@ const Dialogs = ({
           user={data}
         />
       )}
+      {employeeDialogVisible && (
+        <ChangeUserTypeDialog
+          visible={employeeDialogVisible}
+          onClose={closeDialogs}
+          userType={EmployeeType.User}
+        />
+      )}
+      {guestDialogVisible && (
+        <ChangeUserTypeDialog
+          visible={guestDialogVisible}
+          onClose={closeDialogs}
+          userType={EmployeeType.Guest}
+        />
+      )}
+      {activeDialogVisible && (
+        <ChangeUserStatusDialog
+          visible={activeDialogVisible}
+          onClose={closeDialogs}
+          userStatus={EmployeeStatus.Active}
+        />
+      )}
+      {disableDialogVisible && (
+        <ChangeUserStatusDialog
+          visible={disableDialogVisible}
+          onClose={closeDialogs}
+          userStatus={EmployeeStatus.Disabled}
+        />
+      )}
+      {sendInviteDialogVisible && (
+        <SendInviteDialog
+          visible={sendInviteDialogVisible}
+          onClose={closeDialogs}
+        />
+      )}
+
+      {deleteDialogVisible && (
+        <DeleteUsersDialog
+          visible={deleteDialogVisible}
+          onClose={closeDialogs}
+        />
+      )}
+      {invitationDialogVisible && (
+        <InviteDialog
+          visible={invitationDialogVisible}
+          onClose={closeDialogs}
+          onCloseButton={closeDialogs}
+        />
+      )}
     </>
   );
 };
 
-export default inject(({ peopleStore }) => ({
-  changeEmail: peopleStore.dialogStore.changeEmail,
-  changePassword: peopleStore.dialogStore.changePassword,
-  deleteSelfProfile: peopleStore.dialogStore.deleteSelfProfile,
-  deleteProfileEver: peopleStore.dialogStore.deleteProfileEver,
-  data: peopleStore.dialogStore.data,
-  closeDialogs: peopleStore.dialogStore.closeDialogs,
-}))(observer(Dialogs));
+export default inject(({ peopleStore }) => {
+  const {
+    changeEmail,
+    changePassword,
+    deleteSelfProfile,
+    deleteProfileEver,
+    data,
+    closeDialogs,
+
+    employeeDialogVisible,
+    guestDialogVisible,
+    activeDialogVisible,
+    disableDialogVisible,
+    sendInviteDialogVisible,
+    deleteDialogVisible,
+    invitationDialogVisible,
+  } = peopleStore.dialogStore;
+
+  return {
+    changeEmail,
+    changePassword,
+    deleteSelfProfile,
+    deleteProfileEver,
+    data,
+    closeDialogs,
+
+    employeeDialogVisible,
+    guestDialogVisible,
+    activeDialogVisible,
+    disableDialogVisible,
+    sendInviteDialogVisible,
+    deleteDialogVisible,
+    invitationDialogVisible,
+  };
+})(observer(Dialogs));
