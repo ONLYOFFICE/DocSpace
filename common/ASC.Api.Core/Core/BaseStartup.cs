@@ -34,7 +34,9 @@ namespace ASC.Api.Core
         public IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
         public virtual JsonConverter[] Converters { get; }
+        public virtual bool AddControllersAsServices { get; } = false;
         public virtual bool ConfirmAddScheme { get; } = false;
+        public virtual bool AddAndUseSession { get; } = false;
         protected DIHelper DIHelper { get; }
         protected bool LoadProducts { get; } = true;
         protected bool LoadConsumers { get; } = true;
@@ -51,6 +53,9 @@ namespace ASC.Api.Core
             services.AddCustomHealthCheck(Configuration);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
+
+            if(AddAndUseSession)
+                services.AddSession();
 
             DIHelper.Configure(services);
 
@@ -125,6 +130,9 @@ namespace ASC.Api.Core
             });
 
             app.UseRouting();
+
+            if (AddAndUseSession)
+                app.UseSession();
 
             app.UseAuthentication();
 

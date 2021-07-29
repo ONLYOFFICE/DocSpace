@@ -18,6 +18,19 @@
   "scripts": {
     "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",
     "build": "concurrently \"wsrun --parallel build\"",
+    "sw-build": "workbox injectManifest config/workbox-config.js && yarn sw-modify && yarn sw-minimize",
+    "sw-calendar-replace": "replace-in-files --string='products/ASC.Calendar/client/' --replacement='products/calendar/' build/deploy/public/sw.js",
+    "sw-crm-replace": "replace-in-files --string='products/ASC.CRM/client/' --replacement='products/crm/' build/deploy/public/sw.js",
+    "sw-files-replace": "replace-in-files --string='products/ASC.Files/client/' --replacement='products/files/' build/deploy/public/sw.js",
+    "sw-files-editor-replace": "replace-in-files --string='products/ASC.Files/editor/' --replacement='products/files/doceditor/' build/deploy/public/sw.js",
+    "sw-mail-replace": "replace-in-files --string='products/ASC.Mail/client/' --replacement='products/mail/' build/deploy/public/sw.js",
+    "sw-people-replace": "replace-in-files --string='products/ASC.People/client/' --replacement='products/people/' build/deploy/public/sw.js",
+    "sw-projects-replace": "replace-in-files --string='products/ASC.Projects/client/' --replacement='products/projects/' build/deploy/public/sw.js",
+    "sw-studio-replace": "replace-in-files --string='studio/client/' --replacement='/' build/deploy/public/sw.js",
+    "sw-studio-login-replace": "replace-in-files --string='studio/login/' --replacement='login/' build/deploy/public/sw.js",
+    "sw-public-replace": "replace-in-files --string='public/' --replacement='static/' build/deploy/public/sw.js",
+    "sw-modify": "yarn sw-calendar-replace && yarn sw-crm-replace && yarn sw-crm-replace && yarn sw-files-replace && yarn sw-files-editor-replace && yarn sw-mail-replace && yarn sw-people-replace && yarn sw-projects-replace && yarn sw-studio-replace && yarn sw-studio-login-replace && yarn sw-public-replace",
+    "sw-minimize": "yarn terser --compress --mangle -- build/deploy/public/sw.js --output build/deploy/public/sw.js",
     "start": "concurrently \"wsrun --parallel start\"",
     "start-prod": "concurrently \"wsrun --parallel start-prod\"",
     "serve": "concurrently \"wsrun --parallel serve\"",
@@ -26,12 +39,14 @@
     "storybook": "yarn workspace @appserver/components storybook",
     "storybook-build": "yarn workspace @appserver/components run storybook-build",
     "bump": "lerna version --no-push --no-git-tag-version",
-    "deploy": "rimraf build/deploy && concurrently \"wsrun --parallel deploy\" && cp -r public build/deploy && workbox injectManifest config/workbox-config.js"
+    "deploy": "rimraf build/deploy && concurrently \"wsrun --parallel deploy\" && cp -r public build/deploy && yarn sw-build"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
     "lerna": "^3.22.1",
+    "replace-in-files-cli": "^1.0.0",
     "rimraf": "^3.0.2",
+    "terser": "^5.7.1",
     "workbox-cli": "^6.1.5",
     "wsrun": "^5.2.4"
   }

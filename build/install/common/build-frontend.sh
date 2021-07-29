@@ -35,3 +35,4 @@ echo "== FRONT-END-BUILD =="
 cd ${SRC_PATH}
 yarn install
 yarn build
+yarn deploy

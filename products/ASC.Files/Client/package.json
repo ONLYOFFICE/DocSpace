@@ -1,6 +1,6 @@
 {
   "name": "@appserver/files",
-  "version": "0.1.10",
+  "version": "1.0.0",
   "homepage": "/products/files",
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE",
@@ -24,6 +24,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^3.6.0",
+    "external-remotes-plugin": "^1.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "4.5.0",
     "interpolate-html-plugin": "^4.0.0",

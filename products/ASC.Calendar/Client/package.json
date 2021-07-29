@@ -1,6 +1,6 @@
 {
   "name": "@appserver/calendar",
-  "version": "0.1.10",
+  "version": "1.0.0",
   "homepage": "/products/calendar",
   "id": "32d24cb5-7ece-4606-9c94-19216ba42086",
   "title": "ONLYOFFICE",
@@ -24,6 +24,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^3.6.0",
+    "external-remotes-plugin": "^1.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "4.5.0",
     "json-loader": "^0.5.7",
