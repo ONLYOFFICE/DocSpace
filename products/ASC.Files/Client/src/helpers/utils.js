@@ -1,7 +1,7 @@
 import authStore from "@appserver/common/store/AuthStore";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
-import { combineUrl } from "@appserver/common/utils";
+import { combineUrl, toUrlParams } from "@appserver/common/utils";
 import {
   addFileToRecentlyViewed,
   createFile,
@@ -77,5 +77,26 @@ export const openDocEditor = async (
           ),
           "_blank"
         )
+  );
+};
+
+export const SaveAs = (title, url, openNewTab, folderId = null) => {
+  //debugger;
+  const options = {
+    action: "create",
+    fileuri: url,
+    title: title,
+    folderid: folderId,
+    response: openNewTab ? null : "message",
+  };
+  const params = toUrlParams(options, true);
+
+  window.open(
+    combineUrl(
+      AppServerConfig.proxyURL,
+      config.homepage,
+      `/httphandlers/filehandler.ashx?${params}`
+    ),
+    openNewTab ? "_blank" : "_self"
   );
 };

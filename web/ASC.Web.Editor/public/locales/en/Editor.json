@@ -1,3 +1,6 @@
 {
-  "FileLocation": "Open file location"
+  "FileLocation": "Open file location",
+  "FileName": "File name",
+  "FolderForSave": "Folder for save",
+  "OpenSavedDocument": "Open saved document in new tab"
 }

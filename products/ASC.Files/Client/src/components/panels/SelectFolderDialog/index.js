@@ -289,8 +289,14 @@ class SelectFolderModalDialog extends React.Component {
           (pathName = SelectFolderInput.setFullFolderPath(foldersArray))
       )
       .then(() => onSetFullPath && onSetFullPath(pathName))
-      .then(() => onSelectFolder && onSelectFolder(folder[0]))
-      .finally(() => onClose && onClose());
+      .then(() => onSelectFolder && onSelectFolder(folder[0]));
+    //.finally(() => onClose && onClose());
+  };
+  onSave = () => {
+    const { onClose, onClickSave } = this.props;
+    console.log("onSAVE");
+    onClickSave && onClickSave();
+    onClose && onClose();
   };
   render() {
     const {
@@ -302,6 +308,10 @@ class SelectFolderModalDialog extends React.Component {
       isNeedArrowIcon,
       modalHeightContent,
       asideHeightContent,
+      header,
+      headerName,
+      footer,
+      modalContentHeight,
     } = this.props;
     const { isAvailable, certainFolders, folderId, displayType } = this.state;
 
@@ -333,6 +343,11 @@ class SelectFolderModalDialog extends React.Component {
         folderId={folderId}
         folderList={folderList}
         onSelect={this.onSelect}
+        onClickSave={this.onSave}
+        header={header}
+        headerName={headerName}
+        footer={footer}
+        modalContentHeight={modalContentHeight}
       />
     );
   }

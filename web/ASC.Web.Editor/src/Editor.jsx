@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import Toast from "@appserver/components/toast";
 import toastr from "studio/toastr";
@@ -19,6 +19,7 @@ import {
   setEncryptionKeys,
   getEncryptionAccess,
   getFileInfo,
+  copyToFolder,
   getRecentFolderList,
   getFolderInfo,
   updateFile,
@@ -36,12 +37,20 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import { createNewFile, getDefaultFileName, openDocEditor } from "files/utils";
+import {
+  createNewFile,
+  getDefaultFileName,
+  openDocEditor,
+  SaveAs,
+} from "files/utils";
 import SelectFileDialog from "files/SelectFileDialog";
 import SelectFolderDialog from "files/SelectFolderDialog";
-
+import { StyledSelectorFolder } from "./StyledEditor";
 import i18n from "./i18n";
 import { FolderType } from "@appserver/common/constants";
+import Text from "@appserver/components/text";
+import TextInput from "@appserver/components/text-input";
+import Button from "@appserver/components/button";
 let documentIsReady = false;
 
 const text = "text";
@@ -55,6 +64,7 @@ let docSaved = null;
 let docEditor;
 let fileInfo;
 let successAuth;
+let defaultFileName;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -71,6 +81,7 @@ const Editor = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [title, setTitle] = useState("");
 
   const throttledChangeTitle = throttle(
     () => changeTitle(docSaved, docTitle),
@@ -88,7 +99,16 @@ const Editor = () => {
       });
     });
   };
-
+  const insertImage = (file) => {
+    const fileExst = file.fileExst;
+    const convertFileExst = fileExst.substring(1);
+    console.log("file.fileExst", convertFileExst);
+    docEditor.insertImage({
+      c: "add",
+      fileType: "png",
+      url: "",
+    });
+  };
   const updateFavorite = (favorite) => {
     docEditor.setFavorite(favorite);
   };
@@ -132,6 +152,7 @@ const Editor = () => {
       }
 
       config = await openEdit(fileId, version, doc);
+      defaultFileName = config;
 
       if (isDesktop) {
         const isEncryption =
@@ -338,6 +359,7 @@ const Editor = () => {
       docTitle = config.document.title;
       fileType = config.document.fileType;
 
+      setTitle(docTitle);
       setFavicon(fileType);
       setDocumentTitle(docTitle);
 
@@ -508,28 +530,51 @@ const Editor = () => {
             .catch((error) => console.log("error", error));
   };
 
-  const onRequestInsertImage = () => {
+  const onRequestInsertImage = (event) => {
     setIsFileDialogVisible(true);
+    console.log("e", event.data.c);
   };
 
-  const onSelectFile = (e) => {
-    console.log("onSelectFile", e);
+  const onSelectFile = (file) => {
+    console.log("onSelectFile", file);
+    insertImage(file);
   };
 
   const onCloseFileDialog = () => {
     setIsFileDialogVisible(false);
   };
 
-  const onRequestSaveAs = () => {
+  let urlSelectorFolder, titleSelectorFolder;
+  const onRequestSaveAs = (event) => {
+    //debugger;
+    titleSelectorFolder = event.data.title;
+    urlSelectorFolder = event.data.url;
+    console.log("title", titleSelectorFolder, "url", urlSelectorFolder);
     setIsFolderDialogVisible(true);
   };
 
-  const onSelectFolder = (e) => {
-    console.log("onSelectFolder", e);
+  let destFolderId;
+  const onSelectFolder = (folder) => {
+    console.log("onSelectFolder", folder);
+    destFolderId = folder;
   };
 
   const onCloseFolderDialog = () => {
     setIsFolderDialogVisible(false);
+  };
+
+  const onClickSave = (e) => {
+    console.log("onClickSave editor", e);
+
+    SaveAs(titleSelectorFolder, urlSelectorFolder, true);
+  };
+  const onClickClose = () => {
+    console.log("onClickClose editor");
+  };
+  const onChangeInput = (e) => {
+    //const value = e.target.value;
+    setTitle(e.target.value);
+    //console.log("value", value);
   };
 
   return (
@@ -564,6 +609,40 @@ const Editor = () => {
             isPanelVisible={isFolderDialogVisible}
             onClose={onCloseFolderDialog}
             foldersType="common"
+            onClickSave={onClickSave}
+            header={
+              <StyledSelectorFolder>
+                <Text className="editor-selector-folder_text">
+                  {i18n.t("FileName")}
+                </Text>
+                <TextInput
+                  className="editor-selector-folder_text-input"
+                  scale
+                  onChange={onChangeInput}
+                  value={title}
+                />
+              </StyledSelectorFolder>
+            }
+            headerName={i18n.t("FolderForSave")}
+            footer={
+              <div className="select-file-dialog-modal_buttons">
+                <Button
+                  className="select-file-dialog-buttons-save"
+                  primary
+                  size="medium"
+                  label={i18n.t("Common:SaveButton")}
+                  onClick={onClickSave}
+                  //isDisabled={!destFolderId}
+                />
+                <Button
+                  className="modal-dialog-button"
+                  primary
+                  size="medium"
+                  label={i18n.t("Common:CloseButton")}
+                  onClick={onClickClose}
+                />
+              </div>
+            }
           />
         </>
       ) : (

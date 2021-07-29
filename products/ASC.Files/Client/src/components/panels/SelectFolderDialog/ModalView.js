@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import ModalDialog from "@appserver/components/modal-dialog";
-import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
+import {
+  StyledAsidePanel,
+  StyledSelectFolderPanel,
+  StyledSelectFilePanel,
+} from "../StyledPanels";
 import FolderTreeBody from "../../FolderTreeBody";
+import Button from "@appserver/components/button";
 
 const SelectFolderDialogModalView = ({
   t,
@@ -18,21 +23,27 @@ const SelectFolderDialogModalView = ({
   isLoadingData,
   folderList,
   onSelect,
+  onClickSave,
+  header,
+  footer,
+  headerName,
 }) => {
+  console.log("header", header);
   return (
     <StyledAsidePanel visible={isPanelVisible}>
       <ModalDialog
         visible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
-        contentHeight="400px"
+        {...(!header && !footer && { contentHeight: "400px" })}
       >
         <ModalDialog.Header>
-          {t("Translations:SelectFolder")}
+          {headerName ? headerName : t("Translations:SelectFolder")}
         </ModalDialog.Header>
 
         <ModalDialog.Body>
           <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
+            <div>{header} </div>
             <FolderTreeBody
               isLoadingData={isLoadingData}
               folderList={folderList}
@@ -45,6 +56,29 @@ const SelectFolderDialogModalView = ({
             />
           </StyledSelectFolderPanel>
         </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <StyledSelectFilePanel>
+            {footer}
+
+            {/* <div className="select-file-dialog-modal_buttons">
+              <Button
+                className="select-file-dialog-buttons-save"
+                primary
+                size="medium"
+                label={t("Common:SaveButton")}
+                onClick={onClickSave}
+                //isDisabled={selectedFile.length === 0}
+              />
+              <Button
+                className="modal-dialog-button"
+                primary
+                size="medium"
+                label={t("Common:CloseButton")}
+                onClick={onClose}
+              />
+            </div> */}
+          </StyledSelectFilePanel>
+        </ModalDialog.Footer>
       </ModalDialog>
     </StyledAsidePanel>
   );
