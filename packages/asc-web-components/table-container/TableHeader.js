@@ -10,7 +10,6 @@ import Checkbox from "../checkbox";
 import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
 
-const TABLE_SIZE = "tableSize";
 const minColumnSize = 80;
 
 class TableHeader extends React.Component {
@@ -146,7 +145,7 @@ class TableHeader extends React.Component {
 
   onMouseUp = () => {
     localStorage.setItem(
-      TABLE_SIZE,
+      this.props.columnStorageName,
       this.props.containerRef.current.style.gridTemplateColumns
     );
 
@@ -162,13 +161,13 @@ class TableHeader extends React.Component {
   };
 
   onResize = () => {
-    const { containerRef } = this.props;
+    const { containerRef, columnStorageName, checkboxSize } = this.props;
 
     const container = containerRef.current
       ? containerRef.current
       : document.getElementById("table-container");
 
-    const storageSize = localStorage.getItem(TABLE_SIZE);
+    const storageSize = localStorage.getItem(columnStorageName);
     const tableContainer = storageSize
       ? storageSize.split(" ")
       : container.style.gridTemplateColumns.split(" ");
@@ -178,7 +177,8 @@ class TableHeader extends React.Component {
 
     const enableColumns = this.props.columns
       .filter((x) => !x.default)
-      .filter((x) => x.enable);
+      .filter((x) => x.enable)
+      .filter((x) => !x.defaultSize);
 
     const isSingleTable = enableColumns.length > 0;
 
@@ -246,20 +246,24 @@ class TableHeader extends React.Component {
       const percent = 40 / enableColumns.length;
       const otherColumns = (newContainerWidth * percent) / 100 + "px";
 
-      str = `32px ${column} `;
+      str = `${checkboxSize} ${column} `;
       for (let col of this.props.columns) {
         if (!col.default) {
-          str += col.enable ? `${otherColumns} ` : "0px ";
+          str += col.enable
+            ? col.defaultSize
+              ? `${col.defaultSize}px `
+              : `${otherColumns} `
+            : "0px ";
         }
       }
 
-      str += "80px 24px";
+      str += "24px";
     }
     container.style.gridTemplateColumns = str;
     this.headerRef.current.style.gridTemplateColumns = str;
     this.headerRef.current.style.width = containerWidth + "px";
 
-    localStorage.setItem(TABLE_SIZE, str);
+    localStorage.setItem(columnStorageName, str);
   };
 
   onChange = (checked) => {
@@ -279,7 +283,11 @@ class TableHeader extends React.Component {
           {...rest}
         >
           <StyledTableRow>
-            <Checkbox onChange={this.onChange} isChecked={false} />
+            <Checkbox
+              className="table-container_header-checkbox"
+              onChange={this.onChange}
+              isChecked={false}
+            />
 
             {columns.map((column, index) => {
               const nextColumn = this.getNextColumn(columns, index);
@@ -310,11 +318,13 @@ class TableHeader extends React.Component {
 }
 
 TableHeader.propTypes = {
-  containerRef: PropTypes.shape({ current: PropTypes.any }),
+  containerRef: PropTypes.shape({ current: PropTypes.any }).isRequired,
   columns: PropTypes.array.isRequired,
-  setSelected: PropTypes.func,
+  setSelected: PropTypes.func.isRequired,
   sortBy: PropTypes.string,
   sorted: PropTypes.bool,
+  columnStorageName: PropTypes.string,
+  checkboxSize: PropTypes.string,
 };
 
 export default TableHeader;

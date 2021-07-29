@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
 import config from "../../package.json";
@@ -29,6 +29,7 @@ class PeopleStore {
   dialogStore = null;
   loadingStore = null;
   isInit = false;
+  viewAs = "table";
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
@@ -44,11 +45,7 @@ class PeopleStore {
     this.dialogStore = new DialogStore();
     this.loadingStore = new LoadingStore();
 
-    makeObservable(this, {
-      init: action,
-      isPeoplesAdmin: computed,
-      resetFilter: action,
-    });
+    makeAutoObservable(this);
   }
 
   get isPeoplesAdmin() {
@@ -155,6 +152,10 @@ class PeopleStore {
     ];
 
     return headerMenu;
+  };
+
+  setViewAs = (viewAs) => {
+    this.viewAs = viewAs;
   };
 }
 

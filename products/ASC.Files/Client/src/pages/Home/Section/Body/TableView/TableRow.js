@@ -131,7 +131,7 @@ const FilesTableRow = (props) => {
         item={item}
         element={element}
         fileContextClick={fileContextClick}
-        onContentFileSelect={onContentFileSelect}
+        onContentSelect={onContentFileSelect}
         onClick={onMouseClick}
         {...contextOptionsProps}
         {...checkedProps}

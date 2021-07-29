@@ -32,7 +32,7 @@ const TableSettings = ({ columns }) => {
         hoverColor="#657077"
         size={12}
         isFill
-        iconName="images/settings.react.svg"
+        iconName="/static/images/settings.react.svg"
         onClick={onClick}
       />
       <DropDown
@@ -42,19 +42,22 @@ const TableSettings = ({ columns }) => {
         clickOutsideAction={clickOutsideAction}
         withBackdrop={false}
       >
-        {columns.map(
-          (column) =>
-            !column.default && (
+        {columns.map((column) => {
+          const onChange = (e) =>
+            column.onChange && column.onChange(column.key, e);
+
+          return (
+            column.onChange && (
               <Checkbox
                 className="table-container_settings-checkbox"
                 isChecked={column.enable}
-                data-key={column.key}
-                onChange={column.onChange}
+                onChange={onChange}
                 key={column.key}
                 label={column.title}
               />
             )
-        )}
+          );
+        })}
       </DropDown>
     </StyledTableSettings>
   );

@@ -115,14 +115,14 @@ const StyledTableHeaderCell = styled.div`
     cursor: pointer;
 
     .header-container-text-icon {
-      padding: 2px 0 0 4px;
+      padding: 16px 0 0 4px;
 
       display: ${(props) => (props.isActive ? "block" : "none")};
       ${(props) =>
         props.sorted &&
         css`
           transform: scale(1, -1);
-          padding: 0 0 0 4px;
+          padding: 14px 0 0 4px;
         `}
     }
 
@@ -146,6 +146,12 @@ const StyledTableBody = styled.div`
 
 const StyledTableRow = styled.div`
   display: contents;
+
+  .table-container_header-checkbox {
+    svg {
+      margin: 0;
+    }
+  }
 
   .droppable-hover {
     background: ${(props) =>

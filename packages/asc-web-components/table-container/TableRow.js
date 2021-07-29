@@ -72,12 +72,13 @@ const TableRow = (props) => {
         style={style}
         onMouseLeave={onMouseLeave}
         onMouseOver={onMouseOver}
+        className="table-container_row-checkbox-wrapper"
       >
         {iconVisible ? (
           element
         ) : (
           <Checkbox
-            className="table-checkbox"
+            className="table-container_row-checkbox"
             onChange={onChange}
             isChecked={checked}
           />

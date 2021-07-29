@@ -67,7 +67,7 @@ TableGroupMenu.propTypes = {
   isChecked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
   headerMenu: PropTypes.arrayOf(PropTypes.object),
-  checkboxOptions: PropTypes.any,
+  checkboxOptions: PropTypes.any.isRequired,
   onClick: PropTypes.func,
   onChange: PropTypes.func,
   containerRef: PropTypes.shape({ current: PropTypes.any }),

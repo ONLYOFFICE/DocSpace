@@ -832,6 +832,7 @@ class FilterInput extends React.Component {
       isMobile,
       sectionWidth,
       getViewSettingsData,
+      viewSelectorVisible,
     } = this.props;
     /* eslint-enable react/prop-types */
 
@@ -932,7 +933,7 @@ class FilterInput extends React.Component {
             />
           )}
         </div>
-        {viewAs && !isMobileOnly && (
+        {viewAs && !isMobileOnly && viewSelectorVisible && (
           <ViewSelector
             className="view-selector-button not-selectable"
             isDisabled={isDisabled}
@@ -978,6 +979,7 @@ FilterInput.defaultProps = {
   needForUpdate: false,
   directionAscLabel: "A-Z",
   directionDescLabel: "Z-A",
+  viewSelectorVisible: true,
 };
 
 export default FilterInput;

@@ -115,6 +115,7 @@ const SectionHeaderContent = (props) => {
     resetFilter,
     getHeaderMenu,
     setInvitationDialogVisible,
+    viewAs,
   } = props;
 
   const {
@@ -281,7 +282,7 @@ const SectionHeaderContent = (props) => {
           width={context.sectionWidth}
           isTabletView={isTabletView}
         >
-          {isHeaderVisible ? (
+          {isHeaderVisible && viewAs !== "table" ? (
             <div className="group-button-menu-container">
               <GroupButtonsMenu
                 checked={isHeaderChecked}
@@ -368,6 +369,7 @@ export default withRouter(
       selectedGroupStore,
       getHeaderMenu,
       dialogStore,
+      viewAs,
     } = peopleStore;
     const { getUsersList, removeUser, updateUserStatus } = usersStore;
     const {
@@ -407,6 +409,7 @@ export default withRouter(
       isTabletView,
       getHeaderMenu,
       setInvitationDialogVisible,
+      viewAs,
     };
   })(
     withTranslation(["Home", "Common", "Translations"])(

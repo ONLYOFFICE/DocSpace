@@ -20,6 +20,7 @@ export default function withContextOptions(WrappedComponent) {
       setChangeEmailDialogVisible,
       updateUserStatus,
       setDeleteProfileDialogVisible,
+      fetchProfile,
     } = props;
     const { id, options, userName, email, mobilePhone, currentUserId } = item;
 

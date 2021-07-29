@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Text from "../text";
 import Link from "../link";
+import IconButton from "../icon-button";
 import globalColors from "../utils/globalColors";
 import { StyledTableHeaderCell } from "./StyledTableContainer";
 
@@ -13,9 +14,9 @@ const TableHeaderCell = ({
   sortBy,
   sorted,
 }) => {
-  const { options, title, enable } = column;
+  const { options, title, enable, active } = column;
 
-  const isActive = column.sortBy === sortBy;
+  const isActive = column.sortBy === sortBy || active;
 
   const onClick = (e) => {
     column.onClick(column.sortBy, e);
@@ -31,8 +32,9 @@ const TableHeaderCell = ({
     >
       <div className="table-container_header-item">
         {column.onClick ? (
-          <div onClick={onClick} className="header-container-text-wrapper">
+          <div className="header-container-text-wrapper">
             <Link
+              onClick={onClick}
               fontWeight={600}
               color={globalColors.gray}
               className="header-container-text"
@@ -41,9 +43,12 @@ const TableHeaderCell = ({
             >
               {enable ? title : ""}
             </Link>
-            <img
+
+            <IconButton
+              onClick={column.onIconClick ? column.onIconClick : column.onClick}
+              iconName="/static/images/folder arrow.react.svg"
               className="header-container-text-icon"
-              src="/static/images/folder arrow.react.svg"
+              size="small"
             />
           </div>
         ) : (

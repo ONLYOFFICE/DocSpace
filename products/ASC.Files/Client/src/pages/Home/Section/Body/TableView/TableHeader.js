@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import { FilterType } from "@appserver/common/constants";
 import DropDownItem from "@appserver/components/drop-down-item";
 
-const TABLE_COLUMNS = "tableColumns";
+const TABLE_COLUMNS = "filesTableColumns";
 
 class FilesTableHeader extends React.Component {
   constructor(props) {
@@ -23,7 +23,6 @@ class FilesTableHeader extends React.Component {
         default: true,
         sortBy: "AZ",
         onClick: this.onFilter,
-        onChange: this.onColumnChange,
       },
       {
         key: "Author",
@@ -74,9 +73,8 @@ class FilesTableHeader extends React.Component {
         key: "Share",
         title: "",
         enable: withContent,
-        default: true,
+        defaultSize: 80,
         resizable: false,
-        onChange: this.onColumnChange,
       },
     ];
 
@@ -115,11 +113,10 @@ class FilesTableHeader extends React.Component {
     }
   };
 
-  onColumnChange = (e) => {
+  onColumnChange = (key, e) => {
     const { columns } = this.state;
-    const key = e.currentTarget.dataset.key;
-    const columnIndex = columns.findIndex((c) => c.key === key);
 
+    const columnIndex = columns.findIndex((c) => c.key === key);
     if (columnIndex === -1) return;
 
     columns[columnIndex].enable = !columns[columnIndex].enable;
@@ -227,11 +224,13 @@ class FilesTableHeader extends React.Component {
       />
     ) : (
       <TableHeader
+        checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
         setSelected={setSelected}
         containerRef={containerRef}
         columns={columns}
+        columnStorageName="filesColumnsSize"
       />
     );
   }
