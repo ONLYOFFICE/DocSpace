@@ -1,0 +1,9 @@
+{
+  "webhooks": {
+    "dictionary": {
+      "NewFileCreated": {
+        "methodsName": [ "CreateFileFromForm", "CreateFileFromBody" ]
+      }
+    }
+  }
+}

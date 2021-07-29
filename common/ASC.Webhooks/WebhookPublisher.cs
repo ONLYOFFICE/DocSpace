@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 
 using ASC.Common;
@@ -61,6 +62,16 @@ namespace ASC.Webhooks
             }
         }
     }
+
+    public class WebhooksExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<WebhookPublisher>();
+            services.TryAdd<WebhooksIdentifier>();
+        }
+    }
+
     public enum EventName
     {
         UntrackedAction,

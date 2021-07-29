@@ -129,8 +129,7 @@ namespace ASC.Api.Documents
             ProductEntryPoint productEntryPoint,
             TenantManager tenantManager,
             FileUtility fileUtility,
-            ConsumerFactory consumerFactory,
-            WebhookPublisher webhookPublisher)
+            ConsumerFactory consumerFactory)
         {
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
@@ -155,12 +154,12 @@ namespace ASC.Api.Documents
             ProductEntryPoint = productEntryPoint;
             TenantManager = tenantManager;
             FileUtility = fileUtility;
-            WebhookPublisher = webhookPublisher;
         }
 
         [Read("info")]
         public Module GetModule()
         {
+            //WebhookPublisher.Publish(EventName.FileUpdated, "asdasdaddsa");
             ProductEntryPoint.Init();
             return new Module(ProductEntryPoint);
         }
@@ -1020,7 +1019,7 @@ namespace ASC.Api.Documents
         public FileWrapper<int> CreateFileFromBody(int folderId, [FromBody]CreateFileModel<int> model)
         {
             var response = FilesControllerHelperInt.CreateFile(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
-            WebhookPublisher.Publish(EventName.NewFileCreated, response);
+            //WebhookPublisher.Publish(EventName.NewFileCreated, response);
             return response;
         }
 

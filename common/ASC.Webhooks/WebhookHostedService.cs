@@ -15,7 +15,6 @@ namespace ASC.Webhooks
     public class WebhookHostedService : IHostedService
     {
         private WorkerService workerService;
-        internal readonly ConcurrentQueue<WebhookRequest> Queue;
         private BuildQueueService BuildQueueService { get; }
         private WebhookSender WebhookSender { get; }
         private ILog Logger { get; }
@@ -27,12 +26,11 @@ namespace ASC.Webhooks
             BuildQueueService = buildQueueService;
             WebhookSender = webhookSender;
             Logger = options.Get("ASC.Webhooks");
-            Queue = new ConcurrentQueue<WebhookRequest>();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            workerService = new WorkerService(cancellationToken, WebhookSender, Logger);
+            workerService = new WorkerService(cancellationToken, WebhookSender, Logger, BuildQueueService.queue);
             workerService.Start();
             BuildQueueService.Start();
 

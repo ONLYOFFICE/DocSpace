@@ -67,6 +67,7 @@ namespace ASC.Files
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile("webhooks.json")
                     .AddEnvironmentVariables()
                     .AddCommandLine(args)
                     .AddInMemoryCollection(new Dictionary<string, string>

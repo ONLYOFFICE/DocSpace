@@ -45,6 +45,7 @@ namespace ASC.Files
             services.AddHostedService<WebhookHostedService>();
             DIHelper.TryAdd<WebhookHostedService>();
 
+            WebhooksExtension.Register(DIHelper);
             NotifyConfigurationExtension.Register(DIHelper);
         }
 
@@ -57,7 +58,6 @@ namespace ASC.Files
                     .AllowAnyMethod());
 
             base.Configure(app, env);
-
             app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),
                 appBranch =>

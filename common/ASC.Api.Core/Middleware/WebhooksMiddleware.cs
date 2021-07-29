@@ -28,19 +28,7 @@ namespace ASC.Api.Core.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            //EventName eventName;
             var action = context.GetRouteValue("action").ToString();
-
-            //switch (action)
-            //{
-            //    case "CreateFileFromBody":
-            //    case "CreateFileFromForm":
-            //        eventName = EventName.NewFileCreated;
-            //        break;
-            //    default:
-            //        eventName = EventName.UntrackedAction;
-            //        break;
-            //}
 
             var eventName = WebhooksIdentifier.Identify(action);
 
