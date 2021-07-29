@@ -7,6 +7,8 @@ import {
   createFile,
 } from "@appserver/common/api/files";
 import i18n from "./i18n";
+
+import { request } from "@appserver/common/api/client";
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
   const { organizationName } = settingsStore;
@@ -81,7 +83,6 @@ export const openDocEditor = async (
 };
 
 export const SaveAs = (title, url, openNewTab, folderId = null) => {
-  //debugger;
   const options = {
     action: "create",
     fileuri: url,
@@ -90,13 +91,20 @@ export const SaveAs = (title, url, openNewTab, folderId = null) => {
     response: openNewTab ? null : "message",
   };
   const params = toUrlParams(options, true);
-
-  window.open(
-    combineUrl(
-      AppServerConfig.proxyURL,
-      config.homepage,
-      `/httphandlers/filehandler.ashx?${params}`
-    ),
-    openNewTab ? "_blank" : "_self"
-  );
+  !openNewTab
+    ? request({
+        baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+        method: "get",
+        url: `/httphandlers/filehandler.ashx?${params}`,
+      })
+        .then((data) => console.log("data", data))
+        .catch((e) => console.error("error", e))
+    : window.open(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/httphandlers/filehandler.ashx?${params}`
+        ),
+        "_blank"
+      );
 };
