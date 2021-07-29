@@ -1,4 +1,6 @@
-﻿using ASC.Common;
+﻿using System.Collections.Concurrent;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Web.Webhooks;
 
@@ -7,10 +9,12 @@ namespace ASC.Webhooks
     [Singletone]
     public class BuildQueueService
     {
-        private ICacheNotify<WebhookRequest> WebhookNotify { get; }
+        internal readonly ConcurrentQueue<WebhookRequest> queue;
+        private ICacheNotify<WebhookRequest> WebhookNotify { get; }     
         public BuildQueueService(ICacheNotify<WebhookRequest> webhookNotify)
         {
             WebhookNotify = webhookNotify;
+            queue = new ConcurrentQueue<WebhookRequest>();
         }
 
         public void Start()
@@ -25,7 +29,7 @@ namespace ASC.Webhooks
 
         public void BuildWebhooksQueue(WebhookRequest request)
         {
-            WebhookHostedService.Queue.Enqueue(request);
+            queue.Enqueue(request);
         }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using ASC.Common.Logging;
+using ASC.Web.Webhooks;
+using System.Collections.Concurrent;
 
 namespace ASC.Webhooks
 {
@@ -11,16 +13,19 @@ namespace ASC.Webhooks
         private readonly int threadCount = 10;
         private readonly CancellationToken cancellationToken;
         private readonly WebhookSender webhookSender;
+        private readonly ConcurrentQueue<WebhookRequest> queue;
         private ILog logger;
         private Timer timer;
 
         public WorkerService(CancellationToken cancellationToken,
             WebhookSender webhookSender,
-            ILog logger)
+            ILog logger,
+            ConcurrentQueue<WebhookRequest> queue)
         {
             this.cancellationToken = cancellationToken;
             this.logger = logger;
             this.webhookSender = webhookSender;
+            this.queue = queue;
         }
 
         public void Start()
@@ -48,7 +53,7 @@ namespace ASC.Webhooks
 
             timer.Change(Timeout.Infinite, Timeout.Infinite);
             logger.Debug("Procedure: Start.");
-            var queueSize = WebhookHostedService.Queue.Count;
+            var queueSize = queue.Count;
 
             if (queueSize == 0)// change to "<= threadCount"
             {
@@ -69,7 +74,7 @@ namespace ASC.Webhooks
             var counter = 0;
             for (int i = 0; i < queueSize; i++)
             {
-                WebhookHostedService.Queue.TryDequeue(out var entry);
+                queue.TryDequeue(out var entry);
                 tasks.Add(webhookSender.Send(entry));
                 counter++;
 
