@@ -52,243 +52,137 @@ class SelectFolderModalDialog extends React.Component {
   }
 
   componentDidMount() {
-    const {
-      folderPath,
-      onSelectFolder,
-      onSetLoadingData,
-      onSetBaseFolderPath,
-      foldersType,
-      id,
-      onSetLoadingInput,
-      onSetFileName,
-      fileName,
-      displayType,
-      selectedFolderId,
-      dialogWithFiles,
-    } = this.props;
+    const { onSetLoadingData, onSetLoadingInput, displayType } = this.props;
 
     authStore.init();
-
-    const { isSetFolderImmediately } = this.state;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
     this.setState({ isLoadingData: true }, function () {
       onSetLoadingData && onSetLoadingData(true);
       onSetLoadingInput && onSetLoadingInput(true);
-      switch (foldersType) {
-        case "editor":
-          SelectFolderDialog.getAllFolders()
-            .then((folders) => {
-              const convertFolders = this.convertFolders(
-                folders,
-                editorExceptions
-              );
-              folderList = convertFolders;
-            })
-
-            .then(
-              () =>
-                folderList.length === 0 && this.setState({ isAvailable: false })
-            )
-            .then(() =>
-              SelectFolderDialog.getFolderPath(id ? id : folderList[0].id)
-            )
-            .then((folderPath) => (this.folderTitle = folderPath))
-            .then(
-              () =>
-                isSetFolderImmediately &&
-                folderList.length !== 0 &&
-                !selectedFolderId &&
-                onSelectFolder &&
-                onSelectFolder(
-                  `${
-                    selectedFolderId
-                      ? selectedFolderId
-                      : id
-                      ? id
-                      : folderList[0].id
-                  }`
-                )
-            )
-            .then(
-              () =>
-                isSetFolderImmediately &&
-                folderList.length !== 0 &&
-                this.setState({
-                  folderId: `${
-                    selectedFolderId
-                      ? selectedFolderId
-                      : id
-                      ? id
-                      : folderList[0].id
-                  }`,
-                })
-            )
-            .then(
-              () =>
-                !id &&
-                !selectedFolderId &&
-                isSetFolderImmediately &&
-                folderList.length !== 0 &&
-                onSetBaseFolderPath &&
-                onSetBaseFolderPath(this.folderTitle)
-            )
-            .then(() => fileName && onSetFileName && onSetFileName(fileName))
-            .catch((error) => console.log("error", error))
-            .finally(() => {
-              if (!id && !selectedFolderId) {
-                onSetLoadingData && onSetLoadingData(false);
-                onSetLoadingInput && onSetLoadingInput(false);
-                this.setState({
-                  isLoadingData: false,
-                });
-              }
-            });
-
-          if (selectedFolderId) {
-            this.setSelectedFolder(selectedFolderId);
-          }
-
-          if (id && !selectedFolderId) {
-            if (!dialogWithFiles) this.setSelectedFolderToTee(id);
-            else {
-              this.setSelectedFolder(id);
-            }
-          }
-          break;
-        case "common":
-          SelectFolderDialog.getCommonFolders()
-            .then((commonFolder) => {
-              folderList = commonFolder;
-            })
-            .then(
-              () =>
-                folderPath.length === 0 &&
-                !selectedFolderId &&
-                onSelectFolder &&
-                onSelectFolder(`${id ? id : folderList[0].id}`)
-            )
-            .then(() =>
-              this.setState({
-                folderId: `${
-                  selectedFolderId
-                    ? selectedFolderId
-                    : id
-                    ? id
-                    : folderList[0].id
-                }`,
-              })
-            )
-            .then(
-              () =>
-                !id &&
-                !selectedFolderId &&
-                onSetBaseFolderPath &&
-                onSetBaseFolderPath(folderList[0].title)
-            )
-            .then(() => fileName && onSetFileName && onSetFileName(fileName))
-            .finally(() => {
-              if (!id && !selectedFolderId) {
-                onSetLoadingData && onSetLoadingData(false);
-                onSetLoadingInput && onSetLoadingInput(false);
-                this.setState({
-                  isLoadingData: false,
-                });
-              }
-            });
-
-          if (selectedFolderId) {
-            this.setSelectedFolder(selectedFolderId);
-          }
-
-          if (id && !selectedFolderId) {
-            if (!dialogWithFiles) this.setSelectedFolderToTee(id);
-            else {
-              this.setSelectedFolder(id);
-            }
-          }
-
-          break;
-
-        case "third-party":
-          SelectFolderDialog.getCommonThirdPartyList()
-            .then(
-              (commonThirdPartyArray) => (folderList = commonThirdPartyArray)
-            )
-            .then(
-              () =>
-                folderList.length === 0 && this.setState({ isAvailable: false })
-            )
-            .then(() =>
-              SelectFolderDialog.getFolderPath(id ? id : folderList[0].id)
-            )
-            .then((folderPath) => (this.folderTitle = folderPath))
-            .then(
-              () =>
-                isSetFolderImmediately &&
-                folderList.length !== 0 &&
-                !selectedFolderId &&
-                onSelectFolder &&
-                onSelectFolder(
-                  `${
-                    selectedFolderId
-                      ? selectedFolderId
-                      : id
-                      ? id
-                      : folderList[0].id
-                  }`
-                )
-            )
-            .then(
-              () =>
-                isSetFolderImmediately &&
-                folderList.length !== 0 &&
-                this.setState({
-                  folderId: `${
-                    selectedFolderId
-                      ? selectedFolderId
-                      : id
-                      ? id
-                      : folderList[0].id
-                  }`,
-                })
-            )
-            .then(
-              () =>
-                !id &&
-                !selectedFolderId &&
-                isSetFolderImmediately &&
-                folderList.length !== 0 &&
-                onSetBaseFolderPath &&
-                onSetBaseFolderPath(this.folderTitle)
-            )
-            .then(() => fileName && onSetFileName && onSetFileName(fileName))
-            .catch((error) => console.log("error", error))
-            .finally(() => {
-              if (!id && !selectedFolderId) {
-                onSetLoadingData && onSetLoadingData(false);
-                onSetLoadingInput && onSetLoadingInput(false);
-                this.setState({
-                  isLoadingData: false,
-                });
-              }
-            });
-
-          if (selectedFolderId) {
-            this.setSelectedFolder(selectedFolderId);
-          }
-
-          if (id && !selectedFolderId) {
-            if (!dialogWithFiles) this.setSelectedFolderToTee(id);
-            else {
-              this.setSelectedFolder(id);
-            }
-          }
-
-          break;
-      }
+      this.trySwitch();
     });
   }
+
+  trySwitch = async () => {
+    const {
+      folderPath,
+      onSelectFolder,
+      onSetBaseFolderPath,
+      foldersType,
+      id,
+      selectedFolderId,
+    } = this.props;
+    switch (foldersType) {
+      case "editor":
+        const foldersTree = await getFoldersTree();
+        folderList = this.convertFolders(foldersTree, editorExceptions);
+        this.setBaseSettings();
+        break;
+
+      case "common":
+        folderList = await SelectFolderDialog.getCommonFolders();
+
+        folderPath.length === 0 &&
+          !selectedFolderId &&
+          onSelectFolder &&
+          onSelectFolder(`${id ? id : folderList[0].id}`);
+
+        this.setState({
+          folderId: `${
+            selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
+          }`,
+        });
+
+        !id &&
+          !selectedFolderId &&
+          onSetBaseFolderPath &&
+          onSetBaseFolderPath(folderList[0].title);
+
+        this.setFolderInfo();
+        break;
+
+      case "third-party":
+        folderList = await SelectFolderDialog.getCommonThirdPartyList();
+        this.setBaseSettings();
+        break;
+    }
+  };
+
+  setBaseSettings = async () => {
+    const { isSetFolderImmediately } = this.state;
+    const {
+      onSelectFolder,
+      onSetBaseFolderPath,
+      id,
+      selectedFolderId,
+    } = this.props;
+
+    folderList.length === 0 && this.setState({ isAvailable: false });
+
+    this.folderTitle = await SelectFolderDialog.getFolderPath(
+      id ? id : folderList[0].id
+    );
+
+    isSetFolderImmediately &&
+      folderList.length !== 0 &&
+      !selectedFolderId &&
+      onSelectFolder &&
+      onSelectFolder(
+        `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`
+      );
+
+    isSetFolderImmediately &&
+      folderList.length !== 0 &&
+      this.setState({
+        folderId: `${
+          selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
+        }`,
+      });
+
+    !id &&
+      !selectedFolderId &&
+      isSetFolderImmediately &&
+      folderList.length !== 0 &&
+      onSetBaseFolderPath &&
+      onSetBaseFolderPath(this.folderTitle);
+
+    this.setFolderInfo();
+  };
+
+  setFolderInfo = () => {
+    const {
+      onSetLoadingData,
+      id,
+      onSetLoadingInput,
+      onSetFileName,
+      fileName,
+      selectedFolderId,
+      dialogWithFiles,
+    } = this.props;
+
+    fileName && onSetFileName && onSetFileName(fileName);
+
+    if (!id && !selectedFolderId) {
+      onSetLoadingData && onSetLoadingData(false);
+      onSetLoadingInput && onSetLoadingInput(false);
+      this.setState({
+        isLoadingData: false,
+      });
+    }
+
+    if (selectedFolderId) {
+      this.setSelectedFolder(selectedFolderId);
+    }
+
+    if (id && !selectedFolderId) {
+      if (!dialogWithFiles) this.setSelectedFolderToTee(id);
+      else {
+        this.setSelectedFolder(id);
+      }
+    }
+  };
+
   setSelectedFolder = (selectedFolderId) => {
     const {
       onSetLoadingData,
@@ -478,6 +372,7 @@ SelectFolderModalDialog.defaultProps = {
   asideHeightContent: "calc(100% - 86px)",
   zIndex: 310,
   withoutProvider: false,
+  folderPath: "",
 };
 
 const SelectFolderDialogWrapper = inject(
@@ -536,12 +431,6 @@ class SelectFolderDialog extends React.Component {
     };
 
     return [convertedData];
-  };
-
-  static getAllFolders = async () => {
-    const fullFoldersTree = await getFoldersTree();
-   
-    return fullFoldersTree;
   };
 
   static getFolderPath = async (folderId) => {
