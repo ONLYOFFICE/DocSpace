@@ -364,7 +364,14 @@ class PageLayout extends React.Component {
 
                     {isSectionFilterAvailable && (
                       <>
-                        <div id="main-bar" style={{ display: "grid" }}></div>
+                        <div
+                          id="main-bar"
+                          style={{
+                            display: "grid",
+                            paddingRight: "20px",
+                            paddingTop: "10px",
+                          }}
+                        ></div>
                         <SubSectionFilter className="section-header_filter">
                           {sectionFilterContent
                             ? sectionFilterContent.props.children
