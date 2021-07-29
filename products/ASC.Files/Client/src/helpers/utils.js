@@ -82,7 +82,7 @@ export const openDocEditor = async (
   );
 };
 
-export const SaveAs = (title, url, openNewTab, folderId = null) => {
+export const SaveAs = (title, url, folderId, openNewTab) => {
   const options = {
     action: "create",
     fileuri: url,

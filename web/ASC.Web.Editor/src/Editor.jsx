@@ -50,7 +50,8 @@ import i18n from "./i18n";
 import { FolderType } from "@appserver/common/constants";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
-import Button from "@appserver/components/button";
+import Checkbox from "@appserver/components/checkbox";
+
 let documentIsReady = false;
 
 const text = "text";
@@ -81,7 +82,9 @@ const Editor = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [title, setTitle] = useState("");
+  const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
+  const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
+  const [openNewTab, setNewOpenTab] = useState(false);
 
   const throttledChangeTitle = throttle(
     () => changeTitle(docSaved, docTitle),
@@ -359,7 +362,7 @@ const Editor = () => {
       docTitle = config.document.title;
       fileType = config.document.fileType;
 
-      setTitle(docTitle);
+    
       setFavicon(fileType);
       setDocumentTitle(docTitle);
 
@@ -544,39 +547,41 @@ const Editor = () => {
     setIsFileDialogVisible(false);
   };
 
-  let urlSelectorFolder, titleSelectorFolder;
   const onRequestSaveAs = (event) => {
-    //debugger;
-    titleSelectorFolder = event.data.title;
-    urlSelectorFolder = event.data.url;
-    console.log("title", titleSelectorFolder, "url", urlSelectorFolder);
-    setIsFolderDialogVisible(true);
-  };
+    setTitleSelectorFolder(event.data.title);
+    setUrlSelectorFolder(event.data.url);
 
-  let destFolderId;
-  const onSelectFolder = (folder) => {
-    console.log("onSelectFolder", folder);
-    destFolderId = folder;
+    setIsFolderDialogVisible(true);
   };
 
   const onCloseFolderDialog = () => {
     setIsFolderDialogVisible(false);
+    setNewOpenTab(false);
   };
 
-  const onClickSave = (e) => {
-    console.log("onClickSave editor", e);
+  const onClickSaveSelectFolder = (e, folderId) => {
+    console.log(
+      "onClickSave editor",
+      e,
+      "folderId",
+      folderId,
+      "titleSelectorFolder",
+      titleSelectorFolder,
+      "urlSelectorFolder",
+      urlSelectorFolder,
+      "openNewTab",
+      openNewTab
+    );
+    const id = folderId ? folderId : null;
+    SaveAs(titleSelectorFolder, urlSelectorFolder, id, openNewTab);
+  };
 
-    SaveAs(titleSelectorFolder, urlSelectorFolder, true);
-  };
-  const onClickClose = () => {
-    console.log("onClickClose editor");
-  };
   const onChangeInput = (e) => {
-    //const value = e.target.value;
-    setTitle(e.target.value);
-    //console.log("value", value);
+    setTitleSelectorFolder(e.target.value);
   };
-
+  const onClickCheckbox = () => {
+    setNewOpenTab(!openNewTab);
+  };
   return (
     <Box
       widthProp="100vw"
@@ -605,11 +610,11 @@ const Editor = () => {
           />
 
           <SelectFolderDialog
-            onSelectFolder={onSelectFolder}
+            showButtons
             isPanelVisible={isFolderDialogVisible}
             onClose={onCloseFolderDialog}
             foldersType="common"
-            onClickSave={onClickSave}
+            onSave={onClickSaveSelectFolder}
             header={
               <StyledSelectorFolder>
                 <Text className="editor-selector-folder_text">
@@ -619,29 +624,17 @@ const Editor = () => {
                   className="editor-selector-folder_text-input"
                   scale
                   onChange={onChangeInput}
-                  value={title}
+                  value={titleSelectorFolder}
                 />
               </StyledSelectorFolder>
             }
             headerName={i18n.t("FolderForSave")}
             footer={
-              <div className="select-file-dialog-modal_buttons">
-                <Button
-                  className="select-file-dialog-buttons-save"
-                  primary
-                  size="medium"
-                  label={i18n.t("Common:SaveButton")}
-                  onClick={onClickSave}
-                  //isDisabled={!destFolderId}
-                />
-                <Button
-                  className="modal-dialog-button"
-                  primary
-                  size="medium"
-                  label={i18n.t("Common:CloseButton")}
-                  onClick={onClickClose}
-                />
-              </div>
+              <Checkbox
+                label={i18n.t("OpenSavedDocument")}
+                onChange={onClickCheckbox}
+                isChecked={openNewTab}
+              />
             }
           />
         </>

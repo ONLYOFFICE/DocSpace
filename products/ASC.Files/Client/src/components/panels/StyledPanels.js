@@ -529,6 +529,12 @@ const StyledSelectFolderPanel = styled.div`
   .rc-tree-child-tree-open {
     width: fit-content;
   }
+  .select-folder-dialog-buttons-save {
+    margin-right: 8px;
+  }
+  .select-folder-dialog-modal_buttons {
+    margin-top: 16px;
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {
@@ -636,6 +642,12 @@ const StyledSelectFilePanel = styled.div`
   }
   .select-file-dialog-buttons-save {
     margin: 0 8px;
+  }
+  .select-folder-dialog-buttons-save {
+    margin-right: 8px;
+  }
+  .select-folder-dialog-modal_buttons {
+    margin-top: 8px;
   }
 `;
 

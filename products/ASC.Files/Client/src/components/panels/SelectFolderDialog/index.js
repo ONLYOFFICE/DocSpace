@@ -277,7 +277,7 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   onSelect = (folder) => {
-    const { onSelectFolder, onClose, onSetFullPath } = this.props;
+    const { onSelectFolder, onClose, showButtons, onSetFullPath } = this.props;
 
     this.setState({
       folderId: folder[0],
@@ -289,13 +289,14 @@ class SelectFolderModalDialog extends React.Component {
           (pathName = SelectFolderInput.setFullFolderPath(foldersArray))
       )
       .then(() => onSetFullPath && onSetFullPath(pathName))
-      .then(() => onSelectFolder && onSelectFolder(folder[0]));
-    //.finally(() => onClose && onClose());
+      .then(() => onSelectFolder && onSelectFolder(folder[0]))
+      .finally(() => !showButtons && onClose && onClose());
   };
-  onSave = () => {
-    const { onClose, onClickSave } = this.props;
-    console.log("onSAVE");
-    onClickSave && onClickSave();
+  onSave = (e) => {
+    const { onClose, onSave } = this.props;
+    const { folderId } = this.state;
+
+    onSave && onSave(e, folderId);
     onClose && onClose();
   };
   render() {
@@ -311,7 +312,7 @@ class SelectFolderModalDialog extends React.Component {
       header,
       headerName,
       footer,
-      modalContentHeight,
+      showButtons,
     } = this.props;
     const { isAvailable, certainFolders, folderId, displayType } = this.state;
 
@@ -329,6 +330,11 @@ class SelectFolderModalDialog extends React.Component {
         folderId={folderId}
         folderList={folderList}
         onSelect={this.onSelect}
+        onSave={this.onSave}
+        header={header}
+        headerName={headerName}
+        footer={footer}
+        showButtons={showButtons}
       />
     ) : (
       <SelectFolderDialogModalView
@@ -343,18 +349,18 @@ class SelectFolderModalDialog extends React.Component {
         folderId={folderId}
         folderList={folderList}
         onSelect={this.onSelect}
-        onClickSave={this.onSave}
+        onSave={this.onSave}
         header={header}
         headerName={headerName}
         footer={footer}
-        modalContentHeight={modalContentHeight}
+        showButtons={showButtons}
       />
     );
   }
 }
 
 SelectFolderModalDialog.propTypes = {
-  onSelectFolder: PropTypes.func.isRequired,
+  onSelectFolder: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   foldersType: PropTypes.oneOf(["common", "third-party"]),
@@ -364,6 +370,7 @@ SelectFolderModalDialog.propTypes = {
   withoutProvider: PropTypes.bool,
   isNeedArrowIcon: PropTypes.bool,
   dialogWithFiles: PropTypes.bool,
+  showButtons: PropTypes.bool,
   modalHeightContent: PropTypes.string,
   asideHeightContent: PropTypes.string,
 };
