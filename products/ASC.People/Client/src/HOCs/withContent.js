@@ -10,7 +10,6 @@ import { AppServerConfig } from "@appserver/common/constants";
 
 export default function withContent(WrappedContent) {
   const WithContent = (props) => {
-    console.log("Props", props);
     const {
       item,
       selectGroup,

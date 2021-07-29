@@ -96,7 +96,6 @@
   "ResetApplication": "Сбросить приложение",
   "NewVersionAvailable": "Доступна новая версия веб-сайта",
   "Load": "Загрузить",
-  "ResetApplication": "Сбросить приложение",
   "Name": "Название",
   "Image": "Изображение",
   "Unknown": "Неизвестный",
@@ -106,5 +105,8 @@
   "Spreadsheet": "Таблица",
   "Presentation": "Презентация",
   "Document": "Документ",
-  "Folder": "Папка"
+  "Folder": "Папка",
+  "Department": "Отдел",
+  "Role": "Позиция",
+  "Phone": "Телефон"
 }

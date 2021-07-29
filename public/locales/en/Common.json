@@ -96,7 +96,6 @@
   "ResetApplication": "Reset application",
   "NewVersionAvailable": "A new version of the website available",
   "Load": "Load",
-  "ResetApplication": "Reset application",
   "Name": "Name",
   "Image": "Image",
   "Unknown": "Unknown",
@@ -106,5 +105,8 @@
   "Spreadsheet": "Spreadsheet",
   "Presentation": "Presentation",
   "Document": "Document",
-  "Folder": "Folder"
+  "Folder": "Folder",
+  "Department": "Department",
+  "Role": "Role",
+  "Phone": "Phone"
 }
