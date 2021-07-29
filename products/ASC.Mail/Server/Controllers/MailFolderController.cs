@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Resources;
@@ -65,7 +66,7 @@ namespace ASC.Mail.Controllers
         [Read(@"folders/recalculate")]
         public MailOperationStatus RecalculateFolders()
         {
-            //TODO: fix return OperationEngine.RecalculateFolders(TranslateMailOperationStatus);
+            OperationEngine.RecalculateFolders(TranslateMailOperationStatus);
             throw new NotImplementedException();
         }
 
@@ -164,21 +165,19 @@ namespace ASC.Mail.Controllers
         /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
         /// <returns>MailOperationResult object</returns>
         [Delete(@"userfolders/{id}")]
-        public MailOperationStatus DeleteUserFolder(uint id)
+        public MailOperationStatus DeleteUserFolder(int id)
         {
-            //Thread.CurrentThread.CurrentCulture = CurrentCulture;
-            //Thread.CurrentThread.CurrentUICulture = CurrentCulture;
-            //TODO: fix
-            //try
-            //{
-            //    return OperationEngine.RemoveUserFolder(id, TranslateMailOperationStatus);
-            //}
-            //catch (Exception)
-            //{
-            //    throw new Exception(MailApiErrorsResource.ErrorInternalServer);
-            //}
+            Thread.CurrentThread.CurrentCulture = CurrentCulture;
+            Thread.CurrentThread.CurrentUICulture = CurrentCulture;
 
-            throw new NotImplementedException();
+            try
+            {
+                return OperationEngine.RemoveUserFolder(id, TranslateMailOperationStatus);
+            }
+            catch (Exception)
+            {
+                throw new Exception(MailApiErrorsResource.ErrorInternalServer);
+            }
         }
 
         /// <summary>

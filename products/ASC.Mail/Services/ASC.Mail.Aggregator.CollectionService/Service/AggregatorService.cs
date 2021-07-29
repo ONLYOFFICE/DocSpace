@@ -671,7 +671,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 using var scope = ServiceProvider.CreateScope();
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
                 tenantManager.SetCurrentTenant(mailbox.TenantId);

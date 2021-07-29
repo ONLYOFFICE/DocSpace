@@ -282,8 +282,7 @@ namespace ASC.Mail.Controllers
             if (mailbox.IsTeamlab)
                 throw new ArgumentException("Mailbox with specified email can't be deleted");
 
-            //TODO: Fix return OperationEngine.RemoveMailbox(mailbox, TranslateMailOperationStatus);
-            throw new NotImplementedException();
+            return OperationEngine.RemoveMailbox(mailbox, TranslateMailOperationStatus);
         }
 
         /// <summary>

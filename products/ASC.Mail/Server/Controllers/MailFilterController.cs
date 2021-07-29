@@ -1,9 +1,13 @@
-﻿using ASC.Mail.Core.Engine.Operations.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+
+using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
+using ASC.Web.Mail.Resources;
+
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 
 namespace ASC.Mail.Controllers
 {
@@ -107,8 +111,7 @@ namespace ASC.Mail.Controllers
         [Read(@"filters/{id}/apply")]
         public MailOperationStatus ApplyFilter(int id)
         {
-            //TODO: fix
-            /*Thread.CurrentThread.CurrentCulture = CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = CurrentCulture;
             Thread.CurrentThread.CurrentUICulture = CurrentCulture;
 
             try
@@ -118,9 +121,7 @@ namespace ASC.Mail.Controllers
             catch (Exception)
             {
                 throw new Exception(MailApiErrorsResource.ErrorInternalServer);
-            }*/
-
-            throw new NotImplementedException();
+            }
         }
     }
 }
