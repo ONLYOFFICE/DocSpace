@@ -13,7 +13,7 @@ namespace ASC.Mail
 {
     public class Program
     {
-        public async static Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
@@ -29,7 +29,7 @@ namespace ASC.Mail
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-            .ConfigureAppConfiguration((hostingContext, config) =>
+                .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var buided = config.Build();
                     var path = buided["pathToConf"];
@@ -39,18 +39,21 @@ namespace ASC.Mail
                     }
 
                     config.SetBasePath(path);
+                    var env = hostingContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
                     .AddJsonFile("appsettings.json")
-                    .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile($"appsettings.{env}.json", true)
                     .AddJsonFile("storage.json")
+                    .AddJsonFile($"storage.{env}.json")
                     .AddJsonFile("kafka.json")
+                    .AddJsonFile($"kafka.{env}.json", true)
                     .AddJsonFile("mail.json")
-                    .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile($"mail.{env}.json")
                     .AddEnvironmentVariables()
                     .AddCommandLine(args)
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
-                                        {"pathToConf", path}
+                        {"pathToConf", path}
                     });
                 });
     }

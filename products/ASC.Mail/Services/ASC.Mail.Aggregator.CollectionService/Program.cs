@@ -86,27 +86,26 @@ namespace ASC.Mail.Aggregator.CollectionService
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
-                            {
-                                {"pathToConf", path }
-                            }
+                        {
+                            {"pathToConf", path }
+                        }
                         );
                 })
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddMemoryCache();
-                var diHelper = new DIHelper(services);
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.AddSingleton(new ConsoleParser(args));
-                diHelper.TryAdd<AggregatorServiceLauncher>();
-                diHelper.TryAdd<AggregatorServiceScope>();
-                services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-                services.AddHostedService<AggregatorServiceLauncher>();
-                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
-
-            })
-            .ConfigureContainer<ContainerBuilder>((context, builder) =>
-            {
-                builder.Register(context.Configuration, false, false);
-            });
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddMemoryCache();
+                    var diHelper = new DIHelper(services);
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    services.AddSingleton(new ConsoleParser(args));
+                    diHelper.TryAdd<AggregatorServiceLauncher>();
+                    diHelper.TryAdd<AggregatorServiceScope>();
+                    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+                    services.AddHostedService<AggregatorServiceLauncher>();
+                    services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, false, false);
+                });
     }
 }

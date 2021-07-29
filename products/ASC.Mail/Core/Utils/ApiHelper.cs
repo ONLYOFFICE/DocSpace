@@ -148,6 +148,7 @@ namespace ASC.Mail.Utils
             if (!user.IsAuthenticated)
                 throw new AuthenticationException("User not authenticated");
 
+            var tempUrl = MailSettings.ApiPrefix;
 
             var ubBase = new UriBuilder
             {
@@ -155,22 +156,14 @@ namespace ASC.Mail.Utils
                 Host = Tenant.GetTenantDomain(CoreSettings, false)
             };
 
-            //var virtualDir = Configuration["web:api:virtual-dir"];
+            if (!string.IsNullOrEmpty(MailSettings.ApiVirtualDirPrefix))
+                tempUrl = string.Format("{0}/{1}", MailSettings.ApiVirtualDirPrefix.Trim('/'), tempUrl);
 
-            //if (!string.IsNullOrEmpty(virtualDir))
-            //    tempUrl = string.Format("{0}/{1}", virtualDir.Trim('/'), tempUrl);
+            if (!string.IsNullOrEmpty(MailSettings.ApiHost))
+                ubBase.Host = MailSettings.ApiHost;
 
-            //var host = Configuration["web:api.host"];
-
-            //if (!string.IsNullOrEmpty(host))
-            //    ubBase.Host = host;
-
-            //var port = ConfigurationManager.AppSettings["api.port"];
-
-            //if (!string.IsNullOrEmpty(port))
-            //    ubBase.Port = int.Parse(port);
-
-            var tempUrl = (Configuration["web:api"] ?? "").Trim('~', '/');
+            if (!string.IsNullOrEmpty(MailSettings.ApiPort))
+                ubBase.Port = int.Parse(MailSettings.ApiPort);
 
             ubBase.Path = tempUrl;
 

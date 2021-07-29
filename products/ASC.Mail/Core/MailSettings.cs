@@ -6,6 +6,8 @@ using ASC.Common.Utils;
 using ASC.Mail.Models;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.Configuration;
+
 using static System.TimeSpan;
 
 namespace ASC.Mail.Configuration
@@ -28,172 +30,85 @@ namespace ASC.Mail.Configuration
 
         #region from defines
 
-        /// <summary>
-        /// mail.auth-error-warning-in-minutes
-        /// </summary>
         public TimeSpan AuthErrorWarningTimeout { get; set; }
 
-        /// <summary>
-        /// mail.auth-error-disable-mailbox-in-minutes
-        /// </summary>
         public TimeSpan AuthErrorDisableMailboxTimeout { get; set; }
 
-        /// <summary>
-        /// earlier mail.check-work-timer-seconds
-        /// </summary>
         public TimeSpan CheckTimerInterval { get; set; }
 
-        /// <summary>
-        /// earlier mail.activity-timeout-seconds
-        /// </summary>
         public TimeSpan ActiveInterval { get; set; }
 
-        /// <summary>
-        /// earlier mail.one-user-mode
-        /// </summary>
         public List<string> WorkOnUsersOnlyList { get; set; }
 
         public string WorkOnUsersOnly { get; set; }
 
-        /// <summary>
-        /// mail.aggregate-mode
-        /// </summary>
         public AggregateModeType AggregateMode { get; set; }
 
         public string AggregateModeValue { get; set; }
 
-        /// <summary>
-        /// mail.overdue-account-delay-seconds
-        /// </summary>
         public TimeSpan OverdueAccountDelay { get; set; }
 
-        /// <summary>
-        /// mail.quota-ended-delay-seconds
-        /// </summary>
         public TimeSpan QuotaEndedDelay { get; set; }
 
-        /// <summary>
-        /// mail.tenant-cache-lifetime-seconds
-        /// </summary>
         public TimeSpan TenantCachingPeriod { get; set; }
 
-        /// <summary>
-        /// mail.queue-lifetime-seconds
-        /// </summary>
         public TimeSpan QueueLifetime { get; set; }
 
-        /// <summary>
-        /// mail.save-original-message
-        /// </summary>
         public bool SaveOriginalMessage { get; set; }
 
-        /// <summary>
-        /// mail.certificate-permit
-        /// </summary>
         public bool SslCertificatesErrorsPermit { get; set; }
 
-        /// <summary>
-        /// mail.default-api-scheme
-        /// </summary>
         public string DefaultApiSchema { get; set; }
 
-        /// <summary>
-        /// mail.default-login-delay
-        /// </summary>
         public int DefaultServerLoginDelay { get; set; }
 
-        /// <summary>
-        /// mail.autoreply-days-interval
-        /// </summary>
         public int AutoreplyDaysInterval { get; set; }
 
         public bool NeedProxyHttp { get; set; }
 
         public string DefaultServerLoginDelayStr { get; set; }
 
-        /// <summary>
-        /// "web.hub"
-        /// </summary>
         public string WebHub { get; set; }
 
-        /// <summary>
-        /// "web.hub.internal"
-        /// </summary>
         public string WebHubInternal { get; set; }
 
         public bool IsSignalRAvailable { get; set; }
 
-        /// <summary>
-        /// mail.daemon-email
-        /// </summary>
         public string MailDaemonEmail { get; set; }
 
-        /// <summary>
-        /// mail.recalculate-folders-timeout
-        /// </summary>
         public int? RecalculateFoldersTimeout { get; set; }
 
-        /// <summary>
-        /// mail.remove-domain-timeout
-        /// </summary>
         public int? RemoveDomainTimeout { get; set; }
 
-        /// <summary>
-        /// mail.remove-mailbox-timeout
-        /// </summary>
         public int? RemoveMailboxTimeout { get; set; }
 
-        /// <summary>
-        /// mail.server-mailbox-limit-per-user
-        /// </summary>
         public int? ServerDomainMailboxPerUserLimit { get; set; }
 
-        /// <summary>
-        /// mail.server.spf-record-value
-        /// </summary>
         public string ServerDnsSpfRecordValue { get; set; }
 
-        /// <summary>
-        /// mail.server.mx-record-priority
-        /// </summary>
         public int? ServerDnsMxRecordPriority { get; set; }
 
-        /// <summary>
-        /// mail.server-dkim-selector
-        /// </summary>
         public string ServerDnsDkimSelector { get; set; }
 
-        /// <summary>
-        /// mail.server-dns-check-prefix
-        /// </summary>
         public string ServerDnsDomainCheckPrefix { get; set; }
 
-        /// <summary>
-        /// mail.server-dns-default-ttl
-        /// </summary>
         public int ServerDnsDefaultTtl { get; set; }
 
-        /// <summary>
-        /// mail.maximum-message-body-size
-        /// </summary>
         public int? MaximumMessageBodySize { get; set; }
 
-        /// <summary>
-        /// mail.attachments-group-operations
-        /// </summary>
         public bool IsAttachmentsGroupOperationsAvailable { get; set; }
 
         #endregion
 
         #region from taskConfig
 
-        public int? ApiPort { get; set; }
+        public string ApiPrefix { get; set; }
+        public string ApiVirtualDirPrefix { get; set; }
+        public string ApiPort { get; set; }
+        public string ApiHost { get; set; }
 
         public bool UseDump { get; set; }
 
-        /// <summary>
-        /// mail.aggregate-mode
-        /// </summary>
         public enum AggregateModeType
         {
             All,
@@ -201,71 +116,32 @@ namespace ASC.Mail.Configuration
             Internal
         };
 
-        /// <summary>
-        /// web.enable-signalr
-        /// </summary>
         public bool EnableSignalr { get; set; }
 
-        /// <summary>
-        /// mail.check-pop3-uidl-chunk
-        /// </summary>
         public int ChunkOfPop3Uidl { get; set; }
 
-        /// <summary>
-        /// mail.max-messages-per-mailbox
-        /// </summary>
         public int MaxMessagesPerSession { get; set; }
 
-        /// <summary>
-        /// mail.max-tasks-count
-        /// </summary>
         public int MaxTasksAtOnce { get; set; }
 
-        /// <summary>
-        /// mail.inactive-mailboxes-ratio
-        /// </summary>
         public double InactiveMailboxesRatio { get; set; }
 
-        /// <summary>
-        /// mail.tenant-overdue-days
-        /// </summary>
         public int? TenantOverdueDays { get; set; }
 
-        /// <summary>
-        /// mail.tenant-min-quota-balance
-        /// </summary>
         public long? TenantMinQuotaBalance { get; set; }
 
-        /// <summary>
-        /// mail.task-process-lifetime-seconds
-        /// </summary>
         public TimeSpan TaskLifetime { get; set; }
 
-        /// <summary>
-        /// mail.task-check-state-seconds
-        /// </summary>
         public TimeSpan TaskCheckState { get; set; }
 
-        /// <summary>
-        /// mail.tcp-timeout
-        /// </summary>
         public int TcpTimeout { get; set; }
 
-        /// <summary>
-        /// mail.protocol-log-path
-        /// </summary>
         public string ProtocolLogPath { get; set; }
 
-        /// <summary>
-        /// mail.collect-statistics
-        /// </summary>
         public bool CollectStatistics { get; set; }
 
         public bool ShowMailEngineLogs { get; set; }
 
-        /// <summary>
-        /// "mail.quota-rest": 26214400,
-        /// </summary>
         public int? QuotaRest { get; set; }
         #endregion
 
@@ -289,11 +165,17 @@ namespace ASC.Mail.Configuration
             Current = this;
         }
 
-        public MailSettings(ConfigurationExtension configuration)
+        public MailSettings(ConfigurationExtension configuration, IConfiguration config)
         {
             var c = configuration.GetSetting<MailSettings>("mail");
 
-            ApiPort = c.ApiPort ?? 0;
+            ApiPort = c.ApiPort;
+
+            ApiHost = c.ApiHost;
+
+            ApiPrefix = (config["web:api"] ?? "").Trim('~', '/');
+
+            ApiVirtualDirPrefix = (c.ApiVirtualDirPrefix ?? "").Trim('/');
 
             UseDump = c.UseDump;
 

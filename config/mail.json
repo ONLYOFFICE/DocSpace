@@ -1,6 +1,8 @@
 {
   "mail": {
     "ApiPort": "",
+    "ApiHost": "",
+    "ApiVirtualDirPrefix": "",    
     "TcpTimeout": 30000,
     "UseDump": false,
     "QuotaRest": 26214400,
