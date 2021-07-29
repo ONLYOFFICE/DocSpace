@@ -74,13 +74,13 @@ fi
 
 if [ "$APPSERVER_INSTALLED" = "false" ]; then
 
-	apt-get install -yq appserver
+	apt-get install -y ${product}
 
 expect << EOF
 	set timeout -1
 	log_user 1
 
-	spawn /usr/bin/appserver-configuration.sh
+	spawn /usr/bin/${product}-configuration.sh
 	expect -re "Database host:"
 	send "\025$MYSQL_SERVER_HOST\r"
 

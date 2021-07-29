@@ -48,7 +48,7 @@ if [ -z "${UPDATE}" ]; then
 fi
 
 if [ -z "${LOCAL_SCRIPTS}" ]; then
-   LOCAL_SCRIPTS="true";
+   LOCAL_SCRIPTS="false";
 fi
 
 if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
@@ -56,7 +56,7 @@ if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -
   apt-get install -yq curl;
 fi
 
-DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/appserver/develop/build/install/OneClickInstall/install-Debian"
+DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/develop/build/install/OneClickInstall/install-Debian"
 if [ "${LOCAL_SCRIPTS}" == "true" ]; then
 	source install-Debian/bootstrap.sh
 else
