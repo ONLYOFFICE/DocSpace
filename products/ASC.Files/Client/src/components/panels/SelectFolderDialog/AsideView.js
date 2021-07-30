@@ -1,15 +1,10 @@
 import React from "react";
 
 import IconButton from "@appserver/components/icon-button";
-import Aside from "@appserver/components/aside";
-import Heading from "@appserver/components/heading";
-import Backdrop from "@appserver/components/backdrop";
 import FolderTreeBody from "../../FolderTreeBody";
-import {
-  StyledAsidePanel,
-  StyledSelectFilePanel,
-  StyledHeaderContent,
-} from "../StyledPanels";
+import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
 
 const DISPLAY_TYPE = "aside";
 const SelectFolderDialogAsideView = ({
@@ -26,40 +21,42 @@ const SelectFolderDialogAsideView = ({
   isLoadingData,
   folderList,
   onSelect,
+  footer,
+  showButtons,
+  onSave,
+  headerName,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
-      <Backdrop
-        onClick={onClose}
+      <ModalDialog
         visible={isPanelVisible}
         zIndex={zIndex}
-        isAside={true}
-      />
-      <Aside visible={isPanelVisible} zIndex={zIndex}>
-        <StyledSelectFilePanel displayType={DISPLAY_TYPE}>
-          <StyledHeaderContent className="select-file-dialog_aside-header">
-            <div className="select-file-dialog_header">
+        contentHeight="100%"
+        contentPaddingBottom={!footer && !showButtons ? "0px" : "80px"}
+        removeScroll
+      >
+        <ModalDialog.Header>
+          <StyledSelectFolderPanel>
+            <div className="select-folder-dialog_header">
               {isNeedArrowIcon && (
                 <IconButton
-                  className="select-file-dialog_header-icon"
+                  className="select-folder-dialog_header-icon"
                   size="16"
                   iconName="/static/images/arrow.path.react.svg"
                   onClick={onClose}
                   color="#A3A9AE"
                 />
               )}
-
-              <Heading
-                size="medium"
-                className="select-file-dialog_aside-header_title"
-              >
-                {t("Translations:SelectFolder")}
-              </Heading>
+              {headerName ? headerName : t("Translations:SelectFolder")}
             </div>
-          </StyledHeaderContent>
-
-          <div className="select-folder-dialog_aside-body_wrapper">
-            <div className="select-file-dialog_aside_body">
+          </StyledSelectFolderPanel>
+        </ModalDialog.Header>
+        <ModalDialog.Body>
+          <StyledSelectFolderPanel
+            displayType={DISPLAY_TYPE}
+            showButtons={showButtons}
+          >
+            <div className="select-folder-dialog_aside_body">
               <FolderTreeBody
                 isLoadingData={isLoadingData}
                 folderList={folderList}
@@ -72,9 +69,32 @@ const SelectFolderDialogAsideView = ({
                 displayType={DISPLAY_TYPE}
               />
             </div>
-          </div>
-        </StyledSelectFilePanel>
-      </Aside>
+          </StyledSelectFolderPanel>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <StyledSelectFolderPanel>
+            {footer}
+            {showButtons && (
+              <div className="select-folder-dialog-modal_buttons">
+                <Button
+                  className="select-folder-dialog-buttons-save"
+                  primary
+                  size="big"
+                  label={t("Common:SaveButton")}
+                  onClick={onSave}
+                  //isDisabled={selectedFile.length === 0}
+                />
+                <Button
+                  primary
+                  size="big"
+                  label={t("Common:CloseButton")}
+                  onClick={onClose}
+                />
+              </div>
+            )}
+          </StyledSelectFolderPanel>
+        </ModalDialog.Footer>
+      </ModalDialog>
     </StyledAsidePanel>
   );
 };

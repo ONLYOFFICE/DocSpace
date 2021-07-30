@@ -508,7 +508,6 @@ const StyledSelectFolderPanel = styled.div`
     props.displayType === "aside" &&
     css`
       height: 100%;
-      overflow: hidden;
     `}
   .modal-dialog_header {
     display: flex;
@@ -535,6 +534,19 @@ const StyledSelectFolderPanel = styled.div`
   .select-folder-dialog-modal_buttons {
     margin-top: 16px;
   }
+
+  .select-folder-dialog_header {
+    display: flex;
+    align-items: center;
+  }
+  .select-folder-dialog_header-icon {
+    margin-right: 16px;
+  }
+  .select-folder-dialog_aside_body {
+    margin-top: 16px;
+    height: calc(100% - 64px);
+    width: 296px;
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {
@@ -543,13 +555,6 @@ const StyledSelectFilePanel = styled.div`
     }
   }
 
-  .select-file-dialog_header {
-    display: flex;
-    align-items: center;
-  }
-  .select-file-dialog_header-icon {
-    margin-right: 16px;
-  }
   ${(props) =>
     props.displayType === "aside" &&
     css`

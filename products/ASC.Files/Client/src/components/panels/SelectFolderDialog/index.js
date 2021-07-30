@@ -385,7 +385,7 @@ SelectFolderModalDialog.defaultProps = {
   isNeedArrowIcon: false,
   id: "",
   modalHeightContent: "325px",
-  asideHeightContent: "calc(100% - 86px)",
+  asideHeightContent: "100%",
   zIndex: 310,
   withoutProvider: false,
   folderPath: "",
