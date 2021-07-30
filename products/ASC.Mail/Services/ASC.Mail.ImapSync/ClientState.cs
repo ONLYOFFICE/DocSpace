@@ -10,7 +10,10 @@ namespace ASC.Mail.ImapSync
     {
         Creating,
         Disconected,
-        Working,
+        UpdateMessagesList,
+        SetFlags,
+        MoveMessages,
+        ChangeFolder,
         Idle
     }
 }

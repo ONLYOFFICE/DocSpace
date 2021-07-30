@@ -22,7 +22,8 @@ namespace ASC.Mail.ImapSync
             SetAsImportant,
             SetAsNotImpotant,
             SetAsDeleted,
-            MoveTo
+            RemovedFromFolder,
+            New
         }
     }
 }

@@ -79,7 +79,6 @@ namespace ASC.Mail.ImapSync
 
         private Dictionary<IMailFolder, MailFolder> foldersDictionary;
 
-
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
 
@@ -110,13 +109,11 @@ namespace ASC.Mail.ImapSync
 
             var folderKeyValue = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity);
 
-            if (folderKeyValue.Key != null && WorkFolder != folderKeyValue.Key)
+            if (folderKeyValue.Key != null && imapClient.WorkFolder != folderKeyValue.Key)
             {
-                WorkFolder = folderKeyValue.Key;
+                await imapClient.ChangeFolder(folderKeyValue.Key);
 
-                await SynchronizeMailFolderFromImap(WorkFolder);
-
-                _log.Debug($"CheckRedis. WorkFolder change to {WorkFolder.FullName} Count={WorkFolder.Count}.");
+                _log.Debug($"CheckRedis. WorkFolder change to {imapClient.WorkFolder.FullName} Count={imapClient.WorkFolder.Count}.");
             }
         }
 
@@ -140,22 +137,7 @@ namespace ASC.Mail.ImapSync
 
                     if (actionFromCache == null) break;
 
-                    SendOrPostCallback action To client
-
-                    var actionSplittedList = actionFromCache.Uidls.Select(x => new SplittedUidl(x)).ToList();
-
-                    if (!actionSplittedList.Any()) continue;
-
-                    iterationCount++;
-
-                    if (actionFromCache.Action == MailUserAction.MoveTo)
-                    {
-                        await MoveMessageInImap(actionSplittedList, actionFromCache.Destination);
-                    }
-                    else
-                    {
-                        await SetFlagsInImap(actionSplittedList, actionFromCache.Action);
-                    };
+                    imapClient.TrySendToIMAP(actionFromCache);
                 }
             }
             catch(Exception ex)
@@ -218,16 +200,9 @@ namespace ASC.Mail.ImapSync
 
             imapClient = new SimpleImapClient(mailbox, cancelToken, mailSettings, clientScope.GetService<ILog>());
 
-            var connectToServer = imapClient.ConnectToServer();
-
-            connectToServer.ContinueWith(async x =>
+            imapClient.curentTask.ContinueWith(async x =>
             {
-                if (x.Result == null) SetMailboxAuthError(true);
-                else
-                {
-                    SetMailboxAuthError(false);
-                    DetectFolders(x.Result);
-                }
+                DetectFolders(imapClient.foldersList);
             });
 
 
@@ -284,15 +259,6 @@ namespace ASC.Mail.ImapSync
         {
             if (index== 0) return;
 
-            if (WorkFolder != imapFolder)
-            {
-                imapMessagesToUpdate = new ConcurrentQueue<int>();
-
-                _log.Debug($"UpdateMessageFlagInDb: clear queue couse workfolder changed.");
-            }
-
-            imapMessagesToUpdate.Enqueue(index);
-
             if (EventImapSemaphore.CurrentCount == 0) return;
 
             await EventImapSemaphore.WaitAsync(); 
@@ -308,11 +274,7 @@ namespace ASC.Mail.ImapSync
                     indexes.Add(currenValue);
                 }
 
-                await GetImapSemaphore();
-
-                await OpenFolderWithOutWaiter(imapFolder);
-
-                var imap_messages = await imapFolder.FetchAsync(indexes, SummaryItems);
+                var imap_messages = imapClient.MessagesList;
 
                 FolderType folder = foldersDictionary[imapFolder].Folder;
 
@@ -337,12 +299,6 @@ namespace ASC.Mail.ImapSync
             {
                 _log.Error($"UpdateMessageFlagInDb({imapFolder.FullName}, Message.Count={indexes.Count})->{ex.Message}");
             }
-            finally
-            {
-                EventImapSemaphore.Release();
-
-                _ = ReturnImapSemaphore();
-            }
         }
 
         public async Task<bool> SynchronizeMailFolderFromImap(IMailFolder imapFolder, bool IsFirstSync=false)
@@ -355,13 +311,10 @@ namespace ASC.Mail.ImapSync
 
             _log.Debug($"SynchronizeMailFolderFromImap({imapFolder.Name}).");
 
-            await GetImapSemaphore();
-
             try
             {
-                await OpenFolderWithOutWaiter(imapFolder);
 
-                var imap_messages = (await imapFolder.FetchAsync(1, -1, SummaryItems));//.OrderBy(x=>x.UniqueId.Id).Take(_mailSettings.ImapMessagePerFolder);
+                var imap_messages = imapClient.MessagesList;
 
                 var imap_SplittedUids = imap_messages.Select(x => new SplittedUidl(dbFolder.Folder, x.UniqueId)).ToList();
 
@@ -395,40 +348,8 @@ namespace ASC.Mail.ImapSync
                         continue;
                     }
 
-                    string md5 = await GetMessageMD5FromIMAP(imap_message, imapFolder);
-
-                    _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, Try find by md5={md5}.");
-
-                    var expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId,true)
-                        .SetMd5(md5)
-                        .SetMailboxId(Account.MailBoxId);
-
-                    db_message = _mailInfoDao.GetMailInfoList(expMd5.Build()).FirstOrDefault();
-
-                    if (db_message == null)
-                    {
-                        expMd5 = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId, true)
-                            .SetMd5(md5)
-                            .SetMailboxId(Account.MailBoxId);
-
-                        _log.Debug($"SynchronizeMailFolderFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, Try find in deleted.");
-
-                        db_message = _mailInfoDao.GetMailInfoList(expMd5.Build()).FirstOrDefault();
-                        if (db_message == null)
-                        {
-                            _log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} not found in DB. Try create.");
-
-                            await CreateMessageInDB(imap_message, imapFolder);
-
-                            continue;
-                        }
-
-                    }
-
                     if (db_message.IsRemoved)
                     {
-                        _log.Debug($"SynchronizeMailFolderFromImap: message {imap_message.UniqueId.Id} was remove in DB. md5={expMd5}");
-
                         var restoreQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
                             .SetMessageId(db_message.Id)
                             .Build();
@@ -466,10 +387,6 @@ namespace ASC.Mail.ImapSync
                 _log.Error($"SynchronizeMailFolderFromImap(IMailFolder={imapFolder.Name}, MailFolder={dbFolder.Name})->{ex.Message}");
 
                 return false;
-            }
-            finally
-            {
-                await ReturnImapSemaphore(!IsFirstSync);
             }
 
             return true;
