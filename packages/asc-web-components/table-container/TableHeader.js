@@ -11,6 +11,7 @@ import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
 
 const minColumnSize = 80;
+const settingsSize = 24;
 
 class TableHeader extends React.Component {
   constructor(props) {
@@ -97,7 +98,7 @@ class TableHeader extends React.Component {
     let rightColumn;
     let colIndex = index ? index : +columnIndex + 1;
 
-    while (colIndex !== this.props.columns.length - 1) {
+    while (colIndex !== this.props.columns.length) {
       rightColumn = document.getElementById("column_" + colIndex);
       if (rightColumn) {
         if (rightColumn.dataset.enable === "true") break;
@@ -112,7 +113,7 @@ class TableHeader extends React.Component {
       widths[+columnIndex] = newWidth + "px";
       widths[colIndex] = column2Width + offset + "px";
     } else {
-      if (colIndex === this.props.columns.length - 1) return false;
+      if (colIndex === this.props.columns.length) return false;
       return this.moveToRight(widths, newWidth, colIndex + 1);
     }
   };
@@ -173,7 +174,8 @@ class TableHeader extends React.Component {
       : container.style.gridTemplateColumns.split(" ");
 
     const containerWidth = +container.clientWidth;
-    const newContainerWidth = containerWidth - 32 - 80 - 24;
+    const newContainerWidth =
+      containerWidth - this.getSubstring(checkboxSize) - 80 - settingsSize; // TODO: 80
 
     const enableColumns = this.props.columns
       .filter((x) => !x.default)
@@ -210,7 +212,11 @@ class TableHeader extends React.Component {
             this.getSubstring(gridTemplateColumns[1]) +
             this.getSubstring(item) +
             "px";
-        } else if (item !== "24px" && item !== "32px" && item !== "80px") {
+        } else if (
+          item !== `${settingsSize}px` &&
+          item !== checkboxSize &&
+          item !== "80px"
+        ) {
           const percent = (this.getSubstring(item) / oldWidth) * 100;
 
           if (index == 1) {
@@ -257,7 +263,7 @@ class TableHeader extends React.Component {
         }
       }
 
-      str += "24px";
+      str += `${settingsSize}px`;
     }
     container.style.gridTemplateColumns = str;
     this.headerRef.current.style.gridTemplateColumns = str;
