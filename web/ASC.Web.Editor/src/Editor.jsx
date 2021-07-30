@@ -392,6 +392,7 @@ const Editor = () => {
       let onRequestSharingSettings;
       let onRequestRename;
       let onRequestCreateNew;
+      let onRequestSaveAs;
 
       if (
         fileInfo &&
@@ -404,6 +405,7 @@ const Editor = () => {
 
       if (successAuth) {
         onRequestCreateNew = onSDKRequestCreateNew;
+        onRequestSaveAs = onSDKRequestSaveAs;
       }
 
       const events = {
@@ -546,7 +548,7 @@ const Editor = () => {
     setIsFileDialogVisible(false);
   };
 
-  const onRequestSaveAs = (event) => {
+  const onSDKRequestSaveAs = (event) => {
     setTitleSelectorFolder(event.data.title);
     setUrlSelectorFolder(event.data.url);
 
@@ -600,13 +602,13 @@ const Editor = () => {
             />
           )}
 
-          <SelectFileDialog
+          {/* <SelectFileDialog
             onSelectFile={onSelectFile}
             isPanelVisible={isFileDialogVisible}
             onClose={onCloseFileDialog}
             foldersType="common"
             isImageOnly
-          />
+          /> */}
 
           {isFolderDialogVisible && (
             <SelectFolderDialog
