@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
 import {
@@ -16,6 +16,7 @@ const TableGroupMenu = (props) => {
     containerRef,
     onChange,
     checkboxOptions,
+    columnStorageName,
   } = props;
 
   const onCheckboxChange = (e) => {
@@ -25,6 +26,12 @@ const TableGroupMenu = (props) => {
   const width = containerRef.current
     ? containerRef.current.clientWidth + "px"
     : "100%";
+
+  useEffect(() => {
+    const storageSize = localStorage.getItem(columnStorageName);
+    if (containerRef.current)
+      containerRef.current.style.gridTemplateColumns = storageSize;
+  }, [containerRef]);
 
   return (
     <>
@@ -71,6 +78,7 @@ TableGroupMenu.propTypes = {
   onClick: PropTypes.func,
   onChange: PropTypes.func,
   containerRef: PropTypes.shape({ current: PropTypes.any }),
+  columnStorageName: PropTypes.string,
 };
 
 export default TableGroupMenu;

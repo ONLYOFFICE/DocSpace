@@ -223,6 +223,7 @@ class FilesTableHeader extends React.Component {
         isChecked={isHeaderChecked}
         isIndeterminate={isHeaderIndeterminate}
         headerMenu={getHeaderMenu(t)}
+        columnStorageName="filesColumnsSize"
       />
     ) : (
       <TableHeader

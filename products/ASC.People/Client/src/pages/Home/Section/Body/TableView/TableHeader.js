@@ -182,6 +182,7 @@ class PeopleTableHeader extends React.Component {
         isChecked={isHeaderChecked}
         isIndeterminate={isHeaderIndeterminate}
         headerMenu={getHeaderMenu(t)}
+        columnStorageName="peopleColumnsSize"
       />
     ) : (
       <StyledTableHeader
