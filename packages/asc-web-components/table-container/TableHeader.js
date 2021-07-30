@@ -118,6 +118,30 @@ class TableHeader extends React.Component {
     }
   };
 
+  addNewColumns = (gridTemplateColumns, columnIndex) => {
+    const filterColumns = this.props.columns
+      .filter((x) => x.enable)
+      .filter((x) => x.key !== this.props.columns[columnIndex - 1].key)
+      .filter((x) => !x.defaultSize);
+
+    let index = this.props.columns.length;
+    while (index !== 0) {
+      index--;
+      const someItem = this.props.columns[index];
+
+      const isFind = filterColumns.find((x) => x.key === someItem.key);
+      if (isFind) {
+        const someItemById = document.getElementById("column_" + (index + 1));
+
+        const columnSize = someItemById.clientWidth - minColumnSize;
+
+        if (columnSize >= minColumnSize) {
+          return (gridTemplateColumns[index + 1] = columnSize + "px");
+        }
+      }
+    }
+  };
+
   onMouseMove = (e) => {
     const { columnIndex } = this.state;
     const { containerRef } = this.props;
@@ -164,6 +188,8 @@ class TableHeader extends React.Component {
   onResize = () => {
     const { containerRef, columnStorageName, checkboxSize } = this.props;
 
+    let activeColumnIndex = null;
+
     const container = containerRef.current
       ? containerRef.current
       : document.getElementById("table-container");
@@ -197,7 +223,6 @@ class TableHeader extends React.Component {
       for (let index in tableContainer) {
         const item = tableContainer[index];
 
-        //TODO: need refactoring this code
         const column = document.getElementById("column_" + index);
         const enable =
           index == 0 ||
@@ -205,6 +230,7 @@ class TableHeader extends React.Component {
           (column && column.dataset.enable === "true");
 
         const isActiveNow = item === "0px" && enable;
+        if (isActiveNow) activeColumnIndex = index;
 
         if (!enable) {
           gridTemplateColumns.push("0px");
@@ -229,23 +255,18 @@ class TableHeader extends React.Component {
                 ? `${minColumnSize}px`
                 : (containerWidth * percent) / 100 + "px";
 
-            if (isActiveNow) {
-              //add logic to new columns widths
-              gridTemplateColumns[1] =
-                this.getSubstring(gridTemplateColumns[1]) -
-                this.getSubstring(newItemWidth) +
-                "px";
-            }
-
             gridTemplateColumns.push(newItemWidth);
           }
-          //TODO: need refactoring this code
         } else {
           gridTemplateColumns.push(item);
         }
-
-        str = gridTemplateColumns.join(" ");
       }
+
+      if (activeColumnIndex) {
+        this.addNewColumns(gridTemplateColumns, activeColumnIndex);
+      }
+
+      str = gridTemplateColumns.join(" ");
     } else {
       const column =
         (newContainerWidth * (isSingleTable ? 60 : 100)) / 100 + "px";
