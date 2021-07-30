@@ -10,7 +10,7 @@ import Checkbox from "../checkbox";
 import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
 
-const minColumnSize = 80;
+const minColumnSize = 90;
 const settingsSize = 24;
 
 class TableHeader extends React.Component {
@@ -75,7 +75,11 @@ class TableHeader extends React.Component {
       } else return false;
     }
 
-    if (leftColumn.clientWidth <= minColumnSize) {
+    const minSize = leftColumn.dataset.minWidth
+      ? leftColumn.dataset.minWidth
+      : minColumnSize;
+
+    if (leftColumn.clientWidth <= minSize) {
       if (colIndex === 1) return false;
       return this.moveToLeft(widths, newWidth, colIndex - 1);
     }
@@ -84,12 +88,13 @@ class TableHeader extends React.Component {
     const column2Width = this.getSubstring(widths[colIndex]);
 
     const leftColumnWidth = column2Width - offset;
-    const newLeftWidth =
-      leftColumnWidth < minColumnSize ? minColumnSize : leftColumnWidth;
+    const newLeftWidth = leftColumnWidth < minSize ? minSize : leftColumnWidth;
 
     widths[colIndex] = newLeftWidth + "px";
     widths[+columnIndex] =
-      this.getSubstring(widths[+columnIndex]) + offset + "px";
+      this.getSubstring(widths[+columnIndex]) +
+      (offset - (newLeftWidth - leftColumnWidth)) +
+      "px";
   };
 
   moveToRight = (widths, newWidth, index) => {
@@ -153,8 +158,11 @@ class TableHeader extends React.Component {
     const tableContainer = containerRef.current.style.gridTemplateColumns;
     const widths = tableContainer.split(" ");
 
-    //getSubstring(widths[+columnIndex])
-    if (newWidth <= minColumnSize) {
+    const minSize = column.dataset.minWidth
+      ? column.dataset.minWidth
+      : minColumnSize;
+
+    if (newWidth <= minSize) {
       const columnChanged = this.moveToLeft(widths, newWidth);
 
       if (!columnChanged) {

@@ -30,6 +30,7 @@ class PeopleTableHeader extends React.Component {
         default: true,
         sortBy: "AZ",
         active: true,
+        minWidth: 180,
         onClick: this.onFilter,
         onIconClick: this.onIconClick,
       },

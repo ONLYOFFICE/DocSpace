@@ -14,7 +14,7 @@ const TableHeaderCell = ({
   sortBy,
   sorted,
 }) => {
-  const { options, title, enable, active } = column;
+  const { options, title, enable, active, minWidth } = column;
 
   const isActive = column.sortBy === sortBy || active;
 
@@ -29,6 +29,7 @@ const TableHeaderCell = ({
       className="table-container_header-cell"
       id={`column_${index + 1}`}
       data-enable={enable}
+      data-min-width={minWidth}
     >
       <div className="table-container_header-item">
         {column.onClick ? (

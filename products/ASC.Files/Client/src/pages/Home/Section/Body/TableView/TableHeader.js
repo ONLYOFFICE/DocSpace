@@ -22,6 +22,7 @@ class FilesTableHeader extends React.Component {
         enable: true,
         default: true,
         sortBy: "AZ",
+        minWidth: 180,
         onClick: this.onFilter,
       },
       {
