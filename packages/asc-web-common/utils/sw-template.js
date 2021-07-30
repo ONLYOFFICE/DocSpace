@@ -3,7 +3,7 @@ importScripts(
 );
 
 workbox.setConfig({
-  debug: true,
+  debug: false,
 });
 
 // This will trigger the importScripts() for workbox.strategies and its dependencies:

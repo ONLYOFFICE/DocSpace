@@ -78,7 +78,10 @@ namespace ASC.CRM.Api
             SharingOptions = new SharingOptions();
             //            SharingOptions.PublicItems.Add(new SharingOptions.PublicItem { Id = userId, IsGroup = false });
         }
-
+        public override List<ITodo> LoadTodos(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
+        {
+            return new List<ITodo>();
+        }
         public override List<IEvent> LoadEvents(Guid userId, DateTime startDate, DateTime endDate)
         {
             var events = new List<IEvent>();

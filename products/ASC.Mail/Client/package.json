@@ -1,6 +1,6 @@
 {
   "name": "@appserver/mail",
-  "version": "0.1.10",
+  "version": "1.0.0",
   "homepage": "/products/mail",
   "id": "2a923037-8b2d-487b-9a22-5ac0918acf3f",
   "title": "ONLYOFFICE",
@@ -24,6 +24,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^3.6.0",
+    "external-remotes-plugin": "^1.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "4.5.0",
     "json-loader": "^0.5.7",

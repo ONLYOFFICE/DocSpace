@@ -3,6 +3,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
@@ -170,6 +171,7 @@ const config = {
         },
       },
     }),
+    new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
       publicPath: homepage,
