@@ -106,6 +106,7 @@ class DeleteDialogComponent extends React.Component {
       isLoading,
       unsubscribe,
       isPrivacyFolder,
+      personal,
     } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
@@ -126,6 +127,8 @@ class DeleteDialogComponent extends React.Component {
       : checkedSelections.length === 1 || isPrivacyFolder
       ? checkedSelections[0].fileExst
         ? t("MoveToTrashOneFileNote")
+        : personal
+        ? ""
         : t("MoveToTrashOneFolderNote")
       : t("MoveToTrashItemsNote");
 
@@ -231,6 +234,7 @@ export default inject(
     dialogsStore,
     filesActionsStore,
     treeFoldersStore,
+    auth,
   }) => {
     const { selection, isLoading } = filesStore;
     const { deleteAction, unsubscribeAction } = filesActionsStore;
@@ -243,6 +247,8 @@ export default inject(
       setRemoveMediaItem,
       unsubscribe,
     } = dialogsStore;
+
+    const { personal } = auth.settingsStore;
 
     return {
       selection: removeMediaItem ? [removeMediaItem] : selection,
@@ -257,6 +263,8 @@ export default inject(
       unsubscribe,
 
       setRemoveMediaItem,
+
+      personal,
     };
   }
 )(withRouter(observer(DeleteDialog)));
