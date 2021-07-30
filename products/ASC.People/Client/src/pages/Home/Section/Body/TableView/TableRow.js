@@ -27,8 +27,9 @@ const PeopleTableRow = (props) => {
     onContentRowSelect,
     groups,
     onEmailClick,
+    onUserNameClick,
   } = props;
-  const { displayName, email, role, statusType } = item;
+  const { displayName, email, role, statusType, userName } = item;
 
   const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
   const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
@@ -50,6 +51,8 @@ const PeopleTableRow = (props) => {
           fontSize="15px"
           color={nameColor}
           isTextOverflow
+          href={`/products/people/view/${userName}`}
+          onClick={onUserNameClick}
         >
           {displayName}
         </Link>
