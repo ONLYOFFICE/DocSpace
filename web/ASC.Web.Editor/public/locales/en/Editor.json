@@ -2,5 +2,7 @@
   "FileLocation": "Open file location",
   "FileName": "File name",
   "FolderForSave": "Folder for save",
-  "OpenSavedDocument": "Open saved document in new tab"
+  "OpenSavedDocument": "Open saved document in new tab",
+  "FileType": "Select files of type: images",
+  "SelectFileTitle": "Select Data Source"
 }
