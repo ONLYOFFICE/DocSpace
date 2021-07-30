@@ -22,79 +22,77 @@ class SelectFileDialogModalViewBody extends React.Component {
   }
 
   componentDidMount() {
+    const { onSetLoadingData } = this.props;
+    this.setState({ isLoadingData: true }, function () {
+      onSetLoadingData && onSetLoadingData(true);
+
+      this.trySwitch();
+    });
+  }
+  trySwitch = async () => {
     const {
       foldersType,
-      onSetLoadingData,
       onSelectFolder,
       selectedFolder,
       passedId,
     } = this.props;
-
     switch (foldersType) {
       case "common":
-        this.setState({ isLoading: true }, function () {
-          onSetLoadingData && onSetLoadingData(true);
-          SelectFolderDialog.getCommonFolders()
-            .then((commonFolder) => {
-              this.folderList = commonFolder;
-            })
-            .then(
-              () =>
-                !selectedFolder &&
-                onSelectFolder &&
-                onSelectFolder(
-                  `${
-                    selectedFolder
-                      ? selectedFolder
-                      : passedId
-                      ? passedId
-                      : this.folderList[0].id
-                  }`
-                )
-            )
-            .finally(() => {
-              onSetLoadingData && onSetLoadingData(false);
+        try {
+          this.folderList = await SelectFolderDialog.getCommonFolders();
 
-              this.setState({
-                isLoading: false,
-              });
-            });
-        });
+          !selectedFolder &&
+            onSelectFolder &&
+            onSelectFolder(
+              `${
+                selectedFolder
+                  ? selectedFolder
+                  : passedId
+                  ? passedId
+                  : this.folderList[0].id
+              }`
+            );
+        } catch (err) {
+          console.error(err);
+        }
 
+        this.loadersCompletes();
         break;
       case "third-party":
-        this.setState({ isLoading: true }, function () {
-          onSetLoadingData && onSetLoadingData(true);
-          SelectFolderDialog.getCommonThirdPartyList()
-            .then(
-              (commonThirdPartyArray) =>
-                (this.folderList = commonThirdPartyArray)
-            )
-            .then(
-              () =>
-                onSelectFolder &&
-                onSelectFolder(
-                  `${
-                    selectedFolder
-                      ? selectedFolder
-                      : passedId
-                      ? passedId
-                      : this.folderList[0].id
-                  }`
-                )
-            )
-            .finally(() => {
-              onSetLoadingData && onSetLoadingData(false);
+        try {
+          this.folderList = await SelectFolderDialog.getCommonThirdPartyList();
+          this.onSetSelectedFolder();
+        } catch (err) {
+          console.error(err);
+        }
 
-              this.setState({
-                isLoading: false,
-              });
-            });
-        });
+        this.loadersCompletes();
         break;
     }
-  }
+  };
 
+  loadersCompletes = () => {
+    const { onSetLoadingData } = this.props;
+    onSetLoadingData && onSetLoadingData(false);
+
+    this.setState({
+      isLoading: false,
+    });
+  };
+
+  onSetSelectedFolder = () => {
+    const { onSelectFolder, selectedFolder, passedId } = this.props;
+    onSelectFolder &&
+      onSelectFolder(
+        `${
+          selectedFolder
+            ? selectedFolder
+            : passedId
+            ? passedId
+            : this.folderList[0].id
+        }`
+      );
+  };
   onSelect = (folder) => {
     const { onSelectFolder, selectedKeys } = this.props;
 

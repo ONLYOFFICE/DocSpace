@@ -44,9 +44,9 @@ class SelectFileInputBody extends React.PureComponent {
       isMediaOnly,
       loadingLabel,
       header,
+      zIndex,
     } = this.props;
     const { fileName } = this.state;
-    const zIndex = 310;
 
     return (
       <StyledComponent>
@@ -95,6 +95,7 @@ SelectFileInputBody.propTypes = {
 SelectFileInputBody.defaultProps = {
   withoutProvider: false,
   isDisabled: false,
+  zIndex: 310,
 };
 
 class SelectFileInput extends React.Component {

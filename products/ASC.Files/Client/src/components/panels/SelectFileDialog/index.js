@@ -279,7 +279,7 @@ SelectFileDialogBody.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   onSelectFile: PropTypes.func.isRequired,
-  foldersType: PropTypes.oneOf(["common", "third-party"]),
+  foldersType: PropTypes.oneOf(["common", "third-party", "editor"]),
   folderId: PropTypes.string,
   withoutProvider: PropTypes.bool,
   headerName: PropTypes.string,
