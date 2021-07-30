@@ -77,7 +77,10 @@ class SelectFolderModalDialog extends React.Component {
       case "editor":
         try {
           const foldersTree = await getFoldersTree();
-          folderList = this.convertFolders(foldersTree, editorExceptions);
+          folderList = SelectFolderDialog.convertFolders(
+            foldersTree,
+            editorExceptions
+          );
           this.setBaseSettings();
         } catch (err) {
           console.error("error", err);
@@ -467,6 +470,15 @@ class SelectFolderDialog extends React.Component {
       }
     }
     return newPathParts;
+  };
+  static convertFolders = (folders, arrayOfExceptions) => {
+    let newArray = [];
+
+    for (let i = 0; i < folders.length; i++) {
+      !arrayOfExceptions.includes(folders[i].rootFolderType) &&
+        newArray.push(folders[i]);
+    }
+    return newArray;
   };
   render() {
     return (

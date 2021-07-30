@@ -11,6 +11,14 @@ import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { isArrayEqual } from "@appserver/components/utils/array";
+import { FolderType } from "@appserver/common/constants";
+import { getFoldersTree } from "@appserver/common/api/files";
+
+const editorExceptions = [
+  FolderType.Recent,
+  FolderType.TRASH,
+  FolderType.Favorites,
+];
 
 class SelectFileDialogModalViewBody extends React.Component {
   constructor(props) {
@@ -37,6 +45,20 @@ class SelectFileDialogModalViewBody extends React.Component {
       passedId,
     } = this.props;
     switch (foldersType) {
+      case "editor":
+        try {
+          const foldersTree = await getFoldersTree();
+          this.folderList = SelectFolderDialog.convertFolders(
+            foldersTree,
+            editorExceptions
+          );
+          this.onSetSelectedFolder();
+        } catch (err) {
+          console.error(err);
+        }
+
+        this.loadersCompletes();
+        break;
       case "common":
         try {
           this.folderList = await SelectFolderDialog.getCommonFolders();

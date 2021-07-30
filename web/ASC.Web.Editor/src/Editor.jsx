@@ -606,11 +606,10 @@ const Editor = () => {
             onSelectFile={onSelectFile}
             isPanelVisible={isFileDialogVisible}
             onClose={onCloseFileDialog}
-            foldersType="common"
+            foldersType="editor"
             isImageOnly
             header={<Text>{i18n.t("FileType")}</Text>}
             headerName={i18n.t("SelectFileTitle")}
-            
           />
 
           {isFolderDialogVisible && (
