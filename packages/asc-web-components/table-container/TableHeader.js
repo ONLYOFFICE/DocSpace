@@ -9,6 +9,7 @@ import {
 import Checkbox from "../checkbox";
 import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
+import { size } from "../utils/device";
 
 const minColumnSize = 90;
 const settingsSize = 24;
@@ -211,6 +212,10 @@ class TableHeader extends React.Component {
     const newContainerWidth =
       containerWidth - this.getSubstring(checkboxSize) - 80 - settingsSize; // TODO: 80
 
+    const oldWidth = tableContainer
+      .map((column) => this.getSubstring(column))
+      .reduce((x, y) => x + y);
+
     const enableColumns = this.props.columns
       .filter((x) => !x.default)
       .filter((x) => x.enable)
@@ -223,10 +228,6 @@ class TableHeader extends React.Component {
 
     if (tableContainer.length > 1) {
       const gridTemplateColumns = [];
-
-      const oldWidth = tableContainer
-        .map((column) => this.getSubstring(column))
-        .reduce((x, y) => x + y);
 
       for (let index in tableContainer) {
         const item = tableContainer[index];
@@ -299,6 +300,11 @@ class TableHeader extends React.Component {
     this.headerRef.current.style.width = containerWidth + "px";
 
     localStorage.setItem(columnStorageName, str);
+
+    const paddingSize = 24;
+    if (oldWidth < size.tablet - paddingSize) {
+      return this.onResize();
+    }
   };
 
   onChange = (checked) => {
@@ -360,6 +366,7 @@ TableHeader.propTypes = {
   sorted: PropTypes.bool,
   columnStorageName: PropTypes.string,
   checkboxSize: PropTypes.string,
+  sectionWidth: PropTypes.number,
 };
 
 export default TableHeader;
