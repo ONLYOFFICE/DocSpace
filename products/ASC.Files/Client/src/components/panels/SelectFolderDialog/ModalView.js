@@ -39,7 +39,7 @@ const SelectFolderDialogModalView = ({
 
         <ModalDialog.Body>
           <StyledSelectFolderPanel isNeedArrowIcon={isNeedArrowIcon}>
-            <div>{header} </div>
+            <div className="select-folder-modal-dialog-header">{header} </div>
             <FolderTreeBody
               isLoadingData={isLoadingData}
               folderList={folderList}
