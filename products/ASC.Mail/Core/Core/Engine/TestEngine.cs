@@ -27,21 +27,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
+using ASC.Core;
+using ASC.Data.Storage;
 using ASC.Mail.Clients;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Models;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
-using ASC.Mail.Utils;
-using MailMessage = ASC.Mail.Models.MailMessageData;
-using ASC.Core;
-using Microsoft.Extensions.Options;
-using ASC.Data.Storage;
+using ASC.Mail.Models;
 using ASC.Mail.Storage;
-using ASC.Common;
+using ASC.Mail.Utils;
+
+using Microsoft.Extensions.Options;
+
+using MailMessage = ASC.Mail.Models.MailMessageData;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -206,7 +209,7 @@ namespace ASC.Mail.Core.Engine
 
             message.IsNew = model.Unread;
 
-            var wrapper = message.ToMailWrapper(mbox.TenantId, new Guid(mbox.UserId));
+            var wrapper = message.ToMailMail(mbox.TenantId, new Guid(mbox.UserId));
 
             IndexEngine.Add(wrapper);
 
@@ -264,7 +267,7 @@ namespace ASC.Mail.Core.Engine
 
             var replyMessage = MessageEngine.GetMessage(replyId, new MailMessageData.Options());
 
-            var wrapper = replyMessage.ToMailWrapper(mbox.TenantId, new Guid(mbox.UserId));
+            var wrapper = replyMessage.ToMailMail(mbox.TenantId, new Guid(mbox.UserId));
 
             IndexEngine.Add(wrapper);
 
@@ -305,7 +308,7 @@ namespace ASC.Mail.Core.Engine
             if (!model.MailboxId.HasValue)
                 throw new ArgumentException(@"Invalid mailbox id", "mailboxId");
 
-            if(model.EmlStream == null)
+            if (model.EmlStream == null)
                 throw new ArgumentException(@"Invalid eml stream", "emlStream");
 
             var accounts = AccountEngine.GetAccountInfoList().ToAccountData().ToList();
@@ -336,7 +339,7 @@ namespace ASC.Mail.Core.Engine
             if (!add2Index)
                 return message.Id;
 
-            IndexEngine.Add(message.ToMailWrapper(mbox.TenantId, new Guid(mbox.UserId)));
+            IndexEngine.Add(message.ToMailMail(mbox.TenantId, new Guid(mbox.UserId)));
 
             return message.Id;
         }

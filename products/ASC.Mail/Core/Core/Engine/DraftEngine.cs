@@ -321,7 +321,7 @@ namespace ASC.Mail.Core.Engine
 
                         IndexEngine.Update(new List<MailMail>
                         {
-                            message.ToMailWrapper(draft.Mailbox.TenantId,
+                            message.ToMailMail(draft.Mailbox.TenantId,
                                 new Guid(draft.Mailbox.UserId))
                         });
                     }

@@ -367,13 +367,13 @@ namespace ASC.Mail.Core.Engine
 
             if (addIndex)
             {
-                IndexEngine.Add(message.ToMailWrapper(compose.Mailbox.TenantId, new Guid(compose.Mailbox.UserId)));
+                IndexEngine.Add(message.ToMailMail(compose.Mailbox.TenantId, new Guid(compose.Mailbox.UserId)));
             }
             else
             {
                 IndexEngine.Update(new List<MailMail>
                 {
-                    message.ToMailWrapper(compose.Mailbox.TenantId,
+                    message.ToMailMail(compose.Mailbox.TenantId,
                         new Guid(compose.Mailbox.UserId))
                 });
             }

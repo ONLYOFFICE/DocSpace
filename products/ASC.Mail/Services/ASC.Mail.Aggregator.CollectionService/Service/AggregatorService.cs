@@ -846,9 +846,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 log.Debug("DoOptionalOperations -> AddMessageToIndex()");
 
-                var wrapper = message.ToMailWrapper(mailbox.TenantId, new Guid(mailbox.UserId));
+                var mailMail = message.ToMailMail(mailbox.TenantId, new Guid(mailbox.UserId));
 
-                mailFactory.IndexEngine.Add(wrapper);
+                mailFactory.IndexEngine.Add(mailMail);
 
                 foreach (var tagId in tagIds)
                 {

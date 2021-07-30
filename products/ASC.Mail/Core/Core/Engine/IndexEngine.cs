@@ -32,8 +32,11 @@ using System.Linq.Expressions;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Search;
 using ASC.Mail.Models;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -44,27 +47,35 @@ namespace ASC.Mail.Core.Engine
     [Scope]
     public class IndexEngine
     {
-        private FactoryIndexer<MailMail> FactoryIndexerHelper { get; }
+        private FactoryIndexerMailMail FactoryIndexerMailMail { get; }
+        private FactoryIndexerMailContact FactoryIndexerMailContact { get; }
         private FactoryIndexer FactoryIndexerCommon { get; }
+        private FactoryIndexer Indexer { get; }
         private IServiceProvider ServiceProvider { get; }
+        public Lazy<MailDbContext> LazyMailDbContext { get; }
         private ILog Log { get; }
 
         public IndexEngine(
-            FactoryIndexer<MailMail> factoryIndexerHelper,
+            FactoryIndexerMailMail factoryIndexerMailMail,
+            FactoryIndexerMailContact factoryIndexerMailContact,
             FactoryIndexer factoryIndexerCommon,
             IServiceProvider serviceProvider,
+            DbContextManager<MailDbContext> dbContext,
             IOptionsMonitor<ILog> option)
         {
-            FactoryIndexerHelper = factoryIndexerHelper;
+            FactoryIndexerMailMail = factoryIndexerMailMail;
+            FactoryIndexerMailContact = factoryIndexerMailContact;
             FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;
+            LazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("mail"));
             Log = option.Get("ASC.Mail.IndexEngine");
         }
 
         public bool IsIndexAvailable()
         {
-            var t = ServiceProvider.GetService<MailMail>();
-            if (!FactoryIndexerHelper.Support(t))
+            var service = ServiceProvider.GetService<MailMail>();
+
+            if (!FactoryIndexerMailMail.Support(service))
             {
                 Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer<MailWrapper>.Support == false");
                 return false;
@@ -92,7 +103,6 @@ namespace ASC.Mail.Core.Engine
                     return;
 
                 var indexer = ServiceProvider.GetService<FactoryIndexer<T>>();
-
                 indexer.Index(data);
 
                 Log.InfoFormat("IndexEngine->Add<{0}>(mail Id = {1}) success", typeParameterType, data == null ? -1 : data.Id);
