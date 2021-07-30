@@ -389,10 +389,10 @@ const Editor = () => {
         goback,
       };
 
-      let onRequestSharingSettings;
-      let onRequestRename;
-      let onRequestCreateNew;
-      let onRequestSaveAs;
+      let onRequestSharingSettings,
+        onRequestRename,
+        onRequestCreateNew,
+        onRequestSaveAs;
 
       if (
         fileInfo &&
