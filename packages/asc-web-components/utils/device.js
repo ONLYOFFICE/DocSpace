@@ -29,10 +29,6 @@ export const isDesktop = () => {
   return window.innerWidth >= size.desktop;
 };
 
-export const isTabletView = () => {
-  return window.innerWidth > 1300;
-};
-
 export const isTouchDevice = !!(
   typeof window !== "undefined" &&
   typeof navigator !== "undefined" &&

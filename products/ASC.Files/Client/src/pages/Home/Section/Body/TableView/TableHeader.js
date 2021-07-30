@@ -12,7 +12,7 @@ class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, filter, withContent } = props;
+    const { t, withContent } = props;
 
     const defaultColumns = [
       {
@@ -161,6 +161,7 @@ class FilesTableHeader extends React.Component {
       getHeaderMenu,
       setSelected,
       filter,
+      sectionWidth,
     } = this.props;
 
     const { sortBy, sortOrder } = filter;
@@ -232,6 +233,7 @@ class FilesTableHeader extends React.Component {
         containerRef={containerRef}
         columns={columns}
         columnStorageName="filesColumnsSize"
+        sectionWidth={sectionWidth}
       />
     );
   }

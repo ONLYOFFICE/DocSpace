@@ -3,9 +3,9 @@ import TableHeader from "@appserver/components/table-container/TableHeader";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { FilterType } from "@appserver/common/constants";
 import DropDownItem from "@appserver/components/drop-down-item";
 import styled from "styled-components";
+import { Consumer } from "@appserver/components/utils/context";
 
 const TABLE_COLUMNS = "peopleTableColumns";
 
@@ -149,6 +149,7 @@ class PeopleTableHeader extends React.Component {
       getHeaderMenu,
       setSelected,
       filter,
+      sectionWidth,
     } = this.props;
     const { sortOrder } = filter;
 
@@ -190,6 +191,7 @@ class PeopleTableHeader extends React.Component {
         containerRef={containerRef}
         columns={columns}
         columnStorageName="peopleColumnsSize"
+        sectionWidth={sectionWidth}
       />
     );
   }

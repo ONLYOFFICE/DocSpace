@@ -10,7 +10,6 @@ import { withLayoutSize } from "@appserver/common/utils";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import { isTabletView } from "@appserver/components/utils/device";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -95,10 +94,11 @@ class SectionFilterContent extends React.Component {
 
   onChangeViewAs = (view) => {
     const { setViewAs } = this.props;
-    const tabletView = isTabletView();
+    //const tabletView = isTabletView();
 
     if (view === "row") {
-      tabletView ? setViewAs("table") : setViewAs("row");
+      //tabletView ? setViewAs("table") : setViewAs("row");
+      setViewAs("table");
     } else {
       setViewAs(view);
     }

@@ -7,9 +7,8 @@ import FilesRowContainer from "./RowsView/FilesRowContainer";
 import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
-
 import TableView from "./TableView/TableContainer";
-import { isTabletView } from "@appserver/components/utils/device";
+import { Consumer } from "@appserver/components/utils/context";
 
 let currentDroppable = null;
 
@@ -49,8 +48,6 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
 
-    window.addEventListener("resize", onResize);
-
     return () => {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
@@ -59,22 +56,8 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragover", onDragOver);
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
-
-      window.removeEventListener("resize", onResize);
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
-
-  const onResize = () => {
-    if (viewAs !== "table" && viewAs !== "row") return;
-
-    const tabletView = isTabletView();
-
-    if (tabletView) {
-      viewAs !== "table" && setViewAs("table");
-    } else {
-      viewAs !== "row" && setViewAs("row");
-    }
-  };
 
   const onMouseDown = (e) => {
     if (
@@ -194,14 +177,23 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
-  return (!fileActionId && isEmptyFilesList) || null ? (
-    <EmptyContainer />
-  ) : viewAs === "tile" ? (
-    <FilesTileContainer t={t} />
-  ) : viewAs === "table" ? (
-    <TableView tReady={tReady} />
-  ) : (
-    <FilesRowContainer tReady={tReady} />
+  return (
+    <Consumer>
+      {(context) =>
+        (!fileActionId && isEmptyFilesList) || null ? (
+          <EmptyContainer />
+        ) : viewAs === "tile" ? (
+          <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+        ) : viewAs === "table" ? (
+          <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+        ) : (
+          <FilesRowContainer
+            sectionWidth={context.sectionWidth}
+            tReady={tReady}
+          />
+        )
+      }
+    </Consumer>
   );
 };
 
