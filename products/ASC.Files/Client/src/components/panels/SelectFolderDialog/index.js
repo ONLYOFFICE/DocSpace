@@ -80,7 +80,8 @@ class SelectFolderModalDialog extends React.Component {
           folderList = this.convertFolders(foldersTree, editorExceptions);
           this.setBaseSettings();
         } catch (err) {
-          console.error("error", error);
+          console.error("error", err);
+          this.loadersCompletes();
         }
 
         break;
@@ -106,7 +107,8 @@ class SelectFolderModalDialog extends React.Component {
 
           this.setFolderInfo();
         } catch (err) {
-          console.error("error", error);
+          console.error(err);
+          this.loadersCompletes();
         }
 
         break;
@@ -114,14 +116,31 @@ class SelectFolderModalDialog extends React.Component {
       case "third-party":
         try {
           folderList = await SelectFolderDialog.getCommonThirdPartyList();
+
           this.setBaseSettings();
         } catch (err) {
-          console.error("error", error);
+          console.error(err);
+
+          this.loadersCompletes();
         }
         break;
     }
   };
 
+  loadersCompletes = () => {
+    const {
+      onSetLoadingData,
+
+      onSetLoadingInput,
+    } = this.props;
+
+    onSetLoadingData && onSetLoadingData(false);
+    onSetLoadingInput && onSetLoadingInput(false);
+
+    this.setState({
+      isLoadingData: false,
+    });
+  };
   setBaseSettings = async () => {
     const { isSetFolderImmediately } = this.state;
     const {
@@ -132,26 +151,27 @@ class SelectFolderModalDialog extends React.Component {
     } = this.props;
 
     folderList.length === 0 && this.setState({ isAvailable: false });
+
+    isSetFolderImmediately &&
+      folderList.length !== 0 &&
+      !selectedFolderId &&
+      onSelectFolder &&
+      onSelectFolder(
+        `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`
+      );
+
+    isSetFolderImmediately &&
+      folderList.length !== 0 &&
+      this.setState({
+        folderId: `${
+          selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
+        }`,
+      });
+
     try {
       this.folderTitle = await SelectFolderDialog.getFolderPath(
         id ? id : folderList[0].id
       );
-
-      isSetFolderImmediately &&
-        folderList.length !== 0 &&
-        !selectedFolderId &&
-        onSelectFolder &&
-        onSelectFolder(
-          `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`
-        );
-
-      isSetFolderImmediately &&
-        folderList.length !== 0 &&
-        this.setState({
-          folderId: `${
-            selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
-          }`,
-        });
 
       !id &&
         !selectedFolderId &&
@@ -159,18 +179,16 @@ class SelectFolderModalDialog extends React.Component {
         folderList.length !== 0 &&
         onSetBaseFolderPath &&
         onSetBaseFolderPath(this.folderTitle);
-
-      this.setFolderInfo();
     } catch (err) {
-      console.error("error", error);
+      console.error(err);
     }
+
+    this.setFolderInfo();
   };
 
   setFolderInfo = () => {
     const {
-      onSetLoadingData,
       id,
-      onSetLoadingInput,
       onSetFileName,
       fileName,
       selectedFolderId,
@@ -180,11 +198,7 @@ class SelectFolderModalDialog extends React.Component {
     fileName && onSetFileName && onSetFileName(fileName);
 
     if (!id && !selectedFolderId) {
-      onSetLoadingData && onSetLoadingData(false);
-      onSetLoadingInput && onSetLoadingInput(false);
-      this.setState({
-        isLoadingData: false,
-      });
+      this.loadersCompletes();
     }
 
     if (selectedFolderId) {
@@ -200,22 +214,14 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   setSelectedFolder = (selectedFolderId) => {
-    const {
-      onSetLoadingData,
-      onSetLoadingInput,
-      onSetBaseFolderPath,
-    } = this.props;
+    const { onSetBaseFolderPath } = this.props;
     SelectFolderDialog.getFolderPath(selectedFolderId)
       .then((folderPath) => (this.folderTitle = folderPath))
       .then(() => onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle))
 
       .catch((error) => console.log("error", error))
       .finally(() => {
-        onSetLoadingData && onSetLoadingData(false);
-        onSetLoadingInput && onSetLoadingInput(false);
-        this.setState({
-          isLoadingData: false,
-        });
+        this.loadersCompletes();
       });
   };
 
@@ -223,8 +229,6 @@ class SelectFolderModalDialog extends React.Component {
     const {
       setSelectedNode,
       setSelectedFolder,
-      onSetLoadingData,
-      onSetLoadingInput,
       onSetBaseFolderPath,
     } = this.props;
 
@@ -246,11 +250,7 @@ class SelectFolderModalDialog extends React.Component {
       })
       .catch((error) => console.log("error", error))
       .finally(() => {
-        onSetLoadingData && onSetLoadingData(false);
-        onSetLoadingInput && onSetLoadingInput(false);
-        this.setState({
-          isLoadingData: false,
-        });
+        this.loadersCompletes();
       });
   };
   convertFolders = (folders, arrayOfExceptions) => {
