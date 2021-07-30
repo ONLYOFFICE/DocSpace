@@ -25,6 +25,7 @@ const SelectFolderDialogAsideView = ({
   showButtons,
   onSave,
   headerName,
+  header,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -58,6 +59,8 @@ const SelectFolderDialogAsideView = ({
             showButtons={showButtons}
           >
             <div className="select-folder-dialog_aside_body">
+              <div>{header} </div>
+
               <FolderTreeBody
                 isLoadingData={isLoadingData}
                 folderList={folderList}

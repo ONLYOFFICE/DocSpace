@@ -322,7 +322,13 @@ class SelectFolderModalDialog extends React.Component {
       footer,
       showButtons,
     } = this.props;
-    const { isAvailable, certainFolders, folderId, displayType } = this.state;
+    const {
+      isAvailable,
+      certainFolders,
+      folderId,
+      displayType,
+      isLoadingData,
+    } = this.state;
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
@@ -343,6 +349,7 @@ class SelectFolderModalDialog extends React.Component {
         headerName={headerName}
         footer={footer}
         showButtons={showButtons}
+        isLoadingData={isLoadingData}
       />
     ) : (
       <SelectFolderDialogModalView

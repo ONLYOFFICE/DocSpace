@@ -602,15 +602,18 @@ const Editor = () => {
             />
           )}
 
-          <SelectFileDialog
-            onSelectFile={onSelectFile}
-            isPanelVisible={isFileDialogVisible}
-            onClose={onCloseFileDialog}
-            foldersType="editor"
-            isImageOnly
-            header={<Text>{i18n.t("FileType")}</Text>}
-            headerName={i18n.t("SelectFileTitle")}
-          />
+          {isFileDialogVisible && (
+            <SelectFileDialog
+              onSelectFile={onSelectFile}
+              isPanelVisible={isFileDialogVisible}
+              onClose={onCloseFileDialog}
+              foldersType="editor"
+              isImageOnly
+              header={<Text>{i18n.t("FileType")}</Text>}
+              headerName={i18n.t("SelectFileTitle")}
+              modalHeightContent="252px"
+            />
+          )}
 
           {isFolderDialogVisible && (
             <SelectFolderDialog
@@ -618,6 +621,7 @@ const Editor = () => {
               isPanelVisible={isFolderDialogVisible}
               //isSetFolderImmediately
               //id={`${fileInfo.folderId}`}
+              asideHeightContent="calc(100% - 50px)"
               onClose={onCloseFolderDialog}
               foldersType="editor"
               onSave={onClickSaveSelectFolder}

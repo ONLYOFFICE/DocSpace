@@ -547,6 +547,9 @@ const StyledSelectFolderPanel = styled.div`
     height: calc(100% - 64px);
     width: 296px;
   }
+  .files-tree-menu {
+    ${(props) => props.displayType !== "aside" && "margin-top: 16px"};
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {
