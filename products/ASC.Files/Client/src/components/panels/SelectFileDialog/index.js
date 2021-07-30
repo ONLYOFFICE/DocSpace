@@ -202,7 +202,7 @@ class SelectFileDialogBody extends React.Component {
       folderId,
       onSetFileName,
       tReady,
-      children,
+      headerName,
     } = this.props;
     const {
       isVisible,
@@ -239,7 +239,7 @@ class SelectFileDialogBody extends React.Component {
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
-        header={header}
+        headerName={headerName}
         loadingText={loadingText}
         selectedFile={selectedFile}
         folderId={folderId}
@@ -248,7 +248,7 @@ class SelectFileDialogBody extends React.Component {
         displayType={displayType}
         isTranslationsReady={tReady}
         passedId={passedId}
-        children={children}
+        header={header}
       />
     ) : (
       <SelectFileDialogModalView
@@ -265,12 +265,12 @@ class SelectFileDialogBody extends React.Component {
         loadNextPage={this.loadNextPage}
         selectedFolder={selectedFolder}
         withoutProvider={withoutProvider}
-        header={header}
+        headerName={headerName}
         loadingText={loadingText}
         selectedFile={selectedFile}
         folderId={folderId}
         passedId={passedId}
-        children={children}
+        header={header}
       />
     );
   }
@@ -282,11 +282,11 @@ SelectFileDialogBody.propTypes = {
   foldersType: PropTypes.oneOf(["common", "third-party"]),
   folderId: PropTypes.string,
   withoutProvider: PropTypes.bool,
-  header: PropTypes.string,
+  headerName: PropTypes.string,
   zIndex: PropTypes.number,
 };
 
-SelectFileDialogModalView.defaultProps = {
+SelectFileDialogBody.defaultProps = {
   folderId: "",
   header: "",
   withoutProvider: false,

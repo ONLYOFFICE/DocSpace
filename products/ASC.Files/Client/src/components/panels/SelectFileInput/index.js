@@ -34,7 +34,7 @@ class SelectFileInputBody extends React.PureComponent {
       withSubfolders,
       onSelectFile,
       folderId,
-      header,
+      headerName,
       isImageOnly,
       isArchiveOnly,
       isDocumentsOnly,
@@ -43,7 +43,7 @@ class SelectFileInputBody extends React.PureComponent {
       isTablesOnly,
       isMediaOnly,
       loadingLabel,
-      children,
+      header,
     } = this.props;
     const { fileName } = this.state;
     const zIndex = 310;
@@ -70,7 +70,7 @@ class SelectFileInputBody extends React.PureComponent {
             withSubfolders={withSubfolders}
             onSelectFile={onSelectFile}
             folderId={folderId}
-            header={header}
+            headerName={headerName}
             searchParam={searchParam}
             isImageOnly={isImageOnly}
             isArchiveOnly={isArchiveOnly}
@@ -79,7 +79,7 @@ class SelectFileInputBody extends React.PureComponent {
             isTables={isTablesOnly}
             isMediaOnly={isMediaOnly}
             loadingLabel={loadingLabel}
-            children={children}
+            header={header}
           />
         )}
       </StyledComponent>

@@ -123,12 +123,12 @@ class SelectFileDialogModalViewBody extends React.Component {
       loadingText,
       selectedFile,
       onClickSave,
-      children,
+      headerName,
     } = this.props;
 
     const { isLoading } = this.state;
 
-    const isHeaderChildren = !!children;
+    const isHeaderChildren = !!header;
 
     return (
       <StyledAsidePanel visible={isPanelVisible}>
@@ -142,13 +142,13 @@ class SelectFileDialogModalViewBody extends React.Component {
           bodyPadding="0"
         >
           <ModalDialog.Header>
-            {header ? header : t("SelectFile")}
+            {headerName ? headerName : t("SelectFile")}
           </ModalDialog.Header>
           <ModalDialog.Body className="select-file_body-modal-dialog">
             <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
               {!isLoading ? (
                 <div className="modal-dialog_body">
-                  <div className="modal-dialog_children">{children}</div>
+                  <div className="modal-dialog_children">{header}</div>
                   <div className="modal-dialog_tree-body">
                     <FolderTreeBody
                       expandedKeys={expandedKeys}

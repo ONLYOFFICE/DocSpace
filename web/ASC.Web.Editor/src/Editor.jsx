@@ -602,13 +602,16 @@ const Editor = () => {
             />
           )}
 
-          {/* <SelectFileDialog
+          <SelectFileDialog
             onSelectFile={onSelectFile}
             isPanelVisible={isFileDialogVisible}
             onClose={onCloseFileDialog}
             foldersType="common"
             isImageOnly
-          /> */}
+            header={<Text>{i18n.t("FileType")}</Text>}
+            headerName={i18n.t("SelectFileTitle")}
+            
+          />
 
           {isFolderDialogVisible && (
             <SelectFolderDialog
