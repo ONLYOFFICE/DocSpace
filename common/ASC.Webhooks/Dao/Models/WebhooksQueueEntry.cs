@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ASC.Webhooks.Dao.Models
+﻿namespace ASC.Webhooks.Dao.Models
 {
     public class WebhooksQueueEntry
     {
