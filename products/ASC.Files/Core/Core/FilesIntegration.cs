@@ -84,7 +84,7 @@ namespace ASC.Web.Files.Api
             }
         }
 
-        internal static IFileSecurity GetFileSecurity(string path)
+        public static IFileSecurity GetFileSecurity(string path)
         {
             if (string.IsNullOrEmpty(path)) return null;
 

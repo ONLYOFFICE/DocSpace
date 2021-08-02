@@ -61,6 +61,789 @@ namespace ASC.Projects.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Actions.
+        /// </summary>
+        internal static string Actions {
+            get {
+                return ResourceManager.GetString("Actions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage subscribers.
+        /// </summary>
+        internal static string AddParticipants {
+            get {
+                return ResourceManager.GetString("AddParticipants", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        internal static string All {
+            get {
+                return ResourceManager.GetString("All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All {!groups}.
+        /// </summary>
+        internal static string AllDepartments {
+            get {
+                return ResourceManager.GetString("AllDepartments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move with linked tasks.
+        /// </summary>
+        internal static string AllTaskMoveButton {
+            get {
+                return ResourceManager.GetString("AllTaskMoveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All {!users}.
+        /// </summary>
+        internal static string AllUsers {
+            get {
+                return ResourceManager.GetString("AllUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start/Stop Timer.
+        /// </summary>
+        internal static string AutoTimer {
+            get {
+                return ResourceManager.GetString("AutoTimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Time.
+        /// </summary>
+        internal static string AutoTimerLogHours {
+            get {
+                return ResourceManager.GetString("AutoTimerLogHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        internal static string AutoTimerPause {
+            get {
+                return ResourceManager.GetString("AutoTimerPause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        internal static string AutoTimerReset {
+            get {
+                return ResourceManager.GetString("AutoTimerReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        internal static string AutoTimerStart {
+            get {
+                return ResourceManager.GetString("AutoTimerStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Теamlab Projects.
+        /// </summary>
+        internal static string BannerMobileProjects {
+            get {
+                return ResourceManager.GetString("BannerMobileProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try  mobile application.
+        /// </summary>
+        internal static string BannerMobileText {
+            get {
+                return ResourceManager.GetString("BannerMobileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Color.
+        /// </summary>
+        internal static string ChangeColorCustomStatus {
+            get {
+                return ResourceManager.GetString("ChangeColorCustomStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statuses are only available to the user who created the task.
+        /// </summary>
+        internal static string ChangeCustomStatusAvailable {
+            get {
+                return ResourceManager.GetString("ChangeCustomStatusAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Icon.
+        /// </summary>
+        internal static string ChangeIconCustomStatus {
+            get {
+                return ResourceManager.GetString("ChangeIconCustomStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide.
+        /// </summary>
+        internal static string Collapse {
+            get {
+                return ResourceManager.GetString("Collapse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Common Settings.
+        /// </summary>
+        internal static string CommonSettings {
+            get {
+                return ResourceManager.GetString("CommonSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        internal static string Copy {
+            get {
+                return ResourceManager.GetString("Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        internal static string CreateNewButton {
+            get {
+                return ResourceManager.GetString("CreateNewButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start New Project.
+        /// </summary>
+        internal static string CreateProjectButtonText {
+            get {
+                return ResourceManager.GetString("CreateProjectButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        internal static string CustomStatusCategory {
+            get {
+                return ResourceManager.GetString("CustomStatusCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        internal static string CustomStatusDescription {
+            get {
+                return ResourceManager.GetString("CustomStatusDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set necessary order for the task statuses. Each category must have at least one status..
+        /// </summary>
+        internal static string CustomStatusDescriptionBox {
+            get {
+                return ResourceManager.GetString("CustomStatusDescriptionBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Status.
+        /// </summary>
+        internal static string CustomStatusNew {
+            get {
+                return ResourceManager.GetString("CustomStatusNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        internal static string CustomStatusTitle {
+            get {
+                return ResourceManager.GetString("CustomStatusTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Design project hierarchy.
+        /// </summary>
+        internal static string DashboardDesignProjectHierarchy {
+            get {
+                return ResourceManager.GetString("DashboardDesignProjectHierarchy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create projects and milestones..
+        /// </summary>
+        internal static string DashboardDesignProjectHierarchyFirstLine {
+            get {
+                return ResourceManager.GetString("DashboardDesignProjectHierarchyFirstLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign tasks/subtasks. Mark tasks with custom statuses..
+        /// </summary>
+        internal static string DashboardDesignProjectHierarchySecondLine {
+            get {
+                return ResourceManager.GetString("DashboardDesignProjectHierarchySecondLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set deadlines and priorities..
+        /// </summary>
+        internal static string DashboardDesignProjectHierarchyThirdLine {
+            get {
+                return ResourceManager.GetString("DashboardDesignProjectHierarchyThirdLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage access rights.
+        /// </summary>
+        internal static string DashboardManageAccessRights {
+            get {
+                return ResourceManager.GetString("DashboardManageAccessRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create private projects..
+        /// </summary>
+        internal static string DashboardManageAccessRightsFirstLine {
+            get {
+                return ResourceManager.GetString("DashboardManageAccessRightsFirstLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restrict access to milestones, tasks, docs, discussions..
+        /// </summary>
+        internal static string DashboardManageAccessRightsSecondLine {
+            get {
+                return ResourceManager.GetString("DashboardManageAccessRightsSecondLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose who can create new projects - admins or all users..
+        /// </summary>
+        internal static string DashboardManageAccessRightsThirdLine {
+            get {
+                return ResourceManager.GetString("DashboardManageAccessRightsThirdLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track time and progress.
+        /// </summary>
+        internal static string DashboardTrackTimeAndProgress {
+            get {
+                return ResourceManager.GetString("DashboardTrackTimeAndProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schedule your project with Gantt Chart..
+        /// </summary>
+        internal static string DashboardTrackTimeAndProgressFirstLine {
+            get {
+                return ResourceManager.GetString("DashboardTrackTimeAndProgressFirstLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track time spent on specific tasks..
+        /// </summary>
+        internal static string DashboardTrackTimeAndProgressSecondLine {
+            get {
+                return ResourceManager.GetString("DashboardTrackTimeAndProgressSecondLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically generate progress reports..
+        /// </summary>
+        internal static string DashboardTrackTimeAndProgressThirdLine {
+            get {
+                return ResourceManager.GetString("DashboardTrackTimeAndProgressThirdLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use more tools.
+        /// </summary>
+        internal static string DashboardUseMoreTools {
+            get {
+                return ResourceManager.GetString("DashboardUseMoreTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create discussions and projects templates..
+        /// </summary>
+        internal static string DashboardUseMoreToolsFirstLine {
+            get {
+                return ResourceManager.GetString("DashboardUseMoreToolsFirstLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach documents, spreadsheets, and presentations..
+        /// </summary>
+        internal static string DashboardUseMoreToolsSecondLine {
+            get {
+                return ResourceManager.GetString("DashboardUseMoreToolsSecondLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work with your projects on iOS devices..
+        /// </summary>
+        internal static string DashboardUseMoreToolsThirdLine {
+            get {
+                return ResourceManager.GetString("DashboardUseMoreToolsThirdLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        internal static string Date {
+            get {
+                return ResourceManager.GetString("Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        internal static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        internal static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documents.
+        /// </summary>
+        internal static string DocsModuleTitle {
+            get {
+                return ResourceManager.GetString("DocsModuleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link or add contact.
+        /// </summary>
+        internal static string EmptyScreenContactsButton {
+            get {
+                return ResourceManager.GetString("EmptyScreenContactsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the existing CRM contacts from the list to link them with the project you manage, or add new contacts. Edit the contacts personal information. A deeper integration with the CRM will help you manage your work more efficiently..
+        /// </summary>
+        internal static string EmptyScreenContactsDescribe {
+            get {
+                return ResourceManager.GetString("EmptyScreenContactsDescribe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The contact list is empty.
+        /// </summary>
+        internal static string EmptyScreenContasctsHeader {
+            get {
+                return ResourceManager.GetString("EmptyScreenContasctsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each status must have a title.
+        /// </summary>
+        internal static string EmptyStatusTitle {
+            get {
+                return ResourceManager.GetString("EmptyStatusTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no projects matching this filter.
+        /// </summary>
+        internal static string Filter_NoProjects {
+            get {
+                return ResourceManager.GetString("Filter_NoProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Follow.
+        /// </summary>
+        internal static string Follow {
+            get {
+                return ResourceManager.GetString("Follow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check this box if you are not a manager of the project you are creating but wish to track all the changes within it. The information about all the newly created milestones, tasks and discussions will be included into the daily What&apos;s new notification..
+        /// </summary>
+        internal static string HelpAnswerFollowProject {
+            get {
+                return ResourceManager.GetString("HelpAnswerFollowProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {1}Private Project{2} is a way to restrict the access to your project so that only your team members could access it.{0} Saving your project as a private also allows you to set access rights for each teammate inside this project..
+        /// </summary>
+        internal static string HelpAnswerPrivateProject {
+            get {
+                return ResourceManager.GetString("HelpAnswerPrivateProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {1}Private Project{2} is a way to restrict the access to your project so that only your team members could access it..
+        /// </summary>
+        internal static string HelpAnswerPrivateProjectTeam {
+            get {
+                return ResourceManager.GetString("HelpAnswerPrivateProjectTeam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Key milestone is used to create a milestone that you consider to be more important than others.{0} All the key milestones are marked by the red key icon placed near its title..
+        /// </summary>
+        internal static string HelpAnswerProjectMilestone {
+            get {
+                return ResourceManager.GetString("HelpAnswerProjectMilestone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can switch between three project status:{0}{1}Active.{2} All the created projects you are currently working on are marked as active until you do not decide to pause or complete them.{0}{1}Paused.{2} If you decide to temporarily suspend the work on your project, change its status to Paused. To resume the project just make it active setting the corresponding status.{0}{1}Closed.{2} When the work on the project is done and all the tasks are closed, complete your project changing its status to Closed. For f [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string HelpAnswerProjectStatus {
+            get {
+                return ResourceManager.GetString("HelpAnswerProjectStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To add members to your team right now click the {1}Manage Team{2} link and select the users you wish to add from the list.{0} You can also add/remove teammates later switching to the {1}Team{2} tab on your project {1}Overview{2} page and clicking the {1}Manage Team{2} button..
+        /// </summary>
+        internal static string HelpAnswerProjectTeam {
+            get {
+                return ResourceManager.GetString("HelpAnswerProjectTeam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By default, each project team member can view all content inside the selected project: milestones, tasks, documents and discussions. To restrict the access just select the teammate you wish to set access rights for and click one of the links to the right. The same way you can set the access rights for each member of your project team unless he/she does not have portal administrator privileges. The ONLYOFFICE™ administrator has full access to all content across all projects..
+        /// </summary>
+        internal static string HelpAnswerRestrictAccessTeam {
+            get {
+                return ResourceManager.GetString("HelpAnswerRestrictAccessTeam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What does Follow this project mean?.
+        /// </summary>
+        internal static string HelpQuestionFollowProject {
+            get {
+                return ResourceManager.GetString("HelpQuestionFollowProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is a private project?.
+        /// </summary>
+        internal static string HelpQuestionPrivateProject {
+            get {
+                return ResourceManager.GetString("HelpQuestionPrivateProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What does a key milestone mean?.
+        /// </summary>
+        internal static string HelpQuestionProjectMilestone {
+            get {
+                return ResourceManager.GetString("HelpQuestionProjectMilestone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What project statuses exist?.
+        /// </summary>
+        internal static string HelpQuestionProjectStatus {
+            get {
+                return ResourceManager.GetString("HelpQuestionProjectStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to manage your team?.
+        /// </summary>
+        internal static string HelpQuestionProjectTeam {
+            get {
+                return ResourceManager.GetString("HelpQuestionProjectTeam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide.
+        /// </summary>
+        internal static string Hide {
+            get {
+                return ResourceManager.GetString("Hide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Entities In Paused Projects.
+        /// </summary>
+        internal static string HideEntitiesInPausedProjects {
+            get {
+                return ResourceManager.GetString("HideEntitiesInPausedProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This user does not receive notifications for this discussion, because the project has the private status and the user is not a member of the project team..
+        /// </summary>
+        internal static string hintSubscribersPrivateProject {
+            get {
+                return ResourceManager.GetString("hintSubscribersPrivateProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more....
+        /// </summary>
+        internal static string LearnMoreLink {
+            get {
+                return ResourceManager.GetString("LearnMoreLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        internal static string LeftMenuActiveProjects {
+            get {
+                return ResourceManager.GetString("LeftMenuActiveProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Projects I Follow.
+        /// </summary>
+        internal static string LeftMenuFollowedProjects {
+            get {
+                return ResourceManager.GetString("LeftMenuFollowedProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latest.
+        /// </summary>
+        internal static string LeftMenuLatest {
+            get {
+                return ResourceManager.GetString("LeftMenuLatest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Discussions.
+        /// </summary>
+        internal static string LeftMenuMyDiscussions {
+            get {
+                return ResourceManager.GetString("LeftMenuMyDiscussions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Projects.
+        /// </summary>
+        internal static string LeftMenuMyProjects {
+            get {
+                return ResourceManager.GetString("LeftMenuMyProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contacts.
+        /// </summary>
+        internal static string ModuleContacts {
+            get {
+                return ResourceManager.GetString("ModuleContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Projects.
+        /// </summary>
+        internal static string ModuleName {
+            get {
+                return ResourceManager.GetString("ModuleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move task.
+        /// </summary>
+        internal static string MoveTaskHeader {
+            get {
+                return ResourceManager.GetString("MoveTaskHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New comments in discussions.
+        /// </summary>
+        internal static string NewCommentForMessage {
+            get {
+                return ResourceManager.GetString("NewCommentForMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New comments in tasks.
+        /// </summary>
+        internal static string NewCommentForTask {
+            get {
+                return ResourceManager.GetString("NewCommentForTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No contact for link.
+        /// </summary>
+        internal static string NoCRMContactsForLink {
+            get {
+                return ResourceManager.GetString("NoCRMContactsForLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No data.
+        /// </summary>
+        internal static string NoData {
+            get {
+                return ResourceManager.GetString("NoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The task is linked with other tasks, in case you delete it all the links will be removed..
+        /// </summary>
+        internal static string NoteTaskHaveLinks {
+            get {
+                return ResourceManager.GetString("NoteTaskHaveLinks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove links and move.
+        /// </summary>
+        internal static string OneTaskMoveButton {
+            get {
+                return ResourceManager.GetString("OneTaskMoveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal Settings.
+        /// </summary>
+        internal static string PersonalSettings {
+            get {
+                return ResourceManager.GetString("PersonalSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note: this action cannot be undone..
+        /// </summary>
+        internal static string PopupNoteUndone {
+            get {
+                return ResourceManager.GetString("PopupNoteUndone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        internal static string Preview {
+            get {
+                return ResourceManager.GetString("Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do the same as project manager|Appoint project manager|Create and edit, delete any project|Create/edit templates.
         /// </summary>
         internal static string ProductAdminOpportunities {
@@ -111,6 +894,384 @@ namespace ASC.Projects.Resources {
         internal static string ProductUserOpportunities {
             get {
                 return ResourceManager.GetString("ProductUserOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contacts who will be linked to the project.
+        /// </summary>
+        internal static string ProjectLinkedWithContacts {
+            get {
+                return ResourceManager.GetString("ProjectLinkedWithContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Title.
+        /// </summary>
+        internal static string ProjectName {
+            get {
+                return ResourceManager.GetString("ProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read more.
+        /// </summary>
+        internal static string ReadMore {
+            get {
+                return ResourceManager.GetString("ReadMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the user from the team.
+        /// </summary>
+        internal static string RemoveMemberFromTeam {
+            get {
+                return ResourceManager.GetString("RemoveMemberFromTeam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace.
+        /// </summary>
+        internal static string Replace {
+            get {
+                return ResourceManager.GetString("Replace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Folder.
+        /// </summary>
+        internal static string ReportFolder {
+            get {
+                return ResourceManager.GetString("ReportFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reports.
+        /// </summary>
+        internal static string ReportsModuleTitle {
+            get {
+                return ResourceManager.GetString("ReportsModuleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        internal static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save &amp; Create New Task.
+        /// </summary>
+        internal static string SaveAndAddMore {
+            get {
+                return ResourceManager.GetString("SaveAndAddMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Changes.
+        /// </summary>
+        internal static string SaveChanges {
+            get {
+                return ResourceManager.GetString("SaveChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        internal static string SearchText {
+            get {
+                return ResourceManager.GetString("SearchText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select.
+        /// </summary>
+        internal static string Select {
+            get {
+                return ResourceManager.GetString("Select", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select from existing contacts or add a new one.
+        /// </summary>
+        internal static string SelectOrAddCRMContact {
+            get {
+                return ResourceManager.GetString("SelectOrAddCRMContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        internal static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Any user can create a project.
+        /// </summary>
+        internal static string SettingsWhoCanCreateProject {
+            get {
+                return ResourceManager.GetString("SettingsWhoCanCreateProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        internal static string Show {
+            get {
+                return ResourceManager.GetString("Show", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show on page.
+        /// </summary>
+        internal static string ShowOnPage {
+            get {
+                return ResourceManager.GetString("ShowOnPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Spent Billed.
+        /// </summary>
+        internal static string SpentBilledTotally {
+            get {
+                return ResourceManager.GetString("SpentBilledTotally", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Spent.
+        /// </summary>
+        internal static string SpentTotally {
+            get {
+                return ResourceManager.GetString("SpentTotally", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Page.
+        /// </summary>
+        internal static string StartPage {
+            get {
+                return ResourceManager.GetString("StartPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        internal static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscribe to comments.
+        /// </summary>
+        internal static string SubscribeOnNewComment {
+            get {
+                return ResourceManager.GetString("SubscribeOnNewComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task added.
+        /// </summary>
+        internal static string TaskAddedMessage {
+            get {
+                return ResourceManager.GetString("TaskAddedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The start date must be earlier than the due date.
+        /// </summary>
+        internal static string TaskCompareDateError {
+            get {
+                return ResourceManager.GetString("TaskCompareDateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The task you are going to move is linked with other tasks. {0} Please select one of the actions:.
+        /// </summary>
+        internal static string TaskMoveNote {
+            get {
+                return ResourceManager.GetString("TaskMoveNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Statuses.
+        /// </summary>
+        internal static string TaskStatusesSettings {
+            get {
+                return ResourceManager.GetString("TaskStatusesSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove links and update.
+        /// </summary>
+        internal static string TaskUpdateButton {
+            get {
+                return ResourceManager.GetString("TaskUpdateButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the text you want to be hidden from the feed pages and the discussion list page and click the &quot;Text Cut&quot; button..
+        /// </summary>
+        internal static string TeamlabCutText {
+            get {
+                return ResourceManager.GetString("TeamlabCutText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Cut.
+        /// </summary>
+        internal static string TeamlabCutTitle {
+            get {
+                return ResourceManager.GetString("TeamlabCutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        internal static string Time {
+            get {
+                return ResourceManager.GetString("Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Tracking.
+        /// </summary>
+        internal static string TimeTracking {
+            get {
+                return ResourceManager.GetString("TimeTracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        internal static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Today.
+        /// </summary>
+        internal static string Today {
+            get {
+                return ResourceManager.GetString("Today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        internal static string Total {
+            get {
+                return ResourceManager.GetString("Total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unfollow.
+        /// </summary>
+        internal static string Unfollow {
+            get {
+                return ResourceManager.GetString("Unfollow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlink project from contact.
+        /// </summary>
+        internal static string UnlinkProjects {
+            get {
+                return ResourceManager.GetString("UnlinkProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsubscribe from comments.
+        /// </summary>
+        internal static string UnSubscribeOnNewComment {
+            get {
+                return ResourceManager.GetString("UnSubscribeOnNewComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Deadline.
+        /// </summary>
+        internal static string UpdateDeadlineHeader {
+            get {
+                return ResourceManager.GetString("UpdateDeadlineHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The task you are going to update is linked with other tasks. {0} Please select one of the actions:.
+        /// </summary>
+        internal static string UpdateDeadlineNote {
+            get {
+                return ResourceManager.GetString("UpdateDeadlineNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hh.
+        /// </summary>
+        internal static string WatermarkHours {
+            get {
+                return ResourceManager.GetString("WatermarkHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to mm.
+        /// </summary>
+        internal static string WatermarkMinutes {
+            get {
+                return ResourceManager.GetString("WatermarkMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add comment.
+        /// </summary>
+        internal static string WriteComment {
+            get {
+                return ResourceManager.GetString("WriteComment", resourceCulture);
             }
         }
     }

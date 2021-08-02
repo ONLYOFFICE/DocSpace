@@ -120,56 +120,12 @@ namespace ASC.Files.Helpers
 
         public List<FileWrapper<T>> UploadFile(T folderId, UploadModel uploadModel)
         {
-            if (uploadModel.StoreOriginalFileFlag.HasValue)
-            {
-                FilesSettingsHelper.StoreOriginalFiles = uploadModel.StoreOriginalFileFlag.Value;
-            }
-
-            if (uploadModel.Files != null && uploadModel.Files.Any())
-            {
-                if (uploadModel.Files.Count() == 1)
-                {
-                    //Only one file. return it
-                    var postedFile = uploadModel.Files.First();
-                    return new List<FileWrapper<T>>
-                    {
-                        InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
-                    };
-                }
-                //For case with multiple files
-                return uploadModel.Files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)).ToList();
-            }
-            if (uploadModel.File != null)
-            {
-                var fileName = "file" + MimeMapping.GetExtention(uploadModel.ContentType.MediaType);
-                if (uploadModel.ContentDisposition != null)
-                {
-                    fileName = uploadModel.ContentDisposition.FileName;
-                }
-
-                return new List<FileWrapper<T>>
-                {
-                    InsertFile(folderId, uploadModel.File, fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
-                };
-            }
-            throw new InvalidOperationException("No input files");
+            return FileWrapperHelper.UploadFile(folderId, uploadModel.File, uploadModel.ContentType, uploadModel.ContentDisposition, uploadModel.Files, uploadModel.CreateNewIfExist, uploadModel.StoreOriginalFileFlag, uploadModel.KeepConvertStatus);
         }
 
         public FileWrapper<T> InsertFile(T folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
         {
-            try
-            {
-                var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
-                return FileWrapperHelper.Get(resultFile);
-            }
-            catch (FileNotFoundException e)
-            {
-                throw new ItemNotFoundException("File not found", e);
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                throw new ItemNotFoundException("Folder not found", e);
-            }
+            return FileWrapperHelper.InsertFile(folderId, file, title, createNewIfExist, keepConvertStatus);
         }
 
         public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false, bool forcesave = false)

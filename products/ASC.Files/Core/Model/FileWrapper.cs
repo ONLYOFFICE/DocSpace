@@ -27,18 +27,25 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
 
 using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common;
+using ASC.Common.Web;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
+using ASC.Files.Model;
 using ASC.Web.Api.Models;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
+
+using Microsoft.AspNetCore.Http;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
 namespace ASC.Api.Documents
@@ -157,6 +164,8 @@ namespace ASC.Api.Documents
         private CommonLinkUtility CommonLinkUtility { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileUtility FileUtility { get; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private FileUploader FileUploader { get; }
 
         public FileWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
@@ -167,7 +176,9 @@ namespace ASC.Api.Documents
             GlobalFolderHelper globalFolderHelper,
             CommonLinkUtility commonLinkUtility,
             FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility)
+            FileUtility fileUtility,
+            FilesSettingsHelper filesSettingsHelper,
+            FileUploader fileUploader)
             : base(apiDateTimeHelper, employeeWrapperHelper)
         {
             AuthContext = authContext;
@@ -177,6 +188,8 @@ namespace ASC.Api.Documents
             CommonLinkUtility = commonLinkUtility;
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
+            FilesSettingsHelper = filesSettingsHelper;
+            FileUploader = fileUploader;
         }
 
         public FileWrapper<T> Get<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -213,7 +226,7 @@ namespace ASC.Api.Documents
             return result;
         }
 
-        private FileWrapper<T> GetFileWrapper<T>(File<T> file)
+        public FileWrapper<T> GetFileWrapper<T>(File<T> file)
         {
             var result = Get<FileWrapper<T>, T>(file);
 
@@ -248,6 +261,60 @@ namespace ASC.Api.Documents
             }
 
             return result;
+        }
+
+        public List<FileWrapper<T>> UploadFile<T>(T folderId, Stream file, ContentType contentType, ContentDisposition contentDisposition, IEnumerable<IFormFile> files, bool? createNewIfExist, bool? storeOriginalFileFlag, bool keepConvertStatus)
+        {
+            if (storeOriginalFileFlag.HasValue)
+            {
+                FilesSettingsHelper.StoreOriginalFiles = storeOriginalFileFlag.Value;
+            }
+
+            if (files != null && files.Any())
+            {
+                if (files.Count() == 1)
+                {
+                    //Only one file. return it
+                    var postedFile = files.First();
+                    return new List<FileWrapper<T>>
+                    {
+                        InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, createNewIfExist, keepConvertStatus)
+                    };
+                }
+                //For case with multiple files
+                return files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, createNewIfExist, keepConvertStatus)).ToList();
+            }
+            if (file != null)
+            {
+                var fileName = "file" + MimeMapping.GetExtention(contentType.MediaType);
+                if (contentDisposition != null)
+                {
+                    fileName = contentDisposition.FileName;
+                }
+
+                return new List<FileWrapper<T>>
+                {
+                    InsertFile(folderId, file, fileName, createNewIfExist, keepConvertStatus)
+                };
+            }
+            throw new InvalidOperationException("No input files");
+        }
+
+        public FileWrapper<T> InsertFile<T>(T folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        {
+            try
+            {
+                var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
+                return Get(resultFile);
+            }
+            catch (FileNotFoundException e)
+            {
+                throw new ItemNotFoundException("File not found", e);
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                throw new ItemNotFoundException("Folder not found", e);
+            }
         }
     }
 }

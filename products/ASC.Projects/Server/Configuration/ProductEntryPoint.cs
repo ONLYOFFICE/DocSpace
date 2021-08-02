@@ -31,7 +31,7 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Projects.Resources;
 using ASC.Web.Core;
-using ASC.Web.Projects.Classes;
+using ASC.Projects.Classes;
 
 namespace ASC.Projects.Configuration
 {

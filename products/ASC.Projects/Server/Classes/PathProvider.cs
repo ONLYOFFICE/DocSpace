@@ -29,7 +29,7 @@ using System;
 using ASC.Common;
 using ASC.Core.Common;
 
-namespace ASC.Web.Projects.Classes
+namespace ASC.Projects.Classes
 {
     [Scope]
     public class PathProvider
