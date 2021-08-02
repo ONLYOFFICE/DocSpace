@@ -62,7 +62,7 @@ cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.UrlShortener/service/* "%
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.UrlShortener.Svc/service/* "%{buildroot}%{buildpath}/services/ASC.UrlShortener.Svc/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Api/service/* "%{buildroot}%{buildpath}/studio/api/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Studio/service/* "%{buildroot}%{buildpath}/studio/server/"
-cp -rf %{_builddir}/%{sourcename}/build/install/common/systemd/modules/* "%{buildroot}lib/systemd/system/"
+cp -rf %{_builddir}/%{sourcename}/build/install/common/systemd/modules/* "%{buildroot/}lib/systemd/system/"
 cp -rf %{_builddir}/%{sourcename}/build/install/docker/config/*.sql "%{buildroot}%{buildpath}/sql/"
 cp -rf %{_builddir}/%{sourcename}/build/install/common/%{product}-configuration.sh "%{buildroot}%{_bindir}/"
 cp -rf %{_builddir}/%{sourcename}/config/* "%{buildroot}%{_sysconfdir}/onlyoffice/%{product}/"
