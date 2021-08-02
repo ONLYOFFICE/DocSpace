@@ -240,8 +240,6 @@ class SectionHeaderContent extends React.Component {
     }
   };
 
-  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
-
   getContextOptionsFolder = () => {
     const { t } = this.props;
     return [
@@ -310,16 +308,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const {
-      t,
-      selectionCount,
-      isWebEditSelected,
-      isRecycleBin,
-      isPrivacy,
-      isShareFolder,
-      personal,
-      getHeaderMenu,
-    } = this.props;
+    const { t, getHeaderMenu } = this.props;
 
     const headerMenu = getHeaderMenu(t);
 
@@ -378,34 +367,6 @@ class SectionHeaderContent extends React.Component {
     ];
 
     menu = [...menu, ...headerMenu];
-
-    if (isRecycleBin) {
-      menu.push({
-        label: t("EmptyRecycleBin"),
-        onClick: this.onEmptyTrashAction,
-      });
-
-      menu.splice(4, 2, {
-        label: t("Translations:Restore"),
-        onClick: this.onMoveAction,
-      });
-
-      menu.splice(1, 1);
-    }
-
-    if (isPrivacy) {
-      menu.splice(1, 1);
-      menu.splice(2, 1);
-      menu.splice(3, 1);
-    }
-
-    if (isShareFolder) {
-      menu.splice(4, 1);
-    }
-
-    if (personal && (!isWebEditSelected || selectionCount > 1)) {
-      menu.splice(1, 1);
-    }
 
     return menu;
   };
@@ -538,7 +499,6 @@ export default inject(
     auth,
     filesStore,
     dialogsStore,
-    treeFoldersStore,
     selectedFolderStore,
     filesActionsStore,
     settingsStore,
@@ -547,27 +507,19 @@ export default inject(
       setSelected,
       fileActionStore,
       fetchFiles,
-      selection,
       filter,
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      isWebEditSelected,
       setIsLoading,
       viewAs,
     } = filesStore;
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      isShareFolder,
-    } = treeFoldersStore;
     const { setAction } = fileActionStore;
     const {
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
-      setEmptyTrashDialogVisible,
       setDeleteDialogVisible,
     } = dialogsStore;
 
@@ -579,16 +531,11 @@ export default inject(
       title: selectedFolderStore.title,
       parentId: selectedFolderStore.parentId,
       currentFolderId: selectedFolderStore.id,
-      isRecycleBin: isRecycleBinFolder,
-      isPrivacy: isPrivacyFolder,
-      isShareFolder,
       filter,
       canCreate,
-      selectionCount: selection.length,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      isWebEditSelected,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,
@@ -601,7 +548,6 @@ export default inject(
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
-      setEmptyTrashDialogVisible,
       deleteAction,
       setDeleteDialogVisible,
       downloadAction,

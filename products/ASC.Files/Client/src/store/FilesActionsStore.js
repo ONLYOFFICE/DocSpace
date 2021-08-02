@@ -637,7 +637,13 @@ class FilesActionStore {
   };
 
   getHeaderMenu = (t) => {
-    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
+    const {
+      isFavoritesFolder,
+      isRecentFolder,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isShareFolder,
+    } = this.treeFoldersStore;
     const {
       selection,
       isAccessedSelected,
@@ -652,6 +658,7 @@ class FilesActionStore {
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
+      setEmptyTrashDialogVisible,
     } = this.dialogsStore;
 
     const selectionCount = selection.length;
@@ -708,6 +715,37 @@ class FilesActionStore {
         },
       },
     ];
+
+    if (isRecycleBinFolder) {
+      headerMenu.push({
+        label: t("EmptyRecycleBin"),
+        onClick: () => setEmptyTrashDialogVisible(true),
+      });
+
+      headerMenu.splice(4, 2, {
+        label: t("Translations:Restore"),
+        onClick: () => setMoveToPanelVisible(true),
+      });
+
+      headerMenu.splice(1, 1);
+    }
+
+    if (isPrivacyFolder) {
+      headerMenu.splice(1, 1);
+      headerMenu.splice(2, 1);
+      headerMenu.splice(3, 1);
+    }
+
+    if (isShareFolder) {
+      headerMenu.splice(4, 1);
+    }
+
+    if (
+      this.authStore.settingsStore.personal &&
+      (!isWebEditSelected || selectionCount > 1)
+    ) {
+      headerMenu.splice(1, 1);
+    }
 
     return headerMenu;
   };
