@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.4" Modules="enterprise" RootPath="." Language="ru" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.5" Modules="enterprise" RootPath="." Language="ru" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_CURRENT_YEAR" Value="2021" ValueLocId="-"/>
@@ -218,6 +218,7 @@
     <ROW File="socket.json" Component_="appsettings.test.json" FileName="SOCKET~1.JSO|socket.json" Attributes="0" SourcePath="Files\config\socket.json" SelfReg="false"/>
     <ROW File="thumb.test.json" Component_="appsettings.test.json" FileName="THUMBT~1.JSO|thumb.test.json" Attributes="0" SourcePath="Files\config\thumb.test.json" SelfReg="false"/>
     <ROW File="urlshortener.test.json" Component_="appsettings.test.json" FileName="URLSHO~1.JSO|urlshortener.test.json" Attributes="0" SourcePath="Files\config\urlshortener.test.json" SelfReg="false"/>
+    <ROW File="elastic.json" Component_="appsettings.test.json" FileName="ELASTI~1.JSO|elastic.json" Attributes="0" SourcePath="Files\config\elastic.json" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -681,8 +682,10 @@
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceAppDir" TxtUpdateSet="appsettings.test.json" FindPattern="{APPDIRCONF}" ReplacePattern="[AppDirChanged]" Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceElasticHost" TxtUpdateSet="YourFile.txt" FindPattern=".Host.:.*" ReplacePattern="&quot;Host&quot;: &quot;localhost&quot;," Options="3" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
+    <ROW Key="YourFile.txt" Component="OnlyofficeWebStudio.exe" FileName="elastic.json" Directory="config_Dir" Options="25"/>
     <ROW Key="appsettings.test.json" Component="OnlyofficeWebStudio.exe" FileName="*.json" Directory="config_Dir" Options="25"/>
     <ROW Key="xml" Component="OnlyofficeWebStudio.exe" FileName="*.xml" Directory="tools_Dir" Options="25"/>
   </COMPONENT>
