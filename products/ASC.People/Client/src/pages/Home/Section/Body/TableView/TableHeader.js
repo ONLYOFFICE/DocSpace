@@ -5,7 +5,6 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import DropDownItem from "@appserver/components/drop-down-item";
 import styled from "styled-components";
-import { Consumer } from "@appserver/components/utils/context";
 
 const TABLE_COLUMNS = "peopleTableColumns";
 
@@ -138,6 +137,13 @@ class PeopleTableHeader extends React.Component {
     this.props.setSelected(key);
   };
 
+  setSelected = (checked) => {
+    const { isAdmin, setSelected } = this.props;
+    if (isAdmin) {
+      setSelected && setSelected(checked ? "all" : "none");
+    }
+  };
+
   render() {
     const { columns } = this.state;
     const {
@@ -147,7 +153,6 @@ class PeopleTableHeader extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       getHeaderMenu,
-      setSelected,
       filter,
       sectionWidth,
     } = this.props;
@@ -175,6 +180,7 @@ class PeopleTableHeader extends React.Component {
 
     return isHeaderVisible ? (
       <TableGroupMenu
+        style={{ marginLeft: 12 }}
         checkboxOptions={checkboxOptions}
         containerRef={containerRef}
         onSelect={this.onSelect}
@@ -188,7 +194,7 @@ class PeopleTableHeader extends React.Component {
       <StyledTableHeader
         checkboxSize="48px"
         sorted={sortOrder === "descending"}
-        setSelected={setSelected}
+        setSelected={this.setSelected}
         containerRef={containerRef}
         columns={columns}
         columnStorageName="peopleColumnsSize"
@@ -198,7 +204,7 @@ class PeopleTableHeader extends React.Component {
   }
 }
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const {
     selectionStore,
     headerMenuStore,
@@ -219,6 +225,7 @@ export default inject(({ peopleStore }) => {
   const { setIsLoading } = loadingStore;
 
   return {
+    isAdmin: auth.isAdmin,
     setSelected,
     isHeaderVisible,
     filter,

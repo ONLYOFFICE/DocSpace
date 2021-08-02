@@ -61,6 +61,8 @@ const TableRow = (props) => {
     onContentSelect && onContentSelect(e.target.checked, item);
   };
 
+  const renderCheckbox = Object.prototype.hasOwnProperty.call(props, "checked");
+
   return (
     <StyledTableRow
       onContextMenu={onContextMenu}
@@ -74,7 +76,7 @@ const TableRow = (props) => {
         onMouseOver={onMouseOver}
         className="table-container_row-checkbox-wrapper"
       >
-        {iconVisible ? (
+        {iconVisible || !renderCheckbox ? (
           element
         ) : (
           <Checkbox

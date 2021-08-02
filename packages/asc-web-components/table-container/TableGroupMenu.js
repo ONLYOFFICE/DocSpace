@@ -17,6 +17,7 @@ const TableGroupMenu = (props) => {
     onChange,
     checkboxOptions,
     columnStorageName,
+    ...rest
   } = props;
 
   const onCheckboxChange = (e) => {
@@ -38,6 +39,7 @@ const TableGroupMenu = (props) => {
       <StyledTableGroupMenu
         width={width}
         className="table-container_group-menu"
+        {...rest}
       >
         <Checkbox
           className="table-container_group-menu-checkbox"

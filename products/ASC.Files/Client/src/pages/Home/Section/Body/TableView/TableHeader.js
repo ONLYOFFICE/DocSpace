@@ -151,6 +151,10 @@ class FilesTableHeader extends React.Component {
     this.props.setSelected(key);
   };
 
+  setSelected = (checked) => {
+    this.props.setSelected && this.props.setSelected(checked ? "all" : "none");
+  };
+
   render() {
     const {
       t,
@@ -159,7 +163,6 @@ class FilesTableHeader extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       getHeaderMenu,
-      setSelected,
       filter,
       sectionWidth,
     } = this.props;
@@ -230,7 +233,7 @@ class FilesTableHeader extends React.Component {
         checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
-        setSelected={setSelected}
+        setSelected={this.setSelected}
         containerRef={containerRef}
         columns={columns}
         columnStorageName="filesColumnsSize"

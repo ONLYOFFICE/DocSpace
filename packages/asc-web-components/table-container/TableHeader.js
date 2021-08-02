@@ -33,11 +33,8 @@ class TableHeader extends React.Component {
     window.removeEventListener("resize", this.throttledResize);
   }
 
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.sectionWidth !== prevProps.sectionWidth &&
-      this.props.sectionWidth >= size.tablet + 24
-    ) {
+  componentDidUpdate() {
+    if (this.props.sectionWidth >= size.tablet + 24) {
       this.onResize();
     }
   }
@@ -308,7 +305,7 @@ class TableHeader extends React.Component {
   };
 
   onChange = (checked) => {
-    this.props.setSelected(checked ? "all" : "none");
+    this.props.setSelected(checked);
   };
 
   render() {
