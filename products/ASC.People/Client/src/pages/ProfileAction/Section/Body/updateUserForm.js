@@ -448,7 +448,9 @@ class UpdateUserForm extends React.Component {
 
   onSaveAvatar = (isUpdate, result, avatar) => {
     this.setState({ isLoading: true });
-    const { profile, setAvatarMax } = this.props;
+    const { profile, setAvatarMax, personal } = this.props;
+
+    console.log("profile", profile);
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
@@ -483,7 +485,7 @@ class UpdateUserForm extends React.Component {
         .then(() => {
           this.updateUserPhotoInState();
         })
-        .then(() => this.props.fetchProfile(profile.id));
+        .then(() => !personal && this.props.fetchProfile(profile.id));
     } else {
       deleteAvatar(profile.id)
         .then((response) => {
@@ -500,7 +502,7 @@ class UpdateUserForm extends React.Component {
         .then(() => {
           this.setState(this.mapPropsToState(this.props));
         })
-        .then(() => this.props.fetchProfile(profile.id));
+        .then(() => !personal && this.props.fetchProfile(profile.id));
     }
   };
 
