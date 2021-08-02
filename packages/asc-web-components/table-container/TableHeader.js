@@ -33,8 +33,13 @@ class TableHeader extends React.Component {
     window.removeEventListener("resize", this.throttledResize);
   }
 
-  componentDidUpdate() {
-    this.onResize();
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.sectionWidth !== prevProps.sectionWidth &&
+      this.props.sectionWidth >= size.tablet + 24
+    ) {
+      this.onResize();
+    }
   }
 
   getSubstring = (str) => +str.substring(0, str.length - 2);
@@ -300,11 +305,6 @@ class TableHeader extends React.Component {
     this.headerRef.current.style.width = containerWidth + "px";
 
     localStorage.setItem(columnStorageName, str);
-
-    const paddingSize = 24;
-    if (oldWidth < size.tablet - paddingSize) {
-      return this.onResize();
-    }
   };
 
   onChange = (checked) => {
