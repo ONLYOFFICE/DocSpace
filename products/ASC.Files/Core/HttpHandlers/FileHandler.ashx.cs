@@ -1060,7 +1060,14 @@ namespace ASC.Web.Files
             }
             else
             {
-                await CreateFile(context, folderId);
+                if (int.TryParse(folderId, out var id))
+                {
+                    await CreateFile(context, id);
+                }
+                else
+                {
+                    await CreateFile(context, folderId);
+                }
             }
         }
 
