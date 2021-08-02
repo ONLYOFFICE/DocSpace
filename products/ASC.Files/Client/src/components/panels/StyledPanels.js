@@ -526,7 +526,6 @@ const StyledSelectFolderPanel = styled.div`
         : props.isHeaderChildren
         ? "284px"
         : "300px"};
-    overflow: hidden;
   }
   .rc-tree-child-tree-open {
     width: fit-content;
@@ -546,13 +545,9 @@ const StyledSelectFolderPanel = styled.div`
     margin-right: 16px;
   }
   .select-folder-dialog_aside_body {
-    //margin-top: 16px;
     height: calc(100% - 64px);
     width: 296px;
   }
-  /* .files-tree-menu {
-    ${(props) => props.displayType !== "aside" && "margin-top: 16px"};
-  } */
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {
