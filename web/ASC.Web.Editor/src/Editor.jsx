@@ -26,6 +26,7 @@ import {
   getPresignedUri,
   convertFile,
   checkFillFormDraft,
+  getFileVersionInfo,
 } from "@appserver/common/api/files";
 import FilesFilter from "@appserver/common/api/files/filter";
 
@@ -442,6 +443,9 @@ const Editor = () => {
           onRequestMailMergeRecipients,
           onRequestCompareFile,
           onRequestEditRights: onSDKRequestEditRights,
+          onRequestHistory: onSDKRequestHistory,
+          onRequestHistoryClose: onSDKRequestHistoryClose,
+          onRequestHistoryData: onSDKRequestHistoryData,
         },
       };
 
@@ -452,6 +456,49 @@ const Editor = () => {
       console.log(error);
       toastr.error(error.message, null, 0, true);
     }
+  };
+  const onSDKRequestHistoryData = async (event) => {
+    var version = event.data;
+    console.log("version", version);
+    const newConfig = await openEdit(fileId, version, doc);
+    const prevConfig = await openEdit(fileId, version - 1, doc);
+    console.log("newConfig", prevConfig);
+    docEditor.setHistoryData({
+      //changesUrl: "https://example.com/url-to-changes.zip",
+      key: newConfig.document.key,
+      previous: {
+        key: prevConfig.document.key,
+        url: prevConfig.document.url,
+      },
+      url: newConfig.document.url,
+    });
+  };
+  const onSDKRequestHistoryClose = () => {
+    document.location.reload();
+  };
+
+  const onSDKRequestHistory = async (e) => {
+    console.log("request history", e);
+    let fileHistory = await getFileVersionInfo(fileId);
+    let newArr = [];
+
+    for (let i = 0; i < fileHistory.length; i++) {
+      let obj = {
+        created: fileHistory[i].created,
+        user: {
+          id: fileHistory[i].createdBy.id,
+          name: fileHistory[i].createdBy.displayName,
+        },
+        version: fileHistory[i].version,
+      };
+
+      newArr.push(obj);
+    }
+
+    docEditor.refreshHistory({
+      currentVersion: 4,
+      history: newArr,
+    });
   };
 
   const onSDKAppReady = () => {
