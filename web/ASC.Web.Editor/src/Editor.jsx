@@ -392,7 +392,8 @@ const Editor = () => {
       let onRequestSharingSettings,
         onRequestRename,
         onRequestCreateNew,
-        onRequestSaveAs;
+        onRequestSaveAs,
+        onRequestInsertImage;
 
       if (
         fileInfo &&
@@ -406,6 +407,7 @@ const Editor = () => {
       if (successAuth) {
         onRequestCreateNew = onSDKRequestCreateNew;
         onRequestSaveAs = onSDKRequestSaveAs;
+        onRequestInsertImage = onSDKRequestInsertImage;
       }
 
       const events = {
@@ -534,7 +536,7 @@ const Editor = () => {
             .catch((error) => console.log("error", error));
   };
 
-  const onRequestInsertImage = (event) => {
+  const onSDKRequestInsertImage = (event) => {
     setIsFileDialogVisible(true);
     console.log("e", event.data.c);
   };
