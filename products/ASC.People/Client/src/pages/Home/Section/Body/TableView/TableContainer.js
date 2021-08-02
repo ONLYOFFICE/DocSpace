@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
+import EmptyScreen from "../EmptyScreen";
 
 const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
   const ref = useRef(null);
@@ -16,7 +17,7 @@ const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
     }
   }, [sectionWidth]);
 
-  return (
+  return peopleList.length > 0 ? (
     <TableContainer forwardedRef={ref}>
       <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
       <TableBody>
@@ -25,6 +26,8 @@ const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
         ))}
       </TableBody>
     </TableContainer>
+  ) : (
+    <EmptyScreen />
   );
 };
 
