@@ -484,10 +484,12 @@ const Editor = () => {
 
     for (let i = 0; i < fileHistory.length; i++) {
       let obj = {
-        created: fileHistory[i].created,
+        created: `${new Date(fileHistory[i].updated).toLocaleString(
+          config.editorConfig.lang
+        )}`,
         user: {
-          id: fileHistory[i].createdBy.id,
-          name: fileHistory[i].createdBy.displayName,
+          id: fileHistory[i].updatedBy.id,
+          name: fileHistory[i].updatedBy.displayName,
         },
         version: fileHistory[i].version,
       };
