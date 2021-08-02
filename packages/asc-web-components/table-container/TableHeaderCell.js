@@ -46,7 +46,7 @@ const TableHeaderCell = ({
             </Link>
 
             <IconButton
-              onClick={column.onIconClick ? column.onIconClick : column.onClick}
+              onClick={column.onIconClick ? column.onIconClick : onClick}
               iconName="/static/images/folder arrow.react.svg"
               className="header-container-text-icon"
               size="small"
