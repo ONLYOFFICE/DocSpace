@@ -79,7 +79,8 @@ namespace ASC.Core.Data
         private MachinePseudoKeys MachinePseudoKeys { get; }
         internal TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
         internal Lazy<TenantDbContext> LazyTenantDbContext { get; set; }
-
+        internal UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
+        internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
         private static Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
         private static Expression<Func<TenantUserSecurity, Tenant>> FromTenantUserToTenant { get; set; }
 
@@ -122,10 +123,12 @@ namespace ASC.Core.Data
 
         public DbTenantService(
             DbContextManager<TenantDbContext> dbContextManager,
+            DbContextManager<UserDbContext> DbContextManager,
             TenantDomainValidator tenantDomainValidator,
             MachinePseudoKeys machinePseudoKeys)
         {
             LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
+            LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             TenantDomainValidator = tenantDomainValidator;
             MachinePseudoKeys = machinePseudoKeys;
         }
@@ -159,12 +162,12 @@ namespace ASC.Core.Data
 
             IQueryable<TenantUserSecurity> query() => TenantsQuery()
                     .Where(r => r.Status == TenantStatus.Active)
-                    .Join(TenantDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
+                    .Join(UserDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
                     {
                         tenant,
                         user
                     })
-                    .Join(TenantDbContext.UserSecurity, r => r.user.Id, r => r.UserId, (tenantUser, security) => new TenantUserSecurity
+                    .Join(UserDbContext.UserSecurity, r => r.user.Id, r => r.UserId, (tenantUser, security) => new TenantUserSecurity
                     {
                         DbTenant = tenantUser.tenant,
                         User = tenantUser.user,
@@ -214,7 +217,7 @@ namespace ASC.Core.Data
                 //old password
                 var result = q.Select(FromTenantUserToTenant).ToList();
 
-                var usersQuery = TenantDbContext.Users
+                var usersQuery = UserDbContext.Users
                     .Where(r => r.Email == login)
                     .Where(r => r.Status == EmployeeStatus.Active)
                     .Where(r => !r.Removed)

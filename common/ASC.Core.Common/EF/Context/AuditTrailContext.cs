@@ -8,7 +8,6 @@ namespace ASC.Core.Common.EF.Context
 {
     public class AuditTrailContext : BaseDbContext
     {
-        public DbSet<User> User { get; set; }
         public DbSet<LoginEvents> LoginEvents { get; set; }
         public DbSet<AuditEvent> AuditEvents { get; set; }
 
@@ -16,7 +15,6 @@ namespace ASC.Core.Common.EF.Context
         {
             ModelBuilderWrapper
             .From(modelBuilder, Provider)
-            .AddUser()
             .AddLoginEvents()
             .AddAuditEvent()
             .AddDbFunction();

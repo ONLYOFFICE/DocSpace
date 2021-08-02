@@ -45,14 +45,17 @@ namespace ASC.AuditTrail
         private MessageTarget MessageTarget { get; set; }
         private UserFormatter UserFormatter { get; set; }
         private Lazy<AuditTrailContext> LazyAuditTrailContext { get; }
+        private Lazy<UserDbContext> LazyUserDbContext { get; }
         private AuditTrailContext AuditTrailContext { get => LazyAuditTrailContext.Value; }
+        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
         private AuditActionMapper AuditActionMapper { get; }
 
-        public AuditEventsRepository(MessageTarget messageTarget, UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
+        public AuditEventsRepository(MessageTarget messageTarget, UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper, DbContextManager<UserDbContext> DbContextManager)
         {
             MessageTarget = messageTarget;
             UserFormatter = userFormatter;
             LazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value );
+            LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             AuditActionMapper = auditActionMapper;
         }
 
@@ -76,7 +79,7 @@ namespace ASC.AuditTrail
         {
             var query =
                from q in AuditTrailContext.AuditEvents
-               from p in AuditTrailContext.User.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+               from p in UserDbContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
                where q.TenantId == tenant
                orderby q.Date descending
                select new Query { AuditEvent = q, User = p };

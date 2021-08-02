@@ -47,11 +47,14 @@ namespace ASC.AuditTrail.Data
         private Lazy<AuditTrailContext> LazyAuditTrailContext { get; }
         private AuditTrailContext AuditTrailContext { get => LazyAuditTrailContext.Value; }
         private AuditActionMapper AuditActionMapper { get; }
+        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
+        private Lazy<UserDbContext> LazyUserDbContext { get; }
 
-        public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
+        public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper, DbContextManager<UserDbContext> DbContextManager)
         {
             UserFormatter = userFormatter;
             LazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value);
+            LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             AuditActionMapper = auditActionMapper;
         }
 
@@ -65,7 +68,7 @@ namespace ASC.AuditTrail.Data
         {
             var query =
                 (from b in AuditTrailContext.LoginEvents
-                 from p in AuditTrailContext.User.Where(p => b.UserId == p.Id).DefaultIfEmpty()
+                 from p in UserDbContext.Users.Where(p => b.UserId == p.Id).DefaultIfEmpty()
                  where b.TenantId == tenant
                  orderby b.Date descending
                  select new Query { LoginEvents = b, User = p })
@@ -78,7 +81,7 @@ namespace ASC.AuditTrail.Data
         {
             var query =
                 from q in AuditTrailContext.LoginEvents
-                from p in AuditTrailContext.User.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+                from p in UserDbContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
                 where q.TenantId == tenant
                 where q.Date >= fromDate
                 where q.Date <= to
