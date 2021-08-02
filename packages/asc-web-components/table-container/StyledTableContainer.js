@@ -89,6 +89,10 @@ const StyledTableGroupMenu = styled.div`
 
   ${HeaderStyles}
 
+  .table-container_group-menu-checkbox {
+    ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
+  }
+
   .table-container_group-menu_button {
     margin-right: 8px;
   }
@@ -98,6 +102,10 @@ const StyledTableHeader = styled.div`
   display: grid;
 
   ${HeaderStyles}
+
+  .table-container_header-checkbox {
+    ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
+  }
 
   .table-container_header-cell {
     overflow: hidden;

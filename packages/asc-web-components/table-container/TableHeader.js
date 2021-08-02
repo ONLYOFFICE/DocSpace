@@ -10,6 +10,7 @@ import Checkbox from "../checkbox";
 import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
 import { size } from "../utils/device";
+import TableGroupMenu from "./TableGroupMenu";
 
 const minColumnSize = 90;
 const settingsSize = 24;
@@ -21,7 +22,7 @@ class TableHeader extends React.Component {
     this.state = { columnIndex: null };
 
     this.headerRef = React.createRef();
-    this.throttledResize = throttle(this.onResize, 0);
+    this.throttledResize = throttle(this.onResize, 300);
   }
 
   componentDidMount() {
@@ -238,10 +239,10 @@ class TableHeader extends React.Component {
         const enable =
           index == 0 ||
           index == tableContainer.length - 1 ||
-          (column && column.dataset.enable === "true");
+          (column ? column.dataset.enable === "true" : item !== "0px");
 
         const isActiveNow = item === "0px" && enable;
-        if (isActiveNow) activeColumnIndex = index;
+        if (isActiveNow && column) activeColumnIndex = index;
 
         if (!enable) {
           gridTemplateColumns.push("0px");
@@ -298,8 +299,10 @@ class TableHeader extends React.Component {
       str += `${settingsSize}px`;
     }
     container.style.gridTemplateColumns = str;
-    this.headerRef.current.style.gridTemplateColumns = str;
-    this.headerRef.current.style.width = containerWidth + "px";
+    if (this.headerRef.current) {
+      this.headerRef.current.style.gridTemplateColumns = str;
+      this.headerRef.current.style.width = containerWidth + "px";
+    }
 
     localStorage.setItem(columnStorageName, str);
   };
@@ -309,46 +312,72 @@ class TableHeader extends React.Component {
   };
 
   render() {
-    const { columns, sortBy, sorted, ...rest } = this.props;
+    const {
+      columns,
+      sortBy,
+      sorted,
+      isHeaderVisible,
+      checkboxOptions,
+      containerRef,
+      onChange,
+      isChecked,
+      isIndeterminate,
+      headerMenu,
+      columnStorageName,
+      ...rest
+    } = this.props;
 
     //console.log("TABLE HEADER RENDER", columns);
 
     return (
       <>
-        <StyledTableHeader
-          className="table-container_header"
-          ref={this.headerRef}
-          {...rest}
-        >
-          <StyledTableRow>
-            <Checkbox
-              className="table-container_header-checkbox"
-              onChange={this.onChange}
-              isChecked={false}
-            />
+        {isHeaderVisible ? (
+          <TableGroupMenu
+            checkboxOptions={checkboxOptions}
+            containerRef={containerRef}
+            onChange={onChange}
+            isChecked={isChecked}
+            isIndeterminate={isIndeterminate}
+            headerMenu={headerMenu}
+            columnStorageName={columnStorageName}
+            {...rest}
+          />
+        ) : (
+          <StyledTableHeader
+            className="table-container_header"
+            ref={this.headerRef}
+            {...rest}
+          >
+            <StyledTableRow>
+              <Checkbox
+                className="table-container_header-checkbox"
+                onChange={this.onChange}
+                isChecked={false}
+              />
 
-            {columns.map((column, index) => {
-              const nextColumn = this.getNextColumn(columns, index);
-              const resizable = nextColumn ? nextColumn.resizable : false;
+              {columns.map((column, index) => {
+                const nextColumn = this.getNextColumn(columns, index);
+                const resizable = nextColumn ? nextColumn.resizable : false;
 
-              return (
-                <TableHeaderCell
-                  key={column.key}
-                  index={index}
-                  column={column}
-                  sorted={sorted}
-                  sortBy={sortBy}
-                  resizable={resizable}
-                  onMouseDown={this.onMouseDown}
-                />
-              );
-            })}
+                return (
+                  <TableHeaderCell
+                    key={column.key}
+                    index={index}
+                    column={column}
+                    sorted={sorted}
+                    sortBy={sortBy}
+                    resizable={resizable}
+                    onMouseDown={this.onMouseDown}
+                  />
+                );
+              })}
 
-            <div className="table-container_header-settings">
-              <TableSettings columns={columns} />
-            </div>
-          </StyledTableRow>
-        </StyledTableHeader>
+              <div className="table-container_header-settings">
+                <TableSettings columns={columns} />
+              </div>
+            </StyledTableRow>
+          </StyledTableHeader>
+        )}
         <StyledEmptyTableContainer />
       </>
     );
@@ -364,6 +393,13 @@ TableHeader.propTypes = {
   columnStorageName: PropTypes.string,
   checkboxSize: PropTypes.string,
   sectionWidth: PropTypes.number,
+  isHeaderVisible: PropTypes.bool,
+  checkboxOptions: PropTypes.any.isRequired,
+  isChecked: PropTypes.bool,
+  onChange: PropTypes.func,
+  isIndeterminate: PropTypes.bool,
+  headerMenu: PropTypes.arrayOf(PropTypes.object),
+  onClick: PropTypes.func,
 };
 
 export default TableHeader;

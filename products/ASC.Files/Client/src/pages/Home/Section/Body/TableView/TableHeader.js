@@ -1,6 +1,5 @@
 import React from "react";
 import TableHeader from "@appserver/components/table-container/TableHeader";
-import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { FilterType } from "@appserver/common/constants";
@@ -217,18 +216,7 @@ class FilesTableHeader extends React.Component {
       </>
     );
 
-    return isHeaderVisible ? (
-      <TableGroupMenu
-        checkboxOptions={checkboxOptions}
-        containerRef={containerRef}
-        onSelect={this.onSelect}
-        onChange={this.onChange}
-        isChecked={isHeaderChecked}
-        isIndeterminate={isHeaderIndeterminate}
-        headerMenu={getHeaderMenu(t)}
-        columnStorageName="filesColumnsSize"
-      />
-    ) : (
+    return (
       <TableHeader
         checkboxSize="32px"
         sorted={sortOrder === "descending"}
@@ -238,6 +226,12 @@ class FilesTableHeader extends React.Component {
         columns={columns}
         columnStorageName="filesColumnsSize"
         sectionWidth={sectionWidth}
+        isHeaderVisible={isHeaderVisible}
+        checkboxOptions={checkboxOptions}
+        onChange={this.onChange}
+        isChecked={isHeaderChecked}
+        isIndeterminate={isHeaderIndeterminate}
+        headerMenu={getHeaderMenu(t)}
       />
     );
   }

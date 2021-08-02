@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
-import {
-  StyledTableGroupMenu,
-  StyledEmptyTableContainer,
-} from "./StyledTableContainer";
+import { StyledTableGroupMenu } from "./StyledTableContainer";
 import Button from "../button";
 import ComboBox from "../combobox";
 
@@ -17,6 +14,7 @@ const TableGroupMenu = (props) => {
     onChange,
     checkboxOptions,
     columnStorageName,
+    checkboxMargin,
     ...rest
   } = props;
 
@@ -39,6 +37,7 @@ const TableGroupMenu = (props) => {
       <StyledTableGroupMenu
         width={width}
         className="table-container_group-menu"
+        checkboxMargin={checkboxMargin}
         {...rest}
       >
         <Checkbox
@@ -67,7 +66,6 @@ const TableGroupMenu = (props) => {
           );
         })}
       </StyledTableGroupMenu>
-      <StyledEmptyTableContainer />
     </>
   );
 };
@@ -81,6 +79,7 @@ TableGroupMenu.propTypes = {
   onChange: PropTypes.func,
   containerRef: PropTypes.shape({ current: PropTypes.any }),
   columnStorageName: PropTypes.string,
+  checkboxMargin: PropTypes.string,
 };
 
 export default TableGroupMenu;

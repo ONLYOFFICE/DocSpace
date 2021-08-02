@@ -1,18 +1,10 @@
 import React from "react";
 import TableHeader from "@appserver/components/table-container/TableHeader";
-import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import DropDownItem from "@appserver/components/drop-down-item";
-import styled from "styled-components";
 
 const TABLE_COLUMNS = "peopleTableColumns";
-
-const StyledTableHeader = styled(TableHeader)`
-  .table-container_header-checkbox {
-    margin-left: 12px;
-  }
-`;
 
 class PeopleTableHeader extends React.Component {
   constructor(props) {
@@ -178,20 +170,8 @@ class PeopleTableHeader extends React.Component {
       </>
     );
 
-    return isHeaderVisible ? (
-      <TableGroupMenu
-        style={{ marginLeft: 12 }}
-        checkboxOptions={checkboxOptions}
-        containerRef={containerRef}
-        onSelect={this.onSelect}
-        onChange={this.onChange}
-        isChecked={isHeaderChecked}
-        isIndeterminate={isHeaderIndeterminate}
-        headerMenu={getHeaderMenu(t)}
-        columnStorageName="peopleColumnsSize"
-      />
-    ) : (
-      <StyledTableHeader
+    return (
+      <TableHeader
         checkboxSize="48px"
         sorted={sortOrder === "descending"}
         setSelected={this.setSelected}
@@ -199,6 +179,13 @@ class PeopleTableHeader extends React.Component {
         columns={columns}
         columnStorageName="peopleColumnsSize"
         sectionWidth={sectionWidth}
+        isHeaderVisible={isHeaderVisible}
+        checkboxOptions={checkboxOptions}
+        onChange={this.onChange}
+        isChecked={isHeaderChecked}
+        isIndeterminate={isHeaderIndeterminate}
+        headerMenu={getHeaderMenu(t)}
+        checkboxMargin="12px"
       />
     );
   }
