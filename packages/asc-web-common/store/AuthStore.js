@@ -212,7 +212,7 @@ class AuthStore {
 
     setWithCredentialsStatus(false);
 
-    const { isDesktopClient: isDesktop } = this.settingsStore;
+    const { isDesktopClient: isDesktop, personal } = this.settingsStore;
 
     isDesktop && logoutDesktop();
 
@@ -221,7 +221,11 @@ class AuthStore {
     this.init();
 
     if (!withoutRedirect) {
-      history.push(combineUrl(proxyURL, "/login"));
+      if (personal) {
+        window.location.replace("/");
+      } else {
+        history.push(combineUrl(proxyURL, "/login"));
+      }
     }
   };
 
