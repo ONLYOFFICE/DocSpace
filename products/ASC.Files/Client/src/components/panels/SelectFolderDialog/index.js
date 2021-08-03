@@ -20,6 +20,7 @@ import SelectFolderDialogModalView from "./ModalView";
 import stores from "../../../store/index";
 import utils from "@appserver/components/utils";
 import { FolderType } from "@appserver/common/constants";
+import { isArrayEqual } from "@appserver/components/utils/array";
 import store from "studio/store";
 
 const { auth: authStore } = store;
@@ -41,11 +42,13 @@ class SelectFolderModalDialog extends React.Component {
     const isNeedFolder = id ? true : isSetFolderImmediately;
     this.state = {
       isLoadingData: false,
+      isLoading: false,
       isAvailable: true,
       certainFolders: true,
       folderId: "",
       displayType: displayType || this.getDisplayType(),
       isSetFolderImmediately: isNeedFolder,
+      canCreate: false,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.folderTitle = "";
@@ -64,6 +67,15 @@ class SelectFolderModalDialog extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    const { storeFolderId, canCreate, showButtons } = this.props;
+    if (showButtons && storeFolderId !== prevProps.storeFolderId) {
+      this.setState({
+        canCreate: canCreate,
+        isLoading: false,
+      });
+    }
+  }
   trySwitch = async () => {
     const {
       folderPath,
@@ -291,12 +303,23 @@ class SelectFolderModalDialog extends React.Component {
 
   onSelect = (folder) => {
     const { onSelectFolder, onClose, showButtons, onSetFullPath } = this.props;
+    const { folderId } = this.state;
+
+    if (isArrayEqual([+folder[0]], [folderId])) {
+      return;
+    }
 
     this.setState({
       folderId: folder[0],
     });
 
     showButtons && this.setSelectedFolderToTee(folder[0]);
+
+    showButtons &&
+      this.setState({
+        isLoading: true,
+        canCreate: false,
+      });
 
     getFolderPath(folder)
       .then(
@@ -328,7 +351,6 @@ class SelectFolderModalDialog extends React.Component {
       headerName,
       footer,
       showButtons,
-      canCreate,
     } = this.props;
     const {
       isAvailable,
@@ -336,6 +358,8 @@ class SelectFolderModalDialog extends React.Component {
       folderId,
       displayType,
       isLoadingData,
+      canCreate,
+      isLoading,
     } = this.state;
 
     return displayType === "aside" ? (
@@ -359,6 +383,7 @@ class SelectFolderModalDialog extends React.Component {
         showButtons={showButtons}
         isLoadingData={isLoadingData}
         canCreate={canCreate}
+        isLoading={isLoading}
       />
     ) : (
       <SelectFolderDialogModalView
@@ -380,6 +405,7 @@ class SelectFolderModalDialog extends React.Component {
         showButtons={showButtons}
         canCreate={canCreate}
         isLoadingData={isLoadingData}
+        isLoading={isLoading}
       />
     );
   }
@@ -416,11 +442,12 @@ const SelectFolderDialogWrapper = inject(
   ({ treeFoldersStore, selectedFolderStore, filesStore }) => {
     const { setSelectedNode } = treeFoldersStore;
     const { canCreate } = filesStore;
-    const { setSelectedFolder } = selectedFolderStore;
+    const { setSelectedFolder, id } = selectedFolderStore;
     return {
       setSelectedFolder,
       setSelectedNode,
       canCreate,
+      storeFolderId: id,
     };
   }
 )(

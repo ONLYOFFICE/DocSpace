@@ -27,6 +27,7 @@ const SelectFolderDialogAsideView = ({
   headerName,
   header,
   canCreate,
+  isLoading,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -94,7 +95,7 @@ const SelectFolderDialogAsideView = ({
                   size="big"
                   label={t("Common:CloseButton")}
                   onClick={onClose}
-                  isDisabled={isLoadingData}
+                  isDisabled={isLoadingData || isLoading}
                 />
               </div>
             )}
