@@ -26,6 +26,7 @@ const SelectFolderDialogAsideView = ({
   onSave,
   headerName,
   header,
+  canCreate,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -86,7 +87,7 @@ const SelectFolderDialogAsideView = ({
                   size="big"
                   label={t("Common:SaveButton")}
                   onClick={onSave}
-                  //isDisabled={selectedFile.length === 0}
+                  isDisabled={!canCreate}
                 />
                 <Button
                   primary

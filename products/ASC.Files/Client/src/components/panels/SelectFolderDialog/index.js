@@ -151,9 +151,14 @@ class SelectFolderModalDialog extends React.Component {
       onSetBaseFolderPath,
       id,
       selectedFolderId,
+      showButtons,
     } = this.props;
 
     folderList.length === 0 && this.setState({ isAvailable: false });
+
+    folderList.length !== 0 &&
+      showButtons &&
+      this.setSelectedFolderToTee(folderList[0].id);
 
     isSetFolderImmediately &&
       folderList.length !== 0 &&
@@ -291,6 +296,8 @@ class SelectFolderModalDialog extends React.Component {
       folderId: folder[0],
     });
 
+    showButtons && this.setSelectedFolderToTee(folder[0]);
+
     getFolderPath(folder)
       .then(
         (foldersArray) =>
@@ -321,6 +328,7 @@ class SelectFolderModalDialog extends React.Component {
       headerName,
       footer,
       showButtons,
+      canCreate,
     } = this.props;
     const {
       isAvailable,
@@ -350,6 +358,7 @@ class SelectFolderModalDialog extends React.Component {
         footer={footer}
         showButtons={showButtons}
         isLoadingData={isLoadingData}
+        canCreate={canCreate}
       />
     ) : (
       <SelectFolderDialogModalView
@@ -369,6 +378,7 @@ class SelectFolderModalDialog extends React.Component {
         headerName={headerName}
         footer={footer}
         showButtons={showButtons}
+        canCreate={canCreate}
       />
     );
   }
@@ -402,13 +412,14 @@ SelectFolderModalDialog.defaultProps = {
 };
 
 const SelectFolderDialogWrapper = inject(
-  ({ treeFoldersStore, selectedFolderStore }) => {
+  ({ treeFoldersStore, selectedFolderStore, filesStore }) => {
     const { setSelectedNode } = treeFoldersStore;
-
+    const { canCreate } = filesStore;
     const { setSelectedFolder } = selectedFolderStore;
     return {
       setSelectedFolder,
       setSelectedNode,
+      canCreate,
     };
   }
 )(

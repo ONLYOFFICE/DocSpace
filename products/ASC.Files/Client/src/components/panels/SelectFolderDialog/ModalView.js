@@ -24,6 +24,7 @@ const SelectFolderDialogModalView = ({
   headerName,
   showButtons,
   onSave,
+  canCreate,
 }) => {
   return (
     <StyledAsidePanel visible={isPanelVisible}>
@@ -31,7 +32,7 @@ const SelectFolderDialogModalView = ({
         visible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
-        {...(!header && !footer && { contentHeight: "400px" })}
+        {...(!header && !footer && { contentHeight: "416px" })}
       >
         <ModalDialog.Header>
           {headerName ? headerName : t("Translations:SelectFolder")}
@@ -63,7 +64,7 @@ const SelectFolderDialogModalView = ({
                   size="medium"
                   label={t("Common:SaveButton")}
                   onClick={onSave}
-                  //isDisabled={selectedFile.length === 0}
+                  isDisabled={!canCreate}
                 />
                 <Button
                   primary

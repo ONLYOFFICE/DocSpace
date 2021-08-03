@@ -577,8 +577,8 @@ const Editor = () => {
       "openNewTab",
       openNewTab
     );
-    const id = folderId ? folderId : null;
-    SaveAs(titleSelectorFolder, urlSelectorFolder, id, openNewTab);
+
+    SaveAs(titleSelectorFolder, urlSelectorFolder, folderId, openNewTab);
   };
 
   const onChangeInput = (e) => {
@@ -623,7 +623,7 @@ const Editor = () => {
             <SelectFolderDialog
               showButtons
               isPanelVisible={isFolderDialogVisible}
-              //isSetFolderImmediately
+              isSetFolderImmediately
               //id={`${fileInfo.folderId}`}
               asideHeightContent="calc(100% - 50px)"
               onClose={onCloseFolderDialog}
