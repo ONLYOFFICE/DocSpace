@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
 {
     [DbContext(typeof(MySqlFeedDbContext))]
-    [Migration("20210727153900_FeedDbContextMySql")]
+    [Migration("20210803211718_FeedDbContextMySql")]
     partial class FeedDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

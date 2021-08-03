@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
 {
     [DbContext(typeof(MySqlMailDbContext))]
-    [Migration("20210727154325_MailDbContextMySql")]
+    [Migration("20210803212237_MailDbContextMySql")]
     partial class MailDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

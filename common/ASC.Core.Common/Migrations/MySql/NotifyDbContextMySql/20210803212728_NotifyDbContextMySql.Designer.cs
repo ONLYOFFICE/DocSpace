@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
 {
     [DbContext(typeof(MySqlNotifyDbContext))]
-    [Migration("20210727154558_NotifyDbContextMySql")]
+    [Migration("20210803212728_NotifyDbContextMySql")]
     partial class NotifyDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

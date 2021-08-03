@@ -125,31 +125,31 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                         new
                         {
                             TenantId = 1,
-                            VisitDate = new DateTime(2021, 7, 27, 15, 59, 52, 157, DateTimeKind.Utc).AddTicks(9998),
+                            VisitDate = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(1020),
                             ProductId = "00000000-0000-0000-0000-000000000000",
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            FirstVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(2137),
-                            LastVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(2582),
+                            FirstVisitTime = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(3051),
+                            LastVisitTime = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(4096),
                             VisitCount = 3
                         },
                         new
                         {
                             TenantId = 1,
-                            VisitDate = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3001),
+                            VisitDate = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(5161),
                             ProductId = "00000000-0000-0000-0000-000000000000",
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            FirstVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3025),
-                            LastVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3027),
+                            FirstVisitTime = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(5205),
+                            LastVisitTime = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(5208),
                             VisitCount = 2
                         },
                         new
                         {
                             TenantId = 1,
-                            VisitDate = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3029),
+                            VisitDate = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(5210),
                             ProductId = "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            FirstVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3036),
-                            LastVisitTime = new DateTime(2021, 7, 27, 15, 59, 52, 158, DateTimeKind.Utc).AddTicks(3037),
+                            FirstVisitTime = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(5223),
+                            LastVisitTime = new DateTime(2021, 8, 3, 21, 38, 18, 454, DateTimeKind.Utc).AddTicks(5225),
                             VisitCount = 1
                         });
                 });

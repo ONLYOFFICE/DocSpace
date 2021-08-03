@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.AccountLinkContextMySql
 {
     [DbContext(typeof(MySqlAccountLinkContext))]
-    [Migration("20210727151709_AccountLinkContextMySql")]
+    [Migration("20210803210910_AccountLinkContextMySql")]
     partial class AccountLinkContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -3,21 +3,23 @@ using System;
 using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
+namespace ASC.Core.Common.Migrations.MySql.AuditTrailContextMySql
 {
-    [DbContext(typeof(MySqlMessagesContext))]
-    partial class MySqlMessagesContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(MySqlAuditTrailContext))]
+    [Migration("20210803211047_AuditTrailContextMySql")]
+    partial class AuditTrailContextMySql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.8");
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.LoginEvents", b =>
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.AuditEvent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,20 +41,20 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                         .HasColumnName("date");
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("varchar(20000)")
                         .HasColumnName("description")
+                        .UseCollation("utf8_general_ci")
+                        .HasCharSet("utf8");
+
+                    b.Property<string>("Initiator")
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("initiator")
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");
 
                     b.Property<string>("Ip")
                         .HasColumnType("varchar(50)")
                         .HasColumnName("ip")
-                        .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
-
-                    b.Property<string>("Login")
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("login")
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");
 
@@ -65,6 +67,12 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                     b.Property<string>("Platform")
                         .HasColumnType("varchar(200)")
                         .HasColumnName("platform")
+                        .UseCollation("utf8_general_ci")
+                        .HasCharSet("utf8");
+
+                    b.Property<string>("Target")
+                        .HasColumnType("text")
+                        .HasColumnName("target")
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");
 
@@ -81,13 +89,10 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Date")
+                    b.HasIndex("TenantId", "Date")
                         .HasDatabaseName("date");
 
-                    b.HasIndex("TenantId", "UserId")
-                        .HasDatabaseName("tenant_id");
-
-                    b.ToTable("login_events");
+                    b.ToTable("audit_events");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.VoipDbContextMySql
 {
     [DbContext(typeof(MySqlVoipDbContext))]
-    [Migration("20210727155843_VoipDbContextMySql")]
+    [Migration("20210803213656_VoipDbContextMySql")]
     partial class VoipDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
 {
     [DbContext(typeof(MySqlTelegramDbContext))]
-    [Migration("20210727154920_TelegramDbContextMySql")]
+    [Migration("20210803213120_TelegramDbContextMySql")]
     partial class TelegramDbContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

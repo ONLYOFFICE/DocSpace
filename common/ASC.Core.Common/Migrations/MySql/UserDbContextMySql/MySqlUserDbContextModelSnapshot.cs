@@ -1308,7 +1308,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                     b.HasIndex("Tenant", "UserName")
                         .HasDatabaseName("username");
 
-                    b.ToTable("core_user", t => t.ExcludeFromMigrations());
+                    b.ToTable("core_user");
 
                     b.HasData(
                         new
@@ -1318,14 +1318,14 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             CreateOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "",
                             FirstName = "Administrator",
-                            LastModified = new DateTime(2021, 7, 27, 15, 57, 26, 293, DateTimeKind.Utc).AddTicks(4647),
+                            LastModified = new DateTime(2021, 8, 3, 21, 35, 0, 522, DateTimeKind.Utc).AddTicks(6893),
                             LastName = "",
                             PhoneActivation = 0,
                             Removed = false,
                             Status = 1,
                             Tenant = 1,
                             UserName = "administrator",
-                            WorkFromDate = new DateTime(2021, 7, 27, 15, 57, 26, 293, DateTimeKind.Utc).AddTicks(3221)
+                            WorkFromDate = new DateTime(2021, 8, 3, 21, 35, 0, 522, DateTimeKind.Utc).AddTicks(5587)
                         });
                 });
 
@@ -1369,7 +1369,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("core_usergroup", t => t.ExcludeFromMigrations());
+                    b.ToTable("core_usergroup");
 
                     b.HasData(
                         new
@@ -1448,13 +1448,13 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                     b.HasIndex("Tenant")
                         .HasDatabaseName("tenant");
 
-                    b.ToTable("core_usersecurity", t => t.ExcludeFromMigrations());
+                    b.ToTable("core_usersecurity");
 
                     b.HasData(
                         new
                         {
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            LastModified = new DateTime(2021, 7, 27, 15, 57, 26, 320, DateTimeKind.Utc).AddTicks(8256),
+                            LastModified = new DateTime(2021, 8, 3, 21, 35, 0, 555, DateTimeKind.Utc).AddTicks(4764),
                             PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                             Tenant = 1
                         });

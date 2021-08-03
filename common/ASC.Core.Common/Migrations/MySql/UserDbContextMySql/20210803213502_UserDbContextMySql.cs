@@ -95,6 +95,56 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "core_user",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    tenant = table.Column<int>(type: "int", nullable: false),
+                    username = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    firstname = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    lastname = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    sex = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    bithdate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    status = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'1'"),
+                    activation_status = table.Column<int>(type: "int", nullable: false),
+                    email = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    workfromdate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    terminateddate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    title = table.Column<string>(type: "varchar(64)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    culture = table.Column<string>(type: "varchar(20)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    contacts = table.Column<string>(type: "varchar(1024)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    phone = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    phone_activation = table.Column<int>(type: "int", nullable: false),
+                    location = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    notes = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    sid = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    sso_name_id = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    sso_session_id = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    removed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    create_on = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    last_modified = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_core_user", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "core_userphoto",
                 columns: table => new
                 {
@@ -106,6 +156,56 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.userid);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "core_usergroup",
+                columns: table => new
+                {
+                    tenant = table.Column<int>(type: "int", nullable: false),
+                    userid = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    groupid = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    ref_type = table.Column<int>(type: "int", nullable: false),
+                    removed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    last_modified = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.userid, x.groupid, x.ref_type });
+                    table.ForeignKey(
+                        name: "FK_core_usergroup_core_user_userid",
+                        column: x => x.userid,
+                        principalTable: "core_user",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "core_usersecurity",
+                columns: table => new
+                {
+                    userid = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    tenant = table.Column<int>(type: "int", nullable: false),
+                    pwdhash = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    pwdhashsha512 = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    LastModified = table.Column<DateTime>(type: "timestamp", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.userid);
+                    table.ForeignKey(
+                        name: "FK_core_usersecurity_core_user_userid",
+                        column: x => x.userid,
+                        principalTable: "core_user",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -248,6 +348,21 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                     { "SetAccess", "abef62db-11a8-4673-9d32-ef1d8af19dc0", "13ff36fb-0272-4887-b416-74f52b0d0b02", -1, "email.sender|messanger.sender" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "core_user",
+                columns: new[] { "id", "activation_status", "bithdate", "contacts", "culture", "email", "firstname", "last_modified", "lastname", "location", "notes", "phone", "phone_activation", "removed", "sex", "sid", "sso_name_id", "sso_session_id", "status", "tenant", "terminateddate", "title", "username", "workfromdate" },
+                values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", 0, null, null, null, "", "Administrator", new DateTime(2021, 8, 3, 21, 35, 0, 522, DateTimeKind.Utc).AddTicks(6893), "", null, null, null, 0, false, null, null, null, null, 1, 1, null, null, "administrator", new DateTime(2021, 8, 3, 21, 35, 0, 522, DateTimeKind.Utc).AddTicks(5587) });
+
+            migrationBuilder.InsertData(
+                table: "core_usergroup",
+                columns: new[] { "groupid", "ref_type", "tenant", "userid", "removed" },
+                values: new object[] { "cd84e66b-b803-40fc-99f9-b2969a54a1de", 0, 1, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", false });
+
+            migrationBuilder.InsertData(
+                table: "core_usersecurity",
+                columns: new[] { "userid", "pwdhash", "pwdhashsha512", "tenant" },
+                values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=", null, 1 });
+
             migrationBuilder.CreateIndex(
                 name: "last_modified",
                 table: "core_group",
@@ -259,8 +374,43 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 columns: new[] { "tenant", "parentid" });
 
             migrationBuilder.CreateIndex(
+                name: "email",
+                table: "core_user",
+                column: "email");
+
+            migrationBuilder.CreateIndex(
+                name: "last_modified",
+                table: "core_user",
+                column: "last_modified");
+
+            migrationBuilder.CreateIndex(
+                name: "username",
+                table: "core_user",
+                columns: new[] { "tenant", "username" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_core_usergroup_userid",
+                table: "core_usergroup",
+                column: "userid");
+
+            migrationBuilder.CreateIndex(
+                name: "last_modified",
+                table: "core_usergroup",
+                column: "last_modified");
+
+            migrationBuilder.CreateIndex(
                 name: "tenant",
                 table: "core_userphoto",
+                column: "tenant");
+
+            migrationBuilder.CreateIndex(
+                name: "pwdhash",
+                table: "core_usersecurity",
+                column: "pwdhash");
+
+            migrationBuilder.CreateIndex(
+                name: "tenant",
+                table: "core_usersecurity",
                 column: "tenant");
         }
 
@@ -279,7 +429,16 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 name: "core_subscriptionmethod");
 
             migrationBuilder.DropTable(
+                name: "core_usergroup");
+
+            migrationBuilder.DropTable(
                 name: "core_userphoto");
+
+            migrationBuilder.DropTable(
+                name: "core_usersecurity");
+
+            migrationBuilder.DropTable(
+                name: "core_user");
         }
     }
 }
