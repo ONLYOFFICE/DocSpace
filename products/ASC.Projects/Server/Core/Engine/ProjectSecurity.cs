@@ -60,11 +60,11 @@ namespace ASC.Projects.Engine
 
         public bool IsPrivateDisabled { get; private set; }
 
-        public IProjectDao ProjectDao { get; set; }
         public UserManager UserManager { get; set; }
         public WebItemSecurity WebItemSecurity { get; set; }
         public WebItemManager WebItemManager { get; set; }
         public AuthContext AuthContext { get; set; }
+        public IDaoFactory DaoFactory { get; set; }
 
         public ProjectSecurityCommon(SecurityContext securityContext, UserManager userManager, WebItemSecurity webItemSecurity, SettingsManager settingsManager, WebItemManager webItemManager, AuthContext authContext, IDaoFactory daoFactory)
         {
@@ -80,7 +80,7 @@ namespace ASC.Projects.Engine
             IsPrivateDisabled = settingsManager.Load<TenantAccessSettings>().Anyone;
             CurrentUserIsProjectsEnabled = IsModuleEnabled(WebItemManager.ProjectsProductID, CurrentUserId);
             CurrentUserIsCRMEnabled = IsModuleEnabled(WebItemManager.CRMProductID, CurrentUserId);
-            ProjectDao = daoFactory.GetProjectDao();
+            DaoFactory = daoFactory;
         }
 
         public bool IsAdministrator(Guid userId)
@@ -168,7 +168,7 @@ namespace ASC.Projects.Engine
         public bool IsInTeam(Project project, Guid userId, bool includeAdmin = true)
         {
             var isAdmin = includeAdmin && IsAdministrator(userId);
-            return isAdmin || (project != null && ProjectDao.IsInTeam(project.ID, userId));
+            return isAdmin || (project != null && DaoFactory.GetProjectDao().IsInTeam(project.ID, userId));
         }
 
         public bool IsFollow(Project project, Guid userID)
@@ -176,7 +176,7 @@ namespace ASC.Projects.Engine
             var isAdmin = IsAdministrator(userID);
             var isPrivate = project != null && (!project.Private || isAdmin);
 
-            return isPrivate && ProjectDao.IsFollow(project.ID, userID);
+            return isPrivate && DaoFactory.GetProjectDao().IsFollow(project.ID, userID);
         }
 
         public bool GetTeamSecurity(Project project, ProjectTeamSecurity security)
@@ -187,7 +187,7 @@ namespace ASC.Projects.Engine
         public bool GetTeamSecurity(Project project, Guid userId, ProjectTeamSecurity security)
         {
             if (IsProjectManager(project, userId) || project == null || !project.Private) return true;
-            var dao = ProjectDao;
+            var dao = DaoFactory.GetProjectDao();
             var s = dao.GetTeamSecurity(project.ID, userId);
             return (s & security) != security && dao.IsInTeam(project.ID, userId);
         }
@@ -195,7 +195,7 @@ namespace ASC.Projects.Engine
         public bool GetTeamSecurityForParticipants(Project project, Guid userId, ProjectTeamSecurity security)
         {
             if (IsProjectManager(project, userId) || !project.Private) return true;
-            var s = ProjectDao.GetTeamSecurity(project.ID, userId);
+            var s = DaoFactory.GetProjectDao().GetTeamSecurity(project.ID, userId);
             return (s & security) != security;
         }
     }
@@ -206,7 +206,6 @@ namespace ASC.Projects.Engine
         internal SettingsManager SettingsManager { get; set; }
         internal WebItemSecurity WebItemSecurity { get; set; }
         internal SecurityContext SecurityContext { get; set; }
-        internal IMilestoneDao MilestoneDao { get; set; }
 
         public ProjectSecurityTemplate(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory)
         {
@@ -214,7 +213,6 @@ namespace ASC.Projects.Engine
             WebItemSecurity = webItemSecurity;
             SecurityContext = securityContext;
             Common = projectSecurityCommon;
-            MilestoneDao = daoFactory.GetMilestoneDao();
         }
 
         public virtual bool CanCreateEntities(Project project)
@@ -354,12 +352,14 @@ namespace ASC.Projects.Engine
         public ProjectSecurityProject ProjectSecurityProject { get; set; }
 
         public ProjectSecurityMilestone ProjectSecurityMilestone { get; set; }
+        public IDaoFactory DaoFactory { get; set; }
 
         public ProjectSecurityTask(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityProject projectSecurityProject, ProjectSecurityMilestone projectSecurityMilestone, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory)
             : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon, daoFactory)
         {
             ProjectSecurityProject = projectSecurityProject;
             ProjectSecurityMilestone = projectSecurityMilestone;
+            DaoFactory = daoFactory;
         }
 
         public override bool CanCreateEntities(Project project)
@@ -384,7 +384,7 @@ namespace ASC.Projects.Engine
 
             if (task.Milestone != 0 && !ProjectSecurityMilestone.CanReadEntities(task.Project, userId))
             {
-                var m = MilestoneDao.GetById(task.Milestone);
+                var m = DaoFactory.GetMilestoneDao().GetById(task.Milestone);
                 if (!ProjectSecurityMilestone.CanReadEntity(m, userId)) return false;
             }
 
@@ -437,7 +437,7 @@ namespace ASC.Projects.Engine
             if (task.Responsibles.Contains(userId)) return true;
             if (task.Milestone != 0 && !ProjectSecurityMilestone.CanReadEntities(task.Project, userId))
             {
-                var milestone = MilestoneDao.GetById(task.Milestone);
+                var milestone = DaoFactory.GetMilestoneDao().GetById(task.Milestone);
                 if (milestone.Responsible == userId)
                 {
                     return true;
@@ -542,13 +542,13 @@ namespace ASC.Projects.Engine
     public sealed class ProjectSecurityMessage : ProjectSecurityTemplate<Message>
     {
         private ProjectSecurityProject ProjectSecurityProject { get; set; }
-        private MessageEngine MessageEngine { get; set; }
+        private EngineFactory EngineFactory { get; set; }
 
         public ProjectSecurityMessage(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityProject projectSecurityProject, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory, EngineFactory engineFactory)
             : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon, daoFactory)
         {
             ProjectSecurityProject = projectSecurityProject;
-            MessageEngine = engineFactory.GetMessageEngine();
+            EngineFactory = engineFactory;
         }
 
         public override bool CanCreateEntities(Project project)
@@ -599,7 +599,7 @@ namespace ASC.Projects.Engine
             if (message.CreateBy == userId) return true;
             if (!Common.IsInTeam(message.Project, userId, false) && !Common.IsFollow(message.Project, userId)) return false;
 
-            var isSubscriber = MessageEngine.GetSubscribers(message).Any(r => new Guid(r.ID).Equals(userId));
+            var isSubscriber = EngineFactory.GetMessageEngine().GetSubscribers(message).Any(r => new Guid(r.ID).Equals(userId));
             return isSubscriber && Common.GetTeamSecurityForParticipants(message.Project, userId, ProjectTeamSecurity.Messages);
         }
 
@@ -668,7 +668,7 @@ namespace ASC.Projects.Engine
             return timeSpend != null && Common.Can() && Common.IsProjectManager(timeSpend.Task.Project);
         }
     }
-
+    [Scope]
     public class ProjectSecurity
     {
         private IServiceProvider ServiceProvider { get; set; }

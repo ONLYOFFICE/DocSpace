@@ -79,10 +79,10 @@ namespace ASC.Projects.Data.DAO
     {
         private TenantUtil TenantUtil { get; set; }
         private FactoryIndexer<DbMessage> FactoryIndexer { get; set; }
-        private IProjectDao ProjectDao { get; set; }
         private SettingsManager SettingsManager { get; set; }
         private NotifySource NotifySource { get; set; }
         private FilterHelper FilerHelper { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
 
 
         public MessageDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbMessage> factoryIndexer, IDaoFactory daoFactory, SettingsManager settingsManager, TenantManager tenantManager)
@@ -90,8 +90,8 @@ namespace ASC.Projects.Data.DAO
         {
             TenantUtil = tenantUtil;
             FactoryIndexer = factoryIndexer;
-            ProjectDao = daoFactory.GetProjectDao();
             SettingsManager = settingsManager;
+            DaoFactory = daoFactory;
         }
 
         public List<Message> GetAll()
@@ -403,7 +403,7 @@ namespace ASC.Projects.Data.DAO
         {
             return new Message
             {
-                Project = project != null ? ProjectDao.ToProject(project) : null,
+                Project = project != null ? DaoFactory.GetProjectDao().ToProject(project) : null,
                 ID = message.Id,
                 Title = message.Title,
                 Status = (MessageStatus)message.Status,

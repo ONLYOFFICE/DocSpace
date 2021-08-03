@@ -76,23 +76,21 @@ namespace ASC.Projects.Data.DAO
     [Scope]
     public class TaskDao : BaseDao, ITaskDao
     {
-        private ISubtaskDao SubtaskDao { get; }
         private TenantUtil TenantUtil { get; set; }
         private FactoryIndexer<DbTask> FactoryIndexerTask { get; set; }
         private FactoryIndexer<DbSubtask> FactoryIndexerSubTask { get; set; }
-        private IProjectDao ProjectDao { get; set; }
         private SettingsManager SettingsManager { get; set; }
         private FilterHelper FilterHelper { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
 
         public TaskDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbTask> factoryIndexerTask, FactoryIndexer<DbSubtask> factoryIndexerSubTask, IDaoFactory daoFactory, SettingsManager settingsManager, FilterHelper filterHelper, TenantManager tenantManager) : base(securityContext, dbContextManager, tenantManager)
         {
             TenantUtil = tenantUtil;
             FactoryIndexerTask = factoryIndexerTask;
             FactoryIndexerSubTask = factoryIndexerSubTask;
-            ProjectDao = daoFactory.GetProjectDao();
-            SubtaskDao = daoFactory.GetSubtaskDao();
             SettingsManager = settingsManager;
             FilterHelper = filterHelper;
+            DaoFactory = daoFactory;
         }
 
 
@@ -422,7 +420,7 @@ namespace ASC.Projects.Data.DAO
         {
             var id = task.ID;
             task.Links.ForEach(RemoveLink);
-            task.SubTasks.ForEach(subTask => SubtaskDao.Delete(subTask.ID));
+            task.SubTasks.ForEach(subTask => DaoFactory.GetSubtaskDao().Delete(subTask.ID));
             var comments = WebProjectsContext.Comment.Where(c => c.TargetUniqId == task.UniqID).ToList();
             WebProjectsContext.Comment.RemoveRange(comments);
             var taskResponsibles = WebProjectsContext.TasksResponsible.Where(tr => tr.TaskId == id).ToList();
@@ -865,7 +863,7 @@ namespace ASC.Projects.Data.DAO
             var startDate = query.Task.StartDate;
             var task = new Task
             {
-                Project = query.Project != null ? ProjectDao.ToProject(query.Project) : null,
+                Project = query.Project != null ? DaoFactory.GetProjectDao().ToProject(query.Project) : null,
                 ID = query.Task.Id,
                 Title = query.Task.Title,
                 CreateBy = ToGuid(query.Task.CreateBy),

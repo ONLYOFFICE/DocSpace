@@ -42,16 +42,14 @@ namespace ASC.Projects.Engine
         private IDaoFactory DaoFactory { get; set; }
         private GlobalFolderHelper GlobalFolderHelper { get; set; }
         private SecurityContext SecurityContext { get; set; }
-        private IFileSecurityProvider FileSecurityProvider { get; set; }
 
-        public FileEngine(FilesIntegration filesIntegration, IDaoFactory daoFactory, GlobalFolderHelper globalFolderHelper, SecurityContext securityContext, SecurityAdapterProvider securityAdapterProvider, IFileSecurityProvider fileSecurityProvider)
+        public FileEngine(FilesIntegration filesIntegration, IDaoFactory daoFactory, GlobalFolderHelper globalFolderHelper, SecurityContext securityContext, SecurityAdapterProvider securityAdapterProvider)
         {
             FilesIntegration = filesIntegration;
             DaoFactory = daoFactory;
             GlobalFolderHelper = globalFolderHelper;
             SecurityContext = securityContext;
             SecurityAdapterProvider = securityAdapterProvider;
-            FileSecurityProvider = fileSecurityProvider;
         }
 
         public int GetRoot(int projectId)
@@ -106,7 +104,7 @@ namespace ASC.Projects.Engine
 
         public void RegisterFileSecurityProvider()
         {
-            FilesIntegration.RegisterFileSecurityProvider(Module, Bunch, FileSecurityProvider);
+            FilesIntegration.RegisterFileSecurityProvider(Module, Bunch, SecurityAdapterProvider);
         }
 
         internal List<Tuple<string, string>> GetFileListInfoHashtable(IEnumerable<File<int>> uploadedFiles)

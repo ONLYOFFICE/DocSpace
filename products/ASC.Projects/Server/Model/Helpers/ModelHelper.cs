@@ -6,6 +6,7 @@ using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Api.Projects.Wrappers;
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
@@ -23,6 +24,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Projects.Model
 {
+    [Scope]
     public class ModelHelper
     {
         private HttpRequestDictionary<EmployeeWraperFull> EmployeeFullCache { get; set; }
@@ -33,7 +35,6 @@ namespace ASC.Projects.Model
         private ProjectSecurity ProjectSecurity { get; set; }
         private TenantManager TenantManager { get; set; }
         private IHttpContextAccessor HttpContextAccessor { get; set; }
-        private ParticipantEngine ParticipantEngine { get; set; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; set; }
         private UserPhotoManager UserPhotoManager { get; set; }
         private CommonLinkUtility CommonLinkUtility { get; set; }
@@ -42,7 +43,7 @@ namespace ASC.Projects.Model
         private FolderContentWrapperHelper FolderContentWrapperHelper { get; set; }
         private ApiContext Context { get; set; }
         private FileStorageService<int> FileStorageService { get; set; }
-        private ProjectEngine ProjectEngine { get; set; }
+        private EngineFactory EngineFactory { get; set; }
 
         public ModelHelper(IHttpContextAccessor accessor, UserManager userManager, ProjectSecurity projectSecurity, EmployeeWraperHelper employeeWraperHelper, EmployeeWraperFullHelper employeeWraperFullHelper, IHttpContextAccessor httpContextAccessor, EngineFactory engineFactory, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility, SecurityContext securityContext, TenantManager tenantManager, TimeZoneConverter timeZoneConverter, FolderContentWrapperHelper folderContentWrapperHelper, ApiContext context, FileStorageService<int> fileStorageService)
         {
@@ -53,8 +54,6 @@ namespace ASC.Projects.Model
             EmployeeWraperHelper = employeeWraperHelper;
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             HttpContextAccessor = httpContextAccessor;
-            ParticipantEngine = engineFactory.GetParticipantEngine();
-            ProjectEngine = engineFactory.GetProjectEngine();
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             UserPhotoManager = userPhotoManager;
             CommonLinkUtility = commonLinkUtility;
@@ -64,6 +63,7 @@ namespace ASC.Projects.Model
             FolderContentWrapperHelper = folderContentWrapperHelper;
             Context = context;
             FileStorageService = fileStorageService;
+            EngineFactory = engineFactory;
         }
 
         public EmployeeWraperFull GetEmployeeWraperFull(Guid userId)
@@ -162,7 +162,7 @@ namespace ASC.Projects.Model
 
         public CommentInfo GetCommentInfo(IEnumerable<Comment> allComments, Comment comment, ProjectEntity entity)
         {
-            var creator = ParticipantEngine.GetByID(comment.CreateBy).UserInfo;
+            var creator = EngineFactory.GetParticipantEngine().GetByID(comment.CreateBy).UserInfo;
             var oCommentInfo = new CommentInfo
             {
                 TimeStamp = comment.CreateOn,
@@ -526,7 +526,7 @@ namespace ASC.Projects.Model
                 ProjectStatuses = new List<ProjectStatus> { ProjectStatus.Open }
             };
 
-            var projects = ProjectEngine.GetByFilter(filter).ToList();
+            var projects = EngineFactory.GetProjectEngine().GetByFilter(filter).ToList();
             var commonSecurityInfo = new CommonSecurityInfo()
             {
                 CanCreateProject = ProjectSecurity.CanCreate<Project>(null),

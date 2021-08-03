@@ -31,13 +31,13 @@ namespace ASC.Projects.Classes
     public class SecurityAdapter : IFileSecurity
     {
         private Project Project { get; set; }
-        private ProjectEngine ProjectEngine { get; set; }
         private ProjectSecurity ProjectSecurity { get; set; }
+        private EngineFactory EngineFactory { get; set; }
 
         public SecurityAdapter(EngineFactory engineFactory, ProjectSecurity projectSecurity)
         {
-            ProjectEngine = engineFactory.GetProjectEngine();
             ProjectSecurity = projectSecurity;
+            EngineFactory = engineFactory;
         }
 
         public SecurityAdapter Init(Project project)
@@ -48,7 +48,7 @@ namespace ASC.Projects.Classes
 
         public SecurityAdapter Init(int projectId)
         {
-            Project = ProjectEngine.GetByID(projectId);
+            Project = EngineFactory.GetProjectEngine().GetByID(projectId);
             return this;
         }
 
@@ -104,9 +104,7 @@ namespace ASC.Projects.Classes
 
             if (ProjectSecurity.IsAdministrator(userId)) return true;
 
-            var projectEngine = ProjectEngine;
-
-            var inTeam = projectEngine.IsInTeam(Project.ID, userId);
+            var inTeam = EngineFactory.GetProjectEngine().IsInTeam(Project.ID, userId);
 
             switch (action)
             {
@@ -131,7 +129,7 @@ namespace ASC.Projects.Classes
 
         public IEnumerable<Guid> WhoCanRead<T>(FileEntry<T> entry)
         {
-            return ProjectEngine.GetTeam(Project.ID).Select(p => p.ID).ToList();
+            return EngineFactory.GetProjectEngine().GetTeam(Project.ID).Select(p => p.ID).ToList();
         }
 
         private enum SecurityAction

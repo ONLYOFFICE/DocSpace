@@ -61,15 +61,15 @@ namespace ASC.Projects.Core.Domain.Reports
         private SettingsManager SettingsManager { get; set; }
         private FileUploader FileUploader { get; set; }
         private GlobalFolderHelper GlobalFolderHelper { get; set; }
-        private ReportEngine ReportEngine { get; set; }
         private ReportTemplate ReportTemplate { get; set; }
+        private EngineFactory EngineFactory { get; set; }
 
         public ReportTemplateHelper(SettingsManager settingsManager, FileUploader fileUploader, GlobalFolderHelper globalFolderHelper, EngineFactory engineFactory)
         {
             SettingsManager = settingsManager;
             FileUploader = fileUploader;
             GlobalFolderHelper = globalFolderHelper;
-            ReportEngine = engineFactory.GetReportEngine();
+            EngineFactory = engineFactory;
         }
         public ReportTemplate GetReportTemplate(ReportType reportType)
         {
@@ -113,7 +113,7 @@ namespace ASC.Projects.Core.Domain.Reports
                 }
             }
 
-            ReportEngine.Save(new ReportFile
+            EngineFactory.GetReportEngine().Save(new ReportFile
             {
                 FileId = state.FileId,
                 Name = ReportTemplate.Name,
@@ -147,7 +147,7 @@ namespace ASC.Projects.Core.Domain.Reports
                 }
             }
 
-            ReportEngine.Save(new ReportFile
+            EngineFactory.GetReportEngine().Save(new ReportFile
             {
                 FileId = state.FileId,
                 Name = report.Name,

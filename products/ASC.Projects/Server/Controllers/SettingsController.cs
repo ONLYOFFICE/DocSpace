@@ -115,18 +115,18 @@ namespace ASC.Api.Projects
         [Create(@"status")]
         public CustomTaskStatus CreateStatus(CustomTaskStatus status)
         {
-            return StatusEngine.Create(status);
+            return EngineFactory.GetStatusEngine().Create(status);
         }
 
         [Update(@"status")]
         public CustomTaskStatus UpdateStatus(CustomTaskStatus newStatus)
         {
-            if (newStatus.IsDefault && !StatusEngine.Get().Any(r => r.IsDefault && r.StatusType == newStatus.StatusType))
+            if (newStatus.IsDefault && !EngineFactory.GetStatusEngine().Get().Any(r => r.IsDefault && r.StatusType == newStatus.StatusType))
             {
                 return CreateStatus(newStatus);
             }
 
-            var status = StatusEngine.Get().FirstOrDefault(r => r.Id == newStatus.Id).NotFoundIfNull();
+            var status = EngineFactory.GetStatusEngine().Get().FirstOrDefault(r => r.Id == newStatus.Id).NotFoundIfNull();
 
             status.Title = Update.IfNotEmptyAndNotEquals(status.Title, newStatus.Title);
             status.Description = Update.IfNotEmptyAndNotEquals(status.Description, newStatus.Description);
@@ -137,7 +137,7 @@ namespace ASC.Api.Projects
             status.StatusType = Update.IfNotEmptyAndNotEquals(status.StatusType, newStatus.StatusType);
             status.Available = Update.IfNotEmptyAndNotEquals(status.Available, newStatus.Available);
 
-            StatusEngine.Update(status);
+            EngineFactory.GetStatusEngine().Update(status);
 
             return status;
         }
@@ -156,14 +156,14 @@ namespace ASC.Api.Projects
         [Read(@"status")]
         public List<CustomTaskStatus> GetStatuses()
         {
-            return StatusEngine.GetWithDefaults();
+            return EngineFactory.GetStatusEngine().GetWithDefaults();
         }
 
         [Delete(@"status/{id}")]
         public CustomTaskStatus DeleteStatus(int id)
         {
-            var status = StatusEngine.Get().FirstOrDefault(r => r.Id == id).NotFoundIfNull();
-            StatusEngine.Delete(status.Id);
+            var status = EngineFactory.GetStatusEngine().Get().FirstOrDefault(r => r.Id == id).NotFoundIfNull();
+            EngineFactory.GetStatusEngine().Delete(status.Id);
             return status;
         }
     }

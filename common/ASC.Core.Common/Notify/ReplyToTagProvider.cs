@@ -27,6 +27,7 @@
 using System;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Notify.Patterns;
 
 namespace ASC.Core.Common.Notify
@@ -34,6 +35,7 @@ namespace ASC.Core.Common.Notify
     /// <summary>
     /// Class that generates 'mail to' addresses to create new TeamLab entities from post client 
     /// </summary>
+    [Scope]
     public class ReplyToTagProvider
     {
         private static readonly Regex EntityType = new Regex(@"blog|forum.topic|event|photo|file|wiki|bookmark|project\.milestone|project\.task|project\.message");

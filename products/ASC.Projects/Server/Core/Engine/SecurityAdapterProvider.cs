@@ -30,12 +30,12 @@ namespace ASC.Projects.Engine
     [Scope]
     public class SecurityAdapterProvider : IFileSecurityProvider
     {
-        private ProjectEngine ProjectEngine { get; set; }
         private IServiceProvider ServiceProvider { get; set; }
+        private EngineFactory EngineFactory { get; set; }
         public SecurityAdapterProvider(EngineFactory engineFactory, IServiceProvider serviceProvider)
         {
-            ProjectEngine = engineFactory.GetProjectEngine();
             ServiceProvider = serviceProvider;
+            EngineFactory = engineFactory;
         }
         public IFileSecurity GetFileSecurity(string data)
         {
@@ -55,7 +55,7 @@ namespace ASC.Projects.Engine
                 return id;
             }).ToList();
 
-            return ProjectEngine.GetByID(projectIds, false).
+            return EngineFactory.GetProjectEngine().GetByID(projectIds, false).
                 ToDictionary(
                     r =>
                     {

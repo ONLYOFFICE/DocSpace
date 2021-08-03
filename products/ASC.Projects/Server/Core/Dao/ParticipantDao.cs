@@ -31,11 +31,10 @@ namespace ASC.Projects.Data.DAO
     [Scope]
     public class ParticipantDao : BaseDao, IParticipantDao
     {
-        public IProjectDao ProjectDao { get; set; }
-
+        private IDaoFactory DaoFactory { get; set; }
         public ParticipantDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, IDaoFactory daoFactory, TenantManager tenantManager) : base(securityContext, dbContextManager, tenantManager)
         {
-            ProjectDao = daoFactory.GetProjectDao();
+            DaoFactory = daoFactory;
         }
 
         public int[] GetFollowingProjects(Guid participant)
@@ -75,7 +74,7 @@ namespace ASC.Projects.Data.DAO
             WebProjectsContext.FollowingProject.Add(followingProject);
             WebProjectsContext.SaveChanges();
 
-            ProjectDao.UpdateLastModified(project);
+            DaoFactory.GetProjectDao().UpdateLastModified(project);
         }
 
         public void RemoveFromFollowingProjects(int project, Guid participant)
@@ -84,7 +83,7 @@ namespace ASC.Projects.Data.DAO
             WebProjectsContext.FollowingProject.Remove(followingProject);
             WebProjectsContext.SaveChanges();
 
-            ProjectDao.UpdateLastModified(project);
+            DaoFactory.GetProjectDao().UpdateLastModified(project);
         }
     }
 }

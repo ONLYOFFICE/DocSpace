@@ -34,13 +34,13 @@ namespace ASC.Projects.Engine
     [Scope]
     public class MilestoneEngine
     {
-        private IMilestoneDao MilestoneDao { get; set; }
         private ProjectSecurity ProjectSecurity { get; set; }
         public bool DisableNotifications { get; set; }
         private FactoryIndexer<DbMilestone> FactoryIndexer { get; set; }
         private SecurityContext SecurityContext { get; set; }
         private TenantUtil TenantUtil { get; set; }
         private NotifyClient NotifyClient { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
 
         #region Get Milestones
 
@@ -51,7 +51,7 @@ namespace ASC.Projects.Engine
             TenantUtil = tenantUtil;
             NotifyClient = notifyClient;
             ProjectSecurity = projectSecurity;
-            MilestoneDao = daoFactory.GetMilestoneDao();
+            DaoFactory = daoFactory;
         }
 
         public MilestoneEngine Init(bool disableNotifications)
@@ -62,7 +62,7 @@ namespace ASC.Projects.Engine
 
         public IEnumerable<Milestone> GetAll()
         {
-            return MilestoneDao.GetAll().Where(CanRead);
+            return DaoFactory.GetMilestoneDao().GetAll().Where(CanRead);
         }
 
         public List<Milestone> GetByFilter(TaskFilter filter)
@@ -73,7 +73,7 @@ namespace ASC.Projects.Engine
 
             while (true)
             {
-                var milestones = MilestoneDao.GetByFilter(filter, isAdmin, anyOne);
+                var milestones = DaoFactory.GetMilestoneDao().GetByFilter(filter, isAdmin, anyOne);
 
                 if (filter.LastId != 0)
                 {
@@ -104,17 +104,17 @@ namespace ASC.Projects.Engine
 
         public int GetByFilterCount(TaskFilter filter)
         {
-            return MilestoneDao.GetByFilterCount(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
+            return DaoFactory.GetMilestoneDao().GetByFilterCount(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
         }
 
         public List<Tuple<Guid, int, int>> GetByFilterCountForReport(TaskFilter filter)
         {
-            return MilestoneDao.GetByFilterCountForReport(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
+            return DaoFactory.GetMilestoneDao().GetByFilterCountForReport(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
         }
 
         public List<Milestone> GetByProject(int projectId)
         {
-            var milestones = MilestoneDao.GetByProject(projectId).Where(CanRead).ToList();
+            var milestones = DaoFactory.GetMilestoneDao().GetByProject(projectId).Where(CanRead).ToList();
             milestones.Sort((x, y) =>
             {
                 if (x.Status != y.Status) return x.Status.CompareTo(y.Status);
@@ -126,7 +126,7 @@ namespace ASC.Projects.Engine
 
         public List<Milestone> GetByStatus(int projectId, MilestoneStatus milestoneStatus)
         {
-            var milestones = MilestoneDao.GetByStatus(projectId, milestoneStatus).Where(CanRead).ToList();
+            var milestones = DaoFactory.GetMilestoneDao().GetByStatus(projectId, milestoneStatus).Where(CanRead).ToList();
             milestones.Sort((x, y) =>
             {
                 if (x.Status != y.Status) return x.Status.CompareTo(y.Status);
@@ -142,7 +142,7 @@ namespace ASC.Projects.Engine
             var milestones = new List<Milestone>();
             while (true)
             {
-                var packet = MilestoneDao.GetUpcomingMilestones(offset, 2 * max, projects);
+                var packet = DaoFactory.GetMilestoneDao().GetUpcomingMilestones(offset, 2 * max, projects);
                 milestones.AddRange(packet.Where(CanRead));
                 if (max <= milestones.Count || packet.Count() < 2 * max)
                 {
@@ -159,7 +159,7 @@ namespace ASC.Projects.Engine
             var milestones = new List<Milestone>();
             while (true)
             {
-                var packet = MilestoneDao.GetLateMilestones(offset, 2 * max);
+                var packet = DaoFactory.GetMilestoneDao().GetLateMilestones(offset, 2 * max);
                 milestones.AddRange(packet.Where(CanRead));
                 if (max <= milestones.Count || packet.Count() < 2 * max)
                 {
@@ -172,7 +172,7 @@ namespace ASC.Projects.Engine
 
         public List<Milestone> GetByDeadLine(DateTime deadline)
         {
-            return MilestoneDao.GetByDeadLine(deadline).Where(CanRead).ToList();
+            return DaoFactory.GetMilestoneDao().GetByDeadLine(deadline).Where(CanRead).ToList();
         }
 
         public Milestone GetByID(int id)
@@ -182,7 +182,7 @@ namespace ASC.Projects.Engine
 
         public Milestone GetByID(int id, bool checkSecurity)
         {
-            var m = MilestoneDao.GetById(id);
+            var m = DaoFactory.GetMilestoneDao().GetById(id);
 
             if (!checkSecurity)
                 return m;
@@ -197,7 +197,7 @@ namespace ASC.Projects.Engine
 
         public string GetLastModified()
         {
-            return MilestoneDao.GetLastModified();
+            return DaoFactory.GetMilestoneDao().GetLastModified();
         }
 
         private bool CanRead(Milestone m)
@@ -243,25 +243,25 @@ namespace ASC.Projects.Engine
                 if (milestone.CreateOn == default(DateTime)) milestone.CreateOn = TenantUtil.DateTimeNow();
 
                 ProjectSecurity.DemandCreate<Milestone>(milestone.Project);
-                milestone = MilestoneDao.Save(milestone);
+                milestone = DaoFactory.GetMilestoneDao().Save(milestone);
             }
             else
             {
-                var oldMilestone = MilestoneDao.GetById(new[] { milestone.ID }).FirstOrDefault();
+                var oldMilestone = DaoFactory.GetMilestoneDao().GetById(new[] { milestone.ID }).FirstOrDefault();
 
                 if (oldMilestone == null) throw new ArgumentNullException("milestone");
 
                 oldResponsible = oldMilestone.Responsible;
 
                 ProjectSecurity.DemandEdit(milestone);
-                milestone = MilestoneDao.Save(milestone);
+                milestone = DaoFactory.GetMilestoneDao().Save(milestone);
 
             }
 
             if (!milestone.Responsible.Equals(Guid.Empty))
                 NotifyMilestone(milestone, notifyResponsible, isNew, oldResponsible);
 
-            _ = FactoryIndexer.IndexAsync(MilestoneDao.ToDbMilestone(milestone));
+            _ = FactoryIndexer.IndexAsync(DaoFactory.GetMilestoneDao().ToDbMilestone(milestone));
 
             return milestone;
         }
@@ -293,7 +293,7 @@ namespace ASC.Projects.Engine
                 NotifyClient.SendAboutMilestoneResumed(senders, milestone);
             }
 
-            return MilestoneDao.Save(milestone);
+            return DaoFactory.GetMilestoneDao().Save(milestone);
         }
 
         private void NotifyMilestone(Milestone milestone, bool notifyResponsible, bool isNew, Guid oldResponsible)
@@ -321,13 +321,13 @@ namespace ASC.Projects.Engine
             if (milestone == null) throw new ArgumentNullException("milestone");
 
             ProjectSecurity.DemandDelete(milestone);
-            MilestoneDao.Delete(milestone.ID);
+            DaoFactory.GetMilestoneDao().Delete(milestone.ID);
 
             var users = new HashSet<Guid> { milestone.Project.Responsible, milestone.Responsible };
 
             NotifyClient.SendAboutMilestoneDeleting(users, milestone);
 
-            _ = FactoryIndexer.DeleteAsync(MilestoneDao.ToDbMilestone(milestone));
+            _ = FactoryIndexer.DeleteAsync(DaoFactory.GetMilestoneDao().ToDbMilestone(milestone));
         }
 
         #endregion

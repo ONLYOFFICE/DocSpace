@@ -49,21 +49,17 @@ namespace ASC.Projects.Core.Services.NotifyService
     [Scope]
     public class NotifyClient
     {
-        private readonly INotifyClient client;
         private readonly INotifySource source;
 
-        private INotifyClient Client
-        {
-            get { return client; }
-        }
         private ReplyToTagProvider ReplyToTagProvider { get; set; }
         private SecurityContext SecurityContext { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
 
-        public NotifyClient(ReplyToTagProvider replyToTagProvider, SecurityContext securityContext, StudioNotifySource studioNotifySource, IServiceScope serviceScope)
+        public NotifyClient(ReplyToTagProvider replyToTagProvider, SecurityContext securityContext, StudioNotifySource studioNotifySource, IServiceProvider serviceProvider)
         {
             ReplyToTagProvider = replyToTagProvider;
             SecurityContext = securityContext;
-            client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, serviceScope);
+            ServiceProvider = serviceProvider;
             source = studioNotifySource;
         }
 
@@ -128,14 +124,17 @@ namespace ASC.Projects.Core.Services.NotifyService
                 }
                 return false;
             });
-
-            Client.AddInterceptor(securityInterceptor);
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
+            client.AddInterceptor(securityInterceptor);
         }
         public void SendInvaiteToProjectTeam(Guid userId, Project project)
         {
             var recipient = ToRecipient(userId);
             if (recipient != null)
             {
+                using var scope = ServiceProvider.CreateScope();
+                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
                 client.SendNoticeToAsync(
                     NotifyConstants.Event_InviteToProject,
                     project.UniqID,
@@ -156,6 +155,8 @@ namespace ASC.Projects.Core.Services.NotifyService
             var recipient = ToRecipient(userId);
             if (recipient != null)
             {
+                using var scope = ServiceProvider.CreateScope();
+                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
                 client.SendNoticeToAsync(
                     NotifyConstants.Event_RemoveFromProject,
                     project.UniqID,
@@ -172,6 +173,8 @@ namespace ASC.Projects.Core.Services.NotifyService
             var recipient = ToRecipient(userID);
             if (recipient != null)
             {
+                using var scope = ServiceProvider.CreateScope();
+                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
                 client.SendNoticeToAsync(
                     NotifyConstants.Event_MilestoneDeadline,
                     milestone.NotifyId,
@@ -193,6 +196,8 @@ namespace ASC.Projects.Core.Services.NotifyService
             var description = !string.IsNullOrEmpty(project.Description) ? HttpUtility.HtmlEncode(project.Description) : "";
             if (recipient != null)
             {
+                using var scope = ServiceProvider.CreateScope();
+                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
                 client.SendNoticeToAsync(
                     NotifyConstants.Event_ResponsibleForProject,
                     project.UniqID,
@@ -215,6 +220,8 @@ namespace ASC.Projects.Core.Services.NotifyService
             var recipient = ToRecipient(milestone.Responsible);
             if (recipient != null)
             {
+                using var scope = ServiceProvider.CreateScope();
+                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
                 client.SendNoticeToAsync(
                     NotifyConstants.Event_ResponsibleForMilestone,
                     milestone.NotifyId,
@@ -238,6 +245,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
             try
             {
@@ -268,6 +277,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
             try
             {
@@ -293,6 +304,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
             try
             {
@@ -328,6 +341,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendReminderAboutTask(IEnumerable<Guid> recipients, Task task)
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.SendNoticeToAsync(
                 NotifyConstants.Event_ReminderAboutTask,
                 task.NotifyId,
@@ -345,6 +360,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendReminderAboutTaskDeadline(IEnumerable<Guid> recipients, Task task)
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.SendNoticeToAsync(
                 NotifyConstants.Event_ReminderAboutTaskDeadline,
                 task.NotifyId,
@@ -373,6 +390,8 @@ namespace ASC.Projects.Core.Services.NotifyService
             else return;
 
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             try
             {
                 client.AddInterceptor(interceptor);
@@ -403,6 +422,8 @@ namespace ASC.Projects.Core.Services.NotifyService
             else return;
 
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             try
             {
                 client.AddInterceptor(interceptor);
@@ -427,7 +448,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutMilestoneClosing(IEnumerable<Guid> recipients, Milestone milestone)
         {
             var description = !string.IsNullOrEmpty(milestone.Description) ? HttpUtility.HtmlEncode(milestone.Description) : "";
-
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.BeginSingleRecipientEvent("milestone closed");
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
             client.AddInterceptor(interceptor);
@@ -459,6 +481,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutTaskClosing(IEnumerable<IRecipient> recipients, Task task)
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.BeginSingleRecipientEvent("task closed");
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
             client.AddInterceptor(interceptor);
@@ -491,6 +515,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutSubTaskClosing(List<IRecipient> recipients, Task task, Subtask subtask)
         {
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
             try
             {
@@ -522,6 +548,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
             try
             {
@@ -552,6 +580,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
             try
             {
@@ -583,6 +613,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(milestone.Description) ? HttpUtility.HtmlEncode(milestone.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -612,6 +644,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutMessageDeleting(List<IRecipient> recipients, Message message)
         {
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             try
             {
                 client.AddInterceptor(interceptor);
@@ -639,6 +673,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutProjectDeleting(IEnumerable<Guid> recipients, Project project)
         {
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -666,6 +702,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(milestone.Description) ? HttpUtility.HtmlEncode(milestone.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -703,6 +741,8 @@ namespace ASC.Projects.Core.Services.NotifyService
                 resp = recip.Select(r => r.Name).Aggregate((a, b) => a + ", " + b);
             }
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -734,6 +774,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutSubTaskCreating(List<IRecipient> recipients, Task task, Subtask subtask)
         {
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -766,7 +808,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutMilestoneEditing(Milestone milestone)
         {
             var recipient = ToRecipient(milestone.Responsible);
-
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             if (recipient != null)
             {
                 client.SendNoticeToAsync(
@@ -784,6 +827,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutTaskEditing(List<IRecipient> recipients, Task task)
         {
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -808,6 +853,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutSubTaskEditing(List<IRecipient> recipients, Task task, Subtask subtask)
         {
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -839,6 +886,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(milestone.Description) ? HttpUtility.HtmlEncode(milestone.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -869,6 +918,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             try
             {
                 client.AddInterceptor(interceptor);
@@ -898,6 +949,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         public void SendAboutSubTaskResumed(List<IRecipient> recipients, Task task, Subtask subtask)
         {
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
 
             try
@@ -929,6 +982,8 @@ namespace ASC.Projects.Core.Services.NotifyService
         {
             var description = !string.IsNullOrEmpty(task.Description) ? HttpUtility.HtmlEncode(task.Description) : "";
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             client.AddInterceptor(interceptor);
             try
             {
@@ -996,6 +1051,8 @@ namespace ASC.Projects.Core.Services.NotifyService
             }
 
             var interceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), ""));
+            using var scope = ServiceProvider.CreateScope();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             try
             {
                 client.AddInterceptor(interceptor);
@@ -1017,6 +1074,8 @@ namespace ASC.Projects.Core.Services.NotifyService
             var recipient = ToRecipient(user);
             if (recipient != null)
             {
+                using var scope = ServiceProvider.CreateScope();
+                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
                 client.SendNoticeToAsync(
                     NotifyConstants.Event_ImportData,
                     null,

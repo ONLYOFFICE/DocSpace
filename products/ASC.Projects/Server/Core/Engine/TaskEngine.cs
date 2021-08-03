@@ -35,27 +35,17 @@ namespace ASC.Projects.Engine
     [Scope]
     public class TaskEngine : ProjectEntityEngine
     {
-        private ITaskDao TaskDao { get; set; }
-        private ISubtaskDao SubtaskDao { get; set; }
-        private IMilestoneDao MilestoneDao { get; set; }
         private TenantUtil TenantUtil { get; set; }
         private FactoryIndexer<DbTask> FactoryIndexer { get; set; }
-        private SubtaskEngine SubtaskEngine { get; set; }
-        private StatusEngine StatusEngine { get; set; }
-
+        private IDaoFactory DaoProjectFactory { get; set; }
         private readonly Func<Task, bool> canReadDelegate;
 
-        public TaskEngine(FactoryIndexer<DbTask> factoryIndexer, TenantUtil tenantUtil, SecurityContext securityContext, Files.Core.IDaoFactory daoFactory, NotifySource notifySource, NotifyClient notifyClient, IDaoFactory daoProjectFactory, EngineFactory engineFactory)
-            : base(securityContext, daoFactory, notifySource, notifyClient)
+        public TaskEngine(FactoryIndexer<DbTask> factoryIndexer, TenantUtil tenantUtil, SecurityContext securityContext, Files.Core.IDaoFactory daoFactory, NotifySource notifySource, IDaoFactory daoProjectFactory, EngineFactory engineFactory)
+            : base(securityContext, daoFactory, notifySource, engineFactory)
         {
             canReadDelegate = CanRead;
             FactoryIndexer = factoryIndexer;
             TenantUtil = tenantUtil;
-            SubtaskDao = daoProjectFactory.GetSubtaskDao();
-            TaskDao = daoProjectFactory.GetTaskDao();
-            MilestoneDao = daoProjectFactory.GetMilestoneDao();
-            SubtaskEngine = engineFactory.GetSubtaskEngine();
-            StatusEngine = engineFactory.GetStatusEngine();
         }
 
         public TaskEngine Init(bool disableNotifications)
@@ -68,13 +58,13 @@ namespace ASC.Projects.Engine
 
         public IEnumerable<Task> GetAll()
         {
-            return TaskDao.GetAll().Where(canReadDelegate);
+            return DaoProjectFactory.GetTaskDao().GetAll().Where(canReadDelegate);
         }
 
         public IEnumerable<Task> GetByProject(int projectId, TaskStatus? status, Guid participant)
         {
-            var listTask = TaskDao.GetByProject(projectId, status, participant).Where(canReadDelegate).ToList();
-            SubtaskDao.GetSubtasksForTasks(ref listTask);
+            var listTask = DaoProjectFactory.GetTaskDao().GetByProject(projectId, status, participant).Where(canReadDelegate).ToList();
+            DaoProjectFactory.GetSubtaskDao().GetSubtasksForTasks(ref listTask);
             return listTask;
         }
 
@@ -85,7 +75,7 @@ namespace ASC.Projects.Engine
 
             var isAdmin = ProjectSecurity.IsAdministrator(SecurityContext.CurrentAccount.ID);
             var anyOne = ProjectSecurity.IsPrivateDisabled;
-            var count = TaskDao.GetByFilterCount(filter, isAdmin, anyOne);
+            var count = DaoProjectFactory.GetTaskDao().GetByFilterCount(filter, isAdmin, anyOne);
 
             var filterLimit = filter.Max;
             var filterOffset = filter.Offset;
@@ -96,7 +86,7 @@ namespace ASC.Projects.Engine
             var taskList = new List<Task>();
             if (filter.HasTaskStatuses)
             {
-                taskList = TaskDao.GetByFilter(filter, isAdmin, anyOne);
+                taskList = DaoProjectFactory.GetTaskDao().GetByFilter(filter, isAdmin, anyOne);
             }
             else if (filterOffset > count.TasksOpen && count.TasksClosed != 0)
             {
@@ -104,7 +94,7 @@ namespace ASC.Projects.Engine
                 filter.SortBy = "status_changed";
                 filter.SortOrder = false;
                 filter.Offset = filterOffset - count.TasksOpen;
-                taskList = TaskDao.GetByFilter(filter, isAdmin, anyOne);
+                taskList = DaoProjectFactory.GetTaskDao().GetByFilter(filter, isAdmin, anyOne);
             }
             else
             {
@@ -112,7 +102,7 @@ namespace ASC.Projects.Engine
                 if (count.TasksOpen != 0)
                 {
                     filter.TaskStatuses.Add(TaskStatus.Open);
-                    taskList = TaskDao.GetByFilter(filter, isAdmin, anyOne);
+                    taskList = DaoProjectFactory.GetTaskDao().GetByFilter(filter, isAdmin, anyOne);
                 }
 
                 if (taskList.Count < filterLimit && count.TasksClosed != 0)
@@ -123,7 +113,7 @@ namespace ASC.Projects.Engine
                     //filter.SortOrder = false;
                     filter.Offset = 0;
                     filter.Max = filterLimit - taskList.Count;
-                    taskList.AddRange(TaskDao.GetByFilter(filter, isAdmin, anyOne));
+                    taskList.AddRange(DaoProjectFactory.GetTaskDao().GetByFilter(filter, isAdmin, anyOne));
                 }
             }
 
@@ -131,9 +121,9 @@ namespace ASC.Projects.Engine
             filter.Max = filterLimit;
             filter.TaskStatuses.Clear();
 
-            SubtaskDao.GetSubtasksForTasks(ref taskList);
+            DaoProjectFactory.GetSubtaskDao().GetSubtasksForTasks(ref taskList);
 
-            var taskLinks = TaskDao.GetLinks(taskList);
+            var taskLinks = DaoProjectFactory.GetTaskDao().GetLinks(taskList);
 
             Func<Task, int> idSelector = task => task.ID;
             Func<Task, IEnumerable<TaskLink>, Task> resultSelector = (task, linksCol) =>
@@ -150,30 +140,30 @@ namespace ASC.Projects.Engine
 
         public TaskFilterCountOperationResult GetByFilterCount(TaskFilter filter)
         {
-            return TaskDao.GetByFilterCount(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
+            return DaoProjectFactory.GetTaskDao().GetByFilterCount(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
         }
 
         public List<Tuple<Guid, int, int>> GetByFilterCountForReport(TaskFilter filter)
         {
-            return TaskDao.GetByFilterCountForReport(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
+            return DaoProjectFactory.GetTaskDao().GetByFilterCountForReport(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
         }
 
         public IEnumerable<TaskFilterCountOperationResult> GetByFilterCountForStatistic(TaskFilter filter)
         {
-            return TaskDao.GetByFilterCountForStatistic(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
+            return DaoProjectFactory.GetTaskDao().GetByFilterCountForStatistic(filter, ProjectSecurity.CurrentUserAdministrator, ProjectSecurity.IsPrivateDisabled);
         }
 
         public IEnumerable<Task> GetByResponsible(Guid responsibleId, params TaskStatus[] statuses)
         {
-            var listTask = TaskDao.GetByResponsible(responsibleId, statuses).Where(canReadDelegate).ToList();
-            SubtaskDao.GetSubtasksForTasks(ref listTask);
+            var listTask = DaoProjectFactory.GetTaskDao().GetByResponsible(responsibleId, statuses).Where(canReadDelegate).ToList();
+            DaoProjectFactory.GetSubtaskDao().GetSubtasksForTasks(ref listTask);
             return listTask;
         }
 
         public IEnumerable<Task> GetMilestoneTasks(int milestoneId)
         {
-            var listTask = TaskDao.GetMilestoneTasks(milestoneId).Where(canReadDelegate).ToList();
-            SubtaskDao.GetSubtasksForTasks(ref listTask);
+            var listTask = DaoProjectFactory.GetTaskDao().GetMilestoneTasks(milestoneId).Where(canReadDelegate).ToList();
+            DaoProjectFactory.GetSubtaskDao().GetSubtasksForTasks(ref listTask);
             return listTask;
         }
 
@@ -189,12 +179,12 @@ namespace ASC.Projects.Engine
 
         public Task GetByID(int id, bool checkSecurity)
         {
-            var task = TaskDao.GetById(id);
+            var task = DaoProjectFactory.GetTaskDao().GetById(id);
 
             if (task != null)
             {
-                task.SubTasks = SubtaskDao.GetSubtasks(task.ID);
-                task.Links = TaskDao.GetLinks(task.ID).ToList();
+                task.SubTasks = DaoProjectFactory.GetSubtaskDao().GetSubtasks(task.ID);
+                task.Links = DaoProjectFactory.GetTaskDao().GetLinks(task.ID).ToList();
             }
 
             if (!checkSecurity)
@@ -205,15 +195,15 @@ namespace ASC.Projects.Engine
 
         public IEnumerable<Task> GetByID(ICollection<int> ids)
         {
-            var listTask = TaskDao.GetById(ids).Where(canReadDelegate).ToList();
-            SubtaskDao.GetSubtasksForTasks(ref listTask);
+            var listTask = DaoProjectFactory.GetTaskDao().GetById(ids).Where(canReadDelegate).ToList();
+            DaoProjectFactory.GetSubtaskDao().GetSubtasksForTasks(ref listTask);
             return listTask;
 
         }
 
         public bool IsExists(int id)
         {
-            return TaskDao.IsExists(id);
+            return DaoProjectFactory.GetTaskDao().IsExists(id);
         }
 
         private bool CanRead(Task task)
@@ -230,7 +220,7 @@ namespace ASC.Projects.Engine
             if (task == null) throw new ArgumentNullException("task");
             if (task.Project == null) throw new Exception("task.Project");
 
-            var milestone = task.Milestone != 0 ? MilestoneDao.GetById(task.Milestone) : null;
+            var milestone = task.Milestone != 0 ? DaoProjectFactory.GetMilestoneDao().GetById(task.Milestone) : null;
             var milestoneResponsible = milestone != null ? milestone.Responsible : Guid.Empty;
 
             var removeResponsibles = new List<Guid>();
@@ -266,13 +256,13 @@ namespace ASC.Projects.Engine
 
                 ProjectSecurity.DemandCreate<Task>(task.Project);
 
-                task = TaskDao.Create(task);
+                task = DaoProjectFactory.GetTaskDao().Create(task);
 
                 inviteToResponsibles.AddRange(task.Responsibles.Distinct());
             }
             else
             {
-                var oldTask = TaskDao.GetById(new[] { task.ID }).FirstOrDefault();
+                var oldTask = DaoProjectFactory.GetTaskDao().GetById(new[] { task.ID }).FirstOrDefault();
 
                 if (oldTask == null) throw new ArgumentNullException("task");
                 ProjectSecurity.DemandEdit(oldTask);
@@ -299,10 +289,10 @@ namespace ASC.Projects.Engine
                 task.LastModifiedBy = SecurityContext.CurrentAccount.ID;
                 task.LastModifiedOn = TenantUtil.DateTimeNow();
 
-                task = TaskDao.Update(task);
+                task = DaoProjectFactory.GetTaskDao().Update(task);
             }
 
-            _ = FactoryIndexer.IndexAsync(TaskDao.ToDbTask(task));
+            _ = FactoryIndexer.IndexAsync(DaoProjectFactory.GetTaskDao().ToDbTask(task));
 
             if (attachedFileIds != null && attachedFileIds.Any())
             {
@@ -338,7 +328,7 @@ namespace ASC.Projects.Engine
 
             if (task.Status == newStatus.StatusType && task.CustomTaskStatus == newStatus.Id) return task;
 
-            var status = StatusEngine.Get().FirstOrDefault(r => r.Id == newStatus.Id);
+            var status = EngineFactory.GetStatusEngine().Get().FirstOrDefault(r => r.Id == newStatus.Id);
             var cannotChange =
                 status != null &&
                 status.Available.HasValue && !status.Available.Value &&
@@ -372,28 +362,27 @@ namespace ASC.Projects.Engine
                 if (!task.Responsibles.Any())
                     task.Responsibles.Add(SecurityContext.CurrentAccount.ID);
 
-                SubtaskDao.CloseAllSubtasks(task);
+                DaoProjectFactory.GetSubtaskDao().CloseAllSubtasks(task);
                 foreach (var subTask in task.SubTasks)
                 {
                     subTask.Status = TaskStatus.Closed;
                 }
             }
 
-            return TaskDao.Update(task);
+            return DaoProjectFactory.GetTaskDao().Update(task);
         }
 
         public Task CopySubtasks(Task @from, Task to, IEnumerable<Participant> team)
         {
             if (from.Status == TaskStatus.Closed) return to;
 
-            var subtaskEngine = SubtaskEngine;
-            var subTasks = SubtaskDao.GetSubtasks(@from.ID);
+            var subTasks = DaoProjectFactory.GetSubtaskDao().GetSubtasks(@from.ID);
 
             to.SubTasks = new List<Subtask>();
 
             foreach (var subtask in subTasks)
             {
-                to.SubTasks.Add(subtaskEngine.Copy(subtask, to, team));
+                to.SubTasks.Add(EngineFactory.GetSubtaskEngine().Copy(subtask, to, team));
             }
 
             return to;
@@ -421,7 +410,7 @@ namespace ASC.Projects.Engine
             if (task.Project == null) throw new Exception("Project can be null.");
 
             var newMilestone = milestoneID != 0;
-            var milestone = MilestoneDao.GetById(newMilestone ? milestoneID : task.Milestone);
+            var milestone = DaoProjectFactory.GetMilestoneDao().GetById(newMilestone ? milestoneID : task.Milestone);
 
             var senders = GetSubscribers(task);
 
@@ -432,7 +421,7 @@ namespace ASC.Projects.Engine
             task.LastModifiedBy = SecurityContext.CurrentAccount.ID;
             task.LastModifiedOn = TenantUtil.DateTimeNow();
 
-            return TaskDao.Update(task);
+            return DaoProjectFactory.GetTaskDao().Update(task);
         }
 
         public void NotifyTask(Task task, IEnumerable<Guid> inviteToResponsibles, IEnumerable<Guid> removeResponsibles, bool isNew, bool notifyResponsible)
@@ -483,7 +472,7 @@ namespace ASC.Projects.Engine
             if (task == null) throw new ArgumentNullException("task");
 
             ProjectSecurity.DemandDelete(task);
-            TaskDao.Delete(task);
+            DaoProjectFactory.GetTaskDao().Delete(task);
 
             var recipients = GetSubscribers(task);
 
@@ -494,7 +483,7 @@ namespace ASC.Projects.Engine
 
             UnSubscribeAll(task);
 
-            _ = FactoryIndexer.DeleteAsync(TaskDao.ToDbTask(task));
+            _ = FactoryIndexer.DeleteAsync(DaoProjectFactory.GetTaskDao().ToDbTask(task));
         }
 
         #endregion
@@ -512,7 +501,7 @@ namespace ASC.Projects.Engine
                 LinkType = linkType
             };
 
-            if (TaskDao.IsExistLink(link))
+            if (DaoProjectFactory.GetTaskDao().IsExistLink(link))
                 throw new Exception("link already exist");
 
             ProjectSecurity.DemandEdit(dependentTask);
@@ -521,14 +510,14 @@ namespace ASC.Projects.Engine
             parentTask.Links.Add(link);
             dependentTask.Links.Add(link);
 
-            TaskDao.AddLink(link);
+            DaoProjectFactory.GetTaskDao().AddLink(link);
         }
 
         public void RemoveLink(Task dependentTask, Task parentTask)
         {
             ProjectSecurity.DemandEdit(dependentTask);
 
-            TaskDao.RemoveLink(new TaskLink { DependenceTaskId = dependentTask.ID, ParentTaskId = parentTask.ID });
+            DaoProjectFactory.GetTaskDao().RemoveLink(new TaskLink { DependenceTaskId = dependentTask.ID, ParentTaskId = parentTask.ID });
             dependentTask.Links.RemoveAll(r => r.ParentTaskId == parentTask.ID && r.DependenceTaskId == dependentTask.ID);
             parentTask.Links.RemoveAll(r => r.ParentTaskId == parentTask.ID && r.DependenceTaskId == dependentTask.ID);
         }

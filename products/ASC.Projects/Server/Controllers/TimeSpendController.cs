@@ -74,9 +74,9 @@ namespace ASC.Api.Projects
             if (model.Status.HasValue)
                 filter.PaymentStatuses.Add(model.Status.Value);
 
-            Context.SetTotalCount(TimeTrackingEngine.GetByFilterCount(filter));
+            Context.SetTotalCount(EngineFactory.GetTimeTrackingEngine().GetByFilterCount(filter));
 
-            return TimeTrackingEngine.GetByFilter(filter).NotFoundIfNull().Select(t=> ModelHelper.GetTimeWrapper(t));
+            return EngineFactory.GetTimeTrackingEngine().GetByFilter(filter).NotFoundIfNull().Select(t=> ModelHelper.GetTimeWrapper(t));
         }
 
         [Read(@"time/filter/total")]
@@ -99,14 +99,14 @@ namespace ASC.Api.Projects
             if (model.Status.HasValue)
                 filter.PaymentStatuses.Add(model.Status.Value);
 
-            return TimeTrackingEngine.GetByFilterTotal(filter);
+            return EngineFactory.GetTimeTrackingEngine().GetByFilterTotal(filter);
         }
 
         [Read(@"task/{taskid:int}/time")]
         public IEnumerable<TimeWrapper> GetTaskTime(int taskid)
         {
-            if (!TaskEngine.IsExists(taskid)) throw new ItemNotFoundException();
-            var times = TimeTrackingEngine.GetByTask(taskid).NotFoundIfNull();
+            if (!EngineFactory.GetTaskEngine().IsExists(taskid)) throw new ItemNotFoundException();
+            var times = EngineFactory.GetTimeTrackingEngine().GetByTask(taskid).NotFoundIfNull();
             Context.SetTotalCount(times.Count);
             return times.Select(t=> ModelHelper.GetTimeWrapper(t));
         }
@@ -117,11 +117,11 @@ namespace ASC.Api.Projects
             if (model.Date == DateTime.MinValue) throw new ArgumentException("date can't be empty");
             if (model.PersonId == Guid.Empty) throw new ArgumentException("person can't be empty");
 
-            var task = TaskEngine.GetByID(taskid);
+            var task = EngineFactory.GetTaskEngine().GetByID(taskid);
 
             if (task == null) throw new ItemNotFoundException();
 
-            if (!ProjectEngine.IsExists(model.ProjectId)) throw new ItemNotFoundException("project");
+            if (!EngineFactory.GetProjectEngine().IsExists(model.ProjectId)) throw new ItemNotFoundException("project");
 
             var ts = new TimeSpend
             {
@@ -133,7 +133,7 @@ namespace ASC.Api.Projects
                 CreateBy = SecurityContext.CurrentAccount.ID
             };
 
-            ts = TimeTrackingEngine.SaveOrUpdate(ts);
+            ts = EngineFactory.GetTimeTrackingEngine().SaveOrUpdate(ts);
             MessageService.Send(MessageAction.TaskTimeCreated, MessageTarget.Create(ts.ID), task.Project.Title, task.Title, ts.Note);
 
             return ModelHelper.GetTimeWrapper(ts);
@@ -146,14 +146,14 @@ namespace ASC.Api.Projects
             if (model.PersonId == Guid.Empty) throw new ArgumentException("person can't be empty");
 
 
-            var time = TimeTrackingEngine.GetByID(timeid).NotFoundIfNull();
+            var time = EngineFactory.GetTimeTrackingEngine().GetByID(timeid).NotFoundIfNull();
 
             time.Date = model.Date.Date;
             time.Person = model.PersonId;
             time.Hours = model.Hours;
             time.Note = model.Note;
 
-            TimeTrackingEngine.SaveOrUpdate(time);
+            EngineFactory.GetTimeTrackingEngine().SaveOrUpdate(time);
             MessageService.Send(MessageAction.TaskTimeUpdated, MessageTarget.Create(time.ID), time.Task.Project.Title, time.Task.Title, time.Note);
 
             return ModelHelper.GetTimeWrapper(time);
@@ -166,8 +166,8 @@ namespace ASC.Api.Projects
 
             foreach (var timeid in model.TimeIds)
             {
-                var time = TimeTrackingEngine.GetByID(timeid).NotFoundIfNull();
-                TimeTrackingEngine.ChangePaymentStatus(time, model.Status);
+                var time = EngineFactory.GetTimeTrackingEngine().GetByID(timeid).NotFoundIfNull();
+                EngineFactory.GetTimeTrackingEngine().ChangePaymentStatus(time, model.Status);
                 times.Add(ModelHelper.GetTimeWrapper(time));
             }
 
@@ -182,9 +182,9 @@ namespace ASC.Api.Projects
             var listDeletedTimers = new List<TimeWrapper>();
             foreach (var timeid in timeids.Distinct())
             {
-                var time = TimeTrackingEngine.GetByID(timeid).NotFoundIfNull();
+                var time = EngineFactory.GetTimeTrackingEngine().GetByID(timeid).NotFoundIfNull();
 
-                TimeTrackingEngine.Delete(time);
+                EngineFactory.GetTimeTrackingEngine().Delete(time);
                 listDeletedTimers.Add(ModelHelper.GetTimeWrapper(time));
             }
 

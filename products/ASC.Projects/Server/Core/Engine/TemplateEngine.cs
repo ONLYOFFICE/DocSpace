@@ -29,32 +29,32 @@ namespace ASC.Projects.Engine
     [Scope]
     public class TemplateEngine
     {
-        public ITemplateDao TemplateDao { get; set; }
         public ProjectSecurity ProjectSecurity { get; set; }
         public SecurityContext SecurityContext { get; set; }
         public TenantUtil TenantUtil { get; set; }
+        public IDaoFactory DaoFactory { get; set; }
 
         public TemplateEngine(SecurityContext securityContext, IDaoFactory daoFactory, ProjectSecurity projectSecurity, TenantUtil tenantUtil)
         {
             SecurityContext = securityContext;
-            TemplateDao = daoFactory.GetTemplateDao();
             ProjectSecurity = projectSecurity;
             TenantUtil = tenantUtil;
+            DaoFactory = daoFactory;
         }
 
         public List<Template> GetAll()
         {
-            return TemplateDao.GetAll();
+            return DaoFactory.GetTemplateDao().GetAll();
         }
 
         public int GetCount()
         {
-            return TemplateDao.GetCount();
+            return DaoFactory.GetTemplateDao().GetCount();
         }
 
         public Template GetByID(int id)
         {
-            return TemplateDao.GetByID(id);
+            return DaoFactory.GetTemplateDao().GetByID(id);
         }
 
         public Template SaveOrUpdate(Template template)
@@ -75,12 +75,12 @@ namespace ASC.Projects.Engine
             template.LastModifiedBy = SecurityContext.CurrentAccount.ID;
             template.LastModifiedOn = TenantUtil.DateTimeNow();
 
-            return TemplateDao.Save(template);
+            return DaoFactory.GetTemplateDao().Save(template);
         }
 
         public void Delete(int id)
         {
-            TemplateDao.Delete(id);
+            DaoFactory.GetTemplateDao().Delete(id);
         }
     }
 }

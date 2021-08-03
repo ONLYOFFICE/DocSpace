@@ -30,21 +30,9 @@ namespace ASC.Projects.Data.DAO
     [Scope]
     public class SearchDao : BaseDao, ISearchDao
     {
-        public IProjectDao ProjectDao { get; set; }
-        public IMilestoneDao MilestoneDao { get; set; }
-        public ITaskDao TaskDao { get; set; }
-        public IMessageDao MessageDao { get; set; }
-        public ICommentDao CommentDao { get; set; }
-        public ISubtaskDao SubtaskDao { get; set; }
 
         public SearchDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, IDaoFactory daoFactory, TenantManager tenantManager) : base(securityContext, dbContextManager, tenantManager)
         {
-            ProjectDao = daoFactory.GetProjectDao();
-            MilestoneDao = daoFactory.GetMilestoneDao();
-            TaskDao = daoFactory.GetTaskDao();
-            MessageDao = daoFactory.GetMessageDao();
-            CommentDao = daoFactory.GetCommentDao();
-            SubtaskDao = daoFactory.GetSubtaskDao();
         }
 
         public IEnumerable<DomainObject<int>> Search(String text, int projectId)
@@ -74,7 +62,7 @@ namespace ASC.Projects.Data.DAO
                 projWhere = BuildLike(new[] { "title", "description" }, text, projectId);
             }
 
-            return ProjectDao.GetProjects(projWhere);
+            return DaoFactory.GetProjectDao().GetProjects(projWhere);
         }
 
         private IEnumerable<DomainObject<int>> GetMilestones(String text, int projectId)
@@ -91,7 +79,7 @@ namespace ASC.Projects.Data.DAO
                 mileWhere = BuildLike(new[] { "t.title" }, text, projectId);
             }
 
-            return MilestoneDao.GetMilestones(mileWhere);
+            return DaoFactory.GetMilestoneDao().GetMilestones(mileWhere);
         }
 
         private IEnumerable<DomainObject<int>> GetTasks(String text, int projectId)
@@ -108,7 +96,7 @@ namespace ASC.Projects.Data.DAO
                 taskWhere = BuildLike(new[] { "t.title", "t.description" }, text, projectId);
             }
 
-            return TaskDao.GetTasks(taskWhere);
+            return DaoFactory.GetTaskDao().GetTasks(taskWhere);
         }
 
         private IEnumerable<DomainObject<int>> GetMessages(String text, int projectId)
@@ -125,7 +113,7 @@ namespace ASC.Projects.Data.DAO
                 messWhere = BuildLike(new[] { "t.title", "t.content" }, text, projectId);
             }
 
-            return MessageDao.GetMessages(messWhere);
+            return DaoFactory.GetMessageDao().GetMessages(messWhere);
         }
 
         private IEnumerable<DomainObject<int>> GetComments(String text)
@@ -142,7 +130,7 @@ namespace ASC.Projects.Data.DAO
                 commentsWhere = BuildLike(new[] { "content" }, text);
             }
 
-            return CommentDao.GetComments(commentsWhere);
+            return DaoFactory.GetCommentDao().GetComments(commentsWhere);
         }
 
         private IEnumerable<DomainObject<int>> GetSubtasks(String text)
@@ -159,7 +147,7 @@ namespace ASC.Projects.Data.DAO
                 subtasksWhere = BuildLike(new[] { "title" }, text);
             }
 
-            return SubtaskDao.GetSubtasks(subtasksWhere);
+            return DaoFactory.GetSubtaskDao().GetSubtasks(subtasksWhere);
         }
 
         private static Exp BuildLike(string[] columns, string text, int projectId = 0)

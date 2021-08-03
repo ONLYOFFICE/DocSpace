@@ -40,16 +40,18 @@ namespace ASC.Projects.Engine
         public SecurityContext SecurityContext { get; set; }
         public IDaoFactory DaoFactory { get; set; }
         public NotifyClient NotifyClient { get; set; }
+        public EngineFactory EngineFactory { get; set; }
 
         public bool DisableNotifications { get; set; }
 
-        public ProjectEntityEngine(SecurityContext securityContext, IDaoFactory daoFactory, NotifySource notifySource, NotifyClient notifyClient)
+        public ProjectEntityEngine(SecurityContext securityContext, IDaoFactory daoFactory, NotifySource notifySource, EngineFactory engineFactory)
         {
             SubscriptionProvider = notifySource.GetSubscriptionProvider();
             RecipientProvider = notifySource.GetRecipientsProvider();
             SecurityContext = securityContext;
             DaoFactory = daoFactory;
             NotifyClient = NotifyClient;
+            EngineFactory = engineFactory;
         }
 
         public void Init(INotifyAction notifyAction, bool disableNotifications)
@@ -159,7 +161,7 @@ namespace ASC.Projects.Engine
             var ids = tagdao.GetTags(entity.GetType().Name + entity.ID, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArray();
             var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
 
-            var rootId = FileEngine.GetRoot(entity.Project.ID);
+            var rootId = EngineFactory.GetFileEngine().GetRoot(entity.Project.ID);
 
             //delete tags when file moved from project folder
             files.Where(file => !file.RootFolderId.Equals(rootId)).ToList()
@@ -169,7 +171,7 @@ namespace ASC.Projects.Engine
                     files.Remove(file);
                 });
 
-            files.ForEach(r => r.Access = FileEngine.GetFileShare(r, entity.Project.ID));
+            files.ForEach(r => r.Access = EngineFactory.GetFileEngine().GetFileShare(r, entity.Project.ID));
             return files;
             
         }
@@ -183,7 +185,7 @@ namespace ASC.Projects.Engine
             var dao = DaoFactory.GetTagDao<int>();
             var tag = new Files.Core.Tag(entity.GetType().Name + entity.ID, TagType.System, Guid.Empty) { EntryType = FileEntryType.File, EntryId = fileId };
             dao.SaveTags(tag);
-            file = FileEngine.GetFile(fileId, 0);
+            file = EngineFactory.GetFileEngine().GetFile(fileId, 0);
 
             if (notify && !DisableNotifications)
             {

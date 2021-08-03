@@ -132,7 +132,7 @@ namespace ASC.Projects.Configuration
                 HasComplexHierarchyOfAccessRights = true,
             };
 
-            //FileEngine.RegisterFileSecurityProvider();
+            //EngineFactory.GetFileEngine().RegisterFileSecurityProvider();
             //SearchHandlerManager.Registry(new SearchHandler());
             //NotifyClient.RegisterSecurityInterceptor();
             //ClientScriptLocalization = new ClientLocalizationResources();

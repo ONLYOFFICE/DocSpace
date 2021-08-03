@@ -297,17 +297,12 @@ namespace ASC.Projects.Classes
         }
 
         internal CommonLinkUtility CommonLinkUtility { get; set; }
-        internal MilestoneEngine MilestoneEngine { get; set; }
-        internal ProjectEngine ProjectEngine { get; set; }
-        internal TaskEngine TaskEngine { get; set; }
-        internal TagEngine TagEngine { get; set; }
-        internal ReportEngine ReportEngine { get; set; }
-        internal TimeTrackingEngine TimeTrackingEngine { get; set; }
         internal UserManager UserManager { get; set; }
         internal DisplayUserSettingsHelper DisplayUserSettingsHelper { get; set; }
         internal TenantUtil TenantUtil { get; set; }
         internal CustomNamingPeople CustomNamingPeople { get; set; }
         internal FilterHelper FilerHelper { get; set; }
+        internal EngineFactory EngineFactory { get; set; }
 
         protected ExtendedReportType(CommonLinkUtility commonLinkUtility,
             EngineFactory engineFactory,
@@ -317,16 +312,11 @@ namespace ASC.Projects.Classes
             CustomNamingPeople customNamingPeople)
         {
             CommonLinkUtility = commonLinkUtility;
-            MilestoneEngine = engineFactory.GetMilestoneEngine();
-            ProjectEngine = engineFactory.GetProjectEngine();
-            TaskEngine = engineFactory.GetTaskEngine();
-            TagEngine = engineFactory.GetTagEngine();
-            ReportEngine = engineFactory.GetReportEngine();
-            TimeTrackingEngine = engineFactory.GetTimeTrackingEngine();
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             TenantUtil = tenantUtil;
             CustomNamingPeople = customNamingPeople;
+            EngineFactory = engineFactory;
         }
 
         protected void Init(ReportType reportType)
@@ -370,7 +360,7 @@ namespace ASC.Projects.Classes
 
         public override IEnumerable<object[]> BuildDocbuilderReport(TaskFilter filter)
         {
-            return MilestoneEngine
+            return EngineFactory.GetMilestoneEngine()
                 .GetByFilter(filter)
                 .OrderBy(r => r.Project.Title)
                 .Select(r => new object[]
@@ -476,7 +466,7 @@ namespace ASC.Projects.Classes
         {
             filter.MilestoneStatuses = new List<MilestoneStatus> { MilestoneStatus.Open };
 
-            return MilestoneEngine
+            return EngineFactory.GetMilestoneEngine()
                 .GetByFilter(filter)
                 .OrderBy(r => r.Project.Title)
                 .Where(r => ((r.DeadLine - DateTime.Now).TotalDays) > 0)
@@ -579,7 +569,7 @@ namespace ASC.Projects.Classes
             filter.SortBy = "title";
             filter.SortOrder = true;
 
-            var result = ProjectEngine
+            var result = EngineFactory.GetProjectEngine()
                 .GetByFilter(filter)
                 .Select(r => new object[]
                 {
@@ -764,7 +754,7 @@ namespace ASC.Projects.Classes
 
             filter.SortBy = "deadline";
             filter.SortOrder = true;
-            var tasks = TaskEngine.GetByFilter(filter)
+            var tasks = EngineFactory.GetTaskEngine().GetByFilter(filter)
                     .FilterResult.OrderBy(r => r.Project.Title)
                     .ToList();
 
@@ -913,7 +903,7 @@ namespace ASC.Projects.Classes
             filter.SortBy = "deadline";
             filter.SortOrder = true;
 
-            var tasks = TaskEngine.GetByFilter(filter)
+            var tasks = EngineFactory.GetTaskEngine().GetByFilter(filter)
                     .FilterResult.OrderBy(r => r.Project.Title)
                     .ToList();
 
@@ -996,7 +986,7 @@ namespace ASC.Projects.Classes
             filter.FromDate = new DateTime(1970, 1, 1);
             filter.ToDate = TenantUtil.DateTimeNow();
             filter.TaskStatuses.Add(TaskStatus.Open);
-            var tasks = TaskEngine.GetByFilter(filter)
+            var tasks = EngineFactory.GetTaskEngine().GetByFilter(filter)
                     .FilterResult.OrderBy(r => r.Project.Title)
                     .ToList();
 
@@ -1087,10 +1077,10 @@ namespace ASC.Projects.Classes
         {
             if (filter.ProjectIds.Count == 0)
             {
-                filter.ProjectIds = TagEngine.GetTagProjects(filter.TagId).ToList();
+                filter.ProjectIds = EngineFactory.GetTagEngine().GetTagProjects(filter.TagId).ToList();
             }
 
-            var result = ReportEngine.BuildUsersWithoutActiveTasks(filter);
+            var result = EngineFactory.GetReportEngine().BuildUsersWithoutActiveTasks(filter);
 
             result = result.OrderBy(r => (string)r[0]).ToList();
 
@@ -1168,10 +1158,10 @@ namespace ASC.Projects.Classes
         {
             if (filter.TagId != 0 && filter.ProjectIds.Count == 0)
             {
-                filter.ProjectIds = TagEngine.GetTagProjects(filter.TagId).ToList();
+                filter.ProjectIds = EngineFactory.GetTagEngine().GetTagProjects(filter.TagId).ToList();
             }
 
-            var result = ReportEngine.BuildUsersWorkload(filter);
+            var result = EngineFactory.GetReportEngine().BuildUsersWorkload(filter);
 
             result = result.OrderBy(r => (string)r[0]).ToList();
 
@@ -1252,7 +1242,7 @@ namespace ASC.Projects.Classes
             switch (filter.ViewType)
             {
                 case 0:
-                    taskTime = TimeTrackingEngine.GetByFilter(filter)
+                    taskTime = EngineFactory.GetTimeTrackingEngine().GetByFilter(filter)
                         .Select(r =>
                             new object[]
                             {
@@ -1271,7 +1261,7 @@ namespace ASC.Projects.Classes
                     return taskTime.OrderBy(r => (string)r[0]);
 
                 case 1:
-                    taskTime = TimeTrackingEngine.GetByFilter(filter)
+                    taskTime = EngineFactory.GetTimeTrackingEngine().GetByFilter(filter)
                         .Select(r =>
                             new object[]
                             {
@@ -1308,7 +1298,7 @@ namespace ASC.Projects.Classes
                     return result;
 
                 case 2:
-                    taskTime = TimeTrackingEngine.GetByFilter(filter)
+                    taskTime = EngineFactory.GetTimeTrackingEngine().GetByFilter(filter)
                         .Select(r =>
                             new object[]
                             {
@@ -1394,7 +1384,7 @@ namespace ASC.Projects.Classes
 
         public override IEnumerable<object[]> BuildDocbuilderReport(TaskFilter filter)
         {
-            var result = ReportEngine.BuildUsersActivity(filter);
+            var result = EngineFactory.GetReportEngine().BuildUsersActivity(filter);
             return result
                 .OrderBy(r => (string)r[1])
                 .ToList();

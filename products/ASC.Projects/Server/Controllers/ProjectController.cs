@@ -67,13 +67,13 @@ namespace ASC.Api.Projects
         [Read("")]
         public IEnumerable<ProjectWrapper> GetAllProjects()
         {
-            return ProjectEngine.GetAll().Select(p=> ModelHelper.GetProjectWrapper(p)).ToList();
+            return EngineFactory.GetProjectEngine().GetAll().Select(p=> ModelHelper.GetProjectWrapper(p)).ToList();
         }
 
         [Read(@"@self")]
         public IEnumerable<ProjectWrapper> GetMyProjects()
         {
-            return ProjectEngine
+            return EngineFactory.GetProjectEngine()
                 .GetByParticipant(SecurityContext.CurrentAccount.ID)
                 .Select(p => ModelHelper.GetProjectWrapper(p))
                 .ToList();
@@ -82,24 +82,24 @@ namespace ASC.Api.Projects
         [Read(@"@follow")]
         public IEnumerable<ProjectWrapper> GetFollowProjects()
         {
-            return ProjectEngine
+            return EngineFactory.GetProjectEngine()
                 .GetFollowing(SecurityContext.CurrentAccount.ID)
                 .Select(p => ModelHelper.GetProjectWrapper(p))
                 .ToList();
         }
 
-        [Read("{status:(open|paused|closed)}")]
+        [Read("{status:regex(open|paused|closed)}")]
         public IEnumerable<ProjectWrapper> GetProjects(ProjectStatus status)
         {
-            return ProjectEngine.GetAll(status, 0).Select(p => ModelHelper.GetProjectWrapper(p)).ToList();
+            return EngineFactory.GetProjectEngine().GetAll(status, 0).Select(p => ModelHelper.GetProjectWrapper(p)).ToList();
         }
 
         [Read(@"{id:int}")]
         public ProjectWrapperFull GetProject(int id)
         {
-            var isFollow = ProjectEngine.IsFollow(id, SecurityContext.CurrentAccount.ID);
-            var tags = TagEngine.GetProjectTags(id).Select(r => r.Value).ToList();
-            return ModelHelper.GetProjectWrapperFull(ProjectEngine.GetFullProjectByID(id).NotFoundIfNull(), FileEngine.GetRoot(id), isFollow, tags);
+            var isFollow = EngineFactory.GetProjectEngine().IsFollow(id, SecurityContext.CurrentAccount.ID);
+            var tags = EngineFactory.GetTagEngine().GetProjectTags(id).Select(r => r.Value).ToList();
+            return ModelHelper.GetProjectWrapperFull(EngineFactory.GetProjectEngine().GetFullProjectByID(id).NotFoundIfNull(), EngineFactory.GetFileEngine().GetRoot(id), isFollow, tags);
         }
 
         [Read(@"filter")]
@@ -115,11 +115,11 @@ namespace ASC.Api.Projects
             if (model.Status != null)
                 filter.ProjectStatuses.Add((ProjectStatus)model.Status);
 
-            Context.SetTotalCount(ProjectEngine.GetByFilterCount(filter));
+            Context.SetTotalCount(EngineFactory.GetProjectEngine().GetByFilterCount(filter));
 
-            var projects = ProjectEngine.GetByFilter(filter).NotFoundIfNull();
+            var projects = EngineFactory.GetProjectEngine().GetByFilter(filter).NotFoundIfNull();
             var projectIds = projects.Select(p => p.ID).ToList();
-            var projectRoots = FileEngine.GetRoots(projectIds).ToList();
+            var projectRoots = EngineFactory.GetFileEngine().GetRoots(projectIds).ToList();
             ProjectSecurity.GetProjectSecurityInfo(projects);
 
             return projects.Select((t, i) => ModelHelper.GetProjectWrapperFull(t, projectRoots[i])).ToList();
@@ -128,14 +128,14 @@ namespace ASC.Api.Projects
         [Read(@"{id:int}/@search/{query}")]
         public IEnumerable<SearchWrapper> SearchProject(int id, string query)
         {
-            if (!ProjectEngine.IsExists(id)) throw new ItemNotFoundException();
-            return SearchEngine.Search(query, id).Select(x => ModelHelper.GetSearchWrapper(x));
+            if (!EngineFactory.GetProjectEngine().IsExists(id)) throw new ItemNotFoundException();
+            return EngineFactory.GetSearchEngine().Search(query, id).Select(x => ModelHelper.GetSearchWrapper(x));
         }
 
         [Read(@"@search/{query}")]
         public IEnumerable<SearchWrapper> SearchProjects(string query)
         {
-            return SearchEngine.Search(query).Select(x => ModelHelper.GetSearchWrapper(x));
+            return EngineFactory.GetSearchEngine().Search(query).Select(x => ModelHelper.GetSearchWrapper(x));
         }
         
         [Create("")]
@@ -162,22 +162,22 @@ namespace ASC.Api.Projects
                 project.Responsible = SecurityContext.CurrentAccount.ID;
             }
 
-            ProjectEngine.SaveOrUpdate(project, model.Notify ?? true);
-            ProjectEngine.AddToTeam(project, ParticipantEngine.GetByID(model.ResponsibleId), model.Notify ?? true);
-            TagEngine.SetProjectTags(project.ID, model.Tags);
+            EngineFactory.GetProjectEngine().SaveOrUpdate(project, model.Notify ?? true);
+            EngineFactory.GetProjectEngine().AddToTeam(project, EngineFactory.GetParticipantEngine().GetByID(model.ResponsibleId), model.Notify ?? true);
+            EngineFactory.GetTagEngine().SetProjectTags(project.ID, model.Tags);
 
 
             var participantsList = model.Participants.ToList();
             foreach (var participant in participantsList)
             {
-                ProjectEngine.AddToTeam(project, ParticipantEngine.GetByID(participant), model.NotifyResponsibles ?? false);
+                EngineFactory.GetProjectEngine().AddToTeam(project, EngineFactory.GetParticipantEngine().GetByID(participant), model.NotifyResponsibles ?? false);
             }
 
             foreach (var milestone in model.Milestones)
             {
                 milestone.Description = string.Empty;
                 milestone.Project = project;
-                MilestoneEngine.SaveOrUpdate(milestone, model.NotifyResponsibles ?? false);
+                EngineFactory.GetMilestoneEngine().SaveOrUpdate(milestone, model.NotifyResponsibles ?? false);
             }
             var ml = model.Milestones.ToArray();
             foreach (var task in model.Tasks)
@@ -189,13 +189,13 @@ namespace ASC.Api.Projects
                 {
                     task.Milestone = ml[task.Milestone - 1].ID;
                 }
-                TaskEngine.SaveOrUpdate(task, null, model.NotifyResponsibles ?? false);
+                EngineFactory.GetTaskEngine().SaveOrUpdate(task, null, model.NotifyResponsibles ?? false);
             }
 
             if (!ProjectSecurity.IsAdministrator())
             {
                 project.Responsible = model.ResponsibleId;
-                ProjectEngine.SaveOrUpdate(project, model.Notify ?? true);
+                EngineFactory.GetProjectEngine().SaveOrUpdate(project, model.Notify ?? true);
             }
 
             if (model.Tasks.Any() || model.Milestones.Any())
@@ -207,12 +207,12 @@ namespace ASC.Api.Projects
                             milestones = model.Milestones.Select(r => r.ID).ToArray()
                         });
 
-                ProjectEngine.SetTaskOrder(project, order);
+                EngineFactory.GetProjectEngine().SetTaskOrder(project, order);
             }
 
             MessageService.Send(MessageAction.ProjectCreated, MessageTarget.Create(project.ID), project.Title);
 
-            var wrapper = ModelHelper.GetProjectWrapperFull(project, FileEngine.GetRoot(project.ID));
+            var wrapper = ModelHelper.GetProjectWrapperFull(project, EngineFactory.GetFileEngine().GetRoot(project.ID));
              wrapper.ParticipantCount = participantsList.Count() + 1;
             return wrapper;
         }
@@ -237,7 +237,7 @@ namespace ASC.Api.Projects
 
             foreach (var participant in model.Participants.Where(r => !ProjectSecurity.IsAdministrator(r.ID)))
             {
-                ProjectEngine.SetTeamSecurity(project.Id, participant);
+                EngineFactory.GetProjectEngine().SetTeamSecurity(project.Id, participant);
             }
 
             return project;
@@ -249,12 +249,12 @@ namespace ASC.Api.Projects
             if (model.ResponsibleId == Guid.Empty) throw new ArgumentException(@"responsible can't be empty", "responsibleId");
             if (string.IsNullOrEmpty(model.Title)) throw new ArgumentException(@"title can't be empty", "title");
 
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
             ProjectSecurity.DemandEdit(project);
             
-            if (!ProjectEngine.IsInTeam(project.ID, model.ResponsibleId))
+            if (!EngineFactory.GetProjectEngine().IsInTeam(project.ID, model.ResponsibleId))
             {
-                ProjectEngine.AddToTeam(project, ParticipantEngine.GetByID(model.ResponsibleId), false);
+                EngineFactory.GetProjectEngine().AddToTeam(project, EngineFactory.GetParticipantEngine().GetByID(model.ResponsibleId), false);
             }
 
             project.Title = Update.IfNotEmptyAndNotEquals(project.Title, model.Title);
@@ -273,18 +273,18 @@ namespace ASC.Api.Projects
                 project.Private = model.Private.Value;
             }
 
-            ProjectEngine.SaveOrUpdate(project, model.Notify);
+            EngineFactory.GetProjectEngine().SaveOrUpdate(project, model.Notify);
             if (model.Tags != null)
             {
-                TagEngine.SetProjectTags(project.ID, model.Tags);
+                EngineFactory.GetTagEngine().SetProjectTags(project.ID, model.Tags);
             }
-            ProjectEngine.UpdateTeam(project, model.Participants, true);
+            EngineFactory.GetProjectEngine().UpdateTeam(project, model.Participants, true);
 
             project.ParticipantCount = model.Participants.Count();
 
             MessageService.Send(MessageAction.ProjectUpdated, MessageTarget.Create(project.ID), project.Title);
 
-            return ModelHelper.GetProjectWrapperFull(project, FileEngine.GetRoot(id));
+            return ModelHelper.GetProjectWrapperFull(project, EngineFactory.GetFileEngine().GetRoot(id));
         }
 
         [Update(@"{id:int}/withSecurityInfo")]
@@ -305,7 +305,7 @@ namespace ASC.Api.Projects
 
             foreach (var participant in model.Participants)
             {
-                ProjectEngine.SetTeamSecurity(project.Id, participant);
+                EngineFactory.GetProjectEngine().SetTeamSecurity(project.Id, participant);
             }
 
             return project;
@@ -314,21 +314,21 @@ namespace ASC.Api.Projects
         [Update(@"{id:int}/status")]
         public ProjectWrapperFull UpdateProject(int id, ProjectStatus status)
         {
-            var project = ProjectEngine.GetFullProjectByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetFullProjectByID(id).NotFoundIfNull();
 
-            ProjectEngine.ChangeStatus(project, status);
+            EngineFactory.GetProjectEngine().ChangeStatus(project, status);
             MessageService.Send(MessageAction.ProjectUpdatedStatus, MessageTarget.Create(project.ID), project.Title, LocalizedEnumConverter.ConvertToString(project.Status));
 
-            return ModelHelper.GetProjectWrapperFull(project, FileEngine.GetRoot(id));
+            return ModelHelper.GetProjectWrapperFull(project, EngineFactory.GetFileEngine().GetRoot(id));
         } 
         [Delete(@"{id:int}")]
         public ProjectWrapperFull DeleteProject(int id)
         {
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
             ProjectSecurity.DemandEdit(project);
 
-            var folderId = FileEngine.GetRoot(id);
-            ProjectEngine.Delete(id);
+            var folderId = EngineFactory.GetFileEngine().GetRoot(id);
+            EngineFactory.GetProjectEngine().Delete(id);
             MessageService.Send(MessageAction.ProjectDeleted, MessageTarget.Create(project.ID), project.Title);
 
             return ModelHelper.GetProjectWrapperFull(project, folderId);
@@ -357,18 +357,18 @@ namespace ASC.Api.Projects
         [Update(@"{projectid:int}/follow")]
         public ProjectWrapper FollowToProject(int projectId)
         {
-            var project = ProjectEngine.GetByID(projectId).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectId).NotFoundIfNull();
 
             ProjectSecurity.DemandAuthentication();
 
-            if (ParticipantEngine.GetFollowingProjects(SecurityContext.CurrentAccount.ID).Contains(projectId))
+            if (EngineFactory.GetParticipantEngine().GetFollowingProjects(SecurityContext.CurrentAccount.ID).Contains(projectId))
             {
-                ParticipantEngine.RemoveFromFollowingProjects(projectId, SecurityContext.CurrentAccount.ID);
+                EngineFactory.GetParticipantEngine().RemoveFromFollowingProjects(projectId, SecurityContext.CurrentAccount.ID);
                 MessageService.Send(MessageAction.ProjectUnfollowed, MessageTarget.Create(project.ID), project.Title);
             }
             else
             {
-                ParticipantEngine.AddToFollowingProjects(projectId, SecurityContext.CurrentAccount.ID);
+                EngineFactory.GetParticipantEngine().AddToFollowingProjects(projectId, SecurityContext.CurrentAccount.ID);
                 MessageService.Send(MessageAction.ProjectFollowed, MessageTarget.Create(project.ID), project.Title);
             }
 
@@ -378,37 +378,37 @@ namespace ASC.Api.Projects
         [Update(@"{id:int}/tag")]
         public ProjectWrapperFull UpdateProjectTags(int id, string tags)
         {
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
             ProjectSecurity.DemandEdit(project);
 
-            TagEngine.SetProjectTags(id, tags);
+            EngineFactory.GetTagEngine().SetProjectTags(id, tags);
 
-            return ModelHelper.GetProjectWrapperFull(project, FileEngine.GetRoot(id));
+            return ModelHelper.GetProjectWrapperFull(project, EngineFactory.GetFileEngine().GetRoot(id));
         }
 
         [Update(@"{id:int}/tags")]
         public ProjectWrapperFull UpdateProjectTags(int id, IEnumerable<int> tags)
         {
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
             ProjectSecurity.DemandEdit(project);
 
-            TagEngine.SetProjectTags(id, tags);
+            EngineFactory.GetTagEngine().SetProjectTags(id, tags);
 
-            return ModelHelper.GetProjectWrapperFull(project, FileEngine.GetRoot(id));
+            return ModelHelper.GetProjectWrapperFull(project, EngineFactory.GetFileEngine().GetRoot(id));
         }
 
         [Read(@"{id:int}/time")]
         public IEnumerable<TimeWrapper> GetProjectTime(int id)
         {
-            if (!ProjectEngine.IsExists(id)) throw new ItemNotFoundException();
-            return TimeTrackingEngine.GetByProject(id).Select(tt=> ModelHelper.GetTimeWrapper(tt));
+            if (!EngineFactory.GetProjectEngine().IsExists(id)) throw new ItemNotFoundException();
+            return EngineFactory.GetTimeTrackingEngine().GetByProject(id).Select(tt=> ModelHelper.GetTimeWrapper(tt));
         }
 
         [Read(@"{id:int}/time/total")]
         public string GetTotalProjectTime(int id)
         {
-            if (!ProjectEngine.IsExists(id)) throw new ItemNotFoundException();
-            return TimeTrackingEngine.GetTotalByProject(id);
+            if (!EngineFactory.GetProjectEngine().IsExists(id)) throw new ItemNotFoundException();
+            return EngineFactory.GetTimeTrackingEngine().GetTotalByProject(id);
         }
 
         [Create(@"{id:int}/milestone")]
@@ -417,7 +417,7 @@ namespace ASC.Api.Projects
             if (model.Title == null) throw new ArgumentNullException("title");
             if (model.Deadline == DateTime.MinValue) throw new ArgumentNullException("deadline");
 
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
             ProjectSecurity.DemandCreate<Milestone>(project);
 
             var milestone = new Milestone
@@ -431,7 +431,7 @@ namespace ASC.Api.Projects
                 IsNotify = model.IsNotify,
                 Responsible = model.Responsible
             };
-            MilestoneEngine.SaveOrUpdate(milestone, model.NotifyResponsible);
+            EngineFactory.GetMilestoneEngine().SaveOrUpdate(milestone, model.NotifyResponsible);
             MessageService.Send(MessageAction.MilestoneCreated, MessageTarget.Create(milestone.ID), milestone.Project.Title, milestone.Title);
 
             return ModelHelper.GetMilestoneWrapper(milestone);
@@ -440,33 +440,33 @@ namespace ASC.Api.Projects
         [Read(@"{id:int}/milestone")]
         public IEnumerable<MilestoneWrapper> GetProjectMilestones(int id)
         {
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
 
             //NOTE: move to engine
             if (!ProjectSecurity.CanRead<Milestone>(project)) throw ProjectSecurity.CreateSecurityException();
 
-            var milestones = MilestoneEngine.GetByProject(id);
+            var milestones = EngineFactory.GetMilestoneEngine().GetByProject(id);
 
             return milestones.Select(m=> ModelHelper.GetMilestoneWrapper(m));
         }
 
-        [Read(@"{id:int}/milestone/{status:(open|closed|late|disable)}")]
+        [Read(@"{id:int}/milestone/{status:regex(open|closed|late|disable)}")]
         public IEnumerable<MilestoneWrapper> GetProjectMilestones(int id, MilestoneStatus status)
         {
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
 
             if (!ProjectSecurity.CanRead<Milestone>(project)) throw ProjectSecurity.CreateSecurityException();
 
-            var milestones = MilestoneEngine.GetByStatus(id, status);
+            var milestones = EngineFactory.GetMilestoneEngine().GetByStatus(id, status);
 
             return milestones.Select(m=> ModelHelper.GetMilestoneWrapper(m));
         }
         [Read(@"{projectid:int}/team")]
         public IEnumerable<ParticipantWrapper> GetProjectTeam(int projectid)
         {
-            if (!ProjectEngine.IsExists(projectid)) throw new ItemNotFoundException();
+            if (!EngineFactory.GetProjectEngine().IsExists(projectid)) throw new ItemNotFoundException();
 
-            return ProjectEngine.GetTeam(projectid)
+            return EngineFactory.GetProjectEngine().GetTeam(projectid)
                                 .Select(x => ModelHelper.GetParticipantWrapper(x))
                                 .OrderBy(r => r.DisplayName).ToList();
         }
@@ -474,9 +474,9 @@ namespace ASC.Api.Projects
         [Read(@"{projectid:int}/teamExcluded")]
         public IEnumerable<ParticipantWrapper> GetProjectTeamExcluded(int projectid)
         {
-            if (!ProjectEngine.IsExists(projectid)) throw new ItemNotFoundException();
+            if (!EngineFactory.GetProjectEngine().IsExists(projectid)) throw new ItemNotFoundException();
 
-            return ProjectEngine.GetProjectTeamExcluded(projectid)
+            return EngineFactory.GetProjectEngine().GetProjectTeamExcluded(projectid)
                                 .Select(x => ModelHelper.GetParticipantWrapper(x))
                                 .OrderBy(r => r.DisplayName).ToList();
         }
@@ -484,7 +484,7 @@ namespace ASC.Api.Projects
         [Create(@"team")]
         public IEnumerable<ParticipantWrapper> GetProjectTeam(List<int> ids)
         {
-            return ProjectEngine.GetTeam(ids)
+            return EngineFactory.GetProjectEngine().GetTeam(ids)
                                 .Select(x => ModelHelper.GetParticipantWrapper(x))
                                 .OrderBy(r => r.DisplayName).ToList();
         }
@@ -493,10 +493,10 @@ namespace ASC.Api.Projects
         [Create(@"{projectid:int}/team")]
         public IEnumerable<ParticipantWrapper> AddToProjectTeam(int projectid, Guid userId)
         {
-            var project = ProjectEngine.GetByID(projectid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandEditTeam(project);
 
-            ProjectEngine.AddToTeam(project, ParticipantEngine.GetByID(userId), true);
+            EngineFactory.GetProjectEngine().AddToTeam(project, EngineFactory.GetParticipantEngine().GetByID(userId), true);
 
             return GetProjectTeam(projectid);
         }
@@ -504,15 +504,15 @@ namespace ASC.Api.Projects
         [Update(@"{projectid:int}/team/security")]
         public IEnumerable<ParticipantWrapper> SetProjectTeamSecurity(int projectid, ModelSetTeamSecurity model)
         {
-            var project = ProjectEngine.GetByID(projectid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandEditTeam(project);
 
-            if (!ProjectEngine.IsInTeam(projectid, model.UserId))
+            if (!EngineFactory.GetProjectEngine().IsInTeam(projectid, model.UserId))
             {
                 throw new ArgumentOutOfRangeException("userId", "Not a project memeber");
             }
 
-            ProjectEngine.SetTeamSecurity(project, ParticipantEngine.GetByID(model.UserId), model.Security, model.Visible);
+            EngineFactory.GetProjectEngine().SetTeamSecurity(project, EngineFactory.GetParticipantEngine().GetByID(model.UserId), model.Security, model.Visible);
 
             var team = GetProjectTeam(projectid);
             var user = team.SingleOrDefault(t => t.Id == model.UserId);
@@ -527,11 +527,11 @@ namespace ASC.Api.Projects
         [Delete(@"{projectid:int}/team")]
         public IEnumerable<ParticipantWrapper> DeleteFromProjectTeam(int projectid, Guid userId)
         {
-            var project = ProjectEngine.GetByID(projectid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandEditTeam(project);
 
-            var particapant = ParticipantEngine.GetByID(userId);
-            ProjectEngine.RemoveFromTeam(project, particapant, true);
+            var particapant = EngineFactory.GetParticipantEngine().GetByID(userId);
+            EngineFactory.GetProjectEngine().RemoveFromTeam(project, particapant, true);
 
             MessageService.Send(MessageAction.ProjectDeletedMember, MessageTarget.Create(project.ID), project.Title, particapant.UserInfo.DisplayUserName(DisplayUserSettingsHelper));
 
@@ -541,11 +541,11 @@ namespace ASC.Api.Projects
         [Update(@"{projectid:int}/team")]
         public IEnumerable<ParticipantWrapper> UpdateProjectTeam(int projectId, ModelUpdateTeam model)
         {
-            var project = ProjectEngine.GetByID(projectId).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectId).NotFoundIfNull();
             ProjectSecurity.DemandEditTeam(project);
 
             var participantsList = model.Participants.ToList();
-            ProjectEngine.UpdateTeam(project, participantsList, model.Notify);
+            EngineFactory.GetProjectEngine().UpdateTeam(project, participantsList, model.Notify);
 
             var team = GetProjectTeam(projectId);
             MessageService.Send(MessageAction.ProjectUpdatedTeam, MessageTarget.Create(project.ID), project.Title, team.Select(t => t.DisplayName));
@@ -556,9 +556,9 @@ namespace ASC.Api.Projects
         [Read(@"{projectid:int}/task")]
         public IEnumerable<TaskWrapper> GetProjectTasks(int projectid)
         {
-            if (!ProjectEngine.IsExists(projectid)) throw new ItemNotFoundException();
+            if (!EngineFactory.GetProjectEngine().IsExists(projectid)) throw new ItemNotFoundException();
 
-            return TaskEngine.GetByProject(projectid, TaskStatus.Open, Guid.Empty)
+            return EngineFactory.GetTaskEngine().GetByProject(projectid, TaskStatus.Open, Guid.Empty)
                 .Select(t=> ModelHelper.GetTaskWrapper(t))
                 .ToList();
         }
@@ -568,12 +568,10 @@ namespace ASC.Api.Projects
         {
             if (string.IsNullOrEmpty(model.Title)) throw new ArgumentException(@"title can't be empty", "title");
 
-            var projectEngine = ProjectEngine;
-
-            var project = projectEngine.GetByID(projectid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
 
 
-            if (model.Milestoneid > 0 && !MilestoneEngine.IsExists(model.Milestoneid))
+            if (model.Milestoneid > 0 && !EngineFactory.GetMilestoneEngine().IsExists(model.Milestoneid))
             {
                 throw new ItemNotFoundException("Milestone not found");
             }
@@ -592,7 +590,7 @@ namespace ASC.Api.Projects
                 Responsibles = new List<Guid>(model.Responsibles.Distinct()),
                 StartDate = model.StartDate
             };
-            TaskEngine.SaveOrUpdate(task, null, model.Notify);
+            EngineFactory.GetTaskEngine().SaveOrUpdate(task, null, model.Notify);
 
             MessageService.Send(MessageAction.TaskCreated, MessageTarget.Create(task.ID), project.Title, task.Title);
 
@@ -602,8 +600,8 @@ namespace ASC.Api.Projects
         [Create(@"{projectid:int}/task/{messageid:int}")]
         public TaskWrapper AddProjectTaskByMessage(int projectid, int messageid)
         {
-            var project = ProjectEngine.GetByID(projectid).NotFoundIfNull();
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
 
             ProjectSecurity.DemandCreate<Task>(project);
 
@@ -616,16 +614,16 @@ namespace ASC.Api.Projects
                 Project = project
             };
 
-            TaskEngine.SaveOrUpdate(task, null, true);
+            EngineFactory.GetTaskEngine().SaveOrUpdate(task, null, true);
 
-            CommentEngine.SaveOrUpdate(new Comment
+            EngineFactory.GetCommentEngine().SaveOrUpdate(new Comment
             {
                 OldGuidId = Guid.NewGuid(),
                 TargetUniqID = ProjectEntity.BuildUniqId<Task>(task.ID),
                 Content = discussion.Description
             });
             //copy comments
-            var comments = CommentEngine.GetComments(discussion);
+            var comments = EngineFactory.GetCommentEngine().GetComments(discussion);
             var newOldComments = new Dictionary<Guid, Guid>();
 
             var i = 1;
@@ -643,23 +641,23 @@ namespace ASC.Api.Projects
                     comment.Parent = newOldComments[comment.Parent];
                 }
 
-                CommentEngine.SaveOrUpdate(comment);
+                EngineFactory.GetCommentEngine().SaveOrUpdate(comment);
                 i++;
             }
 
             //copy files
-            var files = MessageEngine.GetFiles(discussion);
+            var files = EngineFactory.GetMessageEngine().GetFiles(discussion);
 
             foreach (var file in files)
             {
-                TaskEngine.AttachFile(task, file.ID);
+                EngineFactory.GetTaskEngine().AttachFile(task, file.ID);
             }
 
             //copy recipients
 
-            foreach (var participiant in MessageEngine.GetSubscribers(discussion))
+            foreach (var participiant in EngineFactory.GetMessageEngine().GetSubscribers(discussion))
             {
-                TaskEngine.Subscribe(task, new Guid(participiant.ID));
+                EngineFactory.GetTaskEngine().Subscribe(task, new Guid(participiant.ID));
             }
 
             MessageService.Send(MessageAction.TaskCreatedFromDiscussion, MessageTarget.Create(task.ID), project.Title, discussion.Title, task.Title);
@@ -667,20 +665,20 @@ namespace ASC.Api.Projects
             return ModelHelper.GetTaskWrapper(task);
         }
 
-        [Read(@"{projectid:int}/task/{status:(notaccept|open|closed|disable|unclassified|notinmilestone)}")]
+        [Read(@"{projectid:int}/task/{status:regex(notaccept|open|closed|disable|unclassified|notinmilestone)}")]
         public IEnumerable<TaskWrapper> GetProjectTasks(int projectid, TaskStatus status)
         {
-            if (!ProjectEngine.IsExists(projectid)) throw new ItemNotFoundException();
-            return TaskEngine.GetByProject(projectid, status, Guid.Empty)
+            if (!EngineFactory.GetProjectEngine().IsExists(projectid)) throw new ItemNotFoundException();
+            return EngineFactory.GetTaskEngine().GetByProject(projectid, status, Guid.Empty)
                 .Select(t=> ModelHelper.GetTaskWrapper(t)).ToList();
         }
 
-        [Read(@"{projectid:int}/task/@self/{status:(notaccept|open|closed|disable|unclassified|notinmilestone)}")]
+        [Read(@"{projectid:int}/task/@self/{status:regex(notaccept|open|closed|disable|unclassified|notinmilestone)}")]
         public IEnumerable<TaskWrapper> GetProjectMyTasks(int projectid, TaskStatus status)
         {
-            if (!ProjectEngine.IsExists(projectid)) throw new ItemNotFoundException();
+            if (!EngineFactory.GetProjectEngine().IsExists(projectid)) throw new ItemNotFoundException();
 
-            return TaskEngine.GetByProject(projectid, status, SecurityContext.CurrentAccount.ID)
+            return EngineFactory.GetTaskEngine().GetByProject(projectid, status, SecurityContext.CurrentAccount.ID)
                 .Select(t => ModelHelper.GetTaskWrapper(t))
                 .ToList();
         }
@@ -688,10 +686,10 @@ namespace ASC.Api.Projects
         [Read(@"{id:int}/files")]
         public FolderContentWrapper<int> GetProjectFiles(int id)
         {
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
 
             if (ProjectSecurity.CanReadFiles(project))
-                return ModelHelper.GetFolderContentWrapper(FileEngine.GetRoot(id), Guid.Empty, FilterType.None);
+                return ModelHelper.GetFolderContentWrapper(EngineFactory.GetFileEngine().GetRoot(id), Guid.Empty, FilterType.None);
 
             throw new SecurityException("Access to files is denied");
         }
@@ -725,7 +723,7 @@ namespace ASC.Api.Projects
                     break;
             }
 
-            var listFiles = files.Select(r => FileEngine.GetFile(r).NotFoundIfNull()).ToList();
+            var listFiles = files.Select(r => EngineFactory.GetFileEngine().GetFile(r).NotFoundIfNull()).ToList();
 
             return listFiles.Select(f=> FileWrapperHelper.GetFileWrapper(f));
         }
@@ -744,7 +742,7 @@ namespace ASC.Api.Projects
                     break;
             }
 
-            var file = FileEngine.GetFile(fileid).NotFoundIfNull();
+            var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
             return FileWrapperHelper.GetFileWrapper(file);
         }
 
@@ -764,7 +762,7 @@ namespace ASC.Api.Projects
                     break;
             }
 
-            var listFiles = filesList.Select(r => FileEngine.GetFile(r).NotFoundIfNull()).ToList();
+            var listFiles = filesList.Select(r => EngineFactory.GetFileEngine().GetFile(r).NotFoundIfNull()).ToList();
 
             return listFiles.Select(f=> FileWrapperHelper.GetFileWrapper(f));
         }
@@ -804,8 +802,8 @@ namespace ASC.Api.Projects
         {
             if (contactid <= 0) throw new ArgumentException();
 
-            return ProjectEngine.GetProjectsByContactID(contactid)
-                .Select(x => ModelHelper.GetProjectWrapperFull(x, FileEngine.GetRoot(x.ID))).ToList();
+            return EngineFactory.GetProjectEngine().GetProjectsByContactID(contactid)
+                .Select(x => ModelHelper.GetProjectWrapperFull(x, EngineFactory.GetFileEngine().GetRoot(x.ID))).ToList();
         }
 
         [Create(@"{projectid:int}/contact")]
@@ -814,10 +812,10 @@ namespace ASC.Api.Projects
             var contact = CRMDaoFactory.GetContactDao().GetByID(contactid);
             if (contact == null) throw new ArgumentException();
 
-            var project = ProjectEngine.GetFullProjectByID(projectid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetFullProjectByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandLinkContact(project);
 
-            ProjectEngine.AddProjectContact(projectid, contactid);
+            EngineFactory.GetProjectEngine().AddProjectContact(projectid, contactid);
 
             var messageAction = contact is Company ? MessageAction.CompanyLinkedProject : MessageAction.PersonLinkedProject;
             MessageService.Send(messageAction, MessageTarget.Create(project.ID), contact.GetTitle(), project.Title);
@@ -831,10 +829,10 @@ namespace ASC.Api.Projects
             var contact = CRMDaoFactory.GetContactDao().GetByID(contactid);
             if (contact == null) throw new ArgumentException();
 
-            var project = ProjectEngine.GetByID(projectid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandEdit(project);
 
-            ProjectEngine.DeleteProjectContact(projectid, contactid);
+            EngineFactory.GetProjectEngine().DeleteProjectContact(projectid, contactid);
 
             var messageAction = contact is Company ? MessageAction.CompanyUnlinkedProject : MessageAction.PersonUnlinkedProject;
             MessageService.Send(messageAction, MessageTarget.Create(project.ID), contact.GetTitle(), project.Title);
@@ -845,13 +843,13 @@ namespace ASC.Api.Projects
         [Read("template")]
         public IEnumerable<object> GetAllTemplates()
         {
-            return TemplateEngine.GetAll().Select(x => new { x.Id, x.Title, x.Description, CanEdit = ProjectSecurity.CanEditTemplate(x) });
+            return EngineFactory.GetTemplateEngine().GetAll().Select(x => new { x.Id, x.Title, x.Description, CanEdit = ProjectSecurity.CanEditTemplate(x) });
         }
 
         [Read(@"template/{id:int}")]
         public ObjectWrapperBase GetTemplate(int id)
         {
-            var template = TemplateEngine.GetByID(id).NotFoundIfNull();
+            var template = EngineFactory.GetTemplateEngine().GetByID(id).NotFoundIfNull();
             return new ObjectWrapperBase { Id = template.Id, Title = template.Title, Description = template.Description };
         }
         
@@ -868,7 +866,7 @@ namespace ASC.Api.Projects
                 Description = model.Description
             };
 
-            template = TemplateEngine.SaveOrUpdate(template).NotFoundIfNull();
+            template = EngineFactory.GetTemplateEngine().SaveOrUpdate(template).NotFoundIfNull();
             MessageService.Send(MessageAction.ProjectTemplateCreated, MessageTarget.Create(template.Id), template.Title);
 
             return new ObjectWrapperBase { Id = template.Id, Title = template.Title, Description = template.Description };
@@ -879,12 +877,12 @@ namespace ASC.Api.Projects
         {
             if (string.IsNullOrEmpty(model.Title)) throw new ArgumentException(@"title can't be empty", "title");
 
-            var template = TemplateEngine.GetByID(id).NotFoundIfNull();
+            var template = EngineFactory.GetTemplateEngine().GetByID(id).NotFoundIfNull();
 
             template.Title = Update.IfNotEmptyAndNotEquals(template.Title, model.Title);
             template.Description = Update.IfNotEmptyAndNotEquals(template.Description, model.Description);
 
-            TemplateEngine.SaveOrUpdate(template);
+            EngineFactory.GetTemplateEngine().SaveOrUpdate(template);
             MessageService.Send(MessageAction.ProjectTemplateUpdated, MessageTarget.Create(template.Id), template.Title);
 
             return new ObjectWrapperBase { Id = template.Id, Title = template.Title, Description = template.Description };
@@ -893,9 +891,9 @@ namespace ASC.Api.Projects
         [Delete(@"template/{id:int}")]
         public ObjectWrapperBase DeleteTemplate(int id)
         {
-            var template = TemplateEngine.GetByID(id).NotFoundIfNull();
+            var template = EngineFactory.GetTemplateEngine().GetByID(id).NotFoundIfNull();
 
-            TemplateEngine.Delete(id);
+            EngineFactory.GetTemplateEngine().Delete(id);
             MessageService.Send(MessageAction.ProjectTemplateDeleted, MessageTarget.Create(template.Id), template.Title);
 
             return new ObjectWrapperBase { Id = template.Id, Title = template.Title, Description = template.Description };
@@ -910,18 +908,18 @@ namespace ASC.Api.Projects
         [Read("maxlastmodified")]
         public string GetProjectMaxLastModified()
         {
-            var maxModified = ProjectEngine.GetMaxLastModified();
-            var maxTeamModified = ProjectEngine.GetTeamMaxLastModified();
+            var maxModified = EngineFactory.GetProjectEngine().GetMaxLastModified();
+            var maxTeamModified = EngineFactory.GetProjectEngine().GetTeamMaxLastModified();
             var result = DateTime.Compare(maxModified, maxTeamModified) > 0 ? maxModified : maxTeamModified;
-            return result + ProjectEngine.Count().ToString();
+            return result + EngineFactory.GetProjectEngine().Count().ToString();
         }
 
         [Read(@"{id:int}/order")]
         public string GetTaskOrder(int id)
         {
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
 
-            return ProjectEngine.GetTaskOrder(project);
+            return EngineFactory.GetProjectEngine().GetTaskOrder(project);
         }
 
         [Update(@"{id:int}/order")]
@@ -929,9 +927,9 @@ namespace ASC.Api.Projects
         {
             if (string.IsNullOrEmpty(order)) throw new ArgumentException(@"order can't be empty", "order");
 
-            var project = ProjectEngine.GetByID(id).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
 
-            ProjectEngine.SetTaskOrder(project, order);
+            EngineFactory.GetProjectEngine().SetTaskOrder(project, order);
         }
     }
 }

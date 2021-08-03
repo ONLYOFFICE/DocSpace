@@ -56,8 +56,8 @@ namespace ASC.Api.Projects
         [Read(@"comment/{commentid}")]
         public CommentWrapper GetComment(Guid commentid)
         {
-            var comment = CommentEngine.GetByID(commentid).NotFoundIfNull();
-            var entity = CommentEngine.GetEntityByTargetUniqId(comment).NotFoundIfNull();
+            var comment = EngineFactory.GetCommentEngine().GetByID(commentid).NotFoundIfNull();
+            var entity = EngineFactory.GetCommentEngine().GetEntityByTargetUniqId(comment).NotFoundIfNull();
 
             return ModelHelper.GetCommentWrapper(comment, entity);
         }
@@ -70,7 +70,7 @@ namespace ASC.Api.Projects
             Comment comment;
             if (!string.IsNullOrEmpty(model.CommentId))
             {
-                comment = CommentEngine.GetByID(new Guid(model.CommentId));
+                comment = EngineFactory.GetCommentEngine().GetByID(new Guid(model.CommentId));
                 comment.Content = model.HtmlText;
             }
             else
@@ -83,7 +83,7 @@ namespace ASC.Api.Projects
                 };
             }
 
-            var creator = ParticipantEngine.GetByID(comment.CreateBy).UserInfo;
+            var creator = EngineFactory.GetParticipantEngine().GetByID(comment.CreateBy).UserInfo;
             var info = new CommentInfo
             {
                 CommentID = comment.OldGuidId.ToString(),
@@ -104,15 +104,15 @@ namespace ASC.Api.Projects
         [Delete("comment/{commentid}")]
         public string RemoveProjectComment(string commentid)
         {
-            var comment = CommentEngine.GetByID(new Guid(commentid)).NotFoundIfNull();
+            var comment = EngineFactory.GetCommentEngine().GetByID(new Guid(commentid)).NotFoundIfNull();
             comment.Inactive = true;
 
-            var entity = CommentEngine.GetEntityByTargetUniqId(comment);
+            var entity = EngineFactory.GetCommentEngine().GetEntityByTargetUniqId(comment);
             if (entity == null) return "";
 
             ProjectSecurity.DemandEditComment(entity.Project, comment);
 
-            CommentEngine.SaveOrUpdate(comment);
+            EngineFactory.GetCommentEngine().SaveOrUpdate(comment);
             MessageService.Send(MessageAction.TaskCommentDeleted, MessageTarget.Create(comment.ID), entity.Project.Title, entity.Title);
 
             return commentid;
@@ -133,9 +133,9 @@ namespace ASC.Api.Projects
             if (!string.IsNullOrEmpty(model.ParentCommentId))
                 comment.Parent = new Guid(model.ParentCommentId);
 
-            var entity = CommentEngine.GetEntityByTargetUniqId(comment).NotFoundIfNull();
+            var entity = EngineFactory.GetCommentEngine().GetEntityByTargetUniqId(comment).NotFoundIfNull();
 
-            comment = CommentEngine.SaveOrUpdateComment(entity, comment);
+            comment = EngineFactory.GetCommentEngine().SaveOrUpdateComment(entity, comment);
 
             MessageService.Send(isMessageComment ? MessageAction.DiscussionCommentCreated : MessageAction.TaskCommentCreated, MessageTarget.Create(comment.ID), entity.Project.Title, entity.Title);
             return ModelHelper.GetCommentInfo(null, comment, entity);
@@ -144,13 +144,13 @@ namespace ASC.Api.Projects
         [Update("comment/{commentid}")]
         public string UpdateComment(string commentid, string content)
         {
-            var comment = CommentEngine.GetByID(new Guid(commentid));
+            var comment = EngineFactory.GetCommentEngine().GetByID(new Guid(commentid));
             comment.Content = content;
 
-            var entity = CommentEngine.GetEntityByTargetUniqId(comment);
+            var entity = EngineFactory.GetCommentEngine().GetEntityByTargetUniqId(comment);
             if (entity == null) throw new Exception("Access denied.");
 
-            CommentEngine.SaveOrUpdateComment(entity, comment);
+            EngineFactory.GetCommentEngine().SaveOrUpdateComment(entity, comment);
 
             MessageService.Send(MessageAction.TaskCommentUpdated, MessageTarget.Create(comment.ID), entity.Project.Title, entity.Title);
 

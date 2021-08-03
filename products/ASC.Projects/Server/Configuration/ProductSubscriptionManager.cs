@@ -43,22 +43,17 @@ namespace ASC.Projects.Configuration
         private readonly Dictionary<Int32, List<int>> _bindingTaskID = new Dictionary<Int32, List<int>>();
 
         private readonly Dictionary<Int32, SubscriptionGroup> _bindingProjectToGroup = new Dictionary<Int32, SubscriptionGroup>();
-
-        private MessageEngine MessageEngine { get; set; }
-        private TaskEngine TaskEngine { get; set; }
-        private ProjectEngine ProjectEngine { get; set; }
         private PathProvider PathProvider { get; set; }
         private NotifySource NotifySource { get; set; }
         private SecurityContext SecurityContext { get; set; }
+        private EngineFactory EngineFactory { get; set; }
 
         public ProductSubscriptionManager(EngineFactory engineFactory, PathProvider pathProvider, NotifySource notifySource, SecurityContext securityContext)
         {
-            MessageEngine = engineFactory.GetMessageEngine();
-            TaskEngine = engineFactory.GetTaskEngine();
-            ProjectEngine = engineFactory.GetProjectEngine();
             PathProvider = pathProvider;
             NotifySource = notifySource;
             SecurityContext = securityContext;
+            EngineFactory = engineFactory;
         }
         private int GetProjectIDByGroupID(Guid moduleOrGroupID)
         {
@@ -92,7 +87,7 @@ namespace ASC.Projects.Configuration
 
                     if (getEntity)
                     {
-                        var message = MessageEngine.GetByID(messageID);
+                        var message = EngineFactory.GetMessageEngine().GetByID(messageID);
                         if (message != null && message.Project != null)
                         {
                             result.Add(new SubscriptionObject
@@ -148,7 +143,7 @@ namespace ASC.Projects.Configuration
 
                     if (getEntity)
                     {
-                        var task = TaskEngine.GetByID(taskID);
+                        var task = EngineFactory.GetTaskEngine().GetByID(taskID);
                         if (task != null && task.Project != null)
                         {
                             result.Add(new SubscriptionObject
@@ -306,9 +301,9 @@ namespace ASC.Projects.Configuration
             preparateData.AddRange(new List<string>(GetSubscriptions(NotifyConstants.Event_NewCommentForTask)));
             preparateData.AddRange(new List<string>(GetSubscriptions(NotifyConstants.Event_NewCommentForMessage)));
 
-            var projects = ProjectEngine.GetAll().OrderBy(r => r.Title).ToList();
-            var messages = MessageEngine.GetAll().ToList();
-            var tasks = TaskEngine.GetAll().ToList();
+            var projects = EngineFactory.GetProjectEngine().GetAll().OrderBy(r => r.Title).ToList();
+            var messages = EngineFactory.GetMessageEngine().GetAll().ToList();
+            var tasks = EngineFactory.GetTaskEngine().GetAll().ToList();
 
             foreach (var item in preparateData)
             {

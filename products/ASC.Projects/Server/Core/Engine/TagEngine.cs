@@ -26,56 +26,55 @@ namespace ASC.Projects.Engine
     [Scope]
     public class TagEngine
     {
-        private ITagDao TagDao { get; set; }
-
+        private IDaoFactory DaoFactory { get; set; }
         public TagEngine(IDaoFactory daoFactory)
         {
-            TagDao = daoFactory.GetTagDao();
+            DaoFactory = daoFactory;
         }
 
         public KeyValuePair<int, string> Create(string data)
         {
-            return TagDao.Create(data);
+            return DaoFactory.GetTagDao().Create(data);
         }
 
         public Dictionary<int, string> GetTags()
         {
-            return TagDao.GetTags();
+            return DaoFactory.GetTagDao().GetTags();
         }
 
         public Dictionary<int, string> GetTags(string prefix)
         {
-            return TagDao.GetTags(prefix);
+            return DaoFactory.GetTagDao().GetTags(prefix);
         }
 
         public string GetById(int id)
         {
-            return TagDao.GetById(id);
+            return DaoFactory.GetTagDao().GetById(id);
         }
 
         public int[] GetTagProjects(string tagName)
         {
-            return TagDao.GetTagProjects(tagName);
+            return DaoFactory.GetTagDao().GetTagProjects(tagName);
         }
 
         public int[] GetTagProjects(int tagID)
         {
-            return TagDao.GetTagProjects(tagID);
+            return DaoFactory.GetTagDao().GetTagProjects(tagID);
         }
 
         public Dictionary<int, string> GetProjectTags(int projectId)
         {
-            return TagDao.GetProjectTags(projectId);
+            return DaoFactory.GetTagDao().GetProjectTags(projectId);
         }
 
         public void SetProjectTags(int projectId, string tags)
         {
-            TagDao.SetProjectTags(projectId, FromString(tags));
+            DaoFactory.GetTagDao().SetProjectTags(projectId, FromString(tags));
         }
 
         public void SetProjectTags(int projectId, IEnumerable<int> tags)
         {
-            TagDao.SetProjectTags(projectId, tags);
+            DaoFactory.GetTagDao().SetProjectTags(projectId, tags);
         }
 
         private string[] FromString(string tags)

@@ -61,21 +61,6 @@ namespace ASC.Api.Projects
     {
         protected ProjectSecurity ProjectSecurity { get; private set; }
         protected SecurityContext SecurityContext { get; set; }
-        protected StatusEngine StatusEngine { get; set; }
-        protected TemplateEngine TemplateEngine { get; set; }
-        protected MilestoneEngine MilestoneEngine { get; set; }
-        protected TaskEngine TaskEngine { get; set; }
-        protected FileEngine FileEngine { get; set; }
-        protected ProjectEngine ProjectEngine { get; set; }
-        protected ReportEngine ReportEngine { get; set; }
-        protected SubtaskEngine SubtaskEngine { get; set; }
-        protected TimeTrackingEngine TimeTrackingEngine { get; set; }
-        protected SearchEngine SearchEngine { get; set; }
-        protected TagEngine TagEngine { get; set; }
-        protected CommentEngine CommentEngine { get; set; }
-        protected FileWrapperHelper FileWrapperHelper { get; set; }
-        protected ParticipantEngine ParticipantEngine { get; set; }
-        protected MessageEngine MessageEngine { get; set; }
         protected ApiContext Context { get; set; }
         protected TenantUtil TenantUtil { get; set; }
         protected DisplayUserSettingsHelper DisplayUserSettingsHelper { get; set; }
@@ -95,6 +80,8 @@ namespace ASC.Api.Projects
         protected CustomStatusHelper CustomStatusHelper { get; set; }
         protected IServiceProvider ServiceProvider { get; set; }
         protected SettingsManager SettingsManager { get; set; }
+        protected FileWrapperHelper FileWrapperHelper { get; set; }
+        protected EngineFactory EngineFactory { get; set; }
         public BaseProjectController(SecurityContext securityContext,
             ProjectSecurity projectSecurity,
             ApiContext context,
@@ -122,20 +109,6 @@ namespace ASC.Api.Projects
             SecurityContext = securityContext;
             ProjectSecurity = projectSecurity;
             Context = context;
-            StatusEngine = engineFactory.GetStatusEngine();
-            MilestoneEngine = engineFactory.GetMilestoneEngine();
-            ProjectEngine = engineFactory.GetProjectEngine();
-            CommentEngine = engineFactory.GetCommentEngine();
-            ParticipantEngine = engineFactory.GetParticipantEngine();
-            MessageEngine = engineFactory.GetMessageEngine();
-            FileEngine = engineFactory.GetFileEngine();
-            TaskEngine = engineFactory.GetTaskEngine();
-            TagEngine = engineFactory.GetTagEngine();
-            SearchEngine = engineFactory.GetSearchEngine();
-            TimeTrackingEngine = engineFactory.GetTimeTrackingEngine();
-            TemplateEngine = engineFactory.GetTemplateEngine();
-            ReportEngine = engineFactory.GetReportEngine();
-            SubtaskEngine = engineFactory.GetSubtaskEngine();
             TenantUtil = tenantUtil;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             CommonLinkUtility = commonLinkUtility;
@@ -155,16 +128,17 @@ namespace ASC.Api.Projects
             CustomStatusHelper = customStatusHelper;
             ServiceProvider = serviceProvider;
             SettingsManager = settingsManager;
+            EngineFactory = engineFactory;
         }
 
         public List<BaseCalendar> GetUserCalendars(Guid userId)
         {
             var cals = new List<BaseCalendar>();
-            var projects = ProjectEngine.GetByParticipant(userId);
+            var projects = EngineFactory.GetProjectEngine().GetByParticipant(userId);
 
             if (projects != null)
             {
-                var team = ProjectEngine.GetTeam(projects.Select(r => r.ID).ToList());
+                var team = EngineFactory.GetProjectEngine().GetTeam(projects.Select(r => r.ID).ToList());
 
                 foreach (var project in projects)
                 {
@@ -191,10 +165,10 @@ namespace ASC.Api.Projects
                 }
             }
 
-            var folowingProjects = ProjectEngine.GetFollowing(userId);
+            var folowingProjects = EngineFactory.GetProjectEngine().GetFollowing(userId);
             if (folowingProjects != null)
             {
-                var team = ProjectEngine.GetTeam(folowingProjects.Select(r => r.ID).ToList());
+                var team = EngineFactory.GetProjectEngine().GetTeam(folowingProjects.Select(r => r.ID).ToList());
 
                 foreach (var project in folowingProjects)
                 {
@@ -252,35 +226,33 @@ namespace ASC.Api.Projects
         [Read(@"message/{messageid:int}/files")]
         public IEnumerable<FileWrapper<int>> GetMessageFiles(int messageid)
         {
-            var message = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var message = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
 
             ProjectSecurity.DemandReadFiles(message.Project);
 
-            return MessageEngine.GetFiles(message).Select(f => FileWrapperHelper.GetFileWrapper(f));
+            return EngineFactory.GetMessageEngine().GetFiles(message).Select(f => FileWrapperHelper.GetFileWrapper(f));
         }
 
         [Read(@"task/{taskid:int}/files")]
         public IEnumerable<FileWrapper<int>> GetTaskFiles(int taskid)
         {
-            var taskEngine = TaskEngine;
-
-            var task = taskEngine.GetByID(taskid).NotFoundIfNull();
+            var task = EngineFactory.GetTaskEngine().GetByID(taskid).NotFoundIfNull();
 
             ProjectSecurity.DemandReadFiles(task.Project);
 
-            return taskEngine.GetFiles(task).Select(f=> FileWrapperHelper.GetFileWrapper(f));
+            return EngineFactory.GetTaskEngine().GetFiles(task).Select(f=> FileWrapperHelper.GetFileWrapper(f));
         }
 
         [Delete(@"task/{taskid:int}/files")]
         public TaskWrapper DetachFileFromTask(int taskid, int fileid)
         {
 
-            var task = TaskEngine.GetByID(taskid).NotFoundIfNull();
+            var task = EngineFactory.GetTaskEngine().GetByID(taskid).NotFoundIfNull();
 
             ProjectSecurity.DemandReadFiles(task.Project);
 
-            var file = FileEngine.GetFile(fileid).NotFoundIfNull();
-            TaskEngine.DetachFile(task, fileid);
+            var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
+            EngineFactory.GetTaskEngine().DetachFile(task, fileid);
             MessageService.Send(MessageAction.TaskDetachedFile, MessageTarget.Create(task.ID), task.Project.Title, task.Title, file.Title);
 
             return ModelHelper.GetTaskWrapper(task);
@@ -290,7 +262,7 @@ namespace ASC.Api.Projects
         public TaskWrapper DetachFileFromTask(int taskid, List<int> files)
         {
 
-            var task = TaskEngine.GetByID(taskid).NotFoundIfNull();
+            var task = EngineFactory.GetTaskEngine().GetByID(taskid).NotFoundIfNull();
 
             ProjectSecurity.DemandReadFiles(task.Project);
 
@@ -298,9 +270,9 @@ namespace ASC.Api.Projects
             var attachments = new List<Files.Core.File<int>>();
             foreach (var fileid in filesList)
             {
-                var file = FileEngine.GetFile(fileid).NotFoundIfNull();
+                var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
                 attachments.Add(file);
-                TaskEngine.AttachFile(task, file.ID, true);
+                EngineFactory.GetTaskEngine().AttachFile(task, file.ID, true);
             }
 
             MessageService.Send(MessageAction.TaskDetachedFile, MessageTarget.Create(task.ID), task.Project.Title, task.Title, attachments.Select(x => x.Title));
@@ -311,7 +283,7 @@ namespace ASC.Api.Projects
         [Create(@"task/{taskid:int}/files")]
         public TaskWrapper UploadFilesToTask(int taskid, IEnumerable<int> files)
         {
-            var task = TaskEngine.GetByID(taskid).NotFoundIfNull();
+            var task = EngineFactory.GetTaskEngine().GetByID(taskid).NotFoundIfNull();
 
             ProjectSecurity.DemandReadFiles(task.Project);
 
@@ -319,9 +291,9 @@ namespace ASC.Api.Projects
             var attachments = new List<Files.Core.File<int>>();
             foreach (var fileid in filesList)
             {
-                var file = FileEngine.GetFile(fileid).NotFoundIfNull();
+                var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
                 attachments.Add(file);
-                TaskEngine.AttachFile(task, file.ID, true);
+                EngineFactory.GetTaskEngine().AttachFile(task, file.ID, true);
             }
 
             MessageService.Send(MessageAction.TaskAttachedFiles, MessageTarget.Create(task.ID), task.Project.Title, task.Title, attachments.Select(x => x.Title));
@@ -333,7 +305,7 @@ namespace ASC.Api.Projects
         {
             if (task.Milestone == 0) return ModelHelper.GetTaskWrapper(task);
 
-            var milestone = MilestoneEngine.GetByID(task.Milestone, false);
+            var milestone = EngineFactory.GetMilestoneEngine().GetByID(task.Milestone, false);
             return ModelHelper.GetTaskWrapper(task, milestone);
         }
     }

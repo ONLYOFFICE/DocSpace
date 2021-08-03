@@ -73,19 +73,19 @@ namespace ASC.Api.Projects
             if (model.ProjectId != 0)
                 filter.ProjectIds.Add(model.ProjectId);
 
-            Context.SetTotalCount(MessageEngine.GetByFilterCount(filter));
+            Context.SetTotalCount(EngineFactory.GetMessageEngine().GetByFilterCount(filter));
 
-            return MessageEngine.GetByFilter(filter).NotFoundIfNull().Select(r=> ModelHelper.GetMessageWrapper(r)).ToList();
+            return EngineFactory.GetMessageEngine().GetByFilter(filter).NotFoundIfNull().Select(r=> ModelHelper.GetMessageWrapper(r)).ToList();
         }
 
         [Read(@"{projectid:int}/message")]
         public IEnumerable<MessageWrapper> GetProjectMessages(int projectid)
         {
-            var project = ProjectEngine.GetByID(projectid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
 
             if (!ProjectSecurity.CanRead<Message>(project)) throw ProjectSecurity.CreateSecurityException();
 
-            return MessageEngine.GetByProject(projectid).Select(r=> ModelHelper.GetMessageWrapper(r)).ToList();
+            return EngineFactory.GetMessageEngine().GetByProject(projectid).Select(r=> ModelHelper.GetMessageWrapper(r)).ToList();
         }
 
         [Create(@"{projectid:int}/message")]
@@ -94,7 +94,7 @@ namespace ASC.Api.Projects
             if (string.IsNullOrEmpty(model.Title)) throw new ArgumentException(@"title can't be empty", "title");
             if (string.IsNullOrEmpty(model.Content)) throw new ArgumentException(@"description can't be empty", "content");
 
-            var project = ProjectEngine.GetByID(projectid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandCreate<Message>(project);
 
             var discussion = new Message
@@ -104,7 +104,7 @@ namespace ASC.Api.Projects
                 Project = project,
             };
 
-            MessageEngine.SaveOrUpdate(discussion, model.Notify.HasValue ? model.Notify.Value : true, ToGuidList(model.Participants));
+            EngineFactory.GetMessageEngine().SaveOrUpdate(discussion, model.Notify.HasValue ? model.Notify.Value : true, ToGuidList(model.Participants));
             MessageService.Send(MessageAction.DiscussionCreated, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title);
 
             return ModelHelper.GetMessageWrapper(discussion);
@@ -114,28 +114,28 @@ namespace ASC.Api.Projects
         public MessageWrapperFull UpdateProjectMessage(int messageid, ModelUpdateMessage model)
         {
 
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
-            var project = ProjectEngine.GetByID(model.ProjectId).NotFoundIfNull();
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
+            var project = EngineFactory.GetProjectEngine().GetByID(model.ProjectId).NotFoundIfNull();
             ProjectSecurity.DemandEdit(discussion);
 
             discussion.Project = Update.IfNotEmptyAndNotEquals(discussion.Project, project);
             discussion.Description = Update.IfNotEmptyAndNotEquals(discussion.Description, model.Content);
             discussion.Title = Update.IfNotEmptyAndNotEquals(discussion.Title, model.Title);
 
-            MessageEngine.SaveOrUpdate(discussion, model.Notify.HasValue ? model.Notify.Value : true, ToGuidList(model.Participants));
+            EngineFactory.GetMessageEngine().SaveOrUpdate(discussion, model.Notify.HasValue ? model.Notify.Value : true, ToGuidList(model.Participants));
             MessageService.Send(MessageAction.DiscussionUpdated, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title);
 
-            return ModelHelper.GetMessageWrapperFull(discussion, ModelHelper.GetProjectWrapperFull(discussion.Project, FileEngine.GetRoot(discussion.Project.ID)), GetProjectMessageSubscribers(messageid));
+            return ModelHelper.GetMessageWrapperFull(discussion, ModelHelper.GetProjectWrapperFull(discussion.Project, EngineFactory.GetFileEngine().GetRoot(discussion.Project.ID)), GetProjectMessageSubscribers(messageid));
         }
 
         [Update(@"message/{messageid:int}/status")]
         public MessageWrapper UpdateProjectMessage(int messageid, MessageStatus status)
         {
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
             ProjectSecurity.DemandEdit(discussion);
 
             discussion.Status = status;
-            MessageEngine.ChangeStatus(discussion);
+            EngineFactory.GetMessageEngine().ChangeStatus(discussion);
             MessageService.Send(MessageAction.DiscussionUpdated, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title);
 
             return ModelHelper.GetMessageWrapper(discussion);
@@ -144,10 +144,10 @@ namespace ASC.Api.Projects
         [Delete(@"message/{messageid:int}")]
         public MessageWrapper DeleteProjectMessage(int messageid)
         {
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
             ProjectSecurity.DemandEdit(discussion);
 
-            MessageEngine.Delete(discussion);
+            EngineFactory.GetMessageEngine().Delete(discussion);
             MessageService.Send(MessageAction.DiscussionDeleted, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title);
 
             return ModelHelper.GetMessageWrapper(discussion);
@@ -163,27 +163,27 @@ namespace ASC.Api.Projects
         [Read(@"message/{messageid:int}")]
         public MessageWrapperFull GetProjectMessage(int messageid)
         {
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
-            var project = ModelHelper.GetProjectWrapperFull(discussion.Project, FileEngine.GetRoot(discussion.Project.ID));
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
+            var project = ModelHelper.GetProjectWrapperFull(discussion.Project, EngineFactory.GetFileEngine().GetRoot(discussion.Project.ID));
             var subscribers = GetProjectMessageSubscribers(messageid);
-            var files = MessageEngine.GetFiles(discussion).Select(f=> FileWrapperHelper.GetFileWrapper(f));
-            var comments = CommentEngine.GetComments(discussion);
+            var files = EngineFactory.GetMessageEngine().GetFiles(discussion).Select(f=> FileWrapperHelper.GetFileWrapper(f));
+            var comments = EngineFactory.GetCommentEngine().GetComments(discussion);
             return ModelHelper.GetMessageWrapperFull(discussion, project, subscribers, files, comments.Where(r => r.Parent.Equals(Guid.Empty)).Select(x => ModelHelper.GetCommentInfo(comments, x, discussion)).ToList());
         }
 
         [Create(@"message/{messageid:int}/files")]
         public MessageWrapper UploadFilesToMessage(int messageid, IEnumerable<int> files)
         {
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
             ProjectSecurity.DemandReadFiles(discussion.Project);
 
             var filesList = files.ToList();
             var attachments = new List<Files.Core.File<int>>();
             foreach (var fileid in filesList)
             {
-                var file = FileEngine.GetFile(fileid).NotFoundIfNull();
+                var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
                 attachments.Add(file);
-                MessageEngine.AttachFile(discussion, file.ID, true);
+                EngineFactory.GetMessageEngine().AttachFile(discussion, file.ID, true);
             }
 
             MessageService.Send(MessageAction.DiscussionAttachedFiles, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, attachments.Select(x => x.Title));
@@ -194,12 +194,12 @@ namespace ASC.Api.Projects
         [Delete(@"message/{messageid:int}/files")]
         public MessageWrapper DetachFileFromMessage(int messageid, int fileid)
         {
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
             ProjectSecurity.DemandReadFiles(discussion.Project);
 
-            var file = FileEngine.GetFile(fileid).NotFoundIfNull();
+            var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
 
-            MessageEngine.DetachFile(discussion, fileid);
+            EngineFactory.GetMessageEngine().DetachFile(discussion, fileid);
             MessageService.Send(MessageAction.DiscussionDetachedFile, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, file.Title);
 
             return ModelHelper.GetMessageWrapper(discussion);
@@ -208,16 +208,16 @@ namespace ASC.Api.Projects
         [Delete(@"message/{messageid:int}/filesmany")]
         public MessageWrapper DetachFileFromMessage(int messageid, IEnumerable<int> files)
         {
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
             ProjectSecurity.DemandReadFiles(discussion.Project);
 
             var filesList = files.ToList();
             var attachments = new List<Files.Core.File<int>>();
             foreach (var fileid in filesList)
             {
-                var file = FileEngine.GetFile(fileid).NotFoundIfNull();
+                var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
                 attachments.Add(file);
-                MessageEngine.DetachFile(discussion, fileid);
+                EngineFactory.GetMessageEngine().DetachFile(discussion, fileid);
             }
 
             MessageService.Send(MessageAction.DiscussionDetachedFile, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, attachments.Select(x => x.Title));
@@ -228,22 +228,22 @@ namespace ASC.Api.Projects
         [Read(@"message")]
         public IEnumerable<MessageWrapper> GetProjectRecentMessages()
         {
-            return MessageEngine.GetMessages((int)Context.StartIndex, (int)Context.Count).Select(m=> ModelHelper.GetMessageWrapper(m));
+            return EngineFactory.GetMessageEngine().GetMessages((int)Context.StartIndex, (int)Context.Count).Select(m=> ModelHelper.GetMessageWrapper(m));
         }
 
         [Read(@"message/{messageid:int}/comment")]
         public IEnumerable<CommentWrapper> GetProjectMessagesComments(int messageid)
         {
-            var message = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var message = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
 
-            return CommentEngine.GetComments(message).Select(x => ModelHelper.GetCommentWrapper(x,message));
+            return EngineFactory.GetCommentEngine().GetComments(message).Select(x => ModelHelper.GetCommentWrapper(x,message));
         }
 
         [Create(@"message/{messageid:int}/comment")]
         public CommentWrapper AddProjectMessagesComment(int messageid, ModelContentAndParentId model)
         {
             if (string.IsNullOrEmpty(model.Content)) throw new ArgumentException(@"Comment text is empty", model.Content);
-            if (model.ParentId != Guid.Empty && CommentEngine.GetByID(model.ParentId) == null) throw new ItemNotFoundException("parent comment not found");
+            if (model.ParentId != Guid.Empty && EngineFactory.GetCommentEngine().GetByID(model.ParentId) == null) throw new ItemNotFoundException("parent comment not found");
 
             var comment = new Comment
             {
@@ -258,9 +258,9 @@ namespace ASC.Api.Projects
                 comment.Parent = model.ParentId;
             }
 
-            var message = CommentEngine.GetEntityByTargetUniqId(comment).NotFoundIfNull();
+            var message = EngineFactory.GetCommentEngine().GetEntityByTargetUniqId(comment).NotFoundIfNull();
 
-            CommentEngine.SaveOrUpdateComment(message, comment);
+            EngineFactory.GetCommentEngine().SaveOrUpdateComment(message, comment);
 
             MessageService.Send(MessageAction.DiscussionCommentCreated, MessageTarget.Create(comment.ID), message.Project.Title, message.Title);
 
@@ -270,35 +270,35 @@ namespace ASC.Api.Projects
         [Update(@"message/{messageid:int}/subscribe")]
         public MessageWrapper SubscribeToMessage(int messageid)
         {
-            var discussion = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
 
             ProjectSecurity.DemandAuthentication();
 
-            MessageEngine.Follow(discussion);
+            EngineFactory.GetMessageEngine().Follow(discussion);
             MessageService.Send(MessageAction.DiscussionUpdatedFollowing, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title);
 
-            return ModelHelper.GetMessageWrapperFull(discussion, ModelHelper.GetProjectWrapperFull(discussion.Project, FileEngine.GetRoot(discussion.Project.ID)), GetProjectMessageSubscribers(messageid));
+            return ModelHelper.GetMessageWrapperFull(discussion, ModelHelper.GetProjectWrapperFull(discussion.Project, EngineFactory.GetFileEngine().GetRoot(discussion.Project.ID)), GetProjectMessageSubscribers(messageid));
         }
 
         [Read(@"message/{messageid:int}/subscribe")]
         public bool IsSubscribedToMessage(int messageid)
         {
 
-            var message = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var message = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
 
             ProjectSecurity.DemandAuthentication();
 
-            return MessageEngine.IsSubscribed(message);
+            return EngineFactory.GetMessageEngine().IsSubscribed(message);
         }
 
         [Read(@"message/{messageid:int}/subscribes")]
         public IEnumerable<EmployeeWraperFull> GetProjectMessageSubscribers(int messageid)
         {
-            var message = MessageEngine.GetByID(messageid).NotFoundIfNull();
+            var message = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
 
             ProjectSecurity.DemandAuthentication();
 
-            return MessageEngine.GetSubscribers(message).Select(r => ModelHelper.GetEmployeeWraperFull(new Guid(r.ID)))
+            return EngineFactory.GetMessageEngine().GetSubscribers(message).Select(r => ModelHelper.GetEmployeeWraperFull(new Guid(r.ID)))
                 .OrderBy(r => r.DisplayName).ToList();
         }
 

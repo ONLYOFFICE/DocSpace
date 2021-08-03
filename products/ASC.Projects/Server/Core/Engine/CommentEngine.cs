@@ -38,19 +38,17 @@ namespace ASC.Projects.Engine
         private TenantUtil TenantUtil { get; set; }
         private SecurityContext SecurityContext { get; set; }
         private NotifyClient NotifyClient { get; set; }
-        private TaskEngine TaskEngine { get; set; }
-        private MessageEngine MessageEngine { get; set; }
-        private ICommentDao CommentDao { get; set; }
+        private EngineFactory EngineFactory { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
 
         public CommentEngine(FactoryIndexer<DbComment> factoryIndexer, TenantUtil tenantUtil, IDaoFactory daoFactory, SecurityContext securityContext, EngineFactory engineFactory, NotifyClient notifyClient)
         {
             FactoryIndexer = factoryIndexer;
             TenantUtil = tenantUtil;
-            CommentDao = daoFactory.GetCommentDao();
             SecurityContext = securityContext;
-            TaskEngine = engineFactory.GetTaskEngine();
-            MessageEngine = engineFactory.GetMessageEngine();
             NotifyClient = notifyClient;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
         }
 
         public CommentEngine Init(bool disableNotifications)
@@ -61,27 +59,27 @@ namespace ASC.Projects.Engine
 
         public List<Comment> GetComments(DomainObject<int> targetObject)
         {
-            return targetObject != null ? CommentDao.GetAll(targetObject) : new List<Comment>();
+            return targetObject != null ? DaoFactory.GetCommentDao().GetAll(targetObject) : new List<Comment>();
         }
 
         public Comment GetByID(Guid id)
         {
-            return CommentDao.GetById(id);
+            return DaoFactory.GetCommentDao().GetById(id);
         }
 
         public int Count(DomainObject<int> targetObject)
         {
-            return targetObject == null ? 0 : CommentDao.Count(targetObject);
+            return targetObject == null ? 0 : DaoFactory.GetCommentDao().Count(targetObject);
         }
 
         public List<int> Count(List<ProjectEntity> targets)
         {
-            return CommentDao.Count(targets);
+            return DaoFactory.GetCommentDao().Count(targets);
         }
 
         public int Count(ProjectEntity target)
         {
-            return CommentDao.Count(target);
+            return DaoFactory.GetCommentDao().Count(target);
         }
 
         public void SaveOrUpdate(Comment comment)
@@ -93,15 +91,15 @@ namespace ASC.Projects.Engine
             var now = TenantUtil.DateTimeNow();
             if (comment.CreateOn == default(DateTime)) comment.CreateOn = now;
 
-            CommentDao.Save(comment);
+            DaoFactory.GetCommentDao().Save(comment);
 
             if (!comment.Inactive)
             {
-                _ = FactoryIndexer.IndexAsync(CommentDao.ToDbComment(comment));
+                _ = FactoryIndexer.IndexAsync(DaoFactory.GetCommentDao().ToDbComment(comment));
             }
             else
             {
-                _ = FactoryIndexer.DeleteAsync(CommentDao.ToDbComment(comment));
+                _ = FactoryIndexer.DeleteAsync(DaoFactory.GetCommentDao().ToDbComment(comment));
             }
         }
 
@@ -157,9 +155,9 @@ namespace ASC.Projects.Engine
             switch (comment.TargetType)
             {
                 case "Task":
-                    return TaskEngine;
+                    return EngineFactory.GetTaskEngine();
                 case "Message":
-                    return MessageEngine;
+                    return EngineFactory.GetMessageEngine();
                 default:
                     return null;
             }

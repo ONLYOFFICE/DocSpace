@@ -17,6 +17,7 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
@@ -27,6 +28,7 @@ using NotifySourceBase = ASC.Core.Notify.NotifySource;
 
 namespace ASC.Projects.Core.Services.NotifyService
 {
+    [Scope]
     public class NotifySource : NotifySourceBase
     {
 

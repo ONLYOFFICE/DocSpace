@@ -27,13 +27,12 @@ namespace ASC.Projects.Engine
     [Scope]
     public class StatusEngine
     {
-        public IStatusDao StatusDao { get; set; }
         public ProjectSecurity ProjectSecurity { get; set; }
         public CustomStatusHelper CustomStatusHelper { get; set; }
+        public IDaoFactory DaoFactory { get; set; }
 
         public StatusEngine(IDaoFactory daoFactory, ProjectSecurity projectSecurity, CustomStatusHelper customStatusHelper)
         {
-            StatusDao = daoFactory.GetStatusDao();
             ProjectSecurity = projectSecurity;
             CustomStatusHelper = customStatusHelper;
         }
@@ -42,7 +41,7 @@ namespace ASC.Projects.Engine
         {
             if (!ProjectSecurity.CurrentUserAdministrator) ProjectSecurity.CreateSecurityException();
 
-            var statuses = StatusDao.Get().Where(r => r.StatusType == status.StatusType).OrderBy(r => r.Order);
+            var statuses = DaoFactory.GetStatusDao().Get().Where(r => r.StatusType == status.StatusType).OrderBy(r => r.Order);
             var lastStatus = statuses.LastOrDefault();
 
             if (lastStatus != null)
@@ -59,26 +58,26 @@ namespace ASC.Projects.Engine
                 status.Available = statuses.All(r => r.Available == null || r.Available.Value);
             }
 
-            return StatusDao.Create(status);
+            return DaoFactory.GetStatusDao().Create(status);
         }
 
         public void Update(CustomTaskStatus status)
         {
             if (!ProjectSecurity.CurrentUserAdministrator) ProjectSecurity.CreateSecurityException();
 
-            var statuses = StatusDao.Get().Where(r => r.StatusType == status.StatusType).OrderBy(r => r.Order);
+            var statuses = DaoFactory.GetStatusDao().Get().Where(r => r.StatusType == status.StatusType).OrderBy(r => r.Order);
 
             if (!status.Available.HasValue)
             {
                 status.Available = statuses.All(r => r.Available == null || r.Available.Value);
             }
 
-            StatusDao.Update(status);
+            DaoFactory.GetStatusDao().Update(status);
         }
 
         public List<CustomTaskStatus> Get()
         {
-            return StatusDao.Get();
+            return DaoFactory.GetStatusDao().Get();
         }
 
         public List<CustomTaskStatus> GetWithDefaults()
@@ -104,7 +103,7 @@ namespace ASC.Projects.Engine
             var defaultTask = CustomStatusHelper.GetDefaults().FirstOrDefault(r => r.Id == id);
             if (defaultTask != null) return;
 
-            StatusDao.Delete(id);
+            DaoFactory.GetStatusDao().Delete(id);
         }
     }
 }

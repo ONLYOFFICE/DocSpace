@@ -36,16 +36,14 @@ namespace ASC.Projects.Engine
     {
         private FactoryIndexer<DbSubtask> FactoryIndexer { get; set; }
         private TenantUtil TenantUtil { get; set; }
-        private ISubtaskDao SubtaskDao { get; set; }
-        private ITaskDao TaskDao { get; set; }
+        private IDaoFactory DaoProjectFactory { get; set; }
 
-        public SubtaskEngine(FactoryIndexer<DbSubtask> factoryIndexer, SecurityContext securityContext, Files.Core.IDaoFactory daoFactory, NotifySource notifySource, TenantUtil tenantUtil, IDaoFactory daoProjectFactory, NotifyClient notifyClient) : base(securityContext, daoFactory, notifySource, notifyClient)
+        public SubtaskEngine(FactoryIndexer<DbSubtask> factoryIndexer, SecurityContext securityContext, Files.Core.IDaoFactory daoFactory, NotifySource notifySource, TenantUtil tenantUtil, IDaoFactory daoProjectFactory, NotifyClient notifyClient, EngineFactory engineFactory) : base(securityContext, daoFactory, notifySource, engineFactory )
         {
             FactoryIndexer = factoryIndexer;
             TenantUtil = tenantUtil;
-            TaskDao = daoProjectFactory.GetTaskDao();
-            SubtaskDao = daoProjectFactory.GetSubtaskDao();
             NotifyClient = notifyClient;
+            DaoProjectFactory = daoProjectFactory;
         }
 
         public SubtaskEngine Init(bool disableNotifications)
@@ -58,9 +56,9 @@ namespace ASC.Projects.Engine
 
         public List<Task> GetByDate(DateTime from, DateTime to)
         {
-            var subtasks = SubtaskDao.GetUpdates(from, to).ToDictionary(x => x.Task, x => x);
+            var subtasks = DaoProjectFactory.GetSubtaskDao().GetUpdates(from, to).ToDictionary(x => x.Task, x => x);
             var ids = subtasks.Select(x => x.Value.Task).Distinct().ToList();
-            var tasks = TaskDao.GetById(ids);
+            var tasks = DaoProjectFactory.GetTaskDao().GetById(ids);
             foreach (var task in tasks)
             {
                 Subtask subtask;
@@ -72,9 +70,9 @@ namespace ASC.Projects.Engine
 
         public List<Task> GetByResponsible(Guid id, TaskStatus? status = null)
         {
-            var subtasks = SubtaskDao.GetByResponsible(id, status);
+            var subtasks = DaoProjectFactory.GetSubtaskDao().GetByResponsible(id, status);
             var ids = subtasks.Select(x => x.Task).Distinct().ToList();
-            var tasks = TaskDao.GetById(ids);
+            var tasks = DaoProjectFactory.GetTaskDao().GetById(ids);
             foreach (var task in tasks)
             {
                 task.SubTasks.AddRange(subtasks.FindAll(r => r.Task == task.ID));
@@ -84,17 +82,17 @@ namespace ASC.Projects.Engine
 
         public int GetSubtaskCount(int taskid, params TaskStatus[] statuses)
         {
-            return SubtaskDao.GetSubtaskCount(taskid, statuses);
+            return DaoProjectFactory.GetSubtaskDao().GetSubtaskCount(taskid, statuses);
         }
 
         public int GetSubtaskCount(int taskid)
         {
-            return SubtaskDao.GetSubtaskCount(taskid, null);
+            return DaoProjectFactory.GetSubtaskDao().GetSubtaskCount(taskid, null);
         }
 
         public Subtask GetById(int id)
         {
-            return SubtaskDao.GetById(id);
+            return DaoProjectFactory.GetSubtaskDao().GetById(id);
         }
 
         #endregion
@@ -127,7 +125,7 @@ namespace ASC.Projects.Engine
             if (task.Status != TaskStatus.Closed && newStatus == TaskStatus.Open && !DisableNotifications && senders.Count != 0)
                 NotifyClient.SendAboutSubTaskResumed(senders, task, subtask);
 
-            return SubtaskDao.Save(subtask);
+            return DaoProjectFactory.GetSubtaskDao().Save(subtask);
         }
 
         public Subtask SaveOrUpdate(Subtask subtask, Task task)
@@ -154,11 +152,11 @@ namespace ASC.Projects.Engine
                 if (subtask.CreateOn == default(DateTime)) subtask.CreateOn = TenantUtil.DateTimeNow();
 
                 ProjectSecurity.DemandEdit(task);
-                subtask = SubtaskDao.Save(subtask);
+                subtask = DaoProjectFactory.GetSubtaskDao().Save(subtask);
             }
             else
             {
-                var oldSubtask = SubtaskDao.GetById(new[] { subtask.ID }).First();
+                var oldSubtask = DaoProjectFactory.GetSubtaskDao().GetById(new[] { subtask.ID }).First();
 
                 if (oldSubtask == null) throw new ArgumentNullException("subtask");
 
@@ -166,7 +164,7 @@ namespace ASC.Projects.Engine
 
                 //changed task
                 ProjectSecurity.DemandEdit(task, oldSubtask);
-                subtask = SubtaskDao.Save(subtask);
+                subtask = DaoProjectFactory.GetSubtaskDao().Save(subtask);
             }
 
             NotifySubtask(task, subtask, isNew, oldResponsible);
@@ -179,7 +177,7 @@ namespace ASC.Projects.Engine
                 Subscribe(task, sender);
             }
 
-            _ = FactoryIndexer.IndexAsync(SubtaskDao.ToDbSubTask(subtask));
+            _ = FactoryIndexer.IndexAsync(DaoProjectFactory.GetSubtaskDao().ToDbSubTask(subtask));
 
             return subtask;
         }
@@ -233,7 +231,7 @@ namespace ASC.Projects.Engine
             if (task == null) throw new ArgumentNullException("task");
 
             ProjectSecurity.DemandEdit(task, subtask);
-            SubtaskDao.Delete(subtask.ID);
+            DaoProjectFactory.GetSubtaskDao().Delete(subtask.ID);
 
             var recipients = GetSubscribers(task);
 

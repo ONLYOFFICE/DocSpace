@@ -80,17 +80,17 @@ namespace ASC.Projects.Data.DAO
     {
         private TenantUtil TenantUtil { get; set; }
         private FactoryIndexer<DbMilestone> FactoryIndexer { get; set; }
-        private IProjectDao ProjectDao { get; set; }
         private SettingsManager SettingsManager { get; set; }
         private FilterHelper FilterHelper { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
         public MilestoneDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbMilestone> factoryIndexer, IDaoFactory daoFactory, SettingsManager settingsManager, FilterHelper filterHelper, TenantManager tenantManager)
             : base(securityContext, dbContextManager, tenantManager)
         {
             TenantUtil = tenantUtil;
             FactoryIndexer = factoryIndexer;
-            ProjectDao = daoFactory.GetProjectDao();
             SettingsManager = settingsManager;
             FilterHelper = filterHelper;
+            DaoFactory = daoFactory;
         }
 
         public List<Milestone> GetAll()
@@ -510,7 +510,7 @@ namespace ASC.Projects.Data.DAO
             var milestone = query.Milestone;
             return new Milestone
             {
-                Project = query.Project != null ? ProjectDao.ToProject(query.Project) : null,
+                Project = query.Project != null ? DaoFactory.GetProjectDao().ToProject(query.Project) : null,
                 ID = milestone.Id,
                 Title = milestone.Title,
                 CreateBy = ToGuid(milestone.CreateBy),

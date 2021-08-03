@@ -40,14 +40,12 @@ namespace ASC.Projects.Calendars
 
         private Project project;
         private bool following;
-        private TaskEngine TaskEngine { get; set; }
-        private MilestoneEngine MilestoneEngine { get; set; }
         private TenantManager TenantManager { get; set; }
+        private EngineFactory EngineFactory { get; set; }
         public ProjectCalendar(AuthContext authContext, TimeZoneConverter timeZoneConverter, EngineFactory engineFactory, TenantManager tenantManager) :base(authContext, timeZoneConverter )
         {
-            TaskEngine = engineFactory.GetTaskEngine();
-            MilestoneEngine = engineFactory.GetMilestoneEngine();
             TenantManager = tenantManager;
+            EngineFactory = engineFactory;
         }
 
         public ProjectCalendar Init(Project project, string backgroundColor, string textColor, SharingOptions sharingOptions, bool following)
@@ -72,9 +70,9 @@ namespace ASC.Projects.Calendars
         {
             var tasks = new List<Task>();
             if (!following)
-                tasks.AddRange(TaskEngine.GetByProject(project.ID, TaskStatus.Open, userId));
+                tasks.AddRange(EngineFactory.GetTaskEngine().GetByProject(project.ID, TaskStatus.Open, userId));
 
-            var milestones = MilestoneEngine.GetByStatus(project.ID, MilestoneStatus.Open);
+            var milestones = EngineFactory.GetMilestoneEngine().GetByStatus(project.ID, MilestoneStatus.Open);
 
             var events = milestones
                 .Select(m => new Event

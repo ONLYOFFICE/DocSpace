@@ -119,40 +119,36 @@ namespace ASC.Projects.Engine
     public class SearchEngine
     {
         public Files.Core.IDaoFactory DaoFilesFactory { get; set; }
-        public IProjectDao ProjectDao { get; set; }
-        public ISearchDao SearchDao { get; set; }
         public ProjectSecurity ProjectSecurity { get; set; }
         public FilesIntegration FilesIntegration { get; set; }
         public FilesLinkUtility FilesLinkUtility { get; set; }
         public FileUtility FileUtility { get; set; }
         public Web.Files.Classes.PathProvider PathProvider { get; set; }
         public PathProvider PathProviderProjects { get; set; }
+        public EngineFactory EngineFactory { get; set; }
         public ILog Log { get; set; }
-        public CommentEngine CommentEngine { get; set; }
-        public TaskEngine TaskEngine { get; set; }
+        public IDaoFactory DaoFactory { get; set; }
 
         private readonly List<SearchItem> searchItems;
 
         public SearchEngine(EngineFactory engineFactory, IOptionsMonitor<ILog> options, ProjectSecurity projectSecurity, IDaoFactory daoFactory, Files.Core.IDaoFactory daoFilesFactory, FilesIntegration filesIntegration, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, Web.Files.Classes.PathProvider pathProvider, PathProvider pathProviderProjects)
         {
             Log = options.CurrentValue;
-            CommentEngine = engineFactory.GetCommentEngine();
-            TaskEngine = engineFactory.GetTaskEngine();
             ProjectSecurity = projectSecurity;
             searchItems = new List<SearchItem>();
-            ProjectDao = daoFactory.GetProjectDao();
-            SearchDao = daoFactory.GetSearchDao();
             DaoFilesFactory = daoFilesFactory;
             FilesIntegration = filesIntegration;
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
             PathProvider = pathProvider;
             PathProviderProjects = pathProviderProjects;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
         }
 
         public IEnumerable<SearchItem> Search(string searchText, int projectId = 0)
         {
-            var queryResult = SearchDao.Search(searchText, projectId);
+            var queryResult = DaoFactory.GetSearchDao().Search(searchText, projectId);
 
             foreach (var r in queryResult)
             {
@@ -188,7 +184,7 @@ namespace ASC.Projects.Engine
                         continue;
                     case EntityType.Comment:
                         var comment = (Comment)r;
-                        var entity = CommentEngine.GetEntityByTargetUniqId(comment);
+                        var entity = EngineFactory.GetCommentEngine().GetEntityByTargetUniqId(comment);
                         if (entity == null) continue;
                         searchItems.Add(new SearchItem(comment.EntityType,
                             comment.ID.ToString(CultureInfo.InvariantCulture), HtmlUtil.GetText(comment.Content),
@@ -196,7 +192,7 @@ namespace ASC.Projects.Engine
                         continue;
                     case EntityType.SubTask:
                         var subtask = (Subtask)r;
-                        var parentTask = TaskEngine.GetByID(subtask.Task);
+                        var parentTask = EngineFactory.GetTaskEngine().GetByID(subtask.Task);
                         if (parentTask == null) continue;
 
                         searchItems.Add(new SearchItem(subtask.EntityType,
@@ -231,7 +227,7 @@ namespace ASC.Projects.Engine
                 {
                     var security = FilesIntegration.GetFileSecurity(folderDao.GetBunchObjectID(f.RootFolderId));
                     var id = rootProject[f.RootFolderId];
-                    var project = ProjectDao.GetById(id);
+                    var project = DaoFactory.GetProjectDao().GetById(id);
 
                     if (ProjectSecurity.CanReadFiles(project))
                     {

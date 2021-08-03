@@ -27,13 +27,13 @@ namespace ASC.Projects.Engine
     [Scope]
     public class ParticipantEngine
     {
-        private IParticipantDao ParticipantDao { get; set; }
         private ParticipantHelper ParticipantHelper { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
 
         public ParticipantEngine(IDaoFactory daoFactory, ParticipantHelper participant)
         {
-            ParticipantDao = daoFactory.GetParticipantDao();
             ParticipantHelper = participant;
+            DaoFactory = daoFactory;
         }
 
         public Participant GetByID(Guid userID)
@@ -44,26 +44,26 @@ namespace ASC.Projects.Engine
 
         public void AddToFollowingProjects(int project, Guid participant)
         {
-            ParticipantDao.AddToFollowingProjects(project, participant);
+            DaoFactory.GetParticipantDao().AddToFollowingProjects(project, participant);
         }
 
         public void RemoveFromFollowingProjects(int project, Guid participant)
         {
-            ParticipantDao.RemoveFromFollowingProjects(project, participant);
+            DaoFactory.GetParticipantDao().RemoveFromFollowingProjects(project, participant);
         }
 
         public List<int> GetInterestedProjects(Guid participant)
         {
-            return ParticipantDao.GetInterestedProjects(participant);
+            return DaoFactory.GetParticipantDao().GetInterestedProjects(participant);
         }
         public List<int> GetFollowingProjects(Guid participant)
         {
-            return new List<int>(ParticipantDao.GetFollowingProjects(participant));
+            return new List<int>(DaoFactory.GetParticipantDao().GetFollowingProjects(participant));
         }
 
         public List<int> GetMyProjects(Guid participant)
         {
-            return new List<int>(ParticipantDao.GetMyProjects(participant));
+            return new List<int>(DaoFactory.GetParticipantDao().GetMyProjects(participant));
         }
     }
 }

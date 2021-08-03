@@ -35,95 +35,86 @@ namespace ASC.Projects.Engine
     [Scope]
     public class ReportEngine
     {
-        private IReportDao ReportDao { get; set; }
         private ProjectSecurity ProjectSecurity { get; set; }
         private SecurityContext SecurityContext { get; set; }
         private UserManager UserManager { get; set; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; set; }
-
-        private ProjectEngine ProjectEngine { get; set; }
-        private TaskEngine TaskEngine { get; set; }
-        private MilestoneEngine MilestoneEngine { get; set; }
-        private MessageEngine MessageEngine { get; set; }
-        private FileEngine FileEngine { get; set; }
+        private EngineFactory EngineFactory { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
 
         public ReportEngine(IDaoFactory daoFactory, ProjectSecurity projectSecurity, EngineFactory engineFactory, SecurityContext securityContext, UserManager userManager, DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            ReportDao = daoFactory.GetReportDao();
             ProjectSecurity = projectSecurity;
             SecurityContext = securityContext;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
-            ProjectEngine = engineFactory.GetProjectEngine();
-            TaskEngine = engineFactory.GetTaskEngine();
-            MilestoneEngine = engineFactory.GetMilestoneEngine();
-            MessageEngine = engineFactory.GetMessageEngine();
-            FileEngine = engineFactory.GetFileEngine();
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
         }
 
         public List<ReportTemplate> GetTemplates(Guid userId)
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            return ReportDao.GetTemplates(userId);
+            return DaoFactory.GetReportDao().GetTemplates(userId);
         }
 
         public List<ReportTemplate> GetAutoTemplates()
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            return ReportDao.GetAutoTemplates();
+            return DaoFactory.GetReportDao().GetAutoTemplates();
         }
 
         public ReportTemplate GetTemplate(int id)
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            return ReportDao.GetTemplate(id);
+            return DaoFactory.GetReportDao().GetTemplate(id);
         }
 
         public ReportTemplate SaveTemplate(ReportTemplate template)
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            return ReportDao.SaveTemplate(template);
+            return DaoFactory.GetReportDao().SaveTemplate(template);
         }
 
         public ReportFile Save(ReportFile reportFile)
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            return ReportDao.Save(reportFile);
+            return DaoFactory.GetReportDao().Save(reportFile);
         }
 
         public void DeleteTemplate(int id)
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            ReportDao.DeleteTemplate(id);
+            DaoFactory.GetReportDao().DeleteTemplate(id);
         }
 
         public IEnumerable<ReportFile> Get()
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            return ReportDao.Get();
+            return DaoFactory.GetReportDao().Get();
         }
 
         public ReportFile GetByFileId(int fileid)
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            return ReportDao.GetByFileId(fileid);
+            return DaoFactory.GetReportDao().GetByFileId(fileid);
         }
 
         public void Remove(ReportFile report)
         {
             if (ProjectSecurity.IsVisitor(SecurityContext.CurrentAccount.ID)) throw new SecurityException("Access denied.");
 
-            ReportDao.Remove(report);
+            DaoFactory.GetReportDao().Remove(report);
 
-            FileEngine.MoveToTrash(report.FileId);
+            EngineFactory.GetFileEngine().MoveToTrash(report.FileId);
         }
 
         public IList<object[]> BuildUsersWithoutActiveTasks(TaskFilter filter)
@@ -138,14 +129,14 @@ namespace ASC.Projects.Engine
             }
             else if (filter.HasProjectIds)
             {
-                users.AddRange(ProjectEngine.GetTeam(filter.ProjectIds).Select(r => r.ID).Distinct());
+                users.AddRange(EngineFactory.GetProjectEngine().GetTeam(filter.ProjectIds).Select(r => r.ID).Distinct());
             }
             else if (!filter.HasProjectIds)
             {
-                users.AddRange(ProjectEngine.GetTeam(ProjectEngine.GetAll().Select(r => r.ID).ToList()).Select(r => r.ID).Distinct());
+                users.AddRange(EngineFactory.GetProjectEngine().GetTeam(EngineFactory.GetProjectEngine().GetAll().Select(r => r.ID).ToList()).Select(r => r.ID).Distinct());
             }
 
-            var data = TaskEngine.GetByFilterCountForStatistic(filter);
+            var data = EngineFactory.GetTaskEngine().GetByFilterCountForStatistic(filter);
 
             foreach (var row in data)
             {
@@ -167,14 +158,14 @@ namespace ASC.Projects.Engine
         {
             if (filter.ViewType == 0)
             {
-                return TaskEngine.GetByFilterCountForStatistic(filter).Select(r => new object[]
+                return EngineFactory.GetTaskEngine().GetByFilterCountForStatistic(filter).Select(r => new object[]
                 {
                     DisplayUserSettingsHelper.GetFullUserName(UserManager.GetUsers(r.UserId), false), r.TasksOpen, r.TasksClosed, r.TasksTotal,
                     UserManager.GetUserGroups(r.UserId).Select(x=>x.Name)
                 }).ToList();
             }
 
-            var tasks = TaskEngine.GetByFilter(filter).FilterResult;
+            var tasks = EngineFactory.GetTaskEngine().GetByFilter(filter).FilterResult;
             var projects = tasks.Select(r => r.Project).Distinct();
 
             var result = new List<object[]>();
@@ -212,14 +203,14 @@ namespace ASC.Projects.Engine
         public IList<object[]> BuildUsersActivity(TaskFilter filter)
         {
             var result = new List<object[]>();
-            var tasks = TaskEngine.GetByFilterCountForReport(filter);
-            var milestones = MilestoneEngine.GetByFilterCountForReport(filter);
-            var messages = MessageEngine.GetByFilterCountForReport(filter);
+            var tasks = EngineFactory.GetTaskEngine().GetByFilterCountForReport(filter);
+            var milestones = EngineFactory.GetMilestoneEngine().GetByFilterCountForReport(filter);
+            var messages = EngineFactory.GetMessageEngine().GetByFilterCountForReport(filter);
 
             if (filter.ViewType == 1)
             {
                 var projectIds = GetProjects(tasks, milestones, messages);
-                var projects = ProjectEngine.GetByID(projectIds).ToList();
+                var projects = EngineFactory.GetProjectEngine().GetByID(projectIds).ToList();
 
                 foreach (var p in projects)
                 {

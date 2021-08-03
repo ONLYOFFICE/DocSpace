@@ -57,7 +57,7 @@ namespace ASC.Api.Projects
         [Read(@"milestone")]
         public IEnumerable<MilestoneWrapper> GetMilestones()
         {
-            return MilestoneEngine.GetUpcomingMilestones((int)Context.Count).Select(m=> ModelHelper.GetMilestoneWrapper(m)).ToList();
+            return EngineFactory.GetMilestoneEngine().GetUpcomingMilestones((int)Context.Count).Select(m=> ModelHelper.GetMilestoneWrapper(m)).ToList();
         }
 
         [Read(@"milestone/filter")]
@@ -82,49 +82,49 @@ namespace ASC.Api.Projects
                 filter.MilestoneStatuses.Add((MilestoneStatus)model.Status);
             }
 
-            Context.SetTotalCount(MilestoneEngine.GetByFilterCount(filter));
+            Context.SetTotalCount(EngineFactory.GetMilestoneEngine().GetByFilterCount(filter));
 
-            return MilestoneEngine.GetByFilter(filter).NotFoundIfNull().Select(m=> ModelHelper.GetMilestoneWrapper(m)).ToList();
+            return EngineFactory.GetMilestoneEngine().GetByFilter(filter).NotFoundIfNull().Select(m=> ModelHelper.GetMilestoneWrapper(m)).ToList();
         }
 
         [Read(@"milestone/late")]
         public IEnumerable<MilestoneWrapper> GetLateMilestones()
         {
-            return MilestoneEngine.GetLateMilestones((int)Context.Count).Select(m=> ModelHelper.GetMilestoneWrapper(m)).ToList();
+            return EngineFactory.GetMilestoneEngine().GetLateMilestones((int)Context.Count).Select(m=> ModelHelper.GetMilestoneWrapper(m)).ToList();
         }
 
         [Read(@"milestone/{year}/{month}/{day}")]
         public IEnumerable<MilestoneWrapper> GetMilestonesByDeadLineFull(int year, int month, int day)
         {
-            var milestones = MilestoneEngine.GetByDeadLine(new DateTime(year, month, day));
+            var milestones = EngineFactory.GetMilestoneEngine().GetByDeadLine(new DateTime(year, month, day));
             return milestones.Select(m => ModelHelper.GetMilestoneWrapper(m)).ToList();
         }
 
         [Read(@"milestone/{year}/{month}")]
         public IEnumerable<MilestoneWrapper> GetMilestonesByDeadLineMonth(int year, int month)
         {
-            var milestones = MilestoneEngine.GetByDeadLine(new DateTime(year, month, DateTime.DaysInMonth(year, month)));
+            var milestones = EngineFactory.GetMilestoneEngine().GetByDeadLine(new DateTime(year, month, DateTime.DaysInMonth(year, month)));
             return milestones.Select(m => ModelHelper.GetMilestoneWrapper(m)).ToList();
         }
 
         [Read(@"milestone/{id:int}")]
         public MilestoneWrapper GetMilestoneById(int id)
         {
-            if (!MilestoneEngine.IsExists(id)) throw new ItemNotFoundException();
-            return ModelHelper.GetMilestoneWrapper(MilestoneEngine.GetByID(id));
+            if (!EngineFactory.GetMilestoneEngine().IsExists(id)) throw new ItemNotFoundException();
+            return ModelHelper.GetMilestoneWrapper(EngineFactory.GetMilestoneEngine().GetByID(id));
         }
 
         [Read(@"milestone/{id:int}/task")]
         public IEnumerable<TaskWrapper> GetMilestoneTasks(int id)
         {
-            if (!MilestoneEngine.IsExists(id)) throw new ItemNotFoundException();
-            return TaskEngine.GetMilestoneTasks(id).Select(t=> ModelHelper.GetTaskWrapper(t)).ToList();
+            if (!EngineFactory.GetMilestoneEngine().IsExists(id)) throw new ItemNotFoundException();
+            return EngineFactory.GetTaskEngine().GetMilestoneTasks(id).Select(t=> ModelHelper.GetTaskWrapper(t)).ToList();
         }
 
         [Update(@"milestone/{id:int}")]
         public MilestoneWrapper UpdateMilestone(int id, ModelMilestoneUpdate model)
         {
-            var milestone = MilestoneEngine.GetByID(id).NotFoundIfNull();
+            var milestone = EngineFactory.GetMilestoneEngine().GetByID(id).NotFoundIfNull();
             ProjectSecurity.DemandEdit(milestone);
 
             milestone.Description = Update.IfNotEmptyAndNotEquals(milestone.Description, model.Description);
@@ -140,11 +140,11 @@ namespace ASC.Api.Projects
 
             if (model.ProjectID != 0)
             {
-                var project = ProjectEngine.GetByID(model.ProjectID).NotFoundIfNull();
+                var project = EngineFactory.GetProjectEngine().GetByID(model.ProjectID).NotFoundIfNull();
                 milestone.Project = project;
             }
 
-            MilestoneEngine.SaveOrUpdate(milestone, model.NotifyResponsible);
+            EngineFactory.GetMilestoneEngine().SaveOrUpdate(milestone, model.NotifyResponsible);
             MessageService.Send(MessageAction.MilestoneUpdated, MessageTarget.Create(milestone.ID), milestone.Project.Title, milestone.Title);
 
             return ModelHelper.GetMilestoneWrapper(milestone);
@@ -153,9 +153,9 @@ namespace ASC.Api.Projects
         [Update(@"milestone/{id:int}/status")]
         public MilestoneWrapper UpdateMilestone(int id, MilestoneStatus status)
         {
-            var milestone = MilestoneEngine.GetByID(id).NotFoundIfNull();
+            var milestone = EngineFactory.GetMilestoneEngine().GetByID(id).NotFoundIfNull();
 
-            MilestoneEngine.ChangeStatus(milestone, status);
+            EngineFactory.GetMilestoneEngine().ChangeStatus(milestone, status);
             MessageService.Send(MessageAction.MilestoneUpdatedStatus, MessageTarget.Create(milestone.ID), milestone.Project.Title, milestone.Title, LocalizedEnumConverter.ConvertToString(milestone.Status));
 
             return ModelHelper.GetMilestoneWrapper(milestone);
@@ -164,9 +164,9 @@ namespace ASC.Api.Projects
         [Delete(@"milestone/{id:int}")]
         public MilestoneWrapper DeleteMilestone(int id)
         {
-            var milestone = MilestoneEngine.GetByID(id).NotFoundIfNull();
+            var milestone = EngineFactory.GetMilestoneEngine().GetByID(id).NotFoundIfNull();
 
-            MilestoneEngine.Delete(milestone);
+            EngineFactory.GetMilestoneEngine().Delete(milestone);
             MessageService.Send(MessageAction.MilestoneDeleted, MessageTarget.Create(milestone.ID), milestone.Project.Title, milestone.Title);
 
             return ModelHelper.GetMilestoneWrapper(milestone);

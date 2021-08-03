@@ -54,7 +54,7 @@ namespace ASC.Api.Projects
         [Read(@"tag")]
         public IEnumerable<ObjectWrapperBase> GetAllTags()
         {
-            return TagEngine.GetTags().Select(x => new ObjectWrapperBase { Id = x.Key, Title = x.Value });
+            return EngineFactory.GetTagEngine().GetTags().Select(x => new ObjectWrapperBase { Id = x.Key, Title = x.Value });
         }
 
         [Create(@"tag")]
@@ -63,7 +63,7 @@ namespace ASC.Api.Projects
             if (string.IsNullOrEmpty(data)) throw new ArgumentException("data");
             ProjectSecurity.DemandCreate<Project>(null);
 
-            var result = TagEngine.Create(data);
+            var result = EngineFactory.GetTagEngine().Create(data);
 
             return new ObjectWrapperBase { Id = result.Key, Title = result.Value };
         }
@@ -71,15 +71,15 @@ namespace ASC.Api.Projects
         [Read(@"tag/{tag}")]
         public IEnumerable<ProjectWrapper> GetProjectsByTags(string tag)
         {
-            var projectsTagged = TagEngine.GetTagProjects(tag).ToList();
-            return ProjectEngine.GetByID(projectsTagged).Select(p=> ModelHelper.GetProjectWrapper(p)).ToList();
+            var projectsTagged = EngineFactory.GetTagEngine().GetTagProjects(tag).ToList();
+            return EngineFactory.GetProjectEngine().GetByID(projectsTagged).Select(p=> ModelHelper.GetProjectWrapper(p)).ToList();
         }
 
         [Read(@"tag/search")]
         public string[] GetTagsByName(string tagName)
         {
             return !string.IsNullOrEmpty(tagName) && tagName.Trim() != string.Empty
-                       ? TagEngine.GetTags(tagName.Trim()).Select(r => r.Value).ToArray()
+                       ? EngineFactory.GetTagEngine().GetTags(tagName.Trim()).Select(r => r.Value).ToArray()
                        : new string[0];
         }
     }

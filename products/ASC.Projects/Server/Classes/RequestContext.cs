@@ -29,17 +29,17 @@ namespace ASC.Projects.Classes
     public class RequestContext
     {
         public bool IsInConcreteProject { get; private set; }
-        private ProjectEngine ProjectEngine { get; set; }
         private SecurityContext SecurityContext { get; set; }
         private UrlParameters UrlParameters { get; set; }
+        private EngineFactory EngineFactory { get; set; }
         private Project currentProject;
         
         public RequestContext(EngineFactory engineFactory, SecurityContext securityContext, UrlParameters urlParameters)
         {
-            ProjectEngine = engineFactory.GetProjectEngine();
             SecurityContext = securityContext;
             UrlParameters = urlParameters;
             IsInConcreteProject = UrlParameters.ProjectID >= 0;
+            EngineFactory = engineFactory;
         }
 
         private IEnumerable<Project> currentUserProjects;
@@ -49,7 +49,7 @@ namespace ASC.Projects.Classes
             {
                 return currentUserProjects ??
                        (currentUserProjects =
-                           ProjectEngine.GetByParticipant(SecurityContext.CurrentAccount.ID));
+                           EngineFactory.GetProjectEngine().GetByParticipant(SecurityContext.CurrentAccount.ID));
             }
         }
 
@@ -59,7 +59,7 @@ namespace ASC.Projects.Classes
         {
             if (currentProject != null) return currentProject;
 
-            currentProject = ProjectEngine.GetByID(GetCurrentProjectId(isthrow));
+            currentProject = EngineFactory.GetProjectEngine().GetByID(GetCurrentProjectId(isthrow));
 
             if (currentProject != null || !isthrow)
             {

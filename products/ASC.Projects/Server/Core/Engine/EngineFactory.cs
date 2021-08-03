@@ -23,7 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Projects.Engine
 {
-    [Scope]
+    [Scope(Additional = typeof(EngineFactoryExtension))]
     public class EngineFactory
     {
         private IServiceProvider ServiceProvider;
@@ -101,6 +101,27 @@ namespace ASC.Projects.Engine
         public StatusEngine GetStatusEngine()
         {
             return ServiceProvider.GetService<StatusEngine>();
+        }
+    }
+
+    public class EngineFactoryExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<FileEngine>();
+            services.TryAdd<ProjectEngine>();
+            services.TryAdd<MilestoneEngine>();
+            services.TryAdd<CommentEngine>();
+            services.TryAdd<SearchEngine>();
+            services.TryAdd<TaskEngine>();
+            services.TryAdd<SubtaskEngine>();
+            services.TryAdd<MessageEngine>();
+            services.TryAdd<TimeTrackingEngine>();
+            services.TryAdd<ParticipantEngine>();
+            services.TryAdd<TagEngine>();
+            services.TryAdd<ReportEngine>();
+            services.TryAdd<TemplateEngine>();
+            services.TryAdd<StatusEngine>();
         }
     }
 }

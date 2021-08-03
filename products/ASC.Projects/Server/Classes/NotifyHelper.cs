@@ -48,14 +48,10 @@ namespace ASC.Projects.Classes
     public class NotifyHelper
     {
         private ILog Log { get; set; }
-        private ITaskDao TaskDao { get; set; }
-        private IReportDao ReportDao { get; set; }
-        private IMilestoneDao MilestoneDao { get; set; }
         private TenantManager TenantManager { get; set; }
         private PaymentManager PaymentManager { get; set; }
         private TenantUtil TenantUtil { get; set; }
         private SecurityContext SecurityContext { get; set; }
-        private TaskEngine TaskEngine { get; set; }
         private UserManager UserManager { get; set; }
         private DocbuilderReportsUtility DocbuilderReportsUtility { get; set; }
         private TimeZoneConverter TimeZoneConverter { get; set; }
@@ -64,6 +60,8 @@ namespace ASC.Projects.Classes
         private CommonLinkUtility CommonLinkUtility { get; set; }
         private NotifyClient NotifyClient { get; set; }
         private ReportTemplateHelper ReportTemplateHelper { get; set; }
+        private EngineFactory EngineFactory { get; set; }
+        private IDaoFactory DaoFactory { get; set; }
 
         public NotifyHelper(IOptionsMonitor<ILog> options,
             IDaoFactory daoFactory, 
@@ -81,14 +79,10 @@ namespace ASC.Projects.Classes
             NotifyClient notifyClient)
         {
             Log = options.CurrentValue;
-            TaskDao = daoFactory.GetTaskDao();
-            ReportDao = daoFactory.GetReportDao();
-            MilestoneDao = daoFactory.GetMilestoneDao();
             TenantManager = tenantManager;
             PaymentManager = paymentManager;
             TenantUtil = tenantUtil;
             SecurityContext = securityContext;
-            TaskEngine = engineFactory.GetTaskEngine();
             UserManager = userManager;
             DocbuilderReportsUtility = docbuilderReportsUtility;
             TimeZoneConverter = timeZoneConverter;
@@ -96,6 +90,8 @@ namespace ASC.Projects.Classes
             FilesLinkUtility = filesLinkUtility;
             CommonLinkUtility = commonLinkUtility;
             NotifyClient = notifyClient;
+            DaoFactory = daoFactory;
+            EngineFactory = engineFactory;
         }
 
         public void SendAutoReminderAboutTask(DateTime state)
@@ -105,7 +101,7 @@ namespace ASC.Projects.Classes
                 var now = DateTime.UtcNow;
                 List<object[]> tasks;
 
-                tasks = TaskDao.GetTasksForReminder(now);
+                tasks = DaoFactory.GetTaskDao().GetTasksForReminder(now);
 
                 foreach (var r in tasks)
                 {
@@ -127,7 +123,7 @@ namespace ASC.Projects.Classes
                     {
                         TenantManager.SetCurrentTenant(tenant);
                         SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-                        var t = TaskEngine.GetByID((int)r[1]);
+                        var t = EngineFactory.GetTaskEngine().GetByID((int)r[1]);
                         if (t == null) continue;
 
                         foreach (var responsible in t.Responsibles)
@@ -179,7 +175,7 @@ namespace ASC.Projects.Classes
                 List<ReportTemplate> templates;
 
                 
-                templates = ReportDao.GetAutoTemplates();
+                templates = DaoFactory.GetReportDao().GetAutoTemplates();
 
                 foreach (var tGrouped in templates.GroupBy(r => r.Tenant))
                 {
@@ -206,7 +202,7 @@ namespace ASC.Projects.Classes
 
             List<object[]> milestones;
 
-            milestones = MilestoneDao.GetInfoForReminder(date);
+            milestones = DaoFactory.GetMilestoneDao().GetInfoForReminder(date);
 
             foreach (var r in milestones)
             {
@@ -226,7 +222,7 @@ namespace ASC.Projects.Classes
                         TenantManager.SetCurrentTenant(tenant);
                         SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
                         
-                        var m = MilestoneDao.GetById((int)r[1]);
+                        var m = DaoFactory.GetMilestoneDao().GetById((int)r[1]);
                         if (m != null)
                         {
                             var sender = !m.Responsible.Equals(Guid.Empty) ? m.Responsible : m.Project.Responsible;
