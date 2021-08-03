@@ -316,11 +316,11 @@ CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 
 ## ASC.SsoAuth ##
 FROM builder AS ssoauth
-WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/service/
+WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.SsoAuth.Svc/ .
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ ${BUILD_PATH}/services/ASC.SsoAuth/
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.SsoAuth.Svc/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ ${BUILD_PATH}/ASC.SsoAuth/
 
 CMD ["ASC.SsoAuth.Svc.dll", "ASC.SsoAuth.Svc"]
 
