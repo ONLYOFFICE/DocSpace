@@ -192,7 +192,6 @@ namespace ASC.Mail.ImapSync
                 }
                 else
                 {
-                    client.DeleteClient += Client_DeleteClient;
                     clients.TryUpdate(clientKey, client, null);
                 }
             }

@@ -24,7 +24,7 @@ namespace ASC.Mail.ImapSync
         private ImapClient imap;
 
         private ConcurrentQueue<CashedMailUserAction> actionsToImap;
-        private ConcurrentQueue<ImapAction> actionsFromImap;
+        public ConcurrentQueue<ImapAction> actionsFromImap;
         private ConcurrentDictionary<ClientState, Task> syncTasks;
         private ConcurrentQueue<Task> asyncTasks;
 
@@ -34,7 +34,8 @@ namespace ASC.Mail.ImapSync
         private readonly MailSettings _mailSettings;
         private readonly MailBoxData Account;
 
-
+        public event EventHandler NewActionFromImap;
+        public event EventHandler ClientIsReady;
 
         private CancellationTokenSource DoneToken { get; set; }
         private CancellationToken CancelToken { get; set; }
@@ -89,6 +90,8 @@ namespace ASC.Mail.ImapSync
                         actionsFromImap.Enqueue(imapAction);
                     }
                 }
+
+                if (NewActionFromImap != null) NewActionFromImap(this, EventArgs.Empty);
             }
         }
 
@@ -105,7 +108,7 @@ namespace ASC.Mail.ImapSync
 
             _log.Name = $"ASC.Mail.SimpleClient.Mbox_{mailbox.MailBoxId}";
 
-            State = ClientState.Creating;
+            //State = ClientState.Creating;
 
             var protocolLogger = !string.IsNullOrEmpty(_mailSettings.ProtocolLogPath)
                 ? (IProtocolLogger)
@@ -118,6 +121,8 @@ namespace ASC.Mail.ImapSync
 
             syncTasks = new ConcurrentDictionary<ClientState, Task>();
             asyncTasks = new ConcurrentQueue<Task>();
+            actionsFromImap = new ConcurrentQueue<ImapAction>();
+            actionsToImap = new ConcurrentQueue<CashedMailUserAction>();
 
             imap = new ImapClient(protocolLogger)
             {
@@ -136,6 +141,10 @@ namespace ASC.Mail.ImapSync
             await LoadFoldersFromIMAP();
 
             await TryChangeFolder(imap.Inbox);
+
+            if(ClientIsReady!=null) ClientIsReady(this, EventArgs.Empty);
+
+
         }
 
         public bool TrySendToIMAP(CashedMailUserAction actionToIMAP)
@@ -154,21 +163,25 @@ namespace ASC.Mail.ImapSync
 
             syncTasks.GetOrAdd(ClientState.ChangeFolder, result);
 
+            DoneToken?.Cancel();
+
             return result.ContinueWith(x=> { return MessagesList; });
         }
 
 
         private async Task TryChangeFolder(IMailFolder newWorkFolder)
         {
+            if (WorkFolder == newWorkFolder) return;
+
+            WorkFolder = newWorkFolder;
+
             WorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
 
             WorkFolder.CountChanged -= ImapFolderCountChanged;
 
-            WorkFolder = newWorkFolder;
-
             try
             {
-                await ChangeFolder(newWorkFolder);
+                await WorkFolder.OpenAsync(FolderAccess.ReadWrite);
 
                 WorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
 
@@ -290,16 +303,12 @@ namespace ASC.Mail.ImapSync
 
                 var subfolders = await GetImapSubFolders(rootFolder);
 
-                var foldersIMAP = subfolders.Where(x => !_mailSettings.SkipImapFlags.Contains(x.Name.ToLowerInvariant()))
+                foldersList = subfolders.Where(x => !_mailSettings.SkipImapFlags.Contains(x.Name.ToLowerInvariant()))
                     .Where(x => !x.Attributes.HasFlag(FolderAttributes.NoSelect))
                     .Where(x => !x.Attributes.HasFlag(FolderAttributes.NonExistent))
                     .ToList();
 
-                WorkFolder = imap.Inbox;
-
-                _log.Debug($"Find {foldersIMAP.Count} folders in IMAP.");
-
-
+                _log.Debug($"Find {foldersList.Count} folders in IMAP.");
             }
             catch (AggregateException aggEx)
             {
