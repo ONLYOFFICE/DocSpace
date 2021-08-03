@@ -13,24 +13,19 @@ namespace ASC.Webhooks
     public class WebhookHostedService : IHostedService
     {
         private WorkerService workerService;
-        private BuildQueueService BuildQueueService { get; }
-        private WebhookSender WebhookSender { get; }
-        private ILog Logger { get; }
+        private BuildQueueService buildQueueService;
 
-        public WebhookHostedService(BuildQueueService buildQueueService,
-            WebhookSender webhookSender,
-            IOptionsMonitor<ILog> options)
+        public WebhookHostedService(WorkerService workerService,
+            BuildQueueService buildQueueService)
         {
-            BuildQueueService = buildQueueService;
-            WebhookSender = webhookSender;
-            Logger = options.Get("ASC.Webhooks");
+            this.workerService = workerService;
+            this.buildQueueService = buildQueueService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            workerService = new WorkerService(cancellationToken, WebhookSender, Logger, BuildQueueService.queue);
-            workerService.Start();
-            BuildQueueService.Start();
+            workerService.Start(cancellationToken);
+            buildQueueService.Start();
 
             return Task.CompletedTask;
         }
@@ -44,9 +39,9 @@ namespace ASC.Webhooks
                 workerService = null;
             }
 
-            if (BuildQueueService != null)
+            if (buildQueueService != null)
             {
-                BuildQueueService.Stop();
+                buildQueueService.Stop();
             }
 
             return Task.CompletedTask;

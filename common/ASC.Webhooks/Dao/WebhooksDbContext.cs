@@ -34,10 +34,14 @@ namespace ASC.Webhooks.Dao
         {
             modelBuilder.Entity<WebhooksConfig>(entity =>
             {
-                entity.HasKey(e => new { e.TenantId, e.Uri })
+                entity.HasKey(e => new { e.ConfigId})
                     .HasName("PRIMARY");
 
                 entity.ToTable("webhooks_config");
+
+                entity.Property(e => e.ConfigId)
+                   .HasColumnType("int")
+                   .HasColumnName("ConfigID");
 
                 entity.Property(e => e.TenantId).HasColumnType("int unsigned");
 
@@ -64,6 +68,10 @@ namespace ASC.Webhooks.Dao
                     .HasColumnName("ID")
                     .ValueGeneratedOnAdd();
 
+                entity.Property(e => e.ConfigId)
+                   .HasColumnType("int")
+                   .HasColumnName("ConfigID");
+
                 entity.Property(e => e.Data)
                     .IsRequired()
                     .HasColumnType("json");
@@ -71,7 +79,7 @@ namespace ASC.Webhooks.Dao
                 entity.Property(e => e.Event)
                     .HasColumnType("varchar")
                     .HasColumnName("Event")
-                    .HasMaxLength(50);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Status)
                     .HasColumnType("varchar")

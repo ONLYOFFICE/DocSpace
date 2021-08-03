@@ -31,30 +31,27 @@ namespace ASC.Webhooks
             WebhookNotify = webhookNotify;
         }
 
-        public void Publish(EventName eventName, object data)
+        public void Publish(string eventName, object data)
         {
-            var content = JsonSerializer.Serialize(data);
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
-
-            var webhooksPayload = new WebhooksPayload
-            {
-                TenantId = tenantId,
-                Event = eventName,
-                CreationTime = DateTime.UtcNow,
-                Data = content,
-                Status = ProcessStatus.InProcess
-            };
-            var DbId = DbWorker.WriteToJournal(webhooksPayload);
-
             var webhookConfigs = DbWorker.GetWebhookConfigs(tenantId);
+
             foreach (var config in webhookConfigs)
             {
+                var webhooksPayload = new WebhooksPayload
+                {
+                    TenantId = tenantId,
+                    Event = eventName,
+                    CreationTime = DateTime.UtcNow,
+                    Data = data.ToString(),
+                    Status = ProcessStatus.InProcess,
+                    ConfigId = config.ConfigId
+                };
+                var DbId = DbWorker.WriteToJournal(webhooksPayload);
+
                 var request = new WebhookRequest()
                 {
-                    Id = DbId,
-                    SecretKey = config.SecretKey,
-                    Data = content,
-                    URI = config.Uri
+                    Id = DbId
                 };
 
                 WebhookNotify.Publish(request, CacheNotifyAction.Update);
@@ -70,14 +67,6 @@ namespace ASC.Webhooks
             services.TryAdd<WebhooksIdentifier>();
         }
     }
-
-    public enum EventName
-    {
-        UntrackedAction,
-        NewFileCreated,
-        FileUpdated
-    }
-
     public enum ProcessStatus
     {
         InProcess,

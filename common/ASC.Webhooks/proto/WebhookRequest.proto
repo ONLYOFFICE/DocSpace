@@ -4,7 +4,4 @@ package ASC.Web.Webhooks;
 
 message WebhookRequest {
     int32 Id = 1;
-    string Data = 2;
-	string URI = 3;
-	string SecretKey =4;
 };

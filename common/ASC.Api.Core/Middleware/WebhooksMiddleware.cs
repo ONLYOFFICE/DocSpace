@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Webhooks;
@@ -6,6 +7,7 @@ using ASC.Webhooks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing.Patterns;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -24,11 +26,13 @@ namespace ASC.Api.Core.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var action = context.GetRouteValue("action").ToString();
+            var methodList = new List<string> { "POST", "UPDATE", "DELETE" };
 
-            var eventName = WebhooksIdentifier.Identify(action);
+            var method = context.Request.Method;
+            var endpoint = (RouteEndpoint)context.GetEndpoint();
+            var routePattern = endpoint.RoutePattern.RawText;
 
-            if (eventName == EventName.UntrackedAction)
+            if (!methodList.Contains(method) && !WebhooksIdentifier.Identify(routePattern))
             {
                 await _next(context);
                 return;
@@ -50,6 +54,8 @@ namespace ASC.Api.Core.Middleware
                 await ms.CopyToAsync(originalResponseBody);
                 context.Response.Body = originalResponseBody;
             }
+
+            var eventName = "method: " + method + ", " + "route: " + routePattern;
 
             WebhookPublisher.Publish(eventName, responseContent);
         }

@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
@@ -26,32 +27,35 @@ namespace ASC.Webhooks
             Log = options.Get("ASC.Webhooks");
             ServiceProvider = serviceProvider;
         }
-        public async Task Send(WebhookRequest webhookRequest)
+        public async Task Send(WebhookRequest webhookRequest, CancellationToken cancellationToken)
         {
-            var URI = webhookRequest.URI;
-            var secretKey = webhookRequest.SecretKey;
-
             using var scope = ServiceProvider.CreateScope();
             var dbWorker = scope.ServiceProvider.GetService<DbWorker>();
+
+            var entry = dbWorker.ReadFromJournal(webhookRequest.Id);
+            var id = entry.Id;
+            var requestURI = entry.Uri;
+            var secretKey = entry.SecretKey;
+            var data = entry.Data;
+
 
             for (int i = 0; i < repeatCount; i++)
             {
                 try
-                {           
-                    var request = new HttpRequestMessage(HttpMethod.Post, URI);
+                {                
                     request.Headers.Add("Accept", "*/*");
-                    request.Headers.Add("Secret","SHA256=" + GetSecretHash(secretKey, webhookRequest.Data));
+                    request.Headers.Add("Secret","SHA256=" + GetSecretHash(secretKey, data));
 
                     request.Content = new StringContent(
-                        webhookRequest.Data,
+                        data,
                         Encoding.UTF8,
                         "application/json");
 
-                    var response = await httpClient.SendAsync(request);
+                    var response = await httpClient.SendAsync(request, cancellationToken);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        dbWorker.UpdateStatus(webhookRequest.Id, ProcessStatus.Success);
+                        dbWorker.UpdateStatus(id, ProcessStatus.Success);
                         Log.Debug("Response: " + response);
                         break;
                     }
@@ -60,7 +64,7 @@ namespace ASC.Webhooks
                 {
                     if(i == repeatCount)
                     {
-                        dbWorker.UpdateStatus(webhookRequest.Id, ProcessStatus.Failed);
+                        dbWorker.UpdateStatus(id, ProcessStatus.Failed);
                     }
 
                     Log.Error(ex.Message);

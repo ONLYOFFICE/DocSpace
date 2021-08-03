@@ -9,12 +9,12 @@ namespace ASC.Webhooks
     [Singletone]
     public class BuildQueueService
     {
-        internal readonly ConcurrentQueue<WebhookRequest> queue;
+        internal  ConcurrentQueue<WebhookRequest> Queue { get; }
         private ICacheNotify<WebhookRequest> WebhookNotify { get; }     
         public BuildQueueService(ICacheNotify<WebhookRequest> webhookNotify)
         {
             WebhookNotify = webhookNotify;
-            queue = new ConcurrentQueue<WebhookRequest>();
+            Queue = new ConcurrentQueue<WebhookRequest>();
         }
 
         public void Start()
@@ -29,7 +29,7 @@ namespace ASC.Webhooks
 
         public void BuildWebhooksQueue(WebhookRequest request)
         {
-            queue.Enqueue(request);
+            Queue.Enqueue(request);
         }
     }
 }

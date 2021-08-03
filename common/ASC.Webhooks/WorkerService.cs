@@ -6,31 +6,35 @@ using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Web.Webhooks;
+using ASC.Common;
+using ASC.Common.Caching;
 
 namespace ASC.Webhooks
 {
-    internal class WorkerService
+    [Singletone]
+    public class WorkerService
     {
         private readonly int threadCount = 10;
-        private readonly CancellationToken cancellationToken;
         private readonly WebhookSender webhookSender;
         private readonly ConcurrentQueue<WebhookRequest> queue;
+        private CancellationToken cancellationToken;
         private ILog logger;
         private Timer timer;
 
-        public WorkerService(CancellationToken cancellationToken,
-            WebhookSender webhookSender,
+        public WorkerService(WebhookSender webhookSender,
             ILog logger,
-            ConcurrentQueue<WebhookRequest> queue)
+            ICacheNotify<WebhookRequest> webhookNotify,
+            BuildQueueService buildQueueService)
         {
-            this.cancellationToken = cancellationToken;
             this.logger = logger;
             this.webhookSender = webhookSender;
-            this.queue = queue;
+            queue = buildQueueService.Queue;
         }
 
-        public void Start()
+        public void Start(CancellationToken cancellationToken)
         {
+            this.cancellationToken = cancellationToken;
+
             timer = new Timer(Procedure, null, 0, Timeout.Infinite);
         }
 
@@ -63,20 +67,20 @@ namespace ASC.Webhooks
                 return;
             }
 
-
-            //var queueEntrys = new List<WebhookRequest>();
-            //for (int i = 0; i < queueSize; i++)
-            //{
-            //    WebhookHostedService.Queue.TryDequeue(out var entry);
-            //    queueEntrys.Add(entry);
-            //}
-
             var tasks = new List<Task>();
             var counter = 0;
             for (int i = 0; i < queueSize; i++)
             {
-                queue.TryDequeue(out var entry);
-                tasks.Add(webhookSender.Send(entry));
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Stop();
+                    return;
+                }
+
+                if (!queue.TryDequeue(out var entry))
+                    break;
+
+                tasks.Add(webhookSender.Send(entry, cancellationToken));
                 counter++;
 
                 if (counter >= threadCount)
@@ -87,6 +91,7 @@ namespace ASC.Webhooks
                 }
             }
 
+            Task.WaitAll(tasks.ToArray());
             logger.Debug("Procedure: Finish.");
             timer.Change(0, Timeout.Infinite);
         }

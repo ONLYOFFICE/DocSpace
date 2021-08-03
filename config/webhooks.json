@@ -1,9 +1,5 @@
 {
   "webhooks": {
-    "dictionary": {
-      "NewFileCreated": {
-        "methodsName": [ "CreateFileFromForm", "CreateFileFromBody" ]
-      }
+    "routeList" : [ "CreateFileFromForm", "CreateFileFromBody" ]
     }
-  }
 }

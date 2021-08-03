@@ -10,32 +10,20 @@ namespace ASC.Webhooks
     [Singletone]
     public class WebhooksIdentifier
     {
-        private WebhooksDictionary webhooksDictionary;
+        private WebhooksRoutes routes;
         public WebhooksIdentifier(ConfigurationExtension configuration, IConfiguration configuration1)
         {
-            webhooksDictionary = configuration.GetSetting<WebhooksDictionary>("webhooks");
+            routes = configuration.GetSetting<WebhooksRoutes>("webhooks");
         }
 
-        public EventName Identify(string method)
+        public bool Identify(string method)
         {
-            foreach (var d in webhooksDictionary.dictionary)
-            {
-                if (d.Value.methodsName.Contains(method))
-                {
-                    return d.Key;
-                }
-            }
-            return EventName.UntrackedAction;
+            return routes.routeList.Contains(method);
         }
     }
 
-    public class WebhooksDictionary
+    public class WebhooksRoutes
     {
-        public Dictionary<EventName, Methods> dictionary { get; set; }
-    }
-
-    public class Methods
-    {
-        public List<string> methodsName { get; set; }
+        public List<string> routeList { get; set; }
     }
 }

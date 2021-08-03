@@ -26,6 +26,15 @@ namespace ASC.Webhooks
             return entity.Entity.Id;
         }
 
+        public WebhookEntry ReadFromJournal(int id)
+        {
+            return webhooksDbContext.WebhooksPayloads
+                .Where(it => it.Id == id)
+                .Join(webhooksDbContext.WebhooksConfigs, t => t.ConfigId, t => t.ConfigId, (payload, config) => new { payload, config })
+                .Select(t => new WebhookEntry { Id = t.payload.Id, Data = t.payload.Data, SecretKey = t.config.SecretKey, Uri = t.config.Uri })
+                .OrderBy(t => t.Id).FirstOrDefault();
+        }
+
         public void AddWebhookConfig(WebhooksConfig webhooksConfig)
         {
             webhooksDbContext.WebhooksConfigs.Add(webhooksConfig);
