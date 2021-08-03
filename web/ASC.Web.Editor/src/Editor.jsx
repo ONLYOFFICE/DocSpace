@@ -83,6 +83,7 @@ const Editor = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
+  const [extension, setExtension] = useState();
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
   const [openNewTab, setNewOpenTab] = useState(false);
 
@@ -553,6 +554,7 @@ const Editor = () => {
   const onSDKRequestSaveAs = (event) => {
     setTitleSelectorFolder(event.data.title);
     setUrlSelectorFolder(event.data.url);
+    setExtension(event.data.title.split(".").pop());
 
     setIsFolderDialogVisible(true);
   };
@@ -641,13 +643,15 @@ const Editor = () => {
                 </StyledSelectorFolder>
               }
               headerName={i18n.t("FolderForSave")}
-              footer={
-                <Checkbox
-                  label={i18n.t("OpenSavedDocument")}
-                  onChange={onClickCheckbox}
-                  isChecked={openNewTab}
-                />
-              }
+              {...(extension !== "fb2" && {
+                footer: (
+                  <Checkbox
+                    label={i18n.t("OpenSavedDocument")}
+                    onChange={onClickCheckbox}
+                    isChecked={openNewTab}
+                  />
+                ),
+              })}
             />
           )}
         </>
