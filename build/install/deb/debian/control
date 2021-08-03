@@ -22,6 +22,7 @@ Depends: appserver-api-system,
          appserver-people-server,
          appserver-projects-server,
          appserver-socket,
+         appserver-ssoauth,
          appserver-studio-notify,
          appserver-telegram-service,
          appserver-thumbnails,
@@ -218,4 +219,14 @@ Description: Description
 Package: appserver-proxy
 Architecture: any
 Depends: nginx, ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-ssoauth
+Architecture: any
+Depends: appserver-common,
+ appserver-configuration,
+ dotnet-sdk-5.0,
+ nodejs (>=10),
+ ${misc:Depends},
+ ${shlibs:Depends}
 Description: Description

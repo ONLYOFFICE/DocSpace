@@ -234,10 +234,10 @@
 %files storage-migration
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Data.Storage.Migration/
-%{buildpath}/products/ASC.Files/server/
-%{buildpath}/products/ASC.People/server/
-%{buildpath}/products/ASC.CRM/server/
-%{buildpath}/products/ASC.Projects/server/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
 /lib/systemd/system/%{product}-storage-migration.service
 %dir %{buildpath}/services/
 %dir %{buildpath}/products/
@@ -308,3 +308,10 @@
 /lib/systemd/system/%{product}-mail.service
 %dir %{buildpath}/products/
 %dir %{buildpath}/products/ASC.Mail/
+
+%files ssoauth
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.SsoAuth/
+%{buildpath}/services/ASC.SsoAuth.Svc/
+/lib/systemd/system/%{product}-ssoauth.service
+%dir %{buildpath}/services/

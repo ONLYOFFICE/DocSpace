@@ -397,31 +397,32 @@ setup_nginx(){
 	mv -f $NGINX_CONF/default.conf $NGINX_CONF/default.conf.old >/dev/null 2>&1
 
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
+	if [ "$DIST" = "RedHat" ]; then
+		shopt -s nocasematch
+		PORTS=()
+		if $(getenforce) >/dev/null 2>&1; then
+			case $(getenforce) in
+				enforcing|permissive)
+					PORTS+=('8081') #Storybook
+					PORTS+=("$DOCUMENT_SERVER_PORT")
+					PORTS+=('5001') #ASC.Web.Studio
+					PORTS+=('5002') #ASC.People
+					PORTS+=('5008') #ASC.Files/client
+					PORTS+=('5013') #ASC.Files/editor
+					PORTS+=('5014') #ASC.CRM
+					setsebool -P httpd_can_network_connect on
+				;;
+				disabled)
+					:
+				;;
+			esac
 
-    shopt -s nocasematch
-    PORTS=()
-	if $(getenforce) >/dev/null 2>&1; then
-		case $(getenforce) in
-			enforcing|permissive)
-				PORTS+=('8081') #Storybook
-				PORTS+=("$DOCUMENT_SERVER_PORT")
-				PORTS+=('5001') #ASC.Web.Studio
-				PORTS+=('5002') #ASC.People
-				PORTS+=('5008') #ASC.Files/client
-				PORTS+=('5013') #ASC.Files/editor
-				PORTS+=('5014') #ASC.CRM
-				setsebool -P httpd_can_network_connect on
-			;;
-			disabled)
-				:
-			;;
-		esac
-
-		for PORT in ${PORTS[@]}; do
-			semanage port -a -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
-			semanage port -m -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
-			true
-		done
+			for PORT in ${PORTS[@]}; do
+				semanage port -a -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
+				semanage port -m -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
+				true
+			done
+		fi
 	fi
     chown nginx:nginx /etc/nginx/* -R
     sudo sed -e 's/#//' -i $NGINX_CONF/onlyoffice.conf
