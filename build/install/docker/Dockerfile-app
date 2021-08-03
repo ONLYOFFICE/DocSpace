@@ -292,7 +292,7 @@ WORKDIR  ${BUILD_PATH}/services/urlshortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ ${BUILD_PATH}/urlshortener/client
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ ${BUILD_PATH}/services/urlshortener/client
 
 CMD ["ASC.UrlShortener.Svc.dll", "ASC.UrlShortener.Svc"]
 
@@ -319,8 +319,8 @@ FROM builder AS ssoauth
 WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.SsoAuth.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ ${BUILD_PATH}/ASC.SsoAuth/
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.SsoAuth.Svc/ .
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ ${BUILD_PATH}/services/ASC.SsoAuth/
 
 CMD ["ASC.SsoAuth.Svc.dll", "ASC.SsoAuth.Svc"]
 
