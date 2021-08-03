@@ -20,6 +20,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="DocbuilderTemplates\master.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\ProjectsWithoutActiveMilestones.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\MilestonesExpired.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\MilestonesNearest.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\ProjectsList.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\ProjectsWithoutActiveTasks.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\TasksByProjects.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\TasksByUsers.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\TasksExpired.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\TimeSpend_0.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\TimeSpend_1.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\UsersActivity.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\UsersWithoutActiveTasks.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\UsersWorkload_0.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\TimeSpend_2.docbuilder" />
+    <EmbeddedResource Include="DocbuilderTemplates\UsersWorkload_1.docbuilder" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resources\ProjectsCommonResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

@@ -39,6 +39,7 @@ using ASC.Web.Core.Users;
 using Microsoft.AspNetCore.Http;
 using ASC.Common;
 using ASC.Projects.Resources;
+using System.Reflection;
 
 namespace ASC.Projects.Classes
 {
@@ -109,9 +110,9 @@ namespace ASC.Projects.Classes
 
         private string GetDocbuilderTemplate(string fileName, int v)
         {
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream(string.Format("ASC.Web.Projects.DocbuilderTemplates.{0}_{1}.docbuilder", fileName, v)) ??
-                assembly.GetManifestResourceStream(string.Format("ASC.Web.Projects.DocbuilderTemplates.{0}.docbuilder", fileName)))
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream(string.Format("ASC.Projects.DocbuilderTemplates.{0}_{1}.docbuilder", fileName, v)) ??
+                assembly.GetManifestResourceStream(string.Format("ASC.Projects.DocbuilderTemplates.{0}.docbuilder", fileName)))
             {
                 if (stream != null)
                 {

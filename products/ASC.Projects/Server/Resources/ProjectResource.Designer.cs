@@ -39,7 +39,7 @@ namespace ASC.Projects.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Web.Projects.Resources.ProjectResource", typeof(ProjectResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Projects.Resources.ProjectResource", typeof(ProjectResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

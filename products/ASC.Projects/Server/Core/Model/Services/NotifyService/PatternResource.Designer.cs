@@ -39,7 +39,7 @@ namespace ASC.Projects.Core.Model.Services.NotifyService {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Web.Projects.Core.Model.Services.NotifyService.PatternResource", typeof(PatternResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Projects.Core.Model.Services.NotifyService.PatternResource", typeof(PatternResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

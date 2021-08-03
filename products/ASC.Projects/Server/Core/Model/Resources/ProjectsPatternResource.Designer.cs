@@ -39,7 +39,7 @@ namespace ASC.Projects.Core.Model.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Web.Projects.Core.Model.Resources.ProjectsPatternResource", typeof(ProjectsPatternResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Projects.Core.Model.Resources.ProjectsPatternResource", typeof(ProjectsPatternResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,8 +65,8 @@ namespace ASC.Projects.Core.Model.Resources {
         ///  &lt;formatter type=&quot;ASC.Notify.Patterns.NVelocityPatternFormatter, ASC.Common&quot; /&gt;
         ///
         ///  &lt;pattern id=&quot;EditMessage&quot; sender=&quot;email.sender&quot;&gt;
-        ///    &lt;subject resource=&quot;|subject_EditMessage|ASC.Web.Projects.Core.Model.Services.NotifyService.PatternResource,ASC.Web.Projects&quot; /&gt;
-        ///    &lt;body styler=&quot;ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile&quot; resource=&quot;|pattern_EditMessage|ASC.Web.Projects.Core.Model.Services.NotifyService.PatternResource,ASC.Web.Projects&quot; /&gt;
+        ///    &lt;subject resource=&quot;|subject_EditMessage|ASC.Projects.Core.Model.Services.NotifyService.PatternResource,ASC.Projects&quot; /&gt;
+        ///    &lt;body styler=&quot;ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile&quot; resource=&quot;|pattern_EditMessage|ASC.Projects.Core.Model.Services.NotifyService.PatternResource,ASC.Projects&quot; /&gt;
         ///  &lt;/pattern&gt;
         ///  &lt;pattern id=&quot;EditMessage [rest of string was truncated]&quot;;.
         /// </summary>
