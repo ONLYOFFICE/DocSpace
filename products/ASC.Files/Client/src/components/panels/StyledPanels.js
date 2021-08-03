@@ -548,6 +548,11 @@ const StyledSelectFolderPanel = styled.div`
     height: calc(100% - 64px);
     width: 296px;
   }
+  #folder-tree-scroll-bar {
+    .nav-thumb-horizontal {
+      height: 0px !important;
+    }
+  }
   .tree-folder-Loader{
     ${(props) =>
       props.displayType === "aside"
