@@ -32,7 +32,7 @@ const SelectFolderDialogModalView = ({
         visible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
-        {...(!header && !footer && { contentHeight: "416px" })}
+        {...(!header && !footer && !showButtons && { contentHeight: "416px" })}
       >
         <ModalDialog.Header>
           {headerName ? headerName : t("Translations:SelectFolder")}
@@ -64,13 +64,14 @@ const SelectFolderDialogModalView = ({
                   size="medium"
                   label={t("Common:SaveButton")}
                   onClick={onSave}
-                  isDisabled={!canCreate}
+                  isDisabled={isLoadingData || !canCreate}
                 />
                 <Button
                   primary
                   size="medium"
                   label={t("Common:CloseButton")}
                   onClick={onClose}
+                  isDisabled={isLoadingData}
                 />
               </div>
             )}

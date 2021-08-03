@@ -49,19 +49,22 @@ const FolderTreeBody = ({
           <Text as="span">{t("NotAvailableFolder")}</Text>
         )
       ) : (
-        <div key="loader">
-          <Loader
-            type="oval"
-            size="16px"
-            style={{
-              display: "inline",
-              marginRight: "10px",
-            }}
-          />
-          <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-            "Common:LoadingDescription"
-          )}`}</Text>
-        </div>
+        <StyledSelectFolderPanel heightContent={heightContent}>
+          <div className="tree-folder-Loader" key="loader">
+            <Loader
+              type="oval"
+              size="16px"
+              style={{
+                display: "inline",
+                marginRight: "10px",
+                marginTop: "16px",
+              }}
+            />
+            <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+              "Common:LoadingDescription"
+            )}`}</Text>
+          </div>
+        </StyledSelectFolderPanel>
       )}
     </>
   );

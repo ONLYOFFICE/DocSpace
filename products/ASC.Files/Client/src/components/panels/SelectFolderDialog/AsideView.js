@@ -87,13 +87,14 @@ const SelectFolderDialogAsideView = ({
                   size="big"
                   label={t("Common:SaveButton")}
                   onClick={onSave}
-                  isDisabled={!canCreate}
+                  isDisabled={isLoadingData || !canCreate}
                 />
                 <Button
                   primary
                   size="big"
                   label={t("Common:CloseButton")}
                   onClick={onClose}
+                  isDisabled={isLoadingData}
                 />
               </div>
             )}

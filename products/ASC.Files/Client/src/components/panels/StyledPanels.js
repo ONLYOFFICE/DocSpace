@@ -548,6 +548,15 @@ const StyledSelectFolderPanel = styled.div`
     height: calc(100% - 64px);
     width: 296px;
   }
+  .tree-folder-Loader{
+    ${(props) =>
+      props.displayType === "aside"
+        ? css`
+            margin-top: 16px;
+          `
+        : css`
+            height: ${props.heightContent};
+          `}
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {

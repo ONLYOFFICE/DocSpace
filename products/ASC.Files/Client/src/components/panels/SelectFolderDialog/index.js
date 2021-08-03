@@ -379,6 +379,7 @@ class SelectFolderModalDialog extends React.Component {
         footer={footer}
         showButtons={showButtons}
         canCreate={canCreate}
+        isLoadingData={isLoadingData}
       />
     );
   }
