@@ -48,7 +48,7 @@ class SelectFolderModalDialog extends React.Component {
       folderId: "",
       displayType: displayType || this.getDisplayType(),
       isSetFolderImmediately: isNeedFolder,
-      canCreate: false,
+      canCreate: true,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.folderTitle = "";
