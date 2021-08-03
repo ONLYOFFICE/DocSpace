@@ -1,6 +1,1 @@
 src/var/www/services/ASC.Web.Studio/service/* var/www/appserver/studio/server
-
-src/var/www/products/ASC.Files/server/ASC.Files*.dll var/www/appserver/products/ASC.Files/server
-src/var/www/products/ASC.People/server/ASC.People.dll var/www/appserver/products/ASC.People/server
-src/var/www/products/ASC.CRM/server/ASC.CRM*.dll var/www/appserver/products/ASC.CRM/server
-src/var/www/products/ASC.Projects/server/ASC.Projects*.dll var/www/appserver/products/ASC.Projects/server
