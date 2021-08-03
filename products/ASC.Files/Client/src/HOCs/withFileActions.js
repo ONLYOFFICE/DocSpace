@@ -56,7 +56,7 @@ export default function withFileActions(WrappedFileItem) {
             color={color}
             hoverColor="#657077"
             size={18}
-            iconName="images/catalog.shared.react.svg"
+            iconName="/static/images/catalog.shared.react.svg"
           />
           {t("Share")}
         </Text>
