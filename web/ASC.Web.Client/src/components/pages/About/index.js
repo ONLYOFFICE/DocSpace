@@ -4,7 +4,7 @@ import Link from "@appserver/components/link";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { I18nextProvider, Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { isMobile } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
 import withLoader from "../Confirm/withLoader";
@@ -12,101 +12,43 @@ import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
 
 const BodyStyle = styled.div`
-  margin-top: ${isMobile ? "80px" : "24px"};
+  width: 100%;
+  padding: ${isMobileOnly ? "48px 0 0" : "80px 147px 0"};
 
   .avatar {
-    text-align: center;
-    margin: 0px;
+    margin-top: 32px;
+    margin-bottom: 16px;
   }
 
-  .text-about {
-    margin-top: 4px;
+  .row {
+    display: flex;
+    flex-direction: row;
   }
 
-  .text-license {
-    margin-top: 20px;
-  }
-
-  .text_style {
-    text-align: center;
-  }
-
-  .logo-img {
-    text-align: center;
-    max-width: 216px;
-    max-height: 35px;
-  }
-
-  .hidden-text {
-    height: 0;
-    visibility: hidden;
-    margin: 0;
-  }
-
-  .copyright-line {
-    display: grid;
-    grid-template-columns: 1fr max-content 1fr;
-    grid-column-gap: 24px;
-    padding-bottom: 15px;
-    text-align: center;
-
-    :before {
-      background-color: #e1e1e1;
-      content: "";
-      height: 2px;
-      margin-top: 9px;
-      float: right;
-    }
-
-    :after {
-      background-color: #e1e1e1;
-      content: "";
-      height: 2px;
-      margin-top: 9px;
-      float: left;
-    }
+  .copyright {
+    margin-top: 16px;
   }
 `;
 
-const Style = styled.div`
-  margin-top: 8px;
-  text-align: center;
-`;
-
-const VersionStyle = styled.div`
-  padding: 8px 0px 20px 0px;
-`;
-
-const Body = ({ t, personal, version }) => {
+const Body = ({ t, personal, versionAppServer }) => {
   useEffect(() => {
     setDocumentTitle(t("Common:About"));
   }, [t]);
 
-  const gitHub = "GitHub";
+  const versionEditor = "6.3.1";
   const license = "AGPL-3.0";
-  const link = "www.onlyoffice.com";
+  const link = "https://github.com/ONLYOFFICE";
   const phone = "+371 660-16425";
-  const supportLink = "support@onlyoffice.com";
+  const email = "support@onlyoffice.com";
   const address =
     "20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050";
-  const licenseContent = (
-    <Text as="div" className="text_style" fontSize="12px">
-      <Trans t={t} i18nKey="LicensedUnder" ns="About">
-        "This software is licensed under:"
-        <Link
-          href="https://www.gnu.org/licenses/gpl-3.0.html"
-          isHovered={true}
-          fontSize="12px"
-          target="_blank"
-        >
-          {{ license }}
-        </Link>
-      </Trans>
-    </Text>
-  );
 
   return (
     <BodyStyle>
+      <Text fontSize="32px" fontWeight="600">
+        {t("AboutHeader")}
+      </Text>
+
       <div className="avatar">
         {personal ? (
           <ReactSVG src="images/logo_personal_about.svg" />
@@ -121,83 +63,76 @@ const Body = ({ t, personal, version }) => {
         )}
       </div>
 
-      <VersionStyle>
-        <Text className="text_style" fontSize="14px" color="#A3A9AE">
-          {`${t("Common:Version")}: ${version}`}
-        </Text>
-      </VersionStyle>
-
-      <Text className="copyright-line" fontSize="14px">
-        {t("AboutCompanyLicensor")}
-      </Text>
-
-      <Text as="div" className="text_style" fontSize="16px" isBold={true}>
-        <Trans t={t} i18nKey="AllRightsReservedCustomMode" ns="About">
-          Ascensio System SIA
-          <p className="hidden-text">All rights reserved.</p>
-        </Trans>
-      </Text>
-
-      <Style>
-        <Text className="text_style" fontSize="12px">
-          <Text
-            className="text_style"
-            fontSize="12px"
-            as="span"
-            color="#A3A9AE"
-          >
-            {t("AboutCompanyAddressTitle")}:{" "}
-          </Text>
-          {address}
-        </Text>
-
-        <Text fontSize="12px" className="text_style" as="span" color="#A3A9AE">
-          {t("AboutCompanyEmailTitle")}:{" "}
-          <Link href="mailto:support@onlyoffice.com" fontSize="12px">
-            {supportLink}
-          </Link>
-        </Text>
-
-        <div className="text-about">
-          <Text className="text_style" fontSize="12px">
-            <Text
-              fontSize="12px"
-              className="text_style"
-              as="span"
-              color="#A3A9AE"
-            >
-              {t("AboutCompanyTelTitle")}:{" "}
-            </Text>
-            {phone}
-          </Text>
-        </div>
-        <Link href="http://www.onlyoffice.com" fontSize="12px" target="_blank">
-          {link}
+      <div className="row">
+        <Text fontSize="13px">{t("DocumentManagement")}:</Text>
+        <Link
+          color="#2DA7DB"
+          fontSize="13px"
+          fontWeight="600"
+          href={link}
+          target="_blank"
+        >
+          ONLYOFFICE App Server
         </Link>
+        <Text fontSize="13px" fontWeight="600">
+          v.{versionAppServer}
+        </Text>
+      </div>
 
-        <div className="text-license">
-          <div className="text-row">{licenseContent}</div>
+      <div className="row">
+        <Text fontSize="13px">{t("OnlineEditors")}:</Text>
+        <Link
+          color="#2DA7DB"
+          fontSize="13px"
+          fontWeight="600"
+          href={link}
+          target="_blank"
+        >
+          ONLYOFFICE Docs
+        </Link>
+        <Text fontSize="13px" fontWeight="600">
+          v.{versionEditor}
+        </Text>
+      </div>
 
-          <Text className="text_style" fontSize="12px">
-            {t("SourceCode")}:{" "}
-            <Link
-              href="https://github.com/ONLYOFFICE/AppServer"
-              isHovered={true}
-              fontSize="12px"
-              target="_blank"
-            >
-              {gitHub}
-            </Link>
-          </Text>
-        </div>
-      </Style>
+      <div className="row">
+        <Text fontSize="13px">{t("SoftwareLicense")}: </Text>
+        <Text fontSize="13px" fontWeight="600">
+          {license}
+        </Text>
+      </div>
+
+      <Text className="copyright" fontSize="14px" fontWeight="600">
+        © Ascensio System SIA
+      </Text>
+
+      <div className="row">
+        <Text fontSize="13px">{t("AboutCompanyAddressTitle")}:</Text>
+        <Text fontSize="13px">{address}</Text>
+      </div>
+
+      <div className="row">
+        <Text fontSize="13px">{t("AboutCompanyTelTitle")}:</Text>
+        <Text fontSize="13px">{phone}</Text>
+      </div>
+      <div className="row">
+        <Text fontSize="13px">{t("AboutCompanyEmailTitle")}:</Text>
+        <Link
+          color="#2DA7DB"
+          fontSize="13px"
+          fontWeight="600"
+          href={`mailto:${email}`}
+        >
+          {email}
+        </Link>
+      </div>
     </BodyStyle>
   );
 };
 
 const BodyWrapper = inject(({ auth }) => ({
   personal: auth.settingsStore,
-  version: auth.settingsStore.version,
+  versionAppServer: auth.settingsStore.version,
 }))(withTranslation(["About", "Common"])(withLoader(observer(Body))));
 
 const About = (props) => {
