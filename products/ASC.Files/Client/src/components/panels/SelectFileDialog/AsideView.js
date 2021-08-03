@@ -12,6 +12,7 @@ import Heading from "@appserver/components/heading";
 import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 import Loaders from "@appserver/common/components/Loaders";
+import Loader from "@appserver/components/loader";
 const DISPLAY_TYPE = "aside";
 const SelectFileDialogAsideView = ({
   t,
@@ -94,7 +95,7 @@ const SelectFileDialogAsideView = ({
                   dialogWithFiles
                 />
 
-                {selectedFolder && !isLoadingData && (
+                {selectedFolder && !isLoadingData ? (
                   <FilesListBody
                     filesList={filesList}
                     onSelectFile={onSelectFile}
@@ -106,6 +107,13 @@ const SelectFileDialogAsideView = ({
                     loadingText={loadingText}
                     selectedFile={selectedFile}
                   />
+                ) : (
+                  <div key="loader">
+                    <Loader type="oval" size="16px" className="panel-loader" />
+                    <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                      "Common:LoadingDescription"
+                    )}`}</Text>
+                  </div>
                 )}
               </div>
             </div>
