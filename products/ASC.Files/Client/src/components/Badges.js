@@ -49,7 +49,7 @@ const Badges = ({
       {canWebEdit &&
         !isEditing &&
         !isTrashFolder &&
-        isPrivacy &&
+        !isPrivacy &&
         accessToEdit &&
         showEditBadge &&
         !canConvert && (
