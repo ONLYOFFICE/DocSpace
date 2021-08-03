@@ -46,9 +46,6 @@ namespace ASC.Core.Common.EF
             .AddDbGroup()
             .AddUserGroup()
             .AddSubscription();
-            modelBuilder.Entity<User>().ToTable("core_user", t => t.ExcludeFromMigrations());
-            modelBuilder.Entity<UserSecurity>().ToTable("core_usersecurity", t => t.ExcludeFromMigrations());
-            modelBuilder.Entity<UserGroup>().ToTable("core_usergroup", t => t.ExcludeFromMigrations());
         }
     }
 

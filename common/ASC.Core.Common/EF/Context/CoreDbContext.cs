@@ -35,7 +35,6 @@ namespace ASC.Core.Common.EF
                   .AddDbQuotaRow()
                   .AddDbQuota()
                   .AddDbTariff();
-            modelBuilder.Entity<Acl>().ToTable("core_acl", t => t.ExcludeFromMigrations());
         }
     }
 }
