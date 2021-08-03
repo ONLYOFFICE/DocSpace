@@ -4,7 +4,8 @@ ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
-NGINX_CONF="/etc/nginx/conf.d"
+NGINX_DIR="/etc/nginx"
+NGINX_CONF="${NGINX_DIR}/conf.d"
 SYSTEMD_DIR="/lib/systemd/system"
 
 MYSQL=""
@@ -167,7 +168,7 @@ install_json() {
 		set_core_machinekey
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
 		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
-		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" >/dev/null 2>&1
+		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
 		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" >/dev/null 2>&1
 		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
 		
@@ -177,6 +178,7 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
+	sed -i "s/Type=.*/Type=simple/" $SYSTEMD_DIR/${PRODUCT}-calendar.service >/dev/null 2>&1 #Fix non-start of service
 	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
@@ -186,8 +188,8 @@ restart_services() {
 	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
 	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
 	do
-		systemctl enable $SVC.service  >/dev/null 2>&1
-		systemctl restart $SVC.service  >/dev/null 2>&1
+		systemctl enable $SVC.service >/dev/null 2>&1
+		systemctl restart $SVC.service
 	done
 	echo "OK"
 }
@@ -393,8 +395,10 @@ execute_mysql_script(){
 
 setup_nginx(){
 	echo -n "Configuring nginx... "
-
-	mv -f $NGINX_CONF/default.conf $NGINX_CONF/default.conf.old >/dev/null 2>&1
+	
+	# Remove default nginx website
+	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
+	rm -rf /usr/share/nginx/html/*
 
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
 	if [ "$DIST" = "RedHat" ]; then

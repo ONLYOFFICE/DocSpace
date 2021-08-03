@@ -167,7 +167,7 @@ reassign_values (){
 	ssoauth )
 		SERVICE_PORT="9833"
 		WORK_DIR="${BASE_DIR}/services/ASC.SsoAuth.Svc/"
-		EXEC_FILE="ASC.SsoAuth.dll"
+		EXEC_FILE="ASC.SsoAuth.Svc.dll"
 	;;
   esac
   SERVICE_NAME="$1"

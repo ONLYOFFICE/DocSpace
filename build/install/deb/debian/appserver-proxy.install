@@ -1,6 +1,6 @@
 ## COPY PUBLIC ##
-../../../config/nginx/*.conf                    etc/nginx/conf.d
-../../../config/nginx/includes/*.conf           etc/nginx/includes
+../../../config/nginx/onlyoffice*.conf          etc/nginx/conf.d
+../../../config/nginx/includes/onlyoffice*.conf etc/nginx/includes
 ../../../public/*                               var/www/appserver/public
 ../../../public/images/*                        var/www/appserver/public/images
 ../../../public/offline/*                       var/www/appserver/public/offline
