@@ -1,2 +1,7 @@
 src/var/www/services/ASC.Socket.IO/service/*        var/www/appserver/services/ASC.Socket.IO
 src/var/www/services/ASC.Socket.IO.Svc/service/*    var/www/appserver/services/ASC.Socket.IO.Svc
+
+src/var/www/products/ASC.Files/server/ASC.Files*.dll var/www/appserver/products/ASC.Files/server
+src/var/www/products/ASC.People/server/ASC.People.dll var/www/appserver/products/ASC.People/server
+src/var/www/products/ASC.CRM/server/ASC.CRM*.dll var/www/appserver/products/ASC.CRM/server
+src/var/www/products/ASC.Projects/server/ASC.Projects*.dll var/www/appserver/products/ASC.Projects/server
