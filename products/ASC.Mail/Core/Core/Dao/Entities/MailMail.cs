@@ -16,7 +16,7 @@ namespace ASC.Mail.Core.Dao.Entities
 {
     public static class Tables
     {
-        public const string Mail = "mail";
+        public const string Mail = "mail_mail";
         public const string Contact = "contact";
         public const string ContactInfo = "contact_info";
         public const string Tag = "tag";
@@ -129,7 +129,6 @@ namespace ASC.Mail.Core.Dao.Entities
         [NotMapped]
         public bool WithCalendar { get; set; }
 
-        [NotMapped]
         public Document Document { get; set; }
 
         [NotMapped]
@@ -139,11 +138,6 @@ namespace ASC.Mail.Core.Dao.Entities
             get => Tables.Mail;
         }
 
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
-        {
-            get => (a) => new[] { Subject, FromText, ToText, Cc, Bcc, Document.Attachment.Content };
-        }
-
         public override object[] GetKeys()
         {
             return new object[] { Id };
@@ -151,7 +145,7 @@ namespace ASC.Mail.Core.Dao.Entities
 
         public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            throw new NotImplementedException();
+            return (a) => new[] { Subject, FromText, ToText, Cc, Bcc, Document.Attachment.Content };
         }
     }
 
@@ -161,6 +155,8 @@ namespace ASC.Mail.Core.Dao.Entities
         {
             modelBuilder.Entity<MailMail>(entity =>
             {
+                entity.Ignore(r => r.Document);
+
                 entity.HasIndex(e => e.TimeModified)
                     .HasDatabaseName("time_modified");
 

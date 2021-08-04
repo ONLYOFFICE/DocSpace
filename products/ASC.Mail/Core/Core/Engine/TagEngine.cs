@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -41,7 +40,6 @@ using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Web.Core;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using CrmTag = ASC.Mail.Core.Entities.CrmTag;
@@ -523,11 +521,19 @@ namespace ASC.Mail.Core.Engine
 
         private void UpdateIndexerTags(List<int> ids, UpdateAction action, int tagId)
         {
-            var t = ServiceProvider.GetService<MailMail>();
-            if (!FactoryIndexer.Support(t) || !FactoryIndexerCommon.CheckState(false))
-                return;
+            //TODO: because error when query
 
-            if (ids == null || !ids.Any())
+            /*
+             * Type: script_exception Reason: "runtime error" 
+             * CausedBy: "Type: illegal_argument_exception 
+             * Reason: "dynamic method [java.util.HashMap, contains/1] not found""
+             */
+
+            //var t = ServiceProvider.GetService<MailMail>();
+            //if (!FactoryIndexer.Support(t) || !FactoryIndexerCommon.CheckState(false))
+            return;
+
+            /*if (ids == null || !ids.Any())
                 return;
 
             var data = new MailMail
@@ -544,7 +550,7 @@ namespace ASC.Mail.Core.Engine
             Expression<Func<Selector<MailMail>, Selector<MailMail>>> exp =
                 s => s.In(m => m.Id, ids.ToArray());
 
-            IndexEngine.Update(data, exp, action, s => s.Tags.ToList());
+            IndexEngine.Update(data, exp, action, s => s.Tags.ToList());*/
         }
 
         private void UpdateTagsCount(Tag tag)

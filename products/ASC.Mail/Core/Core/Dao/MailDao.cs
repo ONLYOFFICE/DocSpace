@@ -26,7 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
 
 using ASC.Common;
 using ASC.Core;
@@ -34,6 +36,7 @@ using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Engine;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
 
@@ -42,12 +45,15 @@ namespace ASC.Mail.Core.Dao
     [Scope]
     public class MailDao : BaseMailDao, IMailDao
     {
+        private MessageEngine MessageEngine { get; }
         public MailDao(
              TenantManager tenantManager,
              SecurityContext securityContext,
+             MessageEngine messageEngine,
              DbContextManager<MailDbContext> dbContext)
             : base(tenantManager, securityContext, dbContext)
         {
+            MessageEngine = messageEngine;
         }
 
         public int Save(Core.Entities.Mail mail)
@@ -188,6 +194,26 @@ namespace ASC.Mail.Core.Dao
             };
 
             return mail;
+        }
+
+        public string GetDocumentData(MailMail mail)
+        {
+            using (var stream = GetDocumentStream(mail))
+            {
+                if (stream == null) return null;
+
+                using (var sr = new StreamReader(stream))
+                {
+                    var data = sr.ReadToEnd();
+
+                    return HttpUtility.HtmlDecode(data);
+                }
+            }
+        }
+
+        public Stream GetDocumentStream(MailMail mail)
+        {
+            return MessageEngine.GetMessageStream(mail.Id);
         }
     }
 }

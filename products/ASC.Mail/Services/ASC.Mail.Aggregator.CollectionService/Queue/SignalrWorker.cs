@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -21,7 +22,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
     public class SignalrWorker : IDisposable
     {
         private readonly Queue<MailBoxData> _processingQueue;
-        private Thread _worker;
+        private Task _workerTask;
         private volatile bool _workerTerminateSignal;
         private readonly EventWaitHandle _waitHandle;
         private readonly TimeSpan _timeSpan;
@@ -30,6 +31,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         private ILog Log { get; }
         private SignalrServiceClient SignalrServiceClient { get; }
         private IServiceProvider ServiceProvider { get; }
+        private CancellationTokenSource CancellationTokenSource { get; }
 
         public SignalrWorker(
             IOptionsMonitor<ILog> optionsMonitor,
@@ -39,16 +41,17 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             Log = optionsMonitor.Get("ASC.Mail.SignalrWorker");
             SignalrServiceClient = optionsSnapshot.Get("mail");
             ServiceProvider = serviceProvider;
+            CancellationTokenSource = new CancellationTokenSource();
 
             _workerTerminateSignal = false;
             _processingQueue = new Queue<MailBoxData>();
             _waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-            _timeSpan = TimeSpan.FromSeconds(10);
+            _timeSpan = TimeSpan.FromSeconds(15);
 
-            _worker = new Thread(ProcessQueue);
+            _workerTask = new Task(ProcessQueue, CancellationTokenSource.Token);
 
             if (StartImmediately)
-                _worker.Start();
+                _workerTask.Start();
         }
 
         private void ProcessQueue()
@@ -117,12 +120,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             }
         }
 
-        public void Start()
-        {
-            if (!_worker.IsAlive)
-                _worker.Start();
-        }
-
         public void AddMailbox(MailBoxData item)
         {
             lock (_processingQueue)
@@ -135,24 +132,24 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         public void Dispose()
         {
-            if (_worker == null)
+            if (_workerTask == null)
                 return;
 
             _workerTerminateSignal = true;
             _waitHandle.Set();
 
-            if (_worker.IsAlive)
+            if (_workerTask.Status == TaskStatus.Running)
             {
                 Log.Info("Stop SignalrWorker.");
 
-                if (!_worker.Join(_timeSpan))
+                if (!_workerTask.Wait(_timeSpan))
                 {
-                    Log.Info("SignalrWorker busy, aborting the thread.");
-                    _worker.Abort();
+                    Log.Info("SignalrWorker busy, cancellation of the task.");
+                    CancellationTokenSource.Cancel();
                 }
             }
 
-            _worker = null;
+            _workerTask = null;
         }
 
         private void SendUnreadUser(int tenant, string userId)

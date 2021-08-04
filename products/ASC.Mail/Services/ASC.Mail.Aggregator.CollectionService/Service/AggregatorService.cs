@@ -55,7 +55,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         private readonly TaskFactory TaskFactory;
         private readonly TimeSpan TsTaskStateCheckInterval;
         private readonly TimeSpan TaskSecondsLifetime;
-        private readonly CancellationTokenSource CancelTokenSource;
 
         private bool IsFirstTime = true;
         private Timer WorkTimer;
@@ -111,8 +110,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             TaskSecondsLifetime = MailSettings.TaskLifetime;
 
             TaskFactory = new TaskFactory();
-
-            CancelTokenSource = new CancellationTokenSource();
 
             if (MailSettings.EnableSignalr) SignalrWorker = signalrWorker;
 
