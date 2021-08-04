@@ -3,6 +3,7 @@
   "FileName": "Имя файла",
   "FolderForSave": "Папка для сохранения",
   "OpenSavedDocument": "Открыть сохраненный документ в новой вкладке",
-  "FileType": "Выбрать файлы типа: изображения",
+  "ImageFileType": "Выбрать файлы типа: изображения",
+  "MailMergeFileType": "Выбрать файлы в формате XLSX",
   "SelectFileTitle": "Выбрать источник данных"
 }

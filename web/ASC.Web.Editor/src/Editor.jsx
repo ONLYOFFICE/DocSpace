@@ -57,6 +57,8 @@ let documentIsReady = false;
 const text = "text";
 const spreadSheet = "spreadsheet";
 const presentation = "presentation";
+const insertImageAction = "imageType";
+const mailMergeAction = "mailMergeType";
 
 let docTitle = null;
 let fileType = null;
@@ -111,6 +113,12 @@ const Editor = () => {
       c: "add",
       fileType: "png",
       url: "",
+    });
+  };
+  const mailMerge = (file) => {
+    docEditor.setMailMergeRecipients({
+      fileType: "xlsx",
+      url: "https://example.com/url-to-example-recipients.xlsx",
     });
   };
   const updateFavorite = (favorite) => {
@@ -394,7 +402,8 @@ const Editor = () => {
         onRequestRename,
         onRequestCreateNew,
         onRequestSaveAs,
-        onRequestInsertImage;
+        onRequestInsertImage,
+        onRequestMailMergeRecipients;
 
       if (
         fileInfo &&
@@ -409,6 +418,7 @@ const Editor = () => {
         onRequestCreateNew = onSDKRequestCreateNew;
         onRequestSaveAs = onSDKRequestSaveAs;
         onRequestInsertImage = onSDKRequestInsertImage;
+        onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
       }
 
       const events = {
@@ -425,6 +435,7 @@ const Editor = () => {
           onRequestCreateNew,
           onRequestInsertImage,
           onRequestSaveAs,
+          onRequestMailMergeRecipients,
         },
       };
 
@@ -452,6 +463,7 @@ const Editor = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isFileDialogVisible, setIsFileDialogVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
+  const [filesType, setFilesType] = useState(""); 
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
@@ -538,13 +550,19 @@ const Editor = () => {
   };
 
   const onSDKRequestInsertImage = (event) => {
+    setFilesType(insertImageAction);
     setIsFileDialogVisible(true);
-    console.log("e", event.data.c);
+  };
+
+  const onSDKRequestMailMergeRecipients = (event) => {
+    setFilesType(mailMergeAction);
+    setIsFileDialogVisible(true);
   };
 
   const onSelectFile = (file) => {
     console.log("onSelectFile", file);
-    insertImage(file);
+    if (filesType === insertImageAction) insertImage(file);
+    if (filesType === mailMergeAction) mailMerge(file);
   };
 
   const onCloseFileDialog = () => {
@@ -584,9 +602,28 @@ const Editor = () => {
   const onChangeInput = (e) => {
     setTitleSelectorFolder(e.target.value);
   };
+
   const onClickCheckbox = () => {
     setNewOpenTab(!openNewTab);
   };
+
+  const insertImageActionProps = {
+    isImageOnly: true,
+  };
+
+  const mailMergeActionProps = {
+    isTablesOnly: true,
+    searchParam: "xlsx",
+  };
+
+  const SelectFileHeader = () => (
+    <Text>
+      {filesType === insertImageAction
+        ? i18n.t("ImageFileType")
+        : i18n.t("MailMergeFileType")}
+    </Text>
+  );
+
   return (
     <Box
       widthProp="100vw"
@@ -612,8 +649,10 @@ const Editor = () => {
               isPanelVisible={isFileDialogVisible}
               onClose={onCloseFileDialog}
               foldersType="editor"
-              isImageOnly
-              header={<Text>{i18n.t("FileType")}</Text>}
+              {...(filesType === insertImageAction
+                ? insertImageActionProps
+                : mailMergeActionProps)}
+              header={<SelectFileHeader />}
               headerName={i18n.t("SelectFileTitle")}
               modalHeightContent="252px"
             />
@@ -624,7 +663,6 @@ const Editor = () => {
               showButtons
               isPanelVisible={isFolderDialogVisible}
               isSetFolderImmediately
-              //id={`${fileInfo.folderId}`}
               asideHeightContent="calc(100% - 50px)"
               onClose={onCloseFolderDialog}
               foldersType="editor"
