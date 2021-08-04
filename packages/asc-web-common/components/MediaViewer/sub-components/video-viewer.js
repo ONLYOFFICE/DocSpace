@@ -243,6 +243,14 @@ class VideoViewer extends Component {
     loop: false,
   };
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeydown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeydown, false);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     let newUrl = prevState.url;
     let newPlaying = prevState.playing;
@@ -262,6 +270,10 @@ class VideoViewer extends Component {
       });
     }
   }
+
+  onKeydown = (e) => {
+    if (e.keyCode === 32) this.handlePlayPause();
+  };
 
   handlePlayPause = () => {
     this.setState({ playing: !this.state.playing });
