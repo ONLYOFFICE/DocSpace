@@ -30,6 +30,7 @@ const ButtonKeys = Object.freeze({
   esc: 27,
   ctr: 17,
   one: 49,
+  del: 46,
 });
 
 const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
@@ -359,6 +360,10 @@ class MediaViewer extends React.Component {
             document.getElementsByClassName("iconContainer reset").length > 0 &&
             document.getElementsByClassName("iconContainer reset")[0].click();
           break;
+        case ButtonKeys.del:
+          this.onDelete();
+          break;
+
         default:
           break;
       }
