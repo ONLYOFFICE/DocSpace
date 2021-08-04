@@ -590,6 +590,7 @@ const StyledSelectFilePanel = styled.div`
   .select-folder-dialog_aside-body_wrapper {
     width: 320px;
     padding: 0 16px;
+    box-sizing: border-box;
   }
   .select-folder-dialog_aside-body_wrapper {
     height: 100%;
@@ -667,7 +668,11 @@ const StyledSelectFilePanel = styled.div`
     width: 100%;
   }
   .select-file-dialog-buttons-save {
-    margin: 0 8px;
+    margin-right: 8px;
+    margin-left: 16px;
+  }
+  .select-file-modal-dialog-buttons-save {
+    margin-right: 8px;
   }
   .select-folder-dialog-buttons-save {
     margin-right: 8px;

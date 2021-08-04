@@ -45,7 +45,7 @@ import {
 } from "files/utils";
 import SelectFileDialog from "files/SelectFileDialog";
 import SelectFolderDialog from "files/SelectFolderDialog";
-import { StyledSelectorFolder } from "./StyledEditor";
+import { StyledSelectFolder, StyledSelectFile } from "./StyledEditor";
 import i18n from "./i18n";
 import { FolderType } from "@appserver/common/constants";
 import Text from "@appserver/components/text";
@@ -463,7 +463,7 @@ const Editor = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isFileDialogVisible, setIsFileDialogVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
-  const [filesType, setFilesType] = useState(""); 
+  const [filesType, setFilesType] = useState("");
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
@@ -617,11 +617,13 @@ const Editor = () => {
   };
 
   const SelectFileHeader = () => (
-    <Text>
-      {filesType === insertImageAction
-        ? i18n.t("ImageFileType")
-        : i18n.t("MailMergeFileType")}
-    </Text>
+    <StyledSelectFile>
+      <Text className="editor-select-file_text">
+        {filesType === insertImageAction
+          ? i18n.t("ImageFileType")
+          : i18n.t("MailMergeFileType")}
+      </Text>
+    </StyledSelectFile>
   );
 
   return (
@@ -668,26 +670,29 @@ const Editor = () => {
               foldersType="editor"
               onSave={onClickSaveSelectFolder}
               header={
-                <StyledSelectorFolder>
-                  <Text className="editor-selector-folder_text">
+                <StyledSelectFolder>
+                  <Text className="editor-select-folder_text">
                     {i18n.t("FileName")}
                   </Text>
                   <TextInput
-                    className="editor-selector-folder_text-input"
+                    className="editor-select-folder_text-input"
                     scale
                     onChange={onChangeInput}
                     value={titleSelectorFolder}
                   />
-                </StyledSelectorFolder>
+                </StyledSelectFolder>
               }
               headerName={i18n.t("FolderForSave")}
               {...(extension !== "fb2" && {
                 footer: (
-                  <Checkbox
-                    label={i18n.t("OpenSavedDocument")}
-                    onChange={onClickCheckbox}
-                    isChecked={openNewTab}
-                  />
+                  <StyledSelectFolder>
+                    <Checkbox
+                      className="editor-select-folder_checkbox"
+                      label={i18n.t("OpenSavedDocument")}
+                      onChange={onClickCheckbox}
+                      isChecked={openNewTab}
+                    />
+                  </StyledSelectFolder>
                 ),
               })}
             />

@@ -193,7 +193,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                         selectedFolder={selectedFolder}
                         loadingText={loadingText}
                         selectedFile={selectedFile}
-                        listHeight={isHeaderChildren ? 280 : 300}
+                        listHeight={isHeaderChildren ? 280 : 310}
                       />
                     )}
                   </div>
@@ -215,7 +215,7 @@ class SelectFileDialogModalViewBody extends React.Component {
             <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
               <div className="select-file-dialog-modal_buttons">
                 <Button
-                  className="select-file-dialog-buttons-save"
+                  className="select-file-modal-dialog-buttons-save"
                   primary
                   size="medium"
                   label={t("Common:SaveButton")}
