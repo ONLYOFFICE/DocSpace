@@ -87,12 +87,13 @@ namespace ASC.Projects
                 Available = available
             };
         }
-        protected string GetImageBase64Content(string path)
+        protected string GetImageBase64Content(string path)//todo
         {
-            path = "/skins/default/images/svg/projects/" + path;
+            return path;
+           /* path = "/skins/default/images/svg/projects/" + path;
             var serverPath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, path);
             if (string.IsNullOrEmpty(serverPath)) return "";
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(File.ReadAllText(serverPath)));
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(File.ReadAllText(serverPath)));*/
         }
 
     }

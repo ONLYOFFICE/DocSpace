@@ -31,6 +31,18 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbParticipant>(entity =>
             {
+                entity
+               .HasKey(e => e.ProjectId)
+               .HasName("PRIMARY");
+
+                entity
+               .HasKey(e => e.ParticipantId)
+               .HasName("PRIMARY");
+
+                entity
+               .HasKey(e => e.Tenant)
+               .HasName("PRIMARY");
+
                 entity.ToTable("projects_project_participant");
 
                 entity

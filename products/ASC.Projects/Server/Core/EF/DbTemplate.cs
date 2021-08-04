@@ -32,6 +32,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbTemplate>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                      .HasName("PRIMARY");
+
                 entity.ToTable("projects_templates");
 
                 entity

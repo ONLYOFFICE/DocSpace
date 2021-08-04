@@ -26,6 +26,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbCrmToProject>(entity =>
             {
+                entity.HasKey(e => new { e.ProjectId, e.ContactId, e.TenantId })
+                    .HasName("PRIMARY");
+
                 entity.ToTable("crm_projects");
 
                 entity

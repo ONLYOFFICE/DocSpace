@@ -48,6 +48,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbMessage>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                    .HasName("PRIMARY");
+
                 entity.ToTable("projects_messages");
 
                 entity.Property(e => e.Id)

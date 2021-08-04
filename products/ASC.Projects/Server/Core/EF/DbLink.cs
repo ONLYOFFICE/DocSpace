@@ -27,6 +27,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbLink>(entity =>
             {
+                entity.HasKey(e => new { e.TaskId, e.ParentId, e.TenantId })
+                    .HasName("PRIMARY");
+
                 entity.ToTable("projects_tasks_links");
 
                 entity

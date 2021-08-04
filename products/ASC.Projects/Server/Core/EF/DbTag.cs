@@ -31,6 +31,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbTag>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                       .HasName("PRIMARY");
+
                 entity.ToTable("projects_tags");
 
                 entity.Property(e => e.Id)

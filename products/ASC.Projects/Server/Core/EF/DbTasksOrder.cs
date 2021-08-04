@@ -26,6 +26,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbTasksOrder>(entity =>
             {
+                entity.HasKey(e => new { e.TenantId, e.ProjectId })
+                    .HasName("PRIMARY");
+
                 entity.ToTable("projects_tasks_order");
 
                 entity

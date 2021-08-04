@@ -25,6 +25,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbFollowingProject>(entity =>
             {
+                entity.HasKey(e => new { e.ProjectId, e.ParticipantId })
+                    .HasName("PRIMARY");
+
                 entity.ToTable("projects_following_project_participant");
 
                 entity

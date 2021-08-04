@@ -46,6 +46,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbComment>(entity =>
             {
+                entity.HasKey(e => new { e.CommentId, e.Id })
+                    .HasName("PRIMARY");
+
                 entity.ToTable("projects_comments");
 
                 entity

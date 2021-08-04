@@ -8,7 +8,7 @@ namespace ASC.Projects.EF
 {
     public class DbTagToProject
     {
-        public int? TagId { get; set; }
+        public int TagId { get; set; }
         public int ProjectId { get; set; }
     }
 
@@ -25,6 +25,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbTagToProject>(entity =>
             {
+                entity.HasKey(e => new { e.TagId, e.ProjectId})
+                    .HasName("PRIMARY");
+
                 entity.ToTable("projects_project_tag");
 
                 entity

@@ -668,7 +668,7 @@ namespace ASC.Projects.Engine
             return timeSpend != null && Common.Can() && Common.IsProjectManager(timeSpend.Task.Project);
         }
     }
-    [Scope]
+    [Scope(Additional = typeof(ProjectSecurityExtension))]
     public class ProjectSecurity
     {
         private IServiceProvider ServiceProvider { get; set; }
@@ -676,7 +676,7 @@ namespace ASC.Projects.Engine
         public ProjectSecurity(IServiceProvider serviceProvider, SecurityContext securityContext)
         {
             ServiceProvider = serviceProvider;
-            SecurityContext = SecurityContext;
+            SecurityContext = securityContext;
         }
 
         public bool CanCreate<T>(Project project) where T : DomainObject<int>
@@ -1016,7 +1016,24 @@ namespace ASC.Projects.Engine
         {
             throw new System.Security.SecurityException("A guest cannot be appointed as responsible.");
         }
+    }
 
+    public class ProjectSecurityExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<ProjectSecurityTemplate<Project>>();
+            services.TryAdd<ProjectSecurityTemplate<Task>>();
+            services.TryAdd<ProjectSecurityTemplate<Milestone>>();
+            services.TryAdd<ProjectSecurityTemplate<Message>>();
+            services.TryAdd<ProjectSecurityTemplate<TimeSpend>>();
 
+            services.TryAdd<ProjectSecurityProject>();
+            services.TryAdd<ProjectSecurityMilestone>();
+            services.TryAdd<ProjectSecurityMessage>();
+            services.TryAdd<ProjectSecurityTask>();
+            services.TryAdd<ProjectSecurityTimeTracking>();
+            services.TryAdd<ProjectSecurityCommon>();
+        }
     }
 }

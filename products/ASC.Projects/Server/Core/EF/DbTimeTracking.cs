@@ -36,6 +36,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbTimeTracking>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                      .HasName("PRIMARY");
+
                 entity.ToTable("projects_time_tracking");
 
                 entity

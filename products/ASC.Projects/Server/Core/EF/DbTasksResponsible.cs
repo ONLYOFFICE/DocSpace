@@ -26,6 +26,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbTasksResponsible>(entity =>
             {
+                entity.HasKey(e => new { e.ResponsibleId, e.TaskId, e.TenantId })
+                    .HasName("PRIMARY");
+
                 entity.ToTable("projects_tasks_responsible");
 
                 entity

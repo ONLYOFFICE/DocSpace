@@ -55,12 +55,12 @@ namespace ASC.Projects
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             var globalFolderHelper = serviceProvider.GetService<GlobalFolderHelper>();
-            FolderMy = globalFolderHelper.FolderMy;
             return new ProjectsCommonSettings
             {
                 EverebodyCanCreate = false,
                 StartModuleType = StartModuleType.Tasks,
-                HideEntitiesInPausedProjects = true
+                HideEntitiesInPausedProjects = true,
+                FolderMy = globalFolderHelper.FolderMy
             };
         }
     }

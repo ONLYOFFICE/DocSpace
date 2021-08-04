@@ -33,6 +33,7 @@ using ASC.Projects.Classes;
 using ASC.Projects.Core.Domain.Reports;
 using ASC.Projects.Engine;
 using ASC.Projects.Model;
+using ASC.Projects.Model.Settings;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
@@ -51,43 +52,40 @@ namespace ASC.Api.Projects
         }
 
         [Update(@"settings")]
-        public ProjectsCommonSettings UpdateSettings(bool? everebodyCanCreate,
-            bool? hideEntitiesInPausedProjects,
-            StartModuleType? startModule,
-            object folderId)
+        public ProjectsCommonSettings UpdateSettings(ModelUpdateSettings model)
         {
-            if (everebodyCanCreate.HasValue || hideEntitiesInPausedProjects.HasValue)
+            if (model.EverebodyCanCreate.HasValue || model.HideEntitiesInPausedProjects.HasValue)
             {
                 if (!ProjectSecurity.CurrentUserAdministrator) ProjectSecurity.CreateSecurityException();
 
                 var settings = SettingsManager.Load<ProjectsCommonSettings>();
 
-                if (everebodyCanCreate.HasValue)
+                if (model.EverebodyCanCreate.HasValue)
                 {
-                    settings.EverebodyCanCreate = everebodyCanCreate.Value;
+                    settings.EverebodyCanCreate = model.EverebodyCanCreate.Value;
                 }
 
-                if (hideEntitiesInPausedProjects.HasValue)
+                if (model.HideEntitiesInPausedProjects.HasValue)
                 {
-                    settings.HideEntitiesInPausedProjects = hideEntitiesInPausedProjects.Value;
+                    settings.HideEntitiesInPausedProjects = model.HideEntitiesInPausedProjects.Value;
                 }
 
                 SettingsManager.Save(settings);
                 return settings;
             }
 
-            if (startModule.HasValue || folderId != null)
+            if (model.StartModule.HasValue || model.FolderId != null)
             {
                 if (!ProjectSecurity.IsProjectsEnabled(SecurityContext.CurrentAccount.ID)) ProjectSecurity.CreateSecurityException();
                 var settings = SettingsManager.LoadForCurrentUser<ProjectsCommonSettings>();
-                if (startModule.HasValue)
+                if (model.StartModule.HasValue)
                 {
-                    settings.StartModuleType = startModule.Value;
+                    settings.StartModuleType = model.StartModule.Value;
                 }
 
-                if (folderId != null)
+                if (model.FolderId != null)
                 {
-                    settings.FolderId = folderId;
+                    settings.FolderId = model.FolderId;
                 }
                 SettingsManager.SaveForCurrentUser(settings);
                 return settings;
@@ -113,29 +111,29 @@ namespace ASC.Api.Projects
 
 
         [Create(@"status")]
-        public CustomTaskStatus CreateStatus(CustomTaskStatus status)
+        public CustomTaskStatus CreateStatus(ModelCreateStatus model)
         {
-            return EngineFactory.GetStatusEngine().Create(status);
+            return EngineFactory.GetStatusEngine().Create(model.Status);
         }
 
         [Update(@"status")]
-        public CustomTaskStatus UpdateStatus(CustomTaskStatus newStatus)
+        public CustomTaskStatus UpdateStatus(ModelUpdateStatus model)
         {
-            if (newStatus.IsDefault && !EngineFactory.GetStatusEngine().Get().Any(r => r.IsDefault && r.StatusType == newStatus.StatusType))
+            if (model.NewStatus.IsDefault && !EngineFactory.GetStatusEngine().Get().Any(r => r.IsDefault && r.StatusType == model.NewStatus.StatusType))
             {
-                return CreateStatus(newStatus);
+                return EngineFactory.GetStatusEngine().Create(model.NewStatus);
             }
 
-            var status = EngineFactory.GetStatusEngine().Get().FirstOrDefault(r => r.Id == newStatus.Id).NotFoundIfNull();
+            var status = EngineFactory.GetStatusEngine().Get().FirstOrDefault(r => r.Id == model.NewStatus.Id).NotFoundIfNull();
 
-            status.Title = Update.IfNotEmptyAndNotEquals(status.Title, newStatus.Title);
-            status.Description = Update.IfNotEmptyAndNotEquals(status.Description, newStatus.Description);
-            status.Color = Update.IfNotEmptyAndNotEquals(status.Color, newStatus.Color);
-            status.Image = Update.IfNotEmptyAndNotEquals(status.Image, newStatus.Image);
-            status.ImageType = Update.IfNotEmptyAndNotEquals(status.ImageType, newStatus.ImageType);
-            status.Order = Update.IfNotEmptyAndNotEquals(status.Order, newStatus.Order);
-            status.StatusType = Update.IfNotEmptyAndNotEquals(status.StatusType, newStatus.StatusType);
-            status.Available = Update.IfNotEmptyAndNotEquals(status.Available, newStatus.Available);
+            status.Title = Update.IfNotEmptyAndNotEquals(status.Title, model.NewStatus.Title);
+            status.Description = Update.IfNotEmptyAndNotEquals(status.Description, model.NewStatus.Description);
+            status.Color = Update.IfNotEmptyAndNotEquals(status.Color, model.NewStatus.Color);
+            status.Image = Update.IfNotEmptyAndNotEquals(status.Image, model.NewStatus.Image);
+            status.ImageType = Update.IfNotEmptyAndNotEquals(status.ImageType, model.NewStatus.ImageType);
+            status.Order = Update.IfNotEmptyAndNotEquals(status.Order, model.NewStatus.Order);
+            status.StatusType = Update.IfNotEmptyAndNotEquals(status.StatusType, model.NewStatus.StatusType);
+            status.Available = Update.IfNotEmptyAndNotEquals(status.Available, model.NewStatus.Available);
 
             EngineFactory.GetStatusEngine().Update(status);
 
@@ -143,14 +141,14 @@ namespace ASC.Api.Projects
         }
 
         [Update(@"statuses")]
-        public List<CustomTaskStatus> UpdateStatuses(List<CustomTaskStatus> statuses)
+        public List<CustomTaskStatus> UpdateStatuses(ModelUpdateStatuses model)
         {
-            foreach (var status in statuses)
+            foreach (var status in model.Statuses)
             {
-                UpdateStatus(status);
+                UpdateStatus(new ModelUpdateStatus() { NewStatus = status});
             }
 
-            return statuses;
+            return model.Statuses;
         }
 
         [Read(@"status")]

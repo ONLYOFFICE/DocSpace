@@ -49,6 +49,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbMilestone>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                    .HasName("PRIMARY");
+
                 entity.ToTable("projects_milestones");
 
                 entity.Property(e => e.Id)

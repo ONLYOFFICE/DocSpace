@@ -91,7 +91,8 @@ namespace ASC.Projects.Data.DAO
                 Color = status.Color,
                 Order = status.Order,
                 IsDefault = Convert.ToInt32(status.IsDefault),
-                Available = Convert.ToInt32(status.Available.GetValueOrDefault())
+                Available = Convert.ToInt32(status.Available.GetValueOrDefault()),
+                TenantId = Tenant
             };
             WebProjectsContext.Status.Add(dbStatus);
             WebProjectsContext.SaveChanges();
@@ -112,7 +113,8 @@ namespace ASC.Projects.Data.DAO
                 Color = status.Color,
                 Order = status.Order,
                 IsDefault = Convert.ToInt32(status.IsDefault),
-                Available = Convert.ToInt32(status.Available.GetValueOrDefault())
+                Available = Convert.ToInt32(status.Available.GetValueOrDefault()),
+                TenantId = Tenant
             };
             WebProjectsContext.Status.Update(dbStatus);
             WebProjectsContext.SaveChanges();

@@ -35,6 +35,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbStatus>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                       .HasName("PRIMARY");
+
                 entity.ToTable("projects_status");
 
                 entity

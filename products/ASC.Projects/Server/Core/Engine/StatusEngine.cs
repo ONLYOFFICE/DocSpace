@@ -35,6 +35,7 @@ namespace ASC.Projects.Engine
         {
             ProjectSecurity = projectSecurity;
             CustomStatusHelper = customStatusHelper;
+            DaoFactory = daoFactory;
         }
 
         public CustomTaskStatus Create(CustomTaskStatus status)

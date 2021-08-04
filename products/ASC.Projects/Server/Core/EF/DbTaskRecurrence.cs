@@ -30,6 +30,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbTaskRecurrence>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                       .HasName("PRIMARY");
+
                 entity.ToTable("projects_tasks_recurrence");
 
                 entity

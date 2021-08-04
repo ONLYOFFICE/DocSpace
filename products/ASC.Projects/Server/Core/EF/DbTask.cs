@@ -53,6 +53,9 @@ namespace ASC.Projects.EF
         {
             modelBuilder.Entity<DbTask>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                       .HasName("PRIMARY");
+
                 entity.ToTable("projects_tasks");
 
                 entity.Property(e => e.Id)

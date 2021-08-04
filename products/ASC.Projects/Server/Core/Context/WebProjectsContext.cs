@@ -56,7 +56,9 @@ namespace ASC.Core.Common.EF.Context
             .AddStatus()
             .AddTemplate()
             .AddLink()
-            .AddTaskRecurrence();
+            .AddTaskRecurrence()
+            .AddUserSecurity()
+            .AddTagToProject();
         }
     }
 
