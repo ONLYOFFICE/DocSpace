@@ -398,7 +398,6 @@ setup_nginx(){
 	
 	# Remove default nginx website
 	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
-	rm -rf /usr/share/nginx/html/*
 
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
 	if [ "$DIST" = "RedHat" ]; then
@@ -580,6 +579,7 @@ elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
 	PACKAGE_MANAGER="dpkg -l"
 	mkdir -p /var/log/onlyoffice/appserver/
+	mkdir -p /etc/onlyoffice/appserver/.private/
 	chown -R onlyoffice:onlyoffice /var/www/appserver/
 	chown -R onlyoffice:onlyoffice /var/log/onlyoffice/appserver/
 	chown -R onlyoffice:onlyoffice /etc/onlyoffice/appserver/
