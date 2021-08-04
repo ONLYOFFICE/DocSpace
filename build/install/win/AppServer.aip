@@ -491,7 +491,7 @@
     <ROW Action="AI_TxtUpdaterInstall" Sequence="5101"/>
     <ROW Action="ExecuteScriptCode" Condition="( NOT Installed )" Sequence="3602"/>
     <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="3601"/>
-    <ROW Action="SetProperty" Sequence="201"/>
+    <ROW Action="SetProperty" Sequence="1601"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
@@ -685,8 +685,8 @@
     <ROW Name="ReplaceElasticHost" TxtUpdateSet="YourFile.txt" FindPattern=".Host.:.*" ReplacePattern="&quot;Host&quot;: &quot;localhost&quot;," Options="3" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
-    <ROW Key="YourFile.txt" Component="OnlyofficeWebStudio.exe" FileName="elastic.json" Directory="config_Dir" Options="25"/>
-    <ROW Key="appsettings.test.json" Component="OnlyofficeWebStudio.exe" FileName="*.json" Directory="config_Dir" Options="25"/>
+    <ROW Key="YourFile.txt" Component="appsettings.test.json" FileName="elastic.json" Directory="config_Dir" Options="25"/>
+    <ROW Key="appsettings.test.json" Component="AI_ExePath" FileName="*.json" Directory="config_Dir" Options="25"/>
     <ROW Key="xml" Component="OnlyofficeWebStudio.exe" FileName="*.xml" Directory="tools_Dir" Options="25"/>
   </COMPONENT>
 </DOCUMENT>
