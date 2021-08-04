@@ -134,6 +134,13 @@ services:
       target: studio
     image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
 
+  onlyoffice-ssoauth:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: ssoauth
+    image: "${REPO}/${STATUS}appserver-ssoauth:${SRV_VERSION}"
+
   onlyoffice-bin-share:
     build:
       context: ./
