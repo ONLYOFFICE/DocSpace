@@ -140,62 +140,44 @@ namespace ASC.Mail.ImapSync
 
             await LoadFoldersFromIMAP();
 
-            await TryChangeFolder(imap.Inbox);
-
             if(ClientIsReady!=null) ClientIsReady(this, EventArgs.Empty);
-
-
         }
 
-        public bool TrySendToIMAP(CashedMailUserAction actionToIMAP)
+        public Task ChangeFolder(IMailFolder newWorkFolder)
         {
-            actionsToImap.Enqueue(actionToIMAP);
+            var result = new Task(async () => {
+                try
+                {
+                    if (WorkFolder != null)
+                    {
+                        WorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
+                        WorkFolder.CountChanged -= ImapFolderCountChanged;
+                    }
 
-            return true;
-        }
+                    WorkFolder = newWorkFolder;
 
-        public Task<List<IMessageSummary>> ChangeFolder(IMailFolder newWorkFolder)
-        {
-            var result = new Task(async ()=>
-            {
-                await TryChangeFolder(newWorkFolder);
+                    OpenFolder(WorkFolder);
+
+                    WorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
+                    WorkFolder.CountChanged += ImapFolderCountChanged;
+
+                    MessagesList = WorkFolder.Fetch(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags).ToList();
+                }
+                catch (Exception ex)
+                {
+                    _log.Error($"ChangeFolder: {ex.Message}");
+                }
             });
 
-            syncTasks.GetOrAdd(ClientState.ChangeFolder, result);
+            var actualTask = syncTasks.GetOrAdd(ClientState.ChangeFolder, result);
 
-            DoneToken?.Cancel();
-
-            return result.ContinueWith(x=> { return MessagesList; });
+            return result.ContinueWith(x=>
+            {
+                return x;
+            }
+            );
         }
 
-
-        private async Task TryChangeFolder(IMailFolder newWorkFolder)
-        {
-            if (WorkFolder == newWorkFolder) return;
-
-            WorkFolder = newWorkFolder;
-
-            WorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
-
-            WorkFolder.CountChanged -= ImapFolderCountChanged;
-
-            try
-            {
-                await WorkFolder.OpenAsync(FolderAccess.ReadWrite);
-
-                WorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
-
-                WorkFolder.CountChanged += ImapFolderCountChanged;
-
-                MessagesList = (await WorkFolder.FetchAsync(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags)).ToList();
-            }
-            catch(Exception ex)
-            {
-                _log.Error($"TryChangeFolder: {ex.Message}");
-
-                MessagesList = new List<IMessageSummary>();
-            }
-        }
 
         private void Imap_Disconnected(object sender, DisconnectedEventArgs e)
         {
@@ -347,21 +329,24 @@ namespace ASC.Mail.ImapSync
             return new List<IMailFolder>();
         }
 
-        private Task OpenFolder(IMailFolder imapFolder)
+        private void OpenFolder(IMailFolder imapFolder)
         {
-            if (imapFolder.IsOpen)
+            if (!imapFolder.IsOpen)
             {
-                return Task.CompletedTask;
-            }
-            else
-            {
-                return imapFolder.OpenAsync(FolderAccess.ReadWrite);
+                try
+                {
+                    imapFolder.Open(FolderAccess.ReadWrite);
+                }
+                catch(Exception ex)
+                {
+                    _log.Error($"OpenFolder {imapFolder.Name}: {ex.Message}");
+                }
             }
         }
 
         private async Task UpdateMessagesList()
         {
-            await OpenFolder(WorkFolder);
+            OpenFolder(WorkFolder);
 
             var newMessagesList = (await WorkFolder.FetchAsync(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags)).ToList();
 
@@ -395,9 +380,11 @@ namespace ASC.Mail.ImapSync
 
         private async Task SetIdle()
         {
+            if (WorkFolder == null) return;
+
             try
             {
-                await OpenFolder(WorkFolder);
+                OpenFolder(WorkFolder);
 
                 if (imap.Capabilities.HasFlag(ImapCapabilities.Idle))
                 {
@@ -499,7 +486,7 @@ namespace ASC.Mail.ImapSync
             return true;
         }
 
-        public async Task TrySetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, ImapAction.Action action)
+        public void TrySetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, ImapAction.Action action)
         {
             var result = new Task(async() =>
             {
@@ -516,7 +503,7 @@ namespace ASC.Mail.ImapSync
  
             try
             {
-                await OpenFolder(folder);
+                OpenFolder(folder);
 
                 switch (action)
                 {
@@ -549,28 +536,32 @@ namespace ASC.Mail.ImapSync
 
         private async Task TaskManager(Task previosTask)
         {
+
             if(previosTask.Exception!=null)
             {
                 _log.Error($"Task manager: {previosTask.Exception.Message}");
             }
 
-            if(asyncTasks.Any())
+            if(asyncTasks.TryDequeue(out var task))
             {
-                while(asyncTasks.TryDequeue(out var task))
-                {
-                    await task;
-                }
+                curentTask = task;
+                curentTask.Start();
+                curentTask.ContinueWith(TaskManager);
+
+                return;
             }
 
             if (syncTasks.Any())
             {
-                var works = syncTasks.Keys.ToList();
+                var work = syncTasks.Keys.First();
 
-                foreach(var work in works)
+                if(syncTasks.TryRemove(work, out Task atask))
                 {
-                    syncTasks.TryRemove(work, out Task task);
+                    curentTask = atask;
+                    curentTask.Start();
+                    curentTask.ContinueWith(TaskManager);
 
-                    await task;
+                    return;
                 }
             }
 

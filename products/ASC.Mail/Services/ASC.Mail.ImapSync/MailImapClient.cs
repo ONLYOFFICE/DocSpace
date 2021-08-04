@@ -103,7 +103,7 @@ namespace ASC.Mail.ImapSync
 
                     if (actionFromCache == null) break;
 
-                    imapClient.TrySendToIMAP(actionFromCache);
+                    imapClient.TrySetFlagsInImap( );
                 }
             }
             catch (Exception ex)
@@ -113,15 +113,13 @@ namespace ASC.Mail.ImapSync
 
             _log.Debug($"ProcessActionFromRedis end. {iterationCount} keys readed.");
 
-            var folderKeyValue = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity);
+            var activityUserFolder = foldersDictionary.Values.FirstOrDefault(x=>x.Folder==(FolderType)folderActivity);
 
-            if (folderKeyValue.Key != null && imapClient.WorkFolder != folderKeyValue.Key)
+            if (activityUserFolder!=workFolder)
             {
-                await imapClient.ChangeFolder(folderKeyValue.Key);
+                await ChangeFolder(activityUserFolder);
 
-
-
-                _log.Debug($"CheckRedis. WorkFolder change to {imapClient.WorkFolder.FullName} Count={imapClient.WorkFolder.Count}.");
+                _log.Debug($"CheckRedis. WorkFolder change to {activityUserFolder}.");
             }
         }
 
@@ -299,21 +297,25 @@ namespace ASC.Mail.ImapSync
         {
             if (workFolder == newFolder) return;
 
+            workFolder = newFolder;
+
             try
             {
-                var newImapFolder = foldersDictionary.FirstOrDefault(x => x.Value.Folder == newFolder.Folder).Key;
+                var newImapFolder = foldersDictionary.FirstOrDefault(x => x.Value.Folder == workFolder.Folder).Key;
 
                 if (newImapFolder == null) return;
 
                 var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
                     .SetMailboxId(Account.MailBoxId)
-                    .SetFolder((int)newFolder.Folder);
+                    .SetFolder((int)workFolder.Folder);
 
                 workFolderMails=_mailInfoDao.GetMailInfoList(exp.Build()).ToList();
 
-                var imapFolderMails=await imapClient.ChangeFolder(newImapFolder);
+                Task t= imapClient.ChangeFolder(newImapFolder);
 
-                UpdateDbFolder(imapFolderMails);
+                await t;
+
+                UpdateDbFolder(imapClient.MessagesList);
             }
             catch (Exception ex)
             {
@@ -335,7 +337,7 @@ namespace ASC.Mail.ImapSync
 
                     var db_message = workFolderMails.FirstOrDefault(x => x.Uidl == SplittedUidl.ToUidl(workFolder.Folder, imap_message.UniqueId));
 
-                    if (db_message != null) continue;
+                    if (db_message == null) continue;
                     
                         SetMessageFlagsFromImap(imap_message, db_message);
 
