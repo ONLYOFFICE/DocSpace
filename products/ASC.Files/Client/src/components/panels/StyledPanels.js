@@ -553,7 +553,7 @@ const StyledSelectFolderPanel = styled.div`
       height: 0px !important;
     }
   }
-  .tree-folder-Loader{
+  .tree-folder-Loader {
     ${(props) =>
       props.displayType === "aside"
         ? css`
@@ -562,6 +562,7 @@ const StyledSelectFolderPanel = styled.div`
         : css`
             height: ${props.heightContent};
           `}
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {
@@ -695,9 +696,7 @@ const StyledFilesList = styled.div`
     text-overflow: ellipsis;
     color: #a3a9ae;
   }
-  .entry-title,
-  .file-exst {
-    //margin-top: 7px;
+  .entry-title {
     font-weight: 600;
   }
   .file-exst {
