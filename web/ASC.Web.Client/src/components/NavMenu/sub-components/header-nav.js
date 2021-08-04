@@ -10,6 +10,8 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
+import { isDesktop } from "react-device-detect";
+import AboutDialog from "../../pages/About/AboutDialog";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -61,8 +63,10 @@ const HeaderNav = ({
   isAuthenticated,
   peopleAvailable,
   isPersonal,
+  versionAppServer,
 }) => {
-  const { t } = useTranslation(["NavMenu", "Common"]);
+  const { t } = useTranslation(["NavMenu", "Common", "About"]);
+  const [visibleDialog, setVisibleDialog] = useState(false);
 
   const onProfileClick = useCallback(() => {
     peopleAvailable
@@ -70,7 +74,15 @@ const HeaderNav = ({
       : window.open(PROFILE_MY_URL, "_blank");
   }, []);
 
-  const onAboutClick = useCallback(() => history.push(ABOUT_URL), []);
+  const onAboutClick = useCallback(() => {
+    if (isDesktop) {
+      setVisibleDialog(true);
+    } else {
+      history.push(ABOUT_URL);
+    }
+  }, []);
+
+  const onCloseDialog = () => setVisibleDialog(false);
 
   const onSwitchToDesktopClick = useCallback(() => {
     deleteCookie("desktop_view");
@@ -142,6 +154,14 @@ const HeaderNav = ({
       ) : (
         <></>
       )}
+
+      <AboutDialog
+        t={t}
+        visible={visibleDialog}
+        onClose={onCloseDialog}
+        personal={isPersonal}
+        versionAppServer={versionAppServer}
+      />
     </StyledNav>
   );
 };
@@ -167,7 +187,11 @@ export default withRouter(
       language,
       logout,
     } = auth;
-    const { defaultPage, personal: isPersonal } = settingsStore;
+    const {
+      defaultPage,
+      personal: isPersonal,
+      version: versionAppServer,
+    } = settingsStore;
     const { user } = userStore;
     const modules = auth.availableModules;
     return {
@@ -180,6 +204,7 @@ export default withRouter(
       modules,
       logout,
       peopleAvailable: modules.some((m) => m.appName === "people"),
+      versionAppServer,
     };
   })(observer(HeaderNav))
 );
