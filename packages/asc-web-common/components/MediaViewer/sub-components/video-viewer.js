@@ -421,6 +421,7 @@ class VideoViewer extends Component {
         height={height}
         left={left}
         top={height + controlsHeight}
+        onClick={this.handlePlayPause}
       >
         <div>
           <div className="playerWrapper">
