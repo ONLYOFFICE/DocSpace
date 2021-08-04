@@ -252,12 +252,27 @@
     <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomeDlg.aip"/>
     <ROW Fragment="WelcomePrereqDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomePrereqDlg.aip"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.JsonFileComponent">
+    <ROW JsonFile="Newfile.json_1" FileName="APPSET~1.JSO|appsettings.test.json" DirProperty="config_Dir" Component="appsettings.test.json" RootProperty="Root_1" Flags="22" IndentUnits="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.JsonPropertyComponent">
+    <ROW JsonProperty="ConnectionStrings_1" Parent="Root_1" Name="ConnectionStrings" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_1" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="connectionString_1" Parent="default_1" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[SERVER_PROP];Port=3306;Database=[DATABASE_PROP];User ID=[USERNAME_PROP];Password=[PASSWORD_PROP];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none"/>
+    <ROW JsonProperty="default_1" Parent="ConnectionStrings_1" Name="default" Condition="1" Order="0" Flags="60"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
     <ROW Action="AI_ConfigFailActions" Description="Настройка действия при сбое службы" DescriptionLocId="ActionText.Description.AI_ConfigFailActions" Template="Служба: [1]" TemplateLocId="ActionText.Template.AI_ConfigFailActions"/>
     <ROW Action="AI_DeleteLzma" Description="Удаление извлеченных файлов из архива" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
     <ROW Action="AI_DeleteRLzma" Description="Удаление извлеченных файлов из архива" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
     <ROW Action="AI_ExtractFiles" Description="Извлечение файлов из архива" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
     <ROW Action="AI_ExtractLzma" Description="Извлечение файлов из архива" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+    <ROW Action="AI_JsonCommit" Description="Фиксация JSON-файла конфигурации." DescriptionLocId="ActionText.Description.AI_JsonCommit" Template="Фиксация JSON-файла конфигурации." TemplateLocId="ActionText.Template.AI_JsonCommit"/>
+    <ROW Action="AI_JsonConfig" Description="Выполнение файла конфигурации JSON" DescriptionLocId="ActionText.Description.AI_JsonConfig" Template="Настройка JSON-файла: &quot;[1]&quot;" TemplateLocId="ActionText.Template.AI_JsonConfig"/>
+    <ROW Action="AI_JsonInstall" Description="Создание действий для настройки JSON-файлов" DescriptionLocId="ActionText.Description.AI_JsonInstall"/>
+    <ROW Action="AI_JsonRemove" Description="Выполнение файла конфигурации JSON" DescriptionLocId="ActionText.Description.AI_JsonRemove" Template="Настройка JSON-файла: &quot;[1]&quot;" TemplateLocId="ActionText.Template.AI_JsonRemove"/>
+    <ROW Action="AI_JsonRollback" Description="Откат файлов конфигурации JSON." DescriptionLocId="ActionText.Description.AI_JsonRollback" Template="Откат файлов конфигурации JSON." TemplateLocId="ActionText.Template.AI_JsonRollback"/>
+    <ROW Action="AI_JsonUninstall" Description="Создание действий для настройки JSON-файлов" DescriptionLocId="ActionText.Description.AI_JsonUninstall"/>
     <ROW Action="AI_ProcessFailActions" Description="Создание действия для настройки действия при сбое службы" DescriptionLocId="ActionText.Description.AI_ProcessFailActions" Template="Служба: [1]" TemplateLocId="ActionText.Template.AI_ProcessFailActions"/>
     <ROW Action="AI_SqlConfig" Description="Выполнение установки SQL-сценария" DescriptionLocId="ActionText.Description.AI_SqlConfig" Template="Подключение: [1]  Сценарий: [2]" TemplateLocId="ActionText.Template.AI_SqlConfig"/>
     <ROW Action="AI_SqlInstall" Description="Создание действий для настройки базы данных для установки выполнения сценария SQL" DescriptionLocId="ActionText.Description.AI_SqlInstall"/>
@@ -279,6 +294,7 @@
     <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="jsonCfg.dll" SourcePath="&lt;AI_CUSTACTS&gt;jsonCfg.dll"/>
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
     <ROW Name="sql.dll" SourcePath="&lt;AI_CUSTACTS&gt;sql.dll"/>
   </COMPONENT>
@@ -376,6 +392,8 @@
     <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="TestConnection"/>
     <ROW Action="AI_DATA_SETTER_5" Type="51" Source="CustomActionData" Target="Неверные данные подключения к MySQL Server |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_6" Type="51" Source="CustomActionData" Target="[AppDirChanged]"/>
+    <ROW Action="AI_DATA_SETTER_7" Type="51" Source="CustomActionData" Target="[~]"/>
+    <ROW Action="AI_DATA_SETTER_8" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
@@ -389,6 +407,12 @@
     <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
     <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
+    <ROW Action="AI_JsonCommit" Type="11777" Source="jsonCfg.dll" Target="OnJsonCommit" WithoutSeq="true"/>
+    <ROW Action="AI_JsonConfig" Type="11265" Source="jsonCfg.dll" Target="OnJsonConfig" WithoutSeq="true"/>
+    <ROW Action="AI_JsonInstall" Type="1" Source="jsonCfg.dll" Target="OnJsonInstall" AdditionalSeq="AI_DATA_SETTER_7"/>
+    <ROW Action="AI_JsonRemove" Type="11265" Source="jsonCfg.dll" Target="OnJsonRemove" WithoutSeq="true"/>
+    <ROW Action="AI_JsonRollback" Type="11521" Source="jsonCfg.dll" Target="OnJsonRollback" WithoutSeq="true"/>
+    <ROW Action="AI_JsonUninstall" Type="1" Source="jsonCfg.dll" Target="OnJsonUninstall" AdditionalSeq="AI_DATA_SETTER_8"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
     <ROW Action="AI_ProcessFailActions" Type="1" Source="aicustact.dll" Target="ProcessFailActions" AdditionalSeq="AI_DATA_SETTER_3"/>
     <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH" Target="[AI_SETUPEXEPATH_ORIGINAL]"/>
@@ -488,10 +512,14 @@
     <ROW Action="AI_DATA_SETTER_2" Sequence="1398"/>
     <ROW Action="AI_ProcessFailActions" Sequence="5848"/>
     <ROW Action="AI_DATA_SETTER_3" Sequence="5847"/>
-    <ROW Action="AI_TxtUpdaterInstall" Sequence="5101"/>
+    <ROW Action="AI_TxtUpdaterInstall" Sequence="5103"/>
     <ROW Action="ExecuteScriptCode" Condition="( NOT Installed )" Sequence="3602"/>
     <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="3601"/>
     <ROW Action="SetProperty" Sequence="1601"/>
+    <ROW Action="AI_JsonInstall" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5102"/>
+    <ROW Action="AI_DATA_SETTER_7" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5101"/>
+    <ROW Action="AI_JsonUninstall" Condition="(REMOVE)" Sequence="3102"/>
+    <ROW Action="AI_DATA_SETTER_8" Condition="(REMOVE)" Sequence="3101"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
@@ -683,10 +711,6 @@
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceAppDir" TxtUpdateSet="appsettings.test.json" FindPattern="{APPDIRCONF}" ReplacePattern="[AppDirChanged]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceElasticHost" TxtUpdateSet="YourFile.txt" FindPattern=".Host.:.*" ReplacePattern="&quot;Host&quot;: &quot;localhost&quot;," Options="3" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceMySQLHost" TxtUpdateSet="appsettings.test.json" FindPattern="{MYSQL_HOST}" ReplacePattern="[SERVER_PROP]" Options="2" Order="1" FileEncoding="-1"/>
-    <ROW Name="ReplaceMySQLDatabase" TxtUpdateSet="appsettings.test.json" FindPattern="{MYSQL_DATABASE}" ReplacePattern="[DATABASE_PROP]" Options="2" Order="2" FileEncoding="-1"/>
-    <ROW Name="ReplaceMySQLUser" TxtUpdateSet="appsettings.test.json" FindPattern="{MYSQL_USER}" ReplacePattern="[USERNAME_PROP]" Options="2" Order="3" FileEncoding="-1"/>
-    <ROW Name="ReplaceMySQLPass" TxtUpdateSet="appsettings.test.json" FindPattern="{MYSQL_PASSWORD}" ReplacePattern="[PASSWORD_PROP]" Options="2" Order="4" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
     <ROW Key="YourFile.txt" Component="appsettings.test.json" FileName="elastic.json" Directory="config_Dir" Options="25"/>
