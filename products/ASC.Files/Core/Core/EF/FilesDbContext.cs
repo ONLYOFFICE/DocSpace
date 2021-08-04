@@ -21,7 +21,7 @@ namespace ASC.Files.Core.EF
         public DbSet<DbFilesTagLink> TagLink { get; set; }
         public DbSet<DbFilesTag> Tag { get; set; }
         public DbSet<DbFilesThirdpartyApp> ThirdpartyApp { get; set; }
-        public DbSet<DbTenant> Tenants { get; set; }
+
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get
@@ -46,9 +46,7 @@ namespace ASC.Files.Core.EF
                 .AddDbFilesThirdpartyIdMapping()
                 .AddDbFilesTagLink()
                 .AddDbFilesTag()
-                .AddDbDbFilesThirdpartyApp()
-                .AddDbTenant();
-            modelBuilder.Entity<DbTenant>().ToTable("tenants_tenants", t => t.ExcludeFromMigrations());
+                .AddDbDbFilesThirdpartyApp();
         }
     }
 
