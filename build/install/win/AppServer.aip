@@ -683,10 +683,14 @@
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceAppDir" TxtUpdateSet="appsettings.test.json" FindPattern="{APPDIRCONF}" ReplacePattern="[AppDirChanged]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceElasticHost" TxtUpdateSet="YourFile.txt" FindPattern=".Host.:.*" ReplacePattern="&quot;Host&quot;: &quot;localhost&quot;," Options="3" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceMySQLHost" TxtUpdateSet="appsettings.test.json" FindPattern="{MYSQL_HOST}" ReplacePattern="[SERVER_PROP]" Options="2" Order="1" FileEncoding="-1"/>
+    <ROW Name="ReplaceMySQLDatabase" TxtUpdateSet="appsettings.test.json" FindPattern="{MYSQL_DATABASE}" ReplacePattern="[DATABASE_PROP]" Options="2" Order="2" FileEncoding="-1"/>
+    <ROW Name="ReplaceMySQLUser" TxtUpdateSet="appsettings.test.json" FindPattern="{MYSQL_USER}" ReplacePattern="[USERNAME_PROP]" Options="2" Order="3" FileEncoding="-1"/>
+    <ROW Name="ReplaceMySQLPass" TxtUpdateSet="appsettings.test.json" FindPattern="{MYSQL_PASSWORD}" ReplacePattern="[PASSWORD_PROP]" Options="2" Order="4" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
     <ROW Key="YourFile.txt" Component="appsettings.test.json" FileName="elastic.json" Directory="config_Dir" Options="25"/>
-    <ROW Key="appsettings.test.json" Component="AI_ExePath" FileName="*.json" Directory="config_Dir" Options="25"/>
+    <ROW Key="appsettings.test.json" Component="ASC.ApiSystem.exe" FileName="*.json" Directory="config_Dir" Options="25"/>
     <ROW Key="xml" Component="OnlyofficeWebStudio.exe" FileName="*.xml" Directory="tools_Dir" Options="25"/>
   </COMPONENT>
 </DOCUMENT>
