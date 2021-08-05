@@ -17,15 +17,15 @@ using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Security;
 
+using MimeKit;
+
 namespace ASC.Mail.ImapSync
 {
     public class SimpleImapClient : IDisposable
     {
         private ImapClient imap;
 
-        private ConcurrentQueue<CashedMailUserAction> actionsToImap;
         public ConcurrentQueue<ImapAction> actionsFromImap;
-        private ConcurrentDictionary<ClientState, Task> syncTasks;
         private ConcurrentQueue<Task> asyncTasks;
 
         public Task curentTask { get; private set; }
@@ -34,19 +34,22 @@ namespace ASC.Mail.ImapSync
         private readonly MailSettings _mailSettings;
         private readonly MailBoxData Account;
 
-        public event EventHandler NewActionFromImap;
-        public event EventHandler ClientIsReady;
+        public event EventHandler<ImapAction> NewActionFromImap;
+        public event EventHandler<(MimeMessage, IMessageSummary)> NewMessage;
+        public event EventHandler<string> DeleteMessage;
+        public event EventHandler MessagesListUpdated;
+        public event EventHandler WorkFoldersChanged;
 
         private CancellationTokenSource DoneToken { get; set; }
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
 
-        public List<IMailFolder> foldersList;
+        public List<IMailFolder> foldersList { get; private set; }
         public List<IMessageSummary> MessagesList { get; private set; }
 
         public IMailFolder WorkFolder;
 
-        public ClientState State { get; private set; }
+        #region Event from Imap handlers
 
         private void ImapMessageFlagsChanged(object sender, MessageFlagsChangedEventArgs e)
         {
@@ -56,23 +59,25 @@ namespace ASC.Mail.ImapSync
 
                 if (messageSummary == null) return;
 
-                if(messageSummary.Flags.HasValue)
+                if (messageSummary.Flags.HasValue)
                 {
                     if (e.Flags == messageSummary.Flags) return;
 
                     bool oldSeen = messageSummary.Flags.Value.HasFlag(MessageFlags.Seen);
                     bool newSeen = e.Flags.HasFlag(MessageFlags.Seen);
 
-                    if(oldSeen!=newSeen)
+                    if (oldSeen != newSeen)
                     {
-                        ImapAction imapAction = new ImapAction()
+                        if (NewActionFromImap != null)
                         {
-                            FolderAction = oldSeen ? MailUserAction.SetAsUnread : MailUserAction.SetAsRead,
-                             Folder= imap_folder,
-                              UniqueId= messageSummary.UniqueId
-
-                        };
-                        actionsFromImap.Enqueue(imapAction);
+                            ImapAction imapAction = new ImapAction()
+                            {
+                                FolderAction = oldSeen ? MailUserAction.SetAsUnread : MailUserAction.SetAsRead,
+                                Folder = imap_folder,
+                                UniqueId = messageSummary.UniqueId
+                            };
+                            NewActionFromImap(this, imapAction);
+                        }
                     }
 
                     bool oldImportant = messageSummary.Flags.Value.HasFlag(MessageFlags.Flagged);
@@ -80,25 +85,29 @@ namespace ASC.Mail.ImapSync
 
                     if (oldImportant != newImportant)
                     {
-                        ImapAction imapAction = new ImapAction()
+                        if (NewActionFromImap != null)
                         {
-                            FolderAction = oldImportant ? MailUserAction.SetAsNotImpotant : MailUserAction.SetAsImportant,
-                            Folder = imap_folder,
-                            UniqueId = messageSummary.UniqueId
-
-                        };
-                        actionsFromImap.Enqueue(imapAction);
+                            ImapAction imapAction = new ImapAction()
+                            {
+                                FolderAction = oldImportant ? MailUserAction.SetAsNotImpotant : MailUserAction.SetAsImportant,
+                                Folder = imap_folder,
+                                UniqueId = messageSummary.UniqueId
+                            };
+                            NewActionFromImap(this, imapAction);
+                        }
                     }
-                }
 
-                if (NewActionFromImap != null) NewActionFromImap(this, EventArgs.Empty);
+                    AddTask(new Task(() => UpdateMessagesList()));
+                }
             }
         }
 
         private void ImapFolderCountChanged(object sender, EventArgs e)
         {
-            syncTasks.GetOrAdd(ClientState.UpdateMessagesList, new Task(async ()=>await UpdateMessagesList()));
+            AddTask(new Task(() => UpdateMessagesList()));
         }
+
+        #endregion
 
         public SimpleImapClient(MailBoxData mailbox, CancellationToken cancelToken, MailSettings mailSettings, ILog log)
         {
@@ -107,8 +116,6 @@ namespace ASC.Mail.ImapSync
             _log = log;
 
             _log.Name = $"ASC.Mail.SimpleClient.Mbox_{mailbox.MailBoxId}";
-
-            //State = ClientState.Creating;
 
             var protocolLogger = !string.IsNullOrEmpty(_mailSettings.ProtocolLogPath)
                 ? (IProtocolLogger)
@@ -119,10 +126,8 @@ namespace ASC.Mail.ImapSync
 
             CancelToken = CancellationTokenSource.CreateLinkedTokenSource(cancelToken, StopTokenSource.Token).Token;
 
-            syncTasks = new ConcurrentDictionary<ClientState, Task>();
             asyncTasks = new ConcurrentQueue<Task>();
             actionsFromImap = new ConcurrentQueue<ImapAction>();
-            actionsToImap = new ConcurrentQueue<CashedMailUserAction>();
 
             imap = new ImapClient(protocolLogger)
             {
@@ -136,48 +141,27 @@ namespace ASC.Mail.ImapSync
         {
             await Authenticate();
 
-            imap.Disconnected += Imap_Disconnected;
-
             await LoadFoldersFromIMAP();
 
-            if(ClientIsReady!=null) ClientIsReady(this, EventArgs.Empty);
+            ChangeFolder(imap.Inbox);
         }
 
-        public Task ChangeFolder(IMailFolder newWorkFolder)
+        public void ChangeFolder(IMailFolder newWorkFolder)
         {
-            var result = new Task(async () => {
+            AddTask(new Task(() =>
+            {
                 try
                 {
-                    if (WorkFolder != null)
-                    {
-                        WorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
-                        WorkFolder.CountChanged -= ImapFolderCountChanged;
-                    }
+                    OpenFolder(newWorkFolder);
 
-                    WorkFolder = newWorkFolder;
-
-                    OpenFolder(WorkFolder);
-
-                    WorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
-                    WorkFolder.CountChanged += ImapFolderCountChanged;
-
-                    MessagesList = WorkFolder.Fetch(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags).ToList();
+                    UpdateMessagesList();
                 }
                 catch (Exception ex)
                 {
                     _log.Error($"ChangeFolder: {ex.Message}");
                 }
-            });
-
-            var actualTask = syncTasks.GetOrAdd(ClientState.ChangeFolder, result);
-
-            return result.ContinueWith(x=>
-            {
-                return x;
-            }
-            );
+            }));
         }
-
 
         private void Imap_Disconnected(object sender, DisconnectedEventArgs e)
         {
@@ -198,6 +182,8 @@ namespace ASC.Mail.ImapSync
                 StopTokenSource.Cancel();
             }
         }
+
+        #region Load Folders from Imap to foldersList
 
         public async Task<bool> Authenticate(bool enableUtf8 = true)
         {
@@ -227,7 +213,12 @@ namespace ASC.Mail.ImapSync
 
             imap.SslProtocols = sslProtocols;
 
-            if (!imap.IsConnected) await imap.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
+            if (!imap.IsConnected)
+            {
+                await imap.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
+
+                imap.Disconnected += Imap_Disconnected;
+            }
 
             try
             {
@@ -264,7 +255,7 @@ namespace ASC.Mail.ImapSync
             return true;
         }
 
-        public async Task LoadFoldersFromIMAP()
+        private async Task LoadFoldersFromIMAP()
         {
             _log.Debug("Load folders from IMAP.");
 
@@ -329,13 +320,34 @@ namespace ASC.Mail.ImapSync
             return new List<IMailFolder>();
         }
 
+        #endregion
+
         private void OpenFolder(IMailFolder imapFolder)
         {
-            if (!imapFolder.IsOpen)
+            if (imapFolder != WorkFolder)
+            {
+                if (WorkFolder != null)
+                {
+                    WorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
+                    WorkFolder.CountChanged -= ImapFolderCountChanged;
+                }
+
+                WorkFolder = imapFolder;
+                MessagesList = null;
+
+                WorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
+                WorkFolder.CountChanged += ImapFolderCountChanged;
+
+                _log.Debug($"OpenFolder: Work folder changed to {imapFolder.Name}.");
+            }
+
+            if (!WorkFolder.IsOpen)
             {
                 try
                 {
                     imapFolder.Open(FolderAccess.ReadWrite);
+
+                    _log.Debug($"OpenFolder: Folder {imapFolder.Name} opened.");
                 }
                 catch(Exception ex)
                 {
@@ -344,38 +356,59 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private async Task UpdateMessagesList()
+        private void UpdateMessagesList()
         {
             OpenFolder(WorkFolder);
 
-            var newMessagesList = (await WorkFolder.FetchAsync(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags)).ToList();
+            var newMessagesList = WorkFolder.Fetch(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags).ToList();
 
-            var deletedMessages = MessagesList.Except(newMessagesList).ToList();
-            var newMessages = newMessagesList.Except(MessagesList).ToList();
-
-            MessagesList = newMessagesList;
-
-            foreach(var message in deletedMessages)
+            if (MessagesList == null)
             {
-                ImapAction imapAction = new ImapAction()
+                MessagesList = newMessagesList;
+            }
+            else
+            {
+                var deletedMessages = MessagesList.Where(x => !newMessagesList.Any(y => y.UniqueId == x.UniqueId)).ToList();
+                var newMessages = newMessagesList.Where(x => !MessagesList.Any(y => y.UniqueId == x.UniqueId)).ToList();
+
+                MessagesList = newMessagesList;
+
+                foreach (var message in deletedMessages)
                 {
-                    FolderAction = MailUserAction.RemovedFromFolder,
-                    Folder = WorkFolder,
-                    UniqueId = message.UniqueId
-                };
-                actionsFromImap.Enqueue(imapAction);
+                    if (DeleteMessage != null)
+                    {
+                        DeleteMessage(this, message.UniqueId.ToString());
+                    }
+                }
+
+                foreach (var message in newMessages)
+                {
+                    if (NewMessage != null)
+                    {
+                        var mimeMessage = WorkFolder.GetMessage(message.UniqueId, CancelToken);
+
+                        NewMessage(this, (mimeMessage, message));
+                    }
+                }
             }
 
-            foreach (var message in newMessages)
-            {
-                ImapAction imapAction = new ImapAction()
-                {
-                    FolderAction = MailUserAction.New,
-                    Folder = WorkFolder,
-                    UniqueId = message.UniqueId
-                };
-                actionsFromImap.Enqueue(imapAction);
-            }
+            if (MessagesListUpdated != null) MessagesListUpdated(this, EventArgs.Empty);
+        }
+
+        public void TryGetNewMessage(UniqueId uniqueId)
+        {
+            AddTask(new Task(() => GetNewMessage(uniqueId)));
+        }
+
+        private void GetNewMessage(UniqueId uniqueId)
+        {
+            var message = MessagesList.FirstOrDefault(x => x.UniqueId == uniqueId);
+
+            if (message == null) return;
+
+            var mimeMessage = WorkFolder.GetMessage(message.UniqueId, CancelToken);
+
+            if(NewMessage!=null) NewMessage(this, (mimeMessage, message));
         }
 
         private async Task SetIdle()
@@ -392,7 +425,7 @@ namespace ASC.Mail.ImapSync
 
                     _log.Debug($"Go to Idle.");
 
-                    imap.Idle(DoneToken.Token);
+                    await imap.IdleAsync(DoneToken.Token);
                 }
                 else
                 {
@@ -412,91 +445,40 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        public async Task<bool> MoveMessageInImap(List<SplittedUidl> uidlListSplitted, int destination)
+        public void MoveMessageInImap(IMailFolder sourceFolder, List<UniqueId> uniqueIds, IMailFolder destinationFolder)
         {
-            //if (uidlListSplitted.Count == 0) return false;
+            if (uniqueIds.Count == 0 || sourceFolder == null || destinationFolder == null)
+            {
+                _log.Debug($"MoveMessageInImap: Bad parametrs. Source={sourceFolder?.Name}, Count={uniqueIds.Count}, Destination={destinationFolder?.Name}.");
 
-            //try
-            //{
-            //    var imapFolder = foldersDictionary.Where(x => x.Value.Folder == uidlListSplitted[0].FolderType).Select(x => x.Key).FirstOrDefault();
+                return;
+            }
 
-            //    if (imapFolder == null)
-            //    {
-            //        _log.Debug($"MoveMessageInImap->Don`t found source folder: {uidlListSplitted[0].FolderType}.");
+            try
+            {
+                OpenFolder(sourceFolder);
 
-            //        return false;
-            //    }
+                var returnedUidl = sourceFolder.MoveTo(uniqueIds, destinationFolder);
 
-            //    var imapFolderDestination = foldersDictionary.Where(x => x.Value.Folder == (FolderType)destination).Select(x => x.Key).FirstOrDefault();
-
-            //    if (imapFolderDestination == null)
-            //    {
-            //        _log.Debug($"MoveMessageInImap->Don`t found destination folder: {imapFolderDestination}.");
-
-            //        return false;
-            //    }
-
-            //    await OpenFolderWithOutWaiter(imapFolder);
-
-            //    Imap.Inbox.CountChanged -= ImapCountChanged;
-            //    Imap.Inbox.MessageFlagsChanged -= ImapMessageFlagsChanged;
-
-            //    var returnedUidl = await imapFolder.MoveToAsync(uidlListSplitted.Select(x => x.UniqueId).ToList(), imapFolderDestination);
-
-            //    var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-            //        .SetMessageUids(uidlListSplitted.Select(x => x.Uidl).ToList())
-            //        .SetMailboxId(Account.MailBoxId);
-
-            //    var db_messages = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
-
-            //    foreach (var item in returnedUidl)
-            //    {
-            //        var db_message = db_messages.FirstOrDefault(x => x.Uidl.StartsWith(item.Key.ToString()));
-
-            //        if (db_message == null)
-            //        {
-            //            _log.Debug($"MoveMessageInImap->Don`t found in DB: {imapFolder}-{item.Key} move to {imapFolderDestination}-{item.Value}.");
-
-            //            continue;
-            //        }
-
-            //        var updateQuery = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-            //            .SetMessageId(db_message.Id)
-            //            .Build();
-
-            //        _mailInfoDao.SetFieldValue(updateQuery, "uidl", SplittedUidl.ToUidl((FolderType)destination, item.Value));
-
-            //        _log.Debug($"MoveMessageInImap->Update in DB: {imapFolder}-{item.Key} move to {imapFolderDestination}-{item.Value}.");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    _log.Error($"MoveMessageInImap(messageCount={uidlListSplitted.Count}, destination={destination})->{ex.Message}");
-
-            //    return false;
-            //}
-            //finally
-            //{
-            //    Imap.Inbox.CountChanged += ImapCountChanged;
-            //    Imap.Inbox.MessageFlagsChanged += ImapMessageFlagsChanged;
-
-            //    _ = ReturnImapSemaphore();
-            //}
-
-            return true;
+                UpdateMessagesList();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"MoveMessageInImap: Source={sourceFolder?.Name}, Count={uniqueIds.Count}, Destination={destinationFolder?.Name}.");
+                _log.Error($"MoveMessageInImap: {ex.Message}");
+            }
         }
 
         public void TrySetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, MailUserAction action)
         {
-            var result = new Task(async() =>
-            {
-                await SetFlagsInImap(folder, uniqueIds, action);
-            });
+            var result = new Task(() => SetFlagsInImap(folder, uniqueIds, action));
 
             asyncTasks.Enqueue(result);
+
+            DoneToken?.Cancel();
         }
 
-        private async Task<bool> SetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, MailUserAction action)
+        private bool SetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, MailUserAction action)
         {
             if (folder == null) return false;
             if (uniqueIds.Count == 0) return false;
@@ -508,16 +490,16 @@ namespace ASC.Mail.ImapSync
                 switch (action)
                 {
                     case MailUserAction.SetAsRead:
-                        await folder.AddFlagsAsync(uniqueIds, MessageFlags.Seen, true);
+                        folder.AddFlags(uniqueIds, MessageFlags.Seen, true);
                         break;
                     case MailUserAction.SetAsUnread:
-                        await folder.RemoveFlagsAsync(uniqueIds, MessageFlags.Seen, true);
+                        folder.RemoveFlags(uniqueIds, MessageFlags.Seen, true);
                         break;
                     case MailUserAction.SetAsImportant:
-                        await folder.AddFlagsAsync(uniqueIds, MessageFlags.Flagged, true);
+                        folder.AddFlags(uniqueIds, MessageFlags.Flagged, true);
                         break;
                     case MailUserAction.SetAsNotImpotant:
-                        await folder.RemoveFlagsAsync(uniqueIds, MessageFlags.Flagged, true);
+                        folder.RemoveFlags(uniqueIds, MessageFlags.Flagged, true);
                         break;
 
                 }
@@ -534,9 +516,8 @@ namespace ASC.Mail.ImapSync
             return true;
         }
 
-        private async Task TaskManager(Task previosTask)
+        private void TaskManager(Task previosTask)
         {
-
             if(previosTask.Exception!=null)
             {
                 _log.Error($"Task manager: {previosTask.Exception.Message}");
@@ -544,28 +525,20 @@ namespace ASC.Mail.ImapSync
 
             if(asyncTasks.TryDequeue(out var task))
             {
-                curentTask = task;
-                curentTask.Start();
-                curentTask.ContinueWith(TaskManager);
+                curentTask = task.ContinueWith(TaskManager);
+                task.Start();
 
                 return;
             }
 
-            if (syncTasks.Any())
-            {
-                var work = syncTasks.Keys.First();
-
-                if(syncTasks.TryRemove(work, out Task atask))
-                {
-                    curentTask = atask;
-                    curentTask.Start();
-                    curentTask.ContinueWith(TaskManager);
-
-                    return;
-                }
-            }
-
             curentTask = SetIdle().ContinueWith(TaskManager);
+        }
+
+        private void AddTask(Task task)
+        {
+            asyncTasks.Enqueue(task);
+
+            DoneToken?.Cancel();
         }
 
         public void Dispose()

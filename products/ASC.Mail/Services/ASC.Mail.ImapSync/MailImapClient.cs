@@ -119,11 +119,22 @@ namespace ASC.Mail.ImapSync
 
             _log.Debug($"ProcessActionFromRedis end. {iterationCount} keys readed.");
 
-            var activityUserFolder = foldersDictionary.Values.FirstOrDefault(x=>x.Folder==(FolderType)folderActivity);
+            var activityUserFolder = foldersDictionary.Values.FirstOrDefault(x => x.Folder == (FolderType)folderActivity);
 
-            if (activityUserFolder!=workFolder)
+            if (activityUserFolder != workFolder)
             {
-                await ChangeFolder(activityUserFolder);
+                try
+                {
+                    var newImapFolder = foldersDictionary.FirstOrDefault(x => x.Value.Folder == workFolder.Folder).Key;
+
+                    if (newImapFolder == null) return;
+
+                    imapClient.ChangeFolder(newImapFolder);
+                }
+                catch (Exception ex)
+                {
+                    _log.Error($"ChangeFolder(New folder={activityUserFolder})->{ex.Message}");
+                }
 
                 _log.Debug($"CheckRedis. WorkFolder change to {activityUserFolder}.");
             }
@@ -172,65 +183,83 @@ namespace ASC.Mail.ImapSync
             //    Imap.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
             imapClient = new SimpleImapClient(mailbox, cancelToken, mailSettings, clientScope.GetService<ILog>());
-            imapClient.ClientIsReady += ImapClient_ClientIsReady;
+            imapClient.NewMessage += ImapClient_NewMessage;
+            imapClient.MessagesListUpdated += ImapClient_MessagesListUpdated;
+            imapClient.WorkFoldersChanged += ImapClient_WorkFoldersChanged;
+            imapClient.NewActionFromImap += ImapClient_NewActionFromImap;
 
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
         }
 
-        private void ImapClient_ClientIsReady(object sender, EventArgs e)
+        private void ImapClient_NewActionFromImap(object sender, ImapAction e)
         {
-            DetectFolders(imapClient.foldersList);
+            string uidl = SplittedUidl.ToUidl(foldersDictionary[e.Folder].Folder, e.UniqueId);
 
-            imapClient.NewActionFromImap += ImapClient_NewActionFromImap;
-        }
+            var massageInDB = workFolderMails.FirstOrDefault(x => x.Uidl == uidl);
 
-        private void ImapClient_NewActionFromImap(object sender, EventArgs e)
-        {
-            while (imapClient.actionsFromImap.TryDequeue(out ImapAction newAction))
+            if (massageInDB == null) return;
+
+            switch (e.FolderAction)
             {
-                string uidl = SplittedUidl.ToUidl(workFolder.Folder, newAction.UniqueId);
-
-                var massageInDB = workFolderMails.FirstOrDefault(x => x.Uidl == uidl);
-
-                if (massageInDB == null) continue;
-
-                switch (newAction.FolderAction)
-                {
-                    case MailUserAction.Nothing:
-                        break;
-                    case MailUserAction.SetAsRead:
-                        _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, false);
-                        break;
-                    case MailUserAction.SetAsUnread:
-                        _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, true);
-                        break;
-                    case MailUserAction.SetAsImportant:
-                        _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, true);
-                        break;
-                    case MailUserAction.SetAsNotImpotant:
-                        _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, false);
-                        break;
-                    case MailUserAction.SetAsDeleted:
-                        break;
-                    case MailUserAction.RemovedFromFolder:
-                        break;
-                    case MailUserAction.New:
-                        break;
-                    default:
-                        break;
-                }
+                case MailUserAction.Nothing:
+                    break;
+                case MailUserAction.SetAsRead:
+                    _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, false);
+                    break;
+                case MailUserAction.SetAsUnread:
+                    _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, true);
+                    break;
+                case MailUserAction.SetAsImportant:
+                    _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, true);
+                    break;
+                case MailUserAction.SetAsNotImpotant:
+                    _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, false);
+                    break;
+                case MailUserAction.SetAsDeleted:
+                    break;
+                case MailUserAction.RemovedFromFolder:
+                    break;
+                case MailUserAction.New:
+                    break;
+                default:
+                    break;
             }
+
+            UpdateDbFolder(imapClient.MessagesList);
         }
 
-        private async void DetectFolders(List<IMailFolder> foldersIMAP)
+        private void ImapClient_WorkFoldersChanged(object sender, EventArgs e)
         {
             if (foldersDictionary == null)
             {
                 foldersDictionary = new Dictionary<IMailFolder, MailFolder>();
+                DetectFolders();
             }
-            else return;
 
-            foreach (var folderIMAP in foldersIMAP)
+            workFolder = foldersDictionary[imapClient.WorkFolder];
+
+            var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                .SetMailboxId(Account.MailBoxId)
+                .SetFolder((int)workFolder.Folder);
+
+            workFolderMails = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
+
+            UpdateDbFolder(imapClient.MessagesList);
+        }
+
+        private void ImapClient_MessagesListUpdated(object sender, EventArgs e)
+        {
+            UpdateDbFolder(imapClient.MessagesList);
+        }
+
+        private void ImapClient_NewMessage(object sender, (MimeMessage, IMessageSummary) e)
+        {
+            CreateMessageInDB(e.Item1, e.Item2);
+        }
+
+        private void DetectFolders()
+        {
+            foreach (var folderIMAP in imapClient.foldersList)
             {
                 var dbFolder = DetectFolder(folderIMAP);
 
@@ -243,13 +272,9 @@ namespace ASC.Mail.ImapSync
                 }
                 else
                 {
-                    if (workFolder == null) await ChangeFolder(dbFolder);
                     _log.Debug($"{folderIMAP.Name}-> ready to work.");
                 }                
             }
-
-            
-
 
             _log.Debug($"Loaded {foldersDictionary.Count} folders for work.");
         }
@@ -273,62 +298,6 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        public bool SetFlagsFromImap(IMessageSummary imap_message, MailInfo db_message)
-        {
-            if (imap_message == null || db_message == null) return false;
-            try
-            {
-                _log.Debug("SynchronizeMessageFlagsFromImap begin.");
-                _log.Debug($"SynchronizeMessageFlagsFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, flag={imap_message.Flags.Value.ToString()}.");
-                _log.Debug($"SynchronizeMessageFlagsFromImap: db_message={db_message.Uidl}, folder={db_message.Folder}, IsRemoved={db_message.IsRemoved}.");
-                bool unread = !imap_message.Flags.Value.HasFlag(MessageFlags.Seen);
-                bool important = imap_message.Flags.Value.HasFlag(MessageFlags.Flagged);
-                bool removed = imap_message.Flags.Value.HasFlag(MessageFlags.Deleted);
-
-                if (db_message.IsNew ^ unread) _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { db_message.Id }, unread, true);
-                if (db_message.Importance ^ important) _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { db_message.Id }, important);
-                if (removed) _mailEnginesFactory.MessageEngine.SetRemoved(new List<int>() { db_message.Id });
-                _log.Debug("SynchronizeMessageFlagsFromImap finish.");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _log.Error($"SynchronizeMessageFlagsFromImap({imap_message.UniqueId},{db_message})->{ex.Message}");
-
-                return false;
-            }
-        }
-
-        public async Task ChangeFolder(MailFolder newFolder)
-        {
-            if (workFolder == newFolder) return;
-
-            workFolder = newFolder;
-
-            try
-            {
-                var newImapFolder = foldersDictionary.FirstOrDefault(x => x.Value.Folder == workFolder.Folder).Key;
-
-                if (newImapFolder == null) return;
-
-                var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                    .SetMailboxId(Account.MailBoxId)
-                    .SetFolder((int)workFolder.Folder);
-
-                workFolderMails=_mailInfoDao.GetMailInfoList(exp.Build()).ToList();
-
-                Task t= imapClient.ChangeFolder(newImapFolder);
-
-                await t;
-
-                UpdateDbFolder(imapClient.MessagesList);
-            }
-            catch (Exception ex)
-            {
-                _log.Error($"ChangeFolder(New folder={newFolder.Name})->{ex.Message}");
-            }
-        }
-
         private void UpdateDbFolder(List<IMessageSummary> imapFolderMails)
         {
             if (imapFolderMails == null) return;
@@ -343,9 +312,14 @@ namespace ASC.Mail.ImapSync
 
                     var db_message = workFolderMails.FirstOrDefault(x => x.Uidl == SplittedUidl.ToUidl(workFolder.Folder, imap_message.UniqueId));
 
-                    if (db_message == null) continue;
+                    if (db_message == null)
+                    {
+                        imapClient.TryGetNewMessage(imap_message.UniqueId);
+
+                        continue;
+                    }
                     
-                        SetMessageFlagsFromImap(imap_message, db_message);
+                    SetMessageFlagsFromImap(imap_message, db_message);
 
                     if (db_message.IsRemoved)
                     {
@@ -371,16 +345,16 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                    _log.Debug($"SetMessageFlagsFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, flag={imap_message.Flags.Value.ToString()}.");
-                    _log.Debug($"SetMessageFlagsFromImapp: db_message={db_message.Uidl}, folder={db_message.Folder}, IsRemoved={db_message.IsRemoved}.");
-                    bool unread = !imap_message.Flags.Value.HasFlag(MessageFlags.Seen);
-                    bool important = imap_message.Flags.Value.HasFlag(MessageFlags.Flagged);
-                    bool removed = imap_message.Flags.Value.HasFlag(MessageFlags.Deleted);
+                _log.Debug($"SetMessageFlagsFromImap: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, flag={imap_message.Flags.Value.ToString()}.");
+                _log.Debug($"SetMessageFlagsFromImapp: db_message={db_message.Uidl}, folder={db_message.Folder}, IsRemoved={db_message.IsRemoved}.");
 
-                    if (db_message.IsNew ^ unread) _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { db_message.Id }, unread, true);
-                    if (db_message.Importance ^ important) _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { db_message.Id }, important);
-                    if (removed) _mailEnginesFactory.MessageEngine.SetRemoved(new List<int>() { db_message.Id });
-                
+                bool unread = !imap_message.Flags.Value.HasFlag(MessageFlags.Seen);
+                bool important = imap_message.Flags.Value.HasFlag(MessageFlags.Flagged);
+                bool removed = imap_message.Flags.Value.HasFlag(MessageFlags.Deleted);
+
+                if (db_message.IsNew ^ unread) _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { db_message.Id }, unread, true);
+                if (db_message.Importance ^ important) _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { db_message.Id }, important);
+                if (removed) _mailEnginesFactory.MessageEngine.SetRemoved(new List<int>() { db_message.Id });
             }
             catch (Exception ex)
             {
@@ -388,7 +362,7 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private async Task<bool> CreateMessageInDB(IMessageSummary imap_message, IMailFolder imapFolder)
+        private bool CreateMessageInDB(MimeMessage message, IMessageSummary imap_message)
         {
             bool result = true;
 
@@ -402,8 +376,6 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                var message = await imapFolder.GetMessageAsync(imap_message.UniqueId, CancelToken);
-
                 message.FixDateIssues(imap_message?.InternalDate, _log);
 
                 bool unread = false, important = false;
@@ -417,7 +389,7 @@ namespace ASC.Mail.ImapSync
                 message.FixEncodingIssues(_log);
 
                 var uid = imap_message.UniqueId.ToString();
-                var folder = foldersDictionary[imapFolder];
+                var folder = workFolder;
                 var uidl = string.Format("{0}-{1}", uid, (int)folder.Folder);
 
                 _log.Info($"Get message (UIDL: '{uidl}', MailboxId = {Account.MailBoxId}, Address = '{Account.EMail}')");
