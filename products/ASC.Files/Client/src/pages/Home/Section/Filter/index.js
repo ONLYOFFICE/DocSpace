@@ -98,9 +98,39 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { t, customNames, user, filter, personal } = this.props;
+    const {
+      t,
+      customNames,
+      user,
+      filter,
+      personal,
+      isRecentFolder,
+      isFavoritesFolder,
+    } = this.props;
     const { selectedItem } = filter;
     const { usersCaption, groupsCaption } = customNames;
+
+    const folders =
+      !isFavoritesFolder && !isRecentFolder
+        ? [
+            {
+              key: FilterType.FoldersOnly.toString(),
+              group: "filter-filterType",
+              label: t("Translations:Folders"),
+            },
+          ]
+        : "";
+
+    const allFiles =
+      !isFavoritesFolder && !isRecentFolder
+        ? [
+            {
+              key: FilterType.FilesOnly.toString(),
+              group: "filter-filterType",
+              label: t("AllFiles"),
+            },
+          ]
+        : "";
 
     const options = [
       {
@@ -109,11 +139,7 @@ class SectionFilterContent extends React.Component {
         label: t("Common:Type"),
         isHeader: true,
       },
-      {
-        key: FilterType.FoldersOnly.toString(),
-        group: "filter-filterType",
-        label: t("Translations:Folders"),
-      },
+      ...folders,
       {
         key: FilterType.DocumentsOnly.toString(),
         group: "filter-filterType",
@@ -144,11 +170,7 @@ class SectionFilterContent extends React.Component {
         group: "filter-filterType",
         label: t("Archives"),
       },
-      {
-        key: FilterType.FilesOnly.toString(),
-        group: "filter-filterType",
-        label: t("AllFiles"),
-      },
+      ...allFiles,
     ];
 
     const filterOptions = [...options];
@@ -182,19 +204,20 @@ class SectionFilterContent extends React.Component {
         }
       );
 
-    filterOptions.push(
-      {
-        key: "filter-folders",
-        group: "filter-folders",
-        label: t("Translations:Folders"),
-        isHeader: true,
-      },
-      {
-        key: "false",
-        group: "filter-folders",
-        label: t("NoSubfolders"),
-      }
-    );
+    if (!isRecentFolder && !isFavoritesFolder)
+      filterOptions.push(
+        {
+          key: "filter-folders",
+          group: "filter-folders",
+          label: t("Translations:Folders"),
+          isHeader: true,
+        },
+        {
+          key: "false",
+          group: "filter-folders",
+          label: t("NoSubfolders"),
+        }
+      );
 
     //console.log("getData (filterOptions)", filterOptions);
 
@@ -340,6 +363,7 @@ export default inject(
 
     const { user } = auth.userStore;
     const { customNames, culture, personal } = auth.settingsStore;
+    const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
 
     const { search, filterType, authorType } = filter;
     const isFiltered =
@@ -358,6 +382,8 @@ export default inject(
       filter,
       viewAs,
       isFiltered,
+      isFavoritesFolder,
+      isRecentFolder,
 
       setIsLoading,
       fetchFiles,
