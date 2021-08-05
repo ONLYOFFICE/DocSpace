@@ -61,7 +61,7 @@ class SectionFilterContent extends React.Component {
     const { setIsLoading, filter, selectedFolderId, fetchFiles } = this.props;
 
     const filterType = getFilterType(data.filterValues) || null;
-    const search = data.inputValue || "";
+    const search = data.inputValue || null;
     const sortBy = data.sortId;
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";

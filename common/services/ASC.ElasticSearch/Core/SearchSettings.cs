@@ -157,7 +157,7 @@ namespace ASC.ElasticSearch.Core
 
         public bool CanIndexByContent(Type t, int tenantId)
         {
-            if (typeof(ISearchItemDocument).IsAssignableFrom(t))
+            if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
             {
                 return false;
             }

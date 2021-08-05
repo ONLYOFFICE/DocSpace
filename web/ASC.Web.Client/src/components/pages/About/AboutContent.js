@@ -4,18 +4,18 @@ import Link from "@appserver/components/link";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
+import { isDesktop } from "react-device-detect";
 
 const AboutBody = styled.div`
   width: 100%;
 
   .avatar {
-    margin-top: 32px;
+    margin-top: ${isDesktop ? "0px" : "32px"};
     margin-bottom: 16px;
   }
 
-  .row {
-    display: flex;
-    flex-direction: row;
+  .row-el {
+    display: inline-block;
   }
 
   .copyright {
@@ -37,48 +37,56 @@ const AboutContent = ({ personal, versionAppServer }) => {
     <AboutBody>
       <div className="avatar">
         {personal ? (
-          <ReactSVG src="images/logo_personal_about.svg" />
+          <ReactSVG src="/images/logo_personal_about.svg" />
         ) : (
-          <img src="images/dark_general.png" alt="Logo" />
+          <img src="/images/dark_general.png" alt="Logo" />
         )}
       </div>
 
       <div className="row">
-        <Text fontSize="13px">{t("DocumentManagement")}:</Text>
+        <Text className="row-el" fontSize="13px">
+          {t("DocumentManagement")}:
+        </Text>
         <Link
+          className="row-el"
           color="#2DA7DB"
           fontSize="13px"
           fontWeight="600"
           href={link}
           target="_blank"
         >
-          ONLYOFFICE App Server
+          &nbsp;ONLYOFFICE App Server&nbsp;
         </Link>
-        <Text fontSize="13px" fontWeight="600">
+        <Text className="row-el" fontSize="13px" fontWeight="600">
           v.{versionAppServer}
         </Text>
       </div>
 
       <div className="row">
-        <Text fontSize="13px">{t("OnlineEditors")}:</Text>
+        <Text className="row-el" fontSize="13px">
+          {t("OnlineEditors")}:
+        </Text>
         <Link
+          className="row-el"
           color="#2DA7DB"
           fontSize="13px"
           fontWeight="600"
           href={link}
           target="_blank"
         >
-          ONLYOFFICE Docs
+          &nbsp;ONLYOFFICE Docs&nbsp;
         </Link>
-        <Text fontSize="13px" fontWeight="600">
+        <Text className="row-el" fontSize="13px" fontWeight="600">
           v.{versionEditor}
         </Text>
       </div>
 
       <div className="row">
-        <Text fontSize="13px">{t("SoftwareLicense")}: </Text>
-        <Text fontSize="13px" fontWeight="600">
-          {license}
+        <Text className="row-el" fontSize="13px">
+          {t("SoftwareLicense")}:{" "}
+        </Text>
+        <Text className="row-el" fontSize="13px" fontWeight="600">
+          &nbsp;{license}
         </Text>
       </div>
 
@@ -97,15 +105,19 @@ const AboutContent = ({ personal, versionAppServer }) => {
           {t("AboutCompanyTelTitle")}: {phone}
         </Text>
       </div>
+
       <div className="row">
-        <Text fontSize="13px">{t("AboutCompanyEmailTitle")}:</Text>
+        <Text className="row-el" fontSize="13px">
+          {t("AboutCompanyEmailTitle")}:
+        </Text>
         <Link
+          className="row-el"
           color="#2DA7DB"
           fontSize="13px"
           fontWeight="600"
           href={`mailto:${email}`}
         >
-          {email}
+          &nbsp;{email}
         </Link>
       </div>
     </AboutBody>

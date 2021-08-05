@@ -39,6 +39,7 @@ import SharingDialog from "files/SharingDialog";
 import { createNewFile, getDefaultFileName, openDocEditor } from "files/utils";
 import i18n from "./i18n";
 import { FolderType } from "@appserver/common/constants";
+
 let documentIsReady = false;
 
 const text = "text";
@@ -362,6 +363,16 @@ const Editor = () => {
         goback,
       };
 
+      if (url.indexOf("anchor") !== -1) {
+        const splitUrl = url.split("anchor=");
+        const decodeURI = decodeURIComponent(splitUrl[1]);
+        const obj = JSON.parse(decodeURI);
+
+        config.editorConfig.actionLink = {
+          action: obj.action,
+        };
+      }
+
       let onRequestSharingSettings;
       let onRequestRename;
       let onRequestCreateNew;
@@ -391,6 +402,7 @@ const Editor = () => {
           onRequestSharingSettings,
           onRequestRename,
           onRequestCreateNew,
+          onMakeActionLink: onMakeActionLink,
         },
       };
 
@@ -447,6 +459,24 @@ const Editor = () => {
   const onSDKRequestRename = (event) => {
     const title = event.data;
     updateFile(fileInfo.id, title);
+  };
+
+  const onMakeActionLink = (event) => {
+    var ACTION_DATA = event.data;
+
+    const link = generateLink(ACTION_DATA);
+
+    const urlFormation = !config.editorConfig.actionLink
+      ? url
+      : url.split("&anchor=")[0];
+
+    const linkFormation = `${urlFormation}&anchor=${link}`;
+
+    docEditor.setActionLink(linkFormation);
+  };
+
+  const generateLink = (actionData) => {
+    return encodeURIComponent(JSON.stringify(actionData));
   };
 
   const onCancel = () => {

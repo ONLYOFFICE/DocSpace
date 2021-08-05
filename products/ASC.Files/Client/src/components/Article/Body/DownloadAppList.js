@@ -8,7 +8,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 
 const StyledDownloadAppList = styled.div`
-  margin-top: 42px;
+  margin-top: 20px;
 
   .download-app-list {
     padding-top: 3px;
@@ -35,7 +35,7 @@ const DownloadAppListContainer = ({ t }) => {
 
   return (
     <StyledDownloadAppList>
-      <Text color="#555F65" fontSize="14px" fontWeight={600}>
+      <Text color="#83888d" fontSize="14px" fontWeight={600}>
         {t("Translations:DownloadApps")}
       </Text>
       <div className="download-app-list">

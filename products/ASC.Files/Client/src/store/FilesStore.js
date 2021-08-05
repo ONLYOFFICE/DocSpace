@@ -405,6 +405,8 @@ class FilesStore {
       isShareFolder,
     } = this.treeFoldersStore;
 
+    const { canWebEdit } = this.formatsStore.docserviceStore;
+
     const { isRootFolder } = this.selectedFolderStore;
 
     const isThirdPartyFolder = item.providerKey && isRootFolder;
@@ -415,8 +417,6 @@ class FilesStore {
     const { isDesktopClient, personal } = this.settingsStore;
 
     if (isFile) {
-      const isNotSupported = [0, 1].includes(item.fileType); //TODO: maybe dirty
-
       let fileOptions = [
         //"open",
         "edit",
@@ -681,7 +681,11 @@ class FilesStore {
         );
       }
 
-      if (isNotSupported) {
+      if (
+        !canWebEdit(item.fileExst) &&
+        !fileOptions.includes("view") &&
+        item.fileExst !== ".pdf"
+      ) {
         fileOptions = this.removeOptions(fileOptions, [
           "edit",
           "preview",
