@@ -8,6 +8,9 @@ import toastr from "@appserver/components/toast/toastr";
 
 import { EncryptedFileIcon } from "../components/Icons";
 import { checkProtocol, createTreeFolders } from "../helpers/files-helpers";
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../package.json";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
@@ -161,7 +164,7 @@ export default function withFileActions(WrappedFileItem) {
     };
     onFilesClick = (e) => {
       const {
-        filter,
+        isDesktop,
         parentFolder,
         setIsLoading,
         fetchFiles,
@@ -224,7 +227,19 @@ export default function withFileActions(WrappedFileItem) {
         if (fileStatus === 2) this.onMarkAsRead(id);
 
         if (canWebEdit) {
-          return openDocEditor(id, providerKey);
+          let tab =
+            !isDesktop && fileExst
+              ? window.open(
+                  combineUrl(
+                    AppServerConfig.proxyURL,
+                    config.homepage,
+                    "/products/files/doceditor"
+                  ),
+                  "_blank"
+                )
+              : null;
+
+          return openDocEditor(id, providerKey, tab);
         }
 
         if (isImage || isSound || isVideo) {
