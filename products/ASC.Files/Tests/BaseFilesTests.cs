@@ -63,7 +63,7 @@ namespace ASC.Files.Tests
                 configuration["testAssembly"] = testAssembly;
             }
 
-            using var db = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+            using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
             db.Value.Migrate();
         }
     }
