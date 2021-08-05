@@ -273,6 +273,7 @@ class VideoViewer extends Component {
 
   onKeydown = (e) => {
     if (e.keyCode === 32) this.handlePlayPause();
+    if (e.keyCode === 37 || e.keyCode === 39) this.setState({ playing: false });
   };
 
   handlePlayPause = () => {
