@@ -34,6 +34,7 @@ using ASC.Projects.Core.Domain;
 using ASC.Projects.Core.Domain.Reports;
 using ASC.Projects.Engine;
 using ASC.Projects.Model;
+using ASC.Projects.Model.Tags;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
@@ -60,12 +61,12 @@ namespace ASC.Api.Projects
         }
 
         [Create(@"tag")]
-        public ObjectWrapperBase CreateNewTag(string data)
+        public ObjectWrapperBase CreateNewTag(ModelCreateTag model)
         {
-            if (string.IsNullOrEmpty(data)) throw new ArgumentException("data");
+            if (string.IsNullOrEmpty(model.Data)) throw new ArgumentException("data");
             ProjectSecurity.DemandCreate<Project>(null);
 
-            var result = EngineFactory.GetTagEngine().Create(data);
+            var result = EngineFactory.GetTagEngine().Create(model.Data);
 
             return new ObjectWrapperBase { Id = result.Key, Title = result.Value };
         }
@@ -78,10 +79,10 @@ namespace ASC.Api.Projects
         }
 
         [Read(@"tag/search")]
-        public string[] GetTagsByName(string tagName)
+        public string[] GetTagsByName(ModelSearch model)
         {
-            return !string.IsNullOrEmpty(tagName) && tagName.Trim() != string.Empty
-                       ? EngineFactory.GetTagEngine().GetTags(tagName.Trim()).Select(r => r.Value).ToArray()
+            return !string.IsNullOrEmpty(model.TagName) && model.TagName.Trim() != string.Empty
+                       ? EngineFactory.GetTagEngine().GetTags(model.TagName.Trim()).Select(r => r.Value).ToArray()
                        : new string[0];
         }
     }

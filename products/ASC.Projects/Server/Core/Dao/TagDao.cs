@@ -49,7 +49,8 @@ namespace ASC.Projects.Data.DAO
             var tag = new DbTag()
             {
                 Title = data,
-                LastModifiedOn = DateTime.UtcNow
+                LastModifiedOn = DateTime.UtcNow,
+                TenantId = Tenant
             };
             WebProjectsContext.Tag.Add(tag);
             WebProjectsContext.SaveChanges();
@@ -59,6 +60,7 @@ namespace ASC.Projects.Data.DAO
         public Dictionary<int, string> GetTags()
         {
             return WebProjectsContext.Tag
+                .Where(t=> t.TenantId == Tenant)
                 .OrderBy(t=> t.Title)
                 .ToDictionary(t=> t.Id, t=> t.Title);
         }

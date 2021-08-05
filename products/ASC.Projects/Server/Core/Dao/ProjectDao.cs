@@ -411,8 +411,8 @@ namespace ASC.Projects.Data.DAO
         {
             return WebProjectsContext.Project
                 .Where(p => projectIDs.Contains(p.Id))
-                .Select(p => ToProject(p))
-                .ToList();
+                .ToList()
+                .ConvertAll(p => ToProject(p));
         }
 
         public bool IsExists(int projectId)

@@ -13,8 +13,8 @@ namespace ASC.Projects.EF
         public string Title { get; set; }
         public int TenantId { get; set; }
         public string CreateBy { get; set; }
-        public DateTime CreateOn { get; set; }
-        public DateTime LastModifiedOn { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public DateTime? LastModifiedOn { get; set; }
         public string LastModifiedBy { get; set; }
     }
 
