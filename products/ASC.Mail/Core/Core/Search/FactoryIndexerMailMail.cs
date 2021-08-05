@@ -25,15 +25,20 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
+using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Entities;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Search
@@ -41,6 +46,9 @@ namespace ASC.Mail.Core.Search
     [Scope(Additional = typeof(FactoryIndexerMailMailExtension))]
     public sealed class FactoryIndexerMailMail : FactoryIndexer<MailMail>
     {
+        private Lazy<MailDbContext> LazyMailDbContext { get; }
+        private MailDbContext MailDbContext { get => LazyMailDbContext.Value; }
+
         public FactoryIndexerMailMail(
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
@@ -48,23 +56,19 @@ namespace ASC.Mail.Core.Search
             FactoryIndexer factoryIndexer,
             BaseIndexer<MailMail> baseIndexer,
             IServiceProvider serviceProvider,
-            MailDaoFactory daoFactory,
+            DbContextManager<MailDbContext> dbContext,
             ICache cache)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
-            MailDaoFactory = daoFactory;
+            LazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("mail"));
         }
-
-        public MailDaoFactory MailDaoFactory { get; }
 
         public override void IndexAll()
         {
-            /*var entityDao = DaoFactory.GetCasesDao();
-
-            IQueryable<DbCase> GetBaseQuery(DateTime lastIndexed) =>
-                entityDao.CrmDbContext.Cases
-                        .Where(r => r.LastModifedOn >= lastIndexed)
-                        .Join(entityDao.CrmDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
+            IQueryable<MailMail> GetBaseQuery(DateTime lastIndexed) =>
+                MailDbContext.MailMail
+                        .Where(r => r.TimeModified >= lastIndexed)
+                        .Join(MailDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
                         .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active)
                         .Select(r => r.DbEntity);
 
@@ -96,7 +100,7 @@ namespace ASC.Mail.Core.Search
                                 .AsNoTracking()
                                 .Where(r => r.Id >= start)
                                 .OrderBy(x => x.Id)
-                                .Skip(BaseIndexer<DbCase>.QueryLimit)
+                                .Skip(BaseIndexer<MailMail>.QueryLimit)
                                 .Select(x => x.Id)
                                 .FirstOrDefault();
 
@@ -126,8 +130,7 @@ namespace ASC.Mail.Core.Search
                 Logger.Error(e);
 
                 throw;
-            }*/
-            throw new NotImplementedException();
+            }
         }
     }
 

@@ -3,19 +3,23 @@ using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using Microsoft.EntityFrameworkCore;
+using ASC.Core.Common.EF.Model;
+
+using DbTenant = ASC.Core.Common.EF.Model.DbTenant;
+using CrmContact = ASC.Mail.Core.Dao.Entities.CrmContact;
+using System.Collections.Generic;
+using System;
 
 namespace ASC.Mail.Core.Dao
 {
     public partial class MailDbContext : BaseDbContext
     {
-        public MailDbContext()
-        {
-        }
+        public MailDbContext() { }
 
-        public MailDbContext(DbContextOptions<MailDbContext> options)
-            : base(options)
-        {
-        }
+        public MailDbContext(DbContextOptions<MailDbContext> options) : base(options) { }
+
+        public class MySqlMailDbContext : MailDbContext { }
+        public class PostgreSqlMailDbContext : MailDbContext { }
 
         public virtual DbSet<MailAlert> MailAlerts { get; set; }
         public virtual DbSet<MailAttachment> MailAttachment { get; set; }
@@ -56,85 +60,63 @@ namespace ASC.Mail.Core.Dao
         public virtual DbSet<MailUserFolderXMail> MailUserFolderXMail { get; set; }
         public virtual DbSet<CrmContact> CrmContact { get; set; }
         public virtual DbSet<CrmContactInfo> CrmContactInfo { get; set; }
+        public virtual DbSet<DbTenant> Tenants { get; set; }
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlMailDbContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlMailDbContext() } ,
+                };
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            ModelBuilderWrapper.From(modelBuilder, Provider)
+                .AddDbTenant();
+
             modelBuilder.AddMailAlert();
-
             modelBuilder.AddMailAttachment();
-
             modelBuilder.AddMailChain();
-
             modelBuilder.AddMailChainXCrmEntity();
-
             modelBuilder.AddMailContactInfo();
-
             modelBuilder.AddMailContact();
-
             modelBuilder.AddMailDisplayImages();
-
             modelBuilder.AddMailFilter();
-
             modelBuilder.AddMailFolder();
-
             modelBuilder.AddMailFolderCounters();
-
             modelBuilder.AddMailImapFlags();
-
             modelBuilder.AddMailImapSpecialMailbox();
-
             modelBuilder.AddMailMail();
-
             modelBuilder.AddMailMailbox();
-
             modelBuilder.AddMailMailboxAutoreply();
-
             modelBuilder.AddMailMailboxAutoreplyHistory();
-
             modelBuilder.AddMailMailboxDomain();
-
             modelBuilder.AddMailMailboxProvider();
-
             modelBuilder.AddMailMailboxServer();
-
             modelBuilder.AddMailMailboxSignature();
-
             modelBuilder.AddMailPopUnorderedDomain();
-
             modelBuilder.AddMailServerAddress();
-
             modelBuilder.AddMailServerDns();
-
             modelBuilder.AddMailServerDomain();
-
             modelBuilder.AddMailServerMailGroup();
-
             modelBuilder.AddMailServerMailGroupXMailServerAddress();
-
             modelBuilder.AddMailServerServer();
-
             modelBuilder.AddMailServerServerType();
-
             modelBuilder.AddMailServerServerXTenant();
-
             modelBuilder.AddMailTag();
-
             modelBuilder.AddCrmTag();
-
             modelBuilder.AddCrmEntityTag();
-
             modelBuilder.AddMailTagAddresses();
-
             modelBuilder.AddMailTagMail();
-
             modelBuilder.AddMailUserFolder();
-
             modelBuilder.AddMailUserFolderTree();
-
             modelBuilder.AddMailUserFolderXMail();
-
             modelBuilder.AddCrmContact();
-
             modelBuilder.AddCrmContactInfo();
 
             OnModelCreatingPartial(modelBuilder);

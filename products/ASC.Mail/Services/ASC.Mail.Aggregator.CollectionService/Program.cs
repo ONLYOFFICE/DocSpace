@@ -100,6 +100,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
                     diHelper.TryAdd<FactoryIndexerMailMail>();
+                    diHelper.TryAdd<FactoryIndexerMailContact>();
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     services.AddSingleton(new ConsoleParser(args));
                     diHelper.TryAdd<AggregatorServiceLauncher>();
@@ -110,7 +111,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, false, false);
+                    builder.Register(context.Configuration, false, false, "search.json");
                 });
     }
 }

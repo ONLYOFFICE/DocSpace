@@ -25,11 +25,11 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailMailboxDomain>(entity =>
             {
                 entity.HasIndex(e => new { e.Name, e.IdProvider })
-                    .HasName("id_provider");
+                    .HasDatabaseName("id_provider");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

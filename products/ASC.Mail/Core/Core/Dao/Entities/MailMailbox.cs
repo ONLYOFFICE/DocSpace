@@ -31,8 +31,6 @@ namespace ASC.Mail.Core.Dao.Entities
         public bool IsProcessed { get; set; }
         [Column("is_server_mailbox", TypeName = "tinyint(1) unsigned")]
         public bool IsServerMailbox { get; set; }
-        //[Column("is_teamlab_mailbox", TypeName = "tinyint(1) unsigned")]
-        //public bool IsTeamlabMailbox { get; set; }
         [Column("imap", TypeName = "tinyint(1) unsigned")]
         public bool Imap { get; set; }
         [Column("user_online", TypeName = "tinyint(1) unsigned")]
@@ -87,26 +85,25 @@ namespace ASC.Mail.Core.Dao.Entities
             {
                 entity.Property(e => e.Id)
                     .ValueGeneratedOnAdd();
-                //.HasConversion(v => (uint)v, v => (int)v);
 
                 entity.HasIndex(e => e.Address)
-                    .HasName("address_index");
+                    .HasDatabaseName("address_index");
 
                 entity.HasIndex(e => e.IdInServer)
-                    .HasName("main_mailbox_id_in_server_mail_mailbox_server_id");
+                    .HasDatabaseName("main_mailbox_id_in_server_mail_mailbox_server_id");
 
                 entity.HasIndex(e => e.IdSmtpServer)
-                    .HasName("main_mailbox_id_smtp_server_mail_mailbox_server_id");
+                    .HasDatabaseName("main_mailbox_id_smtp_server_mail_mailbox_server_id");
 
                 entity.HasIndex(e => new { e.DateChecked, e.DateLoginDelayExpires })
-                    .HasName("date_login_delay_expires");
+                    .HasDatabaseName("date_login_delay_expires");
 
                 entity.HasIndex(e => new { e.Tenant, e.IdUser })
-                    .HasName("user_id_index");
+                    .HasDatabaseName("user_id_index");
 
                 entity.Property(e => e.Address)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.BeginDate).HasDefaultValueSql("'1975-01-01 00:00:00'");
 
@@ -118,35 +115,35 @@ namespace ASC.Mail.Core.Dao.Entities
 
                 entity.Property(e => e.EmailInFolder)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Enabled).HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ImapIntervals)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LoginDelay).HasDefaultValueSql("'30'");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Pop3Password)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.SmtpPassword)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Token)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

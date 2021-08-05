@@ -33,20 +33,20 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailServerDomain>(entity =>
             {
                 entity.HasIndex(e => e.DateChecked)
-                    .HasName("date_checked");
+                    .HasDatabaseName("date_checked");
 
                 entity.HasIndex(e => e.Name)
-                    .HasName("name")
+                    .HasDatabaseName("name")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.DateChecked).HasDefaultValueSql("'1975-01-01 00:00:00'");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

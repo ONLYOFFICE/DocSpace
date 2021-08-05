@@ -43,14 +43,14 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailServerAddress>(entity =>
             {
                 entity.HasIndex(e => e.IdDomain)
-                    .HasName("domain_index");
+                    .HasDatabaseName("domain_index");
 
                 entity.HasIndex(e => e.IdMailbox)
-                    .HasName("id_mailbox_fk_index");
+                    .HasDatabaseName("id_mailbox_fk_index");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

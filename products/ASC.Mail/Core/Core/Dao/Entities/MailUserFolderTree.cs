@@ -34,7 +34,7 @@ namespace ASC.Mail.Core.Dao.Entities
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.FolderId)
-                    .HasName("folder_id");
+                    .HasDatabaseName("folder_id");
             });
 
             return modelBuilder;

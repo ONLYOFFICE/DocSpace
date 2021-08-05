@@ -37,18 +37,18 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<CrmContactInfo>(entity =>
             {
                 entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
+                    .HasDatabaseName("last_modifed_on");
 
                 entity.HasIndex(e => new { e.TenantId, e.ContactId })
-                    .HasName("IX_Contact");
+                    .HasDatabaseName("IX_Contact");
 
                 entity.Property(e => e.Data)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

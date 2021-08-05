@@ -28,15 +28,15 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<CrmTag>(entity =>
             {
                 entity.HasIndex(e => new { e.IdTenant })
-                    .HasName("username");
+                    .HasDatabaseName("username");
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.EntityType)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

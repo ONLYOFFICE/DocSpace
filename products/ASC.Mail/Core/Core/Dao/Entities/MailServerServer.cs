@@ -40,16 +40,16 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailServerServer>(entity =>
             {
                 entity.HasIndex(e => e.ServerType)
-                    .HasName("mail_server_server_type_server_type_fk_id");
+                    .HasDatabaseName("mail_server_server_type_server_type_fk_id");
 
                 entity.Property(e => e.ConnectionString)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.MxRecord)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

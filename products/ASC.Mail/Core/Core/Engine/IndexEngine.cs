@@ -133,20 +133,18 @@ namespace ASC.Mail.Core.Engine
 
         private MailMail InitMailDocument(MailMail mail)
         {
-            var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
             tenantManager.SetCurrentTenant(mail.TenantId);
 
-            if (!FactoryIndexerMailMail.CanIndexByContent())
+            mail.Document = new Document
             {
-                mail.Document = new Document
-                {
-                    Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
-                };
+                Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
+            };
 
-                return mail;
-            }
+            if (!FactoryIndexerMailMail.CanIndexByContent()) return mail;
+
             try
             {
                 var data = MailDaoFactory.GetMailDao().GetDocumentData(mail);

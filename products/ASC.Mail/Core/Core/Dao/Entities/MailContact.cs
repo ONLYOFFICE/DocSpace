@@ -78,22 +78,22 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailContact>(entity =>
             {
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Address })
-                    .HasName("tenant_id_user_name_address");
+                    .HasDatabaseName("tenant_id_user_name_address");
 
                 entity.Property(e => e.Address)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModified)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -101,7 +101,7 @@ namespace ASC.Mail.Core.Dao.Entities
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasMany(m => m.InfoList)
                     .WithOne(a => a.Contact)

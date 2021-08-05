@@ -43,34 +43,33 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailAttachment>(entity =>
             {
                 entity.HasIndex(e => new { e.IdMail, e.ContentId })
-                    .HasName("id_mail");
+                    .HasDatabaseName("id_mail");
 
                 entity.HasIndex(e => new { e.IdMailbox, e.Tenant })
-                    .HasName("id_mailbox");
+                    .HasDatabaseName("id_mailbox");
 
                 entity.HasIndex(e => new { e.Tenant, e.IdMail })
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.ContentId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.StoredName)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Type)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.HasOne(a => a.Mail)
                     .WithMany(m => m.Attachments)
                     .HasForeignKey(a => a.IdMail);
-                //.HasPrincipalKey(o => o.Id);
 
             });
 

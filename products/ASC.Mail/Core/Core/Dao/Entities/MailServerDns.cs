@@ -67,42 +67,42 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailServerDns>(entity =>
             {
                 entity.HasIndex(e => new { e.IdDomain, e.Tenant, e.IdUser })
-                    .HasName("id_domain_tenant_id_user");
+                    .HasDatabaseName("id_domain_tenant_id_user");
 
                 entity.Property(e => e.DkimPrivateKey)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.DkimPublicKey)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.DkimSelector)
                     .HasDefaultValueSql("'dkim'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.DkimTtl).HasDefaultValueSql("'300'");
 
                 entity.Property(e => e.DomainCheck)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IdDomain).HasDefaultValueSql("'-1'");
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Mx)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.MxTtl).HasDefaultValueSql("'300'");
 
                 entity.Property(e => e.Spf)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.SpfTtl).HasDefaultValueSql("'300'");
 

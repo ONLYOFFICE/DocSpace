@@ -82,11 +82,11 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailUserFolder>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.IdUser, e.ParentId })
-                    .HasName("tenant_user_parent");
+                    .HasDatabaseName("tenant_user_parent");
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ModifiedOn)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -94,7 +94,7 @@ namespace ASC.Mail.Core.Dao.Entities
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;
