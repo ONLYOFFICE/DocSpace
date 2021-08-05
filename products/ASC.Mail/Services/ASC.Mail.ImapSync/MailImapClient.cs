@@ -103,7 +103,13 @@ namespace ASC.Mail.ImapSync
 
                     if (actionFromCache == null) break;
 
-                    imapClient.TrySetFlagsInImap( );
+                    var imapfolder = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)actionFromCache.CurrentFolder).Key;
+
+                    if (imapfolder == null) continue;
+
+                    var uids = actionFromCache.Uidls.Select(x => SplittedUidl.ToUniqueId(x)).Where(x => x.IsValid).ToList();
+
+                    imapClient.TrySetFlagsInImap(imapfolder, uids, actionFromCache.Action);
                 }
             }
             catch (Exception ex)
@@ -190,25 +196,25 @@ namespace ASC.Mail.ImapSync
 
                 switch (newAction.FolderAction)
                 {
-                    case ImapAction.Action.Nothing:
+                    case MailUserAction.Nothing:
                         break;
-                    case ImapAction.Action.SetAsRead:
+                    case MailUserAction.SetAsRead:
                         _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, false);
                         break;
-                    case ImapAction.Action.SetAsUnread:
+                    case MailUserAction.SetAsUnread:
                         _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, true);
                         break;
-                    case ImapAction.Action.SetAsImportant:
+                    case MailUserAction.SetAsImportant:
                         _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, true);
                         break;
-                    case ImapAction.Action.SetAsNotImpotant:
+                    case MailUserAction.SetAsNotImpotant:
                         _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, false);
                         break;
-                    case ImapAction.Action.SetAsDeleted:
+                    case MailUserAction.SetAsDeleted:
                         break;
-                    case ImapAction.Action.RemovedFromFolder:
+                    case MailUserAction.RemovedFromFolder:
                         break;
-                    case ImapAction.Action.New:
+                    case MailUserAction.New:
                         break;
                     default:
                         break;

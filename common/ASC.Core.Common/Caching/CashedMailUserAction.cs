@@ -23,6 +23,8 @@ namespace ASC.Core.Common.Caching
         SetAsNotImpotant,
         SetAsDeleted,
         StartImapClient,
-        MoveTo
+        MoveTo,
+        New,
+        RemovedFromFolder
     }
 }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ASC.Core.Common.Caching;
+
 using MailKit;
 
 namespace ASC.Mail.ImapSync
@@ -12,18 +14,6 @@ namespace ASC.Mail.ImapSync
     {
         public IMailFolder Folder;
         public UniqueId UniqueId;
-        public Action FolderAction;
-
-        public enum Action
-        {
-            Nothing,
-            SetAsRead,
-            SetAsUnread,
-            SetAsImportant,
-            SetAsNotImpotant,
-            SetAsDeleted,
-            RemovedFromFolder,
-            New
-        }
+        public MailUserAction FolderAction;
     }
 }

@@ -63,5 +63,15 @@ namespace ASC.Mail.ImapSync
         {
             return $"{uniqueId.Id}-{(int)folder}";
         }
+
+        public static UniqueId ToUniqueId(string uidl)
+        {
+            if (!uint.TryParse(uidl.Split('-')[0], out uint uidlInt))
+            {
+                return UniqueId.Invalid;
+            }
+
+            return new UniqueId(uidlInt);
+        }
     }
 }

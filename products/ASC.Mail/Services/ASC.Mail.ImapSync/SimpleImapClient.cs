@@ -67,7 +67,7 @@ namespace ASC.Mail.ImapSync
                     {
                         ImapAction imapAction = new ImapAction()
                         {
-                            FolderAction = oldSeen ? ImapAction.Action.SetAsUnread : ImapAction.Action.SetAsRead,
+                            FolderAction = oldSeen ? MailUserAction.SetAsUnread : MailUserAction.SetAsRead,
                              Folder= imap_folder,
                               UniqueId= messageSummary.UniqueId
 
@@ -82,7 +82,7 @@ namespace ASC.Mail.ImapSync
                     {
                         ImapAction imapAction = new ImapAction()
                         {
-                            FolderAction = oldImportant ? ImapAction.Action.SetAsNotImpotant : ImapAction.Action.SetAsImportant,
+                            FolderAction = oldImportant ? MailUserAction.SetAsNotImpotant : MailUserAction.SetAsImportant,
                             Folder = imap_folder,
                             UniqueId = messageSummary.UniqueId
 
@@ -359,7 +359,7 @@ namespace ASC.Mail.ImapSync
             {
                 ImapAction imapAction = new ImapAction()
                 {
-                    FolderAction = ImapAction.Action.RemovedFromFolder,
+                    FolderAction = MailUserAction.RemovedFromFolder,
                     Folder = WorkFolder,
                     UniqueId = message.UniqueId
                 };
@@ -370,7 +370,7 @@ namespace ASC.Mail.ImapSync
             {
                 ImapAction imapAction = new ImapAction()
                 {
-                    FolderAction = ImapAction.Action.New,
+                    FolderAction = MailUserAction.New,
                     Folder = WorkFolder,
                     UniqueId = message.UniqueId
                 };
@@ -486,7 +486,7 @@ namespace ASC.Mail.ImapSync
             return true;
         }
 
-        public void TrySetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, ImapAction.Action action)
+        public void TrySetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, MailUserAction action)
         {
             var result = new Task(async() =>
             {
@@ -496,7 +496,7 @@ namespace ASC.Mail.ImapSync
             asyncTasks.Enqueue(result);
         }
 
-        private async Task<bool> SetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, ImapAction.Action action)
+        private async Task<bool> SetFlagsInImap(IMailFolder folder, List<UniqueId> uniqueIds, MailUserAction action)
         {
             if (folder == null) return false;
             if (uniqueIds.Count == 0) return false;
@@ -507,16 +507,16 @@ namespace ASC.Mail.ImapSync
 
                 switch (action)
                 {
-                    case ImapAction.Action.SetAsRead:
+                    case MailUserAction.SetAsRead:
                         await folder.AddFlagsAsync(uniqueIds, MessageFlags.Seen, true);
                         break;
-                    case ImapAction.Action.SetAsUnread:
+                    case MailUserAction.SetAsUnread:
                         await folder.RemoveFlagsAsync(uniqueIds, MessageFlags.Seen, true);
                         break;
-                    case ImapAction.Action.SetAsImportant:
+                    case MailUserAction.SetAsImportant:
                         await folder.AddFlagsAsync(uniqueIds, MessageFlags.Flagged, true);
                         break;
-                    case ImapAction.Action.SetAsNotImpotant:
+                    case MailUserAction.SetAsNotImpotant:
                         await folder.RemoveFlagsAsync(uniqueIds, MessageFlags.Flagged, true);
                         break;
 
