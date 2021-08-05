@@ -11,7 +11,7 @@ import ControlBtn from "./sub-components/control-btn";
 import StyledMediaViewer from "./StyledMediaViewer";
 import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
-import CrossIcon from "../../../../public/images/cross.react.svg";
+import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledVideoViewer = styled(VideoViewer)`
@@ -30,6 +30,7 @@ const ButtonKeys = Object.freeze({
   esc: 27,
   ctr: 17,
   one: 49,
+  del: 46,
 });
 
 const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
@@ -359,6 +360,10 @@ class MediaViewer extends React.Component {
             document.getElementsByClassName("iconContainer reset").length > 0 &&
             document.getElementsByClassName("iconContainer reset")[0].click();
           break;
+        case ButtonKeys.del:
+          this.onDelete();
+          break;
+
         default:
           break;
       }
@@ -436,7 +441,11 @@ class MediaViewer extends React.Component {
               onClick={this.props.onClose && this.props.onClose}
               className="mediaPlayerClose"
             >
-              <CrossIcon size="medium" /* isfill={true} */ color="#fff" />
+              <IconButton
+                color="#fff"
+                iconName="/static/images/cross.react.svg"
+                size={25}
+              />
             </ControlBtn>
           </div>
         </div>
