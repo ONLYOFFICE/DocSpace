@@ -308,6 +308,60 @@ namespace ASC.Api.Projects
             return ModelHelper.GetTaskWrapper(task);
         }
 
+        [Create(@"message/{messageid:int}/files")]
+        public MessageWrapper UploadFilesToMessage(int messageid, IEnumerable<int> files)
+        {
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
+            ProjectSecurity.DemandReadFiles(discussion.Project);
+
+            var filesList = files.ToList();
+            var attachments = new List<Files.Core.File<int>>();
+            foreach (var fileid in filesList)
+            {
+                var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
+                attachments.Add(file);
+                EngineFactory.GetMessageEngine().AttachFile(discussion, file.ID, true);
+            }
+
+            MessageService.Send(MessageAction.DiscussionAttachedFiles, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, attachments.Select(x => x.Title));
+
+            return ModelHelper.GetMessageWrapper(discussion);
+        }
+
+        [Delete(@"message/{messageid:int}/files")]
+        public MessageWrapper DetachFileFromMessage(int messageid, int fileid)
+        {
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
+            ProjectSecurity.DemandReadFiles(discussion.Project);
+
+            var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
+
+            EngineFactory.GetMessageEngine().DetachFile(discussion, fileid);
+            MessageService.Send(MessageAction.DiscussionDetachedFile, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, file.Title);
+
+            return ModelHelper.GetMessageWrapper(discussion);
+        }
+
+        [Delete(@"message/{messageid:int}/filesmany")]
+        public MessageWrapper DetachFileFromMessage(int messageid, IEnumerable<int> files)
+        {
+            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
+            ProjectSecurity.DemandReadFiles(discussion.Project);
+
+            var filesList = files.ToList();
+            var attachments = new List<Files.Core.File<int>>();
+            foreach (var fileid in filesList)
+            {
+                var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
+                attachments.Add(file);
+                EngineFactory.GetMessageEngine().DetachFile(discussion, fileid);
+            }
+
+            MessageService.Send(MessageAction.DiscussionDetachedFile, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, attachments.Select(x => x.Title));
+
+            return ModelHelper.GetMessageWrapper(discussion);
+        }
+
         internal TaskWrapper GetTask(Task task)
         {
             if (task.Milestone == 0) return ModelHelper.GetTaskWrapper(task);

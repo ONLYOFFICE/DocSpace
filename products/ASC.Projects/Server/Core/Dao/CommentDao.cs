@@ -68,11 +68,17 @@ namespace ASC.Projects.Data.DAO
         public List<int> Count(List<ProjectEntity> targets)
         {
             var target = targets.ConvertAll(target => target.UniqID);
-            return WebProjectsContext.Comment
+            var query = WebProjectsContext.Comment
                 .Where(c => target.Contains(c.TargetUniqId) && c.InActive == 0)
+                .AsEnumerable()
                 .GroupBy(c => c.TargetUniqId)
-                .Select(c => c.Count())
                 .ToList();
+            return targets.ConvertAll(
+                target =>
+                {
+                    var pair = query.Find(q => Equals(q.Key, target.UniqID));
+                    return pair == null ? 0 : pair.Count();
+                });
         }
 
         public int Count(DomainObject<Int32> target)

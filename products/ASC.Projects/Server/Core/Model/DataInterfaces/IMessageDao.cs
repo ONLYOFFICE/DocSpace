@@ -45,8 +45,10 @@ namespace ASC.Projects.Core.DataInterfaces
 
         bool IsExists(int id);
 
-        DbMessage Save(Message message);
+        Message SaveOrUpdate(Message message);
 
-        DbMessage Delete(int id);
+        Message Delete(int id);
+
+        DbMessage ToDbMessage(Message message);
     }
 }

@@ -199,7 +199,35 @@ namespace ASC.Projects.Model
 
         public MessageWrapperFull GetMessageWrapperFull(Message message, ProjectWrapperFull project, IEnumerable<EmployeeWraperFull> subscribers)
         {
-            var model = (MessageWrapperFull)GetMessageWrapper(message);
+            var model = new MessageWrapperFull();
+            model.Id = message.ID;
+            if (message.Project != null)
+            {
+                model.ProjectOwner = GetSimpleProjectWrapper(message.Project);
+            }
+            model.Title = message.Title;
+            model.Text = message.Description;
+            model.Created = new ApiDateTime(message.CreateOn, TimeSpan.Zero);
+            model.Updated = new ApiDateTime(message.LastModifiedOn, TimeSpan.Zero);
+
+            if (HttpContextAccessor.HttpContext.Request.Query.GetRequestValue("simple") != null)
+            {
+                model.CreatedById = message.CreateBy;
+                model.UpdatedById = message.LastModifiedBy;
+            }
+            else
+            {
+                model.CreatedBy = GetEmployeeWraper(message.CreateBy);
+                if (message.CreateBy != message.LastModifiedBy)
+                {
+                    model.UpdatedBy = GetEmployeeWraper(message.LastModifiedBy);
+                }
+            }
+
+            model.CanEdit = ProjectSecurity.CanEdit(message);
+            model.CommentsCount = message.CommentsCount;
+            model.Status = (int)message.Status;
+            model.CanCreateComment = ProjectSecurity.CanCreateComment(message);
             model.CanEditFiles = ProjectSecurity.CanEditFiles(message);
             model.CanReadFiles = ProjectSecurity.CanReadFiles(message.Project);
             model.Text = HtmlUtility.GetFull(model.Text);
@@ -210,7 +238,35 @@ namespace ASC.Projects.Model
 
         public MessageWrapperFull GetMessageWrapperFull(Message message, ProjectWrapperFull project, IEnumerable<EmployeeWraperFull> subscribers, IEnumerable<FileWrapper<int>> files, IEnumerable<CommentInfo> comments)
         {
-            var model = (MessageWrapperFull)GetMessageWrapper(message);
+            var model = new MessageWrapperFull();
+            model.Id = message.ID;
+            if (message.Project != null)
+            {
+                model.ProjectOwner = GetSimpleProjectWrapper(message.Project);
+            }
+            model.Title = message.Title;
+            model.Text = message.Description;
+            model.Created = new ApiDateTime(message.CreateOn, TimeSpan.Zero);
+            model.Updated = new ApiDateTime(message.LastModifiedOn, TimeSpan.Zero);
+
+            if (HttpContextAccessor.HttpContext.Request.Query.GetRequestValue("simple") != null)
+            {
+                model.CreatedById = message.CreateBy;
+                model.UpdatedById = message.LastModifiedBy;
+            }
+            else
+            {
+                model.CreatedBy = GetEmployeeWraper(message.CreateBy);
+                if (message.CreateBy != message.LastModifiedBy)
+                {
+                    model.UpdatedBy = GetEmployeeWraper(message.LastModifiedBy);
+                }
+            }
+
+            model.CanEdit = ProjectSecurity.CanEdit(message);
+            model.CommentsCount = message.CommentsCount;
+            model.Status = (int)message.Status;
+            model.CanCreateComment = ProjectSecurity.CanCreateComment(message);
             model.CanEditFiles = ProjectSecurity.CanEditFiles(message);
             model.CanReadFiles = ProjectSecurity.CanReadFiles(message.Project);
             model.Text = HtmlUtility.GetFull(model.Text);

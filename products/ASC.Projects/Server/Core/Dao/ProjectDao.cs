@@ -401,10 +401,10 @@ namespace ASC.Projects.Data.DAO
 
         public virtual Project GetById(int projectId)
         {
-            return WebProjectsContext.Project
+            var query =  WebProjectsContext.Project
                 .Where(p => p.Id == projectId)
-                .Select(p=> ToProject(p))
                 .SingleOrDefault();
+            return ToProject(query);
         }
 
         public List<Project> GetById(List<int> projectIDs)

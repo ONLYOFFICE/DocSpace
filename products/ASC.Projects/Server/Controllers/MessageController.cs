@@ -58,7 +58,7 @@ namespace ASC.Api.Projects
         }
 
         [Read(@"message/filter")]
-        public IEnumerable<MessageWrapper> GetMessageByFilter(ModelMessageByFilter model)
+        public IEnumerable<MessageWrapper> GetMessageByFilter(ModelMessageByFilter model)// toto check with all params
         {
             var filter = CreateFilter(EntityType.Message);
 
@@ -115,7 +115,6 @@ namespace ASC.Api.Projects
         [Update(@"message/{messageid:int}")]
         public MessageWrapperFull UpdateProjectMessage(int messageid, ModelUpdateMessage model)
         {
-
             var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
             var project = EngineFactory.GetProjectEngine().GetByID(model.ProjectId).NotFoundIfNull();
             ProjectSecurity.DemandEdit(discussion);
@@ -131,12 +130,12 @@ namespace ASC.Api.Projects
         }
 
         [Update(@"message/{messageid:int}/status")]
-        public MessageWrapper UpdateProjectMessage(int messageid, MessageStatus status)
+        public MessageWrapper UpdateProjectMessage(int messageid, ModelUpdateStatus model)
         {
             var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
             ProjectSecurity.DemandEdit(discussion);
 
-            discussion.Status = status;
+            discussion.Status = model.Status;
             EngineFactory.GetMessageEngine().ChangeStatus(discussion);
             MessageService.Send(MessageAction.DiscussionUpdated, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title);
 
@@ -171,60 +170,6 @@ namespace ASC.Api.Projects
             var files = EngineFactory.GetMessageEngine().GetFiles(discussion).Select(f=> FileWrapperHelper.GetFileWrapper(f));
             var comments = EngineFactory.GetCommentEngine().GetComments(discussion);
             return ModelHelper.GetMessageWrapperFull(discussion, project, subscribers, files, comments.Where(r => r.Parent.Equals(Guid.Empty)).Select(x => ModelHelper.GetCommentInfo(comments, x, discussion)).ToList());
-        }
-
-        [Create(@"message/{messageid:int}/files")]
-        public MessageWrapper UploadFilesToMessage(int messageid, IEnumerable<int> files)
-        {
-            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
-            ProjectSecurity.DemandReadFiles(discussion.Project);
-
-            var filesList = files.ToList();
-            var attachments = new List<Files.Core.File<int>>();
-            foreach (var fileid in filesList)
-            {
-                var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
-                attachments.Add(file);
-                EngineFactory.GetMessageEngine().AttachFile(discussion, file.ID, true);
-            }
-
-            MessageService.Send(MessageAction.DiscussionAttachedFiles, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, attachments.Select(x => x.Title));
-
-            return ModelHelper.GetMessageWrapper(discussion);
-        }
-
-        [Delete(@"message/{messageid:int}/files")]
-        public MessageWrapper DetachFileFromMessage(int messageid, int fileid)
-        {
-            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
-            ProjectSecurity.DemandReadFiles(discussion.Project);
-
-            var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
-
-            EngineFactory.GetMessageEngine().DetachFile(discussion, fileid);
-            MessageService.Send(MessageAction.DiscussionDetachedFile, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, file.Title);
-
-            return ModelHelper.GetMessageWrapper(discussion);
-        }
-
-        [Delete(@"message/{messageid:int}/filesmany")]
-        public MessageWrapper DetachFileFromMessage(int messageid, IEnumerable<int> files)
-        {
-            var discussion = EngineFactory.GetMessageEngine().GetByID(messageid).NotFoundIfNull();
-            ProjectSecurity.DemandReadFiles(discussion.Project);
-
-            var filesList = files.ToList();
-            var attachments = new List<Files.Core.File<int>>();
-            foreach (var fileid in filesList)
-            {
-                var file = EngineFactory.GetFileEngine().GetFile(fileid).NotFoundIfNull();
-                attachments.Add(file);
-                EngineFactory.GetMessageEngine().DetachFile(discussion, fileid);
-            }
-
-            MessageService.Send(MessageAction.DiscussionDetachedFile, MessageTarget.Create(discussion.ID), discussion.Project.Title, discussion.Title, attachments.Select(x => x.Title));
-
-            return ModelHelper.GetMessageWrapper(discussion);
         }
 
         [Read(@"message")]
@@ -304,18 +249,10 @@ namespace ASC.Api.Projects
                 .OrderBy(r => r.DisplayName).ToList();
         }
 
-        ///<summary>
-        ///Get preview
-        ///</summary>
-        ///<short>
-        ///Get preview
-        ///</short>
-        ///<category>Discussions</category>
-        ///<param name="htmltext">html to create preview</param>
         [Create(@"message/discussion/preview")]
-        public string GetPreview(string htmltext)
+        public object GetPreview(ModelPreview model)
         {
-            return HtmlUtility.GetFull(htmltext);
+            return HtmlUtility.GetFull(model.Htmltext);
         }
     }
 }

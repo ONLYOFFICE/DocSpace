@@ -48,7 +48,7 @@ namespace ASC.Projects.Engine
         public EngineFactory EngineFactory { get; set; }
         public IDaoFactory DaoFactory { get; set; }
 
-        public ProjectEngine(IFactoryFileDao factoryFileDao, SecurityContext securityContext, TenantUtil tenantUtil, ParticipantHelper participantHelper, NotifyClient notifyClient, IDaoFactory daoFactory, EngineFactory engineFactory)
+        public ProjectEngine(IFactoryFileDao factoryFileDao, SecurityContext securityContext, TenantUtil tenantUtil, ParticipantHelper participantHelper, NotifyClient notifyClient, IDaoFactory daoFactory, EngineFactory engineFactory, ProjectSecurity projectSecurity)
         {
             CanReadDelegate = CanRead;
             FactoryFileDao = factoryFileDao;
@@ -58,6 +58,7 @@ namespace ASC.Projects.Engine
             NotifyClient = notifyClient;
             EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            ProjectSecurity = projectSecurity;
         }
 
         public ProjectEngine Init(bool disableNotificationParameter)

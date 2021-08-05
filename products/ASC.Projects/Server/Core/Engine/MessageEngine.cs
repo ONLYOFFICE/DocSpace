@@ -172,7 +172,7 @@ namespace ASC.Projects.Engine
             }
 
 
-            var db = DaoProjectFactory.GetMessageDao().Save(message);
+            DaoProjectFactory.GetMessageDao().SaveOrUpdate(message);
 
             if (fileIds != null)
             {
@@ -187,7 +187,7 @@ namespace ASC.Projects.Engine
 
             NotifyParticipiant(message, isNew, participant, GetFiles(message), notify);
 
-            _ = FactoryIndexer.IndexAsync(db);
+            _ = FactoryIndexer.IndexAsync(DaoProjectFactory.GetMessageDao().ToDbMessage(message));
 
             return message;
         }
@@ -198,7 +198,7 @@ namespace ASC.Projects.Engine
             message.LastModifiedOn = TenantUtil.DateTimeNow();
 
             ProjectSecurity.DemandEdit(message);
-            DaoProjectFactory.GetMessageDao().Save(message);
+            DaoProjectFactory.GetMessageDao().SaveOrUpdate(message);
 
             return message;
         }
@@ -210,7 +210,7 @@ namespace ASC.Projects.Engine
 
             ProjectSecurity.DemandEdit(message);
 
-            var db = DaoProjectFactory.GetMessageDao().Delete(message.ID);
+            DaoProjectFactory.GetMessageDao().Delete(message.ID);
 
             var recipients = GetSubscribers(message);
 
@@ -221,7 +221,7 @@ namespace ASC.Projects.Engine
 
             UnSubscribeAll(message);
 
-            _ = FactoryIndexer.DeleteAsync(db);  
+            _ = FactoryIndexer.DeleteAsync(DaoProjectFactory.GetMessageDao().ToDbMessage(message));  
         }
 
         #endregion
