@@ -4,7 +4,6 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import {
   addFileToRecentlyViewed,
-  createFile,
 } from "@appserver/common/api/files";
 import i18n from "./i18n";
 export const setDocumentTitle = (subTitle = null) => {
@@ -40,14 +39,6 @@ export const getDefaultFileName = (format) => {
   }
 };
 
-export const createNewFile = async (folderId, fileName, open = true) => {
-  const file = await createFile(folderId, fileName);
-
-  open && (await openDocEditor(file.id));
-
-  return file;
-};
-
 export const addFileToRecent = async (fileId) => {
   try {
     await addFileToRecentlyViewed(fileId);
@@ -66,16 +57,15 @@ export const openDocEditor = async (
     await addFileToRecent(id);
   }
 
+  if (!url) {
+    url = combineUrl(
+      AppServerConfig.proxyURL,
+      config.homepage,
+      `/doceditor?fileId=${id}`
+    );
+  }
+
   return Promise.resolve(
-    tab
-      ? (tab.location = url)
-      : window.open(
-          combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            `/doceditor?fileId=${id}`
-          ),
-          "_blank"
-        )
+    tab ? (tab.location = url) : window.open(url, "_blank")
   );
 };
