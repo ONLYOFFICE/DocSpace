@@ -91,13 +91,15 @@ namespace ASC.Projects.Data.DAO
             var taskIds = tmpTask.Select(t => t.ID).ToArray();
 
             var subtasks = WebProjectsContext.Subtask.Where(s => s.TenantId == Tenant && taskIds.Contains(s.TaskId))
-                .Select(s => ToSubTask(s));
+                .ToList()
+                .ConvertAll(s => ToSubTask(s));
 
-            tasks = tasks.GroupJoin(subtasks, task => task.ID, subtask => subtask.Task, (task, subtaskCol) =>
-            {
-                task.SubTasks.AddRange(subtaskCol.ToList());
-                return task;
-            }).ToList();
+            tasks = tasks
+                .GroupJoin(subtasks, task => task.ID, subtask => subtask.Task, (task, subtaskCol) =>
+                {
+                    task.SubTasks.AddRange(subtaskCol.ToList());
+                    return task;
+                }).ToList();
         }
 
         public virtual Subtask GetById(int id)

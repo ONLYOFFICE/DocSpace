@@ -153,11 +153,11 @@ namespace ASC.Api.Projects
         }
 
         [Update(@"milestone/{id:int}/status")]
-        public MilestoneWrapper UpdateMilestone(int id, MilestoneStatus status)
+        public MilestoneWrapper UpdateMilestone(int id, ModelUpdateStatus model)
         {
             var milestone = EngineFactory.GetMilestoneEngine().GetByID(id).NotFoundIfNull();
 
-            EngineFactory.GetMilestoneEngine().ChangeStatus(milestone, status);
+            EngineFactory.GetMilestoneEngine().ChangeStatus(milestone, model.Status);
             MessageService.Send(MessageAction.MilestoneUpdatedStatus, MessageTarget.Create(milestone.ID), milestone.Project.Title, milestone.Title, LocalizedEnumConverter.ConvertToString(milestone.Status));
 
             return ModelHelper.GetMilestoneWrapper(milestone);

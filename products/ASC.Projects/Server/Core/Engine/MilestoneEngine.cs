@@ -243,7 +243,7 @@ namespace ASC.Projects.Engine
                 if (milestone.CreateOn == default(DateTime)) milestone.CreateOn = TenantUtil.DateTimeNow();
 
                 ProjectSecurity.DemandCreate<Milestone>(milestone.Project);
-                milestone = DaoFactory.GetMilestoneDao().Save(milestone);
+                milestone = DaoFactory.GetMilestoneDao().SaveOrUpdate(milestone);
             }
             else
             {
@@ -254,7 +254,7 @@ namespace ASC.Projects.Engine
                 oldResponsible = oldMilestone.Responsible;
 
                 ProjectSecurity.DemandEdit(milestone);
-                milestone = DaoFactory.GetMilestoneDao().Save(milestone);
+                milestone = DaoFactory.GetMilestoneDao().SaveOrUpdate(milestone);
 
             }
 
@@ -293,7 +293,7 @@ namespace ASC.Projects.Engine
                 NotifyClient.SendAboutMilestoneResumed(senders, milestone);
             }
 
-            return DaoFactory.GetMilestoneDao().Save(milestone);
+            return DaoFactory.GetMilestoneDao().SaveOrUpdate(milestone);
         }
 
         private void NotifyMilestone(Milestone milestone, bool notifyResponsible, bool isNew, Guid oldResponsible)

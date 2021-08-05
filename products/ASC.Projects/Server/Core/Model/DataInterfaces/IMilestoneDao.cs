@@ -57,7 +57,7 @@ namespace ASC.Projects.Core.DataInterfaces
 
         bool IsExists(int id);
 
-        Milestone Save(Milestone milestone);
+        Milestone SaveOrUpdate(Milestone milestone);
 
         void Delete(int id);
 

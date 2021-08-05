@@ -96,16 +96,20 @@ namespace ASC.Projects.Data.DAO
         public List<Milestone> GetAll()
         {
             return CreateQuery()
-                .Select(q=> ToMilestone(q))
-                .ToList();
+                .AsEnumerable()
+                .GroupBy(q => new QueryMilestone{ Milestone = q.Milestone, Project = q.Project, ActiveTaskCount = q.ActiveTaskCount, ClosedTaskCount = q.ClosedTaskCount })
+                .ToList()
+                .ConvertAll(q => ToMilestone(q.Key));
         }
 
         public List<Milestone> GetByProject(int projectId)
         {
             return CreateQuery()
                 .Where(q => q.Milestone.ProjectId == projectId)
-                .Select(q=> ToMilestone(q))
-                .ToList();
+                .AsEnumerable()
+                .GroupBy(q => new QueryMilestone { Milestone = q.Milestone, Project = q.Project, ActiveTaskCount = q.ActiveTaskCount, ClosedTaskCount = q.ClosedTaskCount })
+                .ToList()
+                .ConvertAll(q => ToMilestone(q.Key));
         }
 
         public List<Milestone> GetByFilter(TaskFilter filter, bool isAdmin, bool checkAccess)
@@ -120,22 +124,27 @@ namespace ASC.Projects.Data.DAO
 
             query = CreateQueryFilter(query, filter, isAdmin, checkAccess);
 
-            var filtredQuery = query.OrderBy(q => q.Milestone.Status);
+            var groupQuery = query.AsEnumerable()
+                .GroupBy(q => new QueryMilestone { Milestone = q.Milestone, Project = q.Project, ActiveTaskCount = q.ActiveTaskCount, ClosedTaskCount = q.ClosedTaskCount });
+
+            var filtredQuery = groupQuery.OrderBy(q => q.Key.Milestone.Status);
 
             if (!string.IsNullOrEmpty(filter.SortBy))
             {
                 var sortColumns = filter.SortColumns["Milestone"];
                 sortColumns.Remove(filter.SortBy);
 
-                filtredQuery = filtredQuery.ThenBy(q => filter.SortBy == "create_on" ? q.Milestone.Id : q.Milestone.Id);
+                filtredQuery = filtredQuery.ThenBy(q => filter.SortBy == "create_on" ? q.Key.Milestone.Id : q.Key.Milestone.Id);
 
                 foreach (var sort in sortColumns.Keys)
                 {
-                    filtredQuery = filtredQuery.ThenBy(q => sort == "create_on" ? q.Milestone.Id : q.Milestone.Id);
+                    filtredQuery = filtredQuery.ThenBy(q => sort == "create_on" ? q.Key.Milestone.Id : q.Key.Milestone.Id);
                 }
             }
 
-            return filtredQuery.Select(q=> ToMilestone(q)).ToList();
+            return filtredQuery
+                .ToList()
+                .ConvertAll(q => ToMilestone(q.Key));
         }
 
         public int GetByFilterCount(TaskFilter filter, bool isAdmin, bool checkAccess)
@@ -187,8 +196,10 @@ namespace ASC.Projects.Data.DAO
         {
             return CreateQuery()
                 .Where(q=> q.Milestone.ProjectId == projectId && (MilestoneStatus)q.Milestone.Status == milestoneStatus)
-                .Select(q=> ToMilestone(q))
-                .ToList();
+                .AsEnumerable()
+                .GroupBy(q => new QueryMilestone { Milestone = q.Milestone, Project = q.Project, ActiveTaskCount = q.ActiveTaskCount, ClosedTaskCount = q.ClosedTaskCount })
+                .ToList()
+                .ConvertAll(q => ToMilestone(q.Key));
         }
 
         public List<Milestone> GetUpcomingMilestones(int offset, int max, params int[] projects)
@@ -204,8 +215,8 @@ namespace ASC.Projects.Data.DAO
 
             return query
                 .OrderBy(q => q.Milestone.Deadline)
-                .Select(q => ToMilestone(q))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToMilestone(q));
         }
 
         public List<Milestone> GetLateMilestones(int offset, int max)
@@ -214,12 +225,14 @@ namespace ASC.Projects.Data.DAO
             var now = TenantUtil.DateTimeNow();
             var yesterday = now.Date.AddDays(-1);
             return CreateQuery()
-                .Where(q => (ProjectStatus)q.Project.Status == ProjectStatus.Open && (MilestoneStatus)q.Milestone.Status == MilestoneStatus.Closed)
+                .Where(q => (ProjectStatus)q.Project.Status == ProjectStatus.Open && (MilestoneStatus)q.Milestone.Status != MilestoneStatus.Closed && q.Milestone.Deadline <= yesterday)
                 .Skip(offset)
                 .Take(max)
-                .OrderBy(q => q.Milestone.Deadline)
-                .Select(q=> ToMilestone(q))
-                .ToList();
+                .AsEnumerable()
+                .GroupBy(q => new QueryMilestone { Milestone = q.Milestone, Project = q.Project, ActiveTaskCount = q.ActiveTaskCount, ClosedTaskCount = q.ClosedTaskCount })
+                .OrderBy(q => q.Key.Milestone.Deadline)
+                .ToList()
+                .ConvertAll(q => ToMilestone(q.Key));
         }
 
         public List<Milestone> GetByDeadLine(DateTime deadline)
@@ -227,24 +240,28 @@ namespace ASC.Projects.Data.DAO
             return CreateQuery()
                 .Where(q => q.Milestone.Deadline == deadline)
                 .OrderBy(q => q.Milestone.Deadline)
-                .Select(q=> ToMilestone(q))
-                .ToList();
+                .AsEnumerable()
+                .GroupBy(q => new QueryMilestone { Milestone = q.Milestone, Project = q.Project, ActiveTaskCount = q.ActiveTaskCount, ClosedTaskCount = q.ClosedTaskCount })
+                .ToList()
+                .ConvertAll(q => ToMilestone(q.Key));
         }
 
         public virtual Milestone GetById(int id)
         {
-            return CreateQuery()
+            var query = CreateQuery()
                 .Where(q => q.Milestone.Id == id)
-                .Select(q=> ToMilestone(q))
                 .SingleOrDefault();
+            return ToMilestone(query);
         }
 
         public List<Milestone> GetById(int[] id)
         {
             return CreateQuery()
                 .Where(q => id.Contains(q.Milestone.Id))
-                .Select(q => ToMilestone(q))
-                .ToList();
+                .AsEnumerable()
+                .GroupBy(q => new QueryMilestone { Milestone = q.Milestone, Project = q.Project, ActiveTaskCount = q.ActiveTaskCount, ClosedTaskCount = q.ClosedTaskCount })
+                .ToList()
+                .ConvertAll(q => ToMilestone(q.Key)); ;
         }
 
         public bool IsExists(int id)
@@ -270,18 +287,44 @@ namespace ASC.Projects.Data.DAO
                 .ConvertAll(q => new object[] { q.Milestone.TenantId, q.Milestone.Id, q.Milestone.Deadline });
         }
 
-        public virtual Milestone Save(Milestone milestone)
+        public virtual Milestone SaveOrUpdate(Milestone milestone)
         {
             if (milestone.DeadLine.Kind != DateTimeKind.Local)
                 milestone.DeadLine = TenantUtil.DateTimeFromUtc(milestone.DeadLine);
 
             milestone.CreateOn = TenantUtil.DateTimeToUtc(milestone.CreateOn);
             milestone.LastModifiedOn = TenantUtil.DateTimeToUtc(milestone.LastModifiedOn);
-            var dbMilestone = ToDbMilestone(milestone);
-            WebProjectsContext.Milestone.Add(dbMilestone);
-            WebProjectsContext.SaveChanges();
-            milestone.ID = dbMilestone.Id;
-            return milestone;
+            if(WebProjectsContext.Milestone.Where(m=> m.Id == milestone.ID).Any())
+            {
+                var dbMilestone = WebProjectsContext.Milestone.Where(m => m.Id == milestone.ID).SingleOrDefault();
+                dbMilestone.Id = milestone.ID;
+                dbMilestone.Title = milestone.Title;
+                dbMilestone.CreateBy = milestone.CreateBy.ToString();
+                dbMilestone.CreateOn = TenantUtil.DateTimeFromUtc(milestone.CreateOn);
+                dbMilestone.LastModifiedBy = milestone.LastModifiedBy.ToString();
+                dbMilestone.LastModifiedOn = TenantUtil.DateTimeFromUtc(milestone.LastModifiedOn);
+                dbMilestone.Deadline = DateTime.SpecifyKind(milestone.DeadLine, DateTimeKind.Local);
+                dbMilestone.Status = (int)milestone.Status;
+                dbMilestone.IsNotify = Convert.ToInt32(milestone.IsNotify);
+                dbMilestone.IsKey = Convert.ToInt32(milestone.IsKey);
+                dbMilestone.Description = milestone.Description;
+                dbMilestone.ResponsibleId = milestone.Responsible.ToString();
+                dbMilestone.TenantId = Tenant;
+                dbMilestone.ProjectId = milestone.Project.ID;
+                dbMilestone.StatusChanged = milestone.StatusChangedOn;
+                WebProjectsContext.Milestone.Update(dbMilestone);
+                WebProjectsContext.SaveChanges();
+                milestone.ID = dbMilestone.Id;
+                return milestone;
+            }
+            else
+            {
+                var dbMilestone = ToDbMilestone(milestone);
+                WebProjectsContext.Milestone.Add(dbMilestone);
+                WebProjectsContext.SaveChanges();
+                milestone.ID = dbMilestone.Id;
+                return milestone;
+            }
         }
 
         public virtual void Delete(int id)
@@ -331,13 +374,6 @@ namespace ASC.Projects.Data.DAO
                     .Select(t=> t.Status == 1 || t.Status == 4 ? 1 : 0).Count(),
                     ClosedTaskCount = WebProjectsContext.Task.Where(t => t.MilestoneId == q.Milestone.Id && t.TenantId == q.Milestone.TenantId)
                     .Select(t => t.Status == 2 ? 1 : 0).Count()
-                }).GroupBy(q => new {q.Milestone, q.Project, q.ActiveTaskCount, q.ClosedTaskCount })
-                .Select(q => new QueryMilestone
-                {
-                    Milestone = q.Key.Milestone,
-                    Project = q.Key.Project,
-                    ActiveTaskCount = q.Key.ActiveTaskCount,
-                    ClosedTaskCount = q.Key.ClosedTaskCount
                 });
         }
 
@@ -543,7 +579,10 @@ namespace ASC.Projects.Data.DAO
                 IsNotify = Convert.ToInt32(milestone.IsNotify),
                 IsKey = Convert.ToInt32(milestone.IsKey),
                 Description = milestone.Description,
-                ResponsibleId = milestone.Responsible.ToString()
+                ResponsibleId = milestone.Responsible.ToString(),
+                TenantId = Tenant,
+                ProjectId = milestone.Project.ID,
+                StatusChanged = milestone.StatusChangedOn
             };
         }
     }

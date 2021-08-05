@@ -328,13 +328,14 @@ namespace ASC.Projects.Data.DAO
         public List<Task> GetMilestoneTasks(int milestoneId)
         {
             return CreateQuery().Where(q => q.Task.MilestoneId == milestoneId)
+                .AsEnumerable()
                 .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible.ResponsibleId)
                 .OrderBy(q => q.Key.Task.SortOrder)
                 .ThenBy(q => q.Key.Task.Status)
                 .ThenBy(q => q.Key.Task.Priority)
                 .ThenBy(q => q.Key.Task.CreateOn)
-                .Select(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
         }
 
         public List<Task> GetById(ICollection<int> ids)
