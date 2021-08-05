@@ -35,8 +35,7 @@ namespace ASC.Projects.Core.DataInterfaces
 
         List<int> Count(List<ProjectEntity> targets);
 
-        Comment Save(Comment comment);
-
+        Comment SaveOrUpdate(Comment comment);
         void Delete(Guid id);
         DbComment ToDbComment(Comment comment);
     }

@@ -38,11 +38,12 @@ namespace ASC.Projects.Engine
         private TenantUtil TenantUtil { get; set; }
         private Core.DataInterfaces.IDaoFactory DaoProjectFactory { get; set; }
 
-        public MessageEngine(FactoryIndexer<DbMessage> factoryIndexer, SecurityContext securityContext, TenantUtil tenantUtil, Core.DataInterfaces.IDaoFactory daoProjectFactory, NotifySource notifySource, Files.Core.IDaoFactory daoFactory, EngineFactory engineFactory) : base(securityContext, daoFactory, notifySource, engineFactory)
+        public MessageEngine(FactoryIndexer<DbMessage> factoryIndexer, SecurityContext securityContext, TenantUtil tenantUtil, Core.DataInterfaces.IDaoFactory daoProjectFactory, NotifySource notifySource, Files.Core.IDaoFactory daoFactory, EngineFactory engineFactory, ProjectSecurity projectSecurity, NotifyClient notifyClient) : base(securityContext, daoFactory, notifySource, engineFactory, projectSecurity, notifyClient)
         {
             FactoryIndexer = factoryIndexer;
             TenantUtil = tenantUtil;
             DaoFactory = daoFactory;
+            DaoProjectFactory = daoProjectFactory;
         }
 
         public MessageEngine Init(bool disableNotifications)

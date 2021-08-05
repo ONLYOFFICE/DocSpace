@@ -39,25 +39,30 @@ using ASC.Projects.Model.Comments;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
+using ASC.Web.Core.Utility;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Utility;
+using ASC.Web.Core.Calendars;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.Text;
+using ASC.Web.Studio.Core.Notify;
 
 namespace ASC.Api.Projects
 {
     public class CommentsController : BaseProjectController
     {
-        public CommentsController(SecurityContext securityContext, ProjectSecurity projectSecurity, ApiContext context, EngineFactory engineFactory, TenantUtil tenantUtil, DisplayUserSettingsHelper displayUserSettingsHelper, CommonLinkUtility commonLinkUtility, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, ModelHelper modelHelper, FileWrapperHelper fileWrapperHelper, IOptionsMonitor<ILog> options, DaoFactory factory, ReportHelper reportHelper, DocbuilderReportsUtility docbuilderReportsUtility, IHttpContextAccessor httpContextAccessor, TenantManager tenantManager, ReportTemplateHelper reportTemplateHelper, FilesLinkUtility filesLinkUtility, CustomStatusHelper customStatusHelper, IServiceProvider serviceProvider, SettingsManager settingsManager) : base(securityContext, projectSecurity, context, engineFactory, tenantUtil, displayUserSettingsHelper, commonLinkUtility, userPhotoManager, messageService, messageTarget, modelHelper, fileWrapperHelper, options, factory, reportHelper, docbuilderReportsUtility, httpContextAccessor, tenantManager, reportTemplateHelper, filesLinkUtility, customStatusHelper, serviceProvider, settingsManager)
+        public CommentsController(SecurityContext securityContext, ProjectSecurity projectSecurity, ApiContext context, EngineFactory engineFactory, TenantUtil tenantUtil, DisplayUserSettingsHelper displayUserSettingsHelper, CommonLinkUtility commonLinkUtility, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, ModelHelper modelHelper, FileWrapperHelper fileWrapperHelper, IOptionsMonitor<ILog> options, DaoFactory factory, ReportHelper reportHelper, DocbuilderReportsUtility docbuilderReportsUtility, IHttpContextAccessor httpContextAccessor, TenantManager tenantManager, ReportTemplateHelper reportTemplateHelper, FilesLinkUtility filesLinkUtility, CustomStatusHelper customStatusHelper, IServiceProvider serviceProvider, SettingsManager settingsManager, HtmlUtility htmlUtility, NotifyConfiguration notifyConfiguration) : base(securityContext, projectSecurity, context, engineFactory, tenantUtil, displayUserSettingsHelper, commonLinkUtility, userPhotoManager, messageService, messageTarget, modelHelper, fileWrapperHelper, options, factory, reportHelper, docbuilderReportsUtility, httpContextAccessor, tenantManager, reportTemplateHelper, filesLinkUtility, customStatusHelper, serviceProvider, settingsManager, htmlUtility, notifyConfiguration)
         {
         }
 
         [Read(@"comment/{commentid}")]
         public CommentWrapper GetComment(Guid commentid)
         {
-            var comment = EngineFactory.GetCommentEngine().GetByID(commentid).NotFoundIfNull();
-            var entity = EngineFactory.GetCommentEngine().GetEntityByTargetUniqId(comment).NotFoundIfNull();
+            var commentEngine = EngineFactory.GetCommentEngine();
+            var comment = commentEngine.GetByID(commentid).NotFoundIfNull();
+            var entity = commentEngine.GetEntityByTargetUniqId(comment).NotFoundIfNull();
 
             return ModelHelper.GetCommentWrapper(comment, entity);
         }
@@ -89,10 +94,10 @@ namespace ASC.Api.Projects
                 CommentID = comment.OldGuidId.ToString(),
                 UserID = comment.CreateBy,
                 TimeStamp = comment.CreateOn,
-                //TimeStampStr = comment.CreateOn.Ago(),
+                TimeStampStr = comment.CreateOn.Ago(TenantUtil),
                 UserPost = creator.Title,
                 Inactive = comment.Inactive,
-                //CommentBody = HtmlUtility.GetFull(comment.Content),//todo
+                CommentBody = HtmlUtility.GetFull(comment.Content),
                 UserFullName = DisplayUserSettingsHelper.GetFullUserName(creator),
                 UserProfileLink = creator.GetUserProfilePageURL(CommonLinkUtility),
                 UserAvatarPath = creator.GetBigPhotoURL(UserPhotoManager)
@@ -102,7 +107,7 @@ namespace ASC.Api.Projects
         }
 
         [Delete("comment/{commentid}")]
-        public string RemoveProjectComment(string commentid)
+        public object RemoveProjectComment(string commentid)
         {
             var comment = EngineFactory.GetCommentEngine().GetByID(new Guid(commentid)).NotFoundIfNull();
             comment.Inactive = true;
@@ -142,10 +147,10 @@ namespace ASC.Api.Projects
         }
 
         [Update("comment/{commentid}")]
-        public string UpdateComment(string commentid, string content)
+        public object UpdateComment(string commentid, ModelContent model)
         {
             var comment = EngineFactory.GetCommentEngine().GetByID(new Guid(commentid));
-            comment.Content = content;
+            comment.Content = model.Content;
 
             var entity = EngineFactory.GetCommentEngine().GetEntityByTargetUniqId(comment);
             if (entity == null) throw new Exception("Access denied.");
@@ -154,7 +159,7 @@ namespace ASC.Api.Projects
 
             MessageService.Send(MessageAction.TaskCommentUpdated, MessageTarget.Create(comment.ID), entity.Project.Title, entity.Title);
 
-            return content;//todo HtmlUtility.GetFull(content);
+            return HtmlUtility.GetFull(model.Content);
         }
     }
 }

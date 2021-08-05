@@ -170,8 +170,8 @@ namespace ASC.Projects.Data.DAO
                     Project = p
                 })
                 .Where(q => q.Message.TenantId == q.Project.TenantId && q.Message.TenantId == Tenant)
-                .GroupBy(q => q.Message.Id)
-                .Select(q=> new QueryMessages(q.ElementAt(q.Key).Project, q.ElementAt(q.Key).Message, null));
+                .GroupBy(q => new { q.Message, q.Project})
+                .Select(q=> new QueryMessages() { Project = q.Key.Project, Message = q.Key.Message, Comment = null });
 
             query = CreateQueryFilter(query, filter, isAdmin, checkAccess);
 
@@ -185,7 +185,7 @@ namespace ASC.Projects.Data.DAO
             var query = WebProjectsContext.Message.Join(WebProjectsContext.Project,
                 m => m.ProjectId,
                 p => p.Id,
-                (m, p) => new QueryMessages(p, m, null))
+                (m, p) => new QueryMessages() { Project = p, Message = m, Comment = null })
                 .Where(q => q.Message.TenantId == q.Project.TenantId && q.Message.TenantId == Tenant && q.Message.CreateOn >= FilerHelper.GetFromDate(filter) && q.Message.CreateOn <= FilerHelper.GetToDate(filter));
 
             if (filter.HasUserId)
@@ -204,10 +204,12 @@ namespace ASC.Projects.Data.DAO
 
         public virtual Message GetById(int id)
         {
-            return CreateQuery()
+            var query = CreateQuery()
                 .Where(q => q.Message.Id == id)
-                .Select(q=> ToMessage(q.Message, q.Project))
+                .AsEnumerable()
+                .GroupBy(q => new { q.Message, q.Project })
                 .SingleOrDefault();
+            return ToMessage(query.Key.Message, query.Key.Project);
         }
 
         public bool IsExists(int id)
@@ -253,7 +255,7 @@ namespace ASC.Projects.Data.DAO
                 .Join(WebProjectsContext.Comment,
                 r => "Message_" + r.Message.Id,
                 c => c.TargetUniqId,
-                (r, c) => new QueryMessages(r.Project,r.Message, c))
+                 (r, c) => new QueryMessages() { Project = r.Project, Message = r.Message, Comment = c })
                 .Where(r => r.Project.TenantId == Tenant && r.Message.TenantId == Tenant && r.Comment.TenantId == Tenant);
         }
 
@@ -296,7 +298,7 @@ namespace ASC.Projects.Data.DAO
                             Participant = ppp
                         })
                         .Where(q => q.Participant.Tenant == q.Message.TenantId && q.Participant.Removed == 0 && ToGuid(q.Participant.ParticipantId) == CurrentUserID)
-                        .Select(q=> new QueryMessages(q.Project, q.Message, q.Comment));
+                        .Select(q=> new QueryMessages() { Project = q.Project, Message = q.Message, Comment = q.Comment });
                 }
             }
 
@@ -315,7 +317,7 @@ namespace ASC.Projects.Data.DAO
                             TagToProject = tp
                         })
                         .Where(q=> q.TagToProject.TagId == null)
-                        .Select(q => new QueryMessages(q.Project, q.Message, q.Comment));
+                        .Select(q => new QueryMessages() { Project = q.Project, Message = q.Message, Comment = q.Comment });
                 }
                 else
                 {
@@ -330,7 +332,7 @@ namespace ASC.Projects.Data.DAO
                             TagToProject = tp
                         })
                         .Where(q => q.TagToProject.TagId == filter.TagId)
-                        .Select(q => new QueryMessages(q.Project, q.Message, q.Comment));
+                        .Select(q => new QueryMessages() { Project = q.Project, Message = q.Message, Comment = q.Comment });
                 }
             }
 
@@ -352,7 +354,7 @@ namespace ASC.Projects.Data.DAO
                         UserGroup = u
                     })
                     .Where(q=> q.UserGroup.GroupId == filter.DepartmentId && q.UserGroup.Tenant == q.Message.TenantId && q.UserGroup.Removed == false)
-                    .Select(q => new QueryMessages(q.Project, q.Message, q.Comment));
+                    .Select(q => new QueryMessages() { Project = q.Project, Message = q.Message, Comment = q.Comment });
             }
 
             if (!filter.FromDate.Equals(DateTime.MinValue) && !filter.ToDate.Equals(DateTime.MinValue) && !filter.ToDate.Equals(DateTime.MaxValue))
@@ -436,12 +438,10 @@ namespace ASC.Projects.Data.DAO
         public DbProject Project { get; set; }
         public DbMessage Message { get; set; }
         public DbComment Comment { get; set; }
-
-        public QueryMessages(DbProject project, DbMessage message, DbComment comment)
+        
+        public QueryMessages()
         {
-            Project = project;
-            Message = message;
-            Comment = comment;
+
         }
     }
 }

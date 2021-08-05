@@ -215,6 +215,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />
   </ItemGroup>
   
 </Project>

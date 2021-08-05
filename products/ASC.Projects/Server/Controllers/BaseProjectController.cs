@@ -50,6 +50,8 @@ using ASC.Core.Common.Settings;
 using ASC.Projects;
 using ASC.Projects.Classes;
 using ASC.Projects.Model;
+using ASC.Web.Core.Utility;
+using ASC.Web.Studio.Core.Notify;
 
 namespace ASC.Api.Projects
 {
@@ -82,6 +84,7 @@ namespace ASC.Api.Projects
         protected SettingsManager SettingsManager { get; set; }
         protected FileWrapperHelper FileWrapperHelper { get; set; }
         protected EngineFactory EngineFactory { get; set; }
+        protected HtmlUtility HtmlUtility { get; set; }
         public BaseProjectController(SecurityContext securityContext,
             ProjectSecurity projectSecurity,
             ApiContext context,
@@ -104,7 +107,9 @@ namespace ASC.Api.Projects
             FilesLinkUtility filesLinkUtility, 
             CustomStatusHelper customStatusHelper,
             IServiceProvider serviceProvider, 
-            SettingsManager settingsManager)
+            SettingsManager settingsManager,
+            HtmlUtility htmlUtility,
+            NotifyConfiguration notifyConfiguration)
         {
             SecurityContext = securityContext;
             ProjectSecurity = projectSecurity;
@@ -129,6 +134,8 @@ namespace ASC.Api.Projects
             ServiceProvider = serviceProvider;
             SettingsManager = settingsManager;
             EngineFactory = engineFactory;
+            HtmlUtility = htmlUtility;
+            notifyConfiguration.Configure();
         }
 
         public List<BaseCalendar> GetUserCalendars(Guid userId)

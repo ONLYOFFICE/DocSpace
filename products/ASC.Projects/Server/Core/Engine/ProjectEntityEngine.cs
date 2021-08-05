@@ -44,14 +44,15 @@ namespace ASC.Projects.Engine
 
         public bool DisableNotifications { get; set; }
 
-        public ProjectEntityEngine(SecurityContext securityContext, IDaoFactory daoFactory, NotifySource notifySource, EngineFactory engineFactory)
+        public ProjectEntityEngine(SecurityContext securityContext, IDaoFactory daoFactory, NotifySource notifySource, EngineFactory engineFactory, ProjectSecurity projectSecurity, NotifyClient notifyClient)
         {
             SubscriptionProvider = notifySource.GetSubscriptionProvider();
             RecipientProvider = notifySource.GetRecipientsProvider();
             SecurityContext = securityContext;
             DaoFactory = daoFactory;
-            NotifyClient = NotifyClient;
+            NotifyClient = notifyClient;
             EngineFactory = engineFactory;
+            ProjectSecurity = projectSecurity;
         }
 
         public void Init(INotifyAction notifyAction, bool disableNotifications)

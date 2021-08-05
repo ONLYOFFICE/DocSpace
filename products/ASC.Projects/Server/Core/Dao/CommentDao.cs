@@ -53,22 +53,23 @@ namespace ASC.Projects.Data.DAO
             return WebProjectsContext.Comment
                  .Where(c => c.TargetUniqId == target.UniqID)
                  .OrderBy(c => c.CreateOn)
-                 .Select(c=> ToComment(c))
-                 .ToList();
+                 .ToList()
+                 .ConvertAll(c => ToComment(c));
         }
 
         public Comment GetById(Guid id)
         {
-            return WebProjectsContext.Comment
+            var dbComment =  WebProjectsContext.Comment
                 .Where(c => c.Id == id.ToString())
-                .Select(c => ToComment(c))
                 .SingleOrDefault();
+            return ToComment(dbComment);
         }
 
         public List<int> Count(List<ProjectEntity> targets)
         {
+            var target = targets.ConvertAll(target => target.UniqID);
             return WebProjectsContext.Comment
-                .Where(c => targets.ConvertAll(target => target.UniqID).Contains(c.TargetUniqId) && c.InActive == 0)
+                .Where(c => target.Contains(c.TargetUniqId) && c.InActive == 0)
                 .GroupBy(c => c.TargetUniqId)
                 .Select(c => c.Count())
                 .ToList();
@@ -82,28 +83,43 @@ namespace ASC.Projects.Data.DAO
         }
 
 
-        public Comment Save(Comment comment)
+        public Comment SaveOrUpdate(Comment comment)
         {
-            DbComment dbComment = ToDbComment(comment);
-            if (ToGuid(dbComment.Id) == default(Guid)) dbComment.Id = Guid.NewGuid().ToString();
+            if (comment.OldGuidId == default(Guid)) comment.OldGuidId = Guid.NewGuid();
 
             if (!string.IsNullOrWhiteSpace(comment.Content) && comment.Content.Contains("<w:WordDocument>"))
             {
                 try
                 {
-                    dbComment.Content = Sanitizer.GetSafeHtmlFragment(dbComment.Content);
+                    comment.Content = Sanitizer.GetSafeHtmlFragment(comment.Content);
                 }
                 catch (Exception err)
                 {
                     Log.Error(err);
                 }
             }
-            dbComment.CreateOn = TenantUtil.DateTimeToUtc(dbComment.CreateOn);
-            WebProjectsContext.Comment.Add(dbComment);
-            WebProjectsContext.SaveChanges();
-
-            comment.ID = dbComment.CommentId;
-            return comment;//todo check have id
+            comment.CreateOn = TenantUtil.DateTimeToUtc(comment.CreateOn);
+            if (WebProjectsContext.Comment.Where(c => c.Id == comment.OldGuidId.ToString()).Any())
+            {
+                var db = WebProjectsContext.Comment.Where(c => c.Id == comment.OldGuidId.ToString()).SingleOrDefault();
+                db.TargetUniqId = comment.TargetUniqID;
+                db.Content = comment.Content;
+                db.InActive = Convert.ToInt32(comment.Inactive);
+                db.CreateBy = comment.CreateBy.ToString();
+                db.CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(comment.CreateOn));
+                db.ParentId = comment.Parent.ToString();
+                WebProjectsContext.Comment.Update(db);
+                WebProjectsContext.SaveChanges();
+                return ToComment(db);
+            }
+            else
+            {
+                DbComment dbComment = ToDbComment(comment);
+                WebProjectsContext.Comment.Add(dbComment);
+                WebProjectsContext.SaveChanges();
+                comment.ID = dbComment.CommentId;
+                return comment;
+            }
         }
 
         public void Delete(Guid id)
@@ -142,7 +158,8 @@ namespace ASC.Projects.Data.DAO
                 CreateBy = comment.CreateBy.ToString(),
                 CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(comment.CreateOn)),
                 ParentId = comment.Parent.ToString(),
-                CommentId = Convert.ToInt32(comment.ID)
+                CommentId = Convert.ToInt32(comment.ID),
+                TenantId = Tenant
             };
         }
     }

@@ -8,7 +8,7 @@ namespace ASC.Projects.EF
 {
     public class DbTagToProject
     {
-        public int TagId { get; set; }
+        public int? TagId { get; set; }
         public int ProjectId { get; set; }
     }
 

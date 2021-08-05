@@ -3,6 +3,7 @@
 using ASC.Api.Core;
 using ASC.Api.Projects;
 using ASC.Common;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,7 @@ namespace ASC.Projects
             DIHelper.TryAdd<SettingsController>();
             DIHelper.TryAdd<TasksController>();
             DIHelper.TryAdd<TimeSpendController>();
+            NotifyConfigurationExtension.Register(DIHelper);
 
         }
 

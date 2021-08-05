@@ -38,11 +38,10 @@ namespace ASC.Projects.Engine
         private TenantUtil TenantUtil { get; set; }
         private IDaoFactory DaoProjectFactory { get; set; }
 
-        public SubtaskEngine(FactoryIndexer<DbSubtask> factoryIndexer, SecurityContext securityContext, Files.Core.IDaoFactory daoFactory, NotifySource notifySource, TenantUtil tenantUtil, IDaoFactory daoProjectFactory, NotifyClient notifyClient, EngineFactory engineFactory) : base(securityContext, daoFactory, notifySource, engineFactory )
+        public SubtaskEngine(FactoryIndexer<DbSubtask> factoryIndexer, SecurityContext securityContext, Files.Core.IDaoFactory daoFactory, NotifySource notifySource, TenantUtil tenantUtil, IDaoFactory daoProjectFactory, NotifyClient notifyClient, EngineFactory engineFactory, ProjectSecurity projectSecurity) : base(securityContext, daoFactory, notifySource, engineFactory, projectSecurity, notifyClient)
         {
             FactoryIndexer = factoryIndexer;
             TenantUtil = tenantUtil;
-            NotifyClient = notifyClient;
             DaoProjectFactory = daoProjectFactory;
         }
 

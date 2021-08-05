@@ -40,12 +40,13 @@ namespace ASC.Projects.Engine
         private IDaoFactory DaoProjectFactory { get; set; }
         private readonly Func<Task, bool> canReadDelegate;
 
-        public TaskEngine(FactoryIndexer<DbTask> factoryIndexer, TenantUtil tenantUtil, SecurityContext securityContext, Files.Core.IDaoFactory daoFactory, NotifySource notifySource, IDaoFactory daoProjectFactory, EngineFactory engineFactory)
-            : base(securityContext, daoFactory, notifySource, engineFactory)
+        public TaskEngine(FactoryIndexer<DbTask> factoryIndexer, TenantUtil tenantUtil, SecurityContext securityContext, Files.Core.IDaoFactory daoFactory, NotifySource notifySource, IDaoFactory daoProjectFactory, EngineFactory engineFactory, NotifyClient notifyClient, ProjectSecurity projectSecurity)
+            : base(securityContext, daoFactory, notifySource, engineFactory, projectSecurity, notifyClient)
         {
             canReadDelegate = CanRead;
             FactoryIndexer = factoryIndexer;
             TenantUtil = tenantUtil;
+            DaoProjectFactory = daoProjectFactory;
         }
 
         public TaskEngine Init(bool disableNotifications)

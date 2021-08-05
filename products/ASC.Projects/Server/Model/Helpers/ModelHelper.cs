@@ -9,6 +9,7 @@ using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Projects.Classes;
@@ -16,7 +17,9 @@ using ASC.Projects.Core.Domain;
 using ASC.Projects.Core.Domain.Reports;
 using ASC.Projects.Engine;
 using ASC.Web.Api.Models;
+using ASC.Web.Core.Calendars;
 using ASC.Web.Core.Users;
+using ASC.Web.Core.Utility;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Studio.Utility;
 
@@ -44,8 +47,10 @@ namespace ASC.Projects.Model
         private ApiContext Context { get; set; }
         private FileStorageService<int> FileStorageService { get; set; }
         private EngineFactory EngineFactory { get; set; }
+        private TenantUtil TenantUtil { get; set; }
+        private HtmlUtility HtmlUtility { get; set; }
 
-        public ModelHelper(IHttpContextAccessor accessor, UserManager userManager, ProjectSecurity projectSecurity, EmployeeWraperHelper employeeWraperHelper, EmployeeWraperFullHelper employeeWraperFullHelper, IHttpContextAccessor httpContextAccessor, EngineFactory engineFactory, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility, SecurityContext securityContext, TenantManager tenantManager, TimeZoneConverter timeZoneConverter, FolderContentWrapperHelper folderContentWrapperHelper, ApiContext context, FileStorageService<int> fileStorageService)
+        public ModelHelper(IHttpContextAccessor accessor, UserManager userManager, ProjectSecurity projectSecurity, EmployeeWraperHelper employeeWraperHelper, EmployeeWraperFullHelper employeeWraperFullHelper, IHttpContextAccessor httpContextAccessor, EngineFactory engineFactory, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility, SecurityContext securityContext, TenantManager tenantManager, TimeZoneConverter timeZoneConverter, FolderContentWrapperHelper folderContentWrapperHelper, ApiContext context, FileStorageService<int> fileStorageService, TenantUtil tenantUtil, HtmlUtility htmlUtility)
         {
             EmployeeFullCache = new HttpRequestDictionary<EmployeeWraperFull>(accessor?.HttpContext, "employeeFullCache");
             EmployeeCache = new HttpRequestDictionary<EmployeeWraper>(accessor?.HttpContext, "employeeCache");
@@ -64,6 +69,8 @@ namespace ASC.Projects.Model
             Context = context;
             FileStorageService = fileStorageService;
             EngineFactory = engineFactory;
+            TenantUtil = tenantUtil;
+            HtmlUtility = htmlUtility;
         }
 
         public EmployeeWraperFull GetEmployeeWraperFull(Guid userId)
@@ -166,8 +173,8 @@ namespace ASC.Projects.Model
             var oCommentInfo = new CommentInfo
             {
                 TimeStamp = comment.CreateOn,
-                //TimeStampStr = comment.CreateOn.Ago(),
-                //CommentBody = HtmlUtility.GetFull(comment.Content),
+                TimeStampStr = comment.CreateOn.Ago(TenantUtil),
+                CommentBody = HtmlUtility.GetFull(comment.Content),
                 CommentID = comment.OldGuidId.ToString(),
                 UserID = comment.CreateBy,
                 UserFullName = creator.DisplayUserName(DisplayUserSettingsHelper),
@@ -195,7 +202,7 @@ namespace ASC.Projects.Model
             var model = (MessageWrapperFull)GetMessageWrapper(message);
             model.CanEditFiles = ProjectSecurity.CanEditFiles(message);
             model.CanReadFiles = ProjectSecurity.CanReadFiles(message.Project);
-          //  model.Text = HtmlUtility.GetFull(Text);
+            model.Text = HtmlUtility.GetFull(model.Text);
             model.Project = project;
             model.Subscribers = subscribers.ToList();
             return model;
@@ -206,7 +213,7 @@ namespace ASC.Projects.Model
             var model = (MessageWrapperFull)GetMessageWrapper(message);
             model.CanEditFiles = ProjectSecurity.CanEditFiles(message);
             model.CanReadFiles = ProjectSecurity.CanReadFiles(message.Project);
-            //  model.Text = HtmlUtility.GetFull(Text);
+            model.Text = HtmlUtility.GetFull(model.Text);
             model.Project = project;
             model.Subscribers = subscribers.ToList();
             model.Files = files.ToList();
@@ -216,8 +223,8 @@ namespace ASC.Projects.Model
                 new CommentInfo
                 {
                     TimeStamp = message.CreateOn,
-                    //TimeStampStr = message.CreateOn.Ago(),
-                    //CommentBody = HtmlUtility.GetFull(message.Description),
+                   TimeStampStr = message.CreateOn.Ago(TenantUtil),
+                    CommentBody = HtmlUtility.GetFull(message.Description),
                     CommentID = SecurityContext.CurrentAccount.ID.ToString() + "1",
                     UserID = message.CreateBy,
                     UserFullName = creator.DisplayUserName(DisplayUserSettingsHelper),

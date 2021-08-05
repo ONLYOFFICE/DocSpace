@@ -30,10 +30,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
+using ASC.Core.Tenants;
+
 namespace ASC.Web.Core.Calendars
 {
 
-    internal static class DateTimeExtension
+    public static class DateTimeExtension
     {
         public static int GetWeekOfYear(this DateTime date, DayOfWeek firstDayOfWeek)
         {
@@ -44,6 +46,28 @@ namespace ASC.Web.Core.Calendars
         public static int GetWeekOfYearCount(this DateTime date, DayOfWeek firstDayOfWeek)
         {
             return new DateTime(date.Year, 12, 31).GetWeekOfYear(firstDayOfWeek);
+        }
+
+        public static string Ago(this DateTime target, TenantUtil tenantUtil)
+        {
+            var result = new StringBuilder();
+            var diff = (tenantUtil.DateTimeNow().Date - target.Date);
+
+            result.AppendFormat("{0} ", target.ToShortTimeString());
+            switch (diff.Days)
+            {
+                case 0:
+                    result.Append("Today");//todo
+                    break;
+                case 1:
+                    result.Append("Yesterday");//todo
+                    break;
+                default:
+                    result.AppendFormat("{0}", target.ToShortDateString());
+                    break;
+            }
+
+            return result.ToString();
         }
 
         public static int GetDaysInMonth(this DateTime date)

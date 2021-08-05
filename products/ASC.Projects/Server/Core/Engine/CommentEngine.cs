@@ -41,7 +41,7 @@ namespace ASC.Projects.Engine
         private EngineFactory EngineFactory { get; set; }
         private IDaoFactory DaoFactory { get; set; }
 
-        public CommentEngine(FactoryIndexer<DbComment> factoryIndexer, TenantUtil tenantUtil, IDaoFactory daoFactory, SecurityContext securityContext, EngineFactory engineFactory, NotifyClient notifyClient)
+        public CommentEngine(FactoryIndexer<DbComment> factoryIndexer, TenantUtil tenantUtil, IDaoFactory daoFactory, SecurityContext securityContext, EngineFactory engineFactory, NotifyClient notifyClient, ProjectSecurity projectSecurity)
         {
             FactoryIndexer = factoryIndexer;
             TenantUtil = tenantUtil;
@@ -49,6 +49,7 @@ namespace ASC.Projects.Engine
             NotifyClient = notifyClient;
             EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            ProjectSecurity = projectSecurity;
         }
 
         public CommentEngine Init(bool disableNotifications)
@@ -91,7 +92,7 @@ namespace ASC.Projects.Engine
             var now = TenantUtil.DateTimeNow();
             if (comment.CreateOn == default(DateTime)) comment.CreateOn = now;
 
-            DaoFactory.GetCommentDao().Save(comment);
+            DaoFactory.GetCommentDao().SaveOrUpdate(comment);
 
             if (!comment.Inactive)
             {

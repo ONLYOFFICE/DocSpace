@@ -199,7 +199,7 @@ namespace ASC.Projects.Engine
             return (s & security) != security;
         }
     }
-
+    [Scope]
     public abstract class ProjectSecurityTemplate<T> where T : DomainObject<int>
     {
         internal ProjectSecurityCommon Common { get; set; }
@@ -270,7 +270,7 @@ namespace ASC.Projects.Engine
             return false;
         }
     }
-
+    [Scope]
     public sealed class ProjectSecurityProject : ProjectSecurityTemplate<Project>
     {
 
@@ -346,7 +346,7 @@ namespace ASC.Projects.Engine
             return Common.IsProjectsEnabled() && CanUpdateEntity(project);
         }
     }
-
+    [Scope]
     public sealed class ProjectSecurityTask : ProjectSecurityTemplate<Task>
     {
         public ProjectSecurityProject ProjectSecurityProject { get; set; }
@@ -483,7 +483,7 @@ namespace ASC.Projects.Engine
                    task.SubTasks.Select(r => r.Responsible).Contains(Common.CurrentUserId);
         }
     }
-
+    [Scope]
     public sealed class ProjectSecurityMilestone : ProjectSecurityTemplate<Milestone>
     {
         public ProjectSecurityProject ProjectSecurityProject { get; set; }
@@ -538,16 +538,16 @@ namespace ASC.Projects.Engine
             return milestone.Responsible == userId || Common.GetTeamSecurityForParticipants(milestone.Project, userId, ProjectTeamSecurity.Milestone);
         }
     }
-
+    [Scope]
     public sealed class ProjectSecurityMessage : ProjectSecurityTemplate<Message>
     {
-        private ProjectSecurityProject ProjectSecurityProject { get; set; }
         private EngineFactory EngineFactory { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
 
-        public ProjectSecurityMessage(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityProject projectSecurityProject, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory, EngineFactory engineFactory)
+        public ProjectSecurityMessage(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, IServiceProvider serviceProvider, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory, EngineFactory engineFactory)
             : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon, daoFactory)
         {
-            ProjectSecurityProject = projectSecurityProject;
+            ServiceProvider = serviceProvider;
             EngineFactory = engineFactory;
         }
 
@@ -565,7 +565,7 @@ namespace ASC.Projects.Engine
 
         public override bool CanReadEntity(Message entity, Guid userId)
         {
-            if (entity == null || !ProjectSecurityProject.CanReadEntity(entity.Project, userId)) return false;
+            if (entity == null || !ServiceProvider.GetService<ProjectSecurityProject>().CanReadEntity(entity.Project, userId)) return false;
 
             return CanReadEntities(entity.Project, userId);
         }
@@ -605,7 +605,7 @@ namespace ASC.Projects.Engine
 
         public override bool CanEditComment(Message message, Comment comment)
         {
-            return message.Status == MessageStatus.Open && ProjectSecurityProject.CanEditComment(message.Project, comment);
+            return message.Status == MessageStatus.Open && ServiceProvider.GetService<ProjectSecurityProject>().CanEditComment(message.Project, comment);
         }
 
         public override bool CanEditFiles(Message entity)
@@ -617,7 +617,7 @@ namespace ASC.Projects.Engine
             return Common.IsInTeam(entity.Project);
         }
     }
-
+    [Scope]
     public sealed class ProjectSecurityTimeTracking : ProjectSecurityTemplate<TimeSpend>
     {
         public ProjectSecurityTask ProjectSecurityTask { get; set; }
@@ -1017,16 +1017,15 @@ namespace ASC.Projects.Engine
             throw new System.Security.SecurityException("A guest cannot be appointed as responsible.");
         }
     }
-
     public class ProjectSecurityExtension
     {
         public static void Register(DIHelper services)
         {
-            services.TryAdd<ProjectSecurityTemplate<Project>>();
-            services.TryAdd<ProjectSecurityTemplate<Task>>();
-            services.TryAdd<ProjectSecurityTemplate<Milestone>>();
-            services.TryAdd<ProjectSecurityTemplate<Message>>();
-            services.TryAdd<ProjectSecurityTemplate<TimeSpend>>();
+            services.TryAdd<ProjectSecurityTemplate<Project>, ProjectSecurityProject>();
+            services.TryAdd<ProjectSecurityTemplate<Task>, ProjectSecurityTask>();
+            services.TryAdd<ProjectSecurityTemplate<Milestone>, ProjectSecurityMilestone>();
+            services.TryAdd<ProjectSecurityTemplate<Message>, ProjectSecurityMessage>();
+            services.TryAdd<ProjectSecurityTemplate<TimeSpend>, ProjectSecurityTimeTracking>();
 
             services.TryAdd<ProjectSecurityProject>();
             services.TryAdd<ProjectSecurityMilestone>();
