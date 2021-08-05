@@ -253,7 +253,7 @@
     <ROW Fragment="WelcomePrereqDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomePrereqDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonFileComponent">
-    <ROW JsonFile="Newfile.json_1" FileName="APPSET~1.JSO|appsettings.test.json" DirProperty="config_Dir" Component="appsettings.test.json" RootProperty="Root_1" Flags="22" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_1" FileName="APPSET~1.JSO|appsettings.test.json" DirProperty="config_Dir" Component="appsettings.test.json" RootProperty="Root_1" Flags="6" IndentUnits="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonPropertyComponent">
     <ROW JsonProperty="ConnectionStrings_1" Parent="Root_1" Name="ConnectionStrings" Condition="1" Order="0" Flags="60"/>
@@ -430,13 +430,13 @@
     <ROW Action="AI_TxtUpdaterConfig" Type="11265" Source="TxtUpdater.dll" Target="OnTxtUpdaterConfig" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterInstall" Type="1" Source="TxtUpdater.dll" Target="OnTxtUpdaterInstall"/>
     <ROW Action="AI_TxtUpdaterRollback" Type="11521" Source="TxtUpdater.dll" Target="OnTxtUpdaterRollback" WithoutSeq="true"/>
-    <ROW Action="ExecuteScriptCode" Type="38" Target="Script Text" TargetUnformatted="Session.Property(&quot;AppDirChanged&quot;) = Replace(Session.Property(&quot;AppDirChanged&quot;), &quot;\&quot;, &quot;/&quot;)&#13;&#10;" AdditionalSeq="AI_DATA_SETTER_6"/>
+    <ROW Action="ChangeSlashesScript" Type="38" Target="Script Text" TargetUnformatted="Session.Property(&quot;AppDirChanged&quot;) = Replace(Session.Property(&quot;AppDirChanged&quot;), &quot;\&quot;, &quot;/&quot;)&#13;&#10;" AdditionalSeq="AI_DATA_SETTER_6"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
-    <ROW Action="SetProperty" Type="51" Source="AppDirChanged" Target="[APPDIR]"/>
+    <ROW Action="SetPropertyAppDirConf" Type="51" Source="AppDirChanged" Target="[APPDIR]"/>
     <ROW Action="TestSQLConnection" Type="1" Source="sql.dll" Target="TestSqlConnection" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_4"/>
-    <ROW Action="TestSQLConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_5"/>
+    <ROW Action="TestSQLConnectionMsgBox" Type="65" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_5"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
@@ -513,9 +513,9 @@
     <ROW Action="AI_ProcessFailActions" Sequence="5848"/>
     <ROW Action="AI_DATA_SETTER_3" Sequence="5847"/>
     <ROW Action="AI_TxtUpdaterInstall" Sequence="5103"/>
-    <ROW Action="ExecuteScriptCode" Condition="( NOT Installed )" Sequence="3602"/>
+    <ROW Action="ChangeSlashesScript" Condition="( NOT Installed )" Sequence="3602"/>
     <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="3601"/>
-    <ROW Action="SetProperty" Sequence="1601"/>
+    <ROW Action="SetPropertyAppDirConf" Sequence="1601"/>
     <ROW Action="AI_JsonInstall" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5102"/>
     <ROW Action="AI_DATA_SETTER_7" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5101"/>
     <ROW Action="AI_JsonUninstall" Condition="(REMOVE)" Sequence="3102"/>
@@ -656,7 +656,7 @@
     <ROW PrereqKey="E0AF34BE02B40458E2E8CF85741C383" DisplayName="ASP.NET Core Runtime 5.0.0 x64" VersionMin="5.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/92866d29-a298-4cab-b501-a65e43820f97/88d287b9fb4a12cfcdf4a6be85f4a638/aspnetcore-runtime-5.0.0-win-x64.exe" Location="1" ExactSize="8267744" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="xy" MD5="368888f7de285aaf6cbe8859e67a8922" TargetName="ASP.NET Core 5.0"/>
     <ROW PrereqKey="F5401508D8347838BBC99F079B6F574" DisplayName="ASP.NET Core Runtime 5.0.0 x86" VersionMin="5.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/115edeeb-c883-45be-90f7-8db7b6b3fa2f/6bf92152b2b9fa9c0d0b08a13b60e525/aspnetcore-runtime-5.0.0-win-x86.exe" Location="1" ExactSize="7567144" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="c3c9727b8f0458f396a1da0305455749" TargetName="ASP.NET Core 5.0"/>
     <ROW PrereqKey="RequiredApplication" DisplayName="MySQL Connector/ODBC 8.0.21 x86" SetupFileUrl="https://dev.mysql.com/get/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.21-win32.msi" Location="1" ExactSize="0" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="MySQL Connector ODBC 8.0.21 x86"/>
-    <ROW PrereqKey="RequiredApplication_1" DisplayName="Node.js 12.18.0" VersionMin="12.18.0" SetupFileUrl="https://nodejs.org/dist/v12.18.0/node-v12.18.0-x64.msi" Location="1" ExactSize="0" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="my" TargetName="Node.js v12.18.0 x64"/>
+    <ROW PrereqKey="RequiredApplication_1" DisplayName="Node.js 14.17.4" VersionMin="14.17.4" SetupFileUrl="https://nodejs.org/dist/v14.17.4/node-v14.17.4-x64.msi" Location="1" ExactSize="0" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="my" TargetName="Node.js v14.17.4 x64"/>
     <ATTRIBUTE name="PrereqsOrder" value="D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 RequiredApplication B96F93FA27E74B02866727AAE83982D0 D89B7B30904FD690B8419A4E98FF8D C7EABA31DB14B869BCE8D63C6777EF0 E0AF34BE02B40458E2E8CF85741C383 F5401508D8347838BBC99F079B6F574 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication_1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
@@ -692,13 +692,13 @@
     <ROW ScriptName="onlyoffice.upgradev115" Token="DELIMITER ;" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
-    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\createdb.sql" Flags="18" Order="0"/>
+    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\createdb.sql" Flags="274" Order="0"/>
     <ROW ScriptName="onlyoffice" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\onlyoffice.sql" Flags="18" Order="1"/>
-    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.data.sql" Flags="18" Order="2"/>
+    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.data.sql" Flags="274" Order="2"/>
     <ROW ScriptName="onlyoffice.resources" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\onlyoffice.resources.sql" Flags="18" Order="3"/>
-    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev110.sql" Flags="18" Order="4"/>
-    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev111.sql" Flags="18" Order="5"/>
-    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev115.sql" Flags="18" Order="6"/>
+    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
+    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
+    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlTestConnectionComponent">
@@ -713,8 +713,8 @@
     <ROW Name="ReplaceElasticHost" TxtUpdateSet="YourFile.txt" FindPattern=".Host.:.*" ReplacePattern="&quot;Host&quot;: &quot;localhost&quot;," Options="3" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
-    <ROW Key="YourFile.txt" Component="appsettings.test.json" FileName="elastic.json" Directory="config_Dir" Options="25"/>
-    <ROW Key="appsettings.test.json" Component="ASC.ApiSystem.exe" FileName="*.json" Directory="config_Dir" Options="25"/>
+    <ROW Key="YourFile.txt" Component="appsettings.test.json" FileName="elastic.json" Directory="config_Dir" Options="17"/>
+    <ROW Key="appsettings.test.json" Component="ASC.ApiSystem.exe" FileName="*.json" Directory="config_Dir" Options="17"/>
     <ROW Key="xml" Component="OnlyofficeWebStudio.exe" FileName="*.xml" Directory="tools_Dir" Options="25"/>
   </COMPONENT>
 </DOCUMENT>
