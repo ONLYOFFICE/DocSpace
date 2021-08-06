@@ -74,7 +74,8 @@ fi
 
 if [ "$APPSERVER_INSTALLED" = "false" ]; then
 
-	apt-get install -y ${product}
+	apt-get install -y ${product} 
+	apt-get install -y ${product} #Fix error 'Failed to fetch' 
 
 expect << EOF
 	set timeout -1

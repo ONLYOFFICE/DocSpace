@@ -398,9 +398,16 @@ setup_nginx(){
 	
 	# Remove default nginx website
 	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
-
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
+
 	if [ "$DIST" = "RedHat" ]; then
+		# Remove default nginx settings
+		DELETION_LINE=$(sed -n '/server {/=' /etc/nginx/nginx.conf | head -n 1)
+		if [ -n "$DELETION_LINE" ]; then 
+			sed "$DELETION_LINE,\$d" -i /etc/nginx/nginx.conf
+			echo "}" >> /etc/nginx/nginx.conf
+		fi
+
 		shopt -s nocasematch
 		PORTS=()
 		if $(getenforce) >/dev/null 2>&1; then
