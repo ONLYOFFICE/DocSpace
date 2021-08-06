@@ -109,13 +109,25 @@ export default function withContextOptions(WrappedComponent) {
         setConvertItem(item);
         setConvertDialogVisible(true);
       } else {
-        this.onPreviewClick();
+        this.openDocEditor(false);
       }
     };
 
     onPreviewClick = () => {
+      this.openDocEditor(true);
+    };
+
+    openDocEditor = (preview = false) => {
       const { item, openDocEditor, isDesktop } = this.props;
       const { id, providerKey, fileExst } = item;
+
+      const urlFormation = preview
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/doceditor?fileId=${id}&action=view`
+          )
+        : null;
 
       let tab =
         !isDesktop && fileExst
@@ -129,7 +141,7 @@ export default function withContextOptions(WrappedComponent) {
             )
           : null;
 
-      openDocEditor(id, providerKey, tab);
+      openDocEditor(id, providerKey, tab, urlFormation);
     };
     onClickDownload = () => {
       const { item, downloadAction, t } = this.props;
