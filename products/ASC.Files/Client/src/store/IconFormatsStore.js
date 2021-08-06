@@ -255,6 +255,8 @@ class IconFormatsStore {
         return `${folderPath}/doc.svg`;
       case ".docx":
         return `${folderPath}/docx.svg`;
+      case ".dotx":
+        return `${folderPath}/dotx.svg`;
       case ".dvd":
         return `${folderPath}/dvd.svg`;
       case ".epub":
@@ -285,6 +287,12 @@ class IconFormatsStore {
         return `${folderPath}/ods.svg`;
       case ".odt":
         return `${folderPath}/odt.svg`;
+      case ".otp":
+        return `${folderPath}/otp.svg`;
+      case ".ots":
+        return `${folderPath}/ots.svg`;
+      case ".ott":
+        return `${folderPath}/ott.svg`;
       case ".pdf":
         return `${folderPath}/pdf.svg`;
       case ".pps":
@@ -293,6 +301,8 @@ class IconFormatsStore {
         return `${folderPath}/ppsx.svg`;
       case ".ppt":
         return `${folderPath}/ppt.svg`;
+      case ".pptm":
+        return `${folderPath}/pptm.svg`;
       case ".pptx":
         return `${folderPath}/pptx.svg`;
       case ".rtf":
@@ -341,6 +351,8 @@ class IconFormatsStore {
         return `${folderPath}/doc.svg`;
       case ".docx":
         return `${folderPath}/docx.svg`;
+      case ".dotx":
+        return `${folderPath}/dotx.svg`;
       case ".dvd":
         return `${folderPath}/dvd.svg`;
       case ".epub":
@@ -371,6 +383,12 @@ class IconFormatsStore {
         return `${folderPath}/ods.svg`;
       case ".odt":
         return `${folderPath}/odt.svg`;
+      case ".otp":
+        return `${folderPath}/otp.svg`;
+      case ".ots":
+        return `${folderPath}/ots.svg`;
+      case ".ott":
+        return `${folderPath}/ott.svg`;
       case ".pdf":
         return `${folderPath}/pdf.svg`;
       case ".pps":
@@ -381,6 +399,8 @@ class IconFormatsStore {
         return `${folderPath}/ppt.svg`;
       case ".pptx":
         return `${folderPath}/pptx.svg`;
+      case ".pptm":
+        return `${folderPath}/pptm.svg`;
       case ".rtf":
         return `${folderPath}/rtf.svg`;
       case ".svg":

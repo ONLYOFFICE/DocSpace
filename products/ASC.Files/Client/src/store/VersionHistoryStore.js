@@ -6,12 +6,14 @@ class VersionHistoryStore {
   fileId = null;
   versions = null;
   filesStore = null;
+  showProgressBar = false;
 
   constructor(filesStore) {
     makeObservable(this, {
       isVisible: observable,
       fileId: observable,
       versions: observable,
+      showProgressBar: observable,
 
       setIsVerHistoryPanel: action,
       setVerHistoryFileId: action,
@@ -75,11 +77,17 @@ class VersionHistoryStore {
   };
 
   restoreVersion = (id, version) => {
-    return api.files.versionRestore(id, version).then((newVersion) => {
-      const updatedVersions = this.versions.slice();
-      updatedVersions.splice(1, 0, newVersion);
-      this.setVerHistoryFileVersions(updatedVersions);
-    });
+    this.setShowProgressBar(true);
+
+    return api.files
+      .versionRestore(id, version)
+      .then((newVersion) => {
+        const updatedVersions = this.versions.slice();
+        updatedVersions.splice(1, 0, newVersion);
+        this.setVerHistoryFileVersions(updatedVersions);
+        this.setShowProgressBar(false);
+      })
+      .catch(() => this.setShowProgressBar(false));
   };
 
   updateCommentVersion = (id, comment, version) => {
@@ -95,6 +103,10 @@ class VersionHistoryStore {
         });
         this.setVerHistoryFileVersions(updatedVersions);
       });
+  };
+
+  setShowProgressBar = (show) => {
+    this.showProgressBar = show;
   };
 }
 
