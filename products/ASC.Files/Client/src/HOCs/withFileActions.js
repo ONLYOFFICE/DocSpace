@@ -196,7 +196,6 @@ export default function withFileActions(WrappedFileItem) {
       } = item;
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
-      console.log("item", item);
       if (isTrashFolder) return;
       if (e && e.target.tagName === "INPUT") return;
 
@@ -270,6 +269,7 @@ export default function withFileActions(WrappedFileItem) {
         isDesktop,
         personal,
         canWebEdit,
+        canViewedDocs,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -296,7 +296,7 @@ export default function withFileActions(WrappedFileItem) {
       const sharedButton =
         !canShare ||
         !showShare ||
-        (personal && !canWebEdit) ||
+        (personal && !canWebEdit && !canViewedDocs) ||
         isEdit ||
         id <= 0 ||
         isMobile
