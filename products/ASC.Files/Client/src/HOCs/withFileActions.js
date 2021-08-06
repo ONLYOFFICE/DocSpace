@@ -173,6 +173,7 @@ export default function withFileActions(WrappedFileItem) {
         isVideo,
         canConvert,
         canWebEdit,
+        canViewedDocs,
         item,
         isTrashFolder,
         isPrivacy,
@@ -226,7 +227,7 @@ export default function withFileActions(WrappedFileItem) {
 
         if (fileStatus === 2) this.onMarkAsRead(id);
 
-        if (canWebEdit) {
+        if (canWebEdit || canViewedDocs) {
           let tab =
             !isDesktop && fileExst
               ? window.open(
@@ -268,6 +269,7 @@ export default function withFileActions(WrappedFileItem) {
         isDesktop,
         personal,
         canWebEdit,
+        canViewedDocs,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -294,7 +296,7 @@ export default function withFileActions(WrappedFileItem) {
       const sharedButton =
         !canShare ||
         !showShare ||
-        (personal && !canWebEdit) ||
+        (personal && !canWebEdit && !canViewedDocs) ||
         isEdit ||
         id <= 0 ||
         isMobile
@@ -402,6 +404,7 @@ export default function withFileActions(WrappedFileItem) {
       const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
+      const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
 
       return {
         t,
@@ -432,6 +435,7 @@ export default function withFileActions(WrappedFileItem) {
         isSound,
         isVideo,
         canWebEdit,
+        canViewedDocs,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,

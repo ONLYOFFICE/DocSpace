@@ -233,6 +233,10 @@ const Editor = () => {
         };
       }
 
+      if (url.indexOf("action=view") !== -1) {
+        config.editorConfig.mode = "view";
+      }
+
       setIsLoading(false);
 
       loadDocApi(docApiUrl, () => onLoad(config));

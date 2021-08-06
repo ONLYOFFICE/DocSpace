@@ -461,7 +461,7 @@ class FilesStore {
           "unsubscribe",
         ]);
 
-        if (!this.isWebEditSelected) {
+        if (!this.isWebEditSelected && !canViewedDocs(item.fileExst)) {
           fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
         }
       }
