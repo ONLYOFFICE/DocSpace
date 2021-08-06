@@ -114,10 +114,22 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onPreviewClick = () => {
-      const { item, openDocEditor } = this.props;
-      const { id, providerKey } = item;
+      const { item, openDocEditor, isDesktop } = this.props;
+      const { id, providerKey, fileExst } = item;
 
-      openDocEditor(id, providerKey);
+      let tab =
+        !isDesktop && fileExst
+          ? window.open(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                config.homepage,
+                "/products/files/doceditor"
+              ),
+              "_blank"
+            )
+          : null;
+
+      openDocEditor(id, providerKey, tab);
     };
 
     onClickDownload = () => {
@@ -497,7 +509,7 @@ export default function withContextOptions(WrappedComponent) {
         setDeleteDialogVisible,
         setUnsubscribe,
       } = dialogsStore;
-      const { isTabletView } = auth.settingsStore;
+      const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
@@ -541,6 +553,7 @@ export default function withContextOptions(WrappedComponent) {
         unsubscribeAction,
         setDeleteDialogVisible,
         setUnsubscribe,
+        isDesktop: isDesktopClient,
       };
     }
   )(observer(WithContextOptions));
