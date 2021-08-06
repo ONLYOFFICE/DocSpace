@@ -3004,7 +3004,7 @@ namespace ASC.Mail.Core.Engine
                         watch.Reset();
 #endif
                         if (options.NeedSanitizer && item.Folder != FolderType.Draft &&
-                            !item.From.Equals(MailSettings.MailDaemonEmail))
+                            !item.From.Equals(MailSettings.Defines.MailDaemonEmail))
                         {
 #if DEBUG
                             watch.Start();

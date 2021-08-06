@@ -4,8 +4,15 @@ using ASC.Common;
 
 using CommandLine;
 
-namespace ASC.Mail.Aggregator.CollectionService.Console
+namespace ASC.Mail.Watchdog.Service
 {
+    [Singletone]
+    public class ConsoleParameters
+    {
+        [Option("console", Required = false, HelpText = "Console state")]
+        public bool IsConsole { get; set; }
+    }
+
     [Singletone]
     public class ConsoleParser
     {

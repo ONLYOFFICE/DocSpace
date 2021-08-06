@@ -101,17 +101,17 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             MailSettings.SkipImapFlags = mailQueueItemSettings.SkipImapFlags;
             MailSettings.SpecialDomainFolders = mailQueueItemSettings.SpecialDomainFolders;
 
-            TsTaskStateCheckInterval = MailSettings.TaskCheckState;
+            TsTaskStateCheckInterval = MailSettings.Aggregator.TaskCheckState;
 
-            if (ConsoleParameters.OnlyUsers != null) MailSettings.WorkOnUsersOnlyList.AddRange(ConsoleParameters.OnlyUsers.ToList());
+            if (ConsoleParameters.OnlyUsers != null) MailSettings.Defines.WorkOnUsersOnlyList.AddRange(ConsoleParameters.OnlyUsers.ToList());
 
-            if (ConsoleParameters.NoMessagesLimit) MailSettings.MaxMessagesPerSession = -1;
+            if (ConsoleParameters.NoMessagesLimit) MailSettings.Aggregator.MaxMessagesPerSession = -1;
 
-            TaskSecondsLifetime = MailSettings.TaskLifetime;
+            TaskSecondsLifetime = MailSettings.Aggregator.TaskLifetime;
 
             TaskFactory = new TaskFactory();
 
-            if (MailSettings.EnableSignalr) SignalrWorker = signalrWorker;
+            if (MailSettings.Aggregator.EnableSignalr) SignalrWorker = signalrWorker;
 
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
 
@@ -154,7 +154,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 StopTimer();
 
-                var tasks = CreateTasks(MailSettings.MaxTasksAtOnce, cancelToken);
+                var tasks = CreateTasks(MailSettings.Aggregator.MaxTasksAtOnce, cancelToken);
 
                 // ***Add a loop to process the tasks one at a time until none remain. 
                 while (tasks.Any())
@@ -191,7 +191,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                         tasks2Free.ForEach(task => FreeTask(task, tasks));
                     }
 
-                    var difference = MailSettings.MaxTasksAtOnce - tasks.Count;
+                    var difference = MailSettings.Aggregator.MaxTasksAtOnce - tasks.Count;
 
                     if (difference <= 0) continue;
 
@@ -241,7 +241,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             if (WorkTimer == null)
                 WorkTimer = new Timer(WorkTimerElapsed, token, Timeout.Infinite, Timeout.Infinite);
 
-            Log.DebugFormat("Setup Work timer to {0} seconds", MailSettings.CheckTimerInterval.TotalSeconds);
+            Log.DebugFormat("Setup Work timer to {0} seconds", MailSettings.Defines.CheckTimerInterval.TotalSeconds);
 
             if (immediately)
             {
@@ -249,7 +249,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             }
             else
             {
-                WorkTimer.Change(MailSettings.CheckTimerInterval, MailSettings.CheckTimerInterval);
+                WorkTimer.Change(MailSettings.Defines.CheckTimerInterval, MailSettings.Defines.CheckTimerInterval);
             }
             return Task.CompletedTask;
         }
@@ -340,7 +340,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             Stopwatch watch = null;
 
-            if (MailSettings.CollectStatistics)
+            if (MailSettings.Aggregator.CollectStatistics)
             {
                 watch = new Stopwatch();
                 watch.Start();
@@ -354,9 +354,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 var serverFolderAccessInfos = factory.GetImapSpecialMailboxDao().GetServerFolderAccessInfoList();
 
-                log.Debug($"Create Mail client with SslCertificatesErrorPermit = {MailSettings.SslCertificatesErrorsPermit}");
-                client = new MailClient(mailbox, cancelToken, serverFolderAccessInfos, MailSettings.TcpTimeout,
-                   mailbox.IsTeamlab || MailSettings.SslCertificatesErrorsPermit, MailSettings.ProtocolLogPath, log, true);
+                log.Debug($"Create Mail client with SslCertificatesErrorPermit = {MailSettings.Defines.SslCertificatesErrorsPermit}");
+                client = new MailClient(mailbox, cancelToken, serverFolderAccessInfos, MailSettings.Aggregator.TcpTimeout,
+                   mailbox.IsTeamlab || MailSettings.Defines.SslCertificatesErrorsPermit, MailSettings.Aggregator.ProtocolLogPath, log, true);
 
                 log.DebugFormat("MailClient.LoginClient(Tenant = {0}, MailboxId = {1} Address = '{2}')",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
@@ -364,7 +364,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 if (!mailbox.Imap)
                 {
                     client.FuncGetPop3NewMessagesIDs =
-                        uidls => MessageEngine.GetPop3NewMessagesIDs(factory, mailbox, uidls, MailSettings.ChunkOfPop3Uidl);
+                        uidls => MessageEngine.GetPop3NewMessagesIDs(factory, mailbox, uidls, MailSettings.Aggregator.ChunkOfPop3Uidl);
                 }
 
                 client.Authenticated += ClientOnAuthenticated;
@@ -423,7 +423,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                     CloseMailClient(client, mailbox, log);
                 }
 
-                if (MailSettings.CollectStatistics && watch != null)
+                if (MailSettings.Aggregator.CollectStatistics && watch != null)
                 {
                     watch.Stop();
 
@@ -436,7 +436,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
         private void NotifySignalrIfNeed(MailBoxData mailbox, ILog log)
         {
-            if (!MailSettings.EnableSignalr)
+            if (!MailSettings.Aggregator.EnableSignalr)
             {
                 log.Debug("Skip NotifySignalrIfNeed: EnableSignalr == false");
 
@@ -535,7 +535,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             Stopwatch watch = null;
 
-            if (mailSettings.CollectStatistics)
+            if (mailSettings.Aggregator.CollectStatistics)
             {
                 watch = new Stopwatch();
                 watch.Start();
@@ -556,7 +556,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 client.GetMessage += ClientOnGetMessage;
 
-                client.Aggregate(mailSettings, mailSettings.MaxMessagesPerSession);
+                client.Aggregate(mailSettings, mailSettings.Aggregator.MaxMessagesPerSession);
             }
             catch (OperationCanceledException)
             {
@@ -578,7 +578,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             {
                 CloseMailClient(client, mailbox, Log);
 
-                if (MailSettings.CollectStatistics && watch != null)
+                if (MailSettings.Aggregator.CollectStatistics && watch != null)
                 {
                     watch.Stop();
 
@@ -644,7 +644,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             Stopwatch watch = null;
 
-            if (MailSettings.CollectStatistics)
+            if (MailSettings.Aggregator.CollectStatistics)
             {
                 watch = new Stopwatch();
                 watch.Start();
@@ -699,7 +699,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             }
             finally
             {
-                if (MailSettings.CollectStatistics && watch != null)
+                if (MailSettings.Aggregator.CollectStatistics && watch != null)
                 {
                     watch.Stop();
 
@@ -870,11 +870,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 log.Debug("DoOptionalOperations -> SaveEmailInData()");
 
-                mailFactory.EmailInEngine.SaveEmailInData(mailbox, message, MailSettings.DefaultApiSchema);
+                mailFactory.EmailInEngine.SaveEmailInData(mailbox, message, MailSettings.Defines.DefaultApiSchema);
 
                 log.Debug("DoOptionalOperations -> SendAutoreply()");
 
-                mailFactory.AutoreplyEngine.SendAutoreply(mailbox, message, MailSettings.DefaultApiSchema, log);
+                mailFactory.AutoreplyEngine.SendAutoreply(mailbox, message, MailSettings.Defines.DefaultApiSchema, log);
 
                 log.Debug("DoOptionalOperations -> UploadIcsToCalendar()");
 
@@ -884,10 +884,10 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                         .CalendarEngine
                         .UploadIcsToCalendar(mailbox, message.CalendarId, message.CalendarUid, message.CalendarEventIcs,
                             message.CalendarEventCharset, message.CalendarEventMimeType, mailbox.EMail.Address,
-                            MailSettings.DefaultApiSchema);
+                            MailSettings.Defines.DefaultApiSchema);
                 }
 
-                if (MailSettings.SaveOriginalMessage)
+                if (MailSettings.Defines.SaveOriginalMessage)
                 {
                     log.Debug("DoOptionalOperations -> StoreMailEml()");
                     StoreMailEml(mailbox.TenantId, mailbox.UserId, message.StreamId, mimeMessage, log);
@@ -1007,7 +1007,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
         private void LogStatistic(string method, MailBoxData mailBoxData, TimeSpan duration, bool failed)
         {
-            if (!MailSettings.CollectStatistics)
+            if (!MailSettings.Aggregator.CollectStatistics)
                 return;
 
             LogStat.DebugWithProps(method,

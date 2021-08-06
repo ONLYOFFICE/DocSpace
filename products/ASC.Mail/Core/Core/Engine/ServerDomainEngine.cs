@@ -180,7 +180,7 @@ namespace ASC.Mail.Core.Engine
                 CryptoUtil.GenerateDkimKeys(out privateKey, out publicKey);
 
                 var domainCheckValue = PasswordGenerator.GenerateNewPassword(16);
-                var domainCheck = MailSettings.ServerDnsDomainCheckPrefix + ": " + domainCheckValue;
+                var domainCheck = MailSettings.Defines.ServerDnsDomainCheckPrefix + ": " + domainCheckValue;
 
                 var serverDns = new ServerDns
                 {
@@ -189,18 +189,18 @@ namespace ASC.Mail.Core.Engine
                     User = User,
                     DomainId = DefineConstants.UNUSED_DNS_SETTING_DOMAIN_ID,
                     DomainCheck = domainCheck,
-                    DkimSelector = MailSettings.ServerDnsDkimSelector,
+                    DkimSelector = MailSettings.Defines.ServerDnsDkimSelector,
                     DkimPrivateKey = privateKey,
                     DkimPublicKey = publicKey,
-                    DkimTtl = MailSettings.ServerDnsDefaultTtl,
+                    DkimTtl = MailSettings.Defines.ServerDnsDefaultTtl,
                     DkimVerified = false,
                     DkimDateChecked = null,
-                    Spf = MailSettings.ServerDnsSpfRecordValue,
-                    SpfTtl = MailSettings.ServerDnsDefaultTtl,
+                    Spf = MailSettings.Defines.ServerDnsSpfRecordValue,
+                    SpfTtl = MailSettings.Defines.ServerDnsDefaultTtl,
                     SpfVerified = false,
                     SpfDateChecked = null,
                     Mx = server.MxRecord,
-                    MxTtl = MailSettings.ServerDnsDefaultTtl,
+                    MxTtl = MailSettings.Defines.ServerDnsDefaultTtl,
                     MxVerified = false,
                     MxDateChecked = null,
                     TimeModified = DateTime.UtcNow
@@ -218,7 +218,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     Host = dnsSettings.Mx,
                     IsVerified = false,
-                    Priority = (int)MailSettings.ServerDnsMxRecordPriority
+                    Priority = (int)MailSettings.Defines.ServerDnsMxRecordPriority
                 },
                 DkimRecord = new ServerDomainDkimRecordData
                 {
@@ -392,7 +392,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     Host = serverDns.Mx,
                     IsVerified = serverDns.MxVerified,
-                    Priority = (int)MailSettings.ServerDnsMxRecordPriority
+                    Priority = (int)MailSettings.Defines.ServerDnsMxRecordPriority
                 },
                 SpfRecord = new ServerDomainDnsRecordData
                 {

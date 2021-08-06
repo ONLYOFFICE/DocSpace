@@ -458,11 +458,11 @@ namespace ASC.Mail.Core.Engine
         {
             var mailboxes = new List<MailBoxData>();
 
-            var boundaryRatio = !(mailSettings.InactiveMailboxesRatio > 0 && mailSettings.InactiveMailboxesRatio < 100);
+            var boundaryRatio = !(mailSettings.Aggregator.InactiveMailboxesRatio > 0 && mailSettings.Aggregator.InactiveMailboxesRatio < 100);
 
             if (needTasks > 1 || boundaryRatio)
             {
-                var inactiveCount = (int)Math.Round(needTasks * mailSettings.InactiveMailboxesRatio / 100, MidpointRounding.AwayFromZero);
+                var inactiveCount = (int)Math.Round(needTasks * mailSettings.Aggregator.InactiveMailboxesRatio / 100, MidpointRounding.AwayFromZero);
 
                 var activeCount = needTasks - inactiveCount;
 
@@ -518,14 +518,14 @@ namespace ASC.Mail.Core.Engine
             {
                 var difference = DateTime.UtcNow - account.AuthErrorDate.Value;
 
-                if (difference > mailSettings.AuthErrorDisableMailboxTimeout)
+                if (difference > mailSettings.Defines.AuthErrorDisableMailboxTimeout)
                 {
                     disableMailbox = true;
 
                     AlertEngine.CreateAuthErrorDisableAlert(account.TenantId, account.UserId,
                         account.MailBoxId);
                 }
-                else if (difference > mailSettings.AuthErrorWarningTimeout)
+                else if (difference > mailSettings.Defines.AuthErrorWarningTimeout)
                 {
                     AlertEngine.CreateAuthErrorWarningAlert(account.TenantId, account.UserId,
                         account.MailBoxId);

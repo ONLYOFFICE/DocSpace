@@ -121,12 +121,12 @@ namespace ASC.Mail.Utils
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
             ApiDateTimeHelper = apiDateTimeHelper;
-            Scheme = mailSettings.DefaultApiSchema ?? Uri.UriSchemeHttp;
+            Scheme = mailSettings.Defines.DefaultApiSchema ?? Uri.UriSchemeHttp;
 
             if (!Scheme.Equals(Uri.UriSchemeHttps) && !Scheme.Equals(Uri.UriSchemeHttp))
                 throw new ApiHelperException("ApiHelper: url scheme not setup", HttpStatusCode.InternalServerError, "");
 
-            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorsPermit)
+            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.Defines.SslCertificatesErrorsPermit)
                 return;
 
             ServicePointManager.ServerCertificateValidationCallback =
@@ -148,7 +148,7 @@ namespace ASC.Mail.Utils
             if (!user.IsAuthenticated)
                 throw new AuthenticationException("User not authenticated");
 
-            var tempUrl = MailSettings.ApiPrefix;
+            var tempUrl = MailSettings.Aggregator.ApiPrefix;
 
             var ubBase = new UriBuilder
             {
@@ -156,14 +156,14 @@ namespace ASC.Mail.Utils
                 Host = Tenant.GetTenantDomain(CoreSettings, false)
             };
 
-            if (!string.IsNullOrEmpty(MailSettings.ApiVirtualDirPrefix))
-                tempUrl = string.Format("{0}/{1}", MailSettings.ApiVirtualDirPrefix.Trim('/'), tempUrl);
+            if (!string.IsNullOrEmpty(MailSettings.Aggregator.ApiVirtualDirPrefix))
+                tempUrl = string.Format("{0}/{1}", MailSettings.Aggregator.ApiVirtualDirPrefix.Trim('/'), tempUrl);
 
-            if (!string.IsNullOrEmpty(MailSettings.ApiHost))
-                ubBase.Host = MailSettings.ApiHost;
+            if (!string.IsNullOrEmpty(MailSettings.Aggregator.ApiHost))
+                ubBase.Host = MailSettings.Aggregator.ApiHost;
 
-            if (!string.IsNullOrEmpty(MailSettings.ApiPort))
-                ubBase.Port = int.Parse(MailSettings.ApiPort);
+            if (!string.IsNullOrEmpty(MailSettings.Aggregator.ApiPort))
+                ubBase.Port = int.Parse(MailSettings.Aggregator.ApiPort);
 
             ubBase.Path = tempUrl;
 

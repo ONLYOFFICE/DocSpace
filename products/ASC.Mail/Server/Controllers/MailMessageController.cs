@@ -426,7 +426,7 @@ namespace ASC.Mail.Controllers
 
                 var daemonLabels =
                     new DraftEngine.DeliveryFailureMessageTranslates(
-                        MailSettings.MailDaemonEmail,
+                        MailSettings.Defines.MailDaemonEmail,
                         MailApiResource.DeliveryFailureSubject,
                         MailApiResource.DeliveryFailureAutomaticMessage,
                         MailApiResource.DeliveryFailureMessageIdentificator,

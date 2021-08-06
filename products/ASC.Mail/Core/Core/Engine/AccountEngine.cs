@@ -135,9 +135,9 @@ namespace ASC.Mail.Core.Engine
                         {
                             var authErrorDate = account.MailboxDateAuthError.Value;
 
-                            if (DateTime.UtcNow - authErrorDate > MailSettings.AuthErrorDisableMailboxTimeout)
+                            if (DateTime.UtcNow - authErrorDate > MailSettings.Defines.AuthErrorDisableMailboxTimeout)
                                 authErrorType = MailBoxData.AuthProblemType.TooManyErrors;
-                            else if (DateTime.UtcNow - authErrorDate > MailSettings.AuthErrorWarningTimeout)
+                            else if (DateTime.UtcNow - authErrorDate > MailSettings.Defines.AuthErrorWarningTimeout)
                                 authErrorType = MailBoxData.AuthProblemType.ConnectError;
                         }
 
@@ -275,7 +275,7 @@ namespace ASC.Mail.Core.Engine
             };
 
             using (var client = new MailClient(mbox, CancellationToken.None, ServerFolderAccessInfos,
-                    certificatePermit: MailSettings.SslCertificatesErrorsPermit, log: Log))
+                    certificatePermit: MailSettings.Defines.SslCertificatesErrorsPermit, log: Log))
             {
                 loginResult = client.TestLogin();
             }
@@ -302,7 +302,7 @@ namespace ASC.Mail.Core.Engine
                 throw new NullReferenceException("mbox");
 
             using (var client = new MailClient(mbox, CancellationToken.None, ServerFolderAccessInfos,
-                    certificatePermit: MailSettings.SslCertificatesErrorsPermit, log: Log))
+                    certificatePermit: MailSettings.Defines.SslCertificatesErrorsPermit, log: Log))
             {
                 loginResult = client.TestLogin();
             }
@@ -345,7 +345,7 @@ namespace ASC.Mail.Core.Engine
                 LoginResult loginResult;
 
                 using (var client = new MailClient(mb, CancellationToken.None, ServerFolderAccessInfos,
-                    MailSettings.TcpTimeout, MailSettings.SslCertificatesErrorsPermit, log: Log))
+                    MailSettings.Aggregator.TcpTimeout, MailSettings.Defines.SslCertificatesErrorsPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
                 }
@@ -565,7 +565,7 @@ namespace ASC.Mail.Core.Engine
             {
                 // Check account connection setting on activation
                 using (var client = new MailClient(tuple.Item1, CancellationToken.None, ServerFolderAccessInfos,
-                        certificatePermit: MailSettings.SslCertificatesErrorsPermit, log: Log))
+                        certificatePermit: MailSettings.Defines.SslCertificatesErrorsPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
                 }

@@ -53,7 +53,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             IOptionsMonitor<ILog> optionsMonitor,
             IServiceProvider serviceProvider)
         {
-            _maxItemsLimit = mailSettings.MaxTasksAtOnce;
+            _maxItemsLimit = mailSettings.Aggregator.MaxTasksAtOnce;
             _mailBoxQueue = new Queue<MailBoxData>();
             _lockedMailBoxList = new List<MailBoxData>();
 
@@ -66,7 +66,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
             CancelHandler = new ManualResetEvent(false);
 
-            if (MailSettings.UseDump)
+            if (MailSettings.Aggregator.UseDump)
             {
                 _dbcFile = Path.Combine(Environment.CurrentDirectory, "dump.db");
                 _dbcJournalFile = Path.Combine(Environment.CurrentDirectory, "dump-journal.db");
@@ -171,7 +171,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         public void LoadMailboxesFromDump()
         {
-            if (!MailSettings.UseDump)
+            if (!MailSettings.Aggregator.UseDump)
                 return;
 
             if (_lockedMailBoxList.Any())
@@ -198,7 +198,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         public void LoadTenantsFromDump()
         {
-            if (!MailSettings.UseDump)
+            if (!MailSettings.Aggregator.UseDump)
                 return;
 
             try
@@ -230,7 +230,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void ReCreateDump()
         {
-            if (!MailSettings.UseDump)
+            if (!MailSettings.Aggregator.UseDump)
                 return;
 
             try
@@ -269,7 +269,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void AddMailboxToDumpDb(MailboxData mailboxData)
         {
-            if (!MailSettings.UseDump)
+            if (!MailSettings.Aggregator.UseDump)
                 return;
 
             try
@@ -297,7 +297,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void DeleteMailboxFromDumpDb(int mailBoxId)
         {
-            if (!MailSettings.UseDump)
+            if (!MailSettings.Aggregator.UseDump)
                 return;
 
             try
@@ -322,7 +322,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void LoadDump()
         {
-            if (!MailSettings.UseDump)
+            if (!MailSettings.Aggregator.UseDump)
                 return;
 
             try
@@ -348,7 +348,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void AddTenantToDumpDb(TenantData tenantData)
         {
-            if (!MailSettings.UseDump)
+            if (!MailSettings.Aggregator.UseDump)
                 return;
 
             try
@@ -376,7 +376,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void DeleteTenantFromDumpDb(int tenantId)
         {
-            if (!MailSettings.UseDump)
+            if (!MailSettings.Aggregator.UseDump)
                 return;
 
             try
@@ -436,7 +436,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private bool QueueLifetimeExpired
         {
-            get { return DateTime.UtcNow - _loadQueueTime >= MailSettings.QueueLifetime; }
+            get { return DateTime.UtcNow - _loadQueueTime >= MailSettings.Defines.QueueLifetime; }
         }
 
         private void LoadQueue()
@@ -531,7 +531,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     Log.DebugFormat($"Tenant {mailbox.TenantId} isn't in cache");
                     try
                     {
-                        var type = mailbox.GetTenantStatus(tenantManager, securityContext, apiHelper, (int)MailSettings.TenantOverdueDays, Log);
+                        var type = mailbox.GetTenantStatus(tenantManager, securityContext, apiHelper, (int)MailSettings.Aggregator.TenantOverdueDays, Log);
 
                         switch (type)
                         {
@@ -555,7 +555,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                                 Log.InfoFormat("Tenant {0} is not paid. Stop processing mailboxes.", mailbox.TenantId);
 
                                 mailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
-                                    MailSettings.OverdueAccountDelay);
+                                    MailSettings.Defines.OverdueAccountDelay);
 
                                 RemoveFromQueue(mailbox.TenantId);
 
@@ -564,7 +564,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                             case DefineConstants.TariffType.Active:
                                 Log.InfoFormat("Tenant {0} is paid.", mailbox.TenantId);
 
-                                var expired = DateTime.UtcNow.Add(MailSettings.TenantCachingPeriod);
+                                var expired = DateTime.UtcNow.Add(MailSettings.Defines.TenantCachingPeriod);
 
                                 var tenantData = new TenantData
                                 {
@@ -579,7 +579,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                             default:
                                 Log.InfoFormat($"Cannot get tariff type for {mailbox.MailBoxId} mailbox");
                                 mailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
-                                    MailSettings.OverdueAccountDelay);
+                                    MailSettings.Defines.OverdueAccountDelay);
 
                                 RemoveFromQueue(mailbox.TenantId);
                                 break;
@@ -617,7 +617,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     return false;
                 }
 
-                if (mailbox.IsTenantQuotaEnded(tenantManager, (int)MailSettings.TenantMinQuotaBalance, Log))
+                if (mailbox.IsTenantQuotaEnded(tenantManager, (int)MailSettings.Aggregator.TenantMinQuotaBalance, Log))
                 {
                     Log.InfoFormat($"Tenant = {mailbox.TenantId} User = {mailbox.UserId}. Quota is ended.");
 
@@ -625,7 +625,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                         alertEngine.CreateQuotaErrorWarningAlert(mailbox.TenantId, mailbox.UserId);
 
                     mailboxEngine.SetNextLoginDelay(new UserMailboxExp(mailbox.TenantId, mailbox.UserId),
-                                    MailSettings.QuotaEndedDelay);
+                                    MailSettings.Defines.QuotaEndedDelay);
 
                     RemoveFromQueue(mailbox.TenantId, mailbox.UserId);
 
@@ -665,7 +665,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 _tenantMemCache.Dispose();
             _tenantMemCache = null;
 
-            if (MailSettings.UseDump)
+            if (MailSettings.Aggregator.UseDump)
             {
                 if (_db != null)
                     _db.Dispose();

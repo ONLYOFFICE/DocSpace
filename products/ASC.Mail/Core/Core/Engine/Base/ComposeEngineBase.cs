@@ -175,7 +175,7 @@ namespace ASC.Mail.Core.Engine
 
             DaemonLabels = daemonLabels ?? DeliveryFailureMessageTranslates.Defauilt;
 
-            _sslCertificatePermit = MailSettings.SslCertificatesErrorsPermit;
+            _sslCertificatePermit = MailSettings.Defines.SslCertificatesErrorsPermit;
 
             if (_signalrServiceClient != null) return;
             _signalrServiceClient = optionsSnapshot.Get("mail");
@@ -222,9 +222,9 @@ namespace ASC.Mail.Core.Engine
                     throw new InvalidOperationException("Saving emails is permitted only in the Drafts folder");
                 }
 
-                if (message.HtmlBody.Length > MailSettings.MaximumMessageBodySize)
+                if (message.HtmlBody.Length > MailSettings.Defines.MaximumMessageBodySize)
                 {
-                    throw new InvalidOperationException("Message body exceeded limit (" + MailSettings.MaximumMessageBodySize / 1024 + " KB)");
+                    throw new InvalidOperationException("Message body exceeded limit (" + MailSettings.Defines.MaximumMessageBodySize / 1024 + " KB)");
                 }
 
                 mimeMessageId = message.MimeMessageId;

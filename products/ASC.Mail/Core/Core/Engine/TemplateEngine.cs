@@ -127,9 +127,9 @@ namespace ASC.Mail.Core.Engine
                     throw new InvalidOperationException("Saving emails is permitted only in the Templates folder");
                 }
 
-                if (message.HtmlBody.Length > MailSettings.MaximumMessageBodySize)
+                if (message.HtmlBody.Length > MailSettings.Defines.MaximumMessageBodySize)
                 {
-                    throw new InvalidOperationException("Message body exceeded limit (" + MailSettings.MaximumMessageBodySize / 1024 + " KB)");
+                    throw new InvalidOperationException("Message body exceeded limit (" + MailSettings.Defines.MaximumMessageBodySize / 1024 + " KB)");
                 }
 
                 mimeMessageId = message.MimeMessageId;

@@ -82,7 +82,7 @@ namespace ASC.Mail.Core.Engine
             StorageManager = storageManager;
             MailSettings = mailSettings;
 
-            AutoreplyDaysInterval = MailSettings.AutoreplyDaysInterval;
+            AutoreplyDaysInterval = MailSettings.Defines.AutoreplyDaysInterval;
         }
 
         public MailAutoreplyData SaveAutoreply(int mailboxId, bool turnOn, bool onlyContacts,

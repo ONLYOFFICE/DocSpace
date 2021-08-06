@@ -349,8 +349,8 @@ namespace ASC.Mail.Core.Dao
             int? messageCount = null, long? size = null, bool? quotaError = null, string oAuthToken = null,
             string imapIntervalsJson = null, bool? resetImapIntervals = false)
         {
-            if (nextLoginDelay < MailSettings.DefaultServerLoginDelay)
-                nextLoginDelay = MailSettings.DefaultServerLoginDelay;
+            if (nextLoginDelay < MailSettings.Defines.DefaultServerLoginDelay)
+                nextLoginDelay = MailSettings.Defines.DefaultServerLoginDelay;
 
             var mailMailbox = MailDbContext.MailMailbox.FirstOrDefault(mb => mb.Id == mailbox.Id);
 
@@ -360,9 +360,9 @@ namespace ASC.Mail.Core.Dao
             mailMailbox.IsProcessed = false;
             mailMailbox.DateChecked = DateTime.UtcNow;
             mailMailbox.DateLoginDelayExpires =
-                nextLoginDelay > MailSettings.DefaultServerLoginDelay
+                nextLoginDelay > MailSettings.Defines.DefaultServerLoginDelay
                 ? DateTime.UtcNow.AddSeconds(nextLoginDelay)
-                : DateTime.UtcNow.AddSeconds(MailSettings.DefaultServerLoginDelay);
+                : DateTime.UtcNow.AddSeconds(MailSettings.Defines.DefaultServerLoginDelay);
 
             if (enabled.HasValue)
             {

@@ -258,7 +258,7 @@ namespace ASC.Mail.Core.Engine
                 throw new DuplicateNameException("You want to create a mailbox with already existing address.");
             }
 
-            if (MailSettings.ServerDomainMailboxPerUserLimit > 0)
+            if (MailSettings.Defines.ServerDomainMailboxPerUserLimit > 0)
             {
                 var accounts = AccountEngine.GetAccountInfoList();
 
@@ -268,11 +268,11 @@ namespace ASC.Mail.Core.Engine
                         Parser.ParseAddress(a.Email)
                             .Domain.Equals(serverDomain.Name, StringComparison.InvariantCultureIgnoreCase));
 
-                if (countDomainMailboxes >= MailSettings.ServerDomainMailboxPerUserLimit)
+                if (countDomainMailboxes >= MailSettings.Defines.ServerDomainMailboxPerUserLimit)
                 {
                     throw new ArgumentOutOfRangeException(
                         string.Format("Count of user's mailboxes must be less or equal {0}.",
-                            MailSettings.ServerDomainMailboxPerUserLimit));
+                            MailSettings.Defines.ServerDomainMailboxPerUserLimit));
                 }
             }
 

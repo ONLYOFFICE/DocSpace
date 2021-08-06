@@ -234,7 +234,7 @@ namespace ASC.Mail.Core.Engine
                 Dns = dns,
                 ServerLimits = new ServerLimitData
                 {
-                    MailboxMaxCountPerUser = (int)MailSettings.ServerDomainMailboxPerUserLimit
+                    MailboxMaxCountPerUser = (int)MailSettings.Defines.ServerDomainMailboxPerUserLimit
                 },
                 InServer = inServer,
                 OutServer = outServer

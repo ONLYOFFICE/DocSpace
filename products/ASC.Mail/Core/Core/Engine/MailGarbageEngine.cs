@@ -101,7 +101,7 @@ namespace ASC.Mail.Core.Engine
 
             TenantMemCache = new MemoryCache("GarbageEraserTenantCache");
 
-            var scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, MailSettings.MaxTasksAtOnce).ConcurrentScheduler;
+            var scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, MailSettings.Aggregator.MaxTasksAtOnce).ConcurrentScheduler;
 
             TaskFactory = new TaskFactory(scheduler);
 
@@ -133,7 +133,7 @@ namespace ASC.Mail.Core.Engine
 
                     tasks.Add(task);
 
-                    if (tasks.Count == MailSettings.MaxTasksAtOnce)
+                    if (tasks.Count == MailSettings.Cleaner.MaxTasksAtOnce)
                     {
                         Log.Info("Wait all tasks to complete");
 
@@ -318,16 +318,16 @@ namespace ASC.Mail.Core.Engine
                 {
                     taskLog.InfoFormat("Tenant {0} isn't in cache", mailbox.TenantId);
 
-                    taskLog.DebugFormat("GetTenantStatus(OverdueDays={0})", MailSettings.TenantOverdueDays);
+                    taskLog.DebugFormat("GetTenantStatus(OverdueDays={0})", MailSettings.Cleaner.TenantOverdueDays);
 
-                    type = mailbox.GetTenantStatus(TenantManager, SecurityContext, ApiHelper, (int)MailSettings.TenantOverdueDays, Log);
+                    type = mailbox.GetTenantStatus(TenantManager, SecurityContext, ApiHelper, (int)MailSettings.Cleaner.TenantOverdueDays, Log);
 
                     var cacheItem = new CacheItem(mailbox.TenantId.ToString(CultureInfo.InvariantCulture), type);
 
                     var cacheItemPolicy = new CacheItemPolicy
                     {
                         AbsoluteExpiration =
-                            DateTimeOffset.UtcNow.AddDays((int)MailSettings.CleanerTenantCacheDays)
+                            DateTimeOffset.UtcNow.AddDays((int)MailSettings.Cleaner.TenantCacheDays)
                     };
 
                     TenantMemCache.Add(cacheItem, cacheItemPolicy);
@@ -380,7 +380,7 @@ namespace ASC.Mail.Core.Engine
                 }
                 else
                 {
-                    RemoveGarbageMailData(mailbox, (int)MailSettings.CleanerGarbageOverdueDays, Log);
+                    RemoveGarbageMailData(mailbox, (int)MailSettings.Cleaner.GarbageOverdueDays, Log);
                 }
 
                 Log.InfoFormat("Mailbox {0} processing complete.", mailbox.MailBoxId);
@@ -437,9 +437,9 @@ namespace ASC.Mail.Core.Engine
                 {
                     var sumCount = 0;
 
-                    log.DebugFormat("GetMailboxAttachsGarbage(limit = {0})", MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                    log.DebugFormat("GetMailboxAttachsGarbage(limit = {0})", MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
-                    var attachGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                    var attachGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                     sumCount += attachGrbgList.Count;
 
@@ -458,7 +458,7 @@ namespace ASC.Mail.Core.Engine
 
                         log.Debug("GetMailboxAttachs()");
 
-                        attachGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                        attachGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                         if (!attachGrbgList.Any()) continue;
 
@@ -479,9 +479,9 @@ namespace ASC.Mail.Core.Engine
                 {
                     var sumCount = 0;
 
-                    log.DebugFormat("GetMailboxMessagesGarbage(limit = {0})", MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                    log.DebugFormat("GetMailboxMessagesGarbage(limit = {0})", MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
-                    var messageGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                    var messageGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                     sumCount += messageGrbgList.Count;
 
@@ -500,7 +500,7 @@ namespace ASC.Mail.Core.Engine
 
                         log.Debug("GetMailboxMessages()");
 
-                        messageGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                        messageGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                         if (!messageGrbgList.Any()) continue;
 
