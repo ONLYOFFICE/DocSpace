@@ -405,7 +405,7 @@ class FilesStore {
       isShareFolder,
     } = this.treeFoldersStore;
 
-    const { canWebEdit } = this.formatsStore.docserviceStore;
+    const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
 
     const { isRootFolder } = this.selectedFolderStore;
 
@@ -683,14 +683,18 @@ class FilesStore {
 
       if (
         !canWebEdit(item.fileExst) &&
-        !fileOptions.includes("view") &&
-        item.fileExst !== ".pdf"
+        !canViewedDocs(item.fileExst) &&
+        !fileOptions.includes("view")
       ) {
         fileOptions = this.removeOptions(fileOptions, [
           "edit",
           "preview",
           "separator0",
         ]);
+      }
+
+      if (!canWebEdit(item.fileExst) && canViewedDocs(item.fileExst)) {
+        fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
 
       return fileOptions;
