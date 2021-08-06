@@ -173,6 +173,7 @@ export default function withFileActions(WrappedFileItem) {
         isVideo,
         canConvert,
         canWebEdit,
+        canViewedDocs,
         item,
         isTrashFolder,
         isPrivacy,
@@ -195,6 +196,7 @@ export default function withFileActions(WrappedFileItem) {
       } = item;
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
+      console.log("item", item);
       if (isTrashFolder) return;
       if (e && e.target.tagName === "INPUT") return;
 
@@ -226,7 +228,7 @@ export default function withFileActions(WrappedFileItem) {
 
         if (fileStatus === 2) this.onMarkAsRead(id);
 
-        if (canWebEdit) {
+        if (canWebEdit || canViewedDocs) {
           let tab =
             !isDesktop && fileExst
               ? window.open(
@@ -402,6 +404,7 @@ export default function withFileActions(WrappedFileItem) {
       const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
+      const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
 
       return {
         t,
@@ -432,6 +435,7 @@ export default function withFileActions(WrappedFileItem) {
         isSound,
         isVideo,
         canWebEdit,
+        canViewedDocs,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
