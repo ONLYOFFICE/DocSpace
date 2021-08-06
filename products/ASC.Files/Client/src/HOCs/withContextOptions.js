@@ -131,13 +131,12 @@ export default function withContextOptions(WrappedComponent) {
 
       openDocEditor(id, providerKey, tab);
     };
-
     onClickDownload = () => {
       const { item, downloadAction, t } = this.props;
       const { fileExst, contentLength, viewUrl } = item;
       const isFile = !!fileExst && contentLength;
       isFile
-        ? window.open(viewUrl, "_blank")
+        ? window.open(viewUrl, "_self")
         : downloadAction(t("Translations:ArchivingData")).catch((err) =>
             toastr.error(err)
           );
