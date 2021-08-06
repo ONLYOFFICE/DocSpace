@@ -24,7 +24,6 @@ import {
   updateFile,
   removeFromFavorite,
   markAsFavorite,
-  createTextFileInMy,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -36,9 +35,10 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import { createNewFile, getDefaultFileName, openDocEditor } from "files/utils";
+import { getDefaultFileName } from "files/utils";
 import i18n from "./i18n";
 import { FolderType } from "@appserver/common/constants";
+
 let documentIsReady = false;
 
 const text = "text";
@@ -362,9 +362,39 @@ const Editor = () => {
         goback,
       };
 
+      if (url.indexOf("anchor") !== -1) {
+        const splitUrl = url.split("anchor=");
+        const decodeURI = decodeURIComponent(splitUrl[1]);
+        const obj = JSON.parse(decodeURI);
+
+        config.editorConfig.actionLink = {
+          action: obj.action,
+        };
+      }
+
+      if (successAuth) {
+        const documentType = config.documentType;
+        const fileExt =
+          documentType === text
+            ? "docx"
+            : documentType === presentation
+            ? "pptx"
+            : "xlsx";
+
+        const defaultFileName = getDefaultFileName(fileExt);
+
+        config.editorConfig.createUrl = combineUrl(
+          window.location.origin,
+          AppServerConfig.proxyURL,
+          "products/files/",
+          `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            defaultFileName
+          )}`
+        );
+      }
+
       let onRequestSharingSettings;
       let onRequestRename;
-      let onRequestCreateNew;
 
       if (
         fileInfo &&
@@ -373,10 +403,6 @@ const Editor = () => {
       ) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
         onRequestRename = onSDKRequestRename;
-      }
-
-      if (successAuth) {
-        onRequestCreateNew = onSDKRequestCreateNew;
       }
 
       const events = {
@@ -390,7 +416,7 @@ const Editor = () => {
           onError: onSDKError,
           onRequestSharingSettings,
           onRequestRename,
-          onRequestCreateNew,
+          onMakeActionLink: onMakeActionLink,
         },
       };
 
@@ -407,6 +433,14 @@ const Editor = () => {
 
   const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
+
+    const index = url.indexOf("#message/");
+    if (index > -1) {
+      const splitUrl = url.split("#message/");
+      const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
+      message && toastr.info(message);
+      history.pushState({}, null, url.substring(0, index));
+    }
   };
 
   const onSDKInfo = (event) => {
@@ -421,32 +455,27 @@ const Editor = () => {
     setIsVisible(true);
   };
 
-  const onSDKRequestCreateNew = () => {
-    const documentType = config.documentType;
-    const fileExst =
-      documentType === text
-        ? "docx"
-        : documentType === presentation
-        ? "pptx"
-        : "xlsx";
-
-    const defaultFileName = getDefaultFileName(fileExst);
-
-    fileInfo && fileInfo.rootFolderType !== FolderType.SHARE
-      ? createNewFile(
-          fileInfo.folderId,
-          `${defaultFileName}.${fileExst}`
-        ).catch((error) => console.log("error", error))
-      : createTextFileInMy(`${defaultFileName}.${fileExst}`).then((file) =>
-          openDocEditor(file.id, file.providerKey).catch((error) =>
-            console.log("error", error)
-          )
-        );
-  };
-
   const onSDKRequestRename = (event) => {
     const title = event.data;
     updateFile(fileInfo.id, title);
+  };
+
+  const onMakeActionLink = (event) => {
+    var ACTION_DATA = event.data;
+
+    const link = generateLink(ACTION_DATA);
+
+    const urlFormation = !config.editorConfig.actionLink
+      ? url
+      : url.split("&anchor=")[0];
+
+    const linkFormation = `${urlFormation}&anchor=${link}`;
+
+    docEditor.setActionLink(linkFormation);
+  };
+
+  const generateLink = (actionData) => {
+    return encodeURIComponent(JSON.stringify(actionData));
   };
 
   const onCancel = () => {
