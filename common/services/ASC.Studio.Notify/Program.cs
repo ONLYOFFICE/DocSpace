@@ -76,6 +76,7 @@ namespace ASC.Studio.Notify
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration);
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }
