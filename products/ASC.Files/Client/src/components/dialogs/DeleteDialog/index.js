@@ -41,6 +41,19 @@ class DeleteDialogComponent extends React.Component {
     this.state = { foldersList, filesList, selection };
   }
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeydown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeydown, false);
+  }
+
+  onKeydown = (e) => {
+    if (e.keyCode === 27) this.onClose();
+    if (e.keyCode === 13) this.onDelete();
+  };
+
   onDelete = () => {
     this.onClose();
     const { t, deleteAction } = this.props;
