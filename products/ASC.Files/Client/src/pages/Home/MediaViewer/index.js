@@ -73,7 +73,7 @@ const FilesMediaViewer = (props) => {
   const onDownloadMediaFile = (id) => {
     if (files.length > 0) {
       let viewUrlFile = files.find((file) => file.id === id).viewUrl;
-      return window.open(viewUrlFile, "_blank");
+      return window.open(viewUrlFile, "_self");
     }
   };
 
