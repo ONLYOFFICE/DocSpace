@@ -429,15 +429,14 @@ namespace ASC.Mail.Core.Dao
             return result > 0;
         }
 
-        /*private const string SET_PROCESS_EXPIRES =
-            "TIMESTAMPDIFF(MINUTE, " + MailboxTable.Columns.DateChecked + ", UTC_TIMESTAMP()) > {0}";*/
-
         public List<int> SetMailboxesProcessed(int timeoutInMinutes)
         {
             var mailboxes = MailDbContext.MailMailbox
                 .Where(mb => mb.IsProcessed == true
                     && mb.DateChecked != null
-                    && (DateTime.UtcNow - mb.DateChecked).GetValueOrDefault().TotalMinutes > timeoutInMinutes);
+                    && EF.Functions.DateDiffMinute(mb.DateChecked, DateTime.UtcNow) > timeoutInMinutes);
+
+            var mbList = mailboxes.ToList();
 
             if (!mailboxes.Any())
                 return new List<int>();
@@ -449,7 +448,7 @@ namespace ASC.Mail.Core.Dao
 
             var result = MailDbContext.SaveChanges();
 
-            return mailboxes.Select(mb => (int)mb.Id).ToList();
+            return mbList.Select(mb => (int)mb.Id).ToList(); ;
         }
 
         public bool CanAccessTo(IMailboxExp exp)

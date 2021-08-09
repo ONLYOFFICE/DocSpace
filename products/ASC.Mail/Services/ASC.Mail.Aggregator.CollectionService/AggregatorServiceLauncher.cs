@@ -18,6 +18,7 @@ namespace ASC.Mail.Aggregator.CollectionService
         private ILog Log { get; }
         private AggregatorService AggregatorService { get; }
         private ConsoleParameters ConsoleParameters { get; }
+        private ManualResetEvent ResetEvent;
 
         private Task AggregatorServiceTask;
         private CancellationTokenSource Cts;
@@ -45,7 +46,19 @@ namespace ASC.Mail.Aggregator.CollectionService
 
             Cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            AggregatorServiceTask = AggregatorService.StartTimer(Cts.Token, true);
+            if (Environment.UserInteractive || ConsoleParameters.IsConsole)
+            {
+                Log.Info("Service Start in console-daemon mode");
+
+                AggregatorServiceTask = AggregatorService.StartTimer(Cts.Token, true);
+                ResetEvent = new ManualResetEvent(false);
+                System.Console.CancelKeyPress += (sender, e) => StopAsync(cancellationToken);
+                ResetEvent.WaitOne();
+            }
+            else
+            {
+                AggregatorServiceTask = AggregatorService.StartTimer(Cts.Token, true);
+            }
 
             return AggregatorServiceTask.IsCompleted ? AggregatorServiceTask : Task.CompletedTask;
         }
