@@ -311,7 +311,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 var client = CreateMailClient(mailbox, taskLogger, commonCancelToken);
 
-                if (client == null || !client.IsConnected || !client.IsAuthenticated)
+                if (client == null || !client.IsConnected || !client.IsAuthenticated || client.IsDisposed)
                 {
                     taskLogger.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
                                mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
@@ -374,7 +374,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             catch (TimeoutException exTimeout)
             {
                 log.WarnFormat(
-                    $"Timeout Exception: CreateTasks -> MailClient.LoginImapPop(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\") Exception: {exTimeout}");
+                    $"Timeout Exception: CreateTasks -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\") Exception: {exTimeout}");
 
                 connectError = true;
                 stopClient = true;
@@ -382,14 +382,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             catch (OperationCanceledException)
             {
                 log.InfoFormat(
-                    $"Operation Cancel: CreateTasks() -> MailClient.LoginImapPop(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")");
+                    $"Operation Cancel: CreateTasks() -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")");
 
                 stopClient = true;
             }
             catch (AuthenticationException authEx)
             {
                 log.ErrorFormat(
-                    $"CreateTasks() -> MailClient.LoginImapPop(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nException: {authEx}\r\n");
+                    $"CreateTasks() -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nException: {authEx}\r\n");
 
                 connectError = true;
                 stopClient = true;
@@ -397,7 +397,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             catch (WebException webEx)
             {
                 log.ErrorFormat(
-                    $"CreateTasks() -> MailClient.LoginImapPop(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nException: {webEx}\r\n");
+                    $"CreateTasks() -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nException: {webEx}\r\n");
 
                 connectError = true;
                 stopClient = true;
@@ -405,7 +405,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             catch (Exception ex)
             {
                 log.ErrorFormat(
-                    "CreateTasks() -> MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = \"{2}\")\r\nException: {3}\r\n",
+                    "CreateTasks() -> MailClient.LoginImap(Tenant = {0}, MailboxId = {1}, Address = \"{2}\")\r\nException: {3}\r\n",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail,
                     ex is ImapProtocolException || ex is Pop3ProtocolException ? ex.Message : ex.ToString());
 

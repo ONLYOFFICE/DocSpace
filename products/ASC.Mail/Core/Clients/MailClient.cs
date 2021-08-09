@@ -72,6 +72,7 @@ namespace ASC.Mail.Clients
 
         public bool IsConnected { get; private set; }
         public bool IsAuthenticated { get; private set; }
+        public bool IsDisposed { get; private set; }
 
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
@@ -316,6 +317,7 @@ namespace ASC.Mail.Clients
                         }
 
                         Imap.Dispose();
+                        IsDisposed = true;
                     }
                 }
 
