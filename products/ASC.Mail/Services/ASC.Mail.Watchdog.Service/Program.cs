@@ -65,7 +65,7 @@ namespace ASC.Mail.Watchdog.Service
                     }
 
                     config.SetBasePath(path);
-                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Development");
+                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
