@@ -168,9 +168,7 @@ export default function withFileActions(WrappedFileItem) {
         parentFolder,
         setIsLoading,
         fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
+        isMediaOrImage,
         canConvert,
         canWebEdit,
         canViewedDocs,
@@ -243,7 +241,7 @@ export default function withFileActions(WrappedFileItem) {
           return openDocEditor(id, providerKey, tab);
         }
 
-        if (isImage || isSound || isVideo) {
+        if (isMediaOrImage) {
           setMediaViewerData({ visible: true, id });
           return;
         }
@@ -399,9 +397,10 @@ export default function withFileActions(WrappedFileItem) {
         ? false
         : true;
 
-      const isImage = iconFormatsStore.isImage(item.fileExst);
-      const isSound = iconFormatsStore.isSound(item.fileExst);
-      const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+      const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
+        item.fileExst
+      );
+
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
       const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
@@ -431,9 +430,7 @@ export default function withFileActions(WrappedFileItem) {
         parentFolder: selectedFolderStore.parentId,
         setIsLoading,
         fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
+        isMediaOrImage,
         canWebEdit,
         canViewedDocs,
         canConvert,
