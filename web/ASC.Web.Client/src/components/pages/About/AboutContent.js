@@ -27,7 +27,8 @@ const AboutContent = ({ personal, versionAppServer }) => {
   const { t } = useTranslation("About");
   const versionEditor = "6.3.1";
   const license = "AGPL-3.0";
-  const link = "https://github.com/ONLYOFFICE";
+  const linkAppServer = "https://github.com/ONLYOFFICE/AppServer";
+  const linkDocs = "https://github.com/ONLYOFFICE/DocumentServer";
   const phone = "+371 660-16425";
   const email = "support@onlyoffice.com";
   const address =
@@ -52,7 +53,7 @@ const AboutContent = ({ personal, versionAppServer }) => {
           color="#2DA7DB"
           fontSize="13px"
           fontWeight="600"
-          href={link}
+          href={linkAppServer}
           target="_blank"
         >
           &nbsp;ONLYOFFICE App Server&nbsp;
@@ -71,7 +72,7 @@ const AboutContent = ({ personal, versionAppServer }) => {
           color="#2DA7DB"
           fontSize="13px"
           fontWeight="600"
-          href={link}
+          href={linkDocs}
           target="_blank"
         >
           &nbsp;ONLYOFFICE Docs&nbsp;
