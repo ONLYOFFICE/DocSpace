@@ -269,18 +269,18 @@ const Editor = () => {
     return isIOS && deviceType === "tablet";
   };
 
-  const setFavicon = (fileType) => {
+  const setFavicon = (documentType) => {
     const favicon = document.getElementById("favicon");
     if (!favicon) return;
     let icon = null;
-    switch (fileType) {
-      case "docx":
+    switch (documentType) {
+      case "text":
         icon = "text.ico";
         break;
-      case "pptx":
+      case "presentation":
         icon = "presentation.ico";
         break;
-      case "xlsx":
+      case "spreadsheet":
         icon = "spreadsheet.ico";
         break;
       default:
@@ -339,7 +339,7 @@ const Editor = () => {
       docTitle = config.document.title;
       fileType = config.document.fileType;
 
-      setFavicon(fileType);
+      setFavicon(config.documentType);
       setDocumentTitle(docTitle);
 
       if (window.innerWidth < 720) {
