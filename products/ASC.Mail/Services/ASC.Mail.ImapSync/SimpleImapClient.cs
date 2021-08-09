@@ -35,7 +35,7 @@ namespace ASC.Mail.ImapSync
         private readonly MailBoxData Account;
 
         public event EventHandler<ImapAction> NewActionFromImap;
-        public event EventHandler<(MimeMessage, IMessageSummary)> NewMessage;
+        public event EventHandler<(MimeMessage, MessageDescriptor)> NewMessage;
         public event EventHandler<string> DeleteMessage;
         public event EventHandler MessagesListUpdated;
         public event EventHandler WorkFoldersChanged;
@@ -45,7 +45,7 @@ namespace ASC.Mail.ImapSync
         private CancellationTokenSource StopTokenSource { get; set; }
 
         public List<IMailFolder> foldersList { get; private set; }
-        public List<IMessageSummary> MessagesList { get; private set; }
+        public List<MessageDescriptor> MessagesList { get; private set; }
 
         public IMailFolder WorkFolder;
 
@@ -55,7 +55,7 @@ namespace ASC.Mail.ImapSync
         {
             if (sender is IMailFolder imap_folder)
             {
-                IMessageSummary messageSummary = MessagesList.FirstOrDefault(x => x.Index == e.Index);
+                MessageDescriptor messageSummary = MessagesList.FirstOrDefault(x => x.Index == e.Index);
 
                 if (messageSummary == null) return;
 
@@ -97,7 +97,7 @@ namespace ASC.Mail.ImapSync
                         }
                     }
 
-                    AddTask(new Task(() => UpdateMessagesList()));
+                    messageSummary.Flags = e.Flags;
                 }
             }
         }
@@ -139,9 +139,9 @@ namespace ASC.Mail.ImapSync
 
         private async Task ConnectToServer()
         {
-            await Authenticate();
+            Authenticate();
 
-            await LoadFoldersFromIMAP();
+            LoadFoldersFromIMAP();
 
             ChangeFolder(imap.Inbox);
         }
@@ -155,6 +155,8 @@ namespace ASC.Mail.ImapSync
                     OpenFolder(newWorkFolder);
 
                     UpdateMessagesList();
+
+                    WorkFoldersChanged(this, EventArgs.Empty);
                 }
                 catch (Exception ex)
                 {
@@ -185,7 +187,7 @@ namespace ASC.Mail.ImapSync
 
         #region Load Folders from Imap to foldersList
 
-        public async Task<bool> Authenticate(bool enableUtf8 = true)
+        public bool Authenticate(bool enableUtf8 = true)
         {
             if (imap.IsAuthenticated) return true;
 
@@ -215,7 +217,7 @@ namespace ASC.Mail.ImapSync
 
             if (!imap.IsConnected)
             {
-                await imap.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
+                imap.Connect(Account.Server, Account.Port, secureSocketOptions, CancelToken);
 
                 imap.Disconnected += Imap_Disconnected;
             }
@@ -226,14 +228,14 @@ namespace ASC.Mail.ImapSync
                 {
                     _log.Debug("Imap.EnableUTF8");
 
-                    await imap.EnableUTF8Async(CancelToken);
+                    imap.EnableUTF8(CancelToken);
                 }
 
                 if (string.IsNullOrEmpty(Account.OAuthToken))
                 {
                     _log.DebugFormat("Imap.Authentication({0})", Account.Account);
 
-                    await imap.AuthenticateAsync(Account.Account, Account.Password, CancelToken);
+                    imap.Authenticate(Account.Account, Account.Password, CancelToken);
                 }
                 else
                 {
@@ -241,7 +243,7 @@ namespace ASC.Mail.ImapSync
 
                     var oauth2 = new SaslMechanismOAuth2(Account.Account, Account.AccessToken);
 
-                    await imap.AuthenticateAsync(oauth2, CancelToken);
+                    imap.Authenticate(oauth2, CancelToken);
                 }
             }
             catch (Exception ex)
@@ -272,9 +274,9 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                var rootFolder = await imap.GetFolderAsync(imap.PersonalNamespaces[0].Path);
+                var rootFolder = imap.GetFolder(imap.PersonalNamespaces[0].Path);
 
-                var subfolders = await GetImapSubFolders(rootFolder);
+                var subfolders = GetImapSubFolders(rootFolder);
 
                 foldersList = subfolders.Where(x => !_mailSettings.SkipImapFlags.Contains(x.Name.ToLowerInvariant()))
                     .Where(x => !x.Attributes.HasFlag(FolderAttributes.NoSelect))
@@ -293,12 +295,12 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private async Task<IEnumerable<IMailFolder>> GetImapSubFolders(IMailFolder folder)
+        private IEnumerable<IMailFolder> GetImapSubFolders(IMailFolder folder)
         {
             var result = new List<IMailFolder>();
             try
             {
-                result = (await folder.GetSubfoldersAsync(true, CancelToken)).ToList();
+                result = folder.GetSubfolders(true, CancelToken).ToList();
 
                 if (result.Any())
                 {
@@ -306,7 +308,7 @@ namespace ASC.Mail.ImapSync
 
                     foreach (var subfolder in resultWithSubfolders)
                     {
-                        result.AddRange(await GetImapSubFolders(subfolder));
+                        result.AddRange(GetImapSubFolders(subfolder));
                     }
 
                     return result;
@@ -360,7 +362,7 @@ namespace ASC.Mail.ImapSync
         {
             OpenFolder(WorkFolder);
 
-            var newMessagesList = WorkFolder.Fetch(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags).ToList();
+            var newMessagesList = WorkFolder.Fetch(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags).ToMessageDescriptorList();
 
             if (MessagesList == null)
             {

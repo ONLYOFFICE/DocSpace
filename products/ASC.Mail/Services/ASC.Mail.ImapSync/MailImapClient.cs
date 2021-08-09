@@ -89,6 +89,8 @@ namespace ASC.Mail.ImapSync
 
         public async void CheckRedis(int folderActivity, IEnumerable<int> tags)
         {
+            if (foldersDictionary == null) return;
+
             var key = _redisClient.CreateQueueKey(Account.MailBoxId);
 
             _log.Debug($"ProcessActionFromRedis. Begin read key: {key}.");
@@ -252,7 +254,7 @@ namespace ASC.Mail.ImapSync
             UpdateDbFolder(imapClient.MessagesList);
         }
 
-        private void ImapClient_NewMessage(object sender, (MimeMessage, IMessageSummary) e)
+        private void ImapClient_NewMessage(object sender, (MimeMessage, MessageDescriptor) e)
         {
             CreateMessageInDB(e.Item1, e.Item2);
         }
@@ -298,7 +300,7 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private void UpdateDbFolder(List<IMessageSummary> imapFolderMails)
+        private void UpdateDbFolder(List<MessageDescriptor> imapFolderMails)
         {
             if (imapFolderMails == null) return;
 
@@ -308,7 +310,7 @@ namespace ASC.Mail.ImapSync
             {
                 foreach (var imap_message in imapFolderMails)
                 {
-                    _log.Debug($"UpdateDbFolder: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}, folder={imap_message.Folder.Name}.");
+                    _log.Debug($"UpdateDbFolder: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}.");
 
                     var db_message = workFolderMails.FirstOrDefault(x => x.Uidl == SplittedUidl.ToUidl(workFolder.Folder, imap_message.UniqueId));
 
@@ -339,7 +341,7 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private void SetMessageFlagsFromImap(IMessageSummary imap_message, MailInfo db_message)
+        private void SetMessageFlagsFromImap(MessageDescriptor imap_message, MailInfo db_message)
         {
             if (imap_message == null || db_message == null) return;
 
@@ -362,7 +364,7 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private bool CreateMessageInDB(MimeMessage message, IMessageSummary imap_message)
+        private bool CreateMessageInDB(MimeMessage message, MessageDescriptor imap_message)
         {
             bool result = true;
 
