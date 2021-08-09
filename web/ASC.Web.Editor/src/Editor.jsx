@@ -400,11 +400,7 @@ const Editor = () => {
       let onRequestSharingSettings;
       let onRequestRename;
 
-      if (
-        fileInfo &&
-        config.document.permissions.edit &&
-        config.document.permissions.modifyFilter
-      ) {
+      if (fileInfo && config.document.permissions.modifyFilter) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
         onRequestRename = onSDKRequestRename;
       }
