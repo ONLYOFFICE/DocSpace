@@ -132,6 +132,36 @@ class SectionFilterContent extends React.Component {
           ]
         : "";
 
+    const images = !isRecentFolder
+      ? [
+          {
+            key: FilterType.ImagesOnly.toString(),
+            group: "filter-filterType",
+            label: t("Images"),
+          },
+        ]
+      : "";
+
+    const archives = !isRecentFolder
+      ? [
+          {
+            key: FilterType.ArchiveOnly.toString(),
+            group: "filter-filterType",
+            label: t("Archives"),
+          },
+        ]
+      : "";
+
+    const media = !isRecentFolder
+      ? [
+          {
+            key: FilterType.MediaOnly.toString(),
+            group: "filter-filterType",
+            label: t("Media"),
+          },
+        ]
+      : "";
+
     const options = [
       {
         key: "filter-filterType",
@@ -155,21 +185,9 @@ class SectionFilterContent extends React.Component {
         group: "filter-filterType",
         label: t("Translations:Spreadsheets"),
       },
-      {
-        key: FilterType.ImagesOnly.toString(),
-        group: "filter-filterType",
-        label: t("Images"),
-      },
-      {
-        key: FilterType.MediaOnly.toString(),
-        group: "filter-filterType",
-        label: t("Media"),
-      },
-      {
-        key: FilterType.ArchiveOnly.toString(),
-        group: "filter-filterType",
-        label: t("Archives"),
-      },
+      ...images,
+      ...media,
+      ...archives,
       ...allFiles,
     ];
 
