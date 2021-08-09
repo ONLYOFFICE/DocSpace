@@ -316,6 +316,7 @@ class SectionHeaderContent extends React.Component {
       selectionCount,
       isAccessedSelected,
       isWebEditSelected,
+      isViewedSelected,
       deleteDialogVisible,
       isRecycleBin,
       isThirdPartySelection,
@@ -448,7 +449,10 @@ class SectionHeaderContent extends React.Component {
       menu.splice(1, 1);
     }
 
-    if ((personal && !isWebEditSelected) || selectionCount > 1) {
+    if (
+      (personal && !isWebEditSelected && !isViewedSelected) ||
+      selectionCount > 1
+    ) {
       menu.splice(1, 1);
     }
 
@@ -602,6 +606,7 @@ export default inject(
       isThirdPartySelection,
       isWebEditSelected,
       setIsLoading,
+      isViewedSelected,
     } = filesStore;
     const {
       isRecycleBinFolder,
@@ -643,6 +648,7 @@ export default inject(
       isAccessedSelected,
       isThirdPartySelection,
       isWebEditSelected,
+      isViewedSelected,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,

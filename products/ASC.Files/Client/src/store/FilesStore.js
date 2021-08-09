@@ -1228,6 +1228,15 @@ class FilesStore {
     });
   }
 
+  get isViewedSelected() {
+    const { canViewedDocs } = this.formatsStore.docserviceStore;
+
+    return this.selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return canViewedDocs(selected.fileExst);
+    });
+  }
+
   get selectionTitle() {
     if (this.selection.length === 0) return null;
     return this.selection.find((el) => el.title).title;
