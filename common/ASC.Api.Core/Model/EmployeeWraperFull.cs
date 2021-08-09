@@ -269,7 +269,7 @@ namespace ASC.Web.Api.Models
             return result;
         }
 
-        private void FillConacts(EmployeeWraperFull employeeWraperFull, UserInfo userInfo)
+        public void FillConacts(EmployeeWraperFull employeeWraperFull, UserInfo userInfo)
         {
             if (userInfo.ContactsList == null) return;
 

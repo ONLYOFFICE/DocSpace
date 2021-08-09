@@ -35,7 +35,7 @@ namespace ASC.Projects.Core.DataInterfaces
 
         Template GetByID(int id);
 
-        Template Save(Template template);
+        Template SaveOrUpdate(Template template);
 
         void Delete(int id);
     }

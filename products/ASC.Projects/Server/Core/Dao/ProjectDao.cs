@@ -111,11 +111,21 @@ namespace ASC.Projects.Data.DAO
 
         public List<Project> GetAll(ProjectStatus? status, int max)
         {
-            return WebProjectsContext.Project
-                .Where(p => (ProjectStatus)p.Status == status)
-                .Take(max)
-                .Select(q=> ToProject(q))
-                .ToList();
+            var project = WebProjectsContext.Project.Where(p => p.TenantId == Tenant);
+            if (status != null)
+            {
+                project = WebProjectsContext.Project
+                    .Where(p => (ProjectStatus)p.Status == status);
+            }
+
+            if(max != 0)
+            {
+                project = project.Take(max);
+            }
+
+            return project
+                .ToList()
+                    .ConvertAll(p => ToProject(p));
         }
 
         public List<Project> GetLast(ProjectStatus? status, int offset, int max)
@@ -188,8 +198,8 @@ namespace ASC.Projects.Data.DAO
                     Participant = ppp
                 }).Where(q => q.Participant.Removed == 0 && q.Participant.Tenant == Tenant && q.Project.TenantId == Tenant && (ProjectStatus)q.Project.Status == status && q.Participant.ParticipantId == participantId.ToString())
                 .OrderBy(q => q.Project.Title)
-                .Select(q=> ToProject(q.Project))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToProject(q.Project));
         }
 
         public List<Project> GetByFilter(TaskFilter filter, bool isAdmin, bool checkAccess)
@@ -247,8 +257,8 @@ namespace ASC.Projects.Data.DAO
             var sortedQuery = query.OrderBy(q => q.Project.Status == 2 ? 1 : (q.Project.Status == 1 ? 2 : 0)).ThenBy(q=> q.Project.Id);
 
             return sortedQuery
-                .Select(q=> ToProjectFull(q))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToProjectFull(q));
         }
 
         public int GetByFilterCount(TaskFilter filter, bool isAdmin, bool checkAccess)
@@ -290,17 +300,27 @@ namespace ASC.Projects.Data.DAO
                         .Select(q => q.QueryProject);
                 }
             }
-
             if (filter.HasUserId || (filter.ParticipantId.HasValue && !filter.ParticipantId.Equals(Guid.Empty)))
             {
-                query = query.Where(q => IsExistParticipant(q, filter));
+               var qquery = query.Where
+                    (q =>
+                       WebProjectsContext.Participant
+                        .Join(WebProjectsContext.UserGroup,
+                        p => p.ParticipantId,
+                        u => u.UserId.ToString(),
+                        (p, u) => new
+                        {
+                            Participant = p,
+                            UserGroup = u
+                        }).Where(p => (q.Project.Id == p.Participant.ProjectId && p.Participant.Removed == 0 && p.Participant.Tenant == q.Project.TenantId) && ((filter.DepartmentId != Guid.Empty) || (p.UserGroup.Removed == false && p.UserGroup.Tenant == p.Participant.Tenant && p.UserGroup.GroupId == filter.DepartmentId)) && ((filter.ParticipantId.HasValue && !filter.ParticipantId.Equals(Guid.Empty)) || (p.Participant.ParticipantId == filter.ParticipantId.ToString())))
+                        .Select(p => p.Participant)
+                        .Any()
+                   );
             }
-
             if (filter.UserId != Guid.Empty)
             {
                 query = query.Where(q => q.Project.ResponsibleId == filter.UserId.ToString());
             }
-
             if (filter.Follow)
             {
                 query = query.Join(WebProjectsContext.FollowingProject,
@@ -318,7 +338,6 @@ namespace ASC.Projects.Data.DAO
             {
                 query = query.Where(q => filter.ProjectStatuses.Contains((ProjectStatus)q.Project.Status));
             }
-
             if (!string.IsNullOrEmpty(filter.SearchText))
             {
                 List<int> projIds;
@@ -331,7 +350,7 @@ namespace ASC.Projects.Data.DAO
                     query = query.Where(q => q.Project.Title.Contains(filter.SearchText));
                 }
             }
-
+           
             if (checkAccess)
             {
                 query = query.Where(q => q.Project.Private == 0);
@@ -345,29 +364,6 @@ namespace ASC.Projects.Data.DAO
 
             return query;
         }
-        private bool IsExistParticipant(QueryProject q, TaskFilter filter)
-        {
-            var query = WebProjectsContext.Participant.Where(p => q.Project.Id == p.ProjectId && p.Removed == 0 && p.Tenant == q.Project.TenantId);
-
-            if (filter.DepartmentId != Guid.Empty)
-            {
-                query = query.Join(WebProjectsContext.UserGroup,
-                    p => p.ParticipantId,
-                    u => u.UserId.ToString(),
-                    (p, u) => new
-                    {
-                        Participant = p,
-                        UserGroup = u
-                    }).Where(q => q.UserGroup.Removed == false && q.UserGroup.Tenant == q.Participant.Tenant && q.UserGroup.GroupId == filter.DepartmentId)
-                    .Select(q=> q.Participant);
-            }
-
-            if (filter.ParticipantId.HasValue && !filter.ParticipantId.Equals(Guid.Empty))
-            {
-                query = query.Where(p => p.ParticipantId == filter.ParticipantId.ToString());
-            }
-            return query.Any();
-        }
 
         public List<Project> GetFollowing(Guid participantId)
         {
@@ -380,8 +376,8 @@ namespace ASC.Projects.Data.DAO
                     FollowingProject = fp
                 }).Where(q => q.FollowingProject.ParticipantId == participantId.ToString() && (ProjectStatus)q.Project.Status == ProjectStatus.Open)
                 .OrderBy(q => q.Project.CreateOn)
-                .Select(q=> ToProject(q.Project))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToProject(q.Project));
         }
 
         public bool IsFollow(int projectId, Guid participantId)
@@ -404,7 +400,7 @@ namespace ASC.Projects.Data.DAO
             var query =  WebProjectsContext.Project
                 .Where(p => p.Id == projectId)
                 .SingleOrDefault();
-            return ToProject(query);
+            return query == null ? null : ToProject(query);
         }
 
         public List<Project> GetById(List<int> projectIDs)
@@ -448,8 +444,8 @@ namespace ASC.Projects.Data.DAO
                 }); 
 
             return query
-                .Select(q=> ToProjectFull(q))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToProjectFull(q));
         }
 
         public void AddProjectContact(int projectID, int contactID)
@@ -457,6 +453,7 @@ namespace ASC.Projects.Data.DAO
             var crmToProject = new DbCrmToProject();
             crmToProject.ContactId = contactID;
             crmToProject.ProjectId = projectID;
+            crmToProject.TenantId = Tenant;
             WebProjectsContext.CrmToProject.Add(crmToProject);
             WebProjectsContext.SaveChanges();
         }
@@ -549,6 +546,7 @@ namespace ASC.Projects.Data.DAO
         {
             project.CreateOn = TenantUtil.DateTimeFromUtc(TenantUtil.DateTimeToUtc(project.CreateOn));
             project.LastModifiedOn = TenantUtil.DateTimeFromUtc(TenantUtil.DateTimeToUtc(project.LastModifiedOn));
+            project.StatusChangedOn = TenantUtil.DateTimeFromUtc(TenantUtil.DateTimeToUtc(project.CreateOn));
             var dbProject = ToDbProject(project);
             WebProjectsContext.Project.Add(dbProject);
             WebProjectsContext.SaveChanges();
@@ -560,7 +558,20 @@ namespace ASC.Projects.Data.DAO
         public virtual Project Update(Project project)
         {
             project.LastModifiedOn = TenantUtil.DateTimeFromUtc(TenantUtil.DateTimeToUtc(project.LastModifiedOn));
-            WebProjectsContext.Update(project);
+            var dbProject = WebProjectsContext.Project.Where(p => p.Id == project.ID).SingleOrDefault();
+            dbProject.Id = Convert.ToInt32(project.ID);
+            dbProject.Title = project.Title;
+            dbProject.Description = project.Description;
+            dbProject.Status = (int)project.Status;
+            dbProject.ResponsibleId = project.Responsible.ToString();
+            dbProject.Private = Convert.ToInt32(project.Private);
+            dbProject.CreateBy = project.CreateBy.ToString();
+            dbProject.CreateOn = TenantUtil.DateTimeFromUtc(project.CreateOn);
+            dbProject.LastModifiedBy = project.LastModifiedBy.ToString();
+            dbProject.LastModifiedOn = TenantUtil.DateTimeFromUtc(project.LastModifiedOn);
+            dbProject.TenantId = Tenant;
+            dbProject.StatusChanged = TenantUtil.DateTimeFromUtc(project.StatusChangedOn);
+            WebProjectsContext.Project.Update(dbProject);
             WebProjectsContext.SaveChanges();
 
             return project;
@@ -628,11 +639,11 @@ namespace ASC.Projects.Data.DAO
                 Created = DateTime.UtcNow,
                 Updated = DateTime.UtcNow,
                 Removed = 0,
-                Tenant = Tenant
+                Tenant = Tenant,
+                Security = 0
             };
             WebProjectsContext.Participant.Add(participant);
             WebProjectsContext.SaveChanges();
-
             UpdateLastModified(projectId);
 
             var key = string.Format("{0}|{1}", projectId, participantId);
@@ -645,7 +656,7 @@ namespace ASC.Projects.Data.DAO
             var query = WebProjectsContext.Participant
                 .Where(p => p.ProjectId == projectId && p.ParticipantId == participantId.ToString() && p.Tenant == Tenant)
                 .SingleOrDefault();
-            query.Removed = 0;
+            query.Removed = 1;
             query.Updated = DateTime.UtcNow;
 
             WebProjectsContext.Update(query);
@@ -686,8 +697,8 @@ namespace ASC.Projects.Data.DAO
             }
 
             return query
-                .Select(q=> ToParticipant(q))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToParticipant(q));
         }
 
         public List<Participant> GetTeam(IEnumerable<Project> projects)
@@ -706,8 +717,8 @@ namespace ASC.Projects.Data.DAO
                     IsManager = q.Participant.ProjectId == q.Project.Id
                 })
                 .Distinct()
-                .Select(q=> ToParticipant(q))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToParticipant(q));
         }
 
         public List<ParticipantFull> GetTeamUpdates(DateTime from, DateTime to)
@@ -798,7 +809,7 @@ namespace ASC.Projects.Data.DAO
                 {
                     var task = WebProjectsContext.Task.Where(t => t.ProjectId == projectID && t.Id == newTaskOrder[1]).SingleOrDefault();
                     task.SortOrder = i;
-                    WebProjectsContext.Update(task);
+                    WebProjectsContext.Task.Update(task);
                 }
             }
             finally
@@ -850,24 +861,27 @@ namespace ASC.Projects.Data.DAO
                 CreateBy = ToGuid(dbProject.CreateBy),
                 CreateOn = TenantUtil.DateTimeFromUtc(dbProject.CreateOn),
                 LastModifiedBy = ToGuid(dbProject.LastModifiedBy),
-                LastModifiedOn = TenantUtil.DateTimeFromUtc(dbProject.LastModifiedOn)
+                LastModifiedOn = TenantUtil.DateTimeFromUtc(dbProject.LastModifiedOn),
+                StatusChangedOn = TenantUtil.DateTimeFromUtc(dbProject.StatusChanged)
             };
         }
 
-        public DbProject ToDbProject(Project dbProject)
+        public DbProject ToDbProject(Project project)
         {
             return new DbProject
             {
-                Id = Convert.ToInt32(dbProject.ID),
-                Title = dbProject.Title,
-                Description = dbProject.Description,
-                Status = (int)dbProject.Status,
-                ResponsibleId = dbProject.Responsible.ToString(),
-                Private = Convert.ToInt32(dbProject.Private),
-                CreateBy = dbProject.CreateBy.ToString(),
-                CreateOn = TenantUtil.DateTimeFromUtc(dbProject.CreateOn),
-                LastModifiedBy = dbProject.LastModifiedBy.ToString(),
-                LastModifiedOn = TenantUtil.DateTimeFromUtc(dbProject.LastModifiedOn)
+                Id = Convert.ToInt32(project.ID),
+                Title = project.Title,
+                Description = project.Description,
+                Status = (int)project.Status,
+                ResponsibleId = project.Responsible.ToString(),
+                Private = Convert.ToInt32(project.Private),
+                CreateBy = project.CreateBy.ToString(),
+                CreateOn = TenantUtil.DateTimeFromUtc(project.CreateOn),
+                LastModifiedBy = project.LastModifiedBy.ToString(),
+                LastModifiedOn = TenantUtil.DateTimeFromUtc(project.LastModifiedOn),
+                TenantId = Tenant,
+                StatusChanged = TenantUtil.DateTimeFromUtc(project.StatusChangedOn)
             };
         }
 

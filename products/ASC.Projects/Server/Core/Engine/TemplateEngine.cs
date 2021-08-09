@@ -75,7 +75,7 @@ namespace ASC.Projects.Engine
             template.LastModifiedBy = SecurityContext.CurrentAccount.ID;
             template.LastModifiedOn = TenantUtil.DateTimeNow();
 
-            return DaoFactory.GetTemplateDao().Save(template);
+            return DaoFactory.GetTemplateDao().SaveOrUpdate(template);
         }
 
         public void Delete(int id)

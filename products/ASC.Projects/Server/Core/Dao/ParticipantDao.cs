@@ -80,10 +80,13 @@ namespace ASC.Projects.Data.DAO
         public void RemoveFromFollowingProjects(int project, Guid participant)
         {
             var followingProject = WebProjectsContext.FollowingProject.Where(fp => fp.ProjectId == project && fp.ParticipantId == participant.ToString()).SingleOrDefault();
-            WebProjectsContext.FollowingProject.Remove(followingProject);
-            WebProjectsContext.SaveChanges();
-
-            DaoFactory.GetProjectDao().UpdateLastModified(project);
+            if (followingProject != null)
+            {
+                WebProjectsContext.FollowingProject.Remove(followingProject);
+                WebProjectsContext.SaveChanges();
+            }
+                DaoFactory.GetProjectDao().UpdateLastModified(project);
+            
         }
     }
 }

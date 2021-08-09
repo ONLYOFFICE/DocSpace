@@ -14,8 +14,8 @@ namespace ASC.Projects.Model.Projects
         public bool @Private { get; set; }
         public IEnumerable<Participant> Participants { get; set; }
         public bool? Notify { get; set; }
-        public IEnumerable<ASC.Projects.Core.Domain.Task> Tasks { get; set; }
-        public IEnumerable<ASC.Projects.Core.Domain.Milestone> Milestones { get; set; }
+        public IEnumerable<Task> Tasks { get; set; }
+        public IEnumerable<Milestone> Milestones { get; set; }
         public bool? NotifyResponsibles { get; set; }
     }
 }

@@ -105,7 +105,7 @@ namespace ASC.Projects.Data.DAO
             return (float)count;
         }
 
-        private IQueryable<DbTimeTracking> CreateQueryFilter(IQueryable<QueryTimeTracking> query, TaskFilter filter, bool isAdmin, bool checkAccess)
+        private IEnumerable<DbTimeTracking> CreateQueryFilter(IQueryable<QueryTimeTracking> query, TaskFilter filter, bool isAdmin, bool checkAccess)
         {
             if (filter.MyProjects || filter.MyMilestones)
             {
@@ -316,7 +316,9 @@ namespace ASC.Projects.Data.DAO
                          .Select(q => q.Query);
                 }
             }
-            return query.GroupBy(q => new { q.TimeTracking.Id , q.TimeTracking})
+            return query
+                .AsEnumerable()
+                .GroupBy(q => new { q.TimeTracking.Id , q.TimeTracking})
                 .Select(q => q.Key.TimeTracking);
         }
 
@@ -324,9 +326,9 @@ namespace ASC.Projects.Data.DAO
         {
             return WebProjectsContext.TimeTracking
                 .Where(tt => tt.ProjectId == projectId)
-                .Select(tt => ToTimeSpend(tt))
                 .OrderBy(tt => tt.Date)
-                .ToList();
+                .ToList()
+                .ConvertAll(tt => ToTimeSpend(tt));
         }
 
         public List<TimeSpend> GetByTask(int taskId)

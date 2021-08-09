@@ -28,7 +28,7 @@ namespace ASC.Projects.EF
         public string CreateBy { get; set; }
         public DateTime CreateOn { get; set; }
         public string LastModifiedBy { get; set; }
-        public DateTime LastModifiedOn { get; set; }
+        public DateTime? LastModifiedOn { get; set; }
         public DateTime StartDate { get; set; }
         public int Progress { get; set; }
 

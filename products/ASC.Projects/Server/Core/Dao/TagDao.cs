@@ -107,24 +107,18 @@ namespace ASC.Projects.Data.DAO
                 .ToDictionary(q => q.Tag.Id, q => q.Tag.Title);
         }
 
-        public void SetProjectTags(int projectId, string[] tags) // check 2 time!!!!
+        public void SetProjectTags(int projectId, string[] tags) 
         {
             var tagsToDelete = WebProjectsContext.TagToProject.Where(tp => tp.ProjectId == projectId).ToList();
             WebProjectsContext.TagToProject.RemoveRange(tagsToDelete);
-
+            WebProjectsContext.SaveChanges();
             foreach (var tag in tagsToDelete)
             {
-                    var tagToDelete = WebProjectsContext.Tag
-                        .Join(WebProjectsContext.TagToProject,
-                        t=> t.Id,
-                        tp=> tp.TagId,
-                        (t, tp)=> new
-                        {
-                            Tag = t,
-                            TagToProject = tp
-                        }).Where(q => q.Tag.Id == tag.TagId && q.TagToProject.ProjectId == 0)
-                        .Select(q=> q.Tag).SingleOrDefault();   
-                    WebProjectsContext.Remove(tagToDelete);
+                if (!WebProjectsContext.TagToProject.Where(p => p.TagId == tag.TagId).Any())
+                {
+                    var tagDelete = WebProjectsContext.Tag.Where(t => t.Id == tag.TagId).SingleOrDefault();
+                    WebProjectsContext.Tag.Remove(tagDelete);
+                }
             }
 
 
@@ -156,6 +150,7 @@ namespace ASC.Projects.Data.DAO
         {
             var tp = WebProjectsContext.TagToProject.Where(tp => tp.ProjectId == projectId).ToList();
             WebProjectsContext.TagToProject.RemoveRange(tp);
+            WebProjectsContext.SaveChanges();
 
             var tagsToDelete = WebProjectsContext.Tag.Join(WebProjectsContext.TagToProject,
                 t => t.Id,
@@ -172,17 +167,11 @@ namespace ASC.Projects.Data.DAO
 
             foreach (var tag in tagsToDelete.Except(tags))
             {
-                var tagToDelete = WebProjectsContext.Tag
-                        .Join(WebProjectsContext.TagToProject,
-                        t => t.Id,
-                        tp => tp.TagId,
-                        (t, tp) => new
-                        {
-                            Tag = t,
-                            TagToProject = tp
-                        }).Where(q => q.Tag.Id == tag && q.TagToProject.ProjectId == 0)
-                        .Select(q => q.Tag).SingleOrDefault();
-                WebProjectsContext.Remove(tagToDelete);
+                if (!WebProjectsContext.TagToProject.Where(p => p.TagId == tag).Any())
+                {
+                    var tagDelete = WebProjectsContext.Tag.Where(t => t.Id == tag).SingleOrDefault();
+                    WebProjectsContext.Tag.Remove(tagDelete);
+                }
             }
 
             if (tags.Any())

@@ -169,20 +169,22 @@ namespace ASC.Api.Projects
             EngineFactory.GetTagEngine().SetProjectTags(project.ID, model.Tags);
 
 
-            var participantsList = model.Participants.ToList();
+            var participantsList = model.Participants == null ? new List<Guid>() : model.Participants.ToList();
             foreach (var participant in participantsList)
             {
                 EngineFactory.GetProjectEngine().AddToTeam(project, EngineFactory.GetParticipantEngine().GetByID(participant), model.NotifyResponsibles ?? false);
             }
 
-            foreach (var milestone in model.Milestones)
+            var milestones = model.Milestones == null ? new List<Milestone>() : model.Milestones;
+            var tasks = model.Tasks == null ? new List<Task>() : model.Tasks;
+            foreach (var milestone in milestones)
             {
                 milestone.Description = string.Empty;
                 milestone.Project = project;
                 EngineFactory.GetMilestoneEngine().SaveOrUpdate(milestone, model.NotifyResponsibles ?? false);
             }
-            var ml = model.Milestones.ToArray();
-            foreach (var task in model.Tasks)
+            var ml = milestones.ToArray();
+            foreach (var task in tasks)
             {
                 task.Description = string.Empty;
                 task.Project = project;
@@ -200,7 +202,7 @@ namespace ASC.Api.Projects
                 EngineFactory.GetProjectEngine().SaveOrUpdate(project, model.Notify ?? true);
             }
 
-            if (model.Tasks.Any() || model.Milestones.Any())
+            if (tasks.Any() || milestones.Any())
             {
                 var order = JsonConvert.SerializeObject(
                         new
@@ -229,7 +231,7 @@ namespace ASC.Api.Projects
                 ResponsibleId = model.ResponsibleId,
                 Tags = model.Tags,
                 Private = model.Private,
-                Participants = model.Participants.Select(r => r.ID).ToList(),
+                Participants = model.Participants == null ? null : model.Participants.Select(r => r.ID).ToList(),
                 Notify = model.Notify,
                 Tasks = model.Tasks,
                 Milestones = model.Milestones,
@@ -237,11 +239,13 @@ namespace ASC.Api.Projects
             };
             var project = CreateProject(model1);
 
-            foreach (var participant in model.Participants.Where(r => !ProjectSecurity.IsAdministrator(r.ID)))
+            if (model.Participants != null)
             {
-                EngineFactory.GetProjectEngine().SetTeamSecurity(project.Id, participant);
+                foreach (var participant in model.Participants.Where(r => !ProjectSecurity.IsAdministrator(r.ID)))
+                {
+                    EngineFactory.GetProjectEngine().SetTeamSecurity(project.Id, participant);
+                }
             }
-
             return project;
         }
 
@@ -280,9 +284,10 @@ namespace ASC.Api.Projects
             {
                 EngineFactory.GetTagEngine().SetProjectTags(project.ID, model.Tags);
             }
-            EngineFactory.GetProjectEngine().UpdateTeam(project, model.Participants, true);
+            var participants = model.Participants == null ? new List<Guid>() : model.Participants;
+            EngineFactory.GetProjectEngine().UpdateTeam(project, participants, true);
 
-            project.ParticipantCount = model.Participants.Count();
+            project.ParticipantCount = participants.Count();
 
             MessageService.Send(MessageAction.ProjectUpdated, MessageTarget.Create(project.ID), project.Title);
 
@@ -305,20 +310,22 @@ namespace ASC.Api.Projects
             };
             var project = UpdateProject(id, model1);
 
-            foreach (var participant in model.Participants)
+            if (model.Participants != null)
             {
-                EngineFactory.GetProjectEngine().SetTeamSecurity(project.Id, participant);
+                foreach (var participant in model.Participants)
+                {
+                    EngineFactory.GetProjectEngine().SetTeamSecurity(project.Id, participant);
+                }
             }
-
             return project;
         }
 
         [Update(@"{id:int}/status")]
-        public ProjectWrapperFull UpdateProject(int id, ProjectStatus status)
+        public ProjectWrapperFull UpdateProject(int id, ModelUpdateStatus model)
         {
             var project = EngineFactory.GetProjectEngine().GetFullProjectByID(id).NotFoundIfNull();
 
-            EngineFactory.GetProjectEngine().ChangeStatus(project, status);
+            EngineFactory.GetProjectEngine().ChangeStatus(project, model.Status);
             MessageService.Send(MessageAction.ProjectUpdatedStatus, MessageTarget.Create(project.ID), project.Title, LocalizedEnumConverter.ConvertToString(project.Status));
 
             return ModelHelper.GetProjectWrapperFull(project, EngineFactory.GetFileEngine().GetRoot(id));
@@ -337,11 +344,11 @@ namespace ASC.Api.Projects
         }
 
         [Delete(@"")]
-        public IEnumerable<ProjectWrapperFull> DeleteProjects(int[] projectids)
+        public IEnumerable<ProjectWrapperFull> DeleteProjects(ModelDeleteProjects model)
         {
-            var result = new List<ProjectWrapperFull>(projectids.Length);
+            var result = new List<ProjectWrapperFull>(model.ProjectIds.Length);
 
-            foreach (var id in projectids)
+            foreach (var id in model.ProjectIds)
             {
                 try
                 {
@@ -378,23 +385,23 @@ namespace ASC.Api.Projects
         }
 
         [Update(@"{id:int}/tag")]
-        public ProjectWrapperFull UpdateProjectTags(int id, string tags)
+        public ProjectWrapperFull UpdateProjectTags(int id, ModelUpdateTags model)
         {
             var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
             ProjectSecurity.DemandEdit(project);
 
-            EngineFactory.GetTagEngine().SetProjectTags(id, tags);
+            EngineFactory.GetTagEngine().SetProjectTags(id, model.Tags);
 
             return ModelHelper.GetProjectWrapperFull(project, EngineFactory.GetFileEngine().GetRoot(id));
         }
 
         [Update(@"{id:int}/tags")]
-        public ProjectWrapperFull UpdateProjectTags(int id, IEnumerable<int> tags)
+        public ProjectWrapperFull UpdateProjectTags(int id, ModelUpdateTagsInt model)
         {
             var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
             ProjectSecurity.DemandEdit(project);
 
-            EngineFactory.GetTagEngine().SetProjectTags(id, tags);
+            EngineFactory.GetTagEngine().SetProjectTags(id, model.Tags);
 
             return ModelHelper.GetProjectWrapperFull(project, EngineFactory.GetFileEngine().GetRoot(id));
         }
@@ -407,7 +414,7 @@ namespace ASC.Api.Projects
         }
 
         [Read(@"{id:int}/time/total")]
-        public string GetTotalProjectTime(int id)
+        public object GetTotalProjectTime(int id)
         {
             if (!EngineFactory.GetProjectEngine().IsExists(id)) throw new ItemNotFoundException();
             return EngineFactory.GetTimeTrackingEngine().GetTotalByProject(id);
@@ -484,21 +491,21 @@ namespace ASC.Api.Projects
         }
 
         [Create(@"team")]
-        public IEnumerable<ParticipantWrapper> GetProjectTeam(List<int> ids)
+        public IEnumerable<ParticipantWrapper> GetProjectTeam(ModelCreateTeam model)
         {
-            return EngineFactory.GetProjectEngine().GetTeam(ids)
+            return EngineFactory.GetProjectEngine().GetTeam(model.Ids)
                                 .Select(x => ModelHelper.GetParticipantWrapper(x))
                                 .OrderBy(r => r.DisplayName).ToList();
         }
 
 
         [Create(@"{projectid:int}/team")]
-        public IEnumerable<ParticipantWrapper> AddToProjectTeam(int projectid, Guid userId)
+        public IEnumerable<ParticipantWrapper> AddToProjectTeam(int projectid, ModelAddProjectTeam model)
         {
             var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandEditTeam(project);
 
-            EngineFactory.GetProjectEngine().AddToTeam(project, EngineFactory.GetParticipantEngine().GetByID(userId), true);
+            EngineFactory.GetProjectEngine().AddToTeam(project, EngineFactory.GetParticipantEngine().GetByID(model.UserId), true);
 
             return GetProjectTeam(projectid);
         }
@@ -527,12 +534,12 @@ namespace ASC.Api.Projects
         }
 
         [Delete(@"{projectid:int}/team")]
-        public IEnumerable<ParticipantWrapper> DeleteFromProjectTeam(int projectid, Guid userId)
+        public IEnumerable<ParticipantWrapper> DeleteFromProjectTeam(int projectid, ModelDeleteFromTeam model)
         {
             var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandEditTeam(project);
 
-            var particapant = EngineFactory.GetParticipantEngine().GetByID(userId);
+            var particapant = EngineFactory.GetParticipantEngine().GetByID(model.UserId);
             EngineFactory.GetProjectEngine().RemoveFromTeam(project, particapant, true);
 
             MessageService.Send(MessageAction.ProjectDeletedMember, MessageTarget.Create(project.ID), project.Title, particapant.UserInfo.DisplayUserName(DisplayUserSettingsHelper));
@@ -577,7 +584,7 @@ namespace ASC.Api.Projects
             {
                 throw new ItemNotFoundException("Milestone not found");
             }
-
+            model.Responsibles = model.Responsibles == null ? new List<Guid>() : model.Responsibles;
             var task = new Task
             {
                 CreateBy = SecurityContext.CurrentAccount.ID,
@@ -590,7 +597,9 @@ namespace ASC.Api.Projects
                 Project = project,
                 Milestone = model.Milestoneid,
                 Responsibles = new List<Guid>(model.Responsibles.Distinct()),
-                StartDate = model.StartDate
+                StartDate = model.StartDate,
+                LastModifiedBy = SecurityContext.CurrentAccount.ID,
+                LastModifiedOn = TenantUtil.DateTimeNow()
             };
             EngineFactory.GetTaskEngine().SaveOrUpdate(task, null, model.Notify);
 
@@ -686,14 +695,15 @@ namespace ASC.Api.Projects
         }
 
         [Read(@"{id:int}/files")]
-        public FolderContentWrapper<int> GetProjectFiles(int id)
+        public FolderContentWrapper<int> GetProjectFiles(int id)//todo
         {
-            var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
+            throw new NotImplementedException();
+            /*var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
 
             if (ProjectSecurity.CanReadFiles(project))
                 return ModelHelper.GetFolderContentWrapper(EngineFactory.GetFileEngine().GetRoot(id), Guid.Empty, FilterType.None);
 
-            throw new SecurityException("Access to files is denied");
+            throw new SecurityException("Access to files is denied");*/
         }
 
         [Read(@"{entityID:int}/entityfiles")]
@@ -809,15 +819,15 @@ namespace ASC.Api.Projects
         }
 
         [Create(@"{projectid:int}/contact")]
-        public ProjectWrapperFull AddProjectContact(int projectid, int contactid)
+        public ProjectWrapperFull AddProjectContact(int projectid, ModelAddOrDeleteContact model)
         {
-            var contact = CRMDaoFactory.GetContactDao().GetByID(contactid);
+            var contact = CRMDaoFactory.GetContactDao().GetByID(model.ContactId);
             if (contact == null) throw new ArgumentException();
 
             var project = EngineFactory.GetProjectEngine().GetFullProjectByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandLinkContact(project);
 
-            EngineFactory.GetProjectEngine().AddProjectContact(projectid, contactid);
+            EngineFactory.GetProjectEngine().AddProjectContact(projectid, model.ContactId);
 
             var messageAction = contact is Company ? MessageAction.CompanyLinkedProject : MessageAction.PersonLinkedProject;
             MessageService.Send(messageAction, MessageTarget.Create(project.ID), contact.GetTitle(), project.Title);
@@ -826,15 +836,15 @@ namespace ASC.Api.Projects
         }
 
         [Delete("{projectid:int}/contact")]
-        public ProjectWrapperFull DeleteProjectContact(int projectid, int contactid)
+        public ProjectWrapperFull DeleteProjectContact(int projectid, ModelAddOrDeleteContact model)
         {
-            var contact = CRMDaoFactory.GetContactDao().GetByID(contactid);
+            var contact = CRMDaoFactory.GetContactDao().GetByID(model.ContactId);
             if (contact == null) throw new ArgumentException();
 
             var project = EngineFactory.GetProjectEngine().GetByID(projectid).NotFoundIfNull();
             ProjectSecurity.DemandEdit(project);
 
-            EngineFactory.GetProjectEngine().DeleteProjectContact(projectid, contactid);
+            EngineFactory.GetProjectEngine().DeleteProjectContact(projectid, model.ContactId);
 
             var messageAction = contact is Company ? MessageAction.CompanyUnlinkedProject : MessageAction.PersonUnlinkedProject;
             MessageService.Send(messageAction, MessageTarget.Create(project.ID), contact.GetTitle(), project.Title);
@@ -908,7 +918,7 @@ namespace ASC.Api.Projects
         }
 
         [Read("maxlastmodified")]
-        public string GetProjectMaxLastModified()
+        public object GetProjectMaxLastModified()
         {
             var maxModified = EngineFactory.GetProjectEngine().GetMaxLastModified();
             var maxTeamModified = EngineFactory.GetProjectEngine().GetTeamMaxLastModified();
@@ -917,7 +927,7 @@ namespace ASC.Api.Projects
         }
 
         [Read(@"{id:int}/order")]
-        public string GetTaskOrder(int id)
+        public object GetTaskOrder(int id)
         {
             var project = EngineFactory.GetProjectEngine().GetByID(id).NotFoundIfNull();
 

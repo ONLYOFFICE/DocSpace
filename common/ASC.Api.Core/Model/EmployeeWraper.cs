@@ -100,7 +100,7 @@ namespace ASC.Web.Api.Models
             }
         }
 
-        protected EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
+        public EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
         {
             result.Id = userInfo.ID;
             result.DisplayName = DisplayUserSettingsHelper.GetFullUserName(userInfo);

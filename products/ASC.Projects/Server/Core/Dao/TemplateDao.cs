@@ -44,8 +44,8 @@ namespace ASC.Projects.Data.DAO
         {
             return WebProjectsContext.Template
                 .OrderBy(t => t.CreateOn)
-                .Select(t=> ToTemplate(t))
-                .ToList();
+                .ToList()
+                .ConvertAll(t => ToTemplate(t));
         }
 
         public int GetCount()
@@ -55,21 +55,37 @@ namespace ASC.Projects.Data.DAO
 
         public Template GetByID(int id)
         {
-            return WebProjectsContext.Template
+            var query = WebProjectsContext.Template
                 .Where(t=> t.Id == id)
-                .Select(t => ToTemplate(t))
                 .SingleOrDefault();
+            return query == null ? null : ToTemplate(query);
         }
 
-        public Template Save(Template template)
+        public Template SaveOrUpdate(Template template)
         {
-            var db = ToDbTemplate(template);
-            db.CreateOn = TenantUtil.DateTimeToUtc(db.CreateOn);
-            db.LastModifiedOn = TenantUtil.DateTimeToUtc(db.LastModifiedOn);
-            WebProjectsContext.Template.Add(db);
-            WebProjectsContext.SaveChanges();
-
-            return ToTemplate(db);
+            if(WebProjectsContext.Template.Where(t=> t.Id == template.Id).Any())
+            {
+                var db = WebProjectsContext.Template.Where(t => t.Id == template.Id).SingleOrDefault();
+                db.Title = template.Title;
+                db.Description = template.Description;
+                db.CreateBy = template.CreateBy.ToString();
+                db.TenantId = Tenant;
+                db.CreateOn = TenantUtil.DateTimeToUtc(db.CreateOn);
+                db.LastModifiedOn = TenantUtil.DateTimeToUtc(db.LastModifiedOn);
+                db.LastModifiedBy = template.LastModifiedBy.ToString();
+                WebProjectsContext.Template.Update(db);
+                WebProjectsContext.SaveChanges();
+                return ToTemplate(db);
+            }
+            else
+            {
+                var db = ToDbTemplate(template);
+                db.CreateOn = TenantUtil.DateTimeToUtc(db.CreateOn);
+                db.LastModifiedOn = TenantUtil.DateTimeToUtc(db.LastModifiedOn);
+                WebProjectsContext.Template.Add(db);
+                WebProjectsContext.SaveChanges();
+                return ToTemplate(db);
+            }
         }
 
         public void Delete(int id)
@@ -99,7 +115,8 @@ namespace ASC.Projects.Data.DAO
                 Title = template.Title,
                 Description = template.Description,
                 CreateBy = template.CreateBy.ToString(),
-                CreateOn = TenantUtil.DateTimeFromUtc(template.CreateOn)
+                CreateOn = TenantUtil.DateTimeFromUtc(template.CreateOn),
+                TenantId = Tenant
             };
         }
     }

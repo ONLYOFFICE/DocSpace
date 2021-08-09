@@ -319,6 +319,7 @@ namespace ASC.Projects.Data.DAO
             }
             else
             {
+                milestone.StatusChangedOn = TenantUtil.DateTimeNow();
                 var dbMilestone = ToDbMilestone(milestone);
                 WebProjectsContext.Milestone.Add(dbMilestone);
                 WebProjectsContext.SaveChanges();

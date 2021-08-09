@@ -48,7 +48,7 @@ namespace ASC.Projects.Engine
         public EngineFactory EngineFactory { get; set; }
         public IDaoFactory DaoFactory { get; set; }
 
-        public ProjectEngine(IFactoryFileDao factoryFileDao, SecurityContext securityContext, TenantUtil tenantUtil, ParticipantHelper participantHelper, NotifyClient notifyClient, IDaoFactory daoFactory, EngineFactory engineFactory, ProjectSecurity projectSecurity)
+        public ProjectEngine(IFactoryFileDao factoryFileDao, SecurityContext securityContext, TenantUtil tenantUtil, ParticipantHelper participantHelper, NotifyClient notifyClient, IDaoFactory daoFactory, EngineFactory engineFactory, ProjectSecurity projectSecurity, FactoryIndexer<DbProject> factoryIndexer)
         {
             CanReadDelegate = CanRead;
             FactoryFileDao = factoryFileDao;
@@ -59,6 +59,7 @@ namespace ASC.Projects.Engine
             EngineFactory = engineFactory;
             DaoFactory = daoFactory;
             ProjectSecurity = projectSecurity;
+            FactoryIndexer = factoryIndexer;
         }
 
         public ProjectEngine Init(bool disableNotificationParameter)
@@ -286,7 +287,7 @@ namespace ASC.Projects.Engine
                 var oldProject = DaoFactory.GetProjectDao().GetById(project.ID);
                 ProjectSecurity.DemandEdit(oldProject);
 
-                var db = DaoFactory.GetProjectDao().Update(project);
+                DaoFactory.GetProjectDao().Update(project);
 
                 if (!project.Private) ResetTeamSecurity(oldProject);
 
