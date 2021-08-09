@@ -169,54 +169,53 @@ const Editor = () => {
       if (successAuth) {
         const recentFolderList = await getRecentFolderList();
 
-        let recentFilesArray = [];
+        const filesArray = recentFolderList.files.slice(0, 25);
 
-        const filesArray = recentFolderList.files;
+        const recentFiles = filesArray.filter(
+          (file) =>
+            file.rootFolderType !== FolderType.SHARE &&
+            ((config.documentType === text && file.fileType === 7) ||
+              (config.documentType === spreadSheet && file.fileType === 5) ||
+              (config.documentType === presentation && file.fileType === 6))
+        );
 
-        for (let i = 0; i < filesArray.length; i++) {
-          if (
-            config.documentType === text &&
-            filesArray[i].fileType === 7 &&
-            filesArray[i].rootFolderType !== FolderType.SHARE
-          ) {
-            const folderInfo = await getFolderInfo(filesArray[i].folderId);
+        const groupedByFolder = recentFiles.reduce((r, a) => {
+          r[a.folderId] = [...(r[a.folderId] || []), a];
+          return r;
+        }, {});
 
-            const convertedData = convertRecentData(filesArray[i], folderInfo);
+        const requests = Object.entries(groupedByFolder).map((item) =>
+          getFolderInfo(item[0])
+            .then((folderInfo) =>
+              Promise.resolve({
+                files: item[1],
+                folderInfo: folderInfo,
+              })
+            )
+            .catch((e) => console.error(e))
+        );
 
-            if (Object.keys(convertedData).length !== 0)
-              recentFilesArray.push(convertedData);
+        let recent = [];
+
+        try {
+          let responses = await Promise.all(requests);
+
+          for (let i = 0; i < responses.length; i++) {
+            const res = responses[i];
+
+            res.files.forEach((file) => {
+              const convertedData = convertRecentData(file, res.folderInfo);
+              if (Object.keys(convertedData).length !== 0)
+                recent.push(convertedData);
+            });
           }
-
-          if (
-            config.documentType === spreadSheet &&
-            filesArray[i].fileType === 5 &&
-            filesArray[i].rootFolderType !== FolderType.SHARE
-          ) {
-            const folderInfo = await getFolderInfo(filesArray[i].folderId);
-
-            const convertedData = convertRecentData(filesArray[i], folderInfo);
-
-            if (Object.keys(convertedData).length !== 0)
-              recentFilesArray.push(convertedData);
-          }
-
-          if (
-            config.documentType === presentation &&
-            filesArray[i].fileType === 6 &&
-            filesArray[i].rootFolderType !== FolderType.SHARE
-          ) {
-            const folderInfo = await getFolderInfo(filesArray[i].folderId);
-
-            const convertedData = convertRecentData(filesArray[i], folderInfo);
-
-            if (Object.keys(convertedData).length !== 0)
-              recentFilesArray.push(convertedData);
-          }
+        } catch (e) {
+          console.error(e);
         }
 
         config.editorConfig = {
           ...config.editorConfig,
-          recent: recentFilesArray,
+          recent: recent,
         };
       }
 
