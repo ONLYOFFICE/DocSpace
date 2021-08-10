@@ -259,7 +259,8 @@ const Editor = () => {
     const folderName = folder.title;
     const fileName = file.title;
     const url = file.webUrl;
-    if (fileId !== file.id)
+
+    if (+fileId !== file.id)
       obj = {
         folder: folderName,
         title: fileName,
