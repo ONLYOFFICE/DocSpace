@@ -167,56 +167,60 @@ const Editor = () => {
       }
 
       if (successAuth) {
-        const recentFolderList = await getRecentFolderList();
-
-        const filesArray = recentFolderList.files.slice(0, 25);
-
-        const recentFiles = filesArray.filter(
-          (file) =>
-            file.rootFolderType !== FolderType.SHARE &&
-            ((config.documentType === text && file.fileType === 7) ||
-              (config.documentType === spreadSheet && file.fileType === 5) ||
-              (config.documentType === presentation && file.fileType === 6))
-        );
-
-        const groupedByFolder = recentFiles.reduce((r, a) => {
-          r[a.folderId] = [...(r[a.folderId] || []), a];
-          return r;
-        }, {});
-
-        const requests = Object.entries(groupedByFolder).map((item) =>
-          getFolderInfo(item[0])
-            .then((folderInfo) =>
-              Promise.resolve({
-                files: item[1],
-                folderInfo: folderInfo,
-              })
-            )
-            .catch((e) => console.error(e))
-        );
-
-        let recent = [];
-
         try {
-          let responses = await Promise.all(requests);
+          const recentFolderList = await getRecentFolderList();
 
-          for (let i = 0; i < responses.length; i++) {
-            const res = responses[i];
+          const filesArray = recentFolderList.files.slice(0, 25);
 
-            res.files.forEach((file) => {
-              const convertedData = convertRecentData(file, res.folderInfo);
-              if (Object.keys(convertedData).length !== 0)
-                recent.push(convertedData);
-            });
+          const recentFiles = filesArray.filter(
+            (file) =>
+              file.rootFolderType !== FolderType.SHARE &&
+              ((config.documentType === text && file.fileType === 7) ||
+                (config.documentType === spreadSheet && file.fileType === 5) ||
+                (config.documentType === presentation && file.fileType === 6))
+          );
+
+          const groupedByFolder = recentFiles.reduce((r, a) => {
+            r[a.folderId] = [...(r[a.folderId] || []), a];
+            return r;
+          }, {});
+
+          const requests = Object.entries(groupedByFolder).map((item) =>
+            getFolderInfo(item[0])
+              .then((folderInfo) =>
+                Promise.resolve({
+                  files: item[1],
+                  folderInfo: folderInfo,
+                })
+              )
+              .catch((e) => console.error(e))
+          );
+
+          let recent = [];
+
+          try {
+            let responses = await Promise.all(requests);
+
+            for (let i = 0; i < responses.length; i++) {
+              const res = responses[i];
+
+              res.files.forEach((file) => {
+                const convertedData = convertRecentData(file, res.folderInfo);
+                if (Object.keys(convertedData).length !== 0)
+                  recent.push(convertedData);
+              });
+            }
+          } catch (e) {
+            console.error(e);
           }
+
+          config.editorConfig = {
+            ...config.editorConfig,
+            recent: recent,
+          };
         } catch (e) {
           console.error(e);
         }
-
-        config.editorConfig = {
-          ...config.editorConfig,
-          recent: recent,
-        };
       }
 
       if (
