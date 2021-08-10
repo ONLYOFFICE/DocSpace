@@ -46,7 +46,7 @@ namespace ASC.Mail.Aggregator.CollectionService
 
             Cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            if (Environment.UserInteractive || ConsoleParameters.IsConsole)
+            if (ConsoleParameters.IsConsole)
             {
                 Log.Info("Service Start in console-daemon mode");
 

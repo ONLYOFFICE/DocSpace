@@ -518,10 +518,10 @@ namespace ASC.Mail.Clients
             {
                 if (aggEx.InnerException != null)
                 {
-                    Log.ErrorFormat($"Imap: Exception while logging\r\nException: {aggEx.InnerException}\r\n.");
+                    Log.ErrorFormat($"Imap: Exception while logging. See next exception for details.");
                     throw aggEx.InnerException;
                 }
-                Log.ErrorFormat($"Imap: Exception while logging\r\nException: {aggEx}\r\n.");
+                Log.ErrorFormat($"Imap: Exception while logging.");
                 throw new Exception("LoginImap failed", aggEx);
             }
             finally
