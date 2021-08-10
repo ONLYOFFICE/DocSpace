@@ -79,10 +79,10 @@ namespace ASC.Projects.Data.DAO
 
         public List<Subtask> GetSubtasks(int taskid)
         {
-            var query = WebProjectsContext.Subtask.Where(s => s.TaskId == taskid && s.TenantId == Tenant)
-                .Select(q=> ToSubTask(q));
+            var query = WebProjectsContext.Subtask.Where(s => s.TaskId == taskid && s.TenantId == Tenant);
             return OrderQuery(query)
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToSubTask(q));
         }
 
         public void GetSubtasksForTasks(ref List<Task> tasks)
@@ -113,16 +113,19 @@ namespace ASC.Projects.Data.DAO
         public List<Subtask> GetById(ICollection<int> ids)
         {
             var query = WebProjectsContext.Subtask
-                .Where(s => s.TenantId == Tenant && ids.Contains(s.Id))
-                .Select(q => ToSubTask(q));
-            return OrderQuery(query).ToList();
+                .Where(s => s.TenantId == Tenant && ids.Contains(s.Id));
+
+            return OrderQuery(query)
+            .ToList()
+            .ConvertAll(q => ToSubTask(q));
         }
 
         public List<Subtask> GetUpdates(DateTime from, DateTime to)
         {
-            var query = WebProjectsContext.Subtask.Where(s => (s.CreateOn >= from && s.CreateOn <= to) || (s.LastModifiedOn >= from && s.LastModifiedOn <= to) || (s.StatusChanged >= from && s.StatusChanged <= to))
-                .Select(q => ToSubTask(q));
-            return OrderQuery(query).ToList();
+            var query = WebProjectsContext.Subtask.Where(s => (s.CreateOn >= from && s.CreateOn <= to) || (s.LastModifiedOn >= from && s.LastModifiedOn <= to) || (s.StatusChanged >= from && s.StatusChanged <= to));
+            return OrderQuery(query)
+            .ToList()
+            .ConvertAll(q => ToSubTask(q));
         }
 
         public List<Subtask> GetByResponsible(Guid id, TaskStatus? status = null)
@@ -135,7 +138,9 @@ namespace ASC.Projects.Data.DAO
             }
 
 
-            return OrderQuery(query.Select(q => ToSubTask(q))).ToList();
+            return OrderQuery(query)
+            .ToList()
+            .ConvertAll(q => ToSubTask(q));
         }
 
         public int GetSubtaskCount(int taskid, params TaskStatus[] statuses)
@@ -174,11 +179,11 @@ namespace ASC.Projects.Data.DAO
             WebProjectsContext.SaveChanges();
         }
 
-        private IOrderedQueryable<Subtask> OrderQuery(IQueryable<Subtask> subtasks)
+        private IOrderedQueryable<DbSubtask> OrderQuery(IQueryable<DbSubtask> subtasks)
         {
             return subtasks
                 .OrderBy(s => s.Status)
-                .ThenBy(s => (int)s.Status == 1 ? s.CreateOn : s.StatusChangedOn);
+                .ThenBy(s => (int)s.Status == 1 ? s.CreateOn : s.StatusChanged);
         }
 
         private Subtask ToSubTask(DbSubtask subtask)

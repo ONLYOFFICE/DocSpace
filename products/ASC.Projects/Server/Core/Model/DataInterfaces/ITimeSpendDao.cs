@@ -37,7 +37,7 @@ namespace ASC.Projects.Core.DataInterfaces
 
         float GetByFilterTotal(TaskFilter filter, bool isAdmin, bool checkAccess);
 
-        TimeSpend Save(TimeSpend timeSpend);
+        TimeSpend SaveOrUpdate(TimeSpend timeSpend);
 
         void Delete(int id);
     }

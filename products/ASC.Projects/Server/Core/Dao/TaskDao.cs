@@ -183,7 +183,7 @@ namespace ASC.Projects.Data.DAO
 
             query = CreateQueryFilter(query, filter, isAdmin, checkAccess);
 
-            var tasks = query.GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible.ResponsibleId)
+            var tasks = query.GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
                 .Select(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
 
             return tasks.ToList();
@@ -333,7 +333,7 @@ namespace ASC.Projects.Data.DAO
         {
             return CreateQuery().Where(q => q.Task.MilestoneId == milestoneId)
                 .AsEnumerable()
-                .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible.ResponsibleId)
+                .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
                 .OrderBy(q => q.Key.Task.SortOrder)
                 .ThenBy(q => q.Key.Task.Status)
                 .ThenBy(q => q.Key.Task.Priority)
@@ -347,7 +347,7 @@ namespace ASC.Projects.Data.DAO
             return CreateQuery()
                 .Where(q => ids.ToArray().Contains(q.Task.Id))
                 .AsEnumerable()
-                .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible.ResponsibleId)
+                .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
                 .ToList()
                 .ConvertAll(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
         }
@@ -356,7 +356,8 @@ namespace ASC.Projects.Data.DAO
         {
             var query = CreateQuery()
                 .Where(q => q.Task.Id == id)
-                .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible.ResponsibleId)
+                .AsEnumerable()
+                .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
                 .SingleOrDefault();
             return ToTask(new QueryTask() { Task = query.Key.Task, Project = query.Key.Project }, Concat(query.ToList()));
         }

@@ -67,8 +67,8 @@ namespace ASC.Projects.Data.DAO
                 }
             }
             return fQuery
-                .Select(tt=> ToTimeSpend(tt))
-                .ToList();
+                .ToList()
+                .ConvertAll(tt => ToTimeSpend(tt));
         }
 
         public int GetByFilterCount(TaskFilter filter, bool isAdmin, bool checkAccess)
@@ -336,29 +336,53 @@ namespace ASC.Projects.Data.DAO
             return WebProjectsContext.
                 TimeTracking
                 .Where(tt => tt.RelativeTaskId == taskId)
-                .Select(tt => ToTimeSpend(tt))
                 .OrderBy(tt => tt.Date)
-                .ToList();
+                .ToList()
+                .ConvertAll(tt => ToTimeSpend(tt));
         }
 
         public TimeSpend GetById(int id)
         {
-            return WebProjectsContext.TimeTracking
+            var tt = WebProjectsContext.TimeTracking
                 .Where(tt => tt.Id == id)
-                .Select(tt => ToTimeSpend(tt))
                 .SingleOrDefault();
+            return tt == null ? null : ToTimeSpend(tt);
         }
 
-        public TimeSpend Save(TimeSpend timeSpend)
+        public TimeSpend SaveOrUpdate(TimeSpend timeSpend)
         {
-            var timeTracking = ToDbTimeSpend(timeSpend);
-            timeTracking.Date = TenantUtil.DateTimeToUtc(timeTracking.Date);
-            timeTracking.CreateBy = CurrentUserID.ToString();
 
-            WebProjectsContext.TimeTracking.Add(timeTracking);
-            WebProjectsContext.SaveChanges();
+            if(WebProjectsContext.TimeTracking.Where(tt=> tt.Id == timeSpend.ID).Any())
+            {
+                var timeTracking = WebProjectsContext.TimeTracking.Where(tt => tt.Id == timeSpend.ID).SingleOrDefault();
+                timeTracking.StatusChanged = TenantUtil.DateTimeNow();
+                timeTracking.Date = TenantUtil.DateTimeToUtc(timeTracking.Date);
+                timeTracking.CreateBy = CurrentUserID.ToString();
+                timeTracking.Note = timeSpend.Note;
+                timeTracking.Hours = (float)timeSpend.Hours;
+                timeTracking.RelativeTaskId = timeSpend.Task.ID;
+                timeTracking.PersonId = timeSpend.Person.ToString();
+                timeTracking.CreateOn = timeSpend.CreateOn;
+                timeTracking.PaymentStatus = (int)timeSpend.PaymentStatus;
+                timeTracking.TenantId = Tenant;
+                timeTracking.ProjectId = timeSpend.Task.Project.ID;
 
-            return ToTimeSpend(timeTracking);
+                WebProjectsContext.TimeTracking.Update(timeTracking);
+                WebProjectsContext.SaveChanges();
+                return timeSpend;
+            }
+            else
+            {
+                var timeTracking = DbTimeTracking(timeSpend);
+                timeTracking.StatusChanged = TenantUtil.DateTimeNow();
+                timeTracking.Date = TenantUtil.DateTimeToUtc(timeTracking.Date);
+                timeTracking.CreateBy = CurrentUserID.ToString();
+
+                WebProjectsContext.TimeTracking.Add(timeTracking);
+                WebProjectsContext.SaveChanges();
+                timeSpend.ID = timeTracking.Id;
+                return timeSpend;
+            }
         }
 
         public void Delete(int id)
@@ -397,7 +421,7 @@ namespace ASC.Projects.Data.DAO
             };
         }
 
-        private DbTimeTracking ToDbTimeSpend(TimeSpend timeSpend)
+        private DbTimeTracking DbTimeTracking(TimeSpend timeSpend)
         {
             return new DbTimeTracking
             {
@@ -410,7 +434,9 @@ namespace ASC.Projects.Data.DAO
                 CreateOn = timeSpend.CreateOn,
                 CreateBy = timeSpend.CreateBy.ToString(),
                 PaymentStatus = (int)timeSpend.PaymentStatus,
-                StatusChanged = timeSpend.StatusChangedOn
+                StatusChanged = timeSpend.StatusChangedOn,
+                TenantId = Tenant,
+                ProjectId = timeSpend.Task.Project.ID
             };
         }
     }

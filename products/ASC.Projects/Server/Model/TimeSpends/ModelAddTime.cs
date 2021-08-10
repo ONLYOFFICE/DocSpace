@@ -1,5 +1,7 @@
 ﻿using System;
 
+using ASC.Api.Core;
+
 namespace ASC.Projects.Model.TimeSpends
 {
     public class ModelAddTime

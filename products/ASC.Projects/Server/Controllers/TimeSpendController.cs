@@ -179,10 +179,10 @@ namespace ASC.Api.Projects
         }
 
         [Delete(@"time/times/remove")]
-        public List<TimeWrapper> DeleteTaskTimes(int[] timeids)
+        public List<TimeWrapper> DeleteTaskTimes(ModelDeleteTimes model)
         {
             var listDeletedTimers = new List<TimeWrapper>();
-            foreach (var timeid in timeids.Distinct())
+            foreach (var timeid in model.TimeIds.Distinct())
             {
                 var time = EngineFactory.GetTimeTrackingEngine().GetByID(timeid).NotFoundIfNull();
 
@@ -190,7 +190,7 @@ namespace ASC.Api.Projects
                 listDeletedTimers.Add(ModelHelper.GetTimeWrapper(time));
             }
 
-            MessageService.Send(MessageAction.TaskTimesDeleted, MessageTarget.Create(timeids), listDeletedTimers.Select(t => t.RelatedTaskTitle));
+            MessageService.Send(MessageAction.TaskTimesDeleted, MessageTarget.Create(model.TimeIds), listDeletedTimers.Select(t => t.RelatedTaskTitle));
 
             return listDeletedTimers;
         }

@@ -133,7 +133,7 @@ namespace ASC.Projects.Engine
                 timeSpend.CreateOn = DateTime.UtcNow;
             }
 
-            return DaoFactory.GetTimeSpendDao().Save(timeSpend);
+            return DaoFactory.GetTimeSpendDao().SaveOrUpdate(timeSpend);
         }
 
         public TimeSpend ChangePaymentStatus(TimeSpend timeSpend, PaymentStatus newStatus)
@@ -154,7 +154,7 @@ namespace ASC.Projects.Engine
 
             timeSpend.StatusChangedOn = DateTime.UtcNow;
 
-            return DaoFactory.GetTimeSpendDao().Save(timeSpend);
+            return DaoFactory.GetTimeSpendDao().SaveOrUpdate(timeSpend);
         }
 
         public void Delete(TimeSpend timeSpend)
