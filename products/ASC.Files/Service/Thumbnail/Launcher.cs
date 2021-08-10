@@ -15,7 +15,6 @@
 */
 
 
-using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,19 +31,17 @@ namespace ASC.Files.ThumbnailBuilder
         private Worker worker;
 
         internal static readonly ConcurrentDictionary<object, FileData<int>> Queue = new ConcurrentDictionary<object, FileData<int>>();
-        private IServiceProvider ServiceProvider { get; }
         private Service Service { get; }
 
-        public Launcher(IServiceProvider serviceProvider, Service service)
+        public Launcher(Service service, Worker worker)
         {
-            ServiceProvider = serviceProvider;
             Service = service;
+            this.worker = worker;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            worker = new Worker(ServiceProvider, cancellationToken);
-            worker.Start();
+            worker.Start(cancellationToken);
             Service.Start();
 
             return Task.CompletedTask;
