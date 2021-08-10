@@ -232,7 +232,7 @@ export default function withFileActions(WrappedFileItem) {
                   combineUrl(
                     AppServerConfig.proxyURL,
                     config.homepage,
-                    "/products/files/doceditor"
+                    "/doceditor"
                   ),
                   "_blank"
                 )
