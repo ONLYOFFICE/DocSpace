@@ -445,8 +445,13 @@ class SectionHeaderContent extends React.Component {
       menu.splice(4, 1);
     }
 
+    if (isRecentFolder) {
+      menu.splice(6, 1);
+    }
+
     if (isRecentFolder || isFavoritesFolder) {
       menu.splice(1, 1);
+      menu.splice(3, 1);
     }
 
     if (
