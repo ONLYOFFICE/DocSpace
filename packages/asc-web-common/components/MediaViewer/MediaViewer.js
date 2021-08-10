@@ -31,6 +31,7 @@ const ButtonKeys = Object.freeze({
   ctr: 17,
   one: 49,
   del: 46,
+  s: 83,
 });
 
 const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
@@ -354,6 +355,9 @@ class MediaViewer extends React.Component {
           break;
         case ButtonKeys.ctr:
           ctrIsPressed = true;
+          break;
+        case ButtonKeys.s:
+          if (ctrIsPressed) this.onDownload();
           break;
         case ButtonKeys.one:
           ctrIsPressed &&
