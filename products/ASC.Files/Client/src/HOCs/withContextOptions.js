@@ -135,7 +135,7 @@ export default function withContextOptions(WrappedComponent) {
               combineUrl(
                 AppServerConfig.proxyURL,
                 config.homepage,
-                "/products/files/doceditor"
+                "/doceditor"
               ),
               "_blank"
             )
