@@ -41,8 +41,6 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
-using Autofac;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.Data
