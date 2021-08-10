@@ -177,6 +177,12 @@ namespace ASC.Core
 
         public UserInfo GetUserByUserName(string username)
         {
+            if (CoreBaseSettings.Personal)
+            {
+                var u = UserService.GetUserByUserName(TenantManager.GetCurrentTenant().TenantId, username);
+                return u ?? Constants.LostUser;
+            }
+
             return GetUsersInternal()
                 .FirstOrDefault(u => string.Compare(u.UserName, username, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
         }
@@ -405,6 +411,11 @@ namespace ASC.Core
 
         internal List<GroupInfo> GetUserGroups(Guid userID, IncludeType includeType, Guid? categoryId)
         {
+            if (CoreBaseSettings.Personal)
+            {
+                return new List<GroupInfo> { Constants.GroupUser, Constants.GroupEveryone };
+            }
+
             var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(Accessor?.HttpContext, "GroupInfo");
             var result = httpRequestDictionary.Get(userID.ToString());
             if (result != null)

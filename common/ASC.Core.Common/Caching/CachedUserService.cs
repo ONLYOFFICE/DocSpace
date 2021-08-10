@@ -265,6 +265,11 @@ namespace ASC.Core.Caching
             return Service.GetUser(tenant, email);
         }
 
+        public UserInfo GetUserByUserName(int tenant, string userName)
+        {
+            return Service.GetUserByUserName(tenant, userName);
+        }
+
 
         /// <summary>
         /// For Personal only
@@ -374,6 +379,11 @@ namespace ASC.Core.Caching
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
+            if (CoreBaseSettings.Personal)
+            {
+                return new Dictionary<string, UserGroupRef>();
+            }
+
             GetChangesFromDb();
 
             var key = UserServiceCache.GetRefCacheKey(tenant);

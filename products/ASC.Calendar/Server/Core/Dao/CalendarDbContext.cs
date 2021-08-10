@@ -47,7 +47,7 @@ namespace ASC.Calendar.Core.Dao
 
                 entity.Property(e => e.ItemId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<CalendarCalendarUser>(entity =>
@@ -56,74 +56,74 @@ namespace ASC.Calendar.Core.Dao
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("user_id");
+                    .HasDatabaseName("user_id");
 
                 entity.Property(e => e.ExtCalendarId)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UserId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.BackgroundColor)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TextColor)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TimeZone)
                     .HasDefaultValueSql("'UTC'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<CalendarCalendars>(entity =>
             {
                 entity.HasIndex(e => new { e.Tenant, e.OwnerId })
-                    .HasName("owner_id");
+                    .HasDatabaseName("owner_id");
 
                 entity.Property(e => e.BackgroundColor)
                     .HasDefaultValueSql("'#fa9191'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CaldavGuid)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IcalUrl)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.OwnerId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TextColor)
                     .HasDefaultValueSql("'#000000'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TimeZone)
                     .HasDefaultValueSql("'UTC'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<CalendarEventHistory>(entity =>
@@ -132,15 +132,15 @@ namespace ASC.Calendar.Core.Dao
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => new { e.Tenant, e.EventId })
-                    .HasName("event_id");
+                    .HasDatabaseName("event_id");
 
                 entity.Property(e => e.EventUid)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Ics)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<CalendarEventItem>(entity =>
@@ -150,7 +150,7 @@ namespace ASC.Calendar.Core.Dao
 
                 entity.Property(e => e.ItemId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<CalendarEventUser>(entity =>
@@ -160,33 +160,33 @@ namespace ASC.Calendar.Core.Dao
 
                 entity.Property(e => e.UserId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<CalendarEvents>(entity =>
             {
                 entity.HasIndex(e => new { e.Tenant, e.CalendarId })
-                    .HasName("calendar_id");
+                    .HasDatabaseName("calendar_id");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.OwnerId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Rrule)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Uid)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<CalendarNotifications>(entity =>
@@ -195,45 +195,45 @@ namespace ASC.Calendar.Core.Dao
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.EventId)
-                    .HasName("event_id");
+                    .HasDatabaseName("event_id");
 
                 entity.HasIndex(e => e.NotifyDate)
-                    .HasName("notify_date");
+                    .HasDatabaseName("notify_date");
 
                 entity.Property(e => e.UserId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Rrule)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TimeZone)
                     .HasDefaultValueSql("'UTC'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<CalendarTodos>(entity =>
             {
                 entity.HasIndex(e => new { e.Tenant, e.CalendarId })
-                    .HasName("calendar_id");
+                    .HasDatabaseName("calendar_id");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.OwnerId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Uid)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             OnModelCreatingPartial(modelBuilder);
