@@ -297,6 +297,8 @@ class IconFormatsStore {
         return `${folderPath}/ott.svg`;
       case ".pdf":
         return `${folderPath}/pdf.svg`;
+      case ".pot":
+        return `${folderPath}/pot.svg`;
       case ".pps":
         return `${folderPath}/pps.svg`;
       case ".ppsx":
@@ -393,6 +395,8 @@ class IconFormatsStore {
         return `${folderPath}/ott.svg`;
       case ".pdf":
         return `${folderPath}/pdf.svg`;
+      case ".pot":
+        return `${folderPath}/pot.svg`;
       case ".pps":
         return `${folderPath}/pps.svg`;
       case ".ppsx":
