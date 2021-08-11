@@ -21,9 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Authentication;
 using System.Threading;
-using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -31,7 +29,6 @@ using ASC.Core.Common.Caching;
 using ASC.Core.Notify.Signalr;
 using ASC.Core.Users;
 using ASC.Data.Storage;
-using ASC.Mail.Clients.Imap;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Message;
@@ -44,8 +41,6 @@ using ASC.Mail.Storage;
 using ASC.Mail.Utils;
 
 using MailKit;
-using MailKit.Net.Imap;
-using MailKit.Security;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -111,7 +106,18 @@ namespace ASC.Mail.ImapSync
 
                     var uids = actionFromCache.Uidls.Select(x => SplittedUidl.ToUniqueId(x)).Where(x => x.IsValid).ToList();
 
-                    imapClient.TrySetFlagsInImap(imapfolder, uids, actionFromCache.Action);
+                    if(actionFromCache.Action== MailUserAction.MoveTo)
+                    {
+                        var destination = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)actionFromCache.Destination).Key;
+
+                        if (destination == null) continue;
+
+                        imapClient.TryMoveMessageInImap(imapfolder, uids, destination);
+                    }
+                    else
+                    {
+                        imapClient.TrySetFlagsInImap(imapfolder, uids, actionFromCache.Action);
+                    }
                 }
             }
             catch (Exception ex)
@@ -227,7 +233,7 @@ namespace ASC.Mail.ImapSync
                     break;
             }
 
-            UpdateDbFolder(imapClient.MessagesList);
+            //UpdateDbFolder(imapClient.MessagesList);
         }
 
         private void ImapClient_WorkFoldersChanged(object sender, EventArgs e)
@@ -251,7 +257,7 @@ namespace ASC.Mail.ImapSync
 
         private void ImapClient_MessagesListUpdated(object sender, EventArgs e)
         {
-            UpdateDbFolder(imapClient.MessagesList);
+            //UpdateDbFolder(imapClient.MessagesList);
         }
 
         private void ImapClient_NewMessage(object sender, (MimeMessage, MessageDescriptor) e)
@@ -499,10 +505,6 @@ namespace ASC.Mail.ImapSync
             return new MailFolder(folderId, folder.Name);
         }
 
-
-
-        
-
         private void LogStat(string method, TimeSpan duration, bool failed)
         {
             if (!_mailSettings.CollectStatistics)
@@ -645,7 +647,6 @@ namespace ASC.Mail.ImapSync
                     e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
         }
-
 
         private List<MailSieveFilterData> GetFilters(MailEnginesFactory factory, ILog log)
         {
