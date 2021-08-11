@@ -36,6 +36,7 @@ using ASC.Core.Common.Settings;
 using Autofac;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
 
@@ -85,7 +86,6 @@ namespace ASC.ElasticSearch.Core
         private TenantManager TenantManager { get; }
         private SettingsManager SettingsManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
-        private FactoryIndexer FactoryIndexer { get; }
         private ICacheNotify<ReIndexAction> CacheNotify { get; }
         private IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
@@ -94,7 +94,6 @@ namespace ASC.ElasticSearch.Core
             TenantManager tenantManager,
             SettingsManager settingsManager,
             CoreBaseSettings coreBaseSettings,
-            FactoryIndexer factoryIndexer,
             ICacheNotify<ReIndexAction> cacheNotify,
             IServiceProvider serviceProvider,
             IConfiguration configuration)
@@ -102,7 +101,6 @@ namespace ASC.ElasticSearch.Core
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
-            FactoryIndexer = factoryIndexer;
             CacheNotify = cacheNotify;
             ServiceProvider = serviceProvider;
             Configuration = configuration;
@@ -127,7 +125,7 @@ namespace ASC.ElasticSearch.Core
         {
             get
             {
-                return allItems ??= FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
+                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
             }
         }
 
@@ -157,7 +155,7 @@ namespace ASC.ElasticSearch.Core
 
         public bool CanIndexByContent(Type t, int tenantId)
         {
-            if (typeof(ISearchItemDocument).IsAssignableFrom(t))
+            if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
             {
                 return false;
             }

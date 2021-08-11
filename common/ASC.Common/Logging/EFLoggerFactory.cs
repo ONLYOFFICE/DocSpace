@@ -6,17 +6,15 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Logging
 {
-    [Scope]
+    [Singletone]
     public class EFLoggerFactory : ILoggerFactory
     {
-        Dictionary<string, ILogger> Loggers { get; set; }
         Lazy<ILogger> Logger { get; set; }
         ILoggerProvider LoggerProvider { get; set; }
 
         public EFLoggerFactory(EFLoggerProvider loggerProvider)
         {
             LoggerProvider = loggerProvider;
-            Loggers = new Dictionary<string, ILogger>();
             Logger = new Lazy<ILogger>(() => LoggerProvider.CreateLogger(""));
         }
 
@@ -35,7 +33,7 @@ namespace ASC.Common.Logging
         }
     }
 
-    [Scope]
+    [Singletone]
     public class EFLoggerProvider : ILoggerProvider
     {
         private IOptionsMonitor<ILog> Option { get; }

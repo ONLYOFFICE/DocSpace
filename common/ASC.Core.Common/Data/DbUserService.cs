@@ -230,6 +230,13 @@ namespace ASC.Core.Data
                 .FirstOrDefault(r=> r.Email ==  email && !r.Removed);
         }
 
+        public UserInfo GetUserByUserName(int tenant, string userName)
+        {
+            return GetUserQuery(tenant, default(DateTime))
+                .Select(FromUserToUserInfo)
+                .FirstOrDefault(r=> r.UserName == userName && !r.Removed);
+        }
+
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
