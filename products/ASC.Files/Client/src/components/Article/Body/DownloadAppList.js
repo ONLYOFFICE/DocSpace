@@ -35,7 +35,7 @@ const DownloadAppListContainer = ({ t }) => {
 
   return (
     <StyledDownloadAppList>
-      <Text color="#83888d" fontSize="14px" fontWeight={600}>
+      <Text color="#83888d" fontSize="14px">
         {t("Translations:DownloadApps")}
       </Text>
       <div className="download-app-list">

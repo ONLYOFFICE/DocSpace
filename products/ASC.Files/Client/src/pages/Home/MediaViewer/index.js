@@ -21,6 +21,7 @@ const FilesMediaViewer = (props) => {
     setRemoveMediaItem,
     selectedFolderId,
     userAccess,
+    deleteDialogVisible,
   } = props;
 
   useEffect(() => {
@@ -94,6 +95,7 @@ const FilesMediaViewer = (props) => {
         onDownload={onDownloadMediaFile}
         onClose={onMediaViewerClose}
         onEmptyPlaylistError={onMediaViewerClose}
+        deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
       />
@@ -131,6 +133,7 @@ export default inject(
       mediaViewerImageFormats: images,
       mediaViewerMediaFormats: media,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
+      deleteDialogVisible: dialogsStore.deleteDialogVisible,
       selectedFolderId: selectedFolderStore.id,
     };
   }

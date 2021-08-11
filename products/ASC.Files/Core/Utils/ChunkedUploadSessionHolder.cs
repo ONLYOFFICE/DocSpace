@@ -63,14 +63,15 @@ namespace ASC.Web.Files.Utils
             FileHelper = fileHelper;
 
             // clear old sessions
-            try
-            {
-                CommonSessionHolder(false).DeleteExpired();
-            }
-            catch (Exception err)
-            {
-                options.CurrentValue.Error(err);
-            }
+            //TODO
+            //try
+            //{
+            //    CommonSessionHolder(false).DeleteExpired();
+            //}
+            //catch (Exception err)
+            //{
+            //    options.CurrentValue.Error(err);
+            //}
         }
 
         public void StoreSession<T>(ChunkedUploadSession<T> s)
