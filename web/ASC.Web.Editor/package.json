@@ -1,6 +1,7 @@
 {
   "name": "@appserver/editor",
   "version": "1.0.0",
+  "private": true,
   "homepage": "/products/files/doceditor",
   "title": "ONLYOFFICE",
   "scripts": {

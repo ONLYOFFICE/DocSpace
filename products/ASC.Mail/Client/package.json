@@ -1,6 +1,7 @@
 {
   "name": "@appserver/mail",
   "version": "1.0.0",
+  "private": true,
   "homepage": "/products/mail",
   "id": "2a923037-8b2d-487b-9a22-5ac0918acf3f",
   "title": "ONLYOFFICE",
