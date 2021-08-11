@@ -133,20 +133,22 @@ const PureThirdPartyListContainer = ({
         "Authorization",
         "height=600, width=1020"
       );
-      openConnectWindow(data.title, authModal).then((modal) => {
-        redirectAction();
-        getOAuthToken(modal).then((token) => {
-          authModal.close();
-          const serviceData = {
-            title: data.title,
-            provider_key: data.title,
-            link: data.link,
-            token,
-          };
-          setConnectItem(serviceData);
-          setConnectDialogVisible(true);
-        });
-      });
+      openConnectWindow(data.title, authModal)
+        .then(() => redirectAction())
+        .then((modal) =>
+          getOAuthToken(modal).then((token) => {
+            authModal.close();
+            const serviceData = {
+              title: data.title,
+              provider_key: data.title,
+              link: data.link,
+              token,
+            };
+            setConnectItem(serviceData);
+            setConnectDialogVisible(true);
+          })
+        )
+        .catch((e) => console.error(e));
     } else {
       setConnectItem(data);
       setConnectDialogVisible(true);
