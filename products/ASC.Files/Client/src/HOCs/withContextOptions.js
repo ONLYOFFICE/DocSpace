@@ -7,6 +7,7 @@ import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
 import config from "../../package.json";
+import { canShare } from "../helpers/utils";
 
 export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
@@ -225,9 +226,29 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     getFilesContextOptions = () => {
-      const { item, t, isThirdPartyFolder } = this.props;
-      const { access, contextOptions } = item;
-      const isSharable = access !== 1 && access !== 0;
+      const {
+        item,
+        t,
+        isThirdPartyFolder,
+        currentFolderId,
+        currentFolderAccess,
+        isDesktop,
+        isPersonal,
+        user,
+        isAdmin,
+      } = this.props;
+      const { contextOptions } = item;
+
+      const isShareable = canShare(
+        item,
+        currentFolderId,
+        currentFolderAccess,
+        user,
+        isAdmin,
+        isDesktop,
+        isPersonal
+      );
+
       return contextOptions.map((option) => {
         switch (option) {
           case "open":
@@ -291,7 +312,7 @@ export default function withContextOptions(WrappedComponent) {
               label: t("SharingSettings"),
               icon: "images/catalog.shared.react.svg",
               onClick: this.onClickShare,
-              disabled: isSharable,
+              disabled: !isShareable,
             };
           case "send-by-email":
             return {
@@ -509,11 +530,17 @@ export default function withContextOptions(WrappedComponent) {
         setDeleteDialogVisible,
         setUnsubscribe,
       } = dialogsStore;
-      const { isTabletView, isDesktopClient } = auth.settingsStore;
+      const { isTabletView, isDesktopClient, personal } = auth.settingsStore;
+      const { isAdmin } = auth;
+      const { user } = auth.userStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
-      const { isRootFolder } = selectedFolderStore;
+      const {
+        isRootFolder,
+        id: currentFolderId,
+        access: currentFolderAccess,
+      } = selectedFolderStore;
       const { isRecycleBinFolder, isShare } = treeFoldersStore;
 
       const isThirdPartyFolder = item.providerKey && isRootFolder;
@@ -554,6 +581,11 @@ export default function withContextOptions(WrappedComponent) {
         setDeleteDialogVisible,
         setUnsubscribe,
         isDesktop: isDesktopClient,
+        currentFolderId,
+        currentFolderAccess,
+        isPersonal: personal,
+        user,
+        isAdmin,
       };
     }
   )(observer(WithContextOptions));

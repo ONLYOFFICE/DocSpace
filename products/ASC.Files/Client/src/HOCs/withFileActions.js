@@ -11,6 +11,7 @@ import { checkProtocol, createTreeFolders } from "../helpers/files-helpers";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
+import { canShare } from "../helpers/utils";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
@@ -256,7 +257,7 @@ export default function withFileActions(WrappedFileItem) {
         item,
         isTrashFolder,
         draggable,
-        canShare,
+        //canShare,
         isPrivacy,
         actionType,
         actionExtension,
@@ -268,6 +269,11 @@ export default function withFileActions(WrappedFileItem) {
         isDesktop,
         personal,
         canWebEdit,
+        canViewedDocs,
+        currentFolderId,
+        currentFolderAccess,
+        user,
+        isAdmin,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -282,19 +288,29 @@ export default function withFileActions(WrappedFileItem) {
       let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
 
+      const isShareable = canShare(
+        item,
+        currentFolderId,
+        currentFolderAccess,
+        user,
+        isAdmin,
+        isDesktop,
+        personal
+      );
+
       const isMobile = sectionWidth < 500;
       const displayShareButton = isMobile
         ? "26px"
-        : !canShare
+        : !isShareable
         ? "38px"
         : "96px";
 
-      const showShare = isPrivacy && (!isDesktop || !fileExst) ? false : true;
+      //const showShare = isPrivacy && (!isDesktop || !fileExst) ? false : true;
 
       const sharedButton =
-        !canShare ||
-        !showShare ||
-        (personal && !canWebEdit) ||
+        !isShareable ||
+        //!showShare ||
+        (personal && !canWebEdit && !canViewedDocs) ||
         isEdit ||
         id <= 0 ||
         isMobile
@@ -358,7 +374,11 @@ export default function withFileActions(WrappedFileItem) {
         addExpandedKeys,
         setExpandedKeys,
       } = treeFoldersStore;
-      const { isRootFolder } = selectedFolderStore;
+      const {
+        isRootFolder,
+        id: currentFolderId,
+        access: currentFolderAccess,
+      } = selectedFolderStore;
       const {
         dragging,
         setDragging,
@@ -366,7 +386,7 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         fileActionStore,
-        canShare,
+        //canShare,
         isFileSelected,
         filter,
         setIsLoading,
@@ -402,6 +422,9 @@ export default function withFileActions(WrappedFileItem) {
       const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
+
+      const { isAdmin } = auth;
+      const { user } = auth.userStore;
 
       return {
         t,
@@ -446,6 +469,10 @@ export default function withFileActions(WrappedFileItem) {
         setConvertDialogVisible,
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
+        currentFolderId,
+        currentFolderAccess,
+        user,
+        isAdmin,
       };
     }
   )(observer(WithFileActions));
