@@ -1443,6 +1443,18 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFileVersionInfo(fileId);
         }
 
+        [Read("file/{fileId}/presigned")]
+        public DocumentService.FileLink GetPresignedUri(string fileId)
+        {
+            return FilesControllerHelperString.GetPresignedUri(fileId);
+        }
+
+        [Read("file/{fileId:int}/presigned")]
+        public DocumentService.FileLink GetPresignedUri(int fileId)
+        {
+            return FilesControllerHelperInt.GetPresignedUri(fileId);
+        }
+
         /// <summary>
         /// Change version history
         /// </summary>

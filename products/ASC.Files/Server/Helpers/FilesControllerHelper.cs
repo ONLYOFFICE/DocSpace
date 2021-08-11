@@ -508,6 +508,11 @@ namespace ASC.Files.Helpers
             return FileWrapperHelper.Get(result);
         }
 
+        public DocumentService.FileLink GetPresignedUri(T fileId)
+        {
+            return FileStorageService.GetPresignedUri(fileId);
+        }
+
         public string UpdateComment(T fileId, int version, string comment)
         {
             return FileStorageService.UpdateComment(fileId, version, comment);
