@@ -47,7 +47,7 @@
     "replace-in-files-cli": "^1.0.0",
     "rimraf": "^3.0.2",
     "terser": "^5.7.1",
-    "workbox-cli": "^6.1.5",
+    "workbox-cli": "^6.2.3",
     "wsrun": "^5.2.4"
   }
 }
