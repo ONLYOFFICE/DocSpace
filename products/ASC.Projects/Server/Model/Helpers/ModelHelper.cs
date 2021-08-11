@@ -396,9 +396,9 @@ namespace ASC.Projects.Model
             return model;
         }
 
-        public TaskWrapper GetTaskWrapper(Task task)
+        public TaskWrapper GetTaskWrapper(Task task, TaskWrapper taskWrapper = null)
         {
-            var model = new TaskWrapper();
+            var model = taskWrapper == null ? new TaskWrapper() : taskWrapper;
             model.Id = task.ID;
             model.Title = task.Title;
             model.Description = task.Description;
@@ -471,9 +471,10 @@ namespace ASC.Projects.Model
             return model;
         }
 
-        public TaskWrapper GetTaskWrapper(Task task, Milestone milestone)
+        public TaskWrapper GetTaskWrapper(Task task, Milestone milestone, TaskWrapper taskWrapper = null)
         {
-            var model = GetTaskWrapper(task);
+            var model = taskWrapper == null ? new TaskWrapper() : taskWrapper;
+            model = GetTaskWrapper(task, model);
             if (milestone != null && task.Milestone != 0)
                 model.Milestone = GetSimpleMilestoneWrapper(milestone);
             return model;
@@ -507,7 +508,7 @@ namespace ASC.Projects.Model
             {
                 model.UpdatedBy = GetEmployeeWraper(subtask.LastModifiedBy);
             }
-            model.CanEdit = ProjectSecurity.CanEdit(subtask);
+            model.CanEdit = ProjectSecurity.CanEdit(task, subtask);
 
             model.TaskId = task.ID;
             return model;
@@ -696,7 +697,8 @@ namespace ASC.Projects.Model
 
         public TaskWrapperFull GetTaskWrapperFull(Task task, Milestone milestone, ProjectWrapperFull project, IEnumerable<FileWrapper<int>> files, IEnumerable<CommentInfo> comments, int commentsCount, bool isSubscribed, float timeSpend)
         {
-            var model = (TaskWrapperFull)GetTaskWrapper(task, milestone);
+            TaskWrapperFull model = new TaskWrapperFull();
+            model = (TaskWrapperFull)GetTaskWrapper(task, milestone, model);
             model.Files = files.ToList();
             model.CommentsCount = commentsCount;
             model.IsSubscribed = isSubscribed;

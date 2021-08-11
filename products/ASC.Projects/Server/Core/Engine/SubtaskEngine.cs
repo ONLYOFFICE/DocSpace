@@ -124,7 +124,7 @@ namespace ASC.Projects.Engine
             if (task.Status != TaskStatus.Closed && newStatus == TaskStatus.Open && !DisableNotifications && senders.Count != 0)
                 NotifyClient.SendAboutSubTaskResumed(senders, task, subtask);
 
-            return DaoProjectFactory.GetSubtaskDao().Save(subtask);
+            return DaoProjectFactory.GetSubtaskDao().SaveOrUpdate(subtask);
         }
 
         public Subtask SaveOrUpdate(Subtask subtask, Task task)
@@ -151,7 +151,7 @@ namespace ASC.Projects.Engine
                 if (subtask.CreateOn == default(DateTime)) subtask.CreateOn = TenantUtil.DateTimeNow();
 
                 ProjectSecurity.DemandEdit(task);
-                subtask = DaoProjectFactory.GetSubtaskDao().Save(subtask);
+                subtask = DaoProjectFactory.GetSubtaskDao().SaveOrUpdate(subtask);
             }
             else
             {
@@ -163,7 +163,7 @@ namespace ASC.Projects.Engine
 
                 //changed task
                 ProjectSecurity.DemandEdit(task, oldSubtask);
-                subtask = DaoProjectFactory.GetSubtaskDao().Save(subtask);
+                subtask = DaoProjectFactory.GetSubtaskDao().SaveOrUpdate(subtask);
             }
 
             NotifySubtask(task, subtask, isNew, oldResponsible);

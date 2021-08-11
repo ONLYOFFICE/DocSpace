@@ -207,7 +207,7 @@ namespace ASC.Projects.Engine
         internal WebItemSecurity WebItemSecurity { get; set; }
         internal SecurityContext SecurityContext { get; set; }
 
-        public ProjectSecurityTemplate(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory)
+        public ProjectSecurityTemplate(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityCommon projectSecurityCommon)
         {
             SettingsManager = settingsManager;
             WebItemSecurity = webItemSecurity;
@@ -274,8 +274,8 @@ namespace ASC.Projects.Engine
     public sealed class ProjectSecurityProject : ProjectSecurityTemplate<Project>
     {
 
-        public ProjectSecurityProject(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory)
-            :base (settingsManager, webItemSecurity, securityContext, projectSecurityCommon, daoFactory)
+        public ProjectSecurityProject(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityCommon projectSecurityCommon)
+            :base (settingsManager, webItemSecurity, securityContext, projectSecurityCommon)
         {
         }
         public override bool CanCreateEntities(Project project)
@@ -355,7 +355,7 @@ namespace ASC.Projects.Engine
         public IDaoFactory DaoFactory { get; set; }
 
         public ProjectSecurityTask(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityProject projectSecurityProject, ProjectSecurityMilestone projectSecurityMilestone, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory)
-            : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon, daoFactory)
+            : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon)
         {
             ProjectSecurityProject = projectSecurityProject;
             ProjectSecurityMilestone = projectSecurityMilestone;
@@ -488,8 +488,8 @@ namespace ASC.Projects.Engine
     {
         public ProjectSecurityProject ProjectSecurityProject { get; set; }
 
-        public ProjectSecurityMilestone(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityProject projectSecurityProject, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory)
-            : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon, daoFactory)
+        public ProjectSecurityMilestone(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityProject projectSecurityProject, ProjectSecurityCommon projectSecurityCommon)
+            : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon)
         {
             ProjectSecurityProject = projectSecurityProject;
         }
@@ -544,8 +544,8 @@ namespace ASC.Projects.Engine
         private EngineFactory EngineFactory { get; set; }
         private IServiceProvider ServiceProvider { get; set; }
 
-        public ProjectSecurityMessage(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, IServiceProvider serviceProvider, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory, EngineFactory engineFactory)
-            : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon, daoFactory)
+        public ProjectSecurityMessage(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, IServiceProvider serviceProvider, ProjectSecurityCommon projectSecurityCommon, EngineFactory engineFactory)
+            : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon)
         {
             ServiceProvider = serviceProvider;
             EngineFactory = engineFactory;
@@ -622,8 +622,8 @@ namespace ASC.Projects.Engine
     {
         public ProjectSecurityTask ProjectSecurityTask { get; set; }
 
-        public ProjectSecurityTimeTracking(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityTask projectSecurityTask, ProjectSecurityCommon projectSecurityCommon, IDaoFactory daoFactory)
-            : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon, daoFactory)
+        public ProjectSecurityTimeTracking(SettingsManager settingsManager, WebItemSecurity webItemSecurity, SecurityContext securityContext, ProjectSecurityTask projectSecurityTask, ProjectSecurityCommon projectSecurityCommon)
+            : base(settingsManager, webItemSecurity, securityContext, projectSecurityCommon)
         {
             ProjectSecurityTask = projectSecurityTask;
         }
@@ -1023,6 +1023,7 @@ namespace ASC.Projects.Engine
         {
             services.TryAdd<ProjectSecurityTemplate<Project>, ProjectSecurityProject>();
             services.TryAdd<ProjectSecurityTemplate<Task>, ProjectSecurityTask>();
+            //services.TryAdd<ProjectSecurityTemplate<Subtask>, ProjectSecurityTask>();
             services.TryAdd<ProjectSecurityTemplate<Milestone>, ProjectSecurityMilestone>();
             services.TryAdd<ProjectSecurityTemplate<Message>, ProjectSecurityMessage>();
             services.TryAdd<ProjectSecurityTemplate<TimeSpend>, ProjectSecurityTimeTracking>();

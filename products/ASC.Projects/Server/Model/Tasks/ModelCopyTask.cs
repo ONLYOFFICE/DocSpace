@@ -17,7 +17,6 @@ namespace ASC.Projects.Model.Tasks
         public IEnumerable<Guid> Responsibles { get; set; }
         public bool Notify { get; set; }
         public ApiDateTime StartDate { get; set; }
-        public int CopyFrom { get; set; }
         public bool CopySubtasks { get; set; }
         public bool CopyFiles { get; set; }
         public bool RemoveOld { get; set; }

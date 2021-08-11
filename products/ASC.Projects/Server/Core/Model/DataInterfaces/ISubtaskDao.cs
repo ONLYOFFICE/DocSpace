@@ -43,7 +43,7 @@ namespace ASC.Projects.Core.DataInterfaces
 
         int GetSubtaskCount(int taskid, params TaskStatus[] statuses);
 
-        Subtask Save(Subtask task);
+        Subtask SaveOrUpdate(Subtask task);
 
         void Delete(int id);
 

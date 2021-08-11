@@ -104,10 +104,11 @@ namespace ASC.Projects.Data.DAO
 
         public virtual Subtask GetById(int id)
         {
-            return WebProjectsContext.Subtask
+            var query =  WebProjectsContext.Subtask
                 .Where(s => s.TenantId == Tenant && s.Id == id)
-                .Select(q => ToSubTask(q))
                 .SingleOrDefault();
+
+            return query == null ? null : ToSubTask(query);
         }
 
         public List<Subtask> GetById(ICollection<int> ids)
@@ -153,16 +154,37 @@ namespace ASC.Projects.Data.DAO
             return query.Count();
         }
 
-        public virtual Subtask Save(Subtask subtask)
+        public virtual Subtask SaveOrUpdate(Subtask subtask)
         {
-            var dbSubtask = ToDbSubTask(subtask);
-            dbSubtask.CreateOn = TenantUtil.DateTimeToUtc(dbSubtask.CreateOn);
-            dbSubtask.LastModifiedOn = TenantUtil.DateTimeToUtc(dbSubtask.LastModifiedOn);
-            dbSubtask.StatusChanged = TenantUtil.DateTimeToUtc(dbSubtask.StatusChanged);
-            WebProjectsContext.Subtask.Add(dbSubtask);
-            WebProjectsContext.SaveChanges();
-
-            return ToSubTask(dbSubtask);
+            if (WebProjectsContext.Subtask.Where(s => s.Id == subtask.ID).Any())
+            {
+                var dbSubtask = WebProjectsContext.Subtask.Where(s => s.Id == subtask.ID).SingleOrDefault();
+                dbSubtask.Title = subtask.Title;
+                dbSubtask.ResponsibleId = subtask.Responsible.ToString();
+                dbSubtask.Status = (int)subtask.Status;
+                dbSubtask.CreateBy = subtask.CreateBy.ToString();
+                dbSubtask.LastModifiedBy = subtask.LastModifiedBy.ToString();
+                dbSubtask.TaskId = subtask.Task;
+                dbSubtask.TenantId = Tenant;
+                dbSubtask.CreateOn = TenantUtil.DateTimeToUtc(dbSubtask.CreateOn);
+                dbSubtask.LastModifiedOn = TenantUtil.DateTimeToUtc(dbSubtask.LastModifiedOn);
+                dbSubtask.StatusChanged = TenantUtil.DateTimeToUtc(dbSubtask.StatusChanged);
+                WebProjectsContext.Subtask.Update(dbSubtask);
+                WebProjectsContext.SaveChanges();
+                return subtask;
+            }
+            else
+            {
+                var dbSubtask = ToDbSubTask(subtask);
+                dbSubtask.CreateOn = TenantUtil.DateTimeToUtc(dbSubtask.CreateOn);
+                dbSubtask.LastModifiedOn = TenantUtil.DateTimeToUtc(dbSubtask.LastModifiedOn);
+                dbSubtask.StatusChanged = TenantUtil.DateTimeToUtc(dbSubtask.StatusChanged);
+                WebProjectsContext.Subtask.Add(dbSubtask);
+                WebProjectsContext.SaveChanges();
+                subtask.ID = dbSubtask.Id;
+                return subtask;
+            }
+            
         }
 
         public void CloseAllSubtasks(Task task)
@@ -214,7 +236,8 @@ namespace ASC.Projects.Data.DAO
                 CreateOn = TenantUtil.DateTimeFromUtc(subtask.CreateOn),
                 LastModifiedBy = subtask.LastModifiedBy.ToString(),
                 LastModifiedOn = TenantUtil.DateTimeFromUtc(subtask.LastModifiedOn),
-                TaskId = subtask.Task
+                TaskId = subtask.Task,
+                TenantId = Tenant
             };
         }
     }

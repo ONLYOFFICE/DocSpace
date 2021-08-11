@@ -544,25 +544,32 @@ namespace ASC.Projects.Data.DAO
 
         private Milestone ToMilestone(QueryMilestone query)
         {
-            var milestone = query.Milestone;
-            return new Milestone
+            if (query != null)
             {
-                Project = query.Project != null ? DaoFactory.GetProjectDao().ToProject(query.Project) : null,
-                ID = milestone.Id,
-                Title = milestone.Title,
-                CreateBy = ToGuid(milestone.CreateBy),
-                CreateOn = TenantUtil.DateTimeFromUtc(milestone.CreateOn),
-                LastModifiedBy = ToGuid(milestone.LastModifiedBy),
-                LastModifiedOn = TenantUtil.DateTimeFromUtc(milestone.LastModifiedOn.GetValueOrDefault()),
-                DeadLine = DateTime.SpecifyKind(milestone.Deadline, DateTimeKind.Local),
-                Status = (MilestoneStatus)milestone.Status,
-                IsNotify = Convert.ToBoolean(milestone.IsNotify),
-                IsKey = Convert.ToBoolean(milestone.IsKey),
-                Description = milestone.Description,
-                Responsible = ToGuid(milestone.ResponsibleId),
-                ActiveTaskCount = query.ActiveTaskCount,
-                ClosedTaskCount = query.ClosedTaskCount
-            };
+                var milestone = query.Milestone;
+                return new Milestone
+                {
+                    Project = query.Project != null ? DaoFactory.GetProjectDao().ToProject(query.Project) : null,
+                    ID = milestone.Id,
+                    Title = milestone.Title,
+                    CreateBy = ToGuid(milestone.CreateBy),
+                    CreateOn = TenantUtil.DateTimeFromUtc(milestone.CreateOn),
+                    LastModifiedBy = ToGuid(milestone.LastModifiedBy),
+                    LastModifiedOn = TenantUtil.DateTimeFromUtc(milestone.LastModifiedOn.GetValueOrDefault()),
+                    DeadLine = DateTime.SpecifyKind(milestone.Deadline, DateTimeKind.Local),
+                    Status = (MilestoneStatus)milestone.Status,
+                    IsNotify = Convert.ToBoolean(milestone.IsNotify),
+                    IsKey = Convert.ToBoolean(milestone.IsKey),
+                    Description = milestone.Description,
+                    Responsible = ToGuid(milestone.ResponsibleId),
+                    ActiveTaskCount = query.ActiveTaskCount,
+                    ClosedTaskCount = query.ClosedTaskCount
+                };
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public DbMilestone ToDbMilestone(Milestone milestone)

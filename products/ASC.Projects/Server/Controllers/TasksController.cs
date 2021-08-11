@@ -59,7 +59,8 @@ namespace ASC.Api.Projects
         [Read(@"task/@self")]
         public IEnumerable<TaskWrapper> GetMyTasks()
         {
-            return EngineFactory.GetTaskEngine().GetByResponsible(SecurityContext.CurrentAccount.ID)
+            return EngineFactory.GetTaskEngine()
+                .GetByResponsible(SecurityContext.CurrentAccount.ID)
                 .Select(t=> ModelHelper.GetTaskWrapper(t))
                 .ToList();
         }
@@ -88,9 +89,9 @@ namespace ASC.Api.Projects
         }
 
         [Read(@"task")]
-        public IEnumerable<TaskWrapper> GetTask(IEnumerable<int> taskid)
+        public IEnumerable<TaskWrapper> GetTask(ModelGetTasks model)
         {
-            var tasks = EngineFactory.GetTaskEngine().GetByID(taskid.ToList()).NotFoundIfNull();
+            var tasks = EngineFactory.GetTaskEngine().GetByID(model.TaskId.ToList()).NotFoundIfNull();
             return tasks.Select(x=> ModelHelper.GetTaskWrapper(x)).ToList();
         }
 
@@ -196,15 +197,15 @@ namespace ASC.Api.Projects
         }
 
         [Update(@"task/{taskid:int}/milestone")]
-        public TaskWrapperFull UpdateTask(int taskid, int milestoneid)
+        public TaskWrapperFull UpdateTask(int taskid, ModelUpdateMilestone model)
         {
-            if (milestoneid < 0) throw new ArgumentNullException("milestoneid");
+            if (model.MilestoneId < 0) throw new ArgumentNullException("milestoneid");
 
             var task = EngineFactory.GetTaskEngine().GetByID(taskid).NotFoundIfNull();
 
-            var milestone = EngineFactory.GetMilestoneEngine().GetByID(milestoneid);
+            var milestone = EngineFactory.GetMilestoneEngine().GetByID(model.MilestoneId);
 
-            EngineFactory.GetTaskEngine().MoveToMilestone(task, milestoneid);
+            EngineFactory.GetTaskEngine().MoveToMilestone(task, model.MilestoneId);
             if (milestone != null)
             {
                 MessageService.Send(MessageAction.TaskMovedToMilestone, MessageTarget.Create(task.ID), task.Project.Title, milestone.Title, task.Title);
@@ -228,7 +229,7 @@ namespace ASC.Api.Projects
             {
                 try
                 {
-                    result.Add(UpdateTask(taskid, model.MilestoneId));
+                    result.Add(UpdateTask(taskid, new ModelUpdateMilestone() { MilestoneId = model.MilestoneId}));
                 }
                 catch (Exception)
                 {
@@ -240,11 +241,11 @@ namespace ASC.Api.Projects
         }
 
         [Create(@"task/{copyFrom:int}/copy")]
-        public TaskWrapper CopyTask(ModelCopyTask model)
+        public TaskWrapper CopyTask(int copyFrom, ModelCopyTask model)
         {
             if (string.IsNullOrEmpty(model.Title)) throw new ArgumentException(@"title can't be empty", "title");
 
-            var copyFromTask = EngineFactory.GetTaskEngine().GetByID(model.CopyFrom).NotFoundIfNull();
+            var copyFromTask = EngineFactory.GetTaskEngine().GetByID(copyFrom).NotFoundIfNull();
             var project = EngineFactory.GetProjectEngine().GetByID(model.ProjectId).NotFoundIfNull();
 
             if (!EngineFactory.GetMilestoneEngine().IsExists(model.Milestoneid) && model.Milestoneid > 0)
@@ -379,11 +380,11 @@ namespace ASC.Api.Projects
 
 
         [Delete(@"task")]
-        public IEnumerable<TaskWrapper> DeleteTasks(int[] taskids)
+        public IEnumerable<TaskWrapper> DeleteTasks(ModelDeleteTask model)
         {
-            var result = new List<TaskWrapper>(taskids.Length);
+            var result = new List<TaskWrapper>(model.TaskIds.Length);
 
-            foreach (var taskId in taskids)
+            foreach (var taskId in model.TaskIds)
             {
                 try
                 {
@@ -480,7 +481,7 @@ namespace ASC.Api.Projects
         }
 
         [Delete(@"task/{taskid:int}/link")]
-        public TaskWrapper RemoveLink(int dependenceTaskId, int parentTaskId)
+        public TaskWrapper RemoveLink(int dependenceTaskId, int parentTaskId)//todo
         {
             var dependentTask = EngineFactory.GetTaskEngine().GetByID(dependenceTaskId).NotFoundIfNull();
             var parentTask = EngineFactory.GetTaskEngine().GetByID(parentTaskId).NotFoundIfNull();
@@ -534,10 +535,12 @@ namespace ASC.Api.Projects
             var task = EngineFactory.GetTaskEngine().GetByID(taskid).NotFoundIfNull();
             var subtask = task.SubTasks.Find(r => r.ID == subtaskid).NotFoundIfNull();
 
-            var hasChanges = false;
+            var hasChanges = subtask.Responsible == model.Responsible && subtask.Title == model.Title ? false : true;
 
             subtask.Responsible = Update.IfNotEquals(subtask.Responsible, model.Responsible);
             subtask.Title = Update.IfNotEmptyAndNotEquals(subtask.Title, model.Title);
+
+            
 
             if (hasChanges)
             {
@@ -561,13 +564,13 @@ namespace ASC.Api.Projects
         }
         
         [Update(@"task/{taskid:int}/{subtaskid:int}/status")]
-        public SubtaskWrapper UpdateSubtask(int taskid, int subtaskid, TaskStatus status)
+        public SubtaskWrapper UpdateSubtask(int taskid, int subtaskid, ModelStatus model)
         {
             var task = EngineFactory.GetTaskEngine().GetByID(taskid).NotFoundIfNull();
             var subtask = task.SubTasks.Find(r => r.ID == subtaskid).NotFoundIfNull();
             ProjectSecurity.DemandEdit(task, subtask);
 
-            EngineFactory.GetSubtaskEngine().ChangeStatus(task, subtask, status);
+            EngineFactory.GetSubtaskEngine().ChangeStatus(task, subtask, model.Status);
             MessageService.Send(MessageAction.SubtaskUpdatedStatus, MessageTarget.Create(subtask.ID), task.Project.Title, task.Title, subtask.Title, LocalizedEnumConverter.ConvertToString(subtask.Status));
 
             return ModelHelper.GetSubtaskWrapper(subtask, task);

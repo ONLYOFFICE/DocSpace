@@ -151,16 +151,15 @@ namespace ASC.Projects.Data.DAO
 
         public List<Task> GetByFilter(TaskFilter filter, bool isAdmin, bool checkAccess)
         {
-            var query = CreateQuery().Join(WebProjectsContext.Milestone,
-                q => q.Task.MilestoneId,
-                m => m.Id,
-                (q, m) => new QueryTask
-                {
-                    Task = q.Task,
-                    Project = q.Project,
-                    TasksResponsible = q.TasksResponsible,
-                    Milestone = q.Milestone
-                }).Where(q => q.Milestone.TenantId == q.Task.MilestoneId);
+            var query = from q in CreateQuery()
+                        from m in WebProjectsContext.Milestone.Where(m => m.Id == q.Task.MilestoneId && m.TenantId == Tenant).DefaultIfEmpty()
+                        select new QueryTask
+                        {
+                            Task = q.Task,
+                            Project = q.Project,
+                            TasksResponsible = q.TasksResponsible,
+                            Milestone = q.Milestone
+                        };
 
             if (filter.Max > 0 && filter.Max < 150000)
             {
@@ -181,12 +180,11 @@ namespace ASC.Projects.Data.DAO
                 }
             }
 
-            query = CreateQueryFilter(query, filter, isAdmin, checkAccess);
-
-            var tasks = query.GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
-                .Select(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
-
-            return tasks.ToList();
+            return CreateQueryFilter(query, filter, isAdmin, checkAccess)
+                .AsEnumerable()
+                .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
+                .ToList()
+                .ConvertAll(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
         }
 
         public TaskFilterCountOperationResult GetByFilterCount(TaskFilter filter, bool isAdmin, bool checkAccess)
@@ -304,14 +302,13 @@ namespace ASC.Projects.Data.DAO
 
         public List<Task> GetByResponsible(Guid responsibleId, IEnumerable<TaskStatus> statuses)
         {
-            var query = CreateQuery().Join(WebProjectsContext.Subtask,
-                q=> q.Task.Id,
-                s=> s.TaskId,
-                (q,s)=> new
-                {
-                    Query = q,
-                    Subtask = s
-                }).Where(q=> q.Subtask.TenantId == Tenant && q.Subtask.ResponsibleId == responsibleId.ToString() && (q.Subtask.Status == null ? -1 : q.Subtask.Status) == (int)TaskStatus.Open || q.Query.TasksResponsible.ResponsibleId == responsibleId.ToString());
+            var query = from q in CreateQuery().Where(q=> q.TasksResponsible == null ? false : q.TasksResponsible.ResponsibleId == responsibleId.ToString())
+                        from s in WebProjectsContext.Subtask.Where(s => q.Task.Id == s.TaskId && s.TenantId == Tenant && s.ResponsibleId == responsibleId.ToString() && (s.Status == null ? -1 : s.Status) == (int)TaskStatus.Open || (q.TasksResponsible != null && q.TasksResponsible.ResponsibleId == responsibleId.ToString())).DefaultIfEmpty()
+                    select new
+                    {
+                        Query = q,
+                        Subtask = s
+                    };
 
             if (statuses != null && statuses.Any())
             {
@@ -320,13 +317,14 @@ namespace ASC.Projects.Data.DAO
             }
 
             return query.Select(q => q.Query)
-                .GroupBy(q => new {q.Task, q.Project}, q => q.TasksResponsible.ResponsibleId)
-                .OrderBy(q => q.Key.Task.SortOrder)
+                .AsEnumerable()
+                .GroupBy(q => new {q.Task, q.Project}, q => q.TasksResponsible == null ? null : q.TasksResponsible.ResponsibleId)
+                .OrderByDescending(q => q.Key.Task.SortOrder)
                 .ThenBy(q => q.Key.Task.Status)
                 .ThenBy(q => q.Key.Task.Priority)
                 .ThenBy(q => q.Key.Task.CreateOn)
-                .Select(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())))
-                .ToList();
+                .ToList()
+                .ConvertAll(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
         }
 
         public List<Task> GetMilestoneTasks(int milestoneId)
@@ -359,7 +357,7 @@ namespace ASC.Projects.Data.DAO
                 .AsEnumerable()
                 .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
                 .SingleOrDefault();
-            return ToTask(new QueryTask() { Task = query.Key.Task, Project = query.Key.Project }, Concat(query.ToList()));
+            return query == null ? null : ToTask(new QueryTask() { Task = query.Key.Task, Project = query.Key.Project }, Concat(query.ToList()));
         }
 
         public bool IsExists(int id)
@@ -392,8 +390,13 @@ namespace ASC.Projects.Data.DAO
 
             if (task.Responsibles.Any())
             {
-                var resps = WebProjectsContext.TasksResponsible.Where(tr => task.Responsibles.Contains(ToGuid(tr.ResponsibleId))).ToList();
-                WebProjectsContext.TasksResponsible.AddRange(resps);
+                foreach (var responsible in task.Responsibles.Distinct())
+                {
+                    var dbResponsible = new DbTasksResponsible();
+                    dbResponsible.TenantId = Tenant;
+                    dbResponsible.TaskId = task.ID;
+                    dbResponsible.ResponsibleId = responsible.ToString();
+                }
             }
 
             WebProjectsContext.SaveChanges();
@@ -405,16 +408,40 @@ namespace ASC.Projects.Data.DAO
         {
             task.LastModifiedOn = TenantUtil.DateTimeToUtc(task.LastModifiedOn);
             task.StatusChangedOn = TenantUtil.DateTimeToUtc(task.StatusChangedOn);
-            var db = ToDbTask(task);
-            WebProjectsContext.Task.Add(db);
+            var db = WebProjectsContext.Task.Where(t => t.Id == task.ID).SingleOrDefault();
+
+            db.Title = task.Title;
+            db.CreateBy = task.CreateBy.ToString();
+            db.CreateOn = TenantUtil.DateTimeFromUtc(task.CreateOn);
+            db.LastModifiedBy = task.LastModifiedBy.ToString();
+            db.LastModifiedOn = TenantUtil.DateTimeFromUtc(task.LastModifiedOn);
+            db.Description = task.Description;
+            db.Priority = (int)task.Priority;
+            db.Status = (int)task.Status;
+            db.MilestoneId = task.Milestone;
+            db.SortOrder = task.SortOrder;
+            db.Deadline = task.Deadline;
+            db.StartDate = task.StartDate;
+            db.Progress = task.Progress;
+            db.StatusId = task.CustomTaskStatus;
+            db.TenantId = Tenant;
+            db.ProjectId = task.Project.ID;
+            db.ResponsibleId = new Guid().ToString();
+
+            WebProjectsContext.Task.Update(db);
 
             var responsiblesDelete = WebProjectsContext.TasksResponsible.Where(tr => tr.TaskId == task.ID).ToList();
             WebProjectsContext.TasksResponsible.RemoveRange(responsiblesDelete);
 
             if (task.Responsibles.Any())
             {
-                var resps = WebProjectsContext.TasksResponsible.Where(tr => task.Responsibles.Contains(ToGuid(tr.ResponsibleId))).ToList();
-                WebProjectsContext.TasksResponsible.AddRange(resps);
+                foreach (var responsible in task.Responsibles.Distinct())
+                {
+                    var dbResponsible = new DbTasksResponsible();
+                    dbResponsible.TenantId = Tenant;
+                    dbResponsible.TaskId = task.ID;
+                    dbResponsible.ResponsibleId = responsible.ToString();
+                }
             }
 
             WebProjectsContext.SaveChanges();
@@ -483,7 +510,8 @@ namespace ASC.Projects.Data.DAO
             {
                 TaskId = taskLink.DependenceTaskId,
                 ParentId = taskLink.ParentTaskId,
-                LinkType = (int)taskLink.LinkType
+                LinkType = (int)taskLink.LinkType,
+                TenantId = Tenant
             };
             WebProjectsContext.Link.Add(link);
             WebProjectsContext.SaveChanges();
@@ -543,7 +571,7 @@ namespace ASC.Projects.Data.DAO
         {
             if (filter.ProjectIds.Count != 0)
             {
-               query = query.Where(q=> filter.ProjectIds.Contains(q.Task.Id));
+               query = query.Where(q=> filter.ProjectIds.Contains(q.Task.ProjectId));
             }
             else
             {
