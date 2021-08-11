@@ -19,9 +19,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using ASC.Common;
 using ASC.Projects.Core.Domain;
+using ASC.Projects.Data.DAO;
 using ASC.Projects.EF;
 
 #endregion
@@ -64,5 +66,7 @@ namespace ASC.Projects.Core.DataInterfaces
         string GetLastModified();
 
         DbMilestone ToDbMilestone(Milestone milestone);
+
+        List<Milestone> GetMilestones(string text, int projectId, IEnumerable<string> keywords);
     }
 }

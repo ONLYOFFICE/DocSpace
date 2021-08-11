@@ -31,6 +31,7 @@ using ASC.Projects.Core.Domain;
 using Microsoft.Extensions.Options;
 using Microsoft.Security.Application;
 using ASC.Common;
+using ASC.ElasticSearch;
 
 namespace ASC.Projects.Data.DAO
 {
@@ -39,12 +40,14 @@ namespace ASC.Projects.Data.DAO
     {
         private TenantUtil TenantUtil { get; set; }
         private ILog Log { get; set; }
+        private FactoryIndexer<DbComment> FactoryIndexer { get; set; }
 
-        public CommentDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, IOptionsMonitor<ILog> options, TenantManager tenantManager)
+        public CommentDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, IOptionsMonitor<ILog> options, TenantManager tenantManager, FactoryIndexer<DbComment> factoryIndexer)
             : base(securityContext, dbContextManager, tenantManager)
         {
             TenantUtil = tenantUtil;
             Log = options.CurrentValue;
+            FactoryIndexer = factoryIndexer;
         }
 
 
@@ -136,6 +139,29 @@ namespace ASC.Projects.Data.DAO
             };
             WebProjectsContext.Comment.Remove(comment);
             WebProjectsContext.SaveChanges();
+        }
+
+        public List<Comment> GetComments(string text, IEnumerable<string> keywords)
+        {
+            List<int> commentIds;
+            if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text).Where(r => r.InActive, 0), out commentIds))
+            {
+                return WebProjectsContext.Comment
+                    .Where(q => commentIds.Contains(q.CommentId) && q.TenantId == Tenant)
+                    .ToList()
+                    .ConvertAll(ToComment);
+            }
+            else
+            {
+                var query = WebProjectsContext.Comment.Where(q => q.TenantId == Tenant);
+                foreach (var keyword in keywords)
+                {
+                    query = query.Where(q => q.Content.Contains(keyword));
+                }
+                return query
+                    .ToList()
+                    .ConvertAll(ToComment);
+            }
         }
 
         private Comment ToComment(DbComment comment)

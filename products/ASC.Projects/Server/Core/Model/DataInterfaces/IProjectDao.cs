@@ -106,5 +106,7 @@ namespace ASC.Projects.Core.DataInterfaces
 
         DbProject ToDbProject(Project dbProject);
         Project ToProject(DbProject dbProject);
+
+        List<Project> GetProjects(string text, int projectId, IEnumerable<string> keywords);
     }
 }

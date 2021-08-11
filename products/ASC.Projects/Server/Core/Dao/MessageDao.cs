@@ -485,6 +485,33 @@ namespace ASC.Projects.Data.DAO
                 ProjectId = message.Project.ID
             };
         }
+
+        public List<Message> GetMessages(string text, int projectId, IEnumerable<string> keywords)
+        {
+            List<int> messIds;
+            if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text), out messIds))
+            {
+                return CreateQuery()
+                    .Where(q => messIds.Contains(q.Message.Id))
+                    .ToList()
+                    .ConvertAll(q=> ToMessage(q.Message, q.Project));
+            }
+            else
+            {
+                var query = CreateQuery();
+                if (projectId != 0)
+                {
+                    query = query.Where(q => q.Project.Id == projectId);
+                }
+                foreach (var keyword in keywords)
+                {
+                    query = query.Where(q => q.Message.Title.Contains(keyword) || q.Message.Content.Contains(keyword));
+                }
+                return query
+                    .ToList()
+                    .ConvertAll(q => ToMessage(q.Message, q.Project));
+            }
+        }
     }
 
     internal class QueryMessages

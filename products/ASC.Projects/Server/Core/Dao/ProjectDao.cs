@@ -823,6 +823,36 @@ namespace ASC.Projects.Data.DAO
             return WebProjectsContext.TasksOrder.Where(t => t.ProjectId == projectID)
                 .Select(t=> t.TaskOrder).FirstOrDefault();
         }
+
+        public List<Project> GetProjects(string text, int projectId, IEnumerable<string> keywords)
+        {
+            List<int> projIds;
+            if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text), out projIds))
+            {
+                return WebProjectsContext.Project
+                    .Where(p => projIds.Contains(p.Id))
+                    .ToList()
+                    .ConvertAll(ToProject);
+            }
+            else
+            {
+                var query = WebProjectsContext.Project.Where(p => p.TenantId == Tenant);
+
+                if (projectId != 0)
+                {
+                    query = query.Where(q => q.Id == projectId);
+                }
+
+                foreach (var keyword in keywords)
+                {
+                    query = query.Where(p => p.Title.Contains(keyword) || p.Description.Contains(keyword));
+                }
+                return query
+                    .ToList()
+                    .ConvertAll(ToProject);
+            }
+        }
+
         private class TeamCacheItem
         {
             public bool InTeam { get; set; }

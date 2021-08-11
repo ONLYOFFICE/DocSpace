@@ -17,155 +17,69 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
+using ASC.ElasticSearch;
 using ASC.Projects.Core.DataInterfaces;
 using ASC.Projects.Core.Domain;
+using ASC.Projects.EF;
 
 namespace ASC.Projects.Data.DAO
 {
     [Scope]
     public class SearchDao : BaseDao, ISearchDao
     {
+        private IDaoFactory DaoFactory { get; set; }
 
         public SearchDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, IDaoFactory daoFactory, TenantManager tenantManager) : base(securityContext, dbContextManager, tenantManager)
         {
+            DaoFactory = daoFactory;
         }
 
         public IEnumerable<DomainObject<int>> Search(String text, int projectId)
         {
-            /*var result = new List<DomainObject<int>>();
+            var result = new List<DomainObject<int>>();
             result.AddRange(GetProjects(text, projectId));
             result.AddRange(GetTasks(text, projectId));
             result.AddRange(GetSubtasks(text));
             result.AddRange(GetMilestones(text, projectId));
             result.AddRange(GetMessages(text, projectId));
             result.AddRange(GetComments(text));
-            return result;*/
-            throw new NotImplementedException();
+            return result;
         }
-        /*
+        
         private IEnumerable<DomainObject<int>> GetProjects(String text, int projectId)
         {
-            Exp projWhere;
-
-            List<int> projIds;
-            if (FactoryIndexer<ProjectsWrapper>.TrySelectIds(s => s.MatchAll(text), out projIds))
-            {
-                projWhere = Exp.In("id", projIds);
-            }
-            else
-            {
-                projWhere = BuildLike(new[] { "title", "description" }, text, projectId);
-            }
-
-            return DaoFactory.GetProjectDao().GetProjects(projWhere);
+            return DaoFactory.GetProjectDao().GetProjects(text, projectId, GetKeywords(text));
         }
 
         private IEnumerable<DomainObject<int>> GetMilestones(String text, int projectId)
         {
-            Exp mileWhere;
-
-            List<int> mileIds;
-            if (FactoryIndexer<MilestonesWrapper>.TrySelectIds(s => s.MatchAll(text), out mileIds))
-            {
-                mileWhere = Exp.In("t.id", mileIds);
-            }
-            else
-            {
-                mileWhere = BuildLike(new[] { "t.title" }, text, projectId);
-            }
-
-            return DaoFactory.GetMilestoneDao().GetMilestones(mileWhere);
+            return DaoFactory.GetMilestoneDao().GetMilestones(text, projectId, GetKeywords(text));
         }
 
         private IEnumerable<DomainObject<int>> GetTasks(String text, int projectId)
         {
-            Exp taskWhere;
-
-            List<int> taskIds;
-            if (FactoryIndexer<TasksWrapper>.TrySelectIds(s => s.MatchAll(text), out taskIds))
-            {
-                taskWhere = Exp.In("t.id", taskIds);
-            }
-            else
-            {
-                taskWhere = BuildLike(new[] { "t.title", "t.description" }, text, projectId);
-            }
-
-            return DaoFactory.GetTaskDao().GetTasks(taskWhere);
+            return DaoFactory.GetTaskDao().GetTasks(text, projectId, GetKeywords(text));
         }
 
         private IEnumerable<DomainObject<int>> GetMessages(String text, int projectId)
         {
-            Exp messWhere;
-
-            List<int> messIds;
-            if (FactoryIndexer<DiscussionsWrapper>.TrySelectIds(s => s.MatchAll(text), out messIds))
-            {
-                messWhere = Exp.In("t.id", messIds);
-            }
-            else
-            {
-                messWhere = BuildLike(new[] { "t.title", "t.content" }, text, projectId);
-            }
-
-            return DaoFactory.GetMessageDao().GetMessages(messWhere);
+            return DaoFactory.GetMessageDao().GetMessages(text, projectId, GetKeywords(text));
         }
 
         private IEnumerable<DomainObject<int>> GetComments(String text)
         {
-            Exp commentsWhere;
-
-            List<int> commentIds;
-            if (FactoryIndexer<CommentsWrapper>.TrySelectIds(s => s.MatchAll(text).Where(r => r.InActive, false), out commentIds))
-            {
-                commentsWhere = Exp.In("comment_id", commentIds);
-            }
-            else
-            {
-                commentsWhere = BuildLike(new[] { "content" }, text);
-            }
-
-            return DaoFactory.GetCommentDao().GetComments(commentsWhere);
+            return DaoFactory.GetCommentDao().GetComments(text, GetKeywords(text));
         }
 
         private IEnumerable<DomainObject<int>> GetSubtasks(String text)
         {
-            Exp subtasksWhere;
-
-            List<int> subtaskIds;
-            if (FactoryIndexer<SubtasksWrapper>.TrySelectIds(s => s.MatchAll(text), out subtaskIds))
-            {
-                subtasksWhere = Exp.In("id", subtaskIds);
-            }
-            else
-            {
-                subtasksWhere = BuildLike(new[] { "title" }, text);
-            }
-
-            return DaoFactory.GetSubtaskDao().GetSubtasks(subtasksWhere);
-        }
-
-        private static Exp BuildLike(string[] columns, string text, int projectId = 0)
-        {
-            var projIdWhere = 0 < projectId ? Exp.Eq("p.id", projectId) : Exp.Empty;
-            var keywords = GetKeywords(text);
-
-            var like = Exp.Empty;
-            foreach (var keyword in keywords)
-            {
-                var keywordLike = Exp.Empty;
-                foreach (var column in columns)
-                {
-                    keywordLike = keywordLike | Exp.Like(column, keyword, SqlLike.AnyWhere);
-                }
-                like = like & keywordLike;
-            }
-            return like & projIdWhere;
+            return DaoFactory.GetSubtaskDao().GetSubtasks(text, GetKeywords(text));
         }
 
         private IEnumerable<string> GetKeywords(string text)
@@ -174,6 +88,6 @@ namespace ASC.Projects.Data.DAO
                 .Where(k => 3 <= k.Trim().Length)
                 .ToArray();
             
-        }*/
+        }
     }
 }

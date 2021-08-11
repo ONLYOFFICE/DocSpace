@@ -48,5 +48,6 @@ namespace ASC.Projects.Core.DataInterfaces
         void Delete(int id);
 
         DbSubtask ToDbSubTask(Subtask subtask);
+        List<Subtask> GetSubtasks(string text, IEnumerable<string> keywords);
     }
 }

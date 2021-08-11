@@ -50,5 +50,6 @@ namespace ASC.Projects.Core.DataInterfaces
         Message Delete(int id);
 
         DbMessage ToDbMessage(Message message);
+        List<Message> GetMessages(string text, int projectId, IEnumerable<string> keywords);
     }
 }

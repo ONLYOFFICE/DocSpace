@@ -26,6 +26,7 @@ using ASC.Core.Tenants;
 using ASC.Projects.Core.DataInterfaces;
 using ASC.Projects.Core.Domain;
 using ASC.Common;
+using ASC.ElasticSearch;
 
 namespace ASC.Projects.Data.DAO
 {/*
@@ -71,10 +72,12 @@ namespace ASC.Projects.Data.DAO
     public class SubtaskDao : BaseDao, ISubtaskDao
     {
         private TenantUtil TenantUtil { get; set; }
+        private FactoryIndexer<DbSubtask> FactoryIndexer { get; set; }
 
-        public SubtaskDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, TenantManager tenantManager) : base(securityContext, dbContextManager, tenantManager)
+        public SubtaskDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, TenantManager tenantManager, FactoryIndexer<DbSubtask> factoryIndexer) : base(securityContext, dbContextManager, tenantManager)
         {
             TenantUtil = tenantUtil;
+            FactoryIndexer = factoryIndexer;
         }
 
         public List<Subtask> GetSubtasks(int taskid)
@@ -185,6 +188,30 @@ namespace ASC.Projects.Data.DAO
                 return subtask;
             }
             
+        }
+
+        public List<Subtask> GetSubtasks(string text, IEnumerable<string> keywords)
+        {
+            List<int> subtaskIds;
+            if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text), out subtaskIds))
+            {
+                var query = WebProjectsContext.Subtask
+                    .Where(q => subtaskIds.Contains(q.Id) && q.TenantId == Tenant);
+                return OrderQuery(query)
+                    .ToList()
+                    .ConvertAll(ToSubTask);
+            }
+            else
+            {
+                var query = WebProjectsContext.Subtask.Where(q => q.TenantId == Tenant);
+                foreach (var keyword in keywords)
+                {
+                    query = query.Where(q => q.Title.Contains(keyword));
+                }
+                return OrderQuery(query)
+                    .ToList()
+                    .ConvertAll(ToSubTask);
+            }
         }
 
         public void CloseAllSubtasks(Task task)

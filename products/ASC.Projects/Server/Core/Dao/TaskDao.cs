@@ -82,8 +82,9 @@ namespace ASC.Projects.Data.DAO
         private SettingsManager SettingsManager { get; set; }
         private FilterHelper FilterHelper { get; set; }
         private IDaoFactory DaoFactory { get; set; }
+        private FactoryIndexer<DbTask> FactoryIndexer { get; set; }
 
-        public TaskDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbTask> factoryIndexerTask, FactoryIndexer<DbSubtask> factoryIndexerSubTask, IDaoFactory daoFactory, SettingsManager settingsManager, FilterHelper filterHelper, TenantManager tenantManager) : base(securityContext, dbContextManager, tenantManager)
+        public TaskDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbTask> factoryIndexerTask, FactoryIndexer<DbSubtask> factoryIndexerSubTask, IDaoFactory daoFactory, SettingsManager settingsManager, FilterHelper filterHelper, TenantManager tenantManager, FactoryIndexer<DbTask> factoryIndexer) : base(securityContext, dbContextManager, tenantManager)
         {
             TenantUtil = tenantUtil;
             FactoryIndexerTask = factoryIndexerTask;
@@ -91,6 +92,7 @@ namespace ASC.Projects.Data.DAO
             SettingsManager = settingsManager;
             FilterHelper = filterHelper;
             DaoFactory = daoFactory;
+            FactoryIndexer = factoryIndexer;
         }
 
 
@@ -358,6 +360,37 @@ namespace ASC.Projects.Data.DAO
                 .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
                 .SingleOrDefault();
             return query == null ? null : ToTask(new QueryTask() { Task = query.Key.Task, Project = query.Key.Project }, Concat(query.ToList()));
+        }
+
+        public List<Task> GetTasks(string text, int projectId, IEnumerable<string> keywords)
+        {
+            List<int> taskIds;
+            if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text), out taskIds))
+            {
+                return CreateQuery()
+                    .Where(q => taskIds.Contains(q.Task.Id))
+                    .AsEnumerable()
+                    .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
+                    .ToList()
+                    .ConvertAll(q=> ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
+            }
+            else
+            {
+                var query = CreateQuery();
+                if (projectId != 0)
+                {
+                    query = query.Where(q => q.Project.Id == projectId);
+                }
+                foreach (var keyword in keywords)
+                {
+                    query = query.Where(q => q.Task.Title.Contains(keyword) || q.Task.Description.Contains(keyword));
+                }
+                return query
+                    .AsEnumerable()
+                    .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
+                    .ToList()
+                    .ConvertAll(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
+            }
         }
 
         public bool IsExists(int id)

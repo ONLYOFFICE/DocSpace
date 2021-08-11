@@ -80,5 +80,6 @@ namespace ASC.Projects.Core.DataInterfaces
         bool IsExistLink(TaskLink link);
         DbTask ToDbTask(Task task);
 
+        List<Task> GetTasks(string text, int projectId, IEnumerable<string> keywords);
     }
 }

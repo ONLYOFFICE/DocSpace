@@ -489,6 +489,33 @@ namespace ASC.Projects.Data.DAO
             return query;
         }
 
+        public List<Milestone> GetMilestones(string text, int projectId, IEnumerable<string> keywords)
+        {
+            List<int> mileIds;
+            if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text), out mileIds))
+            {
+                return CreateQuery()
+                    .Where(q => mileIds.Contains(q.Milestone.Id))
+                    .ToList()
+                    .ConvertAll(ToMilestone);
+            }
+            else
+            {
+                var query = CreateQuery();
+                if (projectId != 0)
+                {
+                    query = query.Where(q => q.Project.Id == projectId);
+                }
+                foreach (var keyword in keywords)
+                {
+                    query = query.Where(q => q.Milestone.Title.Contains(keyword));
+                }
+                return query
+                    .ToList()
+                    .ConvertAll(ToMilestone);
+            }
+        }
+
         private IQueryable<QueryMilestone> CheckSecurity(IQueryable<QueryMilestone> query, TaskFilter filter, bool isAdmin, bool checkAccess)
         {
             if (checkAccess)

@@ -38,5 +38,6 @@ namespace ASC.Projects.Core.DataInterfaces
         Comment SaveOrUpdate(Comment comment);
         void Delete(Guid id);
         DbComment ToDbComment(Comment comment);
+        List<Comment> GetComments(string text, IEnumerable<string> keywords);
     }
 }
