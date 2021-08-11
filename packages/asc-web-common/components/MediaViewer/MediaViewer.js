@@ -31,6 +31,7 @@ const ButtonKeys = Object.freeze({
   ctr: 17,
   one: 49,
   del: 46,
+  s: 83,
 });
 
 const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
@@ -306,14 +307,15 @@ class MediaViewer extends React.Component {
         : 0;
     this.props.onDownload && this.props.onDownload(currentFileId);
   };
+
   onKeyup = (e) => {
     if (ButtonKeys.ctr === e.keyCode) {
       ctrIsPressed = false;
     }
   };
+
   onKeydown = (e) => {
     let isActionKey = false;
-
     for (let key in ButtonKeys) {
       if (ButtonKeys[key] === e.keyCode) {
         e.preventDefault();
@@ -342,7 +344,7 @@ class MediaViewer extends React.Component {
             : this.nextMedia();
           break;
         case ButtonKeys.esc:
-          this.props.onClose();
+          if (!this.props.deleteDialogVisible) this.props.onClose();
           break;
         case ButtonKeys.upArrow:
           document.getElementsByClassName("iconContainer zoomIn").length > 0 &&
@@ -354,6 +356,9 @@ class MediaViewer extends React.Component {
           break;
         case ButtonKeys.ctr:
           ctrIsPressed = true;
+          break;
+        case ButtonKeys.s:
+          if (ctrIsPressed) this.onDownload();
           break;
         case ButtonKeys.one:
           ctrIsPressed &&
@@ -465,7 +470,6 @@ class MediaViewer extends React.Component {
           ) : (
             <StyledVideoViewer
               url={url}
-              playing={false}
               isVideo={isVideo}
               getOffset={this.getOffset}
             />
@@ -509,6 +513,7 @@ MediaViewer.propTypes = {
   onDownload: PropTypes.func,
   onClose: PropTypes.func,
   onEmptyPlaylistError: PropTypes.func,
+  deleteDialogVisible: PropTypes.bool,
 };
 
 MediaViewer.defaultProps = {

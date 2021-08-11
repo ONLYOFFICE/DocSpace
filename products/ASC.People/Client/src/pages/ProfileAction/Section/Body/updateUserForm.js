@@ -280,6 +280,7 @@ class UpdateUserForm extends React.Component {
       updateProfileInUsers,
       history,
       t,
+      setUserIsUpdate,
     } = this.props;
 
     this.setState({ isLoading: true });
@@ -289,6 +290,7 @@ class UpdateUserForm extends React.Component {
         updateProfileInUsers(profile);
         toastr.success(t("ChangesSavedSuccessfully"));
         setIsEditingForm(false);
+        setUserIsUpdate(true);
         history.goBack();
       })
       .catch((error) => {
@@ -976,6 +978,7 @@ export default withRouter(
     setIsEditTargetUser: peopleStore.targetUserStore.setIsEditTargetUser,
     isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
     personal: auth.settingsStore.personal,
+    setUserIsUpdate: auth.userStore.setUserIsUpdate,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

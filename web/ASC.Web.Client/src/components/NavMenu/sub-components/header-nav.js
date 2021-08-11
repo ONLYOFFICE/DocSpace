@@ -64,6 +64,8 @@ const HeaderNav = ({
   peopleAvailable,
   isPersonal,
   versionAppServer,
+  userIsUpdate,
+  setUserIsUpdate,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleDialog, setVisibleDialog] = useState(false);
@@ -150,7 +152,12 @@ const HeaderNav = ({
           />
         ))}
       {isAuthenticated && user ? (
-        <ProfileActions userActions={getCurrentUserActions()} user={user} />
+        <ProfileActions
+          userActions={getCurrentUserActions()}
+          user={user}
+          userIsUpdate={userIsUpdate}
+          setUserIsUpdate={setUserIsUpdate}
+        />
       ) : (
         <></>
       )}
@@ -192,7 +199,7 @@ export default withRouter(
       personal: isPersonal,
       version: versionAppServer,
     } = settingsStore;
-    const { user } = userStore;
+    const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
     return {
       isPersonal,
@@ -205,6 +212,8 @@ export default withRouter(
       logout,
       peopleAvailable: modules.some((m) => m.appName === "people"),
       versionAppServer,
+      userIsUpdate,
+      setUserIsUpdate,
     };
   })(observer(HeaderNav))
 );
