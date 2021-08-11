@@ -470,7 +470,6 @@ class MediaViewer extends React.Component {
           ) : (
             <StyledVideoViewer
               url={url}
-              playing={false}
               isVideo={isVideo}
               getOffset={this.getOffset}
             />
