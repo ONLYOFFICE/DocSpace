@@ -235,7 +235,7 @@ class FilesActionStore {
     const items = [];
 
     if (selection.length === 1 && selection[0].fileExst) {
-      window.open(selection[0].viewUrl, "_blank");
+      window.open(selection[0].viewUrl, "_self");
       return Promise.resolve();
     }
 
