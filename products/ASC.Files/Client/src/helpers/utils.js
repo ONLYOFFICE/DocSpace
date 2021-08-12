@@ -8,7 +8,8 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { addFileToRecentlyViewed } from "@appserver/common/api/files";
 import i18n from "./i18n";
-import { canViewedDocs } from "../store/DocserviceStore";
+import docserviceStore from "../store/DocserviceStore";
+import { isAdmin as checkAdminRights } from "@appserver/common/utils";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -89,31 +90,31 @@ export const accessEdit = (
   if (user.isOutsider) return false;
 
   if (entryData.isFolder) {
-    if (entryData.id == FolderType.COMMON && !isAdmin) {
+    if (entryData.rootFolderType == FolderType.COMMON && !isAdmin) {
       return false;
     }
 
-    if (entryData.id == FolderType.SHARE) {
+    if (entryData.rootFolderType == FolderType.SHARE) {
       return false;
     }
 
-    if (entryData.id == FolderType.Recent) {
+    if (entryData.rootFolderType == FolderType.Recent) {
       return false;
     }
 
-    if (entryData.id == FolderType.Favorites) {
+    if (entryData.rootFolderType == FolderType.Favorites) {
       return false;
     }
 
-    if (entryData.id == FolderType.Templates) {
+    if (entryData.rootFolderType == FolderType.Templates) {
       return false;
     }
 
-    if (entryData.id == FolderType.TRASH) {
+    if (entryData.rootFolderType == FolderType.TRASH) {
       return false;
     }
 
-    if (entryData.id == FolderType.Projects) {
+    if (entryData.rootFolderType == FolderType.Projects) {
       return false;
     }
 
@@ -148,12 +149,12 @@ export const accessEdit = (
     default:
       if (
         entryData.isFolder &&
-        (entryData.id === FolderType.SHARE ||
-          entryData.id === FolderType.Recent ||
-          entryData.id === FolderType.Favorites ||
-          entryData.id === FolderType.Templates ||
-          entryData.id === FolderType.Projects ||
-          entryData.id === FolderType.TRASH)
+        (entryData.rootFolderType === FolderType.SHARE ||
+          entryData.rootFolderType === FolderType.Recent ||
+          entryData.rootFolderType === FolderType.Favorites ||
+          entryData.rootFolderType === FolderType.Templates ||
+          entryData.rootFolderType === FolderType.Projects ||
+          entryData.rootFolderType === FolderType.TRASH)
       ) {
         return false;
       }
@@ -167,10 +168,15 @@ export const canShare = (
   currentFolderId,
   currentFolderAccess,
   user,
-  isAdmin,
-  isDesktop,
-  isPersonal
+  isPersonal,
+  isAdminProp
 ) => {
+  const { isDesktopClient: isDesktop } = authStore.settingsStore;
+
+  const isAdmin = !isAdminProp
+    ? checkAdminRights(user, config.id)
+    : isAdminProp;
+
   let isShareable = true;
 
   if (!entryData.isFolder) {
@@ -182,22 +188,26 @@ export const canShare = (
         isPersonal)
     ) {
       isShareable = false;
-    } else if (isPersonal && !canViewedDocs(entryData.fileExst)) {
+    } else if (
+      isPersonal &&
+      !docserviceStore.canViewedDocs(entryData.fileExst)
+    ) {
       isShareable = false;
     }
   }
 
   if (
     isShareable &&
-    ((entryData.rootFolderType == FolderType.SHARE &&
-      !accessEdit(
-        entryData,
-        currentFolderId,
-        currentFolderAccess,
-        user,
-        isAdmin,
-        isDesktop
-      )) ||
+    ((entryData.rootFolderType == FolderType.COMMON && !isAdmin) ||
+      (entryData.rootFolderType == FolderType.SHARE &&
+        !accessEdit(
+          entryData,
+          currentFolderId,
+          currentFolderAccess,
+          user,
+          isAdmin,
+          isDesktop
+        )) ||
       (entryData.rootFolderType == FolderType.Privacy &&
         (entryData.isFolder ||
           !accessEdit(

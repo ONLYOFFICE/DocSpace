@@ -255,9 +255,8 @@ export default function withContextOptions(WrappedComponent) {
         currentFolderId,
         currentFolderAccess,
         user,
-        isAdmin,
-        isDesktop,
-        isPersonal
+        isPersonal,
+        isAdmin
       );
 
       return contextOptions.map((option) => {

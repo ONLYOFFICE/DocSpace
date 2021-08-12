@@ -292,9 +292,8 @@ export default function withFileActions(WrappedFileItem) {
         currentFolderId,
         currentFolderAccess,
         user,
-        isAdmin,
-        isDesktop,
-        personal
+        personal,
+        isAdmin
       );
 
       const isMobile = sectionWidth < 500;
