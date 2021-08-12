@@ -35,6 +35,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
@@ -66,6 +67,7 @@ namespace ASC.CRM.Core.Dao
 
         public ContactDao(
             DbContextManager<CrmDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             CrmSecurity crmSecurity,
@@ -81,6 +83,7 @@ namespace ASC.CRM.Core.Dao
             IMapper mapper
             ) :
                  base(dbContextManager,
+                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

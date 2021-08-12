@@ -33,6 +33,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 
@@ -49,7 +50,8 @@ namespace ASC.CRM.Core.Dao
 
         private Lazy<CrmDbContext> LazyCrmDbContext { get; }
         public CrmDbContext CrmDbContext { get => LazyCrmDbContext.Value; }
-
+        private Lazy<TenantDbContext> LazyTenantDbContext { get; }
+        public TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
         protected readonly SecurityContext _securityContext;
         protected readonly ICache _cache;
         protected ILog _logger;
@@ -57,6 +59,7 @@ namespace ASC.CRM.Core.Dao
 
         public AbstractDao(
             DbContextManager<CrmDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
@@ -70,7 +73,7 @@ namespace ASC.CRM.Core.Dao
             _cache = ascCache;
 
             LazyCrmDbContext = new Lazy<CrmDbContext>(() => dbContextManager.Get(CrmConstants.DatabaseId));
-
+            LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager1.Get(CrmConstants.DatabaseId));
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             _securityContext = securityContext;
 

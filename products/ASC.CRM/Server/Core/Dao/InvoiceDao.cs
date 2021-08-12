@@ -36,6 +36,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
@@ -75,6 +76,7 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceDao(
             DbContextManager<CrmDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             FactoryIndexerInvoice factoryIndexer,
@@ -87,6 +89,7 @@ namespace ASC.CRM.Core.Dao
             TenantUtil tenantUtil,
             IMapper mapper)
               : base(dbContextManager,
+                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

@@ -68,7 +68,7 @@ namespace ASC.Web.CRM.Core.Search
             IQueryable<DbContact> GetBaseQuery(DateTime lastIndexed) =>
                                 entityDao.CrmDbContext.Contacts
                                         .Where(r => r.LastModifedOn >= lastIndexed)
-                                        .Join(entityDao.CrmDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
+                                        .Join(entityDao.TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
                                         .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active)
                                         .Select(r => r.DbEntity);
 
