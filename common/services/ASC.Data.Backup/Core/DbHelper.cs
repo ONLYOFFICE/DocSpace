@@ -12,6 +12,8 @@ using System.Xml.XPath;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Data.Backup.EF.Context;
 
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +32,15 @@ namespace ASC.Data.Backup
         private readonly IDictionary<string, string> whereExceptions = new Dictionary<string, string>();
         private readonly ILog log;
         private readonly BackupsContext backupsContext;
+        private readonly TenantDbContext tenantDbContext;
+        private readonly CoreDbContext coreDbContext;
 
-        public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString, BackupsContext backupsContext)
+        public DbHelper(IOptionsMonitor<ILog> options, ConnectionStringSettings connectionString, BackupsContext backupsContext, TenantDbContext tenantDbContext, CoreDbContext coreDbContext)
         {
             log = options.CurrentValue;
             this.backupsContext = backupsContext;
+            this.tenantDbContext = tenantDbContext;
+            this.coreDbContext = coreDbContext;
             var file = connectionString.ElementInformation.Source;
             if ("web.connections.config".Equals(Path.GetFileName(file), StringComparison.InvariantCultureIgnoreCase))
             {
@@ -150,11 +156,11 @@ namespace ASC.Data.Backup
                 if ("tenants_tenants".Equals(table.TableName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     // remove last tenant
-                    var tenant = backupsContext.Tenants.LastOrDefault();
+                    var tenant = tenantDbContext.Tenants.LastOrDefault();
                     if (tenant != null)
                     {
-                        backupsContext.Tenants.Remove(tenant);
-                        backupsContext.SaveChanges();
+                        tenantDbContext.Tenants.Remove(tenant);
+                        tenantDbContext.SaveChanges();
                     }
                     /*  var tenantid = CreateCommand("select id from tenants_tenants order by id desc limit 1").ExecuteScalar();
                          CreateCommand("delete from tenants_tenants where id = " + tenantid).ExecuteNonQuery();*/
@@ -165,11 +171,11 @@ namespace ASC.Data.Backup
                             r[table.Columns["mappeddomain"]] = null;
                             if (table.Columns.Contains("id"))
                             {
-                                var tariff = backupsContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
+                                var tariff = coreDbContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
                                 tariff.Tenant = (int)r[table.Columns["id"]];
                                 //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
-                                backupsContext.Entry(tariff).State = EntityState.Modified;
-                                backupsContext.SaveChanges();
+                                coreDbContext.Entry(tariff).State = EntityState.Modified;
+                                coreDbContext.SaveChanges();
                             }
                         }
                     }
