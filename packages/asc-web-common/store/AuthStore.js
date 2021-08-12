@@ -23,6 +23,7 @@ class AuthStore {
   version = null;
 
   providers = [];
+  isInit = false;
 
   constructor() {
     this.userStore = new UserStore();
@@ -34,6 +35,8 @@ class AuthStore {
   }
 
   init = async () => {
+    if (this.isInit) return;
+    this.isInit = true;
     await this.getIsAuthenticated();
 
     const requests = [];
@@ -166,6 +169,8 @@ class AuthStore {
 
       setWithCredentialsStatus(true);
 
+      this.reset();
+
       await this.init();
 
       return Promise.resolve({ url: this.settingsStore.defaultPage });
@@ -200,6 +205,7 @@ class AuthStore {
   };
 
   reset = () => {
+    this.isInit = false;
     this.userStore = new UserStore();
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
