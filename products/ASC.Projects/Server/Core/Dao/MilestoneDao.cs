@@ -127,22 +127,44 @@ namespace ASC.Projects.Data.DAO
             var groupQuery = query.AsEnumerable()
                 .GroupBy(q => new QueryMilestone { Milestone = q.Milestone, Project = q.Project, ActiveTaskCount = q.ActiveTaskCount, ClosedTaskCount = q.ClosedTaskCount });
 
-            var filtredQuery = groupQuery.OrderBy(q => q.Key.Milestone.Status);
+            var sortedQuery = groupQuery.OrderBy(q => q.Key.Milestone.Status);
 
             if (!string.IsNullOrEmpty(filter.SortBy))
             {
                 var sortColumns = filter.SortColumns["Milestone"];
                 sortColumns.Remove(filter.SortBy);
 
-                filtredQuery = filtredQuery.ThenBy(q => filter.SortBy == "create_on" ? q.Key.Milestone.Id : q.Key.Milestone.Id);
+                switch (filter.SortBy)
+                {
+                    case "deadline":
+                        sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Key.Milestone.Deadline) : sortedQuery.ThenByDescending(q => q.Key.Milestone.Deadline);
+                        break;
+                    case "create_on":
+                        sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Key.Milestone.Id) : sortedQuery.ThenByDescending(q => q.Key.Milestone.Id);
+                        break;
+                    case "title":
+                        sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Key.Milestone.Title) : sortedQuery.ThenByDescending(q => q.Key.Milestone.Title);
+                        break;
+                }
 
                 foreach (var sort in sortColumns.Keys)
                 {
-                    filtredQuery = filtredQuery.ThenBy(q => sort == "create_on" ? q.Key.Milestone.Id : q.Key.Milestone.Id);
+                    switch (sort)
+                    {
+                        case "deadline":
+                            sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Key.Milestone.Deadline) : sortedQuery.ThenByDescending(q => q.Key.Milestone.Deadline);
+                            break;
+                        case "create_on":
+                            sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Key.Milestone.Id) : sortedQuery.ThenByDescending(q => q.Key.Milestone.Id);
+                            break;
+                        case "title":
+                            sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Key.Milestone.Title) : sortedQuery.ThenByDescending(q => q.Key.Milestone.Title);
+                            break;
+                    }
                 }
             }
 
-            return filtredQuery
+            return sortedQuery
                 .ToList()
                 .ConvertAll(q => ToMilestone(q.Key));
         }

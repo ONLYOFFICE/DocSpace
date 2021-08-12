@@ -59,16 +59,50 @@ namespace ASC.Projects.Data.DAO
                 var sortColumns = filter.SortColumns["TimeSpend"];
                 sortColumns.Remove(filter.SortBy);
 
-                query.OrderBy("t." + filter.SortBy, filter.SortOrder);//todo
+                var sortedQuery = SortBy(filter.SortBy, filter.SortOrder, fQuery);
 
                 foreach (var sort in sortColumns.Keys)
                 {
-                    query.OrderBy("t." + sort, sortColumns[sort]);//todo
+                    sortedQuery = ThenBy(filter.SortBy, filter.SortOrder, sortedQuery);
                 }
+                return sortedQuery.ToList()
+                .ConvertAll(tt => ToTimeSpend(tt));
             }
             return fQuery
                 .ToList()
                 .ConvertAll(tt => ToTimeSpend(tt));
+        }
+
+        private IOrderedEnumerable<DbTimeTracking> SortBy(string sortBy, bool sortOrder, IEnumerable<DbTimeTracking> query)
+        {
+            switch (sortBy)
+            {
+                case "create_on":
+                    return sortOrder ? query.OrderBy(q => q.CreateOn) : query.OrderByDescending(q => q.CreateOn);
+                case "date":
+                    return sortOrder ? query.OrderBy(q => q.Date) : query.OrderByDescending(q => q.Date);
+                case "hours":
+                    return sortOrder ? query.OrderBy(q => q.Hours) : query.OrderByDescending(q => q.Hours);
+                case "note":
+                    return sortOrder ? query.OrderBy(q => q.Note) : query.OrderByDescending(q => q.Note);
+            }
+            return null;
+        }
+
+        private IOrderedEnumerable<DbTimeTracking> ThenBy(string sortBy, bool sortOrder, IOrderedEnumerable<DbTimeTracking> query)
+        {
+            switch (sortBy)
+            {
+                case "create_on":
+                    return sortOrder ? query.ThenBy(q => q.CreateOn) : query.ThenByDescending(q => q.CreateOn);
+                case "date":
+                    return sortOrder ? query.ThenBy(q => q.Date) : query.ThenByDescending(q => q.Date);
+                case "hours":
+                    return sortOrder ? query.ThenBy(q => q.Hours) : query.ThenByDescending(q => q.Hours);
+                case "note":
+                    return sortOrder ? query.ThenBy(q => q.Note) : query.ThenByDescending(q => q.Note);
+            }
+            return null;
         }
 
         public int GetByFilterCount(TaskFilter filter, bool isAdmin, bool checkAccess)
@@ -143,7 +177,7 @@ namespace ASC.Projects.Data.DAO
                                 TimeTracking = q.TimeTracking,
                                 Task = q.Task,
                                 Project = p
-                            }).Where(q => q.TimeTracking.TenantId == q.Project.TenantId && (ProjectStatus)q.Project.Status == ProjectStatus.Paused)
+                            }).Where(q => q.TimeTracking.TenantId == q.Project.TenantId && (ProjectStatus)q.Project.Status != ProjectStatus.Paused)
                             .Select(q => new QueryTimeTracking
                             {
                                 Task = q.Task,

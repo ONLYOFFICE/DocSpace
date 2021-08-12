@@ -58,7 +58,7 @@ namespace ASC.Api.Projects
         }
 
         [Read(@"message/filter")]
-        public IEnumerable<MessageWrapper> GetMessageByFilter(ModelMessageByFilter model)// toto check with all params
+        public IEnumerable<MessageWrapper> GetMessageByFilter(ModelMessageByFilter model)
         {
             var filter = CreateFilter(EntityType.Message);
 

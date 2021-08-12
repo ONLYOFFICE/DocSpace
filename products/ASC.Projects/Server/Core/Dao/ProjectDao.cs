@@ -241,24 +241,54 @@ namespace ASC.Projects.Data.DAO
 
             query = CreateQueryFilter(query, filter, isAdmin, checkAccess);
 
+            var sortedQuery = query.OrderBy(q => q.Project.Status == 2 ? 1 : (q.Project.Status == 1 ? 2 : 0)).ThenBy(q => q.Project.Id);
+
             if (!string.IsNullOrEmpty(filter.SortBy))
             {
                 var sortColumns = filter.SortColumns["Project"];
                 sortColumns.Remove(filter.SortBy);
 
-                // query = query.OrderBy("p." + filter.SortBy, filter.SortOrder);todo
+                switch (filter.SortBy)
+                {
+                    case "create_on":
+                        sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Project.CreateOn) : sortedQuery.ThenByDescending(q => q.Project.CreateOn);
+                        break;
+                    case "title":
+                        sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Project.Title) : sortedQuery.ThenByDescending(q => q.Project.Title);
+                        break;
+                }
 
                 foreach (var sort in sortColumns.Keys)
                 {
-                    // query.OrderBy("p." + sort, sortColumns[sort]);todo
+                    switch (sort)
+                    {
+                        case "create_on":
+                            sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Project.CreateOn) : sortedQuery.ThenByDescending(q => q.Project.CreateOn);
+                            break;
+                        case "title":
+                            sortedQuery = filter.SortOrder ? sortedQuery.ThenBy(q => q.Project.Title) : sortedQuery.ThenByDescending(q => q.Project.Title);
+                            break;
+                    }
                 }
             }
-
-            var sortedQuery = query.OrderBy(q => q.Project.Status == 2 ? 1 : (q.Project.Status == 1 ? 2 : 0)).ThenBy(q=> q.Project.Id);
 
             return sortedQuery
                 .ToList()
                 .ConvertAll(q => ToProjectFull(q));
+        }
+
+        private IOrderedQueryable<QueryMessages> SortThen(string sortBy, bool sortOrder, IOrderedQueryable<QueryMessages> query)
+        {
+            switch (sortBy)
+            {
+                case "title":
+                    return sortOrder ? query.ThenBy(q => q.Message.Title) : query.ThenByDescending(q => q.Message.Title);
+                case "create_on":
+                    return sortOrder ? query.ThenBy(q => q.Message.CreateOn) : query.ThenByDescending(q => q.Message.CreateOn);
+                case "comments":
+                    return sortOrder ? query.ThenBy(q => q.Comments) : query.ThenByDescending(q => q.Comments);
+            }
+            return null;
         }
 
         public int GetByFilterCount(TaskFilter filter, bool isAdmin, bool checkAccess)

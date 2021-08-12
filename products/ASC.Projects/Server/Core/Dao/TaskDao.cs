@@ -169,25 +169,76 @@ namespace ASC.Projects.Data.DAO
                 query = query.Take((int)filter.Max);
             }
 
+            
+
             if (!string.IsNullOrEmpty(filter.SortBy))
             {
+                var groupedQuery = CreateQueryFilter(query, filter, isAdmin, checkAccess)
+                .AsEnumerable()
+                .GroupBy(q => new QueryTask() { Task = q.Task, Project = q.Project, Milestone = q.Milestone }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null);
                 var sortColumns = filter.SortColumns["Task"];
                 sortColumns.Remove(filter.SortBy);
 
-               // query.OrderBy(GetSortFilter(filter.SortBy, filter.SortOrder), filter.SortOrder);//todo
+                var sortedQuery = SortBy(filter.SortBy, filter.SortOrder, groupedQuery);
 
                 foreach (var sort in sortColumns.Keys)
                 {
-                  //  query.OrderBy(GetSortFilter(sort, sortColumns[sort]), sortColumns[sort]);
+                    sortedQuery = ThenBy(filter.SortBy, filter.SortOrder, sortedQuery);
                 }
+                return sortedQuery
+                    .ToList()
+                    .ConvertAll(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
             }
 
             return CreateQueryFilter(query, filter, isAdmin, checkAccess)
                 .AsEnumerable()
-                .GroupBy(q => new { q.Task, q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
+                .GroupBy(q => new QueryTask() { Task = q.Task, Project = q.Project }, q => q.TasksResponsible != null ? q.TasksResponsible.ResponsibleId : null)
                 .ToList()
                 .ConvertAll(q => ToTask(new QueryTask() { Task = q.Key.Task, Project = q.Key.Project }, Concat(q.ToList())));
         }
+
+        private IOrderedEnumerable<IGrouping<QueryTask, string>> SortBy(string sortBy, bool sortOrder, IEnumerable<IGrouping<QueryTask, string>> query)
+        {
+            switch (sortBy)
+            {
+                case "create_on":
+                    return sortOrder ? query.OrderBy(q => q.Key.Task.CreateOn) : query.OrderByDescending(q => q.Key.Task.CreateOn);
+                case "title":
+                    return sortOrder ? query.OrderBy(q => q.Key.Task.Title) : query.OrderByDescending(q => q.Key.Task.Title);
+                case "priority":
+                    return sortOrder ? query.OrderBy(q => q.Key.Task.Priority) : query.OrderByDescending(q => q.Key.Task.Priority);
+                case "start_date":
+                    return sortOrder ? query.OrderBy(q => q.Key.Task.StartDate) : query.OrderByDescending(q => q.Key.Task.StartDate);
+                case "sort_order":
+                    return sortOrder ? query.OrderBy(q => q.Key.Task.SortOrder) : query.OrderByDescending(q => q.Key.Task.SortOrder);
+                case "deadline":
+                    var sortDate = sortOrder ? DateTime.MaxValue : DateTime.MinValue;
+                    return sortOrder ? query.OrderBy(q => (q.Key.Task.Deadline == DateTime.MinValue) ? (q.Key.Milestone == null ? sortDate : q.Key.Milestone.Deadline) : q.Key.Task.Deadline) : query.OrderByDescending(q => (q.Key.Task.Deadline == DateTime.MinValue) ? (q.Key.Milestone == null ? sortDate : q.Key.Milestone.Deadline) : q.Key.Task.Deadline);
+            }
+            return null;
+        }
+
+        private IOrderedEnumerable<IGrouping<QueryTask, string>> ThenBy(string sortBy, bool sortOrder, IOrderedEnumerable<IGrouping<QueryTask, string>> query)
+        {
+            switch (sortBy)
+            {
+                case "create_on":
+                    return sortOrder ? query.ThenBy(q => q.Key.Task.CreateOn) : query.ThenByDescending(q => q.Key.Task.CreateOn);
+                case "title":
+                    return sortOrder ? query.ThenBy(q => q.Key.Task.Title) : query.ThenByDescending(q => q.Key.Task.Title);
+                case "priority":
+                    return sortOrder ? query.ThenBy(q => q.Key.Task.Priority) : query.ThenByDescending(q => q.Key.Task.Priority);
+                case "start_date":
+                    return sortOrder ? query.ThenBy(q => q.Key.Task.StartDate) : query.ThenByDescending(q => q.Key.Task.StartDate);
+                case "sort_order":
+                    return sortOrder ? query.ThenBy(q => q.Key.Task.SortOrder) : query.ThenByDescending(q => q.Key.Task.SortOrder);
+                case "deadline":
+                    var sortDate = sortOrder ? DateTime.MaxValue : DateTime.MinValue;
+                    return sortOrder ? query.ThenBy(q => (q.Key.Task.Deadline == DateTime.MinValue) ? (q.Key.Milestone == null ? sortDate : q.Key.Milestone.Deadline) : q.Key.Task.Deadline) : query.ThenByDescending(q => (q.Key.Task.Deadline == DateTime.MinValue) ? (q.Key.Milestone == null ? sortDate : q.Key.Milestone.Deadline) : q.Key.Task.Deadline);
+            }
+            return null;
+        }
+
 
         public TaskFilterCountOperationResult GetByFilterCount(TaskFilter filter, bool isAdmin, bool checkAccess)
         {
@@ -610,7 +661,7 @@ namespace ASC.Projects.Data.DAO
             {
                 if (SettingsManager.Load<ProjectsCommonSettings>().HideEntitiesInPausedProjects)
                 {
-                    query = query.Where(q => (ProjectStatus)q.Project.Status == ProjectStatus.Paused);
+                    query = query.Where(q => (ProjectStatus)q.Project.Status != ProjectStatus.Paused);
                 }
 
                 if (filter.MyProjects)
