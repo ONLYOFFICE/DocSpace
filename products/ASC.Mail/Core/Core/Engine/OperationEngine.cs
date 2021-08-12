@@ -29,20 +29,23 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+
+using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Core;
+using ASC.Data.Storage;
+using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Engine.Operations;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
-using SecurityContext = ASC.Core.SecurityContext;
-using Microsoft.Extensions.Options;
-using ASC.Common.Logging;
 using ASC.Mail.Storage;
-using ASC.Common;
-using ASC.ElasticSearch;
-using ASC.Mail.Core.Dao.Entities;
-using ASC.Data.Storage;
+
+using Microsoft.Extensions.Options;
+
+using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -63,7 +66,7 @@ namespace ASC.Mail.Core.Engine
         private DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
         private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private MailboxEngine MailboxEngine { get; }
         private QuotaEngine QuotaEngine { get; }
         private FolderEngine FolderEngine { get; }
@@ -85,7 +88,7 @@ namespace ASC.Mail.Core.Engine
             DistributedTaskCacheNotify distributedTaskCacheNotify,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             MailboxEngine mailboxEngine,
             QuotaEngine quotaEngine,
             FolderEngine folderEngine,
@@ -94,7 +97,7 @@ namespace ASC.Mail.Core.Engine
             UserFolderEngine userFolderEngine,
             FilterEngine filterEngine,
             MessageEngine messageEngine,
-            ServerMailboxEngine serverMailboxEngine, 
+            ServerMailboxEngine serverMailboxEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             StorageFactory storageFactory,
@@ -104,12 +107,12 @@ namespace ASC.Mail.Core.Engine
             DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager,
             IOptionsMonitor<ILog> option)
         {
-            MailOperations = distributedTaskQueueOptionsManager.Get("mailOperations");                
+            MailOperations = distributedTaskQueueOptionsManager.Get("mailOperations");
 
             DistributedTaskCacheNotify = distributedTaskCacheNotify;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             MailboxEngine = mailboxEngine;
             QuotaEngine = quotaEngine;
             FolderEngine = folderEngine;
@@ -163,17 +166,17 @@ namespace ASC.Mail.Core.Engine
                 throw new MailOperationAlreadyRunningException("Remove mailbox operation already running.");
 
             var op = new MailRemoveMailboxOperation(
-                TenantManager, 
-                SecurityContext, 
-                MailboxEngine, 
-                QuotaEngine, 
-                FolderEngine, 
-                CacheEngine, 
+                TenantManager,
+                SecurityContext,
+                MailboxEngine,
+                QuotaEngine,
+                FolderEngine,
+                CacheEngine,
                 IndexEngine,
-                DaoFactory, 
-                CoreSettings, 
-                StorageManager, 
-                Option, 
+                MailDaoFactory,
+                CoreSettings,
+                StorageManager,
+                Option,
                 mailbox);
 
             return QueueTask(op, translateMailOperationStatus);
@@ -216,7 +219,7 @@ namespace ASC.Mail.Core.Engine
             var op = new MailDownloadAllAttachmentsOperation(
                 TenantManager,
                 SecurityContext,
-                DaoFactory,
+                MailDaoFactory,
                 MessageEngine,
                 CoreSettings,
                 StorageManager,
@@ -252,7 +255,7 @@ namespace ASC.Mail.Core.Engine
             var op = new MailRecalculateFoldersOperation(
                 TenantManager,
                 SecurityContext,
-                DaoFactory,
+                MailDaoFactory,
                 FolderEngine,
                 CoreSettings,
                 StorageManager,
@@ -288,11 +291,11 @@ namespace ASC.Mail.Core.Engine
             var op = new MailCheckMailserverDomainsDnsOperation(
                 TenantManager,
                 SecurityContext,
-                DaoFactory,
+                MailDaoFactory,
                 CoreSettings,
                 StorageManager,
                 Option,
-                domainName, 
+                domainName,
                 dns);
 
             return QueueTask(op, translateMailOperationStatus);
@@ -332,7 +335,7 @@ namespace ASC.Mail.Core.Engine
             if (runningOperation != null)
                 throw new MailOperationAlreadyRunningException("Remove user folder operation already running.");
 
-            var op = new MailRemoveUserFolderOperation(TenantManager, SecurityContext, DaoFactory, UserFolderEngine,
+            var op = new MailRemoveUserFolderOperation(TenantManager, SecurityContext, MailDaoFactory, UserFolderEngine,
                 MessageEngine, IndexEngine, CoreSettings, StorageManager, FactoryIndexer, ServiceProvider, Option, userFolderId);
 
             return QueueTask(op, translateMailOperationStatus);
@@ -375,8 +378,8 @@ namespace ASC.Mail.Core.Engine
             var op = new ApplyFilterOperation(
                 TenantManager,
                 SecurityContext,
-                DaoFactory, 
-                FilterEngine, 
+                MailDaoFactory,
+                FilterEngine,
                 MessageEngine,
                 CoreSettings,
                 StorageManager,
@@ -396,9 +399,9 @@ namespace ASC.Mail.Core.Engine
             var op = new ApplyFiltersOperation(
                 TenantManager,
                 SecurityContext,
-                DaoFactory,
-                FilterEngine, 
-                MessageEngine, 
+                MailDaoFactory,
+                FilterEngine,
+                MessageEngine,
                 MailboxEngine,
                 CoreSettings,
                 StorageManager,
@@ -442,9 +445,9 @@ namespace ASC.Mail.Core.Engine
                 throw new MailOperationAlreadyRunningException("Remove mailbox operation already running.");
 
             var op = new MailRemoveMailserverDomainOperation(
-                TenantManager, SecurityContext, 
-                DaoFactory, MailboxEngine, CacheEngine, IndexEngine,
-                CoreSettings, StorageManager, 
+                TenantManager, SecurityContext,
+                MailDaoFactory, MailboxEngine, CacheEngine, IndexEngine,
+                CoreSettings, StorageManager,
                 Option, domain);
 
             return QueueTask(op);
@@ -485,7 +488,7 @@ namespace ASC.Mail.Core.Engine
 
             var op = new MailRemoveMailserverMailboxOperation(
                 TenantManager, SecurityContext,
-                DaoFactory, ServerMailboxEngine, this, CacheEngine, IndexEngine,
+                MailDaoFactory, ServerMailboxEngine, this, CacheEngine, IndexEngine,
                 CoreSettings, StorageManager,
                 Option, mailbox);
 

@@ -50,18 +50,18 @@ namespace ASC.Mail.Core.Dao
 
         public List<Account> GetAccounts()
         {
-            var accounts = (from mb in MailDb.MailMailbox
-                            join signature in MailDb.MailMailboxSignature on mb.Id equals (uint)signature.IdMailbox into Signature
+            var accounts = (from mb in MailDbContext.MailMailbox
+                            join signature in MailDbContext.MailMailboxSignature.DefaultIfEmpty() on mb.Id equals (uint)signature.IdMailbox into Signature
                             from sig in Signature.DefaultIfEmpty()
-                            join autoreply in MailDb.MailMailboxAutoreply on mb.Id equals (uint)autoreply.IdMailbox into Autoreply
+                            join autoreply in MailDbContext.MailMailboxAutoreply.DefaultIfEmpty() on mb.Id equals (uint)autoreply.IdMailbox into Autoreply
                             from reply in Autoreply.DefaultIfEmpty()
-                            join address in MailDb.MailServerAddress on mb.Id equals (uint)address.IdMailbox into Address
+                            join address in MailDbContext.MailServerAddress.DefaultIfEmpty() on mb.Id equals (uint)address.IdMailbox into Address
                             from sa in Address.DefaultIfEmpty()
-                            join domain in MailDb.MailServerDomain on sa.IdDomain equals domain.Id into Domain
+                            join domain in MailDbContext.MailServerDomain.DefaultIfEmpty() on sa.IdDomain equals domain.Id into Domain
                             from sd in Domain.DefaultIfEmpty()
-                            join groupXaddress in MailDb.MailServerMailGroupXMailServerAddress on sa.Id equals groupXaddress.IdAddress into GroupXaddress
+                            join groupXaddress in MailDbContext.MailServerMailGroupXMailServerAddress.DefaultIfEmpty() on sa.Id equals groupXaddress.IdAddress into GroupXaddress
                             from sgxa in GroupXaddress.DefaultIfEmpty()
-                            join servergroup in MailDb.MailServerMailGroup on sgxa.IdMailGroup equals servergroup.Id into ServerGroup
+                            join servergroup in MailDbContext.MailServerMailGroup.DefaultIfEmpty() on sgxa.IdMailGroup equals servergroup.Id into ServerGroup
                             from sg in ServerGroup.DefaultIfEmpty()
                             where mb.Tenant == Tenant && mb.IsRemoved == false && mb.IdUser == UserId
                             orderby sa.IsAlias

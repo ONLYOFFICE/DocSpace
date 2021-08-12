@@ -50,12 +50,12 @@ namespace ASC.Mail.Core.Dao
 
         public ContactCard GetContactCard(int id)
         {
-            var contacts = MailDb.MailContacts
+            var contacts = MailDbContext.MailContacts
                 .Where(c => c.TenantId == Tenant && c.IdUser == UserId && c.Id == id)
                 .Select(ToContact)
                 .ToList();
 
-            var contactInfos = MailDb.MailContactInfo
+            var contactInfos = MailDbContext.MailContactInfo
                 .Where(c => c.IdContact == id)
                 .Select(ToContactInfo)
                 .ToList();
@@ -68,7 +68,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<ContactCard> GetContactCards(IContactsExp exp)
         {
-            var query = MailDb.MailContacts
+            var query = MailDbContext.MailContacts
                 .Where(exp.GetExpression());
 
             if (exp.OrderAsc.HasValue)
@@ -98,7 +98,7 @@ namespace ASC.Mail.Core.Dao
 
             var ids = contacts.Select(c => c.Id).ToList();
 
-            var contactInfos = MailDb.MailContactInfo
+            var contactInfos = MailDbContext.MailContactInfo
                 .Where(c => ids.Contains((int)c.IdContact))
                 .Select(ToContactInfo)
                 .ToList();
@@ -108,9 +108,9 @@ namespace ASC.Mail.Core.Dao
 
         public int GetContactCardsCount(IContactsExp exp)
         {
-            var count = MailDb.MailContacts
+            var count = MailDbContext.MailContacts
                 .Where(exp.GetExpression())
-                .Join(MailDb.MailContactInfo.DefaultIfEmpty(), c => c.Id, ci => ci.IdContact,
+                .Join(MailDbContext.MailContactInfo.DefaultIfEmpty(), c => c.Id, ci => ci.IdContact,
                 (c, ci) => new
                 {
                     Contact = c,

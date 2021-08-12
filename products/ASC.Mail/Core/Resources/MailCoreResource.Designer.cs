@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASC.Mail.Resources {
+namespace ASC.Mail.Core.Resources {
     using System;
     
     
@@ -19,10 +19,10 @@ namespace ASC.Mail.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MailCoreResource {
+    public class MailCoreResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace ASC.Mail.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Mail.Resources.MailCoreResource", typeof(MailCoreResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Mail.Core.Resources.MailCoreResource", typeof(MailCoreResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace ASC.Mail.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to File &apos;{0}&apos; not found.
         /// </summary>
-        internal static string FileNotFoundOrDamaged {
+        public static string FileNotFoundOrDamaged {
             get {
                 return ResourceManager.GetString("FileNotFoundOrDamaged", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to {0} files not found.
         /// </summary>
-        internal static string FilesNotFound {
+        public static string FilesNotFound {
             get {
                 return ResourceManager.GetString("FilesNotFound", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Search by contents of mails.
         /// </summary>
-        internal static string IndexTitle {
+        public static string IndexTitle {
             get {
                 return ResourceManager.GetString("IndexTitle", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to No attachments in message.
         /// </summary>
-        internal static string NoAttachmentsInMessage {
+        public static string NoAttachmentsInMessage {
             get {
                 return ResourceManager.GetString("NoAttachmentsInMessage", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Creating link.
         /// </summary>
-        internal static string OperationCreatingLink {
+        public static string OperationCreatingLink {
             get {
                 return ResourceManager.GetString("OperationCreatingLink", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Finished.
         /// </summary>
-        internal static string OperationFinished {
+        public static string OperationFinished {
             get {
                 return ResourceManager.GetString("OperationFinished", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Get attachments.
         /// </summary>
-        internal static string OperationGetAttachments {
+        public static string OperationGetAttachments {
             get {
                 return ResourceManager.GetString("OperationGetAttachments", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Preparation archive.
         /// </summary>
-        internal static string OperationPreparationArchive {
+        public static string OperationPreparationArchive {
             get {
                 return ResourceManager.GetString("OperationPreparationArchive", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Setup tenant and user.
         /// </summary>
-        internal static string OperationSetupTenantAndUser {
+        public static string OperationSetupTenantAndUser {
             get {
                 return ResourceManager.GetString("OperationSetupTenantAndUser", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace ASC.Mail.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Zipping attachments.
         /// </summary>
-        internal static string OperationZippingAttachments {
+        public static string OperationZippingAttachments {
             get {
                 return ResourceManager.GetString("OperationZippingAttachments", resourceCulture);
             }

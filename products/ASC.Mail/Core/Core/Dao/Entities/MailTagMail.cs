@@ -36,14 +36,14 @@ namespace ASC.Mail.Core.Dao.Entities
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.IdMail)
-                    .HasName("id_mail");
+                    .HasDatabaseName("id_mail");
 
                 entity.HasIndex(e => e.IdTag)
-                    .HasName("id_tag");
+                    .HasDatabaseName("id_tag");
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TimeCreated).HasDefaultValueSql("CURRENT_TIMESTAMP");
             });

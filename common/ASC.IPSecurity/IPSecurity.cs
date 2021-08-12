@@ -64,16 +64,9 @@ namespace ASC.IPSecurity
             IPRestrictionsService iPRestrictionsService,
             SettingsManager settingsManager,
             IOptionsMonitor<ILog> options)
+            : this(configuration, authContext, tenantManager, iPRestrictionsService, settingsManager, options)
         {
-            Log = options.Get("ASC.IPSecurity");
             HttpContextAccessor = httpContextAccessor;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-            IPRestrictionsService = iPRestrictionsService;
-            SettingsManager = settingsManager;
-            CurrentIpForTest = configuration["ipsecurity:test"];
-            var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
-            IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
         }
 
         public IPSecurity(

@@ -26,19 +26,19 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<CrmEntityTag>(entity =>
             {
                 entity.HasIndex(e => new { e.TagId, e.EntityId, e.EntityType })
-                    .HasName("PRIMARY");
+                    .HasDatabaseName("PRIMARY");
 
                 entity.Property(e => e.TagId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.EntityId)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.EntityType)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

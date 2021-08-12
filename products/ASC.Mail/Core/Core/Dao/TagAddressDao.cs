@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -35,7 +36,7 @@ using ASC.Mail.Core.Dao.Interfaces;
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
-    public class TagAddressDao: BaseMailDao, ITagAddressDao
+    public class TagAddressDao : BaseMailDao, ITagAddressDao
     {
         public TagAddressDao(
              TenantManager tenantManager,
@@ -47,15 +48,14 @@ namespace ASC.Mail.Core.Dao
 
         public List<int> GetTagIds(string email)
         {
-            var tagIds = MailDb.MailTagAddresses
-                .Join(MailDb.MailTag, ta => (int)ta.IdTag, t => t.Id,
+            var tagIds = MailDbContext.MailTagAddresses
+                .Join(MailDbContext.MailTag, ta => (int)ta.IdTag, t => t.Id,
                 (ta, t) => new
                 {
                     TagAddress = ta,
                     Tag = t
                 })
-                .Where(o => o.TagAddress.Address == email)
-                .Where(o => o.Tag.TenantId == Tenant && o.Tag.IdUser == UserId)
+                .Where(o => o.TagAddress.Address == email && o.Tag.TenantId == Tenant && o.Tag.IdUser == UserId)
                 .Select(o => (int)o.TagAddress.IdTag)
                 .Distinct()
                 .ToList();
@@ -65,7 +65,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<string> GetTagAddresses(int tagId)
         {
-            var list = MailDb.MailTagAddresses
+            var list = MailDbContext.MailTagAddresses
                 .Where(a => a.IdTag == tagId && a.Tenant == Tenant)
                 .Select(a => a.Address)
                 .ToList();
@@ -82,36 +82,36 @@ namespace ASC.Mail.Core.Dao
                 Tenant = Tenant
             };
 
-            MailDb.AddOrUpdate(t => t.MailTagAddresses, mailTagAddress);
+            MailDbContext.AddOrUpdate(t => t.MailTagAddresses, mailTagAddress);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int Delete(int tagId, string email = null)
         {
-            var queryDelete = MailDb.MailTagAddresses.Where(a => a.IdTag == tagId && a.Tenant == Tenant);
+            var queryDelete = MailDbContext.MailTagAddresses.Where(a => a.IdTag == tagId && a.Tenant == Tenant);
 
             if (!string.IsNullOrEmpty(email))
             {
                 queryDelete.Where(a => a.Address == email);
             }
 
-            MailDb.MailTagAddresses.RemoveRange(queryDelete);
+            MailDbContext.MailTagAddresses.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int DeleteAll()
         {
-            var queryDelete = MailDb.MailTagAddresses.Where(a => a.Tenant == Tenant);
+            var queryDelete = MailDbContext.MailTagAddresses.Where(a => a.Tenant == Tenant);
 
-            MailDb.MailTagAddresses.RemoveRange(queryDelete);
+            MailDbContext.MailTagAddresses.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

@@ -48,7 +48,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<ImapFlag> GetImapFlags()
         {
-            var list = MailDb.MailImapFlags.Select(ToImapFlag)
+            var list = MailDbContext.MailImapFlags.Select(ToImapFlag)
                 .ToList();
 
             return list;

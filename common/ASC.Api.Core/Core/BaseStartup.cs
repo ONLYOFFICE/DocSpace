@@ -8,7 +8,6 @@ using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Mapping;
 
 using Autofac;
@@ -34,9 +33,10 @@ namespace ASC.Api.Core
     {
         public IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
-        public virtual string[] LogParams { get; }
         public virtual JsonConverter[] Converters { get; }
+        public virtual bool AddControllersAsServices { get; } = false;
         public virtual bool ConfirmAddScheme { get; } = false;
+        public virtual bool AddAndUseSession { get; } = false;
         protected DIHelper DIHelper { get; }
         protected bool LoadProducts { get; } = true;
         protected bool LoadConsumers { get; } = true;
@@ -53,6 +53,9 @@ namespace ASC.Api.Core
             services.AddCustomHealthCheck(Configuration);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
+
+            if(AddAndUseSession)
+                services.AddSession();
 
             DIHelper.Configure(services);
 
@@ -83,7 +86,10 @@ namespace ASC.Api.Core
 
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
-            DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+            if (LoadProducts)
+            {
+                DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+            }
 
             var builder = services.AddMvcCore(config =>
             {
@@ -113,11 +119,6 @@ namespace ASC.Api.Core
                 authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
             }
 
-            if (LogParams != null)
-            {
-                LogNLogExtension.ConfigureLog(DIHelper, LogParams);
-            }
-
             services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
         }
 
@@ -129,6 +130,9 @@ namespace ASC.Api.Core
             });
 
             app.UseRouting();
+
+            if (AddAndUseSession)
+                app.UseSession();
 
             app.UseAuthentication();
 

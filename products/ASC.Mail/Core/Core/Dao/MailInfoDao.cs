@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -48,18 +49,18 @@ namespace ASC.Mail.Core.Dao
              SecurityContext securityContext,
              DbContextManager<MailDbContext> dbContext)
             : base(tenantManager, securityContext, dbContext)
-        { 
+        {
         }
 
         public List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false)
         {
-            var query = MailDb.MailMail
+            var query = MailDbContext.MailMail
                 .Where(exp.GetExpression());
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
-                query = query.Where(m => 
-                    MailDb.MailTagMail
+                query = query.Where(m =>
+                    MailDbContext.MailTagMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId)
                         .Count() == exp.TagIds.Count);
             }
@@ -67,7 +68,7 @@ namespace ASC.Mail.Core.Dao
             if (exp.UserFolderId.HasValue)
             {
                 query = query.Where(m =>
-                    MailDb.MailUserFolderXMail
+                    MailDbContext.MailUserFolderXMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId && t.IdFolder == exp.UserFolderId.Value)
                         .FirstOrDefault() != null);
             }
@@ -103,9 +104,10 @@ namespace ASC.Mail.Core.Dao
             }
 
             var list = query
-                .Select(m => new { 
+                .Select(m => new
+                {
                     Mail = m,
-                    LabelsString = skipSelectTags ? "" : string.Join(",", MailDb.MailTagMail.Where(t => t.IdMail == m.Id).Select(t => t.IdTag))
+                    LabelsString = skipSelectTags ? "" : string.Join(",", MailDbContext.MailTagMail.Where(t => t.IdMail == m.Id).Select(t => t.IdTag))
                 })
                 .Select(x => ToMailInfo(x.Mail, x.LabelsString))
                 .ToList();
@@ -115,13 +117,13 @@ namespace ASC.Mail.Core.Dao
 
         public long GetMailInfoTotal(IMessagesExp exp)
         {
-            var query = MailDb.MailMail
+            var query = MailDbContext.MailMail
                 .Where(exp.GetExpression());
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
                 query = query.Where(m =>
-                    MailDb.MailTagMail
+                    MailDbContext.MailTagMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId)
                         .Count() == exp.TagIds.Count);
             }
@@ -129,7 +131,7 @@ namespace ASC.Mail.Core.Dao
             if (exp.UserFolderId.HasValue)
             {
                 query = query.Where(m =>
-                    MailDb.MailUserFolderXMail
+                    MailDbContext.MailUserFolderXMail
                         .Where(t => t.IdMail == m.Id && t.Tenant == Tenant && t.IdUser == UserId && t.IdFolder == exp.UserFolderId.Value)
                         .FirstOrDefault() != null);
             }
@@ -141,7 +143,7 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetMailCount(IMessagesExp exp)
         {
-            var dictionary = MailDb.MailMail
+            var dictionary = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .GroupBy(m => m.Folder)
                 .Select(g => new
@@ -156,18 +158,17 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+            var query = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
                     Mail = m
                 })
-                .Where(t => t.UFxMail.Tenant == Tenant)
-                .Where(t => t.UFxMail.IdUser == UserId)
-                .Where(t => userFolderIds.Contains(t.UFxMail.IdFolder));
+                .Where(t => t.UFxMail.Tenant == Tenant && t.UFxMail.IdUser == UserId && userFolderIds.Contains(t.UFxMail.IdFolder));
 
-            if (unread.HasValue) {
+            if (unread.HasValue)
+            {
                 query = query.Where(t => t.Mail.Unread == unread.Value);
             }
 
@@ -181,15 +182,14 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetMailUserFolderCount(bool? unread = null)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+            var query = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
                     Mail = m
                 })
-                .Where(t => t.UFxMail.Tenant == Tenant)
-                .Where(t => t.UFxMail.IdUser == UserId);
+                .Where(t => t.UFxMail.Tenant == Tenant && t.UFxMail.IdUser == UserId);
 
             if (unread.HasValue)
             {
@@ -208,11 +208,11 @@ namespace ASC.Mail.Core.Dao
         {
             //TODO: fix: make one query
 
-            var max = MailDb.MailMail
+            var max = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .Max(m => m.Id);
 
-            var min = MailDb.MailMail
+            var min = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .Min(m => m.Id);
 
@@ -231,13 +231,13 @@ namespace ASC.Mail.Core.Dao
             var body = Expression.PropertyOrField(x, field);
             var lambda = Expression.Lambda<Func<MailMail, T>>(body, x);
 
-            var max = MailDb.MailMail
+            var max = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .Select(lambda.Compile())
                 .DefaultIfEmpty<T>()
                 .Max();
 
-            return (T)max;
+            return max;
         }
 
         public int SetFieldValue<T>(IMessagesExp exp, string field, T value)
@@ -248,7 +248,7 @@ namespace ASC.Mail.Core.Dao
             if (pi == null)
                 throw new ArgumentException("Field not found");
 
-            var mails = MailDb.MailMail
+            var mails = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .ToList();
 
@@ -257,7 +257,7 @@ namespace ASC.Mail.Core.Dao
                 pi.SetValue(mail, Convert.ChangeType(value, pi.PropertyType), null);
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -274,7 +274,7 @@ namespace ASC.Mail.Core.Dao
             if (piTo == null)
                 throw new ArgumentException("FieldTo not found");
 
-            var mails = MailDb.MailMail
+            var mails = MailDbContext.MailMail
                 .Where(exp.GetExpression())
                 .ToList();
 
@@ -285,7 +285,7 @@ namespace ASC.Mail.Core.Dao
                 piTo.SetValue(mail, Convert.ChangeType(value, piFrom.PropertyType), null);
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -374,8 +374,8 @@ namespace ASC.Mail.Core.Dao
                 IsAnswered = r.IsAnswered,
                 IsForwarded = r.IsForwarded,
                 LabelsString = labelsString,
-                FolderRestore = (FolderType) r.FolderRestore,
-                Folder = (FolderType) r.Folder,
+                FolderRestore = (FolderType)r.FolderRestore,
+                Folder = (FolderType)r.Folder,
                 ChainId = r.ChainId,
                 ChainDate = r.ChainDate,
                 MailboxId = r.IdMailbox,

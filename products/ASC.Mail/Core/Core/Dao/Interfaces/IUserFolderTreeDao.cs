@@ -25,11 +25,14 @@
 
 
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Mail.Core.Dao.Expressions.UserFolder;
 using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(UserFolderTreeDao))]
     public interface IUserFolderTreeDao
     {
         List<UserFolderTreeItem> Get(IUserFoldersTreeExp exp);

@@ -67,23 +67,23 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailTag>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.IdUser })
-                    .HasName("username");
+                    .HasDatabaseName("username");
 
                 entity.Property(e => e.Addresses)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Name)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Style)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

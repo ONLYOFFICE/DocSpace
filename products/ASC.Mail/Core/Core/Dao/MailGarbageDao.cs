@@ -49,11 +49,11 @@ namespace ASC.Mail.Core.Dao
 
         public int GetMailboxAttachsCount(MailBoxData mailBoxData)
         {
-            var count = MailDb.MailMail
+            var count = MailDbContext.MailMail
                 .Where(m => m.IdMailbox == mailBoxData.MailBoxId
                     && m.TenantId == mailBoxData.TenantId
                     && m.IdUser == mailBoxData.UserId)
-                .Join(MailDb.MailAttachment, m => m.Id, a => a.IdMail,
+                .Join(MailDbContext.MailAttachment, m => m.Id, a => a.IdMail,
                     (m, a) => new
                     {
                         Mail = m,
@@ -66,11 +66,11 @@ namespace ASC.Mail.Core.Dao
 
         public List<MailAttachGarbage> GetMailboxAttachs(MailBoxData mailBoxData, int limit)
         {
-            var list = MailDb.MailMail
+            var list = MailDbContext.MailMail
                 .Where(m => m.IdMailbox == mailBoxData.MailBoxId
                     && m.TenantId == mailBoxData.TenantId
                     && m.IdUser == mailBoxData.UserId)
-                .Join(MailDb.MailAttachment, m => m.Id, a => a.IdMail,
+                .Join(MailDbContext.MailAttachment, m => m.Id, a => a.IdMail,
                     (m, a) => new
                     {
                         Mail = m,
@@ -91,16 +91,16 @@ namespace ASC.Mail.Core.Dao
 
             var ids = attachGarbageList.Select(a => a.Id).ToList();
 
-            var deleteQuery = MailDb.MailAttachment.Where(m => ids.Contains(m.Id));
+            var deleteQuery = MailDbContext.MailAttachment.Where(m => ids.Contains(m.Id));
 
-            MailDb.MailAttachment.RemoveRange(deleteQuery);
+            MailDbContext.MailAttachment.RemoveRange(deleteQuery);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
         }
 
         public int GetMailboxMessagesCount(MailBoxData mailBoxData)
         {
-            var count = MailDb.MailMail
+            var count = MailDbContext.MailMail
                 .Where(m => m.IdMailbox == mailBoxData.MailBoxId
                     && m.TenantId == mailBoxData.TenantId
                     && m.IdUser == mailBoxData.UserId)
@@ -111,7 +111,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<MailMessageGarbage> GetMailboxMessages(MailBoxData mailBoxData, int limit)
         {
-            var list = MailDb.MailMail
+            var list = MailDbContext.MailMail
                 .Where(m => m.IdMailbox == mailBoxData.MailBoxId
                     && m.TenantId == mailBoxData.TenantId
                     && m.IdUser == mailBoxData.UserId)
@@ -128,11 +128,11 @@ namespace ASC.Mail.Core.Dao
 
             var ids = messageGarbageList.Select(a => a.Id).ToList();
 
-            var deleteQuery = MailDb.MailMail.Where(m => ids.Contains(m.Id));
+            var deleteQuery = MailDbContext.MailMail.Where(m => ids.Contains(m.Id));
 
-            MailDb.MailMail.RemoveRange(deleteQuery);
+            MailDbContext.MailMail.RemoveRange(deleteQuery);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
         }
     }
 }

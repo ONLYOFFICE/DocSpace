@@ -12,6 +12,7 @@ const DeleteThirdPartyDialog = (props) => {
   const {
     t,
     myId,
+    tReady,
     visible,
     commonId,
     providers,
@@ -63,7 +64,12 @@ const DeleteThirdPartyDialog = (props) => {
   };
 
   return (
-    <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
+    <ModalDialog
+      isLoading={!tReady}
+      visible={visible}
+      zIndex={310}
+      onClose={onClose}
+    >
       <ModalDialog.Header>
         {t("Translations:DeleteThirdParty")}
       </ModalDialog.Header>

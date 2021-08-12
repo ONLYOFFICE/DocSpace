@@ -36,14 +36,14 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailServerMailGroup>(entity =>
             {
                 entity.HasIndex(e => e.IdAddress)
-                    .HasName("mail_server_address_fk_id");
+                    .HasDatabaseName("mail_server_address_fk_id");
 
                 entity.HasIndex(e => e.IdTenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.Address)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

@@ -38,11 +38,12 @@ namespace ASC.Data.Backup.Storage
     [Scope]
     public class BackupRepository : IBackupRepository
     {
-        private BackupsContext BackupContext { get; }
+        private Lazy<BackupsContext> LazyBackupsContext { get; }
+        private BackupsContext BackupContext { get => LazyBackupsContext.Value; }
 
         public BackupRepository(DbContextManager<BackupsContext> backupContext)
         {
-            BackupContext = backupContext.Value;
+            LazyBackupsContext = new Lazy<BackupsContext>(() => backupContext.Value);
         }
 
         public void SaveBackupRecord(BackupRecord backup)

@@ -24,10 +24,14 @@ class ResetApplicationDialogComponent extends React.Component {
 
   render() {
     //console.log("Render ResetApplicationDialog");
-    const { t, visible, onClose } = this.props;
+    const { t, tReady, visible, onClose } = this.props;
 
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>{t("ResetApplicationTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text className="text-dialog">

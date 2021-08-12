@@ -28,27 +28,33 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Security;
 using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+
 using ASC.Common.Logging;
-using ASC.Mail.Models;
 using ASC.Mail.Clients.Imap;
+using ASC.Mail.Configuration;
+using ASC.Mail.Core.Engine;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
+using ASC.Mail.Models;
+
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Net.Pop3;
 using MailKit.Net.Smtp;
 using MailKit.Search;
 using MailKit.Security;
+
 using MimeKit;
+
 using AuthenticationException = MailKit.Security.AuthenticationException;
 using MailFolder = ASC.Mail.Models.MailFolder;
 using Pop3Client = MailKit.Net.Pop3.Pop3Client;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
-using ASC.Mail.Core.Engine;
-using ASC.Mail.Configuration;
 
 namespace ASC.Mail.Clients
 {
@@ -56,6 +62,7 @@ namespace ASC.Mail.Clients
     {
         public MailBoxData Account { get; private set; }
         public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; }
+        public bool CertificatePermit { get; }
         public FolderEngine FolderEngine { get; }
         public ILog Log { get; set; }
 
@@ -63,10 +70,14 @@ namespace ASC.Mail.Clients
         public Pop3Client Pop { get; private set; }
         public SmtpClient Smtp { get; private set; }
 
+        public bool IsConnected { get; private set; }
+        public bool IsAuthenticated { get; private set; }
+        public bool IsDisposed { get; private set; }
+
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
 
-        private const int CONNECT_TIMEOUT = 60000;
+        private const int CONNECT_TIMEOUT = 15000;
         private const int ENABLE_UTF8_TIMEOUT = 10000;
         private const int LOGIN_TIMEOUT = 30000;
 
@@ -123,7 +134,7 @@ namespace ASC.Mail.Clients
 
         #region .Constructor
 
-        public MailClient(MailBoxData mailbox, 
+        public MailClient(MailBoxData mailbox,
             CancellationToken cancelToken,
             List<ServerFolderAccessInfo> serverFolderAccessInfos,
             int tcpTimeout = 30000,
@@ -137,12 +148,14 @@ namespace ASC.Mail.Clients
 
             Account = mailbox;
             ServerFolderAccessInfos = serverFolderAccessInfos;
-
+            CertificatePermit = certificatePermit;
             Log = log ?? new NullLog();
 
             StopTokenSource = new CancellationTokenSource();
 
             CancelToken = CancellationTokenSource.CreateLinkedTokenSource(cancelToken, StopTokenSource.Token).Token;
+
+            Log.Debug($"MailClient: Constructor -> CertificatePermit: {CertificatePermit}.");
 
             if (Account.Imap)
             {
@@ -150,6 +163,8 @@ namespace ASC.Mail.Clients
                 {
                     Timeout = tcpTimeout
                 };
+
+                Imap.ServerCertificateValidationCallback = CertificateValidationCallback;
 
                 Pop = null;
             }
@@ -171,7 +186,7 @@ namespace ASC.Mail.Clients
             if (enableDsn)
             {
                 Smtp = new DsnSmtpClient(protocolLogger,
-                    DeliveryStatusNotification.Success | 
+                    DeliveryStatusNotification.Success |
                     DeliveryStatusNotification.Failure |
                     DeliveryStatusNotification.Delay)
                 {
@@ -185,9 +200,25 @@ namespace ASC.Mail.Clients
                     Timeout = tcpTimeout
                 };
             }
+
+            IsConnected = false;
+            IsAuthenticated = false;
         }
 
         #endregion
+
+        bool CertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            Log.Debug($"CertificateValidationCallback(). Certificate callback: {certificate.Subject}.");
+
+            if (sslPolicyErrors == SslPolicyErrors.None)
+            {
+                Log.Debug("CertificateValidationCallback(). No Ssl policy errors...");
+                return true;
+            }
+
+            return CertificatePermit;
+        }
 
         public MimeMessage GetInboxMessage(string uidl)
         {
@@ -204,8 +235,8 @@ namespace ASC.Mail.Clients
                 var index = Convert.ToInt32(elements[0]);
                 var folderId = Convert.ToInt32(elements[1]);
 
-                if (folderId != (int) FolderType.Inbox)
-                    throw new ArgumentException("uidl is invalid. Only INBOX folder is supported.");
+                if (folderId != (int)FolderType.Inbox)
+                    throw new ArgumentException("Uidl is invalid. Only INBOX folder is supported.");
 
                 var inbox = Imap.Inbox;
 
@@ -265,13 +296,13 @@ namespace ASC.Mail.Clients
 
         public void Cancel()
         {
-            Log.Info("MailClient->Cancel()");
+            Log.Info("MailClient -> Cancel()");
             StopTokenSource.Cancel();
         }
 
         public void Dispose()
         {
-            Log.Info("MailClient->Dispose()");
+            Log.Info("MailClient -> Dispose()");
 
             try
             {
@@ -281,11 +312,12 @@ namespace ASC.Mail.Clients
                     {
                         if (Imap.IsConnected)
                         {
-                            Log.Debug("Imap->Disconnect()");
+                            Log.Debug("Imap -> Disconnect()");
                             Imap.Disconnect(true, CancelToken);
                         }
 
                         Imap.Dispose();
+                        IsDisposed = true;
                     }
                 }
 
@@ -295,7 +327,7 @@ namespace ASC.Mail.Clients
                     {
                         if (Pop.IsConnected)
                         {
-                            Log.Debug("Pop->Disconnect()");
+                            Log.Debug("Pop -> Disconnect()");
                             Pop.Disconnect(true, CancelToken);
                         }
 
@@ -309,7 +341,7 @@ namespace ASC.Mail.Clients
                     {
                         if (Smtp.IsConnected)
                         {
-                            Log.Debug("Smtp->Disconnect()");
+                            Log.Debug("Smtp -> Disconnect()");
                             Smtp.Disconnect(true, CancelToken);
                         }
 
@@ -326,12 +358,11 @@ namespace ASC.Mail.Clients
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("MailClient->Dispose(Mb_Id={0} Mb_Addres: '{1}') Exception: {2}", Account.MailBoxId,
-                    Account.EMail.Address, ex.Message);
+                Log.ErrorFormat($"MailClient -> Dispose(MailboxId={Account.MailBoxId} MailboxAddres: '{Account.EMail.Address}')\r\nException: {ex.Message}\r\n");
             }
         }
 
-        public void LoginImapPop()
+        public void LoginClient()
         {
             if (Account.Imap)
             {
@@ -391,7 +422,7 @@ namespace ASC.Mail.Clients
 
         public static MimeMessage ParseMimeMessage(Stream emlStream)
         {
-           var options = new ParserOptions
+            var options = new ParserOptions
             {
                 AddressParserComplianceMode = RfcComplianceMode.Loose,
                 ParameterComplianceMode = RfcComplianceMode.Loose,
@@ -423,68 +454,62 @@ namespace ASC.Mail.Clients
 
         private void LoginImap(bool enableUtf8 = true)
         {
-            var secureSocketOptions = SecureSocketOptions.Auto;
-            var sslProtocols = SslProtocols.Default;
-
-            switch (Account.Encryption)
-            {
-                case EncryptionType.StartTLS:
-                    secureSocketOptions = SecureSocketOptions.StartTlsWhenAvailable;
-                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
-                    break;
-                case EncryptionType.SSL:
-                    secureSocketOptions = SecureSocketOptions.SslOnConnect;
-                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
-                    break;
-                case EncryptionType.None:
-                    secureSocketOptions = SecureSocketOptions.None;
-                    sslProtocols = SslProtocols.None;
-                    break;
-            }
-
-            Log.DebugFormat("Imap.Connect({0}:{1}, {2})", Account.Server, Account.Port,
-                Enum.GetName(typeof(SecureSocketOptions), secureSocketOptions));
+            Log.DebugFormat($"Imap: Connect({Account.Server}:{Account.Port}, SecureSocketOptions: Auto)");
 
             try
             {
-                Imap.SslProtocols = sslProtocols;
-
-                var t = Imap.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
+                var t = Imap.ConnectAsync(Account.Server, Account.Port, SecureSocketOptions.Auto, CancelToken);
 
                 if (!t.Wait(CONNECT_TIMEOUT, CancelToken))
-                    throw new TimeoutException("Imap.ConnectAsync timeout");
+                {
+                    Log.Debug("Imap: Failed connect: Timeout.");
+                    throw new TimeoutException("Imap: ConnectAsync() timeout.");
+                }
+                else
+                {
+                    IsConnected = true;
+                    Log.Debug("Imap: Successfull connection. Working on!");
+                }
 
                 if (enableUtf8 && (Imap.Capabilities & ImapCapabilities.UTF8Accept) != ImapCapabilities.None)
                 {
-                    Log.Debug("Imap.EnableUTF8");
+                    Log.Debug("Imap: EnableUTF8().");
 
                     t = Imap.EnableUTF8Async(CancelToken);
 
                     if (!t.Wait(ENABLE_UTF8_TIMEOUT, CancelToken))
-                        throw new TimeoutException("Imap.EnableUTF8Async timeout");
+                        throw new TimeoutException("Imap: EnableUTF8Async() timeout.");
                 }
 
                 Imap.Authenticated += ImapOnAuthenticated;
 
                 if (string.IsNullOrEmpty(Account.OAuthToken))
                 {
-                    Log.DebugFormat("Imap.Authentication({0})", Account.Account);
-
+                    Log.DebugFormat($"Imap: Authentication({Account.Account}).");
                     t = Imap.AuthenticateAsync(Account.Account, Account.Password, CancelToken);
+                    IsAuthenticated = true;
                 }
                 else
                 {
-                    Log.DebugFormat("Imap.AuthenticationByOAuth({0})", Account.Account);
+                    Log.DebugFormat("Imap: AuthenticationByOAuth({Account.Account})."); ;
 
                     var oauth2 = new SaslMechanismOAuth2(Account.Account, Account.AccessToken);
 
                     t = Imap.AuthenticateAsync(oauth2, CancelToken);
+                    IsAuthenticated = true;
                 }
 
                 if (!t.Wait(LOGIN_TIMEOUT, CancelToken))
                 {
                     Imap.Authenticated -= ImapOnAuthenticated;
-                    throw new TimeoutException("Imap.AuthenticateAsync timeout");
+                    Log.Debug("Imap: Failed authentication: Timeout.");
+                    IsAuthenticated = false;
+                    throw new TimeoutException("Imap: AuthenticateAsync timeout.");
+                }
+                else
+                {
+                    IsAuthenticated = true;
+                    Log.Debug("Imap: Successfull authentication.");
                 }
 
                 Imap.Authenticated -= ImapOnAuthenticated;
@@ -493,9 +518,15 @@ namespace ASC.Mail.Clients
             {
                 if (aggEx.InnerException != null)
                 {
+                    Log.ErrorFormat($"Imap: Exception while logging. See next exception for details.");
                     throw aggEx.InnerException;
                 }
+                Log.ErrorFormat($"Imap: Exception while logging.");
                 throw new Exception("LoginImap failed", aggEx);
+            }
+            finally
+            {
+                Imap.Authenticated -= ImapOnAuthenticated;
             }
         }
 
@@ -570,7 +601,7 @@ namespace ASC.Mail.Clients
             Func<IMailFolder, bool> isInbox = (f) => f.Attributes.HasFlag(FolderAttributes.Inbox) ||
                                                      f.Name.Equals("inbox", StringComparison.InvariantCultureIgnoreCase);
 
-            Func<IMailFolder, bool> isSent = (f) => f.Attributes.HasFlag(FolderAttributes.Sent) || 
+            Func<IMailFolder, bool> isSent = (f) => f.Attributes.HasFlag(FolderAttributes.Sent) ||
                                                     f.Name.Equals("sent", StringComparison.InvariantCultureIgnoreCase) ||
                                                     f.Name.Equals("sent items", StringComparison.InvariantCultureIgnoreCase);
 
@@ -646,7 +677,7 @@ namespace ASC.Mail.Clients
 
                 return subfolders;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.ErrorFormat("GetImapSubFolders: {0} Exception: {1}", folder.Name, ex.Message);
             }
@@ -707,7 +738,7 @@ namespace ASC.Mail.Clients
                     : Math.Max(uidsInterval.To, first));
 
                 var infoList = GetMessagesSummaryInfo(folder,
-                    limitMessages > 0 ? uidsCollection.Take(limitMessages*3).ToList() : uidsCollection);
+                    limitMessages > 0 ? uidsCollection.Take(limitMessages * 3).ToList() : uidsCollection);
 
                 foreach (var uid in uidsCollection)
                 {
@@ -911,7 +942,7 @@ namespace ASC.Mail.Clients
             }
 
             if (mailSettings.DefaultFolders == null || !mailSettings.DefaultFolders.ContainsKey(folderName))
-                return new MailFolder(FolderType.Inbox, folder.Name, new[] {folder.FullName});
+                return new MailFolder(FolderType.Inbox, folder.Name, new[] { folder.FullName });
 
             folderId = (FolderType)mailSettings.DefaultFolders[folderName];
             return new MailFolder(folderId, folder.Name);
@@ -938,16 +969,16 @@ namespace ASC.Mail.Clients
 
                 var serverInfo = ServerFolderAccessInfos.FirstOrDefault(f => f.Server == Account.Server);
 
-                if(serverInfo == null)
+                if (serverInfo == null)
                     continue;
 
-                if(!serverInfo.FolderAccessList.TryGetValue(folderName, out ServerFolderAccessInfo.FolderInfo folderInfo))
+                if (!serverInfo.FolderAccessList.TryGetValue(folderName, out ServerFolderAccessInfo.FolderInfo folderInfo))
                     continue;
 
-                if(folderInfo.skip)
+                if (folderInfo.skip)
                     continue;
 
-                if (folderInfo.folder_id != FolderType.Sent) 
+                if (folderInfo.folder_id != FolderType.Sent)
                     continue;
 
                 sendFolder = folder;

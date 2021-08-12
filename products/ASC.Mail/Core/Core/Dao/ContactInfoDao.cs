@@ -58,23 +58,23 @@ namespace ASC.Mail.Core.Dao
                 IsPrimary = contactInfo.IsPrimary
             };
 
-            var entity = MailDb.AddOrUpdate(t => t.MailContactInfo, mailContactInfo);
+            var entity = MailDbContext.AddOrUpdate(t => t.MailContactInfo, mailContactInfo);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return (int)entity.Id;
         }
 
         public int RemoveContactInfo(int id)
         {
-            var queryDelete = MailDb.MailContactInfo
+            var queryDelete = MailDbContext.MailContactInfo
                 .Where(c => c.TenantId == Tenant
                     && c.IdUser == UserId
                     && c.Id == id);
 
-            MailDb.MailContactInfo.RemoveRange(queryDelete);
+            MailDbContext.MailContactInfo.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -82,14 +82,14 @@ namespace ASC.Mail.Core.Dao
         //TODO: Move this method into ContactDao
         public int RemoveByContactIds(List<int> contactIds)
         {
-            var queryDelete = MailDb.MailContacts
+            var queryDelete = MailDbContext.MailContacts
                 .Where(c => c.TenantId == Tenant
                     && c.IdUser == UserId
                     && contactIds.Contains((int)c.Id));
 
-            MailDb.MailContacts.RemoveRange(queryDelete);
+            MailDbContext.MailContacts.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

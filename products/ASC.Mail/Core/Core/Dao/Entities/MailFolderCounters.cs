@@ -55,7 +55,7 @@ namespace ASC.Mail.Core.Dao.Entities
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TimeModified)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")

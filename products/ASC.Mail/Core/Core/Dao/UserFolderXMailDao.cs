@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -48,7 +49,7 @@ namespace ASC.Mail.Core.Dao
 
         public UserFolderXMail Get(int mailId)
         {
-            var result = MailDb.MailUserFolderXMail
+            var result = MailDbContext.MailUserFolderXMail
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdMail == mailId)
                 .Select(ToUserFolderXMail)
                 .SingleOrDefault();
@@ -58,7 +59,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<UserFolderXMail> GetList(int? folderId = null, List<int> mailIds = null)
         {
-            var query = MailDb.MailUserFolderXMail
+            var query = MailDbContext.MailUserFolderXMail
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId);
 
             if (folderId.HasValue)
@@ -78,7 +79,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<int> GetMailIds(int folderId)
         {
-            var list = MailDb.MailUserFolderXMail
+            var list = MailDbContext.MailUserFolderXMail
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdFolder == folderId)
                 .Select(r => (int)r.IdMail)
                 .ToList();
@@ -98,7 +99,8 @@ namespace ASC.Mail.Core.Dao
             {
                 var messageId = (uint)idMessages[i];
 
-                items.Add(new MailUserFolderXMail { 
+                items.Add(new MailUserFolderXMail
+                {
                     Tenant = Tenant,
                     IdUser = UserId,
                     IdMail = messageId,
@@ -108,9 +110,9 @@ namespace ASC.Mail.Core.Dao
                 if ((i % 100 != 0 || i == 0) && i + 1 != messagessLen)
                     continue;
 
-                MailDb.MailUserFolderXMail.AddRange(items);
+                MailDbContext.MailUserFolderXMail.AddRange(items);
 
-                MailDb.SaveChanges();
+                MailDbContext.SaveChanges();
 
                 items = new List<MailUserFolderXMail>();
             }
@@ -126,16 +128,16 @@ namespace ASC.Mail.Core.Dao
                 IdFolder = item.FolderId
             };
 
-            MailDb.AddOrUpdate(t => t.MailUserFolderXMail, newItem);
+            MailDbContext.AddOrUpdate(t => t.MailUserFolderXMail, newItem);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int Remove(int? mailId = null, int? folderId = null)
         {
-            var query = MailDb.MailUserFolderXMail
+            var query = MailDbContext.MailUserFolderXMail
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId);
 
             if (mailId.HasValue)
@@ -148,30 +150,29 @@ namespace ASC.Mail.Core.Dao
                 query.Where(r => r.IdFolder == folderId.Value);
             }
 
-            MailDb.MailUserFolderXMail.RemoveRange(query);
+            MailDbContext.MailUserFolderXMail.RemoveRange(query);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int Remove(List<int> mailIds)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
-                .Where(r => mailIds.Contains((int)r.IdMail));
+            var query = MailDbContext.MailUserFolderXMail
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && mailIds.Contains((int)r.IdMail));
 
-            MailDb.MailUserFolderXMail.RemoveRange(query);
+            MailDbContext.MailUserFolderXMail.RemoveRange(query);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int RemoveByMailbox(int mailboxId)
         {
-            var queryDelete = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, r => (int)r.IdMail, r => r.Id, (ufxm, m) => new
+            var queryDelete = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, r => (int)r.IdMail, r => r.Id, (ufxm, m) => new
                 {
                     UserFoldertXMail = ufxm,
                     MailMail = m
@@ -179,9 +180,9 @@ namespace ASC.Mail.Core.Dao
                 .Where(o => o.MailMail.IdMailbox == mailboxId && o.MailMail.TenantId == Tenant && o.MailMail.IdUser == UserId)
                 .Select(o => o.UserFoldertXMail);
 
-            MailDb.MailUserFolderXMail.RemoveRange(queryDelete);
+            MailDbContext.MailUserFolderXMail.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

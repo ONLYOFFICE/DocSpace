@@ -25,10 +25,13 @@
 
 
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(TagDao))]
     public interface ITagDao
     {
         /// <summary>
@@ -63,7 +66,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
         ///     Get a list of CRM tags
         /// </summary>
         /// <param name="contactIds">id</param>
-        List<Tag> GetCrmTags(List<int> contactIds);
+        List<CrmTag> GetCrmTags(List<int> contactIds);
 
         /// <summary>
         ///     Save or update tag

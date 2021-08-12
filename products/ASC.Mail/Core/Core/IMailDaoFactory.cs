@@ -1,12 +1,17 @@
 ﻿
 using ASC.Common;
+using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Interfaces;
+
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ASC.Mail.Core
 {
     [Scope(typeof(MailDaoFactory), Additional = typeof(MailDaoFactoryExtension))]
     public interface IMailDaoFactory
     {
+        MailDbContext GetContext();
+
         IAccountDao GetAccountDao();
 
         IAlertDao GetAlertDao();
@@ -76,5 +81,7 @@ namespace ASC.Mail.Core
         IUserFolderTreeDao GetUserFolderTreeDao();
 
         IUserFolderXMailDao GetUserFolderXMailDao();
+
+        public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel? level = null);
     }
 }

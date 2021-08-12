@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -48,9 +49,8 @@ namespace ASC.Mail.Core.Dao
 
         public ServerGroup Get(int id)
         {
-            var group = MailDb.MailServerMailGroup
-                .Where(g => g.IdTenant == Tenant)
-                .Where(g => g.Id == id)
+            var group = MailDbContext.MailServerMailGroup
+                .Where(g => g.IdTenant == Tenant && g.Id == id)
                 .Select(ToServerGroup)
                 .SingleOrDefault();
 
@@ -59,7 +59,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerGroup> GetList()
         {
-            var groups = MailDb.MailServerMailGroup
+            var groups = MailDbContext.MailServerMailGroup
                 .Where(g => g.IdTenant == Tenant)
                 .Select(ToServerGroup)
                 .ToList();
@@ -69,14 +69,14 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerGroup> GetList(int domainId)
         {
-            var groups = MailDb.MailServerMailGroup
-                .Join(MailDb.MailServerAddress, g => g.IdAddress, a => a.Id, 
-                    (g, a) => new { 
+            var groups = MailDbContext.MailServerMailGroup
+                .Join(MailDbContext.MailServerAddress, g => g.IdAddress, a => a.Id,
+                    (g, a) => new
+                    {
                         Group = g,
                         Address = a
                     })
-                .Where(o => o.Group.IdTenant == Tenant)
-                .Where(o => o.Address.IdDomain == domainId && o.Address.IsMailGroup == true)
+                .Where(o => o.Group.IdTenant == Tenant && o.Address.IdDomain == domainId && o.Address.IsMailGroup)
                 .Select(o => ToServerGroup(o.Group))
                 .ToList();
 
@@ -85,7 +85,8 @@ namespace ASC.Mail.Core.Dao
 
         public int Save(ServerGroup @group)
         {
-            var mailServerGroup = new MailServerMailGroup { 
+            var mailServerGroup = new MailServerMailGroup
+            {
                 Id = group.Id,
                 IdTenant = group.Tenant,
                 Address = group.Address,
@@ -93,9 +94,9 @@ namespace ASC.Mail.Core.Dao
                 DateCreated = group.DateCreated
             };
 
-            var entry = MailDb.AddOrUpdate(t => t.MailServerMailGroup, mailServerGroup);
+            var entry = MailDbContext.AddOrUpdate(t => t.MailServerMailGroup, mailServerGroup);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
@@ -107,9 +108,9 @@ namespace ASC.Mail.Core.Dao
                 Id = id
             };
 
-            MailDb.MailServerMailGroup.Remove(mailServerGroup);
+            MailDbContext.MailServerMailGroup.Remove(mailServerGroup);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

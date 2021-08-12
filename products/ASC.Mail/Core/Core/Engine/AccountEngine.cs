@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -40,6 +41,7 @@ using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -53,7 +55,7 @@ namespace ASC.Mail.Core.Engine
         private SecurityContext SecurityContext { get; }
         private ILog Log { get; }
         private MailboxEngine MailboxEngine { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private TenantManager TenantManager { get; }
         private CacheEngine CacheEngine { get; }
         private ServerEngine ServerEngine { get; }
@@ -67,7 +69,7 @@ namespace ASC.Mail.Core.Engine
         public AccountEngine(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory daoFactory,
             MailboxEngine mailboxEngine,
             CacheEngine cacheEngine,
             ServerEngine serverEngine,
@@ -83,14 +85,14 @@ namespace ASC.Mail.Core.Engine
 
             MailSettings = mailSettings;
 
-            DaoFactory = daoFactory;
+            MailDaoFactory = daoFactory;
             TenantManager = tenantManager;
             CacheEngine = cacheEngine;
             ServerEngine = serverEngine;
             MailBoxSettingEngine = mailBoxSettingEngine;
             CoreBaseSettings = coreBaseSettings;
             SettingsManager = settingsManager;
-            ServerFolderAccessInfos = DaoFactory.ImapSpecialMailboxDao.GetServerFolderAccessInfoList();
+            ServerFolderAccessInfos = MailDaoFactory.GetImapSpecialMailboxDao().GetServerFolderAccessInfoList();
 
             Log = option.Get("ASC.Mail.AccountEngine");
         }
@@ -104,7 +106,7 @@ namespace ASC.Mail.Core.Engine
 
             accountInfoList = new List<AccountInfo>();
 
-            var accounts = DaoFactory.AccountDao.GetAccounts();
+            var accounts = MailDaoFactory.GetAccountDao().GetAccounts();
 
             foreach (var account in accounts)
             {
@@ -133,9 +135,9 @@ namespace ASC.Mail.Core.Engine
                         {
                             var authErrorDate = account.MailboxDateAuthError.Value;
 
-                            if (DateTime.UtcNow - authErrorDate > MailSettings.AuthErrorDisableMailboxTimeout)
+                            if (DateTime.UtcNow - authErrorDate > MailSettings.Defines.AuthErrorDisableMailboxTimeout)
                                 authErrorType = MailBoxData.AuthProblemType.TooManyErrors;
-                            else if (DateTime.UtcNow - authErrorDate > MailSettings.AuthErrorWarningTimeout)
+                            else if (DateTime.UtcNow - authErrorDate > MailSettings.Defines.AuthErrorWarningTimeout)
                                 authErrorType = MailBoxData.AuthProblemType.ConnectError;
                         }
 
@@ -145,8 +147,8 @@ namespace ASC.Mail.Core.Engine
                             account.MailboxAddressName,
                             account.MailboxEnabled,
                             account.MailboxQuotaError,
-                            authErrorType, 
-                            account.MailboxSignature, 
+                            authErrorType,
+                            account.MailboxSignature,
                             account.MailboxAutoreply,
                             !string.IsNullOrEmpty(account.MailboxOAuthToken),
                             account.MailboxEmailInFolder,
@@ -273,7 +275,7 @@ namespace ASC.Mail.Core.Engine
             };
 
             using (var client = new MailClient(mbox, CancellationToken.None, ServerFolderAccessInfos,
-                    certificatePermit: MailSettings.SslCertificatesErrorPermit, log: Log))
+                    certificatePermit: MailSettings.Defines.SslCertificatesErrorsPermit, log: Log))
             {
                 loginResult = client.TestLogin();
             }
@@ -300,7 +302,7 @@ namespace ASC.Mail.Core.Engine
                 throw new NullReferenceException("mbox");
 
             using (var client = new MailClient(mbox, CancellationToken.None, ServerFolderAccessInfos,
-                    certificatePermit: MailSettings.SslCertificatesErrorPermit, log: Log))
+                    certificatePermit: MailSettings.Defines.SslCertificatesErrorsPermit, log: Log))
             {
                 loginResult = client.TestLogin();
             }
@@ -343,7 +345,7 @@ namespace ASC.Mail.Core.Engine
                 LoginResult loginResult;
 
                 using (var client = new MailClient(mb, CancellationToken.None, ServerFolderAccessInfos,
-                    MailSettings.TcpTimeout, MailSettings.SslCertificatesErrorPermit, log: Log))
+                    MailSettings.Aggregator.TcpTimeout, MailSettings.Defines.SslCertificatesErrorsPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
                 }
@@ -375,7 +377,7 @@ namespace ASC.Mail.Core.Engine
 
         public AccountInfo CreateAccountOAuth(string code, byte type)
         {
-			//TODO: Fix
+            //TODO: Fix
             /*var oAuthToken = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
 
             if (oAuthToken == null)
@@ -421,56 +423,56 @@ namespace ASC.Mail.Core.Engine
             if (newMailBoxData == null)
                 throw new NullReferenceException("mbox");
 
-                var mbox =
-                    DaoFactory.MailboxDao.GetMailBox(
-                        new СoncreteUserMailboxExp(
-                            newMailBoxData.EMail,
-                            Tenant, UserId));
+            var mbox =
+                MailDaoFactory.GetMailboxDao().GetMailBox(
+                    new СoncreteUserMailboxExp(
+                        newMailBoxData.EMail,
+                        Tenant, UserId));
 
-                if (null == mbox)
-                    throw new ArgumentException("Mailbox with specified email doesn't exist.");
+            if (null == mbox)
+                throw new ArgumentException("Mailbox with specified email doesn't exist.");
 
-                if (mbox.IsTeamlabMailbox)
-                    throw new ArgumentException("Mailbox with specified email can't be updated");
+            if (mbox.IsTeamlabMailbox)
+                throw new ArgumentException("Mailbox with specified email can't be updated");
 
-                if (!string.IsNullOrEmpty(mbox.OAuthToken))
+            if (!string.IsNullOrEmpty(mbox.OAuthToken))
+            {
+                var needSave = false;
+
+                if (!mbox.Name.Equals(newMailBoxData.Name))
                 {
-                    var needSave = false;
-
-                    if (!mbox.Name.Equals(newMailBoxData.Name))
-                    {
-                        mbox.Name = newMailBoxData.Name;
-                        needSave = true;
-                    }
-
-                    if (!mbox.BeginDate.Equals(newMailBoxData.BeginDate))
-                    {
-                        mbox.BeginDate = newMailBoxData.BeginDate;
-                        mbox.ImapIntervals = null;
-                        needSave = true;
-                    }
-
-                    if (needSave)
-                    {
-                    DaoFactory.MailboxDao.SaveMailBox(mbox);
-
-                        CacheEngine.Clear(UserId);
-                    }
-
-                    var accountInfo = new AccountInfo(mbox.Id, mbox.Address, mbox.Name, mbox.Enabled, mbox.QuotaError,
-                        MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.Id, Tenant, "", false),
-                        new MailAutoreplyData(mbox.Id, Tenant, false, false, false, DateTime.MinValue,
-                            DateTime.MinValue, string.Empty, string.Empty), false, mbox.EmailInFolder, false, false);
-
-                    loginResult = new LoginResult
-                    {
-                        Imap = mbox.Imap,
-                        IngoingSuccess = true,
-                        OutgoingSuccess = true
-                    };
-
-                    return accountInfo;
+                    mbox.Name = newMailBoxData.Name;
+                    needSave = true;
                 }
+
+                if (!mbox.BeginDate.Equals(newMailBoxData.BeginDate))
+                {
+                    mbox.BeginDate = newMailBoxData.BeginDate;
+                    mbox.ImapIntervals = null;
+                    needSave = true;
+                }
+
+                if (needSave)
+                {
+                    MailDaoFactory.GetMailboxDao().SaveMailBox(mbox);
+
+                    CacheEngine.Clear(UserId);
+                }
+
+                var accountInfo = new AccountInfo(mbox.Id, mbox.Address, mbox.Name, mbox.Enabled, mbox.QuotaError,
+                    MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.Id, Tenant, "", false),
+                    new MailAutoreplyData(mbox.Id, Tenant, false, false, false, DateTime.MinValue,
+                        DateTime.MinValue, string.Empty, string.Empty), false, mbox.EmailInFolder, false, false);
+
+                loginResult = new LoginResult
+                {
+                    Imap = mbox.Imap,
+                    IngoingSuccess = true,
+                    OutgoingSuccess = true
+                };
+
+                return accountInfo;
+            }
 
             newMailBoxData.Password = string.IsNullOrEmpty(newMailBoxData.Password)
                 ? mbox.Password
@@ -563,7 +565,7 @@ namespace ASC.Mail.Core.Engine
             {
                 // Check account connection setting on activation
                 using (var client = new MailClient(tuple.Item1, CancellationToken.None, ServerFolderAccessInfos,
-                        certificatePermit: MailSettings.SslCertificatesErrorPermit, log: Log))
+                        certificatePermit: MailSettings.Defines.SslCertificatesErrorsPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
                 }
@@ -576,7 +578,7 @@ namespace ASC.Mail.Core.Engine
 
             loginResult = null;
             var mailboxId =
-                DaoFactory.MailboxDao.Enable(
+                MailDaoFactory.GetMailboxDao().Enable(
                     new СoncreteUserMailboxExp(tuple.Item2.Id, tuple.Item2.Tenant, tuple.Item2.User),
                     enabled)
                     ? tuple.Item2.Id
@@ -597,7 +599,7 @@ namespace ASC.Mail.Core.Engine
 
             bool saved;
 
-            var mailbox = DaoFactory.MailboxDao.GetMailBox(
+            var mailbox = MailDaoFactory.GetMailboxDao().GetMailBox(
                 new СoncreteUserMailboxExp(
                     mailboxId,
                     Tenant, UserId)
@@ -606,7 +608,7 @@ namespace ASC.Mail.Core.Engine
             if (mailbox == null)
                 return false;
 
-            saved = DaoFactory.MailboxDao.SetMailboxEmailIn(mailbox, emailInFolder);
+            saved = MailDaoFactory.GetMailboxDao().SetMailboxEmailIn(mailbox, emailInFolder);
 
             if (!saved)
                 return saved;
@@ -618,7 +620,7 @@ namespace ASC.Mail.Core.Engine
 
         public bool SetAccountsActivity(bool userOnline = true)
         {
-            return DaoFactory.MailboxDao.SetMailboxesActivity(Tenant, UserId, userOnline);
+            return MailDaoFactory.GetMailboxDao().SetMailboxesActivity(Tenant, UserId, userOnline);
         }
 
         public List<string> SearchAccountEmails(string searchText)

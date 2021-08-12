@@ -192,7 +192,6 @@ class IconFormatsStore {
         isSoundItem,
         isHtmlItem
       );
-
       return icon;
     } else {
       return this.getFolderIcon(providerKey, size);
@@ -261,6 +260,8 @@ class IconFormatsStore {
       case ".epub":
         return `${folderPath}/epub.svg`;
       case ".pb2":
+        return `${folderPath}/fb2.svg`;
+      case ".fb2":
         return `${folderPath}/fb2.svg`;
       case ".flv":
         return `${folderPath}/flv.svg`;
@@ -345,6 +346,8 @@ class IconFormatsStore {
       case ".epub":
         return `${folderPath}/epub.svg`;
       case ".pb2":
+        return `${folderPath}/fb2.svg`;
+      case ".fb2":
         return `${folderPath}/fb2.svg`;
       case ".flv":
         return `${folderPath}/flv.svg`;

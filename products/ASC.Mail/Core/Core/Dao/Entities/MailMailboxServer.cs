@@ -39,28 +39,28 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailMailboxServer>(entity =>
             {
                 entity.HasIndex(e => e.IdProvider)
-                    .HasName("id_provider");
+                    .HasDatabaseName("id_provider");
 
                 entity.Property(e => e.Authentication)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Hostname)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.SocketType)
                     .HasDefaultValueSql("'plain'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Type)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Username)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

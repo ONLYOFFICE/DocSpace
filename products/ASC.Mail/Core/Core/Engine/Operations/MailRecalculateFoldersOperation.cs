@@ -25,15 +25,17 @@
 
 
 using System;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
-    public class MailRecalculateFoldersOperation: MailOperation
+    public class MailRecalculateFoldersOperation : MailOperation
     {
         public override MailOperationType OperationType
         {
@@ -44,12 +46,12 @@ namespace ASC.Mail.Core.Engine.Operations
 
         public MailRecalculateFoldersOperation(TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             FolderEngine folderEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor)
         {
             FolderEngine = folderEngine;
         }
@@ -58,7 +60,7 @@ namespace ASC.Mail.Core.Engine.Operations
         {
             try
             {
-                SetProgress((int?) MailOperationRecalculateMailboxProgress.Init, "Setup tenant and user");
+                SetProgress((int?)MailOperationRecalculateMailboxProgress.Init, "Setup tenant and user");
 
                 TenantManager.SetCurrentTenant(CurrentTenant);
 

@@ -31,10 +31,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Entities;
@@ -44,6 +47,7 @@ using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -57,7 +61,7 @@ namespace ASC.Mail.Core.Engine
         private ILog Log { get; }
         private SecurityContext SecurityContext { get; }
         private TenantManager TenantManager { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private IndexEngine IndexEngine { get; }
         private AccountEngine AccountEngine { get; }
         private ApiHelper ApiHelper { get; }
@@ -66,11 +70,13 @@ namespace ASC.Mail.Core.Engine
         private IServiceProvider ServiceProvider { get; }
         private WebItemSecurity WebItemSecurity { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
+        private MailDbContext MailDbContext { get; }
 
         public ContactEngine(
             SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContextManager,
             TenantManager tenantManager,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             IndexEngine indexEngine,
             AccountEngine accountEngine,
             ApiHelper apiHelper,
@@ -82,8 +88,9 @@ namespace ASC.Mail.Core.Engine
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
+            MailDbContext = dbContextManager.Get("mail");
             TenantManager = tenantManager;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             IndexEngine = indexEngine;
             AccountEngine = accountEngine;
             ApiHelper = apiHelper;
@@ -100,7 +107,7 @@ namespace ASC.Mail.Core.Engine
         {
             var exp = string.IsNullOrEmpty(search) && !contactType.HasValue
                 ? new SimpleFilterContactsExp(Tenant, User, sortorder == DefineConstants.ASCENDING, fromIndex, pageSize)
-                : new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, search, contactType,
+                : new FullFilterContactsExp(Tenant, User, MailDbContext, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, search, contactType,
                     orderAsc: sortorder == DefineConstants.ASCENDING,
                     startIndex: fromIndex, limit: pageSize);
 
@@ -120,7 +127,7 @@ namespace ASC.Mail.Core.Engine
 
         public List<MailContactData> GetContactsByContactInfo(ContactInfoType infoType, string data, bool? isPrimary)
         {
-            var exp = new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, 
+            var exp = new FullFilterContactsExp(Tenant, User, MailDbContext, FactoryIndexer, FactoryIndexerCommon, ServiceProvider,
                 data, infoType: infoType, isPrimary: isPrimary);
 
             var contacts = GetContactCards(exp);
@@ -146,7 +153,7 @@ namespace ASC.Mail.Core.Engine
             if (exp == null)
                 throw new ArgumentNullException("exp");
 
-            var list = DaoFactory.ContactCardDao.GetContactCards(exp);
+            var list = MailDaoFactory.GetContactCardDao().GetContactCards(exp);
 
             return list;
         }
@@ -156,23 +163,23 @@ namespace ASC.Mail.Core.Engine
             if (exp == null)
                 throw new ArgumentNullException("exp");
 
-            var count = DaoFactory.ContactCardDao.GetContactCardsCount(exp);
+            var count = MailDaoFactory.GetContactCardDao().GetContactCardsCount(exp);
 
             return count;
         }
 
         public ContactCard GetContactCard(int id)
         {
-            var contactCard = DaoFactory.ContactCardDao.GetContactCard(id);
+            var contactCard = MailDaoFactory.GetContactCardDao().GetContactCard(id);
 
             return contactCard;
         }
 
         public ContactCard SaveContactCard(ContactCard contactCard)
         {
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                var contactId = DaoFactory.ContactDao.SaveContact(contactCard.ContactInfo);
+                var contactId = MailDaoFactory.GetContactDao().SaveContact(contactCard.ContactInfo);
 
                 contactCard.ContactInfo.Id = contactId;
 
@@ -180,7 +187,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     contactItem.ContactId = contactId;
 
-                    var contactItemId = DaoFactory.ContactInfoDao.SaveContactInfo(contactItem);
+                    var contactItemId = MailDaoFactory.GetContactInfoDao().SaveContactInfo(contactItem);
 
                     contactItem.Id = contactItemId;
                 }
@@ -203,7 +210,7 @@ namespace ASC.Mail.Core.Engine
             if (model.Emails == null || !model.Emails.Any())
                 throw new ArgumentException(@"Invalid list of emails.", "emails");
 
-            var contactCard = new ContactCard(model.Id, Tenant, User, model.Name, model.Description, 
+            var contactCard = new ContactCard(model.Id, Tenant, User, model.Name, model.Description,
                 ContactType.Personal, model.Emails, model.PhoneNumbers);
 
             var contact = UpdateContactCard(contactCard);
@@ -232,11 +239,11 @@ namespace ASC.Mail.Core.Engine
             if (!contactChanged && !newContactItems.Any() && !removedContactItems.Any())
                 return contactCard;
 
-            using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 if (contactChanged)
                 {
-                    DaoFactory.ContactDao.SaveContact(newContactCard.ContactInfo);
+                    MailDaoFactory.GetContactDao().SaveContact(newContactCard.ContactInfo);
 
                     contactCard.ContactInfo = newContactCard.ContactInfo;
                 }
@@ -247,7 +254,7 @@ namespace ASC.Mail.Core.Engine
                     {
                         contactItem.ContactId = contactId;
 
-                        var contactItemId = DaoFactory.ContactInfoDao.SaveContactInfo(contactItem);
+                        var contactItemId = MailDaoFactory.GetContactInfoDao().SaveContactInfo(contactItem);
 
                         contactItem.Id = contactItemId;
 
@@ -259,7 +266,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     foreach (var contactItem in removedContactItems)
                     {
-                        DaoFactory.ContactInfoDao.RemoveContactInfo(contactItem.Id);
+                        MailDaoFactory.GetContactInfoDao().RemoveContactInfo(contactItem.Id);
 
                         contactCard.ContactItems.Remove(contactItem);
                     }
@@ -280,11 +287,11 @@ namespace ASC.Mail.Core.Engine
             if (!ids.Any())
                 throw new ArgumentException(@"Empty ids collection", "ids");
 
-            using (var tx = DaoFactory.BeginTransaction())
+            using (var tx = MailDaoFactory.BeginTransaction())
             {
-                DaoFactory.ContactDao.RemoveContacts(ids);
+                MailDaoFactory.GetContactDao().RemoveContacts(ids);
 
-                DaoFactory.ContactInfoDao.RemoveByContactIds(ids);
+                MailDaoFactory.GetContactInfoDao().RemoveByContactIds(ids);
 
                 tx.Commit();
             }
@@ -321,7 +328,7 @@ namespace ASC.Mail.Core.Engine
                     TenantManager.SetCurrentTenant(tenant);
                     SecurityContext.AuthenticateMe(userGuid);
 
-                    var exp = new FullFilterContactsExp(tenant, userName, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, 
+                    var exp = new FullFilterContactsExp(tenant, userName, MailDbContext, FactoryIndexer, FactoryIndexerCommon, ServiceProvider,
                         term, infoType: ContactInfoType.Email, orderAsc: true, limit: maxCountPerSystem);
 
                     var contactCards = GetContactCards(exp);

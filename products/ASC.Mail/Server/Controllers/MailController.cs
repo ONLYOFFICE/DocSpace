@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Globalization;
 
 using ASC.Api.Core;
 using ASC.Common;
@@ -9,9 +10,9 @@ using ASC.Core;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Core.Resources;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
-using ASC.Web.Mail.Resources;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -61,6 +62,25 @@ namespace ASC.Mail.Controllers
         private ILog Log { get; }
 
         private MailSettings MailSettings { get; }
+
+        private string Username
+        {
+            get { return SecurityContext.CurrentAccount.ID.ToString(); }
+        }
+
+        private CultureInfo CurrentCulture
+        {
+            get
+            {
+                var u = UserManager.GetUsers(new Guid(Username));
+
+                var culture = !string.IsNullOrEmpty(u.CultureName)
+                    ? u.GetCulture()
+                    : TenantManager.GetCurrentTenant().GetCulture();
+
+                return culture;
+            }
+        }
 
         public MailController(
             TenantManager tenantManager,

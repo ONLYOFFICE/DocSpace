@@ -27,14 +27,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Mail.Models;
 using ASC.Mail.Enums;
-using Microsoft.Extensions.Options;
+using ASC.Mail.Models;
 using ASC.Mail.Storage;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -53,15 +55,15 @@ namespace ASC.Mail.Core.Engine.Operations
         public ApplyFiltersOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             FilterEngine filterEngine,
             MessageEngine messageEngine,
             MailboxEngine mailboxEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
-            IOptionsMonitor<ILog> optionsMonitor, 
+            IOptionsMonitor<ILog> optionsMonitor,
             List<int> ids)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor)
         {
             FilterEngine = filterEngine;
             MessageEngine = messageEngine;
@@ -97,12 +99,12 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 var mailboxes = new List<MailBoxData>();
 
-                var index = 0; 
+                var index = 0;
                 var max = Ids.Count;
 
                 foreach (var id in Ids)
                 {
-                    var progressState= string.Format("Message id = {0} ({1}/{2})", id, ++index, max);
+                    var progressState = string.Format("Message id = {0} ({1}/{2})", id, ++index, max);
 
                     try
                     {
@@ -135,7 +137,7 @@ namespace ASC.Mail.Core.Engine.Operations
                     }
                 }
 
-                SetProgress((int?) MailOperationApplyFilterProgress.Finished);
+                SetProgress((int?)MailOperationApplyFilterProgress.Finished);
             }
             catch (Exception e)
             {

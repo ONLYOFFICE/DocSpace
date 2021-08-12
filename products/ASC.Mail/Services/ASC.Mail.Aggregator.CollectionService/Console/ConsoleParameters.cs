@@ -3,7 +3,6 @@
 using ASC.Common;
 
 using CommandLine;
-using CommandLine.Text;
 
 namespace ASC.Mail.Aggregator.CollectionService.Console
 {
@@ -18,16 +17,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Console
         [Option("console", Required = false, HelpText = "Console state")]
         public bool IsConsole { get; set; }
 
-        [Option("myInt", Required = false, HelpText = "fucking int")]
-        public int myInt { get; set; }
-
         [Option("unlimit", Required = false, HelpText = "Unlimit messages per mailbox session")]
         public bool NoMessagesLimit { get; set; }
-
-        //[HelpOption]
-        //public string GetUsage()
-        //{
-        //    return HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
-        //}
     }
 }

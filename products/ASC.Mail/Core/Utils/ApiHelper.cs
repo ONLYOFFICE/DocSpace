@@ -59,7 +59,7 @@ using RestSharp;
 
 namespace ASC.Mail.Utils
 {
-    [Transient]
+    [Scope]
     public class ApiHelper
     {
         private const int MAIL_CRM_HISTORY_CATEGORY = -3;
@@ -97,32 +97,12 @@ namespace ASC.Mail.Utils
             MailSettings mailSettings,
             IConfiguration configuration,
             IOptionsMonitor<ILog> option)
+            : this(securityContext, tenantManager, coreSettings, apiDateTimeHelper, mailSettings, configuration, option)
         {
             if (httpContextAccessor != null || httpContextAccessor.HttpContext != null)
             {
                 HttpContext = httpContextAccessor.HttpContext;
             }
-
-            /*if (!scheme.Equals(Uri.UriSchemeHttps) && !scheme.Equals(Uri.UriSchemeHttp))
-                throw new ApiHelperException("ApiHelper: url scheme not setup", HttpStatusCode.InternalServerError, "");*/
-            MailSettings = mailSettings;
-            Configuration = configuration;
-            Log = option.Get("ASC.Mail.ApiHelper");
-            SecurityContext = securityContext;
-            TenantManager = tenantManager;
-            CoreSettings = coreSettings;
-            ApiDateTimeHelper = apiDateTimeHelper;
-            Scheme = mailSettings.DefaultApiSchema ?? Uri.UriSchemeHttp;
-            //TODO: FIX!
-            //Tenant = new Tenant(1, "");
-            //TenantManager.GetCurrentTenant();
-            MailSettings = mailSettings;
-
-            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorPermit)
-                return;
-
-            ServicePointManager.ServerCertificateValidationCallback =
-                (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
         public ApiHelper(
@@ -141,10 +121,12 @@ namespace ASC.Mail.Utils
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
             ApiDateTimeHelper = apiDateTimeHelper;
-            Scheme = mailSettings.DefaultApiSchema ?? Uri.UriSchemeHttp;
-            MailSettings = mailSettings;
+            Scheme = mailSettings.Defines.DefaultApiSchema ?? Uri.UriSchemeHttp;
 
-            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.SslCertificatesErrorPermit)
+            if (!Scheme.Equals(Uri.UriSchemeHttps) && !Scheme.Equals(Uri.UriSchemeHttp))
+                throw new ApiHelperException("ApiHelper: url scheme not setup", HttpStatusCode.InternalServerError, "");
+
+            if (!Scheme.Equals(Uri.UriSchemeHttps) || !MailSettings.Defines.SslCertificatesErrorsPermit)
                 return;
 
             ServicePointManager.ServerCertificateValidationCallback =
@@ -166,6 +148,7 @@ namespace ASC.Mail.Utils
             if (!user.IsAuthenticated)
                 throw new AuthenticationException("User not authenticated");
 
+            var tempUrl = MailSettings.Aggregator.ApiPrefix;
 
             var ubBase = new UriBuilder
             {
@@ -173,22 +156,14 @@ namespace ASC.Mail.Utils
                 Host = Tenant.GetTenantDomain(CoreSettings, false)
             };
 
-            //var virtualDir = Configuration["web:api:virtual-dir"];
+            if (!string.IsNullOrEmpty(MailSettings.Aggregator.ApiVirtualDirPrefix))
+                tempUrl = string.Format("{0}/{1}", MailSettings.Aggregator.ApiVirtualDirPrefix.Trim('/'), tempUrl);
 
-            //if (!string.IsNullOrEmpty(virtualDir))
-            //    tempUrl = string.Format("{0}/{1}", virtualDir.Trim('/'), tempUrl);
+            if (!string.IsNullOrEmpty(MailSettings.Aggregator.ApiHost))
+                ubBase.Host = MailSettings.Aggregator.ApiHost;
 
-            //var host = Configuration["web:api.host"];
-
-            //if (!string.IsNullOrEmpty(host))
-            //    ubBase.Host = host;
-
-            //var port = ConfigurationManager.AppSettings["api.port"];
-
-            //if (!string.IsNullOrEmpty(port))
-            //    ubBase.Port = int.Parse(port);
-
-            var tempUrl = (Configuration["web:api"] ?? "").Trim('~', '/');
+            if (!string.IsNullOrEmpty(MailSettings.Aggregator.ApiPort))
+                ubBase.Port = int.Parse(MailSettings.Aggregator.ApiPort);
 
             ubBase.Path = tempUrl;
 

@@ -47,7 +47,7 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxProvider GetProvider(int id)
         {
-            var provider = MailDb.MailMailboxProvider
+            var provider = MailDbContext.MailMailboxProvider
                 .Where(d => d.Id == id)
                 .Select(ToMailboxProvider)
                 .FirstOrDefault();
@@ -57,7 +57,7 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxProvider GetProvider(string providerName)
         {
-            var provider = MailDb.MailMailboxProvider
+            var provider = MailDbContext.MailMailboxProvider
                 .Where(d => d.Name == providerName)
                 .Select(ToMailboxProvider)
                 .FirstOrDefault();
@@ -76,9 +76,9 @@ namespace ASC.Mail.Core.Dao
                 Documentation = provider.Url
             };
 
-            var result = MailDb.MailMailboxProvider.Add(mailboxProvider).Entity;
+            var result = MailDbContext.MailMailboxProvider.Add(mailboxProvider).Entity;
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return result.Id;
         }

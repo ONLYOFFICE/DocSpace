@@ -18,8 +18,10 @@ namespace ASC.Mail.Aggregator.CollectionService
         private ILog Log { get; }
         private AggregatorService AggregatorService { get; }
         private ConsoleParameters ConsoleParameters { get; }
-
         private ManualResetEvent ResetEvent;
+
+        private Task AggregatorServiceTask;
+        private CancellationTokenSource Cts;
 
         public AggregatorServiceLauncher(
             IOptionsMonitor<ILog> options,
@@ -40,53 +42,40 @@ namespace ASC.Mail.Aggregator.CollectionService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                Log.Info("Start service\r\n");
+            Log.Info("Start service\r\n");
 
-                if (Environment.UserInteractive || ConsoleParameters.IsConsole)
-                {
-                    Log.Info("Service Start in console-daemon mode");
-                    AggregatorService.StartTimer(true);
-                    ResetEvent = new ManualResetEvent(false);
-                    System.Console.CancelKeyPress += (sender, e) => StopAsync(cancellationToken);
-                    ResetEvent.WaitOne();
-                }
-                else
-                {
-                    AggregatorService.StartTimer(true);
-                }
-            }
-            catch (Exception ex)
+            Cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            if (ConsoleParameters.IsConsole)
             {
-                Log.FatalFormat("Unhandled exception: {0}", ex.ToString());
-                StopAsync(cancellationToken);
+                Log.Info("Service Start in console-daemon mode");
+
+                AggregatorServiceTask = AggregatorService.StartTimer(Cts.Token, true);
+                ResetEvent = new ManualResetEvent(false);
+                System.Console.CancelKeyPress += (sender, e) => StopAsync(cancellationToken);
+                ResetEvent.WaitOne();
             }
-            return Task.CompletedTask;
+            else
+            {
+                AggregatorServiceTask = AggregatorService.StartTimer(Cts.Token, true);
+            }
+
+            return AggregatorServiceTask.IsCompleted ? AggregatorServiceTask : Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             try
             {
-                Log.Info("Stoping service\r\n");
-
-                AggregatorService.StopService();
-
+                AggregatorService.StopService(Cts);
+                await Task.WhenAny(AggregatorServiceTask, Task.Delay(TimeSpan.FromSeconds(5), cancellationToken));
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("Stop service Error: {0}\r\n", ex.ToString());
-            }
-            finally
-            {
-                Log.Info("Stop service\r\n");
-
-                if (ResetEvent != null)
-                    ResetEvent.Set();
+                Log.ErrorFormat($"Failed to terminate the service correctly. The details:\r\n{ex}\r\n");
             }
 
-            return Task.CompletedTask;
+            Log.Info("Stop service\r\n");
         }
     }
 }

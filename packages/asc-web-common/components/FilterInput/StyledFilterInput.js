@@ -26,9 +26,9 @@ const StyledFilterInput = styled.div`
 
   .styled-filter-block {
     display: flex;
-
     .filter-button {
       svg {
+        height: 25px;
         path:not(:first-child) {
           stroke: #a3a9ae;
         }
@@ -126,49 +126,49 @@ const StyledFilterInput = styled.div`
       color: #a3a9ae;
     }
   }
+
+  .view-selector-button {
+    display: flex;
+    float: left;
+
+    margin-left: 8px;
+
+    @media (max-width: 460px) {
+      display: none;
+    }
+  }
 `;
 
 export const StyledViewSelector = styled.div`
-  display: flex;
-  float: left;
-  width: 64px;
-  margin-left: 8px;
+  border: 1px solid ${(props) => (props.isDisabled ? "#ECEEF1" : "#D0D5DA")};
+  border-radius: 3px;
+  padding: 7px;
+  ${(props) => props.isDisabled && "background-color: #F8F9F9;"}
 
-  @media (max-width: 460px) {
-    display: none;
+  svg {
+    pointer-events: none;
   }
 
-  .view-selector-button {
-    border: 1px solid ${(props) => (props.isDisabled ? "#ECEEF1" : "#D0D5DA")};
-    border-radius: 3px;
-    padding: 7px;
-    ${(props) => props.isDisabled && "background-color: #F8F9F9;"}
+  &.active {
+    background-color: #a3a9ae;
+    border-color: #a3a9ae;
+  }
 
-    svg {
-      pointer-events: none;
-    }
+  &:hover {
+    ${(props) => !props.isDisabled && "background-color: #A3A9AE;"}
+    ${(props) => !props.isDisabled && "border-color: #A3A9AE;"}
+  }
 
-    &.active {
-      background-color: #a3a9ae;
-      border-color: #a3a9ae;
-    }
+  &:first-child {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 
-    &:hover {
-      ${(props) => !props.isDisabled && "background-color: #A3A9AE;"}
-      ${(props) => !props.isDisabled && "border-color: #A3A9AE;"}
-    }
-
-    &:first-child {
-      border-right: none;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    &:last-child {
-      border-left: none;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
+  &:last-child {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 `;
 
@@ -176,7 +176,7 @@ export const StyledFilterItem = styled.div`
   display: ${(props) => (props.block ? "flex" : "inline-block")};
   margin-bottom: ${(props) => (props.block ? "8px" : "0")};
   position: relative;
-  height: 26px;
+  height: 25px;
   margin-right: 2px;
   border: 1px solid #eceef1;
   border-radius: 3px;
@@ -264,7 +264,7 @@ export const StyledHideFilterButton = styled.div`
   align-items: center;
   font-weight: 600;
   font-size: 16px;
-  height: 100%;
+  height: 25px;
   border: 1px solid #eceef1;
   border-radius: 3px;
   background-color: #f8f9f9;

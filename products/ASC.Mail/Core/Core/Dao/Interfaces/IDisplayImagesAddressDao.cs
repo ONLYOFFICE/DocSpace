@@ -26,8 +26,11 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(DisplayImagesAddressDao))]
     public interface IDisplayImagesAddressDao
     {
         /// <summary>

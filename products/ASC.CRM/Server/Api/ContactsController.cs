@@ -1910,8 +1910,11 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"contact/mailsmtp/preview")]
-        public string GetMailSMTPToContactsPreview([FromForm] string template, [FromForm] int contactId)
+        public string GetMailSMTPToContactsPreview([FromBody] GetMailSMTPToContactsPreviewRequestDto inDto)
         {
+            var contactId = inDto.ContactId;
+            var template = inDto.Template;
+
             if (contactId == 0 || String.IsNullOrEmpty(template)) throw new ArgumentException();
 
             var manager = new MailTemplateManager(_daoFactory);

@@ -26,12 +26,14 @@
 
 using System;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Storage;
 using ASC.Mail.Extensions;
+using ASC.Mail.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
@@ -49,13 +51,13 @@ namespace ASC.Mail.Core.Engine.Operations
         public MailCheckMailserverDomainsDnsOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
-            string domainName, 
+            string domainName,
             ServerDns dns)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, mailDaoFactory, coreSettings, storageManager, optionsMonitor)
         {
             _domainName = domainName;
             _dns = dns;
@@ -83,7 +85,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 ServerDomain domain;
 
-                var domains = DaoFactory.ServerDomainDao.GetDomains();
+                var domains = MailDaoFactory.GetServerDomainDao().GetDomains();
 
                 domain =
                     domains.FirstOrDefault(
@@ -122,7 +124,7 @@ namespace ASC.Mail.Core.Engine.Operations
                 SetProgress((int?)MailOperationCheckDomainDnsProgress.UpdateResults,
                     "Update domain dns check results");
 
-                DaoFactory.ServerDnsDao.Save(_dns);
+                MailDaoFactory.GetServerDnsDao().Save(_dns);
             }
             catch (Exception e)
             {

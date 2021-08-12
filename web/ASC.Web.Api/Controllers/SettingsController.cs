@@ -299,7 +299,9 @@ namespace ASC.Api.Settings
             var settings = new SettingsWrapper
             {
                 Culture = Tenant.GetCulture().ToString(),
-                GreetingSettings = Tenant.Name
+                GreetingSettings = Tenant.Name,
+                Personal = CoreBaseSettings.Personal,
+                Version = Configuration["version:number"] ?? ""
             };
 
             if (AuthContext.IsAuthenticated)
@@ -312,6 +314,17 @@ namespace ASC.Api.Settings
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
                 settings.OwnerId = Tenant.OwnerId;
                 settings.NameSchemaId = CustomNamingPeople.Current.Id;
+
+                settings.Firebase = new FirebaseWrapper
+                {
+                    ApiKey = Configuration["firebase:apiKey"] ?? "",
+                    AuthDomain = Configuration["firebase:authDomain"] ?? "",
+                    ProjectId = Configuration["firebase:projectId"] ?? "",
+                    StorageBucket = Configuration["firebase:storageBucket"] ?? "",
+                    MessagingSenderId = Configuration["firebase:messagingSenderId"] ?? "",
+                    AppId = Configuration["firebase:appId"] ?? "",
+                    MeasurementId = Configuration["firebase:measurementId"] ?? ""
+                };
             }
             else
             {
@@ -344,7 +357,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("messagesettings")]
-        public object EnableAdminMessageSettingsFromBody([FromBody]AdminMessageSettingsModel model)
+        public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsModel model)
         {
             return EnableAdminMessageSettings(model);
         }
@@ -369,7 +382,7 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Create("sendadmmail")]
-        public object SendAdmMailFromBody([FromBody]AdminMessageSettingsModel model)
+        public object SendAdmMailFromBody([FromBody] AdminMessageSettingsModel model)
         {
             return SendAdmMail(model);
         }
@@ -449,7 +462,7 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Create("sendjoininvite")]
-        public object SendJoinInviteMailFromBody([FromBody]AdminMessageSettingsModel model)
+        public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsModel model)
         {
             return SendJoinInviteMail(model);
         }
@@ -574,9 +587,9 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var usrCaption =  (model.UserCaption ?? "").Trim();
+            var usrCaption = (model.UserCaption ?? "").Trim();
             var usrsCaption = (model.UsersCaption ?? "").Trim();
-            var grpCaption =  (model.GroupCaption ?? "").Trim();
+            var grpCaption = (model.GroupCaption ?? "").Trim();
             var grpsCaption = (model.GroupsCaption ?? "").Trim();
             var usrStatusCaption = (model.UserPostCaption ?? "").Trim();
             var regDateCaption = (model.RegDateCaption ?? "").Trim();
@@ -694,14 +707,14 @@ namespace ASC.Api.Settings
         }
 
         [Create("greetingsettings")]
-        public ContentResult SaveGreetingSettingsFromBody([FromBody]GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsModel model)
         {
             return SaveGreetingSettings(model);
         }
 
         [Create("greetingsettings")]
         [Consumes("application/x-www-form-urlencoded")]
-        public ContentResult SaveGreetingSettingsFromForm([FromForm]GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsModel model)
         {
             return SaveGreetingSettings(model);
         }
@@ -779,7 +792,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("version")]
-        public TenantVersionWrapper SetVersionFromBody([FromBody]SettingsModel model)
+        public TenantVersionWrapper SetVersionFromBody([FromBody] SettingsModel model)
         {
             return SetVersion(model);
         }
@@ -802,7 +815,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security")]
-        public IEnumerable<SecurityWrapper> GetWebItemSecurityInfo([FromQuery]IEnumerable<string> ids)
+        public IEnumerable<SecurityWrapper> GetWebItemSecurityInfo([FromQuery] IEnumerable<string> ids)
         {
             if (ids == null || !ids.Any())
             {
@@ -855,7 +868,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("security")]
-        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromBody([FromBody]WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromBody([FromBody] WebItemSecurityModel model)
         {
             return SetWebItemSecurity(model);
         }
@@ -901,7 +914,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("security/access")]
-        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromBody([FromBody]WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityModel model)
         {
             return SetAccessToWebItems(model);
         }
@@ -975,7 +988,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("security/administrator")]
-        public object SetProductAdministratorFromBody([FromBody]SecurityModel model)
+        public object SetProductAdministratorFromBody([FromBody] SecurityModel model)
         {
             return SetProductAdministrator(model);
         }
@@ -1269,7 +1282,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("iprestrictions")]
-        public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody]IpRestrictionsModel model)
+        public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsModel model)
         {
             return SaveIpRestrictions(model);
         }
@@ -1288,7 +1301,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("iprestrictions/settings")]
-        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody]IpRestrictionsModel model)
+        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsModel model)
         {
             return UpdateIpRestrictionsSettings(model);
         }
@@ -1311,7 +1324,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("tips")]
-        public TipsSettings UpdateTipsSettingsFromBody([FromBody]SettingsModel model)
+        public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsModel model)
         {
             return UpdateTipsSettings(model);
         }
@@ -1322,7 +1335,7 @@ namespace ASC.Api.Settings
         {
             return UpdateTipsSettings(model);
         }
-        
+
         private TipsSettings UpdateTipsSettings(SettingsModel model)
         {
             var settings = new TipsSettings { Show = model.Show };
@@ -1358,7 +1371,7 @@ namespace ASC.Api.Settings
 
         [Update("wizard/complete", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-        public WizardSettings CompleteWizardFromBody([FromBody]WizardModel wizardModel)
+        public WizardSettings CompleteWizardFromBody([FromBody] WizardModel wizardModel)
         {
             return CompleteWizard(wizardModel);
         }
@@ -1450,7 +1463,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("tfaapp")]
-        public bool TfaSettingsFromBody([FromBody]TfaModel model)
+        public bool TfaSettingsFromBody([FromBody] TfaModel model)
         {
             return TfaSettingsUpdate(model);
         }
@@ -1461,7 +1474,7 @@ namespace ASC.Api.Settings
         {
             return TfaSettingsUpdate(model);
         }
-        
+
         private bool TfaSettingsUpdate(TfaModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -1546,7 +1559,7 @@ namespace ASC.Api.Settings
             ApiContext.AuthByClaim();
             var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
 
-            if (!TfaAppAuthSettings.IsVisibleSettings || 
+            if (!TfaAppAuthSettings.IsVisibleSettings ||
                 !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
                 TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
                 throw new Exception(Resource.TfaAppNotAvailable);
@@ -1588,7 +1601,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("tfaappnewapp")]
-        public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)]TfaModel model)
+        public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaModel model)
         {
             return TfaAppNewApp(model);
         }
@@ -1645,7 +1658,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("colortheme")]
-        public void SaveColorThemeFromBody([FromBody]SettingsModel model)
+        public void SaveColorThemeFromBody([FromBody] SettingsModel model)
         {
             SaveColorTheme(model);
         }
@@ -1666,7 +1679,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("timeandlanguage")]
-        public object TimaAndLanguageFromBody([FromBody]SettingsModel model)
+        public object TimaAndLanguageFromBody([FromBody] SettingsModel model)
         {
             return TimaAndLanguage(model);
         }
@@ -1720,7 +1733,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("owner")]
-        public object SendOwnerChangeInstructionsFromBody([FromBody]SettingsModel model)
+        public object SendOwnerChangeInstructionsFromBody([FromBody] SettingsModel model)
         {
             return SendOwnerChangeInstructions(model);
         }
@@ -1758,7 +1771,7 @@ namespace ASC.Api.Settings
 
         [Update("owner")]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-        public void OwnerFromBody([FromBody]SettingsModel model)
+        public void OwnerFromBody([FromBody] SettingsModel model)
         {
             Owner(model);
         }
@@ -1800,7 +1813,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("defaultpage")]
-        public object SaveDefaultPageSettingsFromBody([FromBody]SettingsModel model)
+        public object SaveDefaultPageSettingsFromBody([FromBody] SettingsModel model)
         {
             return SaveDefaultPageSettings(model);
         }
@@ -1986,7 +1999,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("customnavigation/create")]
-        public CustomNavigationItem CreateCustomNavigationItemFromBody([FromBody]CustomNavigationItem item)
+        public CustomNavigationItem CreateCustomNavigationItemFromBody([FromBody] CustomNavigationItem item)
         {
             return CreateCustomNavigationItem(item);
         }
@@ -2068,7 +2081,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("emailactivation")]
-        public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody]EmailActivationSettings settings)
+        public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody] EmailActivationSettings settings)
         {
             SettingsManager.SaveForCurrentUser(settings);
             return settings;
@@ -2076,7 +2089,7 @@ namespace ASC.Api.Settings
 
         [Update("emailactivation")]
         [Consumes("application/x-www-form-urlencoded")]
-        public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm]EmailActivationSettings settings)
+        public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm] EmailActivationSettings settings)
         {
             SettingsManager.SaveForCurrentUser(settings);
             return settings;
@@ -2198,7 +2211,7 @@ namespace ASC.Api.Settings
         public readonly object Locker = new object();
 
         [Create("encryption/start")]
-        public bool StartStorageEncryptionFromBody([FromBody]StorageEncryptionModel storageEncryption)
+        public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionModel storageEncryption)
         {
             return StartStorageEncryption(storageEncryption);
         }
@@ -2404,7 +2417,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("storage")]
-        public StorageSettings UpdateStorageFromBody([FromBody]StorageModel model)
+        public StorageSettings UpdateStorageFromBody([FromBody] StorageModel model)
         {
             return UpdateStorage(model);
         }
@@ -2484,7 +2497,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("storage/cdn")]
-        public CdnStorageSettings UpdateCdnFromBody([FromBody]StorageModel model)
+        public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageModel model)
         {
             return UpdateCdn(model);
         }
@@ -2602,7 +2615,7 @@ namespace ASC.Api.Settings
         [Consumes("application/x-www-form-urlencoded")]
         public bool SaveCompanyWhiteLabelSettingsFromForm([FromForm] CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
         {
-           return SaveCompanyWhiteLabelSettings(companyWhiteLabelSettingsWrapper);
+            return SaveCompanyWhiteLabelSettings(companyWhiteLabelSettingsWrapper);
         }
 
         private bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
@@ -2639,7 +2652,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/additional")]
-        public bool SaveAdditionalWhiteLabelSettingsFromBody([FromBody]AdditionalWhiteLabelSettingsWrapper wrapper)
+        public bool SaveAdditionalWhiteLabelSettingsFromBody([FromBody] AdditionalWhiteLabelSettingsWrapper wrapper)
         {
             return SaveAdditionalWhiteLabelSettings(wrapper);
         }
@@ -2648,7 +2661,7 @@ namespace ASC.Api.Settings
         [Consumes("application/x-www-form-urlencoded")]
         public bool SaveAdditionalWhiteLabelSettingsFromForm([FromForm] AdditionalWhiteLabelSettingsWrapper wrapper)
         {
-           return SaveAdditionalWhiteLabelSettings(wrapper);
+            return SaveAdditionalWhiteLabelSettings(wrapper);
         }
 
         private bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
@@ -2707,14 +2720,14 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("rebranding/mail")]
-        public bool UpdateMailWhiteLabelSettingsFromBody([FromBody]MailWhiteLabelSettingsModel model)
+        public bool UpdateMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettingsModel model)
         {
             return UpdateMailWhiteLabelSettings(model);
         }
 
         [Update("rebranding/mail")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool UpdateMailWhiteLabelSettingsFromForm([FromForm]MailWhiteLabelSettingsModel model)
+        public bool UpdateMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettingsModel model)
         {
             return UpdateMailWhiteLabelSettings(model);
         }
@@ -2778,7 +2791,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("authservice")]
-        public bool SaveAuthKeysFromBody([FromBody]AuthServiceModel model)
+        public bool SaveAuthKeysFromBody([FromBody] AuthServiceModel model)
         {
             return SaveAuthKeys(model);
         }

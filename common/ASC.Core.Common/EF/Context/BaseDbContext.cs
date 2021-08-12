@@ -61,7 +61,7 @@ namespace ASC.Core.Common.EF
             switch (Provider)
             {
                 case Provider.MySql:
-                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion.AutoDetect(ConnectionStringSettings.ConnectionString), r=>
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion.Parse("8.0.25"), r=>
                     {
                         if (!string.IsNullOrEmpty(MigrateAssembly))
                         {

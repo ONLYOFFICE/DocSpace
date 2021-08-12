@@ -3,7 +3,6 @@
 using ASC.Common;
 
 using CommandLine;
-using CommandLine.Text;
 
 namespace ASC.Mail.Aggregator.CollectionService.Console
 {
@@ -20,6 +19,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Console
         public ConsoleParameters GetParsedParameters()
         {
             var _consoleParameters = new ConsoleParameters();
+
             if (_args.Any())
             {
                 Parser.Default.ParseArguments<ConsoleParameters>(_args)
@@ -30,6 +30,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Console
                         System.Console.Error.Write(helpText);
                     });
             }
+
             return _consoleParameters;
         }
     }

@@ -39,26 +39,26 @@ namespace ASC.Mail.Server.Core.Dao
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.Active)
-                    .HasName("active");
+                    .HasDatabaseName("active");
 
                 entity.HasIndex(e => e.Domain)
-                    .HasName("domain");
+                    .HasDatabaseName("domain");
 
                 entity.HasIndex(e => e.Expired)
-                    .HasName("expired");
+                    .HasDatabaseName("expired");
 
                 entity.HasIndex(e => e.Islist)
-                    .HasName("islist");
+                    .HasDatabaseName("islist");
 
                 entity.Property(e => e.Address)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Accesspolicy)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Active).HasDefaultValueSql("'1'");
 
@@ -67,31 +67,31 @@ namespace ASC.Mail.Server.Core.Dao
                 entity.Property(e => e.Domain)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Expired).HasDefaultValueSql("'9999-12-31 00:00:00'");
 
                 entity.Property(e => e.Goto)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Moderators)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Modified).HasDefaultValueSql("'0000-00-00 00:00:00'");
 
                 entity.Property(e => e.Name)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<ApiKeys>(entity =>
             {
                 entity.Property(e => e.AccessToken)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Active).HasDefaultValueSql("'1'");
             });
@@ -99,23 +99,23 @@ namespace ASC.Mail.Server.Core.Dao
             modelBuilder.Entity<Dkim>(entity =>
             {
                 entity.HasIndex(e => e.DomainName)
-                    .HasName("domain_name");
+                    .HasDatabaseName("domain_name");
 
                 entity.Property(e => e.DomainName)
                     .HasCharSet("latin1")
-                    .HasCollation("latin1_swedish_ci");
+                    .UseCollation("latin1_swedish_ci");
 
                 entity.Property(e => e.PrivateKey)
                     .HasCharSet("latin1")
-                    .HasCollation("latin1_swedish_ci");
+                    .UseCollation("latin1_swedish_ci");
 
                 entity.Property(e => e.PublicKey)
                     .HasCharSet("latin1")
-                    .HasCollation("latin1_swedish_ci");
+                    .UseCollation("latin1_swedish_ci");
 
                 entity.Property(e => e.Selector)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Domain>(entity =>
@@ -124,18 +124,18 @@ namespace ASC.Mail.Server.Core.Dao
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.Active)
-                    .HasName("active");
+                    .HasDatabaseName("active");
 
                 entity.HasIndex(e => e.Backupmx)
-                    .HasName("backupmx");
+                    .HasDatabaseName("backupmx");
 
                 entity.HasIndex(e => e.Expired)
-                    .HasName("expired");
+                    .HasDatabaseName("expired");
 
                 entity.Property(e => e.DomainName)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Active).HasDefaultValueSql("'1'");
 
@@ -143,11 +143,11 @@ namespace ASC.Mail.Server.Core.Dao
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Disclaimer)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Expired).HasDefaultValueSql("'9999-12-31 00:00:00'");
 
@@ -155,12 +155,12 @@ namespace ASC.Mail.Server.Core.Dao
 
                 entity.Property(e => e.Settings)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Transport)
                     .HasDefaultValueSql("'dovecot'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Mailbox>(entity =>
@@ -169,116 +169,116 @@ namespace ASC.Mail.Server.Core.Dao
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.Active)
-                    .HasName("active");
+                    .HasDatabaseName("active");
 
                 entity.HasIndex(e => e.Department)
-                    .HasName("department");
+                    .HasDatabaseName("department");
 
                 entity.HasIndex(e => e.Domain)
-                    .HasName("domain");
+                    .HasDatabaseName("domain");
 
                 entity.HasIndex(e => e.Employeeid)
-                    .HasName("employeeid");
+                    .HasDatabaseName("employeeid");
 
                 entity.HasIndex(e => e.Enabledeliver)
-                    .HasName("enabledeliver");
+                    .HasDatabaseName("enabledeliver");
 
                 entity.HasIndex(e => e.Enabledoveadm)
-                    .HasName("enabledoveadm");
+                    .HasDatabaseName("enabledoveadm");
 
                 entity.HasIndex(e => e.Enableimap)
-                    .HasName("enableimap");
+                    .HasDatabaseName("enableimap");
 
                 entity.HasIndex(e => e.Enableimapsecured)
-                    .HasName("enableimapsecured");
+                    .HasDatabaseName("enableimapsecured");
 
                 entity.HasIndex(e => e.Enableinternal)
-                    .HasName("enableinternal");
+                    .HasDatabaseName("enableinternal");
 
                 entity.HasIndex(e => e.Enablelda)
-                    .HasName("enablelda");
+                    .HasDatabaseName("enablelda");
 
                 entity.HasIndex(e => e.EnablelibStorage)
-                    .HasName("enablelib-storage");
+                    .HasDatabaseName("enablelib-storage");
 
                 entity.HasIndex(e => e.Enablelmtp)
-                    .HasName("enablelmtp");
+                    .HasDatabaseName("enablelmtp");
 
                 entity.HasIndex(e => e.Enablemanagesieve)
-                    .HasName("enablemanagesieve");
+                    .HasDatabaseName("enablemanagesieve");
 
                 entity.HasIndex(e => e.Enablemanagesievesecured)
-                    .HasName("enablemanagesievesecured");
+                    .HasDatabaseName("enablemanagesievesecured");
 
                 entity.HasIndex(e => e.Enablepop3)
-                    .HasName("enablepop3");
+                    .HasDatabaseName("enablepop3");
 
                 entity.HasIndex(e => e.Enablepop3secured)
-                    .HasName("enablepop3secured");
+                    .HasDatabaseName("enablepop3secured");
 
                 entity.HasIndex(e => e.Enablesieve)
-                    .HasName("enablesieve");
+                    .HasDatabaseName("enablesieve");
 
                 entity.HasIndex(e => e.Enablesievesecured)
-                    .HasName("enablesievesecured");
+                    .HasDatabaseName("enablesievesecured");
 
                 entity.HasIndex(e => e.Enablesmtp)
-                    .HasName("enablesmtp");
+                    .HasDatabaseName("enablesmtp");
 
                 entity.HasIndex(e => e.Enablesmtpsecured)
-                    .HasName("enablesmtpsecured");
+                    .HasDatabaseName("enablesmtpsecured");
 
                 entity.HasIndex(e => e.Expired)
-                    .HasName("expired");
+                    .HasDatabaseName("expired");
 
                 entity.HasIndex(e => e.Isadmin)
-                    .HasName("isadmin");
+                    .HasDatabaseName("isadmin");
 
                 entity.HasIndex(e => e.Isglobaladmin)
-                    .HasName("isglobaladmin");
+                    .HasDatabaseName("isglobaladmin");
 
                 entity.HasIndex(e => e.Passwordlastchange)
-                    .HasName("passwordlastchange");
+                    .HasDatabaseName("passwordlastchange");
 
                 entity.Property(e => e.Username)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Active).HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.AllowNets)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Allowedrecipients)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Allowedsenders)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Created).HasDefaultValueSql("'0000-00-00 00:00:00'");
 
                 entity.Property(e => e.Department)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Disclaimer)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Domain)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Employeeid)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Enabledeliver).HasDefaultValueSql("'1'");
 
@@ -317,70 +317,70 @@ namespace ASC.Mail.Server.Core.Dao
                 entity.Property(e => e.Language)
                     .HasDefaultValueSql("'en_US'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Lastlogindate).HasDefaultValueSql("'0000-00-00 00:00:00'");
 
                 entity.Property(e => e.Lastloginprotocol)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LocalPart)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Maildir)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Modified).HasDefaultValueSql("'0000-00-00 00:00:00'");
 
                 entity.Property(e => e.Name)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Password)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Passwordlastchange).HasDefaultValueSql("'0000-00-00 00:00:00'");
 
                 entity.Property(e => e.Rank)
                     .HasDefaultValueSql("'normal'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Rejectedrecipients)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Rejectedsenders)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Settings)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Storagebasedirectory)
                     .HasDefaultValueSql("'/var/vmail'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Storagenode)
                     .HasDefaultValueSql("'vmail1'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Transport)
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             OnModelCreatingPartial(modelBuilder);

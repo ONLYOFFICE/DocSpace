@@ -36,7 +36,6 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
@@ -59,7 +58,7 @@ namespace ASC.Mail.Core.Engine
         private SecurityContext SecurityContext { get; }
         private TenantManager TenantManager { get; }
         private UserManager UserManager { get; }
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private MailboxEngine MailboxEngine { get; }
         private ServerMailboxEngine ServerMailboxEngine { get; }
         private ServerDomainEngine ServerDomainEngine { get; }
@@ -75,7 +74,7 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             TenantManager tenantManager,
             UserManager userManager,
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             MailboxEngine mailboxEngine,
             ServerMailboxEngine serverMailboxEngine,
             ServerDomainEngine serverDomainEngine,
@@ -83,14 +82,13 @@ namespace ASC.Mail.Core.Engine
             OperationEngine operationEngine,
             ApiHelper apiHelper,
             StorageFactory storageFactory,
-            //MailGarbageEraserConfig config, //TODO: think about setup config
             MailSettings mailSettings,
             IOptionsMonitor<ILog> option) : base(mailSettings)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             UserManager = userManager;
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
             MailboxEngine = mailboxEngine;
             ServerMailboxEngine = serverMailboxEngine;
             ServerDomainEngine = serverDomainEngine;
@@ -99,13 +97,11 @@ namespace ASC.Mail.Core.Engine
             ApiHelper = apiHelper;
             StorageFactory = storageFactory;
 
-            //Config = MailGarbageEraserConfig.FromConfig();
-
             Log = option.Get("ASC.Mail.GarbageEngine");
 
             TenantMemCache = new MemoryCache("GarbageEraserTenantCache");
 
-            var scheduler = new LimitedConcurrencyLevelTaskScheduler(MailSettings.MaxTasksAtOnce);
+            var scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, MailSettings.Aggregator.MaxTasksAtOnce).ConcurrentScheduler;
 
             TaskFactory = new TaskFactory(scheduler);
 
@@ -137,7 +133,7 @@ namespace ASC.Mail.Core.Engine
 
                     tasks.Add(task);
 
-                    if (tasks.Count == MailSettings.MaxTasksAtOnce)
+                    if (tasks.Count == MailSettings.Cleaner.MaxTasksAtOnce)
                     {
                         Log.Info("Wait all tasks to complete");
 
@@ -241,14 +237,14 @@ namespace ASC.Mail.Core.Engine
         {
             try
             {
-                using (var tx = DaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
+                using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    DaoFactory.ServerDomainDao.Delete(domain.Id);
+                    MailDaoFactory.GetServerDomainDao().Delete(domain.Id);
 
                     if (!skipMS)
                     {
 
-                        var server = DaoFactory.ServerDao.Get(domain.Tenant);
+                        var server = MailDaoFactory.GetServerDao().Get(domain.Tenant);
 
                         if (server == null)
                             throw new Exception(string.Format("Information for Tenant's Mail Server not found (Tenant = {0})", domain.Tenant));
@@ -322,16 +318,16 @@ namespace ASC.Mail.Core.Engine
                 {
                     taskLog.InfoFormat("Tenant {0} isn't in cache", mailbox.TenantId);
 
-                    taskLog.DebugFormat("GetTenantStatus(OverdueDays={0})", MailSettings.TenantOverdueDays);
+                    taskLog.DebugFormat("GetTenantStatus(OverdueDays={0})", MailSettings.Cleaner.TenantOverdueDays);
 
-                    type = mailbox.GetTenantStatus(TenantManager, SecurityContext, ApiHelper, (int)MailSettings.TenantOverdueDays, Log);
+                    type = mailbox.GetTenantStatus(TenantManager, SecurityContext, ApiHelper, (int)MailSettings.Cleaner.TenantOverdueDays, Log);
 
                     var cacheItem = new CacheItem(mailbox.TenantId.ToString(CultureInfo.InvariantCulture), type);
 
                     var cacheItemPolicy = new CacheItemPolicy
                     {
                         AbsoluteExpiration =
-                            DateTimeOffset.UtcNow.AddDays((int)MailSettings.CleanerTenantCacheDays)
+                            DateTimeOffset.UtcNow.AddDays((int)MailSettings.Cleaner.TenantCacheDays)
                     };
 
                     TenantMemCache.Add(cacheItem, cacheItemPolicy);
@@ -368,9 +364,6 @@ namespace ASC.Mail.Core.Engine
 
         private void ClearGarbage(MailBoxData mailbox)
         {
-            /*var taskLog =
-                LogManager.GetLogger(string.Format("ASC.Mail Mbox_{0} Task_{1}", mailbox.MailBoxId, Task.CurrentId));*/
-
             Log.InfoFormat("Processing MailboxId = {0}, email = '{1}', tenant = '{2}', user = '{3}'",
                 mailbox.MailBoxId, mailbox.EMail.Address, mailbox.TenantId, mailbox.UserId);
 
@@ -387,7 +380,7 @@ namespace ASC.Mail.Core.Engine
                 }
                 else
                 {
-                    RemoveGarbageMailData(mailbox, (int)MailSettings.CleanerGarbageOverdueDays, Log);
+                    RemoveGarbageMailData(mailbox, (int)MailSettings.Cleaner.GarbageOverdueDays, Log);
                 }
 
                 Log.InfoFormat("Mailbox {0} processing complete.", mailbox.MailBoxId);
@@ -436,7 +429,7 @@ namespace ASC.Mail.Core.Engine
                 log.Debug("GetMailboxAttachsCount()");
 
 
-                var countAttachs = DaoFactory.MailGarbageDao.GetMailboxAttachsCount(mailbox);
+                var countAttachs = MailDaoFactory.GetMailGarbageDao().GetMailboxAttachsCount(mailbox);
 
                 log.InfoFormat("Found {0} garbage attachments", countAttachs);
 
@@ -444,9 +437,9 @@ namespace ASC.Mail.Core.Engine
                 {
                     var sumCount = 0;
 
-                    log.DebugFormat("GetMailboxAttachsGarbage(limit = {0})", MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                    log.DebugFormat("GetMailboxAttachsGarbage(limit = {0})", MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
-                    var attachGrbgList = DaoFactory.MailGarbageDao.GetMailboxAttachs(mailbox, (int)MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                    var attachGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                     sumCount += attachGrbgList.Count;
 
@@ -461,11 +454,11 @@ namespace ASC.Mail.Core.Engine
 
                         log.Debug("CleanupMailboxAttachs()");
 
-                        DaoFactory.MailGarbageDao.CleanupMailboxAttachs(attachGrbgList);
+                        MailDaoFactory.GetMailGarbageDao().CleanupMailboxAttachs(attachGrbgList);
 
                         log.Debug("GetMailboxAttachs()");
 
-                        attachGrbgList = DaoFactory.MailGarbageDao.GetMailboxAttachs(mailbox, (int)MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                        attachGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                         if (!attachGrbgList.Any()) continue;
 
@@ -478,7 +471,7 @@ namespace ASC.Mail.Core.Engine
 
                 log.Debug("GetMailboxMessagesCount()");
 
-                var countMessages = DaoFactory.MailGarbageDao.GetMailboxMessagesCount(mailbox);
+                var countMessages = MailDaoFactory.GetMailGarbageDao().GetMailboxMessagesCount(mailbox);
 
                 log.InfoFormat("Found {0} garbage messages", countMessages);
 
@@ -486,9 +479,9 @@ namespace ASC.Mail.Core.Engine
                 {
                     var sumCount = 0;
 
-                    log.DebugFormat("GetMailboxMessagesGarbage(limit = {0})", MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                    log.DebugFormat("GetMailboxMessagesGarbage(limit = {0})", MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
-                    var messageGrbgList = DaoFactory.MailGarbageDao.GetMailboxMessages(mailbox, (int)MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                    var messageGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                     sumCount += messageGrbgList.Count;
 
@@ -503,11 +496,11 @@ namespace ASC.Mail.Core.Engine
 
                         log.Debug("CleanupMailboxMessages()");
 
-                        DaoFactory.MailGarbageDao.CleanupMailboxMessages(messageGrbgList);
+                        MailDaoFactory.GetMailGarbageDao().CleanupMailboxMessages(messageGrbgList);
 
                         log.Debug("GetMailboxMessages()");
 
-                        messageGrbgList = DaoFactory.MailGarbageDao.GetMailboxMessages(mailbox, (int)MailSettings.CleanerMaxFilesToRemoveAtOnce);
+                        messageGrbgList = MailDaoFactory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                         if (!messageGrbgList.Any()) continue;
 
@@ -537,54 +530,54 @@ namespace ASC.Mail.Core.Engine
             if (!mailbox.IsRemoved)
                 throw new Exception("Mailbox is not removed.");
 
-            var MailDb = DaoFactory.MailDb;
+            var MailDbContext = MailDaoFactory.GetContext();
 
-            using var tx = DaoFactory.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted);
+            using var tx = MailDaoFactory.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted);
 
             var exp = new СoncreteUserMailboxExp(mailbox.MailBoxId, mailbox.TenantId, mailbox.UserId, true);
 
-            var mb = DaoFactory.MailboxDao.GetMailBox(exp);
+            var mb = MailDaoFactory.GetMailboxDao().GetMailBox(exp);
 
-            var deleteMailboxMessagesQuery = MailDb.MailMail
+            var deleteMailboxMessagesQuery = MailDbContext.MailMail
                 .Where(m => m.IdMailbox == mb.Id && m.TenantId == mb.Tenant && m.IdUser == mb.User);
 
-            MailDb.MailMail.RemoveRange(deleteMailboxMessagesQuery);
+            MailDbContext.MailMail.RemoveRange(deleteMailboxMessagesQuery);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
-            var deleteMailboxAttachmentsQuery = MailDb.MailAttachment
+            var deleteMailboxAttachmentsQuery = MailDbContext.MailAttachment
                 .Where(a => a.IdMailbox == mb.Id && a.Tenant == mb.Tenant);
 
-            MailDb.MailAttachment.RemoveRange(deleteMailboxAttachmentsQuery);
+            MailDbContext.MailAttachment.RemoveRange(deleteMailboxAttachmentsQuery);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
-            DaoFactory.MailboxDao.RemoveMailbox(mb);
+            MailDaoFactory.GetMailboxDao().RemoveMailbox(mb);
 
             if (totalRemove)
             {
-                DaoFactory.FolderDao.Delete();
+                MailDaoFactory.GetFolderDao().Delete();
 
-                var deleteContactInfoQuery = MailDb.MailContactInfo
+                var deleteContactInfoQuery = MailDbContext.MailContactInfo
                     .Where(c => c.IdUser == mb.User && c.TenantId == mb.Tenant);
 
-                MailDb.MailContactInfo.RemoveRange(deleteContactInfoQuery);
+                MailDbContext.MailContactInfo.RemoveRange(deleteContactInfoQuery);
 
-                MailDb.SaveChanges();
+                MailDbContext.SaveChanges();
 
-                var deleteContactsQuery = MailDb.MailContacts
+                var deleteContactsQuery = MailDbContext.MailContacts
                     .Where(c => c.IdUser == mb.User && c.TenantId == mb.Tenant);
 
-                MailDb.MailContacts.RemoveRange(deleteContactsQuery);
+                MailDbContext.MailContacts.RemoveRange(deleteContactsQuery);
 
-                MailDb.SaveChanges();
+                MailDbContext.SaveChanges();
 
-                var deleteDisplayImagesQuery = MailDb.MailDisplayImages
+                var deleteDisplayImagesQuery = MailDbContext.MailDisplayImages
                    .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
 
-                MailDb.MailDisplayImages.RemoveRange(deleteDisplayImagesQuery);
+                MailDbContext.MailDisplayImages.RemoveRange(deleteDisplayImagesQuery);
 
-                MailDb.SaveChanges();
+                MailDbContext.SaveChanges();
             }
 
             tx.Commit();

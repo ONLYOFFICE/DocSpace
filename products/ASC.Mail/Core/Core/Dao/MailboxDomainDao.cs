@@ -46,7 +46,7 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxDomain GetDomain(string domainName)
         {
-            var domain = MailDb.MailMailboxDomain
+            var domain = MailDbContext.MailMailboxDomain
                 .Where(d => d.Name == domainName)
                 .Select(ToMailboxDomain)
                 .FirstOrDefault();
@@ -63,9 +63,9 @@ namespace ASC.Mail.Core.Dao
                 Name = domain.Name
             };
 
-            var result = MailDb.MailMailboxDomain.Add(mailboxDomain).Entity;
+            var result = MailDbContext.MailMailboxDomain.Add(mailboxDomain).Entity;
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return result.Id;
         }

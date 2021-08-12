@@ -32,17 +32,17 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailAlert>(entity =>
             {
                 entity.HasIndex(e => new { e.Tenant, e.IdUser, e.IdMailbox, e.Type })
-                    .HasName("tenant_id_user_id_mailbox_type");
+                    .HasDatabaseName("tenant_id_user_id_mailbox_type");
 
                 entity.Property(e => e.Data)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IdMailbox).HasDefaultValueSql("'-1'");
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

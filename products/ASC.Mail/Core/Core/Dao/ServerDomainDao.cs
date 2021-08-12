@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -49,7 +50,8 @@ namespace ASC.Mail.Core.Dao
 
         public int Save(ServerDomain domain)
         {
-            var mailServerDomain = new MailServerDomain { 
+            var mailServerDomain = new MailServerDomain
+            {
                 Id = domain.Id,
                 Name = domain.Name,
                 Tenant = domain.Tenant,
@@ -61,9 +63,9 @@ namespace ASC.Mail.Core.Dao
                 mailServerDomain.DateAdded = DateTime.UtcNow;
             }
 
-            var entry = MailDb.MailServerDomain.Add(mailServerDomain).Entity;
+            var entry = MailDbContext.MailServerDomain.Add(mailServerDomain).Entity;
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
@@ -76,9 +78,9 @@ namespace ASC.Mail.Core.Dao
                 Tenant = Tenant
             };
 
-            MailDb.MailServerDomain.Remove(mailServerDomain);
+            MailDbContext.MailServerDomain.Remove(mailServerDomain);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             var mailServerDns = new MailServerDns
             {
@@ -86,9 +88,9 @@ namespace ASC.Mail.Core.Dao
                 Tenant = Tenant
             };
 
-            MailDb.MailServerDns.Remove(mailServerDns);
+            MailDbContext.MailServerDns.Remove(mailServerDns);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return result;
         }
@@ -97,7 +99,7 @@ namespace ASC.Mail.Core.Dao
         {
             var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
-            var list = MailDb.MailServerDomain
+            var list = MailDbContext.MailServerDomain
                 .Where(d => tenants.Contains(d.Tenant))
                 .Select(ToServerDomain)
                 .ToList();
@@ -107,7 +109,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerDomain> GetAllDomains()
         {
-            var list = MailDb.MailServerDomain
+            var list = MailDbContext.MailServerDomain
                 .Select(ToServerDomain)
                 .ToList();
 
@@ -118,9 +120,8 @@ namespace ASC.Mail.Core.Dao
         {
             var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
-            var domain = MailDb.MailServerDomain
-                .Where(d => tenants.Contains(d.Tenant))
-                .Where(d => d.Id == id)
+            var domain = MailDbContext.MailServerDomain
+                .Where(d => tenants.Contains(d.Tenant) && d.Id == id)
                 .Select(ToServerDomain)
                 .SingleOrDefault();
 
@@ -129,7 +130,7 @@ namespace ASC.Mail.Core.Dao
 
         public bool IsDomainExists(string name)
         {
-            var domain = MailDb.MailServerDomain
+            var domain = MailDbContext.MailServerDomain
                 .Where(d => d.Name == name)
                 .Select(ToServerDomain)
                 .SingleOrDefault();
@@ -144,7 +145,7 @@ namespace ASC.Mail.Core.Dao
             domain.IsVerified = isVerified;
             domain.DateChecked = DateTime.UtcNow;
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

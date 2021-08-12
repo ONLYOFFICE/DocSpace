@@ -49,7 +49,7 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxAutoreply GetAutoreply(Mailbox mailbox)
         {
-            var autoreply = MailDb.MailMailboxAutoreply
+            var autoreply = MailDbContext.MailMailboxAutoreply
                 .Where(a => a.Tenant == mailbox.Tenant && a.IdMailbox == mailbox.Id)
                 .Select(ToAutoreply)
                 .DefaultIfEmpty(new MailboxAutoreply
@@ -71,7 +71,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<MailboxAutoreply> GetAutoreplies(List<int> mailboxIds)
         {
-            var autoreplies = MailDb.MailMailboxAutoreply
+            var autoreplies = MailDbContext.MailMailboxAutoreply
                 .Where(a => a.Tenant == Tenant && mailboxIds.Contains(a.IdMailbox))
                 .Select(ToAutoreply)
                 .ToList();
@@ -99,7 +99,7 @@ namespace ASC.Mail.Core.Dao
 
         public int SaveAutoreply(MailboxAutoreply autoreply)
         {
-            MailDb.MailMailboxAutoreply.Add(new MailMailboxAutoreply
+            MailDbContext.MailMailboxAutoreply.Add(new MailMailboxAutoreply
             {
                 IdMailbox = autoreply.MailboxId,
                 Tenant = autoreply.Tenant,
@@ -112,21 +112,21 @@ namespace ASC.Mail.Core.Dao
                 Html = autoreply.Html
             });
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
 
         public int DeleteAutoreply(int mailboxId)
         {
-            using var tr = MailDb.Database.BeginTransaction();
+            using var tr = MailDbContext.Database.BeginTransaction();
 
-            var range = MailDb.MailMailboxAutoreply
+            var range = MailDbContext.MailMailboxAutoreply
                 .Where(r => r.Tenant == Tenant && r.IdMailbox == mailboxId);
 
-            MailDb.MailMailboxAutoreply.RemoveRange(range);
+            MailDbContext.MailMailboxAutoreply.RemoveRange(range);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             tr.Commit();
 

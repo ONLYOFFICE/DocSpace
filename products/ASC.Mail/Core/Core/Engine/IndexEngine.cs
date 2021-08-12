@@ -27,56 +27,65 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
-using ASC.Mail.Models;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
-using ASC.Common;
+using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Search;
+using ASC.Mail.Models;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
     [Scope]
     public class IndexEngine
     {
-        private SecurityContext SecurityContext { get; }
-        private TenantManager TenantManager { get; }
-        private DaoFactory DaoFactory { get; }
-        private FactoryIndexer<MailMail> FactoryIndexerHelper { get; }
+        private FactoryIndexerMailMail FactoryIndexerMailMail { get; }
+        private FactoryIndexerMailContact FactoryIndexerMailContact { get; }
         private FactoryIndexer FactoryIndexerCommon { get; }
+        private FactoryIndexer Indexer { get; }
         private IServiceProvider ServiceProvider { get; }
+        public Lazy<MailDbContext> LazyMailDbContext { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
         private ILog Log { get; }
 
         public IndexEngine(
-            SecurityContext securityContext,
-            TenantManager tenantManager,
-            DaoFactory daoFactory,
-            FactoryIndexer<MailMail> factoryIndexerHelper,
+            FactoryIndexerMailMail factoryIndexerMailMail,
+            FactoryIndexerMailContact factoryIndexerMailContact,
             FactoryIndexer factoryIndexerCommon,
             IServiceProvider serviceProvider,
+            DbContextManager<MailDbContext> dbContext,
+            IMailDaoFactory mailDaoFactory,
             IOptionsMonitor<ILog> option)
         {
-            SecurityContext = securityContext;
-            TenantManager = tenantManager;
-            DaoFactory = daoFactory;
-            FactoryIndexerHelper = factoryIndexerHelper;
+            FactoryIndexerMailMail = factoryIndexerMailMail;
+            FactoryIndexerMailContact = factoryIndexerMailContact;
             FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;
+            LazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("mail"));
+            MailDaoFactory = mailDaoFactory;
             Log = option.Get("ASC.Mail.IndexEngine");
         }
 
         public bool IsIndexAvailable()
         {
-            //var t = ServiceProvider.GetService<MailMail>();
-            //if (!FactoryIndexerHelper.Support(t))
-            //{
-            //    Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer<MailWrapper>.Support == false");
-            //    return false;
-            //}
+            var service = ServiceProvider.GetService<MailMail>();
+
+            if (!FactoryIndexerMailMail.Support(service))
+            {
+                Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer<MailWrapper>.Support == false");
+                return false;
+            }
 
             //if (!FactoryIndexerCommon.CheckState(false))
             //{
@@ -89,26 +98,86 @@ namespace ASC.Mail.Core.Engine
 
         public void Add<T>(T data) where T : class, ISearchItem, new()
         {
-            var typeParameterType = typeof(T);
-
             try
             {
-                if (data == null)
-                    throw new ArgumentNullException("data");
+                if (data == null) throw new ArgumentNullException(nameof(data));
 
-                if (!IsIndexAvailable())
-                    return;
+                if (!IsIndexAvailable()) return;
 
-                var indexer = ServiceProvider.GetService<FactoryIndexer<T>>();
+                var entityType = data.GetType();
 
-                indexer.Index(data);
+                if (entityType == typeof(MailMail))
+                {
+                    var indexer = ServiceProvider.GetService<FactoryIndexerMailMail>();
+                    var mail = data as MailMail;
+                    indexer.Index(InitMailDocument(mail));
+                }
+                else if (entityType == typeof(MailContact))
+                {
+                    var indexer = ServiceProvider.GetService<FactoryIndexerMailContact>();
+                    var contact = data as MailContact;
+                    indexer.Index(contact);
+                }
+                else
+                {
+                    //?? some other entities with index
+                }
 
-                Log.InfoFormat("IndexEngine->Add<{0}>(mail Id = {1}) success", typeParameterType, data == null ? -1 : data.Id);
+                Log.InfoFormat("IndexEngine->Add<{0}>(mail Id = {1}) success", typeof(T), data == null ? -1 : data.Id);
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("IndexEngine->Add<{0}>(mail Id = {1}) error: {2}", typeParameterType, data == null ? -1 : data.Id, ex.ToString());
+                Log.ErrorFormat("IndexEngine->Add<{0}>(mail Id = {1}) error: {2}", typeof(T), data == null ? -1 : data.Id, ex.ToString());
             }
+        }
+
+        private MailMail InitMailDocument(MailMail mail)
+        {
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+            tenantManager.SetCurrentTenant(mail.TenantId);
+
+            mail.Document = new Document
+            {
+                Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
+            };
+
+            if (!FactoryIndexerMailMail.CanIndexByContent()) return mail;
+
+            try
+            {
+                var data = MailDaoFactory.GetMailDao().GetDocumentData(mail);
+
+                if (!string.IsNullOrEmpty(data))
+                {
+                    mail.Document.Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(data));
+                    return mail;
+                }
+
+                using (var stream = MailDaoFactory.GetMailDao().GetDocumentStream(mail))
+                {
+                    if (stream == null) return mail;
+
+                    using (var ms = new MemoryStream())
+                    {
+                        stream.CopyTo(ms);
+                        mail.Document.Data = Convert.ToBase64String(ms.GetBuffer());
+                    }
+                }
+
+                return mail;
+            }
+            catch (FileNotFoundException e)
+            {
+                Log.Error("InitDocument FileNotFoundException", e);
+            }
+            catch (Exception e)
+            {
+                Log.Error("InitDocument", e);
+            }
+
+            return mail;
         }
 
         public void Update(List<MailMail> mails, UpdateAction action, Expression<Func<MailMail, IList>> fields)

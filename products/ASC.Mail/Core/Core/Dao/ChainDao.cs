@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ASC.Api.Core;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -53,7 +53,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Chain> GetChains(IConversationsExp exp)
         {
-            var chains = MailDb.MailChain
+            var chains = MailDbContext.MailChain
                 .Where(exp.GetExpression())
                 .Select(ToChain)
                 .ToList();
@@ -63,7 +63,7 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetChainCount(IConversationsExp exp)
         {
-            var dictionary = MailDb.MailChain
+            var dictionary = MailDbContext.MailChain
                     .Where(exp.GetExpression())
                     .GroupBy(c => c.Folder, (folderId, c) =>
                     new
@@ -78,22 +78,21 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetChainUserFolderCount(bool? unread = null)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+            var query = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
                     Mail = m
                 })
-                .Join(MailDb.MailChain, x => x.Mail.ChainId, c => c.Id,
+                .Join(MailDbContext.MailChain, x => x.Mail.ChainId, c => c.Id,
                 (x, c) => new
                 {
                     x.UFxMail,
                     x.Mail,
                     Chain = c
                 })
-                .Where(t => t.UFxMail.Tenant == Tenant)
-                .Where(t => t.UFxMail.IdUser == UserId);
+                .Where(t => t.UFxMail.Tenant == Tenant && t.UFxMail.IdUser == UserId);
 
             if (unread.HasValue)
             {
@@ -112,23 +111,25 @@ namespace ASC.Mail.Core.Dao
 
         public Dictionary<int, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
-            var query = MailDb.MailUserFolderXMail
-                .Join(MailDb.MailMail, x => (int)x.IdMail, m => m.Id,
+            var query = MailDbContext.MailUserFolderXMail
+                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
                     Mail = m
                 })
-                .Join(MailDb.MailChain, x => x.Mail.ChainId, c => c.Id, 
-                (x, c) => new 
+                .Join(MailDbContext.MailChain, x => x.Mail.ChainId, c => c.Id,
+                (x, c) => new
                 {
                     x.UFxMail,
                     x.Mail,
                     Chain = c
                 })
-                .Where(t => t.UFxMail.Tenant == Tenant)
-                .Where(t => t.UFxMail.IdUser == UserId)
-                .Where(t => userFolderIds.Contains((int)t.UFxMail.IdFolder));
+                .Where(t =>
+                t.UFxMail.Tenant == Tenant
+                && t.UFxMail.IdUser == UserId
+                && userFolderIds.Contains(t.UFxMail.IdFolder));
+
 
             if (unread.HasValue)
             {
@@ -147,7 +148,8 @@ namespace ASC.Mail.Core.Dao
 
         public int SaveChain(Chain chain)
         {
-            var mailChain = new MailChain { 
+            var mailChain = new MailChain
+            {
                 Id = chain.Id,
                 IdMailbox = (uint)chain.MailboxId,
                 Tenant = (uint)chain.Tenant,
@@ -160,20 +162,20 @@ namespace ASC.Mail.Core.Dao
                 Tags = chain.Tags
             };
 
-            var entry = MailDb.AddOrUpdate(c => c.MailChain, mailChain);
+            var entry = MailDbContext.AddOrUpdate(c => c.MailChain, mailChain);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
 
         public int Delete(IConversationsExp exp)
         {
-            var query = MailDb.MailChain.Where(exp.GetExpression());
+            var query = MailDbContext.MailChain.Where(exp.GetExpression());
 
-            MailDb.MailChain.RemoveRange(query);
+            MailDbContext.MailChain.RemoveRange(query);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
@@ -186,7 +188,7 @@ namespace ASC.Mail.Core.Dao
             if (pi == null)
                 throw new ArgumentException("Field not found");
 
-            var chains = MailDb.MailChain
+            var chains = MailDbContext.MailChain
                 .Where(exp.GetExpression())
                 .ToList();
 
@@ -195,7 +197,7 @@ namespace ASC.Mail.Core.Dao
                 pi.SetValue(chain, Convert.ChangeType(value, pi.PropertyType), null);
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -208,7 +210,7 @@ namespace ASC.Mail.Core.Dao
                 MailboxId = (int)r.IdMailbox,
                 Tenant = (int)r.Tenant,
                 User = r.IdUser,
-                Folder = (FolderType) r.Folder,
+                Folder = (FolderType)r.Folder,
                 Length = (int)r.Length,
                 Unread = r.Unread,
                 HasAttachments = r.HasAttachments,

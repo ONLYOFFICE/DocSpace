@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Dao.Entities;
@@ -36,6 +37,7 @@ using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
+
 using MimeKit;
 
 namespace ASC.Mail.Utils
@@ -193,7 +195,7 @@ namespace ASC.Mail.Utils
             return format.Replace("%EMAILDOMAIN%", host);
         }
 
-        public static MailMail ToMailWrapper(this MailMessageData message, int tenant, Guid userId)
+        public static MailMail ToMailMail(this MailMessageData message, int tenant, Guid userId)
         {
             var now = DateTime.UtcNow;
 
@@ -251,16 +253,16 @@ namespace ASC.Mail.Utils
             return mail;
         }
 
-        public static MailMessageData ConvertToMailMessage(this MimeMessage mimeMessage, 
+        public static MailMessageData ConvertToMailMessage(this MimeMessage mimeMessage,
             TenantManager tenantManager, CoreSettings coreSettings,
-            Models.MailFolder folder, bool unread, string chainId, DateTime? chainDate, string streamId, int mailboxId, 
+            Models.MailFolder folder, bool unread, string chainId, DateTime? chainDate, string streamId, int mailboxId,
             bool createFailedFake = true, ILog log = null)
         {
             MailMessageData message;
 
             try
             {
-                message = mimeMessage.CreateMailMessage(tenantManager, coreSettings, 
+                message = mimeMessage.CreateMailMessage(tenantManager, coreSettings,
                     mailboxId, folder.Folder, unread, chainId, chainDate, streamId, log);
             }
             catch (Exception ex)
@@ -274,7 +276,7 @@ namespace ASC.Mail.Utils
 
                 logger.Debug("Creating fake message with original MimeMessage in attachments");
 
-                message = mimeMessage.CreateCorruptedMesage(tenantManager, coreSettings, 
+                message = mimeMessage.CreateCorruptedMesage(tenantManager, coreSettings,
                     folder.Folder, unread, chainId, streamId);
             }
 

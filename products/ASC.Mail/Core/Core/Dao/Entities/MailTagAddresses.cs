@@ -36,7 +36,7 @@ namespace ASC.Mail.Core.Dao.Entities
 
                 entity.Property(e => e.Address)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

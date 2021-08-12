@@ -26,13 +26,14 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
-using ASC.Mail.Storage;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
+using ASC.Mail.Storage;
 using ASC.Mail.Utils;
 
 namespace ASC.Mail.Core.Engine
@@ -63,10 +64,6 @@ namespace ASC.Mail.Core.Engine
             ApiHelper = apiHelper;
             MessageEngine = messageEngine;
             StorageFactory = storageFactory;
-
-            //TenantManager.SetCurrentTenant(Tenant);
-            //SecurityContext.AuthenticateMe(new Guid(_userId));
-            //if (SecurityContext.IsAuthenticated) return;
         }
 
         public List<object> StoreAttachmentsToMyDocuments(int messageId)
@@ -110,7 +107,7 @@ namespace ASC.Mail.Core.Engine
 
             using var file = mailAttachmentData.ToAttachmentStream(dataStore);
 
-            var uploadedFileId = ApiHelper.UploadToDocuments(file.FileStream, file.FileName, 
+            var uploadedFileId = ApiHelper.UploadToDocuments(file.FileStream, file.FileName,
                 mailAttachmentData.contentType, folderId, true);
 
             return uploadedFileId;

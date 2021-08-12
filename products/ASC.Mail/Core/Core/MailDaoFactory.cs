@@ -2,9 +2,12 @@
 using System;
 
 using ASC.Common;
+using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Interfaces;
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Mail.Core
@@ -13,10 +16,19 @@ namespace ASC.Mail.Core
     public class MailDaoFactory : IMailDaoFactory
     {
         private IServiceProvider ServiceProvider { get; }
+        private MailDbContext MailDbContext { get; }
 
-        public MailDaoFactory(IServiceProvider serviceProvider)
+        public MailDaoFactory(
+            IServiceProvider serviceProvider,
+            DbContextManager<MailDbContext> dbContextManager)
         {
             ServiceProvider = serviceProvider;
+            MailDbContext = dbContextManager.Get("mail");
+        }
+
+        public MailDbContext GetContext()
+        {
+            return MailDbContext;
         }
 
         public IAccountDao GetAccountDao()
@@ -192,6 +204,11 @@ namespace ASC.Mail.Core
         public IUserFolderXMailDao GetUserFolderXMailDao()
         {
             return ServiceProvider.GetService<IUserFolderXMailDao>();
+        }
+
+        public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel? level = null)
+        {
+            return level.HasValue ? MailDbContext.Database.BeginTransaction(level.Value) : MailDbContext.Database.BeginTransaction();
         }
     }
     public class MailDaoFactoryExtension

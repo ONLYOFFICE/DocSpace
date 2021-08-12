@@ -48,7 +48,7 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxServer GetServer(int id)
         {
-            var server = MailDb.MailMailboxServer
+            var server = MailDbContext.MailMailboxServer
                 .Where(s => s.Id == id)
                 .Select(ToMailboxServer)
                 .FirstOrDefault();
@@ -58,7 +58,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<MailboxServer> GetServers(int providerId, bool isUserData = false)
         {
-            var servers = MailDb.MailMailboxServer
+            var servers = MailDbContext.MailMailboxServer
                .Where(s => s.IdProvider == providerId && s.IsUserData == isUserData)
                .Select(ToMailboxServer)
                .ToList();
@@ -81,23 +81,23 @@ namespace ASC.Mail.Core.Dao
                 IsUserData = mailboxServer.IsUserData
             };
 
-            var result = MailDb.MailMailboxServer.Add(server).Entity;
+            var result = MailDbContext.MailMailboxServer.Add(server).Entity;
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return result.Id;
         }
 
         public int DeleteServer(int id)
         {
-            var server = MailDb.MailMailboxServer
+            var server = MailDbContext.MailMailboxServer
                .Where(s => s.Id == id)
                .First();
 
 
-            var result = MailDb.MailMailboxServer.Remove(server);
+            var result = MailDbContext.MailMailboxServer.Remove(server);
 
-            return MailDb.SaveChanges();
+            return MailDbContext.SaveChanges();
         }
 
         protected MailboxServer ToMailboxServer(MailMailboxServer r)

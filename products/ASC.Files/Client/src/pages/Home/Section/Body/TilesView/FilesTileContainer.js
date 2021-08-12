@@ -1,77 +1,39 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 
-const FilesTileContainer = (props) => {
-  return;
-  <>
-    {/*<TileContainer
-      className="tileContainer"
-      draggable
-      useReactWindow={false}
-      headingFolders={t("Translations:Folders")}
-      headingFiles={t("Translations:Files")}
-    >
-      {items.map((item) => {
-        const { checked, isFolder, value, contextOptions } = item;
-        const isEdit =
-          !!fileActionType &&
-          editingId === item.id &&
-          item.fileExst === fileActionExtension;
-        const contextOptionsProps =
-          !isEdit && contextOptions && contextOptions.length > 0
-            ? {
-                contextOptions: this.getFilesContextOptions(
-                  contextOptions,
-                  item
-                ),
-              }
-            : {};
-        const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
-        const element = this.getItemIcon(item, isEdit || item.id <= 0);
+import { Consumer } from "@appserver/components/utils/context";
 
-        let classNameProp =
-          isFolder && item.access < 2 && !isRecycleBin
-            ? { className: " droppable" }
-            : {};
+import TileContainer from "./sub-components/TileContainer";
+import FileTile from "./FileTile";
 
-        if (item.draggable) classNameProp.className += " draggable";
-
-        return (
-          <DragAndDrop
-            {...classNameProp}
-            onDrop={this.onDrop.bind(this, item)}
-            onMouseDown={this.onMouseDown}
-            dragging={dragging && isFolder && item.access < 2}
-            key={`dnd-key_${item.id}`}
-            {...contextOptionsProps}
-            value={value}
-            isFolder={isFolder}
-          >
-            <Tile
-              key={item.id}
+const FilesTileContainer = ({ filesList, t }) => {
+  return (
+    <Consumer>
+      {(context) => (
+        <TileContainer
+          className="tile-container"
+          draggable
+          useReactWindow={false}
+          headingFolders={t("Folders")}
+          headingFiles={t("Files")}
+        >
+          {filesList.map((item, index) => (
+            <FileTile
+              key={`${item.id}_${index}`}
               item={item}
-              isFolder={!item.fileExst}
-              element={element}
-              onSelect={this.onContentRowSelect}
-              editing={editingId}
-              viewAs={viewAs}
-              {...checkedProps}
-              {...contextOptionsProps}
-              //needForUpdate={this.needForUpdate}
-            >
-              <FilesTileContent
-                item={item}
-                viewer={viewer}
-                culture={culture}
-                onEditComplete={this.onEditComplete}
-                onMediaFileClick={this.onMediaFileClick}
-                openDocEditor={this.openDocEditor}
-              />
-            </Tile>
-          </DragAndDrop>
-        );
-      })}
-    </TileContainer>*/}
-  </>;
+              sectionWidth={context.sectionWidth}
+            />
+          ))}
+        </TileContainer>
+      )}
+    </Consumer>
+  );
 };
 
-export default FilesTileContainer;
+export default inject(({ filesStore }) => {
+  const { filesList } = filesStore;
+
+  return {
+    filesList,
+  };
+})(observer(FilesTileContainer));

@@ -24,15 +24,18 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -49,10 +52,10 @@ namespace ASC.Mail.Core.Dao
 
         public List<string> GetAutoreplyHistorySentEmails(int mailboxId, string email, int autoreplyDaysInterval)
         {
-            var emails = MailDb.MailMailboxAutoreplyHistory
+            var emails = MailDbContext.MailMailboxAutoreplyHistory
                 .Where(h => h.IdMailbox == mailboxId
                     && h.SendingEmail == email
-                    && (DateTime.UtcNow - h.SendingDate).TotalDays <= autoreplyDaysInterval)
+                    && EF.Functions.DateDiffDay(h.SendingDate, DateTime.UtcNow) <= autoreplyDaysInterval)
                 .Select(h => h.SendingEmail)
                 .ToList();
 
@@ -69,9 +72,9 @@ namespace ASC.Mail.Core.Dao
                 SendingDate = autoreplyHistory.SendingDate
             };
 
-            MailDb.MailMailboxAutoreplyHistory.Add(model);
+            MailDbContext.MailMailboxAutoreplyHistory.Add(model);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }
@@ -84,9 +87,9 @@ namespace ASC.Mail.Core.Dao
                 Tenant = Tenant
             };
 
-            MailDb.MailMailboxAutoreplyHistory.Remove(model);
+            MailDbContext.MailMailboxAutoreplyHistory.Remove(model);
 
-            var count = MailDb.SaveChanges();
+            var count = MailDbContext.SaveChanges();
 
             return count;
         }

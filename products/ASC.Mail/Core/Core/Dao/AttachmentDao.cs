@@ -24,6 +24,9 @@
 */
 
 
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -31,9 +34,8 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -44,13 +46,13 @@ namespace ASC.Mail.Core.Dao
              TenantManager tenantManager,
              SecurityContext securityContext,
              DbContextManager<MailDbContext> dbContext)
-            : base(tenantManager, securityContext, dbContext) 
-        { 
+            : base(tenantManager, securityContext, dbContext)
+        {
         }
 
         public Attachment GetAttachment(IAttachmentExp exp)
         {
-            var attachemnt = MailDb.MailAttachment
+            var attachemnt = MailDbContext.MailAttachment
                     .Include(a => a.Mail)
                     .Where(exp.GetExpression())
                     .Select(ToAttachment)
@@ -61,7 +63,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<Attachment> GetAttachments(IAttachmentsExp exp)
         {
-            var attachemnts = MailDb.MailAttachment
+            var attachemnts = MailDbContext.MailAttachment
                     .Include(a => a.Mail)
                     .Where(exp.GetExpression())
                     .Select(ToAttachment)
@@ -72,7 +74,7 @@ namespace ASC.Mail.Core.Dao
 
         public long GetAttachmentsSize(IAttachmentsExp exp)
         {
-            var size = MailDb.MailAttachment
+            var size = MailDbContext.MailAttachment
                    .Where(exp.GetExpression())
                    .Sum(a => a.Size);
 
@@ -81,19 +83,16 @@ namespace ASC.Mail.Core.Dao
 
         public int GetAttachmentsMaxFileNumber(IAttachmentsExp exp)
         {
-            var list = MailDb.MailAttachment
+            return MailDbContext.MailAttachment
                    .Where(exp.GetExpression())
                    .Select(a => a.FileNumber)
-                   .ToList();
-
-            var max = list.Any() ? list.Max() : 0;
-
-            return max;
+                   .DefaultIfEmpty()
+                   .Max();
         }
 
         public int GetAttachmentsCount(IAttachmentsExp exp)
         {
-            var count = MailDb.MailAttachment
+            var count = MailDbContext.MailAttachment
                    .Where(exp.GetExpression())
                    .Count();
 
@@ -102,16 +101,16 @@ namespace ASC.Mail.Core.Dao
 
         public bool SetAttachmnetsRemoved(IAttachmentsExp exp)
         {
-            var attachments = MailDb.MailAttachment.Where(exp.GetExpression());
+            var attachments = MailDbContext.MailAttachment.Where(exp.GetExpression());
 
             foreach (var att in attachments)
             {
                 att.NeedRemove = true;
             }
 
-            MailDb.UpdateRange(attachments);
+            MailDbContext.UpdateRange(attachments);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result > 0;
         }
@@ -133,9 +132,9 @@ namespace ASC.Mail.Core.Dao
                 ContentId = attachment.ContentId
             };
 
-            var entry = MailDb.MailAttachment.Add(mailAttachment);
+            var entry = MailDbContext.MailAttachment.Add(mailAttachment);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Entity.Id;
         }

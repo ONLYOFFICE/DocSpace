@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -48,7 +49,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<CrmContactData> GetLinkedCrmContactEntities(string chainId, int mailboxId)
         {
-            var list = MailDb.MailChainXCrmEntity
+            var list = MailDbContext.MailChainXCrmEntity
                 .Where(x => x.IdMailbox == mailboxId && x.IdTenant == Tenant && x.IdChain == chainId)
                 .Select(x => new CrmContactData
                 {
@@ -62,8 +63,9 @@ namespace ASC.Mail.Core.Dao
 
         public int SaveCrmLinks(string chainId, int mailboxId, IEnumerable<CrmContactData> crmContactEntities)
         {
-            var list = crmContactEntities.Select(x => 
-                new MailChainXCrmEntity { 
+            var list = crmContactEntities.Select(x =>
+                new MailChainXCrmEntity
+                {
                     IdChain = chainId,
                     IdMailbox = mailboxId,
                     IdTenant = Tenant,
@@ -72,16 +74,16 @@ namespace ASC.Mail.Core.Dao
                 })
                 .ToList();
 
-            MailDb.MailChainXCrmEntity.AddRange(list);
+            MailDbContext.MailChainXCrmEntity.AddRange(list);
 
-            var result = MailDb.SaveChanges();
-            
+            var result = MailDbContext.SaveChanges();
+
             return result;
         }
 
         public int UpdateCrmLinkedMailboxId(string chainId, int oldMailboxId, int newMailboxId)
         {
-            var chainEntities = MailDb.MailChainXCrmEntity
+            var chainEntities = MailDbContext.MailChainXCrmEntity
                 .Where(x => x.IdChain == chainId && x.IdMailbox == oldMailboxId && x.IdTenant == Tenant)
                 .ToList();
 
@@ -90,14 +92,14 @@ namespace ASC.Mail.Core.Dao
                 chainEntity.IdMailbox = newMailboxId;
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int UpdateCrmLinkedChainId(string chainId, int mailboxId, string newChainId)
         {
-            var chainEntities = MailDb.MailChainXCrmEntity
+            var chainEntities = MailDbContext.MailChainXCrmEntity
                .Where(x => x.IdChain == chainId && x.IdMailbox == mailboxId && x.IdTenant == Tenant)
                .ToList();
 
@@ -106,7 +108,7 @@ namespace ASC.Mail.Core.Dao
                 chainEntity.IdChain = newChainId;
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -124,19 +126,19 @@ namespace ASC.Mail.Core.Dao
                 })
                 .ToList();
 
-            MailDb.MailChainXCrmEntity.RemoveRange(deleteItems);
+            MailDbContext.MailChainXCrmEntity.RemoveRange(deleteItems);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
         }
 
         public int RemoveCrmLinks(int mailboxId)
         {
-            var deleteQuery = MailDb.MailChainXCrmEntity
+            var deleteQuery = MailDbContext.MailChainXCrmEntity
                .Where(x => x.IdMailbox == mailboxId && x.IdTenant == Tenant);
 
-            MailDb.MailChainXCrmEntity.RemoveRange(deleteQuery);
+            MailDbContext.MailChainXCrmEntity.RemoveRange(deleteQuery);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }

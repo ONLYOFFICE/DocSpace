@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(MailGarbageDao))]
     public interface IMailGarbageDao
     {
         int GetMailboxAttachsCount(MailBoxData mailBoxData);

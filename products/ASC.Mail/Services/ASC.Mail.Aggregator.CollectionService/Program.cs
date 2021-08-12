@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -9,9 +9,12 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
+using ASC.Common.Mapping;
 using ASC.Common.Utils;
+using ASC.ElasticSearch;
 using ASC.Mail.Aggregator.CollectionService.Console;
+using ASC.Mail.Aggregator.CollectionService.Service;
+using ASC.Mail.Core.Search;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -25,15 +28,9 @@ namespace ASC.Mail.Aggregator.CollectionService
 {
     class Program
     {
-        public async static Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
-#if DEBUG
-            Debugger.Launch();
-#endif
-            var host = CreateHostBuilder(args).Build();
-
-            await host.RunAsync();
-
+            await CreateHostBuilder(args).Build().RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -55,9 +52,9 @@ namespace ASC.Mail.Aggregator.CollectionService
 
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                         {
-                            if (!String.IsNullOrWhiteSpace(unixSocket))
+                            if (!string.IsNullOrWhiteSpace(unixSocket))
                             {
-                                unixSocket = String.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
+                                unixSocket = string.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
 
                                 serverOptions.ListenUnixSocket(unixSocket);
                             }
@@ -91,31 +88,30 @@ namespace ASC.Mail.Aggregator.CollectionService
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
-                            {
-                                {"pathToConf", path }
-                            }
+                        {
+                            {"pathToConf", path }
+                        }
                         );
                 })
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddMemoryCache();
-                var diHelper = new DIHelper(services);
-                LogNLogExtension.ConfigureLog(diHelper,
-                    "ASC.Mail.Aggregator",
-                    "ASC.Mail.MainThread",
-                    "ASC.Mail.Stat",
-                    "ASC.Mail.MailboxEngine",
-                    "ASC.Core.Common.Cache");
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.AddSingleton(new ConsoleParser(args));
-                diHelper.TryAdd<AggregatorServiceLauncher>();
-                services.AddHostedService<AggregatorServiceLauncher>();
-                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
-
-            })
-            .ConfigureContainer<ContainerBuilder>((context, builder) =>
-            {
-                builder.Register(context.Configuration, false, false);
-            });
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddMemoryCache();
+                    var diHelper = new DIHelper(services);
+                    services.AddHostedService<ServiceLauncher>();
+                    diHelper.TryAdd<ServiceLauncher>();
+                    diHelper.TryAdd<FactoryIndexerMailMail>();
+                    diHelper.TryAdd<FactoryIndexerMailContact>();
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    services.AddSingleton(new ConsoleParser(args));
+                    diHelper.TryAdd<AggregatorServiceLauncher>();
+                    diHelper.TryAdd<AggregatorServiceScope>();
+                    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+                    services.AddHostedService<AggregatorServiceLauncher>();
+                    services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, false, false, "search.json");
+                });
     }
 }

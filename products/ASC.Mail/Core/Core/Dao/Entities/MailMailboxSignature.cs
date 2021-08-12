@@ -29,11 +29,11 @@ namespace ASC.Mail.Core.Dao.Entities
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.Html)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;

@@ -49,7 +49,7 @@ namespace ASC.Mail.Core.Dao
         {
             var serverFolderAccessInfoList = new List<ServerFolderAccessInfo>();
 
-            var imapSpecialMailboxes = MailDb.MailImapSpecialMailbox
+            var imapSpecialMailboxes = MailDbContext.MailImapSpecialMailbox
                 .ToList();
 
             imapSpecialMailboxes.ForEach(r =>

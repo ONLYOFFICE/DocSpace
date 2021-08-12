@@ -26,13 +26,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Engine;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
 
@@ -41,12 +45,15 @@ namespace ASC.Mail.Core.Dao
     [Scope]
     public class MailDao : BaseMailDao, IMailDao
     {
+        private MessageEngine MessageEngine { get; }
         public MailDao(
              TenantManager tenantManager,
              SecurityContext securityContext,
+             MessageEngine messageEngine,
              DbContextManager<MailDbContext> dbContext)
             : base(tenantManager, securityContext, dbContext)
         {
+            MessageEngine = messageEngine;
         }
 
         public int Save(Core.Entities.Mail mail)
@@ -92,16 +99,16 @@ namespace ASC.Mail.Core.Dao
             if (!string.IsNullOrEmpty(mail.CalendarUid))
                 mailMail.CalendarUid = mail.CalendarUid;
 
-            var entry = MailDb.AddOrUpdate(m => m.MailMail, mailMail);
+            var entry = MailDbContext.AddOrUpdate(m => m.MailMail, mailMail);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
 
         public Core.Entities.Mail GetMail(IMessageExp exp)
         {
-            var mail = MailDb.MailMail.Where(exp.GetExpression())
+            var mail = MailDbContext.MailMail.Where(exp.GetExpression())
                 .Select(ToMail)
                 .SingleOrDefault();
 
@@ -110,7 +117,7 @@ namespace ASC.Mail.Core.Dao
 
         public Core.Entities.Mail GetNextMail(IMessageExp exp)
         {
-            var mail = MailDb.MailMail.Where(exp.GetExpression())
+            var mail = MailDbContext.MailMail.Where(exp.GetExpression())
                 .OrderBy(m => m.Id)
                 .Take(1)
                 .Select(ToMail)
@@ -121,7 +128,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<string> GetExistingUidls(int mailboxId, List<string> uidlList)
         {
-            var existingUidls = MailDb.MailMail
+            var existingUidls = MailDbContext.MailMail
                 .Where(m => m.IdMailbox == mailboxId && uidlList.Contains(m.Uidl))
                 .Select(m => m.Uidl)
                 .ToList();
@@ -133,14 +140,14 @@ namespace ASC.Mail.Core.Dao
         {
             var now = DateTime.UtcNow;
 
-            var mails = MailDb.MailMail.Where(m => ids.Contains(m.Id));
+            var mails = MailDbContext.MailMail.Where(m => ids.Contains(m.Id));
 
             foreach (var mail in mails)
             {
                 mail.TimeModified = now;
             }
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -172,8 +179,8 @@ namespace ASC.Mail.Core.Dao
                 IsAnswered = r.IsAnswered,
                 IsForwarded = r.IsForwarded,
                 Stream = r.Stream,
-                Folder = (FolderType) r.Folder,
-                FolderRestore = (FolderType) r.FolderRestore,
+                Folder = (FolderType)r.Folder,
+                FolderRestore = (FolderType)r.FolderRestore,
                 Spam = r.Spam,
                 IsRemoved = r.IsRemoved,
                 TimeModified = r.TimeModified,
@@ -187,6 +194,26 @@ namespace ASC.Mail.Core.Dao
             };
 
             return mail;
+        }
+
+        public string GetDocumentData(MailMail mail)
+        {
+            using (var stream = GetDocumentStream(mail))
+            {
+                if (stream == null) return null;
+
+                using (var sr = new StreamReader(stream))
+                {
+                    var data = sr.ReadToEnd();
+
+                    return HttpUtility.HtmlDecode(data);
+                }
+            }
+        }
+
+        public Stream GetDocumentStream(MailMail mail)
+        {
+            return MessageEngine.GetMessageStream(mail.Id);
         }
     }
 }

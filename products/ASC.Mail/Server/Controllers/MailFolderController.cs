@@ -1,14 +1,18 @@
-﻿using ASC.Mail.Core.Engine.Operations.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+
+using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Core.Resources;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Mail.Resources;
+
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.Mail.Controllers
 {
@@ -23,7 +27,7 @@ namespace ASC.Mail.Controllers
         [Read(@"folders")]
         public IEnumerable<MailFolderData> GetFolders()
         {
-            if (!MailSettings.IsSignalRAvailable)
+            if (!MailSettings.Defines.IsSignalRAvailable)
                 AccountEngine.SetAccountsActivity();
 
             return FolderEngine.GetFolders()
@@ -62,7 +66,7 @@ namespace ASC.Mail.Controllers
         [Read(@"folders/recalculate")]
         public MailOperationStatus RecalculateFolders()
         {
-            //TODO: fix return OperationEngine.RecalculateFolders(TranslateMailOperationStatus);
+            OperationEngine.RecalculateFolders(TranslateMailOperationStatus);
             throw new NotImplementedException();
         }
 
@@ -161,21 +165,19 @@ namespace ASC.Mail.Controllers
         /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
         /// <returns>MailOperationResult object</returns>
         [Delete(@"userfolders/{id}")]
-        public MailOperationStatus DeleteUserFolder(uint id)
+        public MailOperationStatus DeleteUserFolder(int id)
         {
-            //Thread.CurrentThread.CurrentCulture = CurrentCulture;
-            //Thread.CurrentThread.CurrentUICulture = CurrentCulture;
-            //TODO: fix
-            //try
-            //{
-            //    return OperationEngine.RemoveUserFolder(id, TranslateMailOperationStatus);
-            //}
-            //catch (Exception)
-            //{
-            //    throw new Exception(MailApiErrorsResource.ErrorInternalServer);
-            //}
+            Thread.CurrentThread.CurrentCulture = CurrentCulture;
+            Thread.CurrentThread.CurrentUICulture = CurrentCulture;
 
-            throw new NotImplementedException();
+            try
+            {
+                return OperationEngine.RemoveUserFolder(id, TranslateMailOperationStatus);
+            }
+            catch (Exception)
+            {
+                throw new Exception(MailApiErrorsResource.ErrorInternalServer);
+            }
         }
 
         /// <summary>

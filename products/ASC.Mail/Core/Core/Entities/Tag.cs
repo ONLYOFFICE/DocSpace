@@ -38,7 +38,6 @@ namespace ASC.Mail.Core.Entities
         public string Addresses { get; set; }
         public int Count { get; set; }
         public int CrmId { get; set; }
-
         public bool Equals(Tag other)
         {
             if (other == null) return false;

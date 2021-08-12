@@ -25,10 +25,15 @@
 
 
 using System.Collections.Generic;
+using System.IO;
+
+using ASC.Common;
+using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Message;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(MailDao))]
     public interface IMailDao
     {
         int Save(Core.Entities.Mail mail);
@@ -40,5 +45,9 @@ namespace ASC.Mail.Core.Dao.Interfaces
         List<string> GetExistingUidls(int mailboxId, List<string> uidlList);
 
         int SetMessagesChanged(List<int> ids);
+
+        string GetDocumentData(MailMail mail);
+
+        Stream GetDocumentStream(MailMail mail);
     }
 }

@@ -7,7 +7,7 @@
         "$STORAGE_ROOT": "../../../../../../../Data",
         "log__dir": "../../../../../../../Logs",
         "log__name": "mail.agg",
-        "ASPNETCORE_URLS": "http://localhost:5024",
+        "ASPNETCORE_URLS": "http://localhost:5025",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "core__products__folder": "../../../../../../"
       }
@@ -19,7 +19,7 @@
         "$STORAGE_ROOT": "../../../../../../../Data",
         "log__dir": "../../../../../../../Logs",
         "log__name": "mail.agg",
-        "ASPNETCORE_URLS": "http://localhost:5024",
+        "ASPNETCORE_URLS": "http://localhost:5025",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "core__products__folder": "../../../../../../"
       },

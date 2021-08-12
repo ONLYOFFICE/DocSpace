@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -49,7 +50,7 @@ namespace ASC.Mail.Core.Dao
 
         public ServerAddress Get(int id)
         {
-            var address = MailDb.MailServerAddress
+            var address = MailDbContext.MailServerAddress
                 .Where(a => a.Tenant == Tenant && a.Id == id)
                 .Select(ToServerAddress)
                 .SingleOrDefault();
@@ -59,7 +60,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerAddress> GetList(List<int> ids = null)
         {
-            var query = MailDb.MailServerAddress
+            var query = MailDbContext.MailServerAddress
                 .Where(a => a.Tenant == Tenant);
 
             if (ids != null && ids.Any())
@@ -76,7 +77,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerAddress> GetList(int mailboxId)
         {
-            var list = MailDb.MailServerAddress
+            var list = MailDbContext.MailServerAddress
                 .Where(a => a.Tenant == Tenant && a.IdMailbox == mailboxId)
                 .Select(ToServerAddress)
                 .ToList();
@@ -86,10 +87,11 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerAddress> GetGroupAddresses(int groupId)
         {
-            var list = MailDb.MailServerAddress
+            var list = MailDbContext.MailServerAddress
                 .Where(a => a.Tenant == Tenant)
-               .Join(MailDb.MailServerMailGroupXMailServerAddress, a => a.Id, g => g.IdAddress, 
-                (a, g) => new { 
+               .Join(MailDbContext.MailServerMailGroupXMailServerAddress, a => a.Id, g => g.IdAddress,
+                (a, g) => new
+                {
                     Address = a,
                     Xgroup = g
                 }
@@ -103,7 +105,7 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerAddress> GetDomainAddresses(int domainId)
         {
-            var list = MailDb.MailServerAddress
+            var list = MailDbContext.MailServerAddress
                 .Where(a => a.Tenant == Tenant && a.IdDomain == domainId)
                 .Select(ToServerAddress)
                 .ToList();
@@ -120,9 +122,9 @@ namespace ASC.Mail.Core.Dao
                     IdMailGroup = groupId
                 });
 
-            MailDb.MailServerMailGroupXMailServerAddress.AddRange(list);
+            MailDbContext.MailServerMailGroupXMailServerAddress.AddRange(list);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
         }
 
         public void DeleteAddressFromMailGroup(int groupId, int addressId)
@@ -133,34 +135,35 @@ namespace ASC.Mail.Core.Dao
                 IdMailGroup = groupId
             };
 
-            MailDb.MailServerMailGroupXMailServerAddress.Remove(deleteItem);
+            MailDbContext.MailServerMailGroupXMailServerAddress.Remove(deleteItem);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
         }
 
         public void DeleteAddressesFromMailGroup(int groupId)
         {
-            var deleteQuery = MailDb.MailServerMailGroupXMailServerAddress
+            var deleteQuery = MailDbContext.MailServerMailGroupXMailServerAddress
                 .Where(x => x.IdMailGroup == groupId);
 
-            MailDb.MailServerMailGroupXMailServerAddress.RemoveRange(deleteQuery);
+            MailDbContext.MailServerMailGroupXMailServerAddress.RemoveRange(deleteQuery);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
         }
 
         public void DeleteAddressesFromAnyMailGroup(List<int> addressIds)
         {
-            var deleteQuery = MailDb.MailServerMailGroupXMailServerAddress
+            var deleteQuery = MailDbContext.MailServerMailGroupXMailServerAddress
                 .Where(x => addressIds.Contains(x.IdAddress));
 
-            MailDb.MailServerMailGroupXMailServerAddress.RemoveRange(deleteQuery);
+            MailDbContext.MailServerMailGroupXMailServerAddress.RemoveRange(deleteQuery);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
         }
 
         public int Save(ServerAddress address)
         {
-            var mailServerAddress = new MailServerAddress { 
+            var mailServerAddress = new MailServerAddress
+            {
                 Id = address.Id,
                 Name = address.AddressName,
                 Tenant = address.Tenant,
@@ -175,9 +178,9 @@ namespace ASC.Mail.Core.Dao
                 mailServerAddress.DateCreated = DateTime.UtcNow;
             }
 
-            var entry = MailDb.AddOrUpdate(t => t.MailServerAddress, mailServerAddress);
+            var entry = MailDbContext.AddOrUpdate(t => t.MailServerAddress, mailServerAddress);
 
-            MailDb.SaveChanges();
+            MailDbContext.SaveChanges();
 
             return entry.Id;
         }
@@ -190,21 +193,21 @@ namespace ASC.Mail.Core.Dao
                 Tenant = Tenant
             };
 
-            MailDb.MailServerAddress.Remove(deleteItem);
+            MailDbContext.MailServerAddress.Remove(deleteItem);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
 
         public int Delete(List<int> ids)
         {
-            var queryDelete = MailDb.MailServerAddress
+            var queryDelete = MailDbContext.MailServerAddress
                 .Where(a => a.Tenant == Tenant && ids.Contains(a.Id));
 
-            MailDb.MailServerAddress.RemoveRange(queryDelete);
+            MailDbContext.MailServerAddress.RemoveRange(queryDelete);
 
-            var result = MailDb.SaveChanges();
+            var result = MailDbContext.SaveChanges();
 
             return result;
         }
@@ -219,15 +222,14 @@ namespace ASC.Mail.Core.Dao
 
             var tenants = new List<int> { Tenant, DefineConstants.SHARED_TENANT_ID };
 
-            var exists = MailDb.MailServerAddress
-                .Join(MailDb.MailServerDomain, a => a.IdDomain, d => d.Id,
+            var exists = MailDbContext.MailServerAddress
+                .Join(MailDbContext.MailServerDomain, a => a.IdDomain, d => d.Id,
                 (a, d) => new
                 {
                     Address = a,
                     Domain = d
                 })
-                .Where(ad => ad.Address.Name == addressName && tenants.Contains(ad.Address.Tenant))
-                .Where(ad => ad.Domain.Name == domainName)
+                .Where(ad => ad.Address.Name == addressName && tenants.Contains(ad.Address.Tenant) && ad.Domain.Name == domainName)
                 .Select(ad => ad.Address.Id)
                 .Any();
 

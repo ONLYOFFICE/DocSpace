@@ -24,10 +24,12 @@
 */
 
 
+using ASC.Common;
 using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
+    [Scope(typeof(MailboxProviderDao))]
     public interface IMailboxProviderDao
     {
         MailboxProvider GetProvider(int id);

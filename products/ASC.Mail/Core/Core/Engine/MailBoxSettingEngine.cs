@@ -28,12 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -41,19 +43,19 @@ namespace ASC.Mail.Core.Engine
     [Scope]
     public class MailBoxSettingEngine
     {
-        private MailDbContext MailDb { get; }
+        private MailDbContext MailDbContext { get; }
 
-        private DaoFactory DaoFactory { get; }
+        private IMailDaoFactory MailDaoFactory { get; }
 
         private ILog Log { get; }
 
         public MailBoxSettingEngine(
-            DaoFactory daoFactory,
+            IMailDaoFactory mailDaoFactory,
             IOptionsMonitor<ILog> option)
         {
-            MailDb = daoFactory.MailDb;
+            MailDbContext = mailDaoFactory.GetContext();
 
-            DaoFactory = daoFactory;
+            MailDaoFactory = mailDaoFactory;
 
             Log = option.Get("ASC.Mail.MailBoxSettingEngine");
         }
@@ -82,7 +84,7 @@ namespace ASC.Mail.Core.Engine
                             .ToDictionary(s => s[0], s => s[1]);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log.Error("MxToDomainBusinessVendorsList failed", ex);
                 }
@@ -106,9 +108,9 @@ namespace ASC.Mail.Core.Engine
                     throw new Exception("Incorrect config");
                 }
 
-                using var tx = MailDb.Database.BeginTransaction();
+                using var tx = MailDbContext.Database.BeginTransaction();
 
-                var provider = DaoFactory.MailboxProviderDao.GetProvider(config.EmailProvider.Id);
+                var provider = MailDaoFactory.GetMailboxProviderDao().GetProvider(config.EmailProvider.Id);
 
                 if (provider == null)
                 {
@@ -121,7 +123,7 @@ namespace ASC.Mail.Core.Engine
                         Url = config.EmailProvider.Documentation.Url
                     };
 
-                    provider.Id = DaoFactory.MailboxProviderDao.SaveProvider(provider);
+                    provider.Id = MailDaoFactory.GetMailboxProviderDao().SaveProvider(provider);
 
                     if (provider.Id < 0)
                     {
@@ -132,9 +134,9 @@ namespace ASC.Mail.Core.Engine
 
                 foreach (var domainName in config.EmailProvider.Domain)
                 {
-                    var domain = DaoFactory.MailboxDomainDao.GetDomain(domainName);
+                    var domain = MailDaoFactory.GetMailboxDomainDao().GetDomain(domainName);
 
-                    if (domain != null) 
+                    if (domain != null)
                         continue;
 
                     domain = new MailboxDomain
@@ -144,7 +146,7 @@ namespace ASC.Mail.Core.Engine
                         Name = domainName
                     };
 
-                    domain.Id = DaoFactory.MailboxDomainDao.SaveDomain(domain);
+                    domain.Id = MailDaoFactory.GetMailboxDomainDao().SaveDomain(domain);
 
                     if (domain.Id < 0)
                     {
@@ -153,7 +155,7 @@ namespace ASC.Mail.Core.Engine
                     }
                 }
 
-                var existingServers = DaoFactory.MailboxServerDao.GetServers(provider.Id);
+                var existingServers = MailDaoFactory.GetMailboxServerDao().GetServers(provider.Id);
 
                 var newServers = config.EmailProvider
                     .IncomingServer
@@ -201,7 +203,7 @@ namespace ASC.Mail.Core.Engine
                         s.Id = existing.Id;
                     }
 
-                    s.Id = DaoFactory.MailboxServerDao.SaveServer(s);
+                    s.Id = MailDaoFactory.GetMailboxServerDao().SaveServer(s);
 
                     if (s.Id < 0)
                     {
@@ -231,17 +233,17 @@ namespace ASC.Mail.Core.Engine
 
         private ClientConfig GetStoredMailBoxSettings(string host)
         {
-            var domain = DaoFactory.MailboxDomainDao.GetDomain(host);
+            var domain = MailDaoFactory.GetMailboxDomainDao().GetDomain(host);
 
             if (domain == null)
                 return null;
 
-            var provider = DaoFactory.MailboxProviderDao.GetProvider(domain.ProviderId);
+            var provider = MailDaoFactory.GetMailboxProviderDao().GetProvider(domain.ProviderId);
 
             if (provider == null)
                 return null;
 
-            var existingServers = DaoFactory.MailboxServerDao.GetServers(provider.Id);
+            var existingServers = MailDaoFactory.GetMailboxServerDao().GetServers(provider.Id);
 
             if (!existingServers.Any())
                 return null;

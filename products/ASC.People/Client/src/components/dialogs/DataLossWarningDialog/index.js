@@ -33,12 +33,13 @@ class DataLossWarningDialogComponent extends React.Component {
     }
   };
   render() {
-    const { t, isVisibleDataLossDialog } = this.props;
+    const { t, tReady, isVisibleDataLossDialog } = this.props;
 
     return (
       <ModalDialogContainer
         visible={isVisibleDataLossDialog}
         onClose={this.onClose}
+        isLoading={!tReady}
       >
         <ModalDialog.Header>{t("DataLossWarningHeader")}</ModalDialog.Header>
         <ModalDialog.Body>

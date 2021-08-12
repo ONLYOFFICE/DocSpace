@@ -45,7 +45,7 @@ namespace ASC.Mail.Core.Dao.Entities
             modelBuilder.Entity<MailFilter>(entity =>
             {
                 entity.HasIndex(e => new { e.Tenant, e.IdUser })
-                    .HasName("tenant_id_user");
+                    .HasDatabaseName("tenant_id_user");
 
                 entity.Property(e => e.DateModified)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -55,11 +55,11 @@ namespace ASC.Mail.Core.Dao.Entities
 
                 entity.Property(e => e.Filter)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IdUser)
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
             return modelBuilder;
