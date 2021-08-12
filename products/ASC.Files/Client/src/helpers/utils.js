@@ -169,14 +169,9 @@ export const canShare = (
   currentFolderAccess,
   user,
   isPersonal,
-  isAdminProp
+  isAdmin,
+  isDesktop
 ) => {
-  const { isDesktopClient: isDesktop } = authStore.settingsStore;
-
-  const isAdmin = !isAdminProp
-    ? checkAdminRights(user, config.id)
-    : isAdminProp;
-
   let isShareable = true;
 
   if (!entryData.isFolder) {
