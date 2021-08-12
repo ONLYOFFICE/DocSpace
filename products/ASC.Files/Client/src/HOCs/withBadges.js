@@ -17,12 +17,13 @@ export default function withBadges(WrappedComponent) {
     onClickLock = () => {
       const { item, lockFileAction, isAdmin, setIsLoading } = this.props;
       const { locked, id, access } = item;
-      setIsLoading(true);
 
-      if (isAdmin || access === 0)
+      if (isAdmin || access === 0) {
+        setIsLoading(true);
         return lockFileAction(id, !locked)
           .then(() => setIsLoading(false))
           .catch((err) => toastr.error(err));
+      }
       return;
     };
 
