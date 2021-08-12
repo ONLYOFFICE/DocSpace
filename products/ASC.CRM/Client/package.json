@@ -1,6 +1,7 @@
 {
   "name": "@appserver/crm",
   "version": "1.0.0",
+  "private": true,
   "homepage": "/products/crm",
   "title": "ONLYOFFICE",
   "id": "6743007c-6f95-4d20-8c88-a8601ce5e76d",

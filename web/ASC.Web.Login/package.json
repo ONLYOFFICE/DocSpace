@@ -1,6 +1,7 @@
 {
   "name": "@appserver/login",
   "version": "1.0.0",
+  "private": true,
   "homepage": "/login",
   "title": "ONLYOFFICE",
   "scripts": {
