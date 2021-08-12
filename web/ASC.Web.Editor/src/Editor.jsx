@@ -25,19 +25,22 @@ import {
   removeFromFavorite,
   markAsFavorite,
 } from "@appserver/common/api/files";
-import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
 import FilesFilter from "@appserver/common/api/files/filter";
 
 import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
-import { homepage } from "../package.json";
+import { homepage, id as productId } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import { getDefaultFileName } from "files/utils";
+import { getDefaultFileName, canShare, accessEdit } from "files/utils";
 import i18n from "./i18n";
 import { FolderType } from "@appserver/common/constants";
+
+import store from "studio/store";
+
+const { auth: authStore } = store;
 
 let documentIsReady = false;
 
@@ -52,6 +55,10 @@ let docSaved = null;
 let docEditor;
 let fileInfo;
 let successAuth;
+let isSharingAccess;
+let folder;
+let user;
+let isAdmin;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -92,6 +99,8 @@ const Editor = () => {
 
   const init = async () => {
     try {
+      await authStore.init();
+
       if (!fileId) return;
 
       console.log(
@@ -104,9 +113,8 @@ const Editor = () => {
       }
 
       //showLoader();
-
       const docApiUrl = await getDocServiceUrl();
-      successAuth = await checkIsAuthenticated();
+      successAuth = authStore.isAuthenticated;
 
       if (!doc && !successAuth) {
         window.open(
@@ -128,7 +136,28 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      config = await openEdit(fileId, version, doc);
+      const settings = authStore.settingsStore.personal;
+      authStore.settingsStore.setCurrentProductId(productId);
+      isAdmin = authStore.isAdmin;
+      user = authStore.userStore.user;
+      let requests = [];
+
+      requests.push(openEdit(fileId, version, doc));
+
+      if (fileInfo) {
+        requests.push(getFolderInfo(fileInfo.folderId));
+      }
+
+      let configValue, folderValue;
+
+      try {
+        [configValue, folderValue] = await Promise.allSettled(requests);
+      } catch (e) {
+        console.error(e);
+      }
+
+      config = configValue.value;
+      folder = folderValue && folderValue.value;
 
       if (isDesktop) {
         const isEncryption =
@@ -223,13 +252,24 @@ const Editor = () => {
         }
       }
 
-      if (
-        config &&
-        config.document.permissions.edit &&
-        config.document.permissions.modifyFilter &&
-        fileInfo
-      ) {
+      isSharingAccess =
+        fileInfo &&
+        folder &&
+        user &&
+        user.id &&
+        canShare(
+          fileInfo,
+          folder.id,
+          folder.access,
+          user,
+          settings.personal,
+          isAdmin,
+          isDesktop
+        );
+
+      if (isSharingAccess) {
         const sharingSettings = await SharingDialog.getSharingSettings(fileId);
+
         config.document.info = {
           ...config.document.info,
           sharingSettings,
@@ -404,9 +444,24 @@ const Editor = () => {
       let onRequestSharingSettings;
       let onRequestRename;
 
-      if (fileInfo && config.document.permissions.modifyFilter) {
+      if (isSharingAccess) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
-        onRequestRename = onSDKRequestRename;
+      }
+
+      const canEdit =
+        fileInfo &&
+        folder &&
+        accessEdit(
+          fileInfo,
+          folder.id,
+          folder.access,
+          user,
+          isAdmin,
+          isDesktop
+        );
+
+      if (canEdit) {
+        onRequestRename = onSDKRequestRename; //TODO: check for rename
       }
 
       const events = {
@@ -544,7 +599,7 @@ const Editor = () => {
       {!isLoading ? (
         <>
           <div id="editor"></div>
-          {fileInfo && (
+          {isSharingAccess && (
             <SharingDialog
               isVisible={isVisible}
               sharingObject={fileInfo}
