@@ -99,7 +99,7 @@ namespace ASC.Mail.ImapSync
                 Timeout = _mailSettings.TcpTimeout
             };
 
-            curentTask = new Task(()=> {
+            curentTask =Task.Run(()=> {
                 Authenticate();
 
                 LoadFoldersFromIMAP();
