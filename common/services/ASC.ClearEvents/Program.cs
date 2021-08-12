@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
@@ -89,6 +90,7 @@ namespace ASC.Thumbnails.Svc
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, false, false);
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }
