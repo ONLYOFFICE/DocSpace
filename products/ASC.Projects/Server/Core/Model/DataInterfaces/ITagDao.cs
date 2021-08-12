@@ -18,10 +18,11 @@
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Projects.Data.DAO;
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(TagDao))]
     public interface ITagDao
     {
         KeyValuePair<int, string> Create(string data);

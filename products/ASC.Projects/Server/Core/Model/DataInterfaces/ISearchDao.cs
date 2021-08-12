@@ -19,10 +19,11 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Projects.Core.Domain;
+using ASC.Projects.Data.DAO;
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(SearchDao))]
     public interface ISearchDao
     {
         IEnumerable<DomainObject<int>> Search(string text, int projectId = 0);

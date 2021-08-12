@@ -36,14 +36,14 @@ using ASC.Common;
 
 namespace ASC.Projects.Data.DAO
 {
-    /*
-    internal class CachedProjectDao : ProjectDao
+    [Scope]
+    public class CachedProjectDao : ProjectDao
     {
-        private readonly HttpRequestDictionary<DbProject> projectCache = new HttpRequestDictionary<DbProject>("project");
+        private HttpRequestDictionary<Project> ProjectCache { get; set; }
 
-        public CachedProjectDao(int tenantId)
-            : base()
+        public CachedProjectDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbProject> factoryIndexer, ParticipantHelper participantHelper, IHttpContextAccessor accessor, TenantManager tenantManager) : base(securityContext, dbContextManager, tenantUtil, factoryIndexer, participantHelper, accessor, tenantManager)
         {
+            ProjectCache = new HttpRequestDictionary<Project>(accessor?.HttpContext, "project");
         }
 
         public override void Delete(int projectId, out List<int> messages, out List<int> tasks)
@@ -58,7 +58,7 @@ namespace ASC.Projects.Data.DAO
             base.RemoveFromTeam(projectId, participantId);
         }
 
-        public override DbProject Update(DbProject project)
+        public override Project Update(Project project)
         {
             if (project != null)
             {
@@ -67,12 +67,12 @@ namespace ASC.Projects.Data.DAO
             return base.Update(project);
         }
 
-        public override DbProject GetById(int projectId)
+        public override Project GetById(int projectId)
         {
-            return projectCache.Get(projectId.ToString(CultureInfo.InvariantCulture), () => GetBaseById(projectId));
+            return ProjectCache.Get(projectId.ToString(CultureInfo.InvariantCulture), () => GetBaseById(projectId));
         }
 
-        private DbProject GetBaseById(int projectId)
+        private Project GetBaseById(int projectId)
         {
             return base.GetById(projectId);
         }
@@ -85,11 +85,11 @@ namespace ASC.Projects.Data.DAO
 
         private void ResetCache(int projectId)
         {
-            projectCache.Reset(projectId.ToString(CultureInfo.InvariantCulture));
+            ProjectCache.Reset(projectId.ToString(CultureInfo.InvariantCulture));
         }
 
     }
-    */
+    
     [Scope]
     public class ProjectDao : BaseDao, IProjectDao
     {

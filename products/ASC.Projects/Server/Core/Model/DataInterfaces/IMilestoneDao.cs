@@ -30,7 +30,7 @@ using ASC.Projects.EF;
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(MilestoneDao), typeof(CachedMilestoneDao))]
     public interface IMilestoneDao
     {
         List<Milestone> GetAll();

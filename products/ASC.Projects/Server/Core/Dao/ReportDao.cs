@@ -36,16 +36,14 @@ namespace ASC.Projects.Data.DAO
     {
         private TenantUtil TenantUtil { get; set; }
         private TenantManager TenantManager { get; set; }
-        private IServiceProvider ServiceProvider { get; set; }
         private ReportTemplateHelper ReportTemplateHelper { get; set; }
 
-        public ReportDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, TenantManager tenantManager, IServiceProvider serviceProvider, ReportTemplateHelper reportTemplateHelper)
+        public ReportDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, TenantManager tenantManager, ReportTemplateHelper reportTemplateHelper)
             : base(securityContext, dbContextManager, tenantManager)
         {
             TenantUtil = tenantUtil;
             TenantManager = tenantManager;
-            ReportTemplateHelper = ReportTemplateHelper;
-            ServiceProvider = serviceProvider;
+            ReportTemplateHelper = reportTemplateHelper;
         }
 
 

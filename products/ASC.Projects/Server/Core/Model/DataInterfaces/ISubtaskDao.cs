@@ -20,11 +20,12 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Projects.Core.Domain;
+using ASC.Projects.Data.DAO;
 using ASC.Projects.EF;
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(SubtaskDao), typeof(CachedSubtaskDao))]
     public interface ISubtaskDao
     {
         List<Subtask> GetSubtasks(int taskid);

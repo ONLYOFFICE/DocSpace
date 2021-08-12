@@ -20,10 +20,11 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Projects.Core.Domain.Reports;
+using ASC.Projects.Data.DAO;
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(ReportDao))]
     public interface IReportDao
     {
         List<ReportTemplate> GetTemplates(Guid userId);

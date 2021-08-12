@@ -44,16 +44,14 @@ namespace ASC.Projects.Model
         private CommonLinkUtility CommonLinkUtility { get; set; }
         private SecurityContext SecurityContext { get; set; }
         private TimeZoneConverter TimeZoneConverter { get; set; }
-        private FolderContentWrapperHelper FolderContentWrapperHelper { get; set; }
         private ApiContext Context { get; set; }
-        private FileStorageService<int> FileStorageService { get; set; }
         private EngineFactory EngineFactory { get; set; }
         private TenantUtil TenantUtil { get; set; }
         private HtmlUtility HtmlUtility { get; set; }
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
         private WebItemSecurity WebItemSecurity { get; }
 
-        public ModelHelper(IHttpContextAccessor accessor, UserManager userManager, ProjectSecurity projectSecurity, EmployeeWraperHelper employeeWraperHelper, EmployeeWraperFullHelper employeeWraperFullHelper, IHttpContextAccessor httpContextAccessor, EngineFactory engineFactory, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility, SecurityContext securityContext, TenantManager tenantManager, TimeZoneConverter timeZoneConverter, FolderContentWrapperHelper folderContentWrapperHelper, ApiContext context, FileStorageService<int> fileStorageService, TenantUtil tenantUtil, HtmlUtility htmlUtility, ApiDateTimeHelper apiDateTimeHelper, WebItemSecurity webItemSecurity)
+        public ModelHelper(IHttpContextAccessor accessor, UserManager userManager, ProjectSecurity projectSecurity, EmployeeWraperHelper employeeWraperHelper, EmployeeWraperFullHelper employeeWraperFullHelper, IHttpContextAccessor httpContextAccessor, EngineFactory engineFactory, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility, SecurityContext securityContext, TenantManager tenantManager, TimeZoneConverter timeZoneConverter, ApiContext context, TenantUtil tenantUtil, HtmlUtility htmlUtility, ApiDateTimeHelper apiDateTimeHelper, WebItemSecurity webItemSecurity)
         {
             EmployeeFullCache = new HttpRequestDictionary<EmployeeWraperFull>(accessor?.HttpContext, "employeeFullCache");
             EmployeeCache = new HttpRequestDictionary<EmployeeWraper>(accessor?.HttpContext, "employeeCache");
@@ -68,9 +66,7 @@ namespace ASC.Projects.Model
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             TimeZoneConverter = timeZoneConverter;
-            FolderContentWrapperHelper = folderContentWrapperHelper;
             Context = context;
-            FileStorageService = fileStorageService;
             EngineFactory = engineFactory;
             TenantUtil = tenantUtil;
             HtmlUtility = htmlUtility;

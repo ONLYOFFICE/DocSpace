@@ -31,49 +31,52 @@ using ASC.Projects.Core.Services.NotifyService;
 using ASC.Core.Common.Settings;
 using ASC.Projects.Core.Domain.Reports;
 using ASC.Common;
+using ASC.Collections;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Projects.Data.DAO
 {
-    /*
+    [Scope]
     internal class CachedMessageDao : MessageDao
     {
-        private readonly HttpRequestDictionary<DbMessage> messageCache = new HttpRequestDictionary<DbMessage>("message");
 
-        public CachedMessageDao(int tenant) : base(tenant)
+        private HttpRequestDictionary<Message> MessageCache { get; set; }
+        public CachedMessageDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbMessage> factoryIndexer, IDaoFactory daoFactory, SettingsManager settingsManager, TenantManager tenantManager, NotifySource notifySource, IHttpContextAccessor accessor) : base(securityContext, dbContextManager, tenantUtil, factoryIndexer, daoFactory, settingsManager, tenantManager, notifySource)
         {
+            MessageCache = new HttpRequestDictionary<Message>(accessor?.HttpContext, "message");
         }
 
-        public override DbMessage GetById(int id)
+        public override Message GetById(int id)
         {
-            return messageCache.Get(id.ToString(CultureInfo.InvariantCulture), () => GetBaseById(id));
+            return MessageCache.Get(id.ToString(CultureInfo.InvariantCulture), () => GetBaseById(id));
         }
 
-        private DbMessage GetBaseById(int id)
+        private Message GetBaseById(int id)
         {
             return base.GetById(id);
         }
 
-        public override void Save(Message msg)
+        public override Message SaveOrUpdate(Message msg)
         {
             if (msg != null)
             {
-                ResetCache(msg.Id);
+                ResetCache(msg.ID);
             }
-            base.Save(msg);
+            return base.SaveOrUpdate(msg);
         }
 
-        public override void Delete(int id)
+        public override Message Delete(int id)
         {
             ResetCache(id);
-            base.Delete(id);
+            return base.Delete(id);
         }
 
         private void ResetCache(int messageId)
         {
-            messageCache.Reset(messageId.ToString(CultureInfo.InvariantCulture));
+            MessageCache.Reset(messageId.ToString(CultureInfo.InvariantCulture));
         }
     }
-    */
+    
     [Scope]
     public class MessageDao : BaseDao, IMessageDao
     {

@@ -21,12 +21,13 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Projects.Core.Domain;
+using ASC.Projects.Data.DAO;
 
 #endregion
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(TemplateDao))]
     public interface ITemplateDao
     {
         List<Template> GetAll();

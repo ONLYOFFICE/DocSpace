@@ -30,37 +30,38 @@ using ASC.Projects.Core.Domain;
 using ASC.Core.Common.Settings;
 using ASC.Projects.Core.Domain.Reports;
 using ASC.Common;
+using ASC.Collections;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Projects.Data.DAO
 {
-    /*
-    class CachedMilestoneDao : MilestoneDao
+    [Scope]
+    public class CachedMilestoneDao : MilestoneDao
     {
-        private readonly HttpRequestDictionary<DbMilestone> projectCache = new HttpRequestDictionary<DbMilestone>("milestone");
+        private HttpRequestDictionary<Milestone> ProjectCache { get; set; }
 
-
-        public CachedMilestoneDao(int tenant)
-            : base(tenant)
+        public CachedMilestoneDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbMilestone> factoryIndexer, IDaoFactory daoFactory, SettingsManager settingsManager, FilterHelper filterHelper, TenantManager tenantManager, IHttpContextAccessor accessor) : base(securityContext, dbContextManager, tenantUtil, factoryIndexer, daoFactory, settingsManager, filterHelper, tenantManager)
         {
+            ProjectCache = new HttpRequestDictionary<Milestone>(accessor?.HttpContext, "milestone");
         }
 
-        public override DbMilestone GetById(int id)
+        public override Milestone GetById(int id)
         {
-            return projectCache.Get(id.ToString(CultureInfo.InvariantCulture), () => GetBaseById(id));
+            return ProjectCache.Get(id.ToString(CultureInfo.InvariantCulture), () => GetBaseById(id));
         }
 
-        private DbMilestone GetBaseById(int id)
+        private Milestone GetBaseById(int id)
         {
             return base.GetById(id);
         }
 
-        public override DbMilestone Save(DbMilestone milestone)
+        public override Milestone SaveOrUpdate(Milestone milestone)
         {
             if (milestone != null)
             {
                 ResetCache(milestone.ID);
             }
-            return base.Save(milestone);
+            return base.SaveOrUpdate(milestone);
         }
 
         public override void Delete(int id)
@@ -71,10 +72,10 @@ namespace ASC.Projects.Data.DAO
 
         private void ResetCache(int milestoneId)
         {
-            projectCache.Reset(milestoneId.ToString(CultureInfo.InvariantCulture));
+            ProjectCache.Reset(milestoneId.ToString(CultureInfo.InvariantCulture));
         }
     }
-    */
+    
     [Scope]
     public class MilestoneDao : BaseDao, IMilestoneDao
     {

@@ -27,15 +27,20 @@ using ASC.Projects.Core.DataInterfaces;
 using ASC.Projects.Core.Domain;
 using ASC.Common;
 using ASC.ElasticSearch;
+using ASC.Collections;
+using System.Globalization;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Projects.Data.DAO
-{/*
-    internal class CachedSubtaskDao : SubtaskDao
+{
+    [Scope]
+    public class CachedSubtaskDao : SubtaskDao
     {
-        private readonly HttpRequestDictionary<DbSubtask> _subtaskCache = new HttpRequestDictionary<DbSubtask>("subtask");
+        private HttpRequestDictionary<Subtask> SubtaskCache { get; set; }
 
-        public CachedSubtaskDao() : base()
+        public CachedSubtaskDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, TenantManager tenantManager, FactoryIndexer<DbSubtask> factoryIndexer, IHttpContextAccessor accessor) : base(securityContext, dbContextManager, tenantUtil, tenantManager, factoryIndexer)
         {
+            SubtaskCache = new HttpRequestDictionary<Subtask>(accessor?.HttpContext, "subtask");
         }
 
         public override void Delete(int id)
@@ -44,30 +49,31 @@ namespace ASC.Projects.Data.DAO
             base.Delete(id);
         }
 
-        public override DbSubtask GetById(int id)
+        public override Subtask GetById(int id)
         {
-            return _subtaskCache.Get(id.ToString(CultureInfo.InvariantCulture), () => GetBaseById(id));
+            return SubtaskCache.Get(id.ToString(CultureInfo.InvariantCulture), () => GetBaseById(id));
         }
 
-        private DbSubtask GetBaseById(int id)
+        private Subtask GetBaseById(int id)
         {
             return base.GetById(id);
         }
 
-        public override DbSubtask Save(DbSubtask subtask)
+        public override Subtask SaveOrUpdate(Subtask subtask)
         {
             if (subtask != null)
             {
                 ResetCache(subtask.ID);
             }
-            return base.Save(subtask);
+            return base.SaveOrUpdate(subtask);
         }
 
         private void ResetCache(int subtaskId)
         {
-            _subtaskCache.Reset(subtaskId.ToString(CultureInfo.InvariantCulture));
+            SubtaskCache.Reset(subtaskId.ToString(CultureInfo.InvariantCulture));
         }
-    }*/
+    }
+
     [Scope]
     public class SubtaskDao : BaseDao, ISubtaskDao
     {

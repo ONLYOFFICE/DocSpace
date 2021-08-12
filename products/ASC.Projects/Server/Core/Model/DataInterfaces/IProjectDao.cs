@@ -22,13 +22,14 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Projects.Core.Domain;
+using ASC.Projects.Data.DAO;
 using ASC.Projects.EF;
 
 #endregion
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(ProjectDao), typeof(CachedProjectDao))]
     public interface IProjectDao
     {
         List<Project> GetAll(ProjectStatus? status, int max);

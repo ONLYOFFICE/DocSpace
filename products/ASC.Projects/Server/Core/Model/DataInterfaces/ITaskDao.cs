@@ -22,13 +22,14 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Projects.Core.Domain;
+using ASC.Projects.Data.DAO;
 using ASC.Projects.EF;
 
 #endregion
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(TaskDao), typeof(CachedTaskDao))]
     public interface ITaskDao
     {
         List<Task> GetAll();

@@ -105,19 +105,19 @@ namespace ASC.Projects.Data
     {
         public static void Register(DIHelper services)
         {
-            services.TryAdd<IProjectDao, ProjectDao>();
-            services.TryAdd<IParticipantDao, ParticipantDao>();
-            services.TryAdd<IMilestoneDao, MilestoneDao>();
-            services.TryAdd<ITaskDao, TaskDao>();
-            services.TryAdd<ISubtaskDao, SubtaskDao>();
-            services.TryAdd<IMessageDao, MessageDao>();
-            services.TryAdd<ICommentDao, CommentDao>();
-            services.TryAdd<ITemplateDao, TemplateDao>();
-            services.TryAdd<ITimeSpendDao, TimeSpendDao>();
-            services.TryAdd<IReportDao, ReportDao>();
-            services.TryAdd<ISearchDao, SearchDao>();
-            services.TryAdd<ITagDao, TagDao>();
-            services.TryAdd<IStatusDao, StatusDao>();
+            services.TryAdd<IProjectDao>();
+            services.TryAdd<IParticipantDao>();
+            services.TryAdd<IMilestoneDao>();
+            services.TryAdd<ITaskDao>();
+            services.TryAdd<ISubtaskDao>();
+            services.TryAdd<IMessageDao>();
+            services.TryAdd<ICommentDao>();
+            services.TryAdd<ITemplateDao>();
+            services.TryAdd<ITimeSpendDao>();
+            services.TryAdd<IReportDao>();
+            services.TryAdd<ISearchDao>();
+            services.TryAdd<ITagDao>();
+            services.TryAdd<IStatusDao>();
         }
     }
 }

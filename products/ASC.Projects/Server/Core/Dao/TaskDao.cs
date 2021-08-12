@@ -30,34 +30,39 @@ using ASC.Projects.Core.Domain;
 using ASC.Core.Common.Settings;
 using ASC.Projects.Core.Domain.Reports;
 using ASC.Common;
+using ASC.Collections;
+using System.Globalization;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Projects.Data.DAO
 {
-    /*internal class CachedTaskDao : TaskDao
+    [Scope]
+    public class CachedTaskDao : TaskDao
     {
-        private readonly HttpRequestDictionary<DbTask> taskCache = new HttpRequestDictionary<DbTask>("task");
+        private HttpRequestDictionary<Task> TaskCache { get; set; }
 
-        public CachedTaskDao(int tenantID) : base(tenantID)
+        public CachedTaskDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantUtil tenantUtil, FactoryIndexer<DbTask> factoryIndexerTask, FactoryIndexer<DbSubtask> factoryIndexerSubTask, IDaoFactory daoFactory, SettingsManager settingsManager, FilterHelper filterHelper, TenantManager tenantManager, FactoryIndexer<DbTask> factoryIndexer, IHttpContextAccessor accessor) : base(securityContext, dbContextManager, tenantUtil, factoryIndexerTask, factoryIndexerSubTask, daoFactory, settingsManager, filterHelper, tenantManager, factoryIndexer)
         {
+            TaskCache = new HttpRequestDictionary<Task>(accessor?.HttpContext, "task");
         }
 
-        public override void Delete(DbTask task)
+        public override void Delete(Task task)
         {
             ResetCache(task.ID);
             base.Delete(task);
         }
 
-        public override DbTask GetById(int id)
+        public override Task GetById(int id)
         {
-            return taskCache.Get(id.ToString(CultureInfo.InvariantCulture), () => GetBaseById(id));
+            return TaskCache.Get(id.ToString(CultureInfo.InvariantCulture), () => GetBaseById(id));
         }
 
-        private DbTask GetBaseById(int id)
+        private Task GetBaseById(int id)
         {
             return base.GetById(id);
         }
 
-        public override DbTask Update(DbTask task)
+        public override Task Update(Task task)
         {
             if (task != null)
             {
@@ -68,11 +73,11 @@ namespace ASC.Projects.Data.DAO
 
         private void ResetCache(int taskId)
         {
-            taskCache.Reset(taskId.ToString(CultureInfo.InvariantCulture));
+            TaskCache.Reset(taskId.ToString(CultureInfo.InvariantCulture));
         }
     }
 
-    */
+    
     [Scope]
     public class TaskDao : BaseDao, ITaskDao
     {

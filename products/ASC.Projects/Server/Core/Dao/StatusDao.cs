@@ -25,18 +25,22 @@ using ASC.Projects.EF;
 using ASC.Projects.Core.DataInterfaces;
 using ASC.Projects.Core.Domain;
 using ASC.Common;
+using ASC.Collections;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Projects.Data.DAO
 {
-    /* internal class CachedStatusDao : StatusDao
+    [Scope]
+     public class CachedStatusDao : StatusDao
      {
-         private readonly HttpRequestDictionary<List<CustomTaskStatus>> statusCache = new HttpRequestDictionary<List<CustomTaskStatus>>("status");
+        private HttpRequestDictionary<List<CustomTaskStatus>> StatusCache { get; set; }
 
-         public CachedStatusDao(int tenant) : base(tenant)
-         {
-         }
+        public CachedStatusDao(SecurityContext securityContext, DbContextManager<WebProjectsContext> dbContextManager, TenantManager tenantManager, IHttpContextAccessor accessor) : base(securityContext, dbContextManager, tenantManager)
+        {
+            StatusCache = new HttpRequestDictionary<List<CustomTaskStatus>>(accessor?.HttpContext, "status");
+        }
 
-         public override void Delete(int id)
+        public override void Delete(int id)
          {
              base.Delete(id);
              ResetCache();
@@ -57,7 +61,7 @@ namespace ASC.Projects.Data.DAO
 
          public override List<CustomTaskStatus> Get()
          {
-             return statusCache.Get(Tenant.ToString(), BaseGet);
+             return StatusCache.Get(Tenant.ToString(), BaseGet);
          }
 
          private List<CustomTaskStatus> BaseGet()
@@ -67,10 +71,10 @@ namespace ASC.Projects.Data.DAO
 
          private void ResetCache()
          {
-             statusCache.Reset(Tenant.ToString());
+             StatusCache.Reset(Tenant.ToString());
          }
      }
-    */
+    
     [Scope]
     public class StatusDao : BaseDao, IStatusDao
     {

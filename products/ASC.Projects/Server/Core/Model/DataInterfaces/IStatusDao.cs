@@ -18,10 +18,11 @@
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Projects.Data.DAO;
 
 namespace ASC.Projects.Core.DataInterfaces
 {
-    [Scope]
+    [Scope(typeof(StatusDao), typeof(CachedStatusDao))]
     public interface IStatusDao
     {
         CustomTaskStatus Create(CustomTaskStatus status);
