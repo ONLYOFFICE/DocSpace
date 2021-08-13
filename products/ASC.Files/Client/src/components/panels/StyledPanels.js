@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
+import { tablet } from "@appserver/components/utils/device";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -203,6 +204,16 @@ const StyledContent = styled.div`
   .panel-loader {
     display: inline;
     margin-right: 10px;
+  }
+
+  .layout-progress-bar {
+    position: fixed;
+    right: 15px;
+    bottom: 21px;
+
+    @media ${tablet} {
+      bottom: 83px;
+    }
   }
 `;
 

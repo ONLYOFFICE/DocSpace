@@ -59,6 +59,11 @@ const config = {
     filename: "static/js/[name].[contenthash].bundle.js",
   },
 
+  performance: {
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+  },
+
   module: {
     rules: [
       {

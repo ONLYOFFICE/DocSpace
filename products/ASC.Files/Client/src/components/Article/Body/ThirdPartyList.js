@@ -81,7 +81,7 @@ const ServiceItem = (props) => {
   const { capability, src, ...rest } = props;
 
   const capabilityName = capability[0];
-  const capabilityLink = capability[1] ? capability[1] : "";
+  const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
@@ -133,20 +133,22 @@ const PureThirdPartyListContainer = ({
         "Authorization",
         "height=600, width=1020"
       );
-      openConnectWindow(data.title, authModal).then((modal) => {
-        redirectAction();
-        getOAuthToken(modal).then((token) => {
-          authModal.close();
-          const serviceData = {
-            title: data.title,
-            provider_key: data.title,
-            link: data.link,
-            token,
-          };
-          setConnectItem(serviceData);
-          setConnectDialogVisible(true);
-        });
-      });
+      openConnectWindow(data.title, authModal)
+        .then(() => redirectAction())
+        .then((modal) =>
+          getOAuthToken(modal).then((token) => {
+            authModal.close();
+            const serviceData = {
+              title: data.title,
+              provider_key: data.title,
+              link: data.link,
+              token,
+            };
+            setConnectItem(serviceData);
+            setConnectDialogVisible(true);
+          })
+        )
+        .catch((e) => console.error(e));
     } else {
       setConnectItem(data);
       setConnectDialogVisible(true);
