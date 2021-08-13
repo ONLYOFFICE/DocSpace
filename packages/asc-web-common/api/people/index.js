@@ -25,6 +25,7 @@ export function getUser(userName = null) {
   return request({
     method: "get",
     url: `/people/${userName || "@self"}.json`,
+    skipLogout: true,
   });
 }
 export function getUserPhoto(userId) {
