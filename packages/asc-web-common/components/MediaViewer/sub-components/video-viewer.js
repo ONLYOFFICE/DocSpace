@@ -241,6 +241,7 @@ class VideoViewer extends Component {
     duration: 0,
     playbackRate: 1.0,
     loop: false,
+    isNew: false,
   };
 
   componentDidMount() {
@@ -255,7 +256,7 @@ class VideoViewer extends Component {
     if (this.props.url !== prevProps.url) {
       this.setState({
         url: this.props.url,
-        playing: false,
+        isNew: true,
       });
     }
   }
@@ -265,7 +266,7 @@ class VideoViewer extends Component {
   };
 
   handlePlayPause = () => {
-    this.setState({ playing: !this.state.playing });
+    this.setState({ playing: !this.state.playing, isNew: false });
   };
 
   handleStop = () => {
@@ -359,6 +360,11 @@ class VideoViewer extends Component {
     console.log("onError", e);
   };
 
+  onPlay = () => {
+    const playing = this.state.isNew ? false : true;
+    this.setState({ playing: playing, isNew: false });
+  };
+
   render() {
     const {
       url,
@@ -440,7 +446,7 @@ class VideoViewer extends Component {
               playbackRate={playbackRate}
               volume={volume}
               muted={muted}
-              onPlay={this.handlePlay}
+              onPlay={this.onPlay}
               onEnablePIP={this.handleEnablePIP}
               onDisablePIP={this.handleDisablePIP}
               onPause={this.handlePause}
