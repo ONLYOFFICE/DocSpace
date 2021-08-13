@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -9,10 +8,7 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Mapping;
 using ASC.Common.Utils;
-using ASC.Mail.Aggregator.CollectionService.Console;
-using ASC.Mail.Aggregator.CollectionService.Service;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -21,8 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-namespace ASC.Mail.Aggregator.CollectionService
+namespace ASC.Mail.StorageCleaner.Service
 {
     class Program
     {
@@ -73,16 +68,11 @@ namespace ASC.Mail.Aggregator.CollectionService
                     config
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile("storage.json")
-                        .AddJsonFile($"storage.{env}.json")
-                        .AddJsonFile("notify.json")
-                        .AddJsonFile("backup.json")
                         .AddJsonFile("kafka.json")
+                        .AddJsonFile($"kafka.{env}.json", true)
                         .AddJsonFile("mail.json")
                         .AddJsonFile($"mail.{env}.json")
-                        .AddJsonFile("elastic.json")
-                        .AddJsonFile($"elastic.{env}.json")
-                        .AddJsonFile($"kafka.{env}.json", true)
+
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
@@ -95,13 +85,10 @@ namespace ASC.Mail.Aggregator.CollectionService
                 {
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
+
+                    diHelper.TryAdd<StorageCleanerLauncher>();
+                    services.AddHostedService<StorageCleanerLauncher>();
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    services.AddSingleton(new ConsoleParser(args));
-                    diHelper.TryAdd<AggregatorServiceLauncher>();
-                    diHelper.TryAdd<AggregatorServiceScope>();
-                    diHelper.TryAdd<AggregatorLogger>();
-                    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-                    services.AddHostedService<AggregatorServiceLauncher>();
                     services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>

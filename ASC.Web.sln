@@ -99,7 +99,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Mail.Aggregator.Collect
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Mail.Core", "products\ASC.Mail\Core\ASC.Mail.Core.csproj", "{C8245D05-8D7B-410D-AA0F-0FC8FF3C296B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Mail.Watchdog.Service", "products\ASC.Mail\Services\ASC.Mail.Watchdog.Service\ASC.Mail.Watchdog.Service.csproj", "{33DFABE9-0068-4529-B6BB-8ADF89E6E9F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Mail.Watchdog.Service", "products\ASC.Mail\Services\ASC.Mail.Watchdog.Service\ASC.Mail.Watchdog.Service.csproj", "{33DFABE9-0068-4529-B6BB-8ADF89E6E9F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Mail.StorageCleaner.Service", "products\ASC.Mail\Services\ASC.Mail.StorageCleaner.Service\ASC.Mail.StorageCleaner.Service.csproj", "{52A81CFE-47F4-4108-B5FB-FA6A1556118E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -287,6 +289,10 @@ Global
 		{33DFABE9-0068-4529-B6BB-8ADF89E6E9F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33DFABE9-0068-4529-B6BB-8ADF89E6E9F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33DFABE9-0068-4529-B6BB-8ADF89E6E9F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52A81CFE-47F4-4108-B5FB-FA6A1556118E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52A81CFE-47F4-4108-B5FB-FA6A1556118E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52A81CFE-47F4-4108-B5FB-FA6A1556118E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52A81CFE-47F4-4108-B5FB-FA6A1556118E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

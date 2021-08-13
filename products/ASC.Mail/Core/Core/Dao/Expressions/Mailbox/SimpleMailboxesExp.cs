@@ -24,9 +24,12 @@
 */
 
 
-using ASC.Mail.Core.Dao.Entities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
@@ -51,6 +54,40 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
                 return mb => true;
 
             return mb => mb.IsRemoved == _isRemoved;
+        }
+    }
+
+    public class ConcreteMailboxesExp : IMailboxesExp
+    {
+        private readonly bool? _isRemoved;
+        public string OrderBy { get; private set; }
+        public bool? OrderAsc { get; private set; }
+        public int? Limit { get; private set; }
+        public List<int> Ids { get; private set; }
+
+        public ConcreteMailboxesExp(List<int> ids, bool? isRemoved = false)
+        {
+            _isRemoved = isRemoved;
+            OrderBy = null;
+            OrderAsc = false;
+            Limit = null;
+            Ids = ids;
+        }
+
+        public virtual Expression<Func<MailMailbox, bool>> GetExpression()
+        {
+            Expression<Func<MailMailbox, bool>> exp = mb => mb.IsRemoved == _isRemoved;
+
+            exp = exp.And(m => m.Id == Ids[0]);
+
+            if (Ids.Count == 1) return exp;
+
+            foreach (var id in Ids.Skip(1))
+            {
+                exp = exp.Or(m => m.Id == id);
+            }
+
+            return exp;
         }
     }
 }

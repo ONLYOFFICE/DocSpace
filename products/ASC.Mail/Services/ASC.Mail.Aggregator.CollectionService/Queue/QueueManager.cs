@@ -154,7 +154,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                 mailboxEngine.ReleaseMaibox(mailBoxData, MailSettings);
 
-                _lockedMailBoxList.Remove(mailBoxData);
+                _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
 
                 DeleteMailboxFromDumpDb(mailBoxData.MailBoxId);
             }
@@ -512,7 +512,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private bool TryLockMailbox(MailBoxData mailbox)
         {
-            Log.DebugFormat("TryLockMailbox(MailboxId={0} is {1})", mailbox.MailBoxId, mailbox.Active ? "active" : "inactive");
+            Log.DebugFormat("TryLockMailbox {3} (MailboxId={0} is {1})", mailbox.MailBoxId, mailbox.Active ? "active" : "inactive", mailbox.EMail.Address);
 
             try
             {

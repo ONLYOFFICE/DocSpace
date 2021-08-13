@@ -47,6 +47,7 @@ using ASC.Mail.Models;
 using ASC.Mail.Storage;
 using ASC.Mail.Utils;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -69,6 +70,7 @@ namespace ASC.Mail.Core.Engine
         private static TaskFactory TaskFactory { get; set; }
         private static object Locker { get; set; }
         private ILog Log { get; }
+        private IServiceProvider ServiceProvider { get; set; }
 
         public MailGarbageEngine(
             SecurityContext securityContext,
@@ -83,7 +85,8 @@ namespace ASC.Mail.Core.Engine
             ApiHelper apiHelper,
             StorageFactory storageFactory,
             MailSettings mailSettings,
-            IOptionsMonitor<ILog> option) : base(mailSettings)
+            IOptionsMonitor<ILog> option,
+            IServiceProvider serviceProvider) : base(mailSettings)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -96,6 +99,7 @@ namespace ASC.Mail.Core.Engine
             OperationEngine = operationEngine;
             ApiHelper = apiHelper;
             StorageFactory = storageFactory;
+            ServiceProvider = serviceProvider;
 
             Log = option.Get("ASC.Mail.GarbageEngine");
 
@@ -128,6 +132,11 @@ namespace ASC.Mail.Core.Engine
                         break;
 
                     var mb = mailbox;
+
+                    using var scope = ServiceProvider.CreateScope();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+                    tenantManager.SetCurrentTenant(mailbox.TenantId);
 
                     var task = Queue(() => ClearGarbage(mb), cancelToken);
 
@@ -407,8 +416,12 @@ namespace ASC.Mail.Core.Engine
                     {
                         log.Info("RemoveTeamlabMailbox()");
 
-                        TenantManager.SetCurrentTenant(mailbox.TenantId);
-                        SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                        using var scope = ServiceProvider.CreateScope();
+                        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                        var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
+                        tenantManager.SetCurrentTenant(mailbox.TenantId);
+                        securityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
 
                         RemoveTeamlabMailbox(mailbox, log);
                     }

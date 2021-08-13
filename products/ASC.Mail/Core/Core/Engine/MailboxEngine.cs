@@ -497,7 +497,7 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var box in mailboxes)
             {
-                Log.Debug($"{box.MailBoxId}:\tIsEnabled={box.Enabled}\tIsRemoved={box.IsRemoved}\tTenant={box.TenantId}\tId={box.UserId}");
+                Log.Debug($"{box.EMail.Address}\t{box.MailBoxId}:\tIsEnabled={box.Enabled}\tIsRemoved={box.IsRemoved}\tTenant={box.TenantId}\tId={box.UserId}");
             }
 
             return mailboxes;
