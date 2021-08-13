@@ -19,6 +19,11 @@ import {
   setEncryptionKeys,
   getEncryptionAccess,
   getFileInfo,
+  getRecentFolderList,
+  getFolderInfo,
+  updateFile,
+  removeFromFavorite,
+  markAsFavorite,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -30,10 +35,15 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-
+import { getDefaultFileName } from "files/utils";
 import i18n from "./i18n";
+import { FolderType } from "@appserver/common/constants";
 
 let documentIsReady = false;
+
+const text = "text";
+const spreadSheet = "spreadsheet";
+const presentation = "presentation";
 
 let docTitle = null;
 let fileType = null;
@@ -41,6 +51,7 @@ let config;
 let docSaved = null;
 let docEditor;
 let fileInfo;
+let successAuth;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -75,6 +86,10 @@ const Editor = () => {
     });
   };
 
+  const updateFavorite = (favorite) => {
+    docEditor.setFavorite(favorite);
+  };
+
   const init = async () => {
     try {
       if (!fileId) return;
@@ -91,9 +106,9 @@ const Editor = () => {
       //showLoader();
 
       const docApiUrl = await getDocServiceUrl();
-      const success = await checkIsAuthenticated();
+      successAuth = await checkIsAuthenticated();
 
-      if (!doc && !success) {
+      if (!doc && !successAuth) {
         window.open(
           combineUrl(AppServerConfig.proxyURL, "/login"),
           "_self",
@@ -103,14 +118,14 @@ const Editor = () => {
         return;
       }
 
-      if (success) {
+      if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
         } catch (err) {
           console.error(err);
         }
 
-        setIsAuthenticated(success);
+        setIsAuthenticated(successAuth);
       }
 
       config = await openEdit(fileId, version, doc);
@@ -151,6 +166,63 @@ const Editor = () => {
         );
       }
 
+      if (successAuth) {
+        try {
+          const recentFolderList = await getRecentFolderList();
+
+          const filesArray = recentFolderList.files.slice(0, 25);
+
+          const recentFiles = filesArray.filter(
+            (file) =>
+              file.rootFolderType !== FolderType.SHARE &&
+              ((config.documentType === text && file.fileType === 7) ||
+                (config.documentType === spreadSheet && file.fileType === 5) ||
+                (config.documentType === presentation && file.fileType === 6))
+          );
+
+          const groupedByFolder = recentFiles.reduce((r, a) => {
+            r[a.folderId] = [...(r[a.folderId] || []), a];
+            return r;
+          }, {});
+
+          const requests = Object.entries(groupedByFolder).map((item) =>
+            getFolderInfo(item[0])
+              .then((folderInfo) =>
+                Promise.resolve({
+                  files: item[1],
+                  folderInfo: folderInfo,
+                })
+              )
+              .catch((e) => console.error(e))
+          );
+
+          let recent = [];
+
+          try {
+            let responses = await Promise.all(requests);
+
+            for (let i = 0; i < responses.length; i++) {
+              const res = responses[i];
+
+              res.files.forEach((file) => {
+                const convertedData = convertRecentData(file, res.folderInfo);
+                if (Object.keys(convertedData).length !== 0)
+                  recent.push(convertedData);
+              });
+            }
+          } catch (e) {
+            console.error(e);
+          }
+
+          config.editorConfig = {
+            ...config.editorConfig,
+            recent: recent,
+          };
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
       if (
         config &&
         config.document.permissions.edit &&
@@ -162,6 +234,10 @@ const Editor = () => {
           ...config.document.info,
           sharingSettings,
         };
+      }
+
+      if (url.indexOf("action=view") !== -1) {
+        config.editorConfig.mode = "view";
       }
 
       setIsLoading(false);
@@ -178,22 +254,37 @@ const Editor = () => {
     }
   };
 
+  const convertRecentData = (file, folder) => {
+    let obj = {};
+    const folderName = folder.title;
+    const fileName = file.title;
+    const url = file.webUrl;
+
+    if (+fileId !== file.id)
+      obj = {
+        folder: folderName,
+        title: fileName,
+        url: url,
+      };
+    return obj;
+  };
+
   const isIPad = () => {
     return isIOS && deviceType === "tablet";
   };
 
-  const setFavicon = (fileType) => {
+  const setFavicon = (documentType) => {
     const favicon = document.getElementById("favicon");
     if (!favicon) return;
     let icon = null;
-    switch (fileType) {
-      case "docx":
+    switch (documentType) {
+      case "text":
         icon = "text.ico";
         break;
-      case "pptx":
+      case "presentation":
         icon = "presentation.ico";
         break;
-      case "xlsx":
+      case "spreadsheet":
         icon = "spreadsheet.ico";
         break;
       default:
@@ -252,7 +343,7 @@ const Editor = () => {
       docTitle = config.document.title;
       fileType = config.document.fileType;
 
-      setFavicon(fileType);
+      setFavicon(config.documentType);
       setDocumentTitle(docTitle);
 
       if (window.innerWidth < 720) {
@@ -279,14 +370,43 @@ const Editor = () => {
         goback,
       };
 
-      let onRequestSharingSettings;
+      if (url.indexOf("anchor") !== -1) {
+        const splitUrl = url.split("anchor=");
+        const decodeURI = decodeURIComponent(splitUrl[1]);
+        const obj = JSON.parse(decodeURI);
 
-      if (
-        fileInfo &&
-        config.document.permissions.edit &&
-        config.document.permissions.modifyFilter
-      ) {
+        config.editorConfig.actionLink = {
+          action: obj.action,
+        };
+      }
+
+      if (successAuth) {
+        const documentType = config.documentType;
+        const fileExt =
+          documentType === text
+            ? "docx"
+            : documentType === presentation
+            ? "pptx"
+            : "xlsx";
+
+        const defaultFileName = getDefaultFileName(fileExt);
+
+        config.editorConfig.createUrl = combineUrl(
+          window.location.origin,
+          AppServerConfig.proxyURL,
+          "products/files/",
+          `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            defaultFileName
+          )}`
+        );
+      }
+
+      let onRequestSharingSettings;
+      let onRequestRename;
+
+      if (fileInfo && config.document.permissions.modifyFilter) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
+        onRequestRename = onSDKRequestRename;
       }
 
       const events = {
@@ -299,6 +419,8 @@ const Editor = () => {
           onWarning: onSDKWarning,
           onError: onSDKError,
           onRequestSharingSettings,
+          onRequestRename,
+          onMakeActionLink: onMakeActionLink,
         },
       };
 
@@ -315,6 +437,14 @@ const Editor = () => {
 
   const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
+
+    const index = url.indexOf("#message/");
+    if (index > -1) {
+      const splitUrl = url.split("#message/");
+      const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
+      message && toastr.info(message);
+      history.pushState({}, null, url.substring(0, index));
+    }
   };
 
   const onSDKInfo = (event) => {
@@ -327,6 +457,29 @@ const Editor = () => {
 
   const onSDKRequestSharingSettings = () => {
     setIsVisible(true);
+  };
+
+  const onSDKRequestRename = (event) => {
+    const title = event.data;
+    updateFile(fileInfo.id, title);
+  };
+
+  const onMakeActionLink = (event) => {
+    var ACTION_DATA = event.data;
+
+    const link = generateLink(ACTION_DATA);
+
+    const urlFormation = !config.editorConfig.actionLink
+      ? url
+      : url.split("&anchor=")[0];
+
+    const linkFormation = `${urlFormation}&anchor=${link}`;
+
+    docEditor.setActionLink(linkFormation);
+  };
+
+  const generateLink = (actionData) => {
+    return encodeURIComponent(JSON.stringify(actionData));
   };
 
   const onCancel = () => {
@@ -364,10 +517,21 @@ const Editor = () => {
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
+    const favorite = event.data.favorite;
+
     if (newTitle && newTitle !== docTitle) {
       setDocumentTitle(newTitle);
       docTitle = newTitle;
     }
+
+    if (!newTitle)
+      favorite
+        ? markAsFavorite([+fileId])
+            .then(() => updateFavorite(favorite))
+            .catch((error) => console.log("error", error))
+        : removeFromFavorite([+fileId])
+            .then(() => updateFavorite(favorite))
+            .catch((error) => console.log("error", error));
   };
 
   return (

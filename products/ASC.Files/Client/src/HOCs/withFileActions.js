@@ -8,6 +8,9 @@ import toastr from "@appserver/components/toast/toastr";
 
 import { EncryptedFileIcon } from "../components/Icons";
 import { checkProtocol, createTreeFolders } from "../helpers/files-helpers";
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../package.json";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
@@ -161,15 +164,14 @@ export default function withFileActions(WrappedFileItem) {
     };
     onFilesClick = (e) => {
       const {
-        filter,
+        isDesktop,
         parentFolder,
         setIsLoading,
         fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
+        isMediaOrImage,
         canConvert,
         canWebEdit,
+        canViewedDocs,
         item,
         isTrashFolder,
         isPrivacy,
@@ -223,11 +225,23 @@ export default function withFileActions(WrappedFileItem) {
 
         if (fileStatus === 2) this.onMarkAsRead(id);
 
-        if (canWebEdit) {
-          return openDocEditor(id, providerKey);
+        if (canWebEdit || canViewedDocs) {
+          let tab =
+            !isDesktop && fileExst
+              ? window.open(
+                  combineUrl(
+                    AppServerConfig.proxyURL,
+                    config.homepage,
+                    "/doceditor"
+                  ),
+                  "_blank"
+                )
+              : null;
+
+          return openDocEditor(id, providerKey, tab);
         }
 
-        if (isImage || isSound || isVideo) {
+        if (isMediaOrImage) {
           setMediaViewerData({ visible: true, id });
           return;
         }
@@ -253,6 +267,7 @@ export default function withFileActions(WrappedFileItem) {
         isDesktop,
         personal,
         canWebEdit,
+        canViewedDocs,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -279,7 +294,7 @@ export default function withFileActions(WrappedFileItem) {
       const sharedButton =
         !canShare ||
         !showShare ||
-        (personal && !canWebEdit) ||
+        (personal && !canWebEdit && !canViewedDocs) ||
         isEdit ||
         id <= 0 ||
         isMobile
@@ -382,11 +397,13 @@ export default function withFileActions(WrappedFileItem) {
         ? false
         : true;
 
-      const isImage = iconFormatsStore.isImage(item.fileExst);
-      const isSound = iconFormatsStore.isSound(item.fileExst);
-      const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+      const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
+        item.fileExst
+      );
+
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
+      const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
 
       return {
         t,
@@ -413,10 +430,9 @@ export default function withFileActions(WrappedFileItem) {
         parentFolder: selectedFolderStore.parentId,
         setIsLoading,
         fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
+        isMediaOrImage,
         canWebEdit,
+        canViewedDocs,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,

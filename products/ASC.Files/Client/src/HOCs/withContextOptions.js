@@ -109,23 +109,46 @@ export default function withContextOptions(WrappedComponent) {
         setConvertItem(item);
         setConvertDialogVisible(true);
       } else {
-        this.onPreviewClick();
+        this.openDocEditor(false);
       }
     };
 
     onPreviewClick = () => {
-      const { item, openDocEditor } = this.props;
-      const { id, providerKey } = item;
-
-      openDocEditor(id, providerKey);
+      this.openDocEditor(true);
     };
 
+    openDocEditor = (preview = false) => {
+      const { item, openDocEditor, isDesktop } = this.props;
+      const { id, providerKey, fileExst } = item;
+
+      const urlFormation = preview
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/doceditor?fileId=${id}&action=view`
+          )
+        : null;
+
+      let tab =
+        !isDesktop && fileExst
+          ? window.open(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                config.homepage,
+                "/doceditor"
+              ),
+              "_blank"
+            )
+          : null;
+
+      openDocEditor(id, providerKey, tab, urlFormation);
+    };
     onClickDownload = () => {
       const { item, downloadAction, t } = this.props;
       const { fileExst, contentLength, viewUrl } = item;
       const isFile = !!fileExst && contentLength;
       isFile
-        ? window.open(viewUrl, "_blank")
+        ? window.open(viewUrl, "_self")
         : downloadAction(t("Translations:ArchivingData")).catch((err) =>
             toastr.error(err)
           );
@@ -497,7 +520,7 @@ export default function withContextOptions(WrappedComponent) {
         setDeleteDialogVisible,
         setUnsubscribe,
       } = dialogsStore;
-      const { isTabletView } = auth.settingsStore;
+      const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
@@ -541,6 +564,7 @@ export default function withContextOptions(WrappedComponent) {
         unsubscribeAction,
         setDeleteDialogVisible,
         setUnsubscribe,
+        isDesktop: isDesktopClient,
       };
     }
   )(observer(WithContextOptions));

@@ -32,7 +32,6 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 
 using Autofac;
@@ -93,13 +92,13 @@ namespace ASC.Thumbnails.Svc
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Thumbnails.Svc");
                     services.AddHostedService<ThumbnailsServiceLauncher>();
                     diHelper.TryAdd<ThumbnailsServiceLauncher>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, false, false);
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

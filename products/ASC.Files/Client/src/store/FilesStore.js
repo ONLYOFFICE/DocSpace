@@ -15,6 +15,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
+import { openDocEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
 
@@ -404,6 +405,8 @@ class FilesStore {
       isShareFolder,
     } = this.treeFoldersStore;
 
+    const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
+
     const { isRootFolder } = this.selectedFolderStore;
 
     const isThirdPartyFolder = item.providerKey && isRootFolder;
@@ -458,7 +461,7 @@ class FilesStore {
           "unsubscribe",
         ]);
 
-        if (!this.isWebEditSelected) {
+        if (!this.isWebEditSelected && !canViewedDocs(item.fileExst)) {
           fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
         }
       }
@@ -676,6 +679,22 @@ class FilesStore {
           fileOptions,
           isFileOwner ? ["unsubscribe"] : ["move-to", "delete"]
         );
+      }
+
+      if (
+        !canWebEdit(item.fileExst) &&
+        !canViewedDocs(item.fileExst) &&
+        !fileOptions.includes("view")
+      ) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "edit",
+          "preview",
+          "separator0",
+        ]);
+      }
+
+      if (!canWebEdit(item.fileExst) && canViewedDocs(item.fileExst)) {
+        fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
 
       return fileOptions;
@@ -1209,6 +1228,15 @@ class FilesStore {
     });
   }
 
+  get isViewedSelected() {
+    const { canViewedDocs } = this.formatsStore.docserviceStore;
+
+    return this.selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return canViewedDocs(selected.fileExst);
+    });
+  }
+
   get selectionTitle() {
     if (this.selection.length === 0) return null;
     return this.selection.find((el) => el.title).title;
@@ -1361,34 +1389,7 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    if (providerKey) {
-      tab
-        ? (tab.location = url)
-        : window.open(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              config.homepage,
-              `/doceditor?fileId=${id}`
-            ),
-            "_blank"
-          );
-    } else {
-      return this.addFileToRecentlyViewed(id)
-        .then(() => console.log("Pushed to recently viewed"))
-        .catch((e) => console.error(e))
-        .finally(
-          tab
-            ? (tab.location = url)
-            : window.open(
-                combineUrl(
-                  AppServerConfig.proxyURL,
-                  config.homepage,
-                  `/doceditor?fileId=${id}`
-                ),
-                "_blank"
-              )
-        );
-    }
+    return openDocEditor(id, providerKey, tab, url);
   };
 
   createThumbnails = () => {

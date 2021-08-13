@@ -31,7 +31,6 @@ ELK_PORT="9200"
 
 JSON="json -I -f"
 JSON_USERCONF="$JSON $USER_CONF -e"
-JSON_DSCONF="$JSON $DS_CONF -e"
 
 [ $(id -u) -ne 0 ] && { echo "Root privileges required"; exit 1; }
 
@@ -129,7 +128,7 @@ while [ "$1" != "" ]; do
 			echo "      -zkp, --zookeeperport               zookeeper port (default 2181)"
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
-			echo "      -e, --environment                 	environment (default 'production')"
+			echo "      -e, --environment                   environment (default 'production')"
 			echo "      -?, -h, --help                      this help"
 			echo
 			exit 0
@@ -167,8 +166,8 @@ install_json() {
 	
 		set_core_machinekey
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
-		-e "this.urlshortener={ 'path': 'client/index.js' }" -e "this.thumb={ 'path': 'client/' }" \
-		-e "this.socket={ 'path': '../ASC.Socket.IO' }" >/dev/null 2>&1
+		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
+		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" >/dev/null 2>&1
 		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" >/dev/null 2>&1
 		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
 		
@@ -178,22 +177,20 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
+	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
+	systemctl daemon-reload
+
 	for SVC in nginx mysqld ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
 	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
 	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
 	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
 	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
 	do
-		sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service >/dev/null 2>&1
-		
 		if systemctl is-active $SVC | grep -q "active"; then
 			systemctl restart $SVC.service >/dev/null 2>&1
 		else
 			systemctl enable $SVC.service  >/dev/null 2>&1
 			systemctl start $SVC.service  >/dev/null 2>&1
-		fi
-		if systemctl is-active $SVC | grep -v "active" >/dev/null; then
-			echo -e "\033[31m $SVC not started \033[0m"
 		fi
 	done
 	echo "OK"
@@ -418,6 +415,7 @@ setup_nginx(){
 setup_docs() {
 	echo -n "Configuring Docs... "
 	local DS_CONF="/etc/onlyoffice/documentserver/local.json"
+	local JSON_DSCONF="$JSON $DS_CONF -e"
 
 	#Changing the Docs port in nginx conf
 	sed -i "s/0.0.0.0:.*;/0.0.0.0:$DOCUMENT_SERVER_PORT;/" $NGINX_CONF/ds.conf
@@ -504,7 +502,7 @@ setup_elasticsearch() {
 	echo -n "Configuring elasticsearch... "
 
 	#Save elasticsearch parameters in .json
-	$JSON_USERCONF "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\" }" >/dev/null 2>&1
+	$JSON $APP_DIR/elastic.json -e "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\",'Threads': \"1\" }" >/dev/null 2>&1
 
 	change_elasticsearch_config
 	
@@ -515,12 +513,14 @@ setup_kafka() {
 
 	local KAFKA_SERVICE=$(systemctl --type=service | grep 'kafka' | tr -d '●' | awk '{print $1;}')
 
-	if [ $KAFKA_SERVICE ]; then
+	if [ -n ${KAFKA_SERVICE} ]; then
 
 		echo -n "Configuring kafka... "
+		
+		local KAFKA_DIR="$(cat $SYSTEMD_DIR/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)"
+		local KAFKA_CONF="${KAFKA_DIR}/config"
 
 		#Change kafka config
-		local KAFKA_CONF="$(cat $SYSTEMD_DIR/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)/config"
 		sed -i "s/clientPort=.*/clientPort=${ZOOKEEPER_PORT}/g" $KAFKA_CONF/zookeeper.properties
 		sed -i "s/zookeeper.connect=.*/zookeeper.connect=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}/g" $KAFKA_CONF/server.properties
 		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/consumer.properties
@@ -532,6 +532,17 @@ setup_kafka() {
 		#Save kafka parameters in .json
 		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
 
+		#Add topics for kafka
+		KAFKA_TOPICS=( ascchannelQuotaCacheItemAny
+			ascchannelTariffCacheItemRemove
+			ascchannelTenantCacheItemInsertOrUpdate
+			ascchannelTenantSettingRemove )
+
+		for i in "${KAFKA_TOPICS[@]}" 
+		do
+			${KAFKA_DIR}/bin/kafka-topics.sh --create --zookeeper ${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT} --topic $i --replication-factor 1 --partitions 3 >/dev/null 2>&1
+		done
+		
 		echo "OK"
 	fi
 

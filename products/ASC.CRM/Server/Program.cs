@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using ASC.Common.DependencyInjection;
+using ASC.Api.Core;
 using ASC.Common.Utils;
 
-using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
@@ -74,6 +73,7 @@ namespace ASC.CRM
                     {
                                         {"pathToConf", path}
                     });
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

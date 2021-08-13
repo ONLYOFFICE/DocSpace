@@ -13,7 +13,7 @@ Packager:       Ascensio System SIA <support@onlyoffice.com>
 ExclusiveArch:  x86_64
 AutoReq:        no
 AutoProv:       no
-License:        GPLv3
+License:        AGPLv3
 Source0:        https://github.com/ONLYOFFICE/%{product}/archive/%GIT_BRANCH.tar.gz
 BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn

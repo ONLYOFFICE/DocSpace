@@ -52,7 +52,7 @@ namespace ASC.Web.Files.Core.Compress
         /// <param name="title">File name with extension, this name will have the file in the archive</param>
         public void CreateEntry(string title)
         {
-            zipEntry = new ZipEntry(title);
+            zipEntry = new ZipEntry(title) { IsUnicodeText = true };
         }
 
         /// <summary>

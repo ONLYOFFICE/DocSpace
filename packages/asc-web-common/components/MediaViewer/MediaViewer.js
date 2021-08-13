@@ -11,7 +11,7 @@ import ControlBtn from "./sub-components/control-btn";
 import StyledMediaViewer from "./StyledMediaViewer";
 import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
-import CrossIcon from "../../../../public/images/cross.react.svg";
+import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledVideoViewer = styled(VideoViewer)`
@@ -30,6 +30,8 @@ const ButtonKeys = Object.freeze({
   esc: 27,
   ctr: 17,
   one: 49,
+  del: 46,
+  s: 83,
 });
 
 const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
@@ -305,14 +307,15 @@ class MediaViewer extends React.Component {
         : 0;
     this.props.onDownload && this.props.onDownload(currentFileId);
   };
+
   onKeyup = (e) => {
     if (ButtonKeys.ctr === e.keyCode) {
       ctrIsPressed = false;
     }
   };
+
   onKeydown = (e) => {
     let isActionKey = false;
-
     for (let key in ButtonKeys) {
       if (ButtonKeys[key] === e.keyCode) {
         e.preventDefault();
@@ -341,7 +344,7 @@ class MediaViewer extends React.Component {
             : this.nextMedia();
           break;
         case ButtonKeys.esc:
-          this.props.onClose();
+          if (!this.props.deleteDialogVisible) this.props.onClose();
           break;
         case ButtonKeys.upArrow:
           document.getElementsByClassName("iconContainer zoomIn").length > 0 &&
@@ -354,11 +357,18 @@ class MediaViewer extends React.Component {
         case ButtonKeys.ctr:
           ctrIsPressed = true;
           break;
+        case ButtonKeys.s:
+          if (ctrIsPressed) this.onDownload();
+          break;
         case ButtonKeys.one:
           ctrIsPressed &&
             document.getElementsByClassName("iconContainer reset").length > 0 &&
             document.getElementsByClassName("iconContainer reset")[0].click();
           break;
+        case ButtonKeys.del:
+          this.onDelete();
+          break;
+
         default:
           break;
       }
@@ -436,7 +446,11 @@ class MediaViewer extends React.Component {
               onClick={this.props.onClose && this.props.onClose}
               className="mediaPlayerClose"
             >
-              <CrossIcon size="medium" /* isfill={true} */ color="#fff" />
+              <IconButton
+                color="#fff"
+                iconName="/static/images/cross.react.svg"
+                size={25}
+              />
             </ControlBtn>
           </div>
         </div>
@@ -456,7 +470,6 @@ class MediaViewer extends React.Component {
           ) : (
             <StyledVideoViewer
               url={url}
-              playing={this.state.visible}
               isVideo={isVideo}
               getOffset={this.getOffset}
             />
@@ -500,6 +513,7 @@ MediaViewer.propTypes = {
   onDownload: PropTypes.func,
   onClose: PropTypes.func,
   onEmptyPlaylistError: PropTypes.func,
+  deleteDialogVisible: PropTypes.bool,
 };
 
 MediaViewer.defaultProps = {
