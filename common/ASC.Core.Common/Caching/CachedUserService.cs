@@ -247,6 +247,8 @@ namespace ASC.Core.Caching
 
         public UserInfo GetUser(int tenant, Guid id)
         {
+            if (id.Equals(Guid.Empty)) return null;
+
             if (CoreBaseSettings.Personal)
             {
                 return GetUserForPersonal(tenant, id);
