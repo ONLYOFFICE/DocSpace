@@ -25,6 +25,7 @@ import {
   updateFile,
   removeFromFavorite,
   markAsFavorite,
+  getPresignedUri,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -99,20 +100,19 @@ const Editor = () => {
       });
     });
   };
-  const insertImage = (file) => {
-    const fileExst = file.fileExst;
-    const convertFileExst = fileExst.substring(1);
-    console.log("file.fileExst", convertFileExst);
+
+  const insertImage = (link) => {
     docEditor.insertImage({
       c: "add",
-      fileType: "png",
-      url: "",
+      fileType: link.filetype,
+      url: link.url,
     });
   };
-  const mailMerge = (file) => {
+
+  const mailMerge = (link) => {
     docEditor.setMailMergeRecipients({
-      fileType: "xlsx",
-      url: "https://example.com/url-to-example-recipients.xlsx",
+      fileType: link.filetype,
+      url: link.url,
     });
   };
   const updateFavorite = (favorite) => {
@@ -584,10 +584,13 @@ const Editor = () => {
     setIsFileDialogVisible(true);
   };
 
-  const onSelectFile = (file) => {
+  const onSelectFile = async (file) => {
     console.log("onSelectFile", file);
-    if (filesType === insertImageAction) insertImage(file);
-    if (filesType === mailMergeAction) mailMerge(file);
+
+    const link = await getPresignedUri(file.id);
+
+    if (filesType === insertImageAction) insertImage(link);
+    if (filesType === mailMergeAction) mailMerge(link);
   };
 
   const onCloseFileDialog = () => {

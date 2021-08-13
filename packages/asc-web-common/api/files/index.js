@@ -765,3 +765,10 @@ export function createThumbnails(fileIds) {
 
   return request(options);
 }
+
+export function getPresignedUri(fileId) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/presigned`,
+  });
+}
