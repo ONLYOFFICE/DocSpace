@@ -128,7 +128,9 @@ namespace ASC.Common.Caching
                             {
                                 new TopicSpecification 
                                 { 
-                                    Name = channelName
+                                    Name = channelName,
+                                    NumPartitions = 1,
+                                    ReplicationFactor = 1
                                 } 
                             }).Wait();
                 }
