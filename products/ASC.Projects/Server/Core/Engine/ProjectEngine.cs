@@ -38,7 +38,6 @@ namespace ASC.Projects.Engine
         public NotifyClient NotifyClient { get; set; }
         public ProjectSecurity ProjectSecurity { get; set; }
         public bool DisableNotifications { get; set; }
-
         public Func<Project, bool> CanReadDelegate { get; set; }
         public FactoryIndexer<DbProject> FactoryIndexer { get; set; }
         public IFactoryFileDao FactoryFileDao { get; set; }
@@ -62,11 +61,6 @@ namespace ASC.Projects.Engine
             FactoryIndexer = factoryIndexer;
         }
 
-        public ProjectEngine Init(bool disableNotificationParameter)
-        {
-            DisableNotifications = disableNotificationParameter;
-            return this;
-        }
 
         #region Get Projects
 

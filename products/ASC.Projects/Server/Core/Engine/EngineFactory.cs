@@ -40,17 +40,17 @@ namespace ASC.Projects.Engine
 
         public ProjectEngine GetProjectEngine()
         {
-            return ServiceProvider.GetService<ProjectEngine>().Init(false);
+            return ServiceProvider.GetService<ProjectEngine>();
         }
 
         public MilestoneEngine GetMilestoneEngine()
         {
-            return ServiceProvider.GetService<MilestoneEngine>().Init(false);
+            return ServiceProvider.GetService<MilestoneEngine>();
         }
 
         public CommentEngine GetCommentEngine()
         {
-            return ServiceProvider.GetService<CommentEngine>().Init(false);
+            return ServiceProvider.GetService<CommentEngine>();
         }
 
         public SearchEngine GetSearchEngine()
@@ -60,17 +60,17 @@ namespace ASC.Projects.Engine
 
         public TaskEngine GetTaskEngine()
         {
-            return ServiceProvider.GetService<TaskEngine>().Init(false);
+            return ServiceProvider.GetService<TaskEngine>();
         }
 
         public SubtaskEngine GetSubtaskEngine()
         {
-            return ServiceProvider.GetService<SubtaskEngine>().Init(false);
+            return ServiceProvider.GetService<SubtaskEngine>();
         }
 
         public MessageEngine GetMessageEngine()
         {
-            return ServiceProvider.GetService<MessageEngine>().Init(false);
+            return ServiceProvider.GetService<MessageEngine>();
         }
 
         public TimeTrackingEngine GetTimeTrackingEngine()

@@ -52,12 +52,6 @@ namespace ASC.Projects.Engine
             ProjectSecurity = projectSecurity;
         }
 
-        public CommentEngine Init(bool disableNotifications)
-        {
-            DisableNotifications = disableNotifications;
-            return this;
-        }
-
         public List<Comment> GetComments(DomainObject<int> targetObject)
         {
             return targetObject != null ? DaoFactory.GetCommentDao().GetAll(targetObject) : new List<Comment>();

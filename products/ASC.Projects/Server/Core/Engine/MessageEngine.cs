@@ -44,12 +44,7 @@ namespace ASC.Projects.Engine
             TenantUtil = tenantUtil;
             DaoFactory = daoFactory;
             DaoProjectFactory = daoProjectFactory;
-        }
-
-        public MessageEngine Init(bool disableNotifications)
-        {
-            Init(NotifyConstants.Event_NewCommentForMessage, disableNotifications);
-            return this;
+            Init(NotifyConstants.Event_NewCommentForMessage);
         }
 
         #region Get Discussion

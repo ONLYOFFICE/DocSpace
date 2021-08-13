@@ -54,12 +54,6 @@ namespace ASC.Projects.Engine
             DaoFactory = daoFactory;
         }
 
-        public MilestoneEngine Init(bool disableNotifications)
-        {
-            DisableNotifications = disableNotifications;
-            return this;
-        }
-
         public IEnumerable<Milestone> GetAll()
         {
             return DaoFactory.GetMilestoneDao().GetAll().Where(CanRead);

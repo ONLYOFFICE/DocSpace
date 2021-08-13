@@ -31,6 +31,7 @@ using System.Linq;
 using System.Text;
 
 using ASC.Core.Tenants;
+using ASC.Web.Core.PublicResources;
 
 namespace ASC.Web.Core.Calendars
 {
@@ -57,10 +58,10 @@ namespace ASC.Web.Core.Calendars
             switch (diff.Days)
             {
                 case 0:
-                    result.Append("Today");//todo
+                    result.Append(Resource.DrnToday);
                     break;
                 case 1:
-                    result.Append("Yesterday");//todo
+                    result.Append(Resource.DrnYesterday);
                     break;
                 default:
                     result.AppendFormat("{0}", target.ToShortDateString());

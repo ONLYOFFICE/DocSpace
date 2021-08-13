@@ -43,13 +43,9 @@ namespace ASC.Projects.Engine
             FactoryIndexer = factoryIndexer;
             TenantUtil = tenantUtil;
             DaoProjectFactory = daoProjectFactory;
+            Init(NotifyConstants.Event_NewCommentForTask);
         }
 
-        public SubtaskEngine Init(bool disableNotifications)
-        {
-            Init(NotifyConstants.Event_NewCommentForTask, disableNotifications);
-            return this;
-        }
 
         #region get 
 

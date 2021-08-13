@@ -55,11 +55,9 @@ namespace ASC.Projects.Engine
             ProjectSecurity = projectSecurity;
         }
 
-        public void Init(INotifyAction notifyAction, bool disableNotifications)
+        public void Init(INotifyAction notifyAction)
         {
-
             NotifyAction = notifyAction;
-            DisableNotifications = disableNotifications;
         }
 
         public virtual ProjectEntity GetEntityByID(int id)
