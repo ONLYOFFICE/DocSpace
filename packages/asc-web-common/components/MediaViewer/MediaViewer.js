@@ -135,8 +135,8 @@ class MediaViewer extends React.Component {
     ) {
       let playlistPos = 0;
       if (this.props.playlist.length > 0) {
-        if (this.props.playlist.length - 1 < this.state.playlistPos) {
-          playlistPos = this.props.playlist.length - 1;
+        if (this.state.playlistPos < this.props.playlist.length) {
+          playlistPos = this.state.playlistPos;
         }
         this.setState({
           playlist: this.props.playlist,
