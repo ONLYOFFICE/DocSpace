@@ -142,5 +142,10 @@ namespace ASC.Projects.Calendars
                    (startDate <= eventEndDate && eventEndDate <= endDate) ||
                    (eventStartDate < startDate && eventEndDate > endDate);
         }
+
+        public override List<ITodo> LoadTodos(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
