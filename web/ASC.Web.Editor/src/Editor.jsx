@@ -25,18 +25,16 @@ import {
   removeFromFavorite,
   markAsFavorite,
 } from "@appserver/common/api/files";
-import { getUser } from "@appserver/common/api/people";
 import FilesFilter from "@appserver/common/api/files/filter";
 
 import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
-import { homepage, id as productId } from "../package.json";
+import { homepage } from "../package.json";
 
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, FolderType } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import { getDefaultFileName, canShare, accessEdit } from "files/utils";
+import { getDefaultFileName } from "files/utils";
 import i18n from "./i18n";
-import { FolderType } from "@appserver/common/constants";
 
 import store from "studio/store";
 
@@ -49,16 +47,13 @@ const spreadSheet = "spreadsheet";
 const presentation = "presentation";
 
 let docTitle = null;
-let fileType = null;
-let config;
+let actionLink;
 let docSaved = null;
 let docEditor;
 let fileInfo;
 let successAuth;
 let isSharingAccess;
-let folder;
-let user;
-let isAdmin;
+let user = null;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -76,10 +71,7 @@ const Editor = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  const throttledChangeTitle = throttle(
-    () => changeTitle(docSaved, docTitle),
-    500
-  );
+  const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
     init();
@@ -99,8 +91,6 @@ const Editor = () => {
 
   const init = async () => {
     try {
-      await authStore.init();
-
       if (!fileId) return;
 
       console.log(
@@ -114,7 +104,14 @@ const Editor = () => {
 
       //showLoader();
       const docApiUrl = await getDocServiceUrl();
-      successAuth = authStore.isAuthenticated;
+
+      try {
+        await authStore.init();
+        user = authStore.userStore.user;
+        successAuth = true;
+      } catch (e) {
+        successAuth = false;
+      }
 
       if (!doc && !successAuth) {
         window.open(
@@ -136,33 +133,13 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const settings = authStore.settingsStore.personal;
-      authStore.settingsStore.setCurrentProductId(productId);
-      isAdmin = authStore.isAdmin;
-      user = authStore.userStore.user;
-      let requests = [];
+      const config = await openEdit(fileId, version, doc);
 
-      requests.push(openEdit(fileId, version, doc));
-
-      if (fileInfo) {
-        requests.push(getFolderInfo(fileInfo.folderId));
-      }
-
-      let configValue, folderValue;
-
-      try {
-        [configValue, folderValue] = await Promise.allSettled(requests);
-      } catch (e) {
-        console.error(e);
-      }
-
-      config = configValue.value;
-      folder = folderValue && folderValue.value;
+      actionLink = config?.editorConfig?.actionLink;
 
       if (isDesktop) {
         const isEncryption =
           config.editorConfig["encryptionKeys"] !== undefined;
-        const user = await getUser();
 
         regDesktop(
           user,
@@ -230,9 +207,7 @@ const Editor = () => {
           try {
             let responses = await Promise.all(requests);
 
-            for (let i = 0; i < responses.length; i++) {
-              const res = responses[i];
-
+            for (let res of responses) {
               res.files.forEach((file) => {
                 const convertedData = convertRecentData(file, res.folderInfo);
                 if (Object.keys(convertedData).length !== 0)
@@ -252,29 +227,7 @@ const Editor = () => {
         }
       }
 
-      isSharingAccess =
-        fileInfo &&
-        folder &&
-        user &&
-        user.id &&
-        canShare(
-          fileInfo,
-          folder.id,
-          folder.access,
-          user,
-          settings.personal,
-          isAdmin,
-          isDesktop
-        );
-
-      if (isSharingAccess) {
-        const sharingSettings = await SharingDialog.getSharingSettings(fileId);
-
-        config.document.info = {
-          ...config.document.info,
-          sharingSettings,
-        };
-      }
+      isSharingAccess = fileInfo && fileInfo.canShare;
 
       if (url.indexOf("action=view") !== -1) {
         config.editorConfig.mode = "view";
@@ -298,13 +251,12 @@ const Editor = () => {
     let obj = {};
     const folderName = folder.title;
     const fileName = file.title;
-    const url = file.webUrl;
 
     if (+fileId !== file.id)
       obj = {
         folder: folderName,
         title: fileName,
-        url: url,
+        url: file.webUrl,
       };
     return obj;
   };
@@ -334,7 +286,7 @@ const Editor = () => {
     if (icon) favicon.href = `${homepage}/images/${icon}`;
   };
 
-  const changeTitle = (docSaved, docTitle) => {
+  const changeTitle = () => {
     docSaved ? setDocumentTitle(docTitle) : setDocumentTitle(`*${docTitle}`);
   };
 
@@ -381,7 +333,6 @@ const Editor = () => {
       console.log(config);
 
       docTitle = config.document.title;
-      fileType = config.document.fileType;
 
       setFavicon(config.documentType);
       setDocumentTitle(docTitle);
@@ -431,14 +382,15 @@ const Editor = () => {
 
         const defaultFileName = getDefaultFileName(fileExt);
 
-        config.editorConfig.createUrl = combineUrl(
-          window.location.origin,
-          AppServerConfig.proxyURL,
-          "products/files/",
-          `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
-            defaultFileName
-          )}`
-        );
+        if (!user.isVisitor)
+          config.editorConfig.createUrl = combineUrl(
+            window.location.origin,
+            AppServerConfig.proxyURL,
+            "products/files/",
+            `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+              defaultFileName
+            )}`
+          );
       }
 
       let onRequestSharingSettings;
@@ -448,20 +400,8 @@ const Editor = () => {
         onRequestSharingSettings = onSDKRequestSharingSettings;
       }
 
-      const canEdit =
-        fileInfo &&
-        folder &&
-        accessEdit(
-          fileInfo,
-          folder.id,
-          folder.access,
-          user,
-          isAdmin,
-          isDesktop
-        );
-
-      if (canEdit) {
-        onRequestRename = onSDKRequestRename; //TODO: check for rename
+      if (fileInfo && fileInfo.canEdit) {
+        onRequestRename = onSDKRequestRename;
       }
 
       const events = {
@@ -500,6 +440,10 @@ const Editor = () => {
       message && toastr.info(message);
       history.pushState({}, null, url.substring(0, index));
     }
+
+    if (fileInfo && fileInfo.canShare) {
+      updateUsersRightsList();
+    }
   };
 
   const onSDKInfo = (event) => {
@@ -524,9 +468,7 @@ const Editor = () => {
 
     const link = generateLink(ACTION_DATA);
 
-    const urlFormation = !config.editorConfig.actionLink
-      ? url
-      : url.split("&anchor=")[0];
+    const urlFormation = !actionLink ? url : url.split("&anchor=")[0];
 
     const linkFormation = `${urlFormation}&anchor=${link}`;
 

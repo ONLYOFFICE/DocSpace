@@ -136,7 +136,7 @@ export default function withFileActions(WrappedFileItem) {
 
     onMouseUpHandler = (e) => {
       const { isMouseDown } = this.state;
-      const { viewAs, checked, item } = this.props;
+      const { viewAs } = this.props;
 
       if (
         e.target.closest(".checkbox") ||
@@ -256,7 +256,7 @@ export default function withFileActions(WrappedFileItem) {
         item,
         isTrashFolder,
         draggable,
-        //canShare,
+        allowShareIn,
         isPrivacy,
         actionType,
         actionExtension,
@@ -269,10 +269,6 @@ export default function withFileActions(WrappedFileItem) {
         personal,
         canWebEdit,
         canViewedDocs,
-        currentFolderId,
-        currentFolderAccess,
-        user,
-        isAdmin,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -287,15 +283,16 @@ export default function withFileActions(WrappedFileItem) {
       let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
 
-      const isShareable = canShare(
-        item,
-        currentFolderId,
-        currentFolderAccess,
-        user,
-        personal,
-        isAdmin,
-        isDesktop
-      );
+      const isShareable = allowShareIn && item.canShare;
+      // const isShareable = canShare(
+      //   item,
+      //   currentFolderId,
+      //   currentFolderAccess,
+      //   user,
+      //   personal,
+      //   isAdmin,
+      //   isDesktop
+      // );
 
       const isMobile = sectionWidth < 500;
       const displayShareButton = isMobile
@@ -304,11 +301,11 @@ export default function withFileActions(WrappedFileItem) {
         ? "38px"
         : "96px";
 
-      //const showShare = isPrivacy && (!isDesktop || !fileExst) ? false : true;
+      const showShare = isPrivacy && (!isDesktop || !fileExst) ? false : true;
 
       const sharedButton =
         !isShareable ||
-        //!showShare ||
+        !showShare ||
         (personal && !canWebEdit && !canViewedDocs) ||
         isEdit ||
         id <= 0 ||
@@ -373,11 +370,7 @@ export default function withFileActions(WrappedFileItem) {
         addExpandedKeys,
         setExpandedKeys,
       } = treeFoldersStore;
-      const {
-        isRootFolder,
-        id: currentFolderId,
-        access: currentFolderAccess,
-      } = selectedFolderStore;
+      const { isRootFolder } = selectedFolderStore;
       const {
         dragging,
         setDragging,
@@ -385,7 +378,6 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         fileActionStore,
-        //canShare,
         isFileSelected,
         filter,
         setIsLoading,
@@ -397,7 +389,7 @@ export default function withFileActions(WrappedFileItem) {
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
       const {
-        iconFormatsStore,
+        //iconFormatsStore,
         mediaViewersFormatsStore,
         docserviceStore,
       } = formatsStore;
@@ -424,9 +416,6 @@ export default function withFileActions(WrappedFileItem) {
       const canConvert = docserviceStore.canConvert(item.fileExst);
       const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
 
-      const { isAdmin } = auth;
-      const { user } = auth.userStore;
-
       return {
         t,
         item,
@@ -443,7 +432,7 @@ export default function withFileActions(WrappedFileItem) {
         history,
         isFolder,
         isRootFolder,
-        canShare,
+        allowShareIn: filesStore.canShare,
         actionType: type,
         actionExtension: extension,
         actionId: id,
@@ -469,10 +458,6 @@ export default function withFileActions(WrappedFileItem) {
         setConvertDialogVisible,
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
-        currentFolderId,
-        currentFolderAccess,
-        user,
-        isAdmin,
       };
     }
   )(observer(WithFileActions));
