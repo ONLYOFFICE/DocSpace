@@ -1,15 +1,9 @@
 import authStore from "@appserver/common/store/AuthStore";
-import {
-  AppServerConfig,
-  FolderType,
-  ShareAccessRights,
-} from "@appserver/common/constants";
+import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { addFileToRecentlyViewed } from "@appserver/common/api/files";
 import i18n from "./i18n";
-import docserviceStore from "../store/DocserviceStore";
-import { isAdmin as checkAdminRights } from "@appserver/common/utils";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;

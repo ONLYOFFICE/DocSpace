@@ -77,7 +77,7 @@ const Editor = () => {
     init();
   }, []);
 
-  const updateUsersRightsList = () => {
+  const loadUsersRightsList = () => {
     SharingDialog.getSharingSettings(fileId).then((sharingSettings) => {
       docEditor.setSharingSettings({
         sharingSettings,
@@ -87,6 +87,90 @@ const Editor = () => {
 
   const updateFavorite = (favorite) => {
     docEditor.setFavorite(favorite);
+  };
+
+  const getRecent = async (config) => {
+    try {
+      const recentFolderList = await getRecentFolderList();
+
+      const filesArray = recentFolderList.files.slice(0, 25);
+
+      const recentFiles = filesArray.filter(
+        (file) =>
+          file.rootFolderType !== FolderType.SHARE &&
+          ((config.documentType === text && file.fileType === 7) ||
+            (config.documentType === spreadSheet && file.fileType === 5) ||
+            (config.documentType === presentation && file.fileType === 6))
+      );
+
+      const groupedByFolder = recentFiles.reduce((r, a) => {
+        r[a.folderId] = [...(r[a.folderId] || []), a];
+        return r;
+      }, {});
+
+      const requests = Object.entries(groupedByFolder).map((item) =>
+        getFolderInfo(item[0])
+          .then((folderInfo) =>
+            Promise.resolve({
+              files: item[1],
+              folderInfo: folderInfo,
+            })
+          )
+          .catch((e) => console.error(e))
+      );
+
+      let recent = [];
+
+      let responses = await Promise.all(requests);
+
+      for (let res of responses) {
+        res.files.forEach((file) => {
+          const convertedData = convertRecentData(file, res.folderInfo);
+          if (Object.keys(convertedData).length !== 0)
+            recent.push(convertedData);
+        });
+      }
+
+      return recent;
+    } catch (e) {
+      console.error(e);
+    }
+
+    return null;
+  };
+
+  const initDesktop = (config) => {
+    const isEncryption = config.editorConfig["encryptionKeys"] !== undefined;
+
+    regDesktop(
+      user,
+      isEncryption,
+      config.editorConfig.encryptionKeys,
+      (keys) => {
+        setEncryptionKeys(keys);
+      },
+      true,
+      (callback) => {
+        getEncryptionAccess(fileId)
+          .then((keys) => {
+            var data = {
+              keys,
+            };
+
+            callback(data);
+          })
+          .catch((error) => {
+            console.log(error);
+            toastr.error(
+              typeof error === "string" ? error : error.message,
+              null,
+              0,
+              true
+            );
+          });
+      },
+      i18n.t
+    );
   };
 
   const init = async () => {
@@ -106,9 +190,9 @@ const Editor = () => {
       const docApiUrl = await getDocServiceUrl();
 
       try {
-        await authStore.init();
+        await authStore.init(true);
         user = authStore.userStore.user;
-        successAuth = true;
+        successAuth = user !== null;
       } catch (e) {
         successAuth = false;
       }
@@ -138,92 +222,17 @@ const Editor = () => {
       actionLink = config?.editorConfig?.actionLink;
 
       if (isDesktop) {
-        const isEncryption =
-          config.editorConfig["encryptionKeys"] !== undefined;
-
-        regDesktop(
-          user,
-          isEncryption,
-          config.editorConfig.encryptionKeys,
-          (keys) => {
-            setEncryptionKeys(keys);
-          },
-          true,
-          (callback) => {
-            getEncryptionAccess(fileId)
-              .then((keys) => {
-                var data = {
-                  keys,
-                };
-
-                callback(data);
-              })
-              .catch((error) => {
-                console.log(error);
-                toastr.error(
-                  typeof error === "string" ? error : error.message,
-                  null,
-                  0,
-                  true
-                );
-              });
-          },
-          i18n.t
-        );
+        initDesktop();
       }
 
       if (successAuth) {
-        try {
-          const recentFolderList = await getRecentFolderList();
+        const recent = getRecent(config); //TODO: too slow for 1st loading
 
-          const filesArray = recentFolderList.files.slice(0, 25);
-
-          const recentFiles = filesArray.filter(
-            (file) =>
-              file.rootFolderType !== FolderType.SHARE &&
-              ((config.documentType === text && file.fileType === 7) ||
-                (config.documentType === spreadSheet && file.fileType === 5) ||
-                (config.documentType === presentation && file.fileType === 6))
-          );
-
-          const groupedByFolder = recentFiles.reduce((r, a) => {
-            r[a.folderId] = [...(r[a.folderId] || []), a];
-            return r;
-          }, {});
-
-          const requests = Object.entries(groupedByFolder).map((item) =>
-            getFolderInfo(item[0])
-              .then((folderInfo) =>
-                Promise.resolve({
-                  files: item[1],
-                  folderInfo: folderInfo,
-                })
-              )
-              .catch((e) => console.error(e))
-          );
-
-          let recent = [];
-
-          try {
-            let responses = await Promise.all(requests);
-
-            for (let res of responses) {
-              res.files.forEach((file) => {
-                const convertedData = convertRecentData(file, res.folderInfo);
-                if (Object.keys(convertedData).length !== 0)
-                  recent.push(convertedData);
-              });
-            }
-          } catch (e) {
-            console.error(e);
-          }
-
+        if (recent) {
           config.editorConfig = {
             ...config.editorConfig,
             recent: recent,
           };
-        } catch (e) {
-          console.error(e);
         }
       }
 
@@ -327,10 +336,10 @@ const Editor = () => {
   };
 
   const onLoad = (config) => {
-    console.log("Editor config: ", config);
-
     try {
-      console.log(config);
+      if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
+
+      console.log("Editor config: ", config);
 
       docTitle = config.document.title;
 
@@ -341,14 +350,14 @@ const Editor = () => {
         config.type = "mobile";
       }
 
-      let goback;
+      let goBack;
 
       if (fileInfo) {
         const filterObj = FilesFilter.getDefault();
         filterObj.folder = fileInfo.folderId;
         const urlFilter = filterObj.toUrlParams();
 
-        goback = {
+        goBack = {
           blank: true,
           requestClose: false,
           text: i18n.t("FileLocation"),
@@ -358,7 +367,7 @@ const Editor = () => {
 
       config.editorConfig.customization = {
         ...config.editorConfig.customization,
-        goback,
+        goback: goBack,
       };
 
       if (url.indexOf("anchor") !== -1) {
@@ -421,8 +430,6 @@ const Editor = () => {
 
       const newConfig = Object.assign(config, events);
 
-      if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
-
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
     } catch (error) {
       console.log(error);
@@ -442,7 +449,7 @@ const Editor = () => {
     }
 
     if (fileInfo && fileInfo.canShare) {
-      updateUsersRightsList();
+      loadUsersRightsList();
     }
   };
 
@@ -546,7 +553,7 @@ const Editor = () => {
               isVisible={isVisible}
               sharingObject={fileInfo}
               onCancel={onCancel}
-              onSuccess={updateUsersRightsList}
+              onSuccess={loadUsersRightsList}
             />
           )}
         </>

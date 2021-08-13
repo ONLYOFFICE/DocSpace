@@ -29,7 +29,6 @@ const client = axios.create({
   timeout: apiTimeout, // default is `0` (no timeout)
 });
 
-
 export function setWithCredentialsStatus(state) {
   client.defaults.withCredentials = state;
 }
@@ -48,7 +47,7 @@ const getResponseError = (res) => {
   }
 
   if (res.isAxiosError && res.message) {
-    console.error(res.message);
+    //console.error(res.message);
     return res.message;
   }
 };
@@ -71,7 +70,7 @@ export const request = function (options) {
   };
 
   const onError = function (error) {
-    console.error("Request Failed:", error);
+    //console.error("Request Failed:", error);
 
     const errorText = error.response
       ? getResponseError(error.response)
@@ -79,12 +78,12 @@ export const request = function (options) {
 
     switch (error.response.status) {
       case 401:
-        if (options.skipLogout) break;
+        if (options.skipUnauthorized) return Promise.resolve();
 
         request({
           method: "post",
           url: "/authentication/logout",
-        }).then((res) => {
+        }).then(() => {
           setWithCredentialsStatus(false);
           window.location.href = loginURL;
         });
