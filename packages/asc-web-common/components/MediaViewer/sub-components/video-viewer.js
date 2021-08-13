@@ -361,8 +361,7 @@ class VideoViewer extends Component {
   };
 
   onPlay = () => {
-    const playing = this.state.isNew ? false : true;
-    this.setState({ playing: playing, isNew: false });
+    this.setState({ playing: !this.state.isNew, isNew: false });
   };
 
   render() {
