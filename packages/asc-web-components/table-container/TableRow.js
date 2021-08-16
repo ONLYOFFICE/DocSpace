@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { StyledTableRow } from "./StyledTableContainer";
 import TableCell from "./TableCell";
@@ -41,27 +41,9 @@ const TableRow = (props) => {
     return contextOptions;
   };
 
-  const [iconVisible, setIconVisible] = useState(!checked);
-
-  const onMouseOver = () => {
-    if (checked) return;
-    setIconVisible(false);
-  };
-
-  const onMouseLeave = () => {
-    if (checked) return;
-    setIconVisible(true);
-  };
-
-  useEffect(() => {
-    setIconVisible(!checked);
-  }, [checked]);
-
   const onChange = (e) => {
     onContentSelect && onContentSelect(e.target.checked, item);
   };
-
-  const renderCheckbox = Object.prototype.hasOwnProperty.call(props, "checked");
 
   return (
     <StyledTableRow
@@ -70,21 +52,17 @@ const TableRow = (props) => {
       {...rest}
     >
       <TableCell
+        checked={checked}
         {...selectionProp}
         style={style}
-        onMouseLeave={onMouseLeave}
-        onMouseOver={onMouseOver}
         className="table-container_row-checkbox-wrapper"
       >
-        {iconVisible || !renderCheckbox ? (
-          element
-        ) : (
-          <Checkbox
-            className="table-container_row-checkbox"
-            onChange={onChange}
-            isChecked={checked}
-          />
-        )}
+        <div className="table-container_element">{element}</div>
+        <Checkbox
+          className="table-container_row-checkbox"
+          onChange={onChange}
+          isChecked={checked}
+        />
       </TableCell>
       {children}
       <div>

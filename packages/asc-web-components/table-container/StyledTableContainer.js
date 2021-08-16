@@ -180,6 +180,22 @@ const StyledTableCell = styled.div`
   .react-svg-icon svg {
     margin-top: 2px;
   }
+
+  .table-container_element {
+    display: ${(props) => (props.checked ? "none" : "flex")};
+  }
+  .table-container_row-checkbox {
+    display: ${(props) => (props.checked ? "flex" : "none")};
+  }
+
+  :hover {
+    .table-container_element {
+      display: none;
+    }
+    .table-container_row-checkbox {
+      display: flex;
+    }
+  }
 `;
 
 const StyledTableSettings = styled.div`

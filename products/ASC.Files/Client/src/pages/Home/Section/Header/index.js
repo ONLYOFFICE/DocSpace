@@ -536,7 +536,6 @@ export default inject(
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      isViewedSelected,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,

@@ -9,6 +9,11 @@ import Text from "@appserver/components/text";
 import styled from "styled-components";
 
 const StyledPeopleRow = styled(TableRow)`
+  .table-container_cell {
+    height: 46px;
+    max-height: 46px;
+  }
+
   .table-container_row-checkbox-wrapper {
     padding-left: 4px;
 

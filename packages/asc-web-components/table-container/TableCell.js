@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { StyledTableCell } from "./StyledTableContainer";
 
 const TableCell = ({ className, forwardedRef, ...rest }) => {
@@ -9,6 +10,11 @@ const TableCell = ({ className, forwardedRef, ...rest }) => {
       {...rest}
     />
   );
+};
+
+TableCell.propTypes = {
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  forwardedRef: PropTypes.shape({ current: PropTypes.any }),
 };
 
 export default TableCell;
