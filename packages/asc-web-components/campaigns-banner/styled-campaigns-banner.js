@@ -29,7 +29,6 @@ const BannerWrapper = styled.div`
   .banner-btn {
     width: 100%;
     color: #fff;
-    background: #ed7309;
     margin-top: 15px;
     border: none;
     border-radius: 5px;

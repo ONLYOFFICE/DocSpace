@@ -235,7 +235,7 @@ class FilesActionStore {
     const items = [];
 
     if (selection.length === 1 && selection[0].fileExst) {
-      window.open(selection[0].viewUrl, "_blank");
+      window.open(selection[0].viewUrl, "_self");
       return Promise.resolve();
     }
 
@@ -650,6 +650,7 @@ class FilesActionStore {
       isWebEditSelected,
       isThirdPartySelection,
       userAccess,
+      isViewedSelected,
     } = this.filesStore;
 
     const {
@@ -741,8 +742,10 @@ class FilesActionStore {
     }
 
     if (
-      this.authStore.settingsStore.personal &&
-      (!isWebEditSelected || selectionCount > 1)
+      (this.authStore.settingsStore.personal &&
+        !isWebEditSelected &&
+        !isViewedSelected) ||
+      selectionCount > 1
     ) {
       headerMenu.splice(1, 1);
     }

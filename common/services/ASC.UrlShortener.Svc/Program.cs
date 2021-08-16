@@ -99,6 +99,7 @@ namespace ASC.UrlShortener.Svc
                         .ConfigureContainer<ContainerBuilder>((context, builder) =>
                         {
                             builder.Register(context.Configuration, false, false);
-                        });
+                        })
+                        .ConfigureNLogLogging();
     }
 }
