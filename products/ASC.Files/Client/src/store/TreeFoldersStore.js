@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { getFoldersTree, getSubfolders } from "@appserver/common/api/files";
 import { FolderType } from "@appserver/common/constants";
+import { createTreeFolders } from "../helpers/files-helpers";
 
 class TreeFoldersStore {
   selectedFolderStore;
@@ -42,7 +43,11 @@ class TreeFoldersStore {
   };
 
   addExpandedKeys = (item) => {
-    this.expandedKeys.push(item);
+    !this.expandedKeys.includes(item) && this.expandedKeys.push(item);
+  };
+
+  createNewExpandedKeys = (pathParts) => {
+    return createTreeFolders(pathParts, this.expandedKeys);
   };
 
   updateRootBadge = (id, count) => {
