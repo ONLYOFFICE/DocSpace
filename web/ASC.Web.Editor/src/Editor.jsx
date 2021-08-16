@@ -479,8 +479,8 @@ const Editor = () => {
     if (index > -1) {
       const splitUrl = url.split("#message/");
       const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
-      message && toastr.info(message);
       history.pushState({}, null, url.substring(0, index));
+      docEditor.showMessage(message);
     }
   };
 
