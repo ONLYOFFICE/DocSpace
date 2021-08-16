@@ -16,7 +16,7 @@
     "products/ASC.Calendar/Client"
   ],
   "scripts": {
-    "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",
+    "wipe": "shx rm -rf node_modules yarn.lock web/**/node_modules products/**/node_modules",
     "build": "concurrently \"wsrun --parallel build\"",
     "sw-build": "workbox injectManifest config/workbox-config.js && yarn sw-modify && yarn sw-minimize",
     "sw-calendar-replace": "replace-in-files --string='products/ASC.Calendar/client/' --replacement='products/calendar/' build/deploy/public/sw.js",
@@ -39,15 +39,15 @@
     "storybook": "yarn workspace @appserver/components storybook",
     "storybook-build": "yarn workspace @appserver/components run storybook-build",
     "bump": "lerna version --no-push --no-git-tag-version",
-    "deploy": "rimraf build/deploy && concurrently \"wsrun --parallel deploy\" && cp -r public build/deploy && yarn sw-build"
+    "deploy": "shx rm -rf build/deploy && concurrently \"wsrun --parallel deploy\" && shx cp -r public build/deploy && yarn sw-build"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
     "lerna": "^3.22.1",
     "replace-in-files-cli": "^1.0.0",
-    "rimraf": "^3.0.2",
+    "shx": "^0.3.3",
     "terser": "^5.7.1",
-    "workbox-cli": "^6.1.5",
+    "workbox-cli": "^6.2.3",
     "wsrun": "^5.2.4"
   }
 }
