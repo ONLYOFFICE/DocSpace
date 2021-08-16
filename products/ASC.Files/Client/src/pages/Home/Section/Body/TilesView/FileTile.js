@@ -34,6 +34,7 @@ const FilesTile = (props) => {
     getIcon,
     onFilesClick,
     onMouseUp,
+    showShare,
   } = props;
   const temporaryIcon = getIcon(
     96,
