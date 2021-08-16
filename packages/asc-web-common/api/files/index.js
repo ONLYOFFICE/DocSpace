@@ -536,10 +536,13 @@ export function getNewFiles(folderId) {
   });
 }
 
-export function convertFile(fileId) {
+export function convertFile(fileId, sync = false) {
+  const data = { sync };
+
   return request({
     method: "put",
     url: `/files/file/${fileId}/checkconversion`,
+    data,
   });
 }
 

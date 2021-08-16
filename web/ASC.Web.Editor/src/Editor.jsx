@@ -26,6 +26,7 @@ import {
   removeFromFavorite,
   markAsFavorite,
   getPresignedUri,
+  convertFile,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
@@ -37,7 +38,7 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import { getDefaultFileName, SaveAs } from "files/utils";
+import { getDefaultFileName, SaveAs, canConvert } from "files/utils";
 import SelectFileDialog from "files/SelectFileDialog";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import { StyledSelectFolder, StyledSelectFile } from "./StyledEditor";
@@ -150,6 +151,15 @@ const Editor = () => {
       if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
+
+          if (url.indexOf("#message/")) {
+            const needConvert = canConvert(fileInfo.fileExst);
+
+            if (needConvert) {
+              const convert = await convertFile(fileId, true);
+              location.href = convert[0].result.webUrl;
+            }
+          }
         } catch (err) {
           console.error(err);
         }
