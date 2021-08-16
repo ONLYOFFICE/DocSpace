@@ -483,13 +483,16 @@ class FilesActionStore {
       getFileInfo,
       setSelected,
     } = this.filesStore;
+
+    const items = Array.isArray(id) ? id : [id];
+
     //let data = selection.map(item => item.id)
     switch (action) {
       case "mark":
         return markItemAsFavorite([id]).then(() => getFileInfo(id));
 
       case "remove":
-        return removeItemFromFavorite([id])
+        return removeItemFromFavorite(items)
           .then(() => {
             return this.treeFoldersStore.isFavoritesFolder
               ? fetchFavoritesFolder(this.selectedFolderStore.id)
