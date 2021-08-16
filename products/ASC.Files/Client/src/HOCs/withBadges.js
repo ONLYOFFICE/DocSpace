@@ -21,8 +21,8 @@ export default function withBadges(WrappedComponent) {
       if (isAdmin || access === 0) {
         setIsLoading(true);
         return lockFileAction(id, !locked)
-          .then(() => setIsLoading(false))
-          .catch((err) => toastr.error(err));
+          .catch((err) => toastr.error(err))
+          .finally(() => setIsLoading(false));
       }
       return;
     };
