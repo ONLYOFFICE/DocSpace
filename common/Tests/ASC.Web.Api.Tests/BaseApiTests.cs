@@ -45,7 +45,7 @@ namespace ASC.Web.Api.Tests
         [OneTimeTearDown]
         public void DropDb()
         {
-            var context = Scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+            var context = Scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
             context.Value.Database.EnsureDeleted();
         }
 
@@ -60,7 +60,7 @@ namespace ASC.Web.Api.Tests
                 configuration["testAssembly"] = testAssembly;
             }
 
-            using var db = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+            using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
             db.Value.Migrate();
         }
     }
