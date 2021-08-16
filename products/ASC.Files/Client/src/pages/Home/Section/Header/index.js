@@ -241,6 +241,15 @@ class SectionHeaderContent extends React.Component {
     }
   };
 
+  onDeleteFavorite = () => {
+    const { t } = this.props;
+    const items = this.props.selection.map((item) => item.id);
+    this.props
+      .setFavoriteAction("remove", items)
+      .then(() => toastr.success(t("RemovedFromFavorites")))
+      .catch((err) => toastr.error(err));
+  };
+
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
@@ -433,6 +442,14 @@ class SectionHeaderContent extends React.Component {
       });
 
       menu.splice(1, 1);
+    }
+
+    if (isFavoritesFolder) {
+      menu.splice(6, 1);
+      menu.push({
+        label: t("Common:Delete"),
+        onClick: this.onDeleteFavorite,
+      });
     }
 
     if (isPrivacy) {
@@ -630,7 +647,11 @@ export default inject(
       setDeleteDialogVisible,
     } = dialogsStore;
 
-    const { deleteAction, downloadAction } = filesActionsStore;
+    const {
+      deleteAction,
+      downloadAction,
+      setFavoriteAction,
+    } = filesActionsStore;
 
     return {
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -670,6 +691,8 @@ export default inject(
       setDeleteDialogVisible,
       setDownloadDialogVisible,
       downloadAction,
+      setFavoriteAction,
+      selection,
     };
   }
 )(
