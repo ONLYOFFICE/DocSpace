@@ -116,7 +116,6 @@ class MediaViewer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.updateHammer();
     if (this.props.visible !== prevProps.visible) {
       this.setState({
         visible: this.props.visible,
@@ -135,6 +134,7 @@ class MediaViewer extends React.Component {
     ) {
       let playlistPos = 0;
       if (this.props.playlist.length > 0) {
+        this.updateHammer();
         if (this.state.playlistPos < this.props.playlist.length) {
           playlistPos = this.state.playlistPos;
         }
