@@ -123,14 +123,24 @@ namespace ASC.Common.Caching
                     .SetErrorHandler((_, e) => Log.Error(e))
                     .Build())
                 {
+                    try
+                    {
+                        //TODO: must add checking exist
                         adminClient.CreateTopicsAsync(
-                            new TopicSpecification[] 
+                            new TopicSpecification[]
                             {
-                                new TopicSpecification 
-                                { 
-                                    Name = channelName
-                                } 
+                                new TopicSpecification
+                                {
+                                    Name = channelName,
+                                    NumPartitions = 1,
+                                    ReplicationFactor = 1
+                                }
                             }).Wait();
+                    }
+                    catch(AggregateException)
+                    {
+
+                    }
                 }
 
 
