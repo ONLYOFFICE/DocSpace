@@ -46,7 +46,14 @@ const FolderTreeBody = ({
             </div>
           </StyledSelectFolderPanel>
         ) : (
-          <Text as="span">{t("NotAvailableFolder")}</Text>
+          <StyledSelectFolderPanel
+            heightContent={heightContent}
+            isHeaderChildren={isHeaderChildren}
+          >
+            <div className="tree-folder-empty-list select-folder-dialog_tree-folder">
+              <Text as="span">{t("NotAvailableFolder")}</Text>
+            </div>
+          </StyledSelectFolderPanel>
         )
       ) : (
         <StyledSelectFolderPanel heightContent={heightContent}>

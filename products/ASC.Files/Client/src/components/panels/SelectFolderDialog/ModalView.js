@@ -65,7 +65,7 @@ const SelectFolderDialogModalView = ({
                   size="medium"
                   label={t("Common:SaveButton")}
                   onClick={onSave}
-                  isDisabled={isLoadingData || !canCreate}
+                  isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
                   primary

@@ -36,6 +36,7 @@ class SelectFileDialogBody extends React.Component {
       displayType: this.getDisplayType(),
       page: 0,
       filterParams: this.getFilterParameters(),
+      isAvailableFolderList: true,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.newFilter = filter.clone();
@@ -119,14 +120,20 @@ class SelectFileDialogBody extends React.Component {
 
   onSelectFolder = (id) => {
     const { setFolderId } = this.props;
-    setFolderId(id);
+ 
+    if (id) {
+      setFolderId(id);
 
-    this.setState({
-      selectedFolder: id,
-      hasNextPage: true,
-      filesList: [],
-      page: 0,
-    });
+      this.setState({
+        selectedFolder: id,
+        hasNextPage: true,
+        filesList: [],
+        page: 0,
+      });
+    } else
+      this.setState({
+        isAvailableFolderList: false,
+      });
   };
 
   onSelectFile = (e) => {
@@ -214,6 +221,7 @@ class SelectFileDialogBody extends React.Component {
       selectedFile,
       fileName,
       passedId,
+      isAvailableFolderList,
     } = this.state;
 
     const loadingText = loadingLabel
@@ -249,6 +257,7 @@ class SelectFileDialogBody extends React.Component {
         isTranslationsReady={tReady}
         passedId={passedId}
         header={header}
+        isAvailableFolderList={isAvailableFolderList}
       />
     ) : (
       <SelectFileDialogModalView

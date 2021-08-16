@@ -13,6 +13,7 @@ import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 import Loaders from "@appserver/common/components/Loaders";
 import Loader from "@appserver/components/loader";
+import EmptyContainer from "../../EmptyContainer/EmptyContainer";
 const DISPLAY_TYPE = "aside";
 const SelectFileDialogAsideView = ({
   t,
@@ -41,6 +42,7 @@ const SelectFileDialogAsideView = ({
   isTranslationsReady,
   passedId,
   headerName,
+  isAvailableFolderList,
 }) => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const onSetLoadingData = (loading) => {
@@ -107,12 +109,19 @@ const SelectFileDialogAsideView = ({
                     loadingText={loadingText}
                     selectedFile={selectedFile}
                   />
-                ) : (
+                ) : isAvailableFolderList ? (
                   <div key="loader">
                     <Loader type="oval" size="16px" className="panel-loader" />
                     <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
                       "Common:LoadingDescription"
                     )}`}</Text>
+                  </div>
+                ) : (
+                  <div className="select-file-dialog_empty-container">
+                    <EmptyContainer
+                      headerText={t("Home:EmptyFolderHeader")}
+                      imageSrc="/static/images/empty_screen.png"
+                    />
                   </div>
                 )}
               </div>

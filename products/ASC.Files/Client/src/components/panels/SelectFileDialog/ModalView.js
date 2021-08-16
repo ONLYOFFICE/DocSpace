@@ -25,6 +25,7 @@ class SelectFileDialogModalViewBody extends React.Component {
     super(props);
     this.state = {
       isLoading: true,
+      isAvailable: true,
     };
     this.folderList = "";
   }
@@ -83,7 +84,9 @@ class SelectFileDialogModalViewBody extends React.Component {
       case "third-party":
         try {
           this.folderList = await SelectFolderDialog.getCommonThirdPartyList();
-          this.onSetSelectedFolder();
+          this.folderList.length !== 0
+            ? this.onSetSelectedFolder()
+            : this.setState({ isAvailable: false });
         } catch (err) {
           console.error(err);
         }
@@ -104,6 +107,7 @@ class SelectFileDialogModalViewBody extends React.Component {
 
   onSetSelectedFolder = () => {
     const { onSelectFolder, selectedFolder, passedId } = this.props;
+
     onSelectFolder &&
       onSelectFolder(
         `${
@@ -146,7 +150,7 @@ class SelectFileDialogModalViewBody extends React.Component {
       headerName,
     } = this.props;
 
-    const { isLoading } = this.state;
+    const { isLoading, isAvailable } = this.state;
 
     const isHeaderChildren = !!header;
 
@@ -176,7 +180,7 @@ class SelectFileDialogModalViewBody extends React.Component {
                       onSelect={this.onSelect}
                       withoutProvider={withoutProvider}
                       certainFolders
-                      isAvailableFolders
+                      isAvailable={isAvailable}
                       filter={filter}
                       selectedKeys={[selectedFolder]}
                       isHeaderChildren={isHeaderChildren}

@@ -97,6 +97,7 @@ class SelectFolderInputBody extends React.PureComponent {
       modalHeightContent,
       asideHeightContent,
       zIndex,
+      showButtons,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
@@ -131,6 +132,7 @@ class SelectFolderInputBody extends React.PureComponent {
           dialogWithFiles={dialogWithFiles}
           modalHeightContent={modalHeightContent}
           asideHeightContent={asideHeightContent}
+          showButtons={showButtons}
         />
       </StyledComponent>
     );

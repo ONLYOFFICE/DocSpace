@@ -166,14 +166,16 @@ class SelectFolderModalDialog extends React.Component {
       showButtons,
     } = this.props;
 
-    folderList.length === 0 && this.setState({ isAvailable: false });
+    if (folderList.length === 0) {
+      this.setState({ isAvailable: false });
+      onSelectFolder(null);
+      this.loadersCompletes();
+      return;
+    }
 
-    folderList.length !== 0 &&
-      showButtons &&
-      this.setSelectedFolderToTee(folderList[0].id);
+    showButtons && this.setSelectedFolderToTee(folderList[0].id);
 
     isSetFolderImmediately &&
-      folderList.length !== 0 &&
       !selectedFolderId &&
       onSelectFolder &&
       onSelectFolder(
@@ -181,7 +183,6 @@ class SelectFolderModalDialog extends React.Component {
       );
 
     isSetFolderImmediately &&
-      folderList.length !== 0 &&
       this.setState({
         folderId: `${
           selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
@@ -196,7 +197,6 @@ class SelectFolderModalDialog extends React.Component {
       !id &&
         !selectedFolderId &&
         isSetFolderImmediately &&
-        folderList.length !== 0 &&
         onSetBaseFolderPath &&
         onSetBaseFolderPath(this.folderTitle);
     } catch (err) {
