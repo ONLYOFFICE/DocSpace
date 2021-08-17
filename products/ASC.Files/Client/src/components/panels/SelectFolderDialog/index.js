@@ -173,7 +173,7 @@ class SelectFolderModalDialog extends React.Component {
       return;
     }
 
-    showButtons && this.setSelectedFolderToTee(folderList[0].id);
+    showButtons && this.setFolderToTree(folderList[0].id);
 
     isSetFolderImmediately &&
       !selectedFolderId &&
@@ -222,66 +222,74 @@ class SelectFolderModalDialog extends React.Component {
     }
 
     if (selectedFolderId) {
-      this.setSelectedFolder(selectedFolderId);
+      this.setBaseFolderPath(selectedFolderId);
     }
 
     if (id && !selectedFolderId) {
-      if (!dialogWithFiles) this.setSelectedFolderToTee(id);
+      if (!dialogWithFiles) this.setSelectedFolder(id);
       else {
-        this.setSelectedFolder(id);
+        this.setBaseFolderPath(id);
       }
     }
   };
 
-  setSelectedFolder = (selectedFolderId) => {
-    const { onSetBaseFolderPath } = this.props;
+  setBaseFolderPath = () => {
+    const { onSetBaseFolderPath, selectedFolderId } = this.props;
+
     SelectFolderDialog.getFolderPath(selectedFolderId)
       .then((folderPath) => (this.folderTitle = folderPath))
       .then(() => onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle))
-
       .catch((error) => console.log("error", error))
       .finally(() => {
         this.loadersCompletes();
       });
   };
+  setSelectedFolder = async (id) => {
+    const { onSetBaseFolderPath } = this.props;
 
-  setSelectedFolderToTee = (id) => {
-    const {
-      setSelectedNode,
-      setSelectedFolder,
-      onSetBaseFolderPath,
-    } = this.props;
+    let folderPath, folder;
+
+    try {
+      [folderPath, folder] = await Promise.allSettled([
+        getFolderPath(id),
+        getFolder(id),
+      ]);
+    } catch (e) {
+      console.error(e);
+    }
+
+    if (folderPath.value) {
+      this.folderTitle = SelectFolderInput.setFullFolderPath(folderPath.value);
+      onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle);
+    }
+
+    folder.value && this.setFolderObjectToTree(id, folder.value);
+
+    this.loadersCompletes();
+  };
+
+  setFolderToTree = (id) => {
+    getFolder(id)
+      .then((data) => {
+        this.setFolderObjectToTree(id, data);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  setFolderObjectToTree = (id, data) => {
+    const { setSelectedNode, setSelectedFolder } = this.props;
 
     setSelectedNode([id + ""]);
-    SelectFolderDialog.getFolderPath(id)
-      .then((folderPath) => (this.folderTitle = folderPath))
-      .then(() => onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle))
-      .then(() => getFolder(id))
-      .then((data) => {
-        const newPathParts = SelectFolderDialog.convertPathParts(
-          data.pathParts
-        );
-        setSelectedFolder({
-          folders: data.folders,
-          ...data.current,
-          pathParts: newPathParts,
-          ...{ new: data.new },
-        });
-      })
-      .catch((error) => console.log("error", error))
-      .finally(() => {
-        this.loadersCompletes();
-      });
-  };
-  convertFolders = (folders, arrayOfExceptions) => {
-    let newArray = [];
 
-    for (let i = 0; i < folders.length; i++) {
-      !arrayOfExceptions.includes(folders[i].rootFolderType) &&
-        newArray.push(folders[i]);
-    }
-    return newArray;
+    const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
+    setSelectedFolder({
+      folders: data.folders,
+      ...data.current,
+      pathParts: newPathParts,
+      ...{ new: data.new },
+    });
   };
+
   componentWillUnmount() {
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
@@ -301,11 +309,13 @@ class SelectFolderModalDialog extends React.Component {
     this.setState({ displayType: displayType });
   };
 
-  onSelect = (folder) => {
+  onSelect = async (folder) => {
     const { onSelectFolder, onClose, showButtons, onSetFullPath } = this.props;
     const { folderId } = this.state;
 
-    if (isArrayEqual([+folder[0]], [folderId])) {
+    let requests = [];
+
+    if (isArrayEqual([folder[0]], [folderId])) {
       return;
     }
 
@@ -313,22 +323,36 @@ class SelectFolderModalDialog extends React.Component {
       folderId: folder[0],
     });
 
-    showButtons && this.setSelectedFolderToTee(folder[0]);
+    requests.push(getFolderPath(folder));
 
-    showButtons &&
+    if (showButtons) {
+      requests.push(getFolder(folder[0]));
       this.setState({
         isLoading: true,
         canCreate: false,
       });
+    }
 
-    getFolderPath(folder)
-      .then(
-        (foldersArray) =>
-          (pathName = SelectFolderInput.setFullFolderPath(foldersArray))
-      )
-      .then(() => onSetFullPath && onSetFullPath(pathName))
-      .then(() => onSelectFolder && onSelectFolder(folder[0]))
-      .finally(() => !showButtons && onClose && onClose());
+    let folderPath, folderInfo;
+
+    try {
+      [folderPath, folderInfo] = await Promise.allSettled(requests);
+    } catch (e) {
+      console.error(e);
+    }
+
+    if (folderPath.value) {
+      pathName = SelectFolderInput.setFullFolderPath(folderPath.value);
+      onSetFullPath && onSetFullPath(pathName);
+      onSelectFolder && onSelectFolder(folder[0]);
+      !showButtons && onClose && onClose();
+    }
+
+    if (showButtons && folderInfo.value) {
+      this.setFolderObjectToTree(folder[0], folderInfo.value);
+    }
+
+    this.loadersCompletes();
   };
   onSave = (e) => {
     const { onClose, onSave } = this.props;
