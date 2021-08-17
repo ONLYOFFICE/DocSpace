@@ -198,7 +198,7 @@ export default function withFileActions(WrappedFileItem) {
         item,
         isTrashFolder,
         draggable,
-        //allowShareIn,
+        allowShareIn,
         isPrivacy,
         actionType,
         actionExtension,
@@ -225,7 +225,7 @@ export default function withFileActions(WrappedFileItem) {
       let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
 
-      const isShareable = /* allowShareIn && */ item.canShare;
+      const isShareable = allowShareIn && item.canShare;
 
       const isMobile = sectionWidth < 500;
       const displayShareButton = isMobile
@@ -235,6 +235,7 @@ export default function withFileActions(WrappedFileItem) {
         : "96px";
 
       const showShare =
+        !isShareable ||
         (isPrivacy && (!isDesktop || !fileExst)) ||
         (personal && !canWebEdit && !canViewedDocs)
           ? false
@@ -366,7 +367,7 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         history,
         isFolder,
-        //allowShareIn: filesStore.canShare,
+        allowShareIn: filesStore.canShare,
         actionType: type,
         actionExtension: extension,
         actionId: id,
