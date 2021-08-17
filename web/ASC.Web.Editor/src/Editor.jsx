@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Toast from "@appserver/components/toast";
 import toastr from "studio/toastr";
@@ -19,7 +19,6 @@ import {
   setEncryptionKeys,
   getEncryptionAccess,
   getFileInfo,
-  copyToFolder,
   getRecentFolderList,
   getFolderInfo,
   updateFile,
@@ -63,7 +62,7 @@ let docSaved = null;
 let docEditor;
 let fileInfo;
 let successAuth;
-let defaultFileName;
+
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -584,19 +583,17 @@ const Editor = () => {
             .catch((error) => console.log("error", error));
   };
 
-  const onSDKRequestInsertImage = (event) => {
+  const onSDKRequestInsertImage = () => {
     setFilesType(insertImageAction);
     setIsFileDialogVisible(true);
   };
 
-  const onSDKRequestMailMergeRecipients = (event) => {
+  const onSDKRequestMailMergeRecipients = () => {
     setFilesType(mailMergeAction);
     setIsFileDialogVisible(true);
   };
 
   const onSelectFile = async (file) => {
-    console.log("onSelectFile", file);
-
     const link = await getPresignedUri(file.id);
 
     if (filesType === insertImageAction) insertImage(link);
@@ -621,19 +618,6 @@ const Editor = () => {
   };
 
   const onClickSaveSelectFolder = (e, folderId) => {
-    console.log(
-      "onClickSave editor",
-      e,
-      "folderId",
-      folderId,
-      "titleSelectorFolder",
-      titleSelectorFolder,
-      "urlSelectorFolder",
-      urlSelectorFolder,
-      "openNewTab",
-      openNewTab
-    );
-
     SaveAs(titleSelectorFolder, urlSelectorFolder, folderId, openNewTab);
   };
 
