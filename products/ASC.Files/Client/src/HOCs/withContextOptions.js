@@ -214,8 +214,8 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickShare = () => {
-      const { onSelectItem, setSharingPanelVisible, item } = this.props;
-      onSelectItem(item);
+      const { onSelectItem, setSharingPanelVisible, id, isFolder } = this.props;
+      onSelectItem({ id, isFolder });
       setSharingPanelVisible(true);
     };
 

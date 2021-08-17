@@ -4,15 +4,15 @@ import { EncryptedFileIcon } from "./Icons";
 import { inject, observer } from "mobx-react";
 
 const ItemIcon = ({
-  item,
+  id,
+  icon,
+  fileExst,
   isPrivacy,
   viewAs,
   actionType,
   actionExtension,
   actionId,
 }) => {
-  const { id, icon, fileExst } = item;
-
   const isEdit =
     (actionType !== null && actionId === id && fileExst === actionExtension) ||
     id <= 0;

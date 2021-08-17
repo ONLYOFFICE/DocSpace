@@ -30,8 +30,9 @@ export default function withFileActions(WrappedFileItem) {
 
     fileContextClick = () => {
       const { onSelectItem, item } = this.props;
+      const { id, isFolder } = item;
 
-      item.id !== -1 && onSelectItem(item);
+      id !== -1 && onSelectItem({ id, isFolder });
     };
 
     // getSharedButton = (shared) => {

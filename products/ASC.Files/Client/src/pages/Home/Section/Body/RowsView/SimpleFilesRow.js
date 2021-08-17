@@ -75,9 +75,13 @@ const SimpleFilesRow = (props) => {
   } = props;
 
   const sharedButton =
-    item.canShare && showShare ? <SharedButton t={t} item={item} /> : null;
+    item.canShare && showShare ? (
+      <SharedButton t={t} id={item.id} isFolder={item.isFolder} />
+    ) : null;
 
-  const element = <ItemIcon item={item} />;
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   return (
     <div ref={props.selectableRef}>

@@ -3,13 +3,18 @@ import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
 import { inject, observer } from "mobx-react";
 
-const getSharedButton = ({ t, item, onSelectItem, setSharingPanelVisible }) => {
-  const { shared } = item;
-
+const getSharedButton = ({
+  t,
+  id,
+  isFolder,
+  shared,
+  onSelectItem,
+  setSharingPanelVisible,
+}) => {
   const color = shared ? "#657077" : "#a3a9ae";
 
   const onClickShare = () => {
-    onSelectItem(item);
+    onSelectItem({ id, isFolder });
     setSharingPanelVisible(true);
   };
 

@@ -45,8 +45,12 @@ const FilesTile = (props) => {
 
   const { thumbnailUrl } = item;
   const sharedButton =
-    item.canShare && showShare ? <SharedButton t={t} item={item} /> : null;
-  const element = <ItemIcon item={item} />;
+    item.canShare && showShare ? (
+      <SharedButton t={t} id={item.id} isFolder={item.isFolder} />
+    ) : null;
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   return (
     <div ref={props.selectableRef}>
