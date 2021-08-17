@@ -151,11 +151,6 @@ class AuthStore {
     return [settingsModuleWrapper];
   };
 
-  // getIsAuthenticated = async () => {
-  //   const isAuthenticated = await api.user.checkIsAuthenticated();
-  //   this.setIsAuthenticated(isAuthenticated);
-  // };
-
   login = async (user, hash) => {
     try {
       const response = await api.user.login(user, hash);
