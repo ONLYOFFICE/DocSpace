@@ -74,4 +74,4 @@ Link.defaultProps = {
   type: "page",
 };
 
-export default memo(Link);
+export default Link;
