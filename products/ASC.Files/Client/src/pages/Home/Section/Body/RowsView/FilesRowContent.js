@@ -70,11 +70,6 @@ const FilesRowContent = ({
     access,
   } = item;
 
-  // const onMobileRowClick = () => {
-  //   if (isTrashFolder || window.innerWidth > 1024) return;
-  //   onFilesClick();
-  // };
-
   const withAccess = isAdmin || access === 0;
 
   return (
@@ -85,7 +80,6 @@ const FilesRowContent = ({
         sideColor={sideColor}
         isFile={fileExst || contentLength}
         withAccess={withAccess}
-        //onClick={onMobileRowClick}
       >
         <Link
           containerWidth="55%"

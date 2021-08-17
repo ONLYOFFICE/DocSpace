@@ -236,23 +236,13 @@ export default function withFileActions(WrappedFileItem) {
 
       const showShare =
         !isShareable ||
+        isEdit ||
         (isPrivacy && (!isDesktop || !fileExst)) ||
         (personal && !canWebEdit && !canViewedDocs)
           ? false
           : true;
 
-      // const sharedButton =
-      //   !isShareable ||
-      //   !showShare ||
-      //   (personal && !canWebEdit && !canViewedDocs) ||
-      //   isEdit ||
-      //   id <= 0 ||
-      //   isMobile
-      //     ? null
-      //     : this.getSharedButton(shared);
-
       const checkedProps = isEdit || id <= 0 ? false : checked;
-      //const element = this.getItemIcon(isEdit || id <= 0);
 
       return (
         <WrappedFileItem
@@ -268,10 +258,8 @@ export default function withFileActions(WrappedFileItem) {
           value={value}
           displayShareButton={displayShareButton}
           isPrivacy={isPrivacy}
-          //sharedButton={sharedButton}
           showShare={showShare}
           checkedProps={checkedProps}
-          //element={element}
           dragging={dragging}
           isEdit={isEdit}
           {...this.props}
@@ -324,11 +312,7 @@ export default function withFileActions(WrappedFileItem) {
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
-      const {
-        //iconFormatsStore,
-        mediaViewersFormatsStore,
-        docserviceStore,
-      } = formatsStore;
+      const { mediaViewersFormatsStore, docserviceStore } = formatsStore;
       const { setMediaViewerData } = mediaViewerDataStore;
 
       const selectedItem = selection.find(

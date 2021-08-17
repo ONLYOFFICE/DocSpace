@@ -44,7 +44,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .styled-element {
     height: 32px;
-    width: ${(props) => (props.isEdit ? "52px" : "24px")};
+    /* width: ${(props) => (props.isEdit ? "52px" : "24px")}; */
     margin-right: 7px;
   }
 `;
@@ -64,10 +64,8 @@ const SimpleFilesRow = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    //sharedButton,
     contextOptionsProps,
     checkedProps,
-    //element,
     onFilesClick,
     onMouseUp,
     isEdit,

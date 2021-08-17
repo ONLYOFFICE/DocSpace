@@ -954,7 +954,7 @@ class FilesStore {
       case FolderType.USER:
         return true;
       case FolderType.SHARE:
-        return true; //
+        return true;
       case FolderType.COMMON:
         return this.authStore.isAdmin;
       case FolderType.TRASH:
