@@ -369,7 +369,6 @@ class PageLayout extends React.Component {
                           style={{
                             display: "grid",
                             paddingRight: "20px",
-                            paddingTop: "10px",
                           }}
                         ></div>
                         <SubSectionFilter className="section-header_filter">
