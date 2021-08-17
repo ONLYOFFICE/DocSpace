@@ -112,24 +112,6 @@ const FilesRowContent = ({
             </Text>
           )}
         </Link>
-        {/* TODO: ordinary 'a' tag is not re-rendering */}
-        {/* <a href={item.viewUrl}>
-          {titleWithoutExt}
-          {fileExst && (
-            <Text
-              className="badge-ext"
-              as="span"
-              color="#A3A9AE"
-              fontSize="15px"
-              fontWeight={600}
-              title={fileExst}
-              truncate={true}
-            >
-              {fileExst}
-            </Text>
-          )}
-        </a> */}
-
         <div className="badges">{badgesComponent}</div>
         <Text
           containerMinWidth="120px"

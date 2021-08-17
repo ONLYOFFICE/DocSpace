@@ -1,18 +1,11 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { ReactSVG } from "react-svg";
-
-import IconButton from "@appserver/components/icon-button";
-import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
-
-import { EncryptedFileIcon } from "../components/Icons";
 import { checkProtocol } from "../helpers/files-helpers";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
 
-//const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
     constructor(props) {
@@ -34,49 +27,6 @@ export default function withFileActions(WrappedFileItem) {
 
       id !== -1 && onSelectItem({ id, isFolder });
     };
-
-    // getSharedButton = (shared) => {
-    //   const { t } = this.props;
-    //   const color = shared ? "#657077" : "#a3a9ae";
-    //   return (
-    //     <Text
-    //       className="share-button"
-    //       as="span"
-    //       title={t("Share")}
-    //       fontSize="12px"
-    //       fontWeight={600}
-    //       color={color}
-    //       display="inline-flex"
-    //       onClick={this.onClickShare}
-    //     >
-    //       <IconButton
-    //         className="share-button-icon"
-    //         color={color}
-    //         hoverColor="#657077"
-    //         size={18}
-    //         iconName="images/catalog.shared.react.svg"
-    //       />
-    //       {t("Share")}
-    //     </Text>
-    //   );
-    // };
-
-    // getItemIcon = (isEdit) => {
-    //   const { item, isPrivacy, viewAs } = this.props;
-    //   const { icon, fileExst } = item;
-    //   return (
-    //     <>
-    //       <ReactSVG
-    //         className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
-    //         src={icon}
-    //         loading={svgLoader}
-    //       />
-    //       {isPrivacy && fileExst && (
-    //         <EncryptedFileIcon isEdit={isEdit && viewAs !== "tile"} />
-    //       )}
-    //     </>
-    //   );
-    // };
 
     onDropZoneUpload = (files, uploadToFolder) => {
       const { t, dragging, setDragging, startUpload } = this.props;
