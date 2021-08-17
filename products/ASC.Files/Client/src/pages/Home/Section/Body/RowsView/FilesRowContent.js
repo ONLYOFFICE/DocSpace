@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -56,8 +56,8 @@ const FilesRowContent = ({
   updatedDate,
   fileOwner,
   linkStyles,
-  isTrashFolder,
-  onFilesClick,
+  //isTrashFolder,
+  //onFilesClick,
   badgesComponent,
   isAdmin,
 }) => {
@@ -70,10 +70,10 @@ const FilesRowContent = ({
     access,
   } = item;
 
-  const onMobileRowClick = () => {
-    if (isTrashFolder || window.innerWidth > 1024) return;
-    onFilesClick();
-  };
+  // const onMobileRowClick = () => {
+  //   if (isTrashFolder || window.innerWidth > 1024) return;
+  //   onFilesClick();
+  // };
 
   const withAccess = isAdmin || access === 0;
 
@@ -95,10 +95,10 @@ const FilesRowContent = ({
           fontSize="15px"
           {...linkStyles}
           color="#333"
-          isTextOverflow
+          isTextOverflow={true}
         >
           {titleWithoutExt}
-          {fileExst ? (
+          {fileExst && (
             <Text
               className="badge-ext"
               as="span"
@@ -110,8 +110,25 @@ const FilesRowContent = ({
             >
               {fileExst}
             </Text>
-          ) : null}
+          )}
         </Link>
+        {/* TODO: ordinary 'a' tag is not re-rendering */}
+        {/* <a href={item.viewUrl}>
+          {titleWithoutExt}
+          {fileExst && (
+            <Text
+              className="badge-ext"
+              as="span"
+              color="#A3A9AE"
+              fontSize="15px"
+              fontWeight={600}
+              title={fileExst}
+              truncate={true}
+            >
+              {fileExst}
+            </Text>
+          )}
+        </a> */}
 
         <div className="badges">{badgesComponent}</div>
         <Text
