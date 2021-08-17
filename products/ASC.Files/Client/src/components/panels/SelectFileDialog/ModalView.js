@@ -119,9 +119,9 @@ class SelectFileDialogModalView extends React.Component {
       );
   };
   onSelect = (folder) => {
-    const { onSelectFolder, selectedKeys } = this.props;
+    const { onSelectFolder, selectedFolder } = this.props;
 
-    if (isArrayEqual(folder, selectedKeys)) {
+    if (isArrayEqual([folder[0]], [selectedFolder])) {
       return;
     }
 
