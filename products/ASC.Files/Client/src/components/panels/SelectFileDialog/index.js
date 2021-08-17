@@ -40,6 +40,7 @@ class SelectFileDialogBody extends React.Component {
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.newFilter = filter.clone();
+    this._isLoadNextPage = false;
   }
 
   getFilterParameters = () => {
@@ -161,11 +162,14 @@ class SelectFileDialogBody extends React.Component {
     const { setSelectedNode, setSelectedFolder } = this.props;
     const { selectedFolder, page } = this.state;
 
-    //console.log(`loadNextPage(startIndex=${page}")`);
+    if (this._isLoadNextPage) return;
+
+    this._isLoadNextPage = true;
 
     const pageCount = 30;
     this.newFilter.page = page;
     this.newFilter.pageCount = pageCount;
+
     this.setState({ isNextPageLoading: true }, () => {
       getFolder(selectedFolder, this.newFilter)
         .then((data) => {
@@ -191,8 +195,8 @@ class SelectFileDialogBody extends React.Component {
             page: page + 1,
           });
         })
-
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error))
+        .finally(() => (this._isLoadNextPage = false));
     });
   };
   render() {
