@@ -1,6 +1,5 @@
 import React from "react";
-import { inject, observer, Provider as MobxProvider } from "mobx-react";
-import PropTypes from "prop-types";
+import { Provider as MobxProvider } from "mobx-react";
 import stores from "../../../store/index";
 import { StyledAsidePanel, StyledSelectFilePanel } from "../StyledPanels";
 import ModalDialog from "@appserver/components/modal-dialog";
@@ -20,7 +19,7 @@ const editorExceptions = [
   FolderType.Favorites,
 ];
 
-class SelectFileDialogModalViewBody extends React.Component {
+class SelectFileDialogModalView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -238,27 +237,6 @@ class SelectFileDialogModalViewBody extends React.Component {
           </ModalDialog.Footer>
         </ModalDialog>
       </StyledAsidePanel>
-    );
-  }
-}
-
-const SelectFileDialogModalViewBodyWrapper = inject(
-  ({ treeFoldersStore, selectedFolderStore }) => {
-    const { setSelectedNode } = treeFoldersStore;
-
-    const { setSelectedFolder } = selectedFolderStore;
-    return {
-      setSelectedFolder,
-      setSelectedNode,
-    };
-  }
-)(observer(SelectFileDialogModalViewBody));
-class SelectFileDialogModalView extends React.Component {
-  render() {
-    return (
-      <MobxProvider {...stores}>
-        <SelectFileDialogModalViewBodyWrapper {...this.props} />
-      </MobxProvider>
     );
   }
 }
