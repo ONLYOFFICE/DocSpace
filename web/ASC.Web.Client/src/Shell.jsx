@@ -275,6 +275,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
+      style: {
+        marginTop: "10px",
+      },
     };
 
     Snackbar.show(barConfig);
