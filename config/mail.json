@@ -61,7 +61,8 @@
       "TenantCacheDays": 1,
       "TenantOverdueDays": 30,
       "GarbageOverdueDays": 30,
-      "MaxFilesToRemoveAtOnce": 100
+      "MaxFilesToRemoveAtOnce": 100,
+      "DeleteDiscStorageFolders": false
     },
     "Watchdog": {
       "TasksTimeoutInMinutes": 6,

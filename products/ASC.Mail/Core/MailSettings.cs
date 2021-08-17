@@ -59,6 +59,7 @@ namespace ASC.Mail.Configuration
             public int? TenantCacheDays { get; set; }
             public int? TenantOverdueDays { get; set; }
             public int? TimerWaitMinutes { get; set; }
+            public bool DeleteDiscStorageFolders { get; set; }
             public MailGarbageEraserConfig() { }
             public MailGarbageEraserConfig(MailGarbageEraserConfig config, string defaultApiSchema)
             {
@@ -69,6 +70,7 @@ namespace ASC.Mail.Configuration
                 TenantCacheDays = config.TenantCacheDays ?? 1;
                 TenantOverdueDays = config.TenantOverdueDays ?? 30;
                 TimerWaitMinutes = config.TimerWaitMinutes ?? 60;
+                DeleteDiscStorageFolders = config.DeleteDiscStorageFolders;
             }
         }
         public class DefinesConfig

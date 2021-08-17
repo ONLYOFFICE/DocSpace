@@ -72,6 +72,8 @@ namespace ASC.Mail.StorageCleaner.Service
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddJsonFile("mail.json")
                         .AddJsonFile($"mail.{env}.json")
+                        .AddJsonFile("storage.json")
+                        .AddJsonFile($"storage.{env}.json")
 
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
