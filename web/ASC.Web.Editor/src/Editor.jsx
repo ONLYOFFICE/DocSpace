@@ -167,7 +167,6 @@ const Editor = () => {
       }
 
       config = await openEdit(fileId, version, doc);
-      defaultFileName = config;
 
       if (isDesktop) {
         const isEncryption =
