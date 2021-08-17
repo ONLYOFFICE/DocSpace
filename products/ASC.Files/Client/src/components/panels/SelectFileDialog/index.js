@@ -84,7 +84,6 @@ class SelectFileDialogBody extends React.Component {
   };
 
   componentDidMount() {
-    authStore.init();
     window.addEventListener("resize", this.throttledResize);
     this.setFilter();
   }
@@ -120,7 +119,7 @@ class SelectFileDialogBody extends React.Component {
 
   onSelectFolder = (id) => {
     const { setFolderId } = this.props;
- 
+
     if (id) {
       setFolderId(id);
 

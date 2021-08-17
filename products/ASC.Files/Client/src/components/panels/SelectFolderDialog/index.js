@@ -57,8 +57,6 @@ class SelectFolderModalDialog extends React.Component {
   componentDidMount() {
     const { onSetLoadingData, onSetLoadingInput, displayType } = this.props;
 
-    authStore.init();
-
     !displayType && window.addEventListener("resize", this.throttledResize);
     this.setState({ isLoadingData: true }, function () {
       onSetLoadingData && onSetLoadingData(true);
