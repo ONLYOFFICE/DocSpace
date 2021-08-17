@@ -36,6 +36,4 @@ REM sleep 5 seconds
 call ping 127.0.0.1 -n 6 > nul
 
 call sc start nginx
-
-pause
 )
