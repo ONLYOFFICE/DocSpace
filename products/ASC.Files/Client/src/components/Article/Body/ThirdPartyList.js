@@ -11,6 +11,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import IconButton from "@appserver/components/icon-button";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -24,10 +25,10 @@ const StyledThirdParty = styled.div`
     max-width: inherit;
 
     div {
-      height: 26px;
-      width: 100%;
-      background: #eceef1;
-      text-align: center;
+      height: 32px;
+      //width: 100%;
+      //background: #eceef1;
+      //text-align: center;
       margin-right: 1px;
       color: #818b91;
       :first-of-type {
@@ -35,13 +36,9 @@ const StyledThirdParty = styled.div`
       }
       :last-of-type {
         border-radius: 0 3px 3px 0;
-
-        img {
-          margin-top: 4px;
-        }
       }
 
-      img {
+      .icon {
         padding: 4px 6px 0 4px;
       }
 
@@ -91,7 +88,14 @@ const ServiceItem = (props) => {
 
   return (
     <div {...dataProps} {...rest}>
-      <img src={src} alt="" />
+      <IconButton
+        className="icon"
+        iconName={src}
+        size={30}
+        isfill={true}
+        color="#A3A9AE"
+        hoverColor="#818b91"
+      />
     </div>
   );
 };
