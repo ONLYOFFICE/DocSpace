@@ -1,11 +1,9 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import copy from "copy-to-clipboard";
-
 import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
-
 import config from "../../package.json";
 
 export default function withContextOptions(WrappedComponent) {
@@ -197,7 +195,7 @@ export default function withContextOptions(WrappedComponent) {
         deleteItemAction,
         isThirdPartyFolder,
       } = this.props;
-      const { id, title, fileExst, contentLength, folderId, parentId } = item;
+      const { id, title, fileExst, contentLength, folderId } = item;
 
       if (isThirdPartyFolder) {
         const splitItem = id.split("-");
@@ -216,8 +214,8 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickShare = () => {
-      const { onSelectItem, setSharingPanelVisible, item } = this.props;
-      onSelectItem(item);
+      const { onSelectItem, setSharingPanelVisible, id, isFolder } = this.props;
+      onSelectItem({ id, isFolder });
       setSharingPanelVisible(true);
     };
 
@@ -237,8 +235,10 @@ export default function withContextOptions(WrappedComponent) {
 
     getFilesContextOptions = () => {
       const { item, t, isThirdPartyFolder } = this.props;
-      const { access, contextOptions } = item;
-      const isSharable = access !== 1 && access !== 0;
+      const { contextOptions } = item;
+
+      const isShareable = item.canShare;
+
       return contextOptions.map((option) => {
         switch (option) {
           case "open":
@@ -302,7 +302,7 @@ export default function withContextOptions(WrappedComponent) {
               label: t("SharingSettings"),
               icon: "images/catalog.shared.react.svg",
               onClick: this.onClickShare,
-              disabled: isSharable,
+              disabled: !isShareable,
             };
           case "send-by-email":
             return {
