@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common.Utils;
 
 using Autofac.Extensions.DependencyInjection;
@@ -73,6 +74,7 @@ namespace ASC.Files
                     {
                                         {"pathToConf", path}
                     });
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

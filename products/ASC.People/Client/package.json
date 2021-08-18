@@ -1,6 +1,7 @@
 {
   "name": "@appserver/people",
   "version": "1.0.0",
+  "private": true,
   "homepage": "/products/people",
   "id": "f4d98afd-d336-4332-8778-3c6945c81ea0",
   "title": "ONLYOFFICE",
@@ -8,9 +9,9 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5002",
     "build": "webpack --mode production",
-    "deploy": "mkdirp ../../../build/deploy/products/ASC.People/client && cp -r -u dist/* ../../../build/deploy/products/ASC.People/client",
+    "deploy": "shx mkdir -p ../../../build/deploy/products/ASC.People/client && shx cp -r dist/* ../../../build/deploy/products/ASC.People/client",
     "serve": "serve dist -p 5002",
-    "clean": "rimraf dist"
+    "clean": "shx rm -rf dist"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -28,9 +29,8 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "4.5.0",
     "json-loader": "^0.5.7",
-    "mkdirp": "^1.0.4",
-    "rimraf": "^3.0.2",
     "serve": "11.3.2",
+    "shx": "^0.3.3",
     "source-map-loader": "^1.1.2",
     "style-loader": "1.2.1",
     "terser-webpack-plugin": "^5.1.1",

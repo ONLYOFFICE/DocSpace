@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
+
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
@@ -47,7 +49,8 @@ namespace ASC.Calendar
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddEnvironmentVariables()
-					.AddCommandLine(args);
-            });
+                    .AddCommandLine(args);
+            })
+            .ConfigureNLogLogging();
     }
 }

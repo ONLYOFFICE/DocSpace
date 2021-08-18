@@ -26,6 +26,7 @@ const CampaignsBanner = (props) => {
 
       <Button
         className="banner-btn"
+        primary
         size="medium"
         isDisabled={false}
         disableHover={true}

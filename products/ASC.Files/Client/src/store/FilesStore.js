@@ -405,6 +405,8 @@ class FilesStore {
       isShareFolder,
     } = this.treeFoldersStore;
 
+    const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
+
     const { isRootFolder } = this.selectedFolderStore;
 
     const isThirdPartyFolder = item.providerKey && isRootFolder;
@@ -415,8 +417,6 @@ class FilesStore {
     const { isDesktopClient, personal } = this.settingsStore;
 
     if (isFile) {
-      const isNotSupported = [0, 1].includes(item.fileType); //TODO: maybe dirty
-
       let fileOptions = [
         //"open",
         "edit",
@@ -461,7 +461,7 @@ class FilesStore {
           "unsubscribe",
         ]);
 
-        if (!this.isWebEditSelected) {
+        if (!this.isWebEditSelected && !canViewedDocs(item.fileExst)) {
           fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
         }
       }
@@ -681,12 +681,20 @@ class FilesStore {
         );
       }
 
-      if (isNotSupported) {
+      if (
+        !canWebEdit(item.fileExst) &&
+        !canViewedDocs(item.fileExst) &&
+        !fileOptions.includes("view")
+      ) {
         fileOptions = this.removeOptions(fileOptions, [
           "edit",
           "preview",
           "separator0",
         ]);
+      }
+
+      if (!canWebEdit(item.fileExst) && canViewedDocs(item.fileExst)) {
+        fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
 
       return fileOptions;
@@ -1217,6 +1225,15 @@ class FilesStore {
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
       return editedDocs.find((format) => selected.fileExst === format);
+    });
+  }
+
+  get isViewedSelected() {
+    const { canViewedDocs } = this.formatsStore.docserviceStore;
+
+    return this.selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return canViewedDocs(selected.fileExst);
     });
   }
 

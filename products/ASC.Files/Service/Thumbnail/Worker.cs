@@ -31,7 +31,7 @@ namespace ASC.Files.ThumbnailBuilder
     public class Worker
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly CancellationToken cancellationToken;
+        private CancellationToken cancellationToken;
         private readonly ThumbnailSettings thumbnailSettings;
         private readonly ILog logger;
 
@@ -50,6 +50,7 @@ namespace ASC.Files.ThumbnailBuilder
         public void Start(CancellationToken cancellationToken)
         {
             timer = new Timer(Procedure, null, 0, Timeout.Infinite);
+            this.cancellationToken = cancellationToken;
         }
 
         public void Stop()

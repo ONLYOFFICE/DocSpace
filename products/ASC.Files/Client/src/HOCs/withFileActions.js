@@ -168,11 +168,10 @@ export default function withFileActions(WrappedFileItem) {
         parentFolder,
         setIsLoading,
         fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
+        isMediaOrImage,
         canConvert,
         canWebEdit,
+        canViewedDocs,
         item,
         isTrashFolder,
         isPrivacy,
@@ -226,14 +225,14 @@ export default function withFileActions(WrappedFileItem) {
 
         if (fileStatus === 2) this.onMarkAsRead(id);
 
-        if (canWebEdit) {
+        if (canWebEdit || canViewedDocs) {
           let tab =
             !isDesktop && fileExst
               ? window.open(
                   combineUrl(
                     AppServerConfig.proxyURL,
                     config.homepage,
-                    "/products/files/doceditor"
+                    "/doceditor"
                   ),
                   "_blank"
                 )
@@ -242,7 +241,7 @@ export default function withFileActions(WrappedFileItem) {
           return openDocEditor(id, providerKey, tab);
         }
 
-        if (isImage || isSound || isVideo) {
+        if (isMediaOrImage) {
           setMediaViewerData({ visible: true, id });
           return;
         }
@@ -268,6 +267,7 @@ export default function withFileActions(WrappedFileItem) {
         isDesktop,
         personal,
         canWebEdit,
+        canViewedDocs,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
@@ -294,7 +294,7 @@ export default function withFileActions(WrappedFileItem) {
       const sharedButton =
         !canShare ||
         !showShare ||
-        (personal && !canWebEdit) ||
+        (personal && !canWebEdit && !canViewedDocs) ||
         isEdit ||
         id <= 0 ||
         isMobile
@@ -397,11 +397,13 @@ export default function withFileActions(WrappedFileItem) {
         ? false
         : true;
 
-      const isImage = iconFormatsStore.isImage(item.fileExst);
-      const isSound = iconFormatsStore.isSound(item.fileExst);
-      const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+      const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
+        item.fileExst
+      );
+
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
+      const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
 
       return {
         t,
@@ -428,10 +430,9 @@ export default function withFileActions(WrappedFileItem) {
         parentFolder: selectedFolderStore.parentId,
         setIsLoading,
         fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
+        isMediaOrImage,
         canWebEdit,
+        canViewedDocs,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
