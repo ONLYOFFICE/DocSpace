@@ -39,7 +39,7 @@ const StyledThirdParty = styled.div`
       }
 
       .icon {
-        padding: 4px 6px 0 4px;
+        padding: 4px 3px 0 4px;
       }
 
       @media (max-width: 1024px) {
