@@ -108,7 +108,7 @@ class SettingsStore {
   }
 
   setIsArticleVisible = (visible) => {
-    this.isArticleVisible = visible;
+    this.isArticleVisible = this.isArticlePinned ? true : visible;
   };
 
   setIsBackdropVisible = (visible) => {
