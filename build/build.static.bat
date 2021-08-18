@@ -12,9 +12,6 @@ call yarn build
 REM call yarn wipe
 call yarn deploy
 
-REM copy public files to deploy folder
-xcopy public\*.* build\deploy\public\ /E /R /Y
-
 REM copy nginx configurations to deploy folder
 xcopy config\nginx\onlyoffice.conf build\deploy\nginx\ /E /R /Y
 powershell -Command "(gc build\deploy\nginx\onlyoffice.conf) -replace '#', '' | Out-File -encoding ASCII build\deploy\nginx\onlyoffice.conf"
