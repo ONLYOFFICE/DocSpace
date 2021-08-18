@@ -95,6 +95,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
                     services.AddHostedService<ServiceLauncher>();
@@ -107,7 +108,6 @@ namespace ASC.Mail.Aggregator.CollectionService
                     diHelper.TryAdd<AggregatorServiceScope>();
                     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
                     services.AddHostedService<AggregatorServiceLauncher>();
-                    services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

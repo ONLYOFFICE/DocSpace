@@ -25,6 +25,9 @@
       "EnableSignalr": false,
       "AggregateModeValue": "all"
     },
+	"ImapSync": {
+      "RedisConnectionString": ""
+    },
     "Defines": {
       "AuthErrorWarningTimeout": "00:05:00",
       "AuthErrorDisableMailboxTimeout": "00:30:00",

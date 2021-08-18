@@ -1,23 +1,28 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using ASC.Common.Logging;
 
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Mapping;
 using ASC.Common.Utils;
+using ASC.ElasticSearch;
+using ASC.Mail.Aggregator.CollectionService.Console;
+using ASC.Mail.Aggregator.CollectionService.Service;
+using ASC.Mail.Core.Search;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System.Runtime.InteropServices;
-using System.IO;
-using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Mail.ImapSync
 {
@@ -71,7 +76,7 @@ namespace ASC.Mail.ImapSync
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
-                        .AddJsonFile($"storage.{env}.json", true)
+                        //.AddJsonFile($"storage.{env}.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("backup.json")
                         .AddJsonFile("kafka.json")
@@ -83,36 +88,29 @@ namespace ASC.Mail.ImapSync
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
-                            {
-                                {"pathToConf", path }
-                            }
+                        {
+                            {"pathToConf", path }
+                        }
                         );
                 })
             .ConfigureServices((hostContext, services) =>
             {
+                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 services.AddMemoryCache();
                 var diHelper = new DIHelper(services);
-                LogNLogExtension.ConfigureLog(diHelper,
-                    "ASC.Mail.Aggregator",
-                    "ASC.Mail.MainThread",
-                    "ASC.Mail.Stat",
-                    "ASC.Mail.MailboxEngine",
-                    "ASC.Core.Common.Cache");
+                services.AddHostedService<ServiceLauncher>();
+                diHelper.TryAdd<ServiceLauncher>();
+                diHelper.TryAdd<FactoryIndexerMailMail>();
+                diHelper.TryAdd<FactoryIndexerMailContact>();
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                services.AddSingleton(new ConsoleParser(args));
                 diHelper.TryAdd<ImapSyncService>();
-                services.AddSingleton<ImapSyncService>();
+                services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
                 services.AddHostedService<ImapSyncService>();
-//                services.AddSingleton<RedisClient>();
-                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
-                //services.AddStackExchangeRedisCache(options =>
-                //{
-                //    options.Configuration = hostContext.Configuration.GetConnectionString("Redis");
-                //    options.InstanceName = "ASC.Mail.ImapSync";
-                //});
             })
             .ConfigureContainer<ContainerBuilder>((context, builder) =>
             {
-                builder.Register(context.Configuration, false, false);
+                builder.Register(context.Configuration, false, false, "search.json");
             });
     }
 }

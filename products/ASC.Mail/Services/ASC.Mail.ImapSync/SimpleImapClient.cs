@@ -18,6 +18,8 @@ using MailKit.Security;
 
 using MimeKit;
 
+using static ASC.Mail.Configuration.MailSettings;
+
 namespace ASC.Mail.ImapSync
 {
     public class SimpleImapClient : IDisposable
@@ -37,6 +39,7 @@ namespace ASC.Mail.ImapSync
         public event EventHandler<string> DeleteMessage;
         public event EventHandler MessagesListUpdated;
         public event EventHandler WorkFoldersChanged;
+        public event EventHandler KillMe;
 
         private CancellationTokenSource DoneToken { get; set; }
         private CancellationToken CancelToken { get; set; }
@@ -83,10 +86,11 @@ namespace ASC.Mail.ImapSync
 
             _log.Name = $"ASC.Mail.SimpleClient.Mbox_{mailbox.MailBoxId}";
 
-            var protocolLogger = !string.IsNullOrEmpty(_mailSettings.ProtocolLogPath)
-                ? (IProtocolLogger)
-                    new ProtocolLogger(_mailSettings.ProtocolLogPath + $"\\imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log", true)
-                : new NullProtocolLogger();
+            _log.Debug($"ImapLog: {$"/var/log/appserver/imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log"}");
+
+            var protocolLogger = !string.IsNullOrEmpty(_mailSettings.Aggregator.ProtocolLogPath) ? (IProtocolLogger)
+                new ProtocolLogger(_mailSettings.Aggregator.ProtocolLogPath + $"/var/log/appserver/imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log", true)
+            : new ProtocolLogger($"/var/log/appserver/imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log", true);
 
             StopTokenSource = new CancellationTokenSource();
 
@@ -96,7 +100,7 @@ namespace ASC.Mail.ImapSync
 
             imap = new ImapClient(protocolLogger)
             {
-                Timeout = _mailSettings.TcpTimeout
+                Timeout = _mailSettings.Aggregator.TcpTimeout
             };
 
             curentTask =Task.Run(()=> {
@@ -144,6 +148,8 @@ namespace ASC.Mail.ImapSync
                 DoneToken?.Cancel();
 
                 StopTokenSource.Cancel();
+
+                if(KillMe!=null) KillMe(this, EventArgs.Empty);
             }
         }
 
@@ -211,6 +217,9 @@ namespace ASC.Mail.ImapSync
             catch (Exception ex)
             {
                 _log.Error($"Imap.Authentication Error: {ex.Message}");
+
+                if (KillMe != null) KillMe(this, EventArgs.Empty);
+
                 return false;
             }
 
@@ -260,6 +269,7 @@ namespace ASC.Mail.ImapSync
         private IEnumerable<IMailFolder> GetImapSubFolders(IMailFolder folder)
         {
             var result = new List<IMailFolder>();
+
             try
             {
                 result = folder.GetSubfolders(true, CancelToken).ToList();
@@ -385,6 +395,8 @@ namespace ASC.Mail.ImapSync
         {
             if (WorkFolder == null) return;
 
+            if (!imap.IsAuthenticated) return;
+
             try
             {
                 OpenFolder(WorkFolder);
@@ -405,13 +417,15 @@ namespace ASC.Mail.ImapSync
             }
             catch (Exception ex)
             {
-                _log.Error($"ReturnImapSemaphore, Error:{ex.Message}");
+                _log.Error($"SetIdle, Error:{ex.Message}");
             }
             finally
             {
                 DoneToken?.Dispose();
 
                 DoneToken = null;
+
+                _log.Debug($"Retrurn from Idle.");
             }
         }
 
@@ -419,7 +433,6 @@ namespace ASC.Mail.ImapSync
         {
             AddTask(new Task(() => MoveMessageInImap(WorkFolder, uniqueIds, destinationFolder)));
         }
-
 
         private void MoveMessageInImap(IMailFolder sourceFolder, List<UniqueId> uniqueIds, IMailFolder destinationFolder)
         {
@@ -438,7 +451,7 @@ namespace ASC.Mail.ImapSync
 
                 var returnedUidl = sourceFolder.MoveTo(uniqueIds, destinationFolder);
 
-                UpdateMessagesList();
+                MessagesList = MessagesList.Where(x => !uniqueIds.Contains(x.UniqueId)).ToList();
             }
             catch (Exception ex)
             {
@@ -466,17 +479,44 @@ namespace ASC.Mail.ImapSync
                 {
                     case MailUserAction.SetAsRead:
                         folder.AddFlags(uniqueIds, MessageFlags.Seen, true);
+                        MessagesList.ForEach(x=>
+                        {
+                            if (uniqueIds.Contains(x.UniqueId))
+                            {
+                                x.Flags = x.Flags.Value | MessageFlags.Seen;
+                            }
+                        });
                         break;
                     case MailUserAction.SetAsUnread:
                         folder.RemoveFlags(uniqueIds, MessageFlags.Seen, true);
+                        MessagesList.ForEach(x =>
+                        {
+                            if (uniqueIds.Contains(x.UniqueId))
+                            {
+                                x.Flags = x.Flags.Value ^ MessageFlags.Seen;
+                            }
+                        });
                         break;
                     case MailUserAction.SetAsImportant:
                         folder.AddFlags(uniqueIds, MessageFlags.Flagged, true);
+                        MessagesList.ForEach(x =>
+                        {
+                            if (uniqueIds.Contains(x.UniqueId))
+                            {
+                                x.Flags = x.Flags.Value ^ MessageFlags.Flagged;
+                            }
+                        });
                         break;
                     case MailUserAction.SetAsNotImpotant:
                         folder.RemoveFlags(uniqueIds, MessageFlags.Flagged, true);
+                        MessagesList.ForEach(x =>
+                        {
+                            if (uniqueIds.Contains(x.UniqueId))
+                            {
+                                x.Flags = x.Flags.Value ^ MessageFlags.Flagged;
+                            }
+                        });
                         break;
-
                 }
             }
             catch (Exception ex)

@@ -1623,28 +1623,21 @@ namespace ASC.Mail.Core.Engine
 
                 if ((!fromThisMailBox || !toThisMailBox) && messagesInfo.Exists(m => m.FolderRestore == folder))
                 {
-                    var clone = messagesInfo.FirstOrDefault(m => m.FolderRestore == folder && m.Uidl == uidl);
-                    if (clone != null)
-                        log.Info($"Message already exists: mailId={clone.Id}. (md5={md5}) Clone");
-                    else
+
+                    var existMessage = messagesInfo.First();
+
+                    if (!existMessage.IsRemoved)
                     {
-                        var existMessage = messagesInfo.First();
-
-                        if (!existMessage.IsRemoved)
-                        {
-                            if (string.IsNullOrEmpty(existMessage.Uidl))
-                            {
-                                MailDaoFactory.GetMailInfoDao().SetFieldValue(
-                                SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
-                                    .SetMessageId(existMessage.Id)
-                                    .Build(),
-                                "Uidl",
-                                uidl);
-                            }
-                        }
-
-                        log.Info($"Message already exists by (md5={md5})|{mimeMessageId}|Subject|DateSent ");
+                        MailDaoFactory.GetMailInfoDao().SetFieldValue(
+                            SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
+                            .SetMessageId(existMessage.Id)
+                            .Build(),
+                            "Uidl",
+                            uidl);
                     }
+
+                    log.Info($"Message already exists by (md5={md5})|{mimeMessageId}|Subject|DateSent ");
+
 
                     return true;
                 }

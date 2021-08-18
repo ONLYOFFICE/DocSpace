@@ -29,9 +29,11 @@ using ASC.Core.Common.Caching;
 using ASC.Core.Notify.Signalr;
 using ASC.Core.Users;
 using ASC.Data.Storage;
+using ASC.Mail.Aggregator.CollectionService.Queue;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Message;
+using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
@@ -59,7 +61,7 @@ namespace ASC.Mail.ImapSync
 
         private readonly MailEnginesFactory _mailEnginesFactory;
         private readonly MailSettings _mailSettings;
-        private readonly MailInfoDao _mailInfoDao;
+        private readonly IMailInfoDao _mailInfoDao;
         private readonly StorageFactory _storageFactory;
         private readonly FolderEngine _folderEngine;
         private readonly UserManager _userManager;
@@ -67,7 +69,9 @@ namespace ASC.Mail.ImapSync
         private readonly RedisClient _redisClient;
         private readonly ILog _log;
         private readonly IndexEngine _indexEngine;
-
+        private readonly ApiHelper _apiHelper;
+        private readonly TenantManager tenantManager;
+        private readonly SecurityContext securityContext;
         readonly bool crmAvailable;
 
         public MailBoxData Account { get; private set; }
@@ -81,6 +85,11 @@ namespace ASC.Mail.ImapSync
         private CancellationTokenSource StopTokenSource { get; set; }
 
         private SimpleImapClient imapClient;
+
+        private SignalrWorker SignalrWorker { get; }
+
+        private readonly ConcurrentDictionary<string, bool> _userCrmAvailabeDictionary = new ConcurrentDictionary<string, bool>();
+        private readonly object _locker = new object();
 
         public async void CheckRedis(int folderActivity, IEnumerable<int> tags)
         {
@@ -155,13 +164,13 @@ namespace ASC.Mail.ImapSync
 
             var clientScope = serviceProvider.CreateScope().ServiceProvider;
 
-            var tenantManager = clientScope.GetService<TenantManager>();
+            tenantManager = clientScope.GetService<TenantManager>();
             tenantManager.SetCurrentTenant(Account.TenantId);
 
-            var securityContext = clientScope.GetService<SecurityContext>();
+            securityContext = clientScope.GetService<SecurityContext>();
             securityContext.AuthenticateMe(new Guid(Account.UserId));
 
-            _mailInfoDao = clientScope.GetService<MailInfoDao>();
+            _mailInfoDao = clientScope.GetService<IMailInfoDao>();
             _mailEnginesFactory = clientScope.GetService<MailEnginesFactory>();
             _indexEngine = clientScope.GetService<IndexEngine>();
             _storageFactory = clientScope.GetService<StorageFactory>();
@@ -170,6 +179,7 @@ namespace ASC.Mail.ImapSync
             _signalrServiceClient = clientScope.GetService<IOptionsSnapshot<SignalrServiceClient>>().Get("mail");
             _redisClient= clientScope.GetService<RedisClient>();
             _log= clientScope.GetService<ILog>();
+            _apiHelper = clientScope.GetService<ApiHelper>();
 
             _log.Name = $"ASC.Mail.MailImapClient.Mbox_{mailbox.MailBoxId}";
 
@@ -244,15 +254,7 @@ namespace ASC.Mail.ImapSync
                 DetectFolders();
             }
 
-            workFolder = foldersDictionary[imapClient.WorkFolder];
-
-            var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
-                .SetMailboxId(Account.MailBoxId)
-                .SetFolder((int)workFolder.Folder);
-
-            workFolderMails = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
-
-            UpdateDbFolder(imapClient.MessagesList);
+            UpdateDbFolder();
         }
 
         private void ImapClient_MessagesListUpdated(object sender, EventArgs e)
@@ -306,15 +308,23 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private void UpdateDbFolder(List<MessageDescriptor> imapFolderMails)
+        private void UpdateDbFolder()
         {
-            if (imapFolderMails == null) return;
-
             _log.Debug($"UpdateDbFolder.");
+
+            workFolder = foldersDictionary[imapClient.WorkFolder];
+
+            var exp = SimpleMessagesExp.CreateBuilder(Account.TenantId, Account.UserId)
+                .SetMailboxId(Account.MailBoxId)
+                .SetFolder((int)workFolder.Folder);
+
+            workFolderMails = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
+
+            if (imapClient.MessagesList == null) return;
 
             try
             {
-                foreach (var imap_message in imapFolderMails)
+                foreach (var imap_message in imapClient.MessagesList)
                 {
                     _log.Debug($"UpdateDbFolder: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}.");
 
@@ -363,6 +373,8 @@ namespace ASC.Mail.ImapSync
                 if (db_message.IsNew ^ unread) _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { db_message.Id }, unread, true);
                 if (db_message.Importance ^ important) _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { db_message.Id }, important);
                 if (removed) _mailEnginesFactory.MessageEngine.SetRemoved(new List<int>() { db_message.Id });
+
+                NotifySignalrIfNeed(Account, _log);
             }
             catch (Exception ex)
             {
@@ -376,7 +388,7 @@ namespace ASC.Mail.ImapSync
 
             Stopwatch watch = null;
 
-            if (_mailSettings.CollectStatistics)
+            if (_mailSettings.Aggregator.CollectStatistics)
             {
                 watch = new Stopwatch();
                 watch.Start();
@@ -407,6 +419,9 @@ namespace ASC.Mail.ImapSync
                 if (messageDB == null || messageDB.Id <= 0)
                 {
                     _log.Debug("CreateMessageInDB: failed.");
+
+                    
+
                     result = false;
                     return result;
                 }
@@ -415,7 +430,7 @@ namespace ASC.Mail.ImapSync
 
                 _log.Info("DoOptionalOperations->START");
 
-                DoOptionalOperations(messageDB, message, Account, folder);
+                DoOptionalOperations(messageDB, message, Account, folder, _log, _mailEnginesFactory);
 
                 _log.Info("DoOptionalOperations->END");
             }
@@ -427,7 +442,7 @@ namespace ASC.Mail.ImapSync
             }
             finally
             {
-                if (_mailSettings.CollectStatistics && watch != null)
+                if (_mailSettings.Aggregator.CollectStatistics && watch != null)
                 {
                     watch.Stop();
 
@@ -507,7 +522,7 @@ namespace ASC.Mail.ImapSync
 
         private void LogStat(string method, TimeSpan duration, bool failed)
         {
-            if (!_mailSettings.CollectStatistics)
+            if (!_mailSettings.Aggregator.CollectStatistics)
                 return;
 
             _log.DebugWithProps(method,
@@ -517,7 +532,7 @@ namespace ASC.Mail.ImapSync
                 new KeyValuePair<string, object>("isFailed", failed));
         }
 
-        private void DoOptionalOperations(MailMessageData message, MimeMessage mimeMessage, MailBoxData mailbox, MailFolder folder)
+        private void DoOptionalOperations(MailMessageData message, MimeMessage mimeMessage, MailBoxData mailbox, MailFolder folder, ILog log, MailEnginesFactory mailFactory)
         {
             try
             {
@@ -525,27 +540,27 @@ namespace ASC.Mail.ImapSync
 
                 if (folder.Tags.Any())
                 {
-                    _log.Debug("DoOptionalOperations->GetOrCreateTags()");
+                    log.Debug("DoOptionalOperations -> GetOrCreateTags()");
 
-                    tagIds = _mailEnginesFactory.TagEngine.GetOrCreateTags(mailbox.TenantId, mailbox.UserId, folder.Tags);
+                    tagIds = mailFactory.TagEngine.GetOrCreateTags(mailbox.TenantId, mailbox.UserId, folder.Tags);
                 }
 
-                _log.Debug("DoOptionalOperations->IsCrmAvailable()");
+                log.Debug("DoOptionalOperations -> IsCrmAvailable()");
 
-                //if (IsCrmAvailable(mailbox, log))
-                //{
-                //    log.Debug("DoOptionalOperations->GetCrmTags()");
+                if (IsCrmAvailable(mailbox, log))
+                {
+                    log.Debug("DoOptionalOperations -> GetCrmTags()");
 
-                //    var crmTagIds = mailFactory.TagEngine.GetCrmTags(message.FromEmail);
+                    var crmTagIds = mailFactory.TagEngine.GetCrmTags(message.FromEmail);
 
-                //    if (crmTagIds.Any())
-                //    {
-                //        if (tagIds == null)
-                //            tagIds = new List<int>();
+                    if (crmTagIds.Any())
+                    {
+                        if (tagIds == null)
+                            tagIds = new List<int>();
 
-                //        tagIds.AddRange(crmTagIds.Select(t => t.Id));
-                //    }
-                //}
+                        tagIds.AddRange(crmTagIds.Select(t => t.TagId));
+                    }
+                }
 
                 if (tagIds.Any())
                 {
@@ -557,72 +572,132 @@ namespace ASC.Mail.ImapSync
                     message.TagIds = message.TagIds.Distinct().ToList();
                 }
 
-                _log.Debug("DoOptionalOperations->AddMessageToIndex()");
+                log.Debug("DoOptionalOperations -> AddMessageToIndex()");
 
-                var wrapper = message.ToMailWrapper(mailbox.TenantId, new Guid(mailbox.UserId));
+                var mailMail = message.ToMailMail(mailbox.TenantId, new Guid(mailbox.UserId));
 
-                _mailEnginesFactory.IndexEngine.Add(wrapper);
+                mailFactory.IndexEngine.Add(mailMail);
 
                 foreach (var tagId in tagIds)
                 {
                     try
                     {
-                        _log.DebugFormat("DoOptionalOperations->SetMessagesTag(tagId: {0})", tagId);
+                        log.DebugFormat($"DoOptionalOperations -> SetMessagesTag(tagId: {tagId})");
 
-                        _mailEnginesFactory.TagEngine.SetMessagesTag(new List<int> { message.Id }, tagId);
+                        mailFactory.TagEngine.SetMessagesTag(new List<int> { message.Id }, tagId);
                     }
                     catch (Exception e)
                     {
-                        _log.ErrorFormat(
-                            "SetMessagesTag(tenant={0}, userId='{1}', messageId={2}, tagid = {3}) Exception:\r\n{4}\r\n",
+                        log.ErrorFormat(
+                            "SetMessagesTag(tenant={0}, userId='{1}', messageId={2}, tagid = {3})\r\nException:{4}\r\n",
                             mailbox.TenantId, mailbox.UserId, message.Id, e.ToString(),
                             tagIds != null ? string.Join(",", tagIds) : "null");
                     }
                 }
 
-                _log.Debug("DoOptionalOperations->AddRelationshipEventForLinkedAccounts()");
+                log.Debug("DoOptionalOperations -> AddRelationshipEventForLinkedAccounts()");
 
-                _mailEnginesFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message, _mailSettings.DefaultApiSchema);
+                mailFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(mailbox, message);
 
-                _log.Debug("DoOptionalOperations->SaveEmailInData()");
+                log.Debug("DoOptionalOperations -> SaveEmailInData()");
 
-                _mailEnginesFactory.EmailInEngine.SaveEmailInData(mailbox, message, _mailSettings.DefaultApiSchema);
+                mailFactory.EmailInEngine.SaveEmailInData(mailbox, message, _mailSettings.Defines.DefaultApiSchema);
 
-                _log.Debug("DoOptionalOperations->SendAutoreply()");
+                log.Debug("DoOptionalOperations -> SendAutoreply()");
 
-                _mailEnginesFactory.AutoreplyEngine.SendAutoreply(mailbox, message, _mailSettings.DefaultApiSchema, _log);
+                mailFactory.AutoreplyEngine.SendAutoreply(mailbox, message, _mailSettings.Defines.DefaultApiSchema, log);
 
-                _log.Debug("DoOptionalOperations->UploadIcsToCalendar()");
+                log.Debug("DoOptionalOperations -> UploadIcsToCalendar()");
 
                 if (folder.Folder != Enums.FolderType.Spam)
                 {
-                    _mailEnginesFactory
+                    mailFactory
                         .CalendarEngine
                         .UploadIcsToCalendar(mailbox, message.CalendarId, message.CalendarUid, message.CalendarEventIcs,
                             message.CalendarEventCharset, message.CalendarEventMimeType, mailbox.EMail.Address,
-                            _mailSettings.DefaultApiSchema);
+                            _mailSettings.Defines.DefaultApiSchema);
                 }
 
-                if (_mailSettings.SaveOriginalMessage)
+                if (_mailSettings.Defines.SaveOriginalMessage)
                 {
-                    _log.Debug("DoOptionalOperations->StoreMailEml()");
-                    StoreMailEml(mailbox.TenantId, mailbox.UserId, message.StreamId, mimeMessage);
+                    log.Debug("DoOptionalOperations -> StoreMailEml()");
+                    StoreMailEml(mailbox.TenantId, mailbox.UserId, message.StreamId, mimeMessage, log);
                 }
 
-                _log.Debug("DoOptionalOperations->ApplyFilters()");
+                log.Debug("DoOptionalOperations -> ApplyFilters()");
 
-                var filters = GetFilters(_mailEnginesFactory, _log);
+                var filters = GetFilters(mailFactory, log);
 
-                _mailEnginesFactory.FilterEngine.ApplyFilters(message, mailbox, folder, filters);
+                mailFactory.FilterEngine.ApplyFilters(message, mailbox, folder, filters);
 
-                _log.Debug("DoOptionalOperations->NotifySignalrIfNeed()");
+                log.Debug("DoOptionalOperations -> NotifySignalrIfNeed()");
 
-                SendUnreadUser();
+                NotifySignalrIfNeed(mailbox, log);
             }
             catch (Exception ex)
             {
-                _log.ErrorFormat("DoOptionalOperations() Exception:\r\n{0}\r\n", ex.ToString());
+                log.ErrorFormat($"DoOptionalOperations() ->\r\nException:{ex}\r\n");
             }
+        }
+
+        private bool IsCrmAvailable(MailBoxData mailbox, ILog log)
+        {
+            bool crmAvailable;
+
+
+            lock (_locker)
+            {
+                if (_userCrmAvailabeDictionary.TryGetValue(mailbox.UserId, out crmAvailable))
+                    return crmAvailable;
+
+                crmAvailable = mailbox.IsCrmAvailable(tenantManager, securityContext, _apiHelper, log);
+                _userCrmAvailabeDictionary.GetOrAdd(mailbox.UserId, crmAvailable);
+            }
+
+            return crmAvailable;
+        }
+
+        private void NotifySignalrIfNeed(MailBoxData mailbox, ILog log)
+        {
+            if (!_mailSettings.Aggregator.EnableSignalr)
+            {
+                log.Debug("Skip NotifySignalrIfNeed: EnableSignalr == false");
+
+                return;
+            }
+
+            var now = DateTime.UtcNow;
+
+            try
+            {
+                if (mailbox.LastSignalrNotify.HasValue &&
+                    !((now - mailbox.LastSignalrNotify.Value).TotalSeconds > SIGNALR_WAIT_SECONDS))
+                {
+                    mailbox.LastSignalrNotifySkipped = true;
+
+                    log.InfoFormat(
+                        "Skip NotifySignalrIfNeed: last notification has occurend less then {0} seconds ago",
+                        SIGNALR_WAIT_SECONDS);
+
+                    return;
+                }
+
+                if (SignalrWorker == null)
+                    throw new NullReferenceException("SignalrWorker");
+
+                SignalrWorker.AddMailbox(mailbox);
+
+                log.InfoFormat("NotifySignalrIfNeed(UserId = {0} TenantId = {1}) has been succeeded",
+                    mailbox.UserId, mailbox.TenantId);
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("NotifySignalrIfNeed(UserId = {0} TenantId = {1}) Exception: {2}", mailbox.UserId,
+                    mailbox.TenantId, ex.ToString());
+            }
+
+            mailbox.LastSignalrNotify = now;
+            mailbox.LastSignalrNotifySkipped = false;
         }
 
         private void SendUnreadUser()
@@ -673,13 +748,13 @@ namespace ASC.Mail.ImapSync
             return new List<MailSieveFilterData>();
         }
 
-        public string StoreMailEml(int tenant, string user, string streamId, MimeMessage message)
+        public string StoreMailEml(int tenant, string userId, string streamId, MimeMessage message, ILog log)
         {
             if (message == null)
                 return string.Empty;
 
             // Using id_user as domain in S3 Storage - allows not to add quota to tenant.
-            var savePath = MailStoragePathCombiner.GetEmlKey(user, streamId);
+            var savePath = MailStoragePathCombiner.GetEmlKey(userId, streamId);
 
             var storage = _storageFactory.GetMailStorage(tenant);
 
@@ -691,14 +766,14 @@ namespace ASC.Mail.ImapSync
 
                     var res = storage.Save(savePath, stream, MailStoragePathCombiner.EML_FILE_NAME).ToString();
 
-                    _log.InfoFormat("StoreMailEml() tenant='{0}', user_id='{1}', save_eml_path='{2}' Result: {3}", tenant, user, savePath, res);
+                    log.InfoFormat($"StoreMailEml() Tenant = {tenant}, UserId = {userId}, SaveEmlPath = {savePath}. Result: {res}");
 
                     return res;
                 }
             }
             catch (Exception ex)
             {
-                _log.ErrorFormat("StoreMailEml Exception: {0}", ex.ToString());
+                log.ErrorFormat($"StoreMailEml Exception: {ex}");
             }
 
             return string.Empty;
