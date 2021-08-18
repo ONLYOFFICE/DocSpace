@@ -1246,6 +1246,10 @@ class FilesStore {
     return this.selection.find((el) => el.title).title;
   }
 
+  get hasSelection() {
+    return !!this.selection.length;
+  }
+
   getOptions = (selection, externalAccess = false) => {
     const {
       canWebEdit,

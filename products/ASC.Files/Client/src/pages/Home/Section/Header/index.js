@@ -313,7 +313,7 @@ class SectionHeaderContent extends React.Component {
   getMenuItems = () => {
     const {
       t,
-      isSelectionCount,
+      hasSelection,
       isAccessedSelected,
       isWebEditSelected,
       isViewedSelected,
@@ -386,12 +386,12 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Common:Download"),
-        disabled: !isSelectionCount,
+        disabled: !hasSelection,
         onClick: this.downloadAction,
       },
       {
         label: t("Translations:DownloadAs"),
-        disabled: !isSelectionCount || !isWebEditSelected,
+        disabled: !hasSelection || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },
       {
@@ -400,19 +400,19 @@ class SectionHeaderContent extends React.Component {
           isFavoritesFolder ||
           isRecentFolder ||
           !isAccessedSelected ||
-          !isSelectionCount ||
+          !hasSelection ||
           isThirdPartySelection,
         onClick: this.onMoveAction,
       },
       {
         label: t("Translations:Copy"),
-        disabled: !isSelectionCount,
+        disabled: !hasSelection,
         onClick: this.onCopyAction,
       },
       {
         label: t("Common:Delete"),
         disabled:
-          !isSelectionCount || !deleteDialogVisible || isThirdPartySelection,
+          !hasSelection || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
       },
     ];
@@ -600,6 +600,7 @@ export default inject(
       isWebEditSelected,
       setIsLoading,
       isViewedSelected,
+      hasSelection,
     } = filesStore;
     const {
       isRecycleBinFolder,
@@ -633,7 +634,7 @@ export default inject(
       isShareFolder,
       filter,
       canCreate,
-      isSelectionCount: !!selection.length,
+      hasSelection,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
