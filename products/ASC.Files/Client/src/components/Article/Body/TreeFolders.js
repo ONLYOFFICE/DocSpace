@@ -462,7 +462,7 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }, props) => {
     const {
       filter,
       selection,
@@ -484,6 +484,14 @@ export default inject(
     } = treeFoldersStore;
     const { id /* rootFolderType */ } = selectedFolderStore;
 
+    const selectedNode = treeFoldersStore.selectedTreeNode;
+    const selectedKeys =
+      selectedNode.length > 0 &&
+      selectedNode[0] !== "@my" &&
+      selectedNode[0] !== "@common"
+        ? selectedNode
+        : [selectedFolderStore.id + ""];
+
     return {
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -497,6 +505,7 @@ export default inject(
       draggableItems: dragging ? selection : [],
       expandedKeys,
       treeFolders,
+      selectedKeys: props.selectedKeys ? props.selectedKeys : selectedKeys,
 
       setDragging,
       setIsLoading,

@@ -116,6 +116,7 @@ const OperationsPanelComponent = (props) => {
         </ModalDialog.Header>
         <ModalDialog.Body>
           <TreeFolders
+            selectedKeys={[]}
             expandedPanelKeys={expandedKeys}
             data={operationsFolders}
             filter={filter}
