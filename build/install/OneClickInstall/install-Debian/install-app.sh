@@ -72,7 +72,7 @@ elif [ "$APPSERVER_NEED_UPDATE" = "true" ];
 	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
 	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
 	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
-	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 	
 	expect << EOF || true
 	
@@ -122,7 +122,7 @@ expect << EOF
 	send "\025$MYSQL_SERVER_USER\r"
 
 	expect -re "Database password:"
-	send "\025$MYSQL_ROOT_PASS\r"
+	send "\025$MYSQL_SERVER_PASS\r"
 
 	expect eof	
 EOF
