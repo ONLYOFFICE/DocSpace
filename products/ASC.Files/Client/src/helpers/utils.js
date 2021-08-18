@@ -4,6 +4,7 @@ import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { addFileToRecentlyViewed } from "@appserver/common/api/files";
 import i18n from "./i18n";
+
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
   const { organizationName } = settingsStore;
@@ -63,9 +64,13 @@ export const openDocEditor = async (
     );
   }
 
-  return Promise.resolve(
-    tab ? (tab.location = url) : window.open(url, "_blank")
-  );
+  if (tab) {
+    tab.location = url;
+  } else {
+    window.open(url, "_blank");
+  }
+
+  return Promise.resolve();
 };
 
 export const thirdPartyListTitleTranslation = (key, t) => {

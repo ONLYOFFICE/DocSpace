@@ -38,6 +38,7 @@ using ASC.Files.Core.Security;
 using ASC.Web.Api.Models;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
@@ -167,8 +168,9 @@ namespace ASC.Api.Documents
             GlobalFolderHelper globalFolderHelper,
             CommonLinkUtility commonLinkUtility,
             FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility)
-            : base(apiDateTimeHelper, employeeWrapperHelper)
+            FileUtility fileUtility,
+            FileSharingHelper fileSharingHelper)
+            : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
         {
             AuthContext = authContext;
             DaoFactory = daoFactory;
@@ -191,7 +193,7 @@ namespace ASC.Api.Documents
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 FileEntry<T> parentFolder;
 
-                if(folders != null)
+                if (folders != null)
                 {
                     var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(file.FolderID));
                     if (folderWithRight == null || !folderWithRight.Item2)

@@ -299,13 +299,23 @@ class FilesActionStore {
       }
       setAction({ type: null, id: null, extension: null });
       setIsLoading(false);
-      type === FileAction.Rename && this.onSelectItem(selectedItem);
+      type === FileAction.Rename &&
+        this.onSelectItem({
+          id: selectedItem.id,
+          isFolder: selectedItem.isFolder,
+        });
     }
   };
 
-  onSelectItem = (item) => {
+  onSelectItem = ({ id, isFolder }) => {
     const { setSelection, selected, setSelected } = this.filesStore;
     selected === "close" && setSelected("none");
+
+    if (!id) return;
+
+    const item = this.filesStore[isFolder ? "folders" : "files"].find(
+      (elm) => elm.id === id
+    );
     setSelection([item]);
   };
 

@@ -267,7 +267,7 @@ class FilesStore {
     filterData.folder = folderId;
     const {
       treeFolders,
-      privacyFolder,
+      //privacyFolder,
       setSelectedNode,
       getSubfolders,
     } = this.treeFoldersStore;
@@ -957,7 +957,7 @@ class FilesStore {
       case FolderType.USER:
         return true;
       case FolderType.SHARE:
-        return false;
+        return true;
       case FolderType.COMMON:
         return this.authStore.isAdmin;
       case FolderType.TRASH:
@@ -985,13 +985,11 @@ class FilesStore {
     const { getIcon } = this.formatsStore.iconFormatsStore;
 
     if (this.selection.length === 1) {
-      const icon = getIcon(
+      return getIcon(
         24,
         this.selection[0].fileExst,
         this.selection[0].providerKey
       );
-
-      return icon;
     }
     return null;
   }
@@ -1076,6 +1074,7 @@ class FilesStore {
         parentId,
         pureContentLength,
         rootFolderType,
+        rootFolderId,
         shared,
         title,
         updated,
@@ -1087,6 +1086,8 @@ class FilesStore {
         providerKey,
         thumbnailUrl,
         thumbnailStatus,
+        canShare,
+        canEdit,
       } = item;
 
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
@@ -1129,6 +1130,7 @@ class FilesStore {
         parentId,
         pureContentLength,
         rootFolderType,
+        rootFolderId,
         //selectedItem,
         shared,
         title,
@@ -1142,6 +1144,8 @@ class FilesStore {
         canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
+        canShare,
+        canEdit,
         thumbnailUrl,
         thumbnailStatus,
       };
