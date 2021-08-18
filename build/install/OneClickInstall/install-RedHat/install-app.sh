@@ -146,7 +146,7 @@ fi
 
 if [ "$APPSERVER_INSTALLED" = "false" ]; then
 	${package_manager} install -y ${package_sysname}-${product} 
-elif ["$APPSERVER_NEED_UPDATE" = "true"] then
+elif [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
 	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
 	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
@@ -158,7 +158,7 @@ elif ["$APPSERVER_NEED_UPDATE" = "true"] then
 	${package_manager} -y update ${package_sysname}-${product}
 fi
 
-if [ "${APPSERVER_INSTALLED}" = "false" ] || ["$APPSERVER_NEED_UPDATE" = "true"]; then
+if [ "${APPSERVER_INSTALLED}" = "false" ] || [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
 expect << EOF
 	set timeout -1
 	log_user 1
