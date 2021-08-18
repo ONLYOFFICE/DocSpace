@@ -76,6 +76,7 @@ class ArticleBodyContent extends React.Component {
     ) : (
       <>
         <TreeFolders
+          useDefaultSelectedKeys
           onSelect={this.onSelect}
           data={treeFolders}
           onBadgeClick={this.onShowNewFilesPanel}

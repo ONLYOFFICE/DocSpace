@@ -157,7 +157,8 @@ class TreeFolders extends React.Component {
       return false;
     }
 
-    if (draggableItems.find((x) => x.id === item.id)) return false;
+    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      return false;
 
     // const isMy = rootFolderType === FolderType.USER;
     // const isCommon = rootFolderType === FolderType.COMMON;
@@ -462,7 +463,10 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }, props) => {
+  (
+    { auth, filesStore, treeFoldersStore, selectedFolderStore },
+    { useDefaultSelectedKeys, selectedKeys }
+  ) => {
     const {
       filter,
       selection,
@@ -484,14 +488,6 @@ export default inject(
     } = treeFoldersStore;
     const { id /* rootFolderType */ } = selectedFolderStore;
 
-    const selectedNode = treeFoldersStore.selectedTreeNode;
-    const selectedKeys =
-      selectedNode.length > 0 &&
-      selectedNode[0] !== "@my" &&
-      selectedNode[0] !== "@common"
-        ? selectedNode
-        : [selectedFolderStore.id + ""];
-
     return {
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -502,10 +498,12 @@ export default inject(
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       filter,
-      draggableItems: dragging ? selection : [],
+      draggableItems: dragging ? selection : null,
       expandedKeys,
       treeFolders,
-      selectedKeys: props.selectedKeys ? props.selectedKeys : selectedKeys,
+      selectedKeys: useDefaultSelectedKeys
+        ? treeFoldersStore.selectedKeys
+        : selectedKeys,
 
       setDragging,
       setIsLoading,
