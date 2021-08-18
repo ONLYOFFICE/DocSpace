@@ -75,12 +75,8 @@ class PageLayout extends React.Component {
   constructor(props) {
     super(props);
 
-    const isArticleVisibleAndPinned = !!this.props.isArticlePinned;
-
     this.state = {
-      isBackdropVisible: false,
-      isArticleVisible: isArticleVisibleAndPinned,
-      isArticlePinned: isArticleVisibleAndPinned,
+      isArticlePinned: props.isArticlePinned,
     };
 
     this.timeoutHandler = null;
@@ -95,13 +91,9 @@ class PageLayout extends React.Component {
     }
 
     if (
-      (this.props.hideAside &&
-        !this.state.isArticlePinned &&
-        this.props.hideAside !== prevProps.hideAside) ||
-      (this.props.isLoading !== prevProps.isLoading &&
-        this.props.isLoaded &&
-        this.state.isArticleVisible &&
-        !this.state.isArticlePinned)
+      this.props.hideAside &&
+      !this.state.isArticlePinned &&
+      this.props.hideAside !== prevProps.hideAside
     ) {
       this.backdropClick();
     }
@@ -136,42 +128,34 @@ class PageLayout extends React.Component {
   };
 
   backdropClick = () => {
-    this.setState({
-      isBackdropVisible: false,
-      isArticleVisible: false,
-      isArticlePinned: false,
-    });
+    this.setState({ isArticlePinned: false });
+    this.props.setIsBackdropVisible(false);
+    this.props.setIsArticleVisible(false);
     isMobile && this.props.setArticleVisibleOnUnpin(false);
   };
 
   pinArticle = () => {
-    this.setState({
-      isBackdropVisible: false,
-      isArticlePinned: true,
-      isArticleVisible: true,
-    });
+    this.setState({ isArticlePinned: true });
 
+    this.props.setIsBackdropVisible(false);
+    this.props.setIsArticleVisible(true);
     this.props.setArticlePinned(true);
     isMobile && this.props.setArticleVisibleOnUnpin(false);
   };
 
   unpinArticle = () => {
-    this.setState({
-      isBackdropVisible: true,
-      isArticlePinned: false,
-      isArticleVisible: true,
-    });
+    this.setState({ isArticlePinned: false });
+    this.props.setIsBackdropVisible(true);
+    this.props.setIsArticleVisible(true);
 
     this.props.setArticlePinned(false);
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
   showArticle = () => {
-    this.setState({
-      isBackdropVisible: true,
-      isArticleVisible: true,
-      isArticlePinned: false,
-    });
+    this.setState({ isArticlePinned: false });
+    this.props.setIsBackdropVisible(true);
+    this.props.setIsArticleVisible(true);
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
@@ -221,8 +205,9 @@ class PageLayout extends React.Component {
       onOpenUploadPanel,
       isTabletView,
       firstLoad,
-      isLoading,
       dragging,
+      isArticleVisible,
+      isBackdropVisible,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -291,17 +276,16 @@ class PageLayout extends React.Component {
           {isBackdropAvailable && (
             <Backdrop
               zIndex={400}
-              visible={this.state.isBackdropVisible}
+              visible={isBackdropVisible}
               onClick={this.backdropClick}
             />
           )}
           {isArticleAvailable && (
             <Article
-              visible={this.state.isArticleVisible}
+              visible={isArticleVisible}
               pinned={this.state.isArticlePinned}
               isLoaded={isLoaded}
               firstLoad={firstLoad}
-              isLoading={!isLoading}
             >
               {isArticleHeaderAvailable && (
                 <SubArticleHeader>
@@ -449,7 +433,7 @@ class PageLayout extends React.Component {
 
                     {isArticleAvailable && (
                       <SectionToggler
-                        visible={!this.state.isArticleVisible}
+                        visible={!isArticleVisible}
                         onClick={this.showArticle}
                       />
                     )}
@@ -519,7 +503,6 @@ PageLayout.propTypes = {
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
-  isLoading: PropTypes.bool,
 };
 
 PageLayout.defaultProps = {
@@ -541,15 +524,24 @@ export default inject(({ auth }) => {
     isHeaderVisible,
     isTabletView,
     isArticlePinned,
+    isArticleVisible,
+    isBackdropVisible,
     setArticlePinned,
     setArticleVisibleOnUnpin,
+    setIsArticleVisible,
+    setIsBackdropVisible,
   } = settingsStore;
+
   return {
     isLoaded,
     isTabletView,
     isHeaderVisible,
     isArticlePinned,
+    isArticleVisible,
     setArticlePinned,
     setArticleVisibleOnUnpin,
+    setIsArticleVisible,
+    isBackdropVisible,
+    setIsBackdropVisible,
   };
 })(observer(PageLayout));

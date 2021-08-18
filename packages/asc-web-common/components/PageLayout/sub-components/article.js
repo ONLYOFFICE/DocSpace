@@ -47,7 +47,7 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
-            max-width: ${props.isLoading ? "calc(100vw - 368px)" : "240px"};
+            max-width: 240px;
             
     
 			      .increaseHeight {

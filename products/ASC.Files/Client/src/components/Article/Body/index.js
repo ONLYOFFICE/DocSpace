@@ -25,10 +25,12 @@ class ArticleBodyContent extends React.Component {
       fetchFiles,
       homepage,
       history,
+      hideArticle,
     } = this.props;
 
     setSelectedNode(data);
     setIsLoading(true);
+    hideArticle(false);
 
     // const selectedFolderTitle =
     //   (e.node && e.node.props && e.node.props.title) || null;
@@ -104,7 +106,7 @@ export default inject(
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
-    const { personal } = auth.settingsStore;
+    const { personal, hideArticle } = auth.settingsStore;
 
     const selectedFolderTitle = selectedFolderStore.title;
 
@@ -116,16 +118,15 @@ export default inject(
       treeFolders,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
+      homepage: config.homepage,
+      personal,
 
       setIsLoading,
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
       setNewFilesPanelVisible,
-
-      homepage: config.homepage,
-
-      personal,
+      hideArticle,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));
