@@ -1,1 +1,11 @@
-{}
+{
+  "FolderTitleBoxNet": "Cartella di Box",
+  "FolderTitleDocuSign": "Account DocuSign",
+  "FolderTitleDropBox": "Cartella di Dropbox",
+  "FolderTitleGoogle": "Cartella di Google",
+  "FolderTitlekDrive": "directory kDrive",
+  "FolderTitleSharePoint": "Cartella di SharePoint",
+  "FolderTitleSkyDrive": "Cartella di OneDrive",
+  "FolderTitleWebDav": "Cartella di WebDAV",
+  "FolderTitleYandex": "Cartella di Yandex"
+}

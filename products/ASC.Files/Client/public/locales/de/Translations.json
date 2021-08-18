@@ -17,5 +17,14 @@
   "OwnerChange": "Besitzer ändern",
   "Presentations": "Präsentationen",
   "Restore": "Wiederherstellen",
-  "Spreadsheets": "Tabellenkalkulationen"
+  "Spreadsheets": "Tabellenkalkulationen",
+  "FolderTitleBoxNet": "Box-Verzeichnis",
+  "FolderTitleDocuSign": "DocuSign Konto",
+  "FolderTitleDropBox": "Dropbox-Verzeichnis",
+  "FolderTitleGoogle": "Google-Verzeichnis",
+  "FolderTitlekDrive": "kDrive Verzeichnis",
+  "FolderTitleSharePoint": "SharePoint-Verzeichnis",
+  "FolderTitleSkyDrive": "OneDrive-Verzeichnis",
+  "FolderTitleWebDav": "WebDAV Verzeichnis",
+  "FolderTitleYandex": "Yandex Verzeichnis"
 }

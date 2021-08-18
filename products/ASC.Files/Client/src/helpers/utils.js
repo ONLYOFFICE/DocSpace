@@ -2,9 +2,7 @@ import authStore from "@appserver/common/store/AuthStore";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
-import {
-  addFileToRecentlyViewed,
-} from "@appserver/common/api/files";
+import { addFileToRecentlyViewed } from "@appserver/common/api/files";
 import i18n from "./i18n";
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -68,4 +66,40 @@ export const openDocEditor = async (
   return Promise.resolve(
     tab ? (tab.location = url) : window.open(url, "_blank")
   );
+};
+
+export const thirdPartyListTitleTranslation = (key, t) => {
+  switch (key) {
+    case "Box":
+
+    case "BoxNet":
+      return t("Translations:FolderTitleBoxNet");
+
+    case "DropBox":
+    case "DropboxV2":
+      return t("Translations:FolderTitleDropBox");
+
+    case "DocuSign":
+      return t("Translations:FolderTitleDocuSign");
+
+    case "Google":
+    case "GoogleDrive":
+      return t("Translations:FolderTitleGoogle");
+
+    case "OneDrive":
+    case "SkyDrive":
+      return t("Translations:FolderTitleSkyDrive");
+
+    case "SharePoint":
+      return t("Translations:FolderTitleSharePoint");
+    case "WebDav":
+      return t("Translations:FolderTitleWebDav");
+    case "kDrive":
+      return t("Translations:FolderTitlekDrive");
+    case "Yandex":
+      return t("Translations:FolderTitleYandex");
+
+    default:
+      return key;
+  }
 };

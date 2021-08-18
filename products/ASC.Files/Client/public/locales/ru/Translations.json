@@ -20,5 +20,14 @@
   "Restore": "Восстановить",
   "Spreadsheets": "Таблицы",
   "ThirdPartyInfo": "Изменить настройки подключения",
-  "DownloadApps": "Скачать приложения"
+  "DownloadApps": "Скачать приложения",
+  "FolderTitleBoxNet": "Каталог Box",
+  "FolderTitleDocuSign": "Аккаунт DocuSign",
+  "FolderTitleDropBox": "Каталог Dropbox",
+  "FolderTitleGoogle": "Каталог Google",
+  "FolderTitlekDrive": "Каталог kDrive",
+  "FolderTitleSharePoint": "Каталог SharePoint",
+  "FolderTitleSkyDrive": "Каталог OneDrive",
+  "FolderTitleWebDav": "Каталог WebDAV",
+  "FolderTitleYandex": "Каталог Яндекса"
 }

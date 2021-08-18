@@ -1,1 +1,11 @@
-{}
+{
+  "FolderTitleBoxNet": "Répertoire de Box",
+  "FolderTitleDocuSign": "Сompte DocuSign",
+  "FolderTitleDropBox": "Répertoire de Dropbox",
+  "FolderTitleGoogle": "Répertoire de Google",
+  "FolderTitlekDrive": "Répertoire kDrive",
+  "FolderTitleSharePoint": "Répertoire de SharePoint",
+  "FolderTitleSkyDrive": "Répertoire de OneDrive",
+  "FolderTitleWebDav": "Répertoire WebDAV",
+  "FolderTitleYandex": "WebDAV Yandex"
+}

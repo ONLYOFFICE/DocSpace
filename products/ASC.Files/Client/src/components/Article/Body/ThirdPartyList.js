@@ -12,6 +12,7 @@ import config from "../../../../package.json";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import IconButton from "@appserver/components/icon-button";
+import { thirdPartyListTitleTranslation } from "../../../helpers/utils";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -143,7 +144,7 @@ const PureThirdPartyListContainer = ({
           getOAuthToken(modal).then((token) => {
             authModal.close();
             const serviceData = {
-              title: data.title,
+              title: thirdPartyListTitleTranslation(data.title, t),
               provider_key: data.title,
               link: data.link,
               token,
@@ -154,6 +155,7 @@ const PureThirdPartyListContainer = ({
         )
         .catch((e) => console.error(e));
     } else {
+      data.title = thirdPartyListTitleTranslation(data.title, t);
       setConnectItem(data);
       setConnectDialogVisible(true);
       redirectAction();

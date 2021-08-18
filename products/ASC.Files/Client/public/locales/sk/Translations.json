@@ -1,1 +1,10 @@
-{}
+{
+  "FolderTitleBoxNet": "Box priečinok",
+  "FolderTitleDocuSign": "Účet DocuSign",
+  "FolderTitleDropBox": "Dropbox priečinok",
+  "FolderTitleGoogle": "Google priečinok",
+  "FolderTitleSharePoint": "Adresár SharePoint",
+  "FolderTitleSkyDrive": "Adresár OneDrive",
+  "FolderTitleWebDav": "Adresár WebDAV",
+  "FolderTitleYandex": "Adresár Yandex"
+}
