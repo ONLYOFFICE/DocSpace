@@ -46,7 +46,12 @@ const FilesTile = (props) => {
   const { thumbnailUrl } = item;
   const sharedButton =
     item.canShare && showShare ? (
-      <SharedButton t={t} id={item.id} isFolder={item.isFolder} />
+      <SharedButton
+        t={t}
+        id={item.id}
+        shared={item.shared}
+        isFolder={item.isFolder}
+      />
     ) : null;
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
