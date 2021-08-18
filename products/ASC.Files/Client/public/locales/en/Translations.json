@@ -20,5 +20,14 @@
   "Restore": "Restore",
   "Spreadsheets": "Spreadsheets",
   "ThirdPartyInfo": "Change the third-party info",
-  "DownloadApps": "Download applications"
+  "DownloadApps": "Download applications",
+  "FolderTitleBoxNet": "Box directory",
+  "FolderTitleDocuSign": "DocuSign account",
+  "FolderTitleDropBox": "Dropbox directory",
+  "FolderTitleGoogle": "Google directory",
+  "FolderTitlekDrive": "kDrive directory",
+  "FolderTitleSharePoint": "SharePoint directory",
+  "FolderTitleSkyDrive": "OneDrive directory",
+  "FolderTitleWebDav": "WebDAV Directory",
+  "FolderTitleYandex": "Yandex Directory"
 }

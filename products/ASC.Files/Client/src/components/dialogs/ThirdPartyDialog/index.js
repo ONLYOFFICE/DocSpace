@@ -6,6 +6,7 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
+import { thirdPartyListTitleTranslation } from "../../../helpers/utils";
 
 const StyledServicesBlock = styled.div`
   display: grid;
@@ -87,7 +88,7 @@ const ThirdPartyDialog = (props) => {
 
   const showOAuthModal = (token, serviceData) => {
     setConnectItem({
-      title: serviceData.title,
+      title: thirdPartyListTitleTranslation(serviceData.title, t),
       provider_key: serviceData.title,
       link: serviceData.link,
       token,
@@ -112,6 +113,7 @@ const ThirdPartyDialog = (props) => {
         })
       );
     } else {
+      item.title = thirdPartyListTitleTranslation(item.title, t);
       setConnectItem(item);
       setConnectDialogVisible(true);
     }
