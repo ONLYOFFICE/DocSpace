@@ -226,7 +226,7 @@ const Editor = () => {
       }
 
       if (successAuth) {
-        const recent = getRecent(config); //TODO: too slow for 1st loading
+        const recent = await getRecent(config); //TODO: too slow for 1st loading
 
         if (recent) {
           config.editorConfig = {
