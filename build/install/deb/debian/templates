@@ -9,8 +9,7 @@ Default: root
 Description: MySQL user:
 
 Template: appserver/db-pwd
-Type: string
-Default: my-secret-pw
+Type: password
 Description: MySQL password:
 
 Template: appserver/db-name

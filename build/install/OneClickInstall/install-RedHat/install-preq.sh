@@ -79,11 +79,13 @@ if ! rpm -q mysql-community-server; then
 fi
 
 #add elasticsearch repo
+ELASTIC_VERSION="7.13.1"
+ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<END
 [elasticsearch]
-name=Elasticsearch repository for 7.x packages
-baseurl=https://artifacts.elastic.co/packages/7.x/yum
+name=Elasticsearch repository for ${ELASTIC_DIST}.x packages
+baseurl=https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/yum
 gpgcheck=1
 gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=0
@@ -175,7 +177,7 @@ ${package_manager} -y install epel-release \
 			make \
 			yarn \
 			dotnet-sdk-5.0 \
-			elasticsearch-7.13.1 --enablerepo=elasticsearch \
+			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
 			supervisor \

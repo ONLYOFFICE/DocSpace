@@ -36,8 +36,10 @@ fi
 locale-gen en_US.UTF-8
 
 # add elasticsearch repo
+ELASTIC_VERSION="7.13.1"
+ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-7.x.list
+echo "deb https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
 
 # add nodejs repo
 curl -sL https://deb.nodesource.com/setup_12.x | bash - 
@@ -180,7 +182,7 @@ if [ ! -e /usr/bin/json ]; then
 fi
 
 if ! dpkg -l | grep -q "elasticsearch"; then
-	apt-get install -yq elasticsearch=7.13.1
+	apt-get install -yq elasticsearch=${ELASTIC_VERSION}
 fi
 
 # disable apparmor for mysql
