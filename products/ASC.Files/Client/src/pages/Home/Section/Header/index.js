@@ -313,7 +313,7 @@ class SectionHeaderContent extends React.Component {
   getMenuItems = () => {
     const {
       t,
-      selectionCount,
+      isSelectionCount,
       isAccessedSelected,
       isWebEditSelected,
       isViewedSelected,
@@ -381,21 +381,17 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Share"),
-        disabled:
-          isFavoritesFolder ||
-          isRecentFolder ||
-          !isAccessedSelected ||
-          selectionCount > 1,
+        disabled: isFavoritesFolder || isRecentFolder || !isAccessedSelected,
         onClick: this.onOpenSharingPanel,
       },
       {
         label: t("Common:Download"),
-        disabled: !selectionCount,
+        disabled: !isSelectionCount,
         onClick: this.downloadAction,
       },
       {
         label: t("Translations:DownloadAs"),
-        disabled: !selectionCount || !isWebEditSelected,
+        disabled: !isSelectionCount || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },
       {
@@ -404,19 +400,19 @@ class SectionHeaderContent extends React.Component {
           isFavoritesFolder ||
           isRecentFolder ||
           !isAccessedSelected ||
-          !selectionCount ||
+          !isSelectionCount ||
           isThirdPartySelection,
         onClick: this.onMoveAction,
       },
       {
         label: t("Translations:Copy"),
-        disabled: !selectionCount,
+        disabled: !isSelectionCount,
         onClick: this.onCopyAction,
       },
       {
         label: t("Common:Delete"),
         disabled:
-          !selectionCount || !deleteDialogVisible || isThirdPartySelection,
+          !isSelectionCount || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
       },
     ];
@@ -449,10 +445,7 @@ class SectionHeaderContent extends React.Component {
       menu.splice(1, 1);
     }
 
-    if (
-      (personal && !isWebEditSelected && !isViewedSelected) ||
-      selectionCount > 1
-    ) {
+    if (personal && !isWebEditSelected && !isViewedSelected) {
       menu.splice(1, 1);
     }
 
@@ -640,7 +633,7 @@ export default inject(
       isShareFolder,
       filter,
       canCreate,
-      selectionCount: selection.length,
+      isSelectionCount: !!selection.length,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
