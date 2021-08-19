@@ -684,7 +684,6 @@ const Editor = () => {
                 : mailMergeActionProps)}
               header={<SelectFileHeader />}
               headerName={i18n.t("SelectFileTitle")}
-              modalHeightContent="252px"
             />
           )}
 
