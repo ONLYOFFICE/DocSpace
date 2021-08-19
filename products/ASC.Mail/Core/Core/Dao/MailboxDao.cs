@@ -37,6 +37,7 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Models;
 using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
@@ -326,23 +327,23 @@ namespace ASC.Mail.Core.Dao
             return result > 0;
         }
 
-        public bool SetMailboxInProcess(int id)
+        public int SetMailboxesInProcess(MailBoxData mailBox)
         {
-            var mailMailbox = MailDbContext.MailMailbox
-                .Where(mb => mb.Id == id
+            var mailMailboxes = MailDbContext.MailMailbox
+                .Where(mb => mb.Address == mailBox.EMail.Address
                     && mb.IsProcessed == false
-                    && mb.IsRemoved == false)
-                .FirstOrDefault();
+                    && mb.IsRemoved == false);
 
-            if (mailMailbox == null)
-                return false;
+            if (mailMailboxes == null && !mailMailboxes.Any())
+                return 0;
 
-            mailMailbox.IsProcessed = true;
-            mailMailbox.DateChecked = DateTime.UtcNow;
+            foreach (var box in mailMailboxes)
+            {
+                box.IsProcessed = true;
+                box.DateChecked = DateTime.UtcNow;
+            }
 
-            var result = MailDbContext.SaveChanges();
-
-            return result > 0;
+            return MailDbContext.SaveChanges();
         }
 
         public bool SetMailboxProcessed(Mailbox mailbox, int nextLoginDelay, bool? enabled = null,

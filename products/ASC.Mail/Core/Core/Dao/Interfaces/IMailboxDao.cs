@@ -31,6 +31,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
@@ -61,7 +62,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         bool SetMailboxesActivity(int tenant, string user, bool userOnline = true);
 
-        bool SetMailboxInProcess(int id);
+        int SetMailboxesInProcess(MailBoxData mailBox);
 
         bool SetMailboxProcessed(Mailbox mailbox, int nextLoginDelay, bool? enabled = null, int? messageCount = null,
             long? size = null, bool? quotaError = null, string oAuthToken = null, string imapIntervalsJson = null, bool? resetImapIntervals = false);

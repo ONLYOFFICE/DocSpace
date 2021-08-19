@@ -31,27 +31,32 @@ using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    public class SimpleMailboxesExp : IMailboxesExp
+    public class ConcreteMailboxesExp : IMailboxesExp
     {
         private readonly bool? _isRemoved;
         public string OrderBy { get; private set; }
         public bool? OrderAsc { get; private set; }
         public int? Limit { get; private set; }
+        public string Address { get; set; }
 
-        public SimpleMailboxesExp(bool? isRemoved = false)
+        public ConcreteMailboxesExp(string address, bool? isRemoved = false)
         {
             _isRemoved = isRemoved;
             OrderBy = null;
             OrderAsc = false;
             Limit = null;
+            Address = address;
         }
 
         public virtual Expression<Func<MailMailbox, bool>> GetExpression()
         {
-            if (!_isRemoved.HasValue)
-                return mb => true;
+            Expression<Func<MailMailbox, bool>> exp = mb => mb.IsRemoved == _isRemoved;
 
-            return mb => mb.IsRemoved == _isRemoved;
+            exp = exp.And(m => m.Address == Address);
+            exp = exp.And(m => m.Enabled == true);
+            exp = exp.And(m => m.IsProcessed == true);
+
+            return exp;
         }
     }
 }

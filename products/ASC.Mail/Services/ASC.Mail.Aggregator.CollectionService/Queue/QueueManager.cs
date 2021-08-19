@@ -108,6 +108,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             if (mailBoxData == null)
                 return null;
 
+            if (_lockedMailBoxList.Any(m => m.MailBoxId == mailBoxData.MailBoxId))
+            {
+                Log.Error($"GetLockedMailbox() Stored duplicate with id = {mailBoxData.MailBoxId}, address = {mailBoxData.EMail.Address}");
+            }
+
             _lockedMailBoxList.Add(mailBoxData);
 
             CancelHandler.Reset();
@@ -136,9 +141,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         {
             try
             {
-                if (!_lockedMailBoxList.Contains(mailBoxData))
+                if (!_lockedMailBoxList.Any(m => m.MailBoxId == mailBoxData.MailBoxId))
                 {
-                    Log.WarnFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.EMail}') mailbox not found");
+                    Log.WarnFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} " +
+                        $"MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.EMail}') mailbox not found");
+
                     return;
                 }
 
@@ -475,7 +482,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void RemoveFromQueue(int tenant, string user)
         {
-
             Log.Debug("RemoveFromQueue()");
             var list = _mailBoxQueue.ToList();
 
@@ -632,7 +638,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     return false;
                 }
 
-                return mailboxEngine.LockMaibox(mailbox.MailBoxId);
+                return mailboxEngine.LockMaibox(mailbox);
 
             }
             catch (Exception ex)

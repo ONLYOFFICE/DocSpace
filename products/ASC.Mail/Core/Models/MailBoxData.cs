@@ -82,7 +82,7 @@ namespace ASC.Mail.Models
         }
 
         [IgnoreDataMember]
-        public List<int> EqualityEMailIds { get; set; }
+        public bool NotOnlyOne { get; set; }
 
         [DataMember(Name = "name")]
         public string Name { get; set; }
@@ -420,8 +420,6 @@ namespace ASC.Mail.Models
             BeginDate = MailBeginTimestamp;
 
             ImapIntervals = new Dictionary<string, ImapFolderUids>();
-
-            EqualityEMailIds = new List<int>();
         }
 
         public override string ToString()

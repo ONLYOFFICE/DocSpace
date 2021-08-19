@@ -311,24 +311,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             foreach (var mailbox in mailboxes)
             {
-                if (ignoredIds.Count > 0 && ignoredIds.Contains(mailbox.MailBoxId)) continue;
-
-                //Detect boxes with same address to add them to ignore.
-                //To avoid multiple requests, which can lead to blocking on the server.
-                var allSameBoxes = mailboxes.Where(b => b.EMail.Address == mailbox.EMail.Address && mailbox.MailBoxId != b.MailBoxId).ToList();
-
-                if (allSameBoxes.Count > 0)
-                {
-                    Log.InfoFormat($"Detected mailbox(es) with same address ({mailbox.EMail.Address}). Add them to ignore...");
-
-                    foreach (var box in allSameBoxes)
-                    {
-                        mailbox.EqualityEMailIds.Add(box.MailBoxId);
-                        ignoredIds.Add(box.MailBoxId);
-                        ReleaseMailbox(box);
-                    }
-                }
-
                 var timeoutCancel = new CancellationTokenSource(TaskSecondsLifetime);
 
                 var commonCancelToken =
@@ -342,7 +324,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 {
                     log.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
                                mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
+
                     ReleaseMailbox(mailbox);
+
                     continue;
                 }
 
@@ -609,10 +593,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             }
             finally
             {
-                if (mailbox.EqualityEMailIds.Count > 0)
-                {
-
-                }
                 CloseMailClient(client, mailbox, Log);
 
                 if (MailSettings.Aggregator.CollectStatistics && watch != null)
@@ -714,9 +694,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
-                if (mailbox.EqualityEMailIds.Count > 0)
+                if (mailbox.NotOnlyOne)
                 {
-                    var sameMboxes = factory.MailboxEngine.GetMailboxDataList(new ConcreteMailboxesExp(mailbox.EqualityEMailIds));
+                    var sameMboxes = factory.MailboxEngine.GetMailboxDataList(new ConcreteMailboxesExp(mailbox.EMail.Address));
 
                     log.InfoFormat($"Boxes with the same name ({mailbox.EMail.Address}) detected. The message will be sent to them.");
                     SaveAndOptional(mailbox, boxInfo, uidl, log);
