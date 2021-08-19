@@ -13,7 +13,6 @@ import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-const Tiff = require("tiff.js");
 
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 301;
@@ -143,8 +142,14 @@ class MediaViewer extends React.Component {
       playlistPos !== prevState.playlistPos
     ) {
       const currentFile = playlist[playlistPos];
-      const { src } = currentFile;
-      this.setState({ fileUrl: src });
+      const { src, title } = currentFile;
+      const ext = this.getFileExtension(title);
+
+      if (ext === ".tiff" || ext === ".tif") {
+        this.getTiffDataURL(src);
+      } else {
+        this.setState({ fileUrl: src });
+      }
     }
 
     if (
@@ -175,6 +180,16 @@ class MediaViewer extends React.Component {
   }
 
   componentDidMount() {
+    const { playlist } = this.props;
+    const { playlistPos } = this.state;
+
+    const currentFile = playlist[playlistPos];
+    const { src, title } = currentFile;
+    const ext = this.getFileExtension(title);
+
+    if (ext === ".tiff" || ext === ".tif") {
+      this.getTiffDataURL(src);
+    }
     var _this = this;
     setTimeout(function () {
       if (document.getElementsByClassName("react-viewer-canvas").length > 0) {
@@ -417,14 +432,19 @@ class MediaViewer extends React.Component {
   };
 
   getTiffDataURL = (src) => {
+    if (!window.Tiff) return;
     const _this = this;
     const xhr = new XMLHttpRequest();
     xhr.responseType = "arraybuffer";
     xhr.open("GET", src);
-    xhr.onload = () => {
-      const tiff = new Tiff({ buffer: xhr.response });
-      const dataUrl = tiff.toDataURL();
-      _this.setState({ fileUrl: dataUrl });
+    xhr.onload = function () {
+      try {
+        const tiff = new window.Tiff({ buffer: xhr.response });
+        const dataUrl = tiff.toDataURL();
+        _this.setState({ fileUrl: dataUrl });
+      } catch (e) {
+        console.log(e);
+      }
     };
     xhr.send();
   };
@@ -446,10 +466,6 @@ class MediaViewer extends React.Component {
     let canOpen = true;
 
     const ext = this.getFileExtension(title);
-
-    if (ext === ".tiff" || ext === ".tif") {
-      this.getTiffDataURL(fileUrl);
-    }
 
     if (!this.canPlay(ext) && !this.canImageView(ext)) {
       canOpen = false;
