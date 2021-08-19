@@ -13,6 +13,7 @@ import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+const Tiff = require("tiff.js");
 
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 301;
@@ -58,6 +59,7 @@ class MediaViewer extends React.Component {
       allowConvert: true,
       playlist: props.playlist,
       playlistPos,
+      fileUrl: item.src,
     };
 
     this.detailsContainer = React.createRef();
@@ -66,15 +68,12 @@ class MediaViewer extends React.Component {
 
   updateHammer() {
     const { playlistPos, playlist } = this.state;
-    let currentPlaylistPos = playlistPos;
 
-    let currentFile = playlist[currentPlaylistPos];
-    let fileTitle = currentFile.title;
-    let url = currentFile.src;
-    var ext = this.getFileExtension(fileTitle)
-      ? this.getFileExtension(fileTitle)
-      : this.getFileExtension(url);
-    var _this = this;
+    const currentFile = playlist[playlistPos];
+    const { title } = currentFile;
+
+    const ext = this.getFileExtension(title);
+    const _this = this;
 
     if (this.hammer) {
       this.hammer.off("swipeleft", this.nextMedia);
@@ -116,7 +115,7 @@ class MediaViewer extends React.Component {
     }, 500);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const {
       visible,
       playlist,
@@ -136,6 +135,16 @@ class MediaViewer extends React.Component {
         visible: visible,
         playlistPos: newPlaylistPos,
       });
+    }
+
+    if (
+      visible &&
+      visible === prevProps.visible &&
+      playlistPos !== prevState.playlistPos
+    ) {
+      const currentFile = playlist[playlistPos];
+      const { src } = currentFile;
+      this.setState({ fileUrl: src });
     }
 
     if (
@@ -407,8 +416,21 @@ class MediaViewer extends React.Component {
     this.setState({ visible: false });
   };
 
+  getTiffDataURL = (src) => {
+    const _this = this;
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = "arraybuffer";
+    xhr.open("GET", src);
+    xhr.onload = () => {
+      const tiff = new Tiff({ buffer: xhr.response });
+      const dataUrl = tiff.toDataURL();
+      _this.setState({ fileUrl: dataUrl });
+    };
+    xhr.send();
+  };
+
   render() {
-    const { playlistPos, playlist, visible } = this.state;
+    const { playlistPos, playlist, visible, fileUrl } = this.state;
     const { onClose, userAccess, canDelete, canDownload } = this.props;
 
     const currentFileId =
@@ -417,16 +439,17 @@ class MediaViewer extends React.Component {
         : 0;
 
     const currentFile = playlist[playlistPos];
-    console.log(currentFile);
-    let { title, src } = currentFile;
+    const { title } = currentFile;
 
     let isImage = false;
     let isVideo = false;
     let canOpen = true;
 
-    var ext = this.getFileExtension(title)
-      ? this.getFileExtension(title)
-      : this.getFileExtension(src);
+    const ext = this.getFileExtension(title);
+
+    if (ext === ".tiff" || ext === ".tif") {
+      this.getTiffDataURL(fileUrl);
+    }
 
     if (!this.canPlay(ext) && !this.canImageView(ext)) {
       canOpen = false;
@@ -442,10 +465,11 @@ class MediaViewer extends React.Component {
         : false;
     }
 
-    if (this.mapSupplied[ext])
+    // TODO: rewrite with fileURL
+    /*if (this.mapSupplied[ext])
       if (!isImage && this.mapSupplied[ext].convertable && !src.includes("#")) {
         src += (src.includes("?") ? "&" : "?") + "convpreview=true";
-      }
+      }*/
 
     return (
       <StyledMediaViewer visible={visible}>
@@ -488,7 +512,7 @@ class MediaViewer extends React.Component {
               userAccess={userAccess}
               visible={visible}
               onClose={this.onClose}
-              images={[{ src: src, alt: "" }]}
+              images={[{ src: fileUrl, alt: "" }]}
               inactive={playlist.length <= 1}
               onNextClick={this.nextMedia}
               onPrevClick={this.prevMedia}
@@ -497,7 +521,7 @@ class MediaViewer extends React.Component {
             />
           ) : (
             <StyledVideoViewer
-              url={src}
+              url={fileUrl}
               isVideo={isVideo}
               getOffset={this.getOffset}
             />

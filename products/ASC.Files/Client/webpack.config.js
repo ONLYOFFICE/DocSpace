@@ -58,6 +58,7 @@ var config = {
     extensions: [".jsx", ".js", ".json"],
     fallback: {
       crypto: false,
+      path: require.resolve("path-browserify"),
     },
   },
 
