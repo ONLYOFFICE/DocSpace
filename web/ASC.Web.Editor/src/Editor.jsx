@@ -678,7 +678,7 @@ const Editor = () => {
               onSelectFile={onSelectFile}
               isPanelVisible={isFileDialogVisible}
               onClose={onCloseFileDialog}
-              foldersType="editor"
+              foldersType="exceptTrashFolder"
               {...(filesType === insertImageAction
                 ? insertImageActionProps
                 : mailMergeActionProps)}
@@ -694,7 +694,7 @@ const Editor = () => {
               isSetFolderImmediately
               asideHeightContent="calc(100% - 50px)"
               onClose={onCloseFolderDialog}
-              foldersType="editor"
+              foldersType="exceptSortedByTags"
               onSave={onClickSaveSelectFolder}
               header={
                 <StyledSelectFolder>

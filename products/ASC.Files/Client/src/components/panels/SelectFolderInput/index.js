@@ -149,7 +149,6 @@ SelectFolderInputBody.propTypes = {
   withoutProvider: PropTypes.bool,
   isError: PropTypes.bool,
   isSavingProcess: PropTypes.bool,
-  foldersType: PropTypes.oneOf(["common", "third-party", "editor"]),
 };
 
 SelectFolderInputBody.defaultProps = {

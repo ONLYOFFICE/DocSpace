@@ -31,11 +31,13 @@ const { desktop } = utils.device;
 let pathName = "";
 let folderList;
 
-const editorExceptions = [
+const exceptSortedByTagsFolders = [
   FolderType.Recent,
   FolderType.TRASH,
   FolderType.Favorites,
 ];
+
+const exceptTrashFolder = [FolderType.TRASH];
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -87,21 +89,32 @@ class SelectFolderModalDialog extends React.Component {
       selectedFolderId,
     } = this.props;
     switch (foldersType) {
-      case "editor":
+      case "exceptSortedByTags":
         try {
           const foldersTree = await getFoldersTree();
           folderList = SelectFolderDialog.convertFolders(
             foldersTree,
-            editorExceptions
+            exceptSortedByTagsFolders
           );
           this.setBaseSettings();
         } catch (err) {
           console.error("error", err);
           this.loadersCompletes();
         }
-
         break;
-
+      case "exceptTrashFolder":
+        try {
+          const foldersTree = await getFoldersTree();
+          folderList = SelectFolderDialog.convertFolders(
+            foldersTree,
+            exceptTrashFolder
+          );
+          this.setBaseSettings();
+        } catch (err) {
+          console.error(err);
+          this.loadersCompletes();
+        }
+        break;
       case "common":
         try {
           folderList = await SelectFolderDialog.getCommonFolders();
@@ -466,7 +479,12 @@ SelectFolderModalDialog.propTypes = {
   onSelectFolder: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
-  foldersType: PropTypes.oneOf(["common", "third-party", "editor"]),
+  foldersType: PropTypes.oneOf([
+    "common",
+    "third-party",
+    "exceptSortedByTags",
+    "exceptTrashFolder",
+  ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),
   id: PropTypes.string,
   zIndex: PropTypes.number,

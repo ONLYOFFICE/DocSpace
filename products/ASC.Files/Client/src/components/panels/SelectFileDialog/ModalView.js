@@ -13,12 +13,13 @@ import { isArrayEqual } from "@appserver/components/utils/array";
 import { FolderType } from "@appserver/common/constants";
 import { getFoldersTree } from "@appserver/common/api/files";
 
-const editorExceptions = [
+const exceptSortedByTagsFolders = [
   FolderType.Recent,
   FolderType.TRASH,
   FolderType.Favorites,
 ];
 
+const exceptTrashFolder = [FolderType.TRASH];
 class SelectFileDialogModalView extends React.Component {
   constructor(props) {
     super(props);
@@ -45,12 +46,26 @@ class SelectFileDialogModalView extends React.Component {
       passedId,
     } = this.props;
     switch (foldersType) {
-      case "editor":
+      case "exceptSortedByTags":
         try {
           const foldersTree = await getFoldersTree();
           this.folderList = SelectFolderDialog.convertFolders(
             foldersTree,
-            editorExceptions
+            exceptSortedByTagsFolders
+          );
+          this.onSetSelectedFolder();
+        } catch (err) {
+          console.error(err);
+        }
+
+        this.loadersCompletes();
+        break;
+      case "exceptTrashFolder":
+        try {
+          const foldersTree = await getFoldersTree();
+          this.folderList = SelectFolderDialog.convertFolders(
+            foldersTree,
+            exceptTrashFolder
           );
           this.onSetSelectedFolder();
         } catch (err) {
