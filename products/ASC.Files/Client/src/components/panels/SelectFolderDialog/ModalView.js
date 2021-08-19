@@ -33,6 +33,7 @@ const SelectFolderDialogModalView = ({
         visible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
+        displayType="modal"
         {...(!header && !footer && !showButtons && { contentHeight: "416px" })}
       >
         <ModalDialog.Header>

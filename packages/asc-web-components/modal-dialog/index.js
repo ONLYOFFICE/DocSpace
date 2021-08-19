@@ -44,7 +44,6 @@ class ModalDialog extends React.Component {
     this.resize = this.resize.bind(this);
     this.popstate = this.popstate.bind(this);
     this.throttledResize = throttle(this.resize, 300);
-    this._isMounted = false;
   }
 
   getTypeByWidth() {
@@ -59,7 +58,7 @@ class ModalDialog extends React.Component {
     const type = this.getTypeByWidth();
     if (type === this.state.displayType) return;
 
-    this._isMounted && this.setState({ displayType: type });
+    this.setState({ displayType: type });
   }
 
   popstate() {
@@ -78,13 +77,11 @@ class ModalDialog extends React.Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
     window.addEventListener("resize", this.throttledResize);
     window.addEventListener("keyup", this.onKeyPress);
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
     window.removeEventListener("resize", this.throttledResize);
     window.removeEventListener("keyup", this.onKeyPress);
   }
