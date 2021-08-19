@@ -495,10 +495,6 @@ const Editor = () => {
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
     }
-
-    if (fileInfo && fileInfo.canShare) {
-      loadUsersRightsList();
-    }
   };
 
   const onSDKInfo = (event) => {
@@ -568,6 +564,10 @@ const Editor = () => {
 
   const onDocumentReady = () => {
     documentIsReady = true;
+
+    if (isSharingAccess) {
+      loadUsersRightsList();
+    }
   };
 
   const onMetaChange = (event) => {
