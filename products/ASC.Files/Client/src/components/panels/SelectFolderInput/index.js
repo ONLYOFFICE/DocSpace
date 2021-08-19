@@ -20,24 +20,18 @@ class SelectFolderInputBody extends React.PureComponent {
       fullFolderPath: "",
       fullFolderPathDefault: "",
     };
-    this._isMounted = false;
   }
   componentDidMount() {
-    this._isMounted = true;
     const { folderPath } = this.props;
 
     if (folderPath.length !== 0) {
-      this._isMounted &&
-        this.setState({
-          fullFolderPath: folderPath,
-          fullFolderPathDefault: folderPath,
-        });
+      this.setState({
+        fullFolderPath: folderPath,
+        fullFolderPathDefault: folderPath,
+      });
     }
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
   componentDidUpdate(prevProps) {
     const { isSetDefaultFolderPath, folderPath } = this.props;
 
