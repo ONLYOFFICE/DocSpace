@@ -19,6 +19,13 @@ import store from "studio/store";
 
 const { auth: authStore } = store;
 
+const IMAGE_TYPE = "7";
+const DOCUMENTS_TYPE = "3";
+const ARCHIVE_TYPE = "10";
+const PRESENTATION_TYPE = "4";
+const TABLES_TYPE = "5";
+const MEDIA_TYPE = "12";
+const ALL_TYPES = "1";
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
@@ -55,24 +62,24 @@ class SelectFileDialogBody extends React.Component {
     } = this.props;
 
     if (isImageOnly) {
-      return { filterType: "7", filterValue: searchParam };
+      return { filterType: IMAGE_TYPE, filterValue: searchParam };
     }
     if (isDocumentsOnly) {
-      return { filterType: "3", filterValue: searchParam };
+      return { filterType: DOCUMENTS_TYPE, filterValue: searchParam };
     }
     if (isArchiveOnly) {
-      return { filterType: "10", filterValue: searchParam };
+      return { filterType: ARCHIVE_TYPE, filterValue: searchParam };
     }
     if (isPresentationOnly) {
-      return { filterType: "4", filterValue: searchParam };
+      return { filterType: PRESENTATION_TYPE, filterValue: searchParam };
     }
     if (isTablesOnly) {
-      return { filterType: "5", filterValue: searchParam };
+      return { filterType: TABLES_TYPE, filterValue: searchParam };
     }
     if (isMediaOnly) {
-      return { filterType: "12", filterValue: searchParam };
+      return { filterType: MEDIA_TYPE, filterValue: searchParam };
     }
-    return { filterType: "1", filterValue: "" };
+    return { filterType: ALL_TYPES, filterValue: "" };
   };
 
   setFilter = () => {
