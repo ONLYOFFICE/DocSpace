@@ -10,6 +10,8 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
+import { isDesktop } from "react-device-detect";
+import AboutDialog from "../../pages/About/AboutDialog";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -61,8 +63,12 @@ const HeaderNav = ({
   isAuthenticated,
   peopleAvailable,
   isPersonal,
+  versionAppServer,
+  userIsUpdate,
+  setUserIsUpdate,
 }) => {
-  const { t } = useTranslation(["NavMenu", "Common"]);
+  const { t } = useTranslation(["NavMenu", "Common", "About"]);
+  const [visibleDialog, setVisibleDialog] = useState(false);
 
   const onProfileClick = useCallback(() => {
     peopleAvailable
@@ -70,7 +76,15 @@ const HeaderNav = ({
       : window.open(PROFILE_MY_URL, "_blank");
   }, []);
 
-  const onAboutClick = useCallback(() => history.push(ABOUT_URL), []);
+  const onAboutClick = useCallback(() => {
+    if (isDesktop) {
+      setVisibleDialog(true);
+    } else {
+      history.push(ABOUT_URL);
+    }
+  }, []);
+
+  const onCloseDialog = () => setVisibleDialog(false);
 
   const onSwitchToDesktopClick = useCallback(() => {
     deleteCookie("desktop_view");
@@ -85,7 +99,7 @@ const HeaderNav = ({
   const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
   const getCurrentUserActions = useCallback(() => {
-    const currentUserActions = [
+    return [
       {
         key: "ProfileBtn",
         label: t("Common:Profile"),
@@ -113,8 +127,6 @@ const HeaderNav = ({
         onClick: onLogoutClick,
       },
     ];
-
-    return currentUserActions;
   }, [onProfileClick, onAboutClick, onLogoutClick]);
 
   //console.log("HeaderNav render");
@@ -138,10 +150,23 @@ const HeaderNav = ({
           />
         ))}
       {isAuthenticated && user ? (
-        <ProfileActions userActions={getCurrentUserActions()} user={user} />
+        <ProfileActions
+          userActions={getCurrentUserActions()}
+          user={user}
+          userIsUpdate={userIsUpdate}
+          setUserIsUpdate={setUserIsUpdate}
+        />
       ) : (
         <></>
       )}
+
+      <AboutDialog
+        t={t}
+        visible={visibleDialog}
+        onClose={onCloseDialog}
+        personal={isPersonal}
+        versionAppServer={versionAppServer}
+      />
     </StyledNav>
   );
 };
@@ -167,8 +192,12 @@ export default withRouter(
       language,
       logout,
     } = auth;
-    const { defaultPage, personal: isPersonal } = settingsStore;
-    const { user } = userStore;
+    const {
+      defaultPage,
+      personal: isPersonal,
+      version: versionAppServer,
+    } = settingsStore;
+    const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
     return {
       isPersonal,
@@ -180,6 +209,9 @@ export default withRouter(
       modules,
       logout,
       peopleAvailable: modules.some((m) => m.appName === "people"),
+      versionAppServer,
+      userIsUpdate,
+      setUserIsUpdate,
     };
   })(observer(HeaderNav))
 );

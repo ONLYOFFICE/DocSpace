@@ -1,7 +1,7 @@
 import authStore from "@appserver/common/store/AuthStore";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
-import { combineUrl, toUrlParams } from "@appserver/common/utils";
+import { combineUrl } from "@appserver/common/utils";
 import { addFileToRecentlyViewed } from "@appserver/common/api/files";
 import i18n from "./i18n";
 
@@ -67,9 +67,13 @@ export const openDocEditor = async (
     );
   }
 
-  return Promise.resolve(
-    tab ? (tab.location = url) : window.open(url, "_blank")
-  );
+  if (tab) {
+    tab.location = url;
+  } else {
+    window.open(url, "_blank");
+  }
+
+  return Promise.resolve();
 };
 
 export const SaveAs = (title, url, folderId, openNewTab) => {

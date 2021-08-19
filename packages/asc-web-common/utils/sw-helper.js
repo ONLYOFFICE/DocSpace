@@ -64,7 +64,22 @@ const registerSW = () => {
           `until all tabs running the current version have fully unloaded.`
       );
 
+      function refresh() {
+        wb.addEventListener("controlling", () => {
+          localStorage.removeItem("sw_need_activation");
+          window.location.reload();
+        });
+
+        // This will postMessage() to the waiting service worker.
+        wb.messageSkipWaiting();
+      }
+
       try {
+        if (localStorage.getItem("sw_need_activation")) {
+          refresh();
+          return;
+        }
+
         const snackbarNode = document.createElement("div");
         snackbarNode.id = "snackbar";
         document.body.appendChild(snackbarNode);
@@ -73,47 +88,17 @@ const registerSW = () => {
           <SnackBarWrapper
             onButtonClick={() => {
               snackbarNode.remove();
-
-              wb.addEventListener("controlling", () => {
-                window.location.reload();
-              });
-
-              wb.messageSkipWaiting();
+              refresh();
             }}
           />,
           document.getElementById("snackbar")
         );
+
+        localStorage.setItem("sw_need_activation", true);
       } catch (e) {
         console.error("showSkipWaitingPrompt", e);
-        wb.addEventListener("controlling", () => {
-          window.location.reload();
-        });
-
-        // This will postMessage() to the waiting service worker.
-        wb.messageSkipWaiting();
+        refresh();
       }
-      // let snackBarRef = this.snackBar.open(
-
-      //   "A new version of the website available",
-      //   "Reload page",
-      //   {
-      //     duration: 5000,
-      //   }
-      // );
-
-      // // Displaying prompt
-
-      // snackBarRef.onAction().subscribe(() => {
-      //   // Assuming the user accepted the update, set up a listener
-      //   // that will reload the page as soon as the previously waiting
-      //   // service worker has taken control.
-      //   wb.addEventListener("controlling", () => {
-      //     window.location.reload();
-      //   });
-
-      //   // This will postMessage() to the waiting service worker.
-      //   wb.messageSkipWaiting();
-      // });
     };
 
     // Add an event listener to detect when the registered

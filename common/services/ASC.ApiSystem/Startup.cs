@@ -113,7 +113,7 @@ namespace ASC.ApiSystem
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.Register(Configuration, false);
+            builder.Register(Configuration, false, false);
         }
     }
 }
