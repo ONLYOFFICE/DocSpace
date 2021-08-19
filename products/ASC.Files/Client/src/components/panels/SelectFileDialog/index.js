@@ -13,19 +13,14 @@ import SelectFileDialogAsideView from "./AsideView";
 import utils from "@appserver/components/utils";
 import SelectFolderDialog from "../SelectFolderDialog";
 import { getFolder } from "@appserver/common/api/files";
+import { FilterType } from "@appserver/common/constants";
+
 const { desktop } = utils.device;
 
 import store from "studio/store";
 
 const { auth: authStore } = store;
 
-const IMAGE_TYPE = "7";
-const DOCUMENTS_TYPE = "3";
-const ARCHIVE_TYPE = "10";
-const PRESENTATION_TYPE = "4";
-const TABLES_TYPE = "5";
-const MEDIA_TYPE = "12";
-const ALL_TYPES = "1";
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
@@ -62,24 +57,30 @@ class SelectFileDialogBody extends React.Component {
     } = this.props;
 
     if (isImageOnly) {
-      return { filterType: IMAGE_TYPE, filterValue: searchParam };
+      return { filterType: FilterType.ImagesOnly, filterValue: searchParam };
     }
     if (isDocumentsOnly) {
-      return { filterType: DOCUMENTS_TYPE, filterValue: searchParam };
+      return { filterType: FilterType.DocumentsOnly, filterValue: searchParam };
     }
     if (isArchiveOnly) {
-      return { filterType: ARCHIVE_TYPE, filterValue: searchParam };
+      return { filterType: FilterType.ArchiveOnly, filterValue: searchParam };
     }
     if (isPresentationOnly) {
-      return { filterType: PRESENTATION_TYPE, filterValue: searchParam };
+      return {
+        filterType: FilterType.PresentationsOnly,
+        filterValue: searchParam,
+      };
     }
     if (isTablesOnly) {
-      return { filterType: TABLES_TYPE, filterValue: searchParam };
+      return {
+        filterType: FilterType.SpreadsheetsOnly,
+        filterValue: searchParam,
+      };
     }
     if (isMediaOnly) {
-      return { filterType: MEDIA_TYPE, filterValue: searchParam };
+      return { filterType: FilterType.MediaOnly, filterValue: searchParam };
     }
-    return { filterType: ALL_TYPES, filterValue: "" };
+    return { filterType: FilterType.FilesOnly, filterValue: "" };
   };
 
   setFilter = () => {
