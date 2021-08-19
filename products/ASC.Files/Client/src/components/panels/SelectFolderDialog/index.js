@@ -315,9 +315,22 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   componentWillUnmount() {
+    const {
+      setExpandedPanelKeys,
+      setDefaultSelectedFolder,
+
+      resetTreeFolders,
+
+      dialogWithFiles,
+    } = this.props;
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
       window.removeEventListener("resize", this.throttledResize);
+    }
+
+    if (resetTreeFolders && !dialogWithFiles) {
+      setExpandedPanelKeys(null);
+      setDefaultSelectedFolder();
     }
   }
   getDisplayType = () => {
@@ -508,15 +521,29 @@ SelectFolderModalDialog.defaultProps = {
 };
 
 const SelectFolderDialogWrapper = inject(
-  ({ treeFoldersStore, selectedFolderStore, filesStore }) => {
-    const { setSelectedNode } = treeFoldersStore;
+  ({
+    treeFoldersStore,
+    selectedFolderStore,
+    selectedFilesStore,
+    filesStore,
+  }) => {
+    const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { canCreate } = filesStore;
-    const { setSelectedFolder, id } = selectedFolderStore;
+    const {
+      setSelectedFolder,
+      id,
+      toDefault: setDefaultSelectedFolder,
+    } = selectedFolderStore;
+    const { setFolderId, setFile } = selectedFilesStore;
     return {
       setSelectedFolder,
       setSelectedNode,
       canCreate,
       storeFolderId: id,
+      setExpandedPanelKeys,
+      setDefaultSelectedFolder,
+      setFolderId,
+      setFile,
     };
   }
 )(

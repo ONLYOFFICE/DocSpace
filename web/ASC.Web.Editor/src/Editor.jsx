@@ -682,6 +682,7 @@ const Editor = () => {
 
           {isFileDialogVisible && (
             <SelectFileDialog
+              resetTreeFolders
               onSelectFile={onSelectFile}
               isPanelVisible={isFileDialogVisible}
               onClose={onCloseFileDialog}
@@ -696,6 +697,7 @@ const Editor = () => {
 
           {isFolderDialogVisible && (
             <SelectFolderDialog
+              resetTreeFolders
               showButtons
               isPanelVisible={isFolderDialogVisible}
               isSetFolderImmediately

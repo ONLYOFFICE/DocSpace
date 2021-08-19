@@ -99,8 +99,23 @@ class SelectFileDialogBody extends React.Component {
     this.setFilter();
   }
   componentWillUnmount() {
+    const {
+      resetTreeFolders,
+      setExpandedPanelKeys,
+      setDefaultSelectedFolder,
+      setFolderId,
+      setFile,
+    } = this.props;
     this.throttledResize && this.throttledResize.cancel();
     window.removeEventListener("resize", this.throttledResize);
+
+    if (resetTreeFolders) {
+      setExpandedPanelKeys(null);
+      setDefaultSelectedFolder();
+
+      setFolderId(null);
+      setFile(null);
+    }
   }
 
   getDisplayType = () => {
@@ -333,9 +348,13 @@ const SelectFileDialogWrapper = inject(
       setFolderId,
       setFile,
     } = selectedFilesStore;
-    const { setSelectedNode } = treeFoldersStore;
+
+    const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { filter } = filesStore;
-    const { setSelectedFolder } = selectedFolderStore;
+    const {
+      setSelectedFolder,
+      toDefault: setDefaultSelectedFolder,
+    } = selectedFolderStore;
     return {
       storeFolderId,
       fileInfo,
@@ -344,6 +363,8 @@ const SelectFileDialogWrapper = inject(
       setSelectedFolder,
       setSelectedNode,
       filter,
+      setDefaultSelectedFolder,
+      setExpandedPanelKeys,
     };
   }
 )(
