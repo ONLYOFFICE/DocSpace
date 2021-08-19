@@ -326,6 +326,7 @@ class SectionHeaderContent extends React.Component {
       isAccessedSelected,
       isWebEditSelected,
       isViewedSelected,
+      isMediaSelected,
       deleteDialogVisible,
       isRecycleBin,
       isThirdPartySelection,
@@ -441,7 +442,7 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onMoveAction,
       });
 
-      menu.splice(1, 1);
+      if (!isMediaSelected) menu.splice(1, 1);
     }
 
     if (isFavoritesFolder) {
@@ -629,6 +630,7 @@ export default inject(
       isWebEditSelected,
       setIsLoading,
       isViewedSelected,
+      isMediaSelected,
     } = filesStore;
     const {
       isRecycleBinFolder,
@@ -675,6 +677,7 @@ export default inject(
       isThirdPartySelection,
       isWebEditSelected,
       isViewedSelected,
+      isMediaSelected,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,
