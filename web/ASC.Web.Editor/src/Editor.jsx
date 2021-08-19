@@ -10,6 +10,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
+  loadScript,
   //showLoader,
   //hideLoader,
 } from "@appserver/common/utils";
@@ -244,7 +245,7 @@ const Editor = () => {
 
       setIsLoading(false);
 
-      loadDocApi(docApiUrl, () => onLoad(config));
+      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad(config));
     } catch (error) {
       console.log(error);
       toastr.error(
@@ -319,20 +320,6 @@ const Editor = () => {
     }
 
     document.title = title;
-  };
-
-  const loadDocApi = (docApiUrl, onLoadCallback) => {
-    const script = document.createElement("script");
-    script.setAttribute("type", "text/javascript");
-    script.setAttribute("id", "scripDocServiceAddress");
-
-    script.onload = onLoadCallback;
-
-    script.src = docApiUrl;
-    script.async = true;
-
-    console.log("PureEditor componentDidMount: added script");
-    document.body.appendChild(script);
   };
 
   const onLoad = (config) => {
