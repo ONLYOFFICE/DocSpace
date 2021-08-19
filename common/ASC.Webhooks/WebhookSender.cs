@@ -45,22 +45,9 @@ namespace ASC.Webhooks
             {
                 try
                 {
-                    var testRequest = new HttpRequestMessage(HttpMethod.Post, "http://localhost:8092/api/2.0/authentication.json");
-                    string httpContent = @"{ ""userName"":""www.vna-97@mail.ru"", ""password"":""265676-333"" }";
-                    testRequest.Content = new StringContent(
-                        httpContent,
-                        Encoding.UTF8,
-                        "application/json");
-
-                    var testResponse = httpClient.Send(testRequest, cancellationToken);
-
-                    //HttpResponseMessage testResponseCalendar =httpClient.GetAsync("http://localhost:8092/api/2.0/calendar/info");
-                    //var token = "1FR2TsR3kXu2zor7fModuf/3nBJRPI4I7LG5x3ODzTVVgFmUd3NguHEmVqDNMJkNc7MRJjeacv+UaAOlRmLcUyCBtEt54Hzd6TCADQtzUEVvl2M20tX0uYd8sftTdIn/faWV415KXFsY3E16StTZ5A==";
-
                     var request = new HttpRequestMessage(HttpMethod.Post, requestURI);
                     request.Headers.Add("Accept", "*/*");
                     request.Headers.Add("Secret","SHA256=" + GetSecretHash(secretKey, data));
-                    //request.Headers.Add("Authorization", token);
 
                     request.Content = new StringContent(
                         data,
