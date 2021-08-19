@@ -85,6 +85,8 @@ class SelectFileDialogBody extends React.Component {
   };
 
   componentDidMount() {
+    authStore.init(true); // it will work if authStore is not initialized
+
     window.addEventListener("resize", this.throttledResize);
     this.setFilter();
   }

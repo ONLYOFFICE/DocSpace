@@ -22,6 +22,7 @@ import utils from "@appserver/components/utils";
 import { FolderType } from "@appserver/common/constants";
 import { isArrayEqual } from "@appserver/components/utils/array";
 import store from "studio/store";
+import toastr from "studio/toastr";
 
 const { auth: authStore } = store;
 
@@ -56,6 +57,8 @@ class SelectFolderModalDialog extends React.Component {
 
   componentDidMount() {
     const { onSetLoadingData, onSetLoadingInput, displayType } = this.props;
+
+    authStore.init(true); // it will work if authStore is not initialized
 
     !displayType && window.addEventListener("resize", this.throttledResize);
     this.setState({ isLoadingData: true }, function () {
@@ -171,7 +174,7 @@ class SelectFolderModalDialog extends React.Component {
       return;
     }
 
-    showButtons && this.setFolderToTree(folderList[0].id);
+    !id && showButtons && this.setFolderToTree(folderList[0].id);
 
     isSetFolderImmediately &&
       !selectedFolderId &&
@@ -187,18 +190,19 @@ class SelectFolderModalDialog extends React.Component {
         }`,
       });
 
-    try {
-      this.folderTitle = await SelectFolderDialog.getFolderPath(
-        id ? id : folderList[0].id
-      );
+    if (onSetBaseFolderPath) {
+      try {
+        this.folderTitle = await SelectFolderDialog.getFolderPath(
+          id ? id : folderList[0].id
+        );
 
-      !id &&
-        !selectedFolderId &&
-        isSetFolderImmediately &&
-        onSetBaseFolderPath &&
-        onSetBaseFolderPath(this.folderTitle);
-    } catch (err) {
-      console.error(err);
+        !id &&
+          !selectedFolderId &&
+          isSetFolderImmediately &&
+          onSetBaseFolderPath(this.folderTitle);
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     this.setFolderInfo();
@@ -211,16 +215,20 @@ class SelectFolderModalDialog extends React.Component {
       fileName,
       selectedFolderId,
       dialogWithFiles,
+      onSetBaseFolderPath,
     } = this.props;
 
     fileName && onSetFileName && onSetFileName(fileName);
 
     if (!id && !selectedFolderId) {
       this.loadersCompletes();
+      return;
     }
 
     if (selectedFolderId) {
-      this.setBaseFolderPath(selectedFolderId);
+      onSetBaseFolderPath
+        ? this.setBaseFolderPath(selectedFolderId)
+        : this.loadersCompletes();
     }
 
     if (id && !selectedFolderId) {
@@ -236,7 +244,7 @@ class SelectFolderModalDialog extends React.Component {
 
     SelectFolderDialog.getFolderPath(selectedFolderId)
       .then((folderPath) => (this.folderTitle = folderPath))
-      .then(() => onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle))
+      .then(() => onSetBaseFolderPath(this.folderTitle))
       .catch((error) => console.log("error", error))
       .finally(() => {
         this.loadersCompletes();
@@ -245,23 +253,28 @@ class SelectFolderModalDialog extends React.Component {
   setSelectedFolder = async (id) => {
     const { onSetBaseFolderPath } = this.props;
 
-    let folderPath, folder;
+    let folder,
+      folderPath,
+      requests = [];
+
+    requests.push(getFolder(id));
+
+    if (onSetBaseFolderPath) {
+      requests.push(getFolderPath(id));
+    }
 
     try {
-      [folderPath, folder] = await Promise.allSettled([
-        getFolderPath(id),
-        getFolder(id),
-      ]);
+      [folder, folderPath] = await Promise.all(requests);
     } catch (e) {
       console.error(e);
     }
 
-    if (folderPath.value) {
-      this.folderTitle = SelectFolderInput.setFullFolderPath(folderPath.value);
-      onSetBaseFolderPath && onSetBaseFolderPath(this.folderTitle);
-    }
+    folder && this.setFolderObjectToTree(id, folder);
 
-    folder.value && this.setFolderObjectToTree(id, folder.value);
+    if (onSetBaseFolderPath && folderPath) {
+      this.folderTitle = SelectFolderInput.setFullFolderPath(folderPath);
+      onSetBaseFolderPath(this.folderTitle);
+    }
 
     this.loadersCompletes();
   };
@@ -321,34 +334,50 @@ class SelectFolderModalDialog extends React.Component {
       folderId: folder[0],
     });
 
-    requests.push(getFolderPath(folder));
+    let folderInfo, folderPath;
 
     if (showButtons) {
-      requests.push(getFolder(folder[0]));
       this.setState({
         isLoading: true,
         canCreate: false,
       });
     }
 
-    let folderPath, folderInfo;
-
     try {
-      [folderPath, folderInfo] = await Promise.allSettled(requests);
+      if (showButtons && onSetFullPath) {
+        requests.push(getFolder(folder[0]), getFolderPath(folder));
+
+        [folderInfo, folderPath] = await Promise.all(requests);
+      } else {
+        showButtons
+          ? (folderInfo = await getFolder(folder[0]))
+          : (folderPath = await getFolderPath(folder));
+      }
+
+      if (folderInfo) {
+        this.setFolderObjectToTree(folder[0], folderInfo);
+      }
+
+      if (folderPath) {
+        pathName = SelectFolderInput.setFullFolderPath(folderPath);
+        onSetFullPath && onSetFullPath(pathName);
+      }
     } catch (e) {
       console.error(e);
+      toastr.error();
+
+      if (showButtons) {
+        this.setState({
+          isLoading: false,
+          canCreate: true,
+        });
+
+        onClose && onClose();
+      }
     }
 
-    if (folderPath.value) {
-      pathName = SelectFolderInput.setFullFolderPath(folderPath.value);
-      onSetFullPath && onSetFullPath(pathName);
-      onSelectFolder && onSelectFolder(folder[0]);
-      !showButtons && onClose && onClose();
-    }
-
-    if (showButtons && folderInfo.value) {
-      this.setFolderObjectToTree(folder[0], folderInfo.value);
-    }
+    onSelectFolder && onSelectFolder(folder[0]);
+    !showButtons && onClose && onClose();
 
     this.loadersCompletes();
   };
