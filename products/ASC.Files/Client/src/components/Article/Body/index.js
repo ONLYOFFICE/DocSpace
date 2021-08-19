@@ -44,7 +44,9 @@ class ArticleBodyContent extends React.Component {
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
-      const urlFilter = FilesFilter.getDefault().toUrlParams();
+      const newFilter = FilesFilter.getDefault();
+      newFilter.folder = data[0];
+      const urlFilter = newFilter.toUrlParams();
       history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
       );
