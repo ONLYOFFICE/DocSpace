@@ -128,7 +128,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
                 _context = context;
 
-                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
 
                 if (!CheckPermission())
                 {
