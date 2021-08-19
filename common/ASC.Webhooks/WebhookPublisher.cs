@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -19,6 +18,7 @@ namespace ASC.Webhooks
         private TenantManager TenantManager { get; }
         private ICacheNotify<WebhookRequest> WebhookNotify { get; }
         private ILog Log { get; }
+
         public WebhookPublisher(
             DbWorker dbWorker, 
             TenantManager tenantManager,
@@ -64,9 +64,9 @@ namespace ASC.Webhooks
         public static void Register(DIHelper services)
         {
             services.TryAdd<WebhookPublisher>();
-            services.TryAdd<WebhooksIdentifier>();
         }
     }
+
     public enum ProcessStatus
     {
         InProcess,

@@ -1,5 +1,0 @@
-{
-  "webhooks": {
-    "routeList" : [ "CreateFileFromForm", "CreateFileFromBody" ]
-    }
-}

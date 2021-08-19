@@ -14,6 +14,7 @@ namespace ASC.Webhooks
     {
         private Lazy<WebhooksDbContext> LazyWebhooksDbContext { get; }
         private WebhooksDbContext webhooksDbContext { get => LazyWebhooksDbContext.Value; }
+
         public DbWorker(DbContextManager<WebhooksDbContext> webhooksDbContext)
         {
             LazyWebhooksDbContext = new Lazy<WebhooksDbContext>(() => webhooksDbContext.Value);

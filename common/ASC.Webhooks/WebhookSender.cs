@@ -18,7 +18,6 @@ namespace ASC.Webhooks
     public class WebhookSender
     {
         public int RepeatCount { get; } = 5;
-
         private static readonly HttpClient httpClient = new HttpClient();
         private IServiceProvider ServiceProvider { get; }
         private ILog Log { get; }
@@ -65,7 +64,7 @@ namespace ASC.Webhooks
                 }
                 catch (Exception ex)
                 {
-                    if(i == RepeatCount)
+                    if (i == RepeatCount)
                     {
                         dbWorker.UpdateStatus(id, ProcessStatus.Failed);
                     }

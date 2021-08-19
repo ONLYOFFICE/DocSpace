@@ -2,10 +2,8 @@
 using System.Threading.Tasks;
 
 using ASC.Common;
-using ASC.Common.Logging;
 
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Webhooks
 {
