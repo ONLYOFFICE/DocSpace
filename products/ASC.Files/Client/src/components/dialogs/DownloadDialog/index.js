@@ -114,7 +114,6 @@ class DownloadDialogComponent extends React.Component {
     } = this.props;
 
     const [fileConvertIds, folderIds] = this.getDownloadItems();
-console.log("fileConvertIds",fileConvertIds)
 
     if (fileConvertIds.length === 1 && folderIds.length === 0) {
       // Single file download as
@@ -175,7 +174,7 @@ console.log("fileConvertIds",fileConvertIds)
     const newDocuments = documents;
     const newSpreadsheets = spreadsheets;
     const newPresentations = presentations;
-console.log("newDocuments", newDocuments)
+
     if (type === "document") {
       //Set all documents format
       if (!file) {
