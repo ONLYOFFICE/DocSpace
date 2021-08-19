@@ -104,10 +104,10 @@ namespace ASC.Webhooks.Tests
             dbWorker.AddWebhookConfig(successWebhookConfig);
             dbWorker.AddWebhookConfig(failedWebhookConfig);
 
-            var successWebhookPayload = new WebhooksPayload { Id = successedId, ConfigId = successedId, Status = ProcessStatus.InProcess, CreationTime = DateTime.Now, Data = Content, TenantId = testTenant.TenantId };
-            var failedWebhookPayload = new WebhooksPayload { Id = failedId, ConfigId = failedId, Status = ProcessStatus.InProcess, CreationTime = DateTime.Now, Data = Content, TenantId = testTenant.TenantId };
-            dbWorker.WriteToJournal(successWebhookPayload);
-            dbWorker.WriteToJournal(failedWebhookPayload);
+            var successWebhookPayload = new WebhooksPayload { ConfigId = successedId, Status = ProcessStatus.InProcess, CreationTime = creationTime, Data = Content, TenantId = testTenant.TenantId };
+            var failedWebhookPayload = new WebhooksPayload { ConfigId = failedId, Status = ProcessStatus.InProcess, CreationTime = creationTime, Data = Content, TenantId = testTenant.TenantId };
+            var successWebhookPayloadId = dbWorker.WriteToJournal(successWebhookPayload);
+            var failedWebhookPayloadId = dbWorker.WriteToJournal(failedWebhookPayload);
 
             var mockedLog = new Mock<ILog>();
             mockedLog.Setup(a => a.Error(It.IsAny<string>())).Verifiable();
@@ -118,8 +118,8 @@ namespace ASC.Webhooks.Tests
             var source = new CancellationTokenSource();
             var token = source.Token;
 
-            var SuccessedWebhookRequest = new WebhookRequest { Id = successedId };
-            var FailedWebhookRequest = new WebhookRequest { Id = failedId };
+            var SuccessedWebhookRequest = new WebhookRequest { Id = successWebhookPayloadId };
+            var FailedWebhookRequest = new WebhookRequest { Id = failedWebhookPayloadId };
 
             var sender = new WebhookSender(mockedLogOptions.Object, serviceProvider);
             await sender.Send(SuccessedWebhookRequest, token);

@@ -32,7 +32,7 @@ namespace ASC.Webhooks.Tests
         public async Task CreateDb()
         {
             var args = new string[] {
-                "--pathToConf", Path.Combine( "..", "..","..", "..", "config"),
+                "--pathToConf", Path.Combine( "..", "..", "..", "..", "..", "..", "config"),
                 "--ConnectionStrings:default:connectionString", TestConnection,
                 "--migration:enabled", "true"};
 
