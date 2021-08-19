@@ -64,18 +64,15 @@ namespace ASC.Feed.Aggregator
 
         private ConfigurationExtension Configuration { get; }
         private IServiceProvider ServiceProvider { get; }
-        public ILifetimeScope Container { get; }
 
         public FeedAggregatorService(
             ConfigurationExtension configuration,
             IServiceProvider serviceProvider,
-            ILifetimeScope container,
             IOptionsMonitor<ILog> optionsMonitor,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot)
         {
             Configuration = configuration;
             ServiceProvider = serviceProvider;
-            Container = container;
             Log = optionsMonitor.Get("ASC.Feed.Agregator");
             SignalrServiceClient = optionsSnapshot.Get("counters");
         }
@@ -129,8 +126,7 @@ namespace ASC.Feed.Aggregator
                 Log.DebugFormat("Start of collecting feeds...");
 
                 var unreadUsers = new Dictionary<int, Dictionary<Guid, int>>();
-                using var autofacScope = Container.BeginLifetimeScope();
-                var modules = autofacScope.Resolve<IEnumerable<IFeedModule>>();
+                var modules = scope.ServiceProvider.GetService<IEnumerable<IFeedModule>>();
 
                 foreach (var module in modules)
                 {
@@ -277,7 +273,7 @@ namespace ASC.Feed.Aggregator
         {
             try
             {
-                securityContext.AuthenticateMe(authManager.GetAccountByID(tenantId, userid));
+                securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenantId, userid));
                 return true;
             }
             catch

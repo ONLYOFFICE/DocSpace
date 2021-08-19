@@ -8,6 +8,8 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
+import SharedButton from "../../../../../components/SharedButton";
+import ItemIcon from "../../../../../components/ItemIcon";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -41,17 +43,20 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .styled-element {
+    height: 32px;
+    /* width: ${(props) => (props.isEdit ? "52px" : "24px")}; */
     margin-right: 7px;
   }
 `;
 
 const SimpleFilesRow = (props) => {
   const {
+    t,
     item,
     sectionWidth,
     dragging,
-    onContentRowSelect,
-    rowContextClick,
+    onContentFileSelect,
+    fileContextClick,
     onDrop,
     onMouseDown,
     className,
@@ -59,19 +64,29 @@ const SimpleFilesRow = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    sharedButton,
     contextOptionsProps,
     checkedProps,
-    element,
     onFilesClick,
+    onMouseUp,
+    isEdit,
+    showShare,
   } = props;
+
+  const sharedButton =
+    item.canShare && showShare ? (
+      <SharedButton t={t} id={item.id} isFolder={item.isFolder} />
+    ) : null;
+
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   return (
     <div ref={props.selectableRef}>
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-row ${className}`}
+        className={`files-item ${className}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -80,13 +95,16 @@ const SimpleFilesRow = (props) => {
         <StyledSimpleFilesRow
           key={item.id}
           data={item}
+          isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
           contentElement={sharedButton}
-          onSelect={onContentRowSelect}
-          rowContextClick={rowContextClick}
+          onSelect={onContentFileSelect}
+          rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
-          {...checkedProps}
+          onMouseUp={onMouseUp}
+          onDoubleClick={onFilesClick}
+          checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
         >

@@ -122,7 +122,7 @@ class DownloadDialogComponent extends React.Component {
       if (file.value) {
         viewUrl = `${viewUrl}&outputtype=${file.value}`;
       }
-      window.open(viewUrl, "_blank");
+      window.open(viewUrl, "_self");
       this.onClose();
     } else if (fileConvertIds.length || folderIds.length) {
       setSecondaryProgressBarData({
@@ -396,7 +396,7 @@ class DownloadDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, t } = this.props;
+    const { visible, t, tReady } = this.props;
     const {
       documentsTitleFormat,
       spreadsheetsTitleFormat,
@@ -427,7 +427,11 @@ class DownloadDialogComponent extends React.Component {
       1;
 
     return (
-      <ModalDialogContainer visible={visible} onClose={this.onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={this.onClose}
+      >
         <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("ChooseFormatText")}</Text>

@@ -32,11 +32,11 @@ class ChangePasswordDialogComponent extends React.Component {
 
   render() {
     console.log("ChangePasswordDialog render");
-    const { t, visible, email, onClose } = this.props;
+    const { t, tReady, visible, email, onClose } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog visible={visible} onClose={onClose}>
+      <ModalDialog isLoading={!tReady} visible={visible} onClose={onClose}>
         <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text fontSize="13px">

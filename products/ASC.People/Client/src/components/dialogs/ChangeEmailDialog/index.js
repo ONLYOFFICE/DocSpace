@@ -126,11 +126,15 @@ class ChangeEmailDialogComponent extends React.Component {
 
   render() {
     console.log("ChangeEmailDialog render");
-    const { t, visible, onClose } = this.props;
+    const { t, tReady, visible, onClose } = this.props;
     const { isRequestRunning, email, errorMessage, hasError } = this.state;
 
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <FieldContainer

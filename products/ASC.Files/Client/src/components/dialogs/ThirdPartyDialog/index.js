@@ -47,7 +47,7 @@ const ServiceItem = (props) => {
   const { capability, t, ...rest } = props;
 
   const capabilityName = capability[0];
-  const capabilityLink = capability[1] ? capability[1] : "";
+  const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
@@ -61,6 +61,7 @@ const ServiceItem = (props) => {
 const ThirdPartyDialog = (props) => {
   const {
     t,
+    tReady,
     isAdmin,
     googleConnectItem,
     boxConnectItem,
@@ -120,6 +121,7 @@ const ThirdPartyDialog = (props) => {
 
   return (
     <ModalDialog
+      isLoading={!tReady}
       visible={visible}
       scale={false}
       displayType="auto"

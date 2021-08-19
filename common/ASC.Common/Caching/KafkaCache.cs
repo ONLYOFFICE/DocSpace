@@ -8,6 +8,7 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 
 using Confluent.Kafka;
+using Confluent.Kafka.Admin;
 
 using Google.Protobuf;
 
@@ -19,6 +20,7 @@ namespace ASC.Common.Caching
     public class KafkaCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
     {
         private ClientConfig ClientConfig { get; set; }
+        private AdminClientConfig AdminClientConfig { get; set; }
         private ILog Log { get; set; }
         private ConcurrentDictionary<string, CancellationTokenSource> Cts { get; set; }
         private ConcurrentDictionary<string, Action<T>> Actions { get; set; }
@@ -42,6 +44,7 @@ namespace ASC.Common.Caching
             if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
             {
                 ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
+                AdminClientConfig = new AdminClientConfig { BootstrapServers = settings.BootstrapServers };
             }
             else
             {
@@ -114,6 +117,32 @@ namespace ASC.Common.Caching
                 {
                     GroupId = Guid.NewGuid().ToString()
                 };
+
+
+                using (var adminClient = new AdminClientBuilder(AdminClientConfig)
+                    .SetErrorHandler((_, e) => Log.Error(e))
+                    .Build())
+                {
+                    try
+                    {
+                        //TODO: must add checking exist
+                        adminClient.CreateTopicsAsync(
+                            new TopicSpecification[]
+                            {
+                                new TopicSpecification
+                                {
+                                    Name = channelName,
+                                    NumPartitions = 1,
+                                    ReplicationFactor = 1
+                                }
+                            }).Wait();
+                    }
+                    catch(AggregateException)
+                    {
+
+                    }
+                }
+
 
                 using var c = new ConsumerBuilder<AscCacheItem, T>(conf)
                     .SetErrorHandler((_, e) => Log.Error(e))

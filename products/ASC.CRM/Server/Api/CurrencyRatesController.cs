@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Api.CRM;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
+
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Resources;
@@ -131,10 +132,13 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         [Create(@"currency/rates")]
         public CurrencyRateDto CreateCurrencyRate(
-             [FromForm] string fromCurrency,
-             [FromForm] string toCurrency,
-             [FromForm] decimal rate)
+            [FromBody] CreateCurrencyRateRequestDto inDto)
         {
+
+            var rate = inDto.Rate;
+            var fromCurrency = inDto.FromCurrency;
+            var toCurrency = inDto.ToCurrency;
+
             ValidateRate(rate);
 
             ValidateCurrencies(new[] { fromCurrency, toCurrency });
@@ -191,9 +195,11 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         [Create(@"currency/setrates")]
         public List<CurrencyRateDto> SetCurrencyRates(
-             [FromForm] String currency,
-             [FromForm] List<CurrencyRate> rates)
+             SetCurrencyRatesRequestDto inDto)
         {
+            var currency = inDto.Currency;
+            var rates = inDto.Rates;
+
             if (!_crmSecurity.IsAdmin)
                 throw _crmSecurity.CreateSecurityException();
 
@@ -236,7 +242,7 @@ namespace ASC.CRM.Api
         /// <category>Common</category>
         /// <returns></returns>
         [Create(@"currency/addrates")]
-        public List<CurrencyRateDto> AddCurrencyRates([FromForm] List<CurrencyRate> rates)
+        public List<CurrencyRateDto> AddCurrencyRates([FromBody] List<CurrencyRate> rates)
         {
             if (!_crmSecurity.IsAdmin)
                 throw _crmSecurity.CreateSecurityException();

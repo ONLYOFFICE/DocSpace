@@ -5,12 +5,14 @@ class UserStore {
   user = null;
   isLoading = false;
   isLoaded = false;
+  userIsUpdate = false;
 
   constructor() {
     makeObservable(this, {
       user: observable,
       isLoading: observable,
       isLoaded: observable,
+      userIsUpdate: observable,
       getCurrentUser: action,
       setIsLoading: action,
       setIsLoaded: action,
@@ -52,6 +54,10 @@ class UserStore {
 
     this.setUser(user);
     this.setIsLoading(false);
+  };
+
+  setUserIsUpdate = (isUpdate) => {
+    this.userIsUpdate = isUpdate;
   };
 }
 

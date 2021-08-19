@@ -82,7 +82,9 @@ namespace ASC.Api.Core.Auth
                     }
                     else
                     {
-                        if(emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmailActivation)
+                        if(emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmailActivation ||
+                            emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmpInvite ||
+                            emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.LinkInvite)
                         {
                             userId = ASC.Core.Configuration.Constants.CoreSystem.ID;
                         }
@@ -97,7 +99,7 @@ namespace ASC.Api.Core.Auth
                     userId = SecurityContext.CurrentAccount.ID;
                 }
 
-                SecurityContext.AuthenticateMe(userId, claims);
+                SecurityContext.AuthenticateMeWithoutCookie(userId, claims);
             }
 
             var result = checkKeyResult switch

@@ -37,6 +37,10 @@ const EditingWrapper = styled.div`
   display: inline-flex;
   align-items: center;
 
+  ${(props) =>
+    props.viewAs === "tile" &&
+    `margin-right: 12px !important; margin-left: -4px;`}
+
   @media (max-width: 1024px) {
     height: 56px;
   }
@@ -82,6 +86,7 @@ const EditingWrapperComponent = (props) => {
     onClickUpdateItem,
     cancelUpdateItem,
     isLoading,
+    viewAs,
   } = props;
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
@@ -110,7 +115,7 @@ const EditingWrapperComponent = (props) => {
   const onFocus = (e) => e.target.select();
 
   return (
-    <EditingWrapper>
+    <EditingWrapper viewAs={viewAs}>
       <TextInput
         className="edit-text"
         name="title"
@@ -126,7 +131,7 @@ const EditingWrapperComponent = (props) => {
         data-itemid={itemId}
       />
       <Button
-        className="edit-button"
+        className="edit-button not-selectable"
         size="medium"
         isDisabled={isLoading}
         onClick={onClickUpdateItem}
@@ -137,7 +142,7 @@ const EditingWrapperComponent = (props) => {
         isHovered={OkIconIsHovered}
       />
       <Button
-        className="edit-button"
+        className="edit-button not-selectable"
         size="medium"
         isDisabled={isLoading}
         onClick={cancelUpdateItem}

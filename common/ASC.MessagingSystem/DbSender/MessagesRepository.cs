@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 
 using ASC.Common;
@@ -35,7 +34,6 @@ using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
-using ASC.Core.Tenants;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,12 +53,10 @@ namespace ASC.MessagingSystem.DbSender
         private static DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
         private readonly IDictionary<string, EventMessage> Cache;
-        private static Parser Parser { get; set; }
+        private Parser Parser { get; set; }
 
         private readonly Timer Timer;
         private bool timerStarted;
-
-        private readonly Timer ClearTimer;
 
         public ILog Log { get; set; }
         private IServiceProvider ServiceProvider { get; }
@@ -69,15 +65,12 @@ namespace ASC.MessagingSystem.DbSender
         {
             CacheTime = TimeSpan.FromMinutes(1);
             Cache = new Dictionary<string, EventMessage>();
-            Parser = Parser.GetDefault();
             timerStarted = false;
 
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
 
             Timer = new Timer(FlushCache);
-            ClearTimer = new Timer(DeleteOldEvents);
-            ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
         }
 
         public void Add(EventMessage message)
@@ -146,6 +139,7 @@ namespace ASC.MessagingSystem.DbSender
                         }
                         else
                         {
+                            Parser = Parser ?? Parser.GetDefault();
                             clientInfo = Parser.Parse(message.UAHeader);
                             dict.Add(message.UAHeader, clientInfo);
                         }
@@ -267,66 +261,11 @@ namespace ASC.MessagingSystem.DbSender
                        : string.Format("{0} {1}", clientInfo.OS.Family, clientInfo.OS.Major);
         }
 
-        //TODO: move to external service and fix
-        private void DeleteOldEvents(object state)
-        {
-            try
-            {
-                GetOldEvents(r => r.LoginEvents, "LoginHistoryLifeTime");
-                GetOldEvents(r => r.AuditEvents, "AuditTrailLifeTime");
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message, ex);
-            }
-        }
-
-        private void GetOldEvents<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
-        {
-            List<T> ids;
-            var compile = func.Compile();
-            do
-            {
-                using var scope = ServiceProvider.CreateScope();
-                using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
-                var table = compile.Invoke(ef);
-
-                var ae = table
-                    .Join(ef.Tenants, r => r.TenantId, r => r.Id, (audit, tenant) => audit)
-                    .Select(r => new
-                    {
-                        r.Id,
-                        r.Date,
-                        r.TenantId,
-                        ef = r
-                    })
-                    .Where(r => r.Date < DateTime.UtcNow.AddDays(-Convert.ToDouble(
-                        ef.WebstudioSettings
-                        .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
-                        .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
-                        .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
-                    .Take(1000);
-
-                ids = ae.Select(r => r.ef).ToList();
-
-                if (!ids.Any()) return;
-
-                table.RemoveRange(ids);
-                ef.SaveChanges();
-
-            } while (ids.Any());
-        }
-
         public void Dispose()
         {
             if (Timer != null)
             {
                 Timer.Dispose();
-            }
-
-            if (ClearTimer != null)
-            {
-                ClearTimer.Dispose();
             }
         }
     }

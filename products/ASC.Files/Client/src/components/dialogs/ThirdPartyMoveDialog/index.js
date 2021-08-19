@@ -15,6 +15,7 @@ const StyledOperationDialog = styled.div`
 
 const PureThirdPartyMoveContainer = ({
   t,
+  tReady,
   visible,
   provider,
   selection,
@@ -58,7 +59,12 @@ const PureThirdPartyMoveContainer = ({
 
   return (
     <StyledOperationDialog>
-      <ModalDialog visible={visible} zIndex={zIndex} onClose={onClose}>
+      <ModalDialog
+        isLoading={!tReady}
+        visible={visible}
+        zIndex={zIndex}
+        onClose={onClose}
+      >
         <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("MoveConfirmationMessage", { provider })}</Text>

@@ -173,7 +173,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 //}
 
                 tenantManager.SetCurrentTenant(TenantId);
-                securityContext.AuthenticateMe(UserId);
+                securityContext.AuthenticateMeWithoutCookie(UserId);
 
                 BuilderKey = documentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
 

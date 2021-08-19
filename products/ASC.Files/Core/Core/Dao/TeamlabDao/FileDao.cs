@@ -744,6 +744,8 @@ namespace ASC.Files.Core.Data
 
             List<DbFile> toUpdate;
 
+            var trashId = GlobalFolder.GetFolderTrash<int>(DaoFactory);
+
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
                 var fromFolders = Query(FilesDbContext.Files)
@@ -760,7 +762,7 @@ namespace ASC.Files.Core.Data
                 {
                     f.FolderId = toFolderId;
 
-                    if (GlobalFolder.GetFolderTrash<int>(DaoFactory).Equals(toFolderId))
+                    if (trashId.Equals(toFolderId))
                     {
                         f.ModifiedBy = AuthContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;
@@ -1264,17 +1266,15 @@ namespace ASC.Files.Core.Data
         {
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
-                .Select(r => r.TenantId)
-                .GroupBy(r => r)
-                .Where(r => r.Any())
+                .GroupBy(r => r.TenantId)
+                .Where(r => r.Count() > 0)
                 .Select(r => r.Key)
                 .ToList();
 
             var q2 = FilesDbContext.Security
                 .Where(r => r.TimeStamp > fromTime)
-                .Select(r => r.TenantId)
-                .GroupBy(r => r)
-                .Where(r => r.Any())
+                .GroupBy(r => r.TenantId)
+                .Where(r => r.Count() > 0)
                 .Select(r => r.Key)
                 .ToList();
 

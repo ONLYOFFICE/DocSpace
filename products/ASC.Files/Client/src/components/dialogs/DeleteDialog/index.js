@@ -41,6 +41,19 @@ class DeleteDialogComponent extends React.Component {
     this.state = { foldersList, filesList, selection };
   }
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeydown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeydown, false);
+  }
+
+  onKeydown = (e) => {
+    if (e.keyCode === 27) this.onClose();
+    if (e.keyCode === 13) this.onDelete();
+  };
+
   onDelete = () => {
     this.onClose();
     const { t, deleteAction } = this.props;
@@ -99,14 +112,24 @@ class DeleteDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, isLoading, unsubscribe } = this.props;
+    const {
+      visible,
+      t,
+      tReady,
+      isLoading,
+      unsubscribe,
+      isPrivacyFolder,
+      personal,
+    } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    const title = unsubscribe
+    const title = isPrivacyFolder
+      ? t("ConfirmRemove")
+      : unsubscribe
       ? t("UnsubscribeTitle")
-      : checkedSelections.length === 1
+      : checkedSelections.length === 1 || isPrivacyFolder
       ? checkedSelections[0].fileExst
         ? t("MoveToTrashOneFileTitle")
         : t("MoveToTrashOneFolderTitle")
@@ -114,11 +137,19 @@ class DeleteDialogComponent extends React.Component {
 
     const noteText = unsubscribe
       ? t("UnsubscribeNote")
-      : checkedSelections.length === 1
+      : checkedSelections.length === 1 || isPrivacyFolder
       ? checkedSelections[0].fileExst
         ? t("MoveToTrashOneFileNote")
+        : personal
+        ? ""
         : t("MoveToTrashOneFolderNote")
       : t("MoveToTrashItemsNote");
+
+    const accessButtonLabel = isPrivacyFolder
+      ? t("Common:OKButton")
+      : unsubscribe
+      ? t("UnsubscribeButton")
+      : t("MoveToTrashButton");
 
     const accuracy = 20;
     let filesHeight = 25 * filesList.length + accuracy + 8;
@@ -133,7 +164,11 @@ class DeleteDialogComponent extends React.Component {
     const height = filesHeight + foldersHeight;
 
     return (
-      <ModalDialogContainer visible={visible} onClose={this.onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={this.onClose}
+      >
         <ModalDialog.Header>{title}</ModalDialog.Header>
         <ModalDialog.Body>
           <div className="modal-dialog-content">
@@ -179,9 +214,7 @@ class DeleteDialogComponent extends React.Component {
           <Button
             className="button-dialog-accept"
             key="OkButton"
-            label={
-              unsubscribe ? t("UnsubscribeButton") : t("MoveToTrashButton")
-            }
+            label={accessButtonLabel}
             size="medium"
             primary
             onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
@@ -208,9 +241,17 @@ const DeleteDialog = withTranslation([
 ])(DeleteDialogComponent);
 
 export default inject(
-  ({ filesStore, selectedFolderStore, dialogsStore, filesActionsStore }) => {
+  ({
+    filesStore,
+    selectedFolderStore,
+    dialogsStore,
+    filesActionsStore,
+    treeFoldersStore,
+    auth,
+  }) => {
     const { selection, isLoading } = filesStore;
     const { deleteAction, unsubscribeAction } = filesActionsStore;
+    const { isPrivacyFolder } = treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
@@ -220,11 +261,14 @@ export default inject(
       unsubscribe,
     } = dialogsStore;
 
+    const { personal } = auth.settingsStore;
+
     return {
       selection: removeMediaItem ? [removeMediaItem] : selection,
       isLoading,
       isRootFolder: selectedFolderStore.isRootFolder,
       visible,
+      isPrivacyFolder,
 
       setDeleteDialogVisible,
       deleteAction,
@@ -232,6 +276,8 @@ export default inject(
       unsubscribe,
 
       setRemoveMediaItem,
+
+      personal,
     };
   }
 )(withRouter(observer(DeleteDialog)));

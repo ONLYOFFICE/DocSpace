@@ -105,7 +105,7 @@ namespace ASC.Files.Core.Data
 
             if (subject != Guid.Empty)
             {
-                q.Where(r => r.Link.CreateBy == subject);
+                q = q.Where(r => r.Link.CreateBy == subject);
             }
 
             return FromQuery(q);
@@ -138,7 +138,7 @@ namespace ASC.Files.Core.Data
 
             if (subject != Guid.Empty)
             {
-                q.Where(r => r.Link.CreateBy == subject);
+                q = q.Where(r => r.Link.CreateBy == subject);
             }
 
             return FromQuery(q)

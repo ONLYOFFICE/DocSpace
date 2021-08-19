@@ -136,11 +136,6 @@ namespace ASC.CRM.ApiModels
                 Data = "support@onlyoffice.com",
                 InfoType = ContactInfoType.Email
             };
-        }
-
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<ContactInfo, ContactInfoDto>();
-        }
+        }        
     }
 }

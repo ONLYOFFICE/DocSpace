@@ -106,7 +106,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 0;
                 Status = DistributedTaskStatus.Running;
 
-                securityContext.AuthenticateMe(_currentUserId);
+                securityContext.AuthenticateMeWithoutCookie(_currentUserId);
 
                 long crmSpace;
                 GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);

@@ -48,7 +48,6 @@ export function getFolder(folderId, filter) {
     filter && filter instanceof FilesFilter
       ? `${folderId}?${filter.toApiUrlParams()}`
       : folderId;
-
   const options = {
     method: "get",
     url: `/files/${params}`,
@@ -446,8 +445,14 @@ export function setFileOwner(folderIds, fileIds, userId) {
   });
 }
 
-export function startUploadSession(folderId, fileName, fileSize, relativePath) {
-  const data = { fileName, fileSize, relativePath };
+export function startUploadSession(
+  folderId,
+  fileName,
+  fileSize,
+  relativePath,
+  encrypted
+) {
+  const data = { fileName, fileSize, relativePath, encrypted };
   return request({
     method: "post",
     url: `/files/${folderId}/upload/create_session.json`,
@@ -749,4 +754,14 @@ export function getSubfolders(folderId) {
     method: "get",
     url: `files/${folderId}/subfolders`,
   });
+}
+
+export function createThumbnails(fileIds) {
+  const options = {
+    method: "post",
+    url: "/files/thumbnails",
+    data: { fileIds: fileIds },
+  };
+
+  return request(options);
 }

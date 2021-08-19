@@ -75,7 +75,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, onClose, visible, userStatus } = this.props;
+    const { t, tReady, onClose, visible, userStatus } = this.props;
     const { listUsers, isRequestRunning, userIds } = this.state;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
     const itemSize = 25;
@@ -120,7 +120,11 @@ class ChangeUserStatusDialogComponent extends React.Component {
         : t("Common:Active");
 
     return (
-      <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
         <ModalDialog.Header>
           {t("ChangeUserStatusDialogHeader")}
         </ModalDialog.Header>

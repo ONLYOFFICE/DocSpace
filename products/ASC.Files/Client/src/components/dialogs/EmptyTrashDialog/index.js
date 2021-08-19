@@ -14,6 +14,7 @@ const EmptyTrashDialogComponent = (props) => {
   const {
     visible,
     t,
+    tReady,
     filter,
     currentFolderId,
     setSecondaryProgressBarData,
@@ -115,7 +116,11 @@ const EmptyTrashDialogComponent = (props) => {
   ]);
 
   return (
-    <ModalDialogContainer visible={visible} onClose={onClose}>
+    <ModalDialogContainer
+      isLoading={!tReady}
+      visible={visible}
+      onClose={onClose}
+    >
       <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text>{t("DeleteForeverNote")}</Text>

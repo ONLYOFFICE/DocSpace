@@ -12,7 +12,7 @@ import Box from "@appserver/components/box";
 import withLoader from "../withLoader";
 import toastr from "studio/toastr";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
-import { mobile, tablet, isMobile } from "@appserver/components/utils/device";
+import { mobile, tablet } from "@appserver/components/utils/device";
 import Link from "@appserver/components/link";
 
 const StyledForm = styled(Box)`

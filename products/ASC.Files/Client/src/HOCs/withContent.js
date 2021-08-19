@@ -14,7 +14,7 @@ import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
-
+import { getDefaultFileName } from "../helpers/utils";
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ export default function withContent(WrappedContent) {
       const { item, fileActionId, fileActionExt } = props;
       let titleWithoutExt = getTitleWithoutExst(item);
       if (fileActionId === -1 && item.id === fileActionId) {
-        titleWithoutExt = this.getDefaultName(fileActionExt);
+        titleWithoutExt = getDefaultFileName(fileActionExt);
       }
 
       this.state = { itemTitle: titleWithoutExt };
@@ -32,25 +32,10 @@ export default function withContent(WrappedContent) {
     componentDidUpdate(prevProps) {
       const { fileActionId, fileActionExt } = this.props;
       if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
-        const itemTitle = this.getDefaultName(fileActionExt);
+        const itemTitle = getDefaultFileName(fileActionExt);
         this.setState({ itemTitle });
       }
     }
-
-    getDefaultName = (format) => {
-      const { t } = this.props;
-
-      switch (format) {
-        case "docx":
-          return t("NewDocument");
-        case "xlsx":
-          return t("NewSpreadsheet");
-        case "pptx":
-          return t("NewPresentation");
-        default:
-          return t("NewFolder");
-      }
-    };
 
     completeAction = (id) => {
       const { editCompleteAction, item } = this.props;
@@ -125,7 +110,6 @@ export default function withContent(WrappedContent) {
 
     onClickUpdateItem = (e) => {
       const { fileActionType } = this.props;
-
       fileActionType === FileAction.Create
         ? this.createItem(e)
         : this.updateItem(e);
@@ -161,7 +145,7 @@ export default function withContent(WrappedContent) {
               combineUrl(
                 AppServerConfig.proxyURL,
                 config.homepage,
-                "/products/files/doceditor"
+                "/doceditor"
               ),
               "_blank"
             )
@@ -203,7 +187,7 @@ export default function withContent(WrappedContent) {
             .then(() => {
               const exst = item.fileExst;
               return toastr.success(
-                <Trans i18nKey="FileCreated" ns="Home">
+                <Trans t={t} i18nKey="FileCreated" ns="Home">
                   New file {{ itemTitle }}.{{ exst }} is created
                 </Trans>
               );
@@ -251,11 +235,11 @@ export default function withContent(WrappedContent) {
         item,
         fileActionId,
         fileActionExt,
-        isLoading,
         viewer,
         t,
         isTrashFolder,
         onFilesClick,
+        viewAs,
       } = this.props;
       const { id, fileExst, updated, createdBy, access, fileStatus } = item;
 
@@ -283,9 +267,10 @@ export default function withContent(WrappedContent) {
 
       return isEdit ? (
         <EditingWrapperComponent
+          className={"editing-wrapper-component"}
           itemTitle={itemTitle}
           itemId={id}
-          isLoading={isLoading}
+          viewAs={viewAs}
           renameTitle={this.renameTitle}
           onClickUpdateItem={this.onClickUpdateItem}
           cancelUpdateItem={this.cancelUpdateItem}
@@ -317,7 +302,7 @@ export default function withContent(WrappedContent) {
         renameFolder,
         createFile,
         createFolder,
-        isLoading,
+        viewAs,
       } = filesStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -345,10 +330,10 @@ export default function withContent(WrappedContent) {
         setEncryptionAccess,
         createFolder,
         fileActionExt,
-        isLoading,
         culture,
         homepage: config.homepage,
         viewer: auth.userStore.user,
+        viewAs,
       };
     }
   )(observer(WithContent));

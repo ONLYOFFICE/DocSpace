@@ -233,13 +233,13 @@ namespace ASC.Web.Files.ThirdPartyApp
             file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("createdTime"));
             file.ModifiedOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modifiedTime"));
             file.ContentLength = Convert.ToInt64(jsonFile.Value<string>("size"));
-            file.ModifiedByString = jsonFile["lastModifyingUser"]["displayName"].Value<string>();
+            file._modifiedByString = jsonFile["lastModifyingUser"]["displayName"].Value<string>();
             file.ProviderKey = "Google";
 
             var owners = jsonFile["owners"];
             if (owners != null)
             {
-                file.CreateByString = owners[0]["displayName"].Value<string>();
+                file._createByString = owners[0]["displayName"].Value<string>();
             }
 
             editable = jsonFile["capabilities"]["canEdit"].Value<bool>();
@@ -692,7 +692,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 try
                 {
-                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
                     userInfo = UserManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
                 }
                 finally
