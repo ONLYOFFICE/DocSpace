@@ -442,7 +442,7 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onMoveAction,
       });
 
-      if (!isMediaSelected) menu.splice(1, 1);
+      menu.splice(1, 1);
     }
 
     if (isFavoritesFolder) {
@@ -472,12 +472,12 @@ class SectionHeaderContent extends React.Component {
       menu.splice(3, 1);
     }
 
-    if (
+    /*if (
       (personal && !isWebEditSelected && !isViewedSelected) ||
       selectionCount > 1
     ) {
       menu.splice(1, 1);
-    }
+    }*/
 
     return menu;
   };
