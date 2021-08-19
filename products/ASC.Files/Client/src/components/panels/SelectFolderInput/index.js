@@ -98,6 +98,9 @@ class SelectFolderInputBody extends React.PureComponent {
       asideHeightContent,
       zIndex,
       showButtons,
+      header,
+      headerName,
+      footer,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
@@ -133,6 +136,9 @@ class SelectFolderInputBody extends React.PureComponent {
           modalHeightContent={modalHeightContent}
           asideHeightContent={asideHeightContent}
           showButtons={showButtons}
+          header={header}
+          headerName={headerName}
+          footer={footer}
         />
       </StyledComponent>
     );
