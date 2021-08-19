@@ -10,6 +10,9 @@ import RowContent from "@appserver/components/row-content";
 
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../../../../../package.json";
 
 const sideColor = "#A3A9AE";
 
@@ -68,6 +71,9 @@ const FilesRowContent = ({
     foldersCount,
     providerKey,
     access,
+    previewUrl,
+    folderUrl,
+    id,
   } = item;
 
   const onMobileRowClick = () => {
@@ -76,6 +82,20 @@ const FilesRowContent = ({
   };
 
   const withAccess = isAdmin || access === 0;
+
+  const docUrl = combineUrl(
+    AppServerConfig.proxyURL,
+    config.homepage,
+    `/doceditor?fileId=${id}`
+  );
+
+  const href = isTrashFolder
+    ? null
+    : previewUrl
+    ? previewUrl
+    : !item.isFolder
+    ? docUrl
+    : folderUrl;
 
   return (
     <>
@@ -93,6 +113,8 @@ const FilesRowContent = ({
           title={titleWithoutExt}
           fontWeight="600"
           fontSize="15px"
+          target="_blank"
+          href={href}
           {...linkStyles}
           color="#333"
           isTextOverflow

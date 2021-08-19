@@ -109,6 +109,9 @@ export default function withFileActions(WrappedFileItem) {
       } = this.props;
       const notSelectable = e.target.classList.contains("not-selectable");
 
+      if (e.button === 1) {
+        return localStorage.setItem("location", JSON.stringify(location));
+      }
       this.setState({ isMouseDown: true });
 
       if (!draggable || isPrivacy) return;
@@ -196,6 +199,7 @@ export default function withFileActions(WrappedFileItem) {
 
       if (isTrashFolder) return;
       if (e && e.target.tagName === "INPUT") return;
+      e.preventDefault();
 
       if (!fileExst && !contentLength) {
         setIsLoading(true);

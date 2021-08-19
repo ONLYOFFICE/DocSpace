@@ -1093,6 +1093,9 @@ class FilesStore {
         item.fileExst
       );
 
+      const previewUrl = canOpenPlayer
+        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view?${id}`)
+        : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
@@ -1105,6 +1108,14 @@ class FilesStore {
       this.folders.map((x) => {
         if (x.id === item.id) isFolder = true;
       });
+
+      const folderUrl = isFolder
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/view?folder=${id}`
+          )
+        : null;
 
       return {
         access,
@@ -1144,6 +1155,8 @@ class FilesStore {
         //canShare,
         thumbnailUrl,
         thumbnailStatus,
+        previewUrl,
+        folderUrl,
       };
     });
 

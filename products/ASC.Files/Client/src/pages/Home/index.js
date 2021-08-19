@@ -38,11 +38,47 @@ class PureHome extends React.Component {
       isVisitor,
       expandedKeys,
       setExpandedKeys,
+      setMediaViewerData,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
+
+    if (window.location.pathname.indexOf("/files/view") > 1) {
+      const search = window.location.search;
+      let id = null;
+
+      if (search.indexOf("?folder") >= 0) {
+        id = search.slice(search.indexOf("=") + 1);
+      }
+      const newLocation = JSON.parse(localStorage.getItem("location"));
+
+      filterObj = newLocation
+        ? FilesFilter.getFilter(newLocation)
+        : FilesFilter.getDefault();
+      if (isVisitor) filterObj.folder = "@common";
+      const folderId = id || filterObj.folder;
+      setIsLoading(true);
+
+      fetchFiles(folderId, filterObj)
+        .then((data) => {
+          const pathParts = data.selectedFolder.pathParts;
+          const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+          setExpandedKeys(newExpandedKeys);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setFirstLoad(false);
+        });
+
+      if (!(search.indexOf("?folder") >= 0)) {
+        const fileId = Number(search.slice(search.indexOf("?") + 1));
+        setMediaViewerData({ visible: true, id: fileId });
+      }
+
+      return;
+    }
 
     if (match && match.length > 0) {
       filterObj = FilesFilter.getFilter(window.location);
@@ -311,7 +347,13 @@ class PureHome extends React.Component {
 const Home = withTranslation("Home")(PureHome);
 
 export default inject(
-  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    mediaViewerDataStore,
+  }) => {
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
@@ -366,6 +408,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
+    const { setMediaViewerData } = mediaViewerDataStore;
     return {
       homepage: config.homepage,
       firstLoad,
@@ -405,6 +448,7 @@ export default inject(
       startUpload,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
+      setMediaViewerData,
     };
   }
 )(withRouter(observer(Home)));
