@@ -58,5 +58,10 @@ namespace ASC.Webhooks
             webhooksDbContext.WebhooksPayloads.Update(webhook);
             webhooksDbContext.SaveChanges();
         }
+
+        public int ConfigsNumber()
+        {
+            return webhooksDbContext.WebhooksConfigs.Count();
+        }
     }
 }

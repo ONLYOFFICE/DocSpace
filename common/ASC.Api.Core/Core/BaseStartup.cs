@@ -10,6 +10,7 @@ using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Mapping;
+using ASC.Webhooks;
 
 using Autofac;
 
@@ -80,8 +81,10 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<ConfirmAuthHandler>();
 
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
             DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+
 
             var builder = services.AddMvcCore(config =>
             {

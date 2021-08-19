@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
+using ASC.Api.Core.Middleware;
 using ASC.Api.Documents;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
@@ -32,6 +33,7 @@ namespace ASC.Files
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             services.AddMemoryCache();
+            services.AddHostedService<WebhookHostedService>();
 
             base.ConfigureServices(services);
 
@@ -42,7 +44,6 @@ namespace ASC.Files
             DIHelper.TryAdd<DocuSignHandlerService>();
             DIHelper.TryAdd<ThirdPartyAppHandlerService>();
 
-            services.AddHostedService<WebhookHostedService>();
             DIHelper.TryAdd<WebhookHostedService>();
 
             WebhooksExtension.Register(DIHelper);

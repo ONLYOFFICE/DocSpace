@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.Webhooks
 {
     [Scope]
-    public class WebhookPublisher
+    public class WebhookPublisher : IWebhookPublisher
     {
         private DbWorker DbWorker { get; }
         private TenantManager TenantManager { get; }

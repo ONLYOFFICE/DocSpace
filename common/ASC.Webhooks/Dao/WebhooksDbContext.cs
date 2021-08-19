@@ -2,98 +2,64 @@
 using ASC.Webhooks.Dao.Models;
 
 using Microsoft.EntityFrameworkCore;
+using ASC.Core.Common.EF.Model;
+using System.Collections.Generic;
+using System;
+using ASC.Core.Common.EF.Context;
+using ASC.Common;
 
 #nullable disable
 
 namespace ASC.Webhooks.Dao
 {
+    public class MySqlWebhooksDbContext : WebhooksDbContext { }
+    public class PostgreSqlWebhooksDbContext : WebhooksDbContext { }
     public partial class WebhooksDbContext : BaseDbContext
     {
-        public WebhooksDbContext()
-        {
-        }
-
-        public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options)
-            : base(options)
-        {
-        }
-
         public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
         public virtual DbSet<WebhooksPayload> WebhooksPayloads { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseMySQL("server=localhost;port=3306;database=onlyoffice;uid=root;password=onlyoffice");
-//            }
-//        }
+        //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //        {
+        //            if (!optionsBuilder.IsConfigured)
+        //            {
+        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        //                optionsBuilder.UseMySQL("server=localhost;port=3306;database=onlyoffice;uid=root;password=onlyoffice");
+        //            }
+        //        }
+
+        public WebhooksDbContext() { }
+        public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options)
+            : base(options)
+        {
+
+        }
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlWebhooksDbContext() } ,
+                     { Provider.Postgre, () => new PostgreSqlWebhooksDbContext() } ,
+                };
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<WebhooksConfig>(entity =>
-            {
-                entity.HasKey(e => new { e.ConfigId})
-                    .HasName("PRIMARY");
-
-                entity.ToTable("webhooks_config");
-
-                entity.Property(e => e.ConfigId)
-                   .HasColumnType("int")
-                   .HasColumnName("ConfigID");
-
-                entity.Property(e => e.TenantId).HasColumnType("int unsigned");
-
-                entity.Property(e => e.Uri)
-                    .HasMaxLength(50)
-                    .HasColumnName("URI")
-                    .HasDefaultValueSql("''");
-
-                entity.Property(e => e.SecretKey)
-                    .HasMaxLength(50)
-                    .HasColumnName("SecretKey")
-                    .HasDefaultValueSql("''");
-            });
-
-            modelBuilder.Entity<WebhooksPayload>(entity =>
-            {
-                entity.HasKey(e => new { e.Id })
-                   .HasName("PRIMARY");
-
-                entity.ToTable("webhooks_payload");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int")
-                    .HasColumnName("ID")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.ConfigId)
-                   .HasColumnType("int")
-                   .HasColumnName("ConfigID");
-
-                entity.Property(e => e.Data)
-                    .IsRequired()
-                    .HasColumnType("json");
-
-                entity.Property(e => e.Event)
-                    .HasColumnType("varchar")
-                    .HasColumnName("Event")
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.Status)
-                    .HasColumnType("varchar")
-                    .HasColumnName("Status")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.TenantId)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("TenantID");
-            });
-
-            OnModelCreatingPartial(modelBuilder);
+            ModelBuilderWrapper
+            .From(modelBuilder, Provider)
+            .AddWebhooksConfig()
+            .AddWebhooksPayload();
         }
+    }
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    public static class WebhooksDbExtension
+    {
+        public static DIHelper AddWebhooksDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<TenantDbContext>();
+        }
     }
 }

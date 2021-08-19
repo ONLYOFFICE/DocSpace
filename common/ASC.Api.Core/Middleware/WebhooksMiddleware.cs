@@ -14,14 +14,12 @@ namespace ASC.Api.Core.Middleware
     public class WebhooksMiddleware
     {
         private readonly RequestDelegate _next;
-        private WebhookPublisher WebhookPublisher { get; }
-        private WebhooksIdentifier WebhooksIdentifier { get; }
+        private IWebhookPublisher WebhookPublisher { get; }
 
-        public WebhooksMiddleware(RequestDelegate next, WebhookPublisher webhookPublisher, WebhooksIdentifier webhooksIdentifier)
+        public WebhooksMiddleware(RequestDelegate next, IWebhookPublisher webhookPublisher)
         {
             _next = next;
             WebhookPublisher = webhookPublisher;
-            WebhooksIdentifier = webhooksIdentifier;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -30,9 +28,9 @@ namespace ASC.Api.Core.Middleware
 
             var method = context.Request.Method;
             var endpoint = (RouteEndpoint)context.GetEndpoint();
-            var routePattern = endpoint.RoutePattern.RawText;
+            var routePattern = endpoint?.RoutePattern.RawText;
 
-            if (!methodList.Contains(method) && !WebhooksIdentifier.Identify(routePattern))
+            if (!methodList.Contains(method) || routePattern == null)
             {
                 await _next(context);
                 return;
@@ -54,8 +52,7 @@ namespace ASC.Api.Core.Middleware
                 await ms.CopyToAsync(originalResponseBody);
                 context.Response.Body = originalResponseBody;
             }
-
-            var eventName = "method: " + method + ", " + "route: " + routePattern;
+            var eventName = $"method: {method}, route: {routePattern}";
 
             WebhookPublisher.Publish(eventName, responseContent);
         }

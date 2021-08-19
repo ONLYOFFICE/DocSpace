@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Web.Webhooks;
 using ASC.Common;
-using ASC.Common.Caching;
 
 namespace ASC.Webhooks
 {
@@ -23,7 +22,6 @@ namespace ASC.Webhooks
 
         public WorkerService(WebhookSender webhookSender,
             ILog logger,
-            ICacheNotify<WebhookRequest> webhookNotify,
             BuildQueueService buildQueueService)
         {
             this.logger = logger;
