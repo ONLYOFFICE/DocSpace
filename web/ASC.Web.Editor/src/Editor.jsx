@@ -624,7 +624,14 @@ const Editor = () => {
   };
 
   const onClickSaveSelectFolder = (e, folderId) => {
-    SaveAs(titleSelectorFolder, urlSelectorFolder, folderId, openNewTab);
+    const currentExst = titleSelectorFolder.split(".").pop();
+
+    const title =
+      currentExst !== extension
+        ? titleSelectorFolder.concat(`.${extension}`)
+        : titleSelectorFolder;
+
+    SaveAs(title, urlSelectorFolder, folderId, openNewTab);
   };
 
   const onChangeInput = (e) => {
