@@ -23,7 +23,8 @@
       "RemoveDomainTimeout": 99999,
       "RemoveMailboxTimeout": 99999,
       "EnableSignalr": false,
-      "AggregateModeValue": "all"
+      "AggregateModeValue": "all",
+      "MaxMessageSizeLimit": 67108864
     },
     "Defines": {
       "AuthErrorWarningTimeout": "00:05:00",

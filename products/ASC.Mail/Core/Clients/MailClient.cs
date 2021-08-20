@@ -38,6 +38,7 @@ using ASC.Common.Logging;
 using ASC.Mail.Clients.Imap;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Engine;
+using ASC.Mail.Core.Exceptions;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
@@ -577,7 +578,7 @@ namespace ASC.Mail.Clients
                         continue;
                     }
 
-                    loaded += LoadFolderMessages(folder, mailFolder, limitMessages);
+                    loaded += LoadFolderMessages(folder, mailFolder, limitMessages, mailSettings.Aggregator.MaxMessageSizeLimit);
 
                     if (limitMessages <= 0 || loaded < limitMessages)
                         continue;
@@ -685,7 +686,24 @@ namespace ASC.Mail.Clients
             return new List<IMailFolder>();
         }
 
-        private int LoadFolderMessages(IMailFolder folder, MailFolder mailFolder, int limitMessages)
+        class TransferProgress : ITransferProgress
+        {
+            public long BytesTransferred;
+            public long TotalSize;
+
+            public void Report(long bytesTransferred, long totalSize)
+            {
+                BytesTransferred = bytesTransferred;
+                TotalSize = totalSize;
+            }
+
+            public void Report(long bytesTransferred)
+            {
+                BytesTransferred = bytesTransferred;
+            }
+        }
+
+        private int LoadFolderMessages(IMailFolder folder, MailFolder mailFolder, int limitMessages, uint? maxSize)
         {
             var loaded = 0;
 
@@ -749,7 +767,19 @@ namespace ASC.Mail.Clients
                             break;
                         }
 
-                        var message = folder.GetMessage(uid, CancelToken);
+                        var messInfo = folder.Fetch(new List<UniqueId>() { uid }, MessageSummaryItems.Size).FirstOrDefault();
+
+                        if (messInfo.Size > maxSize)
+                            throw new LimitMessageException(string.Format("Message size ({0}) exceeds fixed maximum message size ({1}). The message will be skipped.",
+                                messInfo.Size, maxSize));
+
+                        var progress = new TransferProgress();
+
+                        Log.DebugFormat($"GetMessage(uid='{uid}')");
+
+                        var message = folder.GetMessage(uid, CancelToken, progress);
+
+                        Log.DebugFormat($"BytesTransferred = {progress.BytesTransferred}");
 
                         var uid1 = uid;
                         var info = infoList.FirstOrDefault(t => t.UniqueId == uid1);
@@ -772,6 +802,15 @@ namespace ASC.Mail.Clients
                         message.FixEncodingIssues(Log);
 
                         OnGetMessage(message, uid.Id.ToString(), unread, mailFolder);
+
+                        loaded++;
+                    }
+                    catch (LimitMessageException e)
+                    {
+                        Log.ErrorFormat(
+                            "ProcessMessages() Tenant={0} User='{1}' Account='{2}', MailboxId={3}, UID={4} Exception:\r\n{5}\r\n",
+                            Account.TenantId, Account.UserId, Account.EMail.Address, Account.MailBoxId,
+                            uid, e);
 
                         loaded++;
                     }

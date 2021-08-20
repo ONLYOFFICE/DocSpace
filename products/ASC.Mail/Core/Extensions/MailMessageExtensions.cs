@@ -29,9 +29,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+
 using ASC.Common.Logging;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
+
+using HtmlAgilityPack;
 //using HtmlAgilityPack;
 using MimeKit;
 using MimeKit.Text;
@@ -377,7 +380,7 @@ namespace ASC.Mail.Extensions
                                             mds.Content.DecodeTo(memory);
 
                                             var text =
-                                                Encoding.ASCII.GetString(memory.GetBuffer(), 0, (int) memory.Length)
+                                                Encoding.ASCII.GetString(memory.GetBuffer(), 0, (int)memory.Length)
                                                     .Replace("\r\n", "\n");
 
                                             entity.SetText(Encoding.UTF8, text);
@@ -594,104 +597,103 @@ namespace ASC.Mail.Extensions
 
         public static void ReplaceEmbeddedImages(this MailMessageData mail, ILog log = null)
         {
-            //TODO: Fix
-            //log = log ?? new NullLog();
+            log = log ?? new NullLog();
 
-            //try
-            //{
-            //    var attchments = mail.Attachments.Where(a => a.isEmbedded && !string.IsNullOrEmpty(a.storedFileUrl)).ToList();
+            try
+            {
+                var attchments = mail.Attachments.Where(a => a.isEmbedded && !string.IsNullOrEmpty(a.storedFileUrl)).ToList();
 
-            //    if (!attchments.Any())
-            //        return;
+                if (!attchments.Any())
+                    return;
 
-            //    if (mail.HtmlBodyStream.Length > 0)
-            //    {
-            //        mail.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
+                if (mail.HtmlBodyStream.Length > 0)
+                {
+                    mail.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
 
-            //        var doc = new HtmlDocument();
-            //        doc.Load(mail.HtmlBodyStream, Encoding.UTF8);
+                    var doc = new HtmlDocument();
+                    doc.Load(mail.HtmlBodyStream, Encoding.UTF8);
 
-            //        var hasChanges = false;
+                    var hasChanges = false;
 
-            //        foreach (var attach in attchments)
-            //        {
-            //            HtmlNodeCollection oldNodes = null;
+                    foreach (var attach in attchments)
+                    {
+                        HtmlNodeCollection oldNodes = null;
 
-            //            if (!string.IsNullOrEmpty(attach.contentId))
-            //            {
-            //                oldNodes =
-            //                    doc.DocumentNode.SelectNodes("//img[@src and (contains(@src,'cid:" +
-            //                                                 attach.contentId.Trim('<').Trim('>') + "'))]");
-            //            }
+                        if (!string.IsNullOrEmpty(attach.contentId))
+                        {
+                            oldNodes =
+                                doc.DocumentNode.SelectNodes("//img[@src and (contains(@src,'cid:" +
+                                                             attach.contentId.Trim('<').Trim('>') + "'))]");
+                        }
 
-            //            if (!string.IsNullOrEmpty(attach.contentLocation) && oldNodes == null)
-            //            {
-            //                oldNodes =
-            //                    doc.DocumentNode.SelectNodes("//img[@src and (contains(@src,'" +
-            //                                                 attach.contentLocation + "'))]");
-            //            }
+                        if (!string.IsNullOrEmpty(attach.contentLocation) && oldNodes == null)
+                        {
+                            oldNodes =
+                                doc.DocumentNode.SelectNodes("//img[@src and (contains(@src,'" +
+                                                             attach.contentLocation + "'))]");
+                        }
 
-            //            if (oldNodes == null)
-            //            {
-            //                //This attachment is not embedded;
-            //                attach.contentId = null;
-            //                attach.contentLocation = null;
-            //                continue;
-            //            }
+                        if (oldNodes == null)
+                        {
+                            //This attachment is not embedded;
+                            attach.contentId = null;
+                            attach.contentLocation = null;
+                            continue;
+                        }
 
-            //            foreach (var node in oldNodes)
-            //            {
-            //                node.SetAttributeValue("src", attach.storedFileUrl);
-            //                hasChanges = true;
-            //            }
-            //        }
+                        foreach (var node in oldNodes)
+                        {
+                            node.SetAttributeValue("src", attach.storedFileUrl);
+                            hasChanges = true;
+                        }
+                    }
 
-            //        mail.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
+                    mail.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
 
-            //        if (!hasChanges)
-            //            return;
+                    if (!hasChanges)
+                        return;
 
-            //        mail.HtmlBodyStream.Close();
-            //        mail.HtmlBodyStream.Dispose();
+                    mail.HtmlBodyStream.Close();
+                    mail.HtmlBodyStream.Dispose();
 
-            //        mail.HtmlBodyStream = new MemoryStream();
+                    mail.HtmlBodyStream = new MemoryStream();
 
-            //        using (var sw = new StreamWriter(mail.HtmlBodyStream, Encoding.UTF8, 1024, true))
-            //        {
-            //            doc.DocumentNode.WriteTo(sw);
-            //            sw.Flush();
-            //            mail.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
-            //        }
+                    using (var sw = new StreamWriter(mail.HtmlBodyStream, Encoding.UTF8, 1024, true))
+                    {
+                        doc.DocumentNode.WriteTo(sw);
+                        sw.Flush();
+                        mail.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
+                    }
 
-            //        mail.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
-            //    }
-            //    else
-            //    {
-            //        foreach (var attach in attchments)
-            //        {
-            //            if (!string.IsNullOrEmpty(attach.contentId))
-            //            {
-            //                mail.HtmlBody = mail.HtmlBody.Replace(string.Format("cid:{0}", attach.contentId.Trim('<').Trim('>')),
-            //                    attach.storedFileUrl);
-            //            }
-            //            else if (!string.IsNullOrEmpty(attach.contentLocation))
-            //            {
-            //                mail.HtmlBody = mail.HtmlBody.Replace(string.Format("{0}", attach.contentLocation),
-            //                    attach.storedFileUrl);
-            //            }
-            //            else
-            //            {
-            //                //This attachment is not embedded;
-            //                attach.contentId = null;
-            //                attach.contentLocation = null;
-            //            }
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.ErrorFormat("ReplaceEmbeddedImages() \r\n Exception: \r\n{0}\r\n", ex.ToString());
-            //}
+                    mail.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
+                }
+                else
+                {
+                    foreach (var attach in attchments)
+                    {
+                        if (!string.IsNullOrEmpty(attach.contentId))
+                        {
+                            mail.HtmlBody = mail.HtmlBody.Replace(string.Format("cid:{0}", attach.contentId.Trim('<').Trim('>')),
+                                attach.storedFileUrl);
+                        }
+                        else if (!string.IsNullOrEmpty(attach.contentLocation))
+                        {
+                            mail.HtmlBody = mail.HtmlBody.Replace(string.Format("{0}", attach.contentLocation),
+                                attach.storedFileUrl);
+                        }
+                        else
+                        {
+                            //This attachment is not embedded;
+                            attach.contentId = null;
+                            attach.contentLocation = null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("ReplaceEmbeddedImages() \r\n Exception: \r\n{0}\r\n", ex.ToString());
+            }
         }
     }
 }

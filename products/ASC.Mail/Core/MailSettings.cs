@@ -175,6 +175,7 @@ namespace ASC.Mail.Configuration
             public bool CollectStatistics { get; set; }
             public bool ShowMailEngineLogs { get; set; }
             public int? QuotaRest { get; set; }
+            public uint? MaxMessageSizeLimit { get; set; }
             public AggregatorConfig() { }
             public AggregatorConfig(AggregatorConfig config, IConfiguration configuration)
             {
@@ -218,6 +219,7 @@ namespace ASC.Mail.Configuration
                 CollectStatistics = config.CollectStatistics;
                 TenantOverdueDays = config.TenantOverdueDays ?? 10;
                 TenantMinQuotaBalance = config.TenantMinQuotaBalance ?? 26214400;
+                MaxMessageSizeLimit = config.MaxMessageSizeLimit ?? 67108864;
             }
         }
         public class WatchdogConfig

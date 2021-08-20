@@ -66,7 +66,7 @@ namespace ASC.Mail.StorageCleaner.Service
             if (WorkTimer == null)
                 return;
 
-            Log.Debug("Setup  WorkTimer to Timeout.Infinite");
+            Log.Debug("Setup WorkTimer to Timeout.Infinite");
 
             WorkTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
@@ -102,7 +102,7 @@ namespace ASC.Mail.StorageCleaner.Service
 
             try
             {
-                Eraser.ClearMailGarbage(cancelToken);
+                //Eraser.ClearMailGarbage(cancelToken); Need rework
 
                 Log.InfoFormat("All mailboxes were processed. Go back to timer. Next start after {0} minutes.\r\n",
                     TsInterval.TotalMinutes);
@@ -127,14 +127,6 @@ namespace ASC.Mail.StorageCleaner.Service
 
             StartTimer(cancelToken);
         }
-
-
-
-
-
-
-
-
 
         private void ConfigureNLog(IConfiguration configuration, ConfigurationExtension configurationExtension)
         {

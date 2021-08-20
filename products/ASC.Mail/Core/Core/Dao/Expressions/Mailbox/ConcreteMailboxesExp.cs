@@ -53,7 +53,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             Expression<Func<MailMailbox, bool>> exp = mb => mb.IsRemoved == _isRemoved;
 
             exp = exp.And(m => m.Address == Address);
-            exp = exp.And(m => m.Enabled == true);
             exp = exp.And(m => m.IsProcessed == true);
 
             return exp;

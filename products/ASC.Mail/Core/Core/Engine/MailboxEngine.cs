@@ -555,12 +555,13 @@ namespace ASC.Mail.Core.Engine
             }
 
             bool? enabled = null;
-            int? messageCount = null;
-            long? size = null;
             bool? quotaError = null;
             string oAuthToken = null;
-            string imapIntervalsJson = null;
             bool? resetImapIntervals = null;
+            string imapIntervalsJson = null;
+
+            int? messageCount = null;
+            long? size = null;
 
             if (mailBox.NotOnlyOne)
             {
@@ -593,6 +594,14 @@ namespace ASC.Mail.Core.Engine
                                 imapIntervalsJson = mailBox.ImapIntervalsJson;
                             }
                         }
+                    }
+                    else
+                    {
+                        enabled = null;
+                        quotaError = null;
+                        oAuthToken = null;
+                        resetImapIntervals = null;
+                        imapIntervalsJson = null;
                     }
 
                     if (box.MsgCountLast != mailBox.MessagesCount)

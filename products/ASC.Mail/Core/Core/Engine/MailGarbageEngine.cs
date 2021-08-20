@@ -433,7 +433,7 @@ namespace ASC.Mail.Core.Engine
 
                     log.Info("SetMailboxRemoved()");
 
-                    mailboxEngine.RemoveMailBox(mailbox, needRecalculateFolders);
+                    //mailboxEngine.RemoveMailBox(mailbox, needRecalculateFolders);
 
                     mailbox.IsRemoved = true;
                 }
