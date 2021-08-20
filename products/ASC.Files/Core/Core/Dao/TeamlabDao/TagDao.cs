@@ -749,7 +749,7 @@ namespace ASC.Files.Core.Data
                          EntryType = r.Link.EntryType
                     }
                 })
-                .ToList()
+                .AsEnumerable()
                 .Select(ToTag)
                 .ToList();
         }
