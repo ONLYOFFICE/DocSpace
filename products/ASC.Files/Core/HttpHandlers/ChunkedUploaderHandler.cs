@@ -200,7 +200,7 @@ namespace ASC.Web.Files.HttpHandlers
             if (request.Type(InstanceCrypto) == ChunkedRequestType.Initiate)
             {
                 TenantManager.SetCurrentTenant(request.TenantId);
-                SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, request.AuthKey(InstanceCrypto)));
+                SecurityContext.AuthenticateMeWithoutCookie(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, request.AuthKey(InstanceCrypto)));
                 var cultureInfo = request.CultureInfo(SetupInfo);
                 if (cultureInfo != null)
                     Thread.CurrentThread.CurrentUICulture = cultureInfo;
@@ -213,7 +213,7 @@ namespace ASC.Web.Files.HttpHandlers
                 if (uploadSession != null)
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);
-                    SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, uploadSession.UserId));
+                    SecurityContext.AuthenticateMeWithoutCookie(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, uploadSession.UserId));
                     var culture = SetupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, uploadSession.CultureName, StringComparison.InvariantCultureIgnoreCase));
                     if (culture != null)
                         Thread.CurrentThread.CurrentUICulture = culture;
