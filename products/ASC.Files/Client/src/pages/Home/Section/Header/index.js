@@ -226,9 +226,10 @@ class SectionHeaderContent extends React.Component {
       deleteAction,
       confirmDelete,
       setDeleteDialogVisible,
+      isThirdPartySelection,
     } = this.props;
 
-    if (confirmDelete) {
+    if (confirmDelete || isThirdPartySelection) {
       setDeleteDialogVisible(true);
     } else {
       const translations = {
@@ -325,16 +326,16 @@ class SectionHeaderContent extends React.Component {
       selectionCount,
       isAccessedSelected,
       isWebEditSelected,
-      isViewedSelected,
-      isMediaSelected,
+      // isViewedSelected,
+      // isMediaSelected,
       deleteDialogVisible,
       isRecycleBin,
-      isThirdPartySelection,
+      isThirdPartyRootSelection,
       isPrivacy,
       isFavoritesFolder,
       isRecentFolder,
       isShareFolder,
-      personal,
+      // personal,
     } = this.props;
 
     let menu = [
@@ -415,7 +416,7 @@ class SectionHeaderContent extends React.Component {
           isRecentFolder ||
           !isAccessedSelected ||
           !selectionCount ||
-          isThirdPartySelection,
+          isThirdPartyRootSelection,
         onClick: this.onMoveAction,
       },
       {
@@ -426,7 +427,7 @@ class SectionHeaderContent extends React.Component {
       {
         label: t("Common:Delete"),
         disabled:
-          !selectionCount || !deleteDialogVisible || isThirdPartySelection,
+          !selectionCount || !deleteDialogVisible || isThirdPartyRootSelection,
         onClick: this.onDeleteAction,
       },
     ];
@@ -626,6 +627,7 @@ export default inject(
       isHeaderChecked,
       userAccess,
       isAccessedSelected,
+      isThirdPartyRootSelection,
       isThirdPartySelection,
       isWebEditSelected,
       setIsLoading,
@@ -674,6 +676,7 @@ export default inject(
       isHeaderChecked,
       deleteDialogVisible: userAccess,
       isAccessedSelected,
+      isThirdPartyRootSelection,
       isThirdPartySelection,
       isWebEditSelected,
       isViewedSelected,

@@ -410,10 +410,8 @@ class FilesStore {
 
     const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
 
-    const { isRootFolder } = this.selectedFolderStore;
-
-    const isThirdPartyFolder = item.providerKey && isRootFolder;
-
+    const isThirdPartyFolder =
+      item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
@@ -1221,9 +1219,14 @@ class FilesStore {
     );
   }
 
+  get isThirdPartyRootSelection() {
+    const withProvider = this.selection.find((x) => x.providerKey);
+    return withProvider && withProvider.rootFolderId === withProvider.id;
+  }
+
   get isThirdPartySelection() {
-    const withProvider = this.selection.find((x) => !x.providerKey);
-    return !withProvider && this.selectedFolderStore.isRootFolder;
+    const withProvider = this.selection.find((x) => x.providerKey);
+    return !!withProvider;
   }
 
   get isWebEditSelected() {

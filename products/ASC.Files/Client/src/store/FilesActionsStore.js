@@ -319,13 +319,20 @@ class FilesActionStore {
     setSelection([item]);
   };
 
-  deleteItemAction = (itemId, currentFolderId, translations, isFile) => {
+  deleteItemAction = (
+    itemId,
+    currentFolderId,
+    translations,
+    isFile,
+    isThirdParty
+  ) => {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
     if (
       this.settingsStore.confirmDelete ||
-      this.treeFoldersStore.isPrivacyFolder
+      this.treeFoldersStore.isPrivacyFolder ||
+      isThirdParty
     ) {
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
