@@ -28,6 +28,8 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 
+import api from "@appserver/common/api";
+
 class PureHome extends React.Component {
   componentDidMount() {
     const {
@@ -38,7 +40,8 @@ class PureHome extends React.Component {
       isVisitor,
       expandedKeys,
       setExpandedKeys,
-      setMediaViewerData,
+      setToPreviewFile,
+      mediaViewersFormatsStore,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
@@ -47,35 +50,32 @@ class PureHome extends React.Component {
 
     if (window.location.pathname.indexOf("/files/view") > 1) {
       const search = window.location.search;
-      let id = null;
+      const fileId = search.slice(search.indexOf("view") + 2);
 
-      if (search.indexOf("?folder") >= 0) {
-        id = search.slice(search.indexOf("=") + 1);
-      }
-      const newLocation = JSON.parse(localStorage.getItem("location"));
-
-      filterObj = newLocation
-        ? FilesFilter.getFilter(newLocation)
-        : FilesFilter.getDefault();
-      if (isVisitor) filterObj.folder = "@common";
-      const folderId = id || filterObj.folder;
-      setIsLoading(true);
-
-      fetchFiles(folderId, filterObj)
+      api.files
+        .getFileInfo(fileId)
         .then((data) => {
-          const pathParts = data.selectedFolder.pathParts;
-          const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
-          setExpandedKeys(newExpandedKeys);
-        })
-        .finally(() => {
+          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
+            data.fileExst
+          );
+          const file = { ...data, canOpenPlayer };
+          setToPreviewFile(file, true);
+
           setIsLoading(false);
           setFirstLoad(false);
-        });
+        })
+        .catch((err) => {
+          filterObj = FilesFilter.getFilter();
+          const folderId = filterObj.folderId;
 
-      if (!(search.indexOf("?folder") >= 0)) {
-        const fileId = Number(search.slice(search.indexOf("?") + 1));
-        setMediaViewerData({ visible: true, id: fileId });
-      }
+          fetchFiles(folderId, filterObj)
+            .then(() => toastr.error(err))
+            .catch((err) => toastr.error(err))
+            .finally(() => {
+              setIsLoading(false);
+              setFirstLoad(false);
+            });
+        });
 
       return;
     }
@@ -353,6 +353,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     mediaViewerDataStore,
+    formatsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -371,6 +372,8 @@ export default inject(
       isLoading,
       viewAs,
     } = filesStore;
+
+    const { mediaViewersFormatsStore } = formatsStore;
 
     const { id } = fileActionStore;
     const {
@@ -408,7 +411,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
-    const { setMediaViewerData } = mediaViewerDataStore;
+    const { setToPreviewFile } = mediaViewerDataStore;
     return {
       homepage: config.homepage,
       firstLoad,
@@ -448,7 +451,8 @@ export default inject(
       startUpload,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
-      setMediaViewerData,
+      setToPreviewFile,
+      mediaViewersFormatsStore,
     };
   }
 )(withRouter(observer(Home)));

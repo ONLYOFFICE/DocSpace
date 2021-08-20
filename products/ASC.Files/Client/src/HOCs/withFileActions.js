@@ -108,10 +108,6 @@ export default function withFileActions(WrappedFileItem) {
         isPrivacy,
       } = this.props;
       const notSelectable = e.target.classList.contains("not-selectable");
-
-      if (e.button === 1) {
-        return localStorage.setItem("location", JSON.stringify(location));
-      }
       this.setState({ isMouseDown: true });
 
       if (!draggable || isPrivacy) return;

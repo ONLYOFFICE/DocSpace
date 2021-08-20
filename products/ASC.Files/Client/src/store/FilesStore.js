@@ -1113,7 +1113,7 @@ class FilesStore {
         ? combineUrl(
             AppServerConfig.proxyURL,
             config.homepage,
-            `/view?folder=${id}`
+            `/filter?folder=${id}`
           )
         : null;
 
