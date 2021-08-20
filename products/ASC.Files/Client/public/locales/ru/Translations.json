@@ -29,5 +29,6 @@
   "FolderTitleSharePoint": "Каталог SharePoint",
   "FolderTitleSkyDrive": "Каталог OneDrive",
   "FolderTitleWebDav": "Каталог WebDAV",
-  "FolderTitleYandex": "Каталог Яндекса"
+  "FolderTitleYandex": "Каталог Яндекса",
+  "MediaLoadError": "Медиа файл не может быть загружен"
 }

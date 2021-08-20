@@ -29,5 +29,6 @@
   "FolderTitleSharePoint": "SharePoint directory",
   "FolderTitleSkyDrive": "OneDrive directory",
   "FolderTitleWebDav": "WebDAV Directory",
-  "FolderTitleYandex": "Yandex Directory"
+  "FolderTitleYandex": "Yandex Directory",
+  "MediaLoadError": "Media file could not be loaded"
 }

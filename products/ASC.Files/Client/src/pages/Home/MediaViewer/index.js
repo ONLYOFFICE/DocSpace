@@ -98,6 +98,7 @@ const FilesMediaViewer = (props) => {
         deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
+        errorLabel={t("Translations:MediaLoadError")}
       />
     )
   );
