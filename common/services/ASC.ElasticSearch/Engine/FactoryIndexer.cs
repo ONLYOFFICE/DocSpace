@@ -436,25 +436,25 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public async Task<bool> IndexAsync(T data, bool immediately = true)
+        public Task<bool> IndexAsync(T data, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!await SupportAsync(t)) return false;
-            return await Queue(() => Indexer.Index(data, immediately));
+            if (!Support(t)) return Task.FromResult(false);
+            return Queue(() => Indexer.Index(data, immediately));
         }
 
-        public async Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
+        public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!await SupportAsync(t)) return false;
-            return await Queue(() => Indexer.Update(data, immediately, fields));
+            if (!Support(t)) return Task.FromResult(false);
+            return Queue(() => Indexer.Update(data, immediately, fields));
         }
 
-        public async Task<bool> DeleteAsync(T data, bool immediately = true)
+        public Task<bool> DeleteAsync(T data, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!await SupportAsync(t)) return false;
-            return await Queue(() => Indexer.Delete(data, immediately));
+            if (!Support(t)) return Task.FromResult(false);
+            return Queue(() => Indexer.Delete(data, immediately));
         }
 
         public async Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
