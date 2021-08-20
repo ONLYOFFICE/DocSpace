@@ -56,26 +56,26 @@ export function getFolder(folderId, filter) {
   return request(options);
 }
 
-const getFolderNameByType = (folderType) => {
-  switch (folderType) {
-    case FolderType.USER:
-      return "@my";
-    case FolderType.SHARE:
-      return "@share";
-    case FolderType.COMMON:
-      return "@common";
-    case FolderType.Projects:
-      return "@projects";
-    case FolderType.Favorites:
-      return "@favorites";
-    case FolderType.Recent:
-      return "@recent";
-    case FolderType.TRASH:
-      return "@trash";
-    default:
-      return "";
-  }
-}; //TODO: need get from settings
+// const getFolderNameByType = (folderType) => {
+//   switch (folderType) {
+//     case FolderType.USER:
+//       return "@my";
+//     case FolderType.SHARE:
+//       return "@share";
+//     case FolderType.COMMON:
+//       return "@common";
+//     case FolderType.Projects:
+//       return "@projects";
+//     case FolderType.Favorites:
+//       return "@favorites";
+//     case FolderType.Recent:
+//       return "@recent";
+//     case FolderType.TRASH:
+//       return "@trash";
+//     default:
+//       return "";
+//   }
+// }; //TODO: need get from settings
 
 const sortInDisplayOrder = (folders) => {
   const sorted = [];
@@ -137,7 +137,7 @@ export function getFoldersTree() {
       const folders = sortInDisplayOrder(response);
       return folders.map((data, index) => {
         const type = +data.current.rootFolderType;
-        const name = getFolderNameByType(type);
+        //const name = getFolderNameByType(type);
         const isRecycleBinFolder = type === FolderType.TRASH;
         return {
           id: data.current.id,
@@ -145,7 +145,7 @@ export function getFoldersTree() {
           parentId: data.current.parentId,
           title: data.current.title,
           rootFolderType: type,
-          rootFolderName: name,
+          //rootFolderName: name,
           // folders: !isRecycleBinFolder
           //   ? data.folders.map((folder) => {
           //       return {
