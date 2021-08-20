@@ -261,10 +261,18 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false
+    withSubfolders = false,
+    saveSorting = false
   ) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
+
+    if (saveSorting) {
+      filterData.sortBy = this.filter.sortBy;
+      filterData.pageCount = this.filter.pageCount;
+      filterData.sortOrder = this.filter.sortOrder;
+    }
+
     const {
       treeFolders,
       //privacyFolder,
@@ -410,10 +418,8 @@ class FilesStore {
 
     const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
 
-    const { isRootFolder } = this.selectedFolderStore;
-
-    const isThirdPartyFolder = item.providerKey && isRootFolder;
-
+    const isThirdPartyFolder =
+      item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
@@ -1221,9 +1227,14 @@ class FilesStore {
     );
   }
 
+  get isThirdPartyRootSelection() {
+    const withProvider = this.selection.find((x) => x.providerKey);
+    return withProvider && withProvider.rootFolderId === withProvider.id;
+  }
+
   get isThirdPartySelection() {
-    const withProvider = this.selection.find((x) => !x.providerKey);
-    return !withProvider && this.selectedFolderStore.isRootFolder;
+    const withProvider = this.selection.find((x) => x.providerKey);
+    return !!withProvider;
   }
 
   get isWebEditSelected() {

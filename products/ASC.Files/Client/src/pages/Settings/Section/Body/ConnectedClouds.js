@@ -144,33 +144,37 @@ class ConnectClouds extends React.Component {
 
   openLocation = (e) => {
     const {
-      myDirectoryFolders,
-      commonDirectoryFolders,
+      myFolderId,
+      commonFolderId,
       filter,
       providers,
       homepage,
       history,
+      getSubfolders,
     } = this.props;
 
     const provider = e.currentTarget.dataset.providerKey;
     const isCorporate =
       !!providers.length &&
       providers.find((p) => p.provider_key === provider).corporate;
-    const dir = isCorporate ? commonDirectoryFolders : myDirectoryFolders;
-    const id = dir
-      .filter((f) => f.providerKey === provider)
-      .map((f) => f.id)
-      .join();
+    const dirId = isCorporate ? commonFolderId : myFolderId;
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.startIndex = 0;
-    newFilter.folder = id;
+    getSubfolders(dirId).then((subfolders) => {
+      const id = subfolders
+        .filter((f) => f.providerKey === provider)
+        .map((f) => f.id)
+        .join();
 
-    const urlFilter = newFilter.toUrlParams();
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-    );
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.startIndex = 0;
+      newFilter.folder = id;
+
+      const urlFilter = newFilter.toUrlParams();
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
+    });
   };
 
   getContextOptions = (item, index) => {
@@ -291,7 +295,7 @@ export default inject(
   ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { filter } = filesStore;
-    const { myFolder, commonFolder } = treeFoldersStore;
+    const { myFolder, commonFolder, getSubfolders } = treeFoldersStore;
     const {
       setConnectItem,
       setThirdPartyDialogVisible,
@@ -304,14 +308,15 @@ export default inject(
       filter,
       providers,
       capabilities,
-      myDirectoryFolders: myFolder && myFolder.folders,
-      commonDirectoryFolders: commonFolder && commonFolder.folders,
+      myFolderId: myFolder && myFolder.id,
+      commonFolderId: commonFolder && commonFolder.id,
 
       setThirdPartyDialogVisible,
       setConnectDialogVisible,
       setConnectItem,
       setDeleteThirdPartyDialogVisible,
       setRemoveItem,
+      getSubfolders,
 
       homepage: config.homepage,
     };
