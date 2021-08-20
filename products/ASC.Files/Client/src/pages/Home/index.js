@@ -60,9 +60,6 @@ class PureHome extends React.Component {
           );
           const file = { ...data, canOpenPlayer };
           setToPreviewFile(file, true);
-
-          setIsLoading(false);
-          setFirstLoad(false);
         })
         .catch((err) => {
           filterObj = FilesFilter.getFilter();
