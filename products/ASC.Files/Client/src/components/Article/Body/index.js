@@ -67,7 +67,7 @@ class ArticleBodyContent extends React.Component {
 
       const urlFilter = filter.toUrlParams();
       showLoader();
-      fetchFiles(data[0])
+      fetchFiles(data[0], null, true, false, true)
         .then(() =>
           history.push(
             combineUrl(
