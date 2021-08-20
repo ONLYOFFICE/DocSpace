@@ -16,7 +16,7 @@ import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { isDesktop, isTablet } from "react-device-detect";
-
+import { showLoader, hideLoader } from "@appserver/common/utils";
 class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
@@ -48,7 +48,6 @@ class ArticleBodyContent extends React.Component {
 
     //if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
     setSelectedNode(data);
-    setIsLoading(true);
 
     const selectedFolderTitle =
       (e.node && e.node.props && e.node.props.title) || null;
@@ -58,14 +57,29 @@ class ArticleBodyContent extends React.Component {
       : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
+      setIsLoading(true);
       fetchFiles(data[0])
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
-      const urlFilter = FilesFilter.getDefault().toUrlParams();
-      history.push(
-        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-      );
+      const filter = FilesFilter.getDefault();
+
+      filter.folder = data[0];
+
+      const urlFilter = filter.toUrlParams();
+      showLoader();
+      fetchFiles(data[0])
+        .then(() =>
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              homepage,
+              `/filter?${urlFilter}`
+            )
+          )
+        )
+        .catch((err) => toastr.error(err))
+        .finally(() => hideLoader());
     }
     //}
   };

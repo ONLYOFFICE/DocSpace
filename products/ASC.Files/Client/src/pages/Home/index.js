@@ -38,6 +38,7 @@ class PureHome extends React.Component {
       isVisitor,
       expandedKeys,
       setExpandedKeys,
+      filesList,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
@@ -62,6 +63,8 @@ class PureHome extends React.Component {
     }
 
     if (!filterObj) return;
+
+    if (filesList.length !== 0) return;
 
     let dataObj = { filter: filterObj };
 
@@ -328,6 +331,7 @@ export default inject(
       setIsLoading,
       isLoading,
       viewAs,
+      files: filesList,
     } = filesStore;
 
     const { id } = fileActionStore;
@@ -367,6 +371,7 @@ export default inject(
       : null;
 
     return {
+      filesList,
       homepage: config.homepage,
       firstLoad,
       dragging,
