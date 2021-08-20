@@ -261,10 +261,18 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false
+    withSubfolders = false,
+    saveSorting = false
   ) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
+
+    if (saveSorting) {
+      filterData.sortBy = this.filter.sortBy;
+      filterData.pageCount = this.filter.pageCount;
+      filterData.sortOrder = this.filter.sortOrder;
+    }
+
     const {
       treeFolders,
       //privacyFolder,

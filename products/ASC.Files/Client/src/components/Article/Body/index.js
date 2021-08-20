@@ -37,7 +37,6 @@ class ArticleBodyContent extends React.Component {
 
   onSelect = (data, e) => {
     const {
-      filter,
       setIsLoading,
       selectedTreeNode,
       setSelectedNode,
@@ -58,7 +57,7 @@ class ArticleBodyContent extends React.Component {
       : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
-      fetchFiles(data[0])
+      fetchFiles(data[0], null, true, false, true)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
@@ -119,7 +118,7 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, filter, setIsLoading } = filesStore;
+    const { fetchFiles, setIsLoading } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
 
     const selectedNode = treeFoldersStore.selectedTreeNode;
@@ -139,7 +138,6 @@ export default inject(
       selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
       selectedTreeNode,
-      filter,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
 
