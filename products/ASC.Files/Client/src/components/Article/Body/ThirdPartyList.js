@@ -27,11 +27,11 @@ const StyledThirdParty = styled.div`
     max-width: inherit;
 
     div {
-      height: 32px;
-      //width: 100%;
+      height: 25px;
+      width: 25px;
       //background: #eceef1;
       //text-align: center;
-      margin-right: 1px;
+      margin-right: 10px;
       color: #818b91;
       :first-of-type {
         border-radius: 3px 0 0 3px;
@@ -41,7 +41,7 @@ const StyledThirdParty = styled.div`
       }
 
       .icon {
-        padding: 4px 3px 0 4px;
+        padding: 5px;
       }
 
       @media (max-width: 1024px) {
@@ -93,7 +93,7 @@ const ServiceItem = (props) => {
       <IconButton
         className="icon"
         iconName={src}
-        size={30}
+        size={25}
         isfill={true}
         color="#A3A9AE"
         hoverColor="#818b91"

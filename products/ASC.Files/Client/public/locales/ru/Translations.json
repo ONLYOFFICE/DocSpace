@@ -38,5 +38,6 @@
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Яндекс.Диск"
+  "TypeTitleYandex": "Яндекс.Диск",
+  "MediaLoadError": "Медиа файл не может быть загружен"
 }

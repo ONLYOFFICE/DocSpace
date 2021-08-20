@@ -451,7 +451,13 @@ class MediaViewer extends React.Component {
 
   render() {
     const { playlistPos, playlist, visible, fileUrl } = this.state;
-    const { onClose, userAccess, canDelete, canDownload } = this.props;
+    const {
+      onClose,
+      userAccess,
+      canDelete,
+      canDownload,
+      errorLabel,
+    } = this.props;
 
     const currentFileId =
       playlist.length > 0
@@ -540,6 +546,7 @@ class MediaViewer extends React.Component {
               url={fileUrl}
               isVideo={isVideo}
               getOffset={this.getOffset}
+              errorLabel={errorLabel}
             />
           ))}
         <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
@@ -582,6 +589,7 @@ MediaViewer.propTypes = {
   onClose: PropTypes.func,
   onEmptyPlaylistError: PropTypes.func,
   deleteDialogVisible: PropTypes.bool,
+  errorLabel: PropTypes.string,
 };
 
 MediaViewer.defaultProps = {
