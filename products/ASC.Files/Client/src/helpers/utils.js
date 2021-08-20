@@ -73,7 +73,7 @@ export const openDocEditor = async (
   return Promise.resolve();
 };
 
-export const thirdPartyListTitleTranslation = (key, t) => {
+export const connectedCloudsTitleTranslation = (key, t) => {
   switch (key) {
     case "Box":
 
@@ -103,6 +103,41 @@ export const thirdPartyListTitleTranslation = (key, t) => {
       return t("Translations:FolderTitlekDrive");
     case "Yandex":
       return t("Translations:FolderTitleYandex");
+
+    default:
+      return key;
+  }
+};
+
+export const connectedCloudsTypeTitleTranslation = (key, t) => {
+  switch (key) {
+    case "Box":
+    case "BoxNet":
+      return t("Translations:TypeTitleBoxNet");
+
+    case "DropBox":
+    case "DropboxV2":
+      return t("Translations:TypeTitleDropBox");
+
+    case "DocuSign":
+      return t("Translations:TypeTitleDocuSign");
+
+    case "Google":
+    case "GoogleDrive":
+      return t("Translations:TypeTitleGoogle");
+
+    case "OneDrive":
+    case "SkyDrive":
+      return t("Translations:TypeTitleSkyDrive");
+
+    case "SharePoint":
+      return t("Translations:TypeTitleSharePoint");
+    case "WebDav":
+      return t("Translations:TypeTitleWebDav");
+    case "kDrive":
+      return t("Translations:TypeTitlekDrive");
+    case "Yandex":
+      return t("Translations:TypeTitleYandex");
 
     default:
       return key;

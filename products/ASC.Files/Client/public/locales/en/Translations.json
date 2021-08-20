@@ -29,5 +29,14 @@
   "FolderTitleSharePoint": "SharePoint directory",
   "FolderTitleSkyDrive": "OneDrive directory",
   "FolderTitleWebDav": "WebDAV Directory",
-  "FolderTitleYandex": "Yandex Directory"
+  "FolderTitleYandex": "Yandex Directory",
+  "TypeTitleBoxNet": "Box",
+  "TypeTitleDocuSign": "DocuSign",
+  "TypeTitleDropBox": "Dropbox",
+  "TypeTitleGoogle": "Google Drive",
+  "TypeTitlekDrive": "kDrive",
+  "TypeTitleSharePoint": "SharePoint",
+  "TypeTitleSkyDrive": "OneDrive",
+  "TypeTitleWebDav": "WebDAV",
+  "TypeTitleYandex": "Yandex.Disk"
 }

@@ -24,6 +24,8 @@ import combineUrl from "@appserver/common/utils/combineUrl";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 import config from "../../../../../package.json";
 import { withRouter } from "react-router";
+import { connectedCloudsTypeTitleTranslation } from "../../../../helpers/utils";
+import Loaders from "@appserver/common/components/Loaders";
 
 const StyledBoxIcon = styled(BoxIcon)`
   ${commonIconsStyles}
@@ -191,7 +193,7 @@ class ConnectClouds extends React.Component {
   };
 
   render() {
-    const { t, providers } = this.props;
+    const { t, providers, tReady } = this.props;
 
     return (
       <>
@@ -206,6 +208,10 @@ class ConnectClouds extends React.Component {
             <RowContainer useReactWindow={false}>
               {providers.map((item, index) => {
                 const element = this.getThirdPartyIcon(item.provider_key);
+                const typeTitle = connectedCloudsTypeTitleTranslation(
+                  item.provider_key,
+                  t
+                );
                 return (
                   <Row
                     key={index}
@@ -230,7 +236,11 @@ class ConnectClouds extends React.Component {
                         fontSize="15px"
                         color="#333"
                       >
-                        {item.provider_key}
+                        {tReady ? (
+                          typeTitle
+                        ) : (
+                          <Loaders.Rectangle width="90px" height="10px" />
+                        )}
                       </Text>
                       <Link
                         type="page"

@@ -29,5 +29,14 @@
   "FolderTitleSharePoint": "Каталог SharePoint",
   "FolderTitleSkyDrive": "Каталог OneDrive",
   "FolderTitleWebDav": "Каталог WebDAV",
-  "FolderTitleYandex": "Каталог Яндекса"
+  "FolderTitleYandex": "Каталог Яндекса",
+  "TypeTitleBoxNet": "Box",
+  "TypeTitleDocuSign": "DocuSign",
+  "TypeTitleDropBox": "Dropbox",
+  "TypeTitleGoogle": "Google Drive",
+  "TypeTitlekDrive": "kDrive",
+  "TypeTitleSharePoint": "SharePoint",
+  "TypeTitleSkyDrive": "OneDrive",
+  "TypeTitleWebDav": "WebDAV",
+  "TypeTitleYandex": "Яндекс.Диск"
 }

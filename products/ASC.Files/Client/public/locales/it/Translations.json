@@ -7,5 +7,14 @@
   "FolderTitleSharePoint": "Cartella di SharePoint",
   "FolderTitleSkyDrive": "Cartella di OneDrive",
   "FolderTitleWebDav": "Cartella di WebDAV",
-  "FolderTitleYandex": "Cartella di Yandex"
+  "FolderTitleYandex": "Cartella di Yandex",
+  "TypeTitleBoxNet": "Box",
+  "TypeTitleDocuSign": "Docusign",
+  "TypeTitleDropBox": "Dropbox",
+  "TypeTitleGoogle": "Google Drive",
+  "TypeTitlekDrive": "kDrive",
+  "TypeTitleSharePoint": "SharePoint",
+  "TypeTitleSkyDrive": "OneDrive",
+  "TypeTitleWebDav": "WebDAV",
+  "TypeTitleYandex": "Yandex.Disk"
 }

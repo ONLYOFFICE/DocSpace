@@ -7,5 +7,14 @@
   "FolderTitleSharePoint": "Répertoire de SharePoint",
   "FolderTitleSkyDrive": "Répertoire de OneDrive",
   "FolderTitleWebDav": "Répertoire WebDAV",
-  "FolderTitleYandex": "WebDAV Yandex"
+  "FolderTitleYandex": "WebDAV Yandex",
+  "TypeTitleBoxNet": "Box",
+  "TypeTitleDocuSign": "DocuSign",
+  "TypeTitleDropBox": "Dropbox",
+  "TypeTitleGoogle": "Google Drive",
+  "TypeTitlekDrive": "kDrive",
+  "TypeTitleSharePoint": "SharePoint",
+  "TypeTitleSkyDrive": "OneDrive",
+  "TypeTitleWebDav": "WebDAV",
+  "TypeTitleYandex": "Yandex.Disk"
 }
