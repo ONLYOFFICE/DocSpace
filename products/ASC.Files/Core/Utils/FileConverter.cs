@@ -235,7 +235,7 @@ namespace ASC.Web.Files.Utils
 
                             tenantManager.SetCurrentTenant(tenantId);
 
-                            securityContext.AuthenticateMe(account);
+                            securityContext.AuthenticateMeWithoutCookie(account);
 
                             var user = userManager.GetUsers(account.ID);
                             var culture = string.IsNullOrEmpty(user.CultureName) ? tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);

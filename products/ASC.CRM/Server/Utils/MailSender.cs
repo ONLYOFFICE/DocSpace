@@ -195,7 +195,7 @@ namespace ASC.Web.CRM.Classes
             try
             {
                 _tenantManager.SetCurrentTenant(_tenantID);
-                _securityContext.AuthenticateMe(_authManager.GetAccountByID(_tenantID, _currUser));
+                _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(_tenantID, _currUser));
 
                 smtpClient = GetSmtpClient();
 
