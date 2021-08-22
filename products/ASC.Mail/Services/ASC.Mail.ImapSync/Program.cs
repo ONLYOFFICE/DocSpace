@@ -82,7 +82,7 @@ namespace ASC.Mail.ImapSync
                         .AddJsonFile("kafka.json")
                         .AddJsonFile("mail.json")
                         .AddJsonFile($"mail.{env}.json", true)
-                        .AddJsonFile("elastic.json")
+                        .AddJsonFile("elastic.json", true)
                         .AddJsonFile($"elastic.{env}.json", true)
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()

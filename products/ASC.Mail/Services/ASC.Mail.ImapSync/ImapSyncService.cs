@@ -33,12 +33,16 @@ using Microsoft.Extensions.Options;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Configuration;
 using ASC.Common;
+using System.Collections.Generic;
+using MimeKit;
 
 namespace ASC.Mail.ImapSync
 {
     [Singletone]
     public class ImapSyncService : IHostedService
     {
+        private const int SIGNALR_WAIT_SECONDS = 30;
+
         private readonly ILog _log;
         private readonly IOptionsMonitor<ILog> _options;
         private readonly CancellationTokenSource _cancelTokenSource;
@@ -48,7 +52,6 @@ namespace ASC.Mail.ImapSync
         private readonly IServiceProvider _serviceProvider;
 
         private readonly SemaphoreSlim CreateClientSemaphore;
-        private ManualResetEvent _resetEvent;
         internal MailEnginesFactory MailEnginesFactory { get; }
 
         public ImapSyncService(IOptionsMonitor<ILog> options,
@@ -64,6 +67,7 @@ namespace ASC.Mail.ImapSync
             MailEnginesFactory = mailEnginesFactory;
 
             CreateClientSemaphore = new SemaphoreSlim(1, 1);
+
             try
             {
                 _log = options.Get("ASC.Mail.ImapSyncService");
@@ -74,7 +78,6 @@ namespace ASC.Mail.ImapSync
                 _cancelTokenSource = new CancellationTokenSource();
 
                 _log.Info("Service is ready.");
-
             }
             catch (Exception ex)
             {
@@ -88,16 +91,14 @@ namespace ASC.Mail.ImapSync
         {
             _log.Info("Try to subscribe redis...");
 
+            if (_redisClient == null)
+            {
+                return StopAsync(cancellationToken);
+            }
+
             try
             {
-                var cache = _redisClient;
-
-                if (cache == null)
-                {
-                    return StopAsync(cancellationToken);
-                }
-
-                cache.SubscribeQueueKey<CashedTenantUserMailBox>(CreateNewClient);
+                _redisClient.SubscribeQueueKey<CashedTenantUserMailBox>(CreateNewClient);
 
                 _log.Info("Success redis subscribe!");
             }
@@ -121,7 +122,7 @@ namespace ASC.Mail.ImapSync
                 {
                     clients[clientKey]?.CheckRedis(cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
 
-                    _log.Info($"ImapSyncService. User Activity -> {cashedTenantUserMailBox.MailBoxId}, clients.Count={clients.Count}. ");
+                    _log.Info($"User Activity -> {cashedTenantUserMailBox.MailBoxId}, clients.Count={clients.Count}. ");
 
                     return;
                 }
@@ -138,12 +139,12 @@ namespace ASC.Mail.ImapSync
                 }
             }
 
+            CreateClientSemaphore.Wait();
+
+            if (clients.Keys.Contains(clientKey)) return;
+
             try
             {
-                CreateClientSemaphore.Wait();
-
-                if (clients.Keys.Contains(clientKey)) return;
-
                 var userMailboxesExp = new UserMailboxesExp(cashedTenantUserMailBox.Tenant, cashedTenantUserMailBox.UserName, onlyTeamlab: true);
 
                 var mailboxes = MailEnginesFactory.MailboxEngine.GetMailboxDataList(userMailboxesExp);
@@ -160,10 +161,6 @@ namespace ASC.Mail.ImapSync
                 clients.TryAdd(clientKey, null);
 
                 CreateMailClient(mailbox, clientKey);
-
-                //Thread thread = new Thread(() => CreateMailClient(mailbox, clientKey));
-
-                //thread.Start();
             }
             finally
             {
@@ -173,7 +170,7 @@ namespace ASC.Mail.ImapSync
 
         private void CreateMailClient(MailBoxData mailbox, string clientKey)
         {
-            MailImapClient client = null;
+            MailImapClient client;
 
             var connectError = false;
 
@@ -193,6 +190,8 @@ namespace ASC.Mail.ImapSync
                 else
                 {
                     clients.TryUpdate(clientKey, client, null);
+
+                    client.DeleteClient += Client_DeleteClient;
                 }
             }
             catch (System.TimeoutException exTimeout)
@@ -251,6 +250,8 @@ namespace ASC.Mail.ImapSync
 
             if (clients.TryRemove(clientKey, out MailImapClient trashValue))
             {
+                trashValue?.Dispose();
+
                 _log.Info($"ImapSyncService. MailImapClient {clientKey} died and was remove.");
             }
             else
