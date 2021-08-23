@@ -518,13 +518,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private bool TryLockMailbox(MailBoxData mailbox)
         {
-            Log.DebugFormat("TryLockMailbox {3} (MailboxId={0} is {1})", mailbox.MailBoxId, mailbox.Active ? "active" : "inactive", mailbox.EMail.Address);
+            Log.DebugFormat("TryLockMailbox {2} (MailboxId={0} is {1})", mailbox.MailBoxId, mailbox.Active ? "active" : "inactive", mailbox.EMail.Address);
 
             try
             {
                 var contains = _tenantMemCache.Contains(mailbox.TenantId.ToString(CultureInfo.InvariantCulture));
 
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
+
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var apiHelper = scope.ServiceProvider.GetService<ApiHelper>();
@@ -538,6 +539,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     try
                     {
                         var type = mailbox.GetTenantStatus(tenantManager, securityContext, apiHelper, (int)MailSettings.Aggregator.TenantOverdueDays, Log);
+
+                        Log.InfoFormat("TryLockMailbox -> Returned tenant {0} status: {1}. Disable mailboxes.", mailbox.TenantId, type);
 
                         switch (type)
                         {
