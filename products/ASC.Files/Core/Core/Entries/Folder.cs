@@ -28,7 +28,6 @@ using System;
 using System.Diagnostics;
 
 using ASC.Common;
-using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
@@ -62,8 +61,8 @@ namespace ASC.Files.Core
         public string FolderUrl { get; set; }
     }
 
-    [Transient]
     [DebuggerDisplay("{Title} ({ID})")]
+    [Transient]
     public class Folder<T> : FileEntry<T>, IFolder
     {
         public FolderType FolderType { get; set; }
@@ -84,11 +83,20 @@ namespace ASC.Files.Core
             set { NewForMe = Convert.ToInt32(value); }
         }
 
-        public Folder(Global global)
-            : base(global)
+        public Folder()
         {
             Title = string.Empty;
             FileEntryType = FileEntryType.Folder;
+        }
+
+        public Folder(FileHelper fileHelper) : this()
+        {
+            FileHelper = fileHelper;
+        }
+
+        public override string UniqID
+        {
+            get { return $"folder_{ID}"; }
         }
     }
 }

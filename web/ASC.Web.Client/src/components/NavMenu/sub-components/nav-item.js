@@ -7,6 +7,7 @@ import Badge from "@appserver/components/badge";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { tablet } from "@appserver/components/utils/device";
 import MenuIcon from "../../../../../../public/images/menu.react.svg";
 
 const baseColor = "#7A95B0",
@@ -24,7 +25,7 @@ const NavItemWrapper = styled(Link)`
   min-width: 56px;
   min-height: 50px;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 16px 0 20px;
   cursor: pointer;
   position: relative;
   box-sizing: border-box;
@@ -42,6 +43,10 @@ const NavItemWrapper = styled(Link)`
     path {
       fill: ${(props) => props.iconColor};
     }
+  }
+
+  @media ${tablet} {
+    padding: 0 16px 0 16px;
   }
 `;
 

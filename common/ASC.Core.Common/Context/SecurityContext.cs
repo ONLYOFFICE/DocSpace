@@ -165,7 +165,7 @@ namespace ASC.Core
                             return false;
                         }
 
-                        AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
+                        AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
 
                         return true;
                     }
@@ -200,11 +200,23 @@ namespace ASC.Core
 
         public string AuthenticateMe(IAccount account, List<Claim> additionalClaims = null)
         {
+            AuthenticateMeWithoutCookie(account, additionalClaims);
+            
+            string cookie = null;
+
+            if (account is IUserAccount)
+            {
+                cookie = CookieStorage.EncryptCookie(TenantManager.GetCurrentTenant().TenantId, account.ID);
+            }
+
+            return cookie;
+        }
+
+        public void AuthenticateMeWithoutCookie(IAccount account, List<Claim> additionalClaims = null)
+        {
             if (account == null || account.Equals(Configuration.Constants.Guest)) throw new InvalidCredentialException("account");
 
             var roles = new List<string> { Role.Everyone };
-            string cookie = null;
-
 
             if (account is ISystemAccount && account.ID == Configuration.Constants.CoreSystem.ID)
             {
@@ -241,7 +253,6 @@ namespace ASC.Core
                 roles.Add(Role.Users);
 
                 account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId, UserFormatter);
-                cookie = CookieStorage.EncryptCookie(TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
             var claims = new List<Claim>
@@ -256,13 +267,18 @@ namespace ASC.Core
                 claims.AddRange(additionalClaims);
             }
             AuthContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
-
-            return cookie;
         }
 
         public string AuthenticateMe(Guid userId, List<Claim> additionalClaims = null)
         {
-            return AuthenticateMe(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId), additionalClaims);
+            var account = Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId);
+            return AuthenticateMe(account, additionalClaims);
+        }
+
+        public void AuthenticateMeWithoutCookie(Guid userId, List<Claim> additionalClaims = null)
+        {
+            var account = Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId);
+            AuthenticateMeWithoutCookie(account, additionalClaims);
         }
 
         public void Logout()

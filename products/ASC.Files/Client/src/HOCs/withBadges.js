@@ -18,8 +18,9 @@ export default function withBadges(WrappedComponent) {
       const { item, lockFileAction, isAdmin } = this.props;
       const { locked, id, access } = item;
 
-      if (!isAdmin || !access === 0) return;
-      lockFileAction(id, !locked).catch((err) => toastr.error(err));
+      if (isAdmin || access === 0)
+        return lockFileAction(id, !locked).catch((err) => toastr.error(err));
+      return;
     };
 
     onClickFavorite = () => {
@@ -131,9 +132,11 @@ export default function withBadges(WrappedComponent) {
         item,
         canWebEdit,
         isTrashFolder,
+        isPrivacyFolder,
         canConvert,
         onFilesClick, // from withFileAction HOC
         isAdmin,
+        isDesktopClient,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -154,6 +157,8 @@ export default function withBadges(WrappedComponent) {
           canWebEdit={canWebEdit}
           canConvert={canConvert}
           isTrashFolder={isTrashFolder}
+          isPrivacyFolder={isPrivacyFolder}
+          isDesktopClient={isDesktopClient}
           accessToEdit={accessToEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
@@ -186,13 +191,17 @@ export default function withBadges(WrappedComponent) {
       { item }
     ) => {
       const { docserviceStore } = formatsStore;
-      const { isRecycleBinFolder, updateRootBadge } = treeFoldersStore;
+      const {
+        isRecycleBinFolder,
+        isPrivacyFolder,
+        updateRootBadge,
+      } = treeFoldersStore;
       const {
         lockFileAction,
         setFavoriteAction,
         markAsRead,
       } = filesActionsStore;
-      const { isTabletView } = auth.settingsStore;
+      const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const {
         setNewFilesPanelVisible,
@@ -214,6 +223,7 @@ export default function withBadges(WrappedComponent) {
         canWebEdit,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
+        isPrivacyFolder,
         lockFileAction,
         setFavoriteAction,
         homepage: config.homepage,
@@ -232,6 +242,7 @@ export default function withBadges(WrappedComponent) {
         fetchFiles,
         setConvertDialogVisible,
         setConvertItem,
+        isDesktopClient,
       };
     }
   )(observer(WithBadges));

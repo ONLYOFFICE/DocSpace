@@ -7,6 +7,8 @@ ARG REPO=mcr.microsoft.com/dotnet/sdk
 FROM $REPO:$REPO_TAG AS base
 ARG RELEASE_DATE="2016-06-21"
 ARG DEBIAN_FRONTEND=noninteractive
+ARG PRODUCT_VERSION=0.0.0
+ARG BUILD_NUMBER=0
 ARG GIT_BRANCH=master
 ARG SRC_PATH
 ARG BUILD_PATH
@@ -27,8 +29,10 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
     locale-gen en_US.UTF-8 && \
     apt-get -y update && \
-    apt-get install -yq git apt-utils npm nodejs && \
-    npm install --global yarn 
+    apt-get install -yq git apt-utils npm && \
+    npm install --global yarn && \
+    curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
+    apt-get install -y nodejs
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     echo ${GIT_BRANCH}  && \
@@ -36,15 +40,15 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     cd ${SRC_PATH} && \
-    mkdir -p /var/www/public/ && cp -rf public/* /var/www/public/ && \
     mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
     mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
     mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
+    sed -i "s/\"number\".*,/\"number\": \"${PRODUCT_VERSION}.${BUILD_NUMBER}\",/g" /app/onlyoffice/config/appsettings.json && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd ${SRC_PATH}/build/install/common/ && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
-    bash build-backend.sh -sp ${SRC_PATH} -ar "--disable-parallel" && \
-    bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH} -ar "--disable-parallel" && \
+    bash build-backend.sh -sp ${SRC_PATH}  && \
+    bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH}  && \
     cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
     rm -rf ${SRC_PATH}/common/* && \
     rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
@@ -112,17 +116,9 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
 # copy static services files and config values 
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
-COPY --from=base /var/www/public /var/www/public
-COPY --from=base ${SRC_PATH}/products/ASC.CRM/Client/dist ${BUILD_PATH}/products/ASC.CRM/client
-COPY --from=base ${SRC_PATH}/web/ASC.Web.Editor/dist ${BUILD_PATH}/products/ASC.Files/editor
-COPY --from=base ${SRC_PATH}/products/ASC.Files/Client/dist ${BUILD_PATH}/products/ASC.Files/client
-COPY --from=base ${SRC_PATH}/web/ASC.Web.Login/dist ${BUILD_PATH}/studio/login
-COPY --from=base ${SRC_PATH}/products/ASC.People/Client/dist ${BUILD_PATH}/products/ASC.People/client
-COPY --from=base ${SRC_PATH}/products/ASC.Projects/Client/dist ${BUILD_PATH}/products/ASC.Projects/client
-COPY --from=base ${SRC_PATH}/web/ASC.Web.Client/dist ${BUILD_PATH}/studio/client
-COPY --from=base ${SRC_PATH}/products/ASC.Calendar/Client/dist ${BUILD_PATH}/products/ASC.Calendar/client
-COPY --from=base ${SRC_PATH}/products/ASC.Mail/Client/dist ${BUILD_PATH}/products/ASC.Mail/client
-
+COPY --from=base ${SRC_PATH}/build/deploy/products ${BUILD_PATH}/products
+COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
+COPY --from=base ${SRC_PATH}/build/deploy/studio ${BUILD_PATH}/studio
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
@@ -286,7 +282,7 @@ WORKDIR ${BUILD_PATH}/services/thumb/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ /var/www/services/thumb/client
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ ${BUILD_PATH}/services/thumb/client
 
 CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 
@@ -296,7 +292,7 @@ WORKDIR  ${BUILD_PATH}/services/urlshortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ /var/www/services/urlshortener/client
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ ${BUILD_PATH}/services/urlshortener/client
 
 CMD ["ASC.UrlShortener.Svc.dll", "ASC.UrlShortener.Svc"]
 
@@ -317,6 +313,16 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+
+## ASC.SsoAuth ##
+FROM builder AS ssoauth
+WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.SsoAuth.Svc/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ ${BUILD_PATH}/ASC.SsoAuth/
+
+CMD ["ASC.SsoAuth.Svc.dll", "ASC.SsoAuth.Svc"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share

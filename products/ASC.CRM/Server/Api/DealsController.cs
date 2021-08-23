@@ -227,7 +227,7 @@ namespace ASC.CRM.Api
         ///   Opportunity list
         /// </returns>
         [Update(@"opportunity/filter/access")]
-        public IEnumerable<OpportunityDto> SetAccessToBatchDeal([FromForm] SetAccessToBatchDealByFilterRequestDto inDto)
+        public IEnumerable<OpportunityDto> SetAccessToBatchDeal([FromBody] SetAccessToBatchDealByFilterRequestDto inDto)
         {
             var responsibleid = inDto.Responsibleid;
             var opportunityStagesid = inDto.OpportunityStagesid;

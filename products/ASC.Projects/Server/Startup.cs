@@ -13,8 +13,6 @@ namespace ASC.Projects
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.Projects" }; }
-
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
             : base(configuration, hostEnvironment)
         {

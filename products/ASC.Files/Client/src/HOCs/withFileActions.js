@@ -1,73 +1,31 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { ReactSVG } from "react-svg";
-
-import IconButton from "@appserver/components/icon-button";
-import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
+import { checkProtocol } from "../helpers/files-helpers";
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../package.json";
 
-import { EncryptedFileIcon } from "../components/Icons";
-import { createTreeFolders } from "../helpers/files-helpers";
-
-const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
-    onContentRowSelect = (checked, file) => {
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        isMouseDown: false,
+      };
+    }
+    onContentFileSelect = (checked, file) => {
       const { selectRowAction } = this.props;
-      if (!file) return;
+      if (!file || file.id === -1) return;
       selectRowAction(checked, file);
     };
 
-    onClickShare = () => {
-      const { onSelectItem, setSharingPanelVisible, item } = this.props;
-      onSelectItem(item);
-      setSharingPanelVisible(true);
-    };
-
-    rowContextClick = () => {
+    fileContextClick = () => {
       const { onSelectItem, item } = this.props;
-      onSelectItem(item);
-    };
+      const { id, isFolder } = item;
 
-    getSharedButton = (shared) => {
-      const { t } = this.props;
-      const color = shared ? "#657077" : "#a3a9ae";
-      return (
-        <Text
-          className="share-button"
-          as="span"
-          title={t("Share")}
-          fontSize="12px"
-          fontWeight={600}
-          color={color}
-          display="inline-flex"
-          onClick={this.onClickShare}
-        >
-          <IconButton
-            className="share-button-icon"
-            color={color}
-            hoverColor="#657077"
-            size={18}
-            iconName="images/catalog.shared.react.svg"
-          />
-          {t("Share")}
-        </Text>
-      );
-    };
-
-    getItemIcon = (isEdit) => {
-      const { item, isPrivacy } = this.props;
-      const { icon, fileExst } = item;
-      return (
-        <>
-          <ReactSVG
-            className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
-            src={icon}
-            loading={svgLoader}
-          />
-          {isPrivacy && fileExst && <EncryptedFileIcon isEdit={isEdit} />}
-        </>
-      );
+      id !== -1 && onSelectItem({ id, isFolder });
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
@@ -88,21 +46,22 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onMouseDown = (e) => {
-      const { draggable, setTooltipPosition, setStartDrag } = this.props;
+      const {
+        draggable,
+        setTooltipPosition,
+        setStartDrag,
+        isPrivacy,
+      } = this.props;
       const notSelectable = e.target.classList.contains("not-selectable");
-      if (!draggable) {
+
+      this.setState({ isMouseDown: true });
+
+      if (!draggable || isPrivacy) return;
+
+      if (window.innerWidth < 1025 || notSelectable) {
         return;
       }
 
-      if (
-        window.innerWidth < 1025 ||
-        e.target.tagName === "rect" ||
-        e.target.tagName === "path" ||
-        e.target.tagName === "svg" ||
-        notSelectable
-      ) {
-        return;
-      }
       const mouseButton = e.which
         ? e.which !== 1
         : e.button
@@ -112,9 +71,6 @@ export default function withFileActions(WrappedFileItem) {
       if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
         return;
       }
-
-      //console.log("e.target.classList", e.target.classList);
-      //console.log("onMouseDown setStartDrag", e);
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
     };
@@ -122,23 +78,52 @@ export default function withFileActions(WrappedFileItem) {
     onMarkAsRead = (id) =>
       this.props.markAsRead([], [`${id}`], this.props.item);
 
-    onFilesClick = () => {
+    onMouseUpHandler = (e) => {
+      const { isMouseDown } = this.state;
+      const { viewAs } = this.props;
+
+      if (
+        e.target.closest(".checkbox") ||
+        e.target.tagName === "INPUT" ||
+        e.target.tagName === "SPAN" ||
+        e.target.tagName === "A" ||
+        e.target.closest(".expandButton") ||
+        e.target.closest(".badges") ||
+        e.button !== 0
+      )
+        return;
+
+      if (viewAs === "tile") {
+        if (
+          !isMouseDown ||
+          e.target.closest(".edit-button") ||
+          e.target.tagName === "IMG"
+        )
+          return;
+
+        this.onFilesClick();
+      } else {
+        this.fileContextClick();
+      }
+      this.setState({ isMouseDown: false });
+    };
+    onFilesClick = (e) => {
       const {
-        filter,
-        parentFolder,
+        isDesktop,
+        //parentFolder,
         setIsLoading,
         fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
+        isMediaOrImage,
         canConvert,
         canWebEdit,
+        canViewedDocs,
         item,
         isTrashFolder,
+        isPrivacy,
         openDocEditor,
-        expandedKeys,
-        addExpandedKeys,
+        //addExpandedKeys,
         setExpandedKeys,
+        createNewExpandedKeys,
         setMediaViewerData,
         setConvertItem,
         setConvertDialogVisible,
@@ -150,21 +135,21 @@ export default function withFileActions(WrappedFileItem) {
         providerKey,
         contentLength,
         fileStatus,
+        encrypted,
       } = item;
+      if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
       if (isTrashFolder) return;
+      if (e && e.target.tagName === "INPUT") return;
 
       if (!fileExst && !contentLength) {
         setIsLoading(true);
+        //addExpandedKeys(parentFolder + "");
 
-        if (!expandedKeys.includes(parentFolder + "")) {
-          addExpandedKeys(parentFolder + "");
-        }
-
-        fetchFiles(id, filter)
+        fetchFiles(id)
           .then((data) => {
             const pathParts = data.selectedFolder.pathParts;
-            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            const newExpandedKeys = createNewExpandedKeys(pathParts);
             setExpandedKeys(newExpandedKeys);
 
             this.setNewBadgeCount();
@@ -183,11 +168,23 @@ export default function withFileActions(WrappedFileItem) {
 
         if (fileStatus === 2) this.onMarkAsRead(id);
 
-        if (canWebEdit) {
-          return openDocEditor(id, providerKey);
+        if (canWebEdit || canViewedDocs) {
+          let tab =
+            !isDesktop && fileExst
+              ? window.open(
+                  combineUrl(
+                    AppServerConfig.proxyURL,
+                    config.homepage,
+                    "/doceditor"
+                  ),
+                  "_blank"
+                )
+              : null;
+
+          return openDocEditor(id, providerKey, tab);
         }
 
-        if (isImage || isSound || isVideo) {
+        if (isMediaOrImage) {
           setMediaViewerData({ visible: true, id });
           return;
         }
@@ -199,9 +196,9 @@ export default function withFileActions(WrappedFileItem) {
     render() {
       const {
         item,
-        isRecycleBin,
+        isTrashFolder,
         draggable,
-        canShare,
+        allowShareIn,
         isPrivacy,
         actionType,
         actionExtension,
@@ -210,13 +207,17 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
+        isDesktop,
+        personal,
+        canWebEdit,
+        canViewedDocs,
       } = this.props;
       const { fileExst, access, contentLength, id, shared } = item;
 
       const isEdit =
-        !!actionType && actionId === id && fileExst === actionExtension;
+        actionType !== null && actionId === id && fileExst === actionExtension;
 
-      const isDragging = isFolder && access < 2 && !isRecycleBin;
+      const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
       let className = isDragging ? " droppable" : "";
       if (draggable) className += " draggable not-selectable";
@@ -224,39 +225,43 @@ export default function withFileActions(WrappedFileItem) {
       let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
 
+      const isShareable = allowShareIn && item.canShare;
+
       const isMobile = sectionWidth < 500;
       const displayShareButton = isMobile
         ? "26px"
-        : !canShare
+        : !isShareable
         ? "38px"
         : "96px";
 
-      const sharedButton =
-        !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
-          ? null
-          : this.getSharedButton(shared);
+      const showShare =
+        !isShareable ||
+        isEdit ||
+        (isPrivacy && (!isDesktop || !fileExst)) ||
+        (personal && !canWebEdit && !canViewedDocs)
+          ? false
+          : true;
 
-      const checkedProps = isEdit || id <= 0 ? {} : { checked };
-      const element = this.getItemIcon(isEdit || id <= 0);
+      const checkedProps = isEdit || id <= 0 ? false : checked;
 
       return (
         <WrappedFileItem
-          onContentRowSelect={this.onContentRowSelect}
-          onClickShare={this.onClickShare}
-          rowContextClick={this.rowContextClick}
+          onContentFileSelect={this.onContentFileSelect}
+          fileContextClick={this.fileContextClick}
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
+          onMouseUp={this.onMouseUpHandler}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
           value={value}
           displayShareButton={displayShareButton}
           isPrivacy={isPrivacy}
-          sharedButton={sharedButton}
+          showShare={showShare}
           checkedProps={checkedProps}
-          element={element}
           dragging={dragging}
+          isEdit={isEdit}
           {...this.props}
         />
       );
@@ -266,10 +271,11 @@ export default function withFileActions(WrappedFileItem) {
   return inject(
     (
       {
+        auth,
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
-        selectedFolderStore,
+        //selectedFolderStore,
         filesStore,
         uploadDataStore,
         formatsStore,
@@ -286,11 +292,10 @@ export default function withFileActions(WrappedFileItem) {
       const {
         isPrivacyFolder,
         isRecycleBinFolder,
-        expandedKeys,
-        addExpandedKeys,
+        //addExpandedKeys,
         setExpandedKeys,
+        createNewExpandedKeys,
       } = treeFoldersStore;
-      const { isRootFolder } = selectedFolderStore;
       const {
         dragging,
         setDragging,
@@ -298,21 +303,16 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         fileActionStore,
-        canShare,
         isFileSelected,
-        filter,
         setIsLoading,
         fetchFiles,
         openDocEditor,
         getFolderInfo,
+        viewAs,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
-      const {
-        iconFormatsStore,
-        mediaViewersFormatsStore,
-        docserviceStore,
-      } = formatsStore;
+      const { mediaViewersFormatsStore, docserviceStore } = formatsStore;
       const { setMediaViewerData } = mediaViewerDataStore;
 
       const selectedItem = selection.find(
@@ -328,11 +328,13 @@ export default function withFileActions(WrappedFileItem) {
         ? false
         : true;
 
-      const isImage = iconFormatsStore.isImage(item.fileExst);
-      const isSound = iconFormatsStore.isSound(item.fileExst);
-      const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+      const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
+        item.fileExst
+      );
+
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
+      const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
 
       return {
         t,
@@ -349,31 +351,31 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         history,
         isFolder,
-        isRootFolder,
-        canShare,
+        allowShareIn: filesStore.canShare,
         actionType: type,
         actionExtension: extension,
         actionId: id,
         checked: isFileSelected(item.id, item.parentId),
-        filter,
-        parentFolder: selectedFolderStore.parentId,
+        //parentFolder: selectedFolderStore.parentId,
         setIsLoading,
         fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
+        isMediaOrImage,
         canWebEdit,
+        canViewedDocs,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
-        expandedKeys,
-        addExpandedKeys,
+        //addExpandedKeys,
         setExpandedKeys,
+        createNewExpandedKeys,
         setMediaViewerData,
         getFolderInfo,
         markAsRead,
+        viewAs,
         setConvertItem,
         setConvertDialogVisible,
+        isDesktop: auth.settingsStore.isDesktopClient,
+        personal: auth.settingsStore.personal,
       };
     }
   )(observer(WithFileActions));

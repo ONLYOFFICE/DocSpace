@@ -1,8 +1,60 @@
-import { Workbox } from "workbox-window";
+import React from "react";
+import ReactDOM from "react-dom";
 
-export function registerSW(homepage) {
+import { Workbox } from "workbox-window";
+import SnackBar from "@appserver/components/snackbar";
+import i18n from "i18next";
+import { useTranslation, initReactI18next } from "react-i18next";
+import Backend from "i18next-http-backend";
+import { LANGUAGE } from "../constants";
+import { loadLanguagePath } from "./";
+
+i18n
+  .use(Backend)
+  .use(initReactI18next)
+  .init({
+    lng: localStorage.getItem(LANGUAGE) || "en",
+    fallbackLng: "en",
+    load: "all",
+    //debug: true,
+
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+      format: function (value, format) {
+        if (format === "lowercase") return value.toLowerCase();
+        return value;
+      },
+    },
+
+    backend: {
+      loadPath: loadLanguagePath(""),
+    },
+
+    react: {
+      useSuspense: false,
+    },
+  });
+
+const SnackBarWrapper = (props) => {
+  const { t, ready } = useTranslation("Common", { i18n });
+
+  if (ready) {
+    const barConfig = {
+      parentElementId: "snackbar",
+      text: t("NewVersionAvailable"),
+      btnText: t("Load"),
+      onAction: () => props.onButtonClick(),
+      opacity: 1,
+    };
+
+    return <SnackBar {...barConfig} />;
+  }
+  return <></>;
+};
+
+const registerSW = () => {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
-    const wb = new Workbox(`${homepage}/sw.js`);
+    const wb = new Workbox(`/sw.js`);
 
     //TODO: watch https://developers.google.com/web/tools/workbox/guides/advanced-recipes and https://github.com/webmaxru/prog-web-news/blob/5ff94b45c9d317409c21c0fbb7d76e92f064471b/src/app/app-shell/app-shell.component.ts
 
@@ -12,38 +64,41 @@ export function registerSW(homepage) {
           `until all tabs running the current version have fully unloaded.`
       );
 
-      // Assuming the user accepted the update, set up a listener
-      // that will reload the page as soon as the previously waiting
-      // service worker has taken control.
-      wb.addEventListener("controlling", () => {
-        window.location.reload();
-      });
+      function refresh() {
+        wb.addEventListener("controlling", () => {
+          localStorage.removeItem("sw_need_activation");
+          window.location.reload();
+        });
 
-      // This will postMessage() to the waiting service worker.
-      wb.messageSkipWaiting();
+        // This will postMessage() to the waiting service worker.
+        wb.messageSkipWaiting();
+      }
 
-      // let snackBarRef = this.snackBar.open(
+      try {
+        if (localStorage.getItem("sw_need_activation")) {
+          refresh();
+          return;
+        }
 
-      //   "A new version of the website available",
-      //   "Reload page",
-      //   {
-      //     duration: 5000,
-      //   }
-      // );
+        const snackbarNode = document.createElement("div");
+        snackbarNode.id = "snackbar";
+        document.body.appendChild(snackbarNode);
 
-      // // Displaying prompt
+        ReactDOM.render(
+          <SnackBarWrapper
+            onButtonClick={() => {
+              snackbarNode.remove();
+              refresh();
+            }}
+          />,
+          document.getElementById("snackbar")
+        );
 
-      // snackBarRef.onAction().subscribe(() => {
-      //   // Assuming the user accepted the update, set up a listener
-      //   // that will reload the page as soon as the previously waiting
-      //   // service worker has taken control.
-      //   wb.addEventListener("controlling", () => {
-      //     window.location.reload();
-      //   });
-
-      //   // This will postMessage() to the waiting service worker.
-      //   wb.messageSkipWaiting();
-      // });
+        localStorage.setItem("sw_need_activation", true);
+      } catch (e) {
+        console.error("showSkipWaitingPrompt", e);
+        refresh();
+      }
     };
 
     // Add an event listener to detect when the registered
@@ -58,4 +113,10 @@ export function registerSW(homepage) {
   } else {
     console.log("SKIP registerSW because of DEV mode");
   }
-}
+};
+
+window.SW = {
+  registerSW: registerSW,
+};
+
+export { registerSW };

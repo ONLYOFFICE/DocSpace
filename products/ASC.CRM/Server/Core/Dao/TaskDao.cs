@@ -52,10 +52,12 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class TaskDao : AbstractDao
     {
-        private readonly UserDbContext _userDbContext;
         private readonly FactoryIndexerTask _factoryIndexer;
         private readonly TenantUtil _tenantUtil;
         private readonly CrmSecurity _crmSecurity;
+
+        private Lazy<UserDbContext> LazyUserDbContext { get; }
+        private UserDbContext _userDbContext { get => LazyUserDbContext.Value; }
 
         public TaskDao(DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
@@ -77,7 +79,7 @@ namespace ASC.CRM.Core.Dao
             _crmSecurity = crmSecurity;
             _tenantUtil = tenantUtil;
             _factoryIndexer = factoryIndexer;
-            _userDbContext = userDbContext.Value;
+            LazyUserDbContext = new Lazy<UserDbContext>(() => userDbContext.Value);
             _mapper = mapper;
         }
 
@@ -510,7 +512,7 @@ namespace ASC.CRM.Core.Dao
 
             if (result > 0)
             {
-                _cache.Insert(cacheKey, result, TimeSpan.FromMinutes(1));
+                _cache.Insert(cacheKey, result.ToString(), TimeSpan.FromMinutes(1));
             }
 
             return result;
@@ -641,17 +643,26 @@ namespace ASC.CRM.Core.Dao
                     break;
                     case TaskSortedByType.ContactManager:
                     {
-                        sqlQuery = sqlQuery.GroupJoin(_userDbContext.Users.Where(x => x.Tenant == TenantID),
-                              x => x.ResponsibleId,
-                              y => y.Id,
-                              (x, y) => new { x, y }
-                            )
-                         .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y })
-                         .OrderBy("x.y.LastName", orderBy.IsAsc)
-                         .OrderBy("x.y.FirstName", orderBy.IsAsc)
-                         .OrderBy(x => x.x.Deadline)
-                         .OrderBy(x => x.x.Title)
-                         .Select(x => x.x);
+                        var sqlQueryPart = sqlQuery.GroupJoin(_userDbContext.Users.Where(x => x.Tenant == TenantID),
+                                                      x => x.ResponsibleId,
+                                                      y => y.Id,
+                                                      (x, y) => new { x, y }
+                                                    )
+                                                  .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y });
+
+                        if (orderBy.IsAsc)
+                            sqlQueryPart = sqlQueryPart.OrderBy(x => x.y.LastName)
+                                                       .ThenBy(x => x.y.FirstName)
+                                                       .ThenBy(x => x.x.Deadline)
+                                                       .ThenBy(x => x.x.Title);
+                        else
+                            sqlQueryPart = sqlQueryPart.OrderByDescending(x => x.y.LastName)
+                                                       .ThenByDescending(x => x.y.FirstName)
+                                                       .ThenBy(x => x.x.Deadline)
+                                                       .ThenBy(x => x.x.Title);
+
+
+                        sqlQuery = sqlQueryPart.Select(x => x.x);
                     }
 
                     break;

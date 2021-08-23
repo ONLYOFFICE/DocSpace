@@ -436,25 +436,25 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public async Task<bool> IndexAsync(T data, bool immediately = true)
+        public Task<bool> IndexAsync(T data, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!await SupportAsync(t)) return false;
-            return await Queue(() => Indexer.Index(data, immediately));
+            if (!Support(t)) return Task.FromResult(false);
+            return Queue(() => Indexer.Index(data, immediately));
         }
 
-        public async Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
+        public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!await SupportAsync(t)) return false;
-            return await Queue(() => Indexer.Update(data, immediately, fields));
+            if (!Support(t)) return Task.FromResult(false);
+            return Queue(() => Indexer.Update(data, immediately, fields));
         }
 
-        public async Task<bool> DeleteAsync(T data, bool immediately = true)
+        public Task<bool> DeleteAsync(T data, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!await SupportAsync(t)) return false;
-            return await Queue(() => Indexer.Delete(data, immediately));
+            if (!Support(t)) return Task.FromResult(false);
+            return Queue(() => Indexer.Delete(data, immediately));
         }
 
         public async Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
@@ -556,16 +556,15 @@ namespace ASC.ElasticSearch
     public class FactoryIndexer
     {
         private readonly ICache cache;
-
+        private IServiceProvider ServiceProvider { get; }
         private FactoryIndexerHelper FactoryIndexerHelper { get; }
-        internal ILifetimeScope Builder { get; set; }
         internal static bool Init { get; set; }
         public ILog Log { get; }
         private Client Client { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
 
         public FactoryIndexer(
-            ILifetimeScope container,
+            IServiceProvider serviceProvider,
             FactoryIndexerHelper factoryIndexerHelper,
             Client client,
             IOptionsMonitor<ILog> options,
@@ -573,7 +572,7 @@ namespace ASC.ElasticSearch
             ICache cache)
         {
             this.cache = cache;
-            Builder = container;
+            ServiceProvider = serviceProvider;
             FactoryIndexerHelper = factoryIndexerHelper;
             Client = client;
             CoreBaseSettings = coreBaseSettings;
@@ -581,12 +580,6 @@ namespace ASC.ElasticSearch
             try
             {
                 Log = options.Get("ASC.Indexer");
-
-                if (container != null)
-                {
-                    Builder = container;
-                    Init = true;
-                }
             }
             catch (Exception e)
             {
@@ -735,7 +728,7 @@ namespace ASC.ElasticSearch
             if (!CoreBaseSettings.Standalone) return;
 
             var generic = typeof(BaseIndexer<>);
-            var indexers = Builder.Resolve<IEnumerable<IFactoryIndexer>>()
+            var indexers = ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>()
                 .Where(r => string.IsNullOrEmpty(name) || r.IndexName == name)
                 .Select(r => (IFactoryIndexer)Activator.CreateInstance(generic.MakeGenericType(r.GetType()), r));
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
 import {
@@ -13,6 +13,8 @@ const Badges = ({
   item,
   canWebEdit,
   isTrashFolder,
+  isPrivacyFolder,
+  isDesktopClient,
   canConvert,
   accessToEdit,
   showNew,
@@ -28,7 +30,9 @@ const Badges = ({
   const isFavorite = fileStatus === 32;
   const isEditing = fileStatus === 1;
   const isNewWithFav = fileStatus === 34;
+  const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
+  const isPrivacy = isPrivacyFolder && isDesktopClient;
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -36,7 +40,7 @@ const Badges = ({
         <IconButton
           onClick={setConvertDialogVisible}
           iconName="/static/images/refresh.react.svg"
-          className="badge"
+          className="badge icons-group can-convert"
           size="small"
           isfill={true}
           color="#A3A9AE"
@@ -44,7 +48,10 @@ const Badges = ({
         />
       )}
       {canWebEdit &&
+        !isEditing &&
+        !isEditingWithFav &&
         !isTrashFolder &&
+        !isPrivacy &&
         accessToEdit &&
         showEditBadge &&
         !canConvert && (
@@ -58,6 +65,13 @@ const Badges = ({
             hoverColor="#3B72A7"
           />
         )}
+      {(isEditing || isEditingWithFav) && (
+        <StyledFileActionsConvertEditDocIcon
+          onClick={onFilesClick}
+          className="badge icons-group is-editing"
+          size="small"
+        />
+      )}
       {locked && accessToEdit && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"
@@ -67,18 +81,15 @@ const Badges = ({
           onClick={onClickLock}
         />
       )}
-      {(isFavorite || isNewWithFav) && !isTrashFolder && (
+      {(isFavorite || isNewWithFav || isEditingWithFav) && !isTrashFolder && (
         <StyledFavoriteIcon
-          className="favorite icons-group"
+          className="favorite icons-group badge"
           size="small"
           data-action="remove"
           data-id={id}
           data-title={title}
           onClick={onClickFavorite}
         />
-      )}
-      {isEditing && (
-        <StyledFileActionsConvertEditDocIcon className="badge" size="small" />
       )}
       {versionGroup > 1 && (
         <Badge

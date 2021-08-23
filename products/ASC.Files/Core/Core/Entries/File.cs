@@ -30,8 +30,6 @@ using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
 namespace ASC.Files.Core
@@ -63,25 +61,20 @@ namespace ASC.Files.Core
     {
         private FileStatus _status;
 
-        public File(Global global,
-            FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility,
-            FileConverter fileConverter,
-            FileTrackerHelper fileTracker)
-            : base(global)
+        public File()
         {
             Version = 1;
             VersionGroup = 1;
             FileEntryType = FileEntryType.File;
-            FilesLinkUtility = filesLinkUtility;
-            FileUtility = fileUtility;
-            FileConverter = fileConverter;
-            FileTracker = fileTracker;
+        }
+
+        public File(FileHelper fileHelper): this()
+        {
+            FileHelper = fileHelper;
         }
 
         public int Version { get; set; }
 
-        [JsonPropertyName("version_group")]
         public int VersionGroup { get; set; }
 
         public string Comment { get; set; }
@@ -92,27 +85,15 @@ namespace ASC.Files.Core
             set { base.Title = value; }
         }
 
-        public override string Title
-        {
-            get
-            {
-                return string.IsNullOrEmpty(ConvertedType)
-                           ? base.Title
-                           : FileUtility.ReplaceFileExtension(base.Title, FileUtility.GetInternalExtension(base.Title));
-            }
-            set { base.Title = value; }
-        }
-
-        [JsonPropertyName("content_length")]
         public long ContentLength { get; set; }
 
-        [JsonPropertyName("content_length_string")]
+        [JsonIgnore]
         public string ContentLengthString
         {
             get { return FileSizeComment.FilesSizeToString(ContentLength); }
-            set { }
         }
 
+        [JsonIgnore]
         public FilterType FilterType
         {
             get
@@ -138,36 +119,29 @@ namespace ASC.Files.Core
             }
         }
 
-        [JsonPropertyName("file_status")]
         public FileStatus FileStatus
         {
-            get
-            {
-                if (FileTracker.IsEditing(ID))
-                {
-                    _status |= FileStatus.IsEditing;
-                }
-
-                if (FileTracker.IsEditingAlone(ID))
-                {
-                    _status |= FileStatus.IsEditingAlone;
-                }
-
-                if (FileConverter.IsConverting(this))
-                {
-                    _status |= FileStatus.IsConverting;
-                }
-
-                return _status;
-            }
-            set { _status = value; }
+            get => FileHelper.GetFileStatus(this, ref _status);
+            set => _status = value;
         }
+
+        public override string UniqID
+        {
+            get { return $"file_{ID}"; }
+        }
+
+        [JsonIgnore]
+        public override string Title { get => FileHelper.GetTitle(this); }
+
+
+        [JsonIgnore]
+        public string DownloadUrl { get => FileHelper.GetDownloadUrl(this); }
 
         public bool Locked { get; set; }
 
-        [JsonPropertyName("locked_by")]
         public string LockedBy { get; set; }
 
+        [JsonIgnore]
         public override bool IsNew
         {
             get { return (_status & FileStatus.IsNew) == FileStatus.IsNew; }
@@ -180,6 +154,7 @@ namespace ASC.Files.Core
             }
         }
 
+        [JsonIgnore]
         public bool IsFavorite
         {
             get { return (_status & FileStatus.IsFavorite) == FileStatus.IsFavorite; }
@@ -192,6 +167,7 @@ namespace ASC.Files.Core
             }
         }
 
+        [JsonIgnore]
         public bool IsTemplate
         {
             get { return (_status & FileStatus.IsTemplate) == FileStatus.IsTemplate; }
@@ -206,18 +182,13 @@ namespace ASC.Files.Core
 
         public bool Encrypted { get; set; }
 
-        [JsonPropertyName("thumbnail_status")]
         public Thumbnail ThumbnailStatus { get; set; }
 
         public ForcesaveType Forcesave { get; set; }
 
-        public string DownloadUrl
-        {
-            get { return FilesLinkUtility.GetFileDownloadUrl(ID); }
-        }
-
         public string ConvertedType { get; set; }
 
+        [JsonIgnore]
         public string ConvertedExtension
         {
             get
@@ -237,16 +208,5 @@ namespace ASC.Files.Core
 
         public object NativeAccessor { get; set; }
 
-        [NonSerialized]
-        private FileTrackerHelper FileTracker;
-
-        [NonSerialized]
-        private readonly FilesLinkUtility FilesLinkUtility;
-
-        [NonSerialized]
-        private readonly FileUtility FileUtility;
-
-        [NonSerialized]
-        private readonly FileConverter FileConverter;
     }
 }

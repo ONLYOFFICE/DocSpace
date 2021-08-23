@@ -54,8 +54,7 @@ namespace ASC.Common.Logging
         void Trace(object message);
         void TraceFormat(string message, object arg0);
 
-        void DebugWithProps(string message, params KeyValuePair<string, object>[] props);
-        void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3);
+        void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props);
         void Debug(object message);
         void Debug(object message, Exception exception);
         void DebugFormat(string format, params object[] args);
@@ -99,6 +98,8 @@ namespace ASC.Common.Logging
 
         string LogDirectory { get; }
         string Name { get; set; }
+
+        void Configure(string name);
     }
 
     public class Log : ILog
@@ -108,7 +109,7 @@ namespace ASC.Common.Logging
             XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
         }
 
-        private readonly log4net.ILog loger;
+        private log4net.ILog loger;
 
         public bool IsDebugEnabled { get; private set; }
 
@@ -123,6 +124,11 @@ namespace ASC.Common.Logging
         public bool IsTraceEnabled { get; private set; }
 
         public Log(string name)
+        {
+            Configure(name);
+        }
+
+        public void Configure(string name)
         {
             loger = log4net.LogManager.GetLogger(Assembly.GetCallingAssembly(), name);
 
@@ -179,7 +185,7 @@ namespace ASC.Common.Logging
             if (IsDebugEnabled) loger.DebugFormat(provider, format, args);
         }
 
-        public void DebugWithProps(string message, params KeyValuePair<string, object>[] props)
+        public void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props)
         {
             if (!IsDebugEnabled) return;
 
@@ -402,13 +408,20 @@ namespace ASC.Common.Logging
         }
 
         public void Configure(LogNLog options)
-        {
-
+{
+            options.Configure("ASC");
         }
 
         public void Configure(string name, LogNLog options)
         {
-            Configure(options);
+            if (string.IsNullOrEmpty(name))
+            {
+                Configure(options);
+            }
+            else
+            {
+                options.Configure(name);
+            }
         }
     }
 
@@ -444,6 +457,11 @@ namespace ASC.Common.Logging
         public bool IsFatalEnabled { get; private set; }
 
         public bool IsTraceEnabled { get; private set; }
+
+        public void Configure(string name)
+        {
+            Name = name;
+        }
 
         public void Trace(object message)
         {
@@ -490,7 +508,7 @@ namespace ASC.Common.Logging
             if (IsDebugEnabled) Loger.Debug(provider, format, args);
         }
 
-        public void DebugWithProps(string message, params KeyValuePair<string, object>[] props)
+        public void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props)
         {
             if (!IsDebugEnabled) return;
 
@@ -502,29 +520,6 @@ namespace ASC.Common.Logging
             }
 
             Loger.Log(theEvent);
-        }
-        public void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3)
-        {
-            if (!IsDebugEnabled) return;
-
-            var theEvent = new LogEventInfo
-            {
-                Message = message,
-                LoggerName = Name,
-                Level = LogLevel.Debug
-            };
-
-            AddProp(prop1);
-            AddProp(prop2);
-            AddProp(prop3);
-
-
-            Loger.Log(theEvent);
-
-            void AddProp(KeyValuePair<string, object> p)
-            {
-                theEvent.Properties[p.Key] = p.Value;
-            }
         }
 
         public void Info(object message)
@@ -704,7 +699,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void DebugWithProps(string message, params KeyValuePair<string, object>[] props)
+        public void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props)
         {
         }
 
@@ -848,7 +843,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3)
+        public void Configure(string name)
         {
         }
 
@@ -857,12 +852,12 @@ namespace ASC.Common.Logging
         public string Name { get; set; }
     }
 
-
     [Singletone]
     public class LogManager<T> : OptionsMonitor<T> where T : class, ILog, new()
     {
         public LogManager(IOptionsFactory<T> factory, IEnumerable<IOptionsChangeTokenSource<T>> sources, IOptionsMonitorCache<T> cache) : base(factory, sources, cache)
         {
+
         }
 
         public override T Get(string name)
@@ -882,20 +877,7 @@ namespace ASC.Common.Logging
     {
         public static void RegisterLog(DIHelper services)
         {
-            const string baseName = "ASC";
-            var baseSqlName = $"{baseName}.SQL";
-            services.Configure<T>(r => r.Name = baseName);
-            services.Configure<T>(baseName, r => r.Name = baseName);
-            services.Configure<T>(baseSqlName, r => r.Name = baseSqlName);
             services.TryAdd(typeof(IOptionsMonitor<ILog>), typeof(LogManager<T>));
-        }
-
-        public static void ConfigureLog(DIHelper services, params string[] additionalLoggers)
-        {
-            foreach (var l in additionalLoggers)
-            {
-                services.Configure<T>(l, r => r.Name = l);
-            }
         }
     }
 

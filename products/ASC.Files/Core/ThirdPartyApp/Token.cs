@@ -89,7 +89,8 @@ namespace ASC.Web.Files.ThirdPartyApp
     public class TokenHelper
     {
         public ILog Logger { get; }
-        private FilesDbContext FilesDbContext { get; }
+        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+        private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         private InstanceCrypto InstanceCrypto { get; }
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
@@ -102,7 +103,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             TenantManager tenantManager)
         {
             Logger = option.CurrentValue;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             InstanceCrypto = instanceCrypto;
             AuthContext = authContext;
             TenantManager = tenantManager;

@@ -1,4 +1,4 @@
-import { makeObservable, action, observable, computed } from "mobx";
+import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
 
 class ThirdPartyStore {
@@ -6,27 +6,7 @@ class ThirdPartyStore {
   providers = [];
 
   constructor() {
-    makeObservable(this, {
-      capabilities: observable,
-      providers: observable,
-
-      googleConnectItem: computed,
-      boxConnectItem: computed,
-      dropboxConnectItem: computed,
-      oneDriveConnectItem: computed,
-      sharePointConnectItem: computed,
-      kDriveConnectItem: computed,
-      yandexConnectItem: computed,
-      webDavConnectItem: computed,
-      nextCloudConnectItem: computed,
-      ownCloudConnectItem: computed,
-
-      setThirdPartyProviders: action,
-      setThirdPartyCapabilities: action,
-      fetchThirdPartyProviders: action,
-      deleteThirdParty: action,
-      openConnectWindow: action,
-    });
+    makeAutoObservable(this);
   }
 
   setThirdPartyProviders = (providers) => {
@@ -40,7 +20,8 @@ class ThirdPartyStore {
   deleteThirdParty = (id) => api.files.deleteThirdParty(id);
 
   fetchThirdPartyProviders = async () => {
-    this.providers = await api.files.getThirdPartyList();
+    const list = await api.files.getThirdPartyList();
+    this.setThirdPartyProviders(list);
   };
 
   saveThirdParty = (

@@ -78,7 +78,8 @@ namespace ASC.Web.Core.Mail
         private CoreBaseSettings CoreBaseSettings { get; }
         public MailServiceHelperStorage MailServiceHelperStorage { get; }
         private EFLoggerFactory LoggerFactory { get; }
-        private MailDbContext MailDbContext { get; }
+        private Lazy<MailDbContext> LazyMailDbContext { get; }
+        private MailDbContext MailDbContext { get => LazyMailDbContext.Value; }
         private ICache Cache { get; }
 
         public MailServiceHelper(
@@ -97,7 +98,7 @@ namespace ASC.Web.Core.Mail
             CoreBaseSettings = coreBaseSettings;
             MailServiceHelperStorage = mailServiceHelperStorage;
             LoggerFactory = loggerFactory;
-            MailDbContext = dbContext.Get("webstudio");
+            LazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("webstudio"));
             Cache = mailServiceHelperStorage.Cache;
             DefaultDatabase = GetDefaultDatabase();
         }

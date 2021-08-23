@@ -38,6 +38,7 @@ using ASC.Files.Core.Security;
 using ASC.Web.Api.Models;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
@@ -101,6 +102,9 @@ namespace ASC.Api.Documents
         /// </summary>
         public string ThumbnailUrl { get; set; }
 
+
+        public Thumbnail ThumbnailStatus { get; set; }
+
         /// <summary>
         /// </summary>
         public bool? Locked { get; set; }
@@ -149,7 +153,6 @@ namespace ASC.Api.Documents
     {
         private AuthContext AuthContext { get; }
         private IDaoFactory DaoFactory { get; }
-        private FileSecurity FileSecurity { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
@@ -164,12 +167,12 @@ namespace ASC.Api.Documents
             GlobalFolderHelper globalFolderHelper,
             CommonLinkUtility commonLinkUtility,
             FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility)
-            : base(apiDateTimeHelper, employeeWrapperHelper)
+            FileUtility fileUtility,
+            FileSharingHelper fileSharingHelper)
+            : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
         {
             AuthContext = authContext;
             DaoFactory = daoFactory;
-            FileSecurity = fileSecurity;
             GlobalFolderHelper = globalFolderHelper;
             CommonLinkUtility = commonLinkUtility;
             FilesLinkUtility = filesLinkUtility;
@@ -188,7 +191,7 @@ namespace ASC.Api.Documents
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 FileEntry<T> parentFolder;
 
-                if(folders != null)
+                if (folders != null)
                 {
                     var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(file.FolderID));
                     if (folderWithRight == null || !folderWithRight.Item2)
@@ -232,6 +235,7 @@ namespace ASC.Api.Documents
 
                 result.WebUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID, file.Version));
 
+                result.ThumbnailStatus = file.ThumbnailStatus;
 
                 if (file.ThumbnailStatus == Thumbnail.Created)
                 {

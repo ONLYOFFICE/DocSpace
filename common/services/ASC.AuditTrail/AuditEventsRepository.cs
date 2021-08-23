@@ -44,14 +44,15 @@ namespace ASC.AuditTrail
     {
         private MessageTarget MessageTarget { get; set; }
         private UserFormatter UserFormatter { get; set; }
-        private AuditTrailContext AuditTrailContext { get; }
+        private Lazy<AuditTrailContext> LazyAuditTrailContext { get; }
+        private AuditTrailContext AuditTrailContext { get => LazyAuditTrailContext.Value; }
         private AuditActionMapper AuditActionMapper { get; }
 
         public AuditEventsRepository(MessageTarget messageTarget, UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
         {
             MessageTarget = messageTarget;
             UserFormatter = userFormatter;
-            AuditTrailContext = dbContextManager.Value;
+            LazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value );
             AuditActionMapper = auditActionMapper;
         }
 

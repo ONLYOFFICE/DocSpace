@@ -7,11 +7,15 @@ import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import DownloadAppList from "./DownloadAppList";
+import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
 import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import FilesFilter from "@appserver/common/api/files/filter";
+import { isDesktop, isTablet } from "react-device-detect";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -46,11 +50,6 @@ class ArticleBodyContent extends React.Component {
     setSelectedNode(data);
     setIsLoading(true);
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.startIndex = 0;
-    newFilter.folder = data[0];
-
     const selectedFolderTitle =
       (e.node && e.node.props && e.node.props.title) || null;
 
@@ -59,12 +58,11 @@ class ArticleBodyContent extends React.Component {
       : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
-      fetchFiles(data[0], newFilter)
+      fetchFiles(data[0])
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
-      newFilter.startIndex = 0;
-      const urlFilter = newFilter.toUrlParams();
+      const urlFilter = FilesFilter.getDefault().toUrlParams();
       history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
       );
@@ -83,7 +81,12 @@ class ArticleBodyContent extends React.Component {
       selectedTreeNode,
       enableThirdParty,
       isVisitor,
+      personal,
     } = this.props;
+
+    const campaigns = (localStorage.getItem("campaigns") || "")
+      .split(",")
+      .filter((campaign) => campaign.length > 0);
 
     return isEmpty(treeFolders) ? (
       <Loaders.TreeFolders />
@@ -96,8 +99,12 @@ class ArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        <TreeSettings />
+        {!personal && <TreeSettings />}
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
+        <DownloadAppList />
+        {(isDesktop || isTablet) && personal && campaigns.length > 0 && (
+          <Banner />
+        )}
       </>
     );
   }
@@ -126,6 +133,8 @@ export default inject(
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
+    const { personal } = auth.settingsStore;
+
     return {
       selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
@@ -141,6 +150,8 @@ export default inject(
       setNewFilesPanelVisible,
 
       homepage: config.homepage,
+
+      personal,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));

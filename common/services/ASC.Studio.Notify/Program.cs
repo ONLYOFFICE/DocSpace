@@ -2,10 +2,10 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core.Notify;
 using ASC.Notify;
@@ -14,6 +14,7 @@ using ASC.Web.Studio.Core.Notify;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,6 +35,7 @@ namespace ASC.Studio.Notify
                 .UseSystemd()
                 .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -66,7 +68,6 @@ namespace ASC.Studio.Notify
                     var diHelper = new DIHelper(services);
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Notify", "ASC.Notify.Messages");
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
                     NotifyConfigurationExtension.Register(diHelper);
@@ -75,6 +76,7 @@ namespace ASC.Studio.Notify
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration);
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }
