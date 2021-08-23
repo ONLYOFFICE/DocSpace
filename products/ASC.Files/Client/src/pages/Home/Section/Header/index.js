@@ -326,7 +326,7 @@ class SectionHeaderContent extends React.Component {
       selectionCount,
       isAccessedSelected,
       isWebEditSelected,
-      // isViewedSelected,
+      isViewedSelected,
       // isMediaSelected,
       deleteDialogVisible,
       isRecycleBin,
@@ -335,7 +335,7 @@ class SectionHeaderContent extends React.Component {
       isFavoritesFolder,
       isRecentFolder,
       isShareFolder,
-      // personal,
+      personal,
     } = this.props;
 
     let menu = [
@@ -473,12 +473,14 @@ class SectionHeaderContent extends React.Component {
       menu.splice(3, 1);
     }
 
-    /*if (
-      (personal && !isWebEditSelected && !isViewedSelected) ||
-      selectionCount > 1
+    if (
+      personal &&
+      !isWebEditSelected &&
+      !isViewedSelected &&
+      !isFavoritesFolder
     ) {
       menu.splice(1, 1);
-    }*/
+    }
 
     return menu;
   };
