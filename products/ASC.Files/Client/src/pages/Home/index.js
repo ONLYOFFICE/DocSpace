@@ -99,8 +99,6 @@ class PureHome extends React.Component {
 
     if (!filterObj) return;
 
-    if (filesList.length !== 0) return;
-
     let dataObj = { filter: filterObj };
 
     if (filterObj && filterObj.authorType) {
@@ -157,6 +155,7 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           //console.log("filter", filter);
+          if (filesList.length !== 0) return;
           return fetchFiles(folderId, filter).then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
