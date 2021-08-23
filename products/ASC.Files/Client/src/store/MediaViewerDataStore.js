@@ -20,6 +20,7 @@ class MediaViewerDataStore {
   setToPreviewFile = (file, visible) => {
     if (!file.canOpenPlayer) return;
     this.previewFile = file;
+    this.id = file.id;
     this.visible = visible;
   };
 

@@ -1,11 +1,9 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import copy from "copy-to-clipboard";
-
 import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
-
 import config from "../../package.json";
 
 export default function withContextOptions(WrappedComponent) {
@@ -195,11 +193,19 @@ export default function withContextOptions(WrappedComponent) {
         setDeleteThirdPartyDialogVisible,
         t,
         deleteItemAction,
-        isThirdPartyFolder,
       } = this.props;
-      const { id, title, fileExst, contentLength, folderId, parentId } = item;
+      const {
+        id,
+        title,
+        fileExst,
+        contentLength,
+        folderId,
+        providerKey,
+        rootFolderId,
+      } = item;
+      const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
-      if (isThirdPartyFolder) {
+      if (isRootThirdPartyFolder) {
         const splitItem = id.split("-");
         setRemoveItem({ id: splitItem[splitItem.length - 1], title });
         setDeleteThirdPartyDialogVisible(true);
@@ -212,12 +218,18 @@ export default function withContextOptions(WrappedComponent) {
         successRemoveFolder: t("FolderRemoved"),
       };
 
-      deleteItemAction(id, folderId, translations, fileExst || contentLength);
+      deleteItemAction(
+        id,
+        folderId,
+        translations,
+        fileExst || contentLength,
+        providerKey
+      );
     };
 
     onClickShare = () => {
-      const { onSelectItem, setSharingPanelVisible, item } = this.props;
-      onSelectItem(item);
+      const { onSelectItem, setSharingPanelVisible, id, isFolder } = this.props;
+      onSelectItem({ id, isFolder });
       setSharingPanelVisible(true);
     };
 
@@ -236,9 +248,13 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     getFilesContextOptions = () => {
-      const { item, t, isThirdPartyFolder } = this.props;
-      const { access, contextOptions } = item;
-      const isSharable = access !== 1 && access !== 0;
+      const { item, t } = this.props;
+      const { contextOptions } = item;
+      const isRootThirdPartyFolder =
+        item.providerKey && item.id === item.rootFolderId;
+
+      const isShareable = item.canShare;
+
       return contextOptions.map((option) => {
         switch (option) {
           case "open":
@@ -302,7 +318,7 @@ export default function withContextOptions(WrappedComponent) {
               label: t("SharingSettings"),
               icon: "images/catalog.shared.react.svg",
               onClick: this.onClickShare,
-              disabled: isSharable,
+              disabled: !isShareable,
             };
           case "send-by-email":
             return {
@@ -418,7 +434,7 @@ export default function withContextOptions(WrappedComponent) {
           case "delete":
             return {
               key: option,
-              label: isThirdPartyFolder
+              label: isRootThirdPartyFolder
                 ? t("Translations:DeleteThirdParty")
                 : t("Common:Delete"),
               icon: "/static/images/catalog.trash.react.svg",
@@ -489,7 +505,6 @@ export default function withContextOptions(WrappedComponent) {
         auth,
         versionHistoryStore,
         mediaViewerDataStore,
-        selectedFolderStore,
         dialogsStore,
         treeFoldersStore,
       },
@@ -524,10 +539,8 @@ export default function withContextOptions(WrappedComponent) {
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
-      const { isRootFolder } = selectedFolderStore;
-      const { isRecycleBinFolder, isShare } = treeFoldersStore;
 
-      const isThirdPartyFolder = item.providerKey && isRootFolder;
+      const { isRecycleBinFolder, isShare } = treeFoldersStore;
       const isShareFolder = isShare(item.rootFolderType);
 
       return {
@@ -552,7 +565,6 @@ export default function withContextOptions(WrappedComponent) {
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
         deleteItemAction,
-        isThirdPartyFolder,
         onSelectItem,
         setSharingPanelVisible,
         actionType: type,

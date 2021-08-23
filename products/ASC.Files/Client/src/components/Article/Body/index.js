@@ -16,7 +16,7 @@ import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { isDesktop, isTablet } from "react-device-detect";
-
+import { showLoader, hideLoader } from "@appserver/common/utils";
 class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
@@ -37,7 +37,6 @@ class ArticleBodyContent extends React.Component {
 
   onSelect = (data, e) => {
     const {
-      filter,
       setIsLoading,
       selectedTreeNode,
       setSelectedNode,
@@ -48,7 +47,6 @@ class ArticleBodyContent extends React.Component {
 
     //if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
     setSelectedNode(data);
-    setIsLoading(true);
 
     const selectedFolderTitle =
       (e.node && e.node.props && e.node.props.title) || null;
@@ -58,14 +56,29 @@ class ArticleBodyContent extends React.Component {
       : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
-      fetchFiles(data[0])
+      setIsLoading(true);
+      fetchFiles(data[0], null, true, false, true)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
-      const urlFilter = FilesFilter.getDefault().toUrlParams();
-      history.push(
-        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-      );
+      const filter = FilesFilter.getDefault();
+
+      filter.folder = data[0];
+
+      const urlFilter = filter.toUrlParams();
+      showLoader();
+      fetchFiles(data[0], null, true, false, true)
+        .then(() =>
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              homepage,
+              `/filter?${urlFilter}`
+            )
+          )
+        )
+        .catch((err) => toastr.error(err))
+        .finally(() => hideLoader());
     }
     //}
   };
@@ -119,7 +132,7 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, filter, setIsLoading } = filesStore;
+    const { fetchFiles, setIsLoading } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
 
     const selectedNode = treeFoldersStore.selectedTreeNode;
@@ -139,7 +152,6 @@ export default inject(
       selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
       selectedTreeNode,
-      filter,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
 

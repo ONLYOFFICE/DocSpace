@@ -335,7 +335,7 @@ namespace ASC.Core.Data
                 q = q.Where(r => r.LastModified >= from);
             }
 
-            return q.Select(FromUserGroupToUserGroupRef).ToDictionary(r => r.CreateKey(), r => r);
+            return q.Select(FromUserGroupToUserGroupRef).AsEnumerable().ToDictionary(r => r.CreateKey(), r => r);
         }
 
         public DateTime GetUserPasswordStamp(int tenant, Guid id)
@@ -364,6 +364,7 @@ namespace ASC.Core.Data
         {
             return GetUserQuery(tenant, from)
                 .Select(FromUserToUserInfo)
+                .AsEnumerable()
                 .ToDictionary(r => r.ID, r => r);
         }
 

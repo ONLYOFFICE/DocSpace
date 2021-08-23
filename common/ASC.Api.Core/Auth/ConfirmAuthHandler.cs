@@ -99,7 +99,7 @@ namespace ASC.Api.Core.Auth
                     userId = SecurityContext.CurrentAccount.ID;
                 }
 
-                SecurityContext.AuthenticateMe(userId, claims);
+                SecurityContext.AuthenticateMeWithoutCookie(userId, claims);
             }
 
             var result = checkKeyResult switch

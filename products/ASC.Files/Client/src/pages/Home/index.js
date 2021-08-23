@@ -42,6 +42,7 @@ class PureHome extends React.Component {
       setExpandedKeys,
       setToPreviewFile,
       mediaViewersFormatsStore,
+      filesList,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
@@ -49,8 +50,10 @@ class PureHome extends React.Component {
     let filterObj = null;
 
     if (window.location.pathname.indexOf("/files/view") > 1) {
-      const search = window.location.search;
-      const fileId = search.slice(search.indexOf("view") + 2);
+      const pathname = window.location.pathname;
+      console.log(pathname);
+      const fileId = pathname.slice(pathname.indexOf("view") + 5);
+      console.log(fileId);
 
       api.files
         .getFileInfo(fileId)
@@ -95,6 +98,8 @@ class PureHome extends React.Component {
     }
 
     if (!filterObj) return;
+
+    if (filesList.length !== 0) return;
 
     let dataObj = { filter: filterObj };
 
@@ -368,6 +373,7 @@ export default inject(
       setIsLoading,
       isLoading,
       viewAs,
+      files: filesList,
     } = filesStore;
 
     const { mediaViewersFormatsStore } = formatsStore;
@@ -410,6 +416,7 @@ export default inject(
 
     const { setToPreviewFile } = mediaViewerDataStore;
     return {
+      filesList,
       homepage: config.homepage,
       firstLoad,
       dragging,

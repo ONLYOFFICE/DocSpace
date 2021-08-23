@@ -273,7 +273,7 @@ namespace ASC.Feed.Aggregator
         {
             try
             {
-                securityContext.AuthenticateMe(authManager.GetAccountByID(tenantId, userid));
+                securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenantId, userid));
                 return true;
             }
             catch

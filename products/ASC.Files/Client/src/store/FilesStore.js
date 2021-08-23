@@ -261,13 +261,21 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false
+    withSubfolders = false,
+    saveSorting = false
   ) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
+
+    if (saveSorting) {
+      filterData.sortBy = this.filter.sortBy;
+      filterData.pageCount = this.filter.pageCount;
+      filterData.sortOrder = this.filter.sortOrder;
+    }
+
     const {
       treeFolders,
-      privacyFolder,
+      //privacyFolder,
       setSelectedNode,
       getSubfolders,
     } = this.treeFoldersStore;
@@ -410,10 +418,8 @@ class FilesStore {
 
     const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
 
-    const { isRootFolder } = this.selectedFolderStore;
-
-    const isThirdPartyFolder = item.providerKey && isRootFolder;
-
+    const isThirdPartyFolder =
+      item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
@@ -957,7 +963,7 @@ class FilesStore {
       case FolderType.USER:
         return true;
       case FolderType.SHARE:
-        return false;
+        return true;
       case FolderType.COMMON:
         return this.authStore.isAdmin;
       case FolderType.TRASH:
@@ -985,13 +991,11 @@ class FilesStore {
     const { getIcon } = this.formatsStore.iconFormatsStore;
 
     if (this.selection.length === 1) {
-      const icon = getIcon(
+      return getIcon(
         24,
         this.selection[0].fileExst,
         this.selection[0].providerKey
       );
-
-      return icon;
     }
     return null;
   }
@@ -1076,6 +1080,7 @@ class FilesStore {
         parentId,
         pureContentLength,
         rootFolderType,
+        rootFolderId,
         shared,
         title,
         updated,
@@ -1087,6 +1092,8 @@ class FilesStore {
         providerKey,
         thumbnailUrl,
         thumbnailStatus,
+        canShare,
+        canEdit,
       } = item;
 
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
@@ -1094,7 +1101,7 @@ class FilesStore {
       );
 
       const previewUrl = canOpenPlayer
-        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view?${id}`)
+        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${id}`)
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
@@ -1140,6 +1147,7 @@ class FilesStore {
         parentId,
         pureContentLength,
         rootFolderType,
+        rootFolderId,
         //selectedItem,
         shared,
         title,
@@ -1153,6 +1161,8 @@ class FilesStore {
         canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
+        canShare,
+        canEdit,
         thumbnailUrl,
         thumbnailStatus,
         previewUrl,
@@ -1230,9 +1240,14 @@ class FilesStore {
     );
   }
 
+  get isThirdPartyRootSelection() {
+    const withProvider = this.selection.find((x) => x.providerKey);
+    return withProvider && withProvider.rootFolderId === withProvider.id;
+  }
+
   get isThirdPartySelection() {
-    const withProvider = this.selection.find((x) => !x.providerKey);
-    return !withProvider && this.selectedFolderStore.isRootFolder;
+    const withProvider = this.selection.find((x) => x.providerKey);
+    return !!withProvider;
   }
 
   get isWebEditSelected() {
@@ -1250,6 +1265,15 @@ class FilesStore {
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
       return canViewedDocs(selected.fileExst);
+    });
+  }
+
+  get isMediaSelected() {
+    const { isMediaOrImage } = this.formatsStore.mediaViewersFormatsStore;
+
+    return this.selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return isMediaOrImage(selected.fileExst);
     });
   }
 

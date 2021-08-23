@@ -204,9 +204,12 @@ namespace ASC.Web.Files.Classes
             set
             {
                 var setting = LoadForCurrentUser();
-                setting.DefaultSortedBySetting = value.SortedBy;
-                setting.DefaultSortedAscSetting = value.IsAsc;
-                SaveForCurrentUser(setting);
+                if (setting.DefaultSortedBySetting != value.SortedBy || setting.DefaultSortedAscSetting != value.IsAsc)
+                {
+                    setting.DefaultSortedBySetting = value.SortedBy;
+                    setting.DefaultSortedAscSetting = value.IsAsc;
+                    SaveForCurrentUser(setting);
+                }
             }
             get
             {

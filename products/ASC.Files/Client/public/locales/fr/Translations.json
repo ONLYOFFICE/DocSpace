@@ -1,1 +1,20 @@
-{}
+{
+  "FolderTitleBoxNet": "Répertoire de Box",
+  "FolderTitleDocuSign": "Сompte DocuSign",
+  "FolderTitleDropBox": "Répertoire de Dropbox",
+  "FolderTitleGoogle": "Répertoire de Google",
+  "FolderTitlekDrive": "Répertoire kDrive",
+  "FolderTitleSharePoint": "Répertoire de SharePoint",
+  "FolderTitleSkyDrive": "Répertoire de OneDrive",
+  "FolderTitleWebDav": "Répertoire WebDAV",
+  "FolderTitleYandex": "WebDAV Yandex",
+  "TypeTitleBoxNet": "Box",
+  "TypeTitleDocuSign": "DocuSign",
+  "TypeTitleDropBox": "Dropbox",
+  "TypeTitleGoogle": "Google Drive",
+  "TypeTitlekDrive": "kDrive",
+  "TypeTitleSharePoint": "SharePoint",
+  "TypeTitleSkyDrive": "OneDrive",
+  "TypeTitleWebDav": "WebDAV",
+  "TypeTitleYandex": "Yandex.Disk"
+}

@@ -142,16 +142,15 @@ namespace ASC.Web.Files
 
         public long GetUserSpaceUsage(Guid userId)
         {
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
             return FilesDbContext.Files
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
-                .Where(r => r.file.TenantId == r.bunch.TenantId)
-                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
-                .Where(r => r.file.CreateBy == userId)
-                .Where(r => r.bunch.RightNode.StartsWith("files/trash/") | r.bunch.RightNode.StartsWith("files/my/"))
-                .GroupBy(r => r.file.CreateBy)
-                .Select(r => r.Sum(f => f.file.ContentLength))
-                .FirstOrDefault();
+                .Where(r => r.file.TenantId == r.bunch.TenantId && 
+                            r.file.TenantId == tenantId && 
+                            r.file.CreateBy == userId &&
+                            (r.bunch.RightNode.StartsWith("files/trash/") | r.bunch.RightNode.StartsWith("files/my/")))
+                .Sum(r => r.file.ContentLength);
         }
     }
 }

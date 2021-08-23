@@ -87,11 +87,6 @@ const FilesTileContent = ({
 }) => {
   const { fileExst, previewUrl, folderUrl, id } = item;
 
-  const onMobileRowClick = () => {
-    if (isTrashFolder || window.innerWidth > 1024) return;
-    onFilesClick();
-  };
-
   const docUrl = combineUrl(
     AppServerConfig.proxyURL,
     config.homepage,
@@ -111,7 +106,6 @@ const FilesTileContent = ({
       <SimpleFilesTileContent
         sideColor="#333"
         isFile={fileExst}
-        //onClick={onMobileRowClick}
         //disableSideInfo
       >
         <Link

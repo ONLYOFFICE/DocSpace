@@ -99,7 +99,7 @@ const HeaderNav = ({
   const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
   const getCurrentUserActions = useCallback(() => {
-    const currentUserActions = [
+    return [
       {
         key: "ProfileBtn",
         label: t("Common:Profile"),
@@ -127,8 +127,6 @@ const HeaderNav = ({
         onClick: onLogoutClick,
       },
     ];
-
-    return currentUserActions;
   }, [onProfileClick, onAboutClick, onLogoutClick]);
 
   //console.log("HeaderNav render");

@@ -11,6 +11,9 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import { useCallback } from "react";
+import IconButton from "@appserver/components/icon-button";
+import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -24,25 +27,21 @@ const StyledThirdParty = styled.div`
     max-width: inherit;
 
     div {
-      height: 26px;
-      width: 100%;
-      background: #eceef1;
-      text-align: center;
-      margin-right: 1px;
+      height: 25px;
+      width: 25px;
+      //background: #eceef1;
+      //text-align: center;
+      margin-right: 10px;
       color: #818b91;
       :first-of-type {
         border-radius: 3px 0 0 3px;
       }
       :last-of-type {
         border-radius: 0 3px 3px 0;
-
-        img {
-          margin-top: 4px;
-        }
       }
 
-      img {
-        padding: 4px 6px 0 4px;
+      .icon {
+        padding: 5px;
       }
 
       @media (max-width: 1024px) {
@@ -91,7 +90,14 @@ const ServiceItem = (props) => {
 
   return (
     <div {...dataProps} {...rest}>
-      <img src={src} alt="" />
+      <IconButton
+        className="icon"
+        iconName={src}
+        size={25}
+        isfill={true}
+        color="#A3A9AE"
+        hoverColor="#818b91"
+      />
     </div>
   );
 };
@@ -139,7 +145,7 @@ const PureThirdPartyListContainer = ({
           getOAuthToken(modal).then((token) => {
             authModal.close();
             const serviceData = {
-              title: data.title,
+              title: connectedCloudsTitleTranslation(data.title, t),
               provider_key: data.title,
               link: data.link,
               token,
@@ -150,16 +156,17 @@ const PureThirdPartyListContainer = ({
         )
         .catch((e) => console.error(e));
     } else {
+      data.title = connectedCloudsTitleTranslation(data.title, t);
       setConnectItem(data);
       setConnectDialogVisible(true);
       redirectAction();
     }
   };
 
-  const onShowConnectPanel = () => {
+  const onShowConnectPanel = useCallback(() => {
     setThirdPartyDialogVisible(true);
     redirectAction();
-  };
+  }, []);
 
   return (
     <StyledThirdParty>

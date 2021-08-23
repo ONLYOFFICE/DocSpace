@@ -24,6 +24,8 @@ import combineUrl from "@appserver/common/utils/combineUrl";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 import config from "../../../../../package.json";
 import { withRouter } from "react-router";
+import { connectedCloudsTypeTitleTranslation } from "../../../../helpers/utils";
+import Loaders from "@appserver/common/components/Loaders";
 
 const StyledBoxIcon = styled(BoxIcon)`
   ${commonIconsStyles}
@@ -142,33 +144,37 @@ class ConnectClouds extends React.Component {
 
   openLocation = (e) => {
     const {
-      myDirectoryFolders,
-      commonDirectoryFolders,
+      myFolderId,
+      commonFolderId,
       filter,
       providers,
       homepage,
       history,
+      getSubfolders,
     } = this.props;
 
     const provider = e.currentTarget.dataset.providerKey;
     const isCorporate =
       !!providers.length &&
       providers.find((p) => p.provider_key === provider).corporate;
-    const dir = isCorporate ? commonDirectoryFolders : myDirectoryFolders;
-    const id = dir
-      .filter((f) => f.providerKey === provider)
-      .map((f) => f.id)
-      .join();
+    const dirId = isCorporate ? commonFolderId : myFolderId;
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.startIndex = 0;
-    newFilter.folder = id;
+    getSubfolders(dirId).then((subfolders) => {
+      const id = subfolders
+        .filter((f) => f.providerKey === provider)
+        .map((f) => f.id)
+        .join();
 
-    const urlFilter = newFilter.toUrlParams();
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-    );
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.startIndex = 0;
+      newFilter.folder = id;
+
+      const urlFilter = newFilter.toUrlParams();
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
+    });
   };
 
   getContextOptions = (item, index) => {
@@ -191,7 +197,7 @@ class ConnectClouds extends React.Component {
   };
 
   render() {
-    const { t, providers } = this.props;
+    const { t, providers, tReady } = this.props;
 
     return (
       <>
@@ -206,6 +212,10 @@ class ConnectClouds extends React.Component {
             <RowContainer useReactWindow={false}>
               {providers.map((item, index) => {
                 const element = this.getThirdPartyIcon(item.provider_key);
+                const typeTitle = connectedCloudsTypeTitleTranslation(
+                  item.provider_key,
+                  t
+                );
                 return (
                   <Row
                     key={index}
@@ -230,7 +240,11 @@ class ConnectClouds extends React.Component {
                         fontSize="15px"
                         color="#333"
                       >
-                        {item.provider_key}
+                        {tReady ? (
+                          typeTitle
+                        ) : (
+                          <Loaders.Rectangle width="90px" height="10px" />
+                        )}
                       </Text>
                       <Link
                         type="page"
@@ -281,7 +295,7 @@ export default inject(
   ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { filter } = filesStore;
-    const { myFolder, commonFolder } = treeFoldersStore;
+    const { myFolder, commonFolder, getSubfolders } = treeFoldersStore;
     const {
       setConnectItem,
       setThirdPartyDialogVisible,
@@ -294,14 +308,15 @@ export default inject(
       filter,
       providers,
       capabilities,
-      myDirectoryFolders: myFolder && myFolder.folders,
-      commonDirectoryFolders: commonFolder && commonFolder.folders,
+      myFolderId: myFolder && myFolder.id,
+      commonFolderId: commonFolder && commonFolder.id,
 
       setThirdPartyDialogVisible,
       setConnectDialogVisible,
       setConnectItem,
       setDeleteThirdPartyDialogVisible,
       setRemoveItem,
+      getSubfolders,
 
       homepage: config.homepage,
     };

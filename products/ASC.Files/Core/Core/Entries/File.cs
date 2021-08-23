@@ -125,6 +125,11 @@ namespace ASC.Files.Core
             set => _status = value;
         }
 
+        public override string UniqID
+        {
+            get { return $"file_{ID}"; }
+        }
+
         [JsonIgnore]
         public override string Title { get => FileHelper.GetTitle(this); }
 

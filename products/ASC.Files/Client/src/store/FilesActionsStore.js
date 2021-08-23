@@ -299,23 +299,40 @@ class FilesActionStore {
       }
       setAction({ type: null, id: null, extension: null });
       setIsLoading(false);
-      type === FileAction.Rename && this.onSelectItem(selectedItem);
+      type === FileAction.Rename &&
+        this.onSelectItem({
+          id: selectedItem.id,
+          isFolder: selectedItem.isFolder,
+        });
     }
   };
 
-  onSelectItem = (item) => {
+  onSelectItem = ({ id, isFolder }) => {
     const { setSelection, selected, setSelected } = this.filesStore;
     selected === "close" && setSelected("none");
+
+    if (!id) return;
+
+    const item = this.filesStore[isFolder ? "folders" : "files"].find(
+      (elm) => elm.id === id
+    );
     setSelection([item]);
   };
 
-  deleteItemAction = (itemId, currentFolderId, translations, isFile) => {
+  deleteItemAction = (
+    itemId,
+    currentFolderId,
+    translations,
+    isFile,
+    isThirdParty
+  ) => {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
     if (
       this.settingsStore.confirmDelete ||
-      this.treeFoldersStore.isPrivacyFolder
+      this.treeFoldersStore.isPrivacyFolder ||
+      isThirdParty
     ) {
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {

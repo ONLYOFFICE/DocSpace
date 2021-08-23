@@ -162,7 +162,7 @@ namespace ASC.VoipService.Twilio
 
             if (Guid.TryParse(to, out var newCallerId))
             {
-                SecurityContext.AuthenticateMe(newCallerId);
+                SecurityContext.AuthenticateMeWithoutCookie(newCallerId);
             }
 
             return new VoiceResponse().Enqueue(settings.Queue.Name, GetEcho("enqueue"), "POST",

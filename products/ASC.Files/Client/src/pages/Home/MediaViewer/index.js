@@ -74,7 +74,13 @@ const FilesMediaViewer = (props) => {
       let file = files.find((file) => file.id === id);
       if (file) {
         setRemoveMediaItem(file);
-        deleteItemAction(file.id, selectedFolderId, translations, true);
+        deleteItemAction(
+          file.id,
+          selectedFolderId,
+          translations,
+          true,
+          file.providerKey
+        );
       }
     }
   };
@@ -124,6 +130,7 @@ const FilesMediaViewer = (props) => {
         deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
+        errorLabel={t("Translations:MediaLoadError")}
       />
     )
   );

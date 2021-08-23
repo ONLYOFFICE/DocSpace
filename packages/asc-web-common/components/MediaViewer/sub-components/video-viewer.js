@@ -185,6 +185,19 @@ const StyledVideoViewer = styled.div`
   }
 `;
 
+const ErrorContainer = styled.div`
+  z-index: 301;
+  display: block;
+  position: fixed;
+  left: calc(50% - 110px);
+  top: calc(50% - 40px);
+  background-color: #000;
+  color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+`;
+
 class ValumeBtn extends Component {
   constructor(props) {
     super(props);
@@ -242,6 +255,7 @@ class VideoViewer extends Component {
     playbackRate: 1.0,
     loop: false,
     isNew: false,
+    error: false,
   };
 
   componentDidMount() {
@@ -257,6 +271,7 @@ class VideoViewer extends Component {
       this.setState({
         url: this.props.url,
         isNew: true,
+        error: false,
       });
     }
   }
@@ -358,11 +373,11 @@ class VideoViewer extends Component {
 
   onError = (e) => {
     console.log("onError", e);
+    this.setState({ error: true });
   };
 
   onPlay = () => {
-    const playing = this.state.isNew ? false : true;
-    this.setState({ playing: playing, isNew: false });
+    this.setState({ playing: !this.state.isNew, isNew: false });
   };
 
   render() {
@@ -379,7 +394,10 @@ class VideoViewer extends Component {
       duration,
       playbackRate,
       pip,
+      error,
     } = this.state;
+    const { errorLabel } = this.props;
+
     const parentOffset = this.props.getOffset() || 0;
     var screenSize = {
       w: window.innerWidth,
@@ -420,6 +438,14 @@ class VideoViewer extends Component {
     let progressWidth = this.props.isVideo
       ? width - videoControlBtnWidth
       : width - audioControlBtnWidth;
+
+    if (error) {
+      return (
+        <ErrorContainer>
+          <p>{errorLabel}</p>
+        </ErrorContainer>
+      );
+    }
 
     return (
       <StyledVideoViewer
@@ -495,6 +521,7 @@ VideoViewer.propTypes = {
   isVideo: PropTypes.bool,
   url: PropTypes.string,
   getOffset: PropTypes.func,
+  errorLabel: PropTypes.string,
 };
 
 export default VideoViewer;

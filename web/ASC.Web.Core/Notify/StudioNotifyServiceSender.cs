@@ -80,7 +80,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
             {
-                securityContext.AuthenticateMe(Guid.Parse(item.UserId));
+                securityContext.AuthenticateMeWithoutCookie(Guid.Parse(item.UserId));
                 var user = userManager.GetUsers(userId);
                 if (!string.IsNullOrEmpty(user.CultureName))
                 {

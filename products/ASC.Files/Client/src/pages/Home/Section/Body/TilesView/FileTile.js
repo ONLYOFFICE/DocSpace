@@ -9,9 +9,12 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
+import ItemIcon from "../../../../../components/ItemIcon";
+import SharedButton from "../../../../../components/SharedButton";
 
 const FilesTile = (props) => {
   const {
+    t,
     item,
     sectionWidth,
     dragging,
@@ -24,13 +27,14 @@ const FilesTile = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    sharedButton,
+    //sharedButton,
     contextOptionsProps,
     checkedProps,
-    element,
+    //element,
     getIcon,
     onFilesClick,
     onMouseUp,
+    showShare,
   } = props;
   const temporaryIcon = getIcon(
     96,
@@ -40,6 +44,13 @@ const FilesTile = (props) => {
   );
 
   const { thumbnailUrl } = item;
+  const sharedButton =
+    item.canShare && showShare ? (
+      <SharedButton t={t} id={item.id} isFolder={item.isFolder} />
+    ) : null;
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   return (
     <div ref={props.selectableRef}>

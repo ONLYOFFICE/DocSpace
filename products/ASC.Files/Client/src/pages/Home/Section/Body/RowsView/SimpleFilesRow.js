@@ -8,6 +8,8 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
+import SharedButton from "../../../../../components/SharedButton";
+import ItemIcon from "../../../../../components/ItemIcon";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -42,13 +44,14 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .styled-element {
     height: 32px;
-    width: ${(props) => (props.isEdit ? "52px" : "24px")};
+    /* width: ${(props) => (props.isEdit ? "52px" : "24px")}; */
     margin-right: 7px;
   }
 `;
 
 const SimpleFilesRow = (props) => {
   const {
+    t,
     item,
     sectionWidth,
     dragging,
@@ -61,14 +64,22 @@ const SimpleFilesRow = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    sharedButton,
     contextOptionsProps,
     checkedProps,
-    element,
     onFilesClick,
     onMouseUp,
     isEdit,
+    showShare,
   } = props;
+
+  const sharedButton =
+    item.canShare && showShare ? (
+      <SharedButton t={t} id={item.id} isFolder={item.isFolder} />
+    ) : null;
+
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   return (
     <div ref={props.selectableRef}>
@@ -93,7 +104,7 @@ const SimpleFilesRow = (props) => {
           isPrivacy={isPrivacy}
           onMouseUp={onMouseUp}
           onDoubleClick={onFilesClick}
-          {...checkedProps}
+          checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
         >

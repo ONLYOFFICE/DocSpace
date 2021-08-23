@@ -44,7 +44,7 @@ const VersionRow = (props) => {
   const linkStyles = { isHovered: true, type: "action" };
 
   const onDownloadAction = () =>
-    window.open(`${info.viewUrl}&version=${info.version}`);
+    window.open(`${info.viewUrl}&version=${info.version}`, "_self");
   const onEditComment = () => setShowEditPanel(!showEditPanel);
 
   const onChange = (e) => setCommentValue(e.target.value);

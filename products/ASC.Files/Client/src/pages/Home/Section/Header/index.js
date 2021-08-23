@@ -226,9 +226,10 @@ class SectionHeaderContent extends React.Component {
       deleteAction,
       confirmDelete,
       setDeleteDialogVisible,
+      isThirdPartySelection,
     } = this.props;
 
-    if (confirmDelete) {
+    if (confirmDelete || isThirdPartySelection) {
       setDeleteDialogVisible(true);
     } else {
       const translations = {
@@ -325,15 +326,16 @@ class SectionHeaderContent extends React.Component {
       selectionCount,
       isAccessedSelected,
       isWebEditSelected,
-      isViewedSelected,
+      // isViewedSelected,
+      // isMediaSelected,
       deleteDialogVisible,
       isRecycleBin,
-      isThirdPartySelection,
+      isThirdPartyRootSelection,
       isPrivacy,
       isFavoritesFolder,
       isRecentFolder,
       isShareFolder,
-      personal,
+      // personal,
     } = this.props;
 
     let menu = [
@@ -414,7 +416,7 @@ class SectionHeaderContent extends React.Component {
           isRecentFolder ||
           !isAccessedSelected ||
           !selectionCount ||
-          isThirdPartySelection,
+          isThirdPartyRootSelection,
         onClick: this.onMoveAction,
       },
       {
@@ -425,7 +427,7 @@ class SectionHeaderContent extends React.Component {
       {
         label: t("Common:Delete"),
         disabled:
-          !selectionCount || !deleteDialogVisible || isThirdPartySelection,
+          !selectionCount || !deleteDialogVisible || isThirdPartyRootSelection,
         onClick: this.onDeleteAction,
       },
     ];
@@ -471,12 +473,12 @@ class SectionHeaderContent extends React.Component {
       menu.splice(3, 1);
     }
 
-    if (
+    /*if (
       (personal && !isWebEditSelected && !isViewedSelected) ||
       selectionCount > 1
     ) {
       menu.splice(1, 1);
-    }
+    }*/
 
     return menu;
   };
@@ -625,10 +627,12 @@ export default inject(
       isHeaderChecked,
       userAccess,
       isAccessedSelected,
+      isThirdPartyRootSelection,
       isThirdPartySelection,
       isWebEditSelected,
       setIsLoading,
       isViewedSelected,
+      isMediaSelected,
     } = filesStore;
     const {
       isRecycleBinFolder,
@@ -672,9 +676,11 @@ export default inject(
       isHeaderChecked,
       deleteDialogVisible: userAccess,
       isAccessedSelected,
+      isThirdPartyRootSelection,
       isThirdPartySelection,
       isWebEditSelected,
       isViewedSelected,
+      isMediaSelected,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,

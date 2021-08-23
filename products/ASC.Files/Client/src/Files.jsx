@@ -6,7 +6,11 @@ import config from "../package.json";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import AppLoader from "@appserver/common/components/AppLoader";
 import toastr from "studio/toastr";
-import { combineUrl, updateTempContent } from "@appserver/common/utils";
+import {
+  combineUrl,
+  updateTempContent,
+  loadScript,
+} from "@appserver/common/utils";
 import stores from "./store/index";
 import i18n from "./i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -64,6 +68,8 @@ class FilesContent extends React.Component {
   }
 
   componentDidMount() {
+    loadScript("/static/scripts/tiff.min.js", "img-tiff-script");
+
     this.props
       .loadFilesInfo()
       .catch((err) => toastr.error(err))
@@ -71,6 +77,11 @@ class FilesContent extends React.Component {
         this.props.setIsLoaded(true);
         updateTempContent();
       });
+  }
+
+  componentWillUnmount() {
+    const script = document.getElementById("img-tiff-script");
+    document.body.removeChild(script);
   }
 
   componentDidUpdate(prevProps) {
