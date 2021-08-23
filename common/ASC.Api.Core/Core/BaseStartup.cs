@@ -98,7 +98,6 @@ namespace ASC.Api.Core
                 DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
             }
 
-
             var builder = services.AddMvcCore(config =>
             {
                 config.Conventions.Add(new ControllerNameAttributeConvention());
