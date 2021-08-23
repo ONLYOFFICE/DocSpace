@@ -40,7 +40,6 @@ using ASC.Files.Core.EF;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
@@ -489,7 +488,7 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch)
         {
-            if (parentFolder == null || parentFolder.ID.Equals(default(T)))
+            if (parentFolder == null || EqualityComparer<T>.Default.Equals(parentFolder.ID, default(T)))
                 throw new ArgumentException("folderId");
 
             var result = new List<Tag>();
