@@ -435,12 +435,12 @@ namespace ASC.Web.Files.Utils
 
             var updateTags = new List<Tag>();
 
-            if (!rootFolderId.Equals(default(T)))
+            if (!rootFolderId.Equals(default))
             {
                 UpdateRemoveTags(internalFolderDao.GetFolder(rootFolderId));
             }
 
-            if (!cacheFolderId.Equals(default(T)))
+            if (!cacheFolderId.Equals(default))
             {
                 RemoveFromCahce(cacheFolderId, userID);
             }
