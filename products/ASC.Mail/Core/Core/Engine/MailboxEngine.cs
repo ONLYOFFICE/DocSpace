@@ -502,7 +502,7 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var box in mailboxes)
             {
-                Log.Debug($"{box.EMail.Address}\t{box.MailBoxId}:\tIsEnabled={box.Enabled}\tIsRemoved={box.IsRemoved}\tTenant={box.TenantId}\tId={box.UserId}");
+                Log.Debug($"Address: {box.EMail.Address} | Id: {box.MailBoxId} | IsEnabled: {box.Enabled} | IsRemoved: {box.IsRemoved} | Tenant: {box.TenantId} | Id: {box.UserId}");
             }
 
             return mailboxes;
@@ -610,7 +610,7 @@ namespace ASC.Mail.Core.Engine
                     if (box.SizeLast != mailBox.Size)
                         size = mailBox.Size;
 
-                    MailDaoFactory.GetMailboxDao().SetMailboxProcessed(box, mailBox.ServerLoginDelay, enabled, messageCount, size,
+                    MailDaoFactory.GetMailboxDao().ReleaseMailboxes(box, mailBox.ServerLoginDelay, enabled, messageCount, size,
                         quotaError, oAuthToken, imapIntervalsJson, resetImapIntervals);
                 }
             }

@@ -37,6 +37,7 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Security.Cryptography;
 
@@ -76,7 +77,9 @@ namespace ASC.Mail.Core.Dao
         {
             var query = MailDbContext.MailMailbox
                  .Where(exp.GetExpression())
-                 .Select(ToMailbox).ToList();
+                 .Select(ToMailbox)
+                 .DistinctBy(b => b.Address)
+                 .ToList();
 
             if (!string.IsNullOrEmpty(exp.OrderBy) && exp.OrderAsc.HasValue)
             {
@@ -346,7 +349,7 @@ namespace ASC.Mail.Core.Dao
             return MailDbContext.SaveChanges();
         }
 
-        public bool SetMailboxProcessed(Mailbox mailbox, int nextLoginDelay, bool? enabled = null,
+        public bool ReleaseMailboxes(Mailbox mailbox, int nextLoginDelay, bool? enabled = null,
             int? messageCount = null, long? size = null, bool? quotaError = null, string oAuthToken = null,
             string imapIntervalsJson = null, bool? resetImapIntervals = false)
         {

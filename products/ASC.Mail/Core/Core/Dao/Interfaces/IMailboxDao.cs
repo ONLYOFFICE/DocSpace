@@ -64,7 +64,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         int SetMailboxesInProcess(MailBoxData mailBox);
 
-        bool SetMailboxProcessed(Mailbox mailbox, int nextLoginDelay, bool? enabled = null, int? messageCount = null,
+        bool ReleaseMailboxes(Mailbox mailbox, int nextLoginDelay, bool? enabled = null, int? messageCount = null,
             long? size = null, bool? quotaError = null, string oAuthToken = null, string imapIntervalsJson = null, bool? resetImapIntervals = false);
 
         bool SetMailboxAuthError(int id, DateTime? authErroDate);

@@ -1067,11 +1067,15 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             if (!MailSettings.Aggregator.CollectStatistics)
                 return;
 
-            LogStat.DebugWithProps(method,
+            var pairs = new List<KeyValuePair<string, object>>
+            {
                 new KeyValuePair<string, object>("duration", duration.TotalMilliseconds),
                 new KeyValuePair<string, object>("mailboxId", mailBoxData.MailBoxId),
                 new KeyValuePair<string, object>("address", mailBoxData.EMail.ToString()),
-                new KeyValuePair<string, object>("status", failed ? S_FAIL : S_OK));
+                new KeyValuePair<string, object>("status", failed ? S_FAIL : S_OK)
+            };
+
+            LogStat.DebugWithProps(method, pairs);
         }
         #endregion
     }

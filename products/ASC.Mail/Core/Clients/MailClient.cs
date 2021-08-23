@@ -455,11 +455,35 @@ namespace ASC.Mail.Clients
 
         private void LoginImap(bool enableUtf8 = true)
         {
-            Log.DebugFormat($"Imap: Connect({Account.Server}:{Account.Port}, SecureSocketOptions: Auto)");
+            var secureSocketOptions = SecureSocketOptions.Auto;
+            var sslProtocols = SslProtocols.Default;
+
+            switch (Account.Encryption)
+            {
+                case EncryptionType.StartTLS:
+                    secureSocketOptions = SecureSocketOptions.StartTlsWhenAvailable;
+                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
+                    break;
+                case EncryptionType.SSL:
+                    secureSocketOptions = SecureSocketOptions.SslOnConnect;
+                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
+                    break;
+                case EncryptionType.None:
+                    secureSocketOptions = SecureSocketOptions.None;
+                    sslProtocols = SslProtocols.None;
+                    break;
+            }
+
+            Log.DebugFormat($"Imap: Connect({Account.Server}:{Account.Port}, " +
+                $"{Enum.GetName(typeof(SecureSocketOptions), secureSocketOptions)})");
 
             try
             {
-                var t = Imap.ConnectAsync(Account.Server, Account.Port, SecureSocketOptions.Auto, CancelToken);
+                Imap.SslProtocols = sslProtocols;
+
+                Log.InfoFormat("Try connect... to ({1}:{2}) timeout {0} miliseconds", CONNECT_TIMEOUT, Account.Server, Account.Port);
+
+                var t = Imap.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
 
                 if (!t.Wait(CONNECT_TIMEOUT, CancelToken))
                 {

@@ -67,9 +67,8 @@ namespace ASC.Mail.Aggregator.CollectionService
         {
             try
             {
-                Log.Info("Trying to stop the service...");
+                Log.Info("Trying to stop the service. Await task...");
                 AggregatorService.StopService(Cts);
-                Log.Info("Await task...");
                 await Task.WhenAny(AggregatorServiceTask, Task.Delay(TimeSpan.FromSeconds(5), cancellationToken));
             }
             catch (Exception ex)

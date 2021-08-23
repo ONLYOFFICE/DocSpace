@@ -103,7 +103,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             {
                 mailBoxData = GetQueuedMailbox();
 
-            } while (mailBoxData != null && !TryLockMailbox(mailBoxData));
+            }
+            while (mailBoxData != null && !TryLockMailbox(mailBoxData));
 
             if (mailBoxData == null)
                 return null;
@@ -111,6 +112,11 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             if (_lockedMailBoxList.Any(m => m.MailBoxId == mailBoxData.MailBoxId))
             {
                 Log.Error($"GetLockedMailbox() Stored duplicate with id = {mailBoxData.MailBoxId}, address = {mailBoxData.EMail.Address}");
+            }
+
+            if (_lockedMailBoxList.Any(m => m.EMail.Address == mailBoxData.EMail.Address))
+            {
+                return null;
             }
 
             _lockedMailBoxList.Add(mailBoxData);
@@ -540,7 +546,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     {
                         var type = mailbox.GetTenantStatus(tenantManager, securityContext, apiHelper, (int)MailSettings.Aggregator.TenantOverdueDays, Log);
 
-                        Log.InfoFormat("TryLockMailbox -> Returned tenant {0} status: {1}. Disable mailboxes.", mailbox.TenantId, type);
+                        Log.InfoFormat("TryLockMailbox -> Returned tenant {0} status: {1}.", mailbox.TenantId, type);
 
                         switch (type)
                         {
