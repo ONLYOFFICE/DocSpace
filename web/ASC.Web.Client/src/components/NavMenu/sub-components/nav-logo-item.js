@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
-
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 const LogoItem = styled.div`
   display: flex;
   min-width: 56px;
@@ -14,6 +14,7 @@ const LogoItem = styled.div`
 
   .nav-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    ${NoUserSelect}
   }
 
   .nav-logo-icon {
