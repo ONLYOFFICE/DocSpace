@@ -153,7 +153,6 @@ namespace ASC.Api.Documents
     {
         private AuthContext AuthContext { get; }
         private IDaoFactory DaoFactory { get; }
-        private FileSecurity FileSecurity { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
@@ -174,7 +173,6 @@ namespace ASC.Api.Documents
         {
             AuthContext = authContext;
             DaoFactory = daoFactory;
-            FileSecurity = fileSecurity;
             GlobalFolderHelper = globalFolderHelper;
             CommonLinkUtility = commonLinkUtility;
             FilesLinkUtility = filesLinkUtility;

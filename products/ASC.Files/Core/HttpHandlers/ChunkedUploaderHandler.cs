@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -397,7 +398,7 @@ namespace ASC.Web.Files.HttpHandlers
 
         private bool IsFileDataSet()
         {
-            return !string.IsNullOrEmpty(FileName) && !FolderId.Equals(default(T));
+            return !string.IsNullOrEmpty(FileName) && !EqualityComparer<T>.Default.Equals(FolderId, default(T));
         }
     }
 
