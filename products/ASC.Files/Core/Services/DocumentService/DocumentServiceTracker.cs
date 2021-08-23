@@ -370,7 +370,7 @@ namespace ASC.Web.Files.Services.DocumentService
             UserInfo user = null;
             try
             {
-                SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMeWithoutCookie(userId);
 
                 user = UserManager.GetUsers(userId);
                 var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
@@ -477,7 +477,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             try
             {
-                SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMeWithoutCookie(userId);
 
                 var user = UserManager.GetUsers(userId);
                 var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);

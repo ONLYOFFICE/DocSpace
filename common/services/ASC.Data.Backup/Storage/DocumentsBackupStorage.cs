@@ -75,12 +75,12 @@ namespace ASC.Data.Backup.Storage
             TenantManager.SetCurrentTenant(TenantId);
             if (!userId.Equals(Guid.Empty))
             {
-                SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMeWithoutCookie(userId);
             }
             else
             {
                 var tenant = TenantManager.GetTenant(TenantId);
-                SecurityContext.AuthenticateMe(tenant.OwnerId);
+                SecurityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
             }
 
             if (int.TryParse(folderId, out var fId))

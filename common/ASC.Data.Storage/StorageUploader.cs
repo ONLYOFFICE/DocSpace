@@ -159,7 +159,7 @@ namespace ASC.Data.Storage
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
 
-                securityContext.AuthenticateMe(tenant.OwnerId);
+                securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {
