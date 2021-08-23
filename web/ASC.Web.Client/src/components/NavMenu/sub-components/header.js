@@ -18,6 +18,7 @@ import { desktop, tablet } from "@appserver/components/utils/device";
 import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const { proxyURL } = AppServerConfig;
 
@@ -33,6 +34,7 @@ const Header = styled.header`
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+    ${NoUserSelect}
     ${(props) =>
       props.module &&
       !props.isPersonal &&
