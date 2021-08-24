@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import CampaignsBanner from "@appserver/components/campaigns-banner";
+import { ADS_TIMEOUT } from "../../../helpers/constants";
 
 const Banner = () => {
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -11,7 +12,9 @@ const Banner = () => {
   const defaultBannerName = "Cloud";
   const [bannerName, setBannerName] = useState(defaultBannerName);
 
-  useEffect(() => {
+  const updateBanner = () => {
+    console.log("update banner");
+
     let index = Number(localStorage.getItem("bannerIndex") || 0);
     const campaign = campaigns[index];
 
@@ -23,7 +26,7 @@ const Banner = () => {
 
     localStorage.setItem("bannerIndex", index);
     setBannerName(campaign);
-  }, []);
+  };
 
   const { t, i18n, ready } = useTranslation(`CampaignPersonal${bannerName}`, {
     useSuspense: false,
@@ -36,6 +39,8 @@ const Banner = () => {
   ) {
     return <></>;
   }
+
+  setTimeout(updateBanner, ADS_TIMEOUT);
 
   return (
     <CampaignsBanner
