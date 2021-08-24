@@ -193,7 +193,7 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
-        successAuth = user !== null;
+        successAuth = !!user;
       } catch (e) {
         successAuth = false;
       }
