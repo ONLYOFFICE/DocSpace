@@ -126,8 +126,6 @@ class DeleteDialogComponent extends React.Component {
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    console.log(isRecycleBinFolder);
-
     const title =
       isPrivacyFolder || isRecycleBinFolder
         ? t("ConfirmRemove")
