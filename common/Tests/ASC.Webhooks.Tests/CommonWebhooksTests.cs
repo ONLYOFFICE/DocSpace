@@ -121,7 +121,9 @@ namespace ASC.Webhooks.Tests
             var SuccessedWebhookRequest = new WebhookRequest { Id = successWebhookPayloadId };
             var FailedWebhookRequest = new WebhookRequest { Id = failedWebhookPayloadId };
 
-            var sender = new WebhookSender(mockedLogOptions.Object, serviceProvider);
+            var settings = new Settings();
+
+            var sender = new WebhookSender(mockedLogOptions.Object, serviceProvider, settings);
             await sender.Send(SuccessedWebhookRequest, token);
             await sender.Send(FailedWebhookRequest, token);
 

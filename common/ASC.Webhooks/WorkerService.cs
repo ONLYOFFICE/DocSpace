@@ -13,7 +13,7 @@ namespace ASC.Webhooks
     [Singletone]
     public class WorkerService
     {
-        private readonly int threadCount = 10;
+        private readonly int? threadCount = 10;
         private readonly WebhookSender webhookSender;
         private readonly ConcurrentQueue<WebhookRequest> queue;
         private CancellationToken cancellationToken;
@@ -22,11 +22,13 @@ namespace ASC.Webhooks
 
         public WorkerService(WebhookSender webhookSender,
             ILog logger,
-            BuildQueueService buildQueueService)
+            BuildQueueService buildQueueService,
+            Settings settings)
         {
             this.logger = logger;
             this.webhookSender = webhookSender;
             queue = buildQueueService.Queue;
+            threadCount = settings.ThreadCount;
         }
 
         public void Start(CancellationToken cancellationToken)

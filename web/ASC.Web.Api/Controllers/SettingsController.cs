@@ -2935,8 +2935,25 @@ namespace ASC.Api.Settings
         [Create("webhook")]
         public void CreateWebhook(WebhooksConfig model)
         {
-            model.TenantId = TenantManager.GetCurrentTenant().TenantId;
+            if (model.Uri == null) throw new ArgumentNullException("Uri");
+            if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
             WebhookDbWorker.AddWebhookConfig(model);
+        }
+
+        [Update("webhook")]
+        public void UpdateWebhook(WebhooksConfig model)
+        {
+            if (model.Uri == null) throw new ArgumentNullException("Uri");
+            if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
+            WebhookDbWorker.UpdateWebhookConfig(model);
+        }
+
+        [Delete("webhook")]
+        public void RemoveWebhook(WebhooksConfig model)
+        {
+            if (model.Uri == null) throw new ArgumentNullException("Uri");
+            if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
+            WebhookDbWorker.RemoveWebhookConfig(model);
         }
 
         private readonly int maxCount = 10;

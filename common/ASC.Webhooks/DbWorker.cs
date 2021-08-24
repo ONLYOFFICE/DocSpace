@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Webhooks.Dao;
 using ASC.Webhooks.Dao.Models;
@@ -14,10 +15,12 @@ namespace ASC.Webhooks
     {
         private Lazy<WebhooksDbContext> LazyWebhooksDbContext { get; }
         private WebhooksDbContext webhooksDbContext { get => LazyWebhooksDbContext.Value; }
+        private TenantManager TenantManager { get; }
 
-        public DbWorker(DbContextManager<WebhooksDbContext> webhooksDbContext)
+        public DbWorker(DbContextManager<WebhooksDbContext> webhooksDbContext, TenantManager tenantManager)
         {
             LazyWebhooksDbContext = new Lazy<WebhooksDbContext>(() => webhooksDbContext.Value);
+            TenantManager = tenantManager;
         }
 
         public int WriteToJournal(WebhooksPayload webhook)
@@ -38,13 +41,44 @@ namespace ASC.Webhooks
 
         public void AddWebhookConfig(WebhooksConfig webhooksConfig)
         {
+            webhooksConfig.TenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            var addObj = webhooksDbContext.WebhooksConfigs.Where(it =>
+            it.SecretKey == webhooksConfig.SecretKey &&
+            it.TenantId == webhooksConfig.TenantId &&
+            it.Uri == webhooksConfig.Uri).FirstOrDefault();
+
+            if (addObj != null)
+                return;
+
             webhooksDbContext.WebhooksConfigs.Add(webhooksConfig);
             webhooksDbContext.SaveChanges();
         }
 
-        public List<string> GetWebhookUri(int tenant)
+        public void RemoveWebhookConfig(WebhooksConfig webhooksConfig)
         {
-            return webhooksDbContext.WebhooksConfigs.Where(t => t.TenantId == tenant).Select(it => it.Uri).ToList();
+            webhooksConfig.TenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            var removeObj = webhooksDbContext.WebhooksConfigs.Where(it =>
+            it.SecretKey == webhooksConfig.SecretKey &&
+            it.TenantId == webhooksConfig.TenantId &&
+            it.Uri == webhooksConfig.Uri).FirstOrDefault();
+
+            webhooksDbContext.WebhooksConfigs.Remove(removeObj);
+            webhooksDbContext.SaveChanges();
+        }
+
+        public void UpdateWebhookConfig(WebhooksConfig webhooksConfig)
+        {
+            webhooksConfig.TenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            var updateObj = webhooksDbContext.WebhooksConfigs.Where(it =>
+            it.SecretKey == webhooksConfig.SecretKey &&
+            it.TenantId == webhooksConfig.TenantId &&
+            it.Uri == webhooksConfig.Uri).FirstOrDefault();
+
+            webhooksDbContext.WebhooksConfigs.Update(updateObj);
+            webhooksDbContext.SaveChanges();
         }
 
         public List<WebhooksConfig> GetWebhookConfigs(int tenant)

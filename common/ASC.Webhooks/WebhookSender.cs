@@ -17,15 +17,16 @@ namespace ASC.Webhooks
     [Singletone]
     public class WebhookSender
     {
-        public int RepeatCount { get; } = 5;
+        public int? RepeatCount { get; }
         private static readonly HttpClient httpClient = new HttpClient();
         private IServiceProvider ServiceProvider { get; }
         private ILog Log { get; }
 
-        public WebhookSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        public WebhookSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider, Settings settings)
         {
             Log = options.Get("ASC.Webhooks");
             ServiceProvider = serviceProvider;
+            RepeatCount = settings.RepeatCount;
         }
 
         public async Task Send(WebhookRequest webhookRequest, CancellationToken cancellationToken)
