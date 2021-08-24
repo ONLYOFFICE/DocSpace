@@ -442,14 +442,13 @@ class SectionHeaderContent extends React.Component {
         label: t("Translations:Restore"),
         onClick: this.onMoveAction,
       });
-
-      menu.splice(1, 1);
     }
 
     if (isFavoritesFolder) {
       menu.splice(6, 1);
       menu.push({
         label: t("Common:Delete"),
+        alt: t("RemoveFromFavorites"),
         onClick: this.onDeleteFavorite,
       });
     }
@@ -469,16 +468,10 @@ class SectionHeaderContent extends React.Component {
     }
 
     if (isRecentFolder || isFavoritesFolder) {
-      menu.splice(1, 1);
-      menu.splice(3, 1);
+      menu.splice(4, 1);
     }
 
-    if (
-      personal &&
-      !isWebEditSelected &&
-      !isViewedSelected &&
-      !isFavoritesFolder
-    ) {
+    if (personal) {
       menu.splice(1, 1);
     }
 
