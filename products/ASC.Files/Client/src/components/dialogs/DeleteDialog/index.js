@@ -119,21 +119,23 @@ class DeleteDialogComponent extends React.Component {
       isLoading,
       unsubscribe,
       isPrivacyFolder,
+      isRecycleBinFolder,
       personal,
     } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    const title = isPrivacyFolder
-      ? t("ConfirmRemove")
-      : unsubscribe
-      ? t("UnsubscribeTitle")
-      : checkedSelections.length === 1 || isPrivacyFolder
-      ? checkedSelections[0].fileExst
-        ? t("MoveToTrashOneFileTitle")
-        : t("MoveToTrashOneFolderTitle")
-      : t("MoveToTrashItemsTitle");
+    const title =
+      isPrivacyFolder || isRecycleBinFolder
+        ? t("ConfirmRemove")
+        : unsubscribe
+        ? t("UnsubscribeTitle")
+        : checkedSelections.length === 1 || isPrivacyFolder
+        ? checkedSelections[0].fileExst
+          ? t("MoveToTrashOneFileTitle")
+          : t("MoveToTrashOneFolderTitle")
+        : t("MoveToTrashItemsTitle");
 
     const noteText = unsubscribe
       ? t("UnsubscribeNote")
@@ -145,11 +147,12 @@ class DeleteDialogComponent extends React.Component {
         : t("MoveToTrashOneFolderNote")
       : t("MoveToTrashItemsNote");
 
-    const accessButtonLabel = isPrivacyFolder
-      ? t("Common:OKButton")
-      : unsubscribe
-      ? t("UnsubscribeButton")
-      : t("MoveToTrashButton");
+    const accessButtonLabel =
+      isPrivacyFolder || isRecycleBinFolder
+        ? t("Common:OKButton")
+        : unsubscribe
+        ? t("UnsubscribeButton")
+        : t("MoveToTrashButton");
 
     const accuracy = 20;
     let filesHeight = 25 * filesList.length + accuracy + 8;
@@ -251,7 +254,7 @@ export default inject(
   }) => {
     const { selection, isLoading } = filesStore;
     const { deleteAction, unsubscribeAction } = filesActionsStore;
-    const { isPrivacyFolder } = treeFoldersStore;
+    const { isPrivacyFolder, isRecycleBinFolder } = treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
@@ -269,6 +272,7 @@ export default inject(
       isRootFolder: selectedFolderStore.isRootFolder,
       visible,
       isPrivacyFolder,
+      isRecycleBinFolder,
 
       setDeleteDialogVisible,
       deleteAction,
