@@ -101,7 +101,6 @@ const FilesMediaViewer = (props) => {
       fetchFiles(previewFile.folderId, filterObj)
         .then((data) => {
           const pathParts = data.selectedFolder.pathParts;
-          console.log(pathParts);
           const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
           setExpandedKeys(newExpandedKeys);
         })

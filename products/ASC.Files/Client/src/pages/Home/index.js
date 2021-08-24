@@ -51,9 +51,7 @@ class PureHome extends React.Component {
 
     if (window.location.pathname.indexOf("/files/view") > 1) {
       const pathname = window.location.pathname;
-      console.log(pathname);
       const fileId = pathname.slice(pathname.indexOf("view") + 5);
-      console.log(fileId);
 
       api.files
         .getFileInfo(fileId)
