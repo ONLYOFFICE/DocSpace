@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "/products/files/doceditor",
+  "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE",
   "scripts": {
     "start": "webpack-cli serve",

@@ -99,7 +99,8 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
         {
-            return set.Where(r => r.TenantId == TenantID);
+            var tenantId = TenantID;
+            return set.Where(r => r.TenantId == tenantId);
         }
 
         protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)

@@ -40,7 +40,6 @@ using ASC.Files.Core.EF;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
@@ -413,23 +412,24 @@ namespace ASC.Files.Core.Data
             if (tag == null) return;
 
             var id = Query(FilesDbContext.Tag)
-                .Where(r => r.Name == tag.TagName)
-                .Where(r => r.Owner == tag.Owner)
-                .Where(r => r.Flag == tag.TagType)
+                .Where(r => r.Name == tag.TagName && 
+                            r.Owner == tag.Owner &&
+                            r.Flag == tag.TagType)
                 .Select(r => r.Id)
                 .FirstOrDefault();
 
             if (id != 0)
             {
+                var entryId = MappingID(tag.EntryId).ToString();
                 var toDelete = Query(FilesDbContext.TagLink)
-                    .Where(r => r.TagId == id)
-                    .Where(r => r.EntryId == MappingID(tag.EntryId).ToString())
-                    .Where(r => r.EntryType == tag.EntryType);
+                    .Where(r => r.TagId == id && 
+                                r.EntryId == entryId &&
+                                r.EntryType == tag.EntryType);
 
                 FilesDbContext.TagLink.RemoveRange(toDelete);
                 FilesDbContext.SaveChanges();
 
-                var count = Query(FilesDbContext.TagLink).Where(r => r.TagId == id).Count();
+                var count = Query(FilesDbContext.TagLink).Count(r => r.TagId == id);
                 if (count == 0)
                 {
                     var tagToDelete = Query(FilesDbContext.Tag).Where(r => r.Id == id);
@@ -488,7 +488,7 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch)
         {
-            if (parentFolder == null || parentFolder.ID.Equals(default(T)))
+            if (parentFolder == null || EqualityComparer<T>.Default.Equals(parentFolder.ID, default(T)))
                 throw new ArgumentException("folderId");
 
             var result = new List<Tag>();
@@ -749,7 +749,7 @@ namespace ASC.Files.Core.Data
                          EntryType = r.Link.EntryType
                     }
                 })
-                .ToList()
+                .AsEnumerable()
                 .Select(ToTag)
                 .ToList();
         }

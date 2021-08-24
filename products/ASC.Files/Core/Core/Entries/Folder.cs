@@ -93,5 +93,10 @@ namespace ASC.Files.Core
         {
             FileHelper = fileHelper;
         }
+
+        public override string UniqID
+        {
+            get { return $"folder_{ID}"; }
+        }
     }
 }

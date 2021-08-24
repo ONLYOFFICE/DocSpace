@@ -38,6 +38,7 @@ using ASC.Files.Core.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Files
@@ -131,27 +132,33 @@ namespace ASC.Web.Files
         private Lazy<ASC.Files.Core.EF.FilesDbContext> LazyFilesDbContext { get; }
         private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         private TenantManager TenantManager { get; }
+        private GlobalFolder GlobalFolder { get; }
+        public FileMarker FileMarker { get; }
+        public IDaoFactory DaoFactory { get; }
 
         public FilesUserSpaceUsage(
             DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            GlobalFolder globalFolder,
+            FileMarker fileMarker,
+            IDaoFactory daoFactory)
         {
             LazyFilesDbContext = new Lazy<ASC.Files.Core.EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             TenantManager = tenantManager;
+            GlobalFolder = globalFolder;
+            FileMarker = fileMarker;
+            DaoFactory = daoFactory;
         }
 
         public long GetUserSpaceUsage(Guid userId)
         {
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var my = GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
+            var trash = GlobalFolder.GetFolderTrash<int>(DaoFactory);
+
             return FilesDbContext.Files
-                .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
-                .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
-                .Where(r => r.file.TenantId == r.bunch.TenantId)
-                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
-                .Where(r => r.file.CreateBy == userId)
-                .Where(r => r.bunch.RightNode.StartsWith("files/trash/") | r.bunch.RightNode.StartsWith("files/my/"))
-                .GroupBy(r => r.file.CreateBy)
-                .Select(r => r.Sum(f => f.file.ContentLength))
-                .FirstOrDefault();
+                .Where(r => r.TenantId == tenantId && (r.FolderId == my || r.FolderId == trash))
+                .Sum(r => r.ContentLength);
         }
     }
 }
