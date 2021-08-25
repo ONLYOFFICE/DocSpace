@@ -512,7 +512,6 @@ namespace ASC.Mail.Clients
                 {
                     Log.DebugFormat($"Imap: Authentication({Account.Account}).");
                     t = Imap.AuthenticateAsync(Account.Account, Account.Password, CancelToken);
-                    IsAuthenticated = true;
                 }
                 else
                 {
@@ -521,14 +520,12 @@ namespace ASC.Mail.Clients
                     var oauth2 = new SaslMechanismOAuth2(Account.Account, Account.AccessToken);
 
                     t = Imap.AuthenticateAsync(oauth2, CancelToken);
-                    IsAuthenticated = true;
                 }
 
                 if (!t.Wait(LOGIN_TIMEOUT, CancelToken))
                 {
                     Imap.Authenticated -= ImapOnAuthenticated;
                     Log.Debug("Imap: Failed authentication: Timeout.");
-                    IsAuthenticated = false;
                     throw new TimeoutException("Imap: AuthenticateAsync timeout.");
                 }
                 else
@@ -548,6 +545,11 @@ namespace ASC.Mail.Clients
                 }
                 Log.ErrorFormat($"Imap: Exception while logging.");
                 throw new Exception("LoginImap failed", aggEx);
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("LoginImap error {0}", ex.Message);
+                throw;
             }
             finally
             {
@@ -1130,7 +1132,15 @@ namespace ASC.Mail.Clients
                 var t = Pop.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
 
                 if (!t.Wait(CONNECT_TIMEOUT, CancelToken))
+                {
+                    Log.InfoFormat("Pop3: Failed connect: Timeout.");
                     throw new TimeoutException("Pop.ConnectAsync timeout");
+                }
+                else
+                {
+                    IsConnected = true;
+                    Log.InfoFormat("Imap: Successfull connection. Working on!");
+                }
 
                 if (enableUtf8 && (Pop.Capabilities & Pop3Capabilities.UTF8) != Pop3Capabilities.None)
                 {
@@ -1162,7 +1172,13 @@ namespace ASC.Mail.Clients
                 if (!t.Wait(LOGIN_TIMEOUT, CancelToken))
                 {
                     Pop.Authenticated -= PopOnAuthenticated;
+                    Log.InfoFormat("Pop: Authentication failed.");
                     throw new TimeoutException("Pop.AuthenticateAsync timeout");
+                }
+                else
+                {
+                    IsAuthenticated = true;
+                    Log.InfoFormat("Pop: Successfull authentication.");
                 }
 
                 Pop.Authenticated -= PopOnAuthenticated;
@@ -1171,8 +1187,10 @@ namespace ASC.Mail.Clients
             {
                 if (aggEx.InnerException != null)
                 {
+                    Log.ErrorFormat($"Pop3: Exception while logging. See next exception for details.");
                     throw aggEx.InnerException;
                 }
+                Log.ErrorFormat($"Pop3: Exception while logging.");
                 throw new Exception("LoginPop3 failed", aggEx);
             }
         }

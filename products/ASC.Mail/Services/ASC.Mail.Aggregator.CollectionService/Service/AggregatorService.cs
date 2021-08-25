@@ -322,8 +322,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 if (client == null || !client.IsConnected || !client.IsAuthenticated || client.IsDisposed)
                 {
-                    log.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
-                               mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
+                    if (client != null)
+                        log.InfoFormat("Client -> Could not connect: {0} | Not authenticated: {1} | Was disposed: {2}",
+                            !client.IsConnected ? "Yes" : "No",
+                            !client.IsAuthenticated ? "Yes" : "No",
+                            client.IsDisposed ? "Yes" : "No");
+                    else log.InfoFormat("Client was null");
+
+                    log.InfoFormat($"ReleaseMailbox(Tenant = {mailbox.TenantId} MailboxId = {mailbox.MailBoxId}, Address = '{mailbox.EMail}')");
 
                     ReleaseMailbox(mailbox);
 
@@ -757,7 +763,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 return;
             }
 
-            log.InfoFormat($"Message saved (Id: {message.Id}, From: {message.From}, Subject: {message.Subject}, Unread: {message.IsNew})");
+            log.InfoFormat($"Message saved (to Mbox_{mailbox.MailBoxId} - {mailbox.EMail.Address}) (Id: {message.Id}, From: {message.From}, Subject: {message.Subject}, Unread: {message.IsNew})");
 
             log.Info("DoOptionalOperations -> START");
 
