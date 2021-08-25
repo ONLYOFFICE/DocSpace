@@ -4,15 +4,16 @@ import { useTranslation } from "react-i18next";
 import CampaignsBanner from "@appserver/components/campaigns-banner";
 import { ADS_TIMEOUT } from "../../../helpers/constants";
 
-const Banner = () => {
+const Banner = ({ FirebaseHelper }) => {
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
   const defaultBannerName = "Cloud";
   const [bannerName, setBannerName] = useState(defaultBannerName);
+  const [bannerImage, setBannerImage] = useState("");
 
-  const updateBanner = () => {
+  const updateBanner = async () => {
     console.log("update banner");
 
     let index = Number(localStorage.getItem("bannerIndex") || 0);
@@ -26,7 +27,17 @@ const Banner = () => {
 
     localStorage.setItem("bannerIndex", index);
     setBannerName(campaign);
+
+    const image = await FirebaseHelper.getCampaignsImages(
+      campaign.toLowerCase()
+    );
+    setBannerImage(image);
   };
+
+  useEffect(() => {
+    updateBanner();
+    setInterval(updateBanner, ADS_TIMEOUT);
+  }, []);
 
   const { t, i18n, ready } = useTranslation(`CampaignPersonal${bannerName}`, {
     useSuspense: false,
@@ -40,13 +51,11 @@ const Banner = () => {
     return <></>;
   }
 
-  setTimeout(updateBanner, ADS_TIMEOUT);
-
   return (
     <CampaignsBanner
       headerLabel={t(`CampaignPersonal${bannerName}:Header`)}
       subHeaderLabel={t(`CampaignPersonal${bannerName}:SubHeader`)}
-      img={`/static/images/campaigns.${bannerName.toLowerCase()}.png`}
+      img={bannerImage}
       btnLabel={t(`CampaignPersonal${bannerName}:ButtonLabel`)}
       link={t(`CampaignPersonal${bannerName}:Link`)}
     />

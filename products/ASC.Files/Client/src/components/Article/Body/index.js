@@ -82,6 +82,7 @@ class ArticleBodyContent extends React.Component {
       enableThirdParty,
       isVisitor,
       personal,
+      FirebaseHelper,
     } = this.props;
 
     const campaigns = (localStorage.getItem("campaigns") || "")
@@ -103,7 +104,7 @@ class ArticleBodyContent extends React.Component {
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
         <DownloadAppList />
         {(isDesktop || isTablet) && personal && campaigns.length > 0 && (
-          <Banner />
+          <Banner FirebaseHelper={FirebaseHelper} />
         )}
       </>
     );
@@ -152,6 +153,7 @@ export default inject(
       homepage: config.homepage,
 
       personal,
+      FirebaseHelper: auth.settingsStore.firebaseHelper,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));
