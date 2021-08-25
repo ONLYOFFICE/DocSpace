@@ -104,9 +104,8 @@ const SectionBodyContent = (props) => {
           for (let cl of classElements) {
             cl.classList.add("droppable-hover");
           }
-
-          currentDroppable.classList.add("droppable-hover");
         } else {
+          currentDroppable.classList.add("droppable-hover");
           currentDroppable = droppable;
         }
       }

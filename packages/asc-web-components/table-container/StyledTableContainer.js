@@ -163,7 +163,9 @@ const StyledTableRow = styled.div`
 
   .droppable-hover {
     background: ${(props) =>
-      props.theme.dragAndDrop.acceptBackground} !important;
+      props.dragging
+        ? `${props.theme.dragAndDrop.acceptBackground} !important`
+        : "none"};
   }
 `;
 

@@ -126,6 +126,7 @@ const FilesTableRow = (props) => {
     >
       <TableRow
         {...dragStyles}
+        dragging={dragging && isDragging}
         selectionProp={selectionProp}
         key={item.id}
         item={item}
