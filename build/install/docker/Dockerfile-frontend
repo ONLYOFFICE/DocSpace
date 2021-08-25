@@ -1,0 +1,97 @@
+### STAGE 1: Base image ######
+ARG SRC_PATH=/app/onlyoffice/src
+ARG BUILD_PATH=/var/www
+ARG REPO_TAG=5.0.202-focal-amd64
+ARG REPO=mcr.microsoft.com/dotnet/sdk
+
+FROM $REPO:$REPO_TAG AS base
+ARG RELEASE_DATE="2016-06-21"
+ARG DEBIAN_FRONTEND=noninteractive
+ARG PRODUCT_VERSION=0.0.0
+ARG BUILD_NUMBER=0
+ARG GIT_BRANCH=master
+ARG SRC_PATH
+ARG BUILD_PATH
+
+LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
+      maintainer="Ascensio System SIA <support@onlyoffice.com>"
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
+    apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get -y dist-upgrade && \
+    apt-get install -yq sudo locales && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    locale-gen en_US.UTF-8 && \
+    apt-get -y update && \
+    apt-get install -yq git apt-utils npm && \
+    npm install --global yarn && \
+    curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
+    apt-get install -y nodejs
+
+RUN git clone --depth 1 -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    cd ${SRC_PATH}/build/install/common/ && \
+    bash build-frontend.sh -sp ${SRC_PATH} && \
+    rm -rf ${SRC_PATH}/common/* && \
+    rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
+    rm -rf ${SRC_PATH}/web/ASC.Web.Studio/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Calendar/Server/* && \
+    rm -rf ${SRC_PATH}/products/ASC.CRM/Server/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Files/Server/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Files/Service/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Mail/Server/* && \
+    rm -rf ${SRC_PATH}/products/ASC.People/Server/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Projects/Server/* && \
+    rm -rf /var/lib/apt/lists/*
+
+### STAGE 2: Deploy ###
+## Nginx image ##
+FROM nginx AS web
+ARG SRC_PATH
+ARG BUILD_PATH
+ARG COUNT_WORKER_CONNECTIONS=1024
+ENV DNS_NAMESERVER=127.0.0.11 \
+    COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
+    MAP_HASH_BUCKET_SIZE=""
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get install -yq vim && \
+    # Remove default nginx website
+    rm -rf /usr/share/nginx/html/* 
+
+# copy static services files and config values 
+COPY --from=base ${SRC_PATH}/config/nginx/onlyoffice*.conf /etc/nginx/conf.d
+COPY --from=base ${SRC_PATH}/config/nginx/includes/onlyoffice*.conf /etc/nginx/includes
+COPY --from=base ${SRC_PATH}/build/deploy/products ${BUILD_PATH}/products
+COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
+COPY --from=base ${SRC_PATH}/build/deploy/studio ${BUILD_PATH}/studio
+COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
+COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
+COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
+
+# add defualt user and group for no-root run
+RUN chown nginx:nginx /etc/nginx/* -R && \
+    chown nginx:nginx /docker-entrypoint.d/* && \
+    # changes for upstream configure
+    sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5021/$service_crm/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5020/$service_projects_server/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5023/$service_calendar/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf

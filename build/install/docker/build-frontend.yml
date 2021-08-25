@@ -1,0 +1,9 @@
+version: "3.6"
+
+services: 
+  onlyoffice-proxy:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE-FRONTEND}"
+      target: web
+    image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
