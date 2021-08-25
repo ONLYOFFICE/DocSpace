@@ -6,6 +6,8 @@ using ASC.Files.Core.Security;
 
 using Microsoft.EntityFrameworkCore;
 
+using FileShare = ASC.Files.Core.Security.FileShare;
+
 namespace ASC.Files.Core.EF
 {
     public class DbFilesSecurity : BaseEntity, IDbFile

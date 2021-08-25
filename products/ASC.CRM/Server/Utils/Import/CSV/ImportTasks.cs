@@ -40,6 +40,8 @@ using ASC.Web.Core.Users;
 
 using LumenWorks.Framework.IO.Csv;
 
+using Task = ASC.CRM.Core.Entities.Task;
+
 #endregion
 
 namespace ASC.Web.CRM.Classes

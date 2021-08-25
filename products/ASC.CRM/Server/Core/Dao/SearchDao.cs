@@ -50,6 +50,8 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
+using Task = ASC.CRM.Core.Entities.Task;
+
 namespace ASC.CRM.Core.Dao
 {
     [Scope]

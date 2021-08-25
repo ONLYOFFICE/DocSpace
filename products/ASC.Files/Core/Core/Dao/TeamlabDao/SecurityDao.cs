@@ -24,9 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 
 using ASC.Common;
@@ -40,6 +37,8 @@ using ASC.Files.Core.Security;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
+
+using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Files.Core.Data
 {

@@ -73,7 +73,7 @@ namespace ASC.Files.Core
 
         public string Error { get; set; }
 
-        public FileShare Access { get; set; }
+        public Security.FileShare Access { get; set; }
 
         public bool Shared { get; set; }
 

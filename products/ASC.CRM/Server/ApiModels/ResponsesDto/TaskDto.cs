@@ -35,6 +35,8 @@ using ASC.Web.Api.Models;
 
 using AutoMapper;
 
+using Task = ASC.CRM.Core.Entities.Task;
+
 namespace ASC.CRM.ApiModels
 {
     /// <summary>

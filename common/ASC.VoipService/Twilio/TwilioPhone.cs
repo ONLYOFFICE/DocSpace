@@ -37,6 +37,8 @@ using Twilio.Rest.Api.V2010.Account;
 using Twilio.Rest.Api.V2010.Account.Queue;
 using Twilio.Types;
 
+using HttpMethod = Twilio.Http.HttpMethod;
+
 namespace ASC.VoipService.Twilio
 {
     public class TwilioPhone : VoipPhone

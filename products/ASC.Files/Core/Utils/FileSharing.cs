@@ -45,6 +45,8 @@ using ASC.Web.Files.Services.WCFService;
 
 using Microsoft.Extensions.Options;
 
+using FileShare = ASC.Files.Core.Security.FileShare;
+
 namespace ASC.Web.Files.Utils
 {
     [Scope]

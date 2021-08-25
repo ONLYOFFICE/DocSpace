@@ -40,6 +40,8 @@ using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using FileShare = ASC.Files.Core.Security.FileShare;
+
 namespace ASC.Files.Core.Services.NotifyService
 {
     [Scope(Additional = typeof(NotifyClientExtension))]

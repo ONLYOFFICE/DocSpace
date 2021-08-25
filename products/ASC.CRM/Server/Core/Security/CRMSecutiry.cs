@@ -49,7 +49,9 @@ using Autofac;
 
 using Action = ASC.Common.Security.Authorizing.Action;
 using Constants = ASC.Core.Users.Constants;
+using FileShare = ASC.Files.Core.Security.FileShare;
 using SecurityContext = ASC.Core.SecurityContext;
+using Task = ASC.CRM.Core.Entities.Task;
 
 namespace ASC.CRM.Core
 {

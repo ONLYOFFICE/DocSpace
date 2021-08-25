@@ -24,11 +24,7 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -51,6 +47,8 @@ using ASC.Web.Studio.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+
+using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Files.Core.Data
 {
