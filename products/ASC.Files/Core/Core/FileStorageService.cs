@@ -500,7 +500,7 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            var parent = folderDao.GetFolder(parentId == null || parentId.Equals(default(T)) ? file.FolderID : parentId);
+            var parent = folderDao.GetFolder(EqualityComparer<T>.Default.Equals(parentId, default(T)) ? file.FolderID : parentId);
             ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(parent.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -563,7 +563,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
 
             Folder<T> folder = null;
-            if (!fileWrapper.ParentId.Equals(default(T)))
+            if (!EqualityComparer<T>.Default.Equals(fileWrapper.ParentId, default(T)))
             {
                 folder = folderDao.GetFolder(fileWrapper.ParentId);
 
@@ -608,7 +608,7 @@ namespace ASC.Web.Files.Services.WCFService
                 file.Title = FileUtility.ReplaceFileExtension(fileWrapper.Title, fileExt);
             }
 
-            if (fileWrapper.TemplateId == null || fileWrapper.TemplateId.Equals(default(T)))
+            if (EqualityComparer<T>.Default.Equals(fileWrapper.TemplateId, default(T)))
             {
                 var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
                 var storeTemplate = GetStoreTemplate();
