@@ -1420,7 +1420,7 @@ namespace ASC.Mail.Core.Engine
                     .SetChainId(mimeMessageId)
                     .Build();
 
-                var chains = MailDaoFactory.GetChainDao().GetChains(query)
+                var chains = MailDaoFactory.GetChainDao().GetChains(query, Log)
                     .Select(x => new { id = x.Id, folder = x.Folder })
                     .ToArray();
 

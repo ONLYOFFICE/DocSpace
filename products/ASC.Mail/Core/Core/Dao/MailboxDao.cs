@@ -78,6 +78,36 @@ namespace ASC.Mail.Core.Dao
             var query = MailDbContext.MailMailbox
                  .Where(exp.GetExpression())
                  .Select(ToMailbox)
+                 .ToList();
+
+            if (!string.IsNullOrEmpty(exp.OrderBy) && exp.OrderAsc.HasValue)
+            {
+                if ((bool)exp.OrderAsc)
+                {
+                    query = query.OrderBy(b => b.DateChecked).ToList();
+                }
+                else
+                {
+                    query = query.OrderByDescending(b => b.DateChecked).ToList();
+                }
+
+            }
+
+            if (exp.Limit.HasValue)
+            {
+                query = query.Take(exp.Limit.Value).ToList();
+            }
+
+            var mailboxes = query.ToList();
+
+            return mailboxes;
+        }
+
+        public List<Mailbox> GetUniqueMailBoxes(IMailboxesExp exp)
+        {
+            var query = MailDbContext.MailMailbox
+                 .Where(exp.GetExpression())
+                 .Select(ToMailbox)
                  .DistinctBy(b => b.Address)
                  .ToList();
 
@@ -349,7 +379,7 @@ namespace ASC.Mail.Core.Dao
             return MailDbContext.SaveChanges();
         }
 
-        public bool ReleaseMailboxes(Mailbox mailbox, int nextLoginDelay, bool? enabled = null,
+        public bool ReleaseMailbox(Mailbox mailbox, int nextLoginDelay, ILog log, bool? enabled = null,
             int? messageCount = null, long? size = null, bool? quotaError = null, string oAuthToken = null,
             string imapIntervalsJson = null, bool? resetImapIntervals = false)
         {
@@ -406,6 +436,15 @@ namespace ASC.Mail.Core.Dao
             }
 
             var result = MailDbContext.SaveChanges();
+
+            if (result > 0)
+            {
+                log.InfoFormat($"Successfull Release Mailbox {mailbox.Address} Id:{mailbox.Id}.");
+            }
+            else
+            {
+                log.Warn($"Problem when trying release mailbox {mailbox.Address} Id:{mailbox.Id}.");
+            }
 
             return result > 0;
         }

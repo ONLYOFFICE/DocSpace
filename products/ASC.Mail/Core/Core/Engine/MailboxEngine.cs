@@ -108,6 +108,12 @@ namespace ASC.Mail.Core.Engine
             return tuples.Select(t => t.Item1).ToList();
         }
 
+        public List<MailBoxData> GetUniqueMailboxDataList(IMailboxesExp exp)
+        {
+            var tuples = GetUniqueMailboxFullInfoList(exp);
+            return tuples.Select(t => t.Item1).ToList();
+        }
+
         public List<Mailbox> GetMailboxList(IMailboxesExp exp)
         {
             var tuples = GetMailboxFullInfoList(exp);
@@ -119,6 +125,17 @@ namespace ASC.Mail.Core.Engine
             var list = new List<Tuple<MailBoxData, Mailbox>>();
 
             var mailboxes = MailDaoFactory.GetMailboxDao().GetMailBoxes(exp);
+
+            list.AddRange(mailboxes.Select(GetMailbox).Where(tuple => tuple != null));
+
+            return list;
+        }
+
+        public List<Tuple<MailBoxData, Mailbox>> GetUniqueMailboxFullInfoList(IMailboxesExp exp)
+        {
+            var list = new List<Tuple<MailBoxData, Mailbox>>();
+
+            var mailboxes = MailDaoFactory.GetMailboxDao().GetUniqueMailBoxes(exp);
 
             list.AddRange(mailboxes.Select(GetMailbox).Where(tuple => tuple != null));
 
@@ -520,7 +537,7 @@ namespace ASC.Mail.Core.Engine
             return boxesCount > 0;
         }
 
-        public void ReleaseMaibox(MailBoxData mailBox, MailSettings mailSettings)
+        public void ReleaseMailbox(MailBoxData mailBox, MailSettings mailSettings)
         {
             var disableMailbox = false;
 
@@ -567,41 +584,37 @@ namespace ASC.Mail.Core.Engine
             {
                 var sameMboxes = GetMailboxList(new ConcreteMailboxesExp(mailBox.EMail.Address));
 
+                Log.Info($"Next mailboxes will be released:");
+
                 foreach (var box in sameMboxes)
                 {
-                    if (mailBox.MailBoxId == box.Id)
+                    Log.Info($"{box.Address} width id {box.Id}");
+                }
+
+                foreach (var box in sameMboxes)
+                {
+                    if (mailBox.AuthErrorDate.HasValue)
                     {
-                        if (mailBox.AuthErrorDate.HasValue)
-                        {
-                            if (disableMailbox)
-                                enabled = false;
-                        }
-
-                        if (mailBox.QuotaErrorChanged)
-                            quotaError = mailBox.QuotaError;
-
-                        if (mailBox.AccessTokenRefreshed)
-                            oAuthToken = mailBox.OAuthToken;
-
-                        if (mailBox.Imap && mailBox.ImapFolderChanged)
-                        {
-                            if (mailBox.BeginDateChanged)
-                            {
-                                resetImapIntervals = true;
-                            }
-                            else
-                            {
-                                imapIntervalsJson = mailBox.ImapIntervalsJson;
-                            }
-                        }
+                        if (disableMailbox && mailBox.MailBoxId == box.Id)
+                            enabled = false;
                     }
-                    else
+
+                    if (mailBox.QuotaErrorChanged && mailBox.MailBoxId == box.Id)
+                        quotaError = mailBox.QuotaError;
+
+                    if (mailBox.AccessTokenRefreshed && mailBox.MailBoxId == box.Id)
+                        oAuthToken = mailBox.OAuthToken;
+
+                    if (mailBox.Imap && mailBox.ImapFolderChanged)
                     {
-                        enabled = null;
-                        quotaError = null;
-                        oAuthToken = null;
-                        resetImapIntervals = null;
-                        imapIntervalsJson = null;
+                        if (mailBox.BeginDateChanged)
+                        {
+                            resetImapIntervals = true;
+                        }
+                        else
+                        {
+                            imapIntervalsJson = mailBox.ImapIntervalsJson;
+                        }
                     }
 
                     if (box.MsgCountLast != mailBox.MessagesCount)
@@ -610,9 +623,47 @@ namespace ASC.Mail.Core.Engine
                     if (box.SizeLast != mailBox.Size)
                         size = mailBox.Size;
 
-                    MailDaoFactory.GetMailboxDao().ReleaseMailboxes(box, mailBox.ServerLoginDelay, enabled, messageCount, size,
+                    MailDaoFactory.GetMailboxDao().ReleaseMailbox(box, mailBox.ServerLoginDelay, Log, enabled, messageCount, size,
                         quotaError, oAuthToken, imapIntervalsJson, resetImapIntervals);
                 }
+            }
+            else
+            {
+                var box = MailDaoFactory.GetMailboxDao().GetMailBox(new СoncreteUserMailboxExp(mailBox.MailBoxId, mailBox.TenantId, mailBox.UserId));
+
+                Log.Info($"Mailbox {box.Address} width id {box.Id} will be released:");
+
+                if (mailBox.AuthErrorDate.HasValue)
+                {
+                    if (disableMailbox)
+                        enabled = false;
+                }
+
+                if (mailBox.QuotaErrorChanged)
+                    quotaError = mailBox.QuotaError;
+
+                if (mailBox.AccessTokenRefreshed)
+                    oAuthToken = mailBox.OAuthToken;
+
+                if (mailBox.Imap && mailBox.ImapFolderChanged)
+                {
+                    if (mailBox.BeginDateChanged)
+                    {
+                        resetImapIntervals = true;
+                    }
+                    else
+                    {
+                        imapIntervalsJson = mailBox.ImapIntervalsJson;
+                    }
+                }
+                if (box.MsgCountLast != mailBox.MessagesCount)
+                    messageCount = mailBox.MessagesCount;
+
+                if (box.SizeLast != mailBox.Size)
+                    size = mailBox.Size;
+
+                MailDaoFactory.GetMailboxDao().ReleaseMailbox(box, mailBox.ServerLoginDelay, Log, enabled, messageCount, size,
+                    quotaError, oAuthToken, imapIntervalsJson, resetImapIntervals);
             }
         }
 
@@ -782,7 +833,7 @@ namespace ASC.Mail.Core.Engine
 
             Log.Debug("GetActiveMailboxForProcessing()");
 
-            var mailboxes = GetMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, true));
+            var mailboxes = GetUniqueMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, true));
 
             Log.DebugFormat("Found {0} active tasks", mailboxes.Count);
 
@@ -796,7 +847,7 @@ namespace ASC.Mail.Core.Engine
 
             Log.Debug("GetInactiveMailboxForProcessing()");
 
-            var mailboxes = GetMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, false));
+            var mailboxes = GetUniqueMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, false));
 
             Log.DebugFormat("Found {0} inactive tasks", mailboxes.Count);
 

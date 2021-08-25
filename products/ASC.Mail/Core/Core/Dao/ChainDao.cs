@@ -30,6 +30,7 @@ using System.Linq;
 using System.Reflection;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -51,12 +52,15 @@ namespace ASC.Mail.Core.Dao
         {
         }
 
-        public List<Chain> GetChains(IConversationsExp exp)
+        public List<Chain> GetChains(IConversationsExp exp, ILog log = null)
         {
-            var chains = MailDbContext.MailChain
-                .Where(exp.GetExpression())
-                .Select(ToChain)
-                .ToList();
+            var dbChains = MailDbContext.MailChain.Where(exp.GetExpression()).ToList();
+
+            if (log != null)
+                log.Debug($"ChainDao -> Get chains returned {dbChains.Count} chains.");
+
+            //sometimes query take a very long time then was timeout exception. This is the reason for splitting the request
+            var chains = dbChains.Select(ToChain).ToList();
 
             return chains;
         }

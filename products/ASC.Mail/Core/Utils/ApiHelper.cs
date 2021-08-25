@@ -197,7 +197,7 @@ namespace ASC.Mail.Utils
         {
             Setup();
 
-            log.DebugFormat("ApiHelper->Execute: request url: {0}/{1}", BaseUrl.Uri.ToString(), request.Resource);
+            log.DebugFormat("ApiHelper -> Execute: request url: {0}/{1}", BaseUrl.Uri.ToString(), request.Resource);
 
             var client = new RestClient { BaseUrl = BaseUrl.Uri };
 
@@ -205,7 +205,7 @@ namespace ASC.Mail.Utils
 
             var response = client.ExecuteSafe(request);
 
-            log.Debug($"ApiHelper->Response status code {response.StatusCode}");
+            log.Debug($"ApiHelper -> Response status code {response.StatusCode}");
 
             if (response.ErrorException is ApiHelperException)
                 return response;

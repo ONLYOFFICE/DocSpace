@@ -130,7 +130,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
         private void WorkTimerElapsed(object state)
         {
-            Log.Debug("Timer -> WorkTimer_Elapsed");
+            Log.Debug("Timer -> Work Timer Elapsed");
 
             var cancelToken = state as CancellationToken? ?? new CancellationToken();
 
@@ -144,7 +144,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                     {
                         Log.InfoFormat("Found {0} tasks to release", QueueManager.ProcessingCount);
 
-                        QueueManager.ReleaseAllProcessingMailboxes();
+                        QueueManager.ReleaseAllProcessingMailboxes(true);
                     }
 
                     QueueManager.LoadTenantsFromDump();
@@ -154,7 +154,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 if (cancelToken.IsCancellationRequested)
                 {
-                    Log.Debug("Timer -> WorkTimer_Elapsed: IsCancellationRequested. Quit.");
+                    Log.Debug("Timer -> Work Timer Elapsed: IsCancellationRequested. Quit.");
                     return;
                 }
 
@@ -608,13 +608,13 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             switch (state)
             {
                 case MailboxState.NoChanges:
-                    log.InfoFormat("MailBox with Id = {mailbox.MailBoxId} not changed.");
+                    log.InfoFormat($"MailBox with Id = {mailbox.MailBoxId} not changed.");
                     break;
                 case MailboxState.Disabled:
-                    log.InfoFormat("MailBox with Id = {mailbox.MailBoxId} is deactivated.");
+                    log.InfoFormat($"MailBox with Id = {mailbox.MailBoxId} is deactivated.");
                     break;
                 case MailboxState.Deleted:
-                    log.InfoFormat("MailBox with Id = {mailbox.MailBoxId} is removed.");
+                    log.InfoFormat($"MailBox with Id = {mailbox.MailBoxId} is removed.");
 
                     try
                     {
@@ -699,7 +699,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                     var sameMboxes = factory.MailboxEngine.GetMailboxDataList(new ConcreteMailboxesExp(mailbox.EMail.Address));
 
                     log.InfoFormat($"Boxes with the same name ({mailbox.EMail.Address}) detected. The message will be sent to them.");
-                    SaveAndOptional(mailbox, boxInfo, uidl, log);
+
                     foreach (var box in sameMboxes)
                     {
                         SaveAndOptional(box, boxInfo, uidl, log);
@@ -974,7 +974,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             // Using id_user as domain in S3 Storage - allows not to add quota to tenant.
             var savePath = MailStoragePathCombiner.GetEmlKey(userId, streamId);
 
-            var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceProvider.CreateScope();
             var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
 
             var storage = storageFactory.GetMailStorage(tenant);
