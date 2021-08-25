@@ -25,7 +25,6 @@ using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using MailKit.Security;
 using MailKit.Net.Imap;
 using MailKit.Net.Pop3;
-using ILog = ASC.Common.Logging.ILog;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using ASC.Mail.Models;
@@ -33,22 +32,23 @@ using Microsoft.Extensions.Options;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Configuration;
 using ASC.Common;
-using System.Collections.Generic;
-using MimeKit;
+using ASC.Common.Logging;
 
 namespace ASC.Mail.ImapSync
 {
     [Singletone]
     public class ImapSyncService : IHostedService
     {
-        private const int SIGNALR_WAIT_SECONDS = 30;
-
         private readonly ILog _log;
         private readonly IOptionsMonitor<ILog> _options;
+
         private readonly CancellationTokenSource _cancelTokenSource;
+
         private readonly ConcurrentDictionary<string,MailImapClient> clients;
+
         private readonly MailSettings _mailSettings;
         private readonly RedisClient _redisClient;
+
         private readonly IServiceProvider _serviceProvider;
 
         private readonly SemaphoreSlim CreateClientSemaphore;
@@ -70,8 +70,7 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                _log = options.Get("ASC.Mail.ImapSyncService");
-                _log.Name = "ASC.Mail.ImapSyncService";
+                _log = _options.Get("ASC.Mail.ImapSyncService");
 
                 clients = new ConcurrentDictionary<string, MailImapClient>();
 
@@ -114,53 +113,27 @@ namespace ASC.Mail.ImapSync
 
         public void CreateNewClient(CashedTenantUserMailBox cashedTenantUserMailBox)
         {
-            string clientKey = cashedTenantUserMailBox.MailBoxId.ToString();
-
-            if (clients.Keys.Contains(clientKey))
+            if (clients.ContainsKey(cashedTenantUserMailBox.UserName))
             {
-                if(clients[clientKey]!=null)
+                if(clients[cashedTenantUserMailBox.UserName] !=null)
                 {
-                    clients[clientKey]?.CheckRedis(cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
+                    clients[cashedTenantUserMailBox.UserName]?.CheckRedis(cashedTenantUserMailBox.MailBoxId, cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
 
-                    _log.Info($"User Activity -> {cashedTenantUserMailBox.MailBoxId}, clients.Count={clients.Count}. ");
+                    _log.Info($"User Activity -> {cashedTenantUserMailBox.MailBoxId}, folder={cashedTenantUserMailBox.Folder}. ");
+                }
 
-                    return;
-                }
-                else
-                {
-                    if(clients.TryRemove(clientKey, out MailImapClient trashValue))
-                    {
-                        _log.Info($"ImapSyncService. MailImapClient {clientKey} died and was remove.");
-                    }
-                    else
-                    {
-                        _log.Info($"ImapSyncService. MailImapClient {clientKey} died, bud wasn`t remove.");
-                    }
-                }
+                return;
             }
 
             CreateClientSemaphore.Wait();
 
-            if (clients.Keys.Contains(clientKey)) return;
-
             try
             {
-                var userMailboxesExp = new UserMailboxesExp(cashedTenantUserMailBox.Tenant, cashedTenantUserMailBox.UserName, onlyTeamlab: true);
+                if (clients.ContainsKey(cashedTenantUserMailBox.UserName)) return;
 
-                var mailboxes = MailEnginesFactory.MailboxEngine.GetMailboxDataList(userMailboxesExp);
+                clients.TryAdd(cashedTenantUserMailBox.UserName, null);
 
-                var mailbox = mailboxes.FirstOrDefault(x => x.MailBoxId == cashedTenantUserMailBox.MailBoxId);
-
-                if (mailbox == null)
-                {
-                    _log.Info($"ImapSyncService. MailImapClient {clientKey} didn`t found MailBoxData.");
-
-                    return;
-                }
-
-                clients.TryAdd(clientKey, null);
-
-                CreateMailClient(mailbox, clientKey);
+                CreateMailClient(cashedTenantUserMailBox.UserName, cashedTenantUserMailBox.Tenant);
             }
             finally
             {
@@ -168,114 +141,63 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        private void CreateMailClient(MailBoxData mailbox, string clientKey)
+        private void CreateMailClient(string userName, int tenant)
         {
             MailImapClient client;
 
-            var connectError = false;
-
             try
             {
-                client = new MailImapClient(mailbox, _cancelTokenSource.Token, _mailSettings, _serviceProvider);
-
-                _log.DebugFormat("MailClient.LoginImapPop(Tenant = {0}, MailboxId = {1} Address = '{2}')",
-                    mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
+                client = new MailImapClient(userName, tenant, _cancelTokenSource.Token, _mailSettings, _serviceProvider);
 
                 if (client == null)
                 {
-                    _log.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
-                               mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
-                    //ReleaseMailbox(mailbox);
+                    _log.Info($"Can`t create Mail client for user {userName}.");
                 }
                 else
                 {
-                    clients.TryUpdate(clientKey, client, null);
+                    clients.TryUpdate(userName, client, null);
 
-                    client.DeleteClient += Client_DeleteClient;
+                    client.OnCriticalError += Client_DeleteClient;
                 }
             }
-            catch (System.TimeoutException exTimeout)
+            catch (TimeoutException exTimeout)
             {
-                _log.WarnFormat(
-                    "[TIMEOUT] CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}') Exception: {3}",
-                    mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, exTimeout.ToString());
-
-                connectError = true;
+                _log.Warn($"[TIMEOUT] Create mail client for user {userName}. {exTimeout}" );
             }
             catch (OperationCanceledException)
             {
-                _log.InfoFormat(
-                    "[CANCEL] CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}')",
-                    mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
+                _log.Info("[CANCEL] Create mail client for user {userName}.");
             }
             catch (AuthenticationException authEx)
             {
-                _log.ErrorFormat(
-                    "CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}')\r\nException: {3}\r\n",
-                    mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, authEx.ToString());
-
-                connectError = true;
+                _log.Error($"[AuthenticationException] Create mail client for user {userName}. {authEx}");
             }
             catch (WebException webEx)
             {
-                _log.ErrorFormat(
-                    "CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}')\r\nException: {3}\r\n",
-                    mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, webEx.ToString());
-
-                connectError = true;
+                _log.Error($"[WebException] Create mail client for user {userName}. {webEx}");
             }
             catch (Exception ex)
             {
-                _log.ErrorFormat(
-                    "CreateTasks->client.LoginImapPop(Tenant = {0}, MailboxId = {1}, Address = '{2}')\r\nException: {3}\r\n",
-                    mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail,
-                    ex is ImapProtocolException || ex is Pop3ProtocolException ? ex.Message : ex.ToString());
-            }
-            finally
-            {
-                if (connectError)
-                {
-                    SetMailboxAuthError(mailbox);
-                }
+                _log.Error($"Create mail client for user {userName}. {ex}");
             }
         }
 
         private void Client_DeleteClient(object sender, EventArgs e)
         {
-            var client = sender as MailImapClient;
-
-            if (client == null) return;
-
-            var clientKey=clients.FirstOrDefault(x => x.Value == client).Key;
-
-            if (clients.TryRemove(clientKey, out MailImapClient trashValue))
+            if (sender is MailImapClient client)
             {
-                trashValue?.Dispose();
+                var clientKey = client?.UserName;
 
-                _log.Info($"ImapSyncService. MailImapClient {clientKey} died and was remove.");
-            }
-            else
-            {
-                _log.Info($"ImapSyncService. MailImapClient {clientKey} died, bud wasn`t remove");
-            }
-        }
+                if (clients.TryRemove(clientKey, out MailImapClient trashValue))
+                {
+                    trashValue?.Dispose();
 
-        private void SetMailboxAuthError(MailBoxData mailbox)
-        {
-            try
-            {
-                if (mailbox.AuthErrorDate.HasValue)
-                    return;
-
-                mailbox.AuthErrorDate = DateTime.UtcNow;
-
-                MailEnginesFactory.MailboxEngine.SetMaiboxAuthError(mailbox.MailBoxId, mailbox.AuthErrorDate.Value);
-            }
-            catch (Exception ex)
-            {
-                _log.ErrorFormat(
-                    "CreateTasks->SetMailboxAuthError(Tenant = {0}, MailboxId = {1}, Address = '{2}') Exception: {3}",
-                    mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail, ex.Message);
+                    _log.Info($"ImapSyncService. MailImapClient {clientKey} died and was remove.");
+                }
+                else
+                {
+                    _log.Info($"ImapSyncService. MailImapClient {clientKey} died, bud wasn`t remove");
+                }
             }
         }
 

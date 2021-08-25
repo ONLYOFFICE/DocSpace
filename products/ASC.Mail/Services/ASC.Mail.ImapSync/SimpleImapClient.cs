@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Core.Common.Caching;
 using ASC.Mail.Configuration;
+using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 
@@ -30,23 +31,28 @@ namespace ASC.Mail.ImapSync
 
         private readonly ILog _log;
         private readonly MailSettings _mailSettings;
-        private readonly MailBoxData Account;
+        public readonly MailBoxData Account;
 
         public event EventHandler<ImapAction> NewActionFromImap;
         public event EventHandler<(MimeMessage, MessageDescriptor)> NewMessage;
         public event EventHandler<string> DeleteMessage;
         public event EventHandler MessagesListUpdated;
         public event EventHandler WorkFoldersChanged;
-        public event EventHandler KillMe;
+        public event EventHandler OnAuthenticationError;
+        public event EventHandler OnCriticalError;
+        public event EventHandler<UniqueIdMap> OnUidlsChange;
 
         private CancellationTokenSource DoneToken { get; set; }
         private CancellationToken CancelToken { get; set; }
         private CancellationTokenSource StopTokenSource { get; set; }
 
-        public List<IMailFolder> foldersList { get; private set; }
-        public List<MessageDescriptor> MessagesList { get; private set; }
+        public List<IMailFolder> imapFoldersList { get; private set; }
+        public List<MessageDescriptor> imapMessagesList { get; private set; }
+        public IMailFolder imapWorkFolder;
 
-        public IMailFolder WorkFolder;
+        public List<MailInfo> workFolderMails;
+        public Models.MailFolder mailWorkFolder;
+        public Dictionary<IMailFolder, Models.MailFolder> foldersDictionary;
 
         #region Event from Imap handlers
 
@@ -54,9 +60,9 @@ namespace ASC.Mail.ImapSync
         {
             if (sender is IMailFolder imap_folder)
             {
-                _log.Debug($"ImapMessageFlagsChanged {WorkFolder.Name} index={e.Index}");
+                _log.Debug($"ImapMessageFlagsChanged {imapWorkFolder.Name} index={e.Index}");
 
-                MessageDescriptor messageSummary = MessagesList.FirstOrDefault(x => x.Index == e.Index);
+                MessageDescriptor messageSummary = imapMessagesList.FirstOrDefault(x => x.Index == e.Index);
 
                 if (messageSummary == null) return;
 
@@ -69,7 +75,7 @@ namespace ASC.Mail.ImapSync
 
         private void ImapFolderCountChanged(object sender, EventArgs e)
         {
-            _log.Debug($"ImapFolderCountChanged {WorkFolder.Name} Count={WorkFolder.Count}.");
+            _log.Debug($"ImapFolderCountChanged {imapWorkFolder.Name} Count={imapWorkFolder.Count}.");
 
             AddTask(new Task(() => UpdateMessagesList()));
         }
@@ -112,6 +118,25 @@ namespace ASC.Mail.ImapSync
             }).ContinueWith(TaskManager);
         }
 
+        public void ChangeFolder(int folderActivity)
+        {
+            if (folderActivity != (int)mailWorkFolder.Folder)
+            {
+                try
+                {
+                    var newImapFolder = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity).Key;
+
+                    if (newImapFolder == null) return;
+
+                    ChangeFolder(newImapFolder);
+                }
+                catch (Exception ex)
+                {
+                    _log.Error($"ChangeFolder(New folder={(FolderType)folderActivity})->{ex.Message}");
+                }
+            }
+        }
+
         public void ChangeFolder(IMailFolder newWorkFolder)
         {
             _log.Debug($"Try change folder to {newWorkFolder.Name}.");
@@ -124,9 +149,11 @@ namespace ASC.Mail.ImapSync
 
                     UpdateMessagesList();
 
+                    mailWorkFolder = foldersDictionary[imapWorkFolder];
+
                     WorkFoldersChanged(this, EventArgs.Empty);
 
-                    _log.Debug($"Folder changed to {WorkFolder.Name}.");
+                    _log.Debug($"Folder changed to {imapWorkFolder.Name}.");
                 }
                 catch (Exception ex)
                 {
@@ -153,7 +180,7 @@ namespace ASC.Mail.ImapSync
 
                 StopTokenSource.Cancel();
 
-                if(KillMe!=null) KillMe(this, EventArgs.Empty);
+                OnCriticalError?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -220,7 +247,7 @@ namespace ASC.Mail.ImapSync
             {
                 _log.Error($"Imap.Authentication Error: {ex.Message}");
 
-                if (KillMe != null) KillMe(this, EventArgs.Empty);
+                OnAuthenticationError?.Invoke(this, EventArgs.Empty);
 
                 return false;
             }
@@ -234,9 +261,9 @@ namespace ASC.Mail.ImapSync
         {
             _log.Debug("Load folders from IMAP.");
 
-            if (foldersList == null)
+            if (imapFoldersList == null)
             {
-                foldersList = new List<IMailFolder>();
+                imapFoldersList = new List<IMailFolder>();
             }
             else
             {
@@ -251,12 +278,12 @@ namespace ASC.Mail.ImapSync
 
                 var subfolders = GetImapSubFolders(rootFolder);
 
-                foldersList = subfolders.Where(x => !_mailSettings.SkipImapFlags.Contains(x.Name.ToLowerInvariant()))
+                imapFoldersList = subfolders.Where(x => !_mailSettings.SkipImapFlags.Contains(x.Name.ToLowerInvariant()))
                     .Where(x => !x.Attributes.HasFlag(FolderAttributes.NoSelect))
                     .Where(x => !x.Attributes.HasFlag(FolderAttributes.NonExistent))
                     .ToList();
 
-                _log.Debug($"Find {foldersList.Count} folders in IMAP.");
+                _log.Debug($"Find {imapFoldersList.Count} folders in IMAP.");
             }
             catch (AggregateException aggEx)
             {
@@ -300,21 +327,21 @@ namespace ASC.Mail.ImapSync
 
         private void OpenFolder(IMailFolder imapFolder)
         {
-            if (imapFolder != WorkFolder)
+            if (imapFolder != imapWorkFolder)
             {
                 try
                 {
-                    if (WorkFolder != null)
+                    if (imapWorkFolder != null)
                     {
-                        WorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
-                        WorkFolder.CountChanged -= ImapFolderCountChanged;
+                        imapWorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
+                        imapWorkFolder.CountChanged -= ImapFolderCountChanged;
                     }
 
-                    WorkFolder = imapFolder;
-                    MessagesList = null;
+                    imapWorkFolder = imapFolder;
+                    imapMessagesList = null;
 
-                    WorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
-                    WorkFolder.CountChanged += ImapFolderCountChanged;
+                    imapWorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
+                    imapWorkFolder.CountChanged += ImapFolderCountChanged;
                 }
                 catch(Exception ex)
                 {
@@ -324,7 +351,7 @@ namespace ASC.Mail.ImapSync
                 _log.Debug($"OpenFolder: Work folder changed to {imapFolder.Name}.");
             }
 
-            if (!WorkFolder.IsOpen)
+            if (!imapWorkFolder.IsOpen)
             {
                 try
                 {
@@ -342,24 +369,24 @@ namespace ASC.Mail.ImapSync
         private void UpdateMessagesList()
         {
             List<MessageDescriptor> newMessagesList= new List<MessageDescriptor>();
-            _log.Debug($"UpdateMessagesList: Folder {WorkFolder.Name} Count={WorkFolder.Count}.");
+            _log.Debug($"UpdateMessagesList: Folder {imapWorkFolder.Name} Count={imapWorkFolder.Count}.");
 
-            OpenFolder(WorkFolder);
+            OpenFolder(imapWorkFolder);
 
             try
             {
-                newMessagesList = WorkFolder.Fetch(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags).ToMessageDescriptorList();
+                newMessagesList = imapWorkFolder.Fetch(1, -1, MessageSummaryItems.UniqueId | MessageSummaryItems.Flags).ToMessageDescriptorList();
 
                 _log.Debug($"UpdateMessagesList: New messages count={newMessagesList?.Count}.");
             }
             catch(Exception ex)
             {
-                _log.Error($"UpdateMessagesList: Try fetch messages from imap folder={WorkFolder.Name}: {ex.Message}.");
+                _log.Error($"UpdateMessagesList: Try fetch messages from imap folder={imapWorkFolder.Name}: {ex.Message}.");
             }
         
-            if (MessagesList == null)
+            if (imapMessagesList == null)
             {
-                MessagesList = newMessagesList;
+                imapMessagesList = newMessagesList;
 
                 if (MessagesListUpdated != null) MessagesListUpdated(this, EventArgs.Empty);
             }
@@ -367,13 +394,13 @@ namespace ASC.Mail.ImapSync
             {
                 foreach(var newMessage in newMessagesList)
                 {
-                    var oldMessage = MessagesList.FirstOrDefault(x => x.UniqueId == newMessage.UniqueId);
+                    var oldMessage = imapMessagesList.FirstOrDefault(x => x.UniqueId == newMessage.UniqueId);
 
                     if(oldMessage==null)
                     {
                         try
                         {
-                            var mimeMessage = WorkFolder.GetMessage(newMessage.UniqueId, CancelToken);
+                            var mimeMessage = imapWorkFolder.GetMessage(newMessage.UniqueId, CancelToken);
 
                             _log.Debug($"UpdateMessagesList: New message detected {newMessage.UniqueId}.");
 
@@ -388,13 +415,13 @@ namespace ASC.Mail.ImapSync
                     {
                         if(newMessage.Flags.HasValue)
                         {
-                            CompareFlags(WorkFolder, oldMessage, newMessage.Flags.Value);
+                            CompareFlags(imapWorkFolder, oldMessage, newMessage.Flags.Value);
                         }
                     }
                 }
             }
 
-            MessagesList = newMessagesList;
+            imapMessagesList = newMessagesList;
         }
 
         public void TryGetNewMessage(UniqueId uniqueId)
@@ -406,13 +433,13 @@ namespace ASC.Mail.ImapSync
         {
             _log.Debug($"GetNewMessage task run: UniqueId={uniqueId}.");
 
-            var message = MessagesList.FirstOrDefault(x => x.UniqueId == uniqueId);
+            var message = imapMessagesList.FirstOrDefault(x => x.UniqueId == uniqueId);
 
             if (message == null) return;
 
             try
             {
-                var mimeMessage = WorkFolder.GetMessage(message.UniqueId, CancelToken);
+                var mimeMessage = imapWorkFolder.GetMessage(message.UniqueId, CancelToken);
 
                 if (NewMessage != null) NewMessage(this, (mimeMessage, message));
             }
@@ -424,19 +451,19 @@ namespace ASC.Mail.ImapSync
 
         private async Task SetIdle()
         {
-            if (WorkFolder == null) return;
+            if (imapWorkFolder == null) return;
 
             if (!imap.IsAuthenticated) return;
 
             try
             {
-                OpenFolder(WorkFolder);
+                OpenFolder(imapWorkFolder);
 
                 if (imap.Capabilities.HasFlag(ImapCapabilities.Idle))
                 {
                     DoneToken = new CancellationTokenSource(new TimeSpan(0, 10, 0));
                     
-                    _log.Debug($"Go to Idle. Folder={WorkFolder.Name}.");
+                    _log.Debug($"Go to Idle. Folder={imapWorkFolder.Name}.");
 
                     await imap.IdleAsync(DoneToken.Token);
                 }
@@ -462,7 +489,7 @@ namespace ASC.Mail.ImapSync
 
         public void TryMoveMessageInImap(IMailFolder sourceFolder, List<UniqueId> uniqueIds, IMailFolder destinationFolder)
         {
-            AddTask(new Task(() => MoveMessageInImap(WorkFolder, uniqueIds, destinationFolder)));
+            AddTask(new Task(() => MoveMessageInImap(imapWorkFolder, uniqueIds, destinationFolder)));
         }
 
         private void MoveMessageInImap(IMailFolder sourceFolder, List<UniqueId> uniqueIds, IMailFolder destinationFolder)
@@ -482,7 +509,9 @@ namespace ASC.Mail.ImapSync
 
                 var returnedUidl = sourceFolder.MoveTo(uniqueIds, destinationFolder);
 
-                MessagesList = MessagesList.Where(x => !uniqueIds.Contains(x.UniqueId)).ToList();
+                OnUidlsChange?.Invoke(this, returnedUidl);
+
+                imapMessagesList = imapMessagesList.Where(x => !uniqueIds.Contains(x.UniqueId)).ToList();
             }
             catch (Exception ex)
             {
@@ -510,7 +539,7 @@ namespace ASC.Mail.ImapSync
                 {
                     case MailUserAction.SetAsRead:
                         folder.AddFlags(uniqueIds, MessageFlags.Seen, true);
-                        MessagesList.ForEach(x=>
+                        imapMessagesList.ForEach(x=>
                         {
                             if (uniqueIds.Contains(x.UniqueId))
                             {
@@ -520,7 +549,7 @@ namespace ASC.Mail.ImapSync
                         break;
                     case MailUserAction.SetAsUnread:
                         folder.RemoveFlags(uniqueIds, MessageFlags.Seen, true);
-                        MessagesList.ForEach(x =>
+                        imapMessagesList.ForEach(x =>
                         {
                             if (uniqueIds.Contains(x.UniqueId))
                             {
@@ -530,7 +559,7 @@ namespace ASC.Mail.ImapSync
                         break;
                     case MailUserAction.SetAsImportant:
                         folder.AddFlags(uniqueIds, MessageFlags.Flagged, true);
-                        MessagesList.ForEach(x =>
+                        imapMessagesList.ForEach(x =>
                         {
                             if (uniqueIds.Contains(x.UniqueId))
                             {
@@ -540,7 +569,7 @@ namespace ASC.Mail.ImapSync
                         break;
                     case MailUserAction.SetAsNotImpotant:
                         folder.RemoveFlags(uniqueIds, MessageFlags.Flagged, true);
-                        MessagesList.ForEach(x =>
+                        imapMessagesList.ForEach(x =>
                         {
                             if (uniqueIds.Contains(x.UniqueId))
                             {
@@ -625,7 +654,11 @@ namespace ASC.Mail.ImapSync
 
             if(StopTokenSource!=null)
             {
-                if (!StopTokenSource.IsCancellationRequested)
+                if (StopTokenSource.IsCancellationRequested)
+                {
+                    OnCriticalError?.Invoke(this, EventArgs.Empty);
+                }
+                else
                 {
                     curentTask = SetIdle().ContinueWith(TaskManager);
                 }
