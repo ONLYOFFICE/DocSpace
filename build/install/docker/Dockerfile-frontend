@@ -36,7 +36,9 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
 
 RUN git clone --depth 1 -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
+    mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
+    mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     cd ${SRC_PATH}/build/install/common/ && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
     rm -rf ${SRC_PATH}/common/* && \
@@ -69,8 +71,8 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     rm -rf /usr/share/nginx/html/* 
 
 # copy static services files and config values 
-COPY --from=base ${SRC_PATH}/config/nginx/onlyoffice*.conf /etc/nginx/conf.d
-COPY --from=base ${SRC_PATH}/config/nginx/includes/onlyoffice*.conf /etc/nginx/includes
+COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
+COPY --from=base /etc/nginx/includes /etc/nginx/includes
 COPY --from=base ${SRC_PATH}/build/deploy/products ${BUILD_PATH}/products
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY --from=base ${SRC_PATH}/build/deploy/studio ${BUILD_PATH}/studio
