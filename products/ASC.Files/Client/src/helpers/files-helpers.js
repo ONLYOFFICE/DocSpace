@@ -135,7 +135,7 @@ export const loopTreeFolders = (
       }
       loopTreeFolders(
         newPath,
-        newItems.folders,
+        newItems.folders ? newItems.folders : [],
         folders,
         foldersCount,
         currentFolder
