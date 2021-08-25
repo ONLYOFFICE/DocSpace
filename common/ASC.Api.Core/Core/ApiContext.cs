@@ -225,7 +225,7 @@ namespace ASC.Api.Core
             var id = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
             if (Guid.TryParse(id?.Value, out var userId))
             {
-                SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMeWithoutCookie(userId);
             }
         }
     }

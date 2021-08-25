@@ -323,13 +323,13 @@ namespace ASC.Web.CRM.Services.NotifyService
                 try
                 {
                     tenantManager.SetCurrentTenant(tenant);
-                    securityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
 
                     var user = userManager.GetUsers(responsibleID);
 
                     if (!(!Constants.LostUser.Equals(user) && user.Status == EmployeeStatus.Active)) continue;
 
-                    securityContext.AuthenticateMe(user.ID);
+                    securityContext.AuthenticateMeWithoutCookie(user.ID);
 
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                     Thread.CurrentThread.CurrentUICulture = user.GetCulture();

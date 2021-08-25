@@ -83,17 +83,11 @@ const FilesTileContent = ({
 }) => {
   const { fileExst } = item;
 
-  const onMobileRowClick = () => {
-    if (isTrashFolder || window.innerWidth > 1024) return;
-    onFilesClick();
-  };
-
   return (
     <>
       <SimpleFilesTileContent
         sideColor="#333"
         isFile={fileExst}
-        //onClick={onMobileRowClick}
         //disableSideInfo
       >
         <Link

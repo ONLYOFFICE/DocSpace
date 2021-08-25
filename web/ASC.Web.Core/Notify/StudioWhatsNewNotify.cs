@@ -105,7 +105,7 @@ namespace ASC.Web.Studio.Core.Notify
                             continue;
                         }
 
-                        securityContext.AuthenticateMe(authManager.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 

@@ -36,6 +36,7 @@ using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Api.Models;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Utils;
 
 namespace ASC.Api.Documents
 {
@@ -97,7 +98,6 @@ namespace ASC.Api.Documents
     {
         private AuthContext AuthContext { get; }
         private IDaoFactory DaoFactory { get; }
-        private FileSecurity FileSecurity { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
 
         public FolderWrapperHelper(
@@ -106,19 +106,19 @@ namespace ASC.Api.Documents
             AuthContext authContext,
             IDaoFactory daoFactory,
             FileSecurity fileSecurity,
-            GlobalFolderHelper globalFolderHelper)
-            : base(apiDateTimeHelper, employeeWrapperHelper)
+            GlobalFolderHelper globalFolderHelper,
+            FileSharingHelper fileSharingHelper)
+            : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
         {
             AuthContext = authContext;
             DaoFactory = daoFactory;
-            FileSecurity = fileSecurity;
             GlobalFolderHelper = globalFolderHelper;
         }
 
         public FolderWrapper<T> Get<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
         {
             var result = GetFolderWrapper(folder);
-            
+
             result.ParentId = folder.FolderID;
 
             if (folder.RootFolderType == FolderType.USER

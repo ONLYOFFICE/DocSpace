@@ -244,7 +244,6 @@ export default function withContent(WrappedContent) {
         item,
         fileActionId,
         fileActionExt,
-        isLoading,
         viewer,
         t,
         isTrashFolder,
@@ -286,7 +285,6 @@ export default function withContent(WrappedContent) {
           elementIcon={element}
           itemTitle={itemTitle}
           itemId={id}
-          isLoading={isLoading}
           viewAs={viewAs}
           renameTitle={this.renameTitle}
           onClickUpdateItem={this.onClickUpdateItem}
@@ -320,7 +318,6 @@ export default function withContent(WrappedContent) {
         renameFolder,
         createFile,
         createFolder,
-        isLoading,
         viewAs,
       } = filesStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -349,7 +346,6 @@ export default function withContent(WrappedContent) {
         setEncryptionAccess,
         createFolder,
         fileActionExt,
-        isLoading,
         culture,
         homepage: config.homepage,
         viewer: auth.userStore.user,

@@ -11,6 +11,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import { useCallback } from "react";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -156,10 +157,10 @@ const PureThirdPartyListContainer = ({
     }
   };
 
-  const onShowConnectPanel = () => {
+  const onShowConnectPanel = useCallback(() => {
     setThirdPartyDialogVisible(true);
     redirectAction();
-  };
+  }, []);
 
   return (
     <StyledThirdParty>
