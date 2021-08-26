@@ -22,6 +22,8 @@ const TableRow = (props) => {
     ...rest
   } = props;
 
+  console.log("hasAccess", hasAccess);
+
   const cm = useRef();
   const row = useRef();
 
@@ -48,12 +50,12 @@ const TableRow = (props) => {
 
   return (
     <StyledTableRow
-      hasAccess={hasAccess}
       onContextMenu={onContextMenu}
       className={`${className} table-container_row`}
       {...rest}
     >
       <TableCell
+        hasAccess={hasAccess}
         checked={checked}
         {...selectionProp}
         style={style}
