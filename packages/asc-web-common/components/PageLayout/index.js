@@ -75,10 +75,6 @@ class PageLayout extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isArticlePinned: props.isArticlePinned,
-    };
-
     this.timeoutHandler = null;
     this.intervalHandler = null;
 
@@ -92,7 +88,7 @@ class PageLayout extends React.Component {
 
     if (
       this.props.hideAside &&
-      !this.state.isArticlePinned &&
+      !this.props.isArticlePinned &&
       this.props.hideAside !== prevProps.hideAside
     ) {
       this.backdropClick();
@@ -128,15 +124,13 @@ class PageLayout extends React.Component {
   };
 
   backdropClick = () => {
-    this.setState({ isArticlePinned: false });
+    this.props.setArticlePinned(false);
     this.props.setIsBackdropVisible(false);
     this.props.setIsArticleVisible(false);
     isMobile && this.props.setArticleVisibleOnUnpin(false);
   };
 
   pinArticle = () => {
-    this.setState({ isArticlePinned: true });
-
     this.props.setIsBackdropVisible(false);
     this.props.setIsArticleVisible(true);
     this.props.setArticlePinned(true);
@@ -144,16 +138,14 @@ class PageLayout extends React.Component {
   };
 
   unpinArticle = () => {
-    this.setState({ isArticlePinned: false });
     this.props.setIsBackdropVisible(true);
     this.props.setIsArticleVisible(true);
-
     this.props.setArticlePinned(false);
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
   showArticle = () => {
-    this.setState({ isArticlePinned: false });
+    this.props.setArticlePinned(false);
     this.props.setIsBackdropVisible(true);
     this.props.setIsArticleVisible(true);
     isMobile && this.props.setArticleVisibleOnUnpin(true);
@@ -208,6 +200,7 @@ class PageLayout extends React.Component {
       dragging,
       isArticleVisible,
       isBackdropVisible,
+      isArticlePinned,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -283,7 +276,7 @@ class PageLayout extends React.Component {
           {isArticleAvailable && (
             <Article
               visible={isArticleVisible}
-              pinned={this.state.isArticlePinned}
+              pinned={isArticlePinned}
               isLoaded={isLoaded}
               firstLoad={firstLoad}
             >
@@ -302,7 +295,7 @@ class PageLayout extends React.Component {
                 </SubArticleMainButton>
               )}
               {isArticleBodyAvailable && (
-                <SubArticleBody pinned={this.state.isArticlePinned}>
+                <SubArticleBody pinned={isArticlePinned}>
                   {articleBodyContent
                     ? articleBodyContent.props.children
                     : null}
@@ -310,7 +303,7 @@ class PageLayout extends React.Component {
               )}
               {isArticleBodyAvailable && (
                 <ArticlePinPanel
-                  pinned={this.state.isArticlePinned}
+                  pinned={isArticlePinned}
                   onPin={this.pinArticle}
                   onUnpin={this.unpinArticle}
                 />
@@ -333,12 +326,12 @@ class PageLayout extends React.Component {
                   <Section
                     widthProp={width}
                     unpinArticle={this.unpinArticle}
-                    pinned={this.state.isArticlePinned}
+                    pinned={isArticlePinned}
                   >
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
-                        isArticlePinned={this.state.isArticlePinned}
+                        isArticlePinned={isArticlePinned}
                       >
                         {sectionHeaderContent
                           ? sectionHeaderContent.props.children
@@ -370,7 +363,7 @@ class PageLayout extends React.Component {
                           uploadFiles={uploadFiles}
                           withScroll={withBodyScroll}
                           autoFocus={isMobile || isTabletView ? false : true}
-                          pinned={this.state.isArticlePinned}
+                          pinned={isArticlePinned}
                           viewAs={viewAs}
                         >
                           {isSectionFilterAvailable && (
