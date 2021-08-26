@@ -60,6 +60,8 @@ class SettingsStore {
   isTabletView = false;
   isArticlePinned =
     localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
+  isArticleVisible = false;
+  isBackdropVisible = false;
 
   isArticleVisibleOnUnpin = false;
 
@@ -104,6 +106,19 @@ class SettingsStore {
 
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
+
+  setIsArticleVisible = (visible) => {
+    this.isArticleVisible = this.isArticlePinned ? true : visible;
+  };
+
+  setIsBackdropVisible = (visible) => {
+    this.isBackdropVisible = visible;
+  };
+
+  hideArticle = () => {
+    this.setIsArticleVisible(false);
+    this.setIsBackdropVisible(false);
+  };
 
   setValue = (key, value) => {
     this[key] = value;
