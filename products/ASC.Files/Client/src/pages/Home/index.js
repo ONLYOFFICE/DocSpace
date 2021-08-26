@@ -28,8 +28,6 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 
-import api from "@appserver/common/api";
-
 class PureHome extends React.Component {
   componentDidMount() {
     const {
@@ -43,6 +41,7 @@ class PureHome extends React.Component {
       setToPreviewFile,
       mediaViewersFormatsStore,
       filesList,
+      getFileInfo,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
@@ -53,8 +52,7 @@ class PureHome extends React.Component {
       const pathname = window.location.pathname;
       const fileId = pathname.slice(pathname.indexOf("view") + 5);
 
-      api.files
-        .getFileInfo(fileId)
+      getFileInfo(fileId)
         .then((data) => {
           const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
             data.fileExst
@@ -63,11 +61,9 @@ class PureHome extends React.Component {
           setToPreviewFile(file, true);
         })
         .catch((err) => {
-          filterObj = FilesFilter.getFilter();
-          const folderId = filterObj.folderId;
+          toastr.error(err);
 
-          fetchFiles(folderId, filterObj)
-            .then(() => toastr.error(err))
+          fetchFiles()
             .catch((err) => toastr.error(err))
             .finally(() => {
               setIsLoading(false);
@@ -371,6 +367,7 @@ export default inject(
       isLoading,
       viewAs,
       files: filesList,
+      getFileInfo,
     } = filesStore;
 
     const { mediaViewersFormatsStore } = formatsStore;
@@ -454,6 +451,7 @@ export default inject(
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
       setToPreviewFile,
       mediaViewersFormatsStore,
+      getFileInfo,
     };
   }
 )(withRouter(observer(Home)));

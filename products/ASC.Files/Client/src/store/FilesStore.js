@@ -1421,6 +1421,7 @@ class FilesStore {
   getFileInfo = async (id) => {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
+    return fileInfo;
   };
 
   getFolderInfo = async (id) => {

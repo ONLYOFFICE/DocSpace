@@ -11,9 +11,12 @@ import { ReactSVG } from "react-svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import withLoader from "../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
 
 import { observer, inject } from "mobx-react";
 import { runInAction } from "mobx";
+import { withTranslation } from "react-i18next";
 
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
@@ -420,6 +423,7 @@ class TreeFolders extends React.Component {
     const {
       selectedKeys,
       isLoading,
+      setIsLoading,
       onSelect,
       dragging,
       expandedKeys,
@@ -467,6 +471,7 @@ export default inject(
       filter,
       selection,
       setIsLoading,
+      isLoading,
       dragging,
       setDragging,
     } = filesStore;
@@ -497,6 +502,7 @@ export default inject(
       draggableItems: dragging ? selection : [],
       expandedKeys,
       treeFolders,
+      isLoading,
 
       setDragging,
       setIsLoading,
@@ -506,4 +512,8 @@ export default inject(
       getSubfolders,
     };
   }
-)(observer(TreeFolders));
+)(
+  withTranslation(["Home", "Common"])(
+    withLoader(observer(TreeFolders))(<Loaders.Rectangle width="217px" />)
+  )
+);

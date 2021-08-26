@@ -97,8 +97,7 @@ const FilesMediaViewer = (props) => {
       setIsLoading(true);
       setFirstLoad(true);
 
-      const filterObj = FilesFilter.getDefault();
-      fetchFiles(previewFile.folderId, filterObj)
+      fetchFiles(previewFile.folderId)
         .then((data) => {
           const pathParts = data.selectedFolder.pathParts;
           const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
