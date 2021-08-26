@@ -315,3 +315,11 @@ export function validateTfaCode(code) {
     data,
   });
 }
+
+export function getCommonThirdPartyList() {
+  const options = {
+    method: "get",
+    url: "/files/thirdparty/common",
+  };
+  return request(options);
+}

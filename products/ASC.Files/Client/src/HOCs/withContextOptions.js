@@ -300,7 +300,7 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("SharingSettings"),
-              icon: "images/catalog.shared.react.svg",
+              icon: "/static/images/catalog.shared.react.svg",
               onClick: this.onClickShare,
               disabled: !isShareable,
             };
@@ -315,7 +315,7 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("Translations:OwnerChange"),
-              icon: "images/catalog.user.react.svg",
+              icon: "/static/images/catalog.user.react.svg",
               onClick: this.onOwnerChange,
               disabled: false,
             };

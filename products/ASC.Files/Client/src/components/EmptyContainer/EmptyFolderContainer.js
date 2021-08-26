@@ -73,7 +73,7 @@ const EmptyFolderContainer = ({
   return (
     <EmptyContainer
       headerText={t("EmptyFolderHeader")}
-      imageSrc="images/empty_screen.png"
+      imageSrc="/static/images/empty_screen.png"
       buttons={buttons}
     />
   );
