@@ -147,6 +147,7 @@ class PeopleTableHeader extends React.Component {
       getHeaderMenu,
       filter,
       sectionWidth,
+      isAdmin,
     } = this.props;
     const { sortOrder } = filter;
 
@@ -172,6 +173,7 @@ class PeopleTableHeader extends React.Component {
 
     return (
       <TableHeader
+        hasAccess={isAdmin}
         checkboxSize="48px"
         sorted={sortOrder === "descending"}
         setSelected={this.setSelected}

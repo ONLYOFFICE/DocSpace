@@ -324,6 +324,7 @@ class TableHeader extends React.Component {
       isIndeterminate,
       headerMenu,
       columnStorageName,
+      hasAccess,
       ...rest
     } = this.props;
 
@@ -349,11 +350,15 @@ class TableHeader extends React.Component {
             {...rest}
           >
             <StyledTableRow>
-              <Checkbox
-                className="table-container_header-checkbox"
-                onChange={this.onChange}
-                isChecked={false}
-              />
+              {hasAccess ? (
+                <Checkbox
+                  className="table-container_header-checkbox"
+                  onChange={this.onChange}
+                  isChecked={false}
+                />
+              ) : (
+                <div></div>
+              )}
 
               {columns.map((column, index) => {
                 const nextColumn = this.getNextColumn(columns, index);
@@ -384,6 +389,10 @@ class TableHeader extends React.Component {
   }
 }
 
+TableHeader.defaultProps = {
+  hasAccess: true,
+};
+
 TableHeader.propTypes = {
   containerRef: PropTypes.shape({ current: PropTypes.any }).isRequired,
   columns: PropTypes.array.isRequired,
@@ -400,6 +409,7 @@ TableHeader.propTypes = {
   isIndeterminate: PropTypes.bool,
   headerMenu: PropTypes.arrayOf(PropTypes.object),
   onClick: PropTypes.func,
+  hasAccess: PropTypes.bool,
 };
 
 export default TableHeader;

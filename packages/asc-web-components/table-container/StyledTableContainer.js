@@ -190,14 +190,18 @@ const StyledTableCell = styled.div`
     display: ${(props) => (props.checked ? "flex" : "none")};
   }
 
-  :hover {
-    .table-container_element {
-      display: none;
-    }
-    .table-container_row-checkbox {
-      display: flex;
-    }
-  }
+  ${(props) =>
+    props.hasAccess &&
+    css`
+      :hover {
+        .table-container_element {
+          display: none;
+        }
+        .table-container_row-checkbox {
+          display: flex;
+        }
+      }
+    `}
 `;
 
 const StyledTableSettings = styled.div`

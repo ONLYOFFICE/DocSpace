@@ -18,6 +18,7 @@ const TableRow = (props) => {
     className,
     style,
     selectionProp,
+    hasAccess,
     ...rest
   } = props;
 
@@ -47,6 +48,7 @@ const TableRow = (props) => {
 
   return (
     <StyledTableRow
+      hasAccess={hasAccess}
       onContextMenu={onContextMenu}
       className={`${className} table-container_row`}
       {...rest}
@@ -87,6 +89,10 @@ const TableRow = (props) => {
   );
 };
 
+TableRow.defaultProps = {
+  hasAccess: true,
+};
+
 TableRow.propTypes = {
   fileContextClick: PropTypes.func,
   children: PropTypes.any,
@@ -98,6 +104,7 @@ TableRow.propTypes = {
   selectionProp: PropTypes.object,
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
+  hasAccess: PropTypes.bool,
 };
 
 export default TableRow;

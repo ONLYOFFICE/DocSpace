@@ -124,6 +124,7 @@ export default function withContent(WrappedContent) {
         groups={groups}
         checkedProps={checkedProps}
         element={element}
+        isAdmin={isAdmin}
         {...props}
       />
     );

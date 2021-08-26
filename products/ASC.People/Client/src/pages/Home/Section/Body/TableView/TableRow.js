@@ -33,6 +33,7 @@ const PeopleTableRow = (props) => {
     groups,
     onEmailClick,
     onUserNameClick,
+    isAdmin,
   } = props;
   const { displayName, email, role, statusType, userName } = item;
 
@@ -45,6 +46,7 @@ const PeopleTableRow = (props) => {
       item={item}
       element={element}
       onContentSelect={onContentRowSelect}
+      hasAccess={isAdmin}
       {...contextOptionsProps}
       {...checkedProps}
     >
