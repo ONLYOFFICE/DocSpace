@@ -1,3 +1,9 @@
 {
-  "FileLocation": "Открыть расположение файла"
+  "FileLocation": "Открыть расположение файла",
+  "FileName": "Имя файла",
+  "FolderForSave": "Папка для сохранения",
+  "OpenSavedDocument": "Открыть сохраненный документ в новой вкладке",
+  "ImageFileType": "Выбрать файлы типа: изображения",
+  "MailMergeFileType": "Выбрать файлы в формате XLSX",
+  "SelectFileTitle": "Выбрать источник данных"
 }

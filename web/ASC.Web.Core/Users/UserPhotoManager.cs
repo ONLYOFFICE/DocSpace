@@ -527,8 +527,15 @@ namespace ASC.Web.Core.Users
         public void RemovePhoto(Guid idUser)
         {
             UserManager.SaveUserPhoto(idUser, null);
-            var storage = GetDataStore();
-            storage.DeleteFiles("", idUser + "*.*", false);
+            try
+            {
+                var storage = GetDataStore();
+                storage.DeleteFiles("", idUser + "*.*", false);
+            } 
+            catch(DirectoryNotFoundException e)
+            {
+                Log.Error(e);
+            }
 
             UserManager.SaveUserPhoto(idUser, null);
             UserPhotoManagerCache.ClearCache(idUser);

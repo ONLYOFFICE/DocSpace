@@ -1516,10 +1516,11 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
-        public List<FileOperationResult> CheckConversion(List<List<string>> filesInfoJSON)
+        public List<FileOperationResult> CheckConversion(List<List<string>> filesInfoJSON, bool sync = false)
         {
             if (filesInfoJSON == null || filesInfoJSON.Count == 0) return new List<FileOperationResult>();
 
+            var results = new List<FileOperationResult>();
             var fileDao = GetFileDao();
             var files = new List<KeyValuePair<File<T>, bool>>();
             foreach (var fileInfo in filesInfoJSON)
@@ -1547,7 +1548,14 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     try
                     {
-                        FileConverter.ExecAsync(file, false, fileInfo.Count > 3 ? fileInfo[3] : null);
+                        if (sync)
+                        {
+                            results.Add(FileConverter.ExecSync(file, fileInfo.Count > 3 ? fileInfo[3] : null));
+                        }
+                        else
+                        {
+                            FileConverter.ExecAsync(file, false, fileInfo.Count > 3 ? fileInfo[3] : null);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -1558,9 +1566,14 @@ namespace ASC.Web.Files.Services.WCFService
                 files.Add(new KeyValuePair<File<T>, bool>(file, false));
             }
 
-            var results = FileConverter.GetStatus(files).ToList();
-
-            return new List<FileOperationResult>(results);
+            if (sync)
+            {
+                return results;
+            }
+            else
+            {
+                return FileConverter.GetStatus(files).ToList();
+            }
         }
 
         public void ReassignStorage(Guid userFromId, Guid userToId)

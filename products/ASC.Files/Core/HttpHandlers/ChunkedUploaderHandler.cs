@@ -57,12 +57,10 @@ namespace ASC.Web.Files.HttpHandlers
 {
     public class ChunkedUploaderHandler
     {
-        private RequestDelegate Next { get; }
         private IServiceProvider ServiceProvider { get; }
 
         public ChunkedUploaderHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {
-            Next = next;
             ServiceProvider = serviceProvider;
         }
 
@@ -70,8 +68,7 @@ namespace ASC.Web.Files.HttpHandlers
         {
             using var scope = ServiceProvider.CreateScope();
             var chunkedUploaderHandlerService = scope.ServiceProvider.GetService<ChunkedUploaderHandlerService>();
-            await chunkedUploaderHandlerService.Invoke(context);
-            await Next.Invoke(context);
+            await chunkedUploaderHandlerService.Invoke(context).ConfigureAwait(false);
         }
     }
 
