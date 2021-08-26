@@ -53,6 +53,9 @@ const StyledArticleBody = styled.div`
 
 const StyledArticleWrapper = styled.div`
   margin: 16px 0;
+  @media ${tablet} {
+    ${!isMobile && `margin-bottom:47px`};
+  }
 `;
 
 class ArticleBody extends React.Component {

@@ -326,7 +326,7 @@ class SectionHeaderContent extends React.Component {
       selectionCount,
       isAccessedSelected,
       isWebEditSelected,
-      // isViewedSelected,
+      isViewedSelected,
       // isMediaSelected,
       deleteDialogVisible,
       isRecycleBin,
@@ -335,7 +335,7 @@ class SectionHeaderContent extends React.Component {
       isFavoritesFolder,
       isRecentFolder,
       isShareFolder,
-      // personal,
+      personal,
     } = this.props;
 
     let menu = [
@@ -442,14 +442,13 @@ class SectionHeaderContent extends React.Component {
         label: t("Translations:Restore"),
         onClick: this.onMoveAction,
       });
-
-      menu.splice(1, 1);
     }
 
     if (isFavoritesFolder) {
       menu.splice(6, 1);
       menu.push({
         label: t("Common:Delete"),
+        alt: t("RemoveFromFavorites"),
         onClick: this.onDeleteFavorite,
       });
     }
@@ -469,16 +468,12 @@ class SectionHeaderContent extends React.Component {
     }
 
     if (isRecentFolder || isFavoritesFolder) {
-      menu.splice(1, 1);
-      menu.splice(3, 1);
+      menu.splice(4, 1);
     }
 
-    /*if (
-      (personal && !isWebEditSelected && !isViewedSelected) ||
-      selectionCount > 1
-    ) {
+    if (personal) {
       menu.splice(1, 1);
-    }*/
+    }
 
     return menu;
   };
