@@ -140,7 +140,6 @@ namespace ASC.Employee.Core.Controllers
             )
         {
             Log = option.Get("ASC.Api");
-            Log.Debug("Test");
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;

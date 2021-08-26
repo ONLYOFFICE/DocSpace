@@ -500,7 +500,7 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            var parent = folderDao.GetFolder(parentId == null || parentId.Equals(default(T)) ? file.FolderID : parentId);
+            var parent = folderDao.GetFolder(EqualityComparer<T>.Default.Equals(parentId, default(T)) ? file.FolderID : parentId);
             ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(parent.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -563,7 +563,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
 
             Folder<T> folder = null;
-            if (!fileWrapper.ParentId.Equals(default(T)))
+            if (!EqualityComparer<T>.Default.Equals(fileWrapper.ParentId, default(T)))
             {
                 folder = folderDao.GetFolder(fileWrapper.ParentId);
 
@@ -608,7 +608,7 @@ namespace ASC.Web.Files.Services.WCFService
                 file.Title = FileUtility.ReplaceFileExtension(fileWrapper.Title, fileExt);
             }
 
-            if (fileWrapper.TemplateId == null || fileWrapper.TemplateId.Equals(default(T)))
+            if (EqualityComparer<T>.Default.Equals(fileWrapper.TemplateId, default(T)))
             {
                 var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
                 var storeTemplate = GetStoreTemplate();
@@ -1516,10 +1516,11 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
-        public List<FileOperationResult> CheckConversion(List<List<string>> filesInfoJSON)
+        public List<FileOperationResult> CheckConversion(List<List<string>> filesInfoJSON, bool sync = false)
         {
             if (filesInfoJSON == null || filesInfoJSON.Count == 0) return new List<FileOperationResult>();
 
+            var results = new List<FileOperationResult>();
             var fileDao = GetFileDao();
             var files = new List<KeyValuePair<File<T>, bool>>();
             foreach (var fileInfo in filesInfoJSON)
@@ -1547,7 +1548,14 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     try
                     {
-                        FileConverter.ExecAsync(file, false, fileInfo.Count > 3 ? fileInfo[3] : null);
+                        if (sync)
+                        {
+                            results.Add(FileConverter.ExecSync(file, fileInfo.Count > 3 ? fileInfo[3] : null));
+                        }
+                        else
+                        {
+                            FileConverter.ExecAsync(file, false, fileInfo.Count > 3 ? fileInfo[3] : null);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -1558,9 +1566,14 @@ namespace ASC.Web.Files.Services.WCFService
                 files.Add(new KeyValuePair<File<T>, bool>(file, false));
             }
 
-            var results = FileConverter.GetStatus(files).ToList();
-
-            return new List<FileOperationResult>(results);
+            if (sync)
+            {
+                return results;
+            }
+            else
+            {
+                return FileConverter.GetStatus(files).ToList();
+            }
         }
 
         public void ReassignStorage(Guid userFromId, Guid userToId)
