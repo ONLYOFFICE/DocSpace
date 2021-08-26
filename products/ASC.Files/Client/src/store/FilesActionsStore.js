@@ -661,6 +661,7 @@ class FilesActionStore {
       isThirdPartySelection,
       userAccess,
       isViewedSelected,
+      hasSelection,
     } = this.filesStore;
 
     const {
@@ -682,7 +683,7 @@ class FilesActionStore {
       },
       {
         label: t("Common:Download"),
-        disabled: !selectionCount,
+        disabled: !hasSelection,
         onClick: () =>
           this.downloadAction(t("Translations:ArchivingData")).catch((err) =>
             toastr.error(err)
@@ -690,7 +691,7 @@ class FilesActionStore {
       },
       {
         label: t("Translations:DownloadAs"),
-        disabled: !selectionCount || !isWebEditSelected,
+        disabled: !hasSelection || !isWebEditSelected,
         onClick: () => setDownloadDialogVisible(true),
       },
       {
@@ -699,18 +700,18 @@ class FilesActionStore {
           isFavoritesFolder ||
           isRecentFolder ||
           !isAccessedSelected ||
-          !selectionCount ||
+          !hasSelection ||
           isThirdPartySelection,
         onClick: () => setMoveToPanelVisible(true),
       },
       {
         label: t("Translations:Copy"),
-        disabled: !selectionCount,
+        disabled: !hasSelection,
         onClick: () => setCopyPanelVisible(true),
       },
       {
         label: t("Common:Delete"),
-        disabled: !selectionCount || !userAccess || isThirdPartySelection,
+        disabled: !hasSelection || isThirdPartySelection,
         onClick: () => {
           if (this.settingsStore.confirmDelete) {
             setDeleteDialogVisible(true);
@@ -751,13 +752,16 @@ class FilesActionStore {
       headerMenu.splice(4, 1);
     }
 
+    if (isRecentFolder || isFavoritesFolder) {
+      menu.splice(1, 1);
+    }
+
     if (
-      (this.authStore.settingsStore.personal &&
-        !isWebEditSelected &&
-        !isViewedSelected) ||
-      selectionCount > 1
+      this.authStore.settingsStore.personal &&
+      !isWebEditSelected &&
+      !isViewedSelected
     ) {
-      headerMenu.splice(1, 1);
+      menu.splice(1, 1);
     }
 
     return headerMenu;

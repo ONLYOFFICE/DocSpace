@@ -152,6 +152,8 @@ var config = {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
         "./utils": "./src/helpers/utils.js",
+        "./SelectFileDialog": "./src/components/panels/SelectFileDialog",
+        "./SelectFolderDialog": "./src/components/panels/SelectFolderDialog",
       },
       shared: {
         ...deps,

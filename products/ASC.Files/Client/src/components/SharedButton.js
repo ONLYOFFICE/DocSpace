@@ -3,7 +3,7 @@ import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
 import { inject, observer } from "mobx-react";
 
-const getSharedButton = ({
+const SharedButton = ({
   t,
   id,
   isFolder,
@@ -34,7 +34,7 @@ const getSharedButton = ({
         color={color}
         hoverColor="#657077"
         size={18}
-        iconName="images/catalog.shared.react.svg"
+        iconName="/static/images/catalog.shared.react.svg"
       />
       {t("Share")}
     </Text>
@@ -46,4 +46,4 @@ export default inject(({ filesActionsStore, dialogsStore }) => {
     onSelectItem: filesActionsStore.onSelectItem,
     setSharingPanelVisible: dialogsStore.setSharingPanelVisible,
   };
-})(observer(getSharedButton));
+})(observer(SharedButton));

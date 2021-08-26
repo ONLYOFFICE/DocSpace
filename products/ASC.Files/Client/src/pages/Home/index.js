@@ -190,20 +190,12 @@ class PureHome extends React.Component {
   };
   componentDidUpdate(prevProps) {
     const {
-      isLoading,
       isProgressFinished,
       secondaryProgressDataStoreIcon,
       selectionLength,
       selectionTitle,
-      firstLoad,
     } = this.props;
-    if (isLoading !== prevProps.isLoading && !firstLoad) {
-      if (isLoading) {
-        showLoader();
-      } else {
-        hideLoader();
-      }
-    }
+
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
@@ -239,7 +231,6 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
 
-      isLoading,
       dragging,
       tReady,
     } = this.props;
@@ -271,7 +262,6 @@ class PureHome extends React.Component {
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
-          isLoading={isLoading}
           firstLoad={firstLoad}
           dragging={dragging}
         >
@@ -365,12 +355,19 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
+    if (!firstLoad) {
+      if (isLoading) {
+        showLoader();
+      } else {
+        hideLoader();
+      }
+    }
+
     return {
       homepage: config.homepage,
       firstLoad,
       dragging,
       fileActionId: id,
-      isLoading,
       viewAs,
       uploaded,
       converted,

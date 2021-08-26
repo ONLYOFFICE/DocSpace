@@ -45,6 +45,8 @@ const TableRow = (props) => {
     onContentSelect && onContentSelect(e.target.checked, item);
   };
 
+  console.log("selectionProp", selectionProp);
+
   return (
     <StyledTableRow
       onContextMenu={onContextMenu}
@@ -55,7 +57,7 @@ const TableRow = (props) => {
         checked={checked}
         {...selectionProp}
         style={style}
-        className={`${selectionProp.className} table-container_row-checkbox-wrapper`}
+        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
       >
         <div className="table-container_element">{element}</div>
         <Checkbox
