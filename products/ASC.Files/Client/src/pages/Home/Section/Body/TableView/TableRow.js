@@ -4,6 +4,8 @@ import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
+import ItemIcon from "../../../../../components/ItemIcon";
+import SharedButton from "../../../../../components/SharedButton";
 import { withTranslation } from "react-i18next";
 import TableRow from "@appserver/components/table-container/TableRow";
 import TableCell from "@appserver/components/table-container/TableCell";
@@ -69,9 +71,9 @@ const StyledBadgesContainer = styled.div`
 
 const FilesTableRow = (props) => {
   const {
+    t,
     contextOptionsProps,
     fileContextClick,
-    element,
     item,
     onContentFileSelect,
     checkedProps,
@@ -83,7 +85,22 @@ const FilesTableRow = (props) => {
     isDragging,
     onDrop,
     onMouseDown,
+    showShare,
   } = props;
+
+  const sharedButton =
+    item.canShare && showShare ? (
+      <SharedButton
+        t={t}
+        id={item.id}
+        shared={item.shared}
+        isFolder={item.isFolder}
+      />
+    ) : null;
+
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   const selectionProp = {
     className: `files-item ${className} ${value}`,
@@ -135,7 +152,7 @@ const FilesTableRow = (props) => {
         onContentSelect={onContentFileSelect}
         onClick={onMouseClick}
         {...contextOptionsProps}
-        {...checkedProps}
+        checked={checkedProps}
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell {...props} />
@@ -159,7 +176,7 @@ const FilesTableRow = (props) => {
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          <StyledShare>{props.sharedButton}</StyledShare>
+          <StyledShare>{sharedButton}</StyledShare>
         </TableCell>
       </TableRow>
     </StyledDragAndDrop>

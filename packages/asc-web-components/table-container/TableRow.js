@@ -45,8 +45,6 @@ const TableRow = (props) => {
     onContentSelect && onContentSelect(e.target.checked, item);
   };
 
-  console.log("selectionProp", selectionProp);
-
   return (
     <StyledTableRow
       onContextMenu={onContextMenu}
