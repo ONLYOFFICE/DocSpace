@@ -12,7 +12,8 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Web.Webhooks;
-using ASC.Webhooks.Dao.Models;
+using ASC.Webhooks.Core;
+using ASC.Webhooks.Core.Dao.Models;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,6 +44,7 @@ namespace ASC.Webhooks.Tests
         {
             var scope = host.Services.CreateScope();
             var dbWorker = scope.ServiceProvider.GetService<DbWorker>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
             var id = 1;
             var testWebhookRequest = new WebhookRequest { Id = id };
@@ -63,10 +65,9 @@ namespace ASC.Webhooks.Tests
 
             try
             {
-                dbWorker.AddWebhookConfig(testWebhookConfig);
-
-                var tenantManager = new TenantManager();
                 tenantManager.SetCurrentTenant(testTenant);
+
+                dbWorker.AddWebhookConfig(testWebhookConfig);
 
                 var mockedLog = new Mock<IOptionsMonitor<ILog>>();
                 mockedLog.Setup(a => a.Get("ASC.Webhooks")).Verifiable();
@@ -83,7 +84,6 @@ namespace ASC.Webhooks.Tests
             {
                 Assert.Fail(ex.ToString());
             }
-            var dadad = dbWorker.ReadFromJournal(id);
             Assert.AreEqual(dbWorker.ReadFromJournal(id), testWebhooksEntry);
         }
 
@@ -94,13 +94,16 @@ namespace ASC.Webhooks.Tests
             var scope = host.Services.CreateScope();
             var serviceProvider = scope.ServiceProvider;
             var dbWorker = serviceProvider.GetService<DbWorker>();
+            var tenantManager = serviceProvider.GetService<TenantManager>();
 
             var successedId = dbWorker.ConfigsNumber() + 1;
             var failedId = successedId + 1;
             var testTenant = new Tenant(2, "testWebhooksSender");
 
-            var successWebhookConfig = new WebhooksConfig { ConfigId = successedId, SecretKey = secretKey, TenantId = testTenant.TenantId, Uri = $"{URI}SuccessRequest/" };
-            var failedWebhookConfig = new WebhooksConfig { ConfigId = failedId, SecretKey = secretKey, TenantId = testTenant.TenantId, Uri = $"{URI}FailedRequest/" };
+            tenantManager.SetCurrentTenant(testTenant);
+
+            var successWebhookConfig = new WebhooksConfig { ConfigId = successedId, SecretKey = secretKey, Uri = $"{URI}SuccessRequest/" };
+            var failedWebhookConfig = new WebhooksConfig { ConfigId = failedId, SecretKey = secretKey, Uri = $"{URI}FailedRequest/" };
             dbWorker.AddWebhookConfig(successWebhookConfig);
             dbWorker.AddWebhookConfig(failedWebhookConfig);
 
@@ -113,15 +116,13 @@ namespace ASC.Webhooks.Tests
             mockedLog.Setup(a => a.Error(It.IsAny<string>())).Verifiable();
 
             var mockedLogOptions = new Mock<IOptionsMonitor<ILog>>();
-            mockedLogOptions.Setup(a => a.Get("ASC.Webhooks")).Returns(mockedLog.Object).Verifiable();
+            mockedLogOptions.Setup(a => a.Get("ASC.Webhooks.Core")).Returns(mockedLog.Object).Verifiable();
 
             var source = new CancellationTokenSource();
             var token = source.Token;
 
             var SuccessedWebhookRequest = new WebhookRequest { Id = successWebhookPayloadId };
             var FailedWebhookRequest = new WebhookRequest { Id = failedWebhookPayloadId };
-
-            var settings = new Settings();
 
             var sender = new WebhookSender(mockedLogOptions.Object, serviceProvider, settings);
             await sender.Send(SuccessedWebhookRequest, token);

@@ -5,9 +5,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core.Common.EF;
-using ASC.Webhooks.Dao;
+using ASC.Webhooks.Core;
+using ASC.Webhooks.Core.Dao;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +27,7 @@ namespace ASC.Webhooks.Tests
         protected IHost host;
         protected WebhookSender webhookSender;
         protected RequestHistory requestHistory;
+        protected Settings settings;
         protected string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=dev;Password=dev;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
         protected static int port = 8867;
 
@@ -64,12 +67,14 @@ namespace ASC.Webhooks.Tests
                     .ConfigureServices(services =>
                     {
                         services.AddControllers();
+                        services.AddMemoryCache();
 
                         var dIHelper = new DIHelper();
                         dIHelper.Configure(services);
                         dIHelper.TryAdd<DbWorker>();
                         dIHelper.TryAdd<TestController>();
                         dIHelper.TryAdd<WebhookSender>();
+                        dIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     })
                     .Configure(app =>
                     {
@@ -99,6 +104,7 @@ namespace ASC.Webhooks.Tests
             serviceProvider = host.Services;
             webhookSender = serviceProvider.GetService<WebhookSender>();
             requestHistory = serviceProvider.GetService<RequestHistory>();
+            settings = serviceProvider.GetService<Settings>();
         }
 
         private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
