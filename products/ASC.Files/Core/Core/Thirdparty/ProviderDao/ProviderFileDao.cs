@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -63,7 +64,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(fileId);
 
             var fileDao = selector.GetFileDao(fileId);
-            var result = fileDao.GetFile(selector.ConvertId(fileId));
+            var result = fileDao.GetFileAsync(selector.ConvertId(fileId)).Result;
 
             if (result != null)
             {
@@ -71,6 +72,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             }
 
             return result;
+        }
+
+        public async Task<File<string>> GetFileAsync(string fileId)
+        {
+            return await new Task<File<string>>(() => GetFile(fileId));
         }
 
         public File<string> GetFile(string fileId, int fileVersion)

@@ -268,7 +268,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         if (!Equals(entryId, default(T)))
                         {
                             FileDao.InvalidateCache(entryId);
-                            file = FileDao.GetFile(entryId);
+                            file = FileDao.GetFileAsync(entryId).Result;
 
                             if (file == null)
                             {

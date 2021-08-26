@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -89,6 +90,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return GetFile(fileId, 1);
         }
 
+        public async Task<File<string>> GetFileAsync(string fileId)
+        {
+            return await new Task<File<string>>(() => GetFile(fileId, 1));
+        }
+
         public File<string> GetFile(string fileId, int fileVersion)
         {
             return ToFile(GetDriveEntry(fileId));
@@ -107,7 +113,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public List<File<string>> GetFileHistory(string fileId)
         {
-            return new List<File<string>> { GetFile(fileId) };
+            return new List<File<string>> { GetFileAsync(fileId).Result};
         }
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)

@@ -143,7 +143,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             try
             {
-                file = fileDao.GetFile(fileData.FileId);
+                file = fileDao.GetFileAsync(fileData.FileId).Result;
 
                 if (file == null)
                 {

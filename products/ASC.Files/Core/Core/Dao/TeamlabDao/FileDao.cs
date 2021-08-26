@@ -131,10 +131,15 @@ namespace ASC.Files.Core.Data
 
         public File<int> GetFile(int fileId)
         {
+            return GetFileAsync(fileId).Result;
+        }
+
+        public async Task<File<int>> GetFileAsync(int fileId)
+        {
             var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
-            return ToFile(
-                    FromQueryWithShared(query)
-                    .SingleOrDefault());
+            return ToFile(await
+                FromQueryWithShared(query)
+                .SingleOrDefaultAsync());
         }
 
         public File<int> GetFile(int fileId, int fileVersion)
@@ -142,6 +147,14 @@ namespace ASC.Files.Core.Data
             var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
             return ToFile(FromQueryWithShared(query)
                         .SingleOrDefault());
+        }
+
+        public async Task<File<int>> GetFileAsync(int fileId, int fileVersion)
+        {
+            var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
+            return ToFile(await
+                FromQueryWithShared(query)
+                .SingleOrDefaultAsync());
         }
 
         public File<int> GetFile(int parentId, string title)
@@ -506,7 +519,7 @@ namespace ASC.Files.Core.Data
 
             FactoryIndexer.IndexAsync(InitDocument(toInsert));
 
-            return GetFile(file.ID);
+            return GetFileAsync(file.ID).Result;
         }
 
         public File<int> ReplaceFileVersion(File<int> file, Stream fileStream)
@@ -614,7 +627,7 @@ namespace ASC.Files.Core.Data
 
             FactoryIndexer.IndexAsync(InitDocument(toUpdate));
 
-            return GetFile(file.ID);
+            return GetFileAsync(file.ID).Result;
         }
 
         private void DeleteVersion(File<int> file)
@@ -817,7 +830,7 @@ namespace ASC.Files.Core.Data
 
         public File<int> CopyFile(int fileId, int toFolderId)
         {
-            var file = GetFile(fileId);
+            var file = GetFileAsync(fileId).Result;
             if (file != null)
             {
                 var copy = ServiceProvider.GetService<File<int>>();
@@ -1023,7 +1036,7 @@ namespace ASC.Files.Core.Data
         {
             if (uploadSession.File.ID != default)
             {
-                var file = GetFile(uploadSession.File.ID);
+                var file = GetFileAsync(uploadSession.File.ID).Result;
                 file.Version++;
                 file.ContentLength = uploadSession.BytesTotal;
                 file.ConvertedType = null;

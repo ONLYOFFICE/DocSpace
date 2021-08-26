@@ -110,7 +110,7 @@ namespace ASC.Web.Files.Core.Entries
 
             fileDao.InvalidateCache(fileId);
 
-            var file = fileDao.GetFile(fileId);
+            var file = fileDao.GetFileAsync(fileId).Result;
             if (file == null) throw new System.IO.FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (!FileSecurity.CanEdit(file)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (file.RootFolderType != FolderType.Privacy) throw new NotSupportedException();

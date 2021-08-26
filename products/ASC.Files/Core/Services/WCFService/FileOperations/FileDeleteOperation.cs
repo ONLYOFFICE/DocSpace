@@ -215,7 +215,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                var file = FileDao.GetFile(fileId);
+                var file = FileDao.GetFileAsync(fileId).Result;
                 if (file == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;

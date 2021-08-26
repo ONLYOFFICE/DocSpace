@@ -108,7 +108,7 @@ namespace ASC.Web.Files.Utils
             file = null;
             if (string.IsNullOrEmpty(doc)) return FileShare.Restrict;
             var fileId = Parse<T>(doc);
-            file = fileDao.GetFile(fileId);
+            file = fileDao.GetFileAsync(fileId).Result;
             if (file == null) return FileShare.Restrict;
 
             var filesSecurity = FileSecurity;

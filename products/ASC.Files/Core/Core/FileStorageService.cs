@@ -470,7 +470,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var file = version > 0
                            ? fileDao.GetFile(fileId, version)
-                           : fileDao.GetFile(fileId);
+                           : fileDao.GetFileAsync(fileId).Result;
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
@@ -496,7 +496,7 @@ namespace ASC.Web.Files.Services.WCFService
             var fileDao = GetFileDao();
             var folderDao = GetFolderDao();
 
-            var file = fileDao.GetFile(fileId);
+            var file = fileDao.GetFileAsync(fileId).Result;
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
@@ -652,7 +652,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
             else
             {
-                var template = fileDao.GetFile(fileWrapper.TemplateId);
+                var template = fileDao.GetFileAsync(fileWrapper.TemplateId).Result;
                 ErrorIf(template == null, FilesCommonResource.ErrorMassage_FileNotFound);
                 ErrorIf(!FileSecurity.CanRead(template), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
@@ -887,7 +887,7 @@ namespace ASC.Web.Files.Services.WCFService
         public List<File<T>> GetFileHistory(T fileId)
         {
             var fileDao = GetFileDao();
-            var file = fileDao.GetFile(fileId);
+            var file = fileDao.GetFileAsync(fileId).Result;
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             return new List<File<T>>(fileDao.GetFileHistory(fileId));
@@ -952,7 +952,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             var tagDao = GetTagDao();
             var fileDao = GetFileDao();
-            var file = fileDao.GetFile(fileId);
+            var file = fileDao.GetFileAsync(fileId).Result;
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanEdit(file) || lockfile && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
@@ -1020,7 +1020,7 @@ namespace ASC.Web.Files.Services.WCFService
             var fileDao = GetFileDao();
             var readLink = FileShareLink.Check(doc, true, fileDao, out var file);
             if (file == null)
-                file = fileDao.GetFile(fileId);
+                file = fileDao.GetFileAsync(fileId).Result;
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!readLink && !FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
@@ -1044,7 +1044,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 file = version > 0
                            ? fileDao.GetFile(fileId, version)
-                           : fileDao.GetFile(fileId);
+                           : fileDao.GetFileAsync(fileId).Result;
             }
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
@@ -1433,7 +1433,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             foreach (var id in filesId)
             {
-                var file = fileDao.GetFile(id);
+                var file = fileDao.GetFileAsync(id).Result;
                 if (file != null
                     && !file.Encrypted
                     && fileDao.IsExist(file.Title, toFolder.ID))
@@ -1528,7 +1528,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 var file = int.TryParse(fileInfo[1], out var version) && version > 0
                                 ? fileDao.GetFile(fileId, version)
-                                : fileDao.GetFile(fileId);
+                                : fileDao.GetFileAsync(fileId).Result;
 
                 if (file == null)
                 {
@@ -1829,7 +1829,7 @@ namespace ASC.Web.Files.Services.WCFService
             var result = new List<T>();
 
             var entries = new List<FileEntry<T>>();
-            entries.AddRange(aceCollection.Files.Select(fileId => fileDao.GetFile(fileId)));
+            entries.AddRange(aceCollection.Files.Select(fileId => fileDao.GetFileAsync(fileId).Result));
             entries.AddRange(aceCollection.Folders.Select(folderDao.GetFolder));
 
             foreach (var entry in entries)
@@ -1865,7 +1865,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var fileDao = GetFileDao();
             var folderDao = GetFolderDao();
-            entries.AddRange(filesId.Select(fileId => fileDao.GetFile(fileId)));
+            entries.AddRange(filesId.Select(fileId => fileDao.GetFileAsync(fileId).Result));
             entries.AddRange(foldersId.Select(folderDao.GetFolder));
 
             FileSharingAceHelper.RemoveAce(entries);
@@ -1875,7 +1875,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             File<T> file;
             var fileDao = GetFileDao();
-            file = fileDao.GetFile(fileId);
+            file = fileDao.GetFileAsync(fileId).Result;
             ErrorIf(!FileSharing.CanSetAccess(file), FilesCommonResource.ErrorMassage_SecurityException);
             var shareLink = FileShareLink.GetLink(file);
 
@@ -1893,7 +1893,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             FileEntry<T> file;
             var fileDao = GetFileDao();
-            file = fileDao.GetFile(fileId);
+            file = fileDao.GetFileAsync(fileId).Result;
             var aces = new List<AceWrapper>
                 {
                     new AceWrapper
@@ -1929,7 +1929,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             FileEntry<T> file;
             var fileDao = GetFileDao();
-            file = fileDao.GetFile(fileId);
+            file = fileDao.GetFileAsync(fileId).Result;
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
@@ -1966,7 +1966,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             File<T> file;
             var fileDao = GetFileDao();
-            file = fileDao.GetFile(fileId);
+            file = fileDao.GetFileAsync(fileId).Result;
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 

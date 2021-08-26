@@ -624,7 +624,7 @@ namespace ASC.Web.Files.Utils
             foreach (var tag in tags)
             {
                 var entry = tag.EntryType == FileEntryType.File
-                                ? fileDao.GetFile((T)tag.EntryId)
+                                ? fileDao.GetFileAsync((T)tag.EntryId).Result
                                 : (FileEntry<T>)folderDao.GetFolder((T)tag.EntryId);
                 if (entry != null && (!entry.ProviderEntry || FilesSettingsHelper.EnableThirdParty))
                 {

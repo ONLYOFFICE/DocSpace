@@ -218,9 +218,9 @@ namespace ASC.Web.CRM.Classes
 
                 foreach (var fileID in _fileID)
                 {
-                    var fileObj = fileDao.GetFile(fileID);
+                    var fileObj = fileDao.GetFileAsync(fileID);
                     if (fileObj == null) continue;
-                    using (var fileStream = fileDao.GetFileStream(fileObj))
+                    using (var fileStream = fileDao.GetFileStream(fileObj.Result))
                     {
                         var directoryPath = Path.Combine(Path.GetTempPath(), "teamlab", _tenantID.ToString(),
                             "crm/files/mailsender/");
@@ -230,7 +230,7 @@ namespace ASC.Web.CRM.Classes
                             Directory.CreateDirectory(directoryPath);
                         }
 
-                        var filePath = Path.Combine(directoryPath, fileObj.Title);
+                        var filePath = Path.Combine(directoryPath, fileObj.Result.Title);
 
                         using (var newFileStream = File.Create(filePath))
                         {
@@ -419,10 +419,10 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var fileID in _fileID)
             {
-                var fileObj = fileDao.GetFile(fileID);
+                var fileObj = fileDao.GetFileAsync(fileID);
                 if (fileObj == null) continue;
 
-                fileDao.DeleteFile(fileObj.ID);
+                fileDao.DeleteFile(fileObj.Result.ID);
             }
 
         }

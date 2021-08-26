@@ -910,7 +910,7 @@ namespace ASC.Web.Files.Utils
             var editLink = FileShareLink.Check(doc, false, fileDao, out var file);
             if (file == null)
             {
-                file = fileDao.GetFile(fileId);
+                file = fileDao.GetFileAsync(fileId).Result;
             }
 
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
@@ -1045,7 +1045,7 @@ namespace ASC.Web.Files.Utils
             var fileDao = DaoFactory.GetFileDao<T>();
             editLink = FileShareLink.Check(doc, false, fileDao, out var file);
             if (file == null)
-                file = fileDao.GetFile(fileId);
+                file = fileDao.GetFileAsync(fileId).Result;
 
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             var fileSecurity = FileSecurity;
@@ -1077,7 +1077,7 @@ namespace ASC.Web.Files.Utils
             var editLink = FileShareLink.Check(doc, false, fileDao, out var fromFile);
 
             if (fromFile == null)
-                fromFile = fileDao.GetFile(fileId);
+                fromFile = fileDao.GetFileAsync(fileId).Result;
 
             if (fromFile == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
 
@@ -1104,7 +1104,7 @@ namespace ASC.Web.Files.Utils
 
             try
             {
-                var currFile = fileDao.GetFile(fileId);
+                var currFile = fileDao.GetFileAsync(fileId).Result;
                 var newFile = ServiceProvider.GetService<File<T>>();
 
                 newFile.ID = fromFile.ID;
@@ -1170,14 +1170,14 @@ namespace ASC.Web.Files.Utils
             var fileDao = DaoFactory.GetFileDao<T>();
             var fileVersion = version > 0
 ? fileDao.GetFile(fileId, version)
-: fileDao.GetFile(fileId);
+: fileDao.GetFileAsync(fileId).Result;
             if (fileVersion == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (checkRight && (!FileSecurity.CanEdit(fileVersion) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (FileLockedForMe(fileVersion.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (fileVersion.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
             if (fileVersion.ProviderEntry) throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
 
-            var lastVersionFile = fileDao.GetFile(fileVersion.ID);
+            var lastVersionFile = fileDao.GetFileAsync(fileVersion.ID).Result;
 
             if (continueVersion)
             {
@@ -1209,7 +1209,7 @@ namespace ASC.Web.Files.Utils
         public bool FileRename<T>(T fileId, string title, out File<T> file)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
-            file = fileDao.GetFile(fileId);
+            file = fileDao.GetFileAsync(fileId).Result;
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (!FileSecurity.CanEdit(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
             if (!FileSecurity.CanDelete(file) && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
@@ -1232,7 +1232,7 @@ namespace ASC.Web.Files.Utils
             {
                 var newFileID = fileDao.FileRename(file, title);
 
-                file = fileDao.GetFile(newFileID);
+                file = fileDao.GetFileAsync(newFileID).Result;
                 file.Access = fileAccess;
 
                 DocumentServiceHelper.RenameFile(file, fileDao);

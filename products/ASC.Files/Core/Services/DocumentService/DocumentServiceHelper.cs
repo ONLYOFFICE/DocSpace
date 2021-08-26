@@ -107,7 +107,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (file == null)
             {
-                var curFile = fileDao.GetFile(fileId);
+                var curFile = fileDao.GetFileAsync(fileId).Result;
 
                 if (curFile != null && 0 < version && version < curFile.Version)
                 {

@@ -373,7 +373,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                var file = FileDao.GetFile(fileId);
+                var file = FileDao.GetFileAsync(fileId).Result;
                 if (file == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
@@ -441,7 +441,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     fileMarker.RemoveMarkAsNewForAll(file);
 
                                     var newFileId = FileDao.MoveFile(file.ID, toFolderId);
-                                    newFile = fileDao.GetFile(newFileId);
+                                    newFile = fileDao.GetFileAsync(newFileId).Result;
 
                                     if (file.RootFolderType != FolderType.USER)
                                     {

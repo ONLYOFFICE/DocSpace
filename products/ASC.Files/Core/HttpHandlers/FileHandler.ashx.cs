@@ -310,7 +310,7 @@ namespace ASC.Web.Files
 
                     file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
                                ? fileDao.GetFile(id, version)
-                               : fileDao.GetFile(id);
+                               : fileDao.GetFileAsync(id).Result;
                 }
 
                 if (file == null)
@@ -657,7 +657,7 @@ namespace ASC.Web.Files
                 {
                     file = version > 0
                                ? fileDao.GetFile(id, version)
-                               : fileDao.GetFile(id);
+                               : fileDao.GetFileAsync(id).Result;
                 }
 
                 if (file == null)
@@ -901,7 +901,7 @@ namespace ASC.Web.Files
                 {
                     file = version > 0
                                ? fileDao.GetFile(id, version)
-                               : fileDao.GetFile(id);
+                               : fileDao.GetFileAsync(id).Result;
                 }
 
                 if (file == null)
@@ -971,7 +971,7 @@ namespace ASC.Web.Files
                 var fileDao = DaoFactory.GetFileDao<T>();
                 var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
                    ? fileDao.GetFile(id, version)
-                   : fileDao.GetFile(id);
+                   : fileDao.GetFileAsync(id).Result;
 
                 if (file == null)
                 {
@@ -1218,7 +1218,7 @@ namespace ASC.Web.Files
             if (fileId != null)
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var file = fileDao.GetFile(fileId);
+                var file = fileDao.GetFileAsync(fileId).Result;
                 if (file == null)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;

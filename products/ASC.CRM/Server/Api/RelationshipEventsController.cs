@@ -604,7 +604,7 @@ namespace ASC.CRM.Api
         {
             if (fileid < 0) throw new ArgumentException();
 
-            var file = _filesDaoFactory.GetFileDao<int>().GetFile(fileid);
+            var file = _filesDaoFactory.GetFileDao<int>().GetFileAsync(fileid).Result;
             if (file == null) throw new ItemNotFoundException();
             var result = _fileWrapperHelper.Get<int>(file);
 

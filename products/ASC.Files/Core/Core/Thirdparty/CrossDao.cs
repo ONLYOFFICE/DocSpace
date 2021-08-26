@@ -41,7 +41,7 @@ namespace ASC.Files.Core.Thirdparty
             bool deleteSourceFile)
         {
             //Get File from first dao
-            var fromFile = fromFileDao.GetFile(fromConverter(fromFileId));
+            var fromFile = fromFileDao.GetFileAsync(fromConverter(fromFileId)).Result;
 
             if (fromFile.ContentLength > SetupInfo.AvailableFileSize)
             {

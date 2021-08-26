@@ -49,6 +49,7 @@ namespace ASC.Files.Core
         /// <param name="fileId">file id</param>
         /// <returns></returns>
         File<T> GetFile(T fileId);
+        Task<File<T>> GetFileAsync(T fileId);
 
         /// <summary>
         ///     Receive file

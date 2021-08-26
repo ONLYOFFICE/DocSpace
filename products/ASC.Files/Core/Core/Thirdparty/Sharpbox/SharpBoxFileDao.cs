@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security;
+using System.Threading.Tasks;
 
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
@@ -90,6 +91,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return GetFile(fileId, 1);
         }
 
+        public async Task<File<string>> GetFileAsync(string fileId)
+        {
+            return await new Task<File<string>>(() => GetFile(fileId));
+        }
+
         public File<string> GetFile(string fileId, int fileVersion)
         {
             return ToFile(GetFileById(fileId));
@@ -107,7 +113,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public List<File<string>> GetFileHistory(string fileId)
         {
-            return new List<File<string>> { GetFile(fileId) };
+            return new List<File<string>> { GetFileAsync(fileId).Result };
         }
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)

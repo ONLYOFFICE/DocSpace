@@ -88,6 +88,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             return GetFile(fileId, 1);
         }
 
+        public async Task<File<string>> GetFileAsync(string fileId)
+        {
+            return await new Task<File<string>>(() => GetFile(fileId, 1));
+        }
+
         public File<string> GetFile(string fileId, int fileVersion)
         {
             return ToFile(GetOneDriveItem(fileId));

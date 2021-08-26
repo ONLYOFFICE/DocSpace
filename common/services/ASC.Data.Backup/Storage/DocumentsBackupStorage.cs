@@ -174,13 +174,13 @@ namespace ASC.Data.Backup.Storage
         {
             TenantManager.SetCurrentTenant(TenantId);
             var fileDao = GetFileDao<T>();
-            var file = fileDao.GetFile(fileId);
+            var file = fileDao.GetFileAsync(fileId);
             if (file == null)
             {
                 throw new FileNotFoundException("File not found.");
             }
 
-            using var source = fileDao.GetFileStream(file);
+            using var source = fileDao.GetFileStream(file.Result);
             using var destination = File.OpenWrite(targetLocalPath);
             source.CopyTo(destination);
         }
@@ -197,8 +197,8 @@ namespace ASC.Data.Backup.Storage
             try
             {
 
-                var file = fileDao.GetFile(fileId);
-                return file != null && file.RootFolderType != FolderType.TRASH;
+                var file = fileDao.GetFileAsync(fileId);
+                return file != null && file.Result.RootFolderType != FolderType.TRASH;
             }
             catch (Exception)
             {

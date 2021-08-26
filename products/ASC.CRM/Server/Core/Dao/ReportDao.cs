@@ -351,7 +351,7 @@ namespace ASC.CRM.Core.Dao
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            return exist ? filedao.GetFile(fileid) : null;
+            return exist ? filedao.GetFileAsync(fileid).Result : null;
 
         }
 

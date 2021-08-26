@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -82,6 +83,11 @@ namespace ASC.Files.Thirdparty.SharePoint
             return GetFile(fileId, 1);
         }
 
+        public async Task<File<string>> GetFileAsync(string fileId)
+        {
+            return await new Task<File<string>>(() => GetFile(fileId, 1));
+        }
+
         public File<string> GetFile(string fileId, int fileVersion)
         {
             return ProviderInfo.ToFile(ProviderInfo.GetFileById(fileId));
@@ -99,7 +105,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public List<File<string>> GetFileHistory(string fileId)
         {
-            return new List<File<string>> { GetFile(fileId) };
+            return new List<File<string>> { GetFileAsync(fileId).Result };
         }
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
@@ -268,7 +274,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     file.Title = GetAvailableTitle(file.Title, folder, IsExist);
 
                     var id = ProviderInfo.RenameFile(DaoSelector.ConvertId(resultFile.ID).ToString(), file.Title);
-                    return GetFile(DaoSelector.ConvertId(id));
+                    return GetFileAsync(DaoSelector.ConvertId(id)).Result;
                 }
                 return resultFile;
             }
