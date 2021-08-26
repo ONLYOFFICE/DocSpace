@@ -93,7 +93,7 @@ namespace ASC.Mail.ImapSync
             _log.Debug($"ImapLog: {$"/var/log/appserver/imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log"}");
 
             var protocolLogger = !string.IsNullOrEmpty(_mailSettings.Aggregator.ProtocolLogPath) ? (IProtocolLogger)
-                new ProtocolLogger(_mailSettings.Aggregator.ProtocolLogPath + $"/var/log/appserver/imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log", true)
+                new ProtocolLogger(_mailSettings.Aggregator.ProtocolLogPath + $"/imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log", true)
             : new ProtocolLogger($"/var/log/appserver/imap_{Account.MailBoxId}_{Thread.CurrentThread.ManagedThreadId}.log", true);
 
             StopTokenSource = new CancellationTokenSource();
@@ -102,6 +102,8 @@ namespace ASC.Mail.ImapSync
 
             asyncTasks = new ConcurrentQueue<Task>();
 
+            foldersDictionary = new Dictionary<IMailFolder, Models.MailFolder>();
+
             imap = new ImapClient(protocolLogger)
             {
                 Timeout = _mailSettings.Aggregator.TcpTimeout
@@ -109,26 +111,29 @@ namespace ASC.Mail.ImapSync
 
             imap.Disconnected += Imap_Disconnected;
 
-            curentTask =Task.Run(()=> {
-                Authenticate();
+            Authenticate();
 
-                LoadFoldersFromIMAP();
+            LoadFoldersFromIMAP();
 
-                ChangeFolder(imap.Inbox);
-            }).ContinueWith(TaskManager);
+            OpenFolder(imap.Inbox);
+        }
+
+        public void Init()
+        {
+            UpdateMessagesList();
+
+            TaskManager(Task.CompletedTask);
         }
 
         public void ChangeFolder(int folderActivity)
         {
-            if (folderActivity != (int)mailWorkFolder.Folder)
+            if (folderActivity != (int)mailWorkFolder?.Folder)
             {
                 try
                 {
                     var newImapFolder = foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)folderActivity).Key;
 
-                    if (newImapFolder == null) return;
-
-                    ChangeFolder(newImapFolder);
+                    TryChangeFolder(newImapFolder);
                 }
                 catch (Exception ex)
                 {
@@ -137,29 +142,33 @@ namespace ASC.Mail.ImapSync
             }
         }
 
-        public void ChangeFolder(IMailFolder newWorkFolder)
+        public void TryChangeFolder(IMailFolder newWorkFolder)
         {
+            if (newWorkFolder == null) return;
+
             _log.Debug($"Try change folder to {newWorkFolder.Name}.");
 
-            AddTask(new Task(() =>
+            AddTask(new Task(() => ChangeFolder(newWorkFolder)));
+        }
+
+        private void ChangeFolder(IMailFolder newWorkFolder)
+        {
+            try
             {
-                try
-                {
-                    OpenFolder(newWorkFolder);
+                OpenFolder(newWorkFolder);
 
-                    UpdateMessagesList();
+                UpdateMessagesList();
 
-                    mailWorkFolder = foldersDictionary[imapWorkFolder];
+                WorkFoldersChanged?.Invoke(this, EventArgs.Empty);
 
-                    WorkFoldersChanged(this, EventArgs.Empty);
+                mailWorkFolder = foldersDictionary[imapWorkFolder];
 
-                    _log.Debug($"Folder changed to {imapWorkFolder.Name}.");
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"ChangeFolder: {ex.Message}");
-                }
-            }));
+                _log.Debug($"Folder changed to {imapWorkFolder.Name}.");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ChangeFolder: {ex.Message}");
+            }
         }
 
         private void Imap_Disconnected(object sender, DisconnectedEventArgs e)
@@ -388,7 +397,7 @@ namespace ASC.Mail.ImapSync
             {
                 imapMessagesList = newMessagesList;
 
-                if (MessagesListUpdated != null) MessagesListUpdated(this, EventArgs.Empty);
+                MessagesListUpdated?.Invoke(this, EventArgs.Empty);
             }
             else
             {

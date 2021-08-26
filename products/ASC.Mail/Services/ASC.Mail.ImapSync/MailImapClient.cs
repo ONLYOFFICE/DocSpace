@@ -173,7 +173,9 @@ namespace ASC.Mail.ImapSync
                 throw new Exception($"No redis connection. UserName={UserName}");
             }
 
-            foreach(var mailbox in mailboxes)
+            simpleImapClients = new List<SimpleImapClient>(mailboxes.Count);
+
+            foreach (var mailbox in mailboxes)
             {
                 var simpleImapClient = new SimpleImapClient(mailbox, cancelToken, mailSettings, clientScope.GetService<ILog>());
                 simpleImapClient.NewMessage += ImapClient_NewMessage;
@@ -183,7 +185,12 @@ namespace ASC.Mail.ImapSync
                 simpleImapClient.OnCriticalError += ImapClient_OnCriticalError;
                 simpleImapClient.OnUidlsChange += ImapClient_OnUidlsChange;
                 simpleImapClient.OnAuthenticationError += SetMailboxAuthError;
+
                 simpleImapClients.Add(simpleImapClient);
+
+                DetectFolders(simpleImapClient);
+
+                simpleImapClient.Init();
             }
         }
 
@@ -251,11 +258,6 @@ namespace ASC.Mail.ImapSync
             if (sender is SimpleImapClient simpleImapClient)
             {
                 _log.Debug($"WorkFoldersChanged:");
-                if (simpleImapClient.foldersDictionary == null)
-                {
-                    simpleImapClient.foldersDictionary = new Dictionary<IMailFolder, Models.MailFolder>();
-                    DetectFolders(simpleImapClient);
-                }
 
                 UpdateDbFolder(simpleImapClient);
             }
@@ -265,7 +267,7 @@ namespace ASC.Mail.ImapSync
         {
             if (sender is SimpleImapClient simpleImapClient)
             {
-                _log.Debug($"MessagesListUpdated:");            //UpdateDbFolder(imapClient.MessagesList);
+                UpdateDbFolder(simpleImapClient);
             }
         }
 
@@ -318,6 +320,8 @@ namespace ASC.Mail.ImapSync
                     _log.Debug($"{folderIMAP.Name}-> ready to work.");
                 }                
             }
+
+            simpleImapClient.mailWorkFolder = simpleImapClient.foldersDictionary[simpleImapClient.imapWorkFolder];
 
             _log.Debug($"Loaded {simpleImapClient.foldersDictionary.Count} folders for work.");
         }
