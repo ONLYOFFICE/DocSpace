@@ -21,6 +21,7 @@
   "Spreadsheets": "Spreadsheets",
   "ThirdPartyInfo": "Change the third-party info",
   "DownloadApps": "Download applications",
+  "SelectFolder": "Select folder",
   "FolderTitleBoxNet": "Box directory",
   "FolderTitleDocuSign": "DocuSign account",
   "FolderTitleDropBox": "Dropbox directory",
@@ -39,5 +40,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
- "MediaLoadError": "Media file could not be loaded"
+  "MediaLoadError": "Media file could not be loaded"
 }

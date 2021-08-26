@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
 import CrossSidebarIcon from "../../../public/images/cross.sidebar.react.svg";
@@ -34,6 +34,12 @@ const Content = styled.div`
     font-weight: ${(props) =>
       props.theme.modalDialog.content.heading.fontWeight};
   }
+
+  ${(props) =>
+    props.removeScroll &&
+    css`
+      overflow: hidden;
+    `}
 `;
 Content.defaultProps = { theme: Base };
 
@@ -66,6 +72,12 @@ CloseButton.defaultProps = { theme: Base };
 
 const BodyBox = styled(Box)`
   position: relative;
+
+  ${(props) =>
+    props.removeScroll &&
+    css`
+      height: 100%;
+    `}
 `;
 
 export { CloseButton, StyledHeader, Content, Dialog, BodyBox };
