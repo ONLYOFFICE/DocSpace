@@ -57,7 +57,7 @@ using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
-using ASC.Webhooks;
+using ASC.Webhooks.Core;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -19,7 +19,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\..\common\ASC.Webhooks\ASC.Webhooks.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Webhooks.Core\ASC.Webhooks.Core.csproj" />
     <ProjectReference Include="..\..\..\common\services\ASC.Feed.Aggregator\ASC.Feed.Aggregator.csproj" />
     <ProjectReference Include="..\Core\ASC.Files.Core.csproj" />
   </ItemGroup>

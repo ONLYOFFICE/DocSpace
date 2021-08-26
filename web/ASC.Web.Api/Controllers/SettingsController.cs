@@ -82,8 +82,8 @@ using ASC.Web.Studio.UserControls.FirstTime;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
-using ASC.Webhooks;
-using ASC.Webhooks.Dao.Models;
+using ASC.Webhooks.Core;
+using ASC.Webhooks.Core.Dao.Models;
 
 using Google.Authenticator;
 

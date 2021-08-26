@@ -5,10 +5,10 @@ using System.Linq;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Webhooks.Dao;
-using ASC.Webhooks.Dao.Models;
+using ASC.Webhooks.Core.Dao;
+using ASC.Webhooks.Core.Dao.Models;
 
-namespace ASC.Webhooks
+namespace ASC.Webhooks.Core
 {
     [Scope]
     public class DbWorker

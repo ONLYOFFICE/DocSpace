@@ -1,5 +1,5 @@
 ﻿using ASC.Core.Common.EF;
-using ASC.Webhooks.Dao.Models;
+using ASC.Webhooks.Core.Dao.Models;
 
 using Microsoft.EntityFrameworkCore;
 using ASC.Core.Common.EF.Model;
@@ -10,7 +10,7 @@ using ASC.Common;
 
 #nullable disable
 
-namespace ASC.Webhooks.Dao
+namespace ASC.Webhooks.Core.Dao
 {
     public class MySqlWebhooksDbContext : WebhooksDbContext { }
     public class PostgreSqlWebhooksDbContext : WebhooksDbContext { }

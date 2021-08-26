@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
-namespace ASC.Webhooks.Dao.Models
+namespace ASC.Webhooks.Core.Dao.Models
 {
     public partial class WebhooksPayload
     {

@@ -5,11 +5,11 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Web.Webhooks;
-using ASC.Webhooks.Dao.Models;
+using ASC.Webhooks.Core.Dao.Models;
 
 using Microsoft.Extensions.Options;
 
-namespace ASC.Webhooks
+namespace ASC.Webhooks.Core
 {
     [Scope]
     public class WebhookPublisher : IWebhookPublisher
@@ -27,7 +27,7 @@ namespace ASC.Webhooks
         {
             DbWorker = dbWorker;
             TenantManager = tenantManager;
-            Log = options.Get("ASC.Webhooks");
+            Log = options.Get("ASC.Webhooks.Core");
             WebhookNotify = webhookNotify;
         }
 
@@ -56,14 +56,6 @@ namespace ASC.Webhooks
 
                 WebhookNotify.Publish(request, CacheNotifyAction.Update);
             }
-        }
-    }
-
-    public class WebhooksExtension
-    {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<WebhookPublisher>();
         }
     }
 

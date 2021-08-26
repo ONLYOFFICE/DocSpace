@@ -12,7 +12,7 @@ using ASC.Web.Webhooks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Webhooks
+namespace ASC.Webhooks.Core
 {
     [Singletone]
     public class WebhookSender
@@ -24,7 +24,7 @@ namespace ASC.Webhooks
 
         public WebhookSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider, Settings settings)
         {
-            Log = options.Get("ASC.Webhooks");
+            Log = options.Get("ASC.Webhooks.Core");
             ServiceProvider = serviceProvider;
             RepeatCount = settings.RepeatCount;
         }

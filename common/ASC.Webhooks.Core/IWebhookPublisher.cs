@@ -1,6 +1,6 @@
 ﻿using ASC.Common;
 
-namespace ASC.Webhooks
+namespace ASC.Webhooks.Core
 {
     [Scope]
     public interface IWebhookPublisher

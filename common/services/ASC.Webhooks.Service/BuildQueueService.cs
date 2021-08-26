@@ -4,7 +4,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Web.Webhooks;
 
-namespace ASC.Webhooks
+namespace ASC.Webhooks.Service
 {
     [Singletone]
     public class BuildQueueService

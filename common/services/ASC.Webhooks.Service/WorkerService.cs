@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Web.Webhooks;
+using ASC.Webhooks.Core;
 
-namespace ASC.Webhooks
+namespace ASC.Webhooks.Service
 {
     [Singletone]
     public class WorkerService

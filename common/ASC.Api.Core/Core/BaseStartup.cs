@@ -11,7 +11,7 @@ using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Mapping;
 using ASC.Common.Utils;
-using ASC.Webhooks;
+using ASC.Webhooks.Core;
 
 using Autofac;
 

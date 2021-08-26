@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Utils;
 
-namespace ASC.Webhooks
+namespace ASC.Webhooks.Core
 {
     [Singletone]
     public class Settings

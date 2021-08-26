@@ -5,7 +5,7 @@ using ASC.Common;
 
 using Microsoft.Extensions.Hosting;
 
-namespace ASC.Webhooks
+namespace ASC.Webhooks.Service
 {
     [Singletone]
     public class WebhookHostedService : IHostedService

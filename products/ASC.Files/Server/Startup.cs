@@ -7,7 +7,7 @@ using ASC.Api.Documents;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
 using ASC.Web.Studio.Core.Notify;
-using ASC.Webhooks;
+using ASC.Webhooks.Core;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,7 +32,6 @@ namespace ASC.Files
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             services.AddMemoryCache();
-            services.AddHostedService<WebhookHostedService>();
 
             base.ConfigureServices(services);
 
@@ -43,9 +42,6 @@ namespace ASC.Files
             DIHelper.TryAdd<DocuSignHandlerService>();
             DIHelper.TryAdd<ThirdPartyAppHandlerService>();
 
-            DIHelper.TryAdd<WebhookHostedService>();
-
-            WebhooksExtension.Register(DIHelper);
             NotifyConfigurationExtension.Register(DIHelper);
         }
 

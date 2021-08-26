@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -94,7 +95,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ClearEvents", "common\s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.CRM.BackgroundTasks", "products\ASC.CRM\BackgroundTasks\ASC.CRM.BackgroundTasks.csproj", "{E52C0E35-A05C-437F-8FF2-3E0AC9F81433}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Webhooks", "common\ASC.Webhooks\ASC.Webhooks.csproj", "{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Webhooks.Core", "common\ASC.Webhooks.Core\ASC.Webhooks.Core.csproj", "{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Webhooks.Service", "common\services\ASC.Webhooks.Service\ASC.Webhooks.Service.csproj", "{DAE2912D-1465-4D60-B1D7-90EE835003E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -246,14 +249,14 @@ Global
 		{277F4A2C-07CC-4BC5-B4F3-9695BB2DFFB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{277F4A2C-07CC-4BC5-B4F3-9695BB2DFFB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{277F4A2C-07CC-4BC5-B4F3-9695BB2DFFB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{137CA67B-D0F5-4746-B8BC-1888D2859B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{137CA67B-D0F5-4746-B8BC-1888D2859B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{137CA67B-D0F5-4746-B8BC-1888D2859B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{137CA67B-D0F5-4746-B8BC-1888D2859B90}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74998718-3C9A-4A89-B834-14453762C60F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74998718-3C9A-4A89-B834-14453762C60F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74998718-3C9A-4A89-B834-14453762C60F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74998718-3C9A-4A89-B834-14453762C60F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{137CA67B-D0F5-4746-B8BC-1888D2859B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{137CA67B-D0F5-4746-B8BC-1888D2859B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{137CA67B-D0F5-4746-B8BC-1888D2859B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{137CA67B-D0F5-4746-B8BC-1888D2859B90}.Release|Any CPU.Build.0 = Release|Any CPU	
 		{6AD828EA-FBA2-4D30-B969-756B3BE78E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6AD828EA-FBA2-4D30-B969-756B3BE78E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AD828EA-FBA2-4D30-B969-756B3BE78E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -274,6 +277,10 @@ Global
 		{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

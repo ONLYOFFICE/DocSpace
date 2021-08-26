@@ -1,4 +1,4 @@
-﻿namespace ASC.Webhooks.Dao.Models
+﻿namespace ASC.Webhooks.Core.Dao.Models
 {
     public class WebhookEntry
     {
