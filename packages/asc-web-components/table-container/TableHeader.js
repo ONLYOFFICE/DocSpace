@@ -206,6 +206,8 @@ class TableHeader extends React.Component {
       ? containerRef.current
       : document.getElementById("table-container");
 
+    if (!container) return;
+
     const storageSize = localStorage.getItem(columnStorageName);
     const tableContainer = storageSize
       ? storageSize.split(" ")
