@@ -55,6 +55,7 @@ const spreadSheet = "spreadsheet";
 const presentation = "presentation";
 const insertImageAction = "imageType";
 const mailMergeAction = "mailMergeType";
+const compareFilesAction = "compareFiles";
 
 let docTitle = null;
 let actionLink;
@@ -109,6 +110,13 @@ const Editor = () => {
 
   const mailMerge = (link) => {
     docEditor.setMailMergeRecipients({
+      fileType: link.filetype,
+      url: link.url,
+    });
+  };
+
+  const compareFiles = (link) => {
+    docEditor.setRevisedFile({
       fileType: link.filetype,
       url: link.url,
     });
@@ -442,7 +450,8 @@ const Editor = () => {
         onRequestRename,
         onRequestSaveAs,
         onRequestInsertImage,
-        onRequestMailMergeRecipients;
+        onRequestMailMergeRecipients,
+        onRequestCompareFile;
 
       if (isSharingAccess) {
         onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -456,6 +465,7 @@ const Editor = () => {
         onRequestSaveAs = onSDKRequestSaveAs;
         onRequestInsertImage = onSDKRequestInsertImage;
         onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
+        onRequestCompareFile = onSDKRequestCompareFile;
       }
 
       const events = {
@@ -473,6 +483,7 @@ const Editor = () => {
           onRequestInsertImage,
           onRequestSaveAs,
           onRequestMailMergeRecipients,
+          onRequestCompareFile,
         },
       };
 
@@ -599,11 +610,20 @@ const Editor = () => {
     setIsFileDialogVisible(true);
   };
 
+  const onSDKRequestCompareFile = () => {
+    setFilesType(compareFilesAction);
+    setIsFileDialogVisible(true);
+  };
   const onSelectFile = async (file) => {
-    const link = await getPresignedUri(file.id);
+    try {
+      const link = await getPresignedUri(file.id);
 
-    if (filesType === insertImageAction) insertImage(link);
-    if (filesType === mailMergeAction) mailMerge(link);
+      if (filesType === insertImageAction) insertImage(link);
+      if (filesType === mailMergeAction) mailMerge(link);
+      if (filesType === compareFilesAction) compareFiles(link);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const onCloseFileDialog = () => {
@@ -642,6 +662,21 @@ const Editor = () => {
     setNewOpenTab(!openNewTab);
   };
 
+  const SelectFileHeader = () => {
+    const image = i18n.t("ImageFileType");
+    const helllo = " hello";
+    console.log(image);
+    return (
+      <StyledSelectFile>
+        <Text className="editor-select-file_text">
+          {filesType === insertImageAction
+            ? i18n.t("ImageFileType")
+            : i18n.t("MailMergeFileType")}
+        </Text>
+      </StyledSelectFile>
+    );
+  };
+
   const insertImageActionProps = {
     isImageOnly: true,
   };
@@ -650,16 +685,21 @@ const Editor = () => {
     isTablesOnly: true,
     searchParam: "xlsx",
   };
+  const compareFilesActionProps = {
+    isDocumentsOnly: true,
+  };
 
-  const SelectFileHeader = () => (
-    <StyledSelectFile>
-      <Text className="editor-select-file_text">
-        {filesType === insertImageAction
-          ? i18n.t("ImageFileType")
-          : i18n.t("MailMergeFileType")}
-      </Text>
-    </StyledSelectFile>
-  );
+  const fileTypeDetection = () => {
+    if (filesType === insertImageAction) {
+      return insertImageActionProps;
+    }
+    if (filesType === mailMergeAction) {
+      return mailMergeActionProps;
+    }
+    if (filesType === compareFilesAction) {
+      return compareFilesActionProps;
+    }
+  };
 
   return (
     <Box
@@ -687,9 +727,7 @@ const Editor = () => {
               isPanelVisible={isFileDialogVisible}
               onClose={onCloseFileDialog}
               foldersType="exceptTrashFolder"
-              {...(filesType === insertImageAction
-                ? insertImageActionProps
-                : mailMergeActionProps)}
+              {...fileTypeDetection()}
               header={<SelectFileHeader />}
               headerName={i18n.t("SelectFileTitle")}
             />
