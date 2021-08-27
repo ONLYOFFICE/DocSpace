@@ -158,7 +158,8 @@ class TreeFolders extends React.Component {
       return false;
     }
 
-    if (draggableItems.find((x) => x.id === item.id)) return false;
+    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      return false;
 
     // const isMy = rootFolderType === FolderType.USER;
     // const isCommon = rootFolderType === FolderType.COMMON;
@@ -472,7 +473,10 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  (
+    { auth, filesStore, treeFoldersStore, selectedFolderStore },
+    { useDefaultSelectedKeys, selectedKeys }
+  ) => {
     const {
       filter,
       selection,
@@ -504,9 +508,12 @@ export default inject(
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       filter,
-      draggableItems: dragging ? selection : [],
+      draggableItems: dragging ? selection : null,
       expandedKeys,
       treeFolders,
+      selectedKeys: useDefaultSelectedKeys
+        ? treeFoldersStore.selectedKeys
+        : selectedKeys,
 
       setDragging,
       setIsLoading,

@@ -239,6 +239,7 @@ class ConnectClouds extends React.Component {
                         fontWeight="600"
                         fontSize="15px"
                         color="#333"
+                        noSelect
                       >
                         {tReady ? (
                           typeTitle

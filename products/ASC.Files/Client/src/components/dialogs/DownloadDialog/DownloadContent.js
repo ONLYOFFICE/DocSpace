@@ -297,12 +297,18 @@ const DownloadContent = (props) => {
               element={element}
             >
               <RowContent convertSideInfo={false}>
-                <Text truncate type="page" title={file.title} fontSize="14px">
+                <Text
+                  truncate
+                  type="page"
+                  title={file.title}
+                  fontSize="14px"
+                  noSelect
+                >
                   {file.title}
                 </Text>
                 <></>
                 {file.checked && (
-                  <Text fontSize="12px" containerWidth="auto">
+                  <Text fontSize="12px" containerWidth="auto" noSelect>
                     {t("ConvertInto")}
                   </Text>
                 )}
