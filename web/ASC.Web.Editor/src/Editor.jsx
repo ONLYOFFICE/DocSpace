@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Toast from "@appserver/components/toast";
 import toastr from "studio/toastr";
 import { toast } from "react-toastify";
-
+import { Trans } from "react-i18next";
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
 import Loaders from "@appserver/common/components/Loaders";
@@ -53,9 +53,9 @@ let documentIsReady = false;
 const text = "text";
 const spreadSheet = "spreadsheet";
 const presentation = "presentation";
-const insertImageAction = "imageType";
-const mailMergeAction = "mailMergeType";
-const compareFilesAction = "compareFiles";
+const insertImageAction = "imageFileType";
+const mailMergeAction = "mailMergeFileType";
+const compareFilesAction = "documentsFileType";
 
 let docTitle = null;
 let actionLink;
@@ -662,16 +662,20 @@ const Editor = () => {
     setNewOpenTab(!openNewTab);
   };
 
+  const getFileTypeTranslation = () => {
+    return i18n.t(filesType[0].toUpperCase() + filesType.slice(1));
+  };
   const SelectFileHeader = () => {
-    const image = i18n.t("ImageFileType");
-    const helllo = " hello";
-    console.log(image);
     return (
       <StyledSelectFile>
         <Text className="editor-select-file_text">
-          {filesType === insertImageAction
-            ? i18n.t("ImageFileType")
-            : i18n.t("MailMergeFileType")}
+          {filesType === mailMergeAction ? (
+            i18n.t("MailMergeFileType")
+          ) : (
+            <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
+              Select files of type: {{ fileType: getFileTypeTranslation() }}
+            </Trans>
+          )}
         </Text>
       </StyledSelectFile>
     );
