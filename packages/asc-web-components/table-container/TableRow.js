@@ -22,8 +22,6 @@ const TableRow = (props) => {
     ...rest
   } = props;
 
-  console.log("hasAccess", hasAccess);
-
   const cm = useRef();
   const row = useRef();
 
