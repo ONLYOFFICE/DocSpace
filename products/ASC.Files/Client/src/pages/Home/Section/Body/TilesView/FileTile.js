@@ -33,7 +33,7 @@ const FilesTile = (props) => {
     //element,
     getIcon,
     onFilesClick,
-    onMouseUp,
+    onMouseClick,
     showShare,
   } = props;
   const temporaryIcon = getIcon(
@@ -80,7 +80,7 @@ const FilesTile = (props) => {
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           dragging={dragging && isDragging}
-          onMouseUp={onMouseUp}
+          onClick={onMouseClick}
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
           {...checkedProps}

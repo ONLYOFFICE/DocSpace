@@ -745,7 +745,7 @@ class UpdateUserForm extends React.Component {
             />
             {/*TODO: uncomment this after added phone form */}
             {/* <TextChangeField
-              labelText={`${t("Phone")}:`}
+              labelText={`${t("Common:Phone")}:`}
               inputName="phone"
               inputValue={profile.mobilePhone}
               buttonText={t("ChangeButton")}
