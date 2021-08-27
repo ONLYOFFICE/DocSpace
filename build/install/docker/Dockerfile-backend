@@ -21,9 +21,9 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
+    apt-get install -yq sudo locales && \
     curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
     apt-get -y update && \
-    apt-get install -yq sudo locales && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
     locale-gen en_US.UTF-8 && \
