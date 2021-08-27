@@ -21,18 +21,14 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
+    curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
     apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get -y dist-upgrade && \
     apt-get install -yq sudo locales && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
     locale-gen en_US.UTF-8 && \
-    apt-get -y update && \
-    apt-get install -yq git apt-utils npm && \
-    npm install --global yarn && \
-    curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
-    apt-get install -y nodejs
+    apt-get install -yq git apt-utils npm nodejs && \
+    npm install --global yarn
 
 RUN git clone --depth 1 --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
 
