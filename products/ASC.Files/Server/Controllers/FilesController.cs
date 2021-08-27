@@ -163,13 +163,6 @@ namespace ASC.Api.Documents
             return new Module(ProductEntryPoint);
         }
 
-        [Create("info")]
-        public Module GetModuleeqwe()
-        {
-            ProductEntryPoint.Init();
-            return new Module(ProductEntryPoint);
-        }
-
         [Read("@root")]
         public IEnumerable<FolderContentWrapper<int>> GetRootFolders(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
         {

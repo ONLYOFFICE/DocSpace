@@ -7,6 +7,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
+using ASC.Webhooks.Core;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -65,6 +66,8 @@ namespace ASC.Webhooks.Service
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+                    diHelper.TryAdd<DbWorker>();
 
                     services.AddHostedService<WebhookHostedService>();
                     diHelper.TryAdd<WebhookHostedService>();
