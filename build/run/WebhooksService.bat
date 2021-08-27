@@ -1,2 +1,2 @@
 echo "RUN ASC.Webhooks.Service"
-call dotnet run --project ..\..\common\services\ASC.Webhooks.Services\ASC.Webhooks.Services.csproj --no-build --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=webhooks
+call dotnet run --project ..\..\common\services\ASC.Webhooks.Service\ASC.Webhooks.Service.csproj --no-build --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=webhooks
