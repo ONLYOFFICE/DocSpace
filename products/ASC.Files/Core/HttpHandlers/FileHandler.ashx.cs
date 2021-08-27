@@ -309,7 +309,7 @@ namespace ASC.Web.Files
                     fileDao.InvalidateCache(id);
 
                     file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
-                               ? fileDao.GetFile(id, version)
+                               ? fileDao.GetFileAsync(id, version).Result
                                : fileDao.GetFileAsync(id).Result;
                 }
 
@@ -656,7 +656,7 @@ namespace ASC.Web.Files
                     || version > 0 && file.Version != version)
                 {
                     file = version > 0
-                               ? fileDao.GetFile(id, version)
+                               ? fileDao.GetFileAsync(id, version).Result
                                : fileDao.GetFileAsync(id).Result;
                 }
 
@@ -900,7 +900,7 @@ namespace ASC.Web.Files
                     || version > 0 && file.Version != version)
                 {
                     file = version > 0
-                               ? fileDao.GetFile(id, version)
+                               ? fileDao.GetFileAsync(id, version).Result
                                : fileDao.GetFileAsync(id).Result;
                 }
 
@@ -970,7 +970,7 @@ namespace ASC.Web.Files
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
                 var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
-                   ? fileDao.GetFile(id, version)
+                   ? fileDao.GetFileAsync(id, version).Result
                    : fileDao.GetFileAsync(id).Result;
 
                 if (file == null)

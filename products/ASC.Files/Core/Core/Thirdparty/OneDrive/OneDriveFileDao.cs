@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -85,7 +86,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<string> GetFile(string fileId)
         {
-            return GetFile(fileId, 1);
+            return GetFileAsync(fileId).Result;
         }
 
         public async Task<File<string>> GetFileAsync(string fileId)
@@ -95,7 +96,12 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<string> GetFile(string fileId, int fileVersion)
         {
-            return ToFile(GetOneDriveItem(fileId));
+            return GetFileAsync(fileId, fileVersion).Result;
+        }
+
+        public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
+        {
+            return await new Task<File<string>>(() => ToFile(GetOneDriveItem(fileId)));
         }
 
         public File<string> GetFile(string parentId, string title)

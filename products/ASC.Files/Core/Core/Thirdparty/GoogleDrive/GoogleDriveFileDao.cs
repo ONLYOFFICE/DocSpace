@@ -87,7 +87,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public File<string> GetFile(string fileId)
         {
-            return GetFile(fileId, 1);
+            return GetFileAsync(fileId).Result;
         }
 
         public async Task<File<string>> GetFileAsync(string fileId)
@@ -97,7 +97,12 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public File<string> GetFile(string fileId, int fileVersion)
         {
-            return ToFile(GetDriveEntry(fileId));
+            return GetFileAsync(fileId, fileVersion).Result;
+        }
+
+        public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
+        {
+            return await new Task<File<string>>(() => ToFile(GetDriveEntry(fileId)));
         }
 
         public File<string> GetFile(string parentId, string title)

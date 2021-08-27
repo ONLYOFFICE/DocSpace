@@ -80,7 +80,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public File<string> GetFile(string fileId)
         {
-            return GetFile(fileId, 1);
+            return GetFileAsync(fileId).Result;
         }
 
         public async Task<File<string>> GetFileAsync(string fileId)
@@ -90,7 +90,12 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public File<string> GetFile(string fileId, int fileVersion)
         {
-            return ProviderInfo.ToFile(ProviderInfo.GetFileById(fileId));
+            return GetFileAsync(fileId, fileVersion).Result;
+        }
+
+        public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
+        {
+            return await new Task<File<string>>(() => ProviderInfo.ToFile(ProviderInfo.GetFileById(fileId)));
         }
 
         public File<string> GetFile(string parentId, string title)

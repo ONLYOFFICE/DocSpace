@@ -84,7 +84,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(fileId);
 
             var fileDao = selector.GetFileDao(fileId);
-            var result = fileDao.GetFile(selector.ConvertId(fileId), fileVersion);
+            var result = fileDao.GetFileAsync(selector.ConvertId(fileId), fileVersion).Result;
 
             if (result != null)
             {
@@ -92,6 +92,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             }
 
             return result;
+        }
+
+        public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
+        {
+            return await new Task<File<string>>(() => GetFile(fileId, fileVersion));
         }
 
         public File<string> GetFile(string parentId, string title)

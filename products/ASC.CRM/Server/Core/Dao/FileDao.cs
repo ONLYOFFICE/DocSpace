@@ -69,7 +69,7 @@ namespace ASC.CRM.Core.Dao
         {
             var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            var file = 0 < version ? dao.GetFile(id, version) : dao.GetFileAsync(id).Result;
+            var file = 0 < version ? dao.GetFileAsync(id, version).Result : dao.GetFileAsync(id).Result;
 
             return file;
         }

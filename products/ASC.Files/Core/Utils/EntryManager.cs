@@ -1082,7 +1082,7 @@ namespace ASC.Web.Files.Utils
             if (fromFile == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
 
             if (fromFile.Version != version)
-                fromFile = fileDao.GetFile(fromFile.ID, Math.Min(fromFile.Version, version));
+                fromFile = fileDao.GetFileAsync(fromFile.ID, Math.Min(fromFile.Version, version)).Result;
 
             if (fromFile == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (checkRight && !editLink && (!FileSecurity.CanEdit(fromFile) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
@@ -1169,7 +1169,7 @@ namespace ASC.Web.Files.Utils
         {
             var fileDao = DaoFactory.GetFileDao<T>();
             var fileVersion = version > 0
-? fileDao.GetFile(fileId, version)
+? fileDao.GetFileAsync(fileId, version).Result
 : fileDao.GetFileAsync(fileId).Result;
             if (fileVersion == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (checkRight && (!FileSecurity.CanEdit(fileVersion) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);

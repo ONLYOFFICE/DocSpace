@@ -144,9 +144,7 @@ namespace ASC.Files.Core.Data
 
         public File<int> GetFile(int fileId, int fileVersion)
         {
-            var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
-            return ToFile(FromQueryWithShared(query)
-                        .SingleOrDefault());
+            return GetFileAsync(fileId, fileVersion).Result;
         }
 
         public async Task<File<int>> GetFileAsync(int fileId, int fileVersion)

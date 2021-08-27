@@ -88,18 +88,24 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public File<string> GetFile(string fileId)
         {
-            return GetFile(fileId, 1);
+            return GetFileAsync(fileId).Result;
         }
 
         public async Task<File<string>> GetFileAsync(string fileId)
         {
-            return await new Task<File<string>>(() => GetFile(fileId));
+            return await new Task<File<string>>(() => GetFile(fileId, 1));
         }
 
         public File<string> GetFile(string fileId, int fileVersion)
         {
-            return ToFile(GetFileById(fileId));
+            return GetFileAsync(fileId, fileVersion).Result;
         }
+
+        public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
+        {
+            return await new Task<File<string>>(() => ToFile(GetFileById(fileId)));
+        }
+
 
         public File<string> GetFile(string parentId, string title)
         {

@@ -87,7 +87,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public File<string> GetFile(string fileId)
         {
-            return GetFile(fileId, 1);
+            return GetFileAsync(fileId).Result;
         }
 
         public async Task<File<string>> GetFileAsync(string fileId)
@@ -97,7 +97,12 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public File<string> GetFile(string fileId, int fileVersion)
         {
-            return ToFile(GetDropboxFile(fileId));
+            return GetFileAsync(fileId, fileVersion).Result;
+        }
+
+        public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
+        {
+            return await new Task<File<string>>(() => ToFile(GetDropboxFile(fileId)));
         }
 
         public File<string> GetFile(string parentId, string title)

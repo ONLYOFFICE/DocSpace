@@ -469,7 +469,7 @@ namespace ASC.Web.Files.Services.WCFService
             fileDao.InvalidateCache(fileId);
 
             var file = version > 0
-                           ? fileDao.GetFile(fileId, version)
+                           ? fileDao.GetFileAsync(fileId, version).Result
                            : fileDao.GetFileAsync(fileId).Result;
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
@@ -914,7 +914,7 @@ namespace ASC.Web.Files.Services.WCFService
         public string UpdateComment(T fileId, int version, string comment)
         {
             var fileDao = GetFileDao();
-            var file = fileDao.GetFile(fileId, version);
+            var file = fileDao.GetFileAsync(fileId, version).Result;
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanEdit(file) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             ErrorIf(EntryManager.FileLockedForMe(file.ID), FilesCommonResource.ErrorMassage_LockedFile);
@@ -1043,7 +1043,7 @@ namespace ASC.Web.Files.Services.WCFService
                 || version > 0 && file.Version != version)
             {
                 file = version > 0
-                           ? fileDao.GetFile(fileId, version)
+                           ? fileDao.GetFileAsync(fileId, version).Result
                            : fileDao.GetFileAsync(fileId).Result;
             }
 
@@ -1117,7 +1117,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 string modifiedOnString;
                 fileDao = GetFileDao();
-                var fromFile = fileDao.GetFile(fileId, version);
+                var fromFile = fileDao.GetFileAsync(fileId, version).Result;
                 modifiedOnString = fromFile.ModifiedOnString;
                 file = EntryManager.SaveEditing(fileId, null, url, null, doc, string.Format(FilesCommonResource.CommentRevertChanges, modifiedOnString));
             }
@@ -1527,7 +1527,7 @@ namespace ASC.Web.Files.Services.WCFService
                 var fileId = (T)Convert.ChangeType(fileInfo[0], typeof(T));
 
                 var file = int.TryParse(fileInfo[1], out var version) && version > 0
-                                ? fileDao.GetFile(fileId, version)
+                                ? fileDao.GetFileAsync(fileId, version).Result
                                 : fileDao.GetFileAsync(fileId).Result;
 
                 if (file == null)

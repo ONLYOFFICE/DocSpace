@@ -58,6 +58,7 @@ namespace ASC.Files.Core
         /// <param name="fileVersion">file version</param>
         /// <returns></returns>
         File<T> GetFile(T fileId, int fileVersion);
+        Task<File<T>> GetFileAsync(T fileId, int fileVersion);
 
         /// <summary>
         ///     Receive file
