@@ -663,7 +663,14 @@ const Editor = () => {
   };
 
   const getFileTypeTranslation = () => {
-    return i18n.t(filesType[0].toUpperCase() + filesType.slice(1));
+    switch (filesType) {
+      case mailMergeAction:
+        return i18n.t("MailMergeFileType");
+      case insertImageAction:
+        return i18n.t("ImageFileType");
+      case compareFilesAction:
+        return i18n.t("DocumentsFileType");
+    }
   };
   const SelectFileHeader = () => {
     return (
