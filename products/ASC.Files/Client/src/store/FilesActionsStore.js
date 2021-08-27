@@ -753,7 +753,7 @@ class FilesActionStore {
     }
 
     if (isRecentFolder || isFavoritesFolder) {
-      menu.splice(1, 1);
+      headerMenu.splice(1, 1);
     }
 
     if (
@@ -761,7 +761,7 @@ class FilesActionStore {
       !isWebEditSelected &&
       !isViewedSelected
     ) {
-      menu.splice(1, 1);
+      headerMenu.splice(1, 1);
     }
 
     return headerMenu;
