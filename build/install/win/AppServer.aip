@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.5" Modules="enterprise" RootPath="." Language="ru" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.6" Modules="enterprise" RootPath="." Language="ru" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_CURRENT_YEAR" Value="2021" ValueLocId="-"/>
@@ -42,14 +42,14 @@
     <ROW Property="ServiceName_OnlyofficeWebStudio" Value="OnlyofficeWebStudio"/>
     <ROW Property="USERNAME_PROP" Value="onlyoffice_user"/>
     <ROW Property="UpgradeCode" Value="{FFA9CD16-E087-45F3-8D34-3BBA1EF8A897}"/>
-    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
-    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT50" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME#MsiBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME#MsiBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0#MsiBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0#MsiBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50" MultiBuildValue="DefaultBuild:Windows 2000#MsiBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000#MsiBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003#MsiBuild:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003#MsiBuild:Windows XP/2003" ValueLocId="-"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
@@ -227,7 +227,8 @@
     <ROW Action="AI_DetectSoftware" Sequence="151"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" Languages="ru" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" UseLargeSchema="true" UACExecutionLevel="2"/>
+    <ROW BuildKey="DefaultBuild" BuildName="ONLYOFFICE_EXE" BuildOrder="1" BuildType="0" Languages="ru" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" UseLargeSchema="true" UACExecutionLevel="2"/>
+    <ROW BuildKey="MsiBuild" BuildName="ONLYOFFICE_MSI" BuildOrder="2" BuildType="0" PackageFolder="MsiBuildSetupFiles" PackageFileName="[|ProductName]" Languages="ru" InstallationType="4" UseLargeSchema="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
@@ -515,7 +516,7 @@
     <ROW Action="AI_TxtUpdaterInstall" Sequence="5103"/>
     <ROW Action="ChangeSlashesScript" Condition="( NOT Installed )" Sequence="3602"/>
     <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="3601"/>
-    <ROW Action="SetPropertyAppDirConf" Sequence="1601"/>
+    <ROW Action="SetPropertyAppDirConf" Condition="( NOT Installed )" Sequence="1601"/>
     <ROW Action="AI_JsonInstall" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5102"/>
     <ROW Action="AI_DATA_SETTER_7" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5101"/>
     <ROW Action="AI_JsonUninstall" Condition="(REMOVE)" Sequence="3102"/>
@@ -532,12 +533,12 @@
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
-    <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="Нельзя установить [ProductName] на [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild"/>
-    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="Нельзя установить [ProductName] на [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
-    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="Нельзя установить [ProductName] на [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="Нельзя установить [ProductName] на [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild;MsiBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="Нельзя установить [ProductName] на [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild;MsiBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="Нельзя установить [ProductName] на [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild;MsiBuild"/>
     <ROW Condition="AI_DETECTED_INTERNET_CONNECTION" Description="Для установки [ProductName] требуется активное подключение к Интернету. Пожалуйста, проверьте настройки прокси-сервера и конфигурации сети." DescriptionLocId="AI.LaunchCondition.Internet" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="SETUPEXEDIR OR (REMOVE=&quot;ALL&quot;)" Description="Этот пакет можно запускать только из загрузчика." DescriptionLocId="AI.LaunchCondition.RequireBootstrapper" IsPredefined="true" Builds="DefaultBuild"/>
-    <ROW Condition="VersionNT" Description="[ProductName] не может быть установлен на [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="VersionNT" Description="[ProductName] не может быть установлен на [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild;MsiBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
@@ -692,13 +693,13 @@
     <ROW ScriptName="onlyoffice.upgradev115" Token="DELIMITER ;" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
-    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\createdb.sql" Flags="274" Order="0"/>
-    <ROW ScriptName="onlyoffice" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\onlyoffice.sql" Flags="18" Order="1"/>
-    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.data.sql" Flags="274" Order="2"/>
-    <ROW ScriptName="onlyoffice.resources" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\onlyoffice.resources.sql" Flags="18" Order="3"/>
-    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
-    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
-    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
+    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\createdb.sql" Flags="274" Order="0"/>
+    <ROW ScriptName="onlyoffice" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.sql" Flags="18" Order="1"/>
+    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.data.sql" Flags="274" Order="2"/>
+    <ROW ScriptName="onlyoffice.resources" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.resources.sql" Flags="18" Order="3"/>
+    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
+    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
+    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlTestConnectionComponent">
