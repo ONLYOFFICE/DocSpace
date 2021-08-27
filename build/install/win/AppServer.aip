@@ -693,13 +693,13 @@
     <ROW ScriptName="onlyoffice.upgradev115" Token="DELIMITER ;" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
-    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\createdb.sql" Flags="274" Order="0"/>
-    <ROW ScriptName="onlyoffice" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.sql" Flags="18" Order="1"/>
-    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.data.sql" Flags="274" Order="2"/>
-    <ROW ScriptName="onlyoffice.resources" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.resources.sql" Flags="18" Order="3"/>
-    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
-    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
-    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
+    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\createdb.sql" Flags="274" Order="0"/>
+    <ROW ScriptName="onlyoffice" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\onlyoffice.sql" Flags="18" Order="1"/>
+    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.data.sql" Flags="274" Order="2"/>
+    <ROW ScriptName="onlyoffice.resources" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\onlyoffice.resources.sql" Flags="18" Order="3"/>
+    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
+    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
+    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlTestConnectionComponent">
