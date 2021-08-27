@@ -201,7 +201,7 @@ class IconFormatsStore {
   };
 
   getFolderIcon = (providerKey, size = 32) => {
-    const folderPath = `images/icons/${size}`;
+    const folderPath = `/static/images/icons/${size}`;
 
     switch (providerKey) {
       case "Box":
