@@ -17,14 +17,14 @@ const TypeCell = ({ t, item, sideColor }) => {
       case FileType.Image:
         return t("Common:Image");
       case FileType.Spreadsheet:
-        return t("Common:Spreadsheet");
+        return t("Spreadsheet");
       case FileType.Presentation:
-        return t("Common:Presentation");
+        return t("Presentation");
       case FileType.Document:
-        return t("Common:Document");
+        return t("Document");
 
       default:
-        return t("Common:Folder");
+        return t("Folder");
     }
   };
 
