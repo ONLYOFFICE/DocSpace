@@ -14,6 +14,7 @@ using ASC.Core.Tenants;
 using ASC.Web.Webhooks;
 using ASC.Webhooks.Core;
 using ASC.Webhooks.Core.Dao.Models;
+using ASC.Webhooks.Service;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

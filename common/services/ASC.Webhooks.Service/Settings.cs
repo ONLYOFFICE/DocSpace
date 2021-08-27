@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿
 using ASC.Common;
 using ASC.Common.Utils;
 
-namespace ASC.Webhooks.Core
+namespace ASC.Webhooks.Service
 {
     [Singletone]
     public class Settings

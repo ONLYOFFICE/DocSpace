@@ -9,8 +9,8 @@ namespace ASC.Webhooks.Service
     [Singletone]
     public class BuildQueueService
     {
-        internal  ConcurrentQueue<WebhookRequest> Queue { get; }
-        private ICacheNotify<WebhookRequest> WebhookNotify { get; }     
+        internal ConcurrentQueue<WebhookRequest> Queue { get; }
+        private ICacheNotify<WebhookRequest> WebhookNotify { get; }
 
         public BuildQueueService(ICacheNotify<WebhookRequest> webhookNotify)
         {

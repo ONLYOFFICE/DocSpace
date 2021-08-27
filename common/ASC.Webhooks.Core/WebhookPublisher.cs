@@ -20,7 +20,7 @@ namespace ASC.Webhooks.Core
         private ILog Log { get; }
 
         public WebhookPublisher(
-            DbWorker dbWorker, 
+            DbWorker dbWorker,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
             ICacheNotify<WebhookRequest> webhookNotify)

@@ -1,9 +1,12 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
-using ASC.Webhooks.Core;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -12,20 +15,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ASC.Webhooks.Service
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -65,14 +64,14 @@ namespace ASC.Webhooks.Service
 
                     var diHelper = new DIHelper(services);
 
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
                     services.AddHostedService<WebhookHostedService>();
                     diHelper.TryAdd<WebhookHostedService>();
-
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                builder.Register(context.Configuration, false, false);
+                    builder.Register(context.Configuration, false, false);
                 })
                 .ConfigureNLogLogging();
     }

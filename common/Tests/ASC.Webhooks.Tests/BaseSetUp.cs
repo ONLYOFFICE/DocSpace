@@ -10,6 +10,7 @@ using ASC.Common.Utils;
 using ASC.Core.Common.EF;
 using ASC.Webhooks.Core;
 using ASC.Webhooks.Core.Dao;
+using ASC.Webhooks.Service;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

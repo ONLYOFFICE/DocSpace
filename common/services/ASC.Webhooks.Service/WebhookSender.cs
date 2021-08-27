@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Web.Webhooks;
+using ASC.Webhooks.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Webhooks.Core
+namespace ASC.Webhooks.Service
 {
     [Singletone]
     public class WebhookSender
@@ -47,7 +48,7 @@ namespace ASC.Webhooks.Core
                 {
                     var request = new HttpRequestMessage(HttpMethod.Post, requestURI);
                     request.Headers.Add("Accept", "*/*");
-                    request.Headers.Add("Secret","SHA256=" + GetSecretHash(secretKey, data));
+                    request.Headers.Add("Secret", "SHA256=" + GetSecretHash(secretKey, data));
 
                     request.Content = new StringContent(
                         data,

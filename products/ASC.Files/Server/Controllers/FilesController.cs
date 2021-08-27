@@ -159,7 +159,13 @@ namespace ASC.Api.Documents
         [Read("info")]
         public Module GetModule()
         {
-            //WebhookPublisher.Publish(EventName.FileUpdated, "asdasdaddsa");
+            ProductEntryPoint.Init();
+            return new Module(ProductEntryPoint);
+        }
+
+        [Create("info")]
+        public Module GetModuleeqwe()
+        {
             ProductEntryPoint.Init();
             return new Module(ProductEntryPoint);
         }
