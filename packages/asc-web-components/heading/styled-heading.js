@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 import commonTextStyles from "../text/common-text-styles";
 import Base from "../themes/base";
 
@@ -20,6 +20,8 @@ const StyledHeading = styled.h1`
   ${styleCss};
 
   ${commonTextStyles};
+
+  ${NoUserSelect};
 `;
 
 StyledHeading.defaultProps = { theme: Base };
