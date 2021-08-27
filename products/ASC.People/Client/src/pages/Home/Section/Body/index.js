@@ -1,53 +1,39 @@
 import React from "react";
-import RowContainer from "@appserver/components/row-container";
-import { Consumer } from "@appserver/components/utils/context";
-import { withTranslation } from "react-i18next";
-//import toastr from "studio/toastr";
-
-import EmptyScreen from "./EmptyScreen";
 import { inject, observer } from "mobx-react";
-import SimpleUserRow from "./SimpleUserRow";
-import Dialogs from "./Dialogs";
-import { isMobile } from "react-device-detect";
-
-import withLoader from "../../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
+import { withTranslation } from "react-i18next";
+import withLoader from "../../../../HOCs/withLoader";
+import PeopleRowContainer from "./RowView/PeopleRowContainer";
+import TableView from "./TableView/TableContainer";
+import { Consumer } from "@appserver/components/utils/context";
 
-const SectionBodyContent = ({ peopleList, tReady }) => {
-  return peopleList.length > 0 ? (
-    <>
+class SectionBodyContent extends React.Component {
+  render() {
+    const { tReady, viewAs } = this.props;
+
+    return (
       <Consumer>
-        {(context) => (
-          <RowContainer
-            className="people-row-container"
-            useReactWindow={false}
-            tReady={tReady}
-          >
-            {peopleList.map((person) => (
-              <SimpleUserRow
-                key={person.id}
-                person={person}
-                sectionWidth={context.sectionWidth}
-                isMobile={isMobile}
-              />
-            ))}
-          </RowContainer>
-        )}
+        {(context) =>
+          viewAs === "table" ? (
+            <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+          ) : (
+            <PeopleRowContainer
+              sectionWidth={context.sectionWidth}
+              tReady={tReady}
+            />
+          )
+        }
       </Consumer>
-      <Dialogs />
-    </>
-  ) : (
-    <EmptyScreen />
-  );
-};
+    );
+  }
+}
 
-export default inject(({ auth, peopleStore }) => ({
-  isLoaded: auth.isLoaded,
-  isRefresh: peopleStore.isRefresh,
-  peopleList: peopleStore.usersStore.peopleList,
-  isLoading: peopleStore.isLoading,
-}))(
-  withTranslation("Home")(
+export default inject(({ peopleStore }) => {
+  const { viewAs, setViewAs } = peopleStore;
+
+  return { viewAs, setViewAs };
+})(
+  withTranslation(["Home", "Common", "Translations"])(
     withLoader(observer(SectionBodyContent))(
       <Loaders.Rows isRectangle={false} />
     )

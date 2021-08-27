@@ -31,7 +31,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = localStorage.getItem("viewAs") || "row";
+  viewAs = localStorage.getItem("viewAs") || "table";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
@@ -992,7 +992,7 @@ class FilesStore {
   }
 
   get isHeaderVisible() {
-    return this.selection.length > 0 || this.selected !== "close";
+    return this.selection.length > 0;
   }
 
   get isHeaderIndeterminate() {
@@ -1321,7 +1321,13 @@ class FilesStore {
     }
 
     //this.selected === "close" && this.setSelected("none");
-    this.setSelection(newSelection);
+
+    //need fo table view
+    const clearSelection = Object.values(
+      newSelection.reduce((item, n) => ((item[n.id] = n), item), {})
+    );
+
+    this.setSelection(clearSelection);
     //}
   };
 

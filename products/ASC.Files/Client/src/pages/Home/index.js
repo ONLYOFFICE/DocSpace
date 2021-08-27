@@ -245,7 +245,6 @@ class PureHome extends React.Component {
           uploadFiles
           onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
           setSelections={this.props.setSelections}
-          onMouseMove={this.onMouseMove}
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}

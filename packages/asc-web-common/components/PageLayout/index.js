@@ -166,7 +166,11 @@ class PageLayout extends React.Component {
       (x) => x.classList && x.classList.contains("not-selectable")
     );
 
-    if (notSelectablePath || isBackdrop) {
+    const isDraggable = path.some(
+      (x) => x.classList && x.classList.contains("draggable")
+    );
+
+    if (notSelectablePath || isBackdrop || isDraggable) {
       return false;
     } else return true;
   };
@@ -191,7 +195,6 @@ class PageLayout extends React.Component {
       //withBodyAutoFocus,
       withBodyScroll,
       children,
-      isLoaded,
       isHeaderVisible,
       //headerBorderBottom,
       onOpenUploadPanel,
@@ -277,7 +280,6 @@ class PageLayout extends React.Component {
             <Article
               visible={isArticleVisible}
               pinned={isArticlePinned}
-              isLoaded={isLoaded}
               firstLoad={firstLoad}
             >
               {isArticleHeaderAvailable && (
@@ -489,7 +491,6 @@ PageLayout.propTypes = {
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   hideAside: PropTypes.bool,
-  isLoaded: PropTypes.bool,
   viewAs: PropTypes.string,
   uploadPanelVisible: PropTypes.bool,
   onOpenUploadPanel: PropTypes.func,
