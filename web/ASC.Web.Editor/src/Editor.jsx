@@ -670,7 +670,7 @@ const Editor = () => {
       <StyledSelectFile>
         <Text className="editor-select-file_text">
           {filesType === mailMergeAction ? (
-            i18n.t("MailMergeFileType")
+            getFileTypeTranslation()
           ) : (
             <Trans i18n={i18n} i18nKey="SelectFilesType" ns="Editor">
               Select files of type: {{ fileType: getFileTypeTranslation() }}
