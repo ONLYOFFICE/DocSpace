@@ -434,7 +434,7 @@ class DownloadDialogComponent extends React.Component {
       >
         <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text>{t("ChooseFormatText")}</Text>
+          <Text noSelect>{t("ChooseFormatText")}</Text>
           {documents.length > 0 && (
             <DownloadContent
               t={t}
@@ -490,7 +490,13 @@ class DownloadDialogComponent extends React.Component {
                   indeterminate={indeterminateOtherTitle}
                 >
                   <RowContent>
-                    <Text truncate type="page" title={"Other"} fontSize="14px">
+                    <Text
+                      truncate
+                      type="page"
+                      title={"Other"}
+                      fontSize="14px"
+                      noSelect
+                    >
                       {t("Other")}
                     </Text>
                     <></>
@@ -518,11 +524,12 @@ class DownloadDialogComponent extends React.Component {
                           type="page"
                           title={folder.title}
                           fontSize="14px"
+                          noSelect
                         >
                           {folder.title}
                         </Text>
                         <></>
-                        <Text fontSize="12px" containerWidth="auto">
+                        <Text fontSize="12px" containerWidth="auto" noSelect>
                           {folder.fileExst && t("OriginalFormat")}
                         </Text>
                       </RowContent>
@@ -534,7 +541,7 @@ class DownloadDialogComponent extends React.Component {
           )}
 
           {!isSingleFile && <Text>{t("ConvertToZip")}</Text>}
-          <Text>{t("ConvertMessage")}</Text>
+          <Text noSelect>{t("ConvertMessage")}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button

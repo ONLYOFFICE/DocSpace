@@ -175,10 +175,12 @@ class DeleteDialogComponent extends React.Component {
         <ModalDialog.Header>{title}</ModalDialog.Header>
         <ModalDialog.Body>
           <div className="modal-dialog-content">
-            <Text className="delete_dialog-header-text">{noteText}</Text>
+            <Text className="delete_dialog-header-text" noSelect>
+              {noteText}
+            </Text>
             <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
               {foldersList.length > 0 && (
-                <Text isBold className="delete_dialog-text">
+                <Text isBold className="delete_dialog-text" noSelect>
                   {t("Translations:Folders")}:
                 </Text>
               )}
@@ -195,7 +197,7 @@ class DeleteDialogComponent extends React.Component {
               ))}
 
               {filesList.length > 0 && (
-                <Text isBold className="delete_dialog-text">
+                <Text isBold className="delete_dialog-text" noSelect>
                   {t("Translations:Files")}:
                 </Text>
               )}
