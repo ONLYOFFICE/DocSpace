@@ -17,22 +17,20 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Net;
 using System.Threading;
-using ASC.Core.Common.Caching;
-using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using MailKit.Security;
-using MailKit.Net.Imap;
-using MailKit.Net.Pop3;
-using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
-using ASC.Mail.Models;
-using Microsoft.Extensions.Options;
-using ASC.Mail.Core.Engine;
-using ASC.Mail.Configuration;
+
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core.Common.Caching;
+using ASC.Mail.Configuration;
+using ASC.Mail.Core.Engine;
+
+using MailKit.Security;
+
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.ImapSync
 {
@@ -44,7 +42,7 @@ namespace ASC.Mail.ImapSync
 
         private readonly CancellationTokenSource _cancelTokenSource;
 
-        private readonly ConcurrentDictionary<string,MailImapClient> clients;
+        private readonly ConcurrentDictionary<string, MailImapClient> clients;
 
         private readonly MailSettings _mailSettings;
         private readonly RedisClient _redisClient;
@@ -67,14 +65,13 @@ namespace ASC.Mail.ImapSync
             MailEnginesFactory = mailEnginesFactory;
 
             CreateClientSemaphore = new SemaphoreSlim(1, 1);
+            clients = new ConcurrentDictionary<string, MailImapClient>();
+
+            _cancelTokenSource = new CancellationTokenSource();
 
             try
             {
                 _log = _options.Get("ASC.Mail.ImapSyncService");
-
-                clients = new ConcurrentDictionary<string, MailImapClient>();
-
-                _cancelTokenSource = new CancellationTokenSource();
 
                 _log.Info("Service is ready.");
             }
@@ -115,7 +112,7 @@ namespace ASC.Mail.ImapSync
         {
             if (clients.ContainsKey(cashedTenantUserMailBox.UserName))
             {
-                if(clients[cashedTenantUserMailBox.UserName] !=null)
+                if (clients[cashedTenantUserMailBox.UserName] != null)
                 {
                     clients[cashedTenantUserMailBox.UserName]?.CheckRedis(cashedTenantUserMailBox.MailBoxId, cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
 
@@ -162,7 +159,7 @@ namespace ASC.Mail.ImapSync
             }
             catch (TimeoutException exTimeout)
             {
-                _log.Warn($"[TIMEOUT] Create mail client for user {userName}. {exTimeout}" );
+                _log.Warn($"[TIMEOUT] Create mail client for user {userName}. {exTimeout}");
             }
             catch (OperationCanceledException)
             {

@@ -54,6 +54,14 @@ namespace ASC.Mail.ImapSync
     {
         public readonly string UserName;
         public readonly int Tenant;
+
+        public bool WillDieInNextTurn
+        {
+            get
+            {
+                return _willDieInNextTurn;
+            }
+        }
         public ConcurrentDictionary<string, List<MailSieveFilterData>> Filters { get; set; }
 
         private readonly MailEnginesFactory _mailEnginesFactory;
@@ -76,17 +84,25 @@ namespace ASC.Mail.ImapSync
 
         public EventHandler OnCriticalError;
 
+        private System.Timers.Timer aliveTimer;
+
+        private bool _willDieInNextTurn = false;
+
         public async void CheckRedis(int mailBoxId, int folderActivity, IEnumerable<int> tags)
         {
-            SimpleImapClient simpleImapClient = simpleImapClients.FirstOrDefault(x=>x.Account.MailBoxId== mailBoxId);
+            _willDieInNextTurn = false;
 
-            if(simpleImapClient?.foldersDictionary == null) return;
+            SimpleImapClient simpleImapClient = simpleImapClients.FirstOrDefault(x => x.Account.MailBoxId == mailBoxId);
+
+            if (simpleImapClient == null) return;
 
             var key = _redisClient.CreateQueueKey(mailBoxId);
 
             _log.Debug($"ProcessActionFromRedis. Begin read key: {key}.");
 
             int iterationCount = 0;
+
+            simpleImapClient.ChangeFolder(folderActivity);
 
             try
             {
@@ -96,15 +112,15 @@ namespace ASC.Mail.ImapSync
 
                     if (actionFromCache == null) break;
 
-                    var imapfolder = simpleImapClient.foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)actionFromCache.CurrentFolder).Key;
+                    var imapfolder = simpleImapClient.GetImapFolderByType(actionFromCache.CurrentFolder);
 
                     if (imapfolder == null) continue;
 
-                    var uids = actionFromCache.Uidls.Select(x => SplittedUidl.ToUniqueId(x)).Where(x => x.IsValid).ToList();
+                    var uids = actionFromCache.Uidls.Select(x => x.ToUniqueId()).Where(x => x.IsValid).ToList();
 
-                    if(actionFromCache.Action== MailUserAction.MoveTo)
+                    if (actionFromCache.Action == MailUserAction.MoveTo)
                     {
-                        var destination = simpleImapClient.foldersDictionary.FirstOrDefault(x => x.Value.Folder == (FolderType)actionFromCache.Destination).Key;
+                        var destination = simpleImapClient.GetImapFolderByType(actionFromCache.Destination);
 
                         if (destination == null) continue;
 
@@ -122,8 +138,6 @@ namespace ASC.Mail.ImapSync
             }
 
             _log.Debug($"ProcessActionFromRedis end. {iterationCount} keys readed.");
-
-            simpleImapClient.ChangeFolder(folderActivity);
         }
 
         public MailImapClient(string userName, int tenant, CancellationToken cancelToken, MailSettings mailSettings, IServiceProvider serviceProvider)
@@ -148,8 +162,8 @@ namespace ASC.Mail.ImapSync
             _storageFactory = clientScope.GetService<StorageFactory>();
             _folderEngine = clientScope.GetService<FolderEngine>();
             _signalrServiceClient = clientScope.GetService<IOptionsSnapshot<SignalrServiceClient>>().Get("mail");
-            _redisClient= clientScope.GetService<RedisClient>();
-            _log= clientScope.GetService<ILog>();
+            _redisClient = clientScope.GetService<RedisClient>();
+            _log = clientScope.GetService<ILog>();
             _apiHelper = clientScope.GetService<ApiHelper>();
 
             _log.Name = $"ASC.Mail.MailImapClient{userName}";
@@ -159,12 +173,12 @@ namespace ASC.Mail.ImapSync
 
             var mailboxes = _mailEnginesFactory.MailboxEngine.GetMailboxDataList(userMailboxesExp);
 
-            if (mailboxes == null|| mailboxes.Count==0)
+            if (mailboxes == null || mailboxes.Count == 0)
             {
                 throw new Exception($"No mail boxes. UserName={UserName}");
             }
 
-            //crmAvailable = mailbox.IsCrmAvailable(tenantManager, securityContext, _apiHelper, _log);
+            crmAvailable = mailboxes.Any(mailbox => mailbox.IsCrmAvailable(tenantManager, securityContext, _apiHelper, _log));
 
             CancelToken = CancellationTokenSource.CreateLinkedTokenSource(cancelToken);
 
@@ -175,40 +189,62 @@ namespace ASC.Mail.ImapSync
 
             simpleImapClients = new List<SimpleImapClient>(mailboxes.Count);
 
+            aliveTimer = new System.Timers.Timer((_mailSettings.ImapSync.AliveTimeInMinutes ?? 20) * 60 * 1000);
+
+            aliveTimer.Elapsed += AliveTimer_Elapsed;
+
             foreach (var mailbox in mailboxes)
             {
                 var simpleImapClient = new SimpleImapClient(mailbox, cancelToken, mailSettings, clientScope.GetService<ILog>());
                 simpleImapClient.NewMessage += ImapClient_NewMessage;
                 simpleImapClient.MessagesListUpdated += ImapClient_MessagesListUpdated;
-                simpleImapClient.WorkFoldersChanged += ImapClient_WorkFoldersChanged;
                 simpleImapClient.NewActionFromImap += ImapClient_NewActionFromImap;
-                simpleImapClient.OnCriticalError += ImapClient_OnCriticalError;
+                simpleImapClient.OnCriticalError += ImapClient_OnCriticalError; ;
                 simpleImapClient.OnUidlsChange += ImapClient_OnUidlsChange;
-                simpleImapClient.OnAuthenticationError += SetMailboxAuthError;
 
                 simpleImapClients.Add(simpleImapClient);
 
-                DetectFolders(simpleImapClient);
-
                 simpleImapClient.Init();
+            }
+
+            aliveTimer.Enabled = true;
+        }
+
+        private void AliveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (_willDieInNextTurn)
+            {
+                OnCriticalError?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                _willDieInNextTurn = true;
             }
         }
 
-        private void ImapClient_OnUidlsChange(object sender, UniqueIdMap e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ImapClient_OnCriticalError(object sender, EventArgs e)
+        private void ImapClient_OnCriticalError(object sender, bool IsAuthenticationError)
         {
             if (sender is SimpleImapClient simpleImapClient)
             {
+                if (IsAuthenticationError)
+                {
+                    SetMailboxAuthError(simpleImapClient);
+                }
+
                 simpleImapClients.Remove(simpleImapClient);
 
-                if(!simpleImapClients.Any())
+                if (!simpleImapClients.Any())
                 {
                     OnCriticalError?.Invoke(this, EventArgs.Empty);
                 }
+            }
+        }
+
+        private void ImapClient_OnUidlsChange(object sender, UniqueIdMap returnedUidls)
+        {
+            if (sender is SimpleImapClient simpleImapClient)
+            {
+
             }
         }
 
@@ -216,29 +252,29 @@ namespace ASC.Mail.ImapSync
         {
             if (sender is SimpleImapClient simpleImapClient)
             {
-                string uidl = SplittedUidl.ToUidl(simpleImapClient.foldersDictionary[e.Folder].Folder, e.UniqueId);
+                bool result = false;
+
+                string uidl = e.UniqueId.ToUidl(simpleImapClient.foldersDictionary[e.Folder].Folder);
 
                 var massageInDB = simpleImapClient.workFolderMails.FirstOrDefault(x => x.Uidl == uidl);
 
                 if (massageInDB == null) return;
-
-                _log.Debug($"NewActionFromImap {e.FolderAction}, {e.Folder}, {e.UniqueId}");
 
                 switch (e.FolderAction)
                 {
                     case MailUserAction.Nothing:
                         break;
                     case MailUserAction.SetAsRead:
-                        _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, false);
+                        result=_mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, false);
                         break;
                     case MailUserAction.SetAsUnread:
-                        _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, true);
+                        result = _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, true);
                         break;
                     case MailUserAction.SetAsImportant:
-                        _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, true);
+                        result = _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, true);
                         break;
                     case MailUserAction.SetAsNotImpotant:
-                        _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, false);
+                        result = _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, false);
                         break;
                     case MailUserAction.SetAsDeleted:
                         break;
@@ -250,16 +286,7 @@ namespace ASC.Mail.ImapSync
                         break;
                 }
 
-            }
-        }
-
-        private void ImapClient_WorkFoldersChanged(object sender, EventArgs e)
-        {
-            if (sender is SimpleImapClient simpleImapClient)
-            {
-                _log.Debug($"WorkFoldersChanged:");
-
-                UpdateDbFolder(simpleImapClient);
+                _log.Debug($"New Action ({e.FolderAction}) from imap on {e.Folder}({e.UniqueId}) complete with result {result}.");
             }
         }
 
@@ -275,55 +302,27 @@ namespace ASC.Mail.ImapSync
         {
             if (sender is SimpleImapClient simpleImapClient)
             {
-
                 _log.Debug($"NewMessage: {e.Item2.UniqueId}");
 
                 CreateMessageInDB(simpleImapClient, e.Item1, e.Item2);
             }
         }
 
-        private void SetMailboxAuthError(object sender, EventArgs e)
+        private void SetMailboxAuthError(SimpleImapClient simpleImapClient)
         {
-            if (sender is SimpleImapClient simpleImapClient)
+            try
             {
-                try
-                {
-                    if (simpleImapClient.Account.AuthErrorDate.HasValue)
-                        return;
+                if (simpleImapClient.Account.AuthErrorDate.HasValue)
+                    return;
 
-                    simpleImapClient.Account.AuthErrorDate = DateTime.UtcNow;
+                simpleImapClient.Account.AuthErrorDate = DateTime.UtcNow;
 
-                    _mailEnginesFactory.MailboxEngine.SetMaiboxAuthError(simpleImapClient.Account.MailBoxId, simpleImapClient.Account.AuthErrorDate.Value);
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"SetMailboxAuthError(Tenant = {Tenant}, MailboxId = {simpleImapClient.Account.MailBoxId}, Address = '{simpleImapClient.Account.EMail}') Exception: {ex}");
-                }
+                _mailEnginesFactory.MailboxEngine.SetMaiboxAuthError(simpleImapClient.Account.MailBoxId, simpleImapClient.Account.AuthErrorDate.Value);
             }
-        }
-
-        private void DetectFolders(SimpleImapClient simpleImapClient)
-        {
-            foreach (var folderIMAP in simpleImapClient.imapFoldersList)
+            catch (Exception ex)
             {
-                var dbFolder = DetectFolder(folderIMAP, simpleImapClient);
-
-                simpleImapClient.foldersDictionary.Add(folderIMAP, dbFolder);
-
-                if (dbFolder == null)
-                {
-                    _log.Debug($"{folderIMAP.Name}-> skipped");
-                    continue;
-                }
-                else
-                {
-                    _log.Debug($"{folderIMAP.Name}-> ready to work.");
-                }                
+                _log.Error($"SetMailboxAuthError(Tenant = {Tenant}, MailboxId = {simpleImapClient.Account.MailBoxId}, Address = '{simpleImapClient.Account.EMail}') Exception: {ex}");
             }
-
-            simpleImapClient.mailWorkFolder = simpleImapClient.foldersDictionary[simpleImapClient.imapWorkFolder];
-
-            _log.Debug($"Loaded {simpleImapClient.foldersDictionary.Count} folders for work.");
         }
 
         public void Dispose()
@@ -346,7 +345,7 @@ namespace ASC.Mail.ImapSync
 
         private void UpdateDbFolder(SimpleImapClient simpleImapClient)
         {
-            int intMailWorkFolder = (int)simpleImapClient.mailWorkFolder.Folder;
+            int intMailWorkFolder = (int)simpleImapClient.Folder;
 
             var exp = SimpleMessagesExp.CreateBuilder(simpleImapClient.Account.TenantId, simpleImapClient.Account.UserId)
                 .SetMailboxId(simpleImapClient.Account.MailBoxId)
@@ -362,7 +361,9 @@ namespace ASC.Mail.ImapSync
                 {
                     _log.Debug($"UpdateDbFolder: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}.");
 
-                    var db_message = simpleImapClient.workFolderMails.FirstOrDefault(x => x.Uidl == SplittedUidl.ToUidl(simpleImapClient.mailWorkFolder.Folder, imap_message.UniqueId));
+                    var uidl = imap_message.UniqueId.ToUidl(simpleImapClient.Folder);
+
+                    var db_message = simpleImapClient.workFolderMails.FirstOrDefault(x => x.Uidl == uidl);
 
                     if (db_message == null)
                     {
@@ -370,7 +371,7 @@ namespace ASC.Mail.ImapSync
 
                         continue;
                     }
-                    
+
                     SetMessageFlagsFromImap(imap_message, db_message);
 
                     if (db_message.IsRemoved)
@@ -443,7 +444,7 @@ namespace ASC.Mail.ImapSync
                 message.FixEncodingIssues(_log);
 
                 var uid = imap_message.UniqueId.ToString();
-                var folder = simpleImapClient.mailWorkFolder;
+                var folder = simpleImapClient.MailWorkFolder;
                 var uidl = string.Format("{0}-{1}", uid, (int)folder.Folder);
 
                 _log.Info($"Get message (UIDL: '{uidl}', MailboxId = {simpleImapClient.Account.MailBoxId}, Address = '{simpleImapClient.Account.EMail}')");
@@ -485,71 +486,6 @@ namespace ASC.Mail.ImapSync
             }
 
             return result;
-        }
-
-        private Models.MailFolder DetectFolder(IMailFolder folder, SimpleImapClient simpleImapClient)
-        {
-            var folderName = folder.Name.ToLowerInvariant();
-
-            if (_mailSettings.SkipImapFlags != null &&
-                _mailSettings.SkipImapFlags.Any() &&
-                _mailSettings.SkipImapFlags.Contains(folderName))
-            {
-                return null;
-            }
-
-            FolderType folderId;
-
-            if ((folder.Attributes & FolderAttributes.Inbox) != 0)
-            {
-                return new Models.MailFolder(FolderType.Inbox, folder.Name);
-            }
-            if ((folder.Attributes & FolderAttributes.Sent) != 0)
-            {
-                return new Models.MailFolder(FolderType.Sent, folder.Name);
-            }
-            if ((folder.Attributes & FolderAttributes.Junk) != 0)
-            {
-                return new Models.MailFolder(FolderType.Spam, folder.Name);
-            }
-            if ((folder.Attributes &
-                 (FolderAttributes.All |
-                  FolderAttributes.NoSelect |
-                  FolderAttributes.NonExistent |
-                  FolderAttributes.Trash |
-                  FolderAttributes.Archive |
-                  FolderAttributes.Drafts |
-                  FolderAttributes.Flagged)) != 0)
-            {
-                return null; // Skip folders
-            }
-
-            if (_mailSettings.ImapFlags != null &&
-                _mailSettings.ImapFlags.Any() &&
-                _mailSettings.ImapFlags.ContainsKey(folderName))
-            {
-                folderId = (FolderType)_mailSettings.ImapFlags[folderName];
-                return new Models.MailFolder(folderId, folder.Name);
-            }
-
-            if (_mailSettings.SpecialDomainFolders.Any() &&
-                _mailSettings.SpecialDomainFolders.ContainsKey(simpleImapClient.Account.Server))
-            {
-                var domainSpecialFolders = _mailSettings.SpecialDomainFolders[simpleImapClient.Account.Server];
-
-                if (domainSpecialFolders.Any() &&
-                    domainSpecialFolders.ContainsKey(folderName))
-                {
-                    var info = domainSpecialFolders[folderName];
-                    return info.skip ? null : new Models.MailFolder(info.folder_id, folder.Name);
-                }
-            }
-
-            if (_mailSettings.DefaultFolders == null || !_mailSettings.DefaultFolders.ContainsKey(folderName))
-                return new Models.MailFolder(FolderType.Inbox, folder.Name, new[] { folder.FullName });
-
-            folderId = (FolderType)_mailSettings.DefaultFolders[folderName];
-            return new Models.MailFolder(folderId, folder.Name);
         }
 
         private void LogStat(SimpleImapClient simpleImapClient, string method, TimeSpan duration, bool failed)

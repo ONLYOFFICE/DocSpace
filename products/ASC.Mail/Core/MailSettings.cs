@@ -236,13 +236,26 @@ namespace ASC.Mail.Configuration
         {
             public string RedisConnectionString { get; set; }
 
+            public int? AliveTimeInMinutes { get; set; }
+
+            public ImapSyncMode Mode { get; set; }
+
+            public enum ImapSyncMode
+            {
+                SingleImapClientPerMailBox,
+                OneImapClientPerActivFolderInMailBox,
+                SingleImapClientPerMailBoxNoFolderChange
+            }
+
             public ImapSyncConfig()
             {
 
             }
             public ImapSyncConfig(ImapSyncConfig imapSync)
             {
-                RedisConnectionString = string.IsNullOrEmpty(imapSync.RedisConnectionString)? "localhost:6379":imapSync.RedisConnectionString;
+                RedisConnectionString = string.IsNullOrEmpty(imapSync.RedisConnectionString) ? "localhost:6379" : imapSync.RedisConnectionString;
+
+                AliveTimeInMinutes = imapSync.AliveTimeInMinutes ?? 20;
             }
 
         }
