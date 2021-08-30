@@ -67,14 +67,19 @@ const SimpleFilesRow = (props) => {
     contextOptionsProps,
     checkedProps,
     onFilesClick,
-    onMouseUp,
+    onMouseClick,
     isEdit,
     showShare,
   } = props;
 
   const sharedButton =
     item.canShare && showShare ? (
-      <SharedButton t={t} id={item.id} isFolder={item.isFolder} />
+      <SharedButton
+        t={t}
+        id={item.id}
+        shared={item.shared}
+        isFolder={item.isFolder}
+      />
     ) : null;
 
   const element = (
@@ -90,7 +95,6 @@ const SimpleFilesRow = (props) => {
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
-        {...contextOptionsProps}
       >
         <StyledSimpleFilesRow
           key={item.id}
@@ -102,7 +106,7 @@ const SimpleFilesRow = (props) => {
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
-          onMouseUp={onMouseUp}
+          onClick={onMouseClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
           {...contextOptionsProps}

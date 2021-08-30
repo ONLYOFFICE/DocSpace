@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
@@ -11,17 +11,14 @@ const ViewSelector = ({
   onChangeView,
   ...rest
 }) => {
-  const [currentView, setCurrentView] = useState(viewAs);
-
   const onChangeViewHandler = (e) => {
     if (isDisabled) return;
     const el = e.target.closest(".view-selector-icon");
 
     const view = el.dataset.view;
-    if (view !== currentView) {
+    if (view !== viewAs) {
       const option = viewSettings.find((setting) => view === setting.value);
       option.callback && option.callback();
-      setCurrentView(view);
       onChangeView(view);
     }
   };
@@ -42,7 +39,7 @@ const ViewSelector = ({
           return (
             <IconWrapper
               isDisabled={isDisabled}
-              isChecked={currentView === value}
+              isChecked={viewAs === value}
               firstItem={indx === 0}
               lastItem={indx === lastIndx}
               key={value}

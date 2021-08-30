@@ -655,10 +655,6 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnType("decimal(10,2)")
                         .HasColumnName("price");
 
-                    b.Property<decimal>("Price2")
-                        .HasColumnType("decimal(10,2)")
-                        .HasColumnName("price2");
-
                     b.Property<bool>("Visible")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("visible");
@@ -679,7 +675,6 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
                             Price = 0.00m,
-                            Price2 = 0.00m,
                             Visible = false
                         });
                 });
