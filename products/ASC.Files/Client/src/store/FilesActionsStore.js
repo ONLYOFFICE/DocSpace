@@ -645,6 +645,127 @@ class FilesActionStore {
       this.uploadDataStore.itemOperationToFolder(operationData);
     }
   };
+
+  getHeaderMenu = (t) => {
+    const {
+      isFavoritesFolder,
+      isRecentFolder,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isShareFolder,
+    } = this.treeFoldersStore;
+    const {
+      selection,
+      isAccessedSelected,
+      isWebEditSelected,
+      isThirdPartySelection,
+      userAccess,
+      isViewedSelected,
+      hasSelection,
+    } = this.filesStore;
+
+    const {
+      setSharingPanelVisible,
+      setDownloadDialogVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setDeleteDialogVisible,
+      setEmptyTrashDialogVisible,
+    } = this.dialogsStore;
+
+    const selectionCount = selection.length;
+
+    const headerMenu = [
+      {
+        label: t("Share"),
+        disabled: isFavoritesFolder || isRecentFolder || !isAccessedSelected,
+        onClick: () => setSharingPanelVisible(true),
+      },
+      {
+        label: t("Common:Download"),
+        disabled: !hasSelection,
+        onClick: () =>
+          this.downloadAction(t("Translations:ArchivingData")).catch((err) =>
+            toastr.error(err)
+          ),
+      },
+      {
+        label: t("Translations:DownloadAs"),
+        disabled: !hasSelection || !isWebEditSelected,
+        onClick: () => setDownloadDialogVisible(true),
+      },
+      {
+        label: t("MoveTo"),
+        disabled:
+          isFavoritesFolder ||
+          isRecentFolder ||
+          !isAccessedSelected ||
+          !hasSelection ||
+          isThirdPartySelection,
+        onClick: () => setMoveToPanelVisible(true),
+      },
+      {
+        label: t("Translations:Copy"),
+        disabled: !hasSelection,
+        onClick: () => setCopyPanelVisible(true),
+      },
+      {
+        label: t("Common:Delete"),
+        disabled: !hasSelection || isThirdPartySelection,
+        onClick: () => {
+          if (this.settingsStore.confirmDelete) {
+            setDeleteDialogVisible(true);
+          } else {
+            const translations = {
+              deleteOperation: t("Translations:DeleteOperation"),
+              deleteFromTrash: t("Translations:DeleteFromTrash"),
+              deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+            };
+
+            this.deleteAction(translations).catch((err) => toastr.error(err));
+          }
+        },
+      },
+    ];
+
+    if (isRecycleBinFolder) {
+      headerMenu.push({
+        label: t("EmptyRecycleBin"),
+        onClick: () => setEmptyTrashDialogVisible(true),
+      });
+
+      headerMenu.splice(4, 2, {
+        label: t("Translations:Restore"),
+        onClick: () => setMoveToPanelVisible(true),
+      });
+
+      headerMenu.splice(1, 1);
+    }
+
+    if (isPrivacyFolder) {
+      headerMenu.splice(1, 1);
+      headerMenu.splice(2, 1);
+      headerMenu.splice(3, 1);
+    }
+
+    if (isShareFolder) {
+      headerMenu.splice(4, 1);
+    }
+
+    if (isRecentFolder || isFavoritesFolder) {
+      headerMenu.splice(1, 1);
+    }
+
+    if (
+      this.authStore.settingsStore.personal &&
+      !isWebEditSelected &&
+      !isViewedSelected
+    ) {
+      headerMenu.splice(1, 1);
+    }
+
+    return headerMenu;
+  };
 }
 
 export default FilesActionStore;

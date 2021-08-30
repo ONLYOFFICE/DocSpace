@@ -96,7 +96,7 @@ const SectionBodyContent = ({
   isLoaded,
   tReady,
 }) => {
-  const { t, i18n } = useTranslation(["GroupAction", "Translations"]);
+  const { t, i18n } = useTranslation(["GroupAction", "Translations", "Common"]);
 
   const [inLoading, setInLoading] = useState(false);
   const [isHeadSelectorOpen, setIsHeadSelectorOpen] = useState(false);
@@ -242,7 +242,7 @@ const SectionBodyContent = ({
           hasError={!!nameError}
           errorMessage={nameError}
           isVertical={true}
-          labelText={t("Name")}
+          labelText={t("Common:Name")}
         >
           <TextInput
             id="group-name"
