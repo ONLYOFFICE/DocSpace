@@ -16,7 +16,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { isDesktop, isTablet } from "react-device-detect";
-import { showLoader, hideLoader } from "@appserver/common/utils";
+
 class ArticleBodyContent extends React.Component {
   onSelect = (data, e) => {
     const {
@@ -26,11 +26,12 @@ class ArticleBodyContent extends React.Component {
       homepage,
       history,
       hideArticle,
+      setFirstLoad,
     } = this.props;
 
     setSelectedNode(data);
     hideArticle(false);
-
+    setIsLoading(true);
     // const selectedFolderTitle =
     //   (e.node && e.node.props && e.node.props.title) || null;
 
@@ -39,29 +40,20 @@ class ArticleBodyContent extends React.Component {
     //   : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
-      setIsLoading(true);
       fetchFiles(data[0], null, true, false, true)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
+      setFirstLoad(true);
       const filter = FilesFilter.getDefault();
 
       filter.folder = data[0];
 
       const urlFilter = filter.toUrlParams();
-      showLoader();
-      fetchFiles(data[0], null, true, false, true)
-        .then(() =>
-          history.push(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              `/filter?${urlFilter}`
-            )
-          )
-        )
-        .catch((err) => toastr.error(err))
-        .finally(() => hideLoader());
+
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
     }
     //}
   };
@@ -116,7 +108,7 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, setIsLoading } = filesStore;
+    const { fetchFiles, setIsLoading, setFirstLoad } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
@@ -137,6 +129,7 @@ export default inject(
       personal,
 
       setIsLoading,
+      setFirstLoad,
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
