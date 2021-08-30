@@ -127,7 +127,7 @@ class DeleteDialogComponent extends React.Component {
     const checkedSelections = selection.filter((x) => x.checked === true);
 
     const title =
-      isPrivacyFolder || isRecycleBinFolder
+      isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
         ? t("ConfirmRemove")
         : unsubscribe
         ? t("UnsubscribeTitle")
@@ -148,7 +148,7 @@ class DeleteDialogComponent extends React.Component {
       : t("MoveToTrashItemsNote");
 
     const accessButtonLabel =
-      isPrivacyFolder || isRecycleBinFolder
+      isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
         ? t("Common:OKButton")
         : unsubscribe
         ? t("UnsubscribeButton")
