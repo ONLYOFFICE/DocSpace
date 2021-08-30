@@ -65,6 +65,7 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
+let personal;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -221,6 +222,7 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
+        personal = authStore.settingsStore.personal;
         successAuth = !!user;
       } catch (e) {
         successAuth = false;
@@ -393,6 +395,11 @@ const Editor = () => {
         ...config.editorConfig.customization,
         goback: goBack,
       };
+
+      if (personal && fileInfo && user && user.id !== fileInfo.createdBy.id) {
+        //TODO: add conditions for SaaS
+        config.document.info.favorite = null;
+      }
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");

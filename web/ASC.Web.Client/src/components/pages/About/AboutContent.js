@@ -1,12 +1,13 @@
 import React from "react";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { isDesktop } from "react-device-detect";
 
-const AboutBody = styled.div`
+const StyledAboutBody = styled.div`
   width: 100%;
 
   .avatar {
@@ -20,6 +21,9 @@ const AboutBody = styled.div`
 
   .copyright {
     margin-top: 16px;
+  }
+  .no-select {
+    ${NoUserSelect}
   }
 `;
 
@@ -35,17 +39,24 @@ const AboutContent = ({ personal, versionAppServer }) => {
     "20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050";
 
   return (
-    <AboutBody>
+    <StyledAboutBody>
       <div className="avatar">
         {personal ? (
-          <ReactSVG src="/images/logo_personal_about.svg" />
+          <ReactSVG
+            src="/images/logo_personal_about.svg"
+            className="no-select"
+          />
         ) : (
-          <img src="/images/dark_general.png" alt="Logo" />
+          <img
+            src="/images/dark_general.png"
+            alt="Logo"
+            className="no-select"
+          />
         )}
       </div>
 
       <div className="row">
-        <Text className="row-el" fontSize="13px">
+        <Text className="row-el" fontSize="13px" noSelect>
           {t("DocumentManagement")}:
         </Text>
         <Link
@@ -58,13 +69,13 @@ const AboutContent = ({ personal, versionAppServer }) => {
         >
           &nbsp;ONLYOFFICE App Server&nbsp;
         </Link>
-        <Text className="row-el" fontSize="13px" fontWeight="600">
+        <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
           v.{versionAppServer}
         </Text>
       </div>
 
       <div className="row">
-        <Text className="row-el" fontSize="13px">
+        <Text className="row-el" fontSize="13px" noSelect>
           {t("OnlineEditors")}:
         </Text>
         <Link
@@ -77,38 +88,38 @@ const AboutContent = ({ personal, versionAppServer }) => {
         >
           &nbsp;ONLYOFFICE Docs&nbsp;
         </Link>
-        <Text className="row-el" fontSize="13px" fontWeight="600">
+        <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
           v.{versionEditor}
         </Text>
       </div>
 
       <div className="row">
-        <Text className="row-el" fontSize="13px">
+        <Text className="row-el" fontSize="13px" noSelect>
           {t("SoftwareLicense")}:{" "}
         </Text>
-        <Text className="row-el" fontSize="13px" fontWeight="600">
+        <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
           &nbsp;{license}
         </Text>
       </div>
 
-      <Text className="copyright" fontSize="14px" fontWeight="600">
+      <Text className="copyright" fontSize="14px" fontWeight="600" noSelect>
         © Ascensio System SIA
       </Text>
 
       <div className="row">
-        <Text fontSize="13px">
+        <Text fontSize="13px" noSelect>
           {t("AboutCompanyAddressTitle")}: {address}
         </Text>
       </div>
 
       <div className="row">
-        <Text fontSize="13px">
+        <Text fontSize="13px" noSelect>
           {t("AboutCompanyTelTitle")}: {phone}
         </Text>
       </div>
 
       <div className="row">
-        <Text className="row-el" fontSize="13px">
+        <Text className="row-el" fontSize="13px" noSelect>
           {t("AboutCompanyEmailTitle")}:
         </Text>
         <Link
@@ -121,7 +132,7 @@ const AboutContent = ({ personal, versionAppServer }) => {
           &nbsp;{email}
         </Link>
       </div>
-    </AboutBody>
+    </StyledAboutBody>
   );
 };
 
