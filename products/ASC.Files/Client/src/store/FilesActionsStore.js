@@ -668,7 +668,7 @@ class FilesActionStore {
       selection,
       isAccessedSelected,
       isWebEditSelected,
-      isThirdPartySelection,
+      isThirdPartyRootSelection,
       hasSelection,
     } = this.filesStore;
 
@@ -707,7 +707,7 @@ class FilesActionStore {
           isRecentFolder ||
           !isAccessedSelected ||
           !hasSelection ||
-          isThirdPartySelection,
+          isThirdPartyRootSelection,
         onClick: () => setMoveToPanelVisible(true),
       },
       {
@@ -717,7 +717,7 @@ class FilesActionStore {
       },
       {
         label: t("Common:Delete"),
-        disabled: !hasSelection || isThirdPartySelection,
+        disabled: !hasSelection || isThirdPartyRootSelection,
         onClick: () => {
           if (this.settingsStore.confirmDelete) {
             setDeleteDialogVisible(true);

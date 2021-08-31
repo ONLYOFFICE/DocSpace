@@ -151,6 +151,7 @@ class ConnectClouds extends React.Component {
       homepage,
       history,
       getSubfolders,
+      setFirstLoad,
     } = this.props;
 
     const provider = e.currentTarget.dataset.providerKey;
@@ -171,6 +172,7 @@ class ConnectClouds extends React.Component {
       newFilter.folder = id;
 
       const urlFilter = newFilter.toUrlParams();
+      setFirstLoad(true);
       history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
       );
@@ -295,7 +297,7 @@ class ConnectClouds extends React.Component {
 export default inject(
   ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
-    const { filter } = filesStore;
+    const { filter, setFirstLoad } = filesStore;
     const { myFolder, commonFolder, getSubfolders } = treeFoldersStore;
     const {
       setConnectItem,
@@ -311,7 +313,7 @@ export default inject(
       capabilities,
       myFolderId: myFolder && myFolder.id,
       commonFolderId: commonFolder && commonFolder.id,
-
+      setFirstLoad,
       setThirdPartyDialogVisible,
       setConnectDialogVisible,
       setConnectItem,
