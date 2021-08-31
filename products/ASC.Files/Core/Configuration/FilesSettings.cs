@@ -31,6 +31,7 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Files.Core;
+using ASC.Web.Studio.Core;
 
 namespace ASC.Web.Files.Classes
 {
@@ -115,11 +116,13 @@ namespace ASC.Web.Files.Classes
     {
         private SettingsManager SettingsManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
+        private SetupInfo SetupInfo { get; }
 
-        public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings)
+        public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings, SetupInfo setupInfo)
         {
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
+            SetupInfo = setupInfo;
         }
 
         public bool ConfirmDelete
@@ -283,6 +286,11 @@ namespace ASC.Web.Files.Classes
                 SaveForCurrentUser(setting);
             }
             get => LoadForCurrentUser().DownloadTarGzSetting;
+        }
+
+        public long ChunkUploadSize
+        {
+            get => SetupInfo.ChunkUploadSize;
         }
 
         private FilesSettings LoadForCurrentUser()
