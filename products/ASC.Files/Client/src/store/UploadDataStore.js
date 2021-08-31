@@ -513,7 +513,9 @@ class UploadDataStore {
 
       const { uploaded } = res.data.data;
 
-      const uploadedSize = uploaded ? fileSize : index * chunkSize;
+      const uploadedSize = uploaded
+        ? fileSize
+        : index * this.settingsStore.chunkUploadSize;
 
       const newPercent = this.getNewPercent(uploadedSize, indexOfFile);
 
@@ -627,7 +629,10 @@ class UploadDataStore {
     }
 
     const { file, toFolderId /*, action*/ } = item;
-    const chunks = Math.ceil(file.size / chunkSize, chunkSize);
+    const chunks = Math.ceil(
+      file.size / this.settingsStore.chunkUploadSize,
+      this.settingsStore.chunkUploadSize
+    );
     const fileName = file.name;
     const fileSize = file.size;
     const relativePath = file.path
@@ -651,9 +656,12 @@ class UploadDataStore {
         let chunk = 0;
 
         while (chunk < chunks) {
-          const offset = chunk * chunkSize;
+          const offset = chunk * this.settingsStore.chunkUploadSize;
           const formData = new FormData();
-          formData.append("file", file.slice(offset, offset + chunkSize));
+          formData.append(
+            "file",
+            file.slice(offset, offset + this.settingsStore.chunkUploadSize)
+          );
           requestsDataArray.push(formData);
           chunk++;
         }
