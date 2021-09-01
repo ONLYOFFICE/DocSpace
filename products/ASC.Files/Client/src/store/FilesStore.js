@@ -1116,6 +1116,8 @@ class FilesStore {
         if (x.id === item.id) isFolder = true;
       });
 
+      const { isRecycleBinFolder } = this.treeFoldersStore;
+
       const folderUrl = isFolder
         ? combineUrl(
             AppServerConfig.proxyURL,
@@ -1123,6 +1125,20 @@ class FilesStore {
             `/filter?folder=${id}`
           )
         : null;
+
+      const docUrl = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/doceditor?fileId=${id}`
+      );
+
+      const href = isRecycleBinFolder
+        ? null
+        : previewUrl
+        ? previewUrl
+        : !isFolder
+        ? docUrl
+        : folderUrl;
 
       return {
         access,
@@ -1167,6 +1183,7 @@ class FilesStore {
         thumbnailStatus,
         previewUrl,
         folderUrl,
+        href,
       };
     });
 

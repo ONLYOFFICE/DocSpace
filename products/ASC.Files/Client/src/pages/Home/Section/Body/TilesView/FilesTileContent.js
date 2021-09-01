@@ -10,10 +10,6 @@ import TileContent from "./sub-components/TileContent";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 
-import { AppServerConfig } from "@appserver/common/constants";
-import { combineUrl } from "@appserver/common/utils";
-import config from "../../../../../../package.json";
-
 const SimpleFilesTileContent = styled(TileContent)`
   .row-main-container {
     height: auto;
@@ -81,25 +77,10 @@ const FilesTileContent = ({
   item,
   titleWithoutExt,
   linkStyles,
-  isTrashFolder,
   onFilesClick,
   badgesComponent,
 }) => {
-  const { fileExst, previewUrl, folderUrl, id } = item;
-
-  const docUrl = combineUrl(
-    AppServerConfig.proxyURL,
-    config.homepage,
-    `/doceditor?fileId=${id}`
-  );
-
-  const href = isTrashFolder
-    ? null
-    : previewUrl
-    ? previewUrl
-    : !item.isFolder
-    ? docUrl
-    : folderUrl;
+  const { fileExst } = item;
 
   return (
     <>
@@ -116,7 +97,7 @@ const FilesTileContent = ({
           fontWeight="600"
           fontSize="14px"
           target="_blank"
-          href={href}
+          href={item.href}
           {...linkStyles}
           color="#333"
           isTextOverflow
