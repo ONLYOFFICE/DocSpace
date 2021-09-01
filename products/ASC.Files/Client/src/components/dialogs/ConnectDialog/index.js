@@ -23,7 +23,6 @@ const PureConnectDialogContainer = (props) => {
     providers,
     selectedFolderId,
     selectedFolderFolders,
-    fetchFiles,
     getOAuthToken,
     saveThirdParty,
     openConnectWindow,
@@ -141,7 +140,6 @@ const PureConnectDialogContainer = (props) => {
   }, [
     commonFolderId,
     customerTitle,
-    fetchFiles,
     fetchThirdPartyProviders,
     isCorporate,
     link,
@@ -327,7 +325,6 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const { fetchFiles } = filesStore;
     const { getOAuthToken, personal } = auth.settingsStore;
 
     const {
@@ -353,7 +350,6 @@ export default inject(
       visible,
       item,
 
-      fetchFiles,
       getOAuthToken,
       getSubfolders,
       saveThirdParty,

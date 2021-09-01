@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { mobile } from "../utils/device";
+import NoUserSelect from "../utils/commonStyles";
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;
@@ -19,6 +20,7 @@ const EmptyContentBody = styled.div`
   .ec-image {
     grid-area: img;
     margin: 0 0 0 auto;
+    ${NoUserSelect}
   }
 
   .ec-header {

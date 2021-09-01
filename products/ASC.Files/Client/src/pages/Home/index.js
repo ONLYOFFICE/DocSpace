@@ -149,7 +149,7 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           //console.log("filter", filter);
-          if (filesList.length !== 0) return;
+
           return fetchFiles(folderId, filter).then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
@@ -221,20 +221,12 @@ class PureHome extends React.Component {
   };
   componentDidUpdate(prevProps) {
     const {
-      isLoading,
       isProgressFinished,
       secondaryProgressDataStoreIcon,
       selectionLength,
       selectionTitle,
-      firstLoad,
     } = this.props;
-    if (isLoading !== prevProps.isLoading && !firstLoad) {
-      if (isLoading) {
-        showLoader();
-      } else {
-        hideLoader();
-      }
-    }
+
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
@@ -270,7 +262,6 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
 
-      isLoading,
       dragging,
       tReady,
     } = this.props;
@@ -285,7 +276,6 @@ class PureHome extends React.Component {
           uploadFiles
           onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
           setSelections={this.props.setSelections}
-          onMouseMove={this.onMouseMove}
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}
@@ -303,7 +293,6 @@ class PureHome extends React.Component {
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
-          isLoading={isLoading}
           firstLoad={firstLoad}
           dragging={dragging}
         >
@@ -366,7 +355,6 @@ export default inject(
       setIsLoading,
       isLoading,
       viewAs,
-      files: filesList,
       getFileInfo,
     } = filesStore;
 
@@ -409,13 +397,19 @@ export default inject(
       : null;
 
     const { setToPreviewFile } = mediaViewerDataStore;
+    if (!firstLoad) {
+      if (isLoading) {
+        showLoader();
+      } else {
+        hideLoader();
+      }
+    }
+
     return {
-      filesList,
       homepage: config.homepage,
       firstLoad,
       dragging,
       fileActionId: id,
-      isLoading,
       viewAs,
       uploaded,
       converted,

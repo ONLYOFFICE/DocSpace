@@ -127,7 +127,7 @@ class DeleteDialogComponent extends React.Component {
     const checkedSelections = selection.filter((x) => x.checked === true);
 
     const title =
-      isPrivacyFolder || isRecycleBinFolder
+      isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
         ? t("ConfirmRemove")
         : unsubscribe
         ? t("UnsubscribeTitle")
@@ -148,7 +148,7 @@ class DeleteDialogComponent extends React.Component {
       : t("MoveToTrashItemsNote");
 
     const accessButtonLabel =
-      isPrivacyFolder || isRecycleBinFolder
+      isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
         ? t("Common:OKButton")
         : unsubscribe
         ? t("UnsubscribeButton")
@@ -175,10 +175,12 @@ class DeleteDialogComponent extends React.Component {
         <ModalDialog.Header>{title}</ModalDialog.Header>
         <ModalDialog.Body>
           <div className="modal-dialog-content">
-            <Text className="delete_dialog-header-text">{noteText}</Text>
+            <Text className="delete_dialog-header-text" noSelect>
+              {noteText}
+            </Text>
             <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
               {foldersList.length > 0 && (
-                <Text isBold className="delete_dialog-text">
+                <Text isBold className="delete_dialog-text" noSelect>
                   {t("Translations:Folders")}:
                 </Text>
               )}
@@ -195,7 +197,7 @@ class DeleteDialogComponent extends React.Component {
               ))}
 
               {filesList.length > 0 && (
-                <Text isBold className="delete_dialog-text">
+                <Text isBold className="delete_dialog-text" noSelect>
                   {t("Translations:Files")}:
                 </Text>
               )}

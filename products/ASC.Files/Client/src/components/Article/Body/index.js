@@ -12,73 +12,48 @@ import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
-import { clickBackdrop, combineUrl } from "@appserver/common/utils";
+import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { isDesktop, isTablet } from "react-device-detect";
-import { showLoader, hideLoader } from "@appserver/common/utils";
+
 class ArticleBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { selectedFolderTitle } = props;
-
-    selectedFolderTitle
-      ? setDocumentTitle(selectedFolderTitle)
-      : setDocumentTitle();
-  }
-
-  /*componentDidMount() {
-    if (this.props.currentId) {
-      const currentId = [this.props.currentId + ""];
-      this.props.setSelectedNode(currentId);
-    }
-  }*/
-
   onSelect = (data, e) => {
     const {
       setIsLoading,
-      selectedTreeNode,
       setSelectedNode,
       fetchFiles,
       homepage,
       history,
+      hideArticle,
+      setFirstLoad,
     } = this.props;
 
-    //if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
     setSelectedNode(data);
+    hideArticle(false);
+    setIsLoading(true);
+    // const selectedFolderTitle =
+    //   (e.node && e.node.props && e.node.props.title) || null;
 
-    const selectedFolderTitle =
-      (e.node && e.node.props && e.node.props.title) || null;
-
-    selectedFolderTitle
-      ? setDocumentTitle(selectedFolderTitle)
-      : setDocumentTitle();
+    // selectedFolderTitle
+    //   ? setDocumentTitle(selectedFolderTitle)
+    //   : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
-      setIsLoading(true);
       fetchFiles(data[0], null, true, false, true)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
+      setFirstLoad(true);
       const filter = FilesFilter.getDefault();
 
       filter.folder = data[0];
 
       const urlFilter = filter.toUrlParams();
-      showLoader();
-      fetchFiles(data[0], null, true, false, true)
-        .then(() =>
-          history.push(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              `/filter?${urlFilter}`
-            )
-          )
-        )
-        .catch((err) => toastr.error(err))
-        .finally(() => hideLoader());
+
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
     }
     //}
   };
@@ -91,11 +66,12 @@ class ArticleBodyContent extends React.Component {
     const {
       treeFolders,
       onTreeDrop,
-      selectedTreeNode,
       enableThirdParty,
       isVisitor,
       personal,
     } = this.props;
+
+    //console.log("Article Body render");
 
     const campaigns = (localStorage.getItem("campaigns") || "")
       .split(",")
@@ -106,7 +82,7 @@ class ArticleBodyContent extends React.Component {
     ) : (
       <>
         <TreeFolders
-          selectedKeys={selectedTreeNode}
+          useDefaultSelectedKeys
           onSelect={this.onSelect}
           data={treeFolders}
           onBadgeClick={this.onShowNewFilesPanel}
@@ -132,38 +108,33 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, setIsLoading } = filesStore;
+    const { fetchFiles, setIsLoading, setFirstLoad } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
-
-    const selectedNode = treeFoldersStore.selectedTreeNode;
-
-    const selectedTreeNode =
-      selectedNode.length > 0 &&
-      selectedNode[0] !== "@my" &&
-      selectedNode[0] !== "@common"
-        ? selectedNode
-        : [selectedFolderStore.id + ""];
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
-    const { personal } = auth.settingsStore;
+    const { personal, hideArticle } = auth.settingsStore;
+
+    const selectedFolderTitle = selectedFolderStore.title;
+
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
 
     return {
-      selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
-      selectedTreeNode,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
+      homepage: config.homepage,
+      personal,
 
       setIsLoading,
+      setFirstLoad,
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
       setNewFilesPanelVisible,
-
-      homepage: config.homepage,
-
-      personal,
+      hideArticle,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));

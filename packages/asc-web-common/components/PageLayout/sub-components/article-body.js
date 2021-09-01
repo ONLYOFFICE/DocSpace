@@ -16,7 +16,7 @@ const StyledArticleBody = styled.div`
   }
 
   @media ${tablet} {
-    height: calc(100% - 104px);
+    height: calc(100% - 44px);
     display: table;
     width: calc(100% + 16px);
 
@@ -54,7 +54,7 @@ const StyledArticleBody = styled.div`
 const StyledArticleWrapper = styled.div`
   margin: 16px 0;
   @media ${tablet} {
-    ${!isMobile && `margin-bottom:47px`};
+    margin-bottom: 60px;
   }
 `;
 

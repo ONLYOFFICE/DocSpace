@@ -3,7 +3,7 @@ import commonInputStyles from "./common-input-styles";
 import Input from "./input";
 import Base from "../themes/base";
 import { isMobile } from "react-device-detect";
-
+import NoUserSelect from "../utils/commonStyles";
 /* eslint-enable react/prop-types, no-unused-vars */
 const StyledTextInput = styled(Input).attrs((props) => ({
   id: props.id,
@@ -69,31 +69,31 @@ const StyledTextInput = styled(Input).attrs((props) => ({
   ::-webkit-input-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
-    user-select: ${(props) => props.theme.userSelect};
+    ${NoUserSelect}
   }
 
   :-moz-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
-    user-select: ${(props) => props.theme.userSelect};
+    ${NoUserSelect}
   }
 
   ::-moz-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
-    user-select: ${(props) => props.theme.userSelect};
+    ${NoUserSelect}
   }
 
   :-ms-input-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
-    user-select: ${(props) => props.theme.userSelect};
+    ${NoUserSelect}
   }
 
   ::placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
     font-family: ${(props) => props.theme.fontFamily};
-    user-select: ${(props) => props.theme.userSelect};
+    ${NoUserSelect}
   }
 
   ${(props) => !props.withBorder && `border: none;`}

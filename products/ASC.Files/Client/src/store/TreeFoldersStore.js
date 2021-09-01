@@ -164,6 +164,16 @@ class TreeFoldersStore {
       );
     }
   }
+
+  get selectedKeys() {
+    const selectedKeys =
+      this.selectedTreeNode.length > 0 &&
+      this.selectedTreeNode[0] !== "@my" &&
+      this.selectedTreeNode[0] !== "@common"
+        ? this.selectedTreeNode
+        : [this.selectedFolderStore.id + ""];
+    return selectedKeys;
+  }
 }
 
 export default TreeFoldersStore;

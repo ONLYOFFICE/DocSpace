@@ -17,12 +17,7 @@ import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
-  ${
-    isMobile &&
-    css`
-      margin-bottom: 64px;
-    `
-  }
+
   .tree-thirdparty-list {
     padding-top: 3px;
     display: flex;

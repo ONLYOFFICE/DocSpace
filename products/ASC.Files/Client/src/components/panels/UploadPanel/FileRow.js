@@ -7,6 +7,7 @@ import Link from "@appserver/components/link";
 import LoadingButton from "./LoadingButton";
 import ShareButton from "./ShareButton";
 import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
+import IconButton from "@appserver/components/icon-button";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -37,6 +38,10 @@ const StyledFileRow = styled(Row)`
 
   .img_error {
     filter: grayscale(1);
+  }
+
+  .convert_icon {
+    padding-right: 12px;
   }
 
   .__react_component_tooltip.type-light {
@@ -161,6 +166,13 @@ const FileRow = (props) => {
                     isConversion
                     inConversion={item.inConversion}
                     percent={item.convertProgress}
+                  />
+                  <IconButton
+                    iconName="/static/images/refresh.react.svg"
+                    className="convert_icon"
+                    size="medium"
+                    isfill={true}
+                    color="#A3A9AE"
                   />
                 </div>
               )}
