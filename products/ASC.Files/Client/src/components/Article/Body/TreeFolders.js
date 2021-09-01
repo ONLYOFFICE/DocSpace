@@ -482,7 +482,6 @@ export default inject(
     { useDefaultSelectedKeys, selectedKeys }
   ) => {
     const {
-      filter,
       selection,
       setIsLoading,
       isLoading,
@@ -512,7 +511,6 @@ export default inject(
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
-      filter,
       draggableItems: dragging ? selection : null,
       expandedKeys,
       treeFolders,
@@ -531,6 +529,6 @@ export default inject(
   }
 )(
   withTranslation(["Home", "Common"])(
-    withLoader(observer(TreeFolders))(<Loaders.Rectangle width="217px" />)
+    withLoader(observer(TreeFolders))(<Loaders.TreeFolders />)
   )
 );
