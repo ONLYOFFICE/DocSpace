@@ -18,8 +18,6 @@ import {
   moveToFolder,
 } from "@appserver/common/api/files";
 
-const chunkSize = 1024 * 1023; //~0.999mb
-
 class UploadDataStore {
   formatsStore;
   treeFoldersStore;
@@ -628,11 +626,10 @@ class UploadDataStore {
       return Promise.resolve();
     }
 
+    const { chunkUploadSize } = this.settingsStore;
+
     const { file, toFolderId /*, action*/ } = item;
-    const chunks = Math.ceil(
-      file.size / this.settingsStore.chunkUploadSize,
-      this.settingsStore.chunkUploadSize
-    );
+    const chunks = Math.ceil(file.size / chunkUploadSize, chunkUploadSize);
     const fileName = file.name;
     const fileSize = file.size;
     const relativePath = file.path
@@ -656,12 +653,9 @@ class UploadDataStore {
         let chunk = 0;
 
         while (chunk < chunks) {
-          const offset = chunk * this.settingsStore.chunkUploadSize;
+          const offset = chunk * chunkUploadSize;
           const formData = new FormData();
-          formData.append(
-            "file",
-            file.slice(offset, offset + this.settingsStore.chunkUploadSize)
-          );
+          formData.append("file", file.slice(offset, offset + chunkUploadSize));
           requestsDataArray.push(formData);
           chunk++;
         }
