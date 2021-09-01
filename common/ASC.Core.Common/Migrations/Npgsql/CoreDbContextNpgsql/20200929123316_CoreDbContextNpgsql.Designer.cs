@@ -652,12 +652,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                         .HasColumnType("numeric(10,2)")
                         .HasDefaultValueSql("0.00");
 
-                    b.Property<decimal>("Price2")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("price2")
-                        .HasColumnType("numeric(10,2)")
-                        .HasDefaultValueSql("0.00");
-
                     b.Property<bool>("Visible")
                         .HasColumnName("visible")
                         .HasColumnType("boolean");
