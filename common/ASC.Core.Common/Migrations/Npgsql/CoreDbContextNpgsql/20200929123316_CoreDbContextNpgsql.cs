@@ -56,7 +56,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                     active_users = table.Column<int>(nullable: false),
                     features = table.Column<string>(nullable: true),
                     price = table.Column<decimal>(type: "numeric(10,2)", nullable: false, defaultValueSql: "0.00"),
-                    price2 = table.Column<decimal>(type: "numeric(10,2)", nullable: false, defaultValueSql: "0.00"),
                     avangate_id = table.Column<string>(maxLength: 128, nullable: true, defaultValueSql: "NULL"),
                     visible = table.Column<bool>(nullable: false)
                 },
