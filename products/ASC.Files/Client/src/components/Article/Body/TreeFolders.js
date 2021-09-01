@@ -443,7 +443,7 @@ class TreeFolders extends React.Component {
       <StyledTreeMenu
         className="files-tree-menu"
         checkable={false}
-        draggable
+        draggable={dragging}
         disabled={isLoading}
         multiple={false}
         showIcon
