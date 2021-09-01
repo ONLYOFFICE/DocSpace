@@ -191,19 +191,6 @@ class FilterInput extends React.Component {
       !equal(
         prevProps.selectedFilterData.filterValues,
         selectedFilterData.filterValues
-      ) &&
-      selectedFilterData.filterValues &&
-      (selectedFilterData.filterValues.length === 0 ||
-        (selectedFilterData.filterValues.length === 1 &&
-          selectedFilterData.filterValues[0].key === "null")) &&
-      !selectedFilterData.inputValue
-    ) {
-      this.clearFilter();
-    }
-    if (
-      !equal(
-        prevProps.selectedFilterData.filterValues,
-        selectedFilterData.filterValues
       )
     ) {
       this.checkingOrderItems();
@@ -243,7 +230,7 @@ class FilterInput extends React.Component {
   }
 
   checkingOrderItems = () => {
-    const { filterValues: itemsState } = this.state;
+    const itemsState = this.props.selectedFilterData.filterValues;
     const filterValues = this.getDefaultFilterData();
     let updatedValues = itemsState.slice();
 
@@ -276,7 +263,7 @@ class FilterInput extends React.Component {
       });
     }
 
-    this.setState({ filterValues: updatedValues });
+    this.setState({ filterValues });
     this.updateFilter(updatedValues);
   };
 
@@ -412,6 +399,7 @@ class FilterInput extends React.Component {
 
     return filterItems;
   };
+
   getFilterData = () => {
     const d = this.props.getFilterData();
     const result = [];
@@ -434,6 +422,7 @@ class FilterInput extends React.Component {
     });
     return result;
   };
+
   clearFilter = () => {
     this.setState({
       searchText: "",
@@ -557,7 +546,7 @@ class FilterInput extends React.Component {
     );
 
     const numberOfHiddenItems = this.calcHiddenItems(searchWidth, filterArr);
-    if (searchWidth !== 0 && currentFilterItems.length > 0) {
+    if (searchWidth !== 0) {
       this.setState({
         openFilterItems: numberOfHiddenItems
           ? currentFilterItems.slice(
@@ -607,6 +596,7 @@ class FilterInput extends React.Component {
       this.state.sortDirection ? "desc" : "asc"
     );
   };
+
   onFilter = (filterValues, sortId, sortDirection, searchText) => {
     let cloneFilterValues = cloneObjectsArray(filterValues);
     cloneFilterValues = cloneFilterValues.map(function (item) {
@@ -620,6 +610,7 @@ class FilterInput extends React.Component {
       sortDirection: sortDirection,
     });
   };
+
   onChangeFilter = (result) => {
     this.setState({
       searchText: result.inputValue,
@@ -632,6 +623,7 @@ class FilterInput extends React.Component {
       result.inputValue
     );
   };
+
   onFilterRender = () => {
     this.setState({
       needUpdateFilter: false,
@@ -639,6 +631,7 @@ class FilterInput extends React.Component {
 
     this.updateFilter();
   };
+
   onClickFilterItem = (event, filterItem) => {
     const currentFilterItems = cloneObjectsArray(this.state.filterValues);
 
