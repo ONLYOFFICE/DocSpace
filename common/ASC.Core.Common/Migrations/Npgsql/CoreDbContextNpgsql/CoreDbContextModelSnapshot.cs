@@ -650,12 +650,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                     .HasColumnType("numeric(10,2)")
                     .HasDefaultValueSql("0.00");
 
-                b.Property<decimal>("Price2")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("price2")
-                    .HasColumnType("numeric(10,2)")
-                    .HasDefaultValueSql("0.00");
-
                 b.Property<bool>("Visible")
                     .HasColumnName("visible")
                     .HasColumnType("boolean");
@@ -676,7 +670,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                         MaxTotalSize = 10995116277760L,
                         Name = "default",
                         Price = 0.00m,
-                        Price2 = 0.00m,
                         Visible = false
                     });
             });
