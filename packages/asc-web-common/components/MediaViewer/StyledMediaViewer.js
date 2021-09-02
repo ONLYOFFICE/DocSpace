@@ -66,7 +66,8 @@ const StyledMediaViewer = styled.div`
     position: fixed;
     top: 4px;
     right: 10px;
-    height: 30px;
+    height: 25px;
+    width: 25px;
   }
 `;
 

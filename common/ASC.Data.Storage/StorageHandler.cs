@@ -122,10 +122,6 @@ namespace ASC.Data.Storage.DiscStorage
                 path += ".gz";
                 encoding = "gzip";
             }
-            using (var stream = storage.GetReadStream(_domain, path))
-            {
-                await stream.CopyToAsync(context.Response.Body);
-            }
 
             var headersToCopy = new List<string> { "Content-Disposition", "Cache-Control", "Content-Encoding", "Content-Language", "Content-Type", "Expires" };
             foreach (var h in headers)
@@ -146,6 +142,14 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;
+
+            using (var stream = storage.GetReadStream(_domain, path))
+            {
+                await stream.CopyToAsync(context.Response.Body);
+            }
+
+            await context.Response.Body.FlushAsync();
+            await context.Response.CompleteAsync();
 
             string GetRouteValue(string name)
             {

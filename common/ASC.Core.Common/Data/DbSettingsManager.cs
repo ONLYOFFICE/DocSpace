@@ -186,10 +186,9 @@ namespace ASC.Core.Data
 
                 var defaultData = Serialize(def);
 
-                var tr = WebstudioDbContext.Database.BeginTransaction();
-
                 if (data.SequenceEqual(defaultData))
                 {
+                    using var tr = WebstudioDbContext.Database.BeginTransaction();
                     // remove default settings
                     var s = WebstudioDbContext.WebstudioSettings
                         .Where(r => r.Id == settings.ID)
@@ -201,6 +200,9 @@ namespace ASC.Core.Data
                     {
                         WebstudioDbContext.WebstudioSettings.Remove(s);
                     }
+
+                    WebstudioDbContext.SaveChanges();
+                    tr.Commit();
                 }
                 else
                 {
@@ -213,10 +215,9 @@ namespace ASC.Core.Data
                     };
 
                     WebstudioDbContext.AddOrUpdate(r => r.WebstudioSettings, s);
-                }
 
-                WebstudioDbContext.SaveChanges();
-                tr.Commit();
+                    WebstudioDbContext.SaveChanges();
+                }
 
                 DbSettingsManagerCache.Remove(key);
 

@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 
 using ASC.Common.Web;
 
@@ -58,8 +59,8 @@ namespace ASC.Api.Utils
         }
 
         public static T? NullIfDefault<T>(this T item) where T : struct
-        {
-            return item.Equals(default(T)) ? default(T?) : item;
+{
+            return EqualityComparer<T>.Default.Equals(item, default(T))  ? default(T?) : item;
         }
     }
 }

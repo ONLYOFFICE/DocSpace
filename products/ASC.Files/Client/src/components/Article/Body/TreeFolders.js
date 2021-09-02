@@ -76,22 +76,22 @@ class TreeFolders extends React.Component {
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        iconUrl = "images/catalog.user.react.svg";
+        iconUrl = "/static/images/catalog.user.react.svg";
         break;
       case FolderType.SHARE:
-        iconUrl = "images/catalog.shared.react.svg";
+        iconUrl = "/static/images/catalog.shared.react.svg";
         break;
       case FolderType.COMMON:
-        iconUrl = "images/catalog.portfolio.react.svg";
+        iconUrl = "/static/images/catalog.portfolio.react.svg";
         break;
       case FolderType.Favorites:
-        iconUrl = "images/catalog.favorites.react.svg";
+        iconUrl = "/static/images/catalog.favorites.react.svg";
         break;
       case FolderType.Recent:
-        iconUrl = "images/catalog.recent.react.svg";
+        iconUrl = "/static/images/catalog.recent.react.svg";
         break;
       case FolderType.Privacy:
-        iconUrl = "images/catalog.private.react.svg";
+        iconUrl = "/static/images/catalog.private.react.svg";
         break;
       case FolderType.TRASH:
         iconUrl = "/static/images/catalog.trash.react.svg";
@@ -100,38 +100,39 @@ class TreeFolders extends React.Component {
         break;
     }
 
-    if (item.parentId !== 0) iconUrl = "images/catalog.folder.react.svg";
+    if (item.parentId !== 0)
+      iconUrl = "/static/images/catalog.folder.react.svg";
 
     switch (item.providerKey) {
       case "GoogleDrive":
-        iconUrl = "images/cloud.services.google.drive.react.svg";
+        iconUrl = "/static/images/cloud.services.google.drive.react.svg";
         break;
       case "Box":
-        iconUrl = "images/cloud.services.box.react.svg";
+        iconUrl = "/static/images/cloud.services.box.react.svg";
         break;
       case "DropboxV2":
-        iconUrl = "images/cloud.services.dropbox.react.svg";
+        iconUrl = "/static/images/cloud.services.dropbox.react.svg";
         break;
       case "OneDrive":
-        iconUrl = "images/cloud.services.onedrive.react.svg";
+        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "SharePoint":
-        iconUrl = "images/cloud.services.onedrive.react.svg";
+        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "kDrive":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "Yandex":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "NextCloud":
-        iconUrl = "images/cloud.services.nextcloud.react.svg";
+        iconUrl = "/static/images/cloud.services.nextcloud.react.svg";
         break;
       case "OwnCloud":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "WebDav":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       default:
         break;
@@ -157,7 +158,8 @@ class TreeFolders extends React.Component {
       return false;
     }
 
-    if (draggableItems.find((x) => x.id === item.id)) return false;
+    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      return false;
 
     // const isMy = rootFolderType === FolderType.USER;
     // const isCommon = rootFolderType === FolderType.COMMON;
@@ -196,6 +198,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
+    const { withoutProvider } = this.props;
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -203,8 +206,13 @@ class TreeFolders extends React.Component {
         ? item.newItems > 0 && this.props.needUpdate
         : false;
 
+      const provider = item.providerKey;
+
       const serviceFolder = !!item.providerKey;
       let className = `tree-drag tree-id_${item.id}`;
+
+      if (withoutProvider && provider) return;
+
       if (dragging) className += " dragging";
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
@@ -339,6 +347,7 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = (treeNode, isExpand) => {
+    const { data: incomingDate, certainFolders } = this.props;
     isExpand && this.setState({ isExpand: true });
     this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
@@ -353,7 +362,9 @@ class TreeFolders extends React.Component {
         const listIds = data.listIds;
         listIds.push(itemId);
 
-        const treeData = [...this.props.treeFolders];
+        const treeData = certainFolders
+          ? incomingDate
+          : [...this.props.treeFolders];
 
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
         this.props.setTreeFolders(treeData);
@@ -462,7 +473,10 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  (
+    { auth, filesStore, treeFoldersStore, selectedFolderStore },
+    { useDefaultSelectedKeys, selectedKeys }
+  ) => {
     const {
       filter,
       selection,
@@ -494,9 +508,12 @@ export default inject(
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       filter,
-      draggableItems: dragging ? selection : [],
+      draggableItems: dragging ? selection : null,
       expandedKeys,
       treeFolders,
+      selectedKeys: useDefaultSelectedKeys
+        ? treeFoldersStore.selectedKeys
+        : selectedKeys,
 
       setDragging,
       setIsLoading,

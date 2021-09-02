@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import StyledText from "./styled-link";
 
@@ -74,4 +74,4 @@ Link.defaultProps = {
   type: "page",
 };
 
-export default memo(Link);
+export default Link;

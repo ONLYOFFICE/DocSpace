@@ -230,6 +230,13 @@ namespace ASC.Core.Data
                 .FirstOrDefault(r=> r.Email ==  email && !r.Removed);
         }
 
+        public UserInfo GetUserByUserName(int tenant, string userName)
+        {
+            return GetUserQuery(tenant, default(DateTime))
+                .Select(FromUserToUserInfo)
+                .FirstOrDefault(r=> r.UserName == userName && !r.Removed);
+        }
+
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
@@ -328,7 +335,7 @@ namespace ASC.Core.Data
                 q = q.Where(r => r.LastModified >= from);
             }
 
-            return q.Select(FromUserGroupToUserGroupRef).ToDictionary(r => r.CreateKey(), r => r);
+            return q.Select(FromUserGroupToUserGroupRef).AsEnumerable().ToDictionary(r => r.CreateKey(), r => r);
         }
 
         public DateTime GetUserPasswordStamp(int tenant, Guid id)
@@ -357,6 +364,7 @@ namespace ASC.Core.Data
         {
             return GetUserQuery(tenant, from)
                 .Select(FromUserToUserInfo)
+                .AsEnumerable()
                 .ToDictionary(r => r.ID, r => r);
         }
 

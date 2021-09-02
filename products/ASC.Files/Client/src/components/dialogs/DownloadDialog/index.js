@@ -122,7 +122,7 @@ class DownloadDialogComponent extends React.Component {
       if (file.value) {
         viewUrl = `${viewUrl}&outputtype=${file.value}`;
       }
-      window.open(viewUrl, "_blank");
+      window.open(viewUrl, "_self");
       this.onClose();
     } else if (fileConvertIds.length || folderIds.length) {
       setSecondaryProgressBarData({

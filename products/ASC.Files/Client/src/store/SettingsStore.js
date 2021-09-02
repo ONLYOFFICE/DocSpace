@@ -23,6 +23,7 @@ class SettingsStore {
   favoritesSection = null;
   recentSection = null;
   hideConfirmConvertSave = null;
+  chunkUploadSize = 1024 * 1023; // 1024 * 1023; //~0.999mb
 
   settingsIsLoaded = false;
 

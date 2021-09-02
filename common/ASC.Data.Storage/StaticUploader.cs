@@ -209,7 +209,7 @@ namespace ASC.Data.Storage
                 var (tenantManager, _, securityContext, settingsManager, storageSettingsHelper) = scopeClass;
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
-                securityContext.AuthenticateMe(tenant.OwnerId);
+                securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
 
                 var dataStore = storageSettingsHelper.DataStore(settingsManager.Load<CdnStorageSettings>());
 

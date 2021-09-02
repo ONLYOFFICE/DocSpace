@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
@@ -83,6 +84,7 @@ namespace ASC.CRM.BackgroundTasks
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, true, false, "search.json");
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

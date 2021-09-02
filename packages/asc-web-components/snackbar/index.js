@@ -32,8 +32,6 @@ class SnackBar extends React.Component {
       const bar = document.querySelector(`#${window.snackbar.parentElementId}`);
       bar.remove();
       //ReactDOM.unmountComponentAtNode(window.snackbar.parentElementId);
-    } else {
-      console.error("Not found snackbar");
     }
   }
 

@@ -140,7 +140,6 @@ namespace ASC.Employee.Core.Controllers
             )
         {
             Log = option.Get("ASC.Api");
-            Log.Debug("Test");
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;
@@ -775,7 +774,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+            SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
 
             user.Status = EmployeeStatus.Terminated;
 
@@ -1636,7 +1635,7 @@ namespace ASC.Employee.Core.Controllers
             var userID = Guid.Empty;
             try
             {
-                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
                 var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
 
                 var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;

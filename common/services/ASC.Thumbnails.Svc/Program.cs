@@ -98,6 +98,7 @@ namespace ASC.Thumbnails.Svc
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, false, false);
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

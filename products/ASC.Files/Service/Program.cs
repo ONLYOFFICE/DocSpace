@@ -89,6 +89,7 @@ namespace ASC.Files.Service
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

@@ -282,7 +282,7 @@ WORKDIR ${BUILD_PATH}/services/thumb/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ /var/www/services/thumb/client
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ ${BUILD_PATH}/services/thumb/client
 
 CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 
@@ -292,7 +292,7 @@ WORKDIR  ${BUILD_PATH}/services/urlshortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ /var/www/services/urlshortener/client
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ ${BUILD_PATH}/services/urlshortener/client
 
 CMD ["ASC.UrlShortener.Svc.dll", "ASC.UrlShortener.Svc"]
 
@@ -313,6 +313,16 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+
+## ASC.SsoAuth ##
+FROM builder AS ssoauth
+WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.SsoAuth.Svc/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ ${BUILD_PATH}/ASC.SsoAuth/
+
+CMD ["ASC.SsoAuth.Svc.dll", "ASC.SsoAuth.Svc"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share

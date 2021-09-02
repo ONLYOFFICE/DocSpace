@@ -280,6 +280,7 @@ class UpdateUserForm extends React.Component {
       updateProfileInUsers,
       history,
       t,
+      setUserIsUpdate,
     } = this.props;
 
     this.setState({ isLoading: true });
@@ -289,6 +290,7 @@ class UpdateUserForm extends React.Component {
         updateProfileInUsers(profile);
         toastr.success(t("ChangesSavedSuccessfully"));
         setIsEditingForm(false);
+        setUserIsUpdate(true);
         history.goBack();
       })
       .catch((error) => {
@@ -448,7 +450,9 @@ class UpdateUserForm extends React.Component {
 
   onSaveAvatar = (isUpdate, result, avatar) => {
     this.setState({ isLoading: true });
-    const { profile, setAvatarMax } = this.props;
+    const { profile, setAvatarMax, personal } = this.props;
+
+    console.log("profile", profile);
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
@@ -483,7 +487,7 @@ class UpdateUserForm extends React.Component {
         .then(() => {
           this.updateUserPhotoInState();
         })
-        .then(() => this.props.fetchProfile(profile.id));
+        .then(() => !personal && this.props.fetchProfile(profile.id));
     } else {
       deleteAvatar(profile.id)
         .then((response) => {
@@ -500,7 +504,7 @@ class UpdateUserForm extends React.Component {
         .then(() => {
           this.setState(this.mapPropsToState(this.props));
         })
-        .then(() => this.props.fetchProfile(profile.id));
+        .then(() => !personal && this.props.fetchProfile(profile.id));
     }
   };
 
@@ -741,7 +745,7 @@ class UpdateUserForm extends React.Component {
             />
             {/*TODO: uncomment this after added phone form */}
             {/* <TextChangeField
-              labelText={`${t("Phone")}:`}
+              labelText={`${t("Common:Phone")}:`}
               inputName="phone"
               inputValue={profile.mobilePhone}
               buttonText={t("ChangeButton")}
@@ -974,6 +978,7 @@ export default withRouter(
     setIsEditTargetUser: peopleStore.targetUserStore.setIsEditTargetUser,
     isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
     personal: auth.settingsStore.personal,
+    setUserIsUpdate: auth.userStore.setUserIsUpdate,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

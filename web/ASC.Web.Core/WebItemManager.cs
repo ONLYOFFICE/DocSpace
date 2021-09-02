@@ -34,9 +34,8 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Web.Core.WebZones;
 
-using Autofac;
-
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core
@@ -120,7 +119,7 @@ namespace ASC.Web.Core
             get { return new Guid("{46CFA73A-F320-46CF-8D5B-CD82E1D67F26}"); }
         }
 
-        private ILifetimeScope Container { get; }
+        public IServiceProvider ServiceProvider { get; }
         private IConfiguration Configuration { get; }
 
 
@@ -133,9 +132,9 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemManager(ILifetimeScope container, IConfiguration configuration, IOptionsMonitor<ILog> options)
+        public WebItemManager(IServiceProvider serviceProvider, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
-            Container = container;
+            ServiceProvider = serviceProvider;
             Configuration = configuration;
             log = options.Get("ASC.Web");
             disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
@@ -146,9 +145,7 @@ namespace ASC.Web.Core
         {
             var result = new ConcurrentDictionary<Guid, IWebItem>();
 
-            if (Container == null) return result;
-
-            foreach (var webitem in Container.Resolve<IEnumerable<IWebItem>>())
+            foreach (var webitem in ServiceProvider.GetService<IEnumerable<IWebItem>>())
             {
                 var file = webitem.ID.ToString();
                 try

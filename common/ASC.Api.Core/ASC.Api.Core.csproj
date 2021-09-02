@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -16,12 +17,12 @@
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="5.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.13.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
-    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
-    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -73,6 +73,7 @@ namespace ASC.Data.Storage.Migration
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration);
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

@@ -20,6 +20,14 @@ namespace ASC.Data.Backup.EF.Context
             : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddDbTenant()
+                .AddDbTariff();
+        }
     }
 
     public static class BackupsContextExtension

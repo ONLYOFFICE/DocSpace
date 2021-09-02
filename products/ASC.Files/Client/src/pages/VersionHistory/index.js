@@ -41,13 +41,16 @@ class PureVersionHistory extends React.Component {
   };
 
   render() {
-    const { isLoading, versions } = this.props;
+    const { isLoading, versions, showProgressBar } = this.props;
 
     return (
       <PageLayout
         withBodyScroll={true}
         withBodyAutoFocus={true}
         headerBorderBottom={true}
+        showSecondaryProgressBar={showProgressBar}
+        secondaryProgressBarIcon="file"
+        showSecondaryButtonAlert={false}
       >
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
@@ -88,13 +91,18 @@ VersionHistory.propTypes = {
 
 export default inject(({ auth, filesStore, versionHistoryStore }) => {
   const { filter, isLoading } = filesStore;
-  const { setIsVerHistoryPanel, versions } = versionHistoryStore;
+  const {
+    setIsVerHistoryPanel,
+    versions,
+    showProgressBar,
+  } = versionHistoryStore;
 
   return {
     isTabletView: auth.settingsStore.isTabletView,
     isLoading,
     filter,
     versions,
+    showProgressBar,
 
     setIsVerHistoryPanel,
   };
