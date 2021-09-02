@@ -11,10 +11,6 @@
     <None Remove="protos\BackupProgress.proto" />
     <None Remove="protos\DeleteSchedule.proto" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
-    <ProjectReference Include="..\..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
@@ -30,6 +26,11 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
     <PackageReference Include="MySql.Data" Version="8.0.23" />
     <PackageReference Include="SharpZipLib" Version="1.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
+    <ProjectReference Include="..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
   </ItemGroup>
 
   <ItemGroup>
