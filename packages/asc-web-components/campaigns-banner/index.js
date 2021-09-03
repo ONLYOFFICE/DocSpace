@@ -11,6 +11,11 @@ const onButtonClick = (url) => {
 
 const CampaignsBanner = (props) => {
   const { headerLabel, subHeaderLabel, img, btnLabel, link } = props;
+
+  const onMouseDown = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <BannerWrapper>
       <a href={link}>
@@ -21,7 +26,7 @@ const CampaignsBanner = (props) => {
           {subHeaderLabel}
         </Text>
 
-        <img src={img} />
+        <img src={img} onMouseDown={onMouseDown} />
       </a>
 
       <Button

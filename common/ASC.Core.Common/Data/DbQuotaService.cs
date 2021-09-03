@@ -79,7 +79,6 @@ namespace ASC.Core.Data
                 MaxFileSize = GetInBytes(r.MaxFileSize),
                 MaxTotalSize = GetInBytes(r.MaxTotalSize),
                 Price = r.Price,
-                Price2 = r.Price2,
                 Visible = r.Visible
             };
 
@@ -127,7 +126,6 @@ namespace ASC.Core.Data
                 ActiveUsers = quota.ActiveUsers,
                 Features = quota.Features,
                 Price = quota.Price,
-                Price2 = quota.Price2,
                 AvangateId = quota.AvangateId,
                 Visible = quota.Visible
             };

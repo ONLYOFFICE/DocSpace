@@ -84,9 +84,9 @@ class FilesTableHeader extends React.Component {
     const splitColumns = storageColumns && storageColumns.split(",");
     const columns = this.getColumns(defaultColumns, splitColumns);
     const resetColumnsSize =
-      splitColumns && splitColumns.length !== columns.length;
+      (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
     const tableColumns = columns.map((c) => c.enable && c.key);
-    resetColumnsSize && localStorage.setItem(TABLE_COLUMNS, tableColumns);
+    localStorage.setItem(TABLE_COLUMNS, tableColumns);
 
     this.state = { columns, resetColumnsSize };
   }

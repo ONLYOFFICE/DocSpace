@@ -55,8 +55,6 @@ namespace ASC.Core.Tenants
 
         public decimal Price { get; set; }
 
-        public decimal Price2 { get; set; }
-
         public string AvangateId { get; set; }
 
         public bool Visible { get; set; }

@@ -454,7 +454,8 @@ class PageLayout extends React.Component {
         {!isMobile && uploadFiles && !dragging && (
           <StyledSelectoWrapper>
             <Selecto
-              dragContainer={".main"}
+              boundContainer={".section-body"}
+              dragContainer={".section-body"}
               selectableTargets={[".files-item"]}
               hitRate={0}
               selectByClick={false}
