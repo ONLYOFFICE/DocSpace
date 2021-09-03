@@ -252,7 +252,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-ls | --local_scripts )
+		-ls | --localscripts )
 			if [ "$2" != "" ]; then
 				shift
 			fi

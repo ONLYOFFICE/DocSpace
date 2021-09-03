@@ -21,7 +21,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-ls | --local_scripts )
+		-ls | --localscripts )
 			if [ "$2" != "" ]; then
 				LOCAL_SCRIPTS=$2
 				shift
