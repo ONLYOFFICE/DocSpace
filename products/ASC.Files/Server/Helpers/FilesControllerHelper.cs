@@ -362,17 +362,17 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<ConversationResult<T>> StartConversion(T fileId)
+        public IEnumerable<ConversationResult<T>> StartConversion(T fileId, bool sync = false)
         {
-            return CheckConversion(fileId, true);
+            return CheckConversion(fileId, true, sync);
         }
 
-        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start)
+        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start, bool sync = false)
         {
             return FileStorageService.CheckConversion(new List<List<string>>
             {
                 new List<string> { fileId.ToString(), "0", start.ToString() }
-            })
+            }, sync)
             .Select(r =>
             {
                 var o = new ConversationResult<T>
@@ -506,6 +506,11 @@ namespace ASC.Files.Helpers
         {
             var result = FileStorageService.LockFile(fileId, lockFile);
             return FileWrapperHelper.Get(result);
+        }
+
+        public DocumentService.FileLink GetPresignedUri(T fileId)
+        {
+            return FileStorageService.GetPresignedUri(fileId);
         }
 
         public string UpdateComment(T fileId, int version, string comment)

@@ -396,7 +396,7 @@ namespace ASC.Web.Files.Utils
             return string.Format("fileConvertation-{0}", f.ID);
         }
 
-        private string FileJsonSerializer(EntryStatusManager EntryManager, File<T> file, string folderTitle)
+        internal string FileJsonSerializer(EntryStatusManager EntryManager, File<T> file, string folderTitle)
         {
             if (file == null) return string.Empty;
 
@@ -539,6 +539,7 @@ namespace ASC.Web.Files.Utils
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private FileTrackerHelper FileTracker { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private EntryStatusManager EntryStatusManager { get; }
         private IServiceProvider ServiceProvider { get; }
         private IHttpContextAccessor HttpContextAccesor { get; }
 
@@ -561,6 +562,7 @@ namespace ASC.Web.Files.Utils
             DocumentServiceConnector documentServiceConnector,
             FileTrackerHelper fileTracker,
             BaseCommonLinkUtility baseCommonLinkUtility,
+            EntryStatusManager entryStatusManager,
             IServiceProvider serviceProvider)
         {
             FileUtility = fileUtility;
@@ -581,6 +583,7 @@ namespace ASC.Web.Files.Utils
             DocumentServiceConnector = documentServiceConnector;
             FileTracker = fileTracker;
             BaseCommonLinkUtility = baseCommonLinkUtility;
+            EntryStatusManager = entryStatusManager;
             ServiceProvider = serviceProvider;
         }
         public FileConverter(
@@ -602,12 +605,13 @@ namespace ASC.Web.Files.Utils
             DocumentServiceConnector documentServiceConnector,
             FileTrackerHelper fileTracker,
             BaseCommonLinkUtility baseCommonLinkUtility,
+            EntryStatusManager entryStatusManager,
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccesor)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
                   fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
                   globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector, fileTracker,
-                  baseCommonLinkUtility, serviceProvider)
+                  baseCommonLinkUtility, entryStatusManager, serviceProvider)
         {
             HttpContextAccesor = httpContextAccesor;
         }
@@ -682,7 +686,7 @@ namespace ASC.Web.Files.Utils
             return new ResponseStream(((HttpWebRequest)WebRequest.Create(convertUri)).GetResponse());
         }
 
-        public File<T> ExecSync<T>(File<T> file, string doc)
+        public FileOperationResult ExecSync<T>(File<T> file, string doc)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
             var fileSecurity = FileSecurity;
@@ -707,7 +711,45 @@ namespace ASC.Web.Files.Utils
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
             DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
-            return SaveConvertedFile(file, convertUri);
+            var operationResult = new ConvertFileOperationResult
+            {
+                Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
+                OperationType = FileOperationType.Convert,
+                Error = string.Empty,
+                Progress = 0,
+                Result = string.Empty,
+                Processed = "",
+                Id = string.Empty,
+                TenantId = TenantManager.GetCurrentTenant().TenantId,
+                Account = AuthContext.CurrentAccount,
+                Delete = false,
+                StartDateTime = DateTime.Now,
+                Url = HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null,
+                Password = null,
+                ServerRootPath = BaseCommonLinkUtility.ServerRootPath
+            };
+
+            var operationResultError = string.Empty;
+
+            var newFile = SaveConvertedFile(file, fileUri);
+            if (newFile != null)
+            {
+                var folderDao = DaoFactory.GetFolderDao<T>();
+                var folder = folderDao.GetFolder(newFile.FolderID);
+                var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
+                operationResult.Result = GetFileConverter<T>().FileJsonSerializer(EntryStatusManager, newFile, folderTitle);
+            }
+
+            operationResult.Progress = 100;
+            operationResult.StopDateTime = DateTime.UtcNow;
+            operationResult.Processed = "1";
+
+            if (!string.IsNullOrEmpty(operationResultError))
+            {
+                operationResult.Error = operationResultError;
+            }
+
+            return operationResult;
         }
 
         public void ExecAsync<T>(File<T> file, bool deleteAfter, string password = null)

@@ -832,6 +832,7 @@ class FilterInput extends React.Component {
       isMobile,
       sectionWidth,
       getViewSettingsData,
+      viewSelectorVisible,
     } = this.props;
     /* eslint-enable react/prop-types */
 
@@ -911,31 +912,33 @@ class FilterInput extends React.Component {
           </SearchInput>
         </div>
         <div ref={this.rectComboBoxRef}>
-          <SortComboBox
-            options={getSortData()}
-            viewSettings={this.state.viewSettings}
-            isDisabled={isDisabled}
-            onChangeSortId={this.onClickSortItem}
-            onChangeView={this.props.onChangeViewAs}
-            onChangeSortDirection={this.onChangeSortDirection}
-            selectedOption={
-              getSortData().length > 0
-                ? getSortData().find((x) => x.key === sortId)
-                : {}
-            }
-            onButtonClick={this.onSortDirectionClick}
-            viewAs={viewAs}
-            sortDirection={+sortDirection}
-            directionAscLabel={directionAscLabel}
-            directionDescLabel={directionDescLabel}
-          />
+          {viewAs !== "table" && (
+            <SortComboBox
+              options={getSortData()}
+              viewSettings={this.state.viewSettings}
+              isDisabled={isDisabled}
+              onChangeSortId={this.onClickSortItem}
+              onChangeView={this.props.onChangeViewAs}
+              onChangeSortDirection={this.onChangeSortDirection}
+              selectedOption={
+                getSortData().length > 0
+                  ? getSortData().find((x) => x.key === sortId)
+                  : {}
+              }
+              onButtonClick={this.onSortDirectionClick}
+              viewAs={viewAs}
+              sortDirection={+sortDirection}
+              directionAscLabel={directionAscLabel}
+              directionDescLabel={directionDescLabel}
+            />
+          )}
         </div>
-        {viewAs && !isMobileOnly && (
+        {viewAs && !isMobileOnly && viewSelectorVisible && (
           <ViewSelector
-            className="view-selector-button"
+            className="view-selector-button not-selectable"
             isDisabled={isDisabled}
             onChangeView={this.props.onChangeViewAs}
-            viewAs={viewAs}
+            viewAs={viewAs === "table" ? "row" : viewAs}
             viewSettings={this.state.viewSettings}
           />
         )}
@@ -976,6 +979,7 @@ FilterInput.defaultProps = {
   needForUpdate: false,
   directionAscLabel: "A-Z",
   directionDescLabel: "Z-A",
+  viewSelectorVisible: true,
 };
 
 export default FilterInput;
