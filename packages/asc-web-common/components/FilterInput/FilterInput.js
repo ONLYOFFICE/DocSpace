@@ -162,15 +162,15 @@ class FilterInput extends React.Component {
     }
 
     if (
-      (!equal(
+      !equal(
         selectedFilterData.filterValues,
         prevProps.selectedFilterData.filterValues
       ) &&
-        selectedFilterData.filterValues.length !==
-          this.state.filterValues.length) ||
-      inputValue !== searchText ||
-      sectionWidth !== prevProps.sectionWidth ||
-      isGroupChanged
+      (selectedFilterData.filterValues.length !==
+        this.state.filterValues.length ||
+        inputValue !== searchText ||
+        sectionWidth !== prevProps.sectionWidth ||
+        isGroupChanged)
     ) {
       const sortData = getSortData();
       this.setState({
