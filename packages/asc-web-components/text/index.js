@@ -10,7 +10,6 @@ const Text = ({
   fontWeight,
   color,
   textAlign,
-  className,
   ...rest
 }) => {
   return (
@@ -21,7 +20,6 @@ const Text = ({
       textAlign={textAlign}
       as={!as && tag ? tag : as}
       title={title}
-      className={`${className} not-selectable`}
       {...rest}
     />
   );

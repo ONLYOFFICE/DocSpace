@@ -1200,15 +1200,15 @@ namespace ASC.Api.Documents
         /// <param name="fileId"></param>
         /// <returns>Operation result</returns>
         [Update("file/{fileId}/checkconversion")]
-        public IEnumerable<ConversationResult<string>> StartConversion(string fileId)
+        public IEnumerable<ConversationResult<string>> StartConversion(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
         {
-            return FilesControllerHelperString.StartConversion(fileId);
+            return FilesControllerHelperString.StartConversion(fileId, model?.Sync ?? false);
         }
 
         [Update("file/{fileId:int}/checkconversion")]
-        public IEnumerable<ConversationResult<int>> StartConversion(int fileId)
+        public IEnumerable<ConversationResult<int>> StartConversion(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
         {
-            return FilesControllerHelperInt.StartConversion(fileId);
+            return FilesControllerHelperInt.StartConversion(fileId, model?.Sync ?? false);
         }
 
         /// <summary>
@@ -1441,6 +1441,18 @@ namespace ASC.Api.Documents
         public IEnumerable<FileWrapper<int>> GetFileVersionInfo(int fileId)
         {
             return FilesControllerHelperInt.GetFileVersionInfo(fileId);
+        }
+
+        [Read("file/{fileId}/presigned")]
+        public DocumentService.FileLink GetPresignedUri(string fileId)
+        {
+            return FilesControllerHelperString.GetPresignedUri(fileId);
+        }
+
+        [Read("file/{fileId:int}/presigned")]
+        public DocumentService.FileLink GetPresignedUri(int fileId)
+        {
+            return FilesControllerHelperInt.GetPresignedUri(fileId);
         }
 
         /// <summary>

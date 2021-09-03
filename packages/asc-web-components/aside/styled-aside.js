@@ -4,9 +4,13 @@ import Base from "../themes/base";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-const Container = ({ visible, scale, zIndex, ...props }) => (
-  <aside {...props} />
-);
+const Container = ({
+  visible,
+  scale,
+  zIndex,
+  contentPaddingBottom,
+  ...props
+}) => <aside {...props} />;
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
@@ -27,7 +31,10 @@ const StyledAside = styled(Container)`
   box-sizing: border-box;
 
   &.modal-dialog-aside {
-    padding-bottom: ${(props) => props.theme.aside.paddingBottom};
+    padding-bottom: ${(props) =>
+      props.contentPaddingBottom
+        ? props.contentPaddingBottom
+        : props.theme.aside.paddingBottom};
 
     .modal-dialog-aside-footer {
       position: fixed;

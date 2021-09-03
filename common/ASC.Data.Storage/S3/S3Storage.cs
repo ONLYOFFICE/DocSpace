@@ -907,16 +907,19 @@ namespace ASC.Data.Storage.S3
 
                 return true;
             }
-            catch (AmazonS3Exception ex)
+            catch (AggregateException agg)
             {
-                if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
+                if (agg.InnerException is AmazonS3Exception ex)
                 {
-                    return false;
-                }
+                    if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
+                    {
+                        return false;
+                    }
 
-                if (string.Equals(ex.ErrorCode, "NotFound"))
-                {
-                    return false;
+                    if (string.Equals(ex.ErrorCode, "NotFound"))
+                    {
+                        return false;
+                    }
                 }
 
                 throw;
