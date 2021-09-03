@@ -31,23 +31,24 @@ namespace ASC.Webhooks.Core
             WebhookNotify = webhookNotify;
         }
 
-        public void Publish(string eventName, object data)
+        public void Publish(string eventName, string requestPayload)
         {
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
             var webhookConfigs = DbWorker.GetWebhookConfigs(tenantId);
 
             foreach (var config in webhookConfigs)
             {
-                var webhooksPayload = new WebhooksPayload
-                {
+                var webhooksLog = new WebhooksLog
+                {   
+                    Uid = Guid.NewGuid().ToString(),
                     TenantId = tenantId,
                     Event = eventName,
                     CreationTime = DateTime.UtcNow,
-                    Data = data.ToString(),
+                    RequestPayload = requestPayload,                 
                     Status = ProcessStatus.InProcess,
                     ConfigId = config.ConfigId
                 };
-                var DbId = DbWorker.WriteToJournal(webhooksPayload);
+                var DbId = DbWorker.WriteToJournal(webhooksLog);
 
                 var request = new WebhookRequest()
                 {

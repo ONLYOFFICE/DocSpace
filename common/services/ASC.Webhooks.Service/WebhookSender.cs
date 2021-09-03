@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,14 +42,16 @@ namespace ASC.Webhooks.Service
             var id = entry.Id;
             var requestURI = entry.Uri;
             var secretKey = entry.SecretKey;
-            var data = entry.Data;
+            var data = entry.Payload;
 
+            HttpResponseMessage response = new HttpResponseMessage();
+            HttpRequestMessage request = new HttpRequestMessage();
 
             for (int i = 0; i < RepeatCount; i++)
             {
                 try
                 {
-                    var request = new HttpRequestMessage(HttpMethod.Post, requestURI);
+                    request = new HttpRequestMessage(HttpMethod.Post, requestURI);
                     request.Headers.Add("Accept", "*/*");
                     request.Headers.Add("Secret", "SHA256=" + GetSecretHash(secretKey, data));
 
@@ -55,20 +60,25 @@ namespace ASC.Webhooks.Service
                         Encoding.UTF8,
                         "application/json");
 
-                    var response = await httpClient.SendAsync(request, cancellationToken);
+                    response = await httpClient.SendAsync(request, cancellationToken);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        dbWorker.UpdateStatus(id, ProcessStatus.Success);
+                        UpdateDb(dbWorker, id, response, request, ProcessStatus.Success);
                         Log.Debug("Response: " + response);
                         break;
+                    }
+                    else if (i == RepeatCount - 1)
+                    {
+                        UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
+                        Log.Debug("Response: " + response);
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (i == RepeatCount)
+                    if (i == RepeatCount - 1)
                     {
-                        dbWorker.UpdateStatus(id, ProcessStatus.Failed);
+                        UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
                     }
 
                     Log.Error(ex.Message);
@@ -89,6 +99,21 @@ namespace ASC.Webhooks.Service
             }
 
             return computedSignature;
+        }
+
+        private void UpdateDb(DbWorker dbWorker, int id, HttpResponseMessage response, HttpRequestMessage request, ProcessStatus status)
+        {
+            var responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value));
+            var requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key , v => v.Value));
+            string responsePayload;
+
+            using (var streamReader = new StreamReader(response.Content.ReadAsStream()))
+            {
+                var responseContent = streamReader.ReadToEnd();
+                responsePayload = JsonSerializer.Serialize(responseContent);
+            };
+
+            dbWorker.UpdateWebhookJournal(id, status, responsePayload, responseHeaders, requestHeaders);
         }
     }
 }

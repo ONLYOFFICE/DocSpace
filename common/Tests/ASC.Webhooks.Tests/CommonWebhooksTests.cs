@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -18,10 +19,12 @@ using ASC.Webhooks.Service;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 using Moq;
 
@@ -34,7 +37,8 @@ namespace ASC.Webhooks.Tests
     {
         private string EventName = "testEvent";
         private string secretKey = "testSecretKey";
-        private string Content = JsonSerializer.Serialize("testContent");
+        private string content = JsonSerializer.Serialize("testContent");
+        private string headers = JsonSerializer.Serialize(new { Host = new StringValues("localhost")});
         private string URI = $"http://localhost:{port}/api/2.0/Test/";
         private DateTime creationTime = DateTime.Now;
         private CacheNotifyAction testCacheNotifyAction = CacheNotifyAction.Update;
@@ -59,7 +63,7 @@ namespace ASC.Webhooks.Tests
             var testWebhooksEntry = new WebhookEntry()
             {
                 Id = id,
-                Data = Content,
+                Payload = content,
                 SecretKey = secretKey,
                 Uri = URI
             };
@@ -77,7 +81,7 @@ namespace ASC.Webhooks.Tests
                 mockedKafkaCaches.Setup(a => a.Publish(testWebhookRequest, testCacheNotifyAction)).Verifiable();
 
                 var publisher = new WebhookPublisher(dbWorker, tenantManager, mockedLog.Object, mockedKafkaCaches.Object);
-                publisher.Publish(EventName, Content);
+                publisher.Publish(EventName, content);
 
                 mockedKafkaCaches.Verify(a => a.Publish(testWebhookRequest, testCacheNotifyAction), Times.Once);            
             }
@@ -108,8 +112,8 @@ namespace ASC.Webhooks.Tests
             dbWorker.AddWebhookConfig(successWebhookConfig);
             dbWorker.AddWebhookConfig(failedWebhookConfig);
 
-            var successWebhookPayload = new WebhooksPayload { ConfigId = successedId, Status = ProcessStatus.InProcess, CreationTime = creationTime, Data = Content, TenantId = testTenant.TenantId };
-            var failedWebhookPayload = new WebhooksPayload { ConfigId = failedId, Status = ProcessStatus.InProcess, CreationTime = creationTime, Data = Content, TenantId = testTenant.TenantId };
+            var successWebhookPayload = new WebhooksLog { ConfigId = successedId, Status = ProcessStatus.InProcess, CreationTime = creationTime, RequestPayload = content };
+            var failedWebhookPayload = new WebhooksLog { ConfigId = failedId, Status = ProcessStatus.InProcess, CreationTime = creationTime, RequestPayload = content };
             var successWebhookPayloadId = dbWorker.WriteToJournal(successWebhookPayload);
             var failedWebhookPayloadId = dbWorker.WriteToJournal(failedWebhookPayload);
 
@@ -137,7 +141,7 @@ namespace ASC.Webhooks.Tests
         }
 
         [Test]
-        public async Task Middleware()
+        public async Task GlobalFilter()
         {
             try
             {
@@ -146,8 +150,8 @@ namespace ASC.Webhooks.Tests
                 var postEventName = $"method: POST, route: {controllerAddress}";
 
                 var mockedWebhookPubslisher = new Mock<IWebhookPublisher>();
-                mockedWebhookPubslisher.Setup(a => a.Publish(getEventName, Content)).Verifiable();
-                mockedWebhookPubslisher.Setup(a => a.Publish(postEventName, Content)).Verifiable();
+                mockedWebhookPubslisher.Setup(a => a.Publish(getEventName, content)).Verifiable();
+                mockedWebhookPubslisher.Setup(a => a.Publish(postEventName, content)).Verifiable();
               
 
                 using var host = await new HostBuilder()
@@ -160,15 +164,21 @@ namespace ASC.Webhooks.Tests
                             services.AddSingleton(mockedWebhookPubslisher.Object);
                             services.AddControllers();
 
+                            services.AddSingleton(new Action<JsonOptions>(opt => opt.JsonSerializerOptions.IgnoreNullValues = false));
+
                             var dIHelper = new DIHelper();
                             dIHelper.Configure(services);
                             dIHelper.TryAdd<TestController>();
+                            dIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
+
+                            var builder = services.AddMvcCore(config =>
+                            {
+                                config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
+                            });
                         })
                         .Configure(app =>
                         {
                             app.UseRouting();
-
-                            app.UseWebhooksMiddleware();
 
                             app.UseEndpoints(endpoints =>
                             {
@@ -180,12 +190,12 @@ namespace ASC.Webhooks.Tests
                     .StartAsync();
 
                 var getResponse = await host.GetTestClient().GetAsync(controllerAddress);
-                mockedWebhookPubslisher.Verify(a => a.Publish(getEventName, Content), Times.Never);
+                mockedWebhookPubslisher.Verify(a => a.Publish(getEventName, content), Times.Never);
 
-                StringContent stringContent = new StringContent(Content);
+                StringContent stringContent = new StringContent(content);
 
                 var postResponse = await host.GetTestClient().PostAsync(controllerAddress, stringContent);
-                mockedWebhookPubslisher.Verify(a => a.Publish(postEventName, Content), Times.Once);
+                mockedWebhookPubslisher.Verify(a => a.Publish(postEventName, content), Times.Once);
             }
             catch(Exception ex)
             {

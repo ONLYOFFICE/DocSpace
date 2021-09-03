@@ -58,11 +58,11 @@ namespace ASC.Core.Common.EF
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
-            Provider = GetProviderByConnectionString();
+            Provider = GetProviderByConnectionString();         
             switch (Provider)
             {
                 case Provider.MySql:
-                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r=>
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
                     {
                         if (!string.IsNullOrEmpty(MigrateAssembly))
                         {
@@ -74,7 +74,6 @@ namespace ASC.Core.Common.EF
                     optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
                     break;
             }
-           
         }
 
         public Provider GetProviderByConnectionString()
