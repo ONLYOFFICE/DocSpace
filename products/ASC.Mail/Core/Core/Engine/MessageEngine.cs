@@ -633,8 +633,17 @@ namespace ASC.Mail.Core.Engine
 
             using (var tx = MailDaoFactory.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                SetFolder(MailDaoFactory, ids, folder, userFolderId);
-                tx.Commit();
+                try
+                {
+                    SetFolder(MailDaoFactory, ids, folder, userFolderId);
+                    tx.Commit();
+                }
+                catch (Exception e)
+                {
+                    if (e.InnerException != null)
+                        Log.Error($"Exception when SetFolder: {userFolderId}, type {folder}\n{e.InnerException}");
+                    Log.Error($"Exception when commit SetFolder: {userFolderId}, type {folder}\n{e}");
+                }
             }
 
             var t = ServiceProvider.GetService<MailMail>();

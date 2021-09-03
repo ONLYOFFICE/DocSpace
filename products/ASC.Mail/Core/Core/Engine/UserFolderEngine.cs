@@ -292,12 +292,16 @@ namespace ASC.Mail.Core.Engine
                     .SetFolderCounters(userFolderId, unreadMess, totalMess, unreadConv,
                         totalConv);
 
-                if (res == 0)
-                    throw new Exception("Need recalculation");
+                //this action occurs during a transaction, therefore, saving changes is deferred until commit.
+                //the result will always be 0.
+
+                //if (res == 0)
+                //throw new Exception("Need recalculation");
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("UserFolderEngine->SetFolderCounters() Exception: {0}", ex.ToString());
+                Log.ErrorFormat($"UserFolderEngine->SetFolderCounters() Exception: {ex}\nStack trace:\n{ex.StackTrace}");
+                throw new Exception($"SetFolderCounters exception: folder id {userFolderId}", ex);
                 //TODO: Think about recalculation
                 //var engine = new EngineFactory(Tenant, User);
                 //engine.OperationEngine.RecalculateFolders();

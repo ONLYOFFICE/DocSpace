@@ -102,7 +102,7 @@ namespace ASC.Mail.StorageCleaner.Service
 
             try
             {
-                //Eraser.ClearMailGarbage(cancelToken); Need rework
+                Eraser.ClearMailGarbage(cancelToken);
 
                 Log.InfoFormat("All mailboxes were processed. Go back to timer. Next start after {0} minutes.\r\n",
                     TsInterval.TotalMinutes);

@@ -118,9 +118,12 @@ namespace ASC.Mail.Core.Engine
         {
             Log.Debug("Begin ClearMailGarbage()");
 
+            using var scope = ServiceProvider.CreateScope();
+            var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+
             var tasks = new List<Task>();
 
-            var mailboxIterator = new MailboxIterator(MailboxEngine, isRemoved: null, log: Log);
+            var mailboxIterator = new MailboxIterator(mailboxEngine, isRemoved: null, log: Log);
 
             var mailbox = mailboxIterator.First();
 
@@ -133,7 +136,6 @@ namespace ASC.Mail.Core.Engine
 
                     var mb = mailbox;
 
-                    using var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
                     tenantManager.SetCurrentTenant(mailbox.TenantId);
@@ -319,6 +321,13 @@ namespace ASC.Mail.Core.Engine
 
             lock (Locker)
             {
+                using var scope = ServiceProvider.CreateScope();
+
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var userManager = scope.ServiceProvider.GetService<UserManager>();
+                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                var apiHelper = scope.ServiceProvider.GetService<ApiHelper>();
+
                 DefineConstants.TariffType type;
 
                 var memTenantItem = TenantMemCache.Get(mailbox.TenantId.ToString(CultureInfo.InvariantCulture));
@@ -329,7 +338,7 @@ namespace ASC.Mail.Core.Engine
 
                     taskLog.DebugFormat("GetTenantStatus(OverdueDays={0})", MailSettings.Cleaner.TenantOverdueDays);
 
-                    type = mailbox.GetTenantStatus(TenantManager, SecurityContext, ApiHelper, (int)MailSettings.Cleaner.TenantOverdueDays, Log);
+                    type = mailbox.GetTenantStatus(tenantManager, securityContext, apiHelper, (int)MailSettings.Cleaner.TenantOverdueDays, Log);
 
                     var cacheItem = new CacheItem(mailbox.TenantId.ToString(CultureInfo.InvariantCulture), type);
 
@@ -352,13 +361,14 @@ namespace ASC.Mail.Core.Engine
 
                 if (type == DefineConstants.TariffType.LongDead)
                 {
+                    taskLog.InfoFormat($"The mailbox {mailbox.MailBoxId} will be deleted");
                     needRemove = true;
                 }
                 else
                 {
-                    var isUserRemoved = mailbox.IsUserRemoved(TenantManager, UserManager);
+                    var isUserRemoved = mailbox.IsUserRemoved(tenantManager, userManager);
 
-                    taskLog.InfoFormat("User '{0}' status is '{1}'", mailbox.UserId, isUserRemoved ? "Terminated" : "Not terminated");
+                    taskLog.InfoFormat("User '{0}' status is '{1}'", mailbox.UserId, isUserRemoved ? "Terminated. The mailbox will be deleted" : "Not terminated");
 
                     if (isUserRemoved)
                     {
@@ -380,11 +390,12 @@ namespace ASC.Mail.Core.Engine
             {
                 if (NeedRemove(mailbox, Log))
                 {
+                    Log.DebugFormat($"Mailbox {mailbox.MailBoxId} has been marked for deletion. Removal started...");
                     RemoveMailboxData(mailbox, true, Log);
                 }
                 else if (mailbox.IsRemoved)
                 {
-                    Log.Info("Mailbox is removed.");
+                    Log.Info($"Mailbox {mailbox.MailBoxId} has been marked for deletion. Removal started...");
                     RemoveMailboxData(mailbox, false, Log);
                 }
                 else
@@ -409,10 +420,10 @@ namespace ASC.Mail.Core.Engine
                 using var scope = ServiceProvider.CreateScope();
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
-                var mailDaoFactory = scope.ServiceProvider.GetService<MailDaoFactory>();
-
                 tenantManager.SetCurrentTenant(mailbox.TenantId);
+                var mailDaoFactory = scope.ServiceProvider.GetService<MailDaoFactory>();
+                var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
+
 
                 if (!mailbox.IsRemoved)
                 {
@@ -433,7 +444,7 @@ namespace ASC.Mail.Core.Engine
 
                     log.Info("SetMailboxRemoved()");
 
-                    //mailboxEngine.RemoveMailBox(mailbox, needRecalculateFolders);
+                    factory.MailboxEngine.RemoveMailBox(mailbox, needRecalculateFolders);
 
                     mailbox.IsRemoved = true;
                 }

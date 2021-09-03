@@ -437,13 +437,9 @@ namespace ASC.Mail.Core.Dao
 
             var result = MailDbContext.SaveChanges();
 
-            if (result > 0)
+            if (result <= 0)
             {
-                log.InfoFormat($"Successfull Release Mailbox {mailbox.Address} Id:{mailbox.Id}.");
-            }
-            else
-            {
-                log.Warn($"Problem when trying release mailbox {mailbox.Address} Id:{mailbox.Id}.");
+                log.Warn($"Problem when trying release mailbox {mailbox.Address} | Id:{mailbox.Id}.");
             }
 
             return result > 0;

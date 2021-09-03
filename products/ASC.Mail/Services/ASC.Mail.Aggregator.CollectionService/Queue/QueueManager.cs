@@ -111,7 +111,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
             if (_lockedMailBoxList.Any(m => m.MailBoxId == mailBoxData.MailBoxId))
             {
-                Log.Error($"GetLockedMailbox() Stored duplicate with id = {mailBoxData.MailBoxId}, address = {mailBoxData.EMail.Address}");
+                Log.Error($"GetLockedMailbox() Stored dublicate with id = {mailBoxData.MailBoxId}, address = {mailBoxData.EMail.Address}. Mailbox not added to the queue.");
+                return null;
             }
 
             if (_lockedMailBoxList.Any(m => m.EMail.Address == mailBoxData.EMail.Address))
@@ -187,6 +188,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                 mailboxEngine.ReleaseMailbox(mailBoxData, MailSettings);
 
+                Log.Debug($"Mail box {mailBoxData.MailBoxId} will be realesed...Now remove from locked queue by Id.");
                 _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
 
                 DeleteMailboxFromDumpDb(mailBoxData.MailBoxId);
@@ -494,7 +496,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             {
                 Log.DebugFormat("Queue is {0}. Load new queue.", QueueIsEmpty ? "EMPTY" : "EXPIRED");
 
-                LoadQueue();
+                LoadQueue(); //здесь ящики еще не в процессе
             }
 
             return !QueueIsEmpty ? _mailBoxQueue.Dequeue() : null;

@@ -137,6 +137,12 @@ namespace ASC.Mail.Core.Engine
 
             var mailboxes = MailDaoFactory.GetMailboxDao().GetUniqueMailBoxes(exp);
 
+            Log.Info($"Returned for queue boxes: ");
+            foreach (var box in mailboxes)
+            {
+                Log.Info($"Box {box.Id} have {box.DateLoginDelayExpires} date login delay expires. IsProcessed: {box.IsProcessed}");
+            }
+
             list.AddRange(mailboxes.Select(GetMailbox).Where(tuple => tuple != null));
 
             return list;
@@ -584,12 +590,7 @@ namespace ASC.Mail.Core.Engine
             {
                 var sameMboxes = GetMailboxList(new ConcreteMailboxesExp(mailBox.EMail.Address));
 
-                Log.Info($"Next mailboxes will be released:");
-
-                foreach (var box in sameMboxes)
-                {
-                    Log.Info($"{box.Address} width id {box.Id}");
-                }
+                Log.Info($"{sameMboxes.Count} {sameMboxes.FirstOrDefault().Address} mailboxes will be released.");
 
                 foreach (var box in sameMboxes)
                 {
@@ -849,7 +850,7 @@ namespace ASC.Mail.Core.Engine
 
             var mailboxes = GetUniqueMailboxDataList(new MailboxesForProcessingExp(mailSettings, tasksLimit, false));
 
-            Log.DebugFormat("Found {0} inactive tasks", mailboxes.Count);
+            Log.DebugFormat($"Found {mailboxes.Count} inactive tasks");
 
             return mailboxes;
         }

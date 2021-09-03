@@ -28,13 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
+
 using ASC.Core;
-using ASC.Data.Storage;
 using ASC.Mail.Models;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Utility;
 
 namespace ASC.Mail.Storage
 {
