@@ -13,6 +13,7 @@ const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
       {...linkStyles}
       color="#333"
       isTextOverflow
+      className="item-file-name"
     >
       {titleWithoutExt}
       {fileExst ? (
