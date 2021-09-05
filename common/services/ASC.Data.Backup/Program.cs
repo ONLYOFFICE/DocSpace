@@ -24,7 +24,7 @@ namespace ASC.Data.Backup
             await host.RunAsync();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) => 
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSystemd()
                 .UseWindowsService()
@@ -67,6 +67,7 @@ namespace ASC.Data.Backup
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("backup.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)

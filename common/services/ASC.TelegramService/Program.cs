@@ -96,6 +96,7 @@ namespace ASC.TelegramService
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables();
