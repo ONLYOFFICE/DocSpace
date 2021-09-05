@@ -59,10 +59,12 @@ namespace ASC.Mail.ImapSync
         {
             get
             {
-                return _willDieInNextTurn;
+                return _IsDieInNextTurn;
             }
         }
         public ConcurrentDictionary<string, List<MailSieveFilterData>> Filters { get; set; }
+
+        private ConcurrentQueue<ImapAction> imapActionsQueue;
 
         private readonly MailEnginesFactory _mailEnginesFactory;
         private readonly MailSettings _mailSettings;
@@ -86,11 +88,15 @@ namespace ASC.Mail.ImapSync
 
         private System.Timers.Timer aliveTimer;
 
-        private bool _willDieInNextTurn = false;
+        private System.Timers.Timer processActionFromImapTimer;
+
+        private bool _IsDieInNextTurn = false;
+
+        private bool _IsProcessActionFromImapInNextTurn = false;
 
         public async void CheckRedis(int mailBoxId, int folderActivity, IEnumerable<int> tags)
         {
-            _willDieInNextTurn = false;
+            _IsDieInNextTurn = false;
 
             SimpleImapClient simpleImapClient = simpleImapClients.FirstOrDefault(x => x.Account.MailBoxId == mailBoxId);
 
@@ -166,9 +172,6 @@ namespace ASC.Mail.ImapSync
             _log = clientScope.GetService<ILog>();
             _apiHelper = clientScope.GetService<ApiHelper>();
 
-            _log.Name = $"ASC.Mail.MailImapClient{userName}";
-
-
             var userMailboxesExp = new UserMailboxesExp(tenant, userName, onlyTeamlab: true);
 
             var mailboxes = _mailEnginesFactory.MailboxEngine.GetMailboxDataList(userMailboxesExp);
@@ -177,6 +180,8 @@ namespace ASC.Mail.ImapSync
             {
                 throw new Exception($"No mail boxes. UserName={UserName}");
             }
+
+            _log.Name = $"ASC.Mail.MailUserClient_{userName}";
 
             crmAvailable = mailboxes.Any(mailbox => mailbox.IsCrmAvailable(tenantManager, securityContext, _apiHelper, _log));
 
@@ -188,10 +193,17 @@ namespace ASC.Mail.ImapSync
             }
 
             simpleImapClients = new List<SimpleImapClient>(mailboxes.Count);
+            imapActionsQueue = new ConcurrentQueue<ImapAction>();
 
             aliveTimer = new System.Timers.Timer((_mailSettings.ImapSync.AliveTimeInMinutes ?? 20) * 60 * 1000);
 
             aliveTimer.Elapsed += AliveTimer_Elapsed;
+
+            processActionFromImapTimer = new System.Timers.Timer(1000);
+
+            processActionFromImapTimer.Elapsed += ProcessActionFromImapTimer_Elapsed;
+
+            processActionFromImapTimer.Enabled = true;
 
             foreach (var mailbox in mailboxes)
             {
@@ -210,15 +222,83 @@ namespace ASC.Mail.ImapSync
             aliveTimer.Enabled = true;
         }
 
+        private void ProcessActionFromImapTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (!_IsProcessActionFromImapInNextTurn)
+            {
+                _IsProcessActionFromImapInNextTurn = true;
+                return;
+            }
+
+            var ids = new List<int>();
+
+            while (imapActionsQueue.TryDequeue(out ImapAction imapAction))
+            {
+                bool result = false;
+
+                ids.Add(imapAction.message_id);
+
+                if (imapActionsQueue.TryPeek(out ImapAction nextImapAction))
+                {
+                    if (imapAction.FolderAction == nextImapAction.FolderAction)
+                    {
+                        continue;
+                    }
+                }
+
+                try
+                {
+                    switch (imapAction.FolderAction)
+                    {
+                        case MailUserAction.Nothing:
+                            break;
+                        case MailUserAction.SetAsRead:
+                            result = _mailEnginesFactory.MessageEngine.SetUnread(ids, false);
+                            break;
+                        case MailUserAction.SetAsUnread:
+                            result = _mailEnginesFactory.MessageEngine.SetUnread(ids, true);
+                            break;
+                        case MailUserAction.SetAsImportant:
+                            result = _mailEnginesFactory.MessageEngine.SetImportant(ids, true);
+                            break;
+                        case MailUserAction.SetAsNotImpotant:
+                            result = _mailEnginesFactory.MessageEngine.SetImportant(ids, false);
+                            break;
+                        case MailUserAction.SetAsDeleted:
+                            break;
+                        case MailUserAction.RemovedFromFolder:
+                            break;
+                        case MailUserAction.New:
+                            break;
+                        default:
+                            break;
+                    }
+
+                    _log.Debug($"New Action ({imapAction.FolderAction}) complete with result {result}.");
+                }
+                catch (Exception ex)
+                {
+                    _log.Error($"ProcessActionFromImap: {imapAction.FolderAction}, Count={ids.Count}, Exception: {ex}");
+                    ids.ForEach(x => _log.Error($"MessageId={x}"));
+                }
+                finally
+                {
+                    ids.ForEach(x => _log.Debug($"MessageId={x}"));
+
+                    ids.Clear();
+                }
+            }
+        }
+
         private void AliveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (_willDieInNextTurn)
+            if (_IsDieInNextTurn)
             {
                 OnCriticalError?.Invoke(this, EventArgs.Empty);
             }
             else
             {
-                _willDieInNextTurn = true;
+                _IsDieInNextTurn = true;
             }
         }
 
@@ -250,44 +330,9 @@ namespace ASC.Mail.ImapSync
 
         private void ImapClient_NewActionFromImap(object sender, ImapAction e)
         {
-            if (sender is SimpleImapClient simpleImapClient)
-            {
-                bool result = false;
+            _IsProcessActionFromImapInNextTurn = false;
 
-                string uidl = e.UniqueId.ToUidl(simpleImapClient.foldersDictionary[e.Folder].Folder);
-
-                var massageInDB = simpleImapClient.workFolderMails.FirstOrDefault(x => x.Uidl == uidl);
-
-                if (massageInDB == null) return;
-
-                switch (e.FolderAction)
-                {
-                    case MailUserAction.Nothing:
-                        break;
-                    case MailUserAction.SetAsRead:
-                        result=_mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, false);
-                        break;
-                    case MailUserAction.SetAsUnread:
-                        result = _mailEnginesFactory.MessageEngine.SetUnread(new List<int>() { massageInDB.Id }, true);
-                        break;
-                    case MailUserAction.SetAsImportant:
-                        result = _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, true);
-                        break;
-                    case MailUserAction.SetAsNotImpotant:
-                        result = _mailEnginesFactory.MessageEngine.SetImportant(new List<int>() { massageInDB.Id }, false);
-                        break;
-                    case MailUserAction.SetAsDeleted:
-                        break;
-                    case MailUserAction.RemovedFromFolder:
-                        break;
-                    case MailUserAction.New:
-                        break;
-                    default:
-                        break;
-                }
-
-                _log.Debug($"New Action ({e.FolderAction}) from imap on {e.Folder}({e.UniqueId}) complete with result {result}.");
-            }
+            imapActionsQueue.Enqueue(e);
         }
 
         private void ImapClient_MessagesListUpdated(object sender, EventArgs e)
