@@ -24,6 +24,7 @@ class RadioField extends React.Component {
 
       tooltipContent,
       helpButtonHeaderContent,
+      maxLabelWidth,
     } = this.props;
 
     return (
@@ -33,6 +34,7 @@ class RadioField extends React.Component {
         labelText={labelText}
         tooltipContent={tooltipContent}
         helpButtonHeaderContent={helpButtonHeaderContent}
+        maxLabelWidth={maxLabelWidth}
       >
         <RadioButtonGroup
           name={radioName}

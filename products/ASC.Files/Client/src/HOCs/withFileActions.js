@@ -48,12 +48,26 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         isPrivacy,
+        onSelectItem,
+        item,
       } = this.props;
+
+      const { id, isFolder } = item;
+
       const notSelectable = e.target.classList.contains("not-selectable");
-      if (!draggable || isPrivacy) return;
+      const isFileName = e.target.classList.contains("item-file-name");
+
+      console.log("e.target.classList", e.target.classList);
+      console.log("isFileName", isFileName);
+
+      if (isPrivacy || (!draggable && !isFileName)) return;
 
       if (window.innerWidth < 1025 || notSelectable) {
         return;
+      }
+
+      if (!draggable) {
+        id !== -1 && onSelectItem({ id, isFolder });
       }
 
       const mouseButton = e.which
