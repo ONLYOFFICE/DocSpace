@@ -1,6 +1,6 @@
-﻿/*
+/*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -23,41 +23,27 @@
  *
 */
 
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Common.Threading;
-using ASC.Data.Backup.Controllers;
-using ASC.Data.Backup.Service;
-using ASC.Web.Studio.Core.Notify;
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
 
-namespace ASC.Data.Backup
+using ASC.Data.Backup.EF.Model;
+
+namespace ASC.Data.Backup.Storage
 {
-    public class Startup : BaseStartup
+    public interface IBackupRepository
     {
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
-        {
+        void SaveBackupRecord(BackupRecord backupRecord);
+        BackupRecord GetBackupRecord(Guid id);
+        BackupRecord GetBackupRecord(string hash, int tenant);
+        List<BackupRecord> GetExpiredBackupRecords();
+        List<BackupRecord> GetScheduledBackupRecords();
+        List<BackupRecord> GetBackupRecordsByTenantId(int tenantId);
+        void DeleteBackupRecord(Guid id);
 
-        }
-
-        public override void ConfigureServices(IServiceCollection services)
-        {
-            base.ConfigureServices(services);
-
-            DIHelper.AddDistributedTaskQueueService<BaseBackupProgressItem>(1);
-            
-            DIHelper.TryAdd<BackupProgressItem>();
-            DIHelper.TryAdd<RestoreProgressItem>();
-            DIHelper.TryAdd<TransferProgressItem>();
-
-            DIHelper.TryAdd<BackupServiceLauncher>();
-            DIHelper.TryAdd<BackupController>();
-            NotifyConfigurationExtension.Register(DIHelper);
-
-            services.AddHostedService<BackupServiceLauncher>();
-        }
+        void SaveBackupSchedule(BackupSchedule schedule);
+        BackupSchedule GetBackupSchedule(int tenantId);
+        List<BackupSchedule> GetBackupSchedules();
+        void DeleteBackupSchedule(int tenantId);
     }
 }
