@@ -54,13 +54,14 @@ namespace ASC.Mail.Core.Dao
 
         public List<Chain> GetChains(IConversationsExp exp, ILog log = null)
         {
-            var dbChains = MailDbContext.MailChain.Where(exp.GetExpression()).ToList();
+            var dbChains = MailDbContext.MailChain.Where(exp.GetExpression());
 
             if (log != null)
-                log.Debug($"ChainDao -> Get chains returned {dbChains.Count} chains.");
+                log.Debug($"ChainDao -> Get chains returned {dbChains.Count()} chains.");
 
-            //sometimes query take a very long time then was timeout exception. This is the reason for splitting the request
-            var chains = dbChains.Select(ToChain).ToList();
+            var ch = dbChains.ToList();
+
+            var chains = ch.Select(ToChain).ToList();
 
             return chains;
         }
@@ -72,7 +73,7 @@ namespace ASC.Mail.Core.Dao
                     .GroupBy(c => c.Folder, (folderId, c) =>
                     new
                     {
-                        folder = (int)folderId,
+                        folder = folderId,
                         count = c.Count()
                     })
                     .ToDictionary(o => o.folder, o => o.count);
@@ -155,11 +156,11 @@ namespace ASC.Mail.Core.Dao
             var mailChain = new MailChain
             {
                 Id = chain.Id,
-                IdMailbox = (uint)chain.MailboxId,
-                Tenant = (uint)chain.Tenant,
+                IdMailbox = chain.MailboxId,
+                Tenant = chain.Tenant,
                 IdUser = chain.User,
-                Folder = (uint)chain.Folder,
-                Length = (uint)chain.Length,
+                Folder = (int)chain.Folder,
+                Length = chain.Length,
                 Unread = chain.Unread,
                 HasAttachments = chain.HasAttachments,
                 Importance = chain.Importance,
@@ -211,11 +212,11 @@ namespace ASC.Mail.Core.Dao
             var chain = new Chain
             {
                 Id = r.Id,
-                MailboxId = (int)r.IdMailbox,
-                Tenant = (int)r.Tenant,
+                MailboxId = r.IdMailbox,
+                Tenant = r.Tenant,
                 User = r.IdUser,
                 Folder = (FolderType)r.Folder,
-                Length = (int)r.Length,
+                Length = r.Length,
                 Unread = r.Unread,
                 HasAttachments = r.HasAttachments,
                 Importance = r.Importance,
