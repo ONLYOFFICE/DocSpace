@@ -100,7 +100,7 @@ namespace ASC.ElasticSearch
             SearchSettingsHelper searchSettingsHelper,
             FactoryIndexer factoryIndexer,
             BaseIndexer<T> baseIndexer,
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ICache cache)
         {
             Cache = cache;
@@ -229,7 +229,7 @@ namespace ASC.ElasticSearch
                     {
                         Thread.Sleep(60000);
                         if (retry < 5)
-{
+                        {
                             Index(data, immediately, retry++);
                             return;
                         }
@@ -558,7 +558,6 @@ namespace ASC.ElasticSearch
         private readonly ICache cache;
         private IServiceProvider ServiceProvider { get; }
         private FactoryIndexerHelper FactoryIndexerHelper { get; }
-        internal static bool Init { get; set; }
         public ILog Log { get; }
         private Client Client { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
@@ -568,7 +567,7 @@ namespace ASC.ElasticSearch
             FactoryIndexerHelper factoryIndexerHelper,
             Client client,
             IOptionsMonitor<ILog> options,
-            CoreBaseSettings coreBaseSettings, 
+            CoreBaseSettings coreBaseSettings,
             ICache cache)
         {
             this.cache = cache;
@@ -589,8 +588,6 @@ namespace ASC.ElasticSearch
 
         public bool CheckState(bool cacheState = true)
         {
-            if (!Init) return false;
-
             const string key = "elasticsearch";
 
             if (cacheState)
@@ -633,8 +630,6 @@ namespace ASC.ElasticSearch
 
         public async Task<bool> CheckStateAsync(bool cacheState = true)
         {
-            if (!Init) return false;
-
             const string key = "elasticsearch";
 
             if (cacheState)
