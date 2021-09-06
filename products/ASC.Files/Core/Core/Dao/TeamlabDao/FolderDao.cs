@@ -712,8 +712,11 @@ namespace ASC.Files.Core.Data
         private int GetFilesCount(int folderId)
         {
             var count = Query(FilesDbContext.Files)
+                .Join(FilesDbContext.Tree, r => r.FolderId, r => r.FolderId, (file, tree) => new { tree, file })
+                .Where(r => r.tree.ParentId == folderId)
+                .Select(r => r.file.Id)
                 .Distinct()
-                .Count(r => FilesDbContext.Tree.Any(t => t.ParentId == folderId && t.FolderId == r.FolderId));
+                .Count();
 
             return count;
         }
