@@ -29,9 +29,9 @@ class SectionBodyContent extends React.Component {
 }
 
 export default inject(({ peopleStore }) => {
-  const { viewAs, setViewAs } = peopleStore;
+  const { viewAs } = peopleStore;
 
-  return { viewAs, setViewAs };
+  return { viewAs };
 })(
   withTranslation(["Home", "Common", "Translations"])(
     withLoader(observer(SectionBodyContent))(
