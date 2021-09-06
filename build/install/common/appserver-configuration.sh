@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 PRODUCT="appserver"
 ENVIRONMENT="production"
 
@@ -182,7 +185,7 @@ restart_services() {
 	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	for SVC in nginx mysql* ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
+	for SVC in nginx ${MYSQL_PACKAGE} ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
 	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
 	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
 	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
@@ -233,7 +236,7 @@ establish_mysql_conn(){
 	$MYSQL -e ";" >/dev/null 2>&1
 	ERRCODE=$?
 	if [ $ERRCODE -ne 0 ]; then
-		systemctl mysql* start >/dev/null 2>&1
+		systemctl ${MYSQL_PACKAGE} start >/dev/null 2>&1
 		$MYSQL -e ";" >/dev/null 2>&1 || { echo "FAILURE"; exit 1; }
 	fi
 
@@ -242,12 +245,6 @@ establish_mysql_conn(){
 	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" >/dev/null 2>&1
 
 	echo "OK"
-}
-
-mysql_check_connection() {
-	while ! $MYSQL -e ";" >/dev/null 2>&1; do
-    		sleep 1
-	done
 }
 
 change_mysql_config(){
@@ -351,14 +348,16 @@ change_mysql_config(){
 	fi
 
     systemctl daemon-reload >/dev/null 2>&1
-	systemctl restart mysql* >/dev/null 2>&1
+	systemctl restart ${MYSQL_PACKAGE} >/dev/null 2>&1
 }
 
 execute_mysql_script(){
 
 	change_mysql_config
 
-    mysql_check_connection
+    while ! $MYSQL -e ";" >/dev/null 2>&1; do
+    	sleep 1
+	done
     
     if [ "$DB_USER" = "root" ] && [ ! "$(mysql -V | grep ' 5.5.')" ]; then
 	   # allow connect via mysql_native_password with root and empty password
@@ -374,7 +373,7 @@ execute_mysql_script(){
 		echo -n "Installing MYSQL database... "
 
 		#Adding data to the db
-		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql
+		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql #Fix a bug related to an incorrect date
 		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
 		echo 'CREATE TABLE IF NOT EXISTS `Tenants` ( `id` varchar(200) NOT NULL, `Status` varchar(200) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> $SQL_DIR/onlyoffice.sql #Fix non-existent tables Tenants
 		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
@@ -454,8 +453,8 @@ setup_docs() {
 	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.inbox='true'" >/dev/null 2>&1
 	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.outbox='true'" >/dev/null 2>&1
 	
-	local DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | json services.CoAuthoring.secret.inbox.string)
-	local DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | json services.CoAuthoring.token.inbox.header)
+	local DOCUMENT_SERVER_JWT_SECRET=$(json -f ${DS_CONF} services.CoAuthoring.secret.inbox.string)
+	local DOCUMENT_SERVER_JWT_HEADER=$(json -f ${DS_CONF} services.CoAuthoring.token.inbox.header)
 
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
@@ -542,13 +541,13 @@ setup_elasticsearch() {
 
 setup_kafka() {
 
-	KAFKA_SERVICE=$(systemctl list-units --all -t service --full --no-legend "*kafka*" | cut -f1 -d' ')
+	KAFKA_SERVICE=$(systemctl list-units --no-legend "*kafka*" | cut -f1 -d' ')
 
 	if [ -n ${KAFKA_SERVICE} ]; then
 
 		echo -n "Configuring kafka... "
 		
-		local KAFKA_DIR="$(cat $SYSTEMD_DIR/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)"
+		local KAFKA_DIR="$(grep -oP '(?<=ExecStop=).*(?=/bin)' $SYSTEMD_DIR/$KAFKA_SERVICE)"
 		local KAFKA_CONF="${KAFKA_DIR}/config"
 
 		#Change kafka config
@@ -562,17 +561,6 @@ setup_kafka() {
 		
 		#Save kafka parameters in .json
 		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
-
-		#Add topics for kafka
-		KAFKA_TOPICS=( ascchannelQuotaCacheItemAny
-			ascchannelTariffCacheItemRemove
-			ascchannelTenantCacheItemInsertOrUpdate
-			ascchannelTenantSettingRemove )
-
-		for i in "${KAFKA_TOPICS[@]}" 
-		do
-			${KAFKA_DIR}/bin/kafka-topics.sh --create --zookeeper ${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT} --topic $i --replication-factor 1 --partitions 3 >/dev/null 2>&1
-		done
 		
 		echo "OK"
 	fi
@@ -582,15 +570,13 @@ setup_kafka() {
 if command -v yum >/dev/null 2>&1; then
 	DIST="RedHat"
 	PACKAGE_MANAGER="rpm -q"
+	MYSQL_PACKAGE="mysqld"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
 	PACKAGE_MANAGER="dpkg -l"
-	mkdir -p /var/log/onlyoffice/appserver/
-	mkdir -p /etc/onlyoffice/appserver/.private/
-	chown -R onlyoffice:onlyoffice /var/www/appserver/
-	chown -R onlyoffice:onlyoffice /var/log/onlyoffice/appserver/
-	chown -R onlyoffice:onlyoffice /etc/onlyoffice/appserver/
-
+	MYSQL_PACKAGE="mysql"
+	mkdir -p /var/log/onlyoffice/appserver/ /etc/onlyoffice/appserver/.private/
+	chown -R onlyoffice:onlyoffice /var/www/appserver/ /var/log/onlyoffice/appserver/ /etc/onlyoffice/appserver/
 	chown -R kafka /var/www/appserver/services/kafka/
 	systemctl restart kafka zookeeper
 fi
