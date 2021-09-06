@@ -165,12 +165,12 @@ class FilterInput extends React.Component {
       !equal(
         selectedFilterData.filterValues,
         prevProps.selectedFilterData.filterValues
-      ) &&
-      (selectedFilterData.filterValues.length !==
+      ) ||
+      selectedFilterData.filterValues.length !==
         this.state.filterValues.length ||
-        inputValue !== searchText ||
-        sectionWidth !== prevProps.sectionWidth ||
-        isGroupChanged)
+      inputValue !== searchText ||
+      sectionWidth !== prevProps.sectionWidth ||
+      isGroupChanged
     ) {
       const sortData = getSortData();
       this.setState({
@@ -181,7 +181,7 @@ class FilterInput extends React.Component {
             : sortData.length > 0
             ? sortData[0].key
             : "",
-        searchText: selectedFilterData.inputValue || "",
+        searchText: inputValue || "",
         needUpdateFilter: true,
       });
       this.updateFilter();
@@ -286,6 +286,7 @@ class FilterInput extends React.Component {
       this.state.sortDirection ? "desc" : "asc"
     );
   };
+
   onSortDirectionClick = () => {
     this.onFilter(
       this.state.filterValues,
