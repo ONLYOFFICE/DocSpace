@@ -13,7 +13,7 @@ pipeline {
 						}
 						stage('Backend') {
 							steps {
-								sh 'dotnet build ASC.Web.sln'
+								sh 'dotnet build -c Release ASC.Web.sln'
 							}
 						}
 					}
@@ -28,7 +28,7 @@ pipeline {
 						}
 						stage('Backend') {
 							steps {
-								bat 'dotnet build ASC.Web.sln'
+								bat 'dotnet build -c Release ASC.Web.sln'
 							}
 						}
 					}
