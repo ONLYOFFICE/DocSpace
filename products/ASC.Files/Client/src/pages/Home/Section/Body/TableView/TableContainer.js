@@ -9,7 +9,7 @@ const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    if (viewAs !== "table" && viewAs !== "row") return;
+    if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
 
     if (sectionWidth < 1025) {
       viewAs !== "row" && setViewAs("row");

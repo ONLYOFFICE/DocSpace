@@ -18,6 +18,7 @@ import { isMobile } from "react-device-detect";
 import { openDocEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
+const storageViewAs = localStorage.getItem("viewAs");
 
 class FilesStore {
   authStore;
@@ -31,7 +32,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = localStorage.getItem("viewAs") || "table";
+  viewAs = isMobile && storageViewAs !== "tile" ? "row" : storageViewAs;
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
