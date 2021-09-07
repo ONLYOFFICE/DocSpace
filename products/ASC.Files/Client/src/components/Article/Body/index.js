@@ -89,7 +89,7 @@ class ArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        {!personal && <TreeSettings />}
+        {!personal && !firstLoad && <TreeSettings />}
         {enableThirdParty && !isVisitor && <ThirdPartyList />}
         <DownloadAppList />
         {(isDesktop || isTablet) &&
