@@ -100,6 +100,14 @@ class FirebaseHelper {
     );
     return await tangRef.getDownloadURL();
   }
+
+  async getCampaignsTranslations(banner, lng) {
+    const storageRef = this.firebaseStorage.ref();
+    const tangRef = storageRef.child(
+      `campaigns/locales/${lng}/CampaignPersonal${banner}.json`
+    );
+    return await tangRef.getDownloadURL();
+  }
 }
 
 export default FirebaseHelper;

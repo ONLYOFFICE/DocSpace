@@ -273,7 +273,8 @@ export function loadLanguagePath(homepage, fixedNS = null) {
       return `/static/locales/${language}/Common.json`;
     }
     if (ns.length > 0 && ns[0].includes("Campaign")) {
-      return `/static/locales/${language}/${ns[0]}.json`;
+      const url = localStorage.getItem("campaignsT");
+      return url;
     }
     return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
   };
