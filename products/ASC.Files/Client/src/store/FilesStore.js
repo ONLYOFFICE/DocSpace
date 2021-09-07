@@ -32,7 +32,8 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = isMobile && storageViewAs !== "tile" ? "row" : storageViewAs;
+  viewAs =
+    isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
