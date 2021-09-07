@@ -35,6 +35,7 @@ using System.Web;
 
 using ASC.Common;
 using ASC.Common.Utils;
+using ASC.Common.Web;
 using ASC.Core;
 using ASC.Security.Cryptography;
 
@@ -131,14 +132,14 @@ namespace ASC.Data.Storage.DiscStorage
                 context.Response.Headers[toCopy] = h.Substring(toCopy.Length + 1);
             }
 
-            //try
-            //{
-            //    context.Response.ContentType = MimeMapping.GetMimeMapping(path);
-            //}
-            //catch (Exception e)
-            //{
-            //    var a = 0;
-            //}
+            try
+            {
+                context.Response.ContentType = MimeMapping.GetMimeMapping(path);
+            }
+            catch (Exception)
+            {
+
+            }
 
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;

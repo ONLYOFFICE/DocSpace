@@ -5,7 +5,7 @@ import SimpleFilesRow from "./SimpleFilesRow";
 
 const FilesRowContainer = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
   useEffect(() => {
-    if (viewAs !== "table" && viewAs !== "row") return;
+    if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
 
     if (sectionWidth < 1025) {
       viewAs !== "row" && setViewAs("row");

@@ -760,8 +760,8 @@ namespace ASC.Files.Core.Data
                     }
                 })
                 .AsEnumerable()
-                .Select(ToTag)
-                .ToList();
+                .ToList()
+                .ConvertAll(ToTag);
         }
 
         private Tag ToTag(TagLinkData r)

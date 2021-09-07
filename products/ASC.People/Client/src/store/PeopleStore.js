@@ -13,6 +13,7 @@ import InviteLinksStore from "./InviteLinksStore";
 import store from "studio/store";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
+import { isMobile } from "react-device-detect";
 const { auth: authStore } = store;
 
 class PeopleStore {
@@ -29,7 +30,7 @@ class PeopleStore {
   dialogStore = null;
   loadingStore = null;
   isInit = false;
-  viewAs = "table";
+  viewAs = isMobile ? "row" : "table";
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
