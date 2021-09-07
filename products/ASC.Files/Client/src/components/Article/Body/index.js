@@ -70,6 +70,7 @@ class ArticleBodyContent extends React.Component {
       isVisitor,
       personal,
       firstLoad,
+      isDesktopClient,
     } = this.props;
 
     //console.log("Article Body render");
@@ -90,12 +91,17 @@ class ArticleBodyContent extends React.Component {
           onTreeDrop={onTreeDrop}
         />
         {!personal && !firstLoad && <TreeSettings />}
-        {enableThirdParty && !isVisitor && <ThirdPartyList />}
-        <DownloadAppList />
-        {(isDesktop || isTablet) &&
-          personal &&
-          !firstLoad &&
-          campaigns.length > 0 && <Banner />}
+
+        {!isDesktopClient && (
+          <>
+            {enableThirdParty && !isVisitor && <ThirdPartyList />}
+            <DownloadAppList />
+            {(isDesktop || isTablet) &&
+              personal &&
+              !firstLoad &&
+              campaigns.length > 0 && <Banner />}
+          </>
+        )}
       </>
     );
   }
@@ -115,7 +121,7 @@ export default inject(
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
-    const { personal, hideArticle } = auth.settingsStore;
+    const { personal, hideArticle, isDesktopClient } = auth.settingsStore;
 
     const selectedFolderTitle = selectedFolderStore.title;
 
@@ -138,6 +144,7 @@ export default inject(
       setNewFilesPanelVisible,
       hideArticle,
       firstLoad,
+      isDesktopClient,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));
