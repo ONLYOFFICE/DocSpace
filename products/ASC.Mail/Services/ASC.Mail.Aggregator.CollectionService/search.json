@@ -1,0 +1,22 @@
+﻿{
+  "components": [
+    {
+      "type": "ASC.Mail.Core.Search.FactoryIndexerMailMail, ASC.Mail.Core",
+      "services": [
+        {
+          "type": "ASC.ElasticSearch.IFactoryIndexer, ASC.ElasticSearch"
+        }
+      ],
+      "instanceScope": "perlifetimescope"
+    },
+    {
+      "type": "ASC.Mail.Core.Search.FactoryIndexerMailContact, ASC.Mail.Core",
+      "services": [
+        {
+          "type": "ASC.ElasticSearch.IFactoryIndexer, ASC.ElasticSearch"
+        }
+      ],
+      "instanceScope": "perlifetimescope"
+    }
+  ]
+}
