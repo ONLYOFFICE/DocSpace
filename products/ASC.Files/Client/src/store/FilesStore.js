@@ -1101,6 +1101,9 @@ class FilesStore {
         item.fileExst
       );
 
+      const previewUrl = canOpenPlayer
+        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${id}`)
+        : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
@@ -1113,6 +1116,30 @@ class FilesStore {
       this.folders.map((x) => {
         if (x.id === item.id) isFolder = true;
       });
+
+      const { isRecycleBinFolder } = this.treeFoldersStore;
+
+      const folderUrl = isFolder
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/filter?folder=${id}`
+          )
+        : null;
+
+      const docUrl = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/doceditor?fileId=${id}`
+      );
+
+      const href = isRecycleBinFolder
+        ? null
+        : previewUrl
+        ? previewUrl
+        : !isFolder
+        ? docUrl
+        : folderUrl;
 
       return {
         access,
@@ -1155,6 +1182,9 @@ class FilesStore {
         canEdit,
         thumbnailUrl,
         thumbnailStatus,
+        previewUrl,
+        folderUrl,
+        href,
       };
     });
 
@@ -1419,6 +1449,7 @@ class FilesStore {
   getFileInfo = async (id) => {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
+    return fileInfo;
   };
 
   getFolderInfo = async (id) => {
