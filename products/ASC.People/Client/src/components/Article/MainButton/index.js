@@ -160,9 +160,7 @@ export default withRouter(
     };
   })(
     withTranslation(["Article", "Common", "Translations"])(
-      withLoader(observer(ArticleMainButtonContent))(
-        <Loaders.Rectangle width="217px" />
-      )
+      withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
     )
   )
 );

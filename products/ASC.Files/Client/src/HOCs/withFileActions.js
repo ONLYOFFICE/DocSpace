@@ -144,6 +144,7 @@ export default function withFileActions(WrappedFileItem) {
 
       if (isTrashFolder) return;
       if (e && e.target.tagName === "INPUT") return;
+      e.preventDefault();
 
       if (!fileExst && !contentLength) {
         setIsLoading(true);

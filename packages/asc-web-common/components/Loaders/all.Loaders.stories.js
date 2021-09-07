@@ -4,7 +4,7 @@ import Section from "../../../.storybook/decorators/section";
 
 import Loaders from ".";
 
-storiesOf("Components|Loaders", module)
+storiesOf("Components|TTT", module)
   .addParameters({ options: { showAddonPanel: false } })
   .add("all", () => (
     <Section>
@@ -29,5 +29,8 @@ storiesOf("Components|Loaders", module)
 
       <h1>Tree Folders loader</h1>
       <Loaders.TreeFolders />
+
+      <h1>Main Button loader</h1>
+      <Loaders.MainButton />
     </Section>
   ));
