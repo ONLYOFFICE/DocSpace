@@ -57,9 +57,6 @@ export default function withFileActions(WrappedFileItem) {
       const notSelectable = e.target.classList.contains("not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
 
-      console.log("e.target.classList", e.target.classList);
-      console.log("isFileName", isFileName);
-
       if (isPrivacy || (!draggable && !isFileName)) return;
 
       if (window.innerWidth < 1025 || notSelectable) {

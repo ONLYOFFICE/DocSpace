@@ -127,16 +127,16 @@ class FilesStore {
   initFiles = () => {
     if (this.isInit) return;
 
-    const { isAuthenticated } = this.authStore;
+    const { isAuthenticated, settingsStore } = this.authStore;
     const { getFilesSettings } = this.filesSettingsStore;
 
     const {
       getPortalCultures,
-      isDesktopClient,
       getIsEncryptionSupport,
       getEncryptionKeys,
       setModuleInfo,
     } = this.settingsStore;
+    const { isDesktopClient } = settingsStore;
 
     setModuleInfo(config.homepage, config.id);
 
@@ -424,7 +424,8 @@ class FilesStore {
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
-    const { isDesktopClient, personal } = this.settingsStore;
+    const { personal } = this.settingsStore;
+    const { isDesktopClient } = this.authStore.settingsStore;
 
     if (isFile) {
       let fileOptions = [
@@ -681,7 +682,7 @@ class FilesStore {
           "download-as",
         ]);
 
-        if (!this.authStore.settingsStore.isDesktopClient) {
+        if (!isDesktopClient) {
           fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
         }
 
@@ -748,7 +749,7 @@ class FilesStore {
           "copy-to",
         ]);
 
-        if (!this.authStore.settingsStore.isDesktopClient) {
+        if (!isDesktopClient) {
           folderOptions = this.removeOptions(folderOptions, ["rename"]);
         }
       }
@@ -820,6 +821,13 @@ class FilesStore {
 
       if (isThirdPartyFolder) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
+
+        if (isDesktopClient) {
+          folderOptions = this.removeOptions(folderOptions, [
+            "separator2",
+            "delete",
+          ]);
+        }
       } else {
         folderOptions = this.removeOptions(folderOptions, [
           "change-thirdparty-info",
@@ -1028,7 +1036,7 @@ class FilesStore {
         );
       case FolderType.Privacy:
         return (
-          this.settingsStore.isDesktopClient &&
+          this.authStore.settingsStore.isDesktopClient &&
           this.settingsStore.isEncryptionSupport
         );
       case FolderType.COMMON:
