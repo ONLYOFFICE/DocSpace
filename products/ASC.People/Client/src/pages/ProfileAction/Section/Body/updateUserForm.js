@@ -703,7 +703,7 @@ class UpdateUserForm extends React.Component {
               saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
+          <MainFieldsContainer ref={this.mainFieldsContainerRef} noSelect>
             <TextChangeField
               labelText={`${t("Common:Email")}:`}
               inputName="email"
