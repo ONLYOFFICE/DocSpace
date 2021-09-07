@@ -533,7 +533,7 @@ namespace ASC.Mail.Core.Engine
 
         public bool LockMaibox(MailBoxData mailBox)
         {
-            var boxesCount = MailDaoFactory.GetMailboxDao().SetMailboxesInProcess(mailBox);
+            var boxesCount = MailDaoFactory.GetMailboxDao().SetMailboxesInProcess(mailBox.EMail.Address);
 
             if (boxesCount > 1) mailBox.NotOnlyOne = true;
 
