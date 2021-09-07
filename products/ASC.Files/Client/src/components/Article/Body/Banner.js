@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import CampaignsBanner from "@appserver/components/campaigns-banner";
 import { ADS_TIMEOUT } from "../../../helpers/constants";
+import { LANGUAGE } from "@appserver/common/constants";
 
 const Banner = ({ FirebaseHelper }) => {
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -25,13 +26,20 @@ const Banner = ({ FirebaseHelper }) => {
       index++;
     }
 
-    localStorage.setItem("bannerIndex", index);
-    setBannerName(campaign);
+    const lng = localStorage.getItem(LANGUAGE).split("-")[0] || "en";
+    const translate = await FirebaseHelper.getCampaignsTranslations(
+      campaign,
+      lng
+    );
+    localStorage.setItem("campaignsT", translate);
 
     const image = await FirebaseHelper.getCampaignsImages(
       campaign.toLowerCase()
     );
     setBannerImage(image);
+
+    localStorage.setItem("bannerIndex", index);
+    setBannerName(campaign);
   };
 
   useEffect(() => {
