@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
-import Loaders from "@appserver/common/components/Loaders";
 
 import withLoader from "../../../HOCs/withLoader";
 
@@ -19,10 +18,6 @@ const StyledDownloadAppList = styled.div`
   .icon-button {
     padding: 5px;
   }
-`;
-
-const StyledRectangleLoader = styled(Loaders.Rectangle)`
-  margin-top: 42px;
 `;
 
 const DownloadAppListContainer = ({ t }) => {
@@ -90,7 +85,7 @@ const DownloadAppListContainer = ({ t }) => {
 };
 
 const DownloadAppList = withTranslation(["Translations"])(
-  withLoader(DownloadAppListContainer)(<StyledRectangleLoader />)
+  withLoader(DownloadAppListContainer)(<></>)
 );
 
 export default DownloadAppList;

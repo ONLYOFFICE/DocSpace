@@ -1,15 +1,13 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
 
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
-import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import { useCallback } from "react";
 import IconButton from "@appserver/components/icon-button";
@@ -43,7 +41,7 @@ const StyledThirdParty = styled.div`
 
       @media (max-width: 1024px) {
         height: 32px;
-      
+
         :first-of-type {
           border-radius: 3px 0 0 3px;
         }
@@ -66,10 +64,6 @@ const StyledThirdParty = styled.div`
       }
     }
   }
-`;
-
-const StyledRectangleLoader = styled(Loaders.Rectangle)`
-  margin-top: 42px;
 `;
 
 const ServiceItem = (props) => {
@@ -223,7 +217,7 @@ const PureThirdPartyListContainer = ({
 };
 
 const ThirdPartyList = withTranslation(["Article", "Translations"])(
-  withRouter(withLoader(PureThirdPartyListContainer)(<StyledRectangleLoader />))
+  withRouter(withLoader(PureThirdPartyListContainer)(<></>))
 );
 
 export default inject(
