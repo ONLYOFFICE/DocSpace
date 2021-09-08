@@ -18,6 +18,10 @@ const CampaignsBanner = (props) => {
     setImageLoad(true);
   };
 
+  const onMouseDown = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <BannerWrapper>
       <a href={link}>
@@ -29,7 +33,7 @@ const CampaignsBanner = (props) => {
         </Text>
 
         {!imageLoad && <Loaders.Rectangle height="140px" borderRadius="5px" />}
-        <img src={img} onLoad={handleImageLoaded} />
+        <img src={img} onMouseDown={onMouseDown} onLoad={handleImageLoaded} />
       </a>
 
       <Button

@@ -28,7 +28,6 @@ const SectionBodyContent = (props) => {
     moveDragItems,
     viewAs,
     setSelection,
-    setViewAs,
   } = props;
 
   useEffect(() => {
@@ -213,7 +212,6 @@ export default inject(
       startDrag,
       setStartDrag,
       setSelection,
-      setViewAs,
     } = filesStore;
 
     return {
@@ -231,7 +229,6 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
       setSelection,
-      setViewAs,
     };
   }
 )(

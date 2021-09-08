@@ -10,6 +10,7 @@ const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
   const ref = useRef(null);
 
   useEffect(() => {
+    if (!sectionWidth) return;
     if (sectionWidth < 1025) {
       viewAs !== "row" && setViewAs("row");
     } else {

@@ -108,3 +108,74 @@ export const canConvert = (fileExst) => {
 
   return canConvert(fileExst);
 };
+
+export const connectedCloudsTitleTranslation = (key, t) => {
+  switch (key) {
+    case "Box":
+
+    case "BoxNet":
+      return t("Translations:FolderTitleBoxNet");
+
+    case "DropBox":
+    case "DropboxV2":
+      return t("Translations:FolderTitleDropBox");
+
+    case "DocuSign":
+      return t("Translations:FolderTitleDocuSign");
+
+    case "Google":
+    case "GoogleDrive":
+      return t("Translations:FolderTitleGoogle");
+
+    case "OneDrive":
+    case "SkyDrive":
+      return t("Translations:FolderTitleSkyDrive");
+
+    case "SharePoint":
+      return t("Translations:FolderTitleSharePoint");
+    case "WebDav":
+      return t("Translations:FolderTitleWebDav");
+    case "kDrive":
+      return t("Translations:FolderTitlekDrive");
+    case "Yandex":
+      return t("Translations:FolderTitleYandex");
+
+    default:
+      return key;
+  }
+};
+
+export const connectedCloudsTypeTitleTranslation = (key, t) => {
+  switch (key) {
+    case "Box":
+    case "BoxNet":
+      return t("Translations:TypeTitleBoxNet");
+
+    case "DropBox":
+    case "DropboxV2":
+      return t("Translations:TypeTitleDropBox");
+
+    case "DocuSign":
+      return t("Translations:TypeTitleDocuSign");
+
+    case "Google":
+    case "GoogleDrive":
+      return t("Translations:TypeTitleGoogle");
+
+    case "OneDrive":
+    case "SkyDrive":
+      return t("Translations:TypeTitleSkyDrive");
+
+    case "SharePoint":
+      return t("Translations:TypeTitleSharePoint");
+    case "WebDav":
+      return t("Translations:TypeTitleWebDav");
+    case "kDrive":
+      return t("Translations:TypeTitlekDrive");
+    case "Yandex":
+      return t("Translations:TypeTitleYandex");
+
+    default:
+      return key;
+  }
+};

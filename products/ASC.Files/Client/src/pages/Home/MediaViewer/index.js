@@ -5,6 +5,8 @@ import { withRouter } from "react-router";
 import queryString from "query-string";
 import history from "@appserver/common/history";
 import MediaViewer from "@appserver/common/components/MediaViewer";
+import FilesFilter from "@appserver/common/api/files/filter";
+import { createTreeFolders } from "../../../helpers/files-helpers";
 
 const FilesMediaViewer = (props) => {
   const {
@@ -22,6 +24,12 @@ const FilesMediaViewer = (props) => {
     selectedFolderId,
     userAccess,
     deleteDialogVisible,
+    previewFile,
+    fetchFiles,
+    setIsLoading,
+    setFirstLoad,
+    setExpandedKeys,
+    expandedKeys,
   } = props;
 
   useEffect(() => {
@@ -66,7 +74,13 @@ const FilesMediaViewer = (props) => {
       let file = files.find((file) => file.id === id);
       if (file) {
         setRemoveMediaItem(file);
-        deleteItemAction(file.id, selectedFolderId, translations, true);
+        deleteItemAction(
+          file.id,
+          selectedFolderId,
+          translations,
+          true,
+          file.providerKey
+        );
       }
     }
   };
@@ -78,8 +92,24 @@ const FilesMediaViewer = (props) => {
     }
   };
 
-  const onMediaViewerClose = () =>
+  const onMediaViewerClose = () => {
+    if (previewFile) {
+      setIsLoading(true);
+      setFirstLoad(true);
+
+      fetchFiles(previewFile.folderId)
+        .then((data) => {
+          const pathParts = data.selectedFolder.pathParts;
+          const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+          setExpandedKeys(newExpandedKeys);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setFirstLoad(false);
+        });
+    }
     setMediaViewerData({ visible: false, id: null });
+  };
 
   return (
     visible && (
@@ -98,6 +128,7 @@ const FilesMediaViewer = (props) => {
         deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
+        errorLabel={t("Translations:MediaLoadError")}
       />
     )
   );
@@ -111,16 +142,25 @@ export default inject(
     formatsStore,
     dialogsStore,
     selectedFolderStore,
+    treeFoldersStore,
   }) => {
-    const { files, userAccess } = filesStore;
+    const {
+      files,
+      userAccess,
+      fetchFiles,
+      setIsLoading,
+      setFirstLoad,
+    } = filesStore;
     const {
       visible,
       id: currentMediaFileId,
       setMediaViewerData,
       playlist,
+      previewFile,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { media, images } = formatsStore.mediaViewersFormatsStore;
+    const { expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     return {
       files,
@@ -135,6 +175,12 @@ export default inject(
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       selectedFolderId: selectedFolderStore.id,
+      fetchFiles,
+      previewFile,
+      setIsLoading,
+      setFirstLoad,
+      setExpandedKeys,
+      expandedKeys,
     };
   }
 )(

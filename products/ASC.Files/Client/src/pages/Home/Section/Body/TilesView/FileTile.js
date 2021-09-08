@@ -83,7 +83,7 @@ const FilesTile = (props) => {
           onClick={onMouseClick}
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
-          {...checkedProps}
+          checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
         >

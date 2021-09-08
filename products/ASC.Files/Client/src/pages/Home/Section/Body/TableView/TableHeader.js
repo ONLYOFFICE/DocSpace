@@ -11,7 +11,7 @@ class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, withContent } = props;
+    const { t, withContent, personal } = props;
 
     const defaultColumns = [
       {
@@ -78,9 +78,17 @@ class FilesTableHeader extends React.Component {
       },
     ];
 
-    const columns = this.getColumns(defaultColumns);
+    personal && defaultColumns.splice(1, 1);
 
-    this.state = { columns };
+    const storageColumns = localStorage.getItem(TABLE_COLUMNS);
+    const splitColumns = storageColumns && storageColumns.split(",");
+    const columns = this.getColumns(defaultColumns, splitColumns);
+    const resetColumnsSize =
+      (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
+    const tableColumns = columns.map((c) => c.enable && c.key);
+    localStorage.setItem(TABLE_COLUMNS, tableColumns);
+
+    this.state = { columns, resetColumnsSize };
   }
 
   componentDidUpdate(prevProps) {
@@ -94,13 +102,10 @@ class FilesTableHeader extends React.Component {
     }
   }
 
-  getColumns = (defaultColumns) => {
-    const storageColumns = localStorage.getItem(TABLE_COLUMNS);
+  getColumns = (defaultColumns, splitColumns) => {
     const columns = [];
 
-    if (storageColumns) {
-      const splitColumns = storageColumns.split(",");
-
+    if (splitColumns) {
       for (let col of defaultColumns) {
         const column = splitColumns.find((key) => key === col.key);
         column ? (col.enable = true) : (col.enable = false);
@@ -168,7 +173,7 @@ class FilesTableHeader extends React.Component {
 
     const { sortBy, sortOrder } = filter;
 
-    const { columns } = this.state;
+    const { columns, resetColumnsSize } = this.state;
 
     const checkboxOptions = (
       <>
@@ -232,6 +237,7 @@ class FilesTableHeader extends React.Component {
         isChecked={isHeaderChecked}
         isIndeterminate={isHeaderIndeterminate}
         headerMenu={getHeaderMenu(t)}
+        resetColumnsSize={resetColumnsSize}
       />
     );
   }
@@ -239,6 +245,7 @@ class FilesTableHeader extends React.Component {
 
 export default inject(
   ({
+    auth,
     filesStore,
     filesActionsStore,
     selectedFolderStore,
@@ -258,6 +265,7 @@ export default inject(
     const { isPrivacyFolder } = treeFoldersStore;
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
+    const { personal } = auth.settingsStore;
 
     return {
       isHeaderVisible,
@@ -266,6 +274,7 @@ export default inject(
       filter,
       selectedFolderId: selectedFolderStore.id,
       withContent,
+      personal,
 
       setSelected,
       setIsLoading,
