@@ -49,7 +49,7 @@ class ArticleMainButtonContent extends React.Component {
 
   onFileChange = (e) => {
     const { startUpload, t } = this.props;
-    this.goToHomePage();
+    //this.goToHomePage();
     startUpload(e.target.files, null, t);
   };
 
