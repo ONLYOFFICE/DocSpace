@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "attr-accept": "^2.2.2",
     "axios": "^0.21.0",
     "copy-to-clipboard": "^3.2.0",
     "i18next": "^19.8.4",

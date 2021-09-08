@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "attr-accept": "^2.2.2",
     "i18next": "^19.8.4",
     "i18next-http-backend": "^1.1.0",
     "mobx": "^6.1.1",

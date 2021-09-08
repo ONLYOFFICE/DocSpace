@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "attr-accept": "^2.2.2",
     "axios": "^0.21.0",
     "fast-deep-equal": "^3.1.3",
     "firebase": "^8.6.7",
