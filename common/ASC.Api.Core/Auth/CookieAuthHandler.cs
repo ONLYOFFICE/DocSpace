@@ -3,6 +3,7 @@ using System.Security.Authentication;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Web.Core;
 
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Auth
 {
+    [Scope]
     public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private SecurityContext SecurityContext { get; }

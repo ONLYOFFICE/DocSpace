@@ -618,7 +618,7 @@ class FilesActionStore {
         return setThirdPartyMoveDialogVisible(true);
       }
 
-      if (item.fileExst) {
+      if (!item.isFolder) {
         fileIds.push(item.id);
       } else {
         if (item.providerKey && isRootFolder) continue;

@@ -178,12 +178,12 @@ const Editor = () => {
   };
 
   const initDesktop = (config) => {
-    const isEncryption = config.editorConfig["encryptionKeys"] !== undefined;
+    const isEncryption = config?.editorConfig["encryptionKeys"] !== undefined;
 
     regDesktop(
       user,
       isEncryption,
-      config.editorConfig.encryptionKeys,
+      config?.editorConfig.encryptionKeys,
       (keys) => {
         setEncryptionKeys(keys);
       },
