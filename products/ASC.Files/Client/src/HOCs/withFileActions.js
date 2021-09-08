@@ -53,6 +53,7 @@ export default function withFileActions(WrappedFileItem) {
       } = this.props;
 
       const { id, isFolder } = item;
+      e.preventDefault();
 
       const notSelectable = e.target.classList.contains("not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
