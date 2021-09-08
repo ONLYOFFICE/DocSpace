@@ -637,6 +637,19 @@ const Editor = () => {
     setNewOpenTab(false);
   };
 
+  const getSavingInfo = async (title, folderId) => {
+    const savingInfo = await SaveAs(
+      title,
+      urlSelectorFolder,
+      folderId,
+      openNewTab
+    );
+
+    if (savingInfo) {
+      const convertedInfo = savingInfo.split(": ").pop();
+      docEditor.showMessage(convertedInfo);
+    }
+  };
   const onClickSaveSelectFolder = (e, folderId) => {
     const currentExst = titleSelectorFolder.split(".").pop();
 
@@ -645,7 +658,11 @@ const Editor = () => {
         ? titleSelectorFolder.concat(`.${extension}`)
         : titleSelectorFolder;
 
-    SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    if (openNewTab) {
+      SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    } else {
+      getSavingInfo(title, folderId);
+    }
   };
 
   const onChangeInput = (e) => {

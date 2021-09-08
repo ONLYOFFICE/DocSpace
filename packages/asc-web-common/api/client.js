@@ -66,7 +66,7 @@ export const request = function (options) {
     if (response.data.hasOwnProperty("total"))
       return { total: +response.data.total, items: response.data.response };
 
-    return response.data.response;
+    return response.data.response || response.data;
   };
 
   const onError = function (error) {
