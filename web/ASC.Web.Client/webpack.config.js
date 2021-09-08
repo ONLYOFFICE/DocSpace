@@ -174,6 +174,9 @@ const config = {
         "./src/store": {
           singleton: true,
         },
+        "email-addresses": {
+          singleton: true,
+        },
       },
     }),
     new ExternalTemplateRemotesPlugin(),

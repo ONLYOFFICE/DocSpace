@@ -165,6 +165,12 @@ var config = {
           singleton: true,
           requiredVersion: deps["react-dom"],
         },
+        "email-addresses": {
+          singleton: true,
+        },
+        "fast-deep-equal": {
+          singleton: true,
+        },
       },
     }),
     new ExternalTemplateRemotesPlugin(),

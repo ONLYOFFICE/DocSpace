@@ -157,6 +157,9 @@ var config = {
           singleton: true,
           requiredVersion: deps["react-dom"],
         },
+        "email-addresses": {
+          singleton: true,
+        },
       },
     }),
     new ExternalTemplateRemotesPlugin(),
