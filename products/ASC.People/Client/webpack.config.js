@@ -169,6 +169,9 @@ var config = {
         "email-addresses": {
           singleton: true,
         },
+        "@babel/runtime": {
+          singleton: true,
+        },
       },
     }),
     new ExternalTemplateRemotesPlugin(),

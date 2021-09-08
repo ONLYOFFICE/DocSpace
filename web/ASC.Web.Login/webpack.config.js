@@ -162,6 +162,9 @@ var config = {
         "fast-deep-equal": {
           singleton: true,
         },
+        "@babel/runtime": {
+          singleton: true,
+        },
       },
     }),
     new ExternalTemplateRemotesPlugin(),
