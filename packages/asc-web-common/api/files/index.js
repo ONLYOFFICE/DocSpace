@@ -809,3 +809,17 @@ export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
     },
   });
 }
+
+export function getEditHistory(fileId) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/history`,
+  });
+}
+
+export function getEditDiff(fileId, version) {
+  return request({
+    method: "get",
+    url: `files/file/${fileId}/edit/diff?version=${version}`,
+  });
+}
