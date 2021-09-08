@@ -27,6 +27,8 @@ import {
   convertFile,
   checkFillFormDraft,
   getFileVersionInfo,
+  getEditHistory,
+  getEditDiff,
 } from "@appserver/common/api/files";
 import FilesFilter from "@appserver/common/api/files/filter";
 
@@ -478,18 +480,25 @@ const Editor = () => {
   };
 
   const onSDKRequestHistory = async (e) => {
-    console.log("request history", e);
-    let fileHistory = await getFileVersionInfo(fileId);
+    let fileHistory = await getEditHistory(fileId);
+
     let newArr = [];
+    console.log("fileHistory", fileHistory);
 
     for (let i = 0; i < fileHistory.length; i++) {
+      const changes = fileHistory[i].changes;
+      const serverVersion = fileHistory[i].serverVersion;
+
       let obj = {
-        created: `${new Date(fileHistory[i].updated).toLocaleString(
+        ...(changes.length !== 0 && { changes }),
+        created: `${fileHistory[i].created.toLocaleString(
           config.editorConfig.lang
         )}`,
+        ...(serverVersion && { serverVersion }),
+        key: fileHistory[i].key,
         user: {
-          id: fileHistory[i].updatedBy.id,
-          name: fileHistory[i].updatedBy.displayName,
+          id: fileHistory[i].id,
+          name: fileHistory[i].displayName,
         },
         version: fileHistory[i].version,
       };
@@ -498,7 +507,7 @@ const Editor = () => {
     }
 
     docEditor.refreshHistory({
-      currentVersion: 4,
+      currentVersion: fileHistory.pop(),
       history: newArr,
     });
   };
