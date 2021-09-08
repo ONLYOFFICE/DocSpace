@@ -1,6 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyledTreeFolder, StyledContainer } from "./StyledTreeFolderLoader";
+import {
+  StyledTreeFolder,
+  StyledContainer,
+  StyledBox,
+} from "./StyledTreeFolderLoader";
 import RectangleLoader from "../RectangleLoader";
 import TreeNodeLoader from "../TreeNodeLoader";
 
@@ -17,7 +21,7 @@ const TreeFolderLoader = ({ id, className, style, ...rest }) => {
   } = rest;
 
   return (
-    <div id={id} className={className} style={style}>
+    <StyledBox id={id} className={className} style={style}>
       <StyledTreeFolder>
         <TreeNodeLoader {...rest} />
         <TreeNodeLoader {...rest} />
@@ -48,7 +52,7 @@ const TreeFolderLoader = ({ id, className, style, ...rest }) => {
           animate={animate}
         />
       </StyledContainer>
-    </div>
+    </StyledBox>
   );
 };
 

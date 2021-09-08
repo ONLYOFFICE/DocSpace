@@ -204,6 +204,7 @@ class PageLayout extends React.Component {
       isArticleVisible,
       isBackdropVisible,
       isArticlePinned,
+      isDesktop,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -297,7 +298,7 @@ class PageLayout extends React.Component {
                 </SubArticleMainButton>
               )}
               {isArticleBodyAvailable && (
-                <SubArticleBody pinned={isArticlePinned}>
+                <SubArticleBody pinned={isArticlePinned} isDesktop={isDesktop}>
                   {articleBodyContent
                     ? articleBodyContent.props.children
                     : null}
@@ -524,6 +525,7 @@ export default inject(({ auth }) => {
     setArticleVisibleOnUnpin,
     setIsArticleVisible,
     setIsBackdropVisible,
+    isDesktopClient,
   } = settingsStore;
 
   return {
@@ -537,5 +539,6 @@ export default inject(({ auth }) => {
     setIsArticleVisible,
     isBackdropVisible,
     setIsBackdropVisible,
+    isDesktop: isDesktopClient,
   };
 })(observer(PageLayout));
