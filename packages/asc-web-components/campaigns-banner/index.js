@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import BannerWrapper from "./styled-campaigns-banner";
 
 import Button from "../button";
 import Text from "../text";
+import Loaders from "@appserver/common/components/Loaders";
 
 const onButtonClick = (url) => {
   window.location = url;
@@ -11,6 +12,12 @@ const onButtonClick = (url) => {
 
 const CampaignsBanner = (props) => {
   const { headerLabel, subHeaderLabel, img, btnLabel, link } = props;
+  const [imageLoad, setImageLoad] = useState(false);
+
+  const handleImageLoaded = () => {
+    setImageLoad(true);
+  };
+
   return (
     <BannerWrapper>
       <a href={link}>
@@ -21,7 +28,8 @@ const CampaignsBanner = (props) => {
           {subHeaderLabel}
         </Text>
 
-        <img src={img} />
+        {!imageLoad && <Loaders.Rectangle height="140px" borderRadius="5px" />}
+        <img src={img} onLoad={handleImageLoaded} />
       </a>
 
       <Button
