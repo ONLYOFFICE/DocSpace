@@ -90,7 +90,7 @@ const FilesTileContent = ({
         //disableSideInfo
       >
         <Link
-          className="title-link"
+          className="title-link item-file-name"
           containerWidth="100%"
           type="page"
           title={titleWithoutExt}
@@ -101,7 +101,6 @@ const FilesTileContent = ({
           {...linkStyles}
           color="#333"
           isTextOverflow
-          className="item-file-name"
         >
           {titleWithoutExt}
           {fileExst ? (

@@ -200,7 +200,7 @@ const HeaderComponent = ({
             <img
               alt="logo"
               src={props.logoUrl}
-              className="header-logo-icon AA"
+              className="header-logo-icon"
               onMouseDown={onMouseDown}
             />
           ) : !isMobileOnly ? (
