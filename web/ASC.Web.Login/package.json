@@ -59,7 +59,6 @@
     "react-resize-detector": "^5.2.0",
     "react-router": "^5.2.0",
     "react-text-mask": "^5.4.3",
-    "react-toastify": "^6.1.0",
     "react-tooltip": "^4.2.11",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.6",

@@ -83,7 +83,7 @@
     "react-lifecycles-compat": "^3.0.4",
     "react-onclickoutside": "^6.9.0",
     "react-text-mask": "^5.4.3",
-    "react-toastify": "^5.5.0",
+    "react-toastify": "^6.2.0",
     "react-tooltip": "^3.11.6",
     "react-transition-group": "^4.4.1",
     "react-virtualized-auto-sizer": "^1.0.3",

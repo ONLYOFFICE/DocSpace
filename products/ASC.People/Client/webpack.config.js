@@ -172,6 +172,9 @@ var config = {
         "@babel/runtime": {
           singleton: true,
         },
+        "react-toastify": {
+          singleton: true,
+        },
       },
     }),
     new ExternalTemplateRemotesPlugin(),
