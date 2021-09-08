@@ -78,7 +78,7 @@ const bannerHOC = (WrappedComponent) => (props) => {
 
   useEffect(() => {
     updateBanner();
-    setInterval(updateBanner, 10000);
+    setInterval(updateBanner, ADS_TIMEOUT);
   }, []);
 
   if (!bannerTranslation || !bannerImage) return <></>;
@@ -87,7 +87,7 @@ const bannerHOC = (WrappedComponent) => (props) => {
 };
 
 const Banner = (props) => {
-  console.log("Banner render", props);
+  //console.log("Banner render", props);
   const { t, tReady, bannerImage } = props;
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
