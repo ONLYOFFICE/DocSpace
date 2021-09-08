@@ -31,20 +31,6 @@ const loadLanguagePath = async () => {
   return translationUrl;
 };
 
-i18nConfig.use(Backend).init({
-  lng: localStorage.getItem(LANGUAGE) || "en",
-  fallbackLng: "en",
-  load: "all",
-  debug: false,
-  defaultNS: "",
-
-  backend: {
-    loadPath: function () {
-      return translationUrl;
-    },
-  },
-});
-
 const bannerHOC = (WrappedComponent) => (props) => {
   const { FirebaseHelper } = props;
 
@@ -52,8 +38,6 @@ const bannerHOC = (WrappedComponent) => (props) => {
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  const defaultBannerName = "Cloud";
-  const [bannerName, setBannerName] = useState(defaultBannerName);
   const [bannerImage, setBannerImage] = useState("");
   const [bannerTranslation, setBannerTranslation] = useState();
 
@@ -61,41 +45,49 @@ const bannerHOC = (WrappedComponent) => (props) => {
     let index = Number(localStorage.getItem("bannerIndex") || 0);
     const campaign = campaigns[index];
 
+    if (campaigns.length < 1 || index + 1 >= campaigns.length) {
+      index = 0;
+    } else {
+      index++;
+    }
+
+    const translationUrl = await loadLanguagePath();
+    setBannerTranslation(translationUrl);
+
+    i18nConfig.use(Backend).init({
+      lng: localStorage.getItem(LANGUAGE) || "en",
+      fallbackLng: "en",
+      load: "all",
+      debug: false,
+      defaultNS: "",
+
+      backend: {
+        loadPath: function () {
+          return translationUrl;
+        },
+      },
+    });
+
     const image = await FirebaseHelper.getCampaignsImages(
       campaign.toLowerCase()
     );
     setBannerImage(image);
 
     localStorage.setItem("bannerIndex", index);
-    setBannerName(campaign);
-
-    if (campaigns.length < 1 || index + 1 >= campaigns.length) {
-      index = 0;
-    } else {
-      index++;
-    }
   };
 
-  useEffect(async () => {
-    const translationUrl = await loadLanguagePath();
-    setBannerTranslation(translationUrl);
+  useEffect(() => {
     updateBanner();
-    setInterval(updateBanner, ADS_TIMEOUT);
+    setInterval(updateBanner, 10000);
   }, []);
 
-  if (!bannerTranslation || !bannerName || !bannerImage) return <></>;
+  if (!bannerTranslation || !bannerImage) return <></>;
 
-  return (
-    <WrappedComponent
-      bannerName={bannerName}
-      bannerImage={bannerImage}
-      {...props}
-    />
-  );
+  return <WrappedComponent bannerImage={bannerImage} {...props} />;
 };
 
 const Banner = (props) => {
-  //console.log("Banner render", props);
+  console.log("Banner render", props);
   const { t, tReady, bannerImage } = props;
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
