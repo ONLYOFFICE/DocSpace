@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
+import i18n from "i18next";
+import Backend from "i18next-http-backend";
+import { getLanguage } from "@appserver/common/utils";
 
 import CampaignsBanner from "@appserver/components/campaigns-banner";
 import { ADS_TIMEOUT } from "../../../helpers/constants";
 import { LANGUAGE } from "@appserver/common/constants";
-import i18n from "i18next";
-import Backend from "i18next-http-backend";
-import { getLanguage } from "@appserver/common/utils";
 
 const i18nConfig = i18n.createInstance();
 
@@ -28,7 +28,6 @@ const loadLanguagePath = async () => {
     campaign,
     language
   );
-  console.log("translationUrl", translationUrl);
   return translationUrl;
 };
 
@@ -36,7 +35,7 @@ i18nConfig.use(Backend).init({
   lng: localStorage.getItem(LANGUAGE) || "en",
   fallbackLng: "en",
   load: "all",
-  debug: true,
+  debug: false,
   defaultNS: "",
 
   backend: {
@@ -59,16 +58,8 @@ const bannerHOC = (WrappedComponent) => (props) => {
   const [bannerTranslation, setBannerTranslation] = useState();
 
   const updateBanner = async () => {
-    console.log("update banner");
-
     let index = Number(localStorage.getItem("bannerIndex") || 0);
     const campaign = campaigns[index];
-
-    if (campaigns.length < 1 || index + 1 >= campaigns.length) {
-      index = 0;
-    } else {
-      index++;
-    }
 
     const image = await FirebaseHelper.getCampaignsImages(
       campaign.toLowerCase()
@@ -77,6 +68,12 @@ const bannerHOC = (WrappedComponent) => (props) => {
 
     localStorage.setItem("bannerIndex", index);
     setBannerName(campaign);
+
+    if (campaigns.length < 1 || index + 1 >= campaigns.length) {
+      index = 0;
+    } else {
+      index++;
+    }
   };
 
   useEffect(async () => {
@@ -86,8 +83,7 @@ const bannerHOC = (WrappedComponent) => (props) => {
     setInterval(updateBanner, ADS_TIMEOUT);
   }, []);
 
-  console.log("banner hoc render", bannerTranslation);
-  if (!bannerTranslation || !bannerName || !bannerImage) return <p>Loading</p>;
+  if (!bannerTranslation || !bannerName || !bannerImage) return <></>;
 
   return (
     <WrappedComponent
@@ -99,17 +95,13 @@ const bannerHOC = (WrappedComponent) => (props) => {
 };
 
 const Banner = (props) => {
-  console.log("Banner render", props);
-  const { t, tReady, bannerName, bannerImage, FirebaseHelper } = props;
+  //console.log("Banner render", props);
+  const { t, tReady, bannerImage } = props;
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  if (
-    !campaigns.length ||
-    !tReady /*||
-    !i18n.exists(`CampaignPersonal${bannerName}:Header`)*/
-  ) {
+  if (!campaigns.length || !tReady) {
     return <></>;
   }
 
@@ -124,10 +116,10 @@ const Banner = (props) => {
   );
 };
 
-const ExtendedComponent = withTranslation()(Banner);
+const BannerWithTranslation = withTranslation()(Banner);
 
-const WrapperComponent = (props) => (
-  <ExtendedComponent i18n={i18nConfig} useSuspense={false} {...props} />
+const WrapperBanner = (props) => (
+  <BannerWithTranslation i18n={i18nConfig} useSuspense={false} {...props} />
 );
 
-export default bannerHOC(WrapperComponent);
+export default bannerHOC(WrapperBanner);
