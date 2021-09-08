@@ -117,9 +117,15 @@ namespace ASC.Mail.ImapSync
                     clients[cashedTenantUserMailBox.UserName]?.CheckRedis(cashedTenantUserMailBox.MailBoxId, cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
 
                     _log.Info($"User Activity -> {cashedTenantUserMailBox.MailBoxId}, folder={cashedTenantUserMailBox.Folder}. ");
-                }
 
-                return;
+                    return;
+                }
+                else
+                {
+                    clients.TryRemove(cashedTenantUserMailBox.UserName, out MailImapClient trash);
+
+                    _log.Debug($"User Activity -> Client UserName={cashedTenantUserMailBox.UserName} removed.");
+                }
             }
 
             CreateClientSemaphore.Wait();

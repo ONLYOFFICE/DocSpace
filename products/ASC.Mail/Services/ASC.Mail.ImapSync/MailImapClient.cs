@@ -30,6 +30,7 @@ using ASC.Core.Notify.Signalr;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Mail.Configuration;
+using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
@@ -66,6 +67,7 @@ namespace ASC.Mail.ImapSync
 
         private ConcurrentQueue<ImapAction> imapActionsQueue;
 
+        private readonly IServiceProvider clientScope;
         private readonly MailEnginesFactory _mailEnginesFactory;
         private readonly MailSettings _mailSettings;
         private readonly IMailInfoDao _mailInfoDao;
@@ -82,7 +84,7 @@ namespace ASC.Mail.ImapSync
 
         private CancellationTokenSource CancelToken { get; set; }
 
-        private List<SimpleImapClient> simpleImapClients;
+        private Dictionary<MailBoxData, SimpleImapClient> simpleImapClients;
 
         public EventHandler OnCriticalError;
 
@@ -98,9 +100,20 @@ namespace ASC.Mail.ImapSync
         {
             _IsDieInNextTurn = false;
 
-            SimpleImapClient simpleImapClient = simpleImapClients.FirstOrDefault(x => x.Account.MailBoxId == mailBoxId);
+            var mailBox = simpleImapClients.Keys.FirstOrDefault(x => x.MailBoxId == mailBoxId);
 
-            if (simpleImapClient == null) return;
+            if (mailBox == null) return;
+
+            SimpleImapClient simpleImapClient = simpleImapClients[mailBox];
+
+            if (simpleImapClient == null)
+            {
+                simpleImapClients.Remove(mailBox);
+
+                _log.Debug($"Client for mailboxid={mailBoxId} removed.");
+
+                return;
+            }
 
             var key = _redisClient.CreateQueueKey(mailBoxId);
 
@@ -155,7 +168,7 @@ namespace ASC.Mail.ImapSync
 
             Filters = new ConcurrentDictionary<string, List<MailSieveFilterData>>();
 
-            var clientScope = serviceProvider.CreateScope().ServiceProvider;
+            clientScope = serviceProvider.CreateScope().ServiceProvider;
 
             tenantManager = clientScope.GetService<TenantManager>();
             tenantManager.SetCurrentTenant(tenant);
@@ -192,7 +205,7 @@ namespace ASC.Mail.ImapSync
                 throw new Exception($"No redis connection. UserName={UserName}");
             }
 
-            simpleImapClients = new List<SimpleImapClient>(mailboxes.Count);
+            simpleImapClients = new Dictionary<MailBoxData, SimpleImapClient>(mailboxes.Count);
             imapActionsQueue = new ConcurrentQueue<ImapAction>();
 
             aliveTimer = new System.Timers.Timer((_mailSettings.ImapSync.AliveTimeInMinutes ?? 20) * 60 * 1000);
@@ -207,19 +220,33 @@ namespace ASC.Mail.ImapSync
 
             foreach (var mailbox in mailboxes)
             {
-                var simpleImapClient = new SimpleImapClient(mailbox, cancelToken, mailSettings, clientScope.GetService<ILog>());
-                simpleImapClient.NewMessage += ImapClient_NewMessage;
-                simpleImapClient.MessagesListUpdated += ImapClient_MessagesListUpdated;
-                simpleImapClient.NewActionFromImap += ImapClient_NewActionFromImap;
-                simpleImapClient.OnCriticalError += ImapClient_OnCriticalError; ;
-                simpleImapClient.OnUidlsChange += ImapClient_OnUidlsChange;
-
-                simpleImapClients.Add(simpleImapClient);
-
-                simpleImapClient.Init();
+                CreateSimpleImapClient(mailbox);
             }
 
             aliveTimer.Enabled = true;
+        }
+
+        private void CreateSimpleImapClient(MailBoxData mailbox)
+        {
+            if (simpleImapClients.ContainsKey(mailbox))
+            {
+                simpleImapClients.Remove(mailbox);
+
+                _log.Debug($"CreateSimpleImapClient: Client MailBoxData id={mailbox.MailBoxId} removed.");
+            }
+
+            var simpleImapClient = new SimpleImapClient(mailbox, CancelToken.Token, _mailSettings, clientScope.GetService<ILog>());
+            simpleImapClient.NewMessage += ImapClient_NewMessage;
+            simpleImapClient.MessagesListUpdated += ImapClient_MessagesListUpdated;
+            simpleImapClient.NewActionFromImap += ImapClient_NewActionFromImap;
+            simpleImapClient.OnCriticalError += ImapClient_OnCriticalError; ;
+            simpleImapClient.OnUidlsChange += ImapClient_OnUidlsChange;
+
+            simpleImapClients.Add(mailbox, simpleImapClient);
+
+            _log.Debug($"CreateSimpleImapClient: Client MailBoxData id={mailbox.MailBoxId} created.");
+
+            simpleImapClient.Init();
         }
 
         private void ProcessActionFromImapTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -311,12 +338,7 @@ namespace ASC.Mail.ImapSync
                     SetMailboxAuthError(simpleImapClient);
                 }
 
-                simpleImapClients.Remove(simpleImapClient);
-
-                if (!simpleImapClients.Any())
-                {
-                    OnCriticalError?.Invoke(this, EventArgs.Empty);
-                }
+                CreateSimpleImapClient(simpleImapClient.Account);
             }
         }
 
@@ -378,7 +400,7 @@ namespace ASC.Mail.ImapSync
 
             try
             {
-                simpleImapClients.ForEach(x => x?.Dispose());
+                simpleImapClients.Values.ToList().ForEach(x => x?.Dispose());
 
                 CancelToken?.Dispose();
             }
@@ -396,19 +418,19 @@ namespace ASC.Mail.ImapSync
                 .SetMailboxId(simpleImapClient.Account.MailBoxId)
                 .SetFolder(intMailWorkFolder);
 
-            simpleImapClient.workFolderMails = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
+            simpleImapClient.WorkFolderMails = _mailInfoDao.GetMailInfoList(exp.Build()).ToList();
 
-            if (simpleImapClient.imapMessagesList == null) return;
+            if (simpleImapClient.ImapMessagesList == null) return;
 
             try
             {
-                foreach (var imap_message in simpleImapClient.imapMessagesList)
+                foreach (var imap_message in simpleImapClient.ImapMessagesList)
                 {
                     _log.Debug($"UpdateDbFolder: imap_message_Uidl={imap_message.UniqueId.Id.ToString()}.");
 
                     var uidl = imap_message.UniqueId.ToUidl(simpleImapClient.Folder);
 
-                    var db_message = simpleImapClient.workFolderMails.FirstOrDefault(x => x.Uidl == uidl);
+                    var db_message = simpleImapClient.WorkFolderMails.FirstOrDefault(x => x.Uidl == uidl);
 
                     if (db_message == null)
                     {
@@ -503,6 +525,10 @@ namespace ASC.Mail.ImapSync
                     result = false;
                     return result;
                 }
+
+                var messageInfo=MailInfoDao.ToMailInfo(messageDB.ToMailMail(Tenant, Guid.Parse(UserName)),"");
+
+                simpleImapClient.WorkFolderMails.Add(messageInfo);
 
                 _log.Info($"Message saved (id: {messageDB.Id}, From: '{messageDB.From}', Subject: '{messageDB.Subject}', Unread: {messageDB.IsNew})");
 
