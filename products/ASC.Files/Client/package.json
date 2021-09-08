@@ -44,7 +44,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "@welldone-software/why-did-you-render": "^4.2.5",
     "attr-accept": "^2.2.2",
     "axios": "^0.21.0",
     "copy-to-clipboard": "^3.2.0",
