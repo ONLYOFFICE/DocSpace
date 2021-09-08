@@ -499,6 +499,8 @@ namespace ASC.Mail.ImapSync
             catch (Exception ex)
             {
                 _log.Error($"SetIdle, Error:{ex.Message}");
+
+                OnCriticalError?.Invoke(this, false);
             }
             finally
             {

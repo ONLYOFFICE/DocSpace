@@ -230,6 +230,16 @@ namespace ASC.Mail.ImapSync
         {
             if (simpleImapClients.ContainsKey(mailbox))
             {
+                var deletedSimpleImapClient = simpleImapClients[mailbox];
+                if(deletedSimpleImapClient!=null)
+                {
+                    deletedSimpleImapClient.NewMessage -= ImapClient_NewMessage;
+                    deletedSimpleImapClient.MessagesListUpdated -= ImapClient_MessagesListUpdated;
+                    deletedSimpleImapClient.NewActionFromImap -= ImapClient_NewActionFromImap;
+                    deletedSimpleImapClient.OnCriticalError -= ImapClient_OnCriticalError; ;
+                    deletedSimpleImapClient.OnUidlsChange -= ImapClient_OnUidlsChange;
+                }
+
                 simpleImapClients.Remove(mailbox);
 
                 _log.Debug($"CreateSimpleImapClient: Client MailBoxData id={mailbox.MailBoxId} removed.");

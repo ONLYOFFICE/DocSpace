@@ -193,6 +193,7 @@ namespace ASC.Mail.ImapSync
 
                 if (clients.TryRemove(clientKey, out MailImapClient trashValue))
                 {
+                    trashValue.OnCriticalError -= Client_DeleteClient;
                     trashValue?.Dispose();
 
                     _log.Info($"ImapSyncService. MailImapClient {clientKey} died and was remove.");
