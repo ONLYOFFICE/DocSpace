@@ -19,7 +19,25 @@ const config = {
   mode: "development",
 
   devServer: {
-    contentBase: [path.join(__dirname, "dist")],
+    devMiddleware: {
+      publicPath: homepage,
+      //writeToDisk: true,
+    },
+    static: {
+      directory: path.join(__dirname, "dist"),
+      publicPath: homepage,
+    },
+    client: {
+      logging: "info",
+      // Can be used only for `errors`/`warnings`
+      //
+      // overlay: {
+      //   errors: true,
+      //   warnings: true,
+      // }
+      overlay: true,
+      progress: true,
+    },
     port: 5001,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
@@ -27,22 +45,21 @@ const config = {
       disableDotRule: true,
       index: homepage,
     },
-    writeToDisk: true,
-    // proxy: [
-    //   {
-    //     context: "/api",
-    //     target: "http://localhost:8092",
-    //   },
-    // ],
     hot: false,
-    hotOnly: false,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
       "Access-Control-Allow-Headers":
         "X-Requested-With, content-type, Authorization",
     },
-    openPage: "http://localhost:8092",
+
+    open: {
+      target: [`http://localhost:8092`],
+      app: {
+        name: "google-chrome",
+        arguments: ["--incognito", "--new-window"],
+      },
+    },
   },
   resolve: {
     extensions: [".jsx", ".js", ".json"],

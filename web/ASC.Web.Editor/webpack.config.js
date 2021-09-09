@@ -21,10 +21,13 @@ const config = {
   mode: "development",
 
   devServer: {
-    publicPath: homepage,
-
-    contentBase: [path.join(__dirname, "dist")],
-    contentBasePublicPath: homepage,
+    devMiddleware: {
+      publicPath: homepage,
+    },
+    static: {
+      directory: path.join(__dirname, "dist"),
+      publicPath: homepage,
+    },
     port: 5013,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
@@ -32,14 +35,7 @@ const config = {
       disableDotRule: true,
       index: homepage,
     },
-    // proxy: [
-    //   {
-    //     context: "/api",
-    //     target: "http://localhost:8092",
-    //   },
-    // ],
     hot: false,
-    hotOnly: false,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
