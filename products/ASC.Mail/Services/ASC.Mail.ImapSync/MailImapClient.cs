@@ -231,7 +231,7 @@ namespace ASC.Mail.ImapSync
             if (simpleImapClients.ContainsKey(mailbox))
             {
                 var deletedSimpleImapClient = simpleImapClients[mailbox];
-                if(deletedSimpleImapClient!=null)
+                if (deletedSimpleImapClient != null)
                 {
                     deletedSimpleImapClient.NewMessage -= ImapClient_NewMessage;
                     deletedSimpleImapClient.MessagesListUpdated -= ImapClient_MessagesListUpdated;
@@ -536,7 +536,7 @@ namespace ASC.Mail.ImapSync
                     return result;
                 }
 
-                var messageInfo=MailInfoDao.ToMailInfo(messageDB.ToMailMail(Tenant, Guid.Parse(UserName)),"");
+                var messageInfo = MailInfoDao.ToMailInfo(messageDB.ToMailMail(Tenant, Guid.Parse(UserName)), "");
 
                 simpleImapClient.WorkFolderMails.Add(messageInfo);
 
@@ -574,11 +574,11 @@ namespace ASC.Mail.ImapSync
             if (!_mailSettings.Aggregator.CollectStatistics)
                 return;
 
-            _log.DebugWithProps(method,
+            _log.DebugWithProps(method, new List<KeyValuePair<string, object>>() {
                 new KeyValuePair<string, object>("duration", duration.TotalMilliseconds),
                 new KeyValuePair<string, object>("mailboxId", simpleImapClient.Account.MailBoxId),
                 new KeyValuePair<string, object>("address", simpleImapClient.Account.EMail.ToString()),
-                new KeyValuePair<string, object>("isFailed", failed));
+                new KeyValuePair<string, object>("isFailed", failed)});
         }
 
         private void SendUnreadUser()

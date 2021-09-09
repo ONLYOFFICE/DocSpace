@@ -27,7 +27,6 @@ namespace ASC.Mail.Core.Dao.Entities
     [Transient]
     [ElasticsearchType(RelationName = Tables.Mail)]
     [Table("mail_mail")]
-    
     public partial class MailMail : BaseEntity, ISearchItemDocument
     {
         [Key]

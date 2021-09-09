@@ -76,15 +76,15 @@ namespace ASC.Mail.Aggregator.CollectionService
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
-                        //.AddJsonFile($"storage.{env}.json")
+                        .AddJsonFile($"storage.{env}.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("backup.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile("mail.json")
-                        //.AddJsonFile($"mail.{env}.json")
+                        .AddJsonFile($"mail.{env}.json")
                         .AddJsonFile("elastic.json")
-                        //.AddJsonFile($"elastic.{env}.json")
-                        //.AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile($"elastic.{env}.json")
+                        .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
                         .AddInMemoryCollection(new Dictionary<string, string>
@@ -95,7 +95,6 @@ namespace ASC.Mail.Aggregator.CollectionService
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
                     services.AddHostedService<ServiceLauncher>();
@@ -109,6 +108,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                     diHelper.TryAdd<AggregatorLogger>();
                     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
                     services.AddHostedService<AggregatorServiceLauncher>();
+                    services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

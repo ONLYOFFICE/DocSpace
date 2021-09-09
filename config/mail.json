@@ -16,7 +16,7 @@
       "InactiveMailboxesRatio": 25,
       "TenantOverdueDays": 10,
       "TenantMinQuotaBalance": 26214400,
-      "ProtocolLogPath": "C:\\Work\\AppServer\\Logs",
+      "ProtocolLogPath": "",
       "CollectStatistics": true,
       "MailDaemonEmail": "mail-daemon@onlyoffice.com",
       "RecalculateFoldersTimeout": 99999,

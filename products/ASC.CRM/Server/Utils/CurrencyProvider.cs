@@ -64,8 +64,8 @@ namespace ASC.Web.CRM.Classes
             Configuration = configuration;
             SettingsManager = settingsManager;
 
-            //var daocur = daoFactory.GetCurrencyInfoDao();
-            List<CurrencyInfo> currencies = null;// daocur.GetAll();
+            var daocur = daoFactory.GetCurrencyInfoDao();
+            var currencies = daocur.GetAll();
 
             if (currencies == null || currencies.Count == 0)
             {

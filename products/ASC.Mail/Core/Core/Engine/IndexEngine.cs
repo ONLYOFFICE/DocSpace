@@ -87,11 +87,11 @@ namespace ASC.Mail.Core.Engine
                 return false;
             }
 
-            //if (!FactoryIndexerCommon.CheckState(false))
-            //{
-            //    Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer.CheckState(false) == false");
-            //    return false;
-            //}
+            if (!FactoryIndexerCommon.CheckState(false))
+            {
+                Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer.CheckState(false) == false");
+                return false;
+            }
 
             return true;
         }

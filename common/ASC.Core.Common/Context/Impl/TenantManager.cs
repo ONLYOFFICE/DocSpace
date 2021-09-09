@@ -246,7 +246,7 @@ namespace ASC.Core
 
             if (tenant == null && throwIfNotFound)
             {
-                //throw new Exception("Could not resolve current tenant :-(.");
+                throw new Exception("Could not resolve current tenant :-(.");
             }
 
             CurrentTenant = tenant;
