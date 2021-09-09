@@ -1632,7 +1632,6 @@ namespace ASC.Mail.Core.Engine
 
                 if ((!fromThisMailBox || !toThisMailBox) && messagesInfo.Exists(m => m.FolderRestore == folder))
                 {
-
                     var existMessage = messagesInfo.First();
 
                     if (!existMessage.IsRemoved)
@@ -1646,7 +1645,6 @@ namespace ASC.Mail.Core.Engine
                     }
 
                     log.Info($"Message already exists by (md5={md5})|{mimeMessageId}|Subject|DateSent ");
-
 
                     return true;
                 }
