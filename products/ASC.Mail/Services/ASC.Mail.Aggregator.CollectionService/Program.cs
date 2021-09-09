@@ -106,6 +106,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                     services.AddSingleton(new ConsoleParser(args));
                     diHelper.TryAdd<AggregatorServiceLauncher>();
                     diHelper.TryAdd<AggregatorServiceScope>();
+                    diHelper.TryAdd<AggregatorLogger>();
                     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
                     services.AddHostedService<AggregatorServiceLauncher>();
                 })

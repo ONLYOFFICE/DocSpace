@@ -39,7 +39,9 @@ using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using ASC.Web.Core.Files;
+
 using HtmlAgilityPack;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Storage
@@ -58,9 +60,9 @@ namespace ASC.Mail.Storage
         private TenantManager TenantManager { get; }
 
         public StorageManager(
-            SecurityContext securityContext, 
-            StorageFactory storageFactory, 
-            TenantManager tenantManager, 
+            SecurityContext securityContext,
+            StorageFactory storageFactory,
+            TenantManager tenantManager,
             IOptionsMonitor<ILog> options)
         {
             SecurityContext = securityContext;
@@ -84,7 +86,7 @@ namespace ASC.Mail.Storage
             if (log == null)
                 log = new NullLog();
 
-            var data = new byte[] {};
+            var data = new byte[] { };
 
             try
             {
@@ -138,7 +140,7 @@ namespace ASC.Mail.Storage
 
                         Log.InfoFormat("ChangeSignatureEditorImagesLinks() Original image link: {0}", link);
 
-                         var fileLink = HttpUtility.UrlDecode(link.Substring(currentMailCkeditorUrl.Length));
+                        var fileLink = HttpUtility.UrlDecode(link.Substring(currentMailCkeditorUrl.Length));
 
                         var fileName = Path.GetFileName(fileLink);
 

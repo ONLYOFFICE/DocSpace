@@ -61,6 +61,7 @@ namespace ASC.Mail.Configuration
             public int? TenantCacheDays { get; set; }
             public int? TenantOverdueDays { get; set; }
             public int? TimerWaitMinutes { get; set; }
+            public bool DeleteDiscStorageFolders { get; set; }
             public MailGarbageEraserConfig() { }
             public MailGarbageEraserConfig(MailGarbageEraserConfig config, string defaultApiSchema)
             {
@@ -71,6 +72,7 @@ namespace ASC.Mail.Configuration
                 TenantCacheDays = config.TenantCacheDays ?? 1;
                 TenantOverdueDays = config.TenantOverdueDays ?? 30;
                 TimerWaitMinutes = config.TimerWaitMinutes ?? 60;
+                DeleteDiscStorageFolders = config.DeleteDiscStorageFolders;
             }
         }
         public class DefinesConfig
@@ -175,6 +177,7 @@ namespace ASC.Mail.Configuration
             public bool CollectStatistics { get; set; }
             public bool ShowMailEngineLogs { get; set; }
             public int? QuotaRest { get; set; }
+            public uint? MaxMessageSizeLimit { get; set; }
             public AggregatorConfig() { }
             public AggregatorConfig(AggregatorConfig config, IConfiguration configuration)
             {
@@ -218,6 +221,7 @@ namespace ASC.Mail.Configuration
                 CollectStatistics = config.CollectStatistics;
                 TenantOverdueDays = config.TenantOverdueDays ?? 10;
                 TenantMinQuotaBalance = config.TenantMinQuotaBalance ?? 26214400;
+                MaxMessageSizeLimit = config.MaxMessageSizeLimit ?? 67108864;
             }
         }
         public class WatchdogConfig

@@ -34,6 +34,7 @@ using ASC.Common;
 using ASC.Common.Threading;
 using ASC.Core.Tenants;
 using ASC.Files.Core.Resources;
+using ASC.Web.Files.Core.Compress;
 
 using Microsoft.Extensions.Primitives;
 
@@ -181,6 +182,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             services.TryAdd<FileMoveCopyOperationScope>();
             services.TryAdd<FileOperationScope>();
             services.TryAdd<FileDownloadOperationScope>();
+            services.TryAdd<CompressToArchive>();
             services.AddDistributedTaskQueueService<FileOperation>(10);
         }
     }

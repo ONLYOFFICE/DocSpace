@@ -38,6 +38,7 @@ using ASC.Common.Logging;
 using ASC.Mail.Clients.Imap;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Engine;
+using ASC.Mail.Core.Exceptions;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
@@ -454,11 +455,35 @@ namespace ASC.Mail.Clients
 
         private void LoginImap(bool enableUtf8 = true)
         {
-            Log.DebugFormat($"Imap: Connect({Account.Server}:{Account.Port}, SecureSocketOptions: Auto)");
+            var secureSocketOptions = SecureSocketOptions.Auto;
+            var sslProtocols = SslProtocols.Default;
+
+            switch (Account.Encryption)
+            {
+                case EncryptionType.StartTLS:
+                    secureSocketOptions = SecureSocketOptions.StartTlsWhenAvailable;
+                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
+                    break;
+                case EncryptionType.SSL:
+                    secureSocketOptions = SecureSocketOptions.SslOnConnect;
+                    sslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
+                    break;
+                case EncryptionType.None:
+                    secureSocketOptions = SecureSocketOptions.None;
+                    sslProtocols = SslProtocols.None;
+                    break;
+            }
+
+            Log.DebugFormat($"Imap: Connect({Account.Server}:{Account.Port}, " +
+                $"{Enum.GetName(typeof(SecureSocketOptions), secureSocketOptions)})");
 
             try
             {
-                var t = Imap.ConnectAsync(Account.Server, Account.Port, SecureSocketOptions.Auto, CancelToken);
+                Imap.SslProtocols = sslProtocols;
+
+                Log.InfoFormat("Try connect... to ({1}:{2}) timeout {0} miliseconds", CONNECT_TIMEOUT, Account.Server, Account.Port);
+
+                var t = Imap.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
 
                 if (!t.Wait(CONNECT_TIMEOUT, CancelToken))
                 {
@@ -487,7 +512,6 @@ namespace ASC.Mail.Clients
                 {
                     Log.DebugFormat($"Imap: Authentication({Account.Account}).");
                     t = Imap.AuthenticateAsync(Account.Account, Account.Password, CancelToken);
-                    IsAuthenticated = true;
                 }
                 else
                 {
@@ -496,14 +520,12 @@ namespace ASC.Mail.Clients
                     var oauth2 = new SaslMechanismOAuth2(Account.Account, Account.AccessToken);
 
                     t = Imap.AuthenticateAsync(oauth2, CancelToken);
-                    IsAuthenticated = true;
                 }
 
                 if (!t.Wait(LOGIN_TIMEOUT, CancelToken))
                 {
                     Imap.Authenticated -= ImapOnAuthenticated;
                     Log.Debug("Imap: Failed authentication: Timeout.");
-                    IsAuthenticated = false;
                     throw new TimeoutException("Imap: AuthenticateAsync timeout.");
                 }
                 else
@@ -523,6 +545,11 @@ namespace ASC.Mail.Clients
                 }
                 Log.ErrorFormat($"Imap: Exception while logging.");
                 throw new Exception("LoginImap failed", aggEx);
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("LoginImap error {0}", ex.Message);
+                throw;
             }
             finally
             {
@@ -577,7 +604,7 @@ namespace ASC.Mail.Clients
                         continue;
                     }
 
-                    loaded += LoadFolderMessages(folder, mailFolder, limitMessages);
+                    loaded += LoadFolderMessages(folder, mailFolder, limitMessages, mailSettings.Aggregator.MaxMessageSizeLimit);
 
                     if (limitMessages <= 0 || loaded < limitMessages)
                         continue;
@@ -685,7 +712,24 @@ namespace ASC.Mail.Clients
             return new List<IMailFolder>();
         }
 
-        private int LoadFolderMessages(IMailFolder folder, MailFolder mailFolder, int limitMessages)
+        class TransferProgress : ITransferProgress
+        {
+            public long BytesTransferred;
+            public long TotalSize;
+
+            public void Report(long bytesTransferred, long totalSize)
+            {
+                BytesTransferred = bytesTransferred;
+                TotalSize = totalSize;
+            }
+
+            public void Report(long bytesTransferred)
+            {
+                BytesTransferred = bytesTransferred;
+            }
+        }
+
+        private int LoadFolderMessages(IMailFolder folder, MailFolder mailFolder, int limitMessages, uint? maxSize)
         {
             var loaded = 0;
 
@@ -749,7 +793,19 @@ namespace ASC.Mail.Clients
                             break;
                         }
 
-                        var message = folder.GetMessage(uid, CancelToken);
+                        var messInfo = folder.Fetch(new List<UniqueId>() { uid }, MessageSummaryItems.Size).FirstOrDefault();
+
+                        if (messInfo.Size > maxSize)
+                            throw new LimitMessageException(string.Format("Message size ({0}) exceeds fixed maximum message size ({1}). The message will be skipped.",
+                                messInfo.Size, maxSize));
+
+                        var progress = new TransferProgress();
+
+                        Log.DebugFormat($"GetMessage(uid='{uid}')");
+
+                        var message = folder.GetMessage(uid, CancelToken, progress);
+
+                        Log.DebugFormat($"BytesTransferred = {progress.BytesTransferred}");
 
                         var uid1 = uid;
                         var info = infoList.FirstOrDefault(t => t.UniqueId == uid1);
@@ -772,6 +828,15 @@ namespace ASC.Mail.Clients
                         message.FixEncodingIssues(Log);
 
                         OnGetMessage(message, uid.Id.ToString(), unread, mailFolder);
+
+                        loaded++;
+                    }
+                    catch (LimitMessageException e)
+                    {
+                        Log.ErrorFormat(
+                            "ProcessMessages() Tenant={0} User='{1}' Account='{2}', MailboxId={3}, UID={4} Exception:\r\n{5}\r\n",
+                            Account.TenantId, Account.UserId, Account.EMail.Address, Account.MailBoxId,
+                            uid, e);
 
                         loaded++;
                     }
@@ -1067,7 +1132,15 @@ namespace ASC.Mail.Clients
                 var t = Pop.ConnectAsync(Account.Server, Account.Port, secureSocketOptions, CancelToken);
 
                 if (!t.Wait(CONNECT_TIMEOUT, CancelToken))
+                {
+                    Log.InfoFormat("Pop3: Failed connect: Timeout.");
                     throw new TimeoutException("Pop.ConnectAsync timeout");
+                }
+                else
+                {
+                    IsConnected = true;
+                    Log.InfoFormat("Imap: Successfull connection. Working on!");
+                }
 
                 if (enableUtf8 && (Pop.Capabilities & Pop3Capabilities.UTF8) != Pop3Capabilities.None)
                 {
@@ -1099,7 +1172,13 @@ namespace ASC.Mail.Clients
                 if (!t.Wait(LOGIN_TIMEOUT, CancelToken))
                 {
                     Pop.Authenticated -= PopOnAuthenticated;
+                    Log.InfoFormat("Pop: Authentication failed.");
                     throw new TimeoutException("Pop.AuthenticateAsync timeout");
+                }
+                else
+                {
+                    IsAuthenticated = true;
+                    Log.InfoFormat("Pop: Successfull authentication.");
                 }
 
                 Pop.Authenticated -= PopOnAuthenticated;
@@ -1108,8 +1187,10 @@ namespace ASC.Mail.Clients
             {
                 if (aggEx.InnerException != null)
                 {
+                    Log.ErrorFormat($"Pop3: Exception while logging. See next exception for details.");
                     throw aggEx.InnerException;
                 }
+                Log.ErrorFormat($"Pop3: Exception while logging.");
                 throw new Exception("LoginPop3 failed", aggEx);
             }
         }

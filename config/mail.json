@@ -23,7 +23,8 @@
       "RemoveDomainTimeout": 99999,
       "RemoveMailboxTimeout": 99999,
       "EnableSignalr": false,
-      "AggregateModeValue": "all"
+      "AggregateModeValue": "all",
+      "MaxMessageSizeLimit": 67108864
     },
 	"ImapSync": {
       "RedisConnectionString": ""
@@ -64,7 +65,8 @@
       "TenantCacheDays": 1,
       "TenantOverdueDays": 30,
       "GarbageOverdueDays": 30,
-      "MaxFilesToRemoveAtOnce": 100
+      "MaxFilesToRemoveAtOnce": 100,
+      "DeleteDiscStorageFolders": false
     },
     "Watchdog": {
       "TasksTimeoutInMinutes": 6,

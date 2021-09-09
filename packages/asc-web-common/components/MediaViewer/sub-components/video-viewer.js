@@ -231,7 +231,7 @@ class VideoViewer extends Component {
   state = {
     url: this.props.url,
     pip: false,
-    playing: this.props.playing,
+    playing: false,
     controls: false,
     light: false,
     volume: 0.3,
@@ -243,25 +243,26 @@ class VideoViewer extends Component {
     loop: false,
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    let newUrl = prevState.url;
-    let newPlaying = prevState.playing;
-    if (
-      this.props.url !== prevProps.url ||
-      this.props.playing !== prevProps.playing
-    ) {
-      if (this.props.url !== prevProps.url) {
-        newUrl = this.props.url;
-      }
-      if (this.props.playing !== prevProps.playing) {
-        newPlaying = this.props.playing;
-      }
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeydown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeydown, false);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.url !== prevProps.url) {
       this.setState({
-        url: newUrl,
-        playing: newPlaying,
+        url: this.props.url,
+        playing: false,
       });
     }
   }
+
+  onKeydown = (e) => {
+    if (e.keyCode === 32) this.handlePlayPause();
+  };
 
   handlePlayPause = () => {
     this.setState({ playing: !this.state.playing });
@@ -421,6 +422,7 @@ class VideoViewer extends Component {
         height={height}
         left={left}
         top={height + controlsHeight}
+        onClick={this.handlePlayPause}
       >
         <div>
           <div className="playerWrapper">
@@ -486,7 +488,6 @@ class VideoViewer extends Component {
 VideoViewer.propTypes = {
   isVideo: PropTypes.bool,
   url: PropTypes.string,
-  playing: PropTypes.bool,
   getOffset: PropTypes.func,
 };
 

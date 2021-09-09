@@ -14,18 +14,18 @@ namespace ASC.Mail.Core.Dao.Entities
         public string Id { get; set; }
         [Key]
         [Column("id_mailbox", TypeName = "int(10) unsigned")]
-        public uint IdMailbox { get; set; }
+        public int IdMailbox { get; set; }
         [Key]
         [Column("tenant", TypeName = "int(10) unsigned")]
-        public uint Tenant { get; set; }
+        public int Tenant { get; set; }
         [Key]
         [Column("id_user", TypeName = "varchar(255)")]
         public string IdUser { get; set; }
         [Key]
         [Column("folder", TypeName = "int(10) unsigned")]
-        public uint Folder { get; set; }
+        public int Folder { get; set; }
         [Column("length", TypeName = "int(10) unsigned")]
-        public uint Length { get; set; }
+        public int Length { get; set; }
         [Column("unread", TypeName = "tinyint(1) unsigned")]
         public bool Unread { get; set; }
         [Column("has_attachments", TypeName = "tinyint(1) unsigned")]

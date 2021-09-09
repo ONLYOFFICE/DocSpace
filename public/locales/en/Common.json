@@ -95,5 +95,14 @@
   "Warning": "Warning",
   "ResetApplication": "Reset application",
   "NewVersionAvailable": "A new version of the website available",
-  "Load": "Load"
+  "Load": "Load",
+  "Name": "Name",
+  "Image": "Image",
+  "Unknown": "Unknown",
+  "Archive": "Archive",
+  "Video": "Video",
+  "Audio": "Audio",
+  "Department": "Department",
+  "Role": "Role",
+  "Phone": "Phone"
 }

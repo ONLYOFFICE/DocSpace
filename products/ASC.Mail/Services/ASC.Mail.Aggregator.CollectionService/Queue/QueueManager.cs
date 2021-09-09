@@ -103,10 +103,22 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             {
                 mailBoxData = GetQueuedMailbox();
 
-            } while (mailBoxData != null && !TryLockMailbox(mailBoxData));
+            }
+            while (mailBoxData != null && !TryLockMailbox(mailBoxData));
 
             if (mailBoxData == null)
                 return null;
+
+            if (_lockedMailBoxList.Any(m => m.MailBoxId == mailBoxData.MailBoxId))
+            {
+                Log.Error($"GetLockedMailbox() Stored dublicate with id = {mailBoxData.MailBoxId}, address = {mailBoxData.EMail.Address}. Mailbox not added to the queue.");
+                return null;
+            }
+
+            if (_lockedMailBoxList.Any(m => m.EMail.Address == mailBoxData.EMail.Address))
+            {
+                return null;
+            }
 
             _lockedMailBoxList.Add(mailBoxData);
 
@@ -117,7 +129,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             return mailBoxData;
         }
 
-        public void ReleaseAllProcessingMailboxes()
+        public void ReleaseAllProcessingMailboxes(bool firstTime = false)
         {
             if (!_lockedMailBoxList.Any())
                 return;
@@ -126,9 +138,29 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
             Log.Info("QueueManager -> ReleaseAllProcessingMailboxes()");
 
-            foreach (var mailbox in cloneCollection)
+            using var scope = ServiceProvider.CreateScope();
+
+            var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+
+            if (firstTime)
             {
-                ReleaseMailbox(mailbox);
+                foreach (var mailbox in cloneCollection)
+                {
+                    var sameMboxes = mailboxEngine.GetMailboxDataList(new ConcreteMailboxesExp(mailbox.EMail.Address));
+                    if (sameMboxes.Count > 0)
+                    {
+                        mailbox.NotOnlyOne = true;
+                    }
+
+                    ReleaseMailbox(mailbox);
+                }
+            }
+            else
+            {
+                foreach (var mailbox in cloneCollection)
+                {
+                    ReleaseMailbox(mailbox);
+                }
             }
         }
 
@@ -136,15 +168,17 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         {
             try
             {
-                if (!_lockedMailBoxList.Contains(mailBoxData))
+                if (!_lockedMailBoxList.Any(m => m.MailBoxId == mailBoxData.MailBoxId))
                 {
-                    Log.WarnFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.EMail}') mailbox not found");
+                    Log.WarnFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} " +
+                        $"MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.EMail}') mailbox not found");
+
                     return;
                 }
 
                 Log.InfoFormat($"QueueManager -> ReleaseMailbox(MailboxId = {mailBoxData.MailBoxId} Address '{mailBoxData.EMail}')");
 
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
@@ -152,9 +186,10 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                 var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
 
-                mailboxEngine.ReleaseMaibox(mailBoxData, MailSettings);
+                mailboxEngine.ReleaseMailbox(mailBoxData, MailSettings);
 
-                _lockedMailBoxList.Remove(mailBoxData);
+                Log.Debug($"Mail box {mailBoxData.MailBoxId} will be realesed...Now remove from locked queue by Id.");
+                _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
 
                 DeleteMailboxFromDumpDb(mailBoxData.MailBoxId);
             }
@@ -443,7 +478,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         {
             try
             {
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
                 var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
                 var mbList = mailboxEngine.GetMailboxesForProcessing(MailSettings, _maxItemsLimit).ToList();
 
@@ -461,7 +496,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             {
                 Log.DebugFormat("Queue is {0}. Load new queue.", QueueIsEmpty ? "EMPTY" : "EXPIRED");
 
-                LoadQueue();
+                LoadQueue(); //здесь ящики еще не в процессе
             }
 
             return !QueueIsEmpty ? _mailBoxQueue.Dequeue() : null;
@@ -475,7 +510,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private void RemoveFromQueue(int tenant, string user)
         {
-
             Log.Debug("RemoveFromQueue()");
             var list = _mailBoxQueue.ToList();
 
@@ -512,13 +546,12 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
         private bool TryLockMailbox(MailBoxData mailbox)
         {
-            Log.DebugFormat("TryLockMailbox(MailboxId={0} is {1})", mailbox.MailBoxId, mailbox.Active ? "active" : "inactive");
-
             try
             {
                 var contains = _tenantMemCache.Contains(mailbox.TenantId.ToString(CultureInfo.InvariantCulture));
 
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
+
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var apiHelper = scope.ServiceProvider.GetService<ApiHelper>();
@@ -532,6 +565,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     try
                     {
                         var type = mailbox.GetTenantStatus(tenantManager, securityContext, apiHelper, (int)MailSettings.Aggregator.TenantOverdueDays, Log);
+
+                        Log.InfoFormat("TryLockMailbox -> Returned tenant {0} status: {1}.", mailbox.TenantId, type);
 
                         switch (type)
                         {
@@ -632,7 +667,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                     return false;
                 }
 
-                return mailboxEngine.LockMaibox(mailbox.MailBoxId);
+                Log.DebugFormat("TryLockMailbox {2} (MailboxId: {0} is {1})", mailbox.MailBoxId, mailbox.Active ? "active" : "inactive", mailbox.EMail.Address);
+
+                return mailboxEngine.LockMaibox(mailbox);
 
             }
             catch (Exception ex)

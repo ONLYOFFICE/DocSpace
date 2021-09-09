@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 
 using ASC.Common;
@@ -35,7 +34,6 @@ using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
-using ASC.Core.Tenants;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,7 +53,7 @@ namespace ASC.MessagingSystem.DbSender
         private static DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
         private readonly IDictionary<string, EventMessage> Cache;
-        private static Parser Parser { get; set; }
+        private Parser Parser { get; set; }
 
         private readonly Timer Timer;
         private bool timerStarted;
@@ -67,7 +65,6 @@ namespace ASC.MessagingSystem.DbSender
         {
             CacheTime = TimeSpan.FromMinutes(1);
             Cache = new Dictionary<string, EventMessage>();
-            Parser = Parser.GetDefault();
             timerStarted = false;
 
             Log = options.CurrentValue;
@@ -142,6 +139,7 @@ namespace ASC.MessagingSystem.DbSender
                         }
                         else
                         {
+                            Parser = Parser ?? Parser.GetDefault();
                             clientInfo = Parser.Parse(message.UAHeader);
                             dict.Add(message.UAHeader, clientInfo);
                         }

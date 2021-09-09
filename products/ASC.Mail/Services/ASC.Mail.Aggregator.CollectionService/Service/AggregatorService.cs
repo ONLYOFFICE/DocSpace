@@ -67,6 +67,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
         private IServiceProvider ServiceProvider { get; }
         private QueueManager QueueManager { get; }
         private SignalrWorker SignalrWorker { get; }
+        private AggregatorLogger AggregatorLogger { get; }
 
         public Dictionary<string, int> ImapFlags { get; set; }
         public Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>> SpecialDomainFolders { get; set; }
@@ -82,7 +83,8 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             IConfiguration configuration,
             ConfigurationExtension configurationExtension,
             SignalrWorker signalrWorker,
-            MailQueueItemSettings mailQueueItemSettings)
+            MailQueueItemSettings mailQueueItemSettings,
+            AggregatorLogger aggregatorLogger)
         {
 
             ServiceProvider = serviceProvider;
@@ -90,10 +92,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             QueueManager = queueManager;
 
             ConfigureLogNLog(configuration, configurationExtension);
+            LogOptions = optionsMonitor;
+
 
             Log = optionsMonitor.Get("ASC.Mail.MainThread");
             LogStat = optionsMonitor.Get("ASC.Mail.Stat");
-            LogOptions = optionsMonitor;
+            AggregatorLogger = aggregatorLogger;
+            AggregatorLogger.SetLog(optionsMonitor.Get("ASC.Mail"));
+
             MailSettings = mailSettings;
 
             MailSettings.DefaultFolders = mailQueueItemSettings.DefaultFolders;
@@ -124,7 +130,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
         private void WorkTimerElapsed(object state)
         {
-            Log.Debug("Timer -> WorkTimer_Elapsed");
+            Log.Debug("Timer -> Work Timer Elapsed");
 
             var cancelToken = state as CancellationToken? ?? new CancellationToken();
 
@@ -138,7 +144,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                     {
                         Log.InfoFormat("Found {0} tasks to release", QueueManager.ProcessingCount);
 
-                        QueueManager.ReleaseAllProcessingMailboxes();
+                        QueueManager.ReleaseAllProcessingMailboxes(true);
                     }
 
                     QueueManager.LoadTenantsFromDump();
@@ -148,7 +154,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
                 if (cancelToken.IsCancellationRequested)
                 {
-                    Log.Debug("Timer -> WorkTimer_Elapsed: IsCancellationRequested. Quit.");
+                    Log.Debug("Timer -> Work Timer Elapsed: IsCancellationRequested. Quit.");
                     return;
                 }
 
@@ -300,6 +306,9 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             var tasks = new List<TaskData>();
 
+            var ignoredIds = new List<int>();
+
+
             foreach (var mailbox in mailboxes)
             {
                 var timeoutCancel = new CancellationTokenSource(TaskSecondsLifetime);
@@ -307,19 +316,27 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 var commonCancelToken =
                     CancellationTokenSource.CreateLinkedTokenSource(cancelToken, timeoutCancel.Token).Token;
 
-                var taskLogger = LogOptions.Get($"ASC.Mail Mbox_{mailbox.MailBoxId}");
+                var log = LogOptions.Get($"ASC.Mail Mbox_{mailbox.MailBoxId}");
 
-                var client = CreateMailClient(mailbox, taskLogger, commonCancelToken);
+                var client = CreateMailClient(mailbox, log, commonCancelToken);
 
                 if (client == null || !client.IsConnected || !client.IsAuthenticated || client.IsDisposed)
                 {
-                    taskLogger.InfoFormat("ReleaseMailbox(Tenant = {0} MailboxId = {1}, Address = '{2}')",
-                               mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail);
+                    if (client != null)
+                        log.InfoFormat("Client -> Could not connect: {0} | Not authenticated: {1} | Was disposed: {2}",
+                            !client.IsConnected ? "Yes" : "No",
+                            !client.IsAuthenticated ? "Yes" : "No",
+                            client.IsDisposed ? "Yes" : "No");
+                    else log.InfoFormat("Client was null");
+
+                    log.InfoFormat($"ReleaseMailbox(Tenant = {mailbox.TenantId} MailboxId = {mailbox.MailBoxId}, Address = '{mailbox.EMail}')");
+
                     ReleaseMailbox(mailbox);
+
                     continue;
                 }
 
-                var task = TaskFactory.StartNew(() => ProcessMailbox(client, MailSettings), commonCancelToken);
+                var task = TaskFactory.StartNew(() => ProcessMailbox(client, MailSettings, log), commonCancelToken);
                 tasks.Add(new TaskData(mailbox, task));
             }
 
@@ -389,7 +406,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             catch (AuthenticationException authEx)
             {
                 log.ErrorFormat(
-                    $"CreateTasks() -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nException: {authEx}\r\n");
+                    $"CreateTasks() -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nThe box will be disabled.\r\nAuthentication exception: {authEx}\r\n");
 
                 connectError = true;
                 stopClient = true;
@@ -397,7 +414,15 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             catch (WebException webEx)
             {
                 log.ErrorFormat(
-                    $"CreateTasks() -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nException: {webEx}\r\n");
+                    $"CreateTasks() -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nThe box will be disabled.\r\nWeb exception: {webEx}\r\n");
+
+                connectError = true;
+                stopClient = true;
+            }
+            catch (ImapProtocolException protocolEx)
+            {
+                log.ErrorFormat(
+                    $"CreateTasks() -> MailClient.LoginImap(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")\r\nThe box will be disabled.\r\nImap Protocol Exception: {protocolEx}\r\n");
 
                 connectError = true;
                 stopClient = true;
@@ -405,7 +430,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             catch (Exception ex)
             {
                 log.ErrorFormat(
-                    "CreateTasks() -> MailClient.LoginImap(Tenant = {0}, MailboxId = {1}, Address = \"{2}\")\r\nException: {3}\r\n",
+                    "CreateTasks() -> MailClient.LoginImap(Tenant = {0}, MailboxId = {1}, Address = \"{2}\")\r\nUnregistered exception: {3}\r\n",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail,
                     ex is ImapProtocolException || ex is Pop3ProtocolException ? ex.Message : ex.ToString());
 
@@ -522,7 +547,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             }
         }
 
-        private void ProcessMailbox(MailClient client, MailSettings mailSettings)
+        private void ProcessMailbox(MailClient client, MailSettings mailSettings, ILog log)
         {
             using var scope = ServiceProvider.CreateScope();
 
@@ -543,16 +568,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
 
             var failed = false;
 
-            var taskLogger = LogOptions.Get($"ASC.Mail Mbox_{mailbox.MailBoxId} Task_{Task.CurrentId}");
-
-            taskLogger.InfoFormat(
-                "ProcessMailbox(Tenant = {0}, MailboxId = {1} Address = \"{2}\") Is {3}",
+            log.InfoFormat(
+                "ProcessMailbox(Tenant = {0}, MailboxId = {1} Address = \"{2}\") Is {3}. | Task №: {4}",
                 mailbox.TenantId, mailbox.MailBoxId,
-                mailbox.EMail, mailbox.Active ? "Active" : "Inactive");
+                mailbox.EMail, mailbox.Active ? "Active" : "Inactive", Task.CurrentId);
 
             try
             {
-                client.Log = taskLogger;
+                client.Log = log;
 
                 client.GetMessage += ClientOnGetMessage;
 
@@ -560,14 +583,14 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             }
             catch (OperationCanceledException)
             {
-                taskLogger.InfoFormat(
+                log.InfoFormat(
                     $"Operation cancel: ProcessMailbox(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = \"{mailbox.EMail}\")");
 
-                NotifySignalrIfNeed(mailbox, taskLogger);
+                NotifySignalrIfNeed(mailbox, log);
             }
             catch (Exception ex)
             {
-                taskLogger.ErrorFormat(
+                log.ErrorFormat(
                     "ProcessMailbox(Tenant = {0}, MailboxId = {1}, Address = \"{2}\")\r\nException: {3}\r\n",
                     mailbox.TenantId, mailbox.MailBoxId, mailbox.EMail,
                     ex is ImapProtocolException || ex is Pop3ProtocolException ? ex.Message : ex.ToString());
@@ -586,39 +609,39 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                 }
             }
 
-            var state = GetMailboxState(mailbox, taskLogger, factory);
+            var state = GetMailboxState(mailbox, log, factory);
 
             switch (state)
             {
                 case MailboxState.NoChanges:
-                    taskLogger.InfoFormat("MailBox with Id = {mailbox.MailBoxId} not changed.");
+                    log.InfoFormat($"MailBox with Id = {mailbox.MailBoxId} not changed.");
                     break;
                 case MailboxState.Disabled:
-                    taskLogger.InfoFormat("MailBox with Id = {mailbox.MailBoxId} is deactivated.");
+                    log.InfoFormat($"MailBox with Id = {mailbox.MailBoxId} is deactivated.");
                     break;
                 case MailboxState.Deleted:
-                    taskLogger.InfoFormat("MailBox with Id = {mailbox.MailBoxId} is removed.");
+                    log.InfoFormat($"MailBox with Id = {mailbox.MailBoxId} is removed.");
 
                     try
                     {
-                        taskLogger.InfoFormat($"RemoveMailBox(Id = {mailbox.MailBoxId}) -> Try clear new data from removed mailbox");
+                        log.InfoFormat($"RemoveMailBox(Id = {mailbox.MailBoxId}) -> Try clear new data from removed mailbox");
 
                         factory.MailboxEngine.RemoveMailBox(mailbox);
                     }
                     catch (Exception exRem)
                     {
-                        taskLogger.InfoFormat(
+                        log.InfoFormat(
                             $"ProcessMailbox -> RemoveMailBox(Tenant = {mailbox.TenantId}, MailboxId = {mailbox.MailBoxId}, Address = {mailbox.EMail})\r\nException:{exRem.Message}\r\n");
                     }
                     break;
                 case MailboxState.DateChanged:
-                    taskLogger.InfoFormat($"MailBox with Id = {mailbox.MailBoxId}: Begin date was changed.");
+                    log.InfoFormat($"MailBox with Id = {mailbox.MailBoxId}: Begin date was changed.");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            taskLogger.InfoFormat($"Mailbox \"{mailbox.EMail}\" has been processed.");
+            log.InfoFormat($"Mailbox \"{mailbox.EMail}\" has been processed.");
         }
 
         private void ClientOnAuthenticated(object sender, MailClientEventArgs mailClientEventArgs)
@@ -653,42 +676,45 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             var failed = false;
 
             var mailbox = mailClientMessageEventArgs.Mailbox;
+
             try
             {
-                var mimeMessage = mailClientMessageEventArgs.Message;
-                var uid = mailClientMessageEventArgs.MessageUid;
-                var folder = mailClientMessageEventArgs.Folder;
-                var unread = mailClientMessageEventArgs.Unread;
+                MailBoxSaveInfo boxInfo = new MailBoxSaveInfo()
+                {
+                    Uid = mailClientMessageEventArgs.MessageUid,
+                    MimeMessage = mailClientMessageEventArgs.Message,
+                    Folder = mailClientMessageEventArgs.Folder,
+                    Unread = mailClientMessageEventArgs.Unread
+                };
+
                 log = mailClientMessageEventArgs.Logger;
 
-                var uidl = mailbox.Imap ? $"{uid}-{(int)folder.Folder}" : uid;
+                var uidl = mailbox.Imap ? $"{boxInfo.Uid}-{(int)boxInfo.Folder.Folder}" : boxInfo.Uid;
 
                 log.InfoFormat($"Found message (UIDL: '{uidl}', MailboxId = {mailbox.MailBoxId}, Address = {mailbox.EMail})");
 
                 using var scope = ServiceProvider.CreateScope();
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-
                 tenantManager.SetCurrentTenant(mailbox.TenantId);
-                securityContext.AuthenticateMe(new Guid(mailbox.UserId));
 
-                var mailEnginesFactory = scope.ServiceProvider.GetService<MailEnginesFactory>();
+                var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
-                var message = mailEnginesFactory.MessageEngine.Save(mailbox, mimeMessage, uidl, folder, null, unread, log);
-
-                if (message == null || message.Id <= 0)
+                if (mailbox.NotOnlyOne)
                 {
-                    return;
+                    var sameMboxes = factory.MailboxEngine.GetMailboxDataList(new ConcreteMailboxesExp(mailbox.EMail.Address));
+
+                    log.InfoFormat($"Boxes with the same name ({mailbox.EMail.Address}) detected. The message will be sent to them.");
+
+                    foreach (var box in sameMboxes)
+                    {
+                        SaveAndOptional(box, boxInfo, uidl, log);
+                    }
                 }
-
-                log.InfoFormat($"Message saved (Id: {message.Id}, From: {message.From}, Subject: {message.Subject}, Unread: {message.IsNew})");
-
-                log.Info("DoOptionalOperations -> START");
-
-                DoOptionalOperations(message, mimeMessage, mailbox, folder, log, mailEnginesFactory);
-
-                log.Info("DoOptionalOperations -> END");
+                else
+                {
+                    SaveAndOptional(mailbox, boxInfo, uidl, log);
+                }
             }
             catch (Exception ex)
             {
@@ -706,7 +732,44 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
                     LogStatistic(PROCESS_MESSAGE, mailbox, watch.Elapsed, failed);
                 }
             }
+        }
 
+        private class MailBoxSaveInfo
+        {
+            public string Uid { get; set; }
+            public MimeMessage MimeMessage { get; set; }
+            public MailFolder Folder { get; set; }
+            public bool Unread { get; set; }
+        }
+
+        private void SaveAndOptional(MailBoxData mailbox, MailBoxSaveInfo boxInfo, string uidl, ILog log)
+        {
+            using var scope = ServiceProvider.CreateScope();
+
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
+            tenantManager.SetCurrentTenant(mailbox.TenantId);
+            securityContext.AuthenticateMe(new Guid(mailbox.UserId));
+
+            var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
+
+            var mailEnginesFactory = scope.ServiceProvider.GetService<MailEnginesFactory>();
+
+            var message = factory.MessageEngine.Save(mailbox, boxInfo.MimeMessage, uidl, boxInfo.Folder, null, boxInfo.Unread, log);
+
+            if (message == null || message.Id <= 0)
+            {
+                return;
+            }
+
+            log.InfoFormat($"Message saved (to Mbox_{mailbox.MailBoxId} - {mailbox.EMail.Address}) (Id: {message.Id}, From: {message.From}, Subject: {message.Subject}, Unread: {message.IsNew})");
+
+            log.Info("DoOptionalOperations -> START");
+
+            DoOptionalOperations(message, boxInfo.MimeMessage, mailbox, boxInfo.Folder, log, mailEnginesFactory);
+
+            log.Info("DoOptionalOperations -> END");
         }
 
         enum MailboxState
@@ -917,7 +980,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             // Using id_user as domain in S3 Storage - allows not to add quota to tenant.
             var savePath = MailStoragePathCombiner.GetEmlKey(userId, streamId);
 
-            var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceProvider.CreateScope();
             var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
 
             var storage = storageFactory.GetMailStorage(tenant);
@@ -1010,11 +1073,15 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             if (!MailSettings.Aggregator.CollectStatistics)
                 return;
 
-            LogStat.DebugWithProps(method,
+            var pairs = new List<KeyValuePair<string, object>>
+            {
                 new KeyValuePair<string, object>("duration", duration.TotalMilliseconds),
                 new KeyValuePair<string, object>("mailboxId", mailBoxData.MailBoxId),
                 new KeyValuePair<string, object>("address", mailBoxData.EMail.ToString()),
-                new KeyValuePair<string, object>("status", failed ? S_FAIL : S_OK));
+                new KeyValuePair<string, object>("status", failed ? S_FAIL : S_OK)
+            };
+
+            LogStat.DebugWithProps(method, pairs);
         }
         #endregion
     }

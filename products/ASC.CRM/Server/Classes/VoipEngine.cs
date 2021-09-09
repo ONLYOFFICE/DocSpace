@@ -268,7 +268,7 @@ namespace ASC.Web.CRM.Classes
                     voipEngine.SaveOrUpdateCall(call);
                 }
 
-                _securityContext.AuthenticateMe(call.AnsweredBy);
+                _securityContext.AuthenticateMeWithoutCookie(call.AnsweredBy);
                 AddHistoryToCallContact(call, _daoFactory);
 
             }

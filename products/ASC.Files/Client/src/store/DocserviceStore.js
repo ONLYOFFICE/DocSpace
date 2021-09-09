@@ -127,6 +127,8 @@ class DocserviceStore {
 
   canWebEdit = (extension) => presentInArray(this.editedDocs, extension);
 
+  canViewedDocs = (extension) => presentInArray(this.viewedDocs, extension);
+
   canConvert = (extension) => presentInArray(this.convertDocs, extension);
 
   canWebComment = (extension) => presentInArray(this.commentedDocs, extension);

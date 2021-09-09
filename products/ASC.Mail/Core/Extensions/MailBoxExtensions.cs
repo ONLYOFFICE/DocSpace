@@ -32,6 +32,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Storage;
+using ASC.Mail.Exceptions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 
@@ -186,8 +187,16 @@ namespace ASC.Mail.Extensions
             }
             catch (Exception ex)
             {
-                log.ErrorFormat("GetTenantStatus(Tenant={0}, User='{1}') Exception: {2}",
-                    mailbox.TenantId, mailbox.UserId, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                if (ex is ApiHelperException)
+                {
+                    var apiEx = ex as ApiHelperException;
+                    log.ErrorFormat($"Get portal settings failed (Tenant: {mailbox.TenantId}, User: {mailbox.UserId}, Mailbox: {mailbox.MailBoxId}). Returned status code: {apiEx.StatusCode}");
+                }
+                else
+                {
+                    log.ErrorFormat("GetTenantStatus(Tenant={0}, User='{1}') Exception: {2}",
+                        mailbox.TenantId, mailbox.UserId, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                }
             }
 
             return true;

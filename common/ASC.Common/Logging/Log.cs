@@ -54,8 +54,7 @@ namespace ASC.Common.Logging
         void Trace(object message);
         void TraceFormat(string message, object arg0);
 
-        void DebugWithProps(string message, params KeyValuePair<string, object>[] props);
-        void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3);
+        void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props);
         void Debug(object message);
         void Debug(object message, Exception exception);
         void DebugFormat(string format, params object[] args);
@@ -186,7 +185,7 @@ namespace ASC.Common.Logging
             if (IsDebugEnabled) loger.DebugFormat(provider, format, args);
         }
 
-        public void DebugWithProps(string message, params KeyValuePair<string, object>[] props)
+        public void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props)
         {
             if (!IsDebugEnabled) return;
 
@@ -509,7 +508,7 @@ namespace ASC.Common.Logging
             if (IsDebugEnabled) Loger.Debug(provider, format, args);
         }
 
-        public void DebugWithProps(string message, params KeyValuePair<string, object>[] props)
+        public void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props)
         {
             if (!IsDebugEnabled) return;
 
@@ -521,29 +520,6 @@ namespace ASC.Common.Logging
             }
 
             Loger.Log(theEvent);
-        }
-        public void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3)
-        {
-            if (!IsDebugEnabled) return;
-
-            var theEvent = new LogEventInfo
-            {
-                Message = message,
-                LoggerName = Name,
-                Level = LogLevel.Debug
-            };
-
-            AddProp(prop1);
-            AddProp(prop2);
-            AddProp(prop3);
-
-
-            Loger.Log(theEvent);
-
-            void AddProp(KeyValuePair<string, object> p)
-            {
-                theEvent.Properties[p.Key] = p.Value;
-            }
         }
 
         public void Info(object message)
@@ -723,7 +699,7 @@ namespace ASC.Common.Logging
         {
         }
 
-        public void DebugWithProps(string message, params KeyValuePair<string, object>[] props)
+        public void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props)
         {
         }
 
@@ -864,10 +840,6 @@ namespace ASC.Common.Logging
         }
 
         public void FatalFormat(IFormatProvider provider, string format, params object[] args)
-        {
-        }
-
-        public void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3)
         {
         }
 

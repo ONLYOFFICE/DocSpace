@@ -37,6 +37,7 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Extensions;
 using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +76,39 @@ namespace ASC.Mail.Core.Dao
         {
             var query = MailDbContext.MailMailbox
                  .Where(exp.GetExpression())
-                 .Select(ToMailbox).ToList();
+                 .Select(ToMailbox)
+                 .ToList();
+
+            if (!string.IsNullOrEmpty(exp.OrderBy) && exp.OrderAsc.HasValue)
+            {
+                if ((bool)exp.OrderAsc)
+                {
+                    query = query.OrderBy(b => b.DateChecked).ToList();
+                }
+                else
+                {
+                    query = query.OrderByDescending(b => b.DateChecked).ToList();
+                }
+
+            }
+
+            if (exp.Limit.HasValue)
+            {
+                query = query.Take(exp.Limit.Value).ToList();
+            }
+
+            var mailboxes = query.ToList();
+
+            return mailboxes;
+        }
+
+        public List<Mailbox> GetUniqueMailBoxes(IMailboxesExp exp)
+        {
+            var query = MailDbContext.MailMailbox
+                 .Where(exp.GetExpression())
+                 .Select(ToMailbox)
+                 .DistinctBy(b => b.Address)
+                 .ToList();
 
             if (!string.IsNullOrEmpty(exp.OrderBy) && exp.OrderAsc.HasValue)
             {
@@ -326,26 +359,16 @@ namespace ASC.Mail.Core.Dao
             return result > 0;
         }
 
-        public bool SetMailboxInProcess(int id)
+        public int SetMailboxesInProcess(string address)
         {
-            var mailMailbox = MailDbContext.MailMailbox
-                .Where(mb => mb.Id == id
-                    && mb.IsProcessed == false
-                    && mb.IsRemoved == false)
-                .FirstOrDefault();
-
-            if (mailMailbox == null)
-                return false;
-
-            mailMailbox.IsProcessed = true;
-            mailMailbox.DateChecked = DateTime.UtcNow;
-
-            var result = MailDbContext.SaveChanges();
-
-            return result > 0;
+            return MailDbContext.Database.ExecuteSqlRaw(
+                "UPDATE mail_mailbox " +
+                "SET is_processed = 1, date_checked = {0} " +
+                "WHERE address = {1} AND is_processed = 0 AND is_removed = 0",
+                DateTime.UtcNow, address);
         }
 
-        public bool SetMailboxProcessed(Mailbox mailbox, int nextLoginDelay, bool? enabled = null,
+        public bool ReleaseMailbox(Mailbox mailbox, int nextLoginDelay, ILog log, bool? enabled = null,
             int? messageCount = null, long? size = null, bool? quotaError = null, string oAuthToken = null,
             string imapIntervalsJson = null, bool? resetImapIntervals = false)
         {
@@ -402,6 +425,11 @@ namespace ASC.Mail.Core.Dao
             }
 
             var result = MailDbContext.SaveChanges();
+
+            if (result <= 0)
+            {
+                log.Warn($"Problem when trying release mailbox {mailbox.Address} | Id:{mailbox.Id}.");
+            }
 
             return result > 0;
         }

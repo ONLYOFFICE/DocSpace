@@ -156,7 +156,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
         {
             try
             {
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
 
                 var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();

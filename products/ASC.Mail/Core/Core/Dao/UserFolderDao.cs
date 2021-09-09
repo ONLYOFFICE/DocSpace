@@ -96,7 +96,7 @@ namespace ASC.Mail.Core.Dao
             {
                 if (exp.OrderAsc != null && exp.OrderAsc.Value)
                 {
-                    if(exp.OrderBy == "timeModified")
+                    if (exp.OrderBy == "timeModified")
                         query.OrderBy(uf => uf.TimeModified);
                     else
                         query.OrderBy(uf => uf.Name);
@@ -221,7 +221,7 @@ namespace ASC.Mail.Core.Dao
         {
             var toUpdate = MailDbContext.MailUserFolder
                 .Where(uf => MailDbContext.MailUserFolderTree
-                    .Where(t=> t.FolderId == (int)id)
+                    .Where(t => t.FolderId == id)
                     .Select(t => t.ParentId)
                     .Any(pId => pId == uf.Id)
                 )
@@ -335,10 +335,10 @@ namespace ASC.Mail.Core.Dao
             {
                 Id = r.Id,
                 ParentId = r.ParentId,
-                
+
                 Tenant = r.TenantId,
                 User = r.IdUser,
-                
+
                 Name = r.Name,
                 FolderCount = (int)r.FoldersCount,
 

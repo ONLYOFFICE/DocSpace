@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common.Utils;
 
 using Autofac.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ namespace ASC.Files
             await host.RunAsync();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) => 
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSystemd()
                 .UseWindowsService()
@@ -34,6 +35,11 @@ namespace ASC.Files
 
                     builder.ConfigureKestrel((hostingContext, serverOptions) =>
                     {
+                        serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024;
+                        serverOptions.Limits.MaxRequestBufferSize = 100 * 1024 * 1024;
+                        serverOptions.Limits.MinRequestBodyDataRate = null;
+                        serverOptions.Limits.MinResponseDataRate = null;
+
                         var kestrelConfig = hostingContext.Configuration.GetSection("Kestrel");
 
                         if (!kestrelConfig.Exists()) return;
@@ -73,6 +79,7 @@ namespace ASC.Files
                     {
                                         {"pathToConf", path}
                     });
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

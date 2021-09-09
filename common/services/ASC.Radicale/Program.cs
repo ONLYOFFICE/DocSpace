@@ -24,9 +24,15 @@
 */
 
 
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
+using ASC.Common.DependencyInjection;
+using ASC.Common.Utils;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -35,12 +41,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
 
 namespace ASC.Radicale
 {
@@ -98,6 +98,7 @@ namespace ASC.Radicale
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, false, false);
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

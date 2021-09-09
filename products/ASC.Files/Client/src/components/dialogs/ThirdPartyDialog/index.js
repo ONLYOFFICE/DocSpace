@@ -47,7 +47,7 @@ const ServiceItem = (props) => {
   const { capability, t, ...rest } = props;
 
   const capabilityName = capability[0];
-  const capabilityLink = capability[1] ? capability[1] : "";
+  const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,

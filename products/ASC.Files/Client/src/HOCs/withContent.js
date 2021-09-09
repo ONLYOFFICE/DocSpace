@@ -145,7 +145,7 @@ export default function withContent(WrappedContent) {
               combineUrl(
                 AppServerConfig.proxyURL,
                 config.homepage,
-                "/products/files/doceditor"
+                "/doceditor"
               ),
               "_blank"
             )
@@ -212,7 +212,7 @@ export default function withContent(WrappedContent) {
     };
 
     getStatusByDate = () => {
-      const { culture, t, item, sectionWidth } = this.props;
+      const { culture, t, item, sectionWidth, viewAs } = this.props;
       const { created, updated, version, fileExst } = item;
 
       const title =
@@ -224,9 +224,18 @@ export default function withContent(WrappedContent) {
 
       const date = fileExst ? updated : created;
       const dateLabel = new Date(date).toLocaleString(culture);
-      const mobile = (sectionWidth && sectionWidth <= 375) || isMobile;
+      const mobile =
+        (sectionWidth && sectionWidth <= 375) || isMobile || viewAs === "table";
 
       return mobile ? dateLabel : `${title}: ${dateLabel}`;
+    };
+
+    getTableStatusByDate = (create) => {
+      const { created, updated, fileExst } = this.props.item;
+
+      const date = fileExst ? updated : created;
+      const dateLabel = new Date(date).toLocaleString(this.props.culture);
+      return dateLabel;
     };
 
     render() {
@@ -235,12 +244,12 @@ export default function withContent(WrappedContent) {
         item,
         fileActionId,
         fileActionExt,
-        isLoading,
         viewer,
         t,
         isTrashFolder,
         onFilesClick,
         viewAs,
+        element,
       } = this.props;
       const { id, fileExst, updated, createdBy, access, fileStatus } = item;
 
@@ -248,7 +257,11 @@ export default function withContent(WrappedContent) {
 
       const isEdit = id === fileActionId && fileExst === fileActionExt;
 
-      const updatedDate = updated && this.getStatusByDate();
+      const updatedDate =
+        viewAs === "table"
+          ? this.getTableStatusByDate(false)
+          : updated && this.getStatusByDate();
+      const createdDate = this.getTableStatusByDate(true);
 
       const fileOwner =
         createdBy &&
@@ -269,9 +282,9 @@ export default function withContent(WrappedContent) {
       return isEdit ? (
         <EditingWrapperComponent
           className={"editing-wrapper-component"}
+          elementIcon={element}
           itemTitle={itemTitle}
           itemId={id}
-          isLoading={isLoading}
           viewAs={viewAs}
           renameTitle={this.renameTitle}
           onClickUpdateItem={this.onClickUpdateItem}
@@ -281,6 +294,7 @@ export default function withContent(WrappedContent) {
         <WrappedContent
           titleWithoutExt={titleWithoutExt}
           updatedDate={updatedDate}
+          createdDate={createdDate}
           fileOwner={fileOwner}
           accessToEdit={accessToEdit}
           linkStyles={linkStyles}
@@ -304,7 +318,6 @@ export default function withContent(WrappedContent) {
         renameFolder,
         createFile,
         createFolder,
-        isLoading,
         viewAs,
       } = filesStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -333,7 +346,6 @@ export default function withContent(WrappedContent) {
         setEncryptionAccess,
         createFolder,
         fileActionExt,
-        isLoading,
         culture,
         homepage: config.homepage,
         viewer: auth.userStore.user,

@@ -41,6 +41,8 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         List<Mailbox> GetMailBoxes(IMailboxesExp exp);
 
+        List<Mailbox> GetUniqueMailBoxes(IMailboxesExp exp);
+
         Mailbox GetNextMailBox(IMailboxExp exp);
 
         Tuple<int, int> GetRangeMailboxes(IMailboxExp exp);
@@ -61,9 +63,9 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         bool SetMailboxesActivity(int tenant, string user, bool userOnline = true);
 
-        bool SetMailboxInProcess(int id);
+        int SetMailboxesInProcess(string address);
 
-        bool SetMailboxProcessed(Mailbox mailbox, int nextLoginDelay, bool? enabled = null, int? messageCount = null,
+        bool ReleaseMailbox(Mailbox mailbox, int nextLoginDelay, ILog log, bool? enabled = null, int? messageCount = null,
             long? size = null, bool? quotaError = null, string oAuthToken = null, string imapIntervalsJson = null, bool? resetImapIntervals = false);
 
         bool SetMailboxAuthError(int id, DateTime? authErroDate);

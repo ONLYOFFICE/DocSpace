@@ -1,15 +1,16 @@
 {
   "name": "@appserver/studio",
   "version": "1.0.0",
+  "private": true,
   "homepage": "",
   "title": "ONLYOFFICE",
   "scripts": {
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5001",
     "build": "webpack --mode production",
-    "deploy": "mkdirp ../../build/deploy/studio/client && cp -r -u dist/* ../../build/deploy/studio/client",
+    "deploy": "shx mkdir -p ../../build/deploy/studio/client && shx cp -r dist/* ../../build/deploy/studio/client",
     "serve": "serve dist -p 5001",
-    "clean": "rimraf dist"
+    "clean": "shx rm -rf dist"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -27,9 +28,8 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "4.5.0",
     "json-loader": "^0.5.7",
-    "mkdirp": "^1.0.4",
-    "rimraf": "^3.0.2",
     "serve": "11.3.2",
+    "shx": "^0.3.3",
     "source-map-loader": "^1.1.2",
     "style-loader": "1.2.1",
     "terser-webpack-plugin": "^5.1.1",

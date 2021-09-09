@@ -43,7 +43,7 @@ namespace ASC.Mail.Watchdog.Service
 
             Cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            if (Environment.UserInteractive || ConsoleParameters.IsConsole)
+            if (ConsoleParameters.IsConsole)
             {
                 Log.Info("Service Start in console-daemon mode");
 

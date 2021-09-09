@@ -842,7 +842,7 @@ namespace ASC.Calendar.Controllers
                     {
                         foreach (var responsibleSid in responsibles)
                         {
-                            SecurityContext.AuthenticateMe(Guid.Parse(responsibleSid));
+                            SecurityContext.AuthenticateMeWithoutCookie(Guid.Parse(responsibleSid));
 
                             var calendarIcs = GetCalendariCalString(calendarId, true);
                             var parseCalendar = DDayICalParser.DeserializeCalendar(calendarIcs);
@@ -900,7 +900,7 @@ namespace ASC.Calendar.Controllers
                         SecurityContext.Logout();
                         if (currentUserId != Guid.Empty)
                         {
-                            SecurityContext.AuthenticateMe(currentUserId);
+                            SecurityContext.AuthenticateMeWithoutCookie(currentUserId);
                         }
                     }         
                 }
@@ -1174,7 +1174,7 @@ namespace ASC.Calendar.Controllers
                 }
                 try
                 {
-                    SecurityContext.AuthenticateMe(userId);
+                    SecurityContext.AuthenticateMeWithoutCookie(userId);
                     var icalFormat = GetCalendariCalString(calendarId);
                     if (icalFormat != null)
                     {
@@ -1187,7 +1187,7 @@ namespace ASC.Calendar.Controllers
                     AuthContext.Logout();
                     if (currentUserId != Guid.Empty)
                     {
-                        SecurityContext.AuthenticateMe(currentUserId);
+                        SecurityContext.AuthenticateMeWithoutCookie(currentUserId);
                     }
                 }
             }
@@ -4168,7 +4168,7 @@ namespace ASC.Calendar.Controllers
                                 var evt = DataProvider.GetEventById(Convert.ToInt32(currentEventId));
                                 calendarId = Convert.ToInt32(evt.CalendarId);
                                 ownerId = Guid.Parse(evt.OwnerId.ToString());
-                                SecurityContext.AuthenticateMe(ownerId);
+                                SecurityContext.AuthenticateMeWithoutCookie(ownerId);
                             }
                             else
                             {
@@ -4200,7 +4200,7 @@ namespace ASC.Calendar.Controllers
                 }
                 try
                 {
-                    SecurityContext.AuthenticateMe(ownerId);
+                    SecurityContext.AuthenticateMeWithoutCookie(ownerId);
 
                     var webRequest = (HttpWebRequest)WebRequest.Create(eventURl);
                     webRequest.Method = "GET";
@@ -4384,7 +4384,7 @@ namespace ASC.Calendar.Controllers
                     SecurityContext.Logout();
                     if (currentUserId != Guid.Empty)
                     {
-                        SecurityContext.AuthenticateMe(currentUserId);
+                        SecurityContext.AuthenticateMeWithoutCookie(currentUserId);
                     }
                 }
             }
@@ -4424,7 +4424,7 @@ namespace ASC.Calendar.Controllers
 
 
                 TenantManager.SetCurrentTenant(Convert.ToInt32(calendar[0][2]));
-                SecurityContext.AuthenticateMe(ownerId);
+                SecurityContext.AuthenticateMeWithoutCookie(ownerId);
 
                 var existEvent = DataProvider.GetEventIdByUid(eventGuid + "%", calendarId);
                 if (existEvent != null)
@@ -4457,7 +4457,7 @@ namespace ASC.Calendar.Controllers
                 if (existEvent != null)
                 {
                     TenantManager.SetCurrentTenant(existEvent.TenantId);
-                    SecurityContext.AuthenticateMe(existEvent.OwnerId);
+                    SecurityContext.AuthenticateMeWithoutCookie(existEvent.OwnerId);
                     var eventDeleteModel = new EventDeleteModel
                     {
                         Date = null,

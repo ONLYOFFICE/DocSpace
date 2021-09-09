@@ -116,6 +116,7 @@ namespace ASC.Web.Files
         private FileConverter FileConverter { get; }
         private FFmpegService FFmpegService { get; }
         private IServiceProvider ServiceProvider { get; }
+        public TempStream TempStream { get; }
         private UserManager UserManager { get; }
         private ILog Logger { get; }
 
@@ -143,7 +144,8 @@ namespace ASC.Web.Files
             FileShareLink fileShareLink,
             FileConverter fileConverter,
             FFmpegService fFmpegService,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            TempStream tempStream)
         {
             FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
@@ -166,6 +168,7 @@ namespace ASC.Web.Files
             FileConverter = fileConverter;
             FFmpegService = fFmpegService;
             ServiceProvider = serviceProvider;
+            TempStream = tempStream;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
         }
@@ -1057,7 +1060,14 @@ namespace ASC.Web.Files
             }
             else
             {
-                await CreateFile(context, folderId);
+                if (int.TryParse(folderId, out var id))
+                {
+                    await CreateFile(context, id);
+                }
+                else
+                {
+                    await CreateFile(context, folderId);
+                }
             }
         }
 
@@ -1175,9 +1185,20 @@ namespace ASC.Web.Files
 
             var fileDao = DaoFactory.GetFileDao<T>();
             using var fileStream = req.GetResponse().GetResponseStream();
-            file.ContentLength = fileStream.Length;
 
-            return fileDao.SaveFile(file, fileStream);
+            if (fileStream.CanSeek)
+            {
+                file.ContentLength = fileStream.Length;
+                return fileDao.SaveFile(file, fileStream);
+            }
+            else
+            {
+                using var buffered = TempStream.GetBuffered(fileStream);
+                file.ContentLength = buffered.Length;
+                return fileDao.SaveFile(file, buffered);
+            }
+
+
         }
 
         private void Redirect(HttpContext context)
@@ -1236,7 +1257,7 @@ namespace ASC.Web.Files
         private async Task TrackFile(HttpContext context)
         {
             var q = context.Request.Query[FilesLinkUtility.FileId];
-            
+
             if (int.TryParse(q, out var id))
             {
                 await TrackFile(context, id);
@@ -1281,7 +1302,7 @@ namespace ASC.Web.Files
                 };
                 fileData = JsonSerializer.Deserialize<DocumentServiceTracker.TrackerData>(body, options);
             }
-            catch(JsonException e)
+            catch (JsonException e)
             {
                 Logger.Error("DocService track error read body", e);
                 throw new HttpException((int)HttpStatusCode.BadRequest, "DocService request is incorrect");
