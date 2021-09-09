@@ -22,7 +22,7 @@
     "@svgr/webpack": "^5.5.0",
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^7.0.0",
+    "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^3.6.0",
     "external-remotes-plugin": "^1.0.0",
     "file-loader": "^6.2.0",
