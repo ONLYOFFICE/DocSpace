@@ -502,10 +502,13 @@ namespace ASC.Api.Settings
 
                 var trustedDomainSettings = SettingsManager.Load<StudioTrustedDomainSettings>();
                 var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
-                var enableInviteUsers = TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers;
+                if (!CoreBaseSettings.Personal)
+                {
+                    var enableInviteUsers = TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers;
 
-                if (!enableInviteUsers)
-                    emplType = EmployeeType.Visitor;
+                    if (!enableInviteUsers)
+                        emplType = EmployeeType.Visitor;
+                }
 
                 switch (Tenant.TrustedDomainsType)
                 {
