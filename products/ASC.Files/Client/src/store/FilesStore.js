@@ -18,6 +18,7 @@ import { isMobile } from "react-device-detect";
 import { openDocEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
+const storageViewAs = localStorage.getItem("viewAs");
 
 class FilesStore {
   authStore;
@@ -31,7 +32,8 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = localStorage.getItem("viewAs") || "table";
+  viewAs =
+    isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
@@ -126,16 +128,16 @@ class FilesStore {
   initFiles = () => {
     if (this.isInit) return;
 
-    const { isAuthenticated } = this.authStore;
+    const { isAuthenticated, settingsStore } = this.authStore;
     const { getFilesSettings } = this.filesSettingsStore;
 
     const {
       getPortalCultures,
-      isDesktopClient,
       getIsEncryptionSupport,
       getEncryptionKeys,
       setModuleInfo,
     } = this.settingsStore;
+    const { isDesktopClient } = settingsStore;
 
     setModuleInfo(config.homepage, config.id);
 
@@ -261,10 +263,18 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false
+    withSubfolders = false,
+    saveSorting = false
   ) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
+
+    if (saveSorting) {
+      filterData.sortBy = this.filter.sortBy;
+      filterData.pageCount = this.filter.pageCount;
+      filterData.sortOrder = this.filter.sortOrder;
+    }
+
     const {
       treeFolders,
       //privacyFolder,
@@ -383,7 +393,10 @@ class FilesStore {
     const isVisitor =
       (this.userStore.user && this.userStore.user.isVisitor) || false;
     const isFile = !!item.fileExst || item.contentLength;
-    const isFavorite = item.fileStatus === 32 || item.fileStatus === 34;
+    const isFavorite =
+      item.fileStatus === 32 ||
+      item.fileStatus === 33 ||
+      item.fileStatus === 34;
     const isFullAccess = item.access < 2;
     const withoutShare = false; //TODO: need this prop
     const isThirdPartyItem = !!item.providerKey;
@@ -407,14 +420,13 @@ class FilesStore {
 
     const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
 
-    const { isRootFolder } = this.selectedFolderStore;
-
-    const isThirdPartyFolder = item.providerKey && isRootFolder;
-
+    const isThirdPartyFolder =
+      item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
-    const { isDesktopClient, personal } = this.settingsStore;
+    const { personal } = this.settingsStore;
+    const { isDesktopClient } = this.authStore.settingsStore;
 
     if (isFile) {
       let fileOptions = [
@@ -671,7 +683,7 @@ class FilesStore {
           "download-as",
         ]);
 
-        if (!this.authStore.settingsStore.isDesktopClient) {
+        if (!isDesktopClient) {
           fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
         }
 
@@ -738,7 +750,7 @@ class FilesStore {
           "copy-to",
         ]);
 
-        if (!this.authStore.settingsStore.isDesktopClient) {
+        if (!isDesktopClient) {
           folderOptions = this.removeOptions(folderOptions, ["rename"]);
         }
       }
@@ -810,6 +822,13 @@ class FilesStore {
 
       if (isThirdPartyFolder) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
+
+        if (isDesktopClient) {
+          folderOptions = this.removeOptions(folderOptions, [
+            "separator2",
+            "delete",
+          ]);
+        }
       } else {
         folderOptions = this.removeOptions(folderOptions, [
           "change-thirdparty-info",
@@ -1018,7 +1037,7 @@ class FilesStore {
         );
       case FolderType.Privacy:
         return (
-          this.settingsStore.isDesktopClient &&
+          this.authStore.settingsStore.isDesktopClient &&
           this.settingsStore.isEncryptionSupport
         );
       case FolderType.COMMON:
@@ -1091,6 +1110,9 @@ class FilesStore {
         item.fileExst
       );
 
+      const previewUrl = canOpenPlayer
+        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${id}`)
+        : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
@@ -1103,6 +1125,30 @@ class FilesStore {
       this.folders.map((x) => {
         if (x.id === item.id) isFolder = true;
       });
+
+      const { isRecycleBinFolder } = this.treeFoldersStore;
+
+      const folderUrl = isFolder
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/filter?folder=${id}`
+          )
+        : null;
+
+      const docUrl = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/doceditor?fileId=${id}`
+      );
+
+      const href = isRecycleBinFolder
+        ? null
+        : previewUrl
+        ? previewUrl
+        : !isFolder
+        ? docUrl
+        : folderUrl;
 
       return {
         access,
@@ -1145,6 +1191,9 @@ class FilesStore {
         canEdit,
         thumbnailUrl,
         thumbnailStatus,
+        previewUrl,
+        folderUrl,
+        href,
       };
     });
 
@@ -1218,9 +1267,14 @@ class FilesStore {
     );
   }
 
+  get isThirdPartyRootSelection() {
+    const withProvider = this.selection.find((x) => x.providerKey);
+    return withProvider && withProvider.rootFolderId === withProvider.id;
+  }
+
   get isThirdPartySelection() {
-    const withProvider = this.selection.find((x) => !x.providerKey);
-    return !withProvider && this.selectedFolderStore.isRootFolder;
+    const withProvider = this.selection.find((x) => x.providerKey);
+    return !!withProvider;
   }
 
   get isWebEditSelected() {
@@ -1238,6 +1292,15 @@ class FilesStore {
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
       return canViewedDocs(selected.fileExst);
+    });
+  }
+
+  get isMediaSelected() {
+    const { isMediaOrImage } = this.formatsStore.mediaViewersFormatsStore;
+
+    return this.selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return isMediaOrImage(selected.fileExst);
     });
   }
 
@@ -1395,6 +1458,7 @@ class FilesStore {
   getFileInfo = async (id) => {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
+    return fileInfo;
   };
 
   getFolderInfo = async (id) => {

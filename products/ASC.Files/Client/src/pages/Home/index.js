@@ -38,11 +38,41 @@ class PureHome extends React.Component {
       isVisitor,
       expandedKeys,
       setExpandedKeys,
+      setToPreviewFile,
+      mediaViewersFormatsStore,
+      filesList,
+      getFileInfo,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
+
+    if (window.location.pathname.indexOf("/files/view") > 1) {
+      const pathname = window.location.pathname;
+      const fileId = pathname.slice(pathname.indexOf("view") + 5);
+
+      getFileInfo(fileId)
+        .then((data) => {
+          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
+            data.fileExst
+          );
+          const file = { ...data, canOpenPlayer };
+          setToPreviewFile(file, true);
+        })
+        .catch((err) => {
+          toastr.error(err);
+
+          fetchFiles()
+            .catch((err) => toastr.error(err))
+            .finally(() => {
+              setIsLoading(false);
+              setFirstLoad(false);
+            });
+        });
+
+      return;
+    }
 
     if (match && match.length > 0) {
       filterObj = FilesFilter.getFilter(window.location);
@@ -119,6 +149,7 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           //console.log("filter", filter);
+
           return fetchFiles(folderId, filter).then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
@@ -300,7 +331,14 @@ class PureHome extends React.Component {
 const Home = withTranslation("Home")(PureHome);
 
 export default inject(
-  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    mediaViewerDataStore,
+    formatsStore,
+  }) => {
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
@@ -317,7 +355,10 @@ export default inject(
       setIsLoading,
       isLoading,
       viewAs,
+      getFileInfo,
     } = filesStore;
+
+    const { mediaViewersFormatsStore } = formatsStore;
 
     const { id } = fileActionStore;
     const {
@@ -355,6 +396,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
+    const { setToPreviewFile } = mediaViewerDataStore;
     if (!firstLoad) {
       if (isLoading) {
         showLoader();
@@ -401,6 +443,9 @@ export default inject(
       startUpload,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
+      setToPreviewFile,
+      mediaViewersFormatsStore,
+      getFileInfo,
     };
   }
 )(withRouter(observer(Home)));

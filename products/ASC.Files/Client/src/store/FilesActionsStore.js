@@ -319,13 +319,20 @@ class FilesActionStore {
     setSelection([item]);
   };
 
-  deleteItemAction = (itemId, currentFolderId, translations, isFile) => {
+  deleteItemAction = (
+    itemId,
+    currentFolderId,
+    translations,
+    isFile,
+    isThirdParty
+  ) => {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
     if (
       this.settingsStore.confirmDelete ||
-      this.treeFoldersStore.isPrivacyFolder
+      this.treeFoldersStore.isPrivacyFolder ||
+      isThirdParty
     ) {
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
@@ -493,13 +500,16 @@ class FilesActionStore {
       getFileInfo,
       setSelected,
     } = this.filesStore;
+
+    const items = Array.isArray(id) ? id : [id];
+
     //let data = selection.map(item => item.id)
     switch (action) {
       case "mark":
         return markItemAsFavorite([id]).then(() => getFileInfo(id));
 
       case "remove":
-        return removeItemFromFavorite([id])
+        return removeItemFromFavorite(items)
           .then(() => {
             return this.treeFoldersStore.isFavoritesFolder
               ? fetchFavoritesFolder(this.selectedFolderStore.id)
@@ -658,9 +668,7 @@ class FilesActionStore {
       selection,
       isAccessedSelected,
       isWebEditSelected,
-      isThirdPartySelection,
-      userAccess,
-      isViewedSelected,
+      isThirdPartyRootSelection,
       hasSelection,
     } = this.filesStore;
 
@@ -672,8 +680,6 @@ class FilesActionStore {
       setDeleteDialogVisible,
       setEmptyTrashDialogVisible,
     } = this.dialogsStore;
-
-    const selectionCount = selection.length;
 
     const headerMenu = [
       {
@@ -701,7 +707,7 @@ class FilesActionStore {
           isRecentFolder ||
           !isAccessedSelected ||
           !hasSelection ||
-          isThirdPartySelection,
+          isThirdPartyRootSelection,
         onClick: () => setMoveToPanelVisible(true),
       },
       {
@@ -711,7 +717,7 @@ class FilesActionStore {
       },
       {
         label: t("Common:Delete"),
-        disabled: !hasSelection || isThirdPartySelection,
+        disabled: !hasSelection || isThirdPartyRootSelection,
         onClick: () => {
           if (this.settingsStore.confirmDelete) {
             setDeleteDialogVisible(true);
@@ -734,34 +740,47 @@ class FilesActionStore {
         onClick: () => setEmptyTrashDialogVisible(true),
       });
 
-      headerMenu.splice(4, 2, {
+      headerMenu.splice(3, 2, {
         label: t("Translations:Restore"),
         onClick: () => setMoveToPanelVisible(true),
       });
+    }
 
-      headerMenu.splice(1, 1);
+    if (isFavoritesFolder) {
+      headerMenu.splice(5, 1);
+      headerMenu.push({
+        label: t("Common:Delete"),
+        alt: t("RemoveFromFavorites"),
+        onClick: () => {
+          const items = selection.map((item) => item.id);
+          this.setFavoriteAction("remove", items)
+            .then(() => toastr.success(t("RemovedFromFavorites")))
+            .catch((err) => toastr.error(err));
+        },
+      });
     }
 
     if (isPrivacyFolder) {
+      headerMenu.splice(0, 1);
       headerMenu.splice(1, 1);
       headerMenu.splice(2, 1);
-      headerMenu.splice(3, 1);
     }
 
     if (isShareFolder) {
-      headerMenu.splice(4, 1);
+      headerMenu.splice(3, 1);
+    }
+
+    if (isRecentFolder) {
+      headerMenu.splice(5, 1);
     }
 
     if (isRecentFolder || isFavoritesFolder) {
-      headerMenu.splice(1, 1);
+      //headerMenu.splice(0, 1); TODO: need for develop
+      headerMenu.splice(3, 1);
     }
 
-    if (
-      this.authStore.settingsStore.personal &&
-      !isWebEditSelected &&
-      !isViewedSelected
-    ) {
-      headerMenu.splice(1, 1);
+    if (this.authStore.settingsStore.personal) {
+      headerMenu.splice(0, 1);
     }
 
     return headerMenu;

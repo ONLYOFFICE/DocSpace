@@ -225,9 +225,10 @@ class SectionHeaderContent extends React.Component {
       deleteAction,
       confirmDelete,
       setDeleteDialogVisible,
+      isThirdPartySelection,
     } = this.props;
 
-    if (confirmDelete) {
+    if (confirmDelete || isThirdPartySelection) {
       setDeleteDialogVisible(true);
     } else {
       const translations = {
@@ -239,6 +240,8 @@ class SectionHeaderContent extends React.Component {
       deleteAction(translations).catch((err) => toastr.error(err));
     }
   };
+
+  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
     const { t } = this.props;
@@ -512,6 +515,7 @@ export default inject(
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
+      isThirdPartySelection,
       setIsLoading,
       viewAs,
     } = filesStore;
@@ -536,6 +540,7 @@ export default inject(
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
+      isThirdPartySelection,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,

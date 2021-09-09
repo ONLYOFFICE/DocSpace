@@ -204,6 +204,7 @@ class PageLayout extends React.Component {
       isArticleVisible,
       isBackdropVisible,
       isArticlePinned,
+      isDesktop,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -297,7 +298,7 @@ class PageLayout extends React.Component {
                 </SubArticleMainButton>
               )}
               {isArticleBodyAvailable && (
-                <SubArticleBody pinned={isArticlePinned}>
+                <SubArticleBody pinned={isArticlePinned} isDesktop={isDesktop}>
                   {articleBodyContent
                     ? articleBodyContent.props.children
                     : null}
@@ -348,7 +349,6 @@ class PageLayout extends React.Component {
                           style={{
                             display: "grid",
                             paddingRight: "20px",
-                            paddingTop: "10px",
                           }}
                         ></div>
                         <SubSectionFilter className="section-header_filter">
@@ -455,7 +455,8 @@ class PageLayout extends React.Component {
         {!isMobile && uploadFiles && !dragging && (
           <StyledSelectoWrapper>
             <Selecto
-              dragContainer={".main"}
+              boundContainer={".section-body"}
+              dragContainer={".section-body"}
               selectableTargets={[".files-item"]}
               hitRate={0}
               selectByClick={false}
@@ -524,6 +525,7 @@ export default inject(({ auth }) => {
     setArticleVisibleOnUnpin,
     setIsArticleVisible,
     setIsBackdropVisible,
+    isDesktopClient,
   } = settingsStore;
 
   return {
@@ -537,5 +539,6 @@ export default inject(({ auth }) => {
     setIsArticleVisible,
     isBackdropVisible,
     setIsBackdropVisible,
+    isDesktop: isDesktopClient,
   };
 })(observer(PageLayout));

@@ -33,6 +33,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   const renderComponent = (props) => {
     if (isLoaded && !isAuthenticated) {
+      if (personal) {
+        window.location.replace("/");
+        return <></>;
+      }
+
       console.log("PrivateRoute render Redirect to login", rest);
       return (
         <Redirect

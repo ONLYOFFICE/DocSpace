@@ -67,12 +67,16 @@ const Avatar = (props) => {
     editAction,
   } = props;
 
+  const onMouseDown = (e) => {
+    e.preventDefault();
+  };
+
   const avatarContent = source ? (
-    <StyledImage src={source} />
+    <StyledImage src={source} onMouseDown={onMouseDown} />
   ) : userName ? (
     <Initials userName={userName} size={size} />
   ) : (
-    <EmptyIcon size="scale" />
+    <EmptyIcon size="scale" onMouseDown={onMouseDown} />
   );
 
   const roleIcon = getRoleIcon(role);

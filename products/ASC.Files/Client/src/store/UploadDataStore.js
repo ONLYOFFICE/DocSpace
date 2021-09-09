@@ -786,10 +786,10 @@ class UploadDataStore {
     conflictResolveType,
     deleteAfter
   ) => {
+    const { clearPrimaryProgressData } = this.primaryProgressDataStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      clearPrimaryProgressData,
     } = this.secondaryProgressDataStore;
 
     return moveToFolder(

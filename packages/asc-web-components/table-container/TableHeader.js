@@ -198,7 +198,12 @@ class TableHeader extends React.Component {
   };
 
   onResize = () => {
-    const { containerRef, columnStorageName, checkboxSize } = this.props;
+    const {
+      containerRef,
+      columnStorageName,
+      checkboxSize,
+      resetColumnsSize,
+    } = this.props;
 
     let activeColumnIndex = null;
 
@@ -208,7 +213,8 @@ class TableHeader extends React.Component {
 
     if (!container) return;
 
-    const storageSize = localStorage.getItem(columnStorageName);
+    const storageSize =
+      !resetColumnsSize && localStorage.getItem(columnStorageName);
     const tableContainer = storageSize
       ? storageSize.split(" ")
       : container.style.gridTemplateColumns.split(" ");
@@ -412,6 +418,7 @@ TableHeader.propTypes = {
   headerMenu: PropTypes.arrayOf(PropTypes.object),
   onClick: PropTypes.func,
   hasAccess: PropTypes.bool,
+  resetColumnsSize: PropTypes.bool,
 };
 
 export default TableHeader;

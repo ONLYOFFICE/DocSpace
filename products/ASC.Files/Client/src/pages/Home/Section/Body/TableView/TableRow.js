@@ -86,6 +86,7 @@ const FilesTableRow = (props) => {
     onDrop,
     onMouseDown,
     showShare,
+    personal,
   } = props;
 
   const sharedButton =
@@ -158,9 +159,11 @@ const FilesTableRow = (props) => {
           <FileNameCell {...props} />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
-          <AuthorCell sideColor={sideColor} {...props} />
-        </TableCell>
+        {!personal && (
+          <TableCell {...dragStyles} {...selectionProp}>
+            <AuthorCell sideColor={sideColor} {...props} />
+          </TableCell>
+        )}
         <TableCell {...dragStyles} {...selectionProp}>
           <DateCell create sideColor={sideColor} {...props} />
         </TableCell>
