@@ -211,7 +211,7 @@ const PureTreeSettings = ({
 };
 
 const TreeSettings = withTranslation(["Settings", "Common"])(
-  withRouter(withLoader(PureTreeSettings)(<Loaders.TreeSettingsLoader />))
+  withRouter(withLoader(PureTreeSettings)(<></>))
 );
 
 export default inject(
