@@ -643,8 +643,7 @@ class FilesActionStore {
     try {
       conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
     } catch (err) {
-      toastr.error(err);
-      return;
+      return toastr.error(err.message);
     }
 
     if (conflicts.length) {
@@ -652,7 +651,11 @@ class FilesActionStore {
       setConflictResolveDialogData(operationData);
       setConflictResolveDialogVisible(true);
     } else {
-      this.uploadDataStore.itemOperationToFolder(operationData);
+      try {
+        await this.uploadDataStore.itemOperationToFolder(operationData);
+      } catch (err) {
+        return toastr.error(err.message);
+      }
     }
   };
 
