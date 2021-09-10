@@ -7,6 +7,7 @@ const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 
 const path = require("path");
 const pkg = require("./package.json");
@@ -196,26 +197,7 @@ const config = {
       },
       shared: {
         ...deps,
-        react: {
-          singleton: true,
-          requiredVersion: deps.react,
-        },
-        "react-dom": {
-          singleton: true,
-          requiredVersion: deps["react-dom"],
-        },
-        "./src/store": {
-          singleton: true,
-        },
-        "email-addresses": {
-          singleton: true,
-        },
-        "@babel/runtime": {
-          singleton: true,
-        },
-        "react-toastify": {
-          singleton: true,
-        },
+        ...sharedDeps,
       },
     }),
     new ExternalTemplateRemotesPlugin(),

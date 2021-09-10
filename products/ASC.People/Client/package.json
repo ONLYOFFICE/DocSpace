@@ -78,7 +78,6 @@
     "resize-image": "^0.1.0",
     "screenfull": "^5.1.0",
     "sjcl": "^1.0.8",
-    "styled-components": "^5.2.1",
-    "workbox-window": "^6.1.1"
+    "styled-components": "^5.2.1"
   }
 }
