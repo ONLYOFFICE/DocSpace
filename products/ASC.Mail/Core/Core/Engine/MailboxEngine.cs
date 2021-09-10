@@ -42,7 +42,6 @@ using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Core.Exceptions;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
@@ -596,15 +595,7 @@ namespace ASC.Mail.Core.Engine
 
                 if (sameMboxes == null) throw new NullReferenceException("Box collection for release was null.");
 
-                if (!sameMboxes.Any())
-                {
-                    //the reason for returning an empty list is not completely clear at this time.
-                    //try again in case there is just a problem with the request                    
-
-                    var freeSameMboxes = GetMailboxList(new ConcreteMailboxesExp(mailBox.EMail.Address, false, false));
-
-                    if (freeSameMboxes.Any()) throw new ProcessedBoxesException($"Boxes were emptied ahead of schedule. Count: {freeSameMboxes.Count}");
-                }
+                if (!sameMboxes.Any()) throw new Exception("Box collection for release was empty.");
 
                 Log.Info($"{sameMboxes.Count} {sameMboxes.FirstOrDefault().Address} mailboxes will be released.");
 

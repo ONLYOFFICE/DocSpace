@@ -13,7 +13,6 @@ using ASC.Mail.Aggregator.CollectionService.Queue.Data;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine;
-using ASC.Mail.Core.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
@@ -194,11 +193,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                 _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
 
                 DeleteMailboxFromDumpDb(mailBoxData.MailBoxId);
-            }
-            catch (ProcessedBoxesException pEx)
-            {
-                Log.ErrorFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.Account}')\r\nException: {pEx + "\nBox will be removed from queue"} \r\n.");
-                _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
             }
             catch (NullReferenceException nEx)
             {
