@@ -13,6 +13,7 @@ using ASC.Mail.Aggregator.CollectionService.Queue.Data;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine;
+using ASC.Mail.Core.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
@@ -188,14 +189,29 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                 mailboxEngine.ReleaseMailbox(mailBoxData, MailSettings);
 
-                Log.Debug($"Mail box {mailBoxData.MailBoxId} will be realesed...Now remove from locked queue by Id.");
+                Log.Debug($"Mailbox {mailBoxData.MailBoxId} will be realesed...Now remove from locked queue by Id.");
+
                 _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
 
                 DeleteMailboxFromDumpDb(mailBoxData.MailBoxId);
             }
+            catch (ProcessedBoxesException pEx)
+            {
+                Log.ErrorFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.Account}')\r\nException: {pEx + "\nBox will be removed from queue"} \r\n.");
+                _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
+            }
+            catch (NullReferenceException nEx)
+            {
+                Log.ErrorFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.Account}')\r\nException: {nEx + "\nBox will be removed from queue"} \r\n.");
+                _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
+
+                Log.Info($"Boxes in queue: ");
+                foreach (var b in _lockedMailBoxList) { Log.Info($"Id: {b.MailBoxId}\n"); };
+            }
             catch (Exception ex)
             {
                 Log.ErrorFormat($"QueueManager -> ReleaseMailbox(Tenant = {mailBoxData.TenantId} MailboxId = {mailBoxData.MailBoxId}, Address = '{mailBoxData.Account}')\r\nException: {ex} \r\n");
+                _lockedMailBoxList.RemoveAll(m => m.MailBoxId == mailBoxData.MailBoxId);
             }
         }
 
@@ -496,7 +512,7 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
             {
                 Log.DebugFormat("Queue is {0}. Load new queue.", QueueIsEmpty ? "EMPTY" : "EXPIRED");
 
-                LoadQueue(); //здесь ящики еще не в процессе
+                LoadQueue();
             }
 
             return !QueueIsEmpty ? _mailBoxQueue.Dequeue() : null;

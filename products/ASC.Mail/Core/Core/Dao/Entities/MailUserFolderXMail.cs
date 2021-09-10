@@ -20,7 +20,7 @@ namespace ASC.Mail.Core.Dao.Entities
         
         [Key]
         [Column("id_mail", TypeName = "int(11) unsigned")]
-        public uint IdMail { get; set; }
+        public int IdMail { get; set; }
         
         [Key]
         [Column("id_folder", TypeName = "int(11) unsigned")]

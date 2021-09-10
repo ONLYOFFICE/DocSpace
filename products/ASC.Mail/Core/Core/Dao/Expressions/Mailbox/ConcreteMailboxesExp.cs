@@ -38,14 +38,16 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
         public bool? OrderAsc { get; private set; }
         public int? Limit { get; private set; }
         public string Address { get; set; }
+        public bool? IsProcessed { get; private set; }
 
-        public ConcreteMailboxesExp(string address, bool? isRemoved = false)
+        public ConcreteMailboxesExp(string address, bool? isRemoved = false, bool isProcessd = true)
         {
             _isRemoved = isRemoved;
             OrderBy = null;
             OrderAsc = false;
             Limit = null;
             Address = address;
+            IsProcessed = isProcessd;
         }
 
         public virtual Expression<Func<MailMailbox, bool>> GetExpression()
@@ -53,7 +55,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             Expression<Func<MailMailbox, bool>> exp = mb => mb.IsRemoved == _isRemoved;
 
             exp = exp.And(m => m.Address == Address);
-            exp = exp.And(m => m.IsProcessed == true);
+            exp = exp.And(m => m.IsProcessed == IsProcessed);
 
             return exp;
         }

@@ -42,6 +42,7 @@ using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Core.Exceptions;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
@@ -535,10 +536,13 @@ namespace ASC.Mail.Core.Engine
         {
             var boxesCount = MailDaoFactory.GetMailboxDao().SetMailboxesInProcess(mailBox.EMail.Address);
 
-            if (boxesCount > 1) mailBox.NotOnlyOne = true;
+            if (boxesCount > 1)
+            {
+                mailBox.NotOnlyOne = true;
 
-            Log.Info($"The box '{mailBox.EMail.Address}' width id '{mailBox.MailBoxId}' not alone. " +
-                $"Boxes of the same name are set in the process too");
+                Log.Info($"The box '{mailBox.EMail.Address}' width id '{mailBox.MailBoxId}' not alone. " +
+                    $"Boxes of the same name are set in the process too");
+            }
 
             return boxesCount > 0;
         }
@@ -590,6 +594,18 @@ namespace ASC.Mail.Core.Engine
             {
                 var sameMboxes = GetMailboxList(new ConcreteMailboxesExp(mailBox.EMail.Address));
 
+                if (sameMboxes == null) throw new NullReferenceException("Box collection for release was null.");
+
+                if (!sameMboxes.Any())
+                {
+                    //the reason for returning an empty list is not completely clear at this time.
+                    //try again in case there is just a problem with the request                    
+
+                    var freeSameMboxes = GetMailboxList(new ConcreteMailboxesExp(mailBox.EMail.Address, false, false));
+
+                    if (freeSameMboxes.Any()) throw new ProcessedBoxesException($"Boxes were emptied ahead of schedule. Count: {freeSameMboxes.Count}");
+                }
+
                 Log.Info($"{sameMboxes.Count} {sameMboxes.FirstOrDefault().Address} mailboxes will be released.");
 
                 foreach (var box in sameMboxes)
@@ -632,7 +648,7 @@ namespace ASC.Mail.Core.Engine
             {
                 var box = MailDaoFactory.GetMailboxDao().GetMailBox(new СoncreteUserMailboxExp(mailBox.MailBoxId, mailBox.TenantId, mailBox.UserId));
 
-                Log.Info($"Mailbox {box.Address} width id {box.Id} will be released:");
+                Log.Info($"Mailbox {box.Address} width id {box.Id} will be released");
 
                 if (mailBox.AuthErrorDate.HasValue)
                 {

@@ -69,7 +69,7 @@ namespace ASC.Mail.Core.Dao
 
             if (mailIds != null && mailIds.Any())
             {
-                query.Where(r => mailIds.Contains((int)r.IdMail));
+                query.Where(r => mailIds.Contains(r.IdMail));
             }
 
             var list = query.Select(ToUserFolderXMail).ToList();
@@ -81,7 +81,7 @@ namespace ASC.Mail.Core.Dao
         {
             var list = MailDbContext.MailUserFolderXMail
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdFolder == folderId)
-                .Select(r => (int)r.IdMail)
+                .Select(r => r.IdMail)
                 .ToList();
 
             return list;
@@ -97,7 +97,7 @@ namespace ASC.Mail.Core.Dao
             int i, messagessLen;
             for (i = 0, messagessLen = idMessages.Count; i < messagessLen; i++)
             {
-                var messageId = (uint)idMessages[i];
+                var messageId = idMessages[i];
 
                 items.Add(new MailUserFolderXMail
                 {
@@ -124,7 +124,7 @@ namespace ASC.Mail.Core.Dao
             {
                 Tenant = item.Tenant,
                 IdUser = item.User,
-                IdMail = (uint)item.MailId,
+                IdMail = item.MailId,
                 IdFolder = item.FolderId
             };
 
@@ -160,7 +160,7 @@ namespace ASC.Mail.Core.Dao
         public int Remove(List<int> mailIds)
         {
             var query = MailDbContext.MailUserFolderXMail
-                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && mailIds.Contains((int)r.IdMail));
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && mailIds.Contains(r.IdMail));
 
             MailDbContext.MailUserFolderXMail.RemoveRange(query);
 
@@ -172,7 +172,7 @@ namespace ASC.Mail.Core.Dao
         public int RemoveByMailbox(int mailboxId)
         {
             var queryDelete = MailDbContext.MailUserFolderXMail
-                .Join(MailDbContext.MailMail, r => (int)r.IdMail, r => r.Id, (ufxm, m) => new
+                .Join(MailDbContext.MailMail, r => r.IdMail, r => r.Id, (ufxm, m) => new
                 {
                     UserFoldertXMail = ufxm,
                     MailMail = m
@@ -193,7 +193,7 @@ namespace ASC.Mail.Core.Dao
             {
                 Tenant = r.Tenant,
                 User = r.IdUser,
-                MailId = (int)r.IdMail,
+                MailId = r.IdMail,
                 FolderId = r.IdFolder,
                 TimeModified = r.TimeCreated
             };
