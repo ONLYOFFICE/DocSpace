@@ -26,4 +26,8 @@ module.exports = {
   "workbox-window": {
     singleton: true,
   },
+  axios: {
+    singleton: true,
+    requiredVersion: deps.axios,
+  },
 };
