@@ -41,9 +41,6 @@
     "webpack-dev-server": "4.2.0"
   },
   "dependencies": {
-    "react": "^17.0.1",
-    "react-device-detect": "^1.15.0",
-    "react-dom": "^17.0.1",
-    "styled-components": "^5.2.1"
+    "react-device-detect": "^1.15.0"
   }
 }

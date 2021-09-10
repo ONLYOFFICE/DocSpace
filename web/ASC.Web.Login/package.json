@@ -46,20 +46,16 @@
     "prop-types": "^15.7.2",
     "rc-tree": "^2.1.4",
     "re-resizable": "^6.9.0",
-    "react": "^17.0.1",
     "react-autosize-textarea": "^7.1.0",
     "react-custom-scrollbars": "^4.2.1",
-    "react-dom": "^17.0.1",
     "react-dropzone": "^11.2.4",
     "react-onclickoutside": "^6.9.0",
     "react-resize-detector": "^5.2.0",
-    "react-router": "^5.2.0",
     "react-text-mask": "^5.4.3",
     "react-tooltip": "^4.2.11",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.6",
     "resize-image": "^0.1.0",
-    "sjcl": "^1.0.8",
-    "styled-components": "^5.2.1"
+    "sjcl": "^1.0.8"
   }
 }
