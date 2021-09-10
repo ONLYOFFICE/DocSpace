@@ -4,7 +4,7 @@ const deps = pkg.dependencies;
 module.exports = {
   react: {
     singleton: true,
-    requiredVersion: deps.react,
+    requiredVersion: deps["react"],
   },
   "react-dom": {
     singleton: true,
@@ -22,8 +22,21 @@ module.exports = {
     singleton: true,
     requiredVersion: deps["styled-components"],
   },
+  mobx: {
+    singleton: true,
+    requiredVersion: deps["mobx"],
+  },
+  "mobx-react": {
+    singleton: true,
+    requiredVersion: deps["mobx-react"],
+  },
+  moment: {
+    singleton: true,
+    requiredVersion: deps["moment"],
+  },
   "email-addresses": {
     singleton: true,
+    requiredVersion: deps["email-addresses"],
   },
   "fast-deep-equal": {
     singleton: true,
@@ -35,7 +48,7 @@ module.exports = {
   },
   "react-toastify": {
     singleton: true,
-    requiredVersion: "6.2.0",
+    requiredVersion: deps["react-toastify"],
   },
   "workbox-window": {
     singleton: true,
@@ -43,11 +56,11 @@ module.exports = {
   },
   axios: {
     singleton: true,
-    requiredVersion: deps.axios,
+    requiredVersion: deps["axios"],
   },
   i18next: {
     singleton: true,
-    requiredVersion: deps.i18next,
+    requiredVersion: deps["i18next"],
   },
   "react-i18next": {
     singleton: true,
@@ -56,5 +69,9 @@ module.exports = {
   "i18next-http-backend": {
     singleton: true,
     requiredVersion: deps["i18next-http-backend"],
+  },
+  "prop-types": {
+    singleton: true,
+    requiredVersion: deps["prop-types"],
   },
 };
