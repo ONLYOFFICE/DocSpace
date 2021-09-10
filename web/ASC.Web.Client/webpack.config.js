@@ -121,7 +121,23 @@ const config = {
           // Creates `style` nodes from JS strings
           "style-loader",
           // Translates CSS into CommonJS
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              url: {
+                filter: (url, resourcePath) => {
+                  // resourcePath - path to css file
+
+                  // Don't handle `/static` urls
+                  if (url.startsWith("/static") || url.startsWith("data:")) {
+                    return false;
+                  }
+
+                  return true;
+                },
+              },
+            },
+          },
           // Compiles Sass to CSS
           "sass-loader",
         ],
