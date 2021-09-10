@@ -40,9 +40,6 @@
     "webpack-dev-server": "4.2.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.4",
-    "i18next": "^19.8.4",
-    "i18next-http-backend": "^1.1.0",
     "mobx": "^6.1.1",
     "mobx-react": "^7.1.0",
     "moment": "^2.29.1",
@@ -54,7 +51,6 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.2.4",
-    "react-i18next": "^11.7.3",
     "react-onclickoutside": "^6.9.0",
     "react-resize-detector": "^5.2.0",
     "react-router": "^5.2.0",
