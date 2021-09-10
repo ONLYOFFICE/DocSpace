@@ -183,6 +183,7 @@ const config = {
         },
         "react-toastify": {
           singleton: true,
+          requiredVersion: "6.2.0",
         },
       },
     }),
