@@ -87,6 +87,12 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             return this;
         }
 
+        public MessagesExpBuilder SetMessageUids(List<string> messageUids)
+        {
+            _exp.MessageUids = messageUids;
+            return this;
+        }
+
         public MessagesExpBuilder SetFoldersIds(List<int> foldersIds)
         {
             _exp.FoldersIds = foldersIds;

@@ -334,7 +334,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        protected static MailInfo ToMailInfo(MailMail r, string labelsString)
+        public static MailInfo ToMailInfo(MailMail r, string labelsString)
         {
             var mailInfo = new MailInfo
             {

@@ -20,6 +20,7 @@ namespace ASC.Mail.Configuration
         public MailGarbageEraserConfig Cleaner { get; set; }
         public DefinesConfig Defines { get; set; }
         public AggregatorConfig Aggregator { get; set; }
+        public ImapSyncConfig ImapSync { get; set; }
         public WatchdogConfig Watchdog { get; set; }
 
         public Dictionary<string, int> ImapFlags { get; set; }
@@ -41,6 +42,7 @@ namespace ASC.Mail.Configuration
             Cleaner = new MailGarbageEraserConfig(c.Cleaner, c.Defines.DefaultApiSchema);
             Aggregator = new AggregatorConfig(c.Aggregator, config);
             Watchdog = new WatchdogConfig(c.Watchdog);
+            ImapSync = new ImapSyncConfig(c.ImapSync);
 
             NeedProxyHttp = SetupInfo.IsVisibleSettings("ProxyHttpContent");
 
@@ -232,6 +234,34 @@ namespace ASC.Mail.Configuration
                 TasksTimeoutInMinutes = config.TasksTimeoutInMinutes ?? 6;
                 TimerIntervalInMinutes = config.TimerIntervalInMinutes ?? 6;
             }
+        }
+
+        public class ImapSyncConfig
+        {
+            public string RedisConnectionString { get; set; }
+
+            public int? AliveTimeInMinutes { get; set; }
+
+            public ImapSyncMode Mode { get; set; }
+
+            public enum ImapSyncMode
+            {
+                SingleImapClientPerMailBox,
+                OneImapClientPerActivFolderInMailBox,
+                SingleImapClientPerMailBoxNoFolderChange
+            }
+
+            public ImapSyncConfig()
+            {
+
+            }
+            public ImapSyncConfig(ImapSyncConfig imapSync)
+            {
+                RedisConnectionString = string.IsNullOrEmpty(imapSync.RedisConnectionString) ? "localhost:6379" : imapSync.RedisConnectionString;
+
+                AliveTimeInMinutes = imapSync.AliveTimeInMinutes ?? 20;
+            }
+
         }
     }
 

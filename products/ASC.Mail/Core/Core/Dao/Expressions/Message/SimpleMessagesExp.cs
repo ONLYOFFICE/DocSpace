@@ -47,6 +47,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         public bool? Unread { get; set; }
 
         public List<int> MessageIds { get; set; }
+        public List<string> MessageUids { get; set; }
         public List<int> FoldersIds { get; set; }
         public List<string> ChainIds { get; set; }
         public List<int> TagIds { get; set; }
@@ -104,6 +105,11 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             if (MessageIds != null)
             {
                 exp = exp.And(m => MessageIds.Contains(m.Id));
+            }
+
+            if (MessageUids != null)
+            {
+                exp = exp.And(m => MessageUids.Contains(m.Uidl));
             }
 
             if (ChainIds != null)
