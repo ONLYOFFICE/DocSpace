@@ -227,14 +227,14 @@ namespace ASC.Core.Data
         {
             return GetUserQuery(tenant, default(DateTime))
                 .Select(FromUserToUserInfo)
-                .FirstOrDefault(r=> r.Email ==  email && !r.Removed);
+                .FirstOrDefault(r => r.Email == email && !r.Removed);
         }
 
         public UserInfo GetUserByUserName(int tenant, string userName)
         {
             return GetUserQuery(tenant, default(DateTime))
                 .Select(FromUserToUserInfo)
-                .FirstOrDefault(r=> r.UserName == userName && !r.Removed);
+                .FirstOrDefault(r => r.UserName == userName && !r.Removed);
         }
 
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
@@ -654,15 +654,23 @@ namespace ASC.Core.Data
         private IQueryable<User> GetUserQuery(UserDbContext userDbContext, int tenant, DateTime from = default)
         {
             var q = userDbContext.Users.AsQueryable();
+            var where = false;
 
             if (tenant != Tenant.DEFAULT_TENANT)
             {
                 q = q.Where(r => r.Tenant == tenant);
+                where = true;
             }
 
             if (from != default)
             {
                 q = q.Where(r => r.LastModified >= from);
+                where = true;
+            }
+
+            if (!where)
+            {
+                q = q.Where(r => 1 == 0);
             }
 
             return q;
