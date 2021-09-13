@@ -128,6 +128,7 @@ export default function withFileActions(WrappedFileItem) {
         setMediaViewerData,
         setConvertItem,
         setConvertDialogVisible,
+        setNewBadgeCount,
       } = this.props;
       const {
         id,
@@ -153,7 +154,7 @@ export default function withFileActions(WrappedFileItem) {
             const newExpandedKeys = createNewExpandedKeys(pathParts);
             setExpandedKeys(newExpandedKeys);
 
-            this.setNewBadgeCount();
+            this.setNewBadgeCount(item);
           })
           .catch((err) => {
             toastr.error(err);
@@ -312,7 +313,7 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
       } = filesStore;
       const { startUpload } = uploadDataStore;
-      const { type, extension, id } = fileActionStore;
+      const { type, extension, id, setNewBadgeCount } = fileActionStore;
       const { mediaViewersFormatsStore, docserviceStore } = formatsStore;
       const { setMediaViewerData } = mediaViewerDataStore;
 
@@ -374,6 +375,7 @@ export default function withFileActions(WrappedFileItem) {
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
         isItemsSelected: selection.length > 0,
+        setNewBadgeCount,
       };
     }
   )(observer(WithFileActions));
