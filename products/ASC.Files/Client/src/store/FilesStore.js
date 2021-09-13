@@ -1105,6 +1105,8 @@ class FilesStore {
         canEdit,
       } = item;
 
+      const { canConvert } = this.formatsStore.docserviceStore;
+
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
         item.fileExst
       );
@@ -1135,10 +1137,12 @@ class FilesStore {
           )
         : null;
 
+      const needConvert = canConvert(fileExst);
+
       const docUrl = combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/doceditor?fileId=${id}`
+        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
       );
 
       const href = isRecycleBinFolder
