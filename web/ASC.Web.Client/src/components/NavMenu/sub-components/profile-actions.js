@@ -99,6 +99,7 @@ class ProfileActions extends React.PureComponent {
           email={user.email}
           open={opened}
           clickOutsideAction={this.onClose}
+          forwardedRef={this.ref}
         >
           <div style={{ paddingTop: "8px" }}>
             {this.props.userActions.map((action) => (
