@@ -6,7 +6,6 @@ import {
   FileType,
   FileAction,
   AppServerConfig,
-  FilesFormats,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import { loopTreeFolders } from "../helpers/files-helpers";
@@ -18,6 +17,7 @@ import { isMobile } from "react-device-detect";
 import { openDocEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
+const storageViewAs = localStorage.getItem("viewAs");
 
 class FilesStore {
   authStore;
@@ -31,7 +31,8 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = localStorage.getItem("viewAs") || "row";
+  viewAs =
+    isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
@@ -126,16 +127,16 @@ class FilesStore {
   initFiles = () => {
     if (this.isInit) return;
 
-    const { isAuthenticated } = this.authStore;
+    const { isAuthenticated, settingsStore } = this.authStore;
     const { getFilesSettings } = this.filesSettingsStore;
 
     const {
       getPortalCultures,
-      isDesktopClient,
       getIsEncryptionSupport,
       getEncryptionKeys,
       setModuleInfo,
     } = this.settingsStore;
+    const { isDesktopClient } = settingsStore;
 
     setModuleInfo(config.homepage, config.id);
 
@@ -423,7 +424,8 @@ class FilesStore {
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
-    const { isDesktopClient, personal } = this.settingsStore;
+    const { personal } = this.settingsStore;
+    const { isDesktopClient } = this.authStore.settingsStore;
 
     if (isFile) {
       let fileOptions = [
@@ -680,7 +682,7 @@ class FilesStore {
           "download-as",
         ]);
 
-        if (!this.authStore.settingsStore.isDesktopClient) {
+        if (!isDesktopClient) {
           fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
         }
 
@@ -747,7 +749,7 @@ class FilesStore {
           "copy-to",
         ]);
 
-        if (!this.authStore.settingsStore.isDesktopClient) {
+        if (!isDesktopClient) {
           folderOptions = this.removeOptions(folderOptions, ["rename"]);
         }
       }
@@ -819,6 +821,13 @@ class FilesStore {
 
       if (isThirdPartyFolder) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
+
+        if (isDesktopClient) {
+          folderOptions = this.removeOptions(folderOptions, [
+            "separator2",
+            "delete",
+          ]);
+        }
       } else {
         folderOptions = this.removeOptions(folderOptions, [
           "change-thirdparty-info",
@@ -1001,7 +1010,7 @@ class FilesStore {
   }
 
   get isHeaderVisible() {
-    return this.selection.length > 0 || this.selected !== "close";
+    return this.selection.length > 0;
   }
 
   get isHeaderIndeterminate() {
@@ -1027,7 +1036,7 @@ class FilesStore {
         );
       case FolderType.Privacy:
         return (
-          this.settingsStore.isDesktopClient &&
+          this.authStore.settingsStore.isDesktopClient &&
           this.settingsStore.isEncryptionSupport
         );
       case FolderType.COMMON:
@@ -1096,10 +1105,15 @@ class FilesStore {
         canEdit,
       } = item;
 
+      const { canConvert } = this.formatsStore.docserviceStore;
+
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
         item.fileExst
       );
 
+      const previewUrl = canOpenPlayer
+        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${id}`)
+        : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
@@ -1112,6 +1126,32 @@ class FilesStore {
       this.folders.map((x) => {
         if (x.id === item.id) isFolder = true;
       });
+
+      const { isRecycleBinFolder } = this.treeFoldersStore;
+
+      const folderUrl = isFolder
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/filter?folder=${id}`
+          )
+        : null;
+
+      const needConvert = canConvert(fileExst);
+
+      const docUrl = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
+      );
+
+      const href = isRecycleBinFolder
+        ? null
+        : previewUrl
+        ? previewUrl
+        : !isFolder
+        ? docUrl
+        : folderUrl;
 
       return {
         access,
@@ -1154,6 +1194,9 @@ class FilesStore {
         canEdit,
         thumbnailUrl,
         thumbnailStatus,
+        previewUrl,
+        folderUrl,
+        href,
       };
     });
 
@@ -1168,8 +1211,8 @@ class FilesStore {
     const {
       isSpreadsheet,
       isPresentation,
+      isDocument,
     } = this.formatsStore.iconFormatsStore;
-    const { canWebEdit } = this.formatsStore.docserviceStore;
 
     let sortedFiles = {
       documents: [],
@@ -1180,14 +1223,14 @@ class FilesStore {
 
     for (let item of this.selection) {
       item.checked = true;
-      item.format = FilesFormats.OriginalFormat;
+      item.format = null;
 
       if (item.fileExst) {
         if (isSpreadsheet(item.fileExst)) {
           sortedFiles.spreadsheets.push(item);
         } else if (isPresentation(item.fileExst)) {
           sortedFiles.presentations.push(item);
-        } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)) {
+        } else if (isDocument(item.fileExst)) {
           sortedFiles.documents.push(item);
         } else {
           sortedFiles.other.push(item);
@@ -1238,11 +1281,12 @@ class FilesStore {
   }
 
   get isWebEditSelected() {
-    const { editedDocs } = this.formatsStore.docserviceStore;
+    const { filesConverts } = this.formatsStore.docserviceStore;
 
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return editedDocs.find((format) => selected.fileExst === format);
+      const index = filesConverts.findIndex((f) => f[selected.fileExst]);
+      return index !== -1;
     });
   }
 
@@ -1267,6 +1311,10 @@ class FilesStore {
   get selectionTitle() {
     if (this.selection.length === 0) return null;
     return this.selection.find((el) => el.title).title;
+  }
+
+  get hasSelection() {
+    return !!this.selection.length;
   }
 
   getOptions = (selection, externalAccess = false) => {
@@ -1333,14 +1381,20 @@ class FilesStore {
           : splitValue.slice(1).join("_");
 
       if (fileType === "file") {
-        newSelection.push(this.files.find((f) => f.id == id && f.fileExst));
+        newSelection.push(this.files.find((f) => f.id == id));
       } else {
-        newSelection.push(this.folders.find((f) => f.id == id && !f.fileExst));
+        newSelection.push(this.folders.find((f) => f.id == id));
       }
     }
 
     //this.selected === "close" && this.setSelected("none");
-    this.setSelection(newSelection);
+
+    //need fo table view
+    const clearSelection = Object.values(
+      newSelection.reduce((item, n) => ((item[n.id] = n), item), {})
+    );
+
+    this.setSelection(clearSelection);
     //}
   };
 
@@ -1408,6 +1462,7 @@ class FilesStore {
   getFileInfo = async (id) => {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
+    return fileInfo;
   };
 
   getFolderInfo = async (id) => {

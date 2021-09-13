@@ -5,7 +5,6 @@ import uniqueid from "lodash/uniqueId";
 import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@appserver/common/constants";
-//import toastr from "studio/toastr";
 import {
   getFolder,
   getFileInfo,
@@ -17,8 +16,6 @@ import {
   copyToFolder,
   moveToFolder,
 } from "@appserver/common/api/files";
-
-const chunkSize = 1024 * 1023; //~0.999mb
 
 class UploadDataStore {
   formatsStore;
@@ -513,7 +510,9 @@ class UploadDataStore {
 
       const { uploaded } = res.data.data;
 
-      const uploadedSize = uploaded ? fileSize : index * chunkSize;
+      const uploadedSize = uploaded
+        ? fileSize
+        : index * this.settingsStore.chunkUploadSize;
 
       const newPercent = this.getNewPercent(uploadedSize, indexOfFile);
 
@@ -626,8 +625,10 @@ class UploadDataStore {
       return Promise.resolve();
     }
 
+    const { chunkUploadSize } = this.settingsStore;
+
     const { file, toFolderId /*, action*/ } = item;
-    const chunks = Math.ceil(file.size / chunkSize, chunkSize);
+    const chunks = Math.ceil(file.size / chunkUploadSize, chunkUploadSize);
     const fileName = file.name;
     const fileSize = file.size;
     const relativePath = file.path
@@ -651,9 +652,9 @@ class UploadDataStore {
         let chunk = 0;
 
         while (chunk < chunks) {
-          const offset = chunk * chunkSize;
+          const offset = chunk * chunkUploadSize;
           const formData = new FormData();
-          formData.append("file", file.slice(offset, offset + chunkSize));
+          formData.append("file", file.slice(offset, offset + chunkUploadSize));
           requestsDataArray.push(formData);
           chunk++;
         }
@@ -752,8 +753,8 @@ class UploadDataStore {
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      clearPrimaryProgressData,
     } = this.secondaryProgressDataStore;
+    const { clearPrimaryProgressData } = this.primaryProgressDataStore;
 
     return copyToFolder(
       destFolderId,
@@ -763,17 +764,19 @@ class UploadDataStore {
       deleteAfter
     )
       .then((res) => {
+        if (res[0]?.error) return Promise.reject(res[0].error);
+
         const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopFilesOperations(id, destFolderId, true);
+        return this.loopFilesOperations(id, destFolderId, true);
       })
       .catch((err) => {
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
         });
-        //toastr.error(err);
         setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        return Promise.reject(err);
       });
   };
 
@@ -806,9 +809,9 @@ class UploadDataStore {
           visible: true,
           alert: true,
         });
-        //toastr.error(err);
         setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        return Promise.reject(err);
       });
   };
 
@@ -833,7 +836,7 @@ class UploadDataStore {
       alert: false,
     });
 
-    isCopy
+    return isCopy
       ? this.copyToAction(
           destFolderId,
           folderIds,
@@ -859,81 +862,78 @@ class UploadDataStore {
       setSecondaryProgressBarData,
     } = this.secondaryProgressDataStore;
 
-    const loopOperation = () => {
-      getProgress()
-        .then((res) => {
-          const currentItem = res.find((x) => x.id === id);
-          if (currentItem && currentItem.progress !== 100) {
-            this.secondaryProgressDataStore.setSecondaryProgressBarData({
-              icon: isCopy ? "duplicate" : "move",
-              label,
-              percent: currentItem.progress,
-              visible: true,
-              alert: false,
-            });
-
-            setTimeout(() => loopOperation(), 1000);
-          } else {
-            this.secondaryProgressDataStore.setSecondaryProgressBarData({
-              icon: isCopy ? "duplicate" : "move",
-              label,
-              percent: 100,
-              visible: true,
-              alert: false,
-            });
-
-            getFolder(destFolderId).then((data) => {
-              let newTreeFolders = treeFolders;
-              let path = data.pathParts.slice(0);
-              let folders = data.folders;
-              let foldersCount = data.current.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-
-              if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-                this.filesStore
-                  .fetchFiles(
-                    this.selectedFolderStore.id,
-                    this.filesStore.filter,
-                    true,
-                    true
-                  )
-                  .finally(() => {
-                    setTimeout(
-                      () =>
-                        this.secondaryProgressDataStore.clearSecondaryProgressData(),
-                      TIMEOUT
-                    );
-                  });
-              } else {
-                this.secondaryProgressDataStore.setSecondaryProgressBarData({
-                  icon: "duplicate",
-                  label,
-                  percent: 100,
-                  visible: true,
-                  alert: false,
-                });
-
-                setTimeout(
-                  () =>
-                    this.secondaryProgressDataStore.clearSecondaryProgressData(),
-                  TIMEOUT
-                );
-                this.treeFoldersStore.setTreeFolders(newTreeFolders);
-              }
-            });
-          }
-        })
-        .catch((err) => {
+    return this.getOperationProgress(id)
+      .then((item) => {
+        if (item && item.progress !== 100) {
           setSecondaryProgressBarData({
+            icon: isCopy ? "duplicate" : "move",
+            label,
+            percent: item.progress,
             visible: true,
-            alert: true,
+            alert: false,
           });
-          //toastr.error(err);
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        });
-    };
+        } else {
+          setSecondaryProgressBarData({
+            icon: isCopy ? "duplicate" : "move",
+            label,
+            percent: 100,
+            visible: true,
+            alert: false,
+          });
 
-    loopOperation();
+          getFolder(destFolderId).then((data) => {
+            let newTreeFolders = treeFolders;
+            let path = data.pathParts.slice(0);
+            let folders = data.folders;
+            let foldersCount = data.current.foldersCount;
+            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+
+            if (!isCopy || destFolderId === this.selectedFolderStore.id) {
+              this.filesStore
+                .fetchFiles(
+                  this.selectedFolderStore.id,
+                  this.filesStore.filter,
+                  true,
+                  true
+                )
+                .finally(() => {
+                  setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+                });
+            } else {
+              setSecondaryProgressBarData({
+                icon: "duplicate",
+                label,
+                percent: 100,
+                visible: true,
+                alert: false,
+              });
+
+              setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+              this.treeFoldersStore.setTreeFolders(newTreeFolders);
+            }
+          });
+        }
+      })
+      .catch((err) => Promise.reject(err));
+  };
+
+  getOperationProgress = async (id) => {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        try {
+          getProgress().then((res) => {
+            const currentItem = res.find((x) => x.id === id);
+            if (currentItem?.error) {
+              return reject(currentItem.error);
+            }
+            resolve(currentItem);
+          });
+        } catch (error) {
+          reject(error);
+        }
+      }, 1000);
+    });
+    return promise;
   };
 }
 

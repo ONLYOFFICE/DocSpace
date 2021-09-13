@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const MainContainer = styled.div`
   display: flex;
@@ -45,6 +46,7 @@ const AvatarContainer = styled.div`
 
 const MainFieldsContainer = styled.div`
   flex-grow: 1;
+  ${(props) => props.noSelect && NoUserSelect}
 `;
 
 export { MainContainer, AvatarContainer, MainFieldsContainer };

@@ -33,7 +33,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   const renderComponent = (props) => {
     if (isLoaded && !isAuthenticated) {
-      if (personal && process.env.NODE_ENV === "production") {
+      if (personal) {
         window.location.replace("/");
         return <></>;
       }

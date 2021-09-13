@@ -30,7 +30,7 @@
   "PageOfTotalPage": "{{page}} z {{totalPage}}",
   "Password": "Heslo",
   "PasswordLimitDigits": "číslice",
-  "PasswordLimitLength": "od {{fromNumber}} do {{fromNumber}} znakov",
+  "PasswordLimitLength": "od {{fromNumber}} do {{toNumber}} znakov",
   "PasswordLimitMessage": "Heslo musí obsahovať",
   "PasswordLimitUpperCase": "veľké písmená",
   "People": "Ľudia",

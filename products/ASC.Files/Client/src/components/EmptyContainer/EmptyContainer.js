@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import EmptyScreenContainer from "@appserver/components/empty-screen-container";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
@@ -29,6 +30,7 @@ const EmptyFolderWrapper = styled.div`
     .empty-folder_container_plus-image {
       display: flex;
       line-height: unset;
+      ${NoUserSelect}
     }
 
     .empty-folder_container-icon {

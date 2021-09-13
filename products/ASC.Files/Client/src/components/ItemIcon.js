@@ -1,7 +1,13 @@
 import React from "react";
-import { ReactSVG } from "react-svg";
 import { EncryptedFileIcon } from "./Icons";
 import { inject, observer } from "mobx-react";
+import styled from "styled-components";
+
+const StyledIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-top: 4px;
+`;
 
 const ItemIcon = ({
   id,
@@ -17,14 +23,11 @@ const ItemIcon = ({
     (actionType !== null && actionId === id && fileExst === actionExtension) ||
     id <= 0;
 
-  const svgLoader = () => <div style={{ width: "24px" }}></div>;
-
   return (
     <>
-      <ReactSVG
+      <StyledIcon
         className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
         src={icon}
-        loading={svgLoader}
       />
       {isPrivacy && fileExst && (
         <EncryptedFileIcon isEdit={isEdit && viewAs !== "tile"} />

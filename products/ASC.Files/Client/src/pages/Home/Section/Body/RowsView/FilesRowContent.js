@@ -56,7 +56,6 @@ const FilesRowContent = ({
   updatedDate,
   fileOwner,
   linkStyles,
-  //isTrashFolder,
   //onFilesClick,
   badgesComponent,
   isAdmin,
@@ -87,6 +86,8 @@ const FilesRowContent = ({
           title={titleWithoutExt}
           fontWeight="600"
           fontSize="15px"
+          target="_blank"
+          href={item.href}
           {...linkStyles}
           color="#333"
           isTextOverflow={true}

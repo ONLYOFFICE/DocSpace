@@ -17,6 +17,7 @@ class UserStore {
       setIsLoading: action,
       setIsLoaded: action,
       setUser: action,
+      setUserIsUpdate: action,
     });
   }
 
@@ -57,6 +58,7 @@ class UserStore {
   };
 
   setUserIsUpdate = (isUpdate) => {
+    //console.log("setUserIsUpdate");
     this.userIsUpdate = isUpdate;
   };
 }

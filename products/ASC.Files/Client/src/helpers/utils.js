@@ -76,6 +76,20 @@ export const openDocEditor = async (
   return Promise.resolve();
 };
 
+export const getDataSaveAs = async (params) => {
+  try {
+    const data = await request({
+      baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+      method: "get",
+      url: `/httphandlers/filehandler.ashx?${params}`,
+      responseType: "text",
+    });
+
+    return data;
+  } catch (e) {
+    console.error("error");
+  }
+};
 export const SaveAs = (title, url, folderId, openNewTab) => {
   const options = {
     action: "create",
@@ -84,23 +98,20 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
     folderid: folderId,
     response: openNewTab ? null : "message",
   };
+
   const params = toUrlParams(options, true);
-  !openNewTab
-    ? request({
-        baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
-        method: "get",
-        url: `/httphandlers/filehandler.ashx?${params}`,
-      })
-        .then((data) => console.log("data", data))
-        .catch((e) => console.error("error", e))
-    : window.open(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/httphandlers/filehandler.ashx?${params}`
-        ),
-        "_blank"
-      );
+  if (!openNewTab) {
+    return getDataSaveAs(params);
+  } else {
+    window.open(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/httphandlers/filehandler.ashx?${params}`
+      ),
+      "_blank"
+    );
+  }
 };
 
 export const canConvert = (fileExst) => {

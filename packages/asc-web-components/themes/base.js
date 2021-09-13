@@ -649,7 +649,6 @@ const Base = {
 
   textInput: {
     fontWeight: "normal",
-    userSelect: "none",
     placeholderColor: gray,
     disablePlaceholderColor: grayMid,
 

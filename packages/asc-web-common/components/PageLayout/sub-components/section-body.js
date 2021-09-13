@@ -120,6 +120,7 @@ class SectionBody extends React.Component {
         viewAs={viewAs}
         pinned={pinned}
         isLoaded={isLoaded}
+        className="section-body"
       >
         {withScroll ? (
           !isMobile ? (

@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import commonTextStyles from "./common-text-styles";
 import Base from "../themes/base";
-
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 const styleCss = css`
   font-size: ${(props) => props.fontSizeProp};
   outline: 0 !important;
@@ -37,6 +37,7 @@ const StyledText = styled.p`
   ${styleCss};
 
   ${commonTextStyles};
+  ${(props) => props.noSelect && NoUserSelect}
 `;
 
 StyledText.defaultProps = { theme: Base };

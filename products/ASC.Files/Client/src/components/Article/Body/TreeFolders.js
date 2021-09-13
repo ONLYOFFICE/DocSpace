@@ -11,9 +11,12 @@ import { ReactSVG } from "react-svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import withLoader from "../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
 
 import { observer, inject } from "mobx-react";
 import { runInAction } from "mobx";
+import { withTranslation } from "react-i18next";
 
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
@@ -158,7 +161,8 @@ class TreeFolders extends React.Component {
       return false;
     }
 
-    if (draggableItems.find((x) => x.id === item.id)) return false;
+    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      return false;
 
     // const isMy = rootFolderType === FolderType.USER;
     // const isCommon = rootFolderType === FolderType.COMMON;
@@ -430,6 +434,7 @@ class TreeFolders extends React.Component {
     const {
       selectedKeys,
       isLoading,
+      setIsLoading,
       onSelect,
       dragging,
       expandedKeys,
@@ -442,7 +447,7 @@ class TreeFolders extends React.Component {
       <StyledTreeMenu
         className="files-tree-menu"
         checkable={false}
-        draggable
+        draggable={dragging}
         disabled={isLoading}
         multiple={false}
         showIcon
@@ -472,11 +477,14 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  (
+    { auth, filesStore, treeFoldersStore, selectedFolderStore },
+    { useDefaultSelectedKeys, selectedKeys }
+  ) => {
     const {
-      filter,
       selection,
       setIsLoading,
+      isLoading,
       dragging,
       setDragging,
     } = filesStore;
@@ -503,10 +511,13 @@ export default inject(
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
-      filter,
-      draggableItems: dragging ? selection : [],
+      draggableItems: dragging ? selection : null,
       expandedKeys,
       treeFolders,
+      isLoading,
+      selectedKeys: useDefaultSelectedKeys
+        ? treeFoldersStore.selectedKeys
+        : selectedKeys,
 
       setDragging,
       setIsLoading,
@@ -516,4 +527,8 @@ export default inject(
       getSubfolders,
     };
   }
-)(observer(TreeFolders));
+)(
+  withTranslation(["Home", "Common"])(
+    withLoader(observer(TreeFolders))(<Loaders.TreeFolders />)
+  )
+);

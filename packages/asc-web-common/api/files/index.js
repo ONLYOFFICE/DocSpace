@@ -161,7 +161,9 @@ export function getFoldersTree() {
           //   : null,
           folders: null,
           pathParts: data.pathParts,
-          foldersCount: !isRecycleBinFolder ? data.current.foldersCount : null,
+          foldersCount: !isRecycleBinFolder
+            ? data.current.foldersCount || data.folders.length
+            : null,
           newItems: data.new,
         };
       });

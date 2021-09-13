@@ -66,6 +66,8 @@ export const request = function (options) {
     if (response.data.hasOwnProperty("total"))
       return { total: +response.data.total, items: response.data.response };
 
+    if (response.request.responseType === "text") return response.data;
+
     return response.data.response;
   };
 

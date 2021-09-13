@@ -3,7 +3,9 @@
   "FileName": "File name",
   "FolderForSave": "Folder for save",
   "OpenSavedDocument": "Open saved document in new tab",
-  "ImageFileType": "Select files of type: images",
+  "SelectFilesType": "Select files of type: {{fileType}}",
+  "ImageFileType": "images",
+  "DocumentsFileType": "documents",
   "MailMergeFileType": "Select the file in XLSX format",
   "SelectFileTitle": "Select Data Source"
 }

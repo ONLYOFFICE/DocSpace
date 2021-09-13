@@ -38,7 +38,7 @@ export const getTitleWithoutExst = (item) => {
 
 export const createTreeFolders = (pathParts, expandedKeys) => {
   const newPathParts =
-    pathParts.length > 1 ? pathParts.splice(0, pathParts.length - 1) : [];
+    pathParts.length > 1 ? [...pathParts].splice(0, pathParts.length - 1) : [];
 
   let treeFolders = [];
   if (newPathParts.length > 0) {
@@ -135,7 +135,7 @@ export const loopTreeFolders = (
       }
       loopTreeFolders(
         newPath,
-        newItems.folders,
+        newItems.folders ? newItems.folders : [],
         folders,
         foldersCount,
         currentFolder
