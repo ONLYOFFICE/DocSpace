@@ -11,7 +11,7 @@ const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 
 const path = require("path");
 const pkg = require("./package.json");
-const deps = pkg.dependencies;
+const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
 

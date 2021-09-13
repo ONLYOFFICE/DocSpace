@@ -79,17 +79,16 @@
     "rc-tree": "^2.1.4",
     "react-autosize-textarea": "^7.1.0",
     "react-custom-scrollbars": "^4.2.1",
-    "react-device-detect": "^1.15.0",
+    "react-device-detect": "^1.17.0",
     "react-dropzone": "^11.2.4",
     "react-lifecycles-compat": "^3.0.4",
-    "react-onclickoutside": "^6.9.0",
+    "react-onclickoutside": "^6.11.2",
     "react-text-mask": "^5.4.3",
     "react-toastify": "^6.2.0",
-    "react-tooltip": "^3.11.6",
+    "react-tooltip": "^4.2.21",
     "react-transition-group": "^4.4.1",
-    "react-virtualized-auto-sizer": "^1.0.3",
     "react-window": "^1.8.6",
-    "react-window-infinite-loader": "^1.0.5",
-    "resize-image": "^0.1.0"
+    "resize-image": "^0.1.0",
+    "react-svg": "^12.1.0"
   }
 }
