@@ -174,10 +174,6 @@ const HeaderComponent = ({
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
 
-  const onMouseDown = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <>
       <Header
@@ -197,12 +193,7 @@ const HeaderComponent = ({
 
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
-            <img
-              alt="logo"
-              src={props.logoUrl}
-              className="header-logo-icon"
-              onMouseDown={onMouseDown}
-            />
+            <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
           ) : !isMobileOnly ? (
             <img
               alt="logo"
@@ -211,7 +202,6 @@ const HeaderComponent = ({
                 AppServerConfig.proxyURL,
                 "/static/images/personal.logo.react.svg"
               )}
-              onMouseDown={onMouseDown}
             />
           ) : (
             <img
