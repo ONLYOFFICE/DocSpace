@@ -156,6 +156,7 @@ const StyledContent = styled.div`
 `;
 
 const StyledCheckbox = styled.div`
+  opacity: ${(props) => (props.checkboxVisible ? 1 : 0)};
   flex: 0 0 16px;
   margin-right: -4px;
 `;
@@ -188,6 +189,7 @@ class Tile extends React.PureComponent {
 
     this.state = {
       errorLoadSrc: false,
+      checkboxVisible: false,
     };
 
     this.cm = React.createRef();
@@ -241,6 +243,7 @@ class Tile extends React.PureComponent {
       item,
     } = this.props;
     const { isFolder, id, fileExst } = item;
+    const { checkboxVisible } = this.state;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -270,11 +273,22 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
+
+    const onTileEnter = () => {
+      this.setState({ checkboxVisible: true });
+    };
+
+    const onTileLeave = () => {
+      if (!checked) this.setState({ checkboxVisible: false });
+    };
+
     return (
       <StyledTile
         ref={this.tile}
         {...this.props}
         onContextMenu={onContextMenu}
+        onMouseEnter={onTileEnter}
+        onMouseLeave={onTileLeave}
         dragging={dragging && isFolder}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
@@ -282,7 +296,7 @@ class Tile extends React.PureComponent {
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderCheckbox && (
-              <StyledCheckbox>
+              <StyledCheckbox checkboxVisible={checkboxVisible}>
                 <Checkbox
                   isChecked={checked}
                   isIndeterminate={indeterminate}
@@ -319,7 +333,7 @@ class Tile extends React.PureComponent {
           <>
             <StyledFileTileTop>
               {renderCheckbox && (
-                <StyledCheckbox>
+                <StyledCheckbox checkboxVisible={checkboxVisible}>
                   <Checkbox
                     isChecked={checked}
                     isIndeterminate={indeterminate}
