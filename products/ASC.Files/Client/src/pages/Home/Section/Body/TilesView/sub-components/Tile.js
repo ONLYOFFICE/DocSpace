@@ -195,7 +195,6 @@ class Tile extends React.PureComponent {
 
     this.state = {
       errorLoadSrc: false,
-      checkboxVisible: false,
     };
 
     this.cm = React.createRef();
@@ -249,7 +248,6 @@ class Tile extends React.PureComponent {
       item,
     } = this.props;
     const { isFolder, id, fileExst } = item;
-    const { checkboxVisible } = this.state;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -280,21 +278,11 @@ class Tile extends React.PureComponent {
 
     const icon = this.getIconFile();
 
-    const onTileEnter = () => {
-      this.setState({ checkboxVisible: true });
-    };
-
-    const onTileLeave = () => {
-      if (!checked) this.setState({ checkboxVisible: false });
-    };
-
     return (
       <StyledTile
         ref={this.tile}
         {...this.props}
         onContextMenu={onContextMenu}
-        onMouseEnter={onTileEnter}
-        onMouseLeave={onTileLeave}
         dragging={dragging && isFolder}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
