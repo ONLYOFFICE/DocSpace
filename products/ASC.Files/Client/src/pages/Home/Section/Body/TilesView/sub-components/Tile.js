@@ -97,6 +97,18 @@ const StyledTile = styled.div`
         background-color: #efefb2;
       }
     `};
+
+  .checkbox {
+    opacity: ${(props) => (props.checked ? 1 : 0)};
+    flex: 0 0 16px;
+    margin-right: 4px;
+  }
+
+  :hover {
+    .checkbox {
+      opacity: 1;
+    }
+  }
 `;
 
 const StyledFileTileTop = styled.div`
@@ -153,12 +165,6 @@ const StyledContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
-`;
-
-const StyledCheckbox = styled.div`
-  opacity: ${(props) => (props.checkboxVisible ? 1 : 0)};
-  flex: 0 0 16px;
-  margin-right: -4px;
 `;
 
 const StyledElement = styled.div`
@@ -292,17 +298,17 @@ class Tile extends React.PureComponent {
         dragging={dragging && isFolder}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
+        checked={checked}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderCheckbox && (
-              <StyledCheckbox checkboxVisible={checkboxVisible}>
-                <Checkbox
-                  isChecked={checked}
-                  isIndeterminate={indeterminate}
-                  onChange={this.changeCheckbox}
-                />
-              </StyledCheckbox>
+              <Checkbox
+                className="checkbox"
+                isChecked={checked}
+                isIndeterminate={indeterminate}
+                onChange={this.changeCheckbox}
+              />
             )}
             {renderElement && !(isFolder || (!fileExst && id === -1)) && (
               <StyledElement>{element}</StyledElement>
@@ -333,13 +339,12 @@ class Tile extends React.PureComponent {
           <>
             <StyledFileTileTop>
               {renderCheckbox && (
-                <StyledCheckbox checkboxVisible={checkboxVisible}>
-                  <Checkbox
-                    isChecked={checked}
-                    isIndeterminate={indeterminate}
-                    onChange={this.changeCheckbox}
-                  />
-                </StyledCheckbox>
+                <Checkbox
+                  className="checkbox"
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={this.changeCheckbox}
+                />
               )}
               {icon}
             </StyledFileTileTop>
