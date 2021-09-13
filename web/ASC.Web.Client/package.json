@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "",
-  "title": "ONLYOFFICE",
   "scripts": {
-    "start": "webpack-cli serve",
-    "start-prod": "webpack --mode production && serve dist -p 5001",
     "build": "webpack --mode production",
+    "clean": "shx rm -rf dist",
     "deploy": "shx mkdir -p ../../build/deploy/studio/client && shx cp -r dist/* ../../build/deploy/studio/client",
     "serve": "serve dist -p 5001",
-    "clean": "shx rm -rf dist"
+    "start": "webpack-cli serve",
+    "start-prod": "webpack --mode production && serve dist -p 5001"
+  },
+  "dependencies": {
+    "firebase": "^8.10.0",
+    "react-string-format": "^0.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -39,8 +42,5 @@
     "webpack-cli": "4.8.0",
     "webpack-dev-server": "4.2.0"
   },
-  "dependencies": {
-    "firebase": "^8.10.0",
-    "react-string-format": "^0.1.4"
-  }
+  "title": "ONLYOFFICE"
 }

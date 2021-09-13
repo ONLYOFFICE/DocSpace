@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "/products/people",
-  "id": "f4d98afd-d336-4332-8778-3c6945c81ea0",
-  "title": "ONLYOFFICE",
   "scripts": {
-    "start": "webpack-cli serve",
-    "start-prod": "webpack --mode production && serve dist -p 5002",
     "build": "webpack --mode production",
+    "clean": "shx rm -rf dist",
     "deploy": "shx mkdir -p ../../../build/deploy/products/ASC.People/client && shx cp -r dist/* ../../../build/deploy/products/ASC.People/client",
     "serve": "serve dist -p 5002",
-    "clean": "shx rm -rf dist"
+    "start": "webpack-cli serve",
+    "start-prod": "webpack --mode production && serve dist -p 5002"
+  },
+  "dependencies": {
+    "copy-to-clipboard": "^3.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -40,7 +41,6 @@
     "webpack-cli": "4.8.0",
     "webpack-dev-server": "4.2.0"
   },
-  "dependencies": {
-    "copy-to-clipboard": "^3.3.1"
-  }
+  "id": "f4d98afd-d336-4332-8778-3c6945c81ea0",
+  "title": "ONLYOFFICE"
 }

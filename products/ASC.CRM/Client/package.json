@@ -3,15 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "/products/crm",
-  "title": "ONLYOFFICE",
-  "id": "6743007c-6f95-4d20-8c88-a8601ce5e76d",
   "scripts": {
-    "start": "webpack-cli serve",
-    "start-prod": "webpack --mode production && serve dist -p 5014",
     "build": "webpack --mode production",
+    "clean": "shx rm -rf dist",
     "deploy": "shx mkdir -p ../../../build/deploy/products/ASC.CRM/client && shx cp -r dist/* ../../../build/deploy/products/ASC.CRM/client",
     "serve": "serve dist -p 5014",
-    "clean": "shx rm -rf dist"
+    "start": "webpack-cli serve",
+    "start-prod": "webpack --mode production && serve dist -p 5014"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -39,5 +37,7 @@
     "webpack": "5.52.0",
     "webpack-cli": "4.8.0",
     "webpack-dev-server": "4.2.0"
-  }
+  },
+  "id": "6743007c-6f95-4d20-8c88-a8601ce5e76d",
+  "title": "ONLYOFFICE"
 }

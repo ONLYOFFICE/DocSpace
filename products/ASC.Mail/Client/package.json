@@ -3,15 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "/products/mail",
-  "id": "2a923037-8b2d-487b-9a22-5ac0918acf3f",
-  "title": "ONLYOFFICE",
   "scripts": {
-    "start": "webpack-cli serve",
-    "start-prod": "webpack --mode production && serve dist -p 5016",
     "build": "webpack --mode production",
+    "clean": "shx rm -rf dist",
     "deploy": "shx mkdir -p ../../../build/deploy/products/ASC.Mail/client && shx cp -r dist/* ../../../build/deploy/products/ASC.Mail/client",
     "serve": "serve dist -p 5016",
-    "clean": "shx rm -rf dist"
+    "start": "webpack-cli serve",
+    "start-prod": "webpack --mode production && serve dist -p 5016"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -39,5 +37,7 @@
     "webpack": "5.52.0",
     "webpack-cli": "4.8.0",
     "webpack-dev-server": "4.2.0"
-  }
+  },
+  "id": "2a923037-8b2d-487b-9a22-5ac0918acf3f",
+  "title": "ONLYOFFICE"
 }
