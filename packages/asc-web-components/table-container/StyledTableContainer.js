@@ -113,6 +113,31 @@ const StyledTableHeader = styled.div`
 `;
 
 const StyledTableHeaderCell = styled.div`
+  cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
+
+  .header-container-text-icon {
+    padding: 16px 0 0 4px;
+
+    display: ${(props) =>
+      props.isActive && props.showIcon ? "block" : "none"};
+    ${(props) =>
+      props.sorted &&
+      css`
+        transform: scale(1, -1);
+        padding: 14px 0 0 4px;
+      `}
+  }
+
+  :hover {
+    .header-container-text-icon {
+      ${(props) =>
+        props.showIcon &&
+        css`
+          display: block;
+        `};
+    }
+  }
+
   .table-container_header-item {
     display: flex;
     user-select: none;
@@ -120,25 +145,6 @@ const StyledTableHeaderCell = styled.div`
 
   .header-container-text-wrapper {
     display: flex;
-    cursor: pointer;
-
-    .header-container-text-icon {
-      padding: 16px 0 0 4px;
-
-      display: ${(props) => (props.isActive ? "block" : "none")};
-      ${(props) =>
-        props.sorted &&
-        css`
-          transform: scale(1, -1);
-          padding: 14px 0 0 4px;
-        `}
-    }
-
-    :hover {
-      .header-container-text-icon {
-        display: block;
-      }
-    }
   }
 
   .header-container-text {

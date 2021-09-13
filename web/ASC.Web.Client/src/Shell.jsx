@@ -155,6 +155,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     isDesktop,
     language,
     FirebaseHelper,
+    personal,
   } = rest;
 
   useEffect(() => {
@@ -275,6 +276,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
+      style: {
+        marginTop: "10px",
+      },
     };
 
     Snackbar.show(barConfig);
@@ -392,7 +396,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
               <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
               <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
-              <PublicRoute exact path={LOGIN_URLS} component={LoginRoute} />
+              <PublicRoute
+                exact
+                path={personal ? "/" : LOGIN_URLS}
+                component={LoginRoute}
+              />
               <Route path={CONFIRM_URL} component={ConfirmRoute} />
               <PrivateRoute
                 path={COMING_SOON_URLS}
@@ -422,7 +430,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 };
 
 const ShellWrapper = inject(({ auth }) => {
-  const { init, isLoaded } = auth;
+  const { init, isLoaded, settingsStore } = auth;
+  const { personal } = settingsStore;
 
   return {
     loadBaseInfo: () => {
@@ -439,6 +448,7 @@ const ShellWrapper = inject(({ auth }) => {
     modules: auth.moduleStore.modules,
     isDesktop: auth.settingsStore.isDesktopClient,
     FirebaseHelper: auth.settingsStore.firebaseHelper,
+    personal,
   };
 })(observer(Shell));
 

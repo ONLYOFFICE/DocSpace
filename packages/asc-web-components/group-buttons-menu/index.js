@@ -172,6 +172,7 @@ class GroupButtonsMenu extends React.Component {
                   isIndeterminate={isIndeterminate}
                   onChange={onChange}
                   opened={item.opened}
+                  alt={item.alt}
                 >
                   {item.children}
                 </GroupButton>

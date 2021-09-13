@@ -15,11 +15,15 @@ import config from "../../package.json";
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin } = this.props;
+      const { item, lockFileAction, isAdmin, setIsLoading } = this.props;
       const { locked, id, access } = item;
 
-      if (isAdmin || access === 0)
-        return lockFileAction(id, !locked).catch((err) => toastr.error(err));
+      if (isAdmin || access === 0) {
+        setIsLoading(true);
+        return lockFileAction(id, !locked)
+          .catch((err) => toastr.error(err))
+          .finally(() => setIsLoading(false));
+      }
       return;
     };
 

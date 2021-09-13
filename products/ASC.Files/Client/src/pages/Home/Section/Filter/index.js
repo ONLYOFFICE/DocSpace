@@ -300,7 +300,7 @@ class SectionFilterContent extends React.Component {
 
     selectedFilterData.inputValue = filter.search;
 
-    if (filter.filterType >= 0) {
+    if (filter.filterType) {
       selectedFilterData.filterValues.push({
         key: `${filter.filterType}`,
         group: "filter-filterType",

@@ -584,6 +584,8 @@ class UpdateUserForm extends React.Component {
       groupCaption,
     } = customNames;
 
+    const maxLabelWidth = "140px";
+
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
     //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
@@ -701,7 +703,7 @@ class UpdateUserForm extends React.Component {
               saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
+          <MainFieldsContainer ref={this.mainFieldsContainerRef} noSelect>
             <TextChangeField
               labelText={`${t("Common:Email")}:`}
               inputName="email"
@@ -732,6 +734,7 @@ class UpdateUserForm extends React.Component {
                 </Text>
               }
               dataDialog={dialogsDataset.changeEmail}
+              maxLabelWidth={maxLabelWidth}
             />
             <TextChangeField
               labelText={`${t("Common:Password")}:`}
@@ -742,6 +745,7 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={2}
               dataDialog={dialogsDataset.changePassword}
+              maxLabelWidth={maxLabelWidth}
             />
             {/*TODO: uncomment this after added phone form */}
             {/* <TextChangeField
@@ -753,6 +757,7 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={3}
               dataDialog={dialogsDataset.changePhone}
+              maxLabelWidth={maxLabelWidth}
             /> */}
             <TextField
               isRequired={true}
@@ -765,6 +770,7 @@ class UpdateUserForm extends React.Component {
               inputAutoFocussed={!isMobile}
               inputTabIndex={4}
               maxLength={50}
+              maxLabelWidth={maxLabelWidth}
             />
             <TextField
               isRequired={true}
@@ -776,6 +782,7 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onInputChange}
               inputTabIndex={5}
               maxLength={50}
+              maxLabelWidth={maxLabelWidth}
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
@@ -788,6 +795,7 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={6}
               locale={language}
+              maxLabelWidth={maxLabelWidth}
             />
             <RadioField
               labelText={`${t("Translations:Sex")}:`}
@@ -799,6 +807,7 @@ class UpdateUserForm extends React.Component {
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
+              maxLabelWidth={maxLabelWidth}
             />
             {!personal && (
               <RadioField
@@ -815,6 +824,7 @@ class UpdateUserForm extends React.Component {
                 radioOnChange={this.onUserTypeChange}
                 tooltipContent={tooltipTypeContent}
                 helpButtonHeaderContent={t("Common:Type")}
+                maxLabelWidth={maxLabelWidth}
               />
             )}
             {!personal && (
@@ -832,6 +842,7 @@ class UpdateUserForm extends React.Component {
                   profile.birthday ? new Date(profile.birthday) : new Date()
                 }
                 locale={language}
+                maxLabelWidth={maxLabelWidth}
               />
             )}
             <TextField
@@ -841,6 +852,7 @@ class UpdateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
               inputTabIndex={8}
+              maxLabelWidth={maxLabelWidth}
             />
             {!personal && (
               <TextField
@@ -850,6 +862,7 @@ class UpdateUserForm extends React.Component {
                 inputIsDisabled={isLoading || !isAdmin}
                 inputOnChange={this.onInputChange}
                 inputTabIndex={9}
+                maxLabelWidth={maxLabelWidth}
               />
             )}
             {!isMy && !personal && (
@@ -866,6 +879,7 @@ class UpdateUserForm extends React.Component {
                 selectorSelectAllText={t("Common:SelectAll")}
                 selectorOnSearchGroups={this.onSearchGroups}
                 selectorOnSelectGroups={this.onSelectGroups}
+                maxLabelWidth={maxLabelWidth}
               />
             )}
           </MainFieldsContainer>

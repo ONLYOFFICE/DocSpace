@@ -10,9 +10,11 @@ const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
       title={titleWithoutExt}
       fontWeight="600"
       fontSize="15px"
+      href={item.href}
       {...linkStyles}
       color="#333"
       isTextOverflow
+      className="item-file-name"
     >
       {titleWithoutExt}
       {fileExst ? (

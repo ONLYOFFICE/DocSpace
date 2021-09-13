@@ -76,7 +76,7 @@ export const request = function (options) {
       ? getResponseError(error.response)
       : error.message;
 
-    switch (error.response.status) {
+    switch (error.response?.status) {
       case 401:
         if (options.skipUnauthorized) return Promise.resolve();
 

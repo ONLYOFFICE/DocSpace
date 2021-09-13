@@ -10,6 +10,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
+  loadScript,
   //showLoader,
   //hideLoader,
 } from "@appserver/common/utils";
@@ -65,6 +66,7 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
+let personal;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -228,7 +230,8 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
-        successAuth = user !== null;
+        personal = authStore.settingsStore.personal;
+        successAuth = !!user;
       } catch (e) {
         successAuth = false;
       }
@@ -247,7 +250,7 @@ const Editor = () => {
         try {
           fileInfo = await getFileInfo(fileId);
 
-          if (url.indexOf("#message/")) {
+          if (url.indexOf("#message/") > -1) {
             const needConvert = canConvert(fileInfo.fileExst);
 
             if (needConvert) {
@@ -289,7 +292,7 @@ const Editor = () => {
 
       setIsLoading(false);
 
-      loadDocApi(docApiUrl, () => onLoad(config));
+      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad(config));
     } catch (error) {
       console.log(error);
       toastr.error(
@@ -366,20 +369,6 @@ const Editor = () => {
     document.title = title;
   };
 
-  const loadDocApi = (docApiUrl, onLoadCallback) => {
-    const script = document.createElement("script");
-    script.setAttribute("type", "text/javascript");
-    script.setAttribute("id", "scripDocServiceAddress");
-
-    script.onload = onLoadCallback;
-
-    script.src = docApiUrl;
-    script.async = true;
-
-    console.log("PureEditor componentDidMount: added script");
-    document.body.appendChild(script);
-  };
-
   const onLoad = (config) => {
     try {
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
@@ -414,6 +403,11 @@ const Editor = () => {
         ...config.editorConfig.customization,
         goback: goBack,
       };
+
+      if (personal && !fileInfo) {
+        //TODO: add conditions for SaaS
+        config.document.info.favorite = null;
+      }
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");

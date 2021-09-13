@@ -48,13 +48,24 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         isPrivacy,
+        onSelectItem,
+        item,
       } = this.props;
-      const notSelectable = e.target.classList.contains("not-selectable");
 
-      if (!draggable || isPrivacy) return;
+      const { id, isFolder } = item;
+      e.preventDefault();
+
+      const notSelectable = e.target.classList.contains("not-selectable");
+      const isFileName = e.target.classList.contains("item-file-name");
+
+      if (isPrivacy || (!draggable && !isFileName)) return;
 
       if (window.innerWidth < 1025 || notSelectable) {
         return;
+      }
+
+      if (!draggable) {
+        id !== -1 && onSelectItem({ id, isFolder });
       }
 
       const mouseButton = e.which
@@ -131,12 +142,13 @@ export default function withFileActions(WrappedFileItem) {
 
       if (isTrashFolder) return;
       if (e && e.target.tagName === "INPUT") return;
+      e.preventDefault();
 
       if (!fileExst && !contentLength) {
         setIsLoading(true);
         //addExpandedKeys(parentFolder + "");
 
-        fetchFiles(id)
+        fetchFiles(id, null, true, false, true)
           .then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createNewExpandedKeys(pathParts);
