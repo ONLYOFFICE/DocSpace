@@ -3,7 +3,6 @@ import ContextMenuButton from "@appserver/components/context-menu-button";
 import PropTypes from "prop-types";
 import React from "react";
 import { ReactSVG } from "react-svg";
-//import equal from "fast-deep-equal/react";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
