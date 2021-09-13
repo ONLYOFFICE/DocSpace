@@ -2,7 +2,6 @@ import React from "react";
 import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-//import equal from "fast-deep-equal/react";
 import { FolderType, ShareAccessRights } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
