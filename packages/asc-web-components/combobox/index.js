@@ -95,8 +95,9 @@ class ComboBox extends React.Component {
     const dropDownMaxHeightProp = dropDownMaxHeight
       ? { maxHeight: dropDownMaxHeight }
       : {};
-    const dropDownManualWidthProp = scaledOptions
-      ? { manualWidth: "100%" }
+
+    const dropDownManualWidthProp = this.ref.current
+      ? { manualWidth: this.ref.current.clientWidth + "px" }
       : {};
 
     const optionsLength = options.length
@@ -140,6 +141,7 @@ class ComboBox extends React.Component {
             directionY={directionY}
             manualY="102%"
             open={isOpen}
+            forwardedRef={this.ref}
             clickOutsideAction={this.handleClickOutside}
             {...dropDownMaxHeightProp}
             {...dropDownManualWidthProp}
@@ -175,7 +177,7 @@ ComboBox.propTypes = {
   /** X direction selection */
   directionX: PropTypes.oneOf(["left", "right"]),
   /** Y direction selection */
-  directionY: PropTypes.oneOf(["bottom", "top"]),
+  directionY: PropTypes.oneOf(["bottom", "top", "both"]),
   /** Component Display Type */
   displayType: PropTypes.oneOf(["default", "toggle"]),
   /** Height of Dropdown */

@@ -138,6 +138,7 @@ class GroupButton extends React.Component {
               </Caret>
             </StyledDropdownToggle>
             <DropDown
+              forwardedRef={this.ref}
               {...dropDownMaxHeightProp}
               {...offsetSelectDropDown}
               manualY="72px"

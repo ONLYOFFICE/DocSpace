@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { VariableSizeList } from "react-window";
 import onClickOutside from "react-onclickoutside";
 import { isMobile } from "react-device-detect";
+import Portal from "../portal";
+import DomHelpers from "../utils/domHelpers";
 
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import DropDownItem from "../drop-down-item";
@@ -36,7 +38,6 @@ class DropDown extends React.PureComponent {
       directionX: props.directionX,
       directionY: props.directionY,
     };
-
     this.dropDownRef = React.createRef();
   }
 
@@ -49,6 +50,7 @@ class DropDown extends React.PureComponent {
 
   componentWillUnmount() {
     this.props.disableOnClickOutside();
+    this.unbindDocumentResizeListener();
   }
 
   componentDidUpdate(prevProps) {
@@ -56,6 +58,7 @@ class DropDown extends React.PureComponent {
       if (this.props.open) {
         this.props.enableOnClickOutside();
         this.checkPosition();
+        this.bindDocumentResizeListener();
       } else {
         this.props.disableOnClickOutside();
       }
@@ -72,26 +75,62 @@ class DropDown extends React.PureComponent {
       this.props.clickOutsideAction(e, !this.props.open);
   };
 
-  checkPosition = () => {
-    if (!this.dropDownRef.current) return;
+  bindDocumentResizeListener() {
+    if (!this.documentResizeListener) {
+      this.documentResizeListener = (e) => {
+        if (this.props.open) {
+          this.checkPosition();
+        }
+      };
 
-    const rects = this.dropDownRef.current.getBoundingClientRect();
-    const container = { width: window.innerWidth, height: window.innerHeight };
-    const left = rects.left < 0 && rects.width < container.width;
-    const right =
-      rects.width &&
-      rects.left < 250 &&
-      rects.left > rects.width &&
-      rects.width < container.width;
-    const top = rects.bottom > container.height && rects.top > rects.height;
-    const bottom = rects.top < 0;
-    const x = left ? "left" : right ? "right" : this.state.directionX;
-    const y = bottom ? "bottom" : top ? "top" : this.state.directionY;
+      window.addEventListener("resize", this.documentResizeListener);
+    }
+  }
+
+  unbindDocumentResizeListener() {
+    if (this.documentResizeListener) {
+      window.removeEventListener("resize", this.documentResizeListener);
+      this.documentResizeListener = null;
+    }
+  }
+
+  checkPosition = () => {
+    const parent = this.props.forwardedRef;
+    const rects = parent.current.getBoundingClientRect();
+
+    let dropDownHeight = this.dropDownRef.current.offsetParent
+      ? this.dropDownRef.current.offsetHeight
+      : DomHelpers.getHiddenElementOuterHeight(this.dropDownRef.current);
+
+    let left = rects.left;
+    let bottom = rects.bottom;
+
+    const viewport = DomHelpers.getViewport();
+    const dropDownRects = this.dropDownRef.current.getBoundingClientRect();
+
+    if (
+      this.props.directionY === "top" ||
+      (this.props.directionY === "both" &&
+        rects.top + dropDownHeight > viewport.height)
+    ) {
+      bottom -= parent.current.clientHeight + dropDownHeight;
+    }
+
+    if (this.props.right) {
+      this.dropDownRef.current.style.right = this.props.right;
+    } else if (this.props.directionX === "right") {
+      this.dropDownRef.current.style.left =
+        rects.right - this.dropDownRef.current.clientWidth + "px";
+    } else {
+      this.dropDownRef.current.style.left = left + "px";
+    }
+
+    this.dropDownRef.current.style.top = this.props.top || bottom + "px";
 
     this.setState({
-      directionX: x,
-      directionY: y,
-      width: rects.width,
+      directionX: this.props.directionX,
+      directionY: this.props.directionY,
+      width: dropDownRects.width,
     });
   };
 
@@ -123,7 +162,7 @@ class DropDown extends React.PureComponent {
     }
   };
 
-  render() {
+  renderDropDown() {
     const { maxHeight, children, showDisabledItems } = this.props;
     const { directionX, directionY, width } = this.state;
     let cleanChildren;
@@ -169,6 +208,10 @@ class DropDown extends React.PureComponent {
       </StyledDropdown>
     );
   }
+  render() {
+    const element = this.renderDropDown();
+    return <Portal element={element} appendTo={this.props.appendTo} />;
+  }
 }
 
 const EnhancedComponent = onClickOutside(DropDown);
@@ -211,7 +254,7 @@ DropDownContainer.propTypes = {
   /** Sets the opening direction relative to the parent */
   directionX: PropTypes.oneOf(["left", "right"]), //TODO: make more informative
   /** Sets the opening direction relative to the parent */
-  directionY: PropTypes.oneOf(["bottom", "top"]),
+  directionY: PropTypes.oneOf(["bottom", "top", "both"]),
   /** Accepts id */
   id: PropTypes.string,
   /** Required if you need to specify the exact width of the component, for example 100% */
@@ -232,6 +275,7 @@ DropDownContainer.propTypes = {
   columnCount: PropTypes.number,
   /** Display disabled items or not */
   showDisabledItems: PropTypes.bool,
+  forwardedRef: PropTypes.shape({ current: PropTypes.any }),
 };
 
 DropDownContainer.defaultProps = {

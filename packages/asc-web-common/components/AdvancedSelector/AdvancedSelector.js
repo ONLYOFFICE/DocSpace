@@ -17,7 +17,6 @@ class AdvancedSelector extends React.Component {
     super(props);
 
     this.ref = React.createRef();
-
     this.state = {
       displayType: this.getTypeByWidth(),
     };
@@ -92,9 +91,10 @@ class AdvancedSelector extends React.Component {
     //console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
 
     return (
-      <div ref={this.ref} id={id} className={className} style={style}>
+      <div id={id} className={className} style={style}>
         {displayType === "dropdown" ? (
           <DropDown
+            forwardedRef={this.ref}
             open={isOpen}
             className="dropdown-container"
             clickOutsideAction={this.onClose}

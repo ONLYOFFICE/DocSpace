@@ -347,6 +347,7 @@ class DatePicker extends Component {
           displayType === "dropdown" ? (
             <DropDownStyle>
               <DropDown
+                forwardedRef={this.ref}
                 className="drop-down"
                 open={isOpen}
                 clickOutsideAction={this.onClose}

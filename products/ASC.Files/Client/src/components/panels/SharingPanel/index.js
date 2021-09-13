@@ -465,6 +465,7 @@ class SharingPanelComponent extends React.Component {
                     />
 
                     <DropDown
+                      forwardedRef={this.ref}
                       directionX="right"
                       className="sharing_panel-drop-down"
                       open={showActionPanel}
@@ -475,12 +476,12 @@ class SharingPanelComponent extends React.Component {
                         label={t("LinkText")}
                         onClick={this.onShowUsersPanel}
                       />
-                    {!isEncrypted && (
-                      <DropDownItem
-                        label={t("AddGroupsForSharingButton")}
-                        onClick={this.onShowGroupsPanel}
-                      />
-                    )}
+                      {!isEncrypted && (
+                        <DropDownItem
+                          label={t("AddGroupsForSharingButton")}
+                          onClick={this.onShowGroupsPanel}
+                        />
+                      )}
                     </DropDown>
                   </div>
 

@@ -61,6 +61,7 @@ class HideFilter extends React.Component {
 
         <div className="dropdown-style" ref={this.dropDownRef}>
           <DropDown
+            forwardedRef={this.ref}
             className="drop-down hide-filter-drop-down"
             clickOutsideAction={this.handleClickOutside}
             manualY="8px"

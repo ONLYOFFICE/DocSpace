@@ -107,6 +107,7 @@ class LinkWithDropdown extends React.Component {
           className="fixed-max-width"
           open={this.state.isOpen}
           withArrow={false}
+          forwardedRef={this.ref}
           clickOutsideAction={this.onClose}
           {...rest}
         >

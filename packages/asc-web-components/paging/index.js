@@ -114,7 +114,7 @@ Paging.propTypes = {
   /** Items per page combo box items */
   countItems: PropTypes.array,
   /** Indicates opening direction of combo box */
-  openDirection: PropTypes.oneOf(["bottom", "top"]),
+  openDirection: PropTypes.oneOf(["bottom", "top", "both"]),
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts id */

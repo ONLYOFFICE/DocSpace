@@ -194,7 +194,7 @@ const Base = {
     },
 
     dropDown: {
-      width: "100%",
+      // width: "100%",
       top: "100%",
     },
 
