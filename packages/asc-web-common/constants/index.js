@@ -156,18 +156,4 @@ export const TenantTrustedDomainsType = Object.freeze({
   All: 2,
 });
 
-export const FilesFormats = Object.freeze({
-  OriginalFormat: 0,
-  TxtFormat: 1,
-  DocxFormat: 2,
-  OdtFormat: 3,
-  OdsFormat: 4,
-  OdpFormat: 5,
-  PdfFormat: 6,
-  RtfFormat: 7,
-  XlsxFormat: 8,
-  PptxFormat: 9,
-  CustomFormat: 10,
-});
-
 export const PasswordLimitSpecialCharacters = "!@#$%^&*";
