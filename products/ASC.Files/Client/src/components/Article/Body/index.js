@@ -69,6 +69,8 @@ class ArticleBodyContent extends React.Component {
       enableThirdParty,
       isVisitor,
       personal,
+      firstLoad,
+      isDesktopClient,
     } = this.props;
 
     //console.log("Article Body render");
@@ -88,11 +90,17 @@ class ArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        {!personal && <TreeSettings />}
-        {enableThirdParty && !isVisitor && <ThirdPartyList />}
-        <DownloadAppList />
-        {(isDesktop || isTablet) && personal && campaigns.length > 0 && (
-          <Banner />
+        {!personal && !firstLoad && <TreeSettings />}
+
+        {!isDesktopClient && (
+          <>
+            {enableThirdParty && !isVisitor && <ThirdPartyList />}
+            <DownloadAppList />
+            {(isDesktop || isTablet) &&
+              personal &&
+              !firstLoad &&
+              campaigns.length > 0 && <Banner />}
+          </>
         )}
       </>
     );
@@ -108,12 +116,12 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, setIsLoading, setFirstLoad } = filesStore;
+    const { fetchFiles, setIsLoading, setFirstLoad, firstLoad } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
-    const { personal, hideArticle } = auth.settingsStore;
+    const { personal, hideArticle, isDesktopClient } = auth.settingsStore;
 
     const selectedFolderTitle = selectedFolderStore.title;
 
@@ -135,6 +143,8 @@ export default inject(
       setTreeFolders,
       setNewFilesPanelVisible,
       hideArticle,
+      firstLoad,
+      isDesktopClient,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));

@@ -33,6 +33,7 @@ const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
 const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
+const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/view");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -44,6 +45,7 @@ window.AppServer.files = {
   HISTORY_URL,
   PRIVATE_ROOMS_URL,
   FILTER_URL,
+  MEDIA_VIEW_URL,
 };
 
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -124,6 +126,7 @@ class FilesContent extends React.Component {
           <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
           <PrivateRoute exact path={HOME_URL} component={Home} />
           <PrivateRoute path={FILTER_URL} component={Home} />
+          <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
           <PrivateRoute component={Error404Route} />
         </Switch>
       </>

@@ -87,6 +87,8 @@ function error(data, title, timeout, withCross, centerPosition) {
       ? data
       : dataType === "object" && data.statusText
       ? data.statusText
+      : dataType === "object" && data.message
+      ? data.message
       : "";
 
   return notify("error", message, title, timeout, withCross, centerPosition);

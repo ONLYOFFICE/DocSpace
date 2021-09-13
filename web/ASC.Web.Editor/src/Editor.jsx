@@ -250,7 +250,7 @@ const Editor = () => {
         try {
           fileInfo = await getFileInfo(fileId);
 
-          if (url.indexOf("#message/")) {
+          if (url.indexOf("#message/") > -1) {
             const needConvert = canConvert(fileInfo.fileExst);
 
             if (needConvert) {
@@ -404,7 +404,7 @@ const Editor = () => {
         goback: goBack,
       };
 
-      if (personal && fileInfo && user && user.id !== fileInfo.createdBy.id) {
+      if (personal && !fileInfo) {
         //TODO: add conditions for SaaS
         config.document.info.favorite = null;
       }

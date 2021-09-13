@@ -35,7 +35,7 @@ using NLog.Extensions.Logging;
 namespace ASC.Api.Core
 {
     public abstract class BaseStartup
-{
+    {
         public IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
         public virtual JsonConverter[] Converters { get; }
@@ -59,7 +59,7 @@ namespace ASC.Api.Core
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
 
-            if(AddAndUseSession)
+            if (AddAndUseSession)
                 services.AddSession();
 
             DIHelper.Configure(services);
@@ -88,6 +88,7 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<ProductSecurityFilter>();
             DIHelper.TryAdd<TenantStatusFilter>();
             DIHelper.TryAdd<ConfirmAuthHandler>();
+            DIHelper.TryAdd<CookieAuthHandler>();
 
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 

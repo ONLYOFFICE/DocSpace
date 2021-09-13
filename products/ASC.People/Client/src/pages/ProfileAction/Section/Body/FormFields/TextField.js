@@ -25,6 +25,7 @@ class TextField extends React.Component {
       tooltipContent,
       helpButtonHeaderContent,
       maxLength,
+      maxLabelWidth,
     } = this.props;
 
     return (
@@ -34,6 +35,7 @@ class TextField extends React.Component {
         labelText={labelText}
         tooltipContent={tooltipContent}
         helpButtonHeaderContent={helpButtonHeaderContent}
+        maxLabelWidth={maxLabelWidth}
       >
         <TextInput
           name={inputName}

@@ -16,9 +16,11 @@ import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
+  ${NoUserSelect}
 `;
 
 const InfoItem = styled.div`
@@ -414,7 +416,7 @@ export default withRouter(
       setIsLoading,
       isLoading,
       updateProfileCulture,
-      personal: auth.settingsStore.personal
+      personal: auth.settingsStore.personal,
     };
   })(
     observer(

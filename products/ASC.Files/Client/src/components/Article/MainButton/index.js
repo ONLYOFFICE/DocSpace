@@ -49,7 +49,7 @@ class ArticleMainButtonContent extends React.Component {
 
   onFileChange = (e) => {
     const { startUpload, t } = this.props;
-    this.goToHomePage();
+    //this.goToHomePage();
     startUpload(e.target.files, null, t);
   };
 
@@ -171,9 +171,7 @@ export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
 })(
   withRouter(
     withTranslation(["Article", "Common"])(
-      withLoader(observer(ArticleMainButtonContent))(
-        <Loaders.Rectangle width="217px" />
-      )
+      withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
     )
   )
 );

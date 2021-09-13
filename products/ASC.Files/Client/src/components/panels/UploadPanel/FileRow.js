@@ -81,6 +81,8 @@ const FileRow = (props) => {
     ext,
     name,
     isPersonal,
+    setMediaViewerData,
+    setUploadPanelVisible,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -92,11 +94,12 @@ const FileRow = (props) => {
       : cancelCurrentUpload(id);
   };
 
-  // const onMediaClick = (id) => {
-  //   console.log("id", id);
-  //   const item = { visible: true, id: id };
-  //   this.props.setMediaViewerData(item);
-  // };
+  const onMediaClick = (id) => {
+    console.log("id", id);
+    const item = { visible: true, id: id };
+    setMediaViewerData(item);
+    setUploadPanelVisible(false);
+  };
 
   const onCancelClick = !item.inConversion
     ? { onClick: onCancelCurrentUpload }
@@ -117,15 +120,14 @@ const FileRow = (props) => {
           item.action !== "convert" &&
           item.action !== "converted" ? (
             isMedia ? (
-              <Text
+              <Link
                 fontWeight="600"
                 color={item.error && "#A3A9AE"}
                 truncate
-                // MediaViewer doesn't work
-                /*onClick={() => onMediaClick(item.fileId)}*/
+                onClick={() => onMediaClick(item.fileId)}
               >
                 {name}
-              </Text>
+              </Link>
             ) : (
               <Link
                 fontWeight="600"
@@ -210,7 +212,10 @@ const FileRow = (props) => {
 };
 
 export default inject(
-  ({ auth, filesStore, formatsStore, uploadDataStore }, { item }) => {
+  (
+    { auth, filesStore, formatsStore, uploadDataStore, mediaViewerDataStore },
+    { item }
+  ) => {
     let ext;
     let name;
     let splitted;
@@ -231,6 +236,7 @@ export default inject(
       primaryProgressDataStore,
       cancelCurrentUpload,
       cancelCurrentFileConversion,
+      setUploadPanelVisible,
     } = uploadDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
     const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
@@ -242,6 +248,8 @@ export default inject(
       file && loadingFile.uniqueId === item.uniqueId
         ? loadingFile.percent
         : null;
+
+    const { setMediaViewerData } = mediaViewerDataStore;
 
     return {
       isPersonal: personal,
@@ -255,6 +263,8 @@ export default inject(
 
       cancelCurrentUpload,
       cancelCurrentFileConversion,
+      setMediaViewerData,
+      setUploadPanelVisible,
     };
   }
 )(withTranslation("UploadPanel")(observer(FileRow)));
