@@ -97,6 +97,18 @@ const StyledTile = styled.div`
         background-color: #efefb2;
       }
     `};
+
+  .checkbox {
+    opacity: ${(props) => (props.checked ? 1 : 0)};
+    flex: 0 0 16px;
+    margin-right: 4px;
+  }
+
+  :hover {
+    .checkbox {
+      opacity: 1;
+    }
+  }
 `;
 
 const StyledFileTileTop = styled.div`
@@ -155,12 +167,6 @@ const StyledContent = styled.div`
   }
 `;
 
-const StyledCheckbox = styled.div`
-  opacity: ${(props) => (props.checkboxVisible ? 1 : 0)};
-  flex: 0 0 16px;
-  margin-right: -4px;
-`;
-
 const StyledElement = styled.div`
   flex: 0 0 auto;
   display: flex;
@@ -189,7 +195,6 @@ class Tile extends React.PureComponent {
 
     this.state = {
       errorLoadSrc: false,
-      checkboxVisible: false,
     };
 
     this.cm = React.createRef();
@@ -243,7 +248,6 @@ class Tile extends React.PureComponent {
       item,
     } = this.props;
     const { isFolder, id, fileExst } = item;
-    const { checkboxVisible } = this.state;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -274,35 +278,25 @@ class Tile extends React.PureComponent {
 
     const icon = this.getIconFile();
 
-    const onTileEnter = () => {
-      this.setState({ checkboxVisible: true });
-    };
-
-    const onTileLeave = () => {
-      if (!checked) this.setState({ checkboxVisible: false });
-    };
-
     return (
       <StyledTile
         ref={this.tile}
         {...this.props}
         onContextMenu={onContextMenu}
-        onMouseEnter={onTileEnter}
-        onMouseLeave={onTileLeave}
         dragging={dragging && isFolder}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
+        checked={checked}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderCheckbox && (
-              <StyledCheckbox checkboxVisible={checkboxVisible}>
-                <Checkbox
-                  isChecked={checked}
-                  isIndeterminate={indeterminate}
-                  onChange={this.changeCheckbox}
-                />
-              </StyledCheckbox>
+              <Checkbox
+                className="checkbox"
+                isChecked={checked}
+                isIndeterminate={indeterminate}
+                onChange={this.changeCheckbox}
+              />
             )}
             {renderElement && !(isFolder || (!fileExst && id === -1)) && (
               <StyledElement>{element}</StyledElement>
@@ -333,13 +327,12 @@ class Tile extends React.PureComponent {
           <>
             <StyledFileTileTop>
               {renderCheckbox && (
-                <StyledCheckbox checkboxVisible={checkboxVisible}>
-                  <Checkbox
-                    isChecked={checked}
-                    isIndeterminate={indeterminate}
-                    onChange={this.changeCheckbox}
-                  />
-                </StyledCheckbox>
+                <Checkbox
+                  className="checkbox"
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={this.changeCheckbox}
+                />
               )}
               {icon}
             </StyledFileTileTop>

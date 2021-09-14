@@ -594,8 +594,17 @@ class FilesActionStore {
 
     const { selection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
-    const { isShareFolder, isCommonFolder } = this.treeFoldersStore;
-    const isCopy = isShareFolder || (!this.authStore.isAdmin && isCommonFolder);
+    const {
+      isShareFolder,
+      isCommonFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.treeFoldersStore;
+    const isCopy =
+      isShareFolder ||
+      isFavoritesFolder ||
+      isRecentFolder ||
+      (!this.authStore.isAdmin && isCommonFolder);
 
     const operationData = {
       destFolderId,
