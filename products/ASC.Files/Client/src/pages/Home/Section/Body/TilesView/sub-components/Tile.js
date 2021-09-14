@@ -104,9 +104,32 @@ const StyledTile = styled.div`
     margin-right: 4px;
   }
 
+  .file-checkbox {
+    display: ${(props) => (props.checked ? "flex" : "none")};
+    flex: 0 0 16px;
+    margin-right: 4px;
+  }
+
+  .file-icon {
+    display: ${(props) => (props.checked ? "none" : "flex")};
+    flex: 0 0 auto;
+    margin-right: 4px;
+    user-select: none;
+    margin-top: 3px;
+
+    height: 32px;
+    width: 32px;
+  }
+
   :hover {
     .checkbox {
       opacity: 1;
+    }
+    .file-checkbox {
+      display: flex;
+    }
+    .file-icon {
+      display: none;
     }
   }
 `;
@@ -325,19 +348,17 @@ class Tile extends React.PureComponent {
           </>
         ) : (
           <>
-            <StyledFileTileTop>
-              {renderCheckbox && (
+            <StyledFileTileTop>{icon}</StyledFileTileTop>
+            <StyledFileTileBottom>
+              <div className="file-icon_container">
+                <div className="file-icon">{element}</div>
                 <Checkbox
-                  className="checkbox"
+                  className="file-checkbox"
                   isChecked={checked}
                   isIndeterminate={indeterminate}
                   onChange={this.changeCheckbox}
                 />
-              )}
-              {icon}
-            </StyledFileTileTop>
-            <StyledFileTileBottom>
-              <StyledElement>{element}</StyledElement>
+              </div>
               <StyledContent
                 className="styled-content"
                 isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
