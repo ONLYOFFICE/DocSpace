@@ -294,7 +294,7 @@ namespace ASC.Api.Settings
 
         [Read("", Check = false)]
         [AllowAnonymous]
-        public SettingsWrapper GetSettings()
+        public SettingsWrapper GetSettings(bool? withpassword)
         {
             var settings = new SettingsWrapper
             {
@@ -349,7 +349,10 @@ namespace ASC.Api.Settings
                 settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
+            }
 
+            if (!AuthContext.IsAuthenticated || (withpassword.HasValue && withpassword.Value))
+            {
                 settings.PasswordHash = PasswordHasher;
             }
 

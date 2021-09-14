@@ -14,6 +14,8 @@ const commonStyles = css`
   flex-grow: 1;
   height: 100%;
 
+  -webkit-user-select: none;
+
   .section-wrapper-content {
     flex: 1 0 auto;
     padding: 17px 7px 16px 24px;
