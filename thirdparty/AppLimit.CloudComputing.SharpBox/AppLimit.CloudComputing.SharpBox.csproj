@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProductVersion>9.0.30729</ProductVersion>
-    <TargetFrameworks>net5.0;net4.8</TargetFrameworks>
+    <TargetFrameworks>net4.8;net5.0</TargetFrameworks>
     <FileUpgradeFlags />
     <UpgradeBackupLocation />
     <AssemblyTitle>AppLimit.CloudComputing.SharpBox</AssemblyTitle>
@@ -11,10 +11,10 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <WarningsAsErrors></WarningsAsErrors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.453</Version>
+    <Version>1.1.0.454</Version>
     <PackageLicenseExpression></PackageLicenseExpression>
-    <AssemblyVersion>1.1.0.453</AssemblyVersion>
-    <FileVersion>1.1.0.453</FileVersion>
+    <AssemblyVersion>1.1.0.454</AssemblyVersion>
+    <FileVersion>1.1.0.454</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
