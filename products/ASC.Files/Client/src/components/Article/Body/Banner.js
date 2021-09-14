@@ -51,27 +51,31 @@ const bannerHOC = (WrappedComponent) => (props) => {
       index++;
     }
 
-    const translationUrl = await loadLanguagePath();
-    setBannerTranslation(translationUrl);
+    try {
+      const translationUrl = await loadLanguagePath();
+      setBannerTranslation(translationUrl);
 
-    i18nConfig.use(Backend).init({
-      lng: localStorage.getItem(LANGUAGE) || "en",
-      fallbackLng: "en",
-      load: "all",
-      debug: false,
-      defaultNS: "",
+      i18nConfig.use(Backend).init({
+        lng: localStorage.getItem(LANGUAGE) || "en",
+        fallbackLng: "en",
+        load: "all",
+        debug: false,
+        defaultNS: "",
 
-      backend: {
-        loadPath: function () {
-          return translationUrl;
+        backend: {
+          loadPath: function () {
+            return translationUrl;
+          },
         },
-      },
-    });
+      });
 
-    const image = await FirebaseHelper.getCampaignsImages(
-      campaign.toLowerCase()
-    );
-    setBannerImage(image);
+      const image = await FirebaseHelper.getCampaignsImages(
+        campaign.toLowerCase()
+      );
+      setBannerImage(image);
+    } catch (e) {
+      console.error(e);
+    }
 
     localStorage.setItem("bannerIndex", index);
   };
