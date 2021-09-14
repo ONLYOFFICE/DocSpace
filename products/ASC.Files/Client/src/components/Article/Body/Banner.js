@@ -24,10 +24,18 @@ const loadLanguagePath = async () => {
   const index = Number(localStorage.getItem("bannerIndex") || 0);
   const campaign = campaigns[index];
 
-  translationUrl = await window.firebaseHelper.getCampaignsTranslations(
-    campaign,
-    language
-  );
+  try {
+    translationUrl = await window.firebaseHelper.getCampaignsTranslations(
+      campaign,
+      language
+    );
+  } catch (e) {
+    translationUrl = await window.firebaseHelper.getCampaignsTranslations(
+      campaign,
+      "en"
+    );
+    //console.error(e);
+  }
   return translationUrl;
 };
 
