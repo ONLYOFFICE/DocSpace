@@ -415,6 +415,7 @@ class FilesStore {
       isShare,
       isFavoritesFolder,
       isShareFolder,
+      isMy,
     } = this.treeFoldersStore;
 
     const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
@@ -423,6 +424,7 @@ class FilesStore {
       item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
+    const isMyFolder = isMy(item.rootFolderType);
 
     const { personal } = this.settingsStore;
     const { isDesktopClient } = this.authStore.settingsStore;
@@ -653,7 +655,13 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["mark-read"]);
       }
 
-      if (!(isRecentFolder || isFavoritesFolder)) {
+      if (
+        !(
+          isRecentFolder ||
+          isFavoritesFolder ||
+          (isMyFolder && this.filter.filterType)
+        )
+      ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
       }
 
