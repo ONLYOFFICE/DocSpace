@@ -74,7 +74,8 @@ const bannerHOC = (WrappedComponent) => (props) => {
       );
       setBannerImage(image);
     } catch (e) {
-      console.error(e);
+      updateBanner();
+      //console.error(e);
     }
 
     localStorage.setItem("bannerIndex", index);
