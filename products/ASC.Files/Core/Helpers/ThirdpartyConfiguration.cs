@@ -59,9 +59,13 @@ namespace ASC.Web.Files.Helpers
             GoogleLoginProvider = new Lazy<GoogleLoginProvider>(() => consumerFactory.Get<GoogleLoginProvider>());
         }
 
+        private IEnumerable<string> thirdPartyProviders;
         public IEnumerable<string> ThirdPartyProviders
         {
-            get { return (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList(); }
+            get
+            {
+                return thirdPartyProviders ??= (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList();
+            }
         }
 
         public bool SupportInclusion(IDaoFactory daoFactory)
