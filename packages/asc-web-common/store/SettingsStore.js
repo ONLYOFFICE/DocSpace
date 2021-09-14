@@ -150,6 +150,12 @@ class SettingsStore {
             localStorage.setItem(LANGUAGE, newSettings[key]);
           }
         }
+        if (key === "personal") {
+          window.AppServer = {
+            ...window.AppServer,
+            personal: newSettings[key],
+          };
+        }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
       }
