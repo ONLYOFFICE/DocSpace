@@ -450,6 +450,7 @@ class FilesStore {
         "open-location",
         "mark-read",
         "mark-as-favorite",
+        "remove-from-favorites",
         "download",
         "download-as",
         "convert",
@@ -460,7 +461,6 @@ class FilesStore {
         "restore",
         "rename",
         "separator2",
-        "remove-from-favorites",
         "unsubscribe",
         "delete",
       ];
