@@ -7,11 +7,13 @@ const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const sharedDeps = require("@appserver/common/constants/sharedDependencies");
+
 const { proxyURL } = AppServerConfig;
 
 const path = require("path");
 const pkg = require("./package.json");
-const deps = pkg.dependencies;
+const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; // combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
 
@@ -21,10 +23,13 @@ const config = {
   mode: "development",
 
   devServer: {
-    publicPath: homepage,
-
-    contentBase: [path.join(__dirname, "dist")],
-    contentBasePublicPath: homepage,
+    devMiddleware: {
+      publicPath: homepage,
+    },
+    static: {
+      directory: path.join(__dirname, "dist"),
+      publicPath: homepage,
+    },
     port: 5013,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
@@ -32,14 +37,7 @@ const config = {
       disableDotRule: true,
       index: homepage,
     },
-    // proxy: [
-    //   {
-    //     context: "/api",
-    //     target: "http://localhost:8092",
-    //   },
-    // ],
     hot: false,
-    hotOnly: false,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
@@ -108,7 +106,23 @@ const config = {
           // Creates `style` nodes from JS strings
           "style-loader",
           // Translates CSS into CommonJS
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              url: {
+                filter: (url, resourcePath) => {
+                  // resourcePath - path to css file
+
+                  // Don't handle `/static` urls
+                  if (url.startsWith("/static") || url.startsWith("data:")) {
+                    return false;
+                  }
+
+                  return true;
+                },
+              },
+            },
+          },
           // Compiles Sass to CSS
           "sass-loader",
         ],
@@ -152,14 +166,7 @@ const config = {
       },
       shared: {
         ...deps,
-        react: {
-          singleton: true,
-          requiredVersion: deps.react,
-        },
-        "react-dom": {
-          singleton: true,
-          requiredVersion: deps["react-dom"],
-        },
+        ...sharedDeps,
       },
     }),
     new ExternalTemplateRemotesPlugin(),
