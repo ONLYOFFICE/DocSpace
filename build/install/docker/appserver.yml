@@ -187,6 +187,14 @@ services:
     image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
     container_name: ${STUDIO_HOST}
    
+  onlyoffice-ssoauth:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-ssoauth:${SRV_VERSION}"
+    container_name: ${SSOAUTH_HOST}
+    expose:
+    - ${SERVICE_PORT}
+    - "9834"
+
   onlyoffice-proxy:
     image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
     container_name: ${PROXY_HOST}
@@ -216,6 +224,7 @@ services:
       - onlyoffice-urlshortener
       - onlyoffice-api
       - onlyoffice-studio
+      - onlyoffice-ssoauth
     environment:
       - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
       - SERVICE_BACKUP=${SERVICE_BACKUP}
@@ -235,7 +244,8 @@ services:
       - SERVICE_THUMBNAILS=${SERVICE_THUMBNAILS}
       - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
       - SERVICE_API=${SERVICE_API}
-      - SERVICE_STUDIO=${SERVICE_STUDIO}  
+      - SERVICE_STUDIO=${SERVICE_STUDIO}
+      - SERVICE_SSOAUTH=${SERVICE_SSOAUTH}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:

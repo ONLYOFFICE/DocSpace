@@ -8,13 +8,18 @@ class FirebaseHelper {
     this.firebaseConfig = settings;
 
     if (!this.isEnabled) return;
-    firebase.initializeApp(this.config);
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(this.config);
+    } else {
+      firebase.app();
+    }
 
     this.remoteConfig = firebase.remoteConfig();
 
     this.remoteConfig.settings = {
       fetchTimeMillis: 60000,
-      minimumFetchIntervalMillis: 1,
+      minimumFetchIntervalMillis: 60000,
     };
 
     this.remoteConfig.defaultConfig = {

@@ -137,7 +137,6 @@ namespace ASC.Files.Core.Data
             var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
             return ToFile(
                     FromQueryWithShared(query)
-                    .Take(1)
                     .SingleOrDefault());
         }
 
@@ -145,7 +144,6 @@ namespace ASC.Files.Core.Data
         {
             var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
             return ToFile(FromQueryWithShared(query)
-                        .Take(1)
                         .SingleOrDefault());
         }
 
@@ -172,7 +170,7 @@ namespace ASC.Files.Core.Data
 
             query = query.OrderByDescending(r => r.Version);
 
-            return ToFile(FromQueryWithShared(query).Take(1).SingleOrDefault());
+            return ToFile(FromQueryWithShared(query).SingleOrDefault());
         }
 
         public List<File<int>> GetFileHistory(int fileId)
@@ -552,7 +550,6 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 toUpdate = FilesDbContext.Files
-                    .Take(1)
                     .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
 
                 toUpdate.Version = file.Version;
@@ -630,7 +627,6 @@ namespace ASC.Files.Core.Data
                 || file.Version <= 1) return;
 
             var toDelete = Query(FilesDbContext.Files)
-                .Take(1)
                 .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version);
 
             if (toDelete != null)
@@ -640,7 +636,6 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
 
             var toUpdate = Query(FilesDbContext.Files)
-                .Take(1)
                 .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version - 1);
 
             toUpdate.CurrentVersion = true;
@@ -747,6 +742,8 @@ namespace ASC.Files.Core.Data
 
             List<DbFile> toUpdate;
 
+            var trashId = GlobalFolder.GetFolderTrash<int>(DaoFactory);
+
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
                 var fromFolders = Query(FilesDbContext.Files)
@@ -763,7 +760,7 @@ namespace ASC.Files.Core.Data
                 {
                     f.FolderId = toFolderId;
 
-                    if (GlobalFolder.GetFolderTrash<int>(DaoFactory).Equals(toFolderId))
+                    if (trashId.Equals(toFolderId))
                     {
                         f.ModifiedBy = AuthContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;
@@ -872,7 +869,6 @@ namespace ASC.Files.Core.Data
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
                 .Where(r => r.CurrentVersion)
-                .Take(1)
                 .FirstOrDefault();
 
             toUpdate.Title = newTitle;
@@ -894,7 +890,6 @@ namespace ASC.Files.Core.Data
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version == fileVersion)
-                .Take(1)
                 .FirstOrDefault();
 
             toUpdate.Comment = comment;
@@ -927,7 +922,6 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version == fileVersion)
                 .Select(r => r.VersionGroup)
-                .Take(1)
                 .FirstOrDefault();
 
             var toUpdate = Query(FilesDbContext.Files)

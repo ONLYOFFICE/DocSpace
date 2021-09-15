@@ -172,7 +172,7 @@ namespace ASC.Web.CRM.Classes
                     throw new Exception("Is not configure. Please, call configure method.");
 
                 _tenantManager.SetCurrentTenant(_tenantID);
-                _securityContext.AuthenticateMe(_author);
+                _securityContext.AuthenticateMeWithoutCookie(_author);
 
                 var userCulture = _userManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture();
 

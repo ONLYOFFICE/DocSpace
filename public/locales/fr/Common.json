@@ -71,5 +71,7 @@
   "Version": "Version",
   "View": "Afficher",
   "ViewWeb": "Voir la version web",
-  "Warning": "Attention"
+  "Warning": "Attention",
+  "Name": "Nom",
+  "Phone": "Téléphone"
 }

@@ -493,7 +493,7 @@ namespace ASC.Web.Api.Controllers
                     {
                         try
                         {
-                            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                            SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
                             UserManager.DeleteUser(userInfo.ID);
                             userInfo = Constants.LostUser;
                         }
@@ -565,7 +565,7 @@ namespace ASC.Web.Api.Controllers
 
                 try
                 {
-                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
                     userInfo = UserManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword());
                 }
                 finally

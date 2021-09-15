@@ -195,7 +195,7 @@ namespace ASC.Web.Files.Utils
 
         private FileTracker GetTracker<T>(T fileId)
         {
-            if (!fileId.Equals(default(T)))
+            if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
             {
                 return Cache.Get<FileTracker>(TRACKER + fileId);
             }
@@ -204,7 +204,7 @@ namespace ASC.Web.Files.Utils
 
         private void SetTracker<T>(T fileId, FileTracker tracker)
         {
-            if (!fileId.Equals(default(T)))
+            if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
             {
                 if (tracker != null)
                 {

@@ -18,8 +18,9 @@ export default function withBadges(WrappedComponent) {
       const { item, lockFileAction, isAdmin } = this.props;
       const { locked, id, access } = item;
 
-      if (!isAdmin || !access === 0) return;
-      lockFileAction(id, !locked).catch((err) => toastr.error(err));
+      if (isAdmin || access === 0)
+        return lockFileAction(id, !locked).catch((err) => toastr.error(err));
+      return;
     };
 
     onClickFavorite = () => {

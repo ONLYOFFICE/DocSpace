@@ -44,8 +44,7 @@ class SelectionStore {
   };
 
   selectUser = (user) => {
-    const u = user;
-    return this.selection.push(u);
+    return this.selection.push(user);
   };
 
   deselectUser = (user) => {

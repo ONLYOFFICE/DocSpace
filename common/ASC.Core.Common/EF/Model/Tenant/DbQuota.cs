@@ -14,7 +14,6 @@ namespace ASC.Core.Common.EF
         public int ActiveUsers { get; set; }
         public string Features { get; set; }
         public decimal Price { get; set; }
-        public decimal Price2 { get; set; }
         public string AvangateId { get; set; }
         public bool Visible { get; set; }
         public override object[] GetKeys()
@@ -39,8 +38,7 @@ namespace ASC.Core.Common.EF
                         MaxTotalSize = 10995116277760, 
                         ActiveUsers = 10000, 
                         Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore", 
-                        Price = decimal.Parse("0,00"), 
-                        Price2 = decimal.Parse("0,00"), 
+                        Price = decimal.Parse("0,00"),
                         AvangateId = "0", Visible = false 
                     });
 
@@ -92,10 +90,6 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("price")
                     .HasColumnType("decimal(10,2)");
 
-                entity.Property(e => e.Price2)
-                    .HasColumnName("price2")
-                    .HasColumnType("decimal(10,2)");
-
                 entity.Property(e => e.Visible).HasColumnName("visible");
             });
         }
@@ -139,11 +133,6 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Price)
                     .HasColumnName("price")
-                    .HasColumnType("numeric(10,2)")
-                    .HasDefaultValueSql("0.00");
-
-                entity.Property(e => e.Price2)
-                    .HasColumnName("price2")
                     .HasColumnType("numeric(10,2)")
                     .HasDefaultValueSql("0.00");
 

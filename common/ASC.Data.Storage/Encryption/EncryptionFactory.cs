@@ -24,31 +24,33 @@
 */
 
 
+using System;
+
 using ASC.Common;
 using ASC.Core.Encryption;
 
-using Autofac;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Encryption
 {
     [Singletone]
     public class EncryptionFactory
     {
-        private ILifetimeScope Container { get; }
+        private IServiceProvider ServiceProvider { get; }
 
-        public EncryptionFactory(ILifetimeScope container)
+        public EncryptionFactory(IServiceProvider serviceProvider)
         {
-            Container = container;
+            ServiceProvider = serviceProvider;
         }
 
         public ICrypt GetCrypt(string storageName, EncryptionSettings encryptionSettings)
         {
             ICrypt result = null;
 
-            using var scope = Container.BeginLifetimeScope();
+            using var scope = ServiceProvider.CreateScope();
             if (scope != null)
             {
-                result = scope.Resolve<ICrypt>();
+                result = scope.ServiceProvider.GetService<ICrypt>();
             }
 
             result ??= new FakeCrypt();

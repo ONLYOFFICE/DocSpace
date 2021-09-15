@@ -27,22 +27,30 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.ThumbnailBuilder
 {
-    internal class Worker
+    [Singletone]
+    public class Worker
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly CancellationToken cancellationToken;
+        private CancellationToken cancellationToken;
+        private readonly ThumbnailSettings thumbnailSettings;
+        private readonly ILog logger;
 
         private Timer timer;
 
-        public Worker(IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public Worker(
+            IServiceProvider serviceProvider,
+            IOptionsMonitor<ILog> options,
+            ThumbnailSettings thumbnailSettings)
         {
             this.serviceProvider = serviceProvider;
-            this.cancellationToken = cancellationToken;
+            this.thumbnailSettings = thumbnailSettings;
+            logger = options.Get("ASC.Files.ThumbnailBuilder");
         }
 
-        public void Start()
+        public void Start(CancellationToken cancellationToken)
         {
             timer = new Timer(Procedure, null, 0, Timeout.Infinite);
+            this.cancellationToken = cancellationToken;
         }
 
         public void Stop()
@@ -58,39 +66,40 @@ namespace ASC.Files.ThumbnailBuilder
 
         private void Procedure(object _)
         {
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
+            logger.Trace("Procedure: Start.");
+
             if (cancellationToken.IsCancellationRequested)
             {
                 Stop();
                 return;
             }
 
-            using var scope = serviceProvider.CreateScope();
-            var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
-            var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Files.ThumbnailBuilder");
-            var builder = scope.ServiceProvider.GetService<BuilderQueue<int>>();
-            var config = scope.ServiceProvider.GetService<ThumbnailSettings>();
-
-            //            var configSection = (ConfigSection)ConfigurationManager.GetSection("thumbnailBuilder") ?? new ConfigSection();
+            //var configSection = (ConfigSection)ConfigurationManager.GetSection("thumbnailBuilder") ?? new ConfigSection();
             //CommonLinkUtility.Initialize(configSection.ServerRoot, false);
-            timer.Change(Timeout.Infinite, Timeout.Infinite);
-            logger.Trace("Procedure: Start.");
+
 
             var filesWithoutThumbnails = Launcher.Queue.Select(pair => pair.Value).ToList();
 
             if (!filesWithoutThumbnails.Any())
             {
-                logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", config.LaunchFrequency);
-                timer.Change(TimeSpan.FromSeconds(config.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
+                logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", thumbnailSettings.LaunchFrequency);
+                timer.Change(TimeSpan.FromSeconds(thumbnailSettings.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
                 return;
             }
 
-            var premiumTenants = fileDataProvider.GetPremiumTenants();
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
+                var builder = scope.ServiceProvider.GetService<BuilderQueue<int>>();
+                var premiumTenants = fileDataProvider.GetPremiumTenants();
 
-            filesWithoutThumbnails = filesWithoutThumbnails
-                .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
-                .ToList();
+                filesWithoutThumbnails = filesWithoutThumbnails
+                    .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
+                    .ToList();
 
-            builder.BuildThumbnails(filesWithoutThumbnails);
+                builder.BuildThumbnails(filesWithoutThumbnails);
+            }
 
             logger.Trace("Procedure: Finish.");
             timer.Change(0, Timeout.Infinite);

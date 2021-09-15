@@ -58,6 +58,7 @@ namespace ASC.Files.Service
                         .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddJsonFile("elastic.json", true)
@@ -89,6 +90,7 @@ namespace ASC.Files.Service
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

@@ -57,9 +57,9 @@ const StyledElement = styled.div`
   .react-svg-icon svg {
     margin-top: 4px;
   }
-  .react-svg-icon.is-edit svg {
+  /* .react-svg-icon.is-edit svg {
     margin: 4px 0 0 28px;
-  }
+  } */
 `;
 StyledElement.defaultProps = { theme: Base };
 

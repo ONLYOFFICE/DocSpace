@@ -30,6 +30,9 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Api.Models;
+using ASC.Web.Files.Utils;
+
+using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Api.Documents
 {
@@ -127,6 +130,11 @@ namespace ASC.Api.Documents
         /// </summary>
         public T Id { get; set; }
 
+        public T RootFolderId { get; set; }
+
+        public bool CanShare { get; set; }
+
+        public bool CanEdit { get; set; }
 
         /// <summary>
         /// 
@@ -136,6 +144,7 @@ namespace ASC.Api.Documents
             : base(entry, employeeWraperHelper, apiDateTimeHelper)
         {
             Id = entry.ID;
+            RootFolderId = entry.RootFolderId;
         }
 
         /// <summary>
@@ -152,14 +161,19 @@ namespace ASC.Api.Documents
     {
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
         private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public FileSharingHelper FileSharingHelper { get; }
+        public FileSecurity FileSecurity { get; }
 
         public FileEntryWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
-            EmployeeWraperHelper employeeWraperHelper
+            EmployeeWraperHelper employeeWraperHelper,
+            FileSharingHelper fileSharingHelper, FileSecurity fileSecurity
             )
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
+            FileSharingHelper = fileSharingHelper;
+            FileSecurity = fileSecurity;
         }
 
         protected internal T Get<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
@@ -175,9 +189,12 @@ namespace ASC.Api.Documents
                 Updated = ApiDateTimeHelper.Get(entry.ModifiedOn),
                 UpdatedBy = EmployeeWraperHelper.Get(entry.ModifiedBy),
                 RootFolderType = entry.RootFolderType,
+                RootFolderId = entry.RootFolderId,
                 ProviderItem = entry.ProviderEntry.NullIfDefault(),
                 ProviderKey = entry.ProviderKey,
-                ProviderId = entry.ProviderId.NullIfDefault()
+                ProviderId = entry.ProviderId.NullIfDefault(),
+                CanShare = FileSharingHelper.CanSetAccess(entry),
+                CanEdit = FileSecurity.CanEdit(entry)
             };
         }
     }

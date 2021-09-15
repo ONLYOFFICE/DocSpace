@@ -15,6 +15,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
+import { openDocEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
 
@@ -30,7 +31,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = localStorage.getItem("viewAs") || "row";
+  viewAs = localStorage.getItem("viewAs") || "table";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
@@ -266,7 +267,7 @@ class FilesStore {
     filterData.folder = folderId;
     const {
       treeFolders,
-      privacyFolder,
+      //privacyFolder,
       setSelectedNode,
       getSubfolders,
     } = this.treeFoldersStore;
@@ -404,6 +405,8 @@ class FilesStore {
       isShareFolder,
     } = this.treeFoldersStore;
 
+    const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
+
     const { isRootFolder } = this.selectedFolderStore;
 
     const isThirdPartyFolder = item.providerKey && isRootFolder;
@@ -414,8 +417,6 @@ class FilesStore {
     const { isDesktopClient, personal } = this.settingsStore;
 
     if (isFile) {
-      const isNotSupported = [0, 1].includes(item.fileType); //TODO: maybe dirty
-
       let fileOptions = [
         //"open",
         "edit",
@@ -460,7 +461,7 @@ class FilesStore {
           "unsubscribe",
         ]);
 
-        if (!this.isWebEditSelected) {
+        if (!this.isWebEditSelected && !canViewedDocs(item.fileExst)) {
           fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
         }
       }
@@ -680,12 +681,20 @@ class FilesStore {
         );
       }
 
-      if (isNotSupported) {
+      if (
+        !canWebEdit(item.fileExst) &&
+        !canViewedDocs(item.fileExst) &&
+        !fileOptions.includes("view")
+      ) {
         fileOptions = this.removeOptions(fileOptions, [
           "edit",
           "preview",
           "separator0",
         ]);
+      }
+
+      if (!canWebEdit(item.fileExst) && canViewedDocs(item.fileExst)) {
+        fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
 
       return fileOptions;
@@ -945,7 +954,7 @@ class FilesStore {
       case FolderType.USER:
         return true;
       case FolderType.SHARE:
-        return false;
+        return true;
       case FolderType.COMMON:
         return this.authStore.isAdmin;
       case FolderType.TRASH:
@@ -973,19 +982,17 @@ class FilesStore {
     const { getIcon } = this.formatsStore.iconFormatsStore;
 
     if (this.selection.length === 1) {
-      const icon = getIcon(
+      return getIcon(
         24,
         this.selection[0].fileExst,
         this.selection[0].providerKey
       );
-
-      return icon;
     }
     return null;
   }
 
   get isHeaderVisible() {
-    return this.selection.length > 0 || this.selected !== "close";
+    return this.selection.length > 0;
   }
 
   get isHeaderIndeterminate() {
@@ -1064,6 +1071,7 @@ class FilesStore {
         parentId,
         pureContentLength,
         rootFolderType,
+        rootFolderId,
         shared,
         title,
         updated,
@@ -1075,6 +1083,8 @@ class FilesStore {
         providerKey,
         thumbnailUrl,
         thumbnailStatus,
+        canShare,
+        canEdit,
       } = item;
 
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
@@ -1117,6 +1127,7 @@ class FilesStore {
         parentId,
         pureContentLength,
         rootFolderType,
+        rootFolderId,
         //selectedItem,
         shared,
         title,
@@ -1130,6 +1141,8 @@ class FilesStore {
         canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
+        canShare,
+        canEdit,
         thumbnailUrl,
         thumbnailStatus,
       };
@@ -1219,9 +1232,22 @@ class FilesStore {
     });
   }
 
+  get isViewedSelected() {
+    const { canViewedDocs } = this.formatsStore.docserviceStore;
+
+    return this.selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return canViewedDocs(selected.fileExst);
+    });
+  }
+
   get selectionTitle() {
     if (this.selection.length === 0) return null;
     return this.selection.find((el) => el.title).title;
+  }
+
+  get hasSelection() {
+    return !!this.selection.length;
   }
 
   getOptions = (selection, externalAccess = false) => {
@@ -1295,7 +1321,13 @@ class FilesStore {
     }
 
     //this.selected === "close" && this.setSelected("none");
-    this.setSelection(newSelection);
+
+    //need fo table view
+    const clearSelection = Object.values(
+      newSelection.reduce((item, n) => ((item[n.id] = n), item), {})
+    );
+
+    this.setSelection(clearSelection);
     //}
   };
 
@@ -1371,34 +1403,7 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    if (providerKey) {
-      tab
-        ? (tab.location = url)
-        : window.open(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              config.homepage,
-              `/doceditor?fileId=${id}`
-            ),
-            "_blank"
-          );
-    } else {
-      return this.addFileToRecentlyViewed(id)
-        .then(() => console.log("Pushed to recently viewed"))
-        .catch((e) => console.error(e))
-        .finally(
-          tab
-            ? (tab.location = url)
-            : window.open(
-                combineUrl(
-                  AppServerConfig.proxyURL,
-                  config.homepage,
-                  `/doceditor?fileId=${id}`
-                ),
-                "_blank"
-              )
-        );
-    }
+    return openDocEditor(id, providerKey, tab, url);
   };
 
   createThumbnails = () => {

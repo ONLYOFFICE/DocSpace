@@ -28,6 +28,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common.Utils;
 
 using Autofac.Extensions.DependencyInjection;
@@ -95,9 +96,11 @@ namespace ASC.Data.Storage.Encryption
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables();
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

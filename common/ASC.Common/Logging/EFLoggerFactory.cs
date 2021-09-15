@@ -6,17 +6,15 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Logging
 {
-    [Scope]
+    [Singletone]
     public class EFLoggerFactory : ILoggerFactory
     {
-        Dictionary<string, ILogger> Loggers { get; set; }
         Lazy<ILogger> Logger { get; set; }
         ILoggerProvider LoggerProvider { get; set; }
 
         public EFLoggerFactory(EFLoggerProvider loggerProvider)
         {
             LoggerProvider = loggerProvider;
-            Loggers = new Dictionary<string, ILogger>();
             Logger = new Lazy<ILogger>(() => LoggerProvider.CreateLogger(""));
         }
 
@@ -35,7 +33,7 @@ namespace ASC.Common.Logging
         }
     }
 
-    [Scope]
+    [Singletone]
     public class EFLoggerProvider : ILoggerProvider
     {
         private IOptionsMonitor<ILog> Option { get; }
@@ -89,39 +87,9 @@ namespace ASC.Common.Logging
                 //    break;
                 case 20101:
                     var keyValuePairs = state as IEnumerable<KeyValuePair<string, object>>;
-                    string commandText = null;
-                    string parameters = null;
-                    string elapsed = null;
-
-                    foreach (var kvp in keyValuePairs)
-                    {
-                        commandText = GetParam(kvp, "commandText", commandText);
-                        parameters = GetParam(kvp, "parameters", parameters);
-                        elapsed = GetParam(kvp, "elapsed", elapsed);
-                    }
-
-                    if (!string.IsNullOrEmpty(commandText))
-                    {
-                        CustomLogger.DebugWithProps("",
-                            new KeyValuePair<string, object>("duration", elapsed ?? ""),
-                            new KeyValuePair<string, object>("sql", RemoveWhiteSpaces(commandText)),
-                            new KeyValuePair<string, object>("sqlParams", parameters ?? "")
-                        );
-                    }
-
-                    static string GetParam(KeyValuePair<string, object> keyValuePair, string key, string currentVal)
-                    {
-                        return keyValuePair.Key == key ? keyValuePair.Value.ToString() : currentVal;
-                    }
+                    CustomLogger.DebugWithProps("", keyValuePairs);
                     break;
             }
-        }
-
-        private string RemoveWhiteSpaces(string str)
-        {
-            return !string.IsNullOrEmpty(str) ?
-                str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
-                string.Empty;
         }
     }
 }

@@ -270,16 +270,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
-      onAction: () => snackbarButtonClick(),
+      onAction: () => {
+        Snackbar.close();
+        localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
+      },
       opacity: 1,
     };
 
     Snackbar.show(barConfig);
-  };
-
-  const snackbarButtonClick = () => {
-    Snackbar.close();
-    localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
   };
 
   const fetchMaintenance = () => {

@@ -145,9 +145,9 @@ namespace ASC.Files.Core
         public T RootFolderId { get; set; }
 
         [JsonIgnore]
-        public string UniqID
+        public virtual string UniqID
         {
-            get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
+            get { return $"{GetType().Name.ToLower()}_{ID}"; }
         }
 
         public override bool Equals(object obj)

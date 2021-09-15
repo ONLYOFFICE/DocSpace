@@ -153,7 +153,7 @@ namespace ASC.Web.Studio.Core
             AvailableFileSize = GetAppSettings("web.available-file-size", 100L * 1024L * 1024L);
 
             TeamlabSiteRedirect = GetAppSettings("web.teamlab-site", string.Empty);
-            ChunkUploadSize = GetAppSettings("files.uploader.chunk-size", 5 * 1024 * 1024);
+            ChunkUploadSize = GetAppSettings("files:uploader:chunk-size", 10 * 1024 * 1024);
             ThirdPartyAuthEnabled = string.Equals(GetAppSettings("web.thirdparty-auth", "true"), "true");
             ThirdPartyBannerEnabled = string.Equals(GetAppSettings("web.thirdparty-banner", "false"), "true");
             NoTenantRedirectURL = GetAppSettings("web.notenant-url", "");
