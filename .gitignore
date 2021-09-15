@@ -16,4 +16,4 @@ Logs/
 .eslintcache
 build/deploy/
 build/install/win/*.exe
-!build/install/win/MySQL Installer Community 8.0.21 x64 Runner.exe
+!build/install/win/MySQL Installer Runner.exe
