@@ -317,7 +317,7 @@ namespace ASC.Web.Files.Services.WCFService
                 || parent.FolderType == FolderType.SHARE
                 || parent.RootFolderType == FolderType.Privacy;
 
-            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || 
+            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder ||
             (x is File<string> f1 && !FileConverter.IsConverting(f1) ||
              x is File<int> f2 && !FileConverter.IsConverting(f2)));
 
@@ -586,7 +586,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 fileWrapper.Title = UserControlsCommonResource.NewDocument + ".docx";
             }
-            
+
             var externalExt = false;
 
             var fileExt = !enableExternalExt ? FileUtility.GetInternalExtension(fileWrapper.Title) : FileUtility.GetFileExtension(fileWrapper.Title);
@@ -1426,6 +1426,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = DaoFactory.GetFolderDao<TFrom>();
             var fileDao = DaoFactory.GetFileDao<TFrom>();
             var destFolderDao = DaoFactory.GetFolderDao<TTo>();
+            var destFileDao = DaoFactory.GetFileDao<TTo>();
 
             var toFolder = destFolderDao.GetFolder(destFolderId);
             ErrorIf(toFolder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
@@ -1436,7 +1437,7 @@ namespace ASC.Web.Files.Services.WCFService
                 var file = fileDao.GetFile(id);
                 if (file != null
                     && !file.Encrypted
-                    && fileDao.IsExist(file.Title, toFolder.ID))
+                    && destFileDao.IsExist(file.Title, toFolder.ID))
                 {
                     checkedFiles.Add(id);
                 }
@@ -2290,7 +2291,7 @@ namespace ASC.Web.Files.Services.WCFService
                     BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 
-                foreach(var f in fileIds.Where(r=> r.ValueKind == JsonValueKind.Number))
+                foreach (var f in fileIds.Where(r => r.ValueKind == JsonValueKind.Number))
                 {
                     req.Files.Add(f.GetInt32());
                 }

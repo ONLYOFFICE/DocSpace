@@ -688,16 +688,16 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         [AllowAnonymous]
         [Read("file/{fileId}/openedit", Check = false)]
-        public Configuration<string> OpenEdit(string fileId, int version, string doc)
+        public Configuration<string> OpenEdit(string fileId, int version, string doc, bool view)
         {
-            return FilesControllerHelperString.OpenEdit(fileId, version, doc);
+            return FilesControllerHelperString.OpenEdit(fileId, version, doc, view);
         }
 
         [AllowAnonymous]
         [Read("file/{fileId:int}/openedit", Check = false)]
-        public Configuration<int> OpenEdit(int fileId, int version, string doc)
+        public Configuration<int> OpenEdit(int fileId, int version, string doc, bool view)
         {
-            return FilesControllerHelperInt.OpenEdit(fileId, version, doc);
+            return FilesControllerHelperInt.OpenEdit(fileId, version, doc, view);
         }
 
 
