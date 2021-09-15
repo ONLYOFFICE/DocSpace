@@ -51,7 +51,7 @@ const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
 const Error401 = React.lazy(() => import("studio/Error401"));
 const Home = React.lazy(() => import("./components/pages/Home"));
-const Login = React.lazy(() => import("login/app"));
+
 const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
@@ -101,14 +101,6 @@ const ConfirmRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <Confirm {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const LoginRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Login {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -383,7 +375,24 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     );
   });
 
-  //console.log("Shell ", history);
+  const loginRoutes = [];
+
+  if (!personal) {
+    const loginSystem = {
+      url: combineUrl(AppServerConfig.proxyURL, "/login/remoteEntry.js"),
+      scope: "login",
+      module: "./app",
+    };
+    loginRoutes.push(
+      <PublicRoute
+        key={loginSystem.scope}
+        exact
+        path={LOGIN_URLS}
+        component={System}
+        system={loginSystem}
+      />
+    );
+  }
 
   return (
     <Layout>
@@ -396,11 +405,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
               <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
               <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
-              <PublicRoute
-                exact
-                path={personal ? "/" : LOGIN_URLS}
-                component={LoginRoute}
-              />
+              {loginRoutes}
               <Route path={CONFIRM_URL} component={ConfirmRoute} />
               <PrivateRoute
                 path={COMING_SOON_URLS}
