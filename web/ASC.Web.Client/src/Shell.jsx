@@ -385,6 +385,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     };
     loginRoutes.push(
       <PublicRoute
+        key={loginSystem.scope}
         exact
         path={LOGIN_URLS}
         component={System}
