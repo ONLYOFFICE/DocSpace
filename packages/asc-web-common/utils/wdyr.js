@@ -5,8 +5,5 @@ if (process.env.NODE_ENV === "development") {
   whyDidYouRender(React, {
     trackAllPureComponents: true,
     collapseGroups: true,
-    //trackExtraHooks: [
-    //   [ReactRedux, 'useSelector']
-    //]
   });
 }
