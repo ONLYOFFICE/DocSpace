@@ -247,7 +247,7 @@ export function getProviderTranslation(provider, t) {
   }
 }
 
-function getLanguage(lng) {
+export function getLanguage(lng) {
   try {
     let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;
 
@@ -271,9 +271,6 @@ export function loadLanguagePath(homepage, fixedNS = null) {
 
     if (ns.length > 0 && ns[0] === "Common") {
       return `/static/locales/${language}/Common.json`;
-    }
-    if (ns.length > 0 && ns[0].includes("Campaign")) {
-      return `/static/locales/${language}/${ns[0]}.json`;
     }
     return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
   };
