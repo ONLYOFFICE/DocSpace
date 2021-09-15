@@ -4,8 +4,12 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId, version, doc) {
+export function openEdit(fileId, version, doc, view) {
   const params = []; // doc ? `?doc=${doc}` : "";
+
+  if (view) {
+    params.push(`view=${view}`);
+  }
 
   if (version) {
     params.push(`version=${version}`);

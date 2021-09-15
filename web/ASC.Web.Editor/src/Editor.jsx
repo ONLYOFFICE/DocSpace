@@ -80,6 +80,7 @@ const Editor = () => {
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
+  const view = url.indexOf("action=view") !== -1;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -265,7 +266,7 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const config = await openEdit(fileId, version, doc);
+      const config = await openEdit(fileId, version, doc, view);
 
       actionLink = config?.editorConfig?.actionLink;
 
