@@ -147,6 +147,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     isDesktop,
     language,
     FirebaseHelper,
+    personal,
   } = rest;
 
   useEffect(() => {
@@ -376,7 +377,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const loginRoutes = [];
 
-  if (!personal) {
+  if (isLoaded && !personal) {
     const loginSystem = {
       url: combineUrl(AppServerConfig.proxyURL, "/login/remoteEntry.js"),
       scope: "login",
@@ -434,23 +435,30 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 };
 
 const ShellWrapper = inject(({ auth }) => {
-  const { init, isLoaded } = auth;
+  const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
+  const {
+    personal,
+    isDesktopClient,
+    firebaseHelper,
+    setModuleInfo,
+  } = settingsStore;
 
   return {
     loadBaseInfo: () => {
       init();
-      auth.settingsStore.setModuleInfo(config.homepage, "home");
-      auth.setProductVersion(config.version);
+      setModuleInfo(config.homepage, "home");
+      setProductVersion(config.version);
 
-      if (auth.settingsStore.isDesktopClient) {
+      if (isDesktopClient) {
         document.body.classList.add("desktop");
       }
     },
-    language: auth.language,
+    language,
     isLoaded,
     modules: auth.moduleStore.modules,
-    isDesktop: auth.settingsStore.isDesktopClient,
-    FirebaseHelper: auth.settingsStore.firebaseHelper,
+    isDesktop: isDesktopClient,
+    FirebaseHelper: firebaseHelper,
+    personal,
   };
 })(observer(Shell));
 
