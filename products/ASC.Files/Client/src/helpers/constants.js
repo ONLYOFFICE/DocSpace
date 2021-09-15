@@ -8,3 +8,5 @@ export const thumbnailStatuses = {
   ERROR: 2,
   NOT_REQUIRED: 3,
 };
+
+export const ADS_TIMEOUT = 60000;

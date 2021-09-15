@@ -12,7 +12,7 @@ import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
-import { combineUrl } from "@appserver/common/utils";
+import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { isDesktop, isTablet } from "react-device-detect";
@@ -71,6 +71,7 @@ class ArticleBodyContent extends React.Component {
       personal,
       firstLoad,
       isDesktopClient,
+      FirebaseHelper,
     } = this.props;
 
     //console.log("Article Body render");
@@ -99,7 +100,9 @@ class ArticleBodyContent extends React.Component {
             {(isDesktop || isTablet) &&
               personal &&
               !firstLoad &&
-              campaigns.length > 0 && <Banner />}
+              campaigns.length > 0 && (
+                <Banner FirebaseHelper={FirebaseHelper} />
+              )}
           </>
         )}
       </>
@@ -145,6 +148,7 @@ export default inject(
       hideArticle,
       firstLoad,
       isDesktopClient,
+      FirebaseHelper: auth.settingsStore.firebaseHelper,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));
