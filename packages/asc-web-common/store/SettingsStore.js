@@ -326,7 +326,8 @@ class SettingsStore {
   };
 
   get firebaseHelper() {
-    return new FirebaseHelper(this.firebase);
+    window.firebaseHelper = new FirebaseHelper(this.firebase);
+    return window.firebaseHelper;
   }
 }
 
