@@ -15,6 +15,7 @@ import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
 import { openDocEditor } from "../helpers/utils";
+import toastr from "studio/toastr";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -345,7 +346,8 @@ class FilesStore {
           this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
-        .catch(() => {
+        .catch((err) => {
+          toastr.error(err);
           if (!requestCounter) return;
           requestCounter--;
 
