@@ -1221,6 +1221,7 @@ class FilesStore {
       isPresentation,
       isDocument,
     } = this.formatsStore.iconFormatsStore;
+    const { filesConverts } = this.formatsStore.docserviceStore;
 
     let sortedFiles = {
       documents: [],
@@ -1233,7 +1234,9 @@ class FilesStore {
       item.checked = true;
       item.format = null;
 
-      if (item.fileExst) {
+      const canConvert = filesConverts.find((f) => f[item.fileExst]);
+
+      if (item.fileExst && canConvert) {
         if (isSpreadsheet(item.fileExst)) {
           sortedFiles.spreadsheets.push(item);
         } else if (isPresentation(item.fileExst)) {

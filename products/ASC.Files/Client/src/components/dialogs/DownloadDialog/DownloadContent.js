@@ -32,7 +32,9 @@ const DownloadContent = (props) => {
     let arr = [];
     for (let item of items) {
       const exst = item.fileExst;
-      const arrayExst = filesConverts.find((f) => f[exst])[exst];
+
+      const exstItem = filesConverts.find((f) => f[exst]);
+      const arrayExst = exstItem ? exstItem[exst] : [];
       arr = [...arr, ...arrayExst];
     }
 
@@ -71,9 +73,8 @@ const DownloadContent = (props) => {
   };
 
   const getFormats = (item) => {
-    const conversionFormats = item
-      ? filesConverts.find((f) => f[item.fileExst])[item.fileExst]
-      : [];
+    const arrayFormats = item && filesConverts.find((f) => f[item.fileExst]);
+    const conversionFormats = arrayFormats ? arrayFormats[item.fileExst] : [];
 
     const formats = [
       {
