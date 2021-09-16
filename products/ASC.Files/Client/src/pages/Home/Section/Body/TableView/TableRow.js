@@ -25,7 +25,7 @@ const { acceptBackground, background } = Base.dragAndDrop;
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
     background: ${(props) => props.checked && "#f8f9f9 !important"};
-    cursor: ${(props) => props.checked && "grab"};
+    cursor: ${(props) => props.checked && "url(images/cursor.palm.svg), auto"};
   }
 `;
 

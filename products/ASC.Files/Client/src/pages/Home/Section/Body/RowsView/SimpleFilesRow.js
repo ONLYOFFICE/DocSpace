@@ -13,7 +13,7 @@ import ItemIcon from "../../../../../components/ItemIcon";
 
 const StyledSimpleFilesRow = styled(Row)`
   background: ${(props) => props.checked && "#f8f9f9"};
-  cursor: ${(props) => props.checked && "grab"};
+  cursor: ${(props) => props.checked && `url(images/cursor.palm.svg), auto`};
   margin-top: -2px;
   ${(props) =>
     !props.contextOptions &&
