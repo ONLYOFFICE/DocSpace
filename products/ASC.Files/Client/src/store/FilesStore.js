@@ -236,6 +236,10 @@ class FilesStore {
 
   //TODO: FILTER
   setFilesFilter = (filter) => {
+    const key = `UserFilter=${this.userStore.user.id}`;
+    const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
+    localStorage.setItem(key, value);
+
     this.setFilterUrl(filter);
     this.filter = filter;
   };
@@ -263,46 +267,30 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false,
-    saveSorting = false
+    withSubfolders = false
   ) => {
-    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
-    filterData.folder = folderId;
-
-    if (saveSorting) {
-      filterData.sortBy = this.filter.sortBy;
-      filterData.pageCount = this.filter.pageCount;
-      filterData.sortOrder = this.filter.sortOrder;
-    }
-
     const {
       treeFolders,
-      //privacyFolder,
       setSelectedNode,
       getSubfolders,
     } = this.treeFoldersStore;
+
+    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
+    filterData.folder = folderId;
+
+    const filterStorageItem = localStorage.getItem(
+      `UserFilter=${this.userStore.user.id}`
+    );
+
+    if (filterStorageItem && !filter) {
+      const splitFilter = filterStorageItem.split(",");
+
+      filterData.sortBy = splitFilter[0];
+      filterData.pageCount = splitFilter[1];
+      filterData.sortOrder = splitFilter[2];
+    }
+
     setSelectedNode([folderId + ""]);
-
-    // if (privacyFolder && privacyFolder.id === +folderId) {
-    //   if (!this.settingsStore.isEncryptionSupport) {
-    //     filterData.total = 0;
-    //     this.setFilesFilter(filterData); //TODO: FILTER
-    //     if (clearFilter) {
-    //       this.setFolders([]);
-    //       this.setFiles([]);
-    //       this.fileActionStore.setAction({ type: null });
-    //       this.setSelected("close");
-
-    //       this.selectedFolderStore.setSelectedFolder({
-    //         folders: [],
-    //         ...privacyFolder,
-    //         pathParts: privacyFolder.pathParts,
-    //         ...{ new: 0 },
-    //       });
-    //     }
-    //     return Promise.resolve();
-    //   }
-    // }
 
     //TODO: fix @my
     let requestCounter = 1;

@@ -148,7 +148,7 @@ export default function withFileActions(WrappedFileItem) {
         setIsLoading(true);
         //addExpandedKeys(parentFolder + "");
 
-        fetchFiles(id, null, true, false, true)
+        fetchFiles(id, null, true, false)
           .then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createNewExpandedKeys(pathParts);
