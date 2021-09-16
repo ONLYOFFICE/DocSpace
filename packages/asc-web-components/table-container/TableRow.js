@@ -68,12 +68,7 @@ const TableRow = (props) => {
       </TableCell>
       {children}
       <div>
-        <TableCell
-          {...selectionProp}
-          style={style}
-          forwardedRef={row}
-          checked={checked}
-        >
+        <TableCell {...selectionProp} style={style} forwardedRef={row}>
           <ContextMenu ref={cm} model={contextOptions}></ContextMenu>
           {renderContext ? (
             <ContextMenuButton

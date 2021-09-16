@@ -22,6 +22,13 @@ import Base from "@appserver/components/themes/base";
 const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
+const StyledTableRow = styled(TableRow)`
+  .table-container_cell {
+    background: ${(props) => props.checked && "#f8f9f9 !important"};
+    cursor: ${(props) => props.checked && "grab"};
+  }
+`;
+
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
 `;
@@ -142,7 +149,7 @@ const FilesTableRow = (props) => {
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
     >
-      <TableRow
+      <StyledTableRow
         {...dragStyles}
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
@@ -155,33 +162,33 @@ const FilesTableRow = (props) => {
         {...contextOptionsProps}
         checked={checkedProps}
       >
-        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
+        <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell {...props} />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (
-          <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
+          <TableCell {...dragStyles} {...selectionProp}>
             <AuthorCell sideColor={sideColor} {...props} />
           </TableCell>
         )}
-        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
+        <TableCell {...dragStyles} {...selectionProp}>
           <DateCell create sideColor={sideColor} {...props} />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
+        <TableCell {...dragStyles} {...selectionProp}>
           <DateCell sideColor={sideColor} {...props} />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
+        <TableCell {...dragStyles} {...selectionProp}>
           <SizeCell sideColor={sideColor} {...props} />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
+        <TableCell {...dragStyles} {...selectionProp}>
           <TypeCell sideColor={sideColor} {...props} />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
+        <TableCell {...dragStyles} {...selectionProp}>
           <StyledShare>{sharedButton}</StyledShare>
         </TableCell>
-      </TableRow>
+      </StyledTableRow>
     </StyledDragAndDrop>
   );
 };
