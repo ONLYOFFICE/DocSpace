@@ -12,6 +12,7 @@ import SharedButton from "../../../../../components/SharedButton";
 import ItemIcon from "../../../../../components/ItemIcon";
 
 const StyledSimpleFilesRow = styled(Row)`
+  background: ${(props) => props.checked && "#f8f9f9"};
   margin-top: -2px;
   ${(props) =>
     !props.contextOptions &&
