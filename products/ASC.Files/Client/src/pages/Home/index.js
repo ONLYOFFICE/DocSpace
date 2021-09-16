@@ -35,12 +35,10 @@ class PureHome extends React.Component {
       homepage,
       setIsLoading,
       setFirstLoad,
-      isVisitor,
       expandedKeys,
       setExpandedKeys,
       setToPreviewFile,
       mediaViewersFormatsStore,
-      filesList,
       getFileInfo,
     } = this.props;
 
@@ -62,13 +60,7 @@ class PureHome extends React.Component {
         })
         .catch((err) => {
           toastr.error(err);
-
-          fetchFiles()
-            .catch((err) => toastr.error(err))
-            .finally(() => {
-              setIsLoading(false);
-              setFirstLoad(false);
-            });
+          this.fetchDefaultFiles();
         });
 
       return;
@@ -78,14 +70,8 @@ class PureHome extends React.Component {
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
-        filterObj = FilesFilter.getDefault();
-        if (isVisitor) filterObj.folder = "@common";
-        const folderId = filterObj.folder;
         setIsLoading(true);
-        fetchFiles(folderId, filterObj).finally(() => {
-          setIsLoading(false);
-          setFirstLoad(false);
-        });
+        this.fetchDefaultFiles();
 
         return;
       }
@@ -164,6 +150,17 @@ class PureHome extends React.Component {
         setFirstLoad(false);
       });
   }
+
+  fetchDefaultFiles = () => {
+    const { isVisitor, fetchFiles, setIsLoading, setFirstLoad } = this.props;
+    const filterObj = FilesFilter.getDefault();
+    const folderId = isVisitor ? "@common" : filterObj.folder;
+
+    fetchFiles(folderId).finally(() => {
+      setIsLoading(false);
+      setFirstLoad(false);
+    });
+  };
 
   onDrop = (files, uploadToFolder) => {
     const { t, startUpload, setDragging, dragging } = this.props;
