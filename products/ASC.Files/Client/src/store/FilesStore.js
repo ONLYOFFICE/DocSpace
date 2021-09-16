@@ -1323,6 +1323,11 @@ class FilesStore {
     return !!this.selection.length;
   }
 
+  get isEmptyFilesList() {
+    const filesList = [...this.files, ...this.folders];
+    return filesList.length <= 0;
+  }
+
   getOptions = (selection, externalAccess = false) => {
     const {
       canWebEdit,
@@ -1481,7 +1486,7 @@ class FilesStore {
   };
 
   createThumbnails = () => {
-    const filesList = this.filesList;
+    const filesList = [...this.files, this.folders];
     const fileIds = [];
 
     filesList.map((file) => {

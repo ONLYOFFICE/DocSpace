@@ -2,14 +2,16 @@ import { makeAutoObservable } from "mobx";
 
 class MediaViewerDataStore {
   filesStore;
+  formatsStore;
 
   id = null;
   visible = false;
   previewFile = null;
 
-  constructor(filesStore) {
+  constructor(filesStore, formatsStore) {
     makeAutoObservable(this);
     this.filesStore = filesStore;
+    this.formatsStore = formatsStore;
   }
 
   setMediaViewerData = (mediaData) => {
@@ -25,12 +27,17 @@ class MediaViewerDataStore {
   };
 
   get playlist() {
+    const { isMediaOrImage } = this.formatsStore.mediaViewersFormatsStore;
+    const { files, folders } = this.filesStore;
+
+    const filesList = [...files, ...folders];
     const playlist = [];
     let id = 0;
 
-    if (this.filesStore.filesList.length > 0) {
-      this.filesStore.filesList.forEach((file) => {
-        if (file.canOpenPlayer) {
+    if (filesList.length > 0) {
+      filesList.forEach((file) => {
+        const canOpenPlayer = isMediaOrImage(file.fileExst);
+        if (canOpenPlayer) {
           playlist.push({
             id: id,
             fileId: file.id,
