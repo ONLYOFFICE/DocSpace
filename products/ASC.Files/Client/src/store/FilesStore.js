@@ -1110,7 +1110,11 @@ class FilesStore {
       );
 
       const previewUrl = canOpenPlayer
-        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${id}`)
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/#preview/${id}`
+          )
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 

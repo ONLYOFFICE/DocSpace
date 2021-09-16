@@ -46,9 +46,9 @@ class PureHome extends React.Component {
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 
-    if (window.location.pathname.indexOf("/files/view") > 1) {
-      const pathname = window.location.pathname;
-      const fileId = pathname.slice(pathname.indexOf("view") + 5);
+    if (window.location.href.indexOf("/files/#preview") > 1) {
+      const pathname = window.location.href;
+      const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
       getFileInfo(fileId)
         .then((data) => {
