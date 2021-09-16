@@ -80,7 +80,7 @@ const Badges = ({
           size="small"
         />
       )}
-      {locked && accessToEdit && (
+      {locked && accessToEdit && !isTrashFolder && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"
           size="small"

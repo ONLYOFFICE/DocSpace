@@ -25,7 +25,7 @@ newInstance.use(Backend).init({
   backend: {
     loadPath: loadLanguagePath(config.homepage),
     allowMultiLoading: false,
-    crossDomain: false,
+    crossDomain: true,
   },
 
   react: {
