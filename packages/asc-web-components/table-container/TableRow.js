@@ -57,7 +57,7 @@ const TableRow = (props) => {
         checked={checked}
         {...selectionProp}
         style={style}
-        className={`${selectionProp?.className} table-container_row-checkbox-wrapper table_cell`}
+        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
       >
         <div className="table-container_element">{element}</div>
         <Checkbox
@@ -68,12 +68,7 @@ const TableRow = (props) => {
       </TableCell>
       {children}
       <div>
-        <TableCell
-          {...selectionProp}
-          style={style}
-          forwardedRef={row}
-          className="table_cell"
-        >
+        <TableCell {...selectionProp} style={style} forwardedRef={row}>
           <ContextMenu ref={cm} model={contextOptions}></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
