@@ -101,10 +101,9 @@ namespace ASC.Mail.ImapSync
 
             _log.Debug($"ImapFolderCountChanged {ImapWorkFolder.Name} Count={ImapWorkFolder.Count}.");
 
-            if (!IsUpdateMessagesListPlanned)
-            {
-                AddTask(new Task(() => UpdateMessagesList()));
-            }
+            if (IsUpdateMessagesListPlanned) return;
+
+            AddTask(new Task(() => UpdateMessagesList()));
         }
 
         #endregion
@@ -144,20 +143,19 @@ namespace ASC.Mail.ImapSync
 
         public void ChangeFolder(int folderActivity)
         {
-            if (folderActivity != (int)Folder)
+            if (folderActivity == (int)Folder) return;
+
+            try
             {
-                try
-                {
-                    var newImapFolder = GetImapFolderByType(folderActivity);
+                var newImapFolder = GetImapFolderByType(folderActivity);
 
-                    _log.Debug($"Try change folder to {newImapFolder.Name}.");
+                _log.Debug($"Try change folder to {newImapFolder.Name}.");
 
-                    AddTask(new Task(() => SetNewImapWorkFolder(newImapFolder)));
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"ChangeFolder(New folder={(FolderType)folderActivity})->{ex.Message}");
-                }
+                AddTask(new Task(() => SetNewImapWorkFolder(newImapFolder)));
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ChangeFolder(New folder={(FolderType)folderActivity})->{ex.Message}");
             }
         }
 
@@ -340,52 +338,50 @@ namespace ASC.Mail.ImapSync
 
         private void OpenFolder(IMailFolder folder)
         {
-            if (!folder.IsOpen)
-            {
-                try
-                {
-                    folder.Open(FolderAccess.ReadWrite);
+            if (folder.IsOpen) return;
 
-                    _log.Debug($"OpenFolder: Folder {folder.Name} opened.");
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"OpenFolder {folder.Name}: {ex.Message}");
-                }
+            try
+            {
+                folder.Open(FolderAccess.ReadWrite);
+
+                _log.Debug($"OpenFolder: Folder {folder.Name} opened.");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"OpenFolder {folder.Name}: {ex.Message}");
             }
         }
 
         private void SetNewImapWorkFolder(IMailFolder imapFolder)
         {
-            if (imapFolder != ImapWorkFolder)
+            if (imapFolder == ImapWorkFolder) return;
+
+            IsUpdateMessagesListPlanned = true;
+
+            try
             {
-                IsUpdateMessagesListPlanned = true;
-
-                try
+                if (ImapWorkFolder != null)
                 {
-                    if (ImapWorkFolder != null)
-                    {
-                        ImapWorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
-                        ImapWorkFolder.CountChanged -= ImapFolderCountChanged;
-                    }
-
-                    ImapWorkFolder = imapFolder;
-                    ImapMessagesList = null;
-
-                    ImapWorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
-                    ImapWorkFolder.CountChanged += ImapFolderCountChanged;
-
-                    OpenFolder(ImapWorkFolder);
-
-                    UpdateMessagesList();
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"SetNewImapWorkFolder {imapFolder.Name}: {ex.Message}");
+                    ImapWorkFolder.MessageFlagsChanged -= ImapMessageFlagsChanged;
+                    ImapWorkFolder.CountChanged -= ImapFolderCountChanged;
                 }
 
-                _log.Debug($"SetNewImapWorkFolder: Work folder changed to {imapFolder.Name}.");
+                ImapWorkFolder = imapFolder;
+                ImapMessagesList = null;
+
+                ImapWorkFolder.MessageFlagsChanged += ImapMessageFlagsChanged;
+                ImapWorkFolder.CountChanged += ImapFolderCountChanged;
+
+                OpenFolder(ImapWorkFolder);
+
+                UpdateMessagesList();
             }
+            catch (Exception ex)
+            {
+                _log.Error($"SetNewImapWorkFolder {imapFolder.Name}: {ex.Message}");
+            }
+
+            _log.Debug($"SetNewImapWorkFolder: Work folder changed to {imapFolder.Name}.");
         }
 
         private void UpdateMessagesList()

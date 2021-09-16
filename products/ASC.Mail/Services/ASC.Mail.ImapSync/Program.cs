@@ -13,7 +13,6 @@ using ASC.Common.Mapping;
 using ASC.Common.Utils;
 using ASC.ElasticSearch;
 using ASC.Mail.Aggregator.CollectionService.Console;
-using ASC.Mail.Aggregator.CollectionService.Service;
 using ASC.Mail.Core.Search;
 
 using Autofac;
@@ -95,7 +94,6 @@ namespace ASC.Mail.ImapSync
                 })
             .ConfigureServices((hostContext, services) =>
             {
-                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 services.AddMemoryCache();
                 var diHelper = new DIHelper(services);
                 services.AddHostedService<ServiceLauncher>();
@@ -104,9 +102,12 @@ namespace ASC.Mail.ImapSync
                 diHelper.TryAdd<FactoryIndexerMailContact>();
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 services.AddSingleton(new ConsoleParser(args));
+                diHelper.TryAdd<MailClientScope>();
                 diHelper.TryAdd<ImapSyncService>();
                 services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
                 services.AddHostedService<ImapSyncService>();
+
+                services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
             })
             .ConfigureContainer<ContainerBuilder>((context, builder) =>
             {

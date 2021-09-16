@@ -50,10 +50,8 @@ namespace ASC.Mail.ImapSync
         private readonly IServiceProvider _serviceProvider;
 
         private readonly SemaphoreSlim CreateClientSemaphore;
-        internal MailEnginesFactory MailEnginesFactory { get; }
 
         public ImapSyncService(IOptionsMonitor<ILog> options,
-            MailEnginesFactory mailEnginesFactory,
             RedisClient redisClient,
             MailSettings mailSettings,
             IServiceProvider serviceProvider)
@@ -62,7 +60,6 @@ namespace ASC.Mail.ImapSync
             _redisClient = redisClient;
             _mailSettings = mailSettings;
             _serviceProvider = serviceProvider;
-            MailEnginesFactory = mailEnginesFactory;
 
             CreateClientSemaphore = new SemaphoreSlim(1, 1);
             clients = new ConcurrentDictionary<string, MailImapClient>();

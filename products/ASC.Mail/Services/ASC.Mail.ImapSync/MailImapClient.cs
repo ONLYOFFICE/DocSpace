@@ -389,8 +389,7 @@ namespace ASC.Mail.ImapSync
         {
             try
             {
-                if (simpleImapClient.Account.AuthErrorDate.HasValue)
-                    return;
+                if (simpleImapClient.Account.AuthErrorDate.HasValue) return;
 
                 simpleImapClient.Account.AuthErrorDate = DateTime.UtcNow;
 
@@ -571,8 +570,7 @@ namespace ASC.Mail.ImapSync
 
         private void LogStat(SimpleImapClient simpleImapClient, string method, TimeSpan duration, bool failed)
         {
-            if (!_mailSettings.Aggregator.CollectStatistics)
-                return;
+            if (!_mailSettings.Aggregator.CollectStatistics) return;
 
             _log.DebugWithProps(method, new List<KeyValuePair<string, object>>() {
                 new KeyValuePair<string, object>("duration", duration.TotalMilliseconds),
@@ -716,8 +714,7 @@ namespace ASC.Mail.ImapSync
         {
             var user = factory.UserId;
 
-            if (string.IsNullOrEmpty(user))
-                return new List<MailSieveFilterData>();
+            if (string.IsNullOrEmpty(user)) return new List<MailSieveFilterData>();
 
             try
             {
