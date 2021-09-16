@@ -154,7 +154,7 @@ export default function withFileActions(WrappedFileItem) {
             const newExpandedKeys = createNewExpandedKeys(pathParts);
             setExpandedKeys(newExpandedKeys);
 
-            this.setNewBadgeCount(item);
+            setNewBadgeCount(item);
           })
           .catch((err) => {
             toastr.error(err);
