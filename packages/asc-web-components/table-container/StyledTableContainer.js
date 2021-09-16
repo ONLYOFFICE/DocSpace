@@ -178,6 +178,7 @@ const StyledTableRow = styled.div`
 `;
 
 const StyledTableCell = styled.div`
+  background: ${(props) => props.checked && "#f8f9f9 !important"};
   /* padding-right: 8px; */
   height: 40px;
   max-height: 40px;
