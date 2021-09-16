@@ -58,7 +58,7 @@ const PureConnectDialogContainer = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const isAccount = !!link;
-  const showUrlField = title === "WebDav" || title === "SharePoint";
+  const showUrlField = key === "WebDav" || key === "SharePoint";
 
   const onChangeUrl = (e) => {
     setIsUrlValid(true);
