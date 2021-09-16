@@ -49,9 +49,11 @@ class GroupButtonsMenu extends React.Component {
   };
 
   componentDidMount() {
-    const groupMenuElement = document.getElementById("groupMenu");
+    this.groupMenuElement = document.getElementById("groupMenu");
 
-    const groupMenuItems = groupMenuElement ? groupMenuElement.children : [0];
+    const groupMenuItems = this.groupMenuElement
+      ? this.groupMenuElement.children
+      : [0];
     const groupMenuItemsArray = [...groupMenuItems];
 
     this.widthsArray = groupMenuItemsArray.map((item) => item.offsetWidth);
@@ -73,6 +75,19 @@ class GroupButtonsMenu extends React.Component {
       this.state.moreItems.length !== prevState.moreItems.length ||
       this.props.menuItems !== prevProps.menuItems
     ) {
+      if (
+        this.state.priorityItems.length !== prevState.priorityItems.length &&
+        this.props.sectionWidth === prevProps.sectionWidth &&
+        this.state.moreItems.length === prevState.moreItems.length &&
+        this.state.moreItems.length === 0
+      ) {
+        const groupMenuItems = this.groupMenuElement
+          ? this.groupMenuElement.children
+          : [0];
+        const groupMenuItemsArray = [...groupMenuItems];
+
+        this.widthsArray = groupMenuItemsArray.map((item) => item.offsetWidth);
+      }
       this.updateMenu();
     }
   }
