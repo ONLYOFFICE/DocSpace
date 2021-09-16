@@ -15,6 +15,7 @@ const AccessComboBox = (props) => {
     onAccessChange,
     t,
     arrowIconColor,
+    disableLink,
   } = props;
   const {
     FullAccess,
@@ -100,7 +101,8 @@ const AccessComboBox = (props) => {
     </>
   );
 
-  const accessIconUrl = getAccessIcon(access);
+  const accessRights = disableLink ? ReadOnly : access;
+  const accessIconUrl = getAccessIcon(accessRights);
   const selectedOption = arrowIconColor
     ? { key: 0, arrowIconColor }
     : { key: 0 };
