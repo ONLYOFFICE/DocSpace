@@ -155,30 +155,30 @@ const FilesTableRow = (props) => {
         {...contextOptionsProps}
         checked={checkedProps}
       >
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
           <FileNameCell {...props} />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (
-          <TableCell {...dragStyles} {...selectionProp}>
+          <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
             <AuthorCell sideColor={sideColor} {...props} />
           </TableCell>
         )}
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
           <DateCell create sideColor={sideColor} {...props} />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
           <DateCell sideColor={sideColor} {...props} />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
           <SizeCell sideColor={sideColor} {...props} />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
           <TypeCell sideColor={sideColor} {...props} />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell {...dragStyles} {...selectionProp} checked={checkedProps}>
           <StyledShare>{sharedButton}</StyledShare>
         </TableCell>
       </TableRow>

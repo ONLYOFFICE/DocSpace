@@ -715,6 +715,7 @@ class FilesStore {
         "owner-change",
         "link-for-portal-users",
         "separator1",
+        "open-location",
         "download",
         "move", //category
         "move-to",
@@ -862,6 +863,10 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, [
           "change-thirdparty-info",
         ]);
+      }
+
+      if (!(isMyFolder && this.filter.filterType)) {
+        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
       }
 
       return folderOptions;

@@ -178,6 +178,8 @@ const StyledTableRow = styled.div`
 `;
 
 const StyledTableCell = styled.div`
+  background: ${(props) => props.checked && "#f8f9f9 !important"};
+  cursor: ${(props) => props.checked && "pointer"};
   /* padding-right: 8px; */
   height: 40px;
   max-height: 40px;
