@@ -552,6 +552,7 @@ class FilesStore {
           "move-to",
           "sharing-settings",
           "unsubscribe",
+          "separator2",
         ]);
       }
 
@@ -627,6 +628,7 @@ class FilesStore {
             "move-to",
             "delete",
             "copy",
+            "separator2",
           ]);
           if (!isFavorite) {
             fileOptions = this.removeOptions(fileOptions, ["separator2"]);
