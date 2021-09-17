@@ -154,13 +154,6 @@ export default function withContent(WrappedContent) {
       !item.fileExst && !item.contentLength
         ? createFolder(item.parentId, itemTitle)
             .then(() => this.completeAction(itemId))
-            .then(() =>
-              toastr.success(
-                <Trans t={t} i18nKey="FolderCreated" ns="Home">
-                  New folder {{ itemTitle }} is created
-                </Trans>
-              )
-            )
             .catch((e) => toastr.error(e))
             .finally(() => {
               return setIsLoading(false);
@@ -184,14 +177,6 @@ export default function withContent(WrappedContent) {
               return openDocEditor(file.id, file.providerKey, tab, file.webUrl);
             })
             .then(() => this.completeAction(itemId))
-            .then(() => {
-              const exst = item.fileExst;
-              return toastr.success(
-                <Trans t={t} i18nKey="FileCreated" ns="Home">
-                  New file {{ itemTitle }}.{{ exst }} is created
-                </Trans>
-              );
-            })
             .catch((e) => toastr.error(e))
             .finally(() => {
               return setIsLoading(false);

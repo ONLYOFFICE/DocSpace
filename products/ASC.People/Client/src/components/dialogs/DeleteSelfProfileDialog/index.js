@@ -24,14 +24,11 @@ class DeleteSelfProfileDialogComponent extends React.Component {
       sendInstructionsToDelete()
         .then((res) => {
           toastr.success(
-            <Trans
-              i18nKey="DeleteSelfInstructions"
-              ns="DeleteSelfProfileDialog"
-              t={t}
-            >
-              Instructions to delete your profile has been sent to
-              <strong>{{ email: email }}</strong> email address
-            </Trans>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: res,
+              }}
+            />
           );
         })
         .catch((error) => toastr.error(error))

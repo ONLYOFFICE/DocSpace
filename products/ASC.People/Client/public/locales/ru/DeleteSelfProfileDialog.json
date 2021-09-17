@@ -1,5 +1,4 @@
 {
   "DeleteProfileInfo": "Отправить инструкции по удалению профиля на адрес электронной почты",
-  "DeleteProfileTitle": "Диалог удаления профиля",
-  "DeleteSelfInstructions": "Инструкции по удалению профиля были отправлены на ваш email <strong>{{ email }}</strong>"
+  "DeleteProfileTitle": "Диалог удаления профиля"
 }

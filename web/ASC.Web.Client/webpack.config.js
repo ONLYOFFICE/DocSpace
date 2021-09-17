@@ -174,10 +174,6 @@ const config = {
           AppServerConfig.proxyURL,
           "/remoteEntry.js"
         )}`,
-        login: `login@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/login/remoteEntry.js"
-        )}`,
         people: `people@${combineUrl(
           AppServerConfig.proxyURL,
           "/products/people/remoteEntry.js"

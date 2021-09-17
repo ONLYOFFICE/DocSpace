@@ -594,8 +594,17 @@ class FilesActionStore {
 
     const { selection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
-    const { isShareFolder, isCommonFolder } = this.treeFoldersStore;
-    const isCopy = isShareFolder || (!this.authStore.isAdmin && isCommonFolder);
+    const {
+      isShareFolder,
+      isCommonFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.treeFoldersStore;
+    const isCopy =
+      isShareFolder ||
+      isFavoritesFolder ||
+      isRecentFolder ||
+      (!this.authStore.isAdmin && isCommonFolder);
 
     const operationData = {
       destFolderId,
@@ -618,7 +627,7 @@ class FilesActionStore {
         return setThirdPartyMoveDialogVisible(true);
       }
 
-      if (item.fileExst) {
+      if (!item.isFolder) {
         fileIds.push(item.id);
       } else {
         if (item.providerKey && isRootFolder) continue;
@@ -643,8 +652,7 @@ class FilesActionStore {
     try {
       conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
     } catch (err) {
-      toastr.error(err);
-      return;
+      return toastr.error(err.message);
     }
 
     if (conflicts.length) {
@@ -652,7 +660,11 @@ class FilesActionStore {
       setConflictResolveDialogData(operationData);
       setConflictResolveDialogVisible(true);
     } else {
-      this.uploadDataStore.itemOperationToFolder(operationData);
+      try {
+        await this.uploadDataStore.itemOperationToFolder(operationData);
+      } catch (err) {
+        return toastr.error(err.message);
+      }
     }
   };
 

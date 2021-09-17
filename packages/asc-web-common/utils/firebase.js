@@ -1,9 +1,12 @@
 import firebase from "firebase/app";
 import "firebase/remote-config";
+import "firebase/storage";
 
 class FirebaseHelper {
   remoteConfig = null;
   firebaseConfig = null;
+  firebaseStorage = null;
+
   constructor(settings) {
     this.firebaseConfig = settings;
 
@@ -14,6 +17,8 @@ class FirebaseHelper {
     } else {
       firebase.app();
     }
+
+    this.firebaseStorage = firebase.storage();
 
     this.remoteConfig = firebase.remoteConfig();
 
@@ -86,6 +91,22 @@ class FirebaseHelper {
     });
 
     return await Promise.resolve(campaigns);
+  }
+
+  async getCampaignsImages(banner) {
+    const storageRef = this.firebaseStorage.ref();
+    const tangRef = storageRef.child(
+      `campaigns/images/campaigns.${banner}.png`
+    );
+    return await tangRef.getDownloadURL();
+  }
+
+  async getCampaignsTranslations(banner, lng) {
+    const storageRef = this.firebaseStorage.ref();
+    const tangRef = storageRef.child(
+      `campaigns/locales/${lng}/CampaignPersonal${banner}.json`
+    );
+    return await tangRef.getDownloadURL();
   }
 }
 

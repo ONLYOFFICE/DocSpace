@@ -73,7 +73,7 @@ const HeaderNav = ({
   const onProfileClick = useCallback(() => {
     peopleAvailable
       ? history.push(PROFILE_SELF_URL)
-      : window.open(PROFILE_MY_URL, "_blank");
+      : history.push(PROFILE_MY_URL);
   }, []);
 
   const onAboutClick = useCallback(() => {

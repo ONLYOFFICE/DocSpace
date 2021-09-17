@@ -4,7 +4,7 @@ import Base from "@appserver/components/themes/base";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 const size = {
   header: "28px",
-  menu: "27px",
+  menu: "23px",
   content: "21px",
 };
 
