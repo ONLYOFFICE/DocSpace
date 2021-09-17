@@ -550,7 +550,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "copy",
           "move-to",
-          "sharing-settings",
+          //"sharing-settings",
           "unsubscribe",
         ]);
       }
@@ -981,9 +981,9 @@ class FilesStore {
       case FolderType.TRASH:
         return false;
       case FolderType.Favorites:
-        return false;
+        return true; // false;
       case FolderType.Recent:
-        return false;
+        return true; //false;
       case FolderType.Privacy:
         return true;
       default:
