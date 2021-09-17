@@ -103,7 +103,7 @@ export default function withFileActions(WrappedFileItem) {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
 
-        this.onFilesClick();
+        if (e.detail === 1) this.onFilesClick(e);
       } else {
         this.fileContextClick();
       }
@@ -128,15 +128,15 @@ export default function withFileActions(WrappedFileItem) {
         setMediaViewerData,
         setConvertItem,
         setConvertDialogVisible,
+        setNewBadgeCount,
       } = this.props;
       const {
         id,
-        fileExst,
         viewUrl,
         providerKey,
-        contentLength,
         fileStatus,
         encrypted,
+        isFolder,
       } = item;
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
@@ -144,7 +144,7 @@ export default function withFileActions(WrappedFileItem) {
       if (e && e.target.tagName === "INPUT") return;
       e.preventDefault();
 
-      if (!fileExst && !contentLength) {
+      if (isFolder) {
         setIsLoading(true);
         //addExpandedKeys(parentFolder + "");
 
@@ -154,7 +154,7 @@ export default function withFileActions(WrappedFileItem) {
             const newExpandedKeys = createNewExpandedKeys(pathParts);
             setExpandedKeys(newExpandedKeys);
 
-            this.setNewBadgeCount();
+            this.setNewBadgeCount(item);
           })
           .catch((err) => {
             toastr.error(err);
@@ -172,7 +172,7 @@ export default function withFileActions(WrappedFileItem) {
 
         if (canWebEdit || canViewedDocs) {
           let tab =
-            !isDesktop && fileExst
+            !isDesktop && !isFolder
               ? window.open(
                   combineUrl(
                     AppServerConfig.proxyURL,
@@ -214,7 +214,7 @@ export default function withFileActions(WrappedFileItem) {
         canWebEdit,
         canViewedDocs,
       } = this.props;
-      const { fileExst, access, contentLength, id, shared } = item;
+      const { fileExst, access, id } = item;
 
       const isEdit =
         actionType !== null && actionId === id && fileExst === actionExtension;
@@ -224,7 +224,7 @@ export default function withFileActions(WrappedFileItem) {
       let className = isDragging ? " droppable" : "";
       if (draggable) className += " draggable";
 
-      let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
+      let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
 
       const isShareable = allowShareIn && item.canShare;
@@ -313,7 +313,7 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
       } = filesStore;
       const { startUpload } = uploadDataStore;
-      const { type, extension, id } = fileActionStore;
+      const { type, extension, id, setNewBadgeCount } = fileActionStore;
       const { mediaViewersFormatsStore, docserviceStore } = formatsStore;
       const { setMediaViewerData } = mediaViewerDataStore;
 
@@ -324,11 +324,7 @@ export default function withFileActions(WrappedFileItem) {
       const draggable =
         !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
-      const isFolder = selectedItem
-        ? false
-        : item.fileExst //|| item.contentLength
-        ? false
-        : true;
+      const isFolder = selectedItem ? false : !item.isFolder ? false : true;
 
       const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
         item.fileExst
@@ -379,6 +375,7 @@ export default function withFileActions(WrappedFileItem) {
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
         isItemsSelected: selection.length > 0,
+        setNewBadgeCount,
       };
     }
   )(observer(WithFileActions));

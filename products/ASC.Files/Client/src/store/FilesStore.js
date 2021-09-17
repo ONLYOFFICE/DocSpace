@@ -6,7 +6,6 @@ import {
   FileType,
   FileAction,
   AppServerConfig,
-  FilesFormats,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import { loopTreeFolders } from "../helpers/files-helpers";
@@ -16,6 +15,7 @@ import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
 import { openDocEditor } from "../helpers/utils";
+import toastr from "studio/toastr";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -346,7 +346,8 @@ class FilesStore {
           this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
-        .catch(() => {
+        .catch((err) => {
+          toastr.error(err);
           if (!requestCounter) return;
           requestCounter--;
 
@@ -416,6 +417,7 @@ class FilesStore {
       isShare,
       isFavoritesFolder,
       isShareFolder,
+      isMy,
     } = this.treeFoldersStore;
 
     const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
@@ -424,6 +426,7 @@ class FilesStore {
       item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
+    const isMyFolder = isMy(item.rootFolderType);
 
     const { personal } = this.settingsStore;
     const { isDesktopClient } = this.authStore.settingsStore;
@@ -449,6 +452,7 @@ class FilesStore {
         "open-location",
         "mark-read",
         "mark-as-favorite",
+        "remove-from-favorites",
         "download",
         "download-as",
         "convert",
@@ -459,7 +463,6 @@ class FilesStore {
         "restore",
         "rename",
         "separator2",
-        "remove-from-favorites",
         "unsubscribe",
         "delete",
       ];
@@ -654,7 +657,13 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["mark-read"]);
       }
 
-      if (!(isRecentFolder || isFavoritesFolder)) {
+      if (
+        !(
+          isRecentFolder ||
+          isFavoritesFolder ||
+          (isMyFolder && this.filter.filterType)
+        )
+      ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
       }
 
@@ -1106,6 +1115,8 @@ class FilesStore {
         canEdit,
       } = item;
 
+      const { canConvert } = this.formatsStore.docserviceStore;
+
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
         item.fileExst
       );
@@ -1136,10 +1147,12 @@ class FilesStore {
           )
         : null;
 
+      const needConvert = canConvert(fileExst);
+
       const docUrl = combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/doceditor?fileId=${id}`
+        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
       );
 
       const href = isRecycleBinFolder
@@ -1208,8 +1221,9 @@ class FilesStore {
     const {
       isSpreadsheet,
       isPresentation,
+      isDocument,
     } = this.formatsStore.iconFormatsStore;
-    const { canWebEdit } = this.formatsStore.docserviceStore;
+    const { filesConverts } = this.formatsStore.docserviceStore;
 
     let sortedFiles = {
       documents: [],
@@ -1220,14 +1234,16 @@ class FilesStore {
 
     for (let item of this.selection) {
       item.checked = true;
-      item.format = FilesFormats.OriginalFormat;
+      item.format = null;
 
-      if (item.fileExst) {
+      const canConvert = filesConverts.find((f) => f[item.fileExst]);
+
+      if (item.fileExst && canConvert) {
         if (isSpreadsheet(item.fileExst)) {
           sortedFiles.spreadsheets.push(item);
         } else if (isPresentation(item.fileExst)) {
           sortedFiles.presentations.push(item);
-        } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)) {
+        } else if (isDocument(item.fileExst)) {
           sortedFiles.documents.push(item);
         } else {
           sortedFiles.other.push(item);
@@ -1278,11 +1294,12 @@ class FilesStore {
   }
 
   get isWebEditSelected() {
-    const { editedDocs } = this.formatsStore.docserviceStore;
+    const { filesConverts } = this.formatsStore.docserviceStore;
 
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return editedDocs.find((format) => selected.fileExst === format);
+      const index = filesConverts.findIndex((f) => f[selected.fileExst]);
+      return index !== -1;
     });
   }
 
@@ -1377,9 +1394,9 @@ class FilesStore {
           : splitValue.slice(1).join("_");
 
       if (fileType === "file") {
-        newSelection.push(this.files.find((f) => f.id == id && f.fileExst));
+        newSelection.push(this.files.find((f) => f.id == id));
       } else {
-        newSelection.push(this.folders.find((f) => f.id == id && !f.fileExst));
+        newSelection.push(this.folders.find((f) => f.id == id));
       }
     }
 
