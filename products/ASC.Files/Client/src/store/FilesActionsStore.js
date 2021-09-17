@@ -668,99 +668,203 @@ class FilesActionStore {
     }
   };
 
-  getHeaderMenu = (t) => {
+  isNotAvailableOption = (option) => {
+    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
-      isFavoritesFolder,
-      isRecentFolder,
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      isShareFolder,
-    } = this.treeFoldersStore;
-    const {
-      selection,
       isAccessedSelected,
       isWebEditSelected,
       isThirdPartyRootSelection,
       hasSelection,
     } = this.filesStore;
+    const { personal } = this.authStore.settingsStore;
 
+    switch (option) {
+      case "share":
+        return personal || !isAccessedSelected; //isFavoritesFolder ||isRecentFolder
+      case "copy":
+      case "download":
+        return !hasSelection;
+      case "downloadAs":
+        return !hasSelection || !isWebEditSelected;
+      case "moveTo":
+        return (
+          isFavoritesFolder ||
+          isRecentFolder ||
+          !isAccessedSelected ||
+          !hasSelection ||
+          isThirdPartyRootSelection
+        );
+      case "delete":
+        return !hasSelection || isThirdPartyRootSelection;
+    }
+  };
+
+  convertToArray = (itemsCollection) => {
+    const result = Array.from(itemsCollection.values()).filter((item) => {
+      return item !== undefined && item !== null;
+    });
+
+    itemsCollection.clear();
+
+    return result;
+  };
+
+  getOption = (option, t) => {
     const {
       setSharingPanelVisible,
       setDownloadDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
-      setEmptyTrashDialogVisible,
     } = this.dialogsStore;
 
-    const headerMenu = [
-      {
-        label: t("Share"),
-        disabled: isFavoritesFolder || isRecentFolder || !isAccessedSelected,
-        onClick: () => setSharingPanelVisible(true),
-      },
-      {
-        label: t("Common:Download"),
-        disabled: !hasSelection,
-        onClick: () =>
-          this.downloadAction(t("Translations:ArchivingData")).catch((err) =>
-            toastr.error(err)
-          ),
-      },
-      {
-        label: t("Translations:DownloadAs"),
-        disabled: !hasSelection || !isWebEditSelected,
-        onClick: () => setDownloadDialogVisible(true),
-      },
-      {
-        label: t("MoveTo"),
-        disabled:
-          isFavoritesFolder ||
-          isRecentFolder ||
-          !isAccessedSelected ||
-          !hasSelection ||
-          isThirdPartyRootSelection,
-        onClick: () => setMoveToPanelVisible(true),
-      },
-      {
-        label: t("Translations:Copy"),
-        disabled: !hasSelection,
-        onClick: () => setCopyPanelVisible(true),
-      },
-      {
-        label: t("Common:Delete"),
-        disabled: !hasSelection || isThirdPartyRootSelection,
-        onClick: () => {
-          if (this.settingsStore.confirmDelete) {
-            setDeleteDialogVisible(true);
-          } else {
-            const translations = {
-              deleteOperation: t("Translations:DeleteOperation"),
-              deleteFromTrash: t("Translations:DeleteFromTrash"),
-              deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-            };
+    switch (option) {
+      case "share":
+        if (this.isNotAvailableOption("share")) return null;
+        else
+          return {
+            label: t("Share"),
+            onClick: () => setSharingPanelVisible(true),
+          };
 
-            this.deleteAction(translations).catch((err) => toastr.error(err));
-          }
-        },
-      },
-    ];
+      case "copy":
+        if (this.isNotAvailableOption("copy")) return null;
+        else
+          return {
+            label: t("Translations:Copy"),
+            onClick: () => setCopyPanelVisible(true),
+          };
 
-    if (isRecycleBinFolder) {
-      headerMenu.push({
-        label: t("EmptyRecycleBin"),
-        onClick: () => setEmptyTrashDialogVisible(true),
-      });
+      case "download":
+        if (this.isNotAvailableOption("download")) return null;
+        else
+          return {
+            label: t("Common:Download"),
+            onClick: () =>
+              this.downloadAction(
+                t("Translations:ArchivingData")
+              ).catch((err) => toastr.error(err)),
+          };
 
-      headerMenu.splice(3, 2, {
-        label: t("Translations:Restore"),
-        onClick: () => setMoveToPanelVisible(true),
-      });
+      case "downloadAs":
+        if (this.isNotAvailableOption("downloadAs")) return null;
+        else
+          return {
+            label: t("Translations:DownloadAs"),
+            onClick: () => setDownloadDialogVisible(true),
+          };
+
+      case "moveTo":
+        if (this.isNotAvailableOption("moveTo")) return null;
+        else
+          return {
+            label: t("MoveTo"),
+            onClick: () => setMoveToPanelVisible(true),
+          };
+
+      case "delete":
+        if (this.isNotAvailableOption("delete")) return null;
+        else
+          return {
+            label: t("Common:Delete"),
+            onClick: () => {
+              if (this.settingsStore.confirmDelete) {
+                setDeleteDialogVisible(true);
+              } else {
+                const translations = {
+                  deleteOperation: t("Translations:DeleteOperation"),
+                  deleteFromTrash: t("Translations:DeleteFromTrash"),
+                  deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+                };
+
+                this.deleteAction(translations).catch((err) =>
+                  toastr.error(err)
+                );
+              }
+            },
+          };
     }
+  };
 
-    if (isFavoritesFolder) {
-      headerMenu.splice(5, 1);
-      headerMenu.push({
+  getAnotherFolderOptions = (t) => {
+    let itemsCollection = new Map();
+    const share = this.getOption("share", t);
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const moveTo = this.getOption("moveTo", t);
+    const copy = this.getOption("copy", t);
+    const deleteOption = this.getOption("delete", t);
+
+    itemsCollection
+      .set("share", share)
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("moveTo", moveTo)
+      .set("copy", copy)
+      .set("delete", deleteOption);
+
+    return this.convertToArray(itemsCollection);
+  };
+
+  getRecentFolderOptions = (t) => {
+    let itemsCollection = new Map();
+    const share = this.getOption("share", t);
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const copy = this.getOption("copy", t);
+
+    itemsCollection
+      .set("share", share)
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("copy", copy);
+    return this.convertToArray(itemsCollection);
+  };
+
+  getShareFolderOptions = (t) => {
+    let itemsCollection = new Map();
+    const share = this.getOption("share", t);
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const copy = this.getOption("copy", t);
+    const deleteOption = this.getOption("delete", t);
+
+    itemsCollection
+      .set("share", share)
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("copy", copy)
+      .set("delete", deleteOption);
+    return this.convertToArray(itemsCollection);
+  };
+  getPrivacyFolderOption = (t) => {
+    let itemsCollection = new Map();
+    const moveTo = this.getOption("moveTo", t);
+    const copy = this.getOption("copy", t);
+    const deleteOption = this.getOption("delete", t);
+
+    itemsCollection
+      .set("moveTo", moveTo)
+      .set("copy", copy)
+      .set("delete", deleteOption);
+    return this.convertToArray(itemsCollection);
+  };
+
+  getFavoritesFolderOptions = (t) => {
+    const { selection } = this.filesStore;
+
+    let itemsCollection = new Map();
+    const share = this.getOption("share", t);
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const copy = this.getOption("copy", t);
+
+    itemsCollection
+      .set("share", share)
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("copy", copy)
+      .set("delete", {
         label: t("Common:Delete"),
         alt: t("RemoveFromFavorites"),
         onClick: () => {
@@ -770,32 +874,46 @@ class FilesActionStore {
             .catch((err) => toastr.error(err));
         },
       });
-    }
+    return this.convertToArray(itemsCollection);
+  };
 
-    if (isPrivacyFolder) {
-      headerMenu.splice(0, 1);
-      headerMenu.splice(1, 1);
-      headerMenu.splice(2, 1);
-    }
+  getRecycleBinFolderOptions = (t) => {
+    const { setEmptyTrashDialogVisible } = this.dialogsStore;
+    let itemsCollection = new Map();
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const deleteOption = this.getOption("delete", t);
 
-    if (isShareFolder) {
-      headerMenu.splice(3, 1);
-    }
+    itemsCollection
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("delete", deleteOption)
+      .set("restore", {
+        label: t("EmptyRecycleBin"),
+        onClick: () => setEmptyTrashDialogVisible(true),
+      });
+    return this.convertToArray(itemsCollection);
+  };
+  getHeaderMenu = (t) => {
+    const {
+      isFavoritesFolder,
+      isRecentFolder,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isShareFolder,
+    } = this.treeFoldersStore;
 
-    if (isRecentFolder) {
-      headerMenu.splice(5, 1);
-    }
+    if (isRecycleBinFolder) return this.getRecycleBinFolderOptions(t);
 
-    if (isRecentFolder || isFavoritesFolder) {
-      //headerMenu.splice(0, 1); TODO: need for develop
-      headerMenu.splice(3, 1);
-    }
+    if (isFavoritesFolder) return this.getFavoritesFolderOptions(t);
 
-    if (this.authStore.settingsStore.personal) {
-      headerMenu.splice(0, 1);
-    }
+    if (isPrivacyFolder) return this.getPrivacyFolderOption(t);
 
-    return headerMenu;
+    if (isShareFolder) return this.getShareFolderOptions(t);
+
+    if (isRecentFolder) return this.getRecentFolderOptions(t);
+
+    return this.getAnotherFolderOptions(t);
   };
 }
 
