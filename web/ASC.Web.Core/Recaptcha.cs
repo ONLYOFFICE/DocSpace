@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Security.Authentication;
 
+using ASC.Common;
 using ASC.Web.Studio.Core;
 
 using Newtonsoft.Json.Linq;
@@ -21,6 +22,7 @@ namespace ASC.Web.Core
         }
     }
 
+    [Scope]
     public class Recaptcha
     {
         private SetupInfo SetupInfo { get; }
