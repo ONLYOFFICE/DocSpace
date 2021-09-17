@@ -651,7 +651,7 @@ class FilesStore {
         !(
           isRecentFolder ||
           isFavoritesFolder ||
-          (isMyFolder && this.filter.filterType)
+          (isMyFolder && (this.filter.filterType || this.filter.search))
         )
       ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
@@ -867,7 +867,7 @@ class FilesStore {
         ]);
       }
 
-      if (!(isMyFolder && this.filter.filterType)) {
+      if (!(isMyFolder && (this.filter.filterType || this.filter.search))) {
         folderOptions = this.removeOptions(folderOptions, ["open-location"]);
       }
 
