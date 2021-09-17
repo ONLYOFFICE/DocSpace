@@ -285,7 +285,12 @@ export default function withFileActions(WrappedFileItem) {
       },
       { item, t, history }
     ) => {
-      const { selectRowAction, onSelectItem, markAsRead } = filesActionsStore;
+      const {
+        selectRowAction,
+        onSelectItem,
+        markAsRead,
+        setNewBadgeCount,
+      } = filesActionsStore;
       const {
         setSharingPanelVisible,
         setConvertDialogVisible,
@@ -313,7 +318,7 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
       } = filesStore;
       const { startUpload } = uploadDataStore;
-      const { type, extension, id, setNewBadgeCount } = fileActionStore;
+      const { type, extension, id } = fileActionStore;
       const { mediaViewersFormatsStore, docserviceStore } = formatsStore;
       const { setMediaViewerData } = mediaViewerDataStore;
 
