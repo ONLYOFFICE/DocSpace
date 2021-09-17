@@ -149,7 +149,7 @@ const EditingWrapperComponent = (props) => {
   };
 
   const onFocus = (e) => e.target.select();
-  console.log("viewAs", viewAs);
+
   return (
     <EditingWrapper viewAs={viewAs}>
       {isTable && elementIcon}
