@@ -173,7 +173,7 @@ namespace ASC.Web.Studio.Core
             SalesEmail = GetAppSettings("web.payment.email", "sales@onlyoffice.com");
             web_autotest_secret_email = (configuration["web.autotest.secret-email"] ?? "").Trim();
 
-            RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", "");
+            RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", null);
             RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
             RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
             LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
