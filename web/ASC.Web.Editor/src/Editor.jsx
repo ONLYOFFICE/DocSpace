@@ -585,14 +585,20 @@ const Editor = () => {
       docTitle = newTitle;
     }
 
-    if (!newTitle)
+    if (!newTitle) {
+      const onlyNumbers = new RegExp("^[0-9]+$");
+      const isFileWithoutProvider = onlyNumbers.test(fileId);
+
+      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+
       favorite
-        ? markAsFavorite([+fileId])
+        ? markAsFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error))
-        : removeFromFavorite([+fileId])
+        : removeFromFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error));
+    }
   };
 
   const onSDKRequestInsertImage = () => {

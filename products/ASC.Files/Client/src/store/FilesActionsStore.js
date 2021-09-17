@@ -695,8 +695,7 @@ class FilesActionStore {
 
     const removeDownloadAs = !hasSelection || !isWebEditSelected;
 
-    const removeShare =
-      isFavoritesFolder || isRecentFolder || !isAccessedSelected;
+    const removeShare = !isAccessedSelected; //isFavoritesFolder || isRecentFolder
     const removeDownload = !hasSelection;
 
     const removeMoveTo =

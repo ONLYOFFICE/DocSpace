@@ -1,4 +1,5 @@
 import React from "react";
+import { isMobile } from "react-device-detect";
 import Row from "@appserver/components/row";
 import RowContent from "@appserver/components/row-content";
 import RowContainer from "@appserver/components/row-container";
@@ -187,7 +188,9 @@ const DownloadContent = (props) => {
 
                 {file.checked ? (
                   <LinkWithDropdown
-                    dropdownType="appearDashedAfterHover"
+                    dropdownType={
+                      isMobile ? "alwaysDashed" : "appearDashedAfterHover"
+                    }
                     containerWidth="auto"
                     data={dropdownItems}
                     directionX="left"

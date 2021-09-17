@@ -550,7 +550,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "copy",
           "move-to",
-          "sharing-settings",
+          //"sharing-settings",
           "unsubscribe",
           "separator2",
         ]);
@@ -983,9 +983,9 @@ class FilesStore {
       case FolderType.TRASH:
         return false;
       case FolderType.Favorites:
-        return false;
+        return true; // false;
       case FolderType.Recent:
-        return false;
+        return true; //false;
       case FolderType.Privacy:
         return true;
       default:
@@ -1325,6 +1325,11 @@ class FilesStore {
     return !!this.selection.length;
   }
 
+  get isEmptyFilesList() {
+    const filesList = [...this.files, ...this.folders];
+    return filesList.length <= 0;
+  }
+
   getOptions = (selection, externalAccess = false) => {
     const {
       canWebEdit,
@@ -1483,7 +1488,7 @@ class FilesStore {
   };
 
   createThumbnails = () => {
-    const filesList = this.filesList;
+    const filesList = [...this.files, this.folders];
     const fileIds = [];
 
     filesList.map((file) => {
