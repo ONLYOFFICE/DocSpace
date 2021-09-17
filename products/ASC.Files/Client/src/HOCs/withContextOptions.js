@@ -10,9 +10,8 @@ export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
     onOpenLocation = () => {
       const { item, openLocationAction } = this.props;
-      const { id, folderId, fileExst } = item;
-
-      const locationId = !fileExst ? id : folderId;
+      const { folderId, fileExst } = item;
+      const locationId = !fileExst ? item.parentId : folderId;
       openLocationAction(locationId, !fileExst);
     };
 
