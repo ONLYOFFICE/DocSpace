@@ -21,6 +21,8 @@
     <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
     <ROW Property="SERVER_PROP" Value="localhost"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
+    <ROW Property="ServiceName_Apache_Kafka" Value="Apache Kafka"/>
+    <ROW Property="ServiceName_Apache_ZooKeeper" Value="Apache ZooKeeper"/>
     <ROW Property="ServiceName_OnlyofficeApiSystemService" Value="OnlyofficeApiSystemService"/>
     <ROW Property="ServiceName_OnlyofficeBackupService" Value="OnlyofficeBackupService"/>
     <ROW Property="ServiceName_OnlyofficeCalendarServer" Value="OnlyofficeCalendarServer"/>
@@ -524,10 +526,10 @@
     <ROW MsiServiceConfig="__16" Name="[ServiceName_OnlyofficeWebApi]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfig="__17" Name="[ServiceName_OnlyofficeWebStudio]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Studio.exe"/>
     <ROW MsiServiceConfig="__18" Name="[ServiceName_OnlyofficeProxy]" Event="1" ConfigType="3" Argument="1" Component_="OnlyofficeProxy.exe"/>
-    <ROW MsiServiceConfig="__19" Name="zookeeper" Event="1" ConfigType="3" Argument="1" Component_="zookeeper.exe"/>
+    <ROW MsiServiceConfig="__19" Name="[ServiceName_Apache_ZooKeeper]" Event="1" ConfigType="3" Argument="1" Component_="zookeeper.exe"/>
     <ROW MsiServiceConfig="__2" Name="[ServiceName_OnlyofficeUrlShortenerService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.UrlShortener.Svc.exe"/>
     <ROW MsiServiceConfig="__20" Name="[ServiceName_OnlyofficeBackupService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Backup.exe"/>
-    <ROW MsiServiceConfig="__21" Name="kafka" Event="1" ConfigType="3" Argument="1" Component_="kafka.exe"/>
+    <ROW MsiServiceConfig="__21" Name="[ServiceName_Apache_Kafka]" Event="1" ConfigType="3" Argument="1" Component_="kafka.exe"/>
     <ROW MsiServiceConfig="__3" Name="[ServiceName_OnlyofficeCalendarServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Calendar.exe"/>
     <ROW MsiServiceConfig="__4" Name="[ServiceName_OnlyofficeCrmServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.CRM.exe"/>
     <ROW MsiServiceConfig="__5" Name="[ServiceName_OnlyofficeFileServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Files.exe"/>
@@ -548,10 +550,10 @@
     <ROW MsiServiceConfigFailureActions="__16" Name="[ServiceName_OnlyofficeWebApi]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfigFailureActions="__17" Name="[ServiceName_OnlyofficeWebStudio]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Web.Studio.exe"/>
     <ROW MsiServiceConfigFailureActions="__18" Name="[ServiceName_OnlyofficeProxy]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="OnlyofficeProxy.exe"/>
-    <ROW MsiServiceConfigFailureActions="__19" Name="zookeeper" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="zookeeper.exe"/>
+    <ROW MsiServiceConfigFailureActions="__19" Name="[ServiceName_Apache_ZooKeeper]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="zookeeper.exe"/>
     <ROW MsiServiceConfigFailureActions="__2" Name="[ServiceName_OnlyofficeUrlShortenerService]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.UrlShortener.Svc.exe"/>
     <ROW MsiServiceConfigFailureActions="__20" Name="[ServiceName_OnlyofficeBackupService]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Data.Backup.exe"/>
-    <ROW MsiServiceConfigFailureActions="__21" Name="kafka" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="kafka.exe"/>
+    <ROW MsiServiceConfigFailureActions="__21" Name="[ServiceName_Apache_Kafka]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="kafka.exe"/>
     <ROW MsiServiceConfigFailureActions="__3" Name="[ServiceName_OnlyofficeCalendarServer]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Calendar.exe"/>
     <ROW MsiServiceConfigFailureActions="__4" Name="[ServiceName_OnlyofficeCrmServer]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.CRM.exe"/>
     <ROW MsiServiceConfigFailureActions="__5" Name="[ServiceName_OnlyofficeFileServer]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Files.exe"/>
@@ -580,9 +582,9 @@
     <ROW ServiceControl="ASC.UrlShortener.Svc.exe" Name="[ServiceName_OnlyofficeUrlShortenerService]" Event="161" Wait="0" Component_="ASC.UrlShortener.Svc.exe"/>
     <ROW ServiceControl="ASC.Web.Api.exe" Name="[ServiceName_OnlyofficeWebApi]" Event="161" Wait="1" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceControl="ASC.Web.Studio.exe" Name="[ServiceName_OnlyofficeWebStudio]" Event="161" Wait="1" Component_="ASC.Web.Studio.exe"/>
-    <ROW ServiceControl="kafka.exe" Name="kafka" Event="161" Wait="1" Component_="kafka.exe"/>
+    <ROW ServiceControl="kafka.exe" Name="[ServiceName_Apache_Kafka]" Event="161" Wait="1" Component_="kafka.exe"/>
     <ROW ServiceControl="nginx.exe" Name="[ServiceName_OnlyofficeProxy]" Event="161" Wait="1" Component_="OnlyofficeProxy.exe"/>
-    <ROW ServiceControl="zookeeper.exe" Name="zookeeper" Event="161" Wait="1" Component_="zookeeper.exe"/>
+    <ROW ServiceControl="zookeeper.exe" Name="[ServiceName_Apache_ZooKeeper]" Event="161" Wait="1" Component_="zookeeper.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServInstComponent">
     <ROW ServiceInstall="ASC.ApiSystem.exe" Name="[ServiceName_OnlyofficeApiSystemService]" DisplayName="[ServiceName_OnlyofficeApiSystemService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=http://127.0.0.1:5010 --ENVIRONMENT=test --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot;" Component_="ASC.ApiSystem.exe"/>
@@ -604,9 +606,9 @@
     <ROW ServiceInstall="ASC.UrlShortener.Svc.exe" Name="[ServiceName_OnlyofficeUrlShortenerService]" DisplayName="[ServiceName_OnlyofficeUrlShortenerService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=http://127.0.0.1:9999 --ENVIRONMENT=test --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot;" Component_="ASC.UrlShortener.Svc.exe"/>
     <ROW ServiceInstall="ASC.Web.Api.exe" Name="[ServiceName_OnlyofficeWebApi]" DisplayName="[ServiceName_OnlyofficeWebApi]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=http://127.0.0.1:5000 --ENVIRONMENT=test --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot;" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceInstall="ASC.Web.Studio.exe" Name="[ServiceName_OnlyofficeWebStudio]" DisplayName="[ServiceName_OnlyofficeWebStudio]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=http://127.0.0.1:5003 --ENVIRONMENT=test --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot;" Component_="ASC.Web.Studio.exe"/>
-    <ROW ServiceInstall="kafka.exe" Name="kafka" DisplayName="kafka" ServiceType="16" StartType="2" ErrorControl="1" Component_="kafka.exe"/>
+    <ROW ServiceInstall="kafka.exe" Name="[ServiceName_Apache_Kafka]" DisplayName="[ServiceName_Apache_Kafka]" ServiceType="16" StartType="2" ErrorControl="1" Component_="kafka.exe"/>
     <ROW ServiceInstall="nginx.exe" Name="[ServiceName_OnlyofficeProxy]" DisplayName="[ServiceName_OnlyofficeProxy]" ServiceType="16" StartType="2" ErrorControl="1" Component_="OnlyofficeProxy.exe"/>
-    <ROW ServiceInstall="zookeeper.exe" Name="zookeeper" DisplayName="zookeeper" ServiceType="16" StartType="2" ErrorControl="1" Component_="zookeeper.exe"/>
+    <ROW ServiceInstall="zookeeper.exe" Name="[ServiceName_Apache_ZooKeeper]" DisplayName="[ServiceName_Apache_ZooKeeper]" ServiceType="16" StartType="2" ErrorControl="1" Component_="zookeeper.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
@@ -617,7 +619,8 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
     <ROW PrereqKey="A918597FE054CCCB65ABDBA0AD8F63C" DisplayName="Visual C++ Redistributable for Visual Studio 2015-2019 x86" VersionMin="14.26" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/d60aa805-26e9-47df-b4e3-cd6fcc392333/A06AAC66734A618AB33C1522920654DDFC44FC13CAFAA0F0AB85B199C3D51DC0/VC_redist.x86.exe" Location="1" ExactSize="14413048" WinNTVersions="Windows Vista RTM x86, Windows Vista SP1 x86, Windows Server 2008 RTM x86, Windows 7 RTM x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64, Windows Server 2008 RTM x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64" Operator="0" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="fe6eae1c34528d1ea224569dcdc35618" TargetName="Visual C++ Redistributable for Visual Studio 2015-2019"/>
-    <ROW PrereqKey="Apachekafkazookeep" DisplayName="Apache kafka-zookeeper" VersionMin="1.0.0" SetupFileUrl="Apache kafka-zookeeper.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/qn" BasicUiComLine="/qn" NoUiComLine="/qn" Options="y" TargetName="Apache kafka-zookeeper\Apache kafka-zookeeper.exe"/>
+    <ROW PrereqKey="ApacheKafka" DisplayName="Apache Kafka" VersionMin="1.0.0" SetupFileUrl="Apache Kafka.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/qn" BasicUiComLine="/qn" NoUiComLine="/qn" Options="y" TargetName="Apache Kafka\Apache Kafka.msi"/>
+    <ROW PrereqKey="ApacheZooKepper" DisplayName="Apache ZooKepper" VersionMin="1.0.0" SetupFileUrl="Apache ZooKeeper.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/qn" BasicUiComLine="/qn" NoUiComLine="/qn" Options="y" TargetName="Apache ZooKepper\Apache ZooKeeper.msi"/>
     <ROW PrereqKey="B365F790B0C4E08A90D54675D858A21" DisplayName=".NET Core Runtime 3.1.10 x64" VersionMin="3.1" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/9845b4b0-fb52-48b6-83cf-4c431558c29b/41025de7a76639eeff102410e7015214/dotnet-runtime-3.1.10-win-x64.exe" Location="1" ExactSize="26230496" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="y" MD5="a6e46b0e884ba62316560e3bd17384a5" TargetName=".NET Core 3.1"/>
     <ROW PrereqKey="B450414DF7494F99141402B8725A7C" DisplayName=".NET Core Runtime 3.1.10 x86" VersionMin="3.1" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/abb3fb5d-4e82-4ca8-bc03-ac13e988e608/b34036773a72b30c5dc5520ee6a2768f/dotnet-runtime-3.1.10-win-x86.exe" Location="1" ExactSize="23451472" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="y" MD5="03832c85bc74de4fcb7fffa862b9f4a5" TargetName=".NET Core 3.1"/>
     <ROW PrereqKey="B96F93FA27E74B02866727AAE83982D0" DisplayName=".NET Framework 4.8" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/014120d7-d689-4305-befd-3cb711108212/0fd66638cde16859462a6243a4629a50/ndp48-x86-x64-allos-enu.exe" Location="1" ExactSize="117380440" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86, Windows 10 version 1903 x86, Windows 10 version 1909 x86, Windows 10 version 2004 x86, Windows 10 version 20H2 x86, Windows 10 version 21H1 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 RTM x64, Windows 8 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64, Windows 10 version 1903 x64, Windows 10 version 1909 x64, Windows 10 version 2004 x64, Windows 10 version 20H2 x64, Windows 10 version 21H1 x64" Operator="1" ComLine="/q" BasicUiComLine="/q" NoUiComLine="/q" Options="xym" MD5="aebcb9fcafa2becf8bb30458a7e1f0a2" TargetName=".NET Framework 4.8"/>
@@ -634,7 +637,7 @@
     <ROW PrereqKey="RequiredApplication_1" DisplayName="Node.js 14.17.4" VersionMin="14.17.4" SetupFileUrl="https://nodejs.org/dist/v14.17.4/node-v14.17.4-x64.msi" Location="1" ExactSize="0" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="my" TargetName="Node.js v14.17.4 x64"/>
     <ROW PrereqKey="RequiredApplication_2" DisplayName="MySQL Installer Community 8.0.21 x86" SetupFileUrl="https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-8.0.21.0.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="MySQL Installer Community 8.0.21 x86"/>
     <ROW PrereqKey="RequiredApplication_4" DisplayName="Elasticsearch v7.13.1 x64" VersionMin="7.13.1" VersionMax="7.13.1" SetupFileUrl="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.13.1.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="Elasticsearch v7.13.1 x64"/>
-    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 D89B7B30904FD690B8419A4E98FF8D C7EABA31DB14B869BCE8D63C6777EF0 RequiredApplication_2 E0AF34BE02B40458E2E8CF85741C383 F5401508D8347838BBC99F079B6F574 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication RequiredApplication_1 F6D8148C0594E7491C36E27FD5E9E89 RequiredApplication_4 MySQLInstallerRunn Apachekafkazookeep"/>
+    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 D89B7B30904FD690B8419A4E98FF8D C7EABA31DB14B869BCE8D63C6777EF0 RequiredApplication_2 E0AF34BE02B40458E2E8CF85741C383 F5401508D8347838BBC99F079B6F574 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication RequiredApplication_1 F6D8148C0594E7491C36E27FD5E9E89 RequiredApplication_4 MySQLInstallerRunn ApacheZooKepper ApacheKafka"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="A918597FE054CCCB65ABDBA0AD8F63CSyst" Prereq="A918597FE054CCCB65ABDBA0AD8F63C" SearchType="0" SearchString="[SystemFolder]vcruntime140.dll" VerMin="14.26.28720" Order="2" Property="PreReqSearch_1_A918597FE054CCCB65AB"/>
@@ -656,8 +659,9 @@
     <ROW SearchKey="SystemFolderfile.dll" Prereq="RequiredApplication" SearchType="4" SearchString="{FF073FBB-32E2-4052-B6B2-830C5ED4A809}" VerMin="5.3.10" Order="1" Property="PreReqSearch"/>
     <ROW SearchKey="SystemFolderfile.dll_1" Prereq="RequiredApplication_1" SearchType="4" SearchString="{47C07A3A-42EF-4213-A85D-8F5A59077C28}" VerMin="12.18.0" Order="1" Property="PreReqSearch_1"/>
     <ROW SearchKey="SystemFolderfile.dll_2" Prereq="RequiredApplication_2" SearchType="4" SearchString="{18B94B70-06F1-4AC0-B308-37280DB868C2}" Order="1" Property="PreReqSearch_2"/>
-    <ROW SearchKey="UpgradeCode" Prereq="Apachekafkazookeep" SearchType="4" SearchString="{5CB34BEC-536C-45BA-8C86-77E055EF4325}" VerMin="1.0.0" Order="1" Property="PreReqSearch_3"/>
+    <ROW SearchKey="UpgradeCode" Prereq="ApacheZooKepper" SearchType="4" SearchString="{5CB34BEC-536C-45BA-8C86-77E055EF4325}" VerMin="1.0.0" Order="1" Property="PreReqSearch_3"/>
     <ROW SearchKey="UpgradeCode_1" Prereq="RequiredApplication_4" SearchType="4" SearchString="{DAAA2CBA-A1ED-4F29-AFBF-5478617B00F6}" Order="2" Property="PreReqSearch_7"/>
+    <ROW SearchKey="UpgradeCode_2" Prereq="ApacheKafka" SearchType="4" SearchString="{9202447D-B999-4041-B479-B3789A872456}" VerMin="1.0.0" Order="1" Property="PreReqSearch_8"/>
     <ROW SearchKey="Version" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.7\Version" Order="1" Property="PreReqSearch_4"/>
     <ROW SearchKey="Version_1" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 8.0\Version" Order="2" Property="PreReqSearch_5"/>
     <ROW SearchKey="Version_2" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.5\Version" VerMin="5.5" Order="0" Property="PreReqSearch_6"/>
@@ -677,13 +681,13 @@
     <ROW ScriptName="onlyoffice.upgradev115" Token="DELIMITER ;" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
-    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\createdb.sql" Flags="274" Order="0"/>
-    <ROW ScriptName="onlyoffice" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.sql" Flags="18" Order="1"/>
-    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.data.sql" Flags="274" Order="2"/>
-    <ROW ScriptName="onlyoffice.resources" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.resources.sql" Flags="18" Order="3"/>
-    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
-    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
-    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\AppServer\build\install\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
+    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\createdb.sql" Flags="274" Order="0"/>
+    <ROW ScriptName="onlyoffice" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\onlyoffice.sql" Flags="18" Order="1"/>
+    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.data.sql" Flags="274" Order="2"/>
+    <ROW ScriptName="onlyoffice.resources" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\..\..\build\install\docker\config\onlyoffice.resources.sql" Flags="18" Order="3"/>
+    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
+    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
+    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\..\..\build\install\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlTestConnectionComponent">
@@ -696,10 +700,11 @@
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceAppDir" TxtUpdateSet="appsettings.test.json" FindPattern="{APPDIRCONF}" ReplacePattern="[AppDirChanged]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceElasticHost" TxtUpdateSet="YourFile.txt" FindPattern=".Host.:.*" ReplacePattern="&quot;Host&quot;: &quot;localhost&quot;," Options="3" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceWinVol" TxtUpdateSet="xml" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="1" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
     <ROW Key="YourFile.txt" Component="appsettings.test.json" FileName="elastic.json" Directory="config_Dir" Options="17"/>
     <ROW Key="appsettings.test.json" Component="ASC.ApiSystem.exe" FileName="*.json" Directory="config_Dir" Options="17"/>
-    <ROW Key="xml" Component="AI_ExePath" FileName="OnlyofficeProxy.xml" Directory="tools_Dir" Options="17"/>
+    <ROW Key="xml" Component="AI_ExePath" FileName="*.xml" Directory="tools_Dir" Options="17"/>
   </COMPONENT>
 </DOCUMENT>

@@ -2,11 +2,11 @@
 	<id>zookeeper</id>
 	<name>zookeeper</name>
 	<description>This service runs zookeeper</description>
-	<executable>C:\kafka-zookeeper\kafka_2.12-2.8.0\bin\windows\zookeeper-server-start.bat</executable>
+	<executable>{WindowsVolume}Apache\kafka\bin\windows\zookeeper-server-start.bat</executable>
 	<priority>Normal</priority>
 	<startmode>Automatic</startmode>
 	<arguments>
-		C:\kafka-zookeeper\kafka_2.12-2.8.0\config\zookeeper.properties
+		{WindowsVolume}Apache\kafka\config\zookeeper.properties
 	</arguments>
 	<priority>high</priority>
 </service>
