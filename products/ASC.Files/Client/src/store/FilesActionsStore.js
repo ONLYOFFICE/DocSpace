@@ -668,7 +668,7 @@ class FilesActionStore {
     }
   };
 
-  availableOption = (option) => {
+  isAvailableOption = (option) => {
     const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
       isAccessedSelected,
@@ -680,14 +680,14 @@ class FilesActionStore {
 
     switch (option) {
       case "share":
-        return personal || !isAccessedSelected; //isFavoritesFolder ||isRecentFolder
+        return !personal && isAccessedSelected; //isFavoritesFolder ||isRecentFolder
       case "copy":
       case "download":
-        return !hasSelection;
+        return hasSelection;
       case "downloadAs":
-        return !hasSelection || !isWebEditSelected;
+        return !(!hasSelection || !isWebEditSelected);
       case "moveTo":
-        return (
+        return !(
           isFavoritesFolder ||
           isRecentFolder ||
           !isAccessedSelected ||
@@ -695,7 +695,7 @@ class FilesActionStore {
           isThirdPartyRootSelection
         );
       case "delete":
-        return !hasSelection || isThirdPartyRootSelection;
+        return !(!hasSelection || isThirdPartyRootSelection);
     }
   };
 
@@ -720,7 +720,7 @@ class FilesActionStore {
 
     switch (option) {
       case "share":
-        if (!this.availableOption("share")) return null;
+        if (!this.isAvailableOption("share")) return null;
         else
           return {
             label: t("Share"),
@@ -728,7 +728,7 @@ class FilesActionStore {
           };
 
       case "copy":
-        if (!this.availableOption("copy")) return null;
+        if (!this.isAvailableOption("copy")) return null;
         else
           return {
             label: t("Translations:Copy"),
@@ -736,7 +736,7 @@ class FilesActionStore {
           };
 
       case "download":
-        if (!this.availableOption("download")) return null;
+        if (!this.isAvailableOption("download")) return null;
         else
           return {
             label: t("Common:Download"),
@@ -747,7 +747,7 @@ class FilesActionStore {
           };
 
       case "downloadAs":
-        if (!this.availableOption("downloadAs")) return null;
+        if (!this.isAvailableOption("downloadAs")) return null;
         else
           return {
             label: t("Translations:DownloadAs"),
@@ -755,7 +755,7 @@ class FilesActionStore {
           };
 
       case "moveTo":
-        if (!this.availableOption("moveTo")) return null;
+        if (!this.isAvailableOption("moveTo")) return null;
         else
           return {
             label: t("MoveTo"),
@@ -763,7 +763,7 @@ class FilesActionStore {
           };
 
       case "delete":
-        if (!this.availableOption("delete")) return null;
+        if (!this.isAvailableOption("delete")) return null;
         else
           return {
             label: t("Common:Delete"),
