@@ -1630,6 +1630,7 @@ const Base = {
       height: "36px",
       padding: "0 20px",
       marginBottom: "20px",
+      backgroundColor: grayLight,
       tablet: {
         height: "44px",
         padding: "0 16px",

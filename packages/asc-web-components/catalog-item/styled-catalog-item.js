@@ -112,6 +112,8 @@ const StyledCatalogItemSibling = styled.div`
 `;
 
 const StyledCatalogItemContainer = styled.div`
+  background-color: ${(props) =>
+    props.theme.catalogItem.container.backgroundColor};
   display: flex;
   justify-content: ${(props) => (props.showText ? "space-between" : "center")};
   align-items: center;
