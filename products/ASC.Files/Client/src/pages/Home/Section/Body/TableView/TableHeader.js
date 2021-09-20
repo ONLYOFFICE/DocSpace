@@ -169,6 +169,8 @@ class FilesTableHeader extends React.Component {
       getHeaderMenu,
       filter,
       sectionWidth,
+      cbMenuItems,
+      getCheckboxItemLabel,
     } = this.props;
 
     const { sortBy, sortOrder } = filter;
@@ -177,47 +179,17 @@ class FilesTableHeader extends React.Component {
 
     const checkboxOptions = (
       <>
-        <DropDownItem label={t("All")} data-key="all" onClick={this.onSelect} />
-        <DropDownItem
-          label={t("Translations:Folders")}
-          data-key={FilterType.FoldersOnly}
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("Common:Documents")}
-          data-key={FilterType.DocumentsOnly}
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("Translations:Presentations")}
-          data-key={FilterType.PresentationsOnly}
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("Translations:Spreadsheets")}
-          data-key={FilterType.SpreadsheetsOnly}
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("Images")}
-          data-key={FilterType.ImagesOnly}
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("Media")}
-          data-key={FilterType.MediaOnly}
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("Archives")}
-          data-key={FilterType.ArchiveOnly}
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("AllFiles")}
-          data-key={FilterType.FilesOnly}
-          onClick={this.onSelect}
-        />
+        {cbMenuItems.map((key) => {
+          const label = getCheckboxItemLabel(t, key);
+          return (
+            <DropDownItem
+              key={key}
+              label={label}
+              data-key={key}
+              onClick={this.onSelect}
+            />
+          );
+        })}
       </>
     );
 
@@ -260,6 +232,8 @@ export default inject(
       filter,
       fetchFiles,
       canShare,
+      cbMenuItems,
+      getCheckboxItemLabel,
     } = filesStore;
     const { getHeaderMenu } = filesActionsStore;
     const { isPrivacyFolder } = treeFoldersStore;
@@ -280,6 +254,8 @@ export default inject(
       setIsLoading,
       fetchFiles,
       getHeaderMenu,
+      cbMenuItems,
+      getCheckboxItemLabel,
     };
   }
 )(
