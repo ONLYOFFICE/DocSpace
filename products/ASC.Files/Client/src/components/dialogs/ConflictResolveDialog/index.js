@@ -8,6 +8,7 @@ import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@appserver/common/constants";
+import toastr from "studio/toastr";
 
 const ConflictResolveDialog = (props) => {
   const {
@@ -49,7 +50,7 @@ const ConflictResolveDialog = (props) => {
     }
   };
 
-  const onAcceptType = () => {
+  const onAcceptType = async () => {
     const conflictResolveType = getResolveType();
 
     let newFileIds = fileIds;
@@ -72,7 +73,11 @@ const ConflictResolveDialog = (props) => {
     };
 
     onClose();
-    itemOperationToFolder(data);
+    try {
+      await itemOperationToFolder(data);
+    } catch (error) {
+      toastr.error(error.message);
+    }
   };
 
   const radioOptions = [

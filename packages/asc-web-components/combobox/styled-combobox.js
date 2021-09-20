@@ -18,6 +18,7 @@ const StyledComboBox = styled.div`
     padding: ${(props) =>
       props.advancedOptions && props.theme.comboBox.padding};
   }
+  -webkit-user-select: none;
 `;
 
 StyledComboBox.defaultProps = {

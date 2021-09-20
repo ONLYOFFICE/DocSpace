@@ -28,7 +28,7 @@ const OperationsPanelComponent = (props) => {
   } = props;
 
   const zIndex = 310;
-  const deleteAfter = true; // TODO: get from settings
+  const deleteAfter = false; // TODO: get from settings
 
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
 

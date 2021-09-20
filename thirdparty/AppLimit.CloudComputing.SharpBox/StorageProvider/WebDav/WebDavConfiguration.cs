@@ -49,16 +49,16 @@ namespace AppLimit.CloudComputing.SharpBox.StorageProvider.WebDav
         {
             // set the right url
             var config = new WebDavConfiguration(new Uri("https://sd2dav.1und1.de"))
+            {
+                Limits = new CloudStorageLimits
                 {
-                    Limits = new CloudStorageLimits
-                        {
-                            MaxDownloadFileSize = 500*1024*1024,
-                            MaxUploadFileSize = 500*1024*1024
-                        },
+                    MaxDownloadFileSize = 500 * 1024 * 1024,
+                    MaxUploadFileSize = 500 * 1024 * 1024
+                },
 
-                    // 1and1 does not support a valid ssl
-                    TrustUnsecureSSLConnections = true,
-                };
+                // 1and1 does not support a valid ssl
+                TrustUnsecureSSLConnections = true,
+            };
 
             // go ahead
             return config;
@@ -73,15 +73,15 @@ namespace AppLimit.CloudComputing.SharpBox.StorageProvider.WebDav
         {
             // set the right url
             var config = new WebDavConfiguration(new Uri("https://webdav1.storegate.com/" + credentials.UserName + "/home/" + credentials.UserName))
+            {
+                Limits = new CloudStorageLimits
                 {
-                    Limits = new CloudStorageLimits
-                        {
-                            MaxDownloadFileSize = -1,
-                            MaxUploadFileSize = -1
-                        },
-                    // box.net does not support a valid ssl
-                    TrustUnsecureSSLConnections = false
-                };
+                    MaxDownloadFileSize = -1,
+                    MaxUploadFileSize = -1
+                },
+                // box.net does not support a valid ssl
+                TrustUnsecureSSLConnections = false
+            };
 
             // go ahead
             return config;
@@ -96,19 +96,19 @@ namespace AppLimit.CloudComputing.SharpBox.StorageProvider.WebDav
         {
             // set the right url
             var config = new WebDavConfiguration(new Uri("http://webdav.cloudme.com/" + credentials.UserName + "/xios"))
+            {
+                Limits = new CloudStorageLimits
                 {
-                    Limits = new CloudStorageLimits
-                        {
-                            MaxDownloadFileSize = -1,
-                            MaxUploadFileSize = -1
-                        },
+                    MaxDownloadFileSize = -1,
+                    MaxUploadFileSize = -1
+                },
 
-                    // box.net does not support a valid ssl
-                    TrustUnsecureSSLConnections = false,
+                // box.net does not support a valid ssl
+                TrustUnsecureSSLConnections = false,
 
-                    // set streambuffered transfer
-                    UploadDataStreambuffered = true
-                };
+                // set streambuffered transfer
+                UploadDataStreambuffered = true
+            };
 
             // go ahead
             return config;
@@ -122,38 +122,49 @@ namespace AppLimit.CloudComputing.SharpBox.StorageProvider.WebDav
         {
             // set the right url
             var config = new WebDavConfiguration(new Uri("https://webdav.hidrive.strato.com"))
+            {
+                Limits = new CloudStorageLimits
                 {
-                    Limits = new CloudStorageLimits
-                        {
-                            MaxDownloadFileSize = -1,
-                            MaxUploadFileSize = -1
-                        },
+                    MaxDownloadFileSize = -1,
+                    MaxUploadFileSize = -1
+                },
 
-                    // box.net does not support a valid ssl
-                    TrustUnsecureSSLConnections = false
-                };
+                // box.net does not support a valid ssl
+                TrustUnsecureSSLConnections = false
+            };
 
             // go ahead
             return config;
         }
 
+        public const string kDriveUrl = "https://connect.drive.infomaniak.com";
+        public static WebDavConfiguration GetkDriveConfiguration()
+        {
+            var config = new WebDavConfiguration(new Uri(kDriveUrl))
+            {
+                TrustUnsecureSSLConnections = false
+            };
+            return config;
+        }
+
+
         public const string YaUrl = "https://webdav.yandex.ru";
         public static WebDavConfiguration GetYandexConfiguration()
         {
             var config = new WebDavConfiguration(new Uri(YaUrl))
-                {
-                    TrustUnsecureSSLConnections = false
-                };
+            {
+                TrustUnsecureSSLConnections = false
+            };
             return config;
         }
 
         #region ICloudStorageConfiguration Members
 
         private CloudStorageLimits _limits = new CloudStorageLimits
-            {
-                MaxDownloadFileSize = -1,
-                MaxUploadFileSize = -1
-            };
+        {
+            MaxDownloadFileSize = -1,
+            MaxUploadFileSize = -1
+        };
 
         /// <summary>
         /// Sets or gets the limits of a webdav configuration

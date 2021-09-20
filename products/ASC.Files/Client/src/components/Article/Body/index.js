@@ -40,7 +40,7 @@ class ArticleBodyContent extends React.Component {
     //   : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
-      fetchFiles(data[0], null, true, false, true)
+      fetchFiles(data[0], null, true, false)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {

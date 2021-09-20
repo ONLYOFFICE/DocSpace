@@ -200,13 +200,16 @@ namespace ASC.Files.Helpers
             return FileStorageService.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
         }
 
-        public Configuration<T> OpenEdit(T fileId, int version, string doc)
+        public Configuration<T> OpenEdit(T fileId, int version, string doc, bool view)
         {
-            DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
+            DocumentServiceHelper.GetParams(fileId, version, doc, true, !view, true, out var configuration);
             configuration.EditorType = EditorType.External;
-            configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.File.ID.ToString());
+            if (configuration.EditorConfig.ModeWrite)
+            {
+                configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
+            }
 
-            if (configuration.Document.Info.File.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
+            if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
             {
                 var keyPair = EncryptionKeyPairHelper.GetKeyPair();
                 if (keyPair != null)
@@ -218,8 +221,8 @@ namespace ASC.Files.Helpers
                     };
                 }
             }
-            
-            if (!configuration.Document.Info.File.Encrypted && !configuration.Document.Info.File.ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.File);
+
+            if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.GetFile());
 
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
@@ -493,13 +496,13 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)
         {
             var files = FileStorageService.GetFileHistory(fileId);
-            return files.Select(r=> FileWrapperHelper.Get(r)).ToList();
+            return files.Select(r => FileWrapperHelper.Get(r)).ToList();
         }
 
         public IEnumerable<FileWrapper<T>> ChangeHistory(T fileId, int version, bool continueVersion)
         {
             var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
-            return history.Select(r=> FileWrapperHelper.Get(r)).ToList();
+            return history.Select(r => FileWrapperHelper.Get(r)).ToList();
         }
 
         public FileWrapper<T> LockFile(T fileId, bool lockFile)
@@ -548,7 +551,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
-            return SetSecurityInfo(new List<T>(), new List<T> { folderId}, share, notify, sharingMessage);
+            return SetSecurityInfo(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage);
         }
 
         public IEnumerable<FileShareWrapper> SetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
