@@ -701,7 +701,8 @@ class FilesActionStore {
         );
 
       case "delete":
-        const deleteCondition = !isThirdPartyRootSelection && hasSelection;
+        const deleteCondition =
+          !isThirdPartyRootSelection && hasSelection && isAccessedSelected;
 
         return isCommonFolder ? userAccess && deleteCondition : deleteCondition;
     }
