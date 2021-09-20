@@ -29,7 +29,7 @@
     <ROW Directory="admin_Dir" Directory_Parent="zookeeper_2_Dir" DefaultDir="admin"/>
     <ROW Directory="apache_2_Dir" Directory_Parent="org_2_Dir" DefaultDir="apache"/>
     <ROW Directory="apache_Dir" Directory_Parent="org_Dir" DefaultDir="apache"/>
-    <ROW Directory="apachezookeeper3.7.0bin_Dir" Directory_Parent="kafkazookeeper_Dir" DefaultDir="APACHE~1|apache-zookeeper"/>
+    <ROW Directory="apachezookeeper3.7.0bin_Dir" Directory_Parent="kafkazookeeper_Dir" DefaultDir="ZOOKEE~1|zookeeper"/>
     <ROW Directory="apidocs_Dir" Directory_Parent="docs_Dir" DefaultDir="apidocs"/>
     <ROW Directory="audit_Dir" Directory_Parent="zookeeper_2_Dir" DefaultDir="audit"/>
     <ROW Directory="auth_2_Dir" Directory_Parent="quorum_2_Dir" DefaultDir="auth"/>
@@ -1732,6 +1732,10 @@
     <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomeDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
+    <ROW Action="AI_TxtUpdaterCommit" Description="Фиксация изменений текстового файла." DescriptionLocId="ActionText.Description.AI_TxtUpdaterCommit" Template="Фиксация изменений текстового файла." TemplateLocId="ActionText.Template.AI_TxtUpdaterCommit"/>
+    <ROW Action="AI_TxtUpdaterConfig" Description="Выполнение обновления текстового файла" DescriptionLocId="ActionText.Description.AI_TxtUpdaterConfig" Template="Обновление текстового файла: &quot;[1]&quot;" TemplateLocId="ActionText.Template.AI_TxtUpdaterConfig"/>
+    <ROW Action="AI_TxtUpdaterInstall" Description="Создание действий для настройки текстовых файлов обновлений" DescriptionLocId="ActionText.Description.AI_TxtUpdaterInstall"/>
+    <ROW Action="AI_TxtUpdaterRollback" Description="Откат изменений текстового файла." DescriptionLocId="ActionText.Description.AI_TxtUpdaterRollback" Template="Откат изменений текстового файла." TemplateLocId="ActionText.Template.AI_TxtUpdaterRollback"/>
     <ROW Action="AI_XmlCommit" Description="Фиксация XML-файла конфигурации." DescriptionLocId="ActionText.Description.AI_XmlCommit" Template="Фиксация XML-файла конфигурации." TemplateLocId="ActionText.Template.AI_XmlCommit"/>
     <ROW Action="AI_XmlConfig" Description="Выполнение файла конфигурации XML" DescriptionLocId="ActionText.Description.AI_XmlConfig" Template="Настройка XML-файла: &quot;[1]&quot;" TemplateLocId="ActionText.Template.AI_XmlConfig"/>
     <ROW Action="AI_XmlInstall" Description="Создание действий для настройки XML-файлов" DescriptionLocId="ActionText.Description.AI_XmlInstall"/>
@@ -1740,6 +1744,7 @@
     <ROW Action="AI_XmlUninstall" Description="Создание действий для настройки XML-файлов" DescriptionLocId="ActionText.Description.AI_XmlUninstall"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="xmlCfg.dll" SourcePath="&lt;AI_CUSTACTS&gt;xmlCfg.dll"/>
   </COMPONENT>
@@ -1785,6 +1790,10 @@
     <ROW Action="AI_RestartElevated" Type="1" Source="aicustact.dll" Target="RestartElevated"/>
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="AI_TxtUpdaterCommit" Type="11777" Source="TxtUpdater.dll" Target="OnTxtUpdaterCommit" WithoutSeq="true"/>
+    <ROW Action="AI_TxtUpdaterConfig" Type="11265" Source="TxtUpdater.dll" Target="OnTxtUpdaterConfig" WithoutSeq="true"/>
+    <ROW Action="AI_TxtUpdaterInstall" Type="1" Source="TxtUpdater.dll" Target="OnTxtUpdaterInstall"/>
+    <ROW Action="AI_TxtUpdaterRollback" Type="11521" Source="TxtUpdater.dll" Target="OnTxtUpdaterRollback" WithoutSeq="true"/>
     <ROW Action="AI_XmlCommit" Type="11777" Source="xmlCfg.dll" Target="OnXmlCommit" WithoutSeq="true"/>
     <ROW Action="AI_XmlConfig" Type="11265" Source="xmlCfg.dll" Target="OnXmlConfig" WithoutSeq="true"/>
     <ROW Action="AI_XmlInstall" Type="1" Source="xmlCfg.dll" Target="OnXmlInstall" AdditionalSeq="AI_DATA_SETTER"/>
@@ -1879,10 +1888,11 @@
     <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1397"/>
     <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
     <ROW Action="AI_EnableDebugLog" Sequence="51"/>
-    <ROW Action="AI_XmlInstall" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5102"/>
-    <ROW Action="AI_DATA_SETTER" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5101"/>
+    <ROW Action="AI_XmlInstall" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5103"/>
+    <ROW Action="AI_DATA_SETTER" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5102"/>
     <ROW Action="AI_XmlUninstall" Condition="(REMOVE)" Sequence="3102"/>
     <ROW Action="AI_DATA_SETTER_1" Condition="(REMOVE)" Sequence="3101"/>
+    <ROW Action="AI_TxtUpdaterInstall" Sequence="5101"/>
     <ATTRIBUTE name="RegisterProduct" value="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
@@ -1910,6 +1920,12 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="257" ActionProperty="OLDPRODUCTS"/>
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
+    <ROW Name="ReplaceWindowsVolume" TxtUpdateSet="zoo.cfg" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="0" FileEncoding="-1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
+    <ROW Key="zoo.cfg" Component="AuthenticationHelper.html" FileName="zoo.cfg" Directory="conf_Dir" Options="25"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">
     <ROW XmlAttribute="border" XmlElement="table" Name="border" Flags="14" Order="0" Value="1"/>

@@ -3,8 +3,12 @@
 	<name>OnlyofficeProxy</name>
 	<description>This service runs OnlyofficeProxy</description>
 	<executable>&quot;{APPDIR}nginx\nginx.exe&quot;</executable>
-	<workingdirectory>{APPDIR}nginx</workingdirectory>
+	<workingdirectory>&quot;{APPDIR}nginx&quot;</workingdirectory>
 	<priority>Normal</priority>
 	<startmode>Automatic</startmode>
 	<priority>high</priority>
+	<log mode="roll-by-size">
+  		<sizeThreshold>10240</sizeThreshold>
+  		<keepFiles>8</keepFiles>
+	</log>
 </service>

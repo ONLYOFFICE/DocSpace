@@ -9,4 +9,8 @@
 		{WindowsVolume}Apache\kafka\config\server.properties
 	</arguments>
 	<priority>high</priority>
+	<log mode="roll-by-size">
+  		<sizeThreshold>10240</sizeThreshold>
+  		<keepFiles>8</keepFiles>
+	</log>
 </service>
