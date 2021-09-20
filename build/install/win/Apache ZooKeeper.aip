@@ -1923,8 +1923,10 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
     <ROW Name="ReplaceWindowsVolume" TxtUpdateSet="zoo.cfg" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceSlashes" TxtUpdateSet="properties" FindPattern="/" ReplacePattern="\\" Options="2" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
+    <ROW Key="properties" Component="log4j.properties" FileName="*.properties" Directory="conf_Dir" Options="25"/>
     <ROW Key="zoo.cfg" Component="AuthenticationHelper.html" FileName="zoo.cfg" Directory="conf_Dir" Options="25"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">
