@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Base from "../themes/base";
-
 import { ReactSVG } from "react-svg";
 
 import Badge from "../badge/";
@@ -52,19 +50,17 @@ const CatalogItem = (props) => {
       style={style}
       showText={showText}
       isEndOfBlock={isEndOfBlock}
-      theme={Base}
     >
       <StyledCatalogItemSibling
-        theme={Base}
         onClick={onClickAction}
       ></StyledCatalogItemSibling>
 
-      <StyledCatalogItemImg theme={Base}>
+      <StyledCatalogItemImg>
         <ReactSVG src={icon} />
         {!showText && (
           <>
             {showInitial && (
-              <StyledCatalogItemInitialText theme={Base}>
+              <StyledCatalogItemInitialText>
                 {getInitial(text)}
               </StyledCatalogItemInitialText>
             )}
@@ -72,22 +68,18 @@ const CatalogItem = (props) => {
               <StyledCatalogItemBadgeWrapper
                 onClick={onClickBadgeAction}
                 showText={showText}
-                theme={Base}
               ></StyledCatalogItemBadgeWrapper>
             )}
           </>
         )}
       </StyledCatalogItemImg>
 
-      {showText && (
-        <StyledCatalogItemText theme={Base}>{text}</StyledCatalogItemText>
-      )}
+      {showText && <StyledCatalogItemText>{text}</StyledCatalogItemText>}
 
       {showBadge && showText && (
         <StyledCatalogItemBadgeWrapper
           showText={showText}
           onClick={onClickBadgeAction}
-          theme={Base}
         >
           {!iconBadge ? (
             <Badge label={labelBadge} />

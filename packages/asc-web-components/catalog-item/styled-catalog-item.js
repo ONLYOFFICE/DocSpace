@@ -1,5 +1,7 @@
 import styled, { css } from "styled-components";
 
+import Base from "../themes/base";
+
 import { tablet } from "../utils/device";
 
 import Text from "@appserver/components/text";
@@ -41,6 +43,8 @@ const StyledCatalogItemBadgeWrapper = styled.div`
   ${(props) => !props.showText && badgeWithoutText}
 `;
 
+StyledCatalogItemBadgeWrapper.defaultProps = { theme: Base };
+
 const StyledCatalogItemInitialText = styled(Text)`
   position: absolute;
   top: 3px;
@@ -62,6 +66,8 @@ const StyledCatalogItemInitialText = styled(Text)`
   }
 `;
 
+StyledCatalogItemInitialText.defaultProps = { theme: Base };
+
 const StyledCatalogItemText = styled(Text)`
   width: ${(props) => props.theme.catalogItem.text.width};
   margin-left: ${(props) => props.theme.catalogItem.text.marginLeft};
@@ -79,6 +85,8 @@ const StyledCatalogItemText = styled(Text)`
     font-weight: ${(props) => props.theme.catalogItem.text.tablet.fontWeight};
   }
 `;
+
+StyledCatalogItemText.defaultProps = { theme: Base };
 
 const StyledCatalogItemImg = styled.div`
   position: relative;
@@ -98,6 +106,8 @@ const StyledCatalogItemImg = styled.div`
   }
 `;
 
+StyledCatalogItemImg.defaultProps = { theme: Base };
+
 const StyledCatalogItemSibling = styled.div`
   position: absolute;
   top: 0;
@@ -110,6 +120,8 @@ const StyledCatalogItemSibling = styled.div`
       props.theme.catalogItem.sibling.hover.backgroundColor};
   }
 `;
+
+StyledCatalogItemSibling.defaultProps = { theme: Base };
 
 const StyledCatalogItemContainer = styled.div`
   background-color: ${(props) =>
@@ -136,6 +148,7 @@ const StyledCatalogItemContainer = styled.div`
       props.theme.catalogItem.container.tablet.marginBottom};
   }
 `;
+StyledCatalogItemContainer.defaultProps = { theme: Base };
 
 export {
   StyledCatalogItemContainer,
