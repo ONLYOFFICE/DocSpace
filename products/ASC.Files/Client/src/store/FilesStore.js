@@ -1216,6 +1216,68 @@ class FilesStore {
     return newItem;
   }
 
+  get cbMenuItems() {
+    const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = iconFormatsStore;
+    const { isImage, isVideo } = mediaViewersFormatsStore;
+
+    let cbMenu = ["all"];
+    const filesItems = [...this.files, ...this.folders];
+
+    if (this.folders.length) cbMenu.push(FilterType.FoldersOnly);
+    for (let item of filesItems) {
+      if (isDocument(item.fileExst)) cbMenu.push(FilterType.DocumentsOnly);
+      else if (isPresentation(item.fileExst))
+        cbMenu.push(FilterType.PresentationsOnly);
+      else if (isSpreadsheet(item.fileExst))
+        cbMenu.push(FilterType.SpreadsheetsOnly);
+      else if (isImage(item.fileExst)) cbMenu.push(FilterType.ImagesOnly);
+      else if (isVideo(item.fileExst)) cbMenu.push(FilterType.MediaOnly);
+      else if (isArchive(item.fileExst)) cbMenu.push(FilterType.ArchiveOnly);
+    }
+
+    const hasFiles = cbMenu.some(
+      (elem) => elem !== "all" && elem !== FilterType.DocumentsOnly
+    );
+
+    if (hasFiles) cbMenu.push(FilterType.FilesOnly);
+
+    cbMenu = cbMenu.filter((item, index) => cbMenu.indexOf(item) === index);
+
+    return cbMenu;
+  }
+
+  getCheckboxItemLabel = (t, key) => {
+    switch (key) {
+      case "all":
+        return t("All");
+      case FilterType.FoldersOnly:
+        return t("Translations:Folders");
+      case FilterType.DocumentsOnly:
+        return t("Common:Documents");
+      case FilterType.PresentationsOnly:
+        return t("Translations:Presentations");
+      case FilterType.SpreadsheetsOnly:
+        return t("Translations:Spreadsheets");
+      case FilterType.ImagesOnly:
+        return t("Images");
+      case FilterType.MediaOnly:
+        return t("Media");
+      case FilterType.ArchiveOnly:
+        return t("Archives");
+      case FilterType.FilesOnly:
+        return t("AllFiles");
+
+      default:
+        return "";
+    }
+  };
+
   get sortedFiles() {
     const {
       isSpreadsheet,
