@@ -701,7 +701,7 @@ class FilesActionStore {
 
   convertToArray = (itemsCollection) => {
     const result = Array.from(itemsCollection.values()).filter((item) => {
-      return item !== undefined && item !== null;
+      return item != null;
     });
 
     itemsCollection.clear();
