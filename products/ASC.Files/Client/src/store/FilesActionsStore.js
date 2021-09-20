@@ -851,12 +851,13 @@ class FilesActionStore {
   };
   getPrivacyFolderOption = (itemsCollection, t) => {
     const moveTo = this.getOption("moveTo", t);
-    const copy = this.getOption("copy", t);
     const deleteOption = this.getOption("delete", t);
+    const download = this.getOption("download", t);
 
     itemsCollection
+      .set("download", download)
       .set("moveTo", moveTo)
-      .set("copy", copy)
+
       .set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
