@@ -669,7 +669,11 @@ class FilesActionStore {
   };
 
   isAvailableOption = (option) => {
-    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
+    const {
+      isFavoritesFolder,
+      isRecentFolder,
+      isCommonFolder,
+    } = this.treeFoldersStore;
     const {
       isAccessedSelected,
       isWebEditSelected,
@@ -677,6 +681,7 @@ class FilesActionStore {
       hasSelection,
     } = this.filesStore;
     const { personal } = this.authStore.settingsStore;
+    const { userAccess } = this.filesStore;
 
     switch (option) {
       case "share":
@@ -696,7 +701,9 @@ class FilesActionStore {
         );
 
       case "delete":
-        return !isThirdPartyRootSelection && hasSelection;
+        const deleteCondition = !isThirdPartyRootSelection && hasSelection;
+
+        return isCommonFolder ? userAccess && deleteCondition : deleteCondition;
     }
   };
 
