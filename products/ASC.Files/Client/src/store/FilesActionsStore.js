@@ -786,8 +786,7 @@ class FilesActionStore {
     }
   };
 
-  getAnotherFolderOptions = (t) => {
-    let itemsCollection = new Map();
+  getAnotherFolderOptions = (itemsCollection, t) => {
     const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
@@ -806,8 +805,7 @@ class FilesActionStore {
     return this.convertToArray(itemsCollection);
   };
 
-  getRecentFolderOptions = (t) => {
-    let itemsCollection = new Map();
+  getRecentFolderOptions = (itemsCollection, t) => {
     const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
@@ -821,8 +819,7 @@ class FilesActionStore {
     return this.convertToArray(itemsCollection);
   };
 
-  getShareFolderOptions = (t) => {
-    let itemsCollection = new Map();
+  getShareFolderOptions = (itemsCollection, t) => {
     const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
@@ -837,8 +834,7 @@ class FilesActionStore {
       .set("delete", deleteOption);
     return this.convertToArray(itemsCollection);
   };
-  getPrivacyFolderOption = (t) => {
-    let itemsCollection = new Map();
+  getPrivacyFolderOption = (itemsCollection, t) => {
     const moveTo = this.getOption("moveTo", t);
     const copy = this.getOption("copy", t);
     const deleteOption = this.getOption("delete", t);
@@ -850,10 +846,9 @@ class FilesActionStore {
     return this.convertToArray(itemsCollection);
   };
 
-  getFavoritesFolderOptions = (t) => {
+  getFavoritesFolderOptions = (itemsCollection, t) => {
     const { selection } = this.filesStore;
 
-    let itemsCollection = new Map();
     const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
@@ -877,9 +872,9 @@ class FilesActionStore {
     return this.convertToArray(itemsCollection);
   };
 
-  getRecycleBinFolderOptions = (t) => {
+  getRecycleBinFolderOptions = (itemsCollection, t) => {
     const { setEmptyTrashDialogVisible } = this.dialogsStore;
-    let itemsCollection = new Map();
+
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const deleteOption = this.getOption("delete", t);
@@ -903,17 +898,21 @@ class FilesActionStore {
       isShareFolder,
     } = this.treeFoldersStore;
 
-    if (isRecycleBinFolder) return this.getRecycleBinFolderOptions(t);
+    let itemsCollection = new Map();
 
-    if (isFavoritesFolder) return this.getFavoritesFolderOptions(t);
+    if (isRecycleBinFolder)
+      return this.getRecycleBinFolderOptions(itemsCollection, t);
 
-    if (isPrivacyFolder) return this.getPrivacyFolderOption(t);
+    if (isFavoritesFolder)
+      return this.getFavoritesFolderOptions(itemsCollection, t);
 
-    if (isShareFolder) return this.getShareFolderOptions(t);
+    if (isPrivacyFolder) return this.getPrivacyFolderOption(itemsCollection, t);
 
-    if (isRecentFolder) return this.getRecentFolderOptions(t);
+    if (isShareFolder) return this.getShareFolderOptions(itemsCollection, t);
 
-    return this.getAnotherFolderOptions(t);
+    if (isRecentFolder) return this.getRecentFolderOptions(itemsCollection, t);
+
+    return this.getAnotherFolderOptions(itemsCollection, t);
   };
 }
 
