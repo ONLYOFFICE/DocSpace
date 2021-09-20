@@ -69,6 +69,8 @@ namespace ASC.Api.Settings
 
         public string Version { get; set; }
 
+        public string RecaptchaPublicKey { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper

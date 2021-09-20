@@ -21,6 +21,10 @@ const StyledThirdParty = styled.div`
     display: flex;
     max-width: inherit;
 
+    .icon {
+      padding: 5px;
+    }
+
     div {
       height: 25px;
       width: 25px;
@@ -33,10 +37,6 @@ const StyledThirdParty = styled.div`
       }
       :last-of-type {
         border-radius: 0 3px 3px 0;
-      }
-
-      .icon {
-        padding: 5px;
       }
 
       @media (max-width: 1024px) {
@@ -66,6 +66,13 @@ const StyledThirdParty = styled.div`
   }
 `;
 
+const iconButtonProps = {
+  color: "#A3A9AE",
+  hoverColor: "#818b91",
+  size: 25,
+  className: "icon",
+};
+
 const ServiceItem = (props) => {
   const { capability, src, ...rest } = props;
 
@@ -80,14 +87,7 @@ const ServiceItem = (props) => {
 
   return (
     <div {...dataProps} {...rest}>
-      <IconButton
-        className="icon"
-        iconName={src}
-        size={25}
-        isfill={true}
-        color="#A3A9AE"
-        hoverColor="#818b91"
-      />
+      <IconButton iconName={src} {...iconButtonProps} />
     </div>
   );
 };
@@ -99,7 +99,7 @@ const PureThirdPartyListContainer = ({
   dropboxConnectItem,
   oneDriveConnectItem,
   nextCloudConnectItem,
-  webDavConnectItem,
+  //webDavConnectItem,
   setConnectItem,
   setConnectDialogVisible,
   setSelectedNode,
@@ -204,13 +204,19 @@ const PureThirdPartyListContainer = ({
             onClick={onConnect}
           />
         )}
-        {webDavConnectItem && (
+        {/* {webDavConnectItem && (
           <ServiceItem
             capability={webDavConnectItem}
             src="images/services/more.svg"
             onClick={onConnect}
           />
-        )}
+        )} */}
+
+        <IconButton
+          iconName="images/services/more.svg"
+          onClick={onShowConnectPanel}
+          {...iconButtonProps}
+        />
       </div>
     </StyledThirdParty>
   );

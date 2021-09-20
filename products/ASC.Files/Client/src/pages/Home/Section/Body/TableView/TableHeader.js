@@ -6,12 +6,13 @@ import { FilterType } from "@appserver/common/constants";
 import DropDownItem from "@appserver/components/drop-down-item";
 
 const TABLE_COLUMNS = "filesTableColumns";
+const COLUMNS_SIZE = "filesColumnsSize";
 
 class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, withContent, personal } = props;
+    const { t, withContent, personal, userId } = props;
 
     const defaultColumns = [
       {
@@ -80,16 +81,20 @@ class FilesTableHeader extends React.Component {
 
     personal && defaultColumns.splice(1, 1);
 
-    const storageColumns = localStorage.getItem(TABLE_COLUMNS);
+    const storageColumns = localStorage.getItem(`${TABLE_COLUMNS}=${userId}`);
     const splitColumns = storageColumns && storageColumns.split(",");
     const columns = this.getColumns(defaultColumns, splitColumns);
     const resetColumnsSize =
       (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
     const tableColumns = columns.map((c) => c.enable && c.key);
-    localStorage.setItem(TABLE_COLUMNS, tableColumns);
+    this.setTableColumns(tableColumns);
 
     this.state = { columns, resetColumnsSize };
   }
+
+  setTableColumns = (tableColumns) => {
+    localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
+  };
 
   componentDidUpdate(prevProps) {
     const { columns } = this.state;
@@ -128,7 +133,7 @@ class FilesTableHeader extends React.Component {
     this.setState({ columns });
 
     const tableColumns = columns.map((c) => c.enable && c.key);
-    localStorage.setItem(TABLE_COLUMNS, tableColumns);
+    this.setTableColumns(tableColumns);
   };
 
   onFilter = (sortBy) => {
@@ -169,6 +174,7 @@ class FilesTableHeader extends React.Component {
       getHeaderMenu,
       filter,
       sectionWidth,
+      userId,
       cbMenuItems,
       getCheckboxItemLabel,
     } = this.props;
@@ -182,12 +188,12 @@ class FilesTableHeader extends React.Component {
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
           return (
-            <DropDownItem
+        <DropDownItem
               key={key}
               label={label}
               data-key={key}
-              onClick={this.onSelect}
-            />
+          onClick={this.onSelect}
+        />
           );
         })}
       </>
@@ -201,7 +207,7 @@ class FilesTableHeader extends React.Component {
         setSelected={this.setSelected}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName="filesColumnsSize"
+        columnStorageName={`${COLUMNS_SIZE}=${userId}`}
         sectionWidth={sectionWidth}
         isHeaderVisible={isHeaderVisible}
         checkboxOptions={checkboxOptions}
@@ -254,6 +260,7 @@ export default inject(
       setIsLoading,
       fetchFiles,
       getHeaderMenu,
+      userId: auth.userStore.user.id,
       cbMenuItems,
       getCheckboxItemLabel,
     };

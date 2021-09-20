@@ -680,22 +680,33 @@ const SharingPanel = inject(
 class Panel extends React.Component {
   static convertSharingUsers = (shareDataItems) => {
     const t = i18n.getFixedT(null, ["SharingPanel", "Common"]);
+    const {
+      FullAccess,
+      DenyAccess,
+      ReadOnly,
+      Review,
+      Comment,
+      FormFilling,
+      CustomFilter,
+    } = ShareAccessRights;
+
     let sharingSettings = [];
+
     for (let i = 1; i < shareDataItems.length; i++) {
       let resultAccess =
-        shareDataItems[i].access === 1
+        shareDataItems[i].access === FullAccess
           ? t("Common:FullAccess")
-          : shareDataItems[i].access === 2
+          : shareDataItems[i].access === ReadOnly
           ? t("ReadOnly")
-          : shareDataItems[i].access === 3
+          : shareDataItems[i].access === DenyAccess
           ? t("DenyAccess")
-          : shareDataItems[i].access === 5
+          : shareDataItems[i].access === Review
           ? t("Common:Review")
-          : shareDataItems[i].access === 6
+          : shareDataItems[i].access === Comment
           ? t("Comment")
-          : shareDataItems[i].access === 7
+          : shareDataItems[i].access === FormFilling
           ? t("FormFilling")
-          : shareDataItems[i].access === 8
+          : shareDataItems[i].access === CustomFilter
           ? t("CustomFilter")
           : "";
 
