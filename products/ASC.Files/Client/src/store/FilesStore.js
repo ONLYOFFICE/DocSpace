@@ -552,6 +552,7 @@ class FilesStore {
           "move-to",
           //"sharing-settings",
           "unsubscribe",
+          "separator2",
         ]);
       }
 
@@ -627,6 +628,7 @@ class FilesStore {
             "move-to",
             "delete",
             "copy",
+            "separator2",
           ]);
           if (!isFavorite) {
             fileOptions = this.removeOptions(fileOptions, ["separator2"]);
@@ -649,7 +651,7 @@ class FilesStore {
         !(
           isRecentFolder ||
           isFavoritesFolder ||
-          (isMyFolder && this.filter.filterType)
+          (isMyFolder && (this.filter.filterType || this.filter.search))
         )
       ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
@@ -865,7 +867,7 @@ class FilesStore {
         ]);
       }
 
-      if (!(isMyFolder && this.filter.filterType)) {
+      if (!(isMyFolder && (this.filter.filterType || this.filter.search))) {
         folderOptions = this.removeOptions(folderOptions, ["open-location"]);
       }
 
@@ -1115,7 +1117,11 @@ class FilesStore {
       );
 
       const previewUrl = canOpenPlayer
-        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${id}`)
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/#preview/${id}`
+          )
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 

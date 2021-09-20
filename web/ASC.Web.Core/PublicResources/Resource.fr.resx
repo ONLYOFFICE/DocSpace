@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Le champ du code de validation ne peut pas être vide</value>
@@ -209,7 +209,7 @@
     <value>Clé de Facebook</value>
   </data>
   <data name="ConsumersFacebookDescription" xml:space="preserve">
-    <value>Connecter l'application pour accèder au portail en utilisant le compte Facebook et la recherche des contacts.</value>
+    <value>Connecter l'application pour accèder au portail en utilisant le compte Facebook.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>Si vous ajoutez une application du service Facebook, vous pouvez connecter votre compte Facebook sur votre page de profil en vue de l'utiliser pour accéder au portail ONLYOFFICE™. Cela vous permet également trouver un compte Facebook d’un contact dans le module CRM et  le lier sur la page « Modifier personne/entreprise ».</value>
@@ -695,6 +695,9 @@
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>Le processus de réaffectation des données pour {0} n'est pas terminé.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptcha Invalide</value>
   </data>
   <data name="SgServerRegion" xml:space="preserve">
     <value>Asie-Pacifique (Singapour)</value>
