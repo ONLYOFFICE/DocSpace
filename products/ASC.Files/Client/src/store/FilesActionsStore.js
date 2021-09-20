@@ -889,7 +889,10 @@ class FilesActionStore {
   };
 
   getRecycleBinFolderOptions = (itemsCollection, t) => {
-    const { setEmptyTrashDialogVisible } = this.dialogsStore;
+    const {
+      setEmptyTrashDialogVisible,
+      setMoveToPanelVisible,
+    } = this.dialogsStore;
 
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
@@ -898,8 +901,12 @@ class FilesActionStore {
     itemsCollection
       .set("download", download)
       .set("downloadAs", downloadAs)
-      .set("delete", deleteOption)
       .set("restore", {
+        label: t("Translations:Restore"),
+        onClick: () => setMoveToPanelVisible(true),
+      })
+      .set("delete", deleteOption)
+      .set("emptyRecycleBin", {
         label: t("EmptyRecycleBin"),
         onClick: () => setEmptyTrashDialogVisible(true),
       });
