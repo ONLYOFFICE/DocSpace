@@ -41,6 +41,13 @@ const StyledCatalogItemBadgeWrapper = styled.div`
     props.showText && props.theme.catalogItem.badgeWrapper.marginLeft};
   z-index: 3;
   ${(props) => !props.showText && badgeWithoutText}
+
+  @media ${tablet} {
+    min-width: ${(props) =>
+      props.showText && props.theme.catalogItem.badgeWrapper.tablet.width};
+    min-height: ${(props) =>
+      props.showText && props.theme.catalogItem.badgeWrapper.tablet.height};
+  }
 `;
 
 StyledCatalogItemBadgeWrapper.defaultProps = { theme: Base };

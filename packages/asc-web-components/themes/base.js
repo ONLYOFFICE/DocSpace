@@ -1682,6 +1682,10 @@ const Base = {
     badgeWrapper: {
       size: "20px",
       marginLeft: "20px",
+      tablet: {
+        width: "44px",
+        height: "44px",
+      },
     },
     badgeWithoutText: {
       size: "6px",
