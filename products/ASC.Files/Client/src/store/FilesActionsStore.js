@@ -828,18 +828,25 @@ class FilesActionStore {
   };
 
   getShareFolderOptions = (itemsCollection, t) => {
+    const { setDeleteDialogVisible, setUnsubscribe } = this.dialogsStore;
+
     const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
-    const deleteOption = this.getOption("delete", t);
 
     itemsCollection
       .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
-      .set("delete", deleteOption);
+      .set("delete", {
+        label: t("RemoveFromList"),
+        onClick: () => {
+          setUnsubscribe(true);
+          setDeleteDialogVisible(true);
+        },
+      });
     return this.convertToArray(itemsCollection);
   };
   getPrivacyFolderOption = (itemsCollection, t) => {
