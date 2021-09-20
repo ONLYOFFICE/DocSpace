@@ -28,14 +28,6 @@ namespace ASC.Data.Backup.EF.Context
                 .AddDbTenant()
                 .AddDbTariff();
         }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ModelBuilderWrapper
-                .From(modelBuilder, Provider)
-                .AddDbTenant()
-                .AddDbTariff();
-        }
     }
 
     public static class BackupsContextExtension
