@@ -34,8 +34,6 @@ namespace ASC.Data.Storage.Encryption
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.Data.Storage.Encryption" }; }
-
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
 

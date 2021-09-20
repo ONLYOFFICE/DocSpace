@@ -5,6 +5,8 @@
   "AddButton": "Добавить",
   "AddFilter": "Добавить фильтр",
   "AdminSettings": "Настройки администратора",
+  "BarMaintenanceDescription": "Приносим свои извинения за временные неполадки в работе сервиса, которые могут возникнуть {{targetDate}} в процессе обновления облачного решения {{productName}}.",
+  "BarMaintenanceDisclaimer": "В течение дня убедитесь, что все изменения, успешно сохранены.",
   "ByFirstNameSorting": "Имя",
   "ByLastNameSorting": "Фамилия",
   "CancelButton": "Отмена",
@@ -91,5 +93,16 @@
   "View": "Просмотр",
   "ViewWeb": "Просмотреть веб-версию",
   "Warning": "Внимание",
-  "ResetApplication": "Сбросить приложение"
+  "ResetApplication": "Сбросить приложение",
+  "NewVersionAvailable": "Доступна новая версия веб-сайта",
+  "Load": "Загрузить",
+  "Name": "Название",
+  "Image": "Изображение",
+  "Unknown": "Неизвестный",
+  "Archive": "Архив",
+  "Video": "Видео",
+  "Audio": "Аудио",
+  "Department": "Отдел",
+  "Role": "Позиция",
+  "Phone": "Телефон"
 }

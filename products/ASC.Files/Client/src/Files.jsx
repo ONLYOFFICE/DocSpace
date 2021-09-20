@@ -6,7 +6,11 @@ import config from "../package.json";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import AppLoader from "@appserver/common/components/AppLoader";
 import toastr from "studio/toastr";
-import { combineUrl, updateTempContent } from "@appserver/common/utils";
+import {
+  combineUrl,
+  updateTempContent,
+  loadScript,
+} from "@appserver/common/utils";
 import stores from "./store/index";
 import i18n from "./i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -29,6 +33,7 @@ const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
 const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
+const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -40,6 +45,7 @@ window.AppServer.files = {
   HISTORY_URL,
   PRIVATE_ROOMS_URL,
   FILTER_URL,
+  MEDIA_VIEW_URL,
 };
 
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -62,6 +68,8 @@ class FilesContent extends React.Component {
   }
 
   componentDidMount() {
+    loadScript("/static/scripts/tiff.min.js", "img-tiff-script");
+
     this.props
       .loadFilesInfo()
       .catch((err) => toastr.error(err))
@@ -69,6 +77,11 @@ class FilesContent extends React.Component {
         this.props.setIsLoaded(true);
         updateTempContent();
       });
+  }
+
+  componentWillUnmount() {
+    const script = document.getElementById("img-tiff-script");
+    document.body.removeChild(script);
   }
 
   componentDidUpdate(prevProps) {
@@ -113,6 +126,7 @@ class FilesContent extends React.Component {
           <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
           <PrivateRoute exact path={HOME_URL} component={Home} />
           <PrivateRoute path={FILTER_URL} component={Home} />
+          <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
           <PrivateRoute component={Error404Route} />
         </Switch>
       </>

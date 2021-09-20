@@ -15,12 +15,41 @@ ${package_manager} clean all
 
 ${package_manager} -y install yum-utils
 
+DIST=$(rpm -q --whatprovides redhat-release || rpm -q --whatprovides centos-release);
+DIST=$(echo $DIST | sed -n '/-.*/s///p');
 REV=$(cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//);
 REV_PARTS=(${REV//\./ });
 REV=${REV_PARTS[0]};
 
 if ! [[ "$REV" =~ ^[0-9]+$ ]]; then
 	REV=7;
+fi
+
+read_unsupported_installation () {
+	read -p "$RES_CHOICE_INSTALLATION " CHOICE_INSTALLATION
+	case "$CHOICE_INSTALLATION" in
+		y|Y ) yum -y install $DIST*-release
+		;;
+
+		n|N ) exit 0;
+		;;
+
+		* ) echo $RES_CHOICE;
+			read_unsupported_installation
+		;;
+	esac
+}
+
+{ yum check-update $DIST*-release; exitCode=$?; } || true #Checking for distribution update
+
+UPDATE_AVAILABLE_CODE=100
+if [[ $exitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
+	res_unsupported_version
+	echo $RES_UNSPPORTED_VERSION
+	echo $RES_SELECT_INSTALLATION
+	echo $RES_ERROR_REMINDER
+	echo $RES_QUESTIONS
+	read_unsupported_installation
 fi
 
 # add epel repo
@@ -140,7 +169,7 @@ ${package_manager} -y install epel-release \
 			make \
 			yarn \
 			dotnet-sdk-5.0 \
-			elasticsearch-7.8.1 --enablerepo=elasticsearch \
+			elasticsearch-7.13.1 --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
 			supervisor \

@@ -247,7 +247,7 @@ export function getProviderTranslation(provider, t) {
   }
 }
 
-function getLanguage(lng) {
+export function getLanguage(lng) {
   try {
     let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;
 
@@ -274,4 +274,22 @@ export function loadLanguagePath(homepage, fixedNS = null) {
     }
     return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
   };
+}
+
+export function loadScript(url, id, onLoad, onError) {
+  try {
+    const script = document.createElement("script");
+    script.setAttribute("type", "text/javascript");
+    script.setAttribute("id", id);
+
+    if (onLoad) script.onload = onLoad;
+    if (onError) script.onerror = onError;
+
+    script.src = url;
+    script.async = true;
+
+    document.body.appendChild(script);
+  } catch (e) {
+    console.error(e);
+  }
 }

@@ -6,7 +6,6 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 
 using Autofac;
@@ -50,6 +49,7 @@ namespace ASC.Data.Storage.Migration
                         .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()
@@ -64,7 +64,6 @@ namespace ASC.Data.Storage.Migration
                 {
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Data.Storage.Migration", "ASC.Migration");
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
@@ -75,6 +74,7 @@ namespace ASC.Data.Storage.Migration
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration);
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

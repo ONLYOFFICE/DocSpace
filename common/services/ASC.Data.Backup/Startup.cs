@@ -38,8 +38,6 @@ namespace ASC.Data.Backup
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.Data.Backup" }; }
-
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
 

@@ -20,19 +20,7 @@ const HeaderLoader = ({ id, className, style, ...rest }) => {
     <StyledHeader id={id} className={className} style={style}>
       <RectangleLoader
         title={title}
-        width="24"
-        height="24"
-        borderRadius={borderRadius}
-        backgroundColor={backgroundColor}
-        foregroundColor={foregroundColor}
-        backgroundOpacity={backgroundOpacity}
-        foregroundOpacity={foregroundOpacity}
-        speed={speed}
-        animate={animate}
-      />
-      <RectangleLoader
-        title={title}
-        width="168"
+        width="208"
         height="24"
         borderRadius={borderRadius}
         backgroundColor={backgroundColor}

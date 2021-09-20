@@ -97,6 +97,7 @@ class GroupButton extends React.Component {
       isSeparator,
       label,
       style,
+      alt,
     } = this.props;
 
     const itemLabel = !isSelect ? label : this.state.selected;
@@ -154,7 +155,7 @@ class GroupButton extends React.Component {
             </DropDown>
           </>
         ) : (
-          <StyledDropdownToggle {...this.props} title={itemLabel}>
+          <StyledDropdownToggle {...this.props} title={alt || itemLabel}>
             {label}
           </StyledDropdownToggle>
         )}
@@ -204,6 +205,8 @@ GroupButton.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Value of tab index */
   tabIndex: PropTypes.number,
+  /** Alternative value of the group button */
+  alt: PropTypes.string,
 };
 
 GroupButton.defaultProps = {

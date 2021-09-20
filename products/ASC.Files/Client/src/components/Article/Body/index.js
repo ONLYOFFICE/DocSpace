@@ -7,59 +7,50 @@ import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import DownloadAppList from "./DownloadAppList";
+import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
 import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
+import { isDesktop, isTablet } from "react-device-detect";
 
 class ArticleBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { selectedFolderTitle } = props;
-
-    selectedFolderTitle
-      ? setDocumentTitle(selectedFolderTitle)
-      : setDocumentTitle();
-  }
-
-  /*componentDidMount() {
-    if (this.props.currentId) {
-      const currentId = [this.props.currentId + ""];
-      this.props.setSelectedNode(currentId);
-    }
-  }*/
-
   onSelect = (data, e) => {
     const {
-      filter,
       setIsLoading,
-      selectedTreeNode,
       setSelectedNode,
       fetchFiles,
       homepage,
       history,
+      hideArticle,
+      setFirstLoad,
     } = this.props;
 
-    //if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
     setSelectedNode(data);
+    hideArticle(false);
     setIsLoading(true);
+    // const selectedFolderTitle =
+    //   (e.node && e.node.props && e.node.props.title) || null;
 
-    const selectedFolderTitle =
-      (e.node && e.node.props && e.node.props.title) || null;
-
-    selectedFolderTitle
-      ? setDocumentTitle(selectedFolderTitle)
-      : setDocumentTitle();
+    // selectedFolderTitle
+    //   ? setDocumentTitle(selectedFolderTitle)
+    //   : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
-      fetchFiles(data[0])
+      fetchFiles(data[0], null, true, false)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
-      const urlFilter = FilesFilter.getDefault().toUrlParams();
+      setFirstLoad(true);
+      const filter = FilesFilter.getDefault();
+
+      filter.folder = data[0];
+
+      const urlFilter = filter.toUrlParams();
+
       history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
       );
@@ -75,24 +66,45 @@ class ArticleBodyContent extends React.Component {
     const {
       treeFolders,
       onTreeDrop,
-      selectedTreeNode,
       enableThirdParty,
       isVisitor,
+      personal,
+      firstLoad,
+      isDesktopClient,
+      FirebaseHelper,
     } = this.props;
+
+    //console.log("Article Body render");
+
+    const campaigns = (localStorage.getItem("campaigns") || "")
+      .split(",")
+      .filter((campaign) => campaign.length > 0);
 
     return isEmpty(treeFolders) ? (
       <Loaders.TreeFolders />
     ) : (
       <>
         <TreeFolders
-          selectedKeys={selectedTreeNode}
+          useDefaultSelectedKeys
           onSelect={this.onSelect}
           data={treeFolders}
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        <TreeSettings />
-        {enableThirdParty && !isVisitor && <ThirdPartyList />}
+        {!personal && !firstLoad && <TreeSettings />}
+
+        {!isDesktopClient && (
+          <>
+            {enableThirdParty && !isVisitor && <ThirdPartyList />}
+            <DownloadAppList />
+            {(isDesktop || isTablet) &&
+              personal &&
+              !firstLoad &&
+              campaigns.length > 0 && (
+                <Banner FirebaseHelper={FirebaseHelper} />
+              )}
+          </>
+        )}
       </>
     );
   }
@@ -107,35 +119,36 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, filter, setIsLoading } = filesStore;
+    const { fetchFiles, setIsLoading, setFirstLoad, firstLoad } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
-
-    const selectedNode = treeFoldersStore.selectedTreeNode;
-
-    const selectedTreeNode =
-      selectedNode.length > 0 &&
-      selectedNode[0] !== "@my" &&
-      selectedNode[0] !== "@common"
-        ? selectedNode
-        : [selectedFolderStore.id + ""];
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
+    const { personal, hideArticle, isDesktopClient } = auth.settingsStore;
+
+    const selectedFolderTitle = selectedFolderStore.title;
+
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
+
     return {
-      selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
-      selectedTreeNode,
-      filter,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
+      homepage: config.homepage,
+      personal,
 
       setIsLoading,
+      setFirstLoad,
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
       setNewFilesPanelVisible,
-
-      homepage: config.homepage,
+      hideArticle,
+      firstLoad,
+      isDesktopClient,
+      FirebaseHelper: auth.settingsStore.firebaseHelper,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));

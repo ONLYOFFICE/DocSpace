@@ -2,7 +2,6 @@ import React from "react";
 import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-//import equal from "fast-deep-equal/react";
 import { FolderType, ShareAccessRights } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
@@ -11,9 +10,12 @@ import { ReactSVG } from "react-svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import withLoader from "../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
 
 import { observer, inject } from "mobx-react";
 import { runInAction } from "mobx";
+import { withTranslation } from "react-i18next";
 
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
@@ -76,22 +78,22 @@ class TreeFolders extends React.Component {
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        iconUrl = "images/catalog.user.react.svg";
+        iconUrl = "/static/images/catalog.user.react.svg";
         break;
       case FolderType.SHARE:
-        iconUrl = "images/catalog.shared.react.svg";
+        iconUrl = "/static/images/catalog.shared.react.svg";
         break;
       case FolderType.COMMON:
         iconUrl = "/static/images/catalog.portfolio.react.svg";
         break;
       case FolderType.Favorites:
-        iconUrl = "images/catalog.favorites.react.svg";
+        iconUrl = "/static/images/catalog.favorites.react.svg";
         break;
       case FolderType.Recent:
-        iconUrl = "images/catalog.recent.react.svg";
+        iconUrl = "/static/images/catalog.recent.react.svg";
         break;
       case FolderType.Privacy:
-        iconUrl = "images/catalog.private.react.svg";
+        iconUrl = "/static/images/catalog.private.react.svg";
         break;
       case FolderType.TRASH:
         iconUrl = "/static/images/catalog.trash.react.svg";
@@ -158,7 +160,8 @@ class TreeFolders extends React.Component {
       return false;
     }
 
-    if (draggableItems.find((x) => x.id === item.id)) return false;
+    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      return false;
 
     // const isMy = rootFolderType === FolderType.USER;
     // const isCommon = rootFolderType === FolderType.COMMON;
@@ -198,7 +201,6 @@ class TreeFolders extends React.Component {
 
   getItems = (data) => {
     const { withoutProvider } = this.props;
-
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -206,6 +208,8 @@ class TreeFolders extends React.Component {
         ? item.newItems > 0 && this.props.needUpdate
         : false;
       const provider = item.providerKey;
+      const provider = item.providerKey;
+
       const serviceFolder = !!item.providerKey;
       let className = `tree-drag tree-id_${item.id}`;
 
@@ -430,6 +434,7 @@ class TreeFolders extends React.Component {
     const {
       selectedKeys,
       isLoading,
+      setIsLoading,
       onSelect,
       dragging,
       expandedKeys,
@@ -442,7 +447,7 @@ class TreeFolders extends React.Component {
       <StyledTreeMenu
         className="files-tree-menu"
         checkable={false}
-        draggable
+        draggable={dragging}
         disabled={isLoading}
         multiple={false}
         showIcon
@@ -472,11 +477,14 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  (
+    { auth, filesStore, treeFoldersStore, selectedFolderStore },
+    { useDefaultSelectedKeys, selectedKeys }
+  ) => {
     const {
-      filter,
       selection,
       setIsLoading,
+      isLoading,
       dragging,
       setDragging,
     } = filesStore;
@@ -503,10 +511,13 @@ export default inject(
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
-      filter,
-      draggableItems: dragging ? selection : [],
+      draggableItems: dragging ? selection : null,
       expandedKeys,
       treeFolders,
+      isLoading,
+      selectedKeys: useDefaultSelectedKeys
+        ? treeFoldersStore.selectedKeys
+        : selectedKeys,
 
       setDragging,
       setIsLoading,
@@ -516,4 +527,8 @@ export default inject(
       getSubfolders,
     };
   }
-)(observer(TreeFolders));
+)(
+  withTranslation(["Home", "Common"])(
+    withLoader(observer(TreeFolders))(<Loaders.TreeFolders />)
+  )
+);

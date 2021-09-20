@@ -9,9 +9,12 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
+import ItemIcon from "../../../../../components/ItemIcon";
+import SharedButton from "../../../../../components/SharedButton";
 
 const FilesTile = (props) => {
   const {
+    t,
     item,
     sectionWidth,
     dragging,
@@ -24,13 +27,14 @@ const FilesTile = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    sharedButton,
+    //sharedButton,
     contextOptionsProps,
     checkedProps,
-    element,
+    //element,
     getIcon,
     onFilesClick,
-    onMouseUp,
+    onMouseClick,
+    showShare,
   } = props;
   const temporaryIcon = getIcon(
     96,
@@ -40,6 +44,18 @@ const FilesTile = (props) => {
   );
 
   const { thumbnailUrl } = item;
+  const sharedButton =
+    item.canShare && showShare ? (
+      <SharedButton
+        t={t}
+        id={item.id}
+        shared={item.shared}
+        isFolder={item.isFolder}
+      />
+    ) : null;
+  const element = (
+    <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+  );
 
   return (
     <div ref={props.selectableRef}>
@@ -64,10 +80,10 @@ const FilesTile = (props) => {
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           dragging={dragging && isDragging}
-          onMouseUp={onMouseUp}
+          onClick={onMouseClick}
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
-          {...checkedProps}
+          checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
         >

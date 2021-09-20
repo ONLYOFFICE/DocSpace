@@ -80,7 +80,7 @@ namespace ASC.Web.Studio.Core.SMS
             {
                 try
                 {
-                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
                     UserManager.SaveUserInfo(user);
                 }
                 finally

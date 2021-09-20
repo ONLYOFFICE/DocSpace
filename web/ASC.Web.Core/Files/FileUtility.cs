@@ -41,7 +41,9 @@ namespace ASC.Web.Core.Files
     [Scope]
     public class FileUtility
     {
-        private DbContextManager<FilesDbContext> FilesDbContext { get; set; }
+        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+        private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
+
         public FileUtility(
             IConfiguration configuration,
             FilesLinkUtility filesLinkUtility,
@@ -49,7 +51,7 @@ namespace ASC.Web.Core.Files
         {
             Configuration = configuration;
             FilesLinkUtility = filesLinkUtility;
-            FilesDbContext = dbContextManager;
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get("files"));
             CanForcesave = GetCanForcesave();
         }
 
@@ -178,9 +180,7 @@ namespace ASC.Web.Core.Files
                     _extsConvertible = new Dictionary<string, List<string>>();
                     if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl)) return _extsConvertible;
 
-                    const string databaseId = "files";
-
-                    var dbManager = FilesDbContext.Get(databaseId);
+                    var dbManager = FilesDbContext;
                     var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
 
 

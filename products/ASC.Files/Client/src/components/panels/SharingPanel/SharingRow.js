@@ -7,7 +7,6 @@ import toastr from "studio/toastr";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
-//import equal from "fast-deep-equal/react";
 import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";
 import { objectToGetParams } from "@appserver/common/utils";
@@ -104,6 +103,7 @@ class SharingRow extends React.Component {
       onShowChangeOwnerPanel,
       isLoading,
       internalLink,
+      isPersonal,
     } = this.props;
     const { access } = this.state;
 
@@ -184,87 +184,98 @@ class SharingRow extends React.Component {
             {...this.props}
           />
         )}
-        {internalLinkVisible && (
-          <LinkRow
-            linkText={t("InternalLink")}
-            options={internalLinkData}
-            {...this.props}
-          />
-        )}
+        {!isPersonal && (
+          <>
+            {internalLinkVisible && (
+              <LinkRow
+                linkText={t("InternalLink")}
+                options={internalLinkData}
+                {...this.props}
+              />
+            )}
 
-        {!shareLink && (
-          <Row
-            className="sharing-row"
-            key={`internal-link-key_${id}`}
-            element={
-              isOwner || isLocked ? (
-                <ReactSVG
-                  src={accessIconUrl}
-                  className="sharing_panel-owner-icon"
-                  beforeInjection={(svg) => {
-                    svg
-                      .querySelector("path")
-                      .setAttribute("fill", isLoading ? "#D0D5DA" : "#a3a9ae");
-                    svg.setAttribute(
-                      "style",
-                      `width:16px;
+            {!shareLink && (
+              <Row
+                className="sharing-row"
+                key={`internal-link-key_${id}`}
+                element={
+                  isOwner || isLocked ? (
+                    <ReactSVG
+                      src={accessIconUrl}
+                      className="sharing_panel-owner-icon"
+                      beforeInjection={(svg) => {
+                        svg
+                          .querySelector("path")
+                          .setAttribute(
+                            "fill",
+                            isLoading ? "#D0D5DA" : "#a3a9ae"
+                          );
+                        svg.setAttribute(
+                          "style",
+                          `width:16px;
                   min-width:16px;
                   height:16px;
                   min-height:16px;`
-                    );
-                  }}
-                />
-              ) : (
-                <AccessComboBox
-                  t={t}
-                  access={access}
-                  directionX="left"
-                  onAccessChange={onChangeItemAccess}
-                  itemId={id}
-                  accessOptions={accessOptions}
-                  isDisabled={isLoading}
-                />
-              )
-            }
-            contextButtonSpacerWidth="0px"
-          >
-            <>
-              {!shareLink &&
-                (isOwner && canShareOwnerChange ? (
-                  <Link isHovered type="action" {...onShowChangeOwnerPanelProp}>
-                    {label ? label : userName ? userName : displayName}
-                  </Link>
-                ) : (
-                  <Text truncate className="sharing_panel-text">
-                    {label ? label : userName ? userName : displayName}
-                  </Text>
-                ))}
-              {isOwner ? (
-                <Text className="sharing_panel-remove-icon" color="#A3A9AE">
-                  {t("Owner")}
-                </Text>
-              ) : id === isMyId ? (
-                <Text
-                  className="sharing_panel-remove-icon"
-                  //color="#A3A9AE"
-                >
-                  {t("Common:FullAccess")}
-                </Text>
-              ) : (
-                !shareLink &&
-                !isLocked && (
-                  <IconButton
-                    iconName="/static/images/remove.react.svg"
-                    id={id}
-                    {...onRemoveUserProp}
-                    className="sharing_panel-remove-icon"
-                    color="#A3A9AE"
-                    isDisabled={isLoading}
-                  />
-                )
-              )}
-            </>
-          </Row>
+                        );
+                      }}
+                    />
+                  ) : (
+                    <AccessComboBox
+                      t={t}
+                      access={access}
+                      directionX="left"
+                      onAccessChange={onChangeItemAccess}
+                      itemId={id}
+                      accessOptions={accessOptions}
+                      isDisabled={isLoading}
+                    />
+                  )
+                }
+                contextButtonSpacerWidth="0px"
+              >
+                <>
+                  {!shareLink &&
+                    (isOwner && canShareOwnerChange ? (
+                      <Link
+                        isHovered
+                        type="action"
+                        {...onShowChangeOwnerPanelProp}
+                      >
+                        {label ? label : userName ? userName : displayName}
+                      </Link>
+                    ) : (
+                      <Text truncate className="sharing_panel-text">
+                        {label ? label : userName ? userName : displayName}
+                      </Text>
+                    ))}
+                  {isOwner ? (
+                    <Text className="sharing_panel-remove-icon" color="#A3A9AE">
+                      {t("Owner")}
+                    </Text>
+                  ) : id === isMyId ? (
+                    <Text
+                      className="sharing_panel-remove-icon"
+                      //color="#A3A9AE"
+                    >
+                      {t("Common:FullAccess")}
+                    </Text>
+                  ) : (
+                    !shareLink &&
+                    !isLocked && (
+                      <IconButton
+                        iconName="/static/images/remove.react.svg"
+                        id={id}
+                        {...onRemoveUserProp}
+                        className="sharing_panel-remove-icon"
+                        color="#A3A9AE"
+                        isDisabled={isLoading}
+                      />
+                    )
+                  )}
+                </>
+              </Row>
+            )}
+          </>
         )}
       </>
     );

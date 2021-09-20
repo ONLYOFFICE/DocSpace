@@ -253,7 +253,6 @@ namespace ASC.Core.Data
                 .OrderBy(a => a.Status == TenantStatus.Restoring ? TenantStatus.Active : a.Status)
                 .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.Id)
                 .Select(FromDbTenantToTenant)
-                .Take(1)
                 .FirstOrDefault();
         }
 

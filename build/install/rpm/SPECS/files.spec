@@ -166,18 +166,21 @@
 %files urlshortener
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.UrlShortener/
+%{buildpath}/services/ASC.UrlShortener.Svc/
 %{_sysconfdir}/systemd/system/%{product}-urlshortener.service
 %dir %{buildpath}/services/
 
 %files thumbnails
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Thumbnails/
+%{buildpath}/services/ASC.Thumbnails.Svc/
 %{_sysconfdir}/systemd/system/%{product}-thumbnails.service
 %dir %{buildpath}/services/
 
 %files socket
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Socket.IO/
+%{buildpath}/services/ASC.Socket.IO.Svc/
 %{buildpath}/products/ASC.Files/server/
 %{buildpath}/products/ASC.People/server/
 %{buildpath}/products/ASC.CRM/server/

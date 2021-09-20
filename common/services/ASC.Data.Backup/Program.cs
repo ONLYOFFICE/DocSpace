@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common.Utils;
 
 using Autofac.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ namespace ASC.Data.Backup
             await host.RunAsync();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) => 
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSystemd()
                 .UseWindowsService()
@@ -66,6 +67,7 @@ namespace ASC.Data.Backup
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("backup.json")
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
@@ -75,7 +77,8 @@ namespace ASC.Data.Backup
                                 {"pathToConf", path }
                             }
                         );
-                });
+                })
+            .ConfigureNLogLogging();
 
     }
 }

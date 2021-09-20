@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 
 using Autofac;
@@ -94,13 +93,13 @@ namespace ASC.UrlShortener.Svc
 
                             var diHelper = new DIHelper(services);
 
-                            LogNLogExtension.ConfigureLog(diHelper, "ASC.UrlShortener.Svc");
                             services.AddHostedService<UrlShortenerServiceLauncher>();
                             diHelper.TryAdd<UrlShortenerServiceLauncher>();
                         })
                         .ConfigureContainer<ContainerBuilder>((context, builder) =>
                         {
                             builder.Register(context.Configuration, false, false);
-                        });
+                        })
+                        .ConfigureNLogLogging();
     }
 }

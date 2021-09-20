@@ -112,11 +112,11 @@ namespace ASC.Web.Core
                 if (HttpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
                 {
                     options.Secure = true;
-                }
 
-                if (CoreBaseSettings.Personal)
-                {
-                    options.SameSite = SameSiteMode.None;
+                    if (CoreBaseSettings.Personal)
+                    {
+                        options.SameSite = SameSiteMode.None;
+                    }
                 }
             }
 
@@ -140,11 +140,11 @@ namespace ASC.Web.Core
                 if (HttpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
                 {
                     options.Secure = true;
-                }
 
-                if (CoreBaseSettings.Personal)
-                {
-                    options.SameSite = SameSiteMode.None;
+                    if (CoreBaseSettings.Personal)
+                    {
+                        options.SameSite = SameSiteMode.None;
+                    }
                 }
             }
 

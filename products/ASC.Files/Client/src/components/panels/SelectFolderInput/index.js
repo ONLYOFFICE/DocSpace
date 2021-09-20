@@ -1,63 +1,37 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+
 import PropTypes from "prop-types";
-import i18n from "./i18n";
+
 import stores from "../../../store/index";
-import FileInputWithFolderPath from "./fileInputWithFolderPath";
 import SelectFolderDialog from "../SelectFolderDialog/index";
+import StyledComponent from "./StyledSelectFolderInput";
+import SimpleFileInput from "../../SimpleFileInput";
 
 let path = "";
 
-const StyledComponent = styled.div`
-  .input-with-folder-path {
-    margin-top: 16px;
-  }
-  .input-with-folder-path,
-  .text-input-with-folder-path {
-    width: 100%;
-    max-width: 820px;
-  }
-  .panel-loader-wrapper {
-    margin-top: 8px;
-    padding-left: 32px;
-  }
-  .panel-loader {
-    display: inline;
-    margin-right: 10px;
-  }
-`;
-
-class SelectFolder extends React.PureComponent {
+class SelectFolderInputBody extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef();
+
     this.state = {
       isLoading: false,
       baseFolderPath: "",
       fullFolderPath: "",
       fullFolderPathDefault: "",
     };
-    this._isMounted = false;
   }
   componentDidMount() {
-    this._isMounted = true;
     const { folderPath } = this.props;
 
     if (folderPath.length !== 0) {
-      this._isMounted &&
-        this.setState({
-          fullFolderPath: folderPath,
-          fullFolderPathDefault: folderPath,
-        });
+      this.setState({
+        fullFolderPath: folderPath,
+        fullFolderPathDefault: folderPath,
+      });
     }
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
   componentDidUpdate(prevProps) {
     const { isSetDefaultFolderPath, folderPath } = this.props;
 
@@ -88,12 +62,18 @@ class SelectFolder extends React.PureComponent {
       baseFolderPath: pathName,
     });
   };
+
+  onSetLoadingInput = (loading) => {
+    this.setState({
+      isLoading: loading,
+    });
+  };
   render() {
     const {
       name,
       onClickInput,
       isPanelVisible,
-      isCommonWithoutProvider,
+      withoutProvider,
       onClose,
       isError,
       isSavingProcess,
@@ -103,17 +83,27 @@ class SelectFolder extends React.PureComponent {
       foldersType,
       folderPath,
       isNeedArrowIcon,
+      isSetFolderImmediately,
+      id,
+      selectedFolderId,
+      displayType,
+      dialogWithFiles,
+      modalHeightContent,
+      asideHeightContent,
+      zIndex,
+      showButtons,
+      header,
+      headerName,
+      footer,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
-    const zIndex = 310;
 
     return (
       <StyledComponent>
-        <FileInputWithFolderPath
+        <SimpleFileInput
           name={name}
           className="input-with-folder-path"
-          baseFolderPath={baseFolderPath}
-          folderPath={fullFolderPath}
+          textField={fullFolderPath || baseFolderPath}
           isDisabled={isLoading || isSavingProcess || isDisabled}
           isError={isError}
           onClickInput={onClickInput}
@@ -127,32 +117,48 @@ class SelectFolder extends React.PureComponent {
           onSelectFolder={onSelectFolder}
           onSetLoadingData={onSetLoadingData}
           foldersType={foldersType}
-          isCommonWithoutProvider={isCommonWithoutProvider}
+          withoutProvider={withoutProvider}
           onSetFullPath={this.onSetFullPath}
           onSetBaseFolderPath={this.onSetBaseFolderPath}
-          onSetLoadingData={onSetLoadingData}
+          onSetLoadingInput={this.onSetLoadingInput}
           isNeedArrowIcon={isNeedArrowIcon}
+          isSetFolderImmediately={isSetFolderImmediately}
+          id={id}
+          selectedFolderId={selectedFolderId}
+          displayType={displayType}
+          dialogWithFiles={dialogWithFiles}
+          modalHeightContent={modalHeightContent}
+          asideHeightContent={asideHeightContent}
+          showButtons={showButtons}
+          header={header}
+          headerName={headerName}
+          footer={footer}
         />
       </StyledComponent>
     );
   }
 }
 
-SelectFolder.propTypes = {
+SelectFolderInputBody.propTypes = {
   onClickInput: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSelectFolder: PropTypes.func.isRequired,
+  onSetLoadingData: PropTypes.func,
+  isPanelVisible: PropTypes.bool.isRequired,
+  name: PropTypes.string,
+  withoutProvider: PropTypes.bool,
+  isError: PropTypes.bool,
+  isSavingProcess: PropTypes.bool,
 };
 
-SelectFolder.defaultProps = {
-  isCommonWithoutProvider: false,
+SelectFolderInputBody.defaultProps = {
+  withoutProvider: false,
   isDisabled: false,
-  folderList: "",
+  isError: false,
   folderPath: "",
 };
-const SelectFolderWrapper = withTranslation(["SelectedFolder", "Common"])(
-  SelectFolder
-);
 
-class SelectFolderModal extends React.Component {
+class SelectFolderInput extends React.Component {
   static setFullFolderPath = (foldersArray) => {
     path = "";
     if (foldersArray.length > 1) {
@@ -171,12 +177,10 @@ class SelectFolderModal extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <I18nextProvider i18n={i18n}>
-          <SelectFolderWrapper {...this.props} />
-        </I18nextProvider>
+        <SelectFolderInputBody {...this.props} />
       </MobxProvider>
     );
   }
 }
 
-export default SelectFolderModal;
+export default SelectFolderInput;

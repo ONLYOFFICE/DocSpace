@@ -659,7 +659,6 @@ const Base = {
 
   textInput: {
     fontWeight: "normal",
-    userSelect: "none",
     placeholderColor: gray,
     disablePlaceholderColor: grayMid,
 
@@ -1408,7 +1407,7 @@ const Base = {
 
       maxWidth: "175px",
 
-      lineHeightWithoutBorder: "15px",
+      lineHeightWithoutBorder: "16px",
       lineHeightTextDecoration: "underline dashed transparent",
     },
 

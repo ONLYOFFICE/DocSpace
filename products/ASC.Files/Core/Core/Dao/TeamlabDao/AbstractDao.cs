@@ -41,8 +41,6 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
-using Autofac;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.Data
@@ -51,7 +49,8 @@ namespace ASC.Files.Core.Data
     {
         protected readonly ICache cache;
 
-        public FilesDbContext FilesDbContext { get; }
+        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+        public FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
 
         private int tenantID;
         protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
@@ -83,7 +82,7 @@ namespace ASC.Files.Core.Data
             ICache cache)
         {
             this.cache = cache;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             UserManager = userManager;
             TenantManager = tenantManager;
             TenantUtil = tenantUtil;
@@ -100,7 +99,8 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
         {
-            return set.Where(r => r.TenantId == TenantID);
+            var tenantId = TenantID;
+            return set.Where(r => r.TenantId == tenantId);
         }
 
         protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)

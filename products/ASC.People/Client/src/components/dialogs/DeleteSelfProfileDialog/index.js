@@ -5,8 +5,7 @@ import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
-
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { sendInstructionsToDelete } from "@appserver/common/api/people";
 import toastr from "studio/toastr";
@@ -20,11 +19,17 @@ class DeleteSelfProfileDialogComponent extends React.Component {
     };
   }
   onDeleteSelfProfileInstructions = () => {
-    const { onClose } = this.props;
+    const { t, email, onClose } = this.props;
     this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToDelete()
         .then((res) => {
-          toastr.success(res);
+          toastr.success(
+            <div
+              dangerouslySetInnerHTML={{
+                __html: res,
+              }}
+            />
+          );
         })
         .catch((error) => toastr.error(error))
         .finally(() => {

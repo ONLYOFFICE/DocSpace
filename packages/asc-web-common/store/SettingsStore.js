@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 import { combineUrl } from "../utils";
+import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
 const { proxyURL } = AppServerConfig;
 
@@ -19,10 +20,7 @@ class SettingsStore {
   timezones = [];
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = combineUrl(
-    proxyURL,
-    window["AscDesktopEditor"] !== undefined ? "/products/files/" : "/"
-  );
+  defaultPage = "/";
   homepage = "";
   datePattern = "M/d/yyyy";
   datePatternJQ = "00/00/0000";
@@ -56,10 +54,14 @@ class SettingsStore {
   isEncryptionSupport = false;
   encryptionKeys = null;
 
+  personal = false;
+
   isHeaderVisible = false;
   isTabletView = false;
   isArticlePinned =
     localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
+  isArticleVisible = false;
+  isBackdropVisible = false;
 
   isArticleVisibleOnUnpin = false;
 
@@ -75,6 +77,16 @@ class SettingsStore {
   hasShortenService = false;
 
   customSchemaList = [];
+  firebase = {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: "",
+  };
+  version = "";
 
   tenantStatus = null;
 
@@ -99,6 +111,19 @@ class SettingsStore {
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
 
+  setIsArticleVisible = (visible) => {
+    this.isArticleVisible = this.isArticlePinned ? true : visible;
+  };
+
+  setIsBackdropVisible = (visible) => {
+    this.isBackdropVisible = visible;
+  };
+
+  hideArticle = () => {
+    this.setIsArticleVisible(false);
+    this.setIsBackdropVisible(false);
+  };
+
   get helpUrlCreatingBackup() {
     const substring = this.culture.substring(0, this.culture.indexOf("-"));
     const lang = substring.length > 0 ? substring : "en";
@@ -110,8 +135,17 @@ class SettingsStore {
     this[key] = value;
   };
 
+  setDefaultPage = (defaultPage) => {
+    this.defaultPage = defaultPage;
+  };
+
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
+
+    if (window["AscDesktopEditor"] !== undefined || this.personal) {
+      const dp = combineUrl(proxyURL, "/products/files/");
+      this.setDefaultPage(dp);
+    }
 
     Object.keys(newSettings).map((key) => {
       if (key in this) {
@@ -126,6 +160,12 @@ class SettingsStore {
           if (!language || language == "undefined") {
             localStorage.setItem(LANGUAGE, newSettings[key]);
           }
+        }
+        if (key === "personal") {
+          window.AppServer = {
+            ...window.AppServer,
+            personal: newSettings[key],
+          };
         }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
@@ -300,6 +340,11 @@ class SettingsStore {
   setArticleVisibleOnUnpin = (visible) => {
     this.isArticleVisibleOnUnpin = visible;
   };
+
+  get firebaseHelper() {
+    window.firebaseHelper = new FirebaseHelper(this.firebase);
+    return window.firebaseHelper;
+  }
 }
 
 export default SettingsStore;

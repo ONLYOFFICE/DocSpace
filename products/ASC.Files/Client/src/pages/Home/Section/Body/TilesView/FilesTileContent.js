@@ -77,32 +77,27 @@ const FilesTileContent = ({
   item,
   titleWithoutExt,
   linkStyles,
-  isTrashFolder,
   onFilesClick,
   badgesComponent,
 }) => {
   const { fileExst } = item;
-
-  const onMobileRowClick = () => {
-    if (isTrashFolder || window.innerWidth > 1024) return;
-    onFilesClick();
-  };
 
   return (
     <>
       <SimpleFilesTileContent
         sideColor="#333"
         isFile={fileExst}
-        //onClick={onMobileRowClick}
         //disableSideInfo
       >
         <Link
-          className="title-link"
+          className="title-link item-file-name"
           containerWidth="100%"
           type="page"
           title={titleWithoutExt}
           fontWeight="600"
           fontSize="14px"
+          target="_blank"
+          href={item.href}
           {...linkStyles}
           color="#333"
           isTextOverflow

@@ -14,7 +14,7 @@ import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
-
+import { getDefaultFileName } from "../helpers/utils";
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ export default function withContent(WrappedContent) {
       const { item, fileActionId, fileActionExt } = props;
       let titleWithoutExt = getTitleWithoutExst(item);
       if (fileActionId === -1 && item.id === fileActionId) {
-        titleWithoutExt = this.getDefaultName(fileActionExt);
+        titleWithoutExt = getDefaultFileName(fileActionExt);
       }
 
       this.state = { itemTitle: titleWithoutExt };
@@ -32,25 +32,10 @@ export default function withContent(WrappedContent) {
     componentDidUpdate(prevProps) {
       const { fileActionId, fileActionExt } = this.props;
       if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
-        const itemTitle = this.getDefaultName(fileActionExt);
+        const itemTitle = getDefaultFileName(fileActionExt);
         this.setState({ itemTitle });
       }
     }
-
-    getDefaultName = (format) => {
-      const { t } = this.props;
-
-      switch (format) {
-        case "docx":
-          return t("NewDocument");
-        case "xlsx":
-          return t("NewSpreadsheet");
-        case "pptx":
-          return t("NewPresentation");
-        default:
-          return t("NewFolder");
-      }
-    };
 
     completeAction = (id) => {
       const { editCompleteAction, item } = this.props;
@@ -160,7 +145,7 @@ export default function withContent(WrappedContent) {
               combineUrl(
                 AppServerConfig.proxyURL,
                 config.homepage,
-                "/products/files/doceditor"
+                "/doceditor"
               ),
               "_blank"
             )
@@ -169,13 +154,6 @@ export default function withContent(WrappedContent) {
       !item.fileExst && !item.contentLength
         ? createFolder(item.parentId, itemTitle)
             .then(() => this.completeAction(itemId))
-            .then(() =>
-              toastr.success(
-                <Trans t={t} i18nKey="FolderCreated" ns="Home">
-                  New folder {{ itemTitle }} is created
-                </Trans>
-              )
-            )
             .catch((e) => toastr.error(e))
             .finally(() => {
               return setIsLoading(false);
@@ -199,14 +177,6 @@ export default function withContent(WrappedContent) {
               return openDocEditor(file.id, file.providerKey, tab, file.webUrl);
             })
             .then(() => this.completeAction(itemId))
-            .then(() => {
-              const exst = item.fileExst;
-              return toastr.success(
-                <Trans t={t} i18nKey="FileCreated" ns="Home">
-                  New file {{ itemTitle }}.{{ exst }} is created
-                </Trans>
-              );
-            })
             .catch((e) => toastr.error(e))
             .finally(() => {
               return setIsLoading(false);
@@ -227,7 +197,7 @@ export default function withContent(WrappedContent) {
     };
 
     getStatusByDate = () => {
-      const { culture, t, item, sectionWidth } = this.props;
+      const { culture, t, item, sectionWidth, viewAs } = this.props;
       const { created, updated, version, fileExst } = item;
 
       const title =
@@ -239,9 +209,18 @@ export default function withContent(WrappedContent) {
 
       const date = fileExst ? updated : created;
       const dateLabel = new Date(date).toLocaleString(culture);
-      const mobile = (sectionWidth && sectionWidth <= 375) || isMobile;
+      const mobile =
+        (sectionWidth && sectionWidth <= 375) || isMobile || viewAs === "table";
 
       return mobile ? dateLabel : `${title}: ${dateLabel}`;
+    };
+
+    getTableStatusByDate = (create) => {
+      const { created, updated, fileExst } = this.props.item;
+
+      const date = fileExst ? updated : created;
+      const dateLabel = new Date(date).toLocaleString(this.props.culture);
+      return dateLabel;
     };
 
     render() {
@@ -250,12 +229,12 @@ export default function withContent(WrappedContent) {
         item,
         fileActionId,
         fileActionExt,
-        isLoading,
         viewer,
         t,
         isTrashFolder,
         onFilesClick,
         viewAs,
+        element,
       } = this.props;
       const { id, fileExst, updated, createdBy, access, fileStatus } = item;
 
@@ -263,7 +242,11 @@ export default function withContent(WrappedContent) {
 
       const isEdit = id === fileActionId && fileExst === fileActionExt;
 
-      const updatedDate = updated && this.getStatusByDate();
+      const updatedDate =
+        viewAs === "table"
+          ? this.getTableStatusByDate(false)
+          : updated && this.getStatusByDate();
+      const createdDate = this.getTableStatusByDate(true);
 
       const fileOwner =
         createdBy &&
@@ -284,9 +267,9 @@ export default function withContent(WrappedContent) {
       return isEdit ? (
         <EditingWrapperComponent
           className={"editing-wrapper-component"}
+          elementIcon={element}
           itemTitle={itemTitle}
           itemId={id}
-          isLoading={isLoading}
           viewAs={viewAs}
           renameTitle={this.renameTitle}
           onClickUpdateItem={this.onClickUpdateItem}
@@ -296,6 +279,7 @@ export default function withContent(WrappedContent) {
         <WrappedContent
           titleWithoutExt={titleWithoutExt}
           updatedDate={updatedDate}
+          createdDate={createdDate}
           fileOwner={fileOwner}
           accessToEdit={accessToEdit}
           linkStyles={linkStyles}
@@ -319,7 +303,6 @@ export default function withContent(WrappedContent) {
         renameFolder,
         createFile,
         createFolder,
-        isLoading,
         viewAs,
       } = filesStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -348,7 +331,6 @@ export default function withContent(WrappedContent) {
         setEncryptionAccess,
         createFolder,
         fileActionExt,
-        isLoading,
         culture,
         homepage: config.homepage,
         viewer: auth.userStore.user,

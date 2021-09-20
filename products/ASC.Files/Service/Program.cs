@@ -6,7 +6,6 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.ElasticSearch;
 using ASC.Feed.Aggregator;
@@ -59,6 +58,7 @@ namespace ASC.Files.Service
                         .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddJsonFile("elastic.json", true)
@@ -83,7 +83,6 @@ namespace ASC.Files.Service
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
 
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
                     //diHelper.TryAdd<FileConverter>();
                     diHelper.TryAdd<FactoryIndexerFile>();
                     diHelper.TryAdd<FactoryIndexerFolder>();
@@ -91,6 +90,7 @@ namespace ASC.Files.Service
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

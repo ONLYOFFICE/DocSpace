@@ -10,12 +10,12 @@ const loginURL = combineUrl(proxyURL, "/login");
 const paymentsURL = combineUrl(proxyURL, "/payments");
 
 window.AppServer = {
+  ...window.AppServer,
   origin,
   proxyURL,
   apiPrefixURL,
   apiBaseURL,
   apiTimeout,
-  loginURL,
   paymentsURL,
 };
 
@@ -28,36 +28,6 @@ const client = axios.create({
   responseType: "json",
   timeout: apiTimeout, // default is `0` (no timeout)
 });
-
-client.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (!error.response) return Promise.reject(error);
-
-    switch (true) {
-      case error.response.status === 401:
-        request({
-          method: "post",
-          url: "/authentication/logout",
-        }).then((res) => {
-          setWithCredentialsStatus(false);
-          window.location.href = loginURL;
-        });
-        break;
-      case error.response.status === 402:
-        if (!window.location.pathname.includes("payments")) {
-          window.location.href = paymentsURL;
-        }
-        break;
-      default:
-        break;
-    }
-
-    return Promise.reject(error);
-  }
-);
 
 export function setWithCredentialsStatus(state) {
   client.defaults.withCredentials = state;
@@ -77,7 +47,7 @@ const getResponseError = (res) => {
   }
 
   if (res.isAxiosError && res.message) {
-    console.error(res.message);
+    //console.error(res.message);
     return res.message;
   }
 };
@@ -96,17 +66,40 @@ export const request = function (options) {
     if (response.data.hasOwnProperty("total"))
       return { total: +response.data.total, items: response.data.response };
 
+    if (response.request.responseType === "text") return response.data;
+
     return response.data.response;
   };
 
-  const onError = function (errorResponse) {
-    console.error("Request Failed:", errorResponse);
+  const onError = function (error) {
+    //console.error("Request Failed:", error);
 
-    const errorText = errorResponse.response
-      ? getResponseError(errorResponse.response)
-      : errorResponse.message;
+    const errorText = error.response
+      ? getResponseError(error.response)
+      : error.message;
 
-    return Promise.reject(errorText || errorResponse);
+    switch (error.response?.status) {
+      case 401:
+        if (options.skipUnauthorized) return Promise.resolve();
+
+        request({
+          method: "post",
+          url: "/authentication/logout",
+        }).then(() => {
+          setWithCredentialsStatus(false);
+          window.location.href = window?.AppServer?.personal ? "/" : loginURL;
+        });
+        break;
+      case 402:
+        if (!window.location.pathname.includes("payments")) {
+          window.location.href = paymentsURL;
+        }
+        break;
+      default:
+        break;
+    }
+
+    return Promise.reject(errorText || error);
   };
 
   return client(options).then(onSuccess).catch(onError);

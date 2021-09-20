@@ -5,6 +5,8 @@
   "AddButton": "Add",
   "AddFilter": "Add filter",
   "AdminSettings": "Admin settings",
+  "BarMaintenanceDescription": "We apologize for any short-term technical issues in service functioning, that may appear on {{targetDate}} during the update of {{productName}}.",
+  "BarMaintenanceDisclaimer": "Please, make sure that all the changes are successfully saved during this day.",
   "ByFirstNameSorting": "By first name",
   "ByLastNameSorting": "By last name",
   "CancelButton": "Cancel",
@@ -91,5 +93,16 @@
   "View": "View",
   "ViewWeb": "View web version",
   "Warning": "Warning",
-  "ResetApplication": "Reset application"
+  "ResetApplication": "Reset application",
+  "NewVersionAvailable": "A new version of the website available",
+  "Load": "Load",
+  "Name": "Name",
+  "Image": "Image",
+  "Unknown": "Unknown",
+  "Archive": "Archive",
+  "Video": "Video",
+  "Audio": "Audio",
+  "Department": "Department",
+  "Role": "Role",
+  "Phone": "Phone"
 }

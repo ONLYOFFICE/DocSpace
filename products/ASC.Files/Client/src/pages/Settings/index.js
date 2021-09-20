@@ -16,10 +16,10 @@ import { inject, observer } from "mobx-react";
 const PureSettings = ({
   match,
   t,
-  tReady,
   isLoading,
   isLoadedSettingsTree,
   setFirstLoad,
+  tReady,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
@@ -43,7 +43,7 @@ const PureSettings = ({
         setTitle(t("CommonSettings"));
         break;
     }
-  }, [setting, t]);
+  }, [setting, t, tReady]);
 
   useEffect(() => {
     if (isLoading) {

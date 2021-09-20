@@ -135,6 +135,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private void Do<TTo>(IServiceScope scope, TTo tto)
         {
+            if (Folders.Count == 0 && Files.Count == 0) return;
+
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 

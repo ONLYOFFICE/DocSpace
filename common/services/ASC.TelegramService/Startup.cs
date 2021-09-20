@@ -34,8 +34,6 @@ namespace ASC.TelegramService
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.TelegramService" }; }
-
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
 

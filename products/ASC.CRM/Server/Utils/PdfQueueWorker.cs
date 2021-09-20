@@ -154,7 +154,7 @@ namespace ASC.Web.CRM.Classes
 
                 _tenantManager.SetCurrentTenant(_tenantId);
 
-                _securityContext.AuthenticateMe(_userId);
+                _securityContext.AuthenticateMeWithoutCookie(_userId);
 
                 //if (HttpContext.Current == null && !WorkContext.IsMono)
                 //{

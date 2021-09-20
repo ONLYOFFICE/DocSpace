@@ -39,6 +39,7 @@ using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -149,7 +150,7 @@ namespace ASC.Data.Storage
         private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
 
         private WebPathSettings WebPathSettings { get; }
-        private StaticUploader StaticUploader { get; }
+        public IServiceProvider ServiceProvider { get; }
         private SettingsManager SettingsManager { get; }
         private StorageSettingsHelper StorageSettingsHelper { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -159,7 +160,7 @@ namespace ASC.Data.Storage
 
         public WebPath(
             WebPathSettings webPathSettings,
-            StaticUploader staticUploader,
+            IServiceProvider serviceProvider,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
             IHostEnvironment hostEnvironment,
@@ -167,7 +168,7 @@ namespace ASC.Data.Storage
             IOptionsMonitor<ILog> options)
         {
             WebPathSettings = webPathSettings;
-            StaticUploader = staticUploader;
+            ServiceProvider = serviceProvider;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;
             HostEnvironment = hostEnvironment;
@@ -177,6 +178,7 @@ namespace ASC.Data.Storage
 
         public WebPath(
             WebPathSettings webPathSettings,
+            IServiceProvider serviceProvider,
             StaticUploader staticUploader,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
@@ -184,7 +186,7 @@ namespace ASC.Data.Storage
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> options)
-            : this(webPathSettings, staticUploader, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options)
+            : this(webPathSettings, serviceProvider, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options)
         {
             HttpContextAccessor = httpContextAccessor;
         }
@@ -196,7 +198,7 @@ namespace ASC.Data.Storage
                 throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
             }
 
-            if (CoreBaseSettings.Standalone && StaticUploader.CanUpload())
+            if (CoreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
             {
                 try
                 {

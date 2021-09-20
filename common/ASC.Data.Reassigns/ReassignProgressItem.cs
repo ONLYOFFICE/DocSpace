@@ -109,7 +109,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 0;
                 Status = DistributedTaskStatus.Running;
 
-                securityContext.AuthenticateMe(_currentUserId);
+                securityContext.AuthenticateMeWithoutCookie(_currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
 

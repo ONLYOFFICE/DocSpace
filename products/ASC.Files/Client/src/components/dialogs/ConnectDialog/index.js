@@ -23,11 +23,11 @@ const PureConnectDialogContainer = (props) => {
     providers,
     selectedFolderId,
     selectedFolderFolders,
-    fetchFiles,
     getOAuthToken,
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
+    personal,
     getSubfolders,
   } = props;
   const {
@@ -58,7 +58,7 @@ const PureConnectDialogContainer = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const isAccount = !!link;
-  const showUrlField = title === "WebDav" || title === "SharePoint";
+  const showUrlField = key === "WebDav" || key === "SharePoint";
 
   const onChangeUrl = (e) => {
     setIsUrlValid(true);
@@ -140,7 +140,6 @@ const PureConnectDialogContainer = (props) => {
   }, [
     commonFolderId,
     customerTitle,
-    fetchFiles,
     fetchThirdPartyProviders,
     isCorporate,
     link,
@@ -281,12 +280,14 @@ const PureConnectDialogContainer = (props) => {
             onChange={onChangeFolderName}
           />
         </FieldContainer>
-        <Checkbox
-          label={t("ConnectMakeShared")}
-          isChecked={isCorporate}
-          onChange={onChangeMakeShared}
-          isDisabled={isLoading}
-        />
+        {!personal && (
+          <Checkbox
+            label={t("ConnectMakeShared")}
+            isChecked={isCorporate}
+            onChange={onChangeMakeShared}
+            isDisabled={isLoading}
+          />
+        )}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -324,8 +325,7 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const { fetchFiles } = filesStore;
-    const { getOAuthToken } = auth.settingsStore;
+    const { getOAuthToken, personal } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -350,13 +350,14 @@ export default inject(
       visible,
       item,
 
-      fetchFiles,
       getOAuthToken,
       getSubfolders,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,
       setConnectDialogVisible,
+
+      personal,
     };
   }
 )(observer(ConnectDialog));

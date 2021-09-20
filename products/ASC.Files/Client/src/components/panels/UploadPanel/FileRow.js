@@ -7,6 +7,7 @@ import Link from "@appserver/components/link";
 import LoadingButton from "./LoadingButton";
 import ShareButton from "./ShareButton";
 import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
+import IconButton from "@appserver/components/icon-button";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -37,6 +38,10 @@ const StyledFileRow = styled(Row)`
 
   .img_error {
     filter: grayscale(1);
+  }
+
+  .convert_icon {
+    padding-right: 12px;
   }
 
   .__react_component_tooltip.type-light {
@@ -75,6 +80,9 @@ const FileRow = (props) => {
     isMedia,
     ext,
     name,
+    isPersonal,
+    setMediaViewerData,
+    setUploadPanelVisible,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -86,11 +94,12 @@ const FileRow = (props) => {
       : cancelCurrentUpload(id);
   };
 
-  // const onMediaClick = (id) => {
-  //   console.log("id", id);
-  //   const item = { visible: true, id: id };
-  //   this.props.setMediaViewerData(item);
-  // };
+  const onMediaClick = (id) => {
+    console.log("id", id);
+    const item = { visible: true, id: id };
+    setMediaViewerData(item);
+    setUploadPanelVisible(false);
+  };
 
   const onCancelClick = !item.inConversion
     ? { onClick: onCancelCurrentUpload }
@@ -111,15 +120,14 @@ const FileRow = (props) => {
           item.action !== "convert" &&
           item.action !== "converted" ? (
             isMedia ? (
-              <Text
+              <Link
                 fontWeight="600"
                 color={item.error && "#A3A9AE"}
                 truncate
-                // MediaViewer doesn't work
-                /*onClick={() => onMediaClick(item.fileId)}*/
+                onClick={() => onMediaClick(item.fileId)}
               >
                 {name}
-              </Text>
+              </Link>
             ) : (
               <Link
                 fontWeight="600"
@@ -144,25 +152,33 @@ const FileRow = (props) => {
             <></>
           )}
           {item.fileId && !item.error ? (
-            item.action === "upload" ? (
-              <ShareButton uniqueId={item.uniqueId} />
-            ) : item.action === "convert" ? (
-              <div
-                className="upload_panel-icon"
-                data-id={item.uniqueId}
-                data-file-id={item.fileId}
-                data-action={item.action}
-                {...onCancelClick}
-              >
-                <LoadingButton
-                  isConversion
-                  inConversion={item.inConversion}
-                  percent={item.convertProgress}
-                />
-              </div>
-            ) : (
-              <></>
-            )
+            <>
+              {item.action === "upload" && !isPersonal && (
+                <ShareButton uniqueId={item.uniqueId} />
+              )}
+              {item.action === "convert" && (
+                <div
+                  className="upload_panel-icon"
+                  data-id={item.uniqueId}
+                  data-file-id={item.fileId}
+                  data-action={item.action}
+                  {...onCancelClick}
+                >
+                  <LoadingButton
+                    isConversion
+                    inConversion={item.inConversion}
+                    percent={item.convertProgress}
+                  />
+                  <IconButton
+                    iconName="/static/images/refresh.react.svg"
+                    className="convert_icon"
+                    size="medium"
+                    isfill={true}
+                    color="#A3A9AE"
+                  />
+                </div>
+              )}
+            </>
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
               <LoadErrorIcon
@@ -196,7 +212,10 @@ const FileRow = (props) => {
 };
 
 export default inject(
-  ({ filesStore, formatsStore, uploadDataStore }, { item }) => {
+  (
+    { auth, filesStore, formatsStore, uploadDataStore, mediaViewerDataStore },
+    { item }
+  ) => {
     let ext;
     let name;
     let splitted;
@@ -210,12 +229,14 @@ export default inject(
       name = splitted[0];
     }
 
+    const { personal } = auth.settingsStore;
     const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
     const {
       uploaded,
       primaryProgressDataStore,
       cancelCurrentUpload,
       cancelCurrentFileConversion,
+      setUploadPanelVisible,
     } = uploadDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
     const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
@@ -228,7 +249,10 @@ export default inject(
         ? loadingFile.percent
         : null;
 
+    const { setMediaViewerData } = mediaViewerDataStore;
+
     return {
+      isPersonal: personal,
       currentFileUploadProgress,
       uploaded,
       isMedia,
@@ -239,6 +263,8 @@ export default inject(
 
       cancelCurrentUpload,
       cancelCurrentFileConversion,
+      setMediaViewerData,
+      setUploadPanelVisible,
     };
   }
 )(withTranslation("UploadPanel")(observer(FileRow)));

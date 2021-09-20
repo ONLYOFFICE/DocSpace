@@ -323,7 +323,6 @@ export function getCommonThirdPartyList() {
   };
   return request(options);
 }
-
 export function getBackupStorage() {
   const options = {
     method: "get",

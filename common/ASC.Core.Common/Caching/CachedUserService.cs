@@ -247,6 +247,8 @@ namespace ASC.Core.Caching
 
         public UserInfo GetUser(int tenant, Guid id)
         {
+            if (id.Equals(Guid.Empty)) return null;
+
             if (CoreBaseSettings.Personal)
             {
                 return GetUserForPersonal(tenant, id);
@@ -263,6 +265,11 @@ namespace ASC.Core.Caching
         public UserInfo GetUser(int tenant, string email)
         {
             return Service.GetUser(tenant, email);
+        }
+
+        public UserInfo GetUserByUserName(int tenant, string userName)
+        {
+            return Service.GetUserByUserName(tenant, userName);
         }
 
 
@@ -374,6 +381,11 @@ namespace ASC.Core.Caching
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
+            if (CoreBaseSettings.Personal)
+            {
+                return new Dictionary<string, UserGroupRef>();
+            }
+
             GetChangesFromDb();
 
             var key = UserServiceCache.GetRefCacheKey(tenant);

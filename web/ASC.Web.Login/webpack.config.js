@@ -3,15 +3,17 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const { InjectManifest } = require("workbox-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const sharedDeps = require("@appserver/common/constants/sharedDependencies");
+
 const { proxyURL } = AppServerConfig;
 
 const path = require("path");
 const pkg = require("./package.json");
-const deps = pkg.dependencies;
+const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; // combineUrl(proxyURL, pkg.homepage);
 const title = pkg.title;
 
@@ -21,10 +23,14 @@ var config = {
   mode: "development",
 
   devServer: {
-    publicPath: homepage,
+    devMiddleware: {
+      publicPath: homepage,
+    },
+    static: {
+      directory: path.join(__dirname, "dist"),
+      publicPath: homepage,
+    },
 
-    contentBase: [path.join(__dirname, "dist")],
-    contentBasePublicPath: homepage,
     port: 5011,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
@@ -32,14 +38,7 @@ var config = {
       disableDotRule: true,
       index: homepage,
     },
-    // proxy: [
-    //   {
-    //     context: "/api",
-    //     target: "http://localhost:8092",
-    //   },
-    // ],
     hot: false,
-    hotOnly: false,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
@@ -61,6 +60,11 @@ var config = {
     fallback: {
       crypto: false,
     },
+  },
+
+  performance: {
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
   },
 
   module: {
@@ -94,17 +98,6 @@ var config = {
       },
       { test: /\.json$/, loader: "json-loader" },
       {
-        test: /\.(woff(2)?)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "fonts/[hash].[ext]",
-            },
-          },
-        ],
-      },
-      {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
@@ -114,7 +107,23 @@ var config = {
           // Creates `style` nodes from JS strings
           "style-loader",
           // Translates CSS into CommonJS
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              url: {
+                filter: (url, resourcePath) => {
+                  // resourcePath - path to css file
+
+                  // Don't handle `/static` urls
+                  if (url.startsWith("/static") || url.startsWith("data:")) {
+                    return false;
+                  }
+
+                  return true;
+                },
+              },
+            },
+          },
           // Compiles Sass to CSS
           "sass-loader",
         ],
@@ -154,16 +163,10 @@ var config = {
       },
       shared: {
         ...deps,
-        react: {
-          singleton: true,
-          requiredVersion: deps.react,
-        },
-        "react-dom": {
-          singleton: true,
-          requiredVersion: deps["react-dom"],
-        },
+        ...sharedDeps,
       },
     }),
+    new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
       publicPath: homepage,
@@ -196,14 +199,6 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [new TerserPlugin()],
     };
-    config.plugins.push(
-      new InjectManifest({
-        mode: "production", //"development",
-        swSrc: "@appserver/common/utils/sw-template.js", // this is your sw template file
-        swDest: "sw.js", // this will be created in the build step
-        exclude: [/\.map$/, /manifest$/, /service-worker\.js$/],
-      })
-    );
   } else {
     config.devtool = "cheap-module-source-map";
   }

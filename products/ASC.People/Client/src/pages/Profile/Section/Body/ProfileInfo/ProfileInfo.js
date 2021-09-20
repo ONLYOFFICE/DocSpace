@@ -16,9 +16,11 @@ import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
+  ${NoUserSelect}
 `;
 
 const InfoItem = styled.div`
@@ -202,6 +204,7 @@ class ProfileInfo extends React.PureComponent {
       isAdmin,
       isSelf,
       culture,
+      personal,
     } = this.props;
 
     const {
@@ -261,10 +264,12 @@ class ProfileInfo extends React.PureComponent {
 
     return (
       <InfoContainer>
-        <InfoItem>
-          <InfoItemLabel>{t("Common:Type")}:</InfoItemLabel>
-          <InfoItemValue>{type}</InfoItemValue>
-        </InfoItem>
+        {!personal && (
+          <InfoItem>
+            <InfoItemLabel>{t("Common:Type")}:</InfoItemLabel>
+            <InfoItemValue>{type}</InfoItemValue>
+          </InfoItem>
+        )}
         {email && (
           <InfoItem>
             <InfoItemLabel>{t("Common:Email")}:</InfoItemLabel>
@@ -316,13 +321,13 @@ class ProfileInfo extends React.PureComponent {
             <InfoItemValue>{birthDayDate}</InfoItemValue>
           </InfoItem>
         )}
-        {title && (
+        {!personal && title && (
           <InfoItem>
             <InfoItemLabel>{userPostCaption}:</InfoItemLabel>
             <InfoItemValue>{title}</InfoItemValue>
           </InfoItem>
         )}
-        {department && (
+        {!personal && department && (
           <InfoItem>
             <InfoItemLabel>{groupCaption}:</InfoItemLabel>
             <InfoItemValue>{formatedDepartments}</InfoItemValue>
@@ -334,7 +339,7 @@ class ProfileInfo extends React.PureComponent {
             <InfoItemValue>{location}</InfoItemValue>
           </InfoItem>
         )}
-        {workFrom && (
+        {!personal && workFrom && (
           <InfoItem>
             <InfoItemLabel>{regDateCaption}:</InfoItemLabel>
             <InfoItemValue>{workFromDate}</InfoItemValue>
@@ -411,6 +416,7 @@ export default withRouter(
       setIsLoading,
       isLoading,
       updateProfileCulture,
+      personal: auth.settingsStore.personal,
     };
   })(
     observer(

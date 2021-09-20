@@ -148,6 +148,11 @@ namespace ASC.Common.Utils
         {
             var defaultTimezone = GetTimeZoneDefault();
 
+            if (string.IsNullOrEmpty(timeZoneId))
+            {
+                return defaultIfNoMatch ? defaultTimezone : null;
+            }
+
             try
             {
                 return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);

@@ -5,31 +5,31 @@ class MediaViewersFormatsStore {
   images = [
     ".bmp",
     ".gif",
+    ".ico",
     ".jpeg",
     ".jpg",
     ".png",
-    ".ico",
+    ".svg",
     ".tif",
     ".tiff",
     ".webp",
   ];
   media = [
     ".aac",
-    ".flac",
-    ".m4a",
-    ".mp3",
-    ".oga",
-    ".ogg",
-    ".wav",
+    ".avi",
     ".f4v",
+    ".flac",
     ".m4v",
     ".mov",
+    ".mp3",
     ".mp4",
-    ".ogv",
-    ".webm",
-    ".avi",
-    ".mpg",
     ".mpeg",
+    ".mpg",
+    ".oga",
+    ".ogg",
+    ".ogv",
+    ".wav",
+    ".webm",
     ".wmv",
   ];
 
@@ -42,6 +42,10 @@ class MediaViewersFormatsStore {
 
   isVideo = (extension) => {
     return presentInArray(this.media, extension);
+  };
+
+  isImage = (extension) => {
+    return presentInArray(this.images, extension);
   };
 
   isMediaOrImage = (fileExst) => {

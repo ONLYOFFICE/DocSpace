@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -56,8 +56,7 @@ const FilesRowContent = ({
   updatedDate,
   fileOwner,
   linkStyles,
-  isTrashFolder,
-  onFilesClick,
+  //onFilesClick,
   badgesComponent,
   isAdmin,
 }) => {
@@ -70,11 +69,6 @@ const FilesRowContent = ({
     access,
   } = item;
 
-  const onMobileRowClick = () => {
-    if (isTrashFolder || window.innerWidth > 1024) return;
-    onFilesClick();
-  };
-
   const withAccess = isAdmin || access === 0;
 
   return (
@@ -85,7 +79,6 @@ const FilesRowContent = ({
         sideColor={sideColor}
         isFile={fileExst || contentLength}
         withAccess={withAccess}
-        //onClick={onMobileRowClick}
       >
         <Link
           containerWidth="55%"
@@ -93,12 +86,14 @@ const FilesRowContent = ({
           title={titleWithoutExt}
           fontWeight="600"
           fontSize="15px"
+          target="_blank"
+          href={item.href}
           {...linkStyles}
           color="#333"
-          isTextOverflow
+          isTextOverflow={true}
         >
           {titleWithoutExt}
-          {fileExst ? (
+          {fileExst && (
             <Text
               className="badge-ext"
               as="span"
@@ -110,9 +105,8 @@ const FilesRowContent = ({
             >
               {fileExst}
             </Text>
-          ) : null}
+          )}
         </Link>
-
         <div className="badges">{badgesComponent}</div>
         <Text
           containerMinWidth="120px"

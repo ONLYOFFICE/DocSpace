@@ -17,6 +17,7 @@ import {
 } from "./Section";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
+import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
 
 const Home = ({
   isLoading,
@@ -56,39 +57,43 @@ const Home = ({
   }, [isLoading]);
 
   return (
-    <PageLayout
-      withBodyScroll
-      withBodyAutoFocus={!isMobile}
-      isLoading={isLoading}
-    >
-      <PageLayout.ArticleHeader>
-        <ArticleHeaderContent />
-      </PageLayout.ArticleHeader>
+    <>
+      <PageLayout
+        withBodyScroll
+        withBodyAutoFocus={!isMobile}
+        isLoading={isLoading}
+      >
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-      <PageLayout.ArticleMainButton>
-        <ArticleMainButtonContent />
-      </PageLayout.ArticleMainButton>
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
 
-      <PageLayout.ArticleBody>
-        <ArticleBodyContent />
-      </PageLayout.ArticleBody>
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-      <PageLayout.SectionHeader>
-        <SectionHeaderContent />
-      </PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent />
+        </PageLayout.SectionHeader>
 
-      <PageLayout.SectionFilter>
-        <SectionFilterContent />
-      </PageLayout.SectionFilter>
+        <PageLayout.SectionFilter>
+          <SectionFilterContent />
+        </PageLayout.SectionFilter>
 
-      <PageLayout.SectionBody>
-        <SectionBodyContent />
-      </PageLayout.SectionBody>
+        <PageLayout.SectionBody>
+          <SectionBodyContent />
+        </PageLayout.SectionBody>
 
-      <PageLayout.SectionPaging>
-        <SectionPagingContent />
-      </PageLayout.SectionPaging>
-    </PageLayout>
+        <PageLayout.SectionPaging>
+          <SectionPagingContent />
+        </PageLayout.SectionPaging>
+      </PageLayout>
+
+      <Dialogs />
+    </>
   );
 };
 

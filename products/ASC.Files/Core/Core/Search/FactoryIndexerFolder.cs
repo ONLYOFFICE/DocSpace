@@ -153,7 +153,11 @@ namespace ASC.Web.Files.Core.Search
                             j = 0;
                         }
                     }
+                }
 
+                if (tasks.Any())
+                {
+                    Task.WaitAll(tasks.ToArray());
                 }
             }
             catch (Exception e)

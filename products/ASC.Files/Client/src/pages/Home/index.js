@@ -35,27 +35,43 @@ class PureHome extends React.Component {
       homepage,
       setIsLoading,
       setFirstLoad,
-      isVisitor,
       expandedKeys,
       setExpandedKeys,
+      setToPreviewFile,
+      mediaViewersFormatsStore,
+      getFileInfo,
     } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 
+    if (window.location.href.indexOf("/files/#preview") > 1) {
+      const pathname = window.location.href;
+      const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
+
+      getFileInfo(fileId)
+        .then((data) => {
+          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
+            data.fileExst
+          );
+          const file = { ...data, canOpenPlayer };
+          setToPreviewFile(file, true);
+        })
+        .catch((err) => {
+          toastr.error(err);
+          this.fetchDefaultFiles();
+        });
+
+      return;
+    }
+
     if (match && match.length > 0) {
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
-        filterObj = FilesFilter.getDefault();
-        if (isVisitor) filterObj.folder = "@common";
-        const folderId = filterObj.folder;
         setIsLoading(true);
-        fetchFiles(folderId, filterObj).finally(() => {
-          setIsLoading(false);
-          setFirstLoad(false);
-        });
+        this.fetchDefaultFiles();
 
         return;
       }
@@ -119,6 +135,7 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           //console.log("filter", filter);
+
           return fetchFiles(folderId, filter).then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
@@ -133,6 +150,17 @@ class PureHome extends React.Component {
         setFirstLoad(false);
       });
   }
+
+  fetchDefaultFiles = () => {
+    const { isVisitor, fetchFiles, setIsLoading, setFirstLoad } = this.props;
+    const filterObj = FilesFilter.getDefault();
+    const folderId = isVisitor ? "@common" : filterObj.folder;
+
+    fetchFiles(folderId).finally(() => {
+      setIsLoading(false);
+      setFirstLoad(false);
+    });
+  };
 
   onDrop = (files, uploadToFolder) => {
     const { t, startUpload, setDragging, dragging } = this.props;
@@ -190,19 +218,12 @@ class PureHome extends React.Component {
   };
   componentDidUpdate(prevProps) {
     const {
-      isLoading,
       isProgressFinished,
       secondaryProgressDataStoreIcon,
       selectionLength,
       selectionTitle,
     } = this.props;
-    if (isLoading !== prevProps.isLoading) {
-      if (isLoading) {
-        showLoader();
-      } else {
-        hideLoader();
-      }
-    }
+
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
@@ -238,7 +259,6 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
 
-      isLoading,
       dragging,
       tReady,
     } = this.props;
@@ -253,7 +273,6 @@ class PureHome extends React.Component {
           uploadFiles
           onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
           setSelections={this.props.setSelections}
-          onMouseMove={this.onMouseMove}
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}
@@ -271,7 +290,7 @@ class PureHome extends React.Component {
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
-          isLoading={isLoading}
+          firstLoad={firstLoad}
           dragging={dragging}
         >
           <PageLayout.ArticleHeader>
@@ -309,7 +328,14 @@ class PureHome extends React.Component {
 const Home = withTranslation("Home")(PureHome);
 
 export default inject(
-  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    mediaViewerDataStore,
+    formatsStore,
+  }) => {
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
@@ -326,7 +352,10 @@ export default inject(
       setIsLoading,
       isLoading,
       viewAs,
+      getFileInfo,
     } = filesStore;
+
+    const { mediaViewersFormatsStore } = formatsStore;
 
     const { id } = fileActionStore;
     const {
@@ -364,12 +393,20 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
+    const { setToPreviewFile } = mediaViewerDataStore;
+    if (!firstLoad) {
+      if (isLoading) {
+        showLoader();
+      } else {
+        hideLoader();
+      }
+    }
+
     return {
       homepage: config.homepage,
       firstLoad,
       dragging,
       fileActionId: id,
-      isLoading,
       viewAs,
       uploaded,
       converted,
@@ -403,6 +440,9 @@ export default inject(
       startUpload,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
+      setToPreviewFile,
+      mediaViewersFormatsStore,
+      getFileInfo,
     };
   }
 )(withRouter(observer(Home)));

@@ -45,7 +45,9 @@ namespace ASC.Web.CRM.Configuration
     public class CrmSpaceUsageStatManager : SpaceUsageStatManager
     {
         private int _tenantId;
-        private FilesDbContext _filesDbContext;
+        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+        private FilesDbContext _filesDbContext { get => LazyFilesDbContext.Value; }
+
         private PathProvider _pathProvider;
 
         public CrmSpaceUsageStatManager(DbContextManager<FilesDbContext> filesDbContext,
@@ -53,7 +55,7 @@ namespace ASC.Web.CRM.Configuration
                                         TenantManager tenantManager)
         {
             _pathProvider = pathProvider;
-            _filesDbContext = filesDbContext.Value;
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => filesDbContext.Value);
             _tenantId = tenantManager.GetCurrentTenant().TenantId;
         }
 

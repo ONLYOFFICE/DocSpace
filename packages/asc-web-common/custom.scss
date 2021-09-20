@@ -1,81 +1,7 @@
 // Override default variables before the import
 $font-family-base: "Open Sans", sans-serif;
 
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 300;
-  font-style: normal;
-  src: url("../../public/fonts/light/open-sans-light.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 300;
-  font-style: italic;
-  src: url("../../public/fonts/light-italic/open-sans-light-italic.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: normal;
-  font-style: normal;
-  src: url("../../public/fonts/regular/open-sans-regular.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: normal;
-  font-style: italic;
-  src: url("../../public/fonts/italic/open-sans-italic.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 600;
-  font-style: normal;
-  src: url("../../public/fonts/semibold/open-sans-semibold.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 600;
-  font-style: italic;
-  src: url("../../public/fonts/semibold-italic/open-sans-semibold-italic.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: bold;
-  font-style: normal;
-  src: url("../../public/fonts/bold/open-sans-bold.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: bold;
-  font-style: italic;
-  src: url("../../public/fonts/bold-italic/open-sans-bold-italic.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 800;
-  font-style: normal;
-  src: url("../../public/fonts/extra-bold/open-sans-extra-bold.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 800;
-  font-style: italic;
-  src: url("../../public/fonts/extra-bold-italic/open-sans-extra-bold-italic.woff2")
-    format("woff2");
-}
+@import "./opensansoffline.scss";
 
 html,
 body {
@@ -114,4 +40,13 @@ body.desktop {
   -webkit-user-select: none;
   -o-user-select: none;
   mozuserselect: none;
+}
+
+#snackbar {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: calc(100vw - 60px);
+  padding: 30px;
+  bottom: 15px;
 }

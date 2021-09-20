@@ -85,6 +85,7 @@ services_name_backend+=(ASC.Thumbnails.Svc)
 services_name_backend+=(ASC.UrlShortener.Svc)
 services_name_backend+=(ASC.Web.Api)
 services_name_backend+=(ASC.Web.Studio)
+services_name_backend+=(ASC.SsoAuth.Svc)
 
 # Publish backend services
 for i in ${!services_name_backend[@]}; do
@@ -95,14 +96,15 @@ for i in ${!services_name_backend[@]}; do
 done
 
 # Array of names backend services in directory common (Nodejs)  
-services_name_frontend=(ASC.Thumbnails)
-services_name_frontend+=(ASC.UrlShortener)
-services_name_frontend+=(ASC.Socket.IO)
+services_name_backend_nodejs=(ASC.Thumbnails)
+services_name_backend_nodejs+=(ASC.UrlShortener)
+services_name_backend_nodejs+=(ASC.Socket.IO)
+services_name_backend_nodejs+=(ASC.SsoAuth)
 
 # Publish backend services (Nodejs) 
-for i in ${!services_name_frontend[@]}; do
-  echo "== Publish ${services_name_frontend[$i]} project =="
-  SERVICE_DIR="$(find ${SRC_PATH} -type d -name ${services_name_frontend[$i]})"
+for i in ${!services_name_backend_nodejs[@]}; do
+  echo "== Publish ${services_name_backend_nodejs[$i]} project =="
+  SERVICE_DIR="$(find ${SRC_PATH} -type d -name ${services_name_backend_nodejs[$i]})"
   cd ${SERVICE_DIR}
-  mkdir -p ${BUILD_PATH}/services/${services_name_frontend[$i]}/service/ && cp -arfv ./* ${BUILD_PATH}/services/${services_name_frontend[$i]}/service/
+  mkdir -p ${BUILD_PATH}/services/${services_name_backend_nodejs[$i]}/service/ && cp -arfv ./* ${BUILD_PATH}/services/${services_name_backend_nodejs[$i]}/service/
 done

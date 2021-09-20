@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
+using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Core.Search;
@@ -16,7 +16,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ASC.Common.DependencyInjection;
 
 
 namespace ASC.CRM.BackgroundTasks
@@ -56,6 +55,7 @@ namespace ASC.CRM.BackgroundTasks
                         .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()
@@ -70,12 +70,9 @@ namespace ASC.CRM.BackgroundTasks
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-                 
+
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
-
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
-     
                     diHelper.TryAdd<FactoryIndexerCase>();
                     diHelper.TryAdd<FactoryIndexerContact>();
                     diHelper.TryAdd<FactoryIndexerContactInfo>();
@@ -88,6 +85,7 @@ namespace ASC.CRM.BackgroundTasks
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration, true, false, "search.json");
-                });
+                })
+            .ConfigureNLogLogging();
     }
 }

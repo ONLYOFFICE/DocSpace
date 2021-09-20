@@ -1,33 +1,17 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
-import { withTranslation } from "react-i18next";
-import styled from "styled-components";
 import PropTypes from "prop-types";
-import i18n from "./i18n";
+
 import stores from "../../../store/index";
-import FileInput from "./fileInput";
 import SelectFileDialog from "../SelectFileDialog";
+import StyledComponent from "./StyledSelectFileInput";
+import SimpleFileInput from "../../SimpleFileInput";
 
-let path = "";
-
-const StyledComponent = styled.div`
-  .file-input {
-    margin: 16px 0;
-  }
-  .file-input,
-  .file-text-input {
-    width: 100%;
-    max-width: 820px;
-  }
-`;
-
-class SelectFile extends React.PureComponent {
+class SelectFileInputBody extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef();
+
     this.state = {
-      isLoading: false,
       fileName: "",
     };
   }
@@ -42,27 +26,34 @@ class SelectFile extends React.PureComponent {
       name,
       onClickInput,
       isPanelVisible,
-      isCommonWithoutProvider,
+      withoutProvider,
       onClose,
       isError,
-      isSavingProcess,
       isDisabled,
       foldersType,
-      iconUrl,
-      filterType,
-      filterValue,
       withSubfolders,
       onSelectFile,
+      folderId,
+      headerName,
+      isImageOnly,
+      isArchiveOnly,
+      isDocumentsOnly,
+      searchParam,
+      isPresentationOnly,
+      isTablesOnly,
+      isMediaOnly,
+      loadingLabel,
+      header,
+      zIndex,
     } = this.props;
-    const { isLoading, fileName } = this.state;
-    const zIndex = 310;
+    const { fileName } = this.state;
 
     return (
       <StyledComponent>
-        <FileInput
+        <SimpleFileInput
           name={name}
           className="file-input"
-          fileName={fileName}
+          textField={fileName}
           isDisabled={isDisabled}
           isError={isError}
           onClickInput={onClickInput}
@@ -75,12 +66,20 @@ class SelectFile extends React.PureComponent {
             isPanelVisible={isPanelVisible}
             foldersType={foldersType}
             onSetFileName={this.onSetFileName}
-            isCommonWithoutProvider={isCommonWithoutProvider}
-            iconUrl={iconUrl}
-            filterValue={filterValue}
+            withoutProvider={withoutProvider}
             withSubfolders={withSubfolders}
-            filterType={filterType}
             onSelectFile={onSelectFile}
+            folderId={folderId}
+            headerName={headerName}
+            searchParam={searchParam}
+            isImageOnly={isImageOnly}
+            isArchiveOnly={isArchiveOnly}
+            isDocumentsOnly={isDocumentsOnly}
+            isPresentation={isPresentationOnly}
+            isTables={isTablesOnly}
+            isMediaOnly={isMediaOnly}
+            loadingLabel={loadingLabel}
+            header={header}
           />
         )}
       </StyledComponent>
@@ -88,28 +87,25 @@ class SelectFile extends React.PureComponent {
   }
 }
 
-SelectFile.propTypes = {
+SelectFileInputBody.propTypes = {
   onClickInput: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
-SelectFile.defaultProps = {
-  isCommonWithoutProvider: false,
+SelectFileInputBody.defaultProps = {
+  withoutProvider: false,
   isDisabled: false,
+  zIndex: 310,
 };
-const SelectFileWrapper = withTranslation(["SelectedFolder", "Common"])(
-  SelectFile
-);
 
-class SelectFileModal extends React.Component {
+class SelectFileInput extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <I18nextProvider i18n={i18n}>
-          <SelectFileWrapper {...this.props} />
-        </I18nextProvider>
+        <SelectFileInputBody {...this.props} />
       </MobxProvider>
     );
   }
 }
 
-export default SelectFileModal;
+export default SelectFileInput;

@@ -58,7 +58,6 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                     features = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    price2 = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     avangate_id = table.Column<string>(type: "varchar(128)", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     visible = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -181,8 +180,8 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
 
             migrationBuilder.InsertData(
                 table: "tenants_quota",
-                columns: new[] { "tenant", "active_users", "avangate_id", "description", "features", "max_file_size", "max_total_size", "name", "price", "price2", "visible" },
-                values: new object[] { -1, 10000, "0", null, "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore", 102400L, 10995116277760L, "default", 0.00m, 0.00m, false });
+                columns: new[] { "tenant", "active_users", "avangate_id", "description", "features", "max_file_size", "max_total_size", "name", "price", "visible" },
+                values: new object[] { -1, 10000, "0", null, "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore", 102400L, 10995116277760L, "default", 0.00m, false });
 
             migrationBuilder.CreateIndex(
                 name: "last_modified",

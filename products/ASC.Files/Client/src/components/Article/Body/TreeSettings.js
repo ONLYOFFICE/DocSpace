@@ -81,23 +81,22 @@ const PureTreeSettings = ({
   isLoading,
   setSelectedNode,
   setExpandSettingsTree,
-  getFilesSettings,
+
   setSelectedFolder,
   //selectedFolder,
   history,
   setIsLoading,
   t,
   isVisitor,
+  isDesktop,
 }) => {
   const { setting } = match.params;
 
   useEffect(() => {
     setIsLoading(true);
-    getFilesSettings().then(() => {
-      setIsLoading(false);
-      setSelectedNode([setting]);
-    });
-  }, [getFilesSettings, setting, setIsLoading, setSelectedNode]);
+    setSelectedNode([setting]);
+    setIsLoading(false);
+  }, [setting, setIsLoading, setSelectedNode]);
 
   useEffect(() => {
     const { setting } = match.params;
@@ -175,7 +174,7 @@ const PureTreeSettings = ({
             title={t("Common:AdminSettings")}
           />
         ) : null}
-        {enableThirdParty && !isVisitor ? (
+        {enableThirdParty && !isVisitor && !isDesktop ? (
           <TreeNode
             selectable={true}
             className="settings-node"
@@ -212,7 +211,7 @@ const PureTreeSettings = ({
 };
 
 const TreeSettings = withTranslation(["Settings", "Common"])(
-  withRouter(withLoader(PureTreeSettings)(<Loaders.TreeSettingsLoader />))
+  withRouter(withLoader(PureTreeSettings)(<></>))
 );
 
 export default inject(
@@ -227,7 +226,6 @@ export default inject(
     const { setSelectedFolder } = selectedFolderStore;
     const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
     const {
-      getFilesSettings,
       enableThirdParty,
       expandedSetting,
       setExpandSettingsTree,
@@ -244,8 +242,8 @@ export default inject(
       setIsLoading,
       setSelectedFolder,
       setSelectedNode,
-      getFilesSettings,
       setExpandSettingsTree,
+      isDesktop: auth.settingsStore.isDesktopClient,
     };
   }
 )(observer(TreeSettings));

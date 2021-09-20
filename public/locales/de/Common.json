@@ -81,5 +81,7 @@
   "Version": "Version",
   "View": "Anzeigen",
   "ViewWeb": "Web-Version öffnen",
-  "Warning": "Warnung"
+  "Warning": "Warnung",
+  "Name": "Name",
+  "Phone": "Telefon"
 }

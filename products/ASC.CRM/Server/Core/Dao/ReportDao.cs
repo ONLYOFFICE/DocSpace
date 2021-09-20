@@ -73,13 +73,11 @@ namespace ASC.CRM.Core.Dao
         private CurrencyInfo _defaultCurrency;
         private TenantUtil _tenantUtil;
         private DaoFactory _daoFactory;
-        private UserDbContext _userDbContext;
         private DisplayUserSettingsHelper _displayUserSettings;
 
         #region Constructor
 
         public ReportDao(DbContextManager<CrmDbContext> dbContextManager,
-                        DbContextManager<UserDbContext> dbUserContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        FilesIntegration filesIntegration,
@@ -111,8 +109,6 @@ namespace ASC.CRM.Core.Dao
             _daoFactory = daoFactory;
 
             var crmSettings = settingsManager.Load<CrmSettings>();
-
-            _userDbContext = dbUserContextManager.Get(CrmConstants.DatabaseId);
 
             _defaultCurrency = currencyProvider.Get(crmSettings.DefaultCurrency);
 
@@ -313,7 +309,7 @@ namespace ASC.CRM.Core.Dao
 
                     var file = _daoFactory.GetFileDao().SaveFile(document, stream);
 
-                    SaveFile((int)file.ID, -1);
+                    SaveFile(file.ID, -1);
 
                     result.Add(file);
                 }

@@ -6,7 +6,7 @@ call start\stop.bat
 
 PUSHD %~dp0..
 
-echo "FRONT-END"
+echo "FRONT-END (for start run command 'yarn start' inside the root folder)"
 call build\build.frontend.bat
 
 echo "BACK-END"

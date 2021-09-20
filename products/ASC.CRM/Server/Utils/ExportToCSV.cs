@@ -209,7 +209,7 @@ namespace ASC.Web.CRM.Classes
             try
             {
                 _tenantManager.SetCurrentTenant(_tenantId);
-                _securityContext.AuthenticateMe(_author);
+                _securityContext.AuthenticateMeWithoutCookie(_author);
 
                 var userCulture = _userManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture();
 
@@ -413,7 +413,7 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportContactsToCsv(IReadOnlyCollection<Contact> contacts, StringDictionary contactInfos, DaoFactory daoFactory)
         {
-            var key = (string)Id;
+            var key = Id;
             var listItemDao = daoFactory.GetListItemDao();
             var tagDao = daoFactory.GetTagDao();
             var customFieldDao = daoFactory.GetCustomFieldDao();
@@ -649,7 +649,7 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportDealsToCsv(IEnumerable<Deal> deals, DaoFactory daoFactory)
         {
-            var key = (string)Id;
+            var key = Id;
             var tagDao = daoFactory.GetTagDao();
             var customFieldDao = daoFactory.GetCustomFieldDao();
             var dealMilestoneDao = daoFactory.GetDealMilestoneDao();
@@ -823,7 +823,7 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportCasesToCsv(IEnumerable<ASC.CRM.Core.Entities.Cases> cases, DaoFactory daoFactory)
         {
-            var key = (string)Id;
+            var key = Id;
             var tagDao = daoFactory.GetTagDao();
             var customFieldDao = daoFactory.GetCustomFieldDao();
 
@@ -886,7 +886,7 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportHistoryToCsv(IEnumerable<RelationshipEvent> events, DaoFactory daoFactory)
         {
-            var key = (string)Id;
+            var key = Id;
             var listItemDao = daoFactory.GetListItemDao();
             var dealDao = daoFactory.GetDealDao();
             var casesDao = daoFactory.GetCasesDao();
@@ -998,7 +998,7 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportTasksToCsv(IEnumerable<Task> tasks, DaoFactory daoFactory)
         {
-            var key = (string)Id;
+            var key = Id;
             var listItemDao = daoFactory.GetListItemDao();
             var dealDao = daoFactory.GetDealDao();
             var casesDao = daoFactory.GetCasesDao();
@@ -1113,7 +1113,7 @@ namespace ASC.Web.CRM.Classes
 
         private String ExportInvoiceItemsToCsv(IEnumerable<InvoiceItem> invoiceItems, DaoFactory daoFactory)
         {
-            var key = (string)Id;
+            var key = Id;
             var taxes = daoFactory.GetInvoiceTaxDao().GetAll();
             var dataTable = new DataTable();
 
