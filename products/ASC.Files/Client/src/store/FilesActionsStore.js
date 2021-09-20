@@ -680,22 +680,23 @@ class FilesActionStore {
 
     switch (option) {
       case "share":
-        return !personal && isAccessedSelected; //isFavoritesFolder ||isRecentFolder
+        return isAccessedSelected && !personal; //isFavoritesFolder ||isRecentFolder
       case "copy":
       case "download":
         return hasSelection;
       case "downloadAs":
-        return !(!hasSelection || !isWebEditSelected);
+        return isWebEditSelected && hasSelection;
       case "moveTo":
-        return !(
-          isFavoritesFolder ||
-          isRecentFolder ||
-          !isAccessedSelected ||
-          !hasSelection ||
-          isThirdPartyRootSelection
+        return (
+          !isThirdPartyRootSelection &&
+          hasSelection &&
+          isAccessedSelected &&
+          !isRecentFolder &&
+          !isFavoritesFolder
         );
+
       case "delete":
-        return !(!hasSelection || isThirdPartyRootSelection);
+        return !isThirdPartyRootSelection && hasSelection;
     }
   };
 
