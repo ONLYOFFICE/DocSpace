@@ -668,7 +668,7 @@ class FilesActionStore {
     }
   };
 
-  isNotAvailableOption = (option) => {
+  availableOption = (option) => {
     const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
       isAccessedSelected,
@@ -720,7 +720,7 @@ class FilesActionStore {
 
     switch (option) {
       case "share":
-        if (this.isNotAvailableOption("share")) return null;
+        if (!this.availableOption("share")) return null;
         else
           return {
             label: t("Share"),
@@ -728,7 +728,7 @@ class FilesActionStore {
           };
 
       case "copy":
-        if (this.isNotAvailableOption("copy")) return null;
+        if (!this.availableOption("copy")) return null;
         else
           return {
             label: t("Translations:Copy"),
@@ -736,7 +736,7 @@ class FilesActionStore {
           };
 
       case "download":
-        if (this.isNotAvailableOption("download")) return null;
+        if (!this.availableOption("download")) return null;
         else
           return {
             label: t("Common:Download"),
@@ -747,7 +747,7 @@ class FilesActionStore {
           };
 
       case "downloadAs":
-        if (this.isNotAvailableOption("downloadAs")) return null;
+        if (!this.availableOption("downloadAs")) return null;
         else
           return {
             label: t("Translations:DownloadAs"),
@@ -755,7 +755,7 @@ class FilesActionStore {
           };
 
       case "moveTo":
-        if (this.isNotAvailableOption("moveTo")) return null;
+        if (!this.availableOption("moveTo")) return null;
         else
           return {
             label: t("MoveTo"),
@@ -763,7 +763,7 @@ class FilesActionStore {
           };
 
       case "delete":
-        if (this.isNotAvailableOption("delete")) return null;
+        if (!this.availableOption("delete")) return null;
         else
           return {
             label: t("Common:Delete"),
