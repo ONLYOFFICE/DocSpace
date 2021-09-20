@@ -8,7 +8,7 @@ export default {
     docs: {
       description: {
         component:
-          "Display catalog item. On tablet can show only icon. If is it end of block - adding margin bottom.",
+          "Display catalog item. Can show only icon. If is it end of block - adding margin bottom.",
       },
     },
   },

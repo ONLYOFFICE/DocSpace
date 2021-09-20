@@ -1,6 +1,6 @@
 # CatalogItem
 
-Is a item of CatalogBloc component
+Is a item of catalog
 
 ### Usage
 
@@ -12,7 +12,7 @@ import CatalogItem from "@appserver/components/catalog-item";
 <CatalogItem />
 ```
 
-Display catalog item. On tablet can show only icon. If is it end of block - adding margin bottom.
+Display catalog item. Can show only icon (showText property). If is it end of block - adding margin bottom.
 
 ### Properties
 
