@@ -3,7 +3,7 @@
 	<name>OnlyofficeProxy</name>
 	<description>This service runs OnlyofficeProxy</description>
 	<executable>&quot;{APPDIR}nginx\nginx.exe&quot;</executable>
-	<workingdirectory>&quot;{APPDIR}nginx&quot;</workingdirectory>
+	<workingdirectory>{APPDIR}nginx</workingdirectory>
 	<priority>Normal</priority>
 	<startmode>Automatic</startmode>
 	<priority>high</priority>
