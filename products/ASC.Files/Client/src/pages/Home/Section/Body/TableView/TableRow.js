@@ -22,6 +22,13 @@ import Base from "@appserver/components/themes/base";
 const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
+const StyledTableRow = styled(TableRow)`
+  .table-container_cell {
+    background: ${(props) => props.checked && "#f8f9f9 !important"};
+    cursor: ${(props) => props.checked && "url(images/cursor.palm.svg), auto"};
+  }
+`;
+
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
 `;
@@ -142,7 +149,7 @@ const FilesTableRow = (props) => {
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
     >
-      <TableRow
+      <StyledTableRow
         {...dragStyles}
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
@@ -181,7 +188,7 @@ const FilesTableRow = (props) => {
         <TableCell {...dragStyles} {...selectionProp}>
           <StyledShare>{sharedButton}</StyledShare>
         </TableCell>
-      </TableRow>
+      </StyledTableRow>
     </StyledDragAndDrop>
   );
 };

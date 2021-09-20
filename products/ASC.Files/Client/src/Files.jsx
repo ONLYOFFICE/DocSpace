@@ -33,7 +33,7 @@ const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
 const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
-const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/view");
+const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
 
 if (!window.AppServer) {
   window.AppServer = {};

@@ -204,7 +204,7 @@ export default inject(
   }) => {
     const {
       fileActionStore,
-      filesList,
+      isEmptyFilesList,
       dragging,
       setDragging,
       viewAs,
@@ -219,7 +219,7 @@ export default inject(
       startDrag,
       setStartDrag,
       fileActionId: fileActionStore.id,
-      isEmptyFilesList: filesList.length <= 0,
+      isEmptyFilesList,
       setDragging,
       startDrag,
       setStartDrag,

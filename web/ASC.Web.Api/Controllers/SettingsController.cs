@@ -349,6 +349,8 @@ namespace ASC.Api.Settings
                 settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
+
+                settings.RecaptchaPublicKey = SetupInfo.RecaptchaPublicKey;
             }
 
             if (!AuthContext.IsAuthenticated || (withpassword.HasValue && withpassword.Value))

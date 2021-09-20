@@ -42,10 +42,12 @@ class VersionHistoryStore {
       null,
       versions.map((ver) => ver.versionGroup)
     );
+    const isVerHistoryPanel = this.isVisible;
 
     if (
-      versions.length !== file.version ||
-      currentVersionGroup !== file.versionGroup
+      isVerHistoryPanel &&
+      (versions.length !== file.version ||
+        currentVersionGroup !== file.versionGroup)
     ) {
       const newFile = {
         ...file,
