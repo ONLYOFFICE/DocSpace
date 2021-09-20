@@ -1623,6 +1623,75 @@ const Base = {
   //     },
   //   },
   // },
+
+  catalogItem: {
+    container: {
+      width: "100%",
+      height: "36px",
+      padding: "0 20px",
+      marginBottom: "20px",
+      tablet: {
+        height: "44px",
+        padding: "0 16px",
+        marginBottom: "24px",
+      },
+    },
+    sibling: {
+      hover: {
+        backgroundColor: lightGrayishStrongBlue,
+      },
+    },
+    img: {
+      svg: {
+        width: "16px",
+        height: "16px",
+
+        tablet: {
+          width: "20px",
+          height: "20px",
+        },
+      },
+    },
+    text: {
+      width: "100%",
+      marginLeft: "8px",
+      lineHeight: "20px",
+      color: cyanBlueDarkShade,
+      fontSize: "13px",
+      fontWeight: 600,
+      tablet: {
+        marginLeft: "12px",
+        lineHeight: "16px",
+        fontSize: "14px",
+        fontWeight: "bold",
+      },
+    },
+    initialText: {
+      color: white,
+      width: "16px",
+      lineHeight: "15px",
+      fontSize: "9px",
+      fontWeight: 700,
+      tablet: {
+        width: "20px",
+        lineHeight: "19px",
+        fontSize: "11px",
+      },
+    },
+    badgeWrapper: {
+      size: "20px",
+      marginLeft: "20px",
+    },
+    badgeWithoutText: {
+      size: "6px",
+      position: "-3px",
+      backgroundColor: orangeMain,
+      tablet: {
+        size: "8px",
+        position: "-4px",
+      },
+    },
+  },
 };
 
 export default Base;
