@@ -311,9 +311,13 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const { t, getHeaderMenu } = this.props;
+    const { t, getHeaderMenu, cbMenuItems, getCheckboxItemLabel } = this.props;
 
     const headerMenu = getHeaderMenu(t);
+    const children = cbMenuItems.map((key, index) => {
+      const label = getCheckboxItemLabel(t, key);
+      return <DropDownItem key={key} label={label} data-index={index} />;
+    });
 
     let menu = [
       {
@@ -322,49 +326,7 @@ class SectionHeaderContent extends React.Component {
         isSeparator: true,
         isSelect: true,
         fontWeight: "bold",
-        children: [
-          <DropDownItem key="all" label={t("All")} data-index={0} />,
-          <DropDownItem
-            key={FilterType.FoldersOnly}
-            label={t("Translations:Folders")}
-            data-index={1}
-          />,
-          <DropDownItem
-            key={FilterType.DocumentsOnly}
-            label={t("Common:Documents")}
-            data-index={2}
-          />,
-          <DropDownItem
-            key={FilterType.PresentationsOnly}
-            label={t("Translations:Presentations")}
-            data-index={3}
-          />,
-          <DropDownItem
-            key={FilterType.SpreadsheetsOnly}
-            label={t("Translations:Spreadsheets")}
-            data-index={4}
-          />,
-          <DropDownItem
-            key={FilterType.ImagesOnly}
-            label={t("Images")}
-            data-index={5}
-          />,
-          <DropDownItem
-            key={FilterType.MediaOnly}
-            label={t("Media")}
-            data-index={6}
-          />,
-          <DropDownItem
-            key={FilterType.ArchiveOnly}
-            label={t("Archives")}
-            data-index={7}
-          />,
-          <DropDownItem
-            key={FilterType.FilesOnly}
-            label={t("AllFiles")}
-            data-index={8}
-          />,
-        ],
+        children,
         onSelect: this.onSelect,
       },
     ];
@@ -518,6 +480,8 @@ export default inject(
       isThirdPartySelection,
       setIsLoading,
       viewAs,
+      cbMenuItems,
+      getCheckboxItemLabel,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -545,6 +509,7 @@ export default inject(
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,
       viewAs,
+      cbMenuItems,
 
       setSelected,
       setAction,
@@ -557,6 +522,7 @@ export default inject(
       setDeleteDialogVisible,
       downloadAction,
       getHeaderMenu,
+      getCheckboxItemLabel,
     };
   }
 )(

@@ -35,12 +35,10 @@ class PureHome extends React.Component {
       homepage,
       setIsLoading,
       setFirstLoad,
-      isVisitor,
       expandedKeys,
       setExpandedKeys,
       setToPreviewFile,
       mediaViewersFormatsStore,
-      filesList,
       getFileInfo,
     } = this.props;
 
@@ -48,9 +46,9 @@ class PureHome extends React.Component {
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 
-    if (window.location.pathname.indexOf("/files/view") > 1) {
-      const pathname = window.location.pathname;
-      const fileId = pathname.slice(pathname.indexOf("view") + 5);
+    if (window.location.href.indexOf("/files/#preview") > 1) {
+      const pathname = window.location.href;
+      const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
       getFileInfo(fileId)
         .then((data) => {
@@ -62,13 +60,7 @@ class PureHome extends React.Component {
         })
         .catch((err) => {
           toastr.error(err);
-
-          fetchFiles()
-            .catch((err) => toastr.error(err))
-            .finally(() => {
-              setIsLoading(false);
-              setFirstLoad(false);
-            });
+          this.fetchDefaultFiles();
         });
 
       return;
@@ -78,14 +70,8 @@ class PureHome extends React.Component {
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
-        filterObj = FilesFilter.getDefault();
-        if (isVisitor) filterObj.folder = "@common";
-        const folderId = filterObj.folder;
         setIsLoading(true);
-        fetchFiles(folderId, filterObj).finally(() => {
-          setIsLoading(false);
-          setFirstLoad(false);
-        });
+        this.fetchDefaultFiles();
 
         return;
       }
@@ -164,6 +150,17 @@ class PureHome extends React.Component {
         setFirstLoad(false);
       });
   }
+
+  fetchDefaultFiles = () => {
+    const { isVisitor, fetchFiles, setIsLoading, setFirstLoad } = this.props;
+    const filterObj = FilesFilter.getDefault();
+    const folderId = isVisitor ? "@common" : filterObj.folder;
+
+    fetchFiles(folderId).finally(() => {
+      setIsLoading(false);
+      setFirstLoad(false);
+    });
+  };
 
   onDrop = (files, uploadToFolder) => {
     const { t, startUpload, setDragging, dragging } = this.props;

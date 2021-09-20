@@ -361,9 +361,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return file;
         }
 
+        private ICloudDirectoryEntry _rootFolder;
         protected ICloudDirectoryEntry RootFolder()
         {
-            return ProviderInfo.Storage.GetRoot();
+            return _rootFolder ??= ProviderInfo.Storage.GetRoot();
         }
 
         protected ICloudDirectoryEntry GetFolderById(object folderId)

@@ -7,7 +7,7 @@ import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { inject, observer } from "mobx-react";
 
-const StyledOperationDialog = styled.div`
+const StyledOperationDialog = styled(ModalDialog)`
   .operation-button {
     margin-right: 8px;
   }
@@ -58,43 +58,41 @@ const PureThirdPartyMoveContainer = ({
   };
 
   return (
-    <StyledOperationDialog>
-      <ModalDialog
-        isLoading={!tReady}
-        visible={visible}
-        zIndex={zIndex}
-        onClose={onClose}
-      >
-        <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text>{t("MoveConfirmationMessage", { provider })}</Text>
-          <br />
-          <Text>{t("MoveConfirmationAlert")}</Text>
-        </ModalDialog.Body>
+    <StyledOperationDialog
+      isLoading={!tReady}
+      visible={visible}
+      zIndex={zIndex}
+      onClose={onClose}
+    >
+      <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text>{t("MoveConfirmationMessage", { provider })}</Text>
+        <br />
+        <Text>{t("MoveConfirmationAlert")}</Text>
+      </ModalDialog.Body>
 
-        <ModalDialog.Footer>
-          <Button
-            className="operation-button"
-            label={t("Translations:Move")}
-            size="big"
-            primary
-            onClick={startOperation}
-          />
-          <Button
-            data-copy="copy"
-            className="operation-button"
-            label={t("Translations:Copy")}
-            size="big"
-            onClick={startOperation}
-          />
-          <Button
-            className="operation-button"
-            label={t("Common:CancelButton")}
-            size="big"
-            onClick={onClose}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
+      <ModalDialog.Footer>
+        <Button
+          className="operation-button"
+          label={t("Translations:Move")}
+          size="big"
+          primary
+          onClick={startOperation}
+        />
+        <Button
+          data-copy="copy"
+          className="operation-button"
+          label={t("Translations:Copy")}
+          size="big"
+          onClick={startOperation}
+        />
+        <Button
+          className="operation-button"
+          label={t("Common:CancelButton")}
+          size="big"
+          onClick={onClose}
+        />
+      </ModalDialog.Footer>
     </StyledOperationDialog>
   );
 };

@@ -80,6 +80,7 @@ const Editor = () => {
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
+  const view = url.indexOf("action=view") !== -1;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -178,12 +179,12 @@ const Editor = () => {
   };
 
   const initDesktop = (config) => {
-    const isEncryption = config.editorConfig["encryptionKeys"] !== undefined;
+    const isEncryption = config?.editorConfig["encryptionKeys"] !== undefined;
 
     regDesktop(
       user,
       isEncryption,
-      config.editorConfig.encryptionKeys,
+      config?.editorConfig.encryptionKeys,
       (keys) => {
         setEncryptionKeys(keys);
       },
@@ -265,7 +266,7 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const config = await openEdit(fileId, version, doc);
+      const config = await openEdit(fileId, version, doc, view);
 
       actionLink = config?.editorConfig?.actionLink;
 
@@ -584,14 +585,20 @@ const Editor = () => {
       docTitle = newTitle;
     }
 
-    if (!newTitle)
+    if (!newTitle) {
+      const onlyNumbers = new RegExp("^[0-9]+$");
+      const isFileWithoutProvider = onlyNumbers.test(fileId);
+
+      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+
       favorite
-        ? markAsFavorite([+fileId])
+        ? markAsFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error))
-        : removeFromFavorite([+fileId])
+        : removeFromFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error));
+    }
   };
 
   const onSDKRequestInsertImage = () => {
@@ -637,6 +644,19 @@ const Editor = () => {
     setNewOpenTab(false);
   };
 
+  const getSavingInfo = async (title, folderId) => {
+    const savingInfo = await SaveAs(
+      title,
+      urlSelectorFolder,
+      folderId,
+      openNewTab
+    );
+
+    if (savingInfo) {
+      const convertedInfo = savingInfo.split(": ").pop();
+      docEditor.showMessage(convertedInfo);
+    }
+  };
   const onClickSaveSelectFolder = (e, folderId) => {
     const currentExst = titleSelectorFolder.split(".").pop();
 
@@ -645,7 +665,11 @@ const Editor = () => {
         ? titleSelectorFolder.concat(`.${extension}`)
         : titleSelectorFolder;
 
-    SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    if (openNewTab) {
+      SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    } else {
+      getSavingInfo(title, folderId);
+    }
   };
 
   const onChangeInput = (e) => {

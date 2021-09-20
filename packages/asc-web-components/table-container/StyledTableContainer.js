@@ -10,6 +10,8 @@ const HeaderStyles = css`
 `;
 
 const StyledTableContainer = styled.div`
+  -moz-user-select: none;
+
   width: 100%;
   max-width: 100%;
   margin-top: -18px;

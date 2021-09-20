@@ -35,9 +35,7 @@ class TableHeader extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.sectionWidth >= size.tablet + 24) {
-      this.onResize();
-    }
+    this.onResize();
   }
 
   getSubstring = (str) => +str.substring(0, str.length - 2);
@@ -203,7 +201,10 @@ class TableHeader extends React.Component {
       columnStorageName,
       checkboxSize,
       resetColumnsSize,
+      sectionWidth,
     } = this.props;
+
+    const minSize = size.tablet + 24;
 
     let activeColumnIndex = null;
 
@@ -211,7 +212,12 @@ class TableHeader extends React.Component {
       ? containerRef.current
       : document.getElementById("table-container");
 
-    if (!container) return;
+    if (
+      !container ||
+      +container.clientWidth <= minSize ||
+      sectionWidth <= minSize
+    )
+      return;
 
     const storageSize =
       !resetColumnsSize && localStorage.getItem(columnStorageName);
