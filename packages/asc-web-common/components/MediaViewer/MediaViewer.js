@@ -199,7 +199,6 @@ class MediaViewer extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log("unmount mediaviewer");
     if (this.hammer) {
       this.hammer.off("swipeleft", this.nextMedia);
       this.hammer.off("swiperight", this.prevMedia);
