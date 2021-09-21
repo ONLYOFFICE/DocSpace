@@ -12,7 +12,7 @@ import TableHeaderCell from "./TableHeaderCell";
 import { size } from "../utils/device";
 import TableGroupMenu from "./TableGroupMenu";
 
-const minColumnSize = 90;
+const minColumnSize = 150;
 const settingsSize = 24;
 
 class TableHeader extends React.Component {
