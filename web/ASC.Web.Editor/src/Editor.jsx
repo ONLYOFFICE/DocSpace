@@ -44,7 +44,7 @@ import i18n from "./i18n";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
-
+import { isMobile } from "react-device-detect";
 import store from "studio/store";
 
 const { auth: authStore } = store;
@@ -381,7 +381,7 @@ const Editor = () => {
       setFavicon(config.documentType);
       setDocumentTitle(docTitle);
 
-      if (window.innerWidth < 720) {
+      if (isMobile) {
         config.type = "mobile";
       }
 
