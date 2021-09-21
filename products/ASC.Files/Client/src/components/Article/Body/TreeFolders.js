@@ -207,7 +207,7 @@ class TreeFolders extends React.Component {
       const showBadge = item.newItems
         ? item.newItems > 0 && this.props.needUpdate
         : false;
-      const provider = item.providerKey;
+
       const provider = item.providerKey;
 
       const serviceFolder = !!item.providerKey;
@@ -337,13 +337,13 @@ class TreeFolders extends React.Component {
     return this.props.getSubfolders(folderId).then((data) => {
       arrayFolders = data;
 
-        const folderIndex = treeNode.props.pos;
-        let i = 0;
+      const folderIndex = treeNode.props.pos;
+      let i = 0;
 
-        for (let item of arrayFolders) {
-          item["key"] = `${folderIndex}-${i}`;
-          i++;
-        }
+      for (let item of arrayFolders) {
+        item["key"] = `${folderIndex}-${i}`;
+        i++;
+      }
 
       return { folders: arrayFolders, listIds: [], level };
     });
