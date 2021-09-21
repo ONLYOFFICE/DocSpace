@@ -977,7 +977,7 @@ namespace ASC.Web.Files.Services.WCFService
                 var usersDrop = FileTracker.GetEditingBy(file.ID).Where(uid => uid != AuthContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
                 if (usersDrop.Any())
                 {
-                    var fileStable = file.Forcesave == ForcesaveType.None ? file : fileDao.GetFileStable(file.ID, file.Version);
+                    var fileStable = file.Forcesave == ForcesaveType.None ? file : fileDao.GetFileStableAsync(file.ID, file.Version).Result;
                     var docKey = DocumentServiceHelper.GetDocKey(fileStable);
                     DocumentServiceHelper.DropUser(docKey, usersDrop, file.ID);
                 }
@@ -1064,7 +1064,7 @@ namespace ASC.Web.Files.Services.WCFService
                 string sourceFileUrl;
                 if (file.Version > 1)
                 {
-                    var previousFileStable = fileDao.GetFileStable(file.ID, file.Version - 1);
+                    var previousFileStable = fileDao.GetFileStableAsync(file.ID, file.Version - 1).Result;
                     ErrorIf(previousFileStable == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
                     sourceFileUrl = PathProvider.GetFileStreamUrl(previousFileStable, doc);
@@ -1453,7 +1453,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var toSub = toSubfolders.FirstOrDefault(to => Equals(to.Title, folderProject.Title));
                     if (toSub == null) continue;
 
-                    var filesPr = fileDao.GetFiles(folderProject.ID);
+                    var filesPr = fileDao.GetFilesAsync(folderProject.ID).Result;
                     var foldersPr = folderDao.GetFolders(folderProject.ID).Select(d => d.ID);
 
                     var (cFiles, cFolders) = MoveOrCopyFilesCheck(filesPr, foldersPr, toSub.ID);
@@ -1511,7 +1511,7 @@ namespace ASC.Web.Files.Services.WCFService
             var fileDao = GetFileDao();
             var trashId = folderDao.GetFolderIDTrash(true);
             var foldersId = folderDao.GetFolders(trashId).Select(f => f.ID).ToList();
-            var filesId = fileDao.GetFiles(trashId).ToList();
+            var filesId = fileDao.GetFilesAsync(trashId).Result.ToList();
 
             return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, false, true, false, GetHttpHeaders());
         }

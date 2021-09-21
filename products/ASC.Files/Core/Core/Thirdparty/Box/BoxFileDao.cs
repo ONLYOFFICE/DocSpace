@@ -110,9 +110,19 @@ namespace ASC.Files.Thirdparty.Box
                               .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFile);
         }
 
+        public async Task<File<string>> GetFileAsync(string parentId, string title)
+        {
+            throw new NotImplementedException();
+        }
+
         public File<string> GetFileStable(string fileId, int fileVersion)
         {
             return ToFile(GetBoxFile(fileId));
+        }
+
+        public async Task<File<string>> GetFileStableAsync(string parentId, int fileVersion)
+        {
+            throw new NotImplementedException();
         }
 
         public List<File<string>> GetFileHistory(string fileId)

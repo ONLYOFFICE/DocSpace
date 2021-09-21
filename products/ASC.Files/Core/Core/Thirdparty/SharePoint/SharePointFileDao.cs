@@ -103,9 +103,19 @@ namespace ASC.Files.Thirdparty.SharePoint
             return ProviderInfo.ToFile(ProviderInfo.GetFolderFiles(parentId).FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
+        public Task<File<string>> GetFileAsync(string parentId, string title)
+        {
+            throw new NotImplementedException();
+        }
+
         public File<string> GetFileStable(string fileId, int fileVersion)
         {
             return ProviderInfo.ToFile(ProviderInfo.GetFileById(fileId));
+        }
+
+        public Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
+        {
+            throw new NotImplementedException();
         }
 
         public List<File<string>> GetFileHistory(string fileId)

@@ -128,7 +128,7 @@ namespace ASC.Files.Core.Thirdparty
                                  : toFolderDao.SaveFolder(toFolder1);
 
             var foldersToCopy = fromFolderDao.GetFolders(fromConverter(fromFolderId));
-            var fileIdsToCopy = fromFileDao.GetFiles(fromConverter(fromFolderId));
+            var fileIdsToCopy = fromFileDao.GetFilesAsync(fromConverter(fromFolderId)).Result;
             Exception copyException = null;
             //Copy files first
             foreach (var fileId in fileIdsToCopy)

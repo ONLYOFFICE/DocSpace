@@ -113,12 +113,17 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
+        public Task<File<string>> GetFileAsync(string parentId, string title)
+        {
+            throw new NotImplementedException();
+        }
+
         public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             var selector = GetSelector(fileId);
 
             var fileDao = selector.GetFileDao(fileId);
-            var result = fileDao.GetFileStable(selector.ConvertId(fileId), fileVersion);
+            var result = fileDao.GetFileStableAsync(selector.ConvertId(fileId), fileVersion).Result;
 
             if (result != null)
             {
@@ -126,6 +131,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             }
 
             return result;
+        }
+
+        public Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
+        {
+            throw new NotImplementedException();
         }
 
         public List<File<string>> GetFileHistory(string fileId)
@@ -187,7 +197,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(parentId);
             var fileDao = selector.GetFileDao(parentId);
-            return fileDao.GetFiles(selector.ConvertId(parentId)).Where(r => r != null).ToList();
+            return fileDao.GetFilesAsync(selector.ConvertId(parentId)).Result.Where(r => r != null).ToList();
         }
 
         public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -471,7 +481,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             file.FolderID = ConvertId(file.FolderID);
             return file;
         }
-
         #endregion
     }
 }

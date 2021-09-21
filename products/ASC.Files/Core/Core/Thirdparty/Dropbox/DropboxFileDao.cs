@@ -114,9 +114,19 @@ namespace ASC.Files.Thirdparty.Dropbox
                        : ToFile(metadata.AsFile);
         }
 
+        public Task<File<string>> GetFileAsync(string parentId, string title)
+        {
+            throw new NotImplementedException();
+        }
+
         public File<string> GetFileStable(string fileId, int fileVersion)
         {
             return ToFile(GetDropboxFile(fileId));
+        }
+
+        public Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
+        {
+            throw new NotImplementedException();
         }
 
         public List<File<string>> GetFileHistory(string fileId)
@@ -602,7 +612,6 @@ namespace ASC.Files.Thirdparty.Dropbox
                 File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
             }
         }
-
         #endregion
     }
 }

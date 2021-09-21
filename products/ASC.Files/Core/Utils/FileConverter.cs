@@ -781,7 +781,7 @@ namespace ASC.Web.Files.Utils
 
                 if (FilesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.ID) || !file.ProviderEntry))
                 {
-                    newFile = fileDao.GetFile(folderId, newFileTitle);
+                    newFile = fileDao.GetFileAsync(folderId, newFileTitle).Result;
                     if (newFile != null && fileSecurity.CanEdit(newFile) && !EntryManager.FileLockedForMe(newFile.ID) && !FileTracker.IsEditing(newFile.ID))
                     {
                         newFile.Version++;

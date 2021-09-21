@@ -284,7 +284,7 @@ namespace ASC.Web.Files.Services.DocumentService
             if (app == null)
             {
                 File<T> fileStable;
-                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
+                fileStable = DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId).Result;
 
                 docKey = DocumentServiceHelper.GetDocKey(fileStable);
             }
@@ -355,7 +355,7 @@ namespace ASC.Web.Files.Services.DocumentService
             if (app == null)
             {
                 File<T> fileStable;
-                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
+                fileStable = DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId).Result;
 
                 var docKey = DocumentServiceHelper.GetDocKey(fileStable);
                 if (!fileData.Key.Equals(docKey))

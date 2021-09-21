@@ -235,7 +235,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                             if (FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
                             {
-                                MoveOrCopyFiles(scope, FileDao.GetFiles(folder.ID), newFolder, copy);
+                                MoveOrCopyFiles(scope, FileDao.GetFilesAsync(folder.ID).Result, newFolder, copy);
                                 MoveOrCopyFolders(scope, FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), newFolder, copy);
 
                                 if (!copy)
@@ -400,7 +400,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         var conflict = _resolveType == FileConflictResolveType.Duplicate
                             || file.RootFolderType == FolderType.Privacy
                                            ? null
-                                           : fileDao.GetFile(toFolderId, file.Title);
+                                           : fileDao.GetFileAsync(toFolderId, file.Title).Result;
                         if (conflict == null)
                         {
                             File<TTo> newFile = null;

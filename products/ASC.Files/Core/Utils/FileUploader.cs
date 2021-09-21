@@ -147,7 +147,7 @@ namespace ASC.Web.Files.Utils
             folderId = GetFolderId(folderId, string.IsNullOrEmpty(relativePath) ? null : relativePath.Split('/').ToList());
 
             var fileDao = DaoFactory.GetFileDao<T>();
-            var file = fileDao.GetFile(folderId, fileName);
+            var file = fileDao.GetFileAsync(folderId, fileName).Result;
 
             if (updateIfExists && CanEdit(file))
             {

@@ -69,7 +69,7 @@ namespace ASC.Files.Core
         ///   file
         /// </returns>
         File<T> GetFile(T parentId, string title);
-
+        Task<File<T>> GetFileAsync(T parentId, string title);
         /// <summary>
         ///     Receive last file without forcesave
         /// </summary>
@@ -77,7 +77,7 @@ namespace ASC.Files.Core
         /// <param name="fileVersion"></param>
         /// <returns></returns>
         File<T> GetFileStable(T fileId, int fileVersion = -1);
-
+        Task<File<T>> GetFileStableAsync(T fileId, int fileVersion = -1);
         /// <summary>
         ///  Returns all versions of the file
         /// </summary>
@@ -110,6 +110,7 @@ namespace ASC.Files.Core
         /// <param name="parentId"></param>
         /// <returns></returns>
         List<T> GetFiles(T parentId);
+        Task<List<T>> GetFilesAsync(T parentId);
 
         /// <summary>
         ///     Get files in folder

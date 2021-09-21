@@ -157,16 +157,26 @@ namespace ASC.Files.Core.Data
 
         public File<int> GetFile(int parentId, string title)
         {
+            return GetFileAsync(parentId, title).Result;
+        }
+
+        public async Task<File<int>> GetFileAsync(int parentId, string title)
+        {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
             var query = GetFileQuery(r => r.Title == title && r.CurrentVersion == true && r.FolderId == parentId)
                 .AsNoTracking()
                 .OrderBy(r => r.CreateOn);
 
-            return ToFile(FromQueryWithShared(query).FirstOrDefault());
+            return ToFile(await FromQueryWithShared(query).FirstOrDefaultAsync());
         }
 
         public File<int> GetFileStable(int fileId, int fileVersion = -1)
+        {
+            return GetFileStableAsync(fileId, fileVersion).Result;
+        }
+
+        public async Task<File<int>> GetFileStableAsync(int fileId, int fileVersion = -1)
         {
             var query = GetFileQuery(r => r.Id == fileId && r.Forcesave == ForcesaveType.None)
                 .AsNoTracking();
@@ -178,7 +188,7 @@ namespace ASC.Files.Core.Data
 
             query = query.OrderByDescending(r => r.Version);
 
-            return ToFile(FromQueryWithShared(query).SingleOrDefault());
+            return ToFile(await FromQueryWithShared(query).SingleOrDefaultAsync());
         }
 
         public List<File<int>> GetFileHistory(int fileId)
@@ -255,11 +265,20 @@ namespace ASC.Files.Core.Data
 
         public List<int> GetFiles(int parentId)
         {
-            return Query(FilesDbContext.Files)
+            return GetFilesAsync(parentId).Result;
+        }
+
+        public async Task<List<int>> GetFilesAsync(int parentId)
+        {
+            var rng = new List<int>();
+            await foreach (int item in rng)
+                Console.Write(item + " ");
+
+            return await Query(FilesDbContext.Files)
                 .AsNoTracking()
                 .Where(r => r.FolderId == parentId && r.CurrentVersion)
                 .Select(r => r.Id)
-                .ToList();
+                .ToListAsync();
         }
 
         public List<File<int>> GetFiles(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -373,6 +392,11 @@ namespace ASC.Files.Core.Data
         }
 
         public File<int> SaveFile(File<int> file, Stream fileStream, bool checkQuota = true)
+        {
+            return SaveFileAsync(file, fileStream, checkQuota).Result;
+        }
+
+        public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
         {
             if (file == null)
             {
@@ -515,9 +539,9 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(InitDocument(toInsert));
+            FactoryIndexer.IndexAsync(InitDocument(toInsert)).Start();
 
-            return GetFileAsync(file.ID).Result;
+            return await GetFileAsync(file.ID);
         }
 
         public File<int> ReplaceFileVersion(File<int> file, Stream fileStream)

@@ -112,9 +112,19 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return ToFile(GetFolderFiles(parentId).FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
+        public Task<File<string>> GetFileAsync(string parentId, string title)
+        {
+            throw new NotImplementedException();
+        }
+
         public File<string> GetFileStable(string fileId, int fileVersion)
         {
             return ToFile(GetFileById(fileId));
+        }
+
+        public Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
+        {
+            throw new NotImplementedException();
         }
 
         public List<File<string>> GetFileHistory(string fileId)
@@ -664,7 +674,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             return file;
         }
-
         #endregion
     }
 }

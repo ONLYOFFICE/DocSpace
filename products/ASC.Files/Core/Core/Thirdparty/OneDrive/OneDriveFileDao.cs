@@ -110,9 +110,19 @@ namespace ASC.Files.Thirdparty.OneDrive
                               .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase) && item.File != null));
         }
 
+        public Task<File<string>> GetFileAsync(string parentId, string title)
+        {
+            throw new NotImplementedException();
+        }
+
         public File<string> GetFileStable(string fileId, int fileVersion)
         {
             return ToFile(GetOneDriveItem(fileId));
+        }
+
+        public Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
+        {
+            throw new NotImplementedException();
         }
 
         public List<File<string>> GetFileHistory(string fileId)
@@ -603,7 +613,6 @@ namespace ASC.Files.Thirdparty.OneDrive
                 System.IO.File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
             }
         }
-
         #endregion
     }
 }

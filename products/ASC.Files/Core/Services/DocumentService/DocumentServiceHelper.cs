@@ -272,7 +272,7 @@ namespace ASC.Web.Files.Services.DocumentService
             if (lastVersion && file.Forcesave != ForcesaveType.None && tryEdit)
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                fileStable = fileDao.GetFileStable(file.ID, file.Version);
+                fileStable = fileDao.GetFileStableAsync(file.ID, file.Version).Result;
             }
 
             var docKey = GetDocKey(fileStable);
@@ -377,7 +377,7 @@ namespace ASC.Web.Files.Services.DocumentService
             if (file.Forcesave != ForcesaveType.None)
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                fileStable = fileDao.GetFileStable(file.ID, file.Version);
+                fileStable = fileDao.GetFileStableAsync(file.ID, file.Version).Result;
             }
 
             var docKey = GetDocKey(fileStable);
@@ -399,7 +399,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 && !FileUtility.CanWebComment(file.Title))
                 return true;
 
-            var fileStable = file.Forcesave == ForcesaveType.None ? file : fileDao.GetFileStable(file.ID, file.Version);
+            var fileStable = file.Forcesave == ForcesaveType.None ? file : fileDao.GetFileStableAsync(file.ID, file.Version).Result;
             var docKeyForTrack = GetDocKey(fileStable);
 
             var meta = new Web.Core.Files.DocumentService.MetaData { Title = file.Title };

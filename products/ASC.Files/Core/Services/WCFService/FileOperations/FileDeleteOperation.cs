@@ -167,7 +167,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
                         if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default(T)))
                         {
-                            DeleteFiles(FileDao.GetFiles(folder.ID), scope);
+                            DeleteFiles(FileDao.GetFilesAsync(folder.ID).Result, scope);
                             DeleteFolders(FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), scope);
 
                             if (FolderDao.IsEmpty(folder.ID))
