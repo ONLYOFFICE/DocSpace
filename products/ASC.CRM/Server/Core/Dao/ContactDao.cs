@@ -1584,8 +1584,6 @@ namespace ASC.CRM.Core.Dao
                                  .ToArray();
             }
 
-            RangeAsync
-
             CrmDbContext.RemoveRange(Query(CrmDbContext.FieldValue)
                                           .Where(x => contactID.Contains(x.EntityId))
                                           .Where(x => x.EntityType == EntityType.Contact || x.EntityType == EntityType.Person || x.EntityType == EntityType.Company)

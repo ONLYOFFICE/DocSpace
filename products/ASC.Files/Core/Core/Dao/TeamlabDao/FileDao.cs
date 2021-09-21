@@ -270,10 +270,6 @@ namespace ASC.Files.Core.Data
 
         public async Task<List<int>> GetFilesAsync(int parentId)
         {
-            var rng = new List<int>();
-            await foreach (int item in rng)
-                Console.Write(item + " ");
-
             return await Query(FilesDbContext.Files)
                 .AsNoTracking()
                 .Where(r => r.FolderId == parentId && r.CurrentVersion)
