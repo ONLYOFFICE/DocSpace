@@ -12,6 +12,8 @@ ARG BUILD_NUMBER=0
 ARG GIT_BRANCH=master
 ARG SRC_PATH
 ARG BUILD_PATH
+ARG BUILD_ARGS=build
+ARG DEPLOY_ARGS=deploy
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
@@ -46,7 +48,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     sed -i "s/\"number\".*,/\"number\": \"${PRODUCT_VERSION}.${BUILD_NUMBER}\",/g" /app/onlyoffice/config/appsettings.json && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd ${SRC_PATH}/build/install/common/ && \
-    bash build-frontend.sh -sp ${SRC_PATH} && \
+    bash build-frontend.sh -sp ${SRC_PATH} -ba ${BUILD_ARGS} -da ${DEPLOY_ARGS} && \
     bash build-backend.sh -sp ${SRC_PATH}  && \
     bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH}  && \
     cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
