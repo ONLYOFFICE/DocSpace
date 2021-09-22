@@ -484,6 +484,10 @@ const Editor = () => {
 
     let newArr = [];
     console.log("fileHistory", fileHistory);
+    const currenVersion =
+      url.indexOf("&version=") !== -1
+        ? +url.split("&version=")[1]
+        : fileHistory.pop().version;
 
     for (let i = 0; i < fileHistory.length; i++) {
       const changes = fileHistory[i].changes;
@@ -507,7 +511,7 @@ const Editor = () => {
     }
 
     docEditor.refreshHistory({
-      currentVersion: fileHistory.pop(),
+      currentVersion: currenVersion,
       history: newArr,
     });
   };
