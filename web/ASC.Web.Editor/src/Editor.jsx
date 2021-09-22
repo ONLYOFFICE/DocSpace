@@ -463,19 +463,27 @@ const Editor = () => {
     const version = event.data;
     console.log("version", version);
 
-    const diff = await getEditDiff(fileId, version);
+    try {
+      const diff = await getEditDiff(fileId, version);
 
-    docEditor.setHistoryData({
-      changesUrl: diff.changesUrl,
-      key: diff.key,
-      previous: {
-        key: diff.previous?.key,
-        url: diff.previous?.url,
-      },
-      url: diff.url,
-      version,
-    });
+      docEditor.setHistoryData({
+        changesUrl: diff.changesUrl,
+        key: diff.key,
+        previous: {
+          key: diff.previous?.key,
+          url: diff.previous?.url,
+        },
+        url: diff.url,
+        version,
+      });
+    } catch (e) {
+      docEditor.setHistoryData({
+        error: `${e}`, //TODO: maybe need to display something else.
+        version,
+      });
+    }
   };
+
   const onSDKRequestHistoryClose = () => {
     document.location.reload();
   };
