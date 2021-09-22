@@ -460,7 +460,7 @@ const Editor = () => {
     }
   };
   const onSDKRequestHistoryData = async (event) => {
-    var version = event.data;
+    const version = event.data;
     console.log("version", version);
 
     const diff = await getEditDiff(fileId, version);
@@ -473,6 +473,7 @@ const Editor = () => {
         url: diff.previous?.url,
       },
       url: diff.url,
+      version,
     });
   };
   const onSDKRequestHistoryClose = () => {
@@ -510,7 +511,7 @@ const Editor = () => {
 
       newArr.push(obj);
     }
-
+    console.log("newArr", newArr);
     docEditor.refreshHistory({
       currentVersion: currenVersion,
       history: newArr,
