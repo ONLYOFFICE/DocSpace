@@ -1,2 +1,15 @@
-echo "RUN ASC.CRM.Server"
-call dotnet run --project ..\..\products\ASC.CRM\Server\ASC.CRM.csproj --no-build --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=crm
+@echo off
+PUSHD %~dp0..
+set servicepath=%cd%\deploy\products\ASC.CRM\server\
+set servicename=ASC.CRM
+
+PUSHD %~dp0..\..
+set servicesource=%cd%\products\ASC.CRM\Server\
+
+if "%1%" == "service" (
+  set servicepath=%servicepath%%servicename%.exe  --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=crm
+) else (
+	if NOT "%1%" == "publish" (
+		call %servicepath%%servicename%.exe
+	)
+)
