@@ -240,7 +240,7 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const config = await openEdit(fileId, version, doc, view);
+      config = await openEdit(fileId, version, doc, view);
 
       if (
         !view &&
@@ -462,17 +462,17 @@ const Editor = () => {
   const onSDKRequestHistoryData = async (event) => {
     var version = event.data;
     console.log("version", version);
-    const newConfig = await openEdit(fileId, version, doc);
-    const prevConfig = await openEdit(fileId, version - 1, doc);
-    console.log("newConfig", prevConfig);
+
+    const diff = await getEditDiff(fileId, version);
+
     docEditor.setHistoryData({
-      //changesUrl: "https://example.com/url-to-changes.zip",
-      key: newConfig.document.key,
+      changesUrl: diff.changesUrl,
+      key: diff.key,
       previous: {
-        key: prevConfig.document.key,
-        url: prevConfig.document.url,
+        key: diff.previous?.key,
+        url: diff.previous?.url,
       },
-      url: newConfig.document.url,
+      url: diff.url,
     });
   };
   const onSDKRequestHistoryClose = () => {
