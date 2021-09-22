@@ -48,6 +48,7 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         isPrivacy,
+        isTrashFolder,
         onSelectItem,
         item,
       } = this.props;
@@ -58,7 +59,7 @@ export default function withFileActions(WrappedFileItem) {
       const notSelectable = e.target.classList.contains("not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
 
-      if (isPrivacy || (!draggable && !isFileName)) return;
+      if (isPrivacy || isTrashFolder || (!draggable && !isFileName)) return;
 
       if (window.innerWidth < 1025 || notSelectable) {
         return;
