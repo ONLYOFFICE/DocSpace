@@ -127,7 +127,7 @@ const Layout = (props) => {
 
     const updateHeight = () => {
       const correctorMobileChrome = 57; // ios
-      const correctorTabletSafari = 71; // ios
+      //const correctorTabletSafari = 71; // ios
 
       clearInterval(intervalHandler);
       clearTimeout(timeoutHandler);
@@ -142,14 +142,15 @@ const Layout = (props) => {
           height = window.screen.availWidth - correctorMobileChrome;
         }
       }
-      if (isTablet && isIOS && isSafari) {
-        if (
-          window.innerHeight < window.innerWidth &&
-          window.innerWidth > 1024
-        ) {
-          height = window.screen.availHeight - correctorTabletSafari;
-        }
-      }
+
+      // if (isTablet && isIOS && isSafari) {
+      //   if (
+      //     window.innerHeight < window.innerWidth &&
+      //     window.innerWidth > 1024
+      //   ) {
+      //     height = window.screen.availHeight - correctorTabletSafari;
+      //   }
+      // }
       setContentHeight(height);
     };
     intervalHandler = setInterval(() => {
