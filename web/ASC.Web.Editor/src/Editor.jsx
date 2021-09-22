@@ -495,7 +495,7 @@ const Editor = () => {
 
       let obj = {
         ...(changes.length !== 0 && { changes }),
-        created: `${fileHistory[i].created.toLocaleString(
+        created: `${new Date(fileHistory[i].created).toLocaleString(
           config.editorConfig.lang
         )}`,
         ...(serverVersion && { serverVersion }),
