@@ -484,12 +484,13 @@ const Editor = () => {
 
     let newArr = [];
     console.log("fileHistory", fileHistory);
+    const historyLength = fileHistory.length;
     const currenVersion =
       url.indexOf("&version=") !== -1
         ? +url.split("&version=")[1]
-        : fileHistory.pop().version;
+        : fileHistory[historyLength - 1].version;
 
-    for (let i = 0; i < fileHistory.length; i++) {
+    for (let i = 0; i < historyLength; i++) {
       const changes = fileHistory[i].changes;
       const serverVersion = fileHistory[i].serverVersion;
 
