@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import copy from "copy-to-clipboard";
 import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
-import toastr from "studio/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import config from "../../package.json";
 
 export default function withContextOptions(WrappedComponent) {
