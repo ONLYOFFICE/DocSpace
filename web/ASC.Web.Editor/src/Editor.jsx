@@ -464,16 +464,16 @@ const Editor = () => {
     console.log("version", version);
 
     try {
-      const diff = await getEditDiff(fileId, version);
+      const versionDifference = await getEditDiff(fileId, version);
 
       docEditor.setHistoryData({
-        changesUrl: diff.changesUrl,
-        key: diff.key,
+        changesUrl: versionDifference.changesUrl,
+        key: versionDifference.key,
         previous: {
-          key: diff.previous?.key,
-          url: diff.previous?.url,
+          key: versionDifference.previous?.key,
+          url: versionDifference.previous?.url,
         },
-        url: diff.url,
+        url: versionDifference.url,
         version,
       });
     } catch (e) {
