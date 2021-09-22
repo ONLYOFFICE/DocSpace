@@ -497,8 +497,8 @@ const Editor = () => {
         ...(serverVersion && { serverVersion }),
         key: fileHistory[i].key,
         user: {
-          id: fileHistory[i].id,
-          name: fileHistory[i].displayName,
+          id: fileHistory[i].user.id,
+          name: fileHistory[i].user.displayName,
         },
         version: fileHistory[i].version,
       };
