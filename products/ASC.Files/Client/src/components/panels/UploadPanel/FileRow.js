@@ -116,9 +116,7 @@ const FileRow = (props) => {
         }
       >
         <>
-          {item.fileId &&
-          item.action !== "convert" &&
-          item.action !== "converted" ? (
+          {item.fileId ? (
             isMedia ? (
               <Link
                 fontWeight="600"
