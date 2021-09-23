@@ -495,10 +495,9 @@ const Editor = () => {
     document.location.reload();
   };
 
-  const getDocumentHistory = (fileHistory) => {
+  const getDocumentHistory = (fileHistory, historyLength) => {
     let result = [];
     console.log("fileHistory", fileHistory);
-    const historyLength = fileHistory.length;
 
     for (let i = 0; i < historyLength; i++) {
       const changes = fileHistory[i].changes;
@@ -526,19 +525,19 @@ const Editor = () => {
     console.log("newArr", result);
     return result;
   };
-  const currentDocumentVersion = (fileHistory) => {
-    const historyLength = fileHistory.length;
+  const currentDocumentVersion = (fileHistory, historyLength) => {
     return url.indexOf("&version=") !== -1
       ? +url.split("&version=")[1]
       : fileHistory[historyLength - 1].version;
   };
   const onSDKRequestHistory = async () => {
     try {
-      let fileHistory = await getEditHistory(fileId);
+      const fileHistory = await getEditHistory(fileId);
+      const historyLength = fileHistory.length;
 
       docEditor.refreshHistory({
-        currentVersion: currentDocumentVersion(fileHistory),
-        history: getDocumentHistory(fileHistory),
+        currentVersion: currentDocumentVersion(fileHistory, historyLength),
+        history: getDocumentHistory(fileHistory, historyLength),
       });
     } catch (e) {
       docEditor.refreshHistory({
