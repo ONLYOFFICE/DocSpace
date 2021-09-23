@@ -472,14 +472,19 @@ const Editor = () => {
 
     try {
       const versionDifference = await getEditDiff(fileId, version);
+      const changesUrl = versionDifference.changesUrl;
+      const previous = versionDifference.previous;
 
       docEditor.setHistoryData({
-        changesUrl: versionDifference.changesUrl,
+        ...(changesUrl && { changesUrl }),
         key: versionDifference.key,
-        previous: {
-          key: versionDifference.previous?.key,
-          url: versionDifference.previous?.url,
-        },
+        ...(previous && {
+          previous: {
+            key: previous.key,
+            url: previous.url,
+          },
+        }),
+        // token: versionDifference.token, //TODO: need to add.
         url: versionDifference.url,
         version,
       });
