@@ -525,7 +525,7 @@ const Editor = () => {
     console.log("newArr", result);
     return result;
   };
-  const currentDocumentVersion = (fileHistory, historyLength) => {
+  const getCurrentDocumentVersion = (fileHistory, historyLength) => {
     return url.indexOf("&version=") !== -1
       ? +url.split("&version=")[1]
       : fileHistory[historyLength - 1].version;
@@ -536,7 +536,7 @@ const Editor = () => {
       const historyLength = fileHistory.length;
 
       docEditor.refreshHistory({
-        currentVersion: currentDocumentVersion(fileHistory, historyLength),
+        currentVersion: getCurrentDocumentVersion(fileHistory, historyLength),
         history: getDocumentHistory(fileHistory, historyLength),
       });
     } catch (e) {
