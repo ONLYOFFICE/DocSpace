@@ -44,6 +44,10 @@ class MediaViewersFormatsStore {
     return presentInArray(this.media, extension);
   };
 
+  isImage = (extension) => {
+    return presentInArray(this.images, extension);
+  };
+
   isMediaOrImage = (fileExst) => {
     if (this.media.includes(fileExst) || this.images.includes(fileExst)) {
       return true;

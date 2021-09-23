@@ -206,10 +206,10 @@ namespace ASC.Files.Helpers
             configuration.EditorType = EditorType.External;
             if (configuration.EditorConfig.ModeWrite)
             {
-                configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.File.ID.ToString());
+                configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
             }
 
-            if (configuration.Document.Info.File.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
+            if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
             {
                 var keyPair = EncryptionKeyPairHelper.GetKeyPair();
                 if (keyPair != null)
@@ -222,7 +222,7 @@ namespace ASC.Files.Helpers
                 }
             }
 
-            if (!configuration.Document.Info.File.Encrypted && !configuration.Document.Info.File.ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.File);
+            if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.GetFile());
 
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;

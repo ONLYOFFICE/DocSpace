@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+
 using AppLimit.CloudComputing.SharpBox.Common.IO;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
 
@@ -669,68 +670,70 @@ namespace AppLimit.CloudComputing.SharpBox
                 case nSupportedCloudConfigurations.BoxNet:
                     return StorageProvider.BoxNet.BoxNetConfiguration.GetBoxNetConfiguration();
                 case nSupportedCloudConfigurations.StoreGate:
+                {
+                    // check parameters
+                    if (param.Length < 1 || (param[0] as ICredentials) == null)
                     {
-                        // check parameters
-                        if (param.Length < 1 || (param[0] as ICredentials) == null)
-                        {
-                            var e = new Exception("Missing valid credentials for StoreGate in the first parameter");
-                            throw new SharpBoxException(SharpBoxErrorCodes.ErrorInvalidParameters, e);
-                        }
-
-                        // cast creds
-                        var creds = (ICredentials)param[0];
-
-                        // build config
-                        return StorageProvider.WebDav.WebDavConfiguration.GetStoreGateConfiguration(creds.GetCredential(null, ""));
+                        var e = new Exception("Missing valid credentials for StoreGate in the first parameter");
+                        throw new SharpBoxException(SharpBoxErrorCodes.ErrorInvalidParameters, e);
                     }
+
+                    // cast creds
+                    var creds = (ICredentials)param[0];
+
+                    // build config
+                    return StorageProvider.WebDav.WebDavConfiguration.GetStoreGateConfiguration(creds.GetCredential(null, ""));
+                }
                 case nSupportedCloudConfigurations.SmartDrive:
                     return StorageProvider.WebDav.WebDavConfiguration.Get1and1Configuration();
                 case nSupportedCloudConfigurations.WebDav:
+                {
+                    // check parameters
+                    if (param.Length < 1 || (param[0] as Uri) == null)
                     {
-                        // check parameters
-                        if (param.Length < 1 || (param[0] as Uri) == null)
-                        {
-                            var e = new Exception("Missing URL for webdav server in the first parameter");
-                            throw new SharpBoxException(SharpBoxErrorCodes.ErrorInvalidParameters, e);
-                        }
-
-                        // convert to uri
-                        var uri = (Uri)param[0];
-
-                        // create the config
-                        var cfg = new StorageProvider.WebDav.WebDavConfiguration(uri) { TrustUnsecureSSLConnections = true };
-
-                        // go ahead
-                        return cfg;
+                        var e = new Exception("Missing URL for webdav server in the first parameter");
+                        throw new SharpBoxException(SharpBoxErrorCodes.ErrorInvalidParameters, e);
                     }
+
+                    // convert to uri
+                    var uri = (Uri)param[0];
+
+                    // create the config
+                    var cfg = new StorageProvider.WebDav.WebDavConfiguration(uri) { TrustUnsecureSSLConnections = true };
+
+                    // go ahead
+                    return cfg;
+                }
                 case nSupportedCloudConfigurations.CloudMe:
+                {
+                    // check parameters
+                    if (param.Length < 1 || (param[0] as ICredentials) == null)
                     {
-                        // check parameters
-                        if (param.Length < 1 || (param[0] as ICredentials) == null)
-                        {
-                            var e = new Exception("Missing valid credentials for CloudMe in the first parameter");
-                            throw new SharpBoxException(SharpBoxErrorCodes.ErrorInvalidParameters, e);
-                        }
-
-                        // cast creds
-                        var creds = (ICredentials)param[0];
-
-                        // build config
-                        return StorageProvider.WebDav.WebDavConfiguration.GetCloudMeConfiguration(creds.GetCredential(null, ""));
+                        var e = new Exception("Missing valid credentials for CloudMe in the first parameter");
+                        throw new SharpBoxException(SharpBoxErrorCodes.ErrorInvalidParameters, e);
                     }
+
+                    // cast creds
+                    var creds = (ICredentials)param[0];
+
+                    // build config
+                    return StorageProvider.WebDav.WebDavConfiguration.GetCloudMeConfiguration(creds.GetCredential(null, ""));
+                }
                 case nSupportedCloudConfigurations.HiDrive:
                     return StorageProvider.WebDav.WebDavConfiguration.GetHiDriveConfiguration();
                 case nSupportedCloudConfigurations.Google:
                     return StorageProvider.GoogleDocs.GoogleDocsConfiguration.GetStandartConfiguration();
+                case nSupportedCloudConfigurations.kDrive:
+                    return StorageProvider.WebDav.WebDavConfiguration.GetkDriveConfiguration();
                 case nSupportedCloudConfigurations.Yandex:
                     return StorageProvider.WebDav.WebDavConfiguration.GetYandexConfiguration();
                 case nSupportedCloudConfigurations.SkyDrive:
                     return new StorageProvider.SkyDrive.SkyDriveConfiguration();
                 default:
-                    {
-                        var e = new Exception("Unknow service type");
-                        throw new SharpBoxException(SharpBoxErrorCodes.ErrorInvalidParameters, e);
-                    }
+                {
+                    var e = new Exception("Unknow service type");
+                    throw new SharpBoxException(SharpBoxErrorCodes.ErrorInvalidParameters, e);
+                }
             }
         }
 
@@ -766,25 +769,25 @@ namespace AppLimit.CloudComputing.SharpBox
 
             // create the eventargs element
             var arg = new FileDataTransferEventArgs
-                {
-                    FileSystemEntry = e,
-                    CurrentBytes = pe.ReadBytesTotal,
-                    CustomnContext = progressContext,
-                    PercentageProgress = pe.PercentageProgress,
-                    TransferRateTotal = pe.TransferRateTotal,
-                    TransferRateCurrent = pe.TransferRateCurrent,
-                    TotalBytes = pe.TotalLength == -1 ? e.Length : pe.TotalLength
-                };
+            {
+                FileSystemEntry = e,
+                CurrentBytes = pe.ReadBytesTotal,
+                CustomnContext = progressContext,
+                PercentageProgress = pe.PercentageProgress,
+                TransferRateTotal = pe.TransferRateTotal,
+                TransferRateCurrent = pe.TransferRateCurrent,
+                TotalBytes = pe.TotalLength == -1 ? e.Length : pe.TotalLength
+            };
 
             // calc transfertime            
             if (pe.TransferRateTotal != -1 && pe.TransferRateTotal > 0)
             {
-                var bytesPerSecond = (arg.TransferRateTotal/8)*1000;
+                var bytesPerSecond = (arg.TransferRateTotal / 8) * 1000;
 
                 if (bytesPerSecond > 0)
                 {
-                    var neededSeconds = (arg.TotalBytes - arg.CurrentBytes)/bytesPerSecond;
-                    arg.OpenTransferTime = new TimeSpan(neededSeconds*TimeSpan.TicksPerSecond);
+                    var neededSeconds = (arg.TotalBytes - arg.CurrentBytes) / bytesPerSecond;
+                    arg.OpenTransferTime = new TimeSpan(neededSeconds * TimeSpan.TicksPerSecond);
                 }
                 else
                     arg.OpenTransferTime = new TimeSpan(long.MaxValue);

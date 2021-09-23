@@ -53,7 +53,8 @@ namespace ASC.Web.Studio.Core
         public string MainLogoURL { get; private set; }
         public string MainLogoMailTmplURL { get; private set; }
         public List<CultureInfo> EnabledCultures { get; private set; }
-        public List<CultureInfo> EnabledCulturesPersonal { get; private set; }
+        public List<CultureInfo> EnabledCulturesPersonal { get; set; }
+        public List<KeyValuePair<string, CultureInfo>> PersonalCultures { get; private set; }
         public decimal ExchangeRateRuble { get; private set; }
         public long MaxImageUploadSize { get; private set; }
 
@@ -141,11 +142,14 @@ namespace ASC.Web.Studio.Core
                 .Select(l => CultureInfo.GetCultureInfo(l.Trim()))
                 .OrderBy(l => l.DisplayName)
                 .ToList();
-            EnabledCulturesPersonal = GetAppSettings("web.cultures.personal", GetAppSettings("web.cultures", "en-US"))
+
+            EnabledCulturesPersonal = GetAppSettings("web:cultures:personal", GetAppSettings("web:cultures", "en-US"))
                 .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(l => CultureInfo.GetCultureInfo(l.Trim()))
                 .OrderBy(l => l.DisplayName)
                 .ToList();
+
+            PersonalCultures = GetPersonalCultures();
 
             ExchangeRateRuble = GetAppSettings("exchange-rate.ruble", 65);
             MaxImageUploadSize = GetAppSettings<long>("web:max-upload-size", 1024 * 1024);
@@ -169,7 +173,7 @@ namespace ASC.Web.Studio.Core
             SalesEmail = GetAppSettings("web.payment.email", "sales@onlyoffice.com");
             web_autotest_secret_email = (configuration["web.autotest.secret-email"] ?? "").Trim();
 
-            RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", "");
+            RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", null);
             RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
             RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
             LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
@@ -246,6 +250,56 @@ namespace ASC.Web.Studio.Core
                 }
             }
             return defaultValue;
+        }
+
+        private List<KeyValuePair<string, CultureInfo>> GetPersonalCultures()
+        {
+            var result = new Dictionary<string, CultureInfo>();
+
+            foreach (var culture in EnabledCulturesPersonal)
+            {
+                if (result.ContainsKey(culture.TwoLetterISOLanguageName))
+                {
+                    result.Add(culture.Name, culture);
+                }
+                else
+                {
+                    result.Add(culture.TwoLetterISOLanguageName, culture);
+                }
+            }
+
+            return result.OrderBy(item => item.Value.DisplayName).ToList();
+        }
+
+        public KeyValuePair<string, CultureInfo> GetPersonalCulture(string lang)
+        {
+            foreach (var item in PersonalCultures)
+            {
+                if (string.Equals(item.Key, lang, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return item;
+                }
+            }
+
+            var cultureInfo = EnabledCulturesPersonal.Find(c => string.Equals(c.Name, lang, StringComparison.InvariantCultureIgnoreCase));
+
+            if (cultureInfo == null)
+            {
+                cultureInfo = EnabledCulturesPersonal.Find(c => string.Equals(c.TwoLetterISOLanguageName, lang, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            if (cultureInfo != null)
+            {
+                foreach (var item in PersonalCultures)
+                {
+                    if (item.Value == cultureInfo)
+                    {
+                        return item;
+                    }
+                }
+            }
+
+            return new KeyValuePair<string, CultureInfo>(lang, cultureInfo);
         }
     }
 }

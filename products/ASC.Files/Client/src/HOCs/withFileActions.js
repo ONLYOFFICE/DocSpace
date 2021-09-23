@@ -148,13 +148,13 @@ export default function withFileActions(WrappedFileItem) {
         setIsLoading(true);
         //addExpandedKeys(parentFolder + "");
 
-        fetchFiles(id, null, true, false, true)
+        fetchFiles(id, null, true, false)
           .then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createNewExpandedKeys(pathParts);
             setExpandedKeys(newExpandedKeys);
 
-            this.setNewBadgeCount(item);
+            setNewBadgeCount(item);
           })
           .catch((err) => {
             toastr.error(err);
@@ -285,7 +285,12 @@ export default function withFileActions(WrappedFileItem) {
       },
       { item, t, history }
     ) => {
-      const { selectRowAction, onSelectItem, markAsRead } = filesActionsStore;
+      const {
+        selectRowAction,
+        onSelectItem,
+        markAsRead,
+        setNewBadgeCount,
+      } = filesActionsStore;
       const {
         setSharingPanelVisible,
         setConvertDialogVisible,
@@ -313,7 +318,7 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
       } = filesStore;
       const { startUpload } = uploadDataStore;
-      const { type, extension, id, setNewBadgeCount } = fileActionStore;
+      const { type, extension, id } = fileActionStore;
       const { mediaViewersFormatsStore, docserviceStore } = formatsStore;
       const { setMediaViewerData } = mediaViewerDataStore;
 
