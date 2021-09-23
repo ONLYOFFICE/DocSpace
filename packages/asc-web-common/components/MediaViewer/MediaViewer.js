@@ -123,7 +123,8 @@ class MediaViewer extends React.Component {
       onEmptyPlaylistError,
     } = this.props;
 
-    const { playlistPos } = this.state;
+    const { playlistPos, fileUrl } = this.state;
+    const src = playlist[playlistPos]?.src;
 
     if (visible !== prevProps.visible) {
       const newPlaylistPos =
@@ -135,6 +136,10 @@ class MediaViewer extends React.Component {
         visible: visible,
         playlistPos: newPlaylistPos,
       });
+    }
+
+    if (src && src !== fileUrl && playlistPos === prevState.playlistPos) {
+      this.setState({ fileUrl: src });
     }
 
     if (
