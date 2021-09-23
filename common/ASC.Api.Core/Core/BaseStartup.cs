@@ -177,7 +177,7 @@ namespace ASC.Api.Core
         {
             return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
             {
-                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration));
+                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
                 r.AddNLog(LogManager.Configuration);
             });
         }

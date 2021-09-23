@@ -1,13 +1,13 @@
 @echo off
 PUSHD %~dp0..
-set servicepath=%cd%\deploy\services\ssoauth\service
+set servicepath=%cd%\deploy\services\ssoauth\service\
 set servicename=ASC.SsoAuth.Svc
 
 PUSHD %~dp0..\..
 set servicesource=%cd%\common\services\ASC.SsoAuth.Svc\
 
 if "%1%" == "service" (
-  set servicepath=%servicepath%%servicename%.exe --$STORAGE_ROOT=..\..\Data  --log__dir=..\..\Logs --log__name=ssoauth
+  set servicepath=%servicepath%%servicename%.exe urls=http://0.0.0.0:5031 $STORAGE_ROOT=..\..\..\..\..\Data  log:dir=..\..\..\..\..\Logs log:name=ssoauth pathToConf=..\..\..\..\..\config core:products:folder=..\..\..\products core:products:subfolder=server
 ) else (
 	if NOT "%1%" == "publish" (
 		call %servicepath%%servicename%.exe

@@ -7,7 +7,7 @@ PUSHD %~dp0..\..
 set servicesource=%cd%\common\services\ASC.UrlShortener.Svc\
 
 if "%1%" == "service" (
-  set servicepath=%servicepath%%servicename%.exe  --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=urlshortener
+  set servicepath=%servicepath%%servicename%.exe urls=http://0.0.0.0:5029 $STORAGE_ROOT=..\..\..\..\..\Data log:dir=..\..\..\..\..\Logs log:name=urlshortener pathToConf=..\..\..\..\..\config core:products:folder=..\..\..\products core:products:subfolder=server
 ) else (
 	if NOT "%1%" == "publish" (
 		call %servicepath%%servicename%.exe
