@@ -499,15 +499,11 @@ const Editor = () => {
         ? +url.split("&version=")[1]
         : fileHistory[historyLength - 1].version;
 
-    let version = null;
-
     for (let i = 0; i < historyLength; i++) {
       const changes = fileHistory[i].changes;
       const serverVersion = fileHistory[i].serverVersion;
-
-      if (version !== fileHistory[i].versionGroup) {
-        version = fileHistory[i].versionGroup;
-      }
+      const version = fileHistory[i].version;
+      const versionGroup = fileHistory[i].versionGroup;
 
       let obj = {
         ...(changes.length !== 0 && { changes }),
@@ -521,6 +517,7 @@ const Editor = () => {
           name: fileHistory[i].user.displayName,
         },
         version,
+        versionGroup,
       };
 
       newArr.push(obj);
