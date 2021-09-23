@@ -9,10 +9,12 @@ const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
       type="page"
       title={titleWithoutExt}
       fontWeight="600"
-      fontSize="15px"
+      fontSize="13px"
+      href={item.href}
       {...linkStyles}
       color="#333"
       isTextOverflow
+      className="item-file-name"
     >
       {titleWithoutExt}
       {fileExst ? (
@@ -20,7 +22,7 @@ const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
           className="badge-ext"
           as="span"
           color="#A3A9AE"
-          fontSize="15px"
+          fontSize="13px"
           fontWeight={600}
           title={fileExst}
           truncate={true}

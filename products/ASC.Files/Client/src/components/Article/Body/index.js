@@ -12,7 +12,7 @@ import Banner from "./Banner";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
-import { combineUrl } from "@appserver/common/utils";
+import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { isDesktop, isTablet } from "react-device-detect";
@@ -26,12 +26,12 @@ class ArticleBodyContent extends React.Component {
       homepage,
       history,
       hideArticle,
+      setFirstLoad,
     } = this.props;
 
     setSelectedNode(data);
-    setIsLoading(true);
     hideArticle(false);
-
+    setIsLoading(true);
     // const selectedFolderTitle =
     //   (e.node && e.node.props && e.node.props.title) || null;
 
@@ -40,13 +40,17 @@ class ArticleBodyContent extends React.Component {
     //   : setDocumentTitle();
 
     if (window.location.pathname.indexOf("/filter") > 0) {
-      fetchFiles(data[0])
+      fetchFiles(data[0], null, true, false)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
-      const newFilter = FilesFilter.getDefault();
-      newFilter.folder = data[0];
-      const urlFilter = newFilter.toUrlParams();
+      setFirstLoad(true);
+      const filter = FilesFilter.getDefault();
+
+      filter.folder = data[0];
+
+      const urlFilter = filter.toUrlParams();
+
       history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
       );
@@ -65,6 +69,9 @@ class ArticleBodyContent extends React.Component {
       enableThirdParty,
       isVisitor,
       personal,
+      firstLoad,
+      isDesktopClient,
+      FirebaseHelper,
     } = this.props;
 
     //console.log("Article Body render");
@@ -84,11 +91,19 @@ class ArticleBodyContent extends React.Component {
           onBadgeClick={this.onShowNewFilesPanel}
           onTreeDrop={onTreeDrop}
         />
-        {!personal && <TreeSettings />}
-        {enableThirdParty && !isVisitor && <ThirdPartyList />}
-        <DownloadAppList />
-        {(isDesktop || isTablet) && personal && campaigns.length > 0 && (
-          <Banner />
+        {!personal && !firstLoad && <TreeSettings />}
+
+        {!isDesktopClient && (
+          <>
+            {enableThirdParty && !isVisitor && <ThirdPartyList />}
+            <DownloadAppList />
+            {(isDesktop || isTablet) &&
+              personal &&
+              !firstLoad &&
+              campaigns.length > 0 && (
+                <Banner FirebaseHelper={FirebaseHelper} />
+              )}
+          </>
         )}
       </>
     );
@@ -104,12 +119,12 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, setIsLoading } = filesStore;
+    const { fetchFiles, setIsLoading, setFirstLoad, firstLoad } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
-    const { personal, hideArticle } = auth.settingsStore;
+    const { personal, hideArticle, isDesktopClient } = auth.settingsStore;
 
     const selectedFolderTitle = selectedFolderStore.title;
 
@@ -125,11 +140,15 @@ export default inject(
       personal,
 
       setIsLoading,
+      setFirstLoad,
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
       setNewFilesPanelVisible,
       hideArticle,
+      firstLoad,
+      isDesktopClient,
+      FirebaseHelper: auth.settingsStore.firebaseHelper,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));

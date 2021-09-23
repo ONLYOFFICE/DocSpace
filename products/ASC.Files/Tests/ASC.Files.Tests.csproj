@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AppLimit.CloudComputing.SharpBox" Version="1.1.0.453" />
+    <PackageReference Include="AppLimit.CloudComputing.SharpBox" Version="1.1.0.456" />
     <PackageReference Include="Autofac" Version="6.0.0" />
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />

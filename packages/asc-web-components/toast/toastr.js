@@ -62,8 +62,14 @@ const notify = (
         <Icon size="medium" type={type} />
       </IconWrapper>
       <StyledDiv>
-        {title && <Text className="toast-title">{title}</Text>}
-        {data && <Text className="toast-text">{data}</Text>}
+        {typeof data === "string" ? (
+          <>
+            {title && <Text className="toast-title">{title}</Text>}
+            {data && <Text className="toast-text">{data}</Text>}
+          </>
+        ) : (
+          data
+        )}
       </StyledDiv>
     </>,
     {
@@ -87,6 +93,8 @@ function error(data, title, timeout, withCross, centerPosition) {
       ? data
       : dataType === "object" && data.statusText
       ? data.statusText
+      : dataType === "object" && data.message
+      ? data.message
       : "";
 
   return notify("error", message, title, timeout, withCross, centerPosition);

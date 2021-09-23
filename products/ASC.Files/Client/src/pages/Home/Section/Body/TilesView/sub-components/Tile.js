@@ -3,7 +3,6 @@ import ContextMenuButton from "@appserver/components/context-menu-button";
 import PropTypes from "prop-types";
 import React from "react";
 import { ReactSVG } from "react-svg";
-//import equal from "fast-deep-equal/react";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
@@ -97,6 +96,41 @@ const StyledTile = styled.div`
         background-color: #efefb2;
       }
     `};
+
+  .checkbox {
+    opacity: ${(props) => (props.checked ? 1 : 0)};
+    flex: 0 0 16px;
+    margin-right: 4px;
+  }
+
+  .file-checkbox {
+    display: ${(props) => (props.checked ? "flex" : "none")};
+    flex: 0 0 16px;
+    margin-right: 4px;
+  }
+
+  .file-icon {
+    display: ${(props) => (props.checked ? "none" : "flex")};
+    flex: 0 0 auto;
+    margin-right: 4px;
+    user-select: none;
+    margin-top: 3px;
+
+    height: 32px;
+    width: 32px;
+  }
+
+  :hover {
+    .checkbox {
+      opacity: 1;
+    }
+    .file-checkbox {
+      display: flex;
+    }
+    .file-icon {
+      display: none;
+    }
+  }
 `;
 
 const StyledFileTileTop = styled.div`
@@ -153,11 +187,6 @@ const StyledContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
-`;
-
-const StyledCheckbox = styled.div`
-  flex: 0 0 16px;
-  margin-right: -4px;
 `;
 
 const StyledElement = styled.div`
@@ -270,6 +299,7 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
+
     return (
       <StyledTile
         ref={this.tile}
@@ -278,17 +308,17 @@ class Tile extends React.PureComponent {
         dragging={dragging && isFolder}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
+        checked={checked}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderCheckbox && (
-              <StyledCheckbox>
-                <Checkbox
-                  isChecked={checked}
-                  isIndeterminate={indeterminate}
-                  onChange={this.changeCheckbox}
-                />
-              </StyledCheckbox>
+              <Checkbox
+                className="checkbox"
+                isChecked={checked}
+                isIndeterminate={indeterminate}
+                onChange={this.changeCheckbox}
+              />
             )}
             {renderElement && !(isFolder || (!fileExst && id === -1)) && (
               <StyledElement>{element}</StyledElement>
@@ -317,20 +347,17 @@ class Tile extends React.PureComponent {
           </>
         ) : (
           <>
-            <StyledFileTileTop>
-              {renderCheckbox && (
-                <StyledCheckbox>
-                  <Checkbox
-                    isChecked={checked}
-                    isIndeterminate={indeterminate}
-                    onChange={this.changeCheckbox}
-                  />
-                </StyledCheckbox>
-              )}
-              {icon}
-            </StyledFileTileTop>
+            <StyledFileTileTop>{icon}</StyledFileTileTop>
             <StyledFileTileBottom>
-              <StyledElement>{element}</StyledElement>
+              <div className="file-icon_container">
+                <div className="file-icon">{element}</div>
+                <Checkbox
+                  className="file-checkbox"
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={this.changeCheckbox}
+                />
+              </div>
               <StyledContent
                 className="styled-content"
                 isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}

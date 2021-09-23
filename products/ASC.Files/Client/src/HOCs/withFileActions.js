@@ -48,13 +48,24 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         isPrivacy,
+        onSelectItem,
+        item,
       } = this.props;
-      const notSelectable = e.target.classList.contains("not-selectable");
 
-      if (!draggable || isPrivacy) return;
+      const { id, isFolder } = item;
+      e.preventDefault();
+
+      const notSelectable = e.target.classList.contains("not-selectable");
+      const isFileName = e.target.classList.contains("item-file-name");
+
+      if (isPrivacy || (!draggable && !isFileName)) return;
 
       if (window.innerWidth < 1025 || notSelectable) {
         return;
+      }
+
+      if (!draggable) {
+        id !== -1 && onSelectItem({ id, isFolder });
       }
 
       const mouseButton = e.which
@@ -92,7 +103,7 @@ export default function withFileActions(WrappedFileItem) {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
 
-        this.onFilesClick();
+        if (e.detail === 1) this.onFilesClick(e);
       } else {
         this.fileContextClick();
       }
@@ -117,32 +128,33 @@ export default function withFileActions(WrappedFileItem) {
         setMediaViewerData,
         setConvertItem,
         setConvertDialogVisible,
+        setNewBadgeCount,
       } = this.props;
       const {
         id,
-        fileExst,
         viewUrl,
         providerKey,
-        contentLength,
         fileStatus,
         encrypted,
+        isFolder,
       } = item;
       if (encrypted && isPrivacy) return checkProtocol(item.id, true);
 
       if (isTrashFolder) return;
       if (e && e.target.tagName === "INPUT") return;
+      e.preventDefault();
 
-      if (!fileExst && !contentLength) {
+      if (isFolder) {
         setIsLoading(true);
         //addExpandedKeys(parentFolder + "");
 
-        fetchFiles(id)
+        fetchFiles(id, null, true, false)
           .then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createNewExpandedKeys(pathParts);
             setExpandedKeys(newExpandedKeys);
 
-            this.setNewBadgeCount();
+            setNewBadgeCount(item);
           })
           .catch((err) => {
             toastr.error(err);
@@ -160,7 +172,7 @@ export default function withFileActions(WrappedFileItem) {
 
         if (canWebEdit || canViewedDocs) {
           let tab =
-            !isDesktop && fileExst
+            !isDesktop && !isFolder
               ? window.open(
                   combineUrl(
                     AppServerConfig.proxyURL,
@@ -202,7 +214,7 @@ export default function withFileActions(WrappedFileItem) {
         canWebEdit,
         canViewedDocs,
       } = this.props;
-      const { fileExst, access, contentLength, id, shared } = item;
+      const { fileExst, access, id } = item;
 
       const isEdit =
         actionType !== null && actionId === id && fileExst === actionExtension;
@@ -212,7 +224,7 @@ export default function withFileActions(WrappedFileItem) {
       let className = isDragging ? " droppable" : "";
       if (draggable) className += " draggable";
 
-      let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
+      let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
 
       const isShareable = allowShareIn && item.canShare;
@@ -273,7 +285,12 @@ export default function withFileActions(WrappedFileItem) {
       },
       { item, t, history }
     ) => {
-      const { selectRowAction, onSelectItem, markAsRead } = filesActionsStore;
+      const {
+        selectRowAction,
+        onSelectItem,
+        markAsRead,
+        setNewBadgeCount,
+      } = filesActionsStore;
       const {
         setSharingPanelVisible,
         setConvertDialogVisible,
@@ -312,11 +329,7 @@ export default function withFileActions(WrappedFileItem) {
       const draggable =
         !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
-      const isFolder = selectedItem
-        ? false
-        : item.fileExst //|| item.contentLength
-        ? false
-        : true;
+      const isFolder = selectedItem ? false : !item.isFolder ? false : true;
 
       const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
         item.fileExst
@@ -367,6 +380,7 @@ export default function withFileActions(WrappedFileItem) {
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
         isItemsSelected: selection.length > 0,
+        setNewBadgeCount,
       };
     }
   )(observer(WithFileActions));

@@ -5,13 +5,13 @@ import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
-  const { wizardCompleted, isAuthenticated, isLoaded } = rest;
+  const { wizardCompleted, isAuthenticated, isLoaded, personal } = rest;
   const renderComponent = (props) => {
     if (!isLoaded) {
       return <AppLoader />;
     }
 
-    if (isAuthenticated) {
+    if (isAuthenticated || personal) {
       return (
         <Redirect
           to={{
@@ -40,11 +40,12 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, isLoaded } = auth;
-  const { wizardCompleted } = settingsStore;
+  const { wizardCompleted, personal } = settingsStore;
 
   return {
     wizardCompleted,
     isAuthenticated,
     isLoaded,
+    personal,
   };
 })(observer(PublicRoute));

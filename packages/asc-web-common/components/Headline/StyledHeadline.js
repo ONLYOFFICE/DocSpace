@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import Heading from "@appserver/components/heading";
 import Base from "@appserver/components/themes/base";
-
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 const size = {
   header: "28px",
-  menu: "27px",
+  menu: "23px",
   content: "21px",
 };
 
@@ -20,6 +20,7 @@ const StyledHeading = styled(Heading)`
   font-size: ${(props) => size[props.headlineType]};
   font-weight: ${(props) => weight[props.headlineType]};
   color: ${(props) => (props.color ? props.color : props.theme.color)};
+  ${NoUserSelect}
 `;
 StyledHeading.defaultProps = { theme: Base };
 

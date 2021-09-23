@@ -28,7 +28,6 @@ const SectionBodyContent = (props) => {
     moveDragItems,
     viewAs,
     setSelection,
-    setViewAs,
   } = props;
 
   useEffect(() => {
@@ -205,7 +204,7 @@ export default inject(
   }) => {
     const {
       fileActionStore,
-      filesList,
+      isEmptyFilesList,
       dragging,
       setDragging,
       viewAs,
@@ -213,7 +212,6 @@ export default inject(
       startDrag,
       setStartDrag,
       setSelection,
-      setViewAs,
     } = filesStore;
 
     return {
@@ -221,7 +219,7 @@ export default inject(
       startDrag,
       setStartDrag,
       fileActionId: fileActionStore.id,
-      isEmptyFilesList: filesList.length <= 0,
+      isEmptyFilesList,
       setDragging,
       startDrag,
       setStartDrag,
@@ -231,7 +229,6 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
       setSelection,
-      setViewAs,
     };
   }
 )(

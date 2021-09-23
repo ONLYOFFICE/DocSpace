@@ -10,9 +10,8 @@ export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
     onOpenLocation = () => {
       const { item, openLocationAction } = this.props;
-      const { id, folderId, fileExst } = item;
-
-      const locationId = !fileExst ? id : folderId;
+      const { parentId, folderId, fileExst } = item;
+      const locationId = !fileExst ? parentId : folderId;
       openLocationAction(locationId, !fileExst);
     };
 
@@ -193,11 +192,19 @@ export default function withContextOptions(WrappedComponent) {
         setDeleteThirdPartyDialogVisible,
         t,
         deleteItemAction,
-        isThirdPartyFolder,
       } = this.props;
-      const { id, title, fileExst, contentLength, folderId } = item;
+      const {
+        id,
+        title,
+        fileExst,
+        contentLength,
+        folderId,
+        providerKey,
+        rootFolderId,
+      } = item;
+      const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
-      if (isThirdPartyFolder) {
+      if (isRootThirdPartyFolder) {
         const splitItem = id.split("-");
         setRemoveItem({ id: splitItem[splitItem.length - 1], title });
         setDeleteThirdPartyDialogVisible(true);
@@ -210,7 +217,13 @@ export default function withContextOptions(WrappedComponent) {
         successRemoveFolder: t("FolderRemoved"),
       };
 
-      deleteItemAction(id, folderId, translations, fileExst || contentLength);
+      deleteItemAction(
+        id,
+        folderId,
+        translations,
+        fileExst || contentLength,
+        providerKey
+      );
     };
 
     onClickShare = () => {
@@ -234,8 +247,10 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     getFilesContextOptions = () => {
-      const { item, t, isThirdPartyFolder } = this.props;
+      const { item, t } = this.props;
       const { contextOptions } = item;
+      const isRootThirdPartyFolder =
+        item.providerKey && item.id === item.rootFolderId;
 
       const isShareable = item.canShare;
 
@@ -418,7 +433,7 @@ export default function withContextOptions(WrappedComponent) {
           case "delete":
             return {
               key: option,
-              label: isThirdPartyFolder
+              label: isRootThirdPartyFolder
                 ? t("Translations:DeleteThirdParty")
                 : t("Common:Delete"),
               icon: "/static/images/catalog.trash.react.svg",
@@ -489,7 +504,6 @@ export default function withContextOptions(WrappedComponent) {
         auth,
         versionHistoryStore,
         mediaViewerDataStore,
-        selectedFolderStore,
         dialogsStore,
         treeFoldersStore,
       },
@@ -524,10 +538,8 @@ export default function withContextOptions(WrappedComponent) {
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
-      const { isRootFolder } = selectedFolderStore;
-      const { isRecycleBinFolder, isShare } = treeFoldersStore;
 
-      const isThirdPartyFolder = item.providerKey && isRootFolder;
+      const { isRecycleBinFolder, isShare } = treeFoldersStore;
       const isShareFolder = isShare(item.rootFolderType);
 
       return {
@@ -552,7 +564,6 @@ export default function withContextOptions(WrappedComponent) {
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
         deleteItemAction,
-        isThirdPartyFolder,
         onSelectItem,
         setSharingPanelVisible,
         actionType: type,

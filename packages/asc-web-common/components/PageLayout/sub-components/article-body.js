@@ -16,7 +16,8 @@ const StyledArticleBody = styled.div`
   }
 
   @media ${tablet} {
-    height: calc(100% - 104px);
+    height: ${(props) =>
+      props.isDesktop ? "calc(100% - 104px)" : "calc(100% - 44px)"};
     display: table;
     width: calc(100% + 16px);
 
@@ -53,6 +54,9 @@ const StyledArticleBody = styled.div`
 
 const StyledArticleWrapper = styled.div`
   margin: 16px 0;
+  @media ${tablet} {
+    margin-bottom: 60px;
+  }
 `;
 
 class ArticleBody extends React.Component {
@@ -62,10 +66,10 @@ class ArticleBody extends React.Component {
 
   render() {
     //console.log("PageLayout ArticleBody render");
-    const { children, pinned } = this.props;
+    const { children, pinned, isDesktop } = this.props;
 
     return (
-      <StyledArticleBody pinned={pinned}>
+      <StyledArticleBody pinned={pinned} isDesktop={isDesktop}>
         <Scrollbar
           id="articleScrollBar"
           className="custom-scrollbar"

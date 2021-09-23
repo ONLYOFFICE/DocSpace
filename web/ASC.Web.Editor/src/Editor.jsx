@@ -10,6 +10,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
+  loadScript,
   //showLoader,
   //hideLoader,
 } from "@appserver/common/utils";
@@ -65,6 +66,7 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
+let personal;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -78,6 +80,7 @@ const Editor = () => {
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
+  const view = url.indexOf("action=view") !== -1;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -176,12 +179,12 @@ const Editor = () => {
   };
 
   const initDesktop = (config) => {
-    const isEncryption = config.editorConfig["encryptionKeys"] !== undefined;
+    const isEncryption = config?.editorConfig["encryptionKeys"] !== undefined;
 
     regDesktop(
       user,
       isEncryption,
-      config.editorConfig.encryptionKeys,
+      config?.editorConfig.encryptionKeys,
       (keys) => {
         setEncryptionKeys(keys);
       },
@@ -228,7 +231,8 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
-        successAuth = user !== null;
+        personal = authStore.settingsStore.personal;
+        successAuth = !!user;
       } catch (e) {
         successAuth = false;
       }
@@ -247,7 +251,7 @@ const Editor = () => {
         try {
           fileInfo = await getFileInfo(fileId);
 
-          if (url.indexOf("#message/")) {
+          if (url.indexOf("#message/") > -1) {
             const needConvert = canConvert(fileInfo.fileExst);
 
             if (needConvert) {
@@ -262,7 +266,7 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const config = await openEdit(fileId, version, doc);
+      const config = await openEdit(fileId, version, doc, view);
 
       actionLink = config?.editorConfig?.actionLink;
 
@@ -289,7 +293,7 @@ const Editor = () => {
 
       setIsLoading(false);
 
-      loadDocApi(docApiUrl, () => onLoad(config));
+      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad(config));
     } catch (error) {
       console.log(error);
       toastr.error(
@@ -366,20 +370,6 @@ const Editor = () => {
     document.title = title;
   };
 
-  const loadDocApi = (docApiUrl, onLoadCallback) => {
-    const script = document.createElement("script");
-    script.setAttribute("type", "text/javascript");
-    script.setAttribute("id", "scripDocServiceAddress");
-
-    script.onload = onLoadCallback;
-
-    script.src = docApiUrl;
-    script.async = true;
-
-    console.log("PureEditor componentDidMount: added script");
-    document.body.appendChild(script);
-  };
-
   const onLoad = (config) => {
     try {
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
@@ -414,6 +404,11 @@ const Editor = () => {
         ...config.editorConfig.customization,
         goback: goBack,
       };
+
+      if (personal && !fileInfo) {
+        //TODO: add conditions for SaaS
+        config.document.info.favorite = null;
+      }
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
@@ -590,14 +585,20 @@ const Editor = () => {
       docTitle = newTitle;
     }
 
-    if (!newTitle)
+    if (!newTitle) {
+      const onlyNumbers = new RegExp("^[0-9]+$");
+      const isFileWithoutProvider = onlyNumbers.test(fileId);
+
+      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+
       favorite
-        ? markAsFavorite([+fileId])
+        ? markAsFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error))
-        : removeFromFavorite([+fileId])
+        : removeFromFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error));
+    }
   };
 
   const onSDKRequestInsertImage = () => {
@@ -643,6 +644,19 @@ const Editor = () => {
     setNewOpenTab(false);
   };
 
+  const getSavingInfo = async (title, folderId) => {
+    const savingInfo = await SaveAs(
+      title,
+      urlSelectorFolder,
+      folderId,
+      openNewTab
+    );
+
+    if (savingInfo) {
+      const convertedInfo = savingInfo.split(": ").pop();
+      docEditor.showMessage(convertedInfo);
+    }
+  };
   const onClickSaveSelectFolder = (e, folderId) => {
     const currentExst = titleSelectorFolder.split(".").pop();
 
@@ -651,7 +665,11 @@ const Editor = () => {
         ? titleSelectorFolder.concat(`.${extension}`)
         : titleSelectorFolder;
 
-    SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    if (openNewTab) {
+      SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    } else {
+      getSavingInfo(title, folderId);
+    }
   };
 
   const onChangeInput = (e) => {

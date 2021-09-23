@@ -247,7 +247,7 @@ export function getProviderTranslation(provider, t) {
   }
 }
 
-function getLanguage(lng) {
+export function getLanguage(lng) {
   try {
     let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;
 
@@ -272,9 +272,24 @@ export function loadLanguagePath(homepage, fixedNS = null) {
     if (ns.length > 0 && ns[0] === "Common") {
       return `/static/locales/${language}/Common.json`;
     }
-    if (ns.length > 0 && ns[0].includes("Campaign")) {
-      return `/static/locales/${language}/${ns[0]}.json`;
-    }
     return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
   };
+}
+
+export function loadScript(url, id, onLoad, onError) {
+  try {
+    const script = document.createElement("script");
+    script.setAttribute("type", "text/javascript");
+    script.setAttribute("id", id);
+
+    if (onLoad) script.onload = onLoad;
+    if (onError) script.onerror = onError;
+
+    script.src = url;
+    script.async = true;
+
+    document.body.appendChild(script);
+  } catch (e) {
+    console.error(e);
+  }
 }

@@ -319,13 +319,20 @@ class FilesActionStore {
     setSelection([item]);
   };
 
-  deleteItemAction = (itemId, currentFolderId, translations, isFile) => {
+  deleteItemAction = (
+    itemId,
+    currentFolderId,
+    translations,
+    isFile,
+    isThirdParty
+  ) => {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
     if (
       this.settingsStore.confirmDelete ||
-      this.treeFoldersStore.isPrivacyFolder
+      this.treeFoldersStore.isPrivacyFolder ||
+      isThirdParty
     ) {
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
@@ -493,13 +500,16 @@ class FilesActionStore {
       getFileInfo,
       setSelected,
     } = this.filesStore;
+
+    const items = Array.isArray(id) ? id : [id];
+
     //let data = selection.map(item => item.id)
     switch (action) {
       case "mark":
         return markItemAsFavorite([id]).then(() => getFileInfo(id));
 
       case "remove":
-        return removeItemFromFavorite([id])
+        return removeItemFromFavorite(items)
           .then(() => {
             return this.treeFoldersStore.isFavoritesFolder
               ? fetchFavoritesFolder(this.selectedFolderStore.id)
@@ -584,8 +594,17 @@ class FilesActionStore {
 
     const { selection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
-    const { isShareFolder, isCommonFolder } = this.treeFoldersStore;
-    const isCopy = isShareFolder || (!this.authStore.isAdmin && isCommonFolder);
+    const {
+      isShareFolder,
+      isCommonFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.treeFoldersStore;
+    const isCopy =
+      isShareFolder ||
+      isFavoritesFolder ||
+      isRecentFolder ||
+      (!this.authStore.isAdmin && isCommonFolder);
 
     const operationData = {
       destFolderId,
@@ -608,7 +627,7 @@ class FilesActionStore {
         return setThirdPartyMoveDialogVisible(true);
       }
 
-      if (item.fileExst) {
+      if (!item.isFolder) {
         fileIds.push(item.id);
       } else {
         if (item.providerKey && isRootFolder) continue;
@@ -633,8 +652,7 @@ class FilesActionStore {
     try {
       conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
     } catch (err) {
-      toastr.error(err);
-      return;
+      return toastr.error(err.message);
     }
 
     if (conflicts.length) {
@@ -642,10 +660,259 @@ class FilesActionStore {
       setConflictResolveDialogData(operationData);
       setConflictResolveDialogVisible(true);
     } else {
-      this.uploadDataStore.itemOperationToFolder(operationData);
+      try {
+        await this.uploadDataStore.itemOperationToFolder(operationData);
+      } catch (err) {
+        return toastr.error(err.message);
+      }
     }
   };
 
+  isAvailableOption = (option) => {
+    const {
+      isFavoritesFolder,
+      isRecentFolder,
+      isCommonFolder,
+    } = this.treeFoldersStore;
+    const {
+      isAccessedSelected,
+      isWebEditSelected,
+      isThirdPartyRootSelection,
+      hasSelection,
+    } = this.filesStore;
+    const { personal } = this.authStore.settingsStore;
+    const { userAccess } = this.filesStore;
+
+    switch (option) {
+      case "share":
+        return isAccessedSelected && !personal; //isFavoritesFolder ||isRecentFolder
+      case "copy":
+      case "download":
+        return hasSelection;
+      case "downloadAs":
+        return isWebEditSelected && hasSelection;
+      case "moveTo":
+        return (
+          !isThirdPartyRootSelection &&
+          hasSelection &&
+          isAccessedSelected &&
+          !isRecentFolder &&
+          !isFavoritesFolder
+        );
+
+      case "delete":
+        const deleteCondition =
+          !isThirdPartyRootSelection && hasSelection && isAccessedSelected;
+
+        return isCommonFolder ? userAccess && deleteCondition : deleteCondition;
+    }
+  };
+
+  convertToArray = (itemsCollection) => {
+    const result = Array.from(itemsCollection.values()).filter((item) => {
+      return item != null;
+    });
+
+    itemsCollection.clear();
+
+    return result;
+  };
+
+  getOption = (option, t) => {
+    const {
+      setSharingPanelVisible,
+      setDownloadDialogVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setDeleteDialogVisible,
+    } = this.dialogsStore;
+
+    switch (option) {
+      case "share":
+        if (!this.isAvailableOption("share")) return null;
+        else
+          return {
+            label: t("Share"),
+            onClick: () => setSharingPanelVisible(true),
+          };
+
+      case "copy":
+        if (!this.isAvailableOption("copy")) return null;
+        else
+          return {
+            label: t("Translations:Copy"),
+            onClick: () => setCopyPanelVisible(true),
+          };
+
+      case "download":
+        if (!this.isAvailableOption("download")) return null;
+        else
+          return {
+            label: t("Common:Download"),
+            onClick: () =>
+              this.downloadAction(
+                t("Translations:ArchivingData")
+              ).catch((err) => toastr.error(err)),
+          };
+
+      case "downloadAs":
+        if (!this.isAvailableOption("downloadAs")) return null;
+        else
+          return {
+            label: t("Translations:DownloadAs"),
+            onClick: () => setDownloadDialogVisible(true),
+          };
+
+      case "moveTo":
+        if (!this.isAvailableOption("moveTo")) return null;
+        else
+          return {
+            label: t("MoveTo"),
+            onClick: () => setMoveToPanelVisible(true),
+          };
+
+      case "delete":
+        if (!this.isAvailableOption("delete")) return null;
+        else
+          return {
+            label: t("Common:Delete"),
+            onClick: () => {
+              if (this.settingsStore.confirmDelete) {
+                setDeleteDialogVisible(true);
+              } else {
+                const translations = {
+                  deleteOperation: t("Translations:DeleteOperation"),
+                  deleteFromTrash: t("Translations:DeleteFromTrash"),
+                  deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+                };
+
+                this.deleteAction(translations).catch((err) =>
+                  toastr.error(err)
+                );
+              }
+            },
+          };
+    }
+  };
+
+  getAnotherFolderOptions = (itemsCollection, t) => {
+    const share = this.getOption("share", t);
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const moveTo = this.getOption("moveTo", t);
+    const copy = this.getOption("copy", t);
+    const deleteOption = this.getOption("delete", t);
+
+    itemsCollection
+      .set("share", share)
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("moveTo", moveTo)
+      .set("copy", copy)
+      .set("delete", deleteOption);
+
+    return this.convertToArray(itemsCollection);
+  };
+
+  getRecentFolderOptions = (itemsCollection, t) => {
+    const share = this.getOption("share", t);
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const copy = this.getOption("copy", t);
+
+    itemsCollection
+      .set("share", share)
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("copy", copy);
+    return this.convertToArray(itemsCollection);
+  };
+
+  getShareFolderOptions = (itemsCollection, t) => {
+    const { setDeleteDialogVisible, setUnsubscribe } = this.dialogsStore;
+
+    const share = this.getOption("share", t);
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const copy = this.getOption("copy", t);
+
+    itemsCollection
+      .set("share", share)
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("copy", copy)
+      .set("delete", {
+        label: t("RemoveFromList"),
+        onClick: () => {
+          setUnsubscribe(true);
+          setDeleteDialogVisible(true);
+        },
+      });
+    return this.convertToArray(itemsCollection);
+  };
+  getPrivacyFolderOption = (itemsCollection, t) => {
+    const moveTo = this.getOption("moveTo", t);
+    const deleteOption = this.getOption("delete", t);
+    const download = this.getOption("download", t);
+
+    itemsCollection
+      .set("download", download)
+      .set("moveTo", moveTo)
+
+      .set("delete", deleteOption);
+    return this.convertToArray(itemsCollection);
+  };
+
+  getFavoritesFolderOptions = (itemsCollection, t) => {
+    const { selection } = this.filesStore;
+
+    const share = this.getOption("share", t);
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const copy = this.getOption("copy", t);
+
+    itemsCollection
+      .set("share", share)
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("copy", copy)
+      .set("delete", {
+        label: t("Common:Delete"),
+        alt: t("RemoveFromFavorites"),
+        onClick: () => {
+          const items = selection.map((item) => item.id);
+          this.setFavoriteAction("remove", items)
+            .then(() => toastr.success(t("RemovedFromFavorites")))
+            .catch((err) => toastr.error(err));
+        },
+      });
+    return this.convertToArray(itemsCollection);
+  };
+
+  getRecycleBinFolderOptions = (itemsCollection, t) => {
+    const {
+      setEmptyTrashDialogVisible,
+      setMoveToPanelVisible,
+    } = this.dialogsStore;
+
+    const download = this.getOption("download", t);
+    const downloadAs = this.getOption("downloadAs", t);
+    const deleteOption = this.getOption("delete", t);
+
+    itemsCollection
+      .set("download", download)
+      .set("downloadAs", downloadAs)
+      .set("restore", {
+        label: t("Translations:Restore"),
+        onClick: () => setMoveToPanelVisible(true),
+      })
+      .set("delete", deleteOption)
+      .set("emptyRecycleBin", {
+        label: t("EmptyRecycleBin"),
+        onClick: () => setEmptyTrashDialogVisible(true),
+      });
+    return this.convertToArray(itemsCollection);
+  };
   getHeaderMenu = (t) => {
     const {
       isFavoritesFolder,
@@ -654,117 +921,22 @@ class FilesActionStore {
       isPrivacyFolder,
       isShareFolder,
     } = this.treeFoldersStore;
-    const {
-      selection,
-      isAccessedSelected,
-      isWebEditSelected,
-      isThirdPartySelection,
-      userAccess,
-      isViewedSelected,
-      hasSelection,
-    } = this.filesStore;
 
-    const {
-      setSharingPanelVisible,
-      setDownloadDialogVisible,
-      setMoveToPanelVisible,
-      setCopyPanelVisible,
-      setDeleteDialogVisible,
-      setEmptyTrashDialogVisible,
-    } = this.dialogsStore;
+    let itemsCollection = new Map();
 
-    const selectionCount = selection.length;
+    if (isRecycleBinFolder)
+      return this.getRecycleBinFolderOptions(itemsCollection, t);
 
-    const headerMenu = [
-      {
-        label: t("Share"),
-        disabled: isFavoritesFolder || isRecentFolder || !isAccessedSelected,
-        onClick: () => setSharingPanelVisible(true),
-      },
-      {
-        label: t("Common:Download"),
-        disabled: !hasSelection,
-        onClick: () =>
-          this.downloadAction(t("Translations:ArchivingData")).catch((err) =>
-            toastr.error(err)
-          ),
-      },
-      {
-        label: t("Translations:DownloadAs"),
-        disabled: !hasSelection || !isWebEditSelected,
-        onClick: () => setDownloadDialogVisible(true),
-      },
-      {
-        label: t("MoveTo"),
-        disabled:
-          isFavoritesFolder ||
-          isRecentFolder ||
-          !isAccessedSelected ||
-          !hasSelection ||
-          isThirdPartySelection,
-        onClick: () => setMoveToPanelVisible(true),
-      },
-      {
-        label: t("Translations:Copy"),
-        disabled: !hasSelection,
-        onClick: () => setCopyPanelVisible(true),
-      },
-      {
-        label: t("Common:Delete"),
-        disabled: !hasSelection || isThirdPartySelection,
-        onClick: () => {
-          if (this.settingsStore.confirmDelete) {
-            setDeleteDialogVisible(true);
-          } else {
-            const translations = {
-              deleteOperation: t("Translations:DeleteOperation"),
-              deleteFromTrash: t("Translations:DeleteFromTrash"),
-              deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-            };
+    if (isFavoritesFolder)
+      return this.getFavoritesFolderOptions(itemsCollection, t);
 
-            this.deleteAction(translations).catch((err) => toastr.error(err));
-          }
-        },
-      },
-    ];
+    if (isPrivacyFolder) return this.getPrivacyFolderOption(itemsCollection, t);
 
-    if (isRecycleBinFolder) {
-      headerMenu.push({
-        label: t("EmptyRecycleBin"),
-        onClick: () => setEmptyTrashDialogVisible(true),
-      });
+    if (isShareFolder) return this.getShareFolderOptions(itemsCollection, t);
 
-      headerMenu.splice(4, 2, {
-        label: t("Translations:Restore"),
-        onClick: () => setMoveToPanelVisible(true),
-      });
+    if (isRecentFolder) return this.getRecentFolderOptions(itemsCollection, t);
 
-      headerMenu.splice(1, 1);
-    }
-
-    if (isPrivacyFolder) {
-      headerMenu.splice(1, 1);
-      headerMenu.splice(2, 1);
-      headerMenu.splice(3, 1);
-    }
-
-    if (isShareFolder) {
-      headerMenu.splice(4, 1);
-    }
-
-    if (isRecentFolder || isFavoritesFolder) {
-      headerMenu.splice(1, 1);
-    }
-
-    if (
-      this.authStore.settingsStore.personal &&
-      !isWebEditSelected &&
-      !isViewedSelected
-    ) {
-      headerMenu.splice(1, 1);
-    }
-
-    return headerMenu;
+    return this.getAnotherFolderOptions(itemsCollection, t);
   };
 }
 

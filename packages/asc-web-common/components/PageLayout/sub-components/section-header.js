@@ -6,13 +6,14 @@ import PropTypes from "prop-types";
 import { LayoutContextConsumer } from "studio/Layout/context";
 import { isMobile } from "react-device-detect";
 import { tablet, desktop } from "@appserver/components/utils/device";
-
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 const StyledSectionHeader = styled.div`
   border-bottom: 1px solid #eceef1;
   height: 55px;
   margin-right: 24px;
   margin-top: -1px;
   padding-bottom: 9px;
+  ${NoUserSelect}
   ${isMobile &&
   css`
     height: 49px;

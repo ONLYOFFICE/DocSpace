@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import PropType from "prop-types";
+import PropTypes from "prop-types";
 import StyledSnackBar from "./styled-snackbar";
 import StyledCrossIcon from "./styled-snackbar-action";
 import StyledLogoIcon from "./styled-snackbar-logo";
@@ -50,13 +51,14 @@ class SnackBar extends React.Component {
       fontWeight,
       textAlign,
       htmlContent,
+      style,
       ...rest
     } = this.props;
 
     const headerStyles = headerText ? {} : { display: "none" };
 
     return (
-      <StyledSnackBar {...rest}>
+      <StyledSnackBar style={style} {...rest}>
         {htmlContent ? (
           <div
             dangerouslySetInnerHTML={{
@@ -123,6 +125,7 @@ SnackBar.propTypes = {
   fontWeight: PropType.string,
   textAlign: PropType.string,
   htmlContent: PropType.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 SnackBar.defaultProps = {

@@ -167,7 +167,7 @@ namespace ASC.Files.Core.Data
 
             query = query.OrderByDescending(r => r.Version);
 
-            return ToFile(FromQueryWithShared(query).SingleOrDefault());
+            return ToFile(FromQueryWithShared(query).FirstOrDefault());
         }
 
         public List<File<int>> GetFileHistory(int fileId)

@@ -150,6 +150,12 @@ class SettingsStore {
             localStorage.setItem(LANGUAGE, newSettings[key]);
           }
         }
+        if (key === "personal") {
+          window.AppServer = {
+            ...window.AppServer,
+            personal: newSettings[key],
+          };
+        }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
       }
@@ -320,7 +326,8 @@ class SettingsStore {
   };
 
   get firebaseHelper() {
-    return new FirebaseHelper(this.firebase);
+    window.firebaseHelper = new FirebaseHelper(this.firebase);
+    return window.firebaseHelper;
   }
 }
 

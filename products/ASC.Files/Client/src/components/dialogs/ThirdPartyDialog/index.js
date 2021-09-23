@@ -6,6 +6,8 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
+import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const StyledServicesBlock = styled.div`
   display: grid;
@@ -27,6 +29,7 @@ const StyledServicesBlock = styled.div`
   }
 
   img {
+    ${NoUserSelect}
     border: 1px solid #d1d1d1;
     width: 158px;
     height: 40px;
@@ -87,7 +90,7 @@ const ThirdPartyDialog = (props) => {
 
   const showOAuthModal = (token, serviceData) => {
     setConnectItem({
-      title: serviceData.title,
+      title: connectedCloudsTitleTranslation(serviceData.title, t),
       provider_key: serviceData.title,
       link: serviceData.link,
       token,
@@ -112,6 +115,7 @@ const ThirdPartyDialog = (props) => {
         })
       );
     } else {
+      item.title = connectedCloudsTitleTranslation(item.title, t);
       setConnectItem(item);
       setConnectDialogVisible(true);
     }
@@ -132,7 +136,7 @@ const ThirdPartyDialog = (props) => {
         {t("Translations:ConnectingAccount")}
       </ModalDialog.Header>
       <ModalDialog.Body>
-        <Text as="div">
+        <Text as="div" noSelect>
           {t("ConnectDescription")}
           {isAdmin && (
             <Trans t={t} i18nKey="ConnectAdminDescription" ns="Settings">
@@ -228,6 +232,7 @@ const ThirdPartyDialog = (props) => {
               className="service-item service-text"
               data-title={webDavConnectItem[0]}
               data-key={webDavConnectItem[0]}
+              noSelect
             >
               {t("ConnextOtherAccount")}
             </Text>

@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next";
 import DropDownItem from "@appserver/components/drop-down-item";
 
 const TABLE_COLUMNS = "peopleTableColumns";
+const COLUMNS_SIZE = "peopleColumnsSize";
 
 class PeopleTableHeader extends React.Component {
   constructor(props) {
@@ -61,7 +62,9 @@ class PeopleTableHeader extends React.Component {
   }
 
   getColumns = (defaultColumns) => {
-    const storageColumns = localStorage.getItem(TABLE_COLUMNS);
+    const storageColumns = localStorage.getItem(
+      `${TABLE_COLUMNS}=${this.props.userId}`
+    );
     const columns = [];
 
     if (storageColumns) {
@@ -89,7 +92,7 @@ class PeopleTableHeader extends React.Component {
     this.setState({ columns });
 
     const tableColumns = columns.map((c) => c.enable && c.key);
-    localStorage.setItem(TABLE_COLUMNS, tableColumns);
+    localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
   };
 
   onFilter = () => {
@@ -148,6 +151,7 @@ class PeopleTableHeader extends React.Component {
       filter,
       sectionWidth,
       isAdmin,
+      userId,
     } = this.props;
     const { sortOrder } = filter;
 
@@ -179,7 +183,7 @@ class PeopleTableHeader extends React.Component {
         setSelected={this.setSelected}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName="peopleColumnsSize"
+        columnStorageName={`${COLUMNS_SIZE}=${userId}`}
         sectionWidth={sectionWidth}
         isHeaderVisible={isHeaderVisible}
         checkboxOptions={checkboxOptions}
@@ -223,6 +227,7 @@ export default inject(({ auth, peopleStore }) => {
     getHeaderMenu,
     isHeaderChecked,
     isHeaderIndeterminate,
+    userId: auth.userStore.user.id,
   };
 })(
   withTranslation(["Home", "Common", "Translations"])(

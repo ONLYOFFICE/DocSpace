@@ -55,6 +55,7 @@ class LinkRow extends React.Component {
                 onAccessChange={onChangeItemAccess}
                 itemId={item.sharedTo.id}
                 isDisabled={isDisabled}
+                disableLink={disableLink}
               />
             ) : (
               <StyledAccessEditIcon
