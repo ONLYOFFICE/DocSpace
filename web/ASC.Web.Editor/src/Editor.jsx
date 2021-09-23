@@ -495,45 +495,50 @@ const Editor = () => {
     document.location.reload();
   };
 
+  const getDocumentHistory = (fileHistory) => {
+    let result = [];
+    console.log("fileHistory", fileHistory);
+    const historyLength = fileHistory.length;
+
+    for (let i = 0; i < historyLength; i++) {
+      const changes = fileHistory[i].changes;
+      const serverVersion = fileHistory[i].serverVersion;
+      const version = fileHistory[i].version;
+      const versionGroup = fileHistory[i].versionGroup;
+
+      let obj = {
+        ...(changes.length !== 0 && { changes }),
+        created: `${new Date(fileHistory[i].created).toLocaleString(
+          config.editorConfig.lang
+        )}`,
+        ...(serverVersion && { serverVersion }),
+        key: fileHistory[i].key,
+        user: {
+          id: fileHistory[i].user.id,
+          name: fileHistory[i].user.displayName,
+        },
+        version,
+        versionGroup,
+      };
+
+      result.push(obj);
+    }
+    console.log("newArr", result);
+    return result;
+  };
+  const currentDocumentVersion = (fileHistory) => {
+    const historyLength = fileHistory.length;
+    return url.indexOf("&version=") !== -1
+      ? +url.split("&version=")[1]
+      : fileHistory[historyLength - 1].version;
+  };
   const onSDKRequestHistory = async () => {
     try {
       let fileHistory = await getEditHistory(fileId);
 
-      let newArr = [];
-      console.log("fileHistory", fileHistory);
-      const historyLength = fileHistory.length;
-      const currentVersion =
-        url.indexOf("&version=") !== -1
-          ? +url.split("&version=")[1]
-          : fileHistory[historyLength - 1].version;
-
-      for (let i = 0; i < historyLength; i++) {
-        const changes = fileHistory[i].changes;
-        const serverVersion = fileHistory[i].serverVersion;
-        const version = fileHistory[i].version;
-        const versionGroup = fileHistory[i].versionGroup;
-
-        let obj = {
-          ...(changes.length !== 0 && { changes }),
-          created: `${new Date(fileHistory[i].created).toLocaleString(
-            config.editorConfig.lang
-          )}`,
-          ...(serverVersion && { serverVersion }),
-          key: fileHistory[i].key,
-          user: {
-            id: fileHistory[i].user.id,
-            name: fileHistory[i].user.displayName,
-          },
-          version,
-          versionGroup,
-        };
-
-        newArr.push(obj);
-      }
-      console.log("newArr", newArr);
       docEditor.refreshHistory({
-        currentVersion,
-        history: newArr,
+        currentVersion: currentDocumentVersion(fileHistory),
+        history: getDocumentHistory(fileHistory),
       });
     } catch (e) {
       docEditor.refreshHistory({
