@@ -448,6 +448,7 @@ const Editor = () => {
           onRequestHistory: onSDKRequestHistory,
           onRequestHistoryClose: onSDKRequestHistoryClose,
           onRequestHistoryData: onSDKRequestHistoryData,
+          onRequestRestore: onSDKRequestRestore,
         },
       };
 
@@ -459,6 +460,12 @@ const Editor = () => {
       toastr.error(error.message, null, 0, true);
     }
   };
+
+  const onSDKRequestRestore = (event) => {
+    const restoreVersion = event.data.version;
+    console.log("version in restore func", restoreVersion);
+  };
+
   const onSDKRequestHistoryData = async (event) => {
     const version = event.data;
     console.log("version", version);
