@@ -2,13 +2,15 @@
 	<id>zookeeper</id>
 	<name>zookeeper</name>
 	<description>This service runs zookeeper</description>
-	<executable>{WindowsVolume}Apache\kafka\bin\windows\zookeeper-server-start.bat</executable>
-	<priority>Normal</priority>
+	<priority>realtime</priority>
 	<startmode>Automatic</startmode>
+	<onfailure action="restart" delay="5 sec"/>
+	<executable>cmd</executable>
 	<arguments>
-		{WindowsVolume}Apache\kafka\config\zookeeper.properties
+		/c 
+		C:\Apache\kafka\bin\windows\zookeeper-server-start.bat
+		C:\Apache\kafka\config\zookeeper.properties
 	</arguments>
-	<priority>high</priority>
 	<log mode="roll-by-size">
   		<sizeThreshold>10240</sizeThreshold>
   		<keepFiles>8</keepFiles>

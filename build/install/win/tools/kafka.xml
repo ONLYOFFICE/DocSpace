@@ -2,13 +2,15 @@
 	<id>kafka</id>
 	<name>kafka</name>
 	<description>This service runs kafka</description>
-	<executable>{WindowsVolume}Apache\kafka\bin\windows\kafka-server-start.bat</executable>
-	<priority>Normal</priority>
+	<priority>realtime</priority>
 	<startmode>Automatic</startmode>
+	<onfailure action="restart" delay="5 sec"/>
+	<executable>cmd</executable>
 	<arguments>
-		{WindowsVolume}Apache\kafka\config\server.properties
+		/c
+		C:\Apache\kafka\bin\windows\kafka-server-start.bat
+		C:\Apache\kafka\config\server.properties
 	</arguments>
-	<priority>high</priority>
 	<log mode="roll-by-size">
   		<sizeThreshold>10240</sizeThreshold>
   		<keepFiles>8</keepFiles>

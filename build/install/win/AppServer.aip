@@ -171,6 +171,8 @@
     <ROW File="kafka.xml" Component_="OnlyofficeApiSystemService.xml" FileName="kafka.xml" Attributes="0" SourcePath="Files\tools\kafka.xml" SelfReg="false"/>
     <ROW File="zookeeper.exe" Component_="zookeeper.exe" FileName="ZOOKEE~1.EXE|zookeeper.exe" Attributes="0" SourcePath="Files\tools\zookeeper.exe" SelfReg="false" DigSign="true"/>
     <ROW File="zookeeper.xml" Component_="OnlyofficeApiSystemService.xml" FileName="ZOOKEE~1.XML|zookeeper.xml" Attributes="0" SourcePath="Files\tools\zookeeper.xml" SelfReg="false"/>
+    <ROW File="kafka.json" Component_="appsettings.test.json" FileName="KAFKA~1.JSO|kafka.json" Attributes="0" SourcePath="Files\config\kafka.json" SelfReg="false"/>
+    <ROW File="kafka.test.json" Component_="appsettings.test.json" FileName="KAFKAT~1.JSO|kafka.test.json" Attributes="0" SourcePath="Files\config\kafka.test.json" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -565,7 +567,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
     <ROW ServiceControl="ASC.ApiSystem.exe" Name="[ServiceName_OnlyofficeApiSystemService]" Event="161" Wait="1" Component_="ASC.ApiSystem.exe"/>
     <ROW ServiceControl="ASC.CRM.exe" Name="[ServiceName_OnlyofficeCrmServer]" Event="161" Wait="1" Component_="ASC.CRM.exe"/>
-    <ROW ServiceControl="ASC.Calendar.exe" Name="[ServiceName_OnlyofficeCalendarServer]" Event="161" Wait="1" Component_="ASC.Calendar.exe"/>
+    <ROW ServiceControl="ASC.Calendar.exe" Name="[ServiceName_OnlyofficeCalendarServer]" Event="161" Wait="0" Component_="ASC.Calendar.exe"/>
     <ROW ServiceControl="ASC.Data.Backup.exe" Name="[ServiceName_OnlyofficeBackupService]" Event="161" Wait="1" Component_="ASC.Data.Backup.exe"/>
     <ROW ServiceControl="ASC.Data.Storage.Encryption.exe" Name="[ServiceName_OnlyofficeEncryptionService]" Event="161" Wait="1" Component_="ASC.Data.Storage.Encryption.exe"/>
     <ROW ServiceControl="ASC.Data.Storage.Migration.exe" Name="[ServiceName_OnlyofficeMigrationService]" Event="161" Wait="1" Component_="ASC.Data.Storage.Migration.exe"/>
@@ -606,7 +608,7 @@
     <ROW ServiceInstall="ASC.UrlShortener.Svc.exe" Name="[ServiceName_OnlyofficeUrlShortenerService]" DisplayName="[ServiceName_OnlyofficeUrlShortenerService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=http://127.0.0.1:9999 --ENVIRONMENT=test --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot;" Component_="ASC.UrlShortener.Svc.exe"/>
     <ROW ServiceInstall="ASC.Web.Api.exe" Name="[ServiceName_OnlyofficeWebApi]" DisplayName="[ServiceName_OnlyofficeWebApi]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=http://127.0.0.1:5000 --ENVIRONMENT=test --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot;" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceInstall="ASC.Web.Studio.exe" Name="[ServiceName_OnlyofficeWebStudio]" DisplayName="[ServiceName_OnlyofficeWebStudio]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=http://127.0.0.1:5003 --ENVIRONMENT=test --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot;" Component_="ASC.Web.Studio.exe"/>
-    <ROW ServiceInstall="kafka.exe" Name="[ServiceName_Apache_Kafka]" DisplayName="[ServiceName_Apache_Kafka]" ServiceType="16" StartType="2" ErrorControl="1" Component_="kafka.exe"/>
+    <ROW ServiceInstall="kafka.exe" Name="[ServiceName_Apache_Kafka]" DisplayName="[ServiceName_Apache_Kafka]" ServiceType="16" StartType="2" ErrorControl="1" Dependencies="[ServiceName_Apache_ZooKeeper]" Component_="kafka.exe"/>
     <ROW ServiceInstall="nginx.exe" Name="[ServiceName_OnlyofficeProxy]" DisplayName="[ServiceName_OnlyofficeProxy]" ServiceType="16" StartType="2" ErrorControl="1" Component_="OnlyofficeProxy.exe"/>
     <ROW ServiceInstall="zookeeper.exe" Name="[ServiceName_Apache_ZooKeeper]" DisplayName="[ServiceName_Apache_ZooKeeper]" ServiceType="16" StartType="2" ErrorControl="1" Component_="zookeeper.exe"/>
   </COMPONENT>
