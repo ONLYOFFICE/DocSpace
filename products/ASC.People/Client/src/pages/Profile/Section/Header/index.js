@@ -408,11 +408,12 @@ class SectionHeaderContent extends React.PureComponent {
 
   onClickBack = () => {
     const { filter, setFilter, history, resetProfile, isMy } = this.props;
-    resetProfile();
 
     if (isMy) {
       return history.goBack();
     }
+
+    resetProfile();
 
     const url = filter.toUrlParams();
     const backUrl = combineUrl(
