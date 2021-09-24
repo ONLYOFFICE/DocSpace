@@ -117,10 +117,11 @@ class PageLayout extends React.Component {
     const isPortrait =
       isFirefox &&
       isMobileOnly &&
-      screen.orientation.type === "landscape-primary";
+      screen.orientation.type === "portrait-primary";
 
     if ((!isEnoughWidth && isValueExist) || isPortrait) {
       this.backdropClick();
+      return;
     }
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
