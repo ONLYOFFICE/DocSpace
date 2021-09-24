@@ -28,6 +28,8 @@ const SectionBodyContent = (props) => {
     moveDragItems,
     viewAs,
     setSelection,
+    tooltipPageX,
+    tooltipPageY,
   } = props;
 
   useEffect(() => {
@@ -68,6 +70,13 @@ const SectionBodyContent = (props) => {
   };
 
   const onMouseMove = (e) => {
+    if (
+      Math.abs(e.pageX - tooltipPageX) < 5 &&
+      Math.abs(e.pageY - tooltipPageY) < 5
+    ) {
+      return false;
+    }
+
     if (!dragging) {
       document.body.classList.add("drag-cursor");
       setDragging(true);
@@ -212,6 +221,8 @@ export default inject(
       startDrag,
       setStartDrag,
       setSelection,
+      tooltipPageX,
+      tooltipPageY,
     } = filesStore;
 
     return {
@@ -229,6 +240,8 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
       setSelection,
+      tooltipPageX,
+      tooltipPageY,
     };
   }
 )(
