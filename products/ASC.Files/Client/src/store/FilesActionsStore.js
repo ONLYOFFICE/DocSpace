@@ -663,7 +663,7 @@ class FilesActionStore {
       try {
         await this.uploadDataStore.itemOperationToFolder(operationData);
       } catch (err) {
-        return toastr.error(err.message);
+        return toastr.error(err.message ? err.message : err);
       }
     }
   };
