@@ -66,7 +66,7 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    const deleteAfter = true; //Delete after finished TODO: get from settings
+    const deleteAfter = false; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
 
     const folderIds = [];
@@ -590,7 +590,7 @@ class FilesActionStore {
   moveDragItems = (destFolderId, folderTitle, translations) => {
     const folderIds = [];
     const fileIds = [];
-    const deleteAfter = true;
+    const deleteAfter = false;
 
     const { selection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
@@ -663,7 +663,7 @@ class FilesActionStore {
       try {
         await this.uploadDataStore.itemOperationToFolder(operationData);
       } catch (err) {
-        return toastr.error(err.message);
+        return toastr.error(err.message ? err.message : err);
       }
     }
   };

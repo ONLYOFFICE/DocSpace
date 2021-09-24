@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Core;
 using ASC.Web.Core;
+using ASC.Web.Core.Helpers;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ namespace ASC.Api.Core.Auth
     [Scope]
     public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        private AuthorizationHelper AuthorizationHelper { get; }
         private SecurityContext SecurityContext { get; }
         private CookiesManager CookiesManager { get; }
 
@@ -23,17 +25,20 @@ namespace ASC.Api.Core.Auth
         {
         }
         //
-        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, SecurityContext securityContext, CookiesManager cookiesManager)
+        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,
+            AuthorizationHelper authorizationHelper,
+            SecurityContext securityContext,
+            CookiesManager cookiesManager)
             : this(options, logger, encoder, clock)
         {
+            AuthorizationHelper = authorizationHelper;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var token = Context.Request.Cookies["asc_auth_key"] ?? Context.Request.Headers["Authorization"];
-            var result = SecurityContext.AuthenticateMe(token);
+            var result = AuthorizationHelper.ProcessBasicAuthorization(out _);
 
             if (!result)
             {
