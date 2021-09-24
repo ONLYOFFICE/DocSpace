@@ -802,7 +802,7 @@ class UploadDataStore {
     )
       .then((res) => {
         const data = res[0] ? res[0] : null;
-        return this.loopFilesOperations(data, destFolderId, true);
+        return this.loopFilesOperations(data, destFolderId, false);
       })
       .catch((err) => {
         setSecondaryProgressBarData({
