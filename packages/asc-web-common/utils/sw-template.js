@@ -1,5 +1,5 @@
 importScripts(
-  "https://storage.googleapis.com/workbox-cdn/releases/6.2.3/workbox-sw.js"
+  "https://storage.googleapis.com/workbox-cdn/releases/6.3.0/workbox-sw.js"
 );
 
 workbox.setConfig({
@@ -27,7 +27,7 @@ setCacheNameDetails({
   prefix: prefix,
   precache: "precache",
   runtime: "runtime",
-  suffix: "v1",
+  suffix: "v1.0.0",
 });
 
 // We inject manifest here using "workbox-build" in workbox-inject.js
