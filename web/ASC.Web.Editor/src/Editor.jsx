@@ -104,23 +104,32 @@ const Editor = () => {
   };
 
   const insertImage = (link) => {
+    const token = link.token;
+
     docEditor.insertImage({
       c: "add",
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
 
   const mailMerge = (link) => {
+    const token = link.token;
+
     docEditor.setMailMergeRecipients({
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
 
   const compareFiles = (link) => {
+    const token = link.token;
+
     docEditor.setRevisedFile({
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
