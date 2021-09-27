@@ -370,6 +370,7 @@ const Form = (props) => {
 
   const providerButtons = () => {
     let facebookIndex = null;
+
     const providerButtons =
       providers &&
       providers.map((item, index) => {
@@ -379,7 +380,7 @@ const Form = (props) => {
           item.provider
         ];
 
-        if (item.provider === "Facebook") {
+        if (item.provider === "facebook") {
           facebookIndex = index;
           return;
         }
@@ -415,7 +416,7 @@ const Form = (props) => {
   };
 
   //console.log("Login render");
-
+  
   return (
     <LoginContainer>
       <Text
