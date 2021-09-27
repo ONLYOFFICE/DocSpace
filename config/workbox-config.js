@@ -1,7 +1,7 @@
 module.exports = {
 	globDirectory: 'build/deploy/',
 	globPatterns: [
-		"**/*.{js,html,css,woff2,svg}"
+		"**/*.{js,css,woff2,svg}"
 	],
     globIgnores: ['**/remoteEntry.js'],
     swSrc: 'packages/asc-web-common/utils/sw-template.js',
