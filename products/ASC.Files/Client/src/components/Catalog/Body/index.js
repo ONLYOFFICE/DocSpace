@@ -6,7 +6,7 @@ import { setDocumentTitle } from '../../../helpers/utils';
 import config from '../../../../package.json';
 import { AppServerConfig } from '@appserver/common/constants';
 import Items from './Items';
-import { tablet } from '@appserver/components/utils/device';
+import { isMobile, tablet } from '@appserver/components/utils/device';
 import FilesFilter from '@appserver/common/api/files/filter';
 import SettingsItems from './SettingsItems';
 import { combineUrl } from '@appserver/common/utils';
@@ -36,7 +36,7 @@ const CatalogBodyContent = (props) => {
   } = props;
   const onClick = React.useCallback((data) => {
     const {
-      setShowText,
+      toggleShowText,
       setIsLoading,
       setSelectedNode,
       fetchFiles,
@@ -50,7 +50,9 @@ const CatalogBodyContent = (props) => {
 
     if (window.location.pathname.indexOf('/filter') > 0) {
       fetchFiles(data, null, true, false)
-        .then(() => !isDesktop && setShowText(false))
+        .then(() => {
+          isMobile() && toggleShowText();
+        })
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     } else {
@@ -95,7 +97,7 @@ export default inject(
 
     const {
       showText,
-      setShowText,
+      toggleShowText,
       personal,
       hideArticle,
       isDesktopClient,
@@ -109,7 +111,7 @@ export default inject(
     return {
       treeFolders,
       showText,
-      setShowText,
+      toggleShowText,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
       homepage: config.homepage,
