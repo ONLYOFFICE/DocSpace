@@ -236,13 +236,13 @@ export function toCommunityHostname(hostname) {
 
 export function getProviderTranslation(provider, t) {
   switch (provider) {
-    case "Google":
+    case "google":
       return t("Common:SignInWithGoogle");
-    case "Facebook":
+    case "facebook":
       return t("Common:SignInWithFacebook");
-    case "Twitter":
+    case "twitter":
       return t("Common:SignInWithTwitter");
-    case "LinkedIn":
+    case "linkedin":
       return t("Common:SignInWithLinkedIn");
   }
 }

@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import RowContainer from "@appserver/components/row-container";
 import SimpleFilesRow from "./SimpleFilesRow";
+import { isMobile } from "react-device-detect";
 
 const FilesRowContainer = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
 
-    if (sectionWidth < 1025) {
+    if (sectionWidth < 1025 || isMobile) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");
