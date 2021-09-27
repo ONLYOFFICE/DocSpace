@@ -1,0 +1,68 @@
+import React from 'react';
+import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
+import { Resizable } from 're-resizable';
+import { isMobile } from 'react-device-detect';
+import { mobile, tablet } from '@appserver/components/utils/device';
+
+const StyledCatalog = styled.div`
+  .resizable-block {
+    display: flex;
+    flex-direction: column;
+    min-width: 256px;
+    width: 256px;
+    height: 100% !important;
+    background: #f8f9f9;
+    overflow: hidden;
+    .resizable-border {
+      div {
+        cursor: ew-resize !important;
+      }
+    }
+
+    @media ${tablet} {
+      min-width: ${(props) => (props.showText ? '240px' : '52px')};
+      max-width: ${(props) => (props.showText ? '240px' : '52px')};
+      .resizable-border {
+        display: none;
+      }
+    }
+
+    @media ${mobile} {
+      display: ${(props) => (props.showText ? 'flex' : 'none')};
+      min-width: 100vw;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+  }
+`;
+
+const Catalog = (props) => {
+  const { showText, children, ...rest } = props;
+
+  const enable = {
+    top: false,
+    right: !isMobile,
+    bottom: false,
+    left: false,
+  };
+
+  return (
+    <StyledCatalog showText={showText} {...rest}>
+      <Resizable
+        enable={enable}
+        className="resizable-block"
+        handleWrapperClass="resizable-border not-selectable">
+        {children}
+      </Resizable>
+    </StyledCatalog>
+  );
+};
+
+Catalog.propTypes = {
+  showText: PropTypes.bool,
+  children: PropTypes.any,
+};
+
+export default Catalog;

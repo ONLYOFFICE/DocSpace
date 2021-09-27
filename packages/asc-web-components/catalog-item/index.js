@@ -28,6 +28,7 @@ const CatalogItem = (props) => {
     showText,
     onClick,
     isEndOfBlock,
+    isActive,
     showInitial,
     showBadge,
     labelBadge,
@@ -35,12 +36,13 @@ const CatalogItem = (props) => {
     onClickBadge,
   } = props;
 
-  const onClickAction = (e) => {
-    onClick && onClick(e);
+  const onClickAction = () => {
+    onClick && onClick(id);
   };
 
   const onClickBadgeAction = (e) => {
-    onClickBadge && onClickBadge(e);
+    e.stopPropagation();
+    onClickBadge && onClickBadge(id);
   };
 
   return (
@@ -52,6 +54,7 @@ const CatalogItem = (props) => {
       isEndOfBlock={isEndOfBlock}
     >
       <StyledCatalogItemSibling
+        isActive={isActive}
         onClick={onClickAction}
       ></StyledCatalogItemSibling>
 
@@ -96,7 +99,7 @@ CatalogItem.propTypes = {
   /** Accepts className */
   className: PropTypes.string,
   /** Accepts id */
-  id: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Catalog item icon */
@@ -111,6 +114,8 @@ CatalogItem.propTypes = {
   showInitial: PropTypes.bool,
   /** Tells when the catalog item should be end of block */
   isEndOfBlock: PropTypes.bool,
+  /** Tells when the catalog item should be active */
+  isActive: PropTypes.bool,
   /** Tells when the catalog item should display badge */
   showBadge: PropTypes.bool,
   /** Label in catalog item badge */
@@ -124,6 +129,7 @@ CatalogItem.propTypes = {
 CatalogItem.defaultProps = {
   showText: false,
   showBadge: false,
+  isActive: false,
   showInitial: false,
   isEndOfBlock: false,
 };

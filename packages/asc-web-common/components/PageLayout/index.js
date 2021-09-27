@@ -1,26 +1,31 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Backdrop from "@appserver/components/backdrop";
-import { size } from "@appserver/components/utils/device";
-import { Provider } from "@appserver/components/utils/context";
-import { isMobile } from "react-device-detect";
-import Article from "./sub-components/article";
-import SubArticleHeader from "./sub-components/article-header";
-import SubArticleMainButton from "./sub-components/article-main-button";
-import SubArticleBody from "./sub-components/article-body";
-import ArticlePinPanel from "./sub-components/article-pin-panel";
-import Section from "./sub-components/section";
-import SubSectionHeader from "./sub-components/section-header";
-import SubSectionFilter from "./sub-components/section-filter";
-import SubSectionBody from "./sub-components/section-body";
-import SubSectionBodyContent from "./sub-components/section-body-content";
-import SubSectionPaging from "./sub-components/section-paging";
-import SectionToggler from "./sub-components/section-toggler";
-import ReactResizeDetector from "react-resize-detector";
-import FloatingButton from "../FloatingButton";
-import { inject, observer } from "mobx-react";
-import Selecto from "react-selecto";
-import styled from "styled-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Backdrop from '@appserver/components/backdrop';
+import { isTablet, isDesktop, size } from '@appserver/components/utils/device';
+import { Provider } from '@appserver/components/utils/context';
+import { isMobile } from 'react-device-detect';
+import Article from './sub-components/article';
+import SubArticleHeader from './sub-components/article-header';
+import SubArticleMainButton from './sub-components/article-main-button';
+import SubArticleBody from './sub-components/article-body';
+import ArticlePinPanel from './sub-components/article-pin-panel';
+import Section from './sub-components/section';
+import SubSectionHeader from './sub-components/section-header';
+import SubSectionFilter from './sub-components/section-filter';
+import SubSectionBody from './sub-components/section-body';
+import SubSectionBodyContent from './sub-components/section-body-content';
+import SubSectionPaging from './sub-components/section-paging';
+import SectionToggler from './sub-components/section-toggler';
+import ReactResizeDetector from 'react-resize-detector';
+import FloatingButton from '../FloatingButton';
+import { inject, observer } from 'mobx-react';
+import Selecto from 'react-selecto';
+import styled from 'styled-components';
+import Catalog from './sub-components/catalog';
+import SubCatalogBackdrop from './sub-components/catalog-backdrop';
+import SubCatalogHeader from './sub-components/catalog-header';
+import SubCatalogMainButton from './sub-components/catalog-main-button';
+import SubCatalogBody from './sub-components/catalog-body';
 
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {
@@ -28,42 +33,60 @@ const StyledSelectoWrapper = styled.div`
   }
 `;
 
+function CatalogHeader() {
+  return null;
+}
+CatalogHeader.displayName = 'CatalogHeader';
+
+function CatalogMainButton() {
+  return null;
+}
+CatalogMainButton.displayName = 'CatalogMainButton';
+
+function CatalogBody() {
+  return null;
+}
+CatalogBody.displayName = 'CatalogBody';
+
 function ArticleHeader() {
   return null;
 }
-ArticleHeader.displayName = "ArticleHeader";
+ArticleHeader.displayName = 'ArticleHeader';
 
 function ArticleMainButton() {
   return null;
 }
-ArticleMainButton.displayName = "ArticleMainButton";
+ArticleMainButton.displayName = 'ArticleMainButton';
 
 function ArticleBody() {
   return null;
 }
-ArticleBody.displayName = "ArticleBody";
+ArticleBody.displayName = 'ArticleBody';
 
 function SectionHeader() {
   return null;
 }
-SectionHeader.displayName = "SectionHeader";
+SectionHeader.displayName = 'SectionHeader';
 
 function SectionFilter() {
   return null;
 }
-SectionFilter.displayName = "SectionFilter";
+SectionFilter.displayName = 'SectionFilter';
 
 function SectionBody() {
   return null;
 }
-SectionBody.displayName = "SectionBody";
+SectionBody.displayName = 'SectionBody';
 
 function SectionPaging() {
   return null;
 }
-SectionPaging.displayName = "SectionPaging";
+SectionPaging.displayName = 'SectionPaging';
 
 class PageLayout extends React.Component {
+  static CatalogHeader = CatalogHeader;
+  static CatalogMainButton = CatalogMainButton;
+  static CatalogBody = CatalogBody;
   static ArticleHeader = ArticleHeader;
   static ArticleMainButton = ArticleMainButton;
   static ArticleBody = ArticleBody;
@@ -83,7 +106,7 @@ class PageLayout extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (!this.scroll) {
-      this.scroll = document.getElementsByClassName("section-scroll")[0];
+      this.scroll = document.getElementsByClassName('section-scroll')[0];
     }
 
     if (
@@ -93,19 +116,25 @@ class PageLayout extends React.Component {
     ) {
       this.backdropClick();
     }
+
+    if (isDesktop()) return this.props.setShowText(true);
+    if (isTablet() && !this.props.userShowText) return this.props.setShowText(false);
+    if (this.props.showText && isTablet() && !this.props.userShowText)
+      return this.props.setShowText(false);
+    if (this.props.showText && isMobile && !this.props.userShowText)
+      return this.props.setShowText(false);
+    if (!isTablet() && !isMobile && !this.props.showText && !this.props.userShowText)
+      return this.props.setShowText(true);
   }
 
   componentDidMount() {
-    window.addEventListener("orientationchange", this.orientationChangeHandler);
+    window.addEventListener('orientationchange', this.orientationChangeHandler);
 
     this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
-    window.removeEventListener(
-      "orientationchange",
-      this.orientationChangeHandler
-    );
+    window.removeEventListener('orientationchange', this.orientationChangeHandler);
 
     if (this.intervalHandler) clearInterval(this.intervalHandler);
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
@@ -159,16 +188,12 @@ class PageLayout extends React.Component {
 
   dragCondition = (e) => {
     const path = e.inputEvent.composedPath();
-    const isBackdrop = path.some(
-      (x) => x.classList && x.classList.contains("backdrop-active")
-    );
+    const isBackdrop = path.some((x) => x.classList && x.classList.contains('backdrop-active'));
     const notSelectablePath = path.some(
-      (x) => x.classList && x.classList.contains("not-selectable")
+      (x) => x.classList && x.classList.contains('not-selectable'),
     );
 
-    const isDraggable = path.some(
-      (x) => x.classList && x.classList.contains("draggable")
-    );
+    const isDraggable = path.some((x) => x.classList && x.classList.contains('draggable'));
 
     if (notSelectablePath || isBackdrop || isDraggable) {
       return false;
@@ -205,7 +230,13 @@ class PageLayout extends React.Component {
       isBackdropVisible,
       isArticlePinned,
       isDesktop,
+      showText,
+      toggleShowText,
+      showCatalog,
     } = this.props;
+    let catalogHeaderContent = null;
+    let catalogMainButtonContent = null;
+    let catalogBodyContent = null;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
     let articleBodyContent = null;
@@ -213,12 +244,19 @@ class PageLayout extends React.Component {
     let sectionFilterContent = null;
     let sectionPagingContent = null;
     let sectionBodyContent = null;
-
     React.Children.forEach(children, (child) => {
-      const childType =
-        child && child.type && (child.type.displayName || child.type.name);
+      const childType = child && child.type && (child.type.displayName || child.type.name);
 
       switch (childType) {
+        case CatalogHeader.displayName:
+          catalogHeaderContent = child;
+          break;
+        case CatalogMainButton.displayName:
+          catalogMainButtonContent = child;
+          break;
+        case CatalogBody.displayName:
+          catalogBodyContent = child;
+          break;
         case ArticleHeader.displayName:
           articleHeaderContent = child;
           break;
@@ -249,59 +287,70 @@ class PageLayout extends React.Component {
       isArticleMainButtonAvailable = !!articleMainButtonContent,
       isArticleBodyAvailable = !!articleBodyContent,
       isArticleAvailable =
-        isArticleHeaderAvailable ||
-        isArticleMainButtonAvailable ||
-        isArticleBodyAvailable,
+        isArticleHeaderAvailable || isArticleMainButtonAvailable || isArticleBodyAvailable,
       isSectionHeaderAvailable = !!sectionHeaderContent,
       isSectionFilterAvailable = !!sectionFilterContent,
       isSectionPagingAvailable = !!sectionPagingContent,
       isSectionBodyAvailable =
-        !!sectionBodyContent ||
-        isSectionFilterAvailable ||
-        isSectionPagingAvailable,
+        !!sectionBodyContent || isSectionFilterAvailable || isSectionPagingAvailable,
       isSectionAvailable =
         isSectionHeaderAvailable ||
         isSectionFilterAvailable ||
         isSectionBodyAvailable ||
         isSectionPagingAvailable ||
         isArticleAvailable,
-      isBackdropAvailable = isArticleAvailable;
+      isBackdropAvailable = isArticleAvailable,
+      isCatalogHeaderAvailable = !!catalogHeaderContent,
+      isCatalogMainButtonAvailable = !!catalogMainButtonContent,
+      isCatalogBodyAvailable = !!catalogBodyContent,
+      isCatalogAvailable =
+        isCatalogHeaderAvailable || isCatalogMainButtonAvailable || isCatalogBodyAvailable;
 
     const renderPageLayout = () => {
       return (
         <>
-          {isBackdropAvailable && (
-            <Backdrop
-              zIndex={400}
-              visible={isBackdropVisible}
-              onClick={this.backdropClick}
-            />
+          {showCatalog && isCatalogAvailable && (
+            <Catalog showText={showText}>
+              {isCatalogHeaderAvailable && (
+                <>
+                  <SubCatalogBackdrop showText={showText} onClick={toggleShowText} />
+                  <SubCatalogHeader showText={showText} onClick={toggleShowText}>
+                    {catalogHeaderContent ? catalogHeaderContent.props.children : null}
+                  </SubCatalogHeader>
+                </>
+              )}
+
+              {isCatalogMainButtonAvailable && (
+                <SubCatalogMainButton showText={showText}>
+                  {catalogMainButtonContent ? catalogMainButtonContent.props.children : null}
+                </SubCatalogMainButton>
+              )}
+
+              {isCatalogBodyAvailable && (
+                <SubCatalogBody showText={showText}>
+                  {catalogBodyContent ? catalogBodyContent.props.children : null}
+                </SubCatalogBody>
+              )}
+            </Catalog>
           )}
-          {isArticleAvailable && (
-            <Article
-              visible={isArticleVisible}
-              pinned={isArticlePinned}
-              firstLoad={firstLoad}
-            >
+          {!showCatalog && isBackdropAvailable && (
+            <Backdrop zIndex={400} visible={isBackdropVisible} onClick={this.backdropClick} />
+          )}
+          {!showCatalog && isArticleAvailable && (
+            <Article visible={isArticleVisible} pinned={isArticlePinned} firstLoad={firstLoad}>
               {isArticleHeaderAvailable && (
                 <SubArticleHeader>
-                  {articleHeaderContent
-                    ? articleHeaderContent.props.children
-                    : null}
+                  {articleHeaderContent ? articleHeaderContent.props.children : null}
                 </SubArticleHeader>
               )}
               {isArticleMainButtonAvailable && (
                 <SubArticleMainButton>
-                  {articleMainButtonContent
-                    ? articleMainButtonContent.props.children
-                    : null}
+                  {articleMainButtonContent ? articleMainButtonContent.props.children : null}
                 </SubArticleMainButton>
               )}
               {isArticleBodyAvailable && (
                 <SubArticleBody pinned={isArticlePinned} isDesktop={isDesktop}>
-                  {articleBodyContent
-                    ? articleBodyContent.props.children
-                    : null}
+                  {articleBodyContent ? articleBodyContent.props.children : null}
                 </SubArticleBody>
               )}
               {isArticleBodyAvailable && (
@@ -317,28 +366,23 @@ class PageLayout extends React.Component {
             <ReactResizeDetector
               refreshRate={100}
               refreshMode="debounce"
-              refreshOptions={{ trailing: true }}
-            >
+              refreshOptions={{ trailing: true }}>
               {({ width, height }) => (
                 <Provider
                   value={{
                     sectionWidth: width,
                     sectionHeight: height,
-                  }}
-                >
+                  }}>
                   <Section
+                    showText={showText}
                     widthProp={width}
                     unpinArticle={this.unpinArticle}
-                    pinned={isArticlePinned}
-                  >
+                    pinned={isArticlePinned}>
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
-                        isArticlePinned={isArticlePinned}
-                      >
-                        {sectionHeaderContent
-                          ? sectionHeaderContent.props.children
-                          : null}
+                        isArticlePinned={isArticlePinned}>
+                        {sectionHeaderContent ? sectionHeaderContent.props.children : null}
                       </SubSectionHeader>
                     )}
 
@@ -347,14 +391,11 @@ class PageLayout extends React.Component {
                         <div
                           id="main-bar"
                           style={{
-                            display: "grid",
-                            paddingRight: "20px",
-                          }}
-                        ></div>
+                            display: 'grid',
+                            paddingRight: '20px',
+                          }}></div>
                         <SubSectionFilter className="section-header_filter">
-                          {sectionFilterContent
-                            ? sectionFilterContent.props.children
-                            : null}
+                          {sectionFilterContent ? sectionFilterContent.props.children : null}
                         </SubSectionFilter>
                       </>
                     )}
@@ -366,25 +407,18 @@ class PageLayout extends React.Component {
                           withScroll={withBodyScroll}
                           autoFocus={isMobile || isTabletView ? false : true}
                           pinned={isArticlePinned}
-                          viewAs={viewAs}
-                        >
+                          viewAs={viewAs}>
                           {isSectionFilterAvailable && (
                             <SubSectionFilter className="section-body_filter">
-                              {sectionFilterContent
-                                ? sectionFilterContent.props.children
-                                : null}
+                              {sectionFilterContent ? sectionFilterContent.props.children : null}
                             </SubSectionFilter>
                           )}
                           <SubSectionBodyContent>
-                            {sectionBodyContent
-                              ? sectionBodyContent.props.children
-                              : null}
+                            {sectionBodyContent ? sectionBodyContent.props.children : null}
                           </SubSectionBodyContent>
                           {isSectionPagingAvailable && (
                             <SubSectionPaging>
-                              {sectionPagingContent
-                                ? sectionPagingContent.props.children
-                                : null}
+                              {sectionPagingContent ? sectionPagingContent.props.children : null}
                             </SubSectionPaging>
                           )}
                         </SubSectionBody>
@@ -426,11 +460,8 @@ class PageLayout extends React.Component {
                       <></>
                     )}
 
-                    {isArticleAvailable && (
-                      <SectionToggler
-                        visible={!isArticleVisible}
-                        onClick={this.showArticle}
-                      />
+                    {!showCatalog && isArticleAvailable && (
+                      <SectionToggler visible={!isArticleVisible} onClick={this.showArticle} />
                     )}
                   </Section>
                 </Provider>
@@ -455,9 +486,9 @@ class PageLayout extends React.Component {
         {!isMobile && uploadFiles && !dragging && (
           <StyledSelectoWrapper>
             <Selecto
-              boundContainer={".section-body"}
-              dragContainer={".section-body"}
-              selectableTargets={[".files-item"]}
+              boundContainer={'.section-body'}
+              dragContainer={'.section-body'}
+              selectableTargets={['.files-item']}
               hitRate={0}
               selectByClick={false}
               selectFromInside={true}
@@ -498,6 +529,11 @@ PageLayout.propTypes = {
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
+  showText: PropTypes.bool,
+  userShowText: PropTypes.bool,
+  setShowText: PropTypes.func,
+  toggleShowText: PropTypes.func,
+  showCatalog: PropTypes.bool,
 };
 
 PageLayout.defaultProps = {
@@ -505,6 +541,8 @@ PageLayout.defaultProps = {
   withBodyAutoFocus: false,
 };
 
+PageLayout.CatalogHeader = CatalogHeader;
+PageLayout.CatalogMainButton = CatalogMainButton;
 PageLayout.ArticleHeader = ArticleHeader;
 PageLayout.ArticleMainButton = ArticleMainButton;
 PageLayout.ArticleBody = ArticleBody;
@@ -526,6 +564,11 @@ export default inject(({ auth }) => {
     setIsArticleVisible,
     setIsBackdropVisible,
     isDesktopClient,
+    showText,
+    userShowText,
+    setShowText,
+    toggleShowText,
+    showCatalog,
   } = settingsStore;
 
   return {
@@ -540,5 +583,10 @@ export default inject(({ auth }) => {
     isBackdropVisible,
     setIsBackdropVisible,
     isDesktop: isDesktopClient,
+    showText,
+    userShowText,
+    setShowText,
+    toggleShowText,
+    showCatalog,
   };
 })(observer(PageLayout));

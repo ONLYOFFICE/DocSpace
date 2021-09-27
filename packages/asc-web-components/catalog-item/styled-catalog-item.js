@@ -103,6 +103,9 @@ const StyledCatalogItemImg = styled.div`
   svg {
     width: ${(props) => props.theme.catalogItem.img.svg.width};
     height: ${(props) => props.theme.catalogItem.img.svg.height};
+    path {
+      fill: #657077 !important;
+    }
   }
 
   @media ${tablet} {
@@ -122,6 +125,9 @@ const StyledCatalogItemSibling = styled.div`
   width: 100%;
   height: 100%;
 
+  background-color: ${(props) =>
+    props.isActive && props.theme.catalogItem.sibling.hover.backgroundColor};
+
   &:hover {
     background-color: ${(props) =>
       props.theme.catalogItem.sibling.hover.backgroundColor};
@@ -131,8 +137,6 @@ const StyledCatalogItemSibling = styled.div`
 StyledCatalogItemSibling.defaultProps = { theme: Base };
 
 const StyledCatalogItemContainer = styled.div`
-  background-color: ${(props) =>
-    props.theme.catalogItem.container.backgroundColor};
   display: flex;
   justify-content: ${(props) => (props.showText ? "space-between" : "center")};
   align-items: center;

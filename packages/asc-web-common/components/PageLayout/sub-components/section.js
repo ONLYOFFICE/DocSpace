@@ -1,13 +1,7 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import { tablet, size } from "@appserver/components/utils/device";
-import {
-  isIOS,
-  isTablet,
-  isSafari,
-  isChrome,
-  isMobile,
-} from "react-device-detect";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { tablet, size, mobile } from '@appserver/components/utils/device';
+import { isIOS, isTablet, isSafari, isChrome, isMobile } from 'react-device-detect';
 
 const tabletProps = css`
   .section-header_filter {
@@ -25,6 +19,9 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  @media ${mobile} {
+    display: ${(props) => (!props.showText ? 'flex' : 'none')};
+  }
   //width: ${(props) => `${props.widthProp}px`};
   .layout-progress-bar {
     position: fixed;
@@ -57,13 +54,11 @@ const StyledSection = styled.section`
     padding: 0 0 0 16px;
     ${tabletProps};
   }
-  ${
-    isMobile &&
-    css`
-      ${tabletProps};
-      min-width: 100px;
-    `
-  }
+  ${isMobile &&
+  css`
+    ${tabletProps};
+    min-width: 100px;
+  `}
 `;
 
 class Section extends React.Component {

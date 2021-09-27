@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import StyledTreeSettingsLoader from "./StyledTreeSettingsLoader";
-import TreeNodeLoader from "../TreeNodeLoader";
+import React from 'react';
+import PropTypes from 'prop-types';
+import StyledTreeSettingsLoader from './StyledTreeSettingsLoader';
+import TreeNodeLoader from '../TreeNodeLoader';
 
 const TreeSettingsLoader = ({ id, className, style, ...rest }) => {
   return (
