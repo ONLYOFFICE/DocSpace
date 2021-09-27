@@ -122,6 +122,11 @@ namespace ASC.Core.Caching
             return tenant.ToString() + GROUPS;
         }
 
+        public static string GetGroupCacheKey(int tenant, Guid groupId)
+        {
+            return tenant.ToString() + GROUPS + groupId;
+        }
+
         public static string GetRefCacheKey(int tenant)
         {
             return tenant.ToString() + REFS;
@@ -180,6 +185,7 @@ namespace ASC.Core.Caching
     {
         internal IUserService Service { get; set; }
         internal ICache Cache { get; set; }
+        internal ScopedCache scopedCache = new ScopedCache();
 
         internal TrustInterval TrustInterval { get; set; }
         private int getchanges;
@@ -249,17 +255,17 @@ namespace ASC.Core.Caching
         {
             if (id.Equals(Guid.Empty)) return null;
 
-            if (CoreBaseSettings.Personal)
+            var key = UserServiceCache.GetUserCacheKeyForPersonal(tenant, id);
+            var user = scopedCache.Get<UserInfo>(key);
+
+            if (user == null)
             {
-                return GetUserForPersonal(tenant, id);
+                user = Service.GetUser(tenant, id);
+
+                if (user != null) scopedCache.Insert(key, user);
             }
 
-            var users = GetUsers(tenant);
-            lock (users)
-            {
-                users.TryGetValue(id, out var u);
-                return u;
-            }
+            return user;
         }
 
         public UserInfo GetUser(int tenant, string email)
@@ -307,14 +313,16 @@ namespace ASC.Core.Caching
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
             user = Service.SaveUser(tenant, user);
-            CacheUserInfoItem.Publish(new UserInfoCacheItem { ID = user.ID.ToByteString(), Tenant = tenant }, CacheNotifyAction.Any);
+            scopedCache.Remove(UserServiceCache.GetUserCacheKeyForPersonal(tenant, user.ID));
+            //CacheUserInfoItem.Publish(new UserInfoCacheItem { ID = user.ID.ToByteString(), Tenant = tenant }, CacheNotifyAction.Any);
             return user;
         }
 
         public void RemoveUser(int tenant, Guid id)
         {
             Service.RemoveUser(tenant, id);
-            CacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, ID = id.ToByteString() }, CacheNotifyAction.Any);
+            scopedCache.Remove(UserServiceCache.GetUserCacheKeyForPersonal(tenant, id));
+            //CacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, ID = id.ToByteString() }, CacheNotifyAction.Any);
         }
 
         public byte[] GetUserPhoto(int tenant, Guid id)
@@ -349,20 +357,23 @@ namespace ASC.Core.Caching
         public IDictionary<Guid, Group> GetGroups(int tenant, DateTime from)
         {
             var groups = GetGroups(tenant);
-            lock (groups)
-            {
-                return (from == default ? groups.Values : groups.Values.Where(g => g.LastModified >= from)).ToDictionary(g => g.Id);
-            }
+
+            return (from == default ? groups.Values : groups.Values.Where(g => g.LastModified >= from)).ToDictionary(g => g.Id);
         }
 
         public Group GetGroup(int tenant, Guid id)
         {
-            var groups = GetGroups(tenant);
-            lock (groups)
+            var key = UserServiceCache.GetGroupCacheKey(tenant, id);
+            var group = scopedCache.Get<Group>(key);
+
+            if (group == null)
             {
-                groups.TryGetValue(id, out var g);
-                return g;
-            }
+                group = Service.GetGroup(tenant, id);
+
+                if (group != null) scopedCache.Insert(key, group);
+            };
+
+            return group;
         }
 
         public Group SaveGroup(int tenant, Group group)
@@ -418,30 +429,14 @@ namespace ASC.Core.Caching
 
         private IDictionary<Guid, UserInfo> GetUsers(int tenant)
         {
-            GetChangesFromDb();
-
-            var key = UserServiceCache.GetUserCacheKey(tenant);
-            var users = Cache.Get<IDictionary<Guid, UserInfo>>(key);
-            if (users == null)
-            {
-                users = Service.GetUsers(tenant, default);
-
-                Cache.Insert(key, users, CacheExpiration);
-            }
+            var users = Service.GetUsers(tenant, default);
             return users;
         }
 
         private IDictionary<Guid, Group> GetGroups(int tenant)
         {
-            GetChangesFromDb();
+            var groups = Service.GetGroups(tenant, default);
 
-            var key = UserServiceCache.GetGroupCacheKey(tenant);
-            var groups = Cache.Get<IDictionary<Guid, Group>>(key);
-            if (groups == null)
-            {
-                groups = Service.GetGroups(tenant, default);
-                Cache.Insert(key, groups, CacheExpiration);
-            }
             return groups;
         }
 
