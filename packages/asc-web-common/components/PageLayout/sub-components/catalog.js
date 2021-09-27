@@ -6,6 +6,12 @@ import { isMobile } from 'react-device-detect';
 import { mobile, tablet } from '@appserver/components/utils/device';
 
 const StyledCatalog = styled.div`
+  @supports (-webkit-touch-callout: none) {
+    position: relative;
+    top: 48px;
+    left: 0;
+  }
+
   .resizable-block {
     display: flex;
     flex-direction: column;

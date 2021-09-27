@@ -12,8 +12,6 @@ const StyledBackdrop = styled(Backdrop)`
   position: fixed;
   top: 0;
   left: 0;
-  background: rgba(6, 22, 38, 0.15);
-  backdrop-filter: blur(18px);
   cursor: initial;
   @media ${mobile} {
     display: block;

@@ -140,8 +140,8 @@ const StyledCatalogItemContainer = styled.div`
   display: flex;
   justify-content: ${(props) => (props.showText ? "space-between" : "center")};
   align-items: center;
-  width: ${(props) => props.theme.catalogItem.container.width};
-  height: ${(props) => props.theme.catalogItem.container.height};
+  min-width: ${(props) => props.theme.catalogItem.container.width};
+  min-height: ${(props) => props.theme.catalogItem.container.height};
   position: relative;
   box-sizing: border-box;
   padding: ${(props) =>
@@ -151,7 +151,7 @@ const StyledCatalogItemContainer = styled.div`
   cursor: pointer;
 
   @media ${tablet} {
-    height: ${(props) => props.theme.catalogItem.container.tablet.height};
+    min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     padding: ${(props) =>
       props.showText && props.theme.catalogItem.container.tablet.padding};
     margin-bottom: ${(props) =>

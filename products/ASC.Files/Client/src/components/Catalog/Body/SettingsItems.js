@@ -8,7 +8,7 @@ import { combineUrl } from '@appserver/common/utils';
 import config from '../../../../package.json';
 import { AppServerConfig } from '@appserver/common/constants';
 import withLoader from '../../../HOCs/withLoader';
-import { isTablet } from '@appserver/components/utils/device';
+import { isTablet, isMobile } from '@appserver/components/utils/device';
 
 const PureSettingsItems = ({
   match,
@@ -21,7 +21,7 @@ const PureSettingsItems = ({
   t,
   showText,
   homepage,
-  setShowText,
+  toggleShowText,
 }) => {
   const { setting } = match.params;
   const iconUrl = '/static/images/settings.react.svg';
@@ -42,7 +42,7 @@ const PureSettingsItems = ({
 
     setSelectedNode(['common']);
     if (!expandedSetting || expandedSetting[0] !== 'settings') setExpandSettingsTree(`settings`);
-    if (isTablet()) setShowText(false);
+    if ((isTablet() || isMobile()) && showText) toggleShowText();
     return history.push(combineUrl(AppServerConfig.proxyURL, homepage, '/settings/common'));
 
     // if (selectedTreeNode[0] !== path) {
@@ -88,7 +88,7 @@ export default inject(
       setSelectedNode,
       setExpandSettingsTree,
       showText: auth.settingsStore.showText,
-      setShowText: auth.settingsStore.setShowText,
+      toggleShowText: auth.settingsStore.toggleShowText,
       homepage: config.homepage,
     };
   },
