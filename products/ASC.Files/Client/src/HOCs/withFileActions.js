@@ -5,6 +5,7 @@ import { checkProtocol } from "../helpers/files-helpers";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
+import { isMobile } from "react-device-detect";
 
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
@@ -61,7 +62,7 @@ export default function withFileActions(WrappedFileItem) {
 
       if (isPrivacy || isTrashFolder || (!draggable && !isFileName)) return;
 
-      if (window.innerWidth < 1025 || notSelectable) {
+      if (window.innerWidth < 1025 || notSelectable || isMobile) {
         return;
       }
 
@@ -230,8 +231,8 @@ export default function withFileActions(WrappedFileItem) {
 
       const isShareable = allowShareIn && item.canShare;
 
-      const isMobile = sectionWidth < 500;
-      const displayShareButton = isMobile
+      const isMobileView = sectionWidth < 500;
+      const displayShareButton = isMobileView
         ? "26px"
         : !isShareable
         ? "38px"
