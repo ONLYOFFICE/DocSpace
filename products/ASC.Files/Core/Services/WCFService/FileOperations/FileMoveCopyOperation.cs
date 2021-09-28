@@ -82,7 +82,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (toFolderId.ValueKind == JsonValueKind.String)
             {
-                if (int.TryParse(toFolderId.GetString(), out var i))
+                if (!int.TryParse(toFolderId.GetString(), out var i))
                 {
                     ThirdpartyFolderId = toFolderId.GetString();
                 }
