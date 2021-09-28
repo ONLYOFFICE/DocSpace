@@ -33,8 +33,6 @@ const StyledComponent = styled.div`
   }
 `;
 
-let inputValueArray;
-
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -109,7 +107,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const { onMakeCopy } = this.props;
 
     let obj = {};
-    inputValueArray = [];
+    let inputValueArray = [];
 
     const selectedStorage = availableStorage[selectedId];
 
