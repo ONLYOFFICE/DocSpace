@@ -173,7 +173,7 @@ var config = {
         "./SelectFolderDialog": "./src/components/panels/SelectFolderDialog",
         "./SelectFolderInput": "./src/components/panels/SelectFolderInput",
         "./SelectFileInput": "./src/components/panels/SelectFileInput",
-        "./ListRow": "./src/components/panels/SelectFileDialog/listRow.js",
+        "./ListRow": "./src/components/panels/SelectFileDialog/FilesListRow.js",
       },
       shared: {
         ...deps,
