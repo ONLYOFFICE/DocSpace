@@ -169,12 +169,10 @@ export default function withContent(WrappedContent) {
                     encryptedFile,
                     true,
                     false
-                  ).then(() =>
-                    openDocEditor(file.id, file.providerKey, tab, file.webUrl)
-                  );
+                  ).then(() => openDocEditor(file.id, file.providerKey, tab));
                 });
               }
-              return openDocEditor(file.id, file.providerKey, tab, file.webUrl);
+              return openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
