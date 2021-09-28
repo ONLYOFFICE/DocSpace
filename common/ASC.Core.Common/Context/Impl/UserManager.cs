@@ -161,7 +161,6 @@ namespace ASC.Core
         public DateTime GetMaxUsersLastModified()
         {
             return UserService.GetUsers(Tenant.TenantId, default)
-                .Values
                 .Select(g => g.LastModified)
                 .DefaultIfEmpty()
                 .Max();
@@ -177,14 +176,8 @@ namespace ASC.Core
 
         public UserInfo GetUserByUserName(string username)
         {
-            if (CoreBaseSettings.Personal)
-            {
-                var u = UserService.GetUserByUserName(TenantManager.GetCurrentTenant().TenantId, username);
-                return u ?? Constants.LostUser;
-            }
-
-            return GetUsersInternal()
-                .FirstOrDefault(u => string.Compare(u.UserName, username, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
+            var u = UserService.GetUserByUserName(TenantManager.GetCurrentTenant().TenantId, username);
+            return u ?? Constants.LostUser;
         }
 
         public UserInfo GetUserBySid(string sid)
@@ -242,15 +235,8 @@ namespace ASC.Core
         {
             if (string.IsNullOrEmpty(email)) return Constants.LostUser;
 
-            if (CoreBaseSettings.Personal)
-            {
-                var u = UserService.GetUser(Tenant.TenantId, email);
-                return u != null && !u.Removed ? u : Constants.LostUser;
-            }
-
-
-            return GetUsersInternal()
-                .FirstOrDefault(u => string.Compare(u.Email, email, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
+            var u = UserService.GetUser(Tenant.TenantId, email);
+            return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
         public UserInfo[] Search(string text, EmployeeStatus status)
@@ -520,11 +506,11 @@ namespace ASC.Core
 
         public Guid GetDepartmentManager(Guid deparmentID)
         {
-            return GetRefsInternal()
-                .Values
-                .Where(r => r.RefType == UserGroupRefType.Manager && r.GroupId == deparmentID && !r.Removed)
-                .Select(r => r.UserId)
-                .SingleOrDefault();
+            var groupRef = UserService.GetUserGroupRef(Tenant.TenantId, deparmentID, UserGroupRefType.Manager);
+
+            if (groupRef == null) return Guid.Empty;
+
+            return groupRef.UserId;
         }
 
         public void SetDepartmentManager(Guid deparmentID, Guid userID)
@@ -574,8 +560,15 @@ namespace ASC.Core
 
         public GroupInfo GetGroupInfo(Guid groupID)
         {
-            return GetGroupsInternal()
-                .SingleOrDefault(g => g.ID == groupID) ?? Constants.LostGroupInfo;
+            var group = UserService.GetGroup(Tenant.TenantId, groupID);
+
+            return new GroupInfo
+            {
+                ID = group.Id,
+                CategoryID = group.CategoryId,
+                Name = group.Name,
+                Sid = group.Sid
+            };
         }
 
         public GroupInfo GetGroupInfoBySid(string sid)
@@ -587,7 +580,6 @@ namespace ASC.Core
         public DateTime GetMaxGroupsLastModified()
         {
             return UserService.GetGroups(Tenant.TenantId, default)
-                .Values
                 .Select(g => g.LastModified)
                 .DefaultIfEmpty()
                 .Max();
@@ -634,14 +626,12 @@ namespace ASC.Core
         private IEnumerable<UserInfo> GetUsersInternal()
         {
             return UserService.GetUsers(Tenant.TenantId, default)
-                .Values
                 .Where(u => !u.Removed);
         }
 
         private IEnumerable<GroupInfo> GetGroupsInternal()
         {
             return UserService.GetGroups(Tenant.TenantId, default)
-                .Values
                 .Where(g => !g.Removed)
                 .Select(g => new GroupInfo(g.CategoryId) { ID = g.Id, Name = g.Name, Sid = g.Sid })
                 .Concat(Constants.BuildinGroups);
