@@ -151,6 +151,7 @@ namespace ASC.Web.Studio.Core.Notify
                     Actions.PersonalPasswordChange,
                     Actions.PersonalEmailChangeV115,
                     Actions.PersonalProfileDelete,
+                    Actions.PersonalAlreadyExist,
 
                     Actions.MailboxCreated,
                     Actions.MailboxWithoutSettingsCreated,
@@ -164,6 +165,7 @@ namespace ASC.Web.Studio.Core.Notify
                     Actions.PersonalCustomModePasswordChange,
                     Actions.PersonalCustomModeEmailChangeV115,
                     Actions.PersonalCustomModeProfileDelete,
+                    Actions.PersonalCustomModeAlreadyExist,
 
                     Actions.SaasCustomModeRegData,
 
