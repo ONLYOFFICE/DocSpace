@@ -51,21 +51,18 @@ class RackspaceStorage extends React.Component {
   };
 
   onMakeCopy = () => {
-    const { fillInputValueArray } = this.props;
-    const { private_container, public_container, region } = this.state;
-
+    const { private_container, public_container, region, isError } = this.state;
+    const { onMakeCopyIntoStorage } = this.props;
     if (this.isInvalidForm()) return;
 
-    saveToSessionStorage("selectedManualStorageType", "thirdPartyStorage");
+    isError &&
+      this.setState({
+        isError: false,
+      });
 
     const valuesArray = [private_container, public_container, region];
 
-    const inputNumber = valuesArray.length;
-
-    this.setState({
-      isError: false,
-    });
-    fillInputValueArray(inputNumber, valuesArray);
+    onMakeCopyIntoStorage(valuesArray);
   };
   render() {
     const { private_container, public_container, region, isError } = this.state;

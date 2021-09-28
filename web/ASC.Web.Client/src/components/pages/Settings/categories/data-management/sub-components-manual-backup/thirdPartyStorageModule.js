@@ -13,6 +13,7 @@ import RackspaceStorage from "./rackspaceStorage";
 import SelectelStorage from "./selectelStorage";
 import AmazonStorage from "./amazonStorage";
 import { getOptions } from "../utils/getOptions";
+import { saveToSessionStorage } from "../../../utils";
 
 const StyledComponent = styled.div`
   .backup_combo {
@@ -123,6 +124,14 @@ class ThirdPartyStorageModule extends React.PureComponent {
     onMakeCopy(null, null, "5", "module", selectedId, inputValueArray);
   };
 
+  onMakeCopyIntoStorage = (valuesArray) => {
+    saveToSessionStorage("selectedManualStorageType", "thirdPartyStorage");
+
+    const formSettings = [...valuesArray];
+    const inputsNumber = formSettings.length;
+
+    this.fillInputValueArray(inputsNumber, formSettings);
+  };
   render() {
     const { t, helpUrlCreatingBackup, isLoadingData, maxProgress } = this.props;
     const {
@@ -164,7 +173,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             availableStorage={availableStorage}
             maxProgress={maxProgress}
             selectedId={selectedId}
-            fillInputValueArray={this.fillInputValueArray}
+            onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
           />
         )}
 
@@ -175,7 +184,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             availableStorage={availableStorage}
             maxProgress={maxProgress}
             selectedId={selectedId}
-            fillInputValueArray={this.fillInputValueArray}
+            onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
           />
         )}
 
@@ -186,7 +195,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             availableStorage={availableStorage}
             maxProgress={maxProgress}
             selectedId={selectedId}
-            fillInputValueArray={this.fillInputValueArray}
+            onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
           />
         )}
 
@@ -197,7 +206,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             availableStorage={availableStorage}
             maxProgress={maxProgress}
             selectedId={selectedId}
-            fillInputValueArray={this.fillInputValueArray}
+            onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
           />
         )}
       </StyledComponent>

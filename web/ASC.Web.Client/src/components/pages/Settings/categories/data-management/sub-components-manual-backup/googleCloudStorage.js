@@ -43,20 +43,18 @@ class GoogleCloudStorage extends React.Component {
   };
 
   onMakeCopy = () => {
-    const { fillInputValueArray } = this.props;
-    const { bucket } = this.state;
-
+    const { bucket, isError } = this.state;
+    const { onMakeCopyIntoStorage } = this.props;
     if (this.isInvalidForm()) return;
 
-    saveToSessionStorage("selectedManualStorageType", "thirdPartyStorage");
+    isError &&
+      this.setState({
+        isError: false,
+      });
 
-    const inputNumber = 1;
     const valuesArray = [bucket];
 
-    this.setState({
-      isError: false,
-    });
-    fillInputValueArray(inputNumber, valuesArray);
+    onMakeCopyIntoStorage(valuesArray);
   };
   render() {
     const { bucket, isError } = this.state;

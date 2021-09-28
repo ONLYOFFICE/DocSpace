@@ -46,22 +46,19 @@ class SelectelStorage extends React.Component {
   };
 
   onMakeCopy = () => {
-    const { fillInputValueArray } = this.props;
-    const { private_container, public_container } = this.state;
+    const { private_container, public_container, isError } = this.state;
+    const { onMakeCopyIntoStorage } = this.props;
 
     if (this.isInvalidForm()) return;
 
-    saveToSessionStorage("selectedManualStorageType", "thirdPartyStorage");
+    isError &&
+      this.setState({
+        isError: false,
+      });
 
     const valuesArray = [private_container, public_container];
 
-    const inputNumber = valuesArray.length;
-
-    this.setState({
-      isChangedInput: false,
-      isError: false,
-    });
-    fillInputValueArray(inputNumber, valuesArray);
+    onMakeCopyIntoStorage(valuesArray);
   };
 
   render() {

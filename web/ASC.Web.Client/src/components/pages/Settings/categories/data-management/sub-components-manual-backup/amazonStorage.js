@@ -2,7 +2,6 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
-import { saveToSessionStorage } from "../../../utils";
 
 class AmazonStorage extends React.Component {
   constructor(props) {
@@ -60,7 +59,6 @@ class AmazonStorage extends React.Component {
   };
 
   onMakeCopy = () => {
-    const { fillInputValueArray } = this.props;
     const {
       bucket,
       forcePathStyle,
@@ -68,11 +66,17 @@ class AmazonStorage extends React.Component {
       serviceUrl,
       sse,
       useHttp,
+      isError,
     } = this.state;
+
+    const { onMakeCopyIntoStorage } = this.props;
 
     if (this.isInvalidForm()) return;
 
-    saveToSessionStorage("selectedManualStorageType", "thirdPartyStorage");
+    isError &&
+      this.setState({
+        isError: false,
+      });
 
     const valuesArray = [
       bucket,
@@ -83,12 +87,7 @@ class AmazonStorage extends React.Component {
       useHttp,
     ];
 
-    const inputNumber = valuesArray.length;
-
-    this.setState({
-      isError: false,
-    });
-    fillInputValueArray(inputNumber, valuesArray);
+    onMakeCopyIntoStorage(valuesArray);
   };
   render() {
     const {
