@@ -106,6 +106,8 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
   fillInputValueArray = (inputNumber, valuesArray) => {
     const { selectedId, availableStorage } = this.state;
+    const { onMakeCopy } = this.props;
+
     let obj = {};
     inputValueArray = [];
 
@@ -118,33 +120,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
       };
       inputValueArray.push(obj);
     }
-    this.onMakeCopy();
+
+    onMakeCopy(null, null, "5", "module", selectedId, inputValueArray);
   };
 
-  onMakeCopy = () => {
-    const { setInterval } = this.props;
-    const { selectedId } = this.state;
-
-    let storageParams = [
-      {
-        key: "module",
-        value: selectedId,
-      },
-    ];
-
-    let obj = {};
-
-    for (let i = 0; i < inputValueArray.length; i++) {
-      obj = {
-        key: inputValueArray[i].key,
-        value: inputValueArray[i].value,
-      };
-      storageParams.push(obj);
-    }
-
-    startBackup("5", storageParams);
-    setInterval();
-  };
   render() {
     const { t, helpUrlCreatingBackup, isLoadingData, maxProgress } = this.props;
     const {

@@ -335,6 +335,45 @@ class ManualBackup extends React.Component {
         isLoadingData: isLoading,
       });
   };
+
+  onMakeCopy = (
+    selectedFolder,
+    moduleName,
+    moduleType,
+    key,
+    selectedId,
+    storageValues
+  ) => {
+    console.log("selectedFolder", selectedFolder);
+    const storageParams = [
+      {
+        key: `${key}`,
+        value: selectedFolder ? selectedFolder : selectedId,
+      },
+    ];
+
+    if (selectedFolder) {
+      saveToSessionStorage("selectedManualStorageType", `${moduleName}`);
+      saveToSessionStorage("selectedFolder", `${selectedFolder}`);
+
+      SelectFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
+        saveToSessionStorage("selectedFolderPath", `${folderPath}`);
+      });
+    } else {
+      let obj = {};
+
+      for (let i = 0; i < storageValues.length; i++) {
+        obj = {
+          key: storageValues[i].key,
+          value: storageValues[i].value,
+        };
+        storageParams.push(obj);
+      }
+    }
+
+    startBackup(`${moduleType}`, storageParams);
+    this.setInterval();
+  };
   render() {
     const { t } = this.props;
     const {
@@ -426,9 +465,9 @@ class ManualBackup extends React.Component {
           {isCheckedDocuments && (
             <DocumentsModule
               maxProgress={maxProgress}
-              setInterval={this.setInterval}
               isCheckedDocuments={isCheckedDocuments}
               isCopyingLocal={isLoadingData}
+              onMakeCopy={this.onMakeCopy}
             />
           )}
         </StyledModules>
@@ -465,8 +504,8 @@ class ManualBackup extends React.Component {
             <ThirdPartyModule
               maxProgress={maxProgress}
               commonThirdPartyList={this.commonThirdPartyList}
-              setInterval={this.setInterval}
               isCopyingLocal={isLoadingData}
+              onMakeCopy={this.onMakeCopy}
             />
           )}
         </StyledModules>
@@ -495,7 +534,7 @@ class ManualBackup extends React.Component {
               maxProgress={maxProgress}
               isLoadingData={isLoadingData}
               isManualBackup
-              setInterval={this.setInterval}
+              onMakeCopy={this.onMakeCopy}
             />
           )}
         </StyledModules>

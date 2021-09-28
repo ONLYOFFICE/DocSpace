@@ -65,27 +65,13 @@ class DocumentsModule extends React.Component {
     });
   };
 
-  onClickButton = () => {
-    //debugger;
-    saveToSessionStorage("selectedManualStorageType", "documents");
+  onMakeCopy = () => {
+    const { onMakeCopy } = this.props;
     const { selectedFolder } = this.state;
-    console.log("selectedFolder", selectedFolder);
 
-    saveToSessionStorage("selectedFolder", `${selectedFolder}`);
-
-    SelectFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
-      saveToSessionStorage("selectedFolderPath", `${folderPath}`);
-    });
-    const { setInterval } = this.props;
-    const storageParams = [
-      {
-        key: "folderId",
-        value: selectedFolder,
-      },
-    ];
-    startBackup("0", storageParams);
-    setInterval();
+    onMakeCopy(selectedFolder, "documents", "0", "folderId");
   };
+
   render() {
     const { maxProgress, t, isCopyingLocal } = this.props;
     const { isPanelVisible, isLoadingData, folderPath } = this.state;
@@ -108,7 +94,7 @@ class DocumentsModule extends React.Component {
         <div className="manual-backup_buttons">
           <Button
             label={t("MakeCopy")}
-            onClick={this.onClickButton}
+            onClick={this.onMakeCopy}
             primary
             isDisabled={!maxProgress || isLoadingData}
             size="medium"

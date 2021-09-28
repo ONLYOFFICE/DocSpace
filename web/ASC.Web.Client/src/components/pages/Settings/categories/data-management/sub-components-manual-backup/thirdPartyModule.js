@@ -77,33 +77,17 @@ class ThirdPartyModule extends React.Component {
     });
     return true;
   };
-  onClickButton = () => {
-    //console.log("selectedFolder", selectedFolder);
-    saveToSessionStorage("selectedManualStorageType", "thirdPartyResource");
+
+  onMakeCopy = () => {
+    const { onMakeCopy } = this.props;
     const { selectedFolder, isError } = this.state;
-    const { setInterval } = this.props;
-
     if (this.isInvalidForm()) return;
-
-    saveToSessionStorage("selectedFolder", `${selectedFolder}`);
-
-    SelectFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
-      saveToSessionStorage("selectedFolderPath", `${folderPath}`);
-    });
-
     isError &&
       this.setState({
         isError: false,
       });
 
-    const storageParams = [
-      {
-        key: "folderId",
-        value: selectedFolder,
-      },
-    ];
-    startBackup("1", storageParams);
-    setInterval();
+    onMakeCopy(selectedFolder, "thirdPartyResource", "1", "folderId");
   };
   render() {
     const {
@@ -142,7 +126,7 @@ class ThirdPartyModule extends React.Component {
         <div className="manual-backup_buttons">
           <Button
             label={t("MakeCopy")}
-            onClick={this.onClickButton}
+            onClick={this.onMakeCopy}
             primary
             isDisabled={!maxProgress || isLoadingData}
             size="medium"
