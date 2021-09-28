@@ -5,47 +5,54 @@ import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import RadioButton from "@appserver/components/radio-button";
-const FilesListRow = ({
-  displayType,
-  needRowSelection,
-  index,
-  onSelectFile,
-  fileName,
-  children,
-  fileExst,
-  iconSrc,
-  isMultiSelect, // it will be needed
-  isChecked,
-}) => {
+
+const CheckboxRender = ({ isMultiSelect, index, isChecked, onSelectFile }) => {
+  return isMultiSelect ? ( //  it will be needed
+    <Checkbox
+      label=""
+      isChecked={isChecked}
+      className="select-file-dialog_checked"
+    />
+  ) : (
+    <RadioButton
+      fontSize="13px"
+      fontWeight="400"
+      name={`${index}`}
+      label=""
+      isChecked={isChecked}
+      onClick={onSelectFile}
+      value=""
+      className="select-file-dialog_checked"
+    />
+  );
+};
+const FilesListRow = (props) => {
+  const {
+    displayType,
+    needRowSelection,
+    index,
+    onSelectFile,
+    fileName,
+    children,
+    fileExst,
+    iconSrc,
+    isChecked,
+    noCheckBox,
+  } = props;
   return (
     <StyledFilesList
       displayType={displayType}
       needRowSelection={needRowSelection}
       isChecked={isChecked}
+      noCheckBox={noCheckBox}
     >
       <div
         data-index={index}
         className="modal-dialog_file-name"
         onClick={onSelectFile}
       >
-        {isMultiSelect ? ( //  it will be needed
-          <Checkbox
-            label=""
-            isChecked={isChecked}
-            className="select-file-dialog_checked"
-          />
-        ) : (
-          <RadioButton
-            fontSize="13px"
-            fontWeight="400"
-            name={`${index}`}
-            label=""
-            isChecked={isChecked}
-            onClick={onSelectFile}
-            value=""
-            className="select-file-dialog_checked"
-          />
-        )}
+        {!noCheckBox && <CheckboxRender {...props} />}
+
         <ReactSVG src={iconSrc} className="select-file-dialog_icon" />
         <div data-index={index} className="files-list_full-name">
           <Text data-index={index} className="entry-title">
@@ -65,6 +72,7 @@ const FilesListRow = ({
 FilesListRow.defaultProps = {
   needRowSelection: true,
   isMultiSelect: false,
+  noCheckBox: false,
 };
 
 export default inject(({ formatsStore }, { fileExst }) => {

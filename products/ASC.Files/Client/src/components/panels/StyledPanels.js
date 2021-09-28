@@ -754,8 +754,19 @@ const StyledFilesList = styled.div`
     border-bottom: 1px solid #eceef1;
     align-items: center;
     display: grid;
+
     ${(props) =>
-      props.displayType === "aside"
+      props.noCheckBox
+        ? props.displayType === "aside"
+          ? css`
+              height: 56px;
+              grid-template-areas: "icon-name full-name full-name" "checked-button icon-name owner-name owner-name";
+            `
+          : css`
+              height: 36px;
+              grid-template-areas: "icon-name full-name owner-name";
+            `
+        : props.displayType === "aside"
         ? css`
             height: 56px;
             grid-template-areas: "checked-button icon-name full-name full-name" "checked-button icon-name owner-name owner-name";
@@ -764,7 +775,8 @@ const StyledFilesList = styled.div`
             height: 36px;
             grid-template-areas: "checked-button icon-name full-name owner-name";
           `}
-    grid-template-columns: 22px 32px 1fr;
+    grid-template-columns: ${(props) =>
+      props.noCheckBox ? "32px 1fr" : "22px 32px 1fr"}
   }
 `;
 export {

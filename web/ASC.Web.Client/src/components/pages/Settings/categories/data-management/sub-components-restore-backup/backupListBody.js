@@ -14,7 +14,6 @@ const BackupListBody = ({
   onIconClick,
   onRestoreClick,
   t,
-  iconUrl,
 }) => {
   const Item = ({ index, style }) => {
     const file = filesList[index];
@@ -29,7 +28,7 @@ const BackupListBody = ({
           index={index}
           fileName={modifyFileName}
           fileExst={fileExst}
-          iconUrl={iconUrl}
+          noCheckBox
         >
           <div data-index={index} className="backup-list_options">
             <Link
