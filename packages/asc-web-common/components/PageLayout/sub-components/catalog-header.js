@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Heading from '@appserver/components/heading';
-import Backdrop from '@appserver/components/backdrop';
 import { mobile, tablet } from '@appserver/components/utils/device';
 import MenuIcon from '@appserver/components/public/static/images/menu.react.svg';
 
