@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
+import { Provider as MobxProvider, inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 
 import stores from "../../../store/index";
@@ -14,6 +14,10 @@ class SelectFileInputBody extends React.PureComponent {
     this.state = {
       fileName: "",
     };
+  }
+
+  componentDidMount() {
+    this.props.setFirstLoad(false);
   }
 
   onSetFileName = (fileName) => {
@@ -98,11 +102,18 @@ SelectFileInputBody.defaultProps = {
   zIndex: 310,
 };
 
+const SelectFileInputBodyWrapper = inject(({ filesStore }) => {
+  const { setFirstLoad } = filesStore;
+  return {
+    setFirstLoad,
+  };
+})(observer(SelectFileInputBody));
+
 class SelectFileInput extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <SelectFileInputBody {...this.props} />
+        <SelectFileInputBodyWrapper {...this.props} />
       </MobxProvider>
     );
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
+import { Provider as MobxProvider, inject, observer } from "mobx-react";
 
 import PropTypes from "prop-types";
 
@@ -22,7 +22,7 @@ class SelectFolderInputBody extends React.PureComponent {
     };
   }
   componentDidMount() {
-    const { folderPath } = this.props;
+    const { folderPath, setFirstLoad } = this.props;
 
     if (folderPath.length !== 0) {
       this.setState({
@@ -30,6 +30,7 @@ class SelectFolderInputBody extends React.PureComponent {
         fullFolderPathDefault: folderPath,
       });
     }
+    setFirstLoad(false);
   }
 
   componentDidUpdate(prevProps) {
@@ -158,6 +159,12 @@ SelectFolderInputBody.defaultProps = {
   folderPath: "",
 };
 
+const SelectFolderInputBodyWrapper = inject(({ filesStore }) => {
+  const { setFirstLoad } = filesStore;
+  return {
+    setFirstLoad,
+  };
+})(observer(SelectFolderInputBody));
 class SelectFolderInput extends React.Component {
   static setFullFolderPath = (foldersArray) => {
     path = "";
@@ -177,7 +184,7 @@ class SelectFolderInput extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <SelectFolderInputBody {...this.props} />
+        <SelectFolderInputBodyWrapper {...this.props} />
       </MobxProvider>
     );
   }
