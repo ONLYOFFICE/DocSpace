@@ -118,10 +118,9 @@ const StyledTile = styled.div`
     flex: 0 0 auto;
     margin-right: 4px;
     user-select: none;
-    margin-top: 3px;
 
-    height: 32px;
-    width: 32px;
+    height: 24px;
+    width: 24px;
   }
 
   :hover {
