@@ -893,7 +893,15 @@ class UploadDataStore {
       alert: false,
     });
 
-    getFolder(destFolderId).then((data) => {
+    let receivedFolder = destFolderId;
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      receivedFolder = this.selectedFolderStore.parentId;
+      updatedFolder = destFolderId;
+    }
+
+    getFolder(receivedFolder).then((data) => {
       let newTreeFolders = treeFolders;
       let path = data.pathParts.slice(0);
       let folders = data.folders;
@@ -902,14 +910,10 @@ class UploadDataStore {
 
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
         this.filesStore
-          .fetchFiles(
-            this.selectedFolderStore.id,
-            this.filesStore.filter,
-            true,
-            true
-          )
+          .fetchFiles(updatedFolder, this.filesStore.filter, true, true)
           .finally(() => {
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            this.dialogsStore.setIsFolderActions(false);
           });
       } else {
         setSecondaryProgressBarData({

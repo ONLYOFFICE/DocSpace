@@ -209,11 +209,20 @@ class SectionHeaderContent extends React.Component {
     toastr.success(t("Translations:LinkCopySuccess"));
   };
 
-  onMoveAction = () => this.props.setMoveToPanelVisible(true);
-  onCopyAction = () => this.props.setCopyPanelVisible(true);
+  onMoveAction = () => {
+    this.props.setIsFolderActions(true);
+    return this.props.setMoveToPanelVisible(true);
+  };
+  onCopyAction = () => {
+    this.props.setIsFolderActions(true);
+    return this.props.setCopyPanelVisible(true);
+  };
   downloadAction = () =>
     this.props
-      .downloadAction(this.props.t("Translations:ArchivingData"))
+      .downloadAction(
+        this.props.t("Translations:ArchivingData"),
+        this.props.currentFolderId
+      )
       .catch((err) => toastr.error(err));
 
   renameAction = () => console.log("renameAction click");
@@ -256,26 +265,26 @@ class SectionHeaderContent extends React.Component {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: false,
+        disabled: true,
       },
       { key: "separator-2", isSeparator: true },
       {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "rename",
@@ -419,7 +428,7 @@ class SectionHeaderContent extends React.Component {
                           getData={this.getContextOptionsPlus}
                           isDisabled={false}
                         />
-                        {!personal && (
+                        {personal && (
                           <ContextMenuButton
                             className="option-button"
                             directionX="right"
@@ -489,6 +498,7 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
+      setIsFolderActions,
     } = dialogsStore;
 
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
@@ -518,6 +528,7 @@ export default inject(
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setIsFolderActions,
       deleteAction,
       setDeleteDialogVisible,
       downloadAction,

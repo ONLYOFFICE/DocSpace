@@ -16,8 +16,10 @@ const OperationsPanelComponent = (props) => {
     visible,
     provider,
     selection,
+    isFolderActions,
     isRecycleBin,
     setDestFolderId,
+    setIsFolderActions,
     currentFolderId,
     operationsFolders,
     setCopyPanelVisible,
@@ -33,7 +35,13 @@ const OperationsPanelComponent = (props) => {
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
   const onClose = () => {
-    isCopy ? setCopyPanelVisible(false) : setMoveToPanelVisible(false);
+    if (isCopy) {
+      setCopyPanelVisible(false);
+      setIsFolderActions(false);
+    } else {
+      setMoveToPanelVisible(false);
+    }
+
     setExpandedPanelKeys(null);
   };
 
@@ -68,8 +76,8 @@ const OperationsPanelComponent = (props) => {
         ? selection.filter((x) => !x.providerKey)
         : selection;
 
-    const fileIds = [];
-    const folderIds = [];
+    let fileIds = [];
+    let folderIds = [];
 
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
@@ -79,6 +87,13 @@ const OperationsPanelComponent = (props) => {
       } else {
         folderIds.push(item.id);
       }
+    }
+
+    if (isFolderActions) {
+      fileIds = [];
+      folderIds = [];
+
+      folderIds.push(currentFolderId);
     }
 
     if (!folderIds.length && !fileIds.length) return;
@@ -152,10 +167,12 @@ export default inject(
     const {
       moveToPanelVisible,
       copyPanelVisible,
+      isFolderActions,
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setDestFolderId,
       setThirdPartyMoveDialogVisible,
+      setIsFolderActions,
     } = dialogsStore;
 
     const provider = selection.find((x) => x.providerKey);
@@ -171,10 +188,12 @@ export default inject(
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
       selection,
+      isFolderActions,
 
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setDestFolderId,
+      setIsFolderActions,
       setThirdPartyMoveDialogVisible,
       checkOperationConflict,
       setExpandedPanelKeys,
