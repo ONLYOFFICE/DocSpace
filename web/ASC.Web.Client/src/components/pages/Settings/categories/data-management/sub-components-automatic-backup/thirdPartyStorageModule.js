@@ -20,6 +20,7 @@ import SelectelStorage from "./selectelStorage";
 import AmazonStorage from "./amazonStorage";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
+import { ThirdPartyStorages } from "@appserver/common/constants";
 
 const StyledComponent = styled.div`
   .backup_combo {
@@ -762,7 +763,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
           className="backup_combo"
         />
 
-        {selectedId === "GoogleCloud" && !isLoading && (
+        {selectedId === ThirdPartyStorages.GoogleId && !isLoading && (
           <GoogleCloudStorage
             isLoadingData={isLoadingData}
             isLoading={isLoading}
@@ -781,7 +782,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
           />
         )}
 
-        {selectedId === "Rackspace" && !isLoading && (
+        {selectedId === ThirdPartyStorages.RackspaceId && !isLoading && (
           <RackspaceStorage
             isLoadingData={isLoadingData}
             isLoading={isLoading}
@@ -800,7 +801,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
           />
         )}
 
-        {selectedId === "Selectel" && !isLoading && (
+        {selectedId === ThirdPartyStorages.SelectelId && !isLoading && (
           <SelectelStorage
             isLoadingData={isLoadingData}
             isLoading={isLoading}
@@ -819,7 +820,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
           />
         )}
 
-        {selectedId === "S3" && !isLoading && (
+        {selectedId === ThirdPartyStorages.AmazonId && !isLoading && (
           <AmazonStorage
             isLoadingData={isLoadingData}
             isLoading={isLoading}
