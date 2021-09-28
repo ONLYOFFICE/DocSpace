@@ -130,6 +130,19 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     this.convertFormSettings(inputsNumber, formSettings);
   };
+
+  isInvalidForm = (formSettings) => {
+    for (let key in formSettings) {
+      const elem = formSettings[key];
+
+      if (!elem.trim()) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   render() {
     const { t, helpUrlCreatingBackup, isLoadingData, maxProgress } = this.props;
     const {
@@ -172,6 +185,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             maxProgress={maxProgress}
             selectedId={selectedId}
             onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
+            isInvalidForm={this.isInvalidForm}
           />
         )}
 
@@ -183,6 +197,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             maxProgress={maxProgress}
             selectedId={selectedId}
             onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
+            isInvalidForm={this.isInvalidForm}
           />
         )}
 
@@ -194,6 +209,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             maxProgress={maxProgress}
             selectedId={selectedId}
             onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
+            isInvalidForm={this.isInvalidForm}
           />
         )}
 
@@ -205,6 +221,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             maxProgress={maxProgress}
             selectedId={selectedId}
             onMakeCopyIntoStorage={this.onMakeCopyIntoStorage}
+            isInvalidForm={this.isInvalidForm}
           />
         )}
       </StyledComponent>

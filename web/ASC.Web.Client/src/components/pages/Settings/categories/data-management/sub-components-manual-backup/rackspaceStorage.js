@@ -40,27 +40,23 @@ class RackspaceStorage extends React.Component {
     this.setState({ [name]: value });
   };
 
-  isInvalidForm = () => {
-    const { private_container, public_container, region } = this.state;
-    if (private_container || public_container || region) return false;
-
-    this.setState({
-      isError: true,
-    });
-    return true;
-  };
-
   onMakeCopy = () => {
     const { private_container, public_container, region, isError } = this.state;
-    const { onMakeCopyIntoStorage } = this.props;
-    if (this.isInvalidForm()) return;
+    const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
+
+    const valuesArray = [private_container, public_container, region];
+
+    if (isInvalidForm(valuesArray)) {
+      this.setState({
+        isError: true,
+      });
+      return;
+    }
 
     isError &&
       this.setState({
         isError: false,
       });
-
-    const valuesArray = [private_container, public_container, region];
 
     onMakeCopyIntoStorage(valuesArray);
   };

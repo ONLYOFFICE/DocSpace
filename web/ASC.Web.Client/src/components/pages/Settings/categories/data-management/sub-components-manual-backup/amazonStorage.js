@@ -47,17 +47,6 @@ class AmazonStorage extends React.Component {
     this.setState({ [name]: value });
   };
 
-  isInvalidForm = () => {
-    const { bucket, region } = this.state;
-
-    if (bucket || region) return false;
-
-    this.setState({
-      isError: true,
-    });
-    return true;
-  };
-
   onMakeCopy = () => {
     const {
       bucket,
@@ -69,9 +58,14 @@ class AmazonStorage extends React.Component {
       isError,
     } = this.state;
 
-    const { onMakeCopyIntoStorage } = this.props;
+    const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
 
-    if (this.isInvalidForm()) return;
+    if (isInvalidForm([bucket, region])) {
+      this.setState({
+        isError: true,
+      });
+      return;
+    }
 
     isError &&
       this.setState({
@@ -114,6 +108,7 @@ class AmazonStorage extends React.Component {
           placeholder={this.defaultBucketPlaceholder || ""}
           tabIndex={1}
         />
+
         <TextInput
           name="region"
           className="backup_text-input"

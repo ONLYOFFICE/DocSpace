@@ -35,28 +35,23 @@ class SelectelStorage extends React.Component {
     this.setState({ [name]: value });
   };
 
-  isInvalidForm = () => {
-    const { private_container, public_container } = this.state;
-    if (private_container || public_container) return false;
-
-    this.setState({
-      isError: true,
-    });
-    return true;
-  };
-
   onMakeCopy = () => {
     const { private_container, public_container, isError } = this.state;
-    const { onMakeCopyIntoStorage } = this.props;
+    const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
 
-    if (this.isInvalidForm()) return;
+    const valuesArray = [private_container, public_container];
+
+    if (isInvalidForm(valuesArray)) {
+      this.setState({
+        isError: true,
+      });
+      return;
+    }
 
     isError &&
       this.setState({
         isError: false,
       });
-
-    const valuesArray = [private_container, public_container];
 
     onMakeCopyIntoStorage(valuesArray);
   };

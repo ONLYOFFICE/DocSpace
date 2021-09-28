@@ -44,15 +44,21 @@ class GoogleCloudStorage extends React.Component {
 
   onMakeCopy = () => {
     const { bucket, isError } = this.state;
-    const { onMakeCopyIntoStorage } = this.props;
-    if (this.isInvalidForm()) return;
+    const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
+
+    const valuesArray = [bucket];
+
+    if (isInvalidForm(valuesArray)) {
+      this.setState({
+        isError: true,
+      });
+      return;
+    }
 
     isError &&
       this.setState({
         isError: false,
       });
-
-    const valuesArray = [bucket];
 
     onMakeCopyIntoStorage(valuesArray);
   };
