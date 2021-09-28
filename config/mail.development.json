@@ -57,7 +57,7 @@
       "IsAttachmentsGroupOperationsAvailable": true
     },
     "Cleaner": {
-      "TimerWaitMinutes": 2,
+      "TimerWaitMinutes": 60,
       "MaxTasksAtOnce": 1,
       "TenantCacheDays": 1,
       "TenantOverdueDays": 30,
@@ -66,8 +66,8 @@
       "DeleteDiscStorageFolders": true
     },
     "Watchdog": {
-      "TasksTimeoutInMinutes": 1,
-      "TimerIntervalInMinutes": 1
+      "TasksTimeoutInMinutes": 6,
+      "TimerIntervalInMinutes": 6
     }
   }
 }
