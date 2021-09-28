@@ -552,10 +552,10 @@
     <ROW MsiServiceConfigFailureActions="__16" Name="[ServiceName_OnlyofficeWebApi]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfigFailureActions="__17" Name="[ServiceName_OnlyofficeWebStudio]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Web.Studio.exe"/>
     <ROW MsiServiceConfigFailureActions="__18" Name="[ServiceName_OnlyofficeProxy]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="OnlyofficeProxy.exe"/>
-    <ROW MsiServiceConfigFailureActions="__19" Name="[ServiceName_Apache_ZooKeeper]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="zookeeper.exe"/>
+    <ROW MsiServiceConfigFailureActions="__19" Name="[ServiceName_Apache_ZooKeeper]" Event="1" ResetPeriod="1" Actions="1" DelayActions="0" Component_="zookeeper.exe"/>
     <ROW MsiServiceConfigFailureActions="__2" Name="[ServiceName_OnlyofficeUrlShortenerService]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.UrlShortener.Svc.exe"/>
     <ROW MsiServiceConfigFailureActions="__20" Name="[ServiceName_OnlyofficeBackupService]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Data.Backup.exe"/>
-    <ROW MsiServiceConfigFailureActions="__21" Name="[ServiceName_Apache_Kafka]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="kafka.exe"/>
+    <ROW MsiServiceConfigFailureActions="__21" Name="[ServiceName_Apache_Kafka]" Event="1" ResetPeriod="1" Actions="1" DelayActions="0" Component_="kafka.exe"/>
     <ROW MsiServiceConfigFailureActions="__3" Name="[ServiceName_OnlyofficeCalendarServer]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Calendar.exe"/>
     <ROW MsiServiceConfigFailureActions="__4" Name="[ServiceName_OnlyofficeCrmServer]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.CRM.exe"/>
     <ROW MsiServiceConfigFailureActions="__5" Name="[ServiceName_OnlyofficeFileServer]" Event="1" ResetPeriod="1" Actions="1" DelayActions="1" Component_="ASC.Files.exe"/>
