@@ -469,14 +469,12 @@ namespace ASC.Mail.Core.Dao
             if (!mailboxes.Any())
                 return new List<int>();
 
-            foreach (var mbox in mailboxes)
-            {
-                mbox.IsProcessed = false;
-            }
+            MailDbContext.Database.ExecuteSqlRaw(
+                "UPDATE mail_mailbox SET is_processed = 0 " +
+                "WHERE is_processed = 1 AND date_checked IS NOT NULL AND {0} - date_checked > {1}",
+                DateTime.UtcNow, timeoutInMinutes);
 
-            var result = MailDbContext.SaveChanges();
-
-            return mbList.Select(mb => (int)mb.Id).ToList(); ;
+            return mbList.Select(mb => (int)mb.Id).ToList();
         }
 
         public bool CanAccessTo(IMailboxExp exp)
