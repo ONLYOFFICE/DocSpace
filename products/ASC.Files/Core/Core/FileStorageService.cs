@@ -1383,13 +1383,13 @@ namespace ASC.Web.Files.Services.WCFService
 
         public (List<object>, List<object>) MoveOrCopyFilesCheck<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
         {
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(foldersId);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(filesId);
+
             var checkedFiles = new List<object>();
             var checkedFolders = new List<object>();
 
-            var (filesInts, folderInts) = MoveOrCopyFilesCheck(
-                FileOperationsManager.GetIntIds(filesId),
-                FileOperationsManager.GetIntIds(foldersId),
-                destFolderId);
+            var (filesInts, folderInts) = MoveOrCopyFilesCheck(fileIntIds, folderIntIds, destFolderId);
 
             foreach (var i in filesInts)
             {
@@ -1401,10 +1401,7 @@ namespace ASC.Web.Files.Services.WCFService
                 checkedFolders.Add(i);
             }
 
-            var (filesStrings, folderStrings) = MoveOrCopyFilesCheck(
-                FileOperationsManager.GetStringIds(filesId),
-                FileOperationsManager.GetStringIds(foldersId),
-                destFolderId);
+            var (filesStrings, folderStrings) = MoveOrCopyFilesCheck(fileStringIds, folderStringIds, destFolderId);
 
             foreach (var i in filesStrings)
             {
@@ -2291,7 +2288,9 @@ namespace ASC.Web.Files.Services.WCFService
                     BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 
-                foreach (var f in FileOperationsManager.GetIntIds(fileIds))
+                var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
+
+                foreach (var f in fileIntIds)
                 {
                     req.Files.Add(f);
                 }

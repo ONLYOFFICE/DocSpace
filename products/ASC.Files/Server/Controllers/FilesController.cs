@@ -1045,9 +1045,12 @@ namespace ASC.Api.Documents
 
         public IEnumerable<FileEntryWrapper> ChangeOwner(ChangeOwnerModel model)
         {
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+
             var result = new List<FileEntry>();
-            result.AddRange(FileStorageServiceInt.ChangeOwner(FileOperationsManager.GetIntIds(model.FolderIds), FileOperationsManager.GetIntIds(model.FileIds), model.UserId));
-            result.AddRange(FileStorageService.ChangeOwner(FileOperationsManager.GetStringIds(model.FolderIds), FileOperationsManager.GetStringIds(model.FileIds), model.UserId));
+            result.AddRange(FileStorageServiceInt.ChangeOwner(folderIntIds, fileIntIds, model.UserId));
+            result.AddRange(FileStorageService.ChangeOwner(folderStringIds, fileStringIds, model.UserId));
             return result.Select(FilesControllerHelperInt.GetFileEntryWrapper).ToList();
         }
 
@@ -1544,9 +1547,12 @@ namespace ASC.Api.Documents
         [Create("share")]
         public IEnumerable<FileShareWrapper> GetSecurityInfoFromBody([FromBody] BaseBatchModel<JsonElement> model)
         {
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+
             var result = new List<FileShareWrapper>();
-            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(FileOperationsManager.GetIntIds(model.FileIds), FileOperationsManager.GetIntIds(model.FolderIds)));
-            result.AddRange(FilesControllerHelperString.GetSecurityInfo(FileOperationsManager.GetStringIds(model.FileIds), FileOperationsManager.GetStringIds(model.FolderIds)));
+            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(fileIntIds, folderIntIds));
+            result.AddRange(FilesControllerHelperString.GetSecurityInfo(fileStringIds, folderStringIds));
             return result;
         }
 
@@ -1554,9 +1560,12 @@ namespace ASC.Api.Documents
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm] BaseBatchModel<JsonElement> model)
         {
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+
             var result = new List<FileShareWrapper>();
-            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(FileOperationsManager.GetIntIds(model.FileIds), FileOperationsManager.GetIntIds(model.FolderIds)));
-            result.AddRange(FilesControllerHelperString.GetSecurityInfo(FileOperationsManager.GetStringIds(model.FileIds), FileOperationsManager.GetStringIds(model.FolderIds)));
+            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(fileIntIds, folderIntIds));
+            result.AddRange(FilesControllerHelperString.GetSecurityInfo(fileStringIds, folderStringIds));
             return result;
         }
 
@@ -1614,9 +1623,12 @@ namespace ASC.Api.Documents
 
         public IEnumerable<FileShareWrapper> SetSecurityInfo(SecurityInfoModel model)
         {
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+
             var result = new List<FileShareWrapper>();
-            result.AddRange(FilesControllerHelperInt.SetSecurityInfo(FileOperationsManager.GetIntIds(model.FileIds), FileOperationsManager.GetIntIds(model.FolderIds), model.Share, model.Notify, model.SharingMessage));
-            result.AddRange(FilesControllerHelperString.SetSecurityInfo(FileOperationsManager.GetStringIds(model.FileIds), FileOperationsManager.GetStringIds(model.FolderIds), model.Share, model.Notify, model.SharingMessage));
+            result.AddRange(FilesControllerHelperInt.SetSecurityInfo(fileIntIds, folderIntIds, model.Share, model.Notify, model.SharingMessage));
+            result.AddRange(FilesControllerHelperString.SetSecurityInfo(fileStringIds, folderStringIds, model.Share, model.Notify, model.SharingMessage));
             return result;
         }
 
@@ -1670,8 +1682,11 @@ namespace ASC.Api.Documents
         [Delete("share")]
         public bool RemoveSecurityInfo(BaseBatchModel<JsonElement> model)
         {
-            FilesControllerHelperInt.RemoveSecurityInfo(FileOperationsManager.GetIntIds(model.FileIds), FileOperationsManager.GetIntIds(model.FolderIds));
-            FilesControllerHelperString.RemoveSecurityInfo(FileOperationsManager.GetStringIds(model.FileIds), FileOperationsManager.GetStringIds(model.FolderIds));
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+
+            FilesControllerHelperInt.RemoveSecurityInfo(fileIntIds, folderIntIds);
+            FilesControllerHelperString.RemoveSecurityInfo(fileStringIds, folderStringIds);
             return true;
         }
 
@@ -1870,8 +1885,11 @@ namespace ASC.Api.Documents
 
         private bool AddFavorites(BaseBatchModel<JsonElement> model)
         {
-            FileStorageServiceInt.AddToFavorites(FileOperationsManager.GetIntIds(model.FolderIds), FileOperationsManager.GetIntIds(model.FileIds));
-            FileStorageService.AddToFavorites(FileOperationsManager.GetStringIds(model.FolderIds), FileOperationsManager.GetStringIds(model.FileIds));
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+
+            FileStorageServiceInt.AddToFavorites(folderIntIds, fileIntIds);
+            FileStorageService.AddToFavorites(folderStringIds, fileStringIds);
             return true;
         }
 
@@ -1898,8 +1916,11 @@ namespace ASC.Api.Documents
         [Delete("favorites")]
         public bool DeleteFavorites(BaseBatchModel<JsonElement> model)
         {
-            FileStorageServiceInt.DeleteFavorites(FileOperationsManager.GetIntIds(model.FolderIds), FileOperationsManager.GetIntIds(model.FileIds));
-            FileStorageService.DeleteFavorites(FileOperationsManager.GetStringIds(model.FolderIds), FileOperationsManager.GetStringIds(model.FileIds));
+            var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
+            var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+
+            FileStorageServiceInt.DeleteFavorites(folderIntIds, fileIntIds);
+            FileStorageService.DeleteFavorites(folderStringIds, fileStringIds);
             return true;
         }
 
