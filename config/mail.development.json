@@ -1,0 +1,73 @@
+{
+  "mail": {
+    "Aggregator": {
+      "ApiPort": "",
+      "ApiHost": "",
+      "ApiVirtualDirPrefix": "",
+      "TcpTimeout": 30000,
+      "UseDump": false,
+      "QuotaRest": 26214400,
+      "ChunkOfPop3Uidl": 100,
+      "ShowMailEngineLogs": false,
+      "TaskCheckState": "00:00:30",
+      "TaskLifetime": "00:05:00",
+      "MaxTasksAtOnce": 10,
+      "MaxMessagesPerSession": 25,
+      "InactiveMailboxesRatio": 25,
+      "TenantOverdueDays": 10,
+      "TenantMinQuotaBalance": 26214400,
+      "ProtocolLogPath": "",
+      "CollectStatistics": true,
+      "MailDaemonEmail": "mail-daemon@onlyoffice.com",
+      "RecalculateFoldersTimeout": 99999,
+      "RemoveDomainTimeout": 99999,
+      "RemoveMailboxTimeout": 99999,
+      "EnableSignalr": false,
+      "AggregateModeValue": "all",
+      "MaxMessageSizeLimit": 67108864
+    },
+    "Defines": {
+      "AuthErrorWarningTimeout": "00:05:00",
+      "AuthErrorDisableMailboxTimeout": "00:30:00",
+      "CheckTimerInterval": "00:00:10",
+      "ActiveInterval": "00:01:30",
+      "WorkOnUsersOnly": "",
+      "OverdueAccountDelay": "00:10:00",
+      "QuotaEndedDelay": "00:10:00",
+      "TenantCachingPeriod": "1:00:00:00",
+      "QueueLifetime": "00:00:30",
+      "SaveOriginalMessage": false,
+      "SslCertificatesErrorsPermit": false,
+      "DefaultApiSchema": "http",
+      "DefaultServerLoginDelay": 30,
+      "AutoreplyDaysInterval": 1,
+      "WebHub": "",
+      "WebHubInternal": "http://localhost:9899",
+      "MailDaemonEmail": "mail-daemon@onlyoffice.com",
+      "RecalculateFoldersTimeout": 99999,
+      "RemoveDomainTimeout": 99999,
+      "RemoveMailboxTimeout": 99999,
+      "ServerDomainMailboxPerUserLimit": 2,
+      "ServerDnsSpfRecordValue": "v=spf1 +mx ~all",
+      "ServerDnsMxRecordPriority": 0,
+      "ServerDnsDkimSelector": "dkim",
+      "ServerDnsDomainCheckPrefix": "onlyoffice-domain",
+      "ServerDnsDefaultTtl": 300,
+      "MaximumMessageBodySize": 524288,
+      "IsAttachmentsGroupOperationsAvailable": true
+    },
+    "Cleaner": {
+      "TimerWaitMinutes": 2,
+      "MaxTasksAtOnce": 1,
+      "TenantCacheDays": 1,
+      "TenantOverdueDays": 30,
+      "GarbageOverdueDays": 30,
+      "MaxFilesToRemoveAtOnce": 100,
+      "DeleteDiscStorageFolders": true
+    },
+    "Watchdog": {
+      "TasksTimeoutInMinutes": 1,
+      "TimerIntervalInMinutes": 1
+    }
+  }
+}
