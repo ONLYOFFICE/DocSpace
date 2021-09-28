@@ -5,9 +5,9 @@ import { withTranslation } from "react-i18next";
 import Button from "@appserver/components/button";
 import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
-import ThirdPartyModule from "./sub-components-manual-backup/thirdPartyModule";
-import DocumentsModule from "./sub-components-manual-backup/documentsModule";
-import ThirdPartyStorageModule from "./sub-components-manual-backup/thirdPartyStorageModule";
+import ThirdPartyModule from "./sub-components-manual-backup/ThirdPartyModule";
+import DocumentsModule from "./sub-components-manual-backup/DocumentsModule";
+import ThirdPartyStorageModule from "./sub-components-manual-backup/ThirdPartyStorageModule";
 
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
