@@ -422,11 +422,11 @@ namespace ASC.Files.Helpers
 
             if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
             {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetInt32());
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetInt32());
             }
             else
             {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetString());
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetString());
             }
 
             var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
@@ -438,21 +438,21 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
         {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
                 .Select(FileOperationWraperHelper.Get)
                 .ToList();
         }
 
         public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
         {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
                 .Select(FileOperationWraperHelper.Get)
                 .ToList();
         }
 
         public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<JsonElement> model)
         {
-            return FileStorageService.MarkAsRead(model.FolderIds, model.FileIds).Select(FileOperationWraperHelper.Get).ToList();
+            return FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()).Select(FileOperationWraperHelper.Get).ToList();
         }
 
         public IEnumerable<FileOperationWraper> TerminateTasks()

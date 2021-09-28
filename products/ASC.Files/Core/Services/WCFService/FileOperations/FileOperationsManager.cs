@@ -109,10 +109,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public List<FileOperationResult> MarkAsRead(Guid userId, Tenant tenant, IEnumerable<JsonElement> folderIds, IEnumerable<JsonElement> fileIds)
+        public List<FileOperationResult> MarkAsRead(Guid userId, Tenant tenant, List<JsonElement> folderIds, List<JsonElement> fileIds)
         {
-            var op1 = new FileMarkAsReadOperation<int>(ServiceProvider, new FileMarkAsReadOperationData<int>(folderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), fileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenant));
-            var op2 = new FileMarkAsReadOperation<string>(ServiceProvider, new FileMarkAsReadOperationData<string>(folderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), fileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenant));
+            var op1 = new FileMarkAsReadOperation<int>(ServiceProvider, new FileMarkAsReadOperationData<int>(GetIntIds(folderIds), GetIntIds(fileIds), tenant));
+            var op2 = new FileMarkAsReadOperation<string>(ServiceProvider, new FileMarkAsReadOperationData<string>(GetStringIds(folderIds), GetStringIds(fileIds), tenant));
             var op = new FileMarkAsReadOperation(ServiceProvider, op2, op1);
             return QueueTask(userId, op);
         }
@@ -128,17 +128,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new InvalidOperationException(FilesCommonResource.ErrorMassage_ManyDownloads);
             }
 
-            var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folders.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), tenant, headers));
-            var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folders.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), tenant, headers));
+            var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(GetIntIds(folders), GetIntIds(files), tenant, headers));
+            var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(GetStringIds(folders), GetStringIds(files), tenant, headers));
             var op = new FileDownloadOperation(ServiceProvider, TempStream, op2, op1);
 
             return QueueTask(userId, op);
         }
 
-        public List<FileOperationResult> MoveOrCopy(Guid userId, Tenant tenant, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, IDictionary<string, StringValues> headers)
+        public List<FileOperationResult> MoveOrCopy(Guid userId, Tenant tenant, List<JsonElement> folders, List<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, IDictionary<string, StringValues> headers)
         {
-            var op1 = new FileMoveCopyOperation<int>(ServiceProvider, new FileMoveCopyOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenant, destFolderId, copy, resolveType, holdResult, headers));
-            var op2 = new FileMoveCopyOperation<string>(ServiceProvider, new FileMoveCopyOperationData<string>(folders.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), files.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenant, destFolderId, copy, resolveType, holdResult, headers));
+            var op1 = new FileMoveCopyOperation<int>(ServiceProvider, new FileMoveCopyOperationData<int>(GetIntIds(folders), GetIntIds(files), tenant, destFolderId, copy, resolveType, holdResult, headers));
+            var op2 = new FileMoveCopyOperation<string>(ServiceProvider, new FileMoveCopyOperationData<string>(GetStringIds(folders), GetStringIds(files), tenant, destFolderId, copy, resolveType, holdResult, headers));
             var op = new FileMoveCopyOperation(ServiceProvider, op2, op1);
 
             return QueueTask(userId, op);
@@ -150,10 +150,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return QueueTask(userId, op);
         }
 
-        public List<FileOperationResult> Delete(Guid userId, Tenant tenant, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
+        public List<FileOperationResult> Delete(Guid userId, Tenant tenant, List<JsonElement> folders, List<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
-            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenant, holdResult, ignoreException, immediately, headers));
-            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folders.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), files.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenant, holdResult, ignoreException, immediately, headers));
+            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(GetIntIds(folders), GetIntIds(files), tenant, holdResult, ignoreException, immediately, headers));
+            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(GetStringIds(folders), GetStringIds(files), tenant, holdResult, ignoreException, immediately, headers));
             var op = new FileDeleteOperation(ServiceProvider, op2, op1);
 
             return QueueTask(userId, op);
@@ -170,6 +170,50 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             tasks.QueueTask(op.RunJob, op.GetDistributedTask());
             return GetOperationResults(userId);
+        }
+
+        public static List<int> GetIntIds(IEnumerable<JsonElement> items)
+        {
+            var result = items.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList();
+
+            if (result.Count() == items.Count()) return result;
+
+            foreach (var r in GetStringIds(items))
+            {
+                if (int.TryParse(r, out var i))
+                {
+                    result.Add(i);
+                }
+            }
+
+            return result;
+        }
+
+        public static List<string> GetStringIds(IEnumerable<JsonElement> items)
+        {
+            return items.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList();
+        }
+
+        public static Dictionary<int, string> GetIntIds(Dictionary<JsonElement, string> items)
+        {
+            var result = items.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value);
+
+            if (result.Count == items.Count) return result;
+
+            foreach (var r in GetStringIds(items))
+            {
+                if (int.TryParse(r.Key, out var i))
+                {
+                    result.Add(i, r.Value);
+                }
+            }
+
+            return result;
+        }
+
+        public static Dictionary<string, string> GetStringIds(Dictionary<JsonElement, string> items)
+        {
+            return items.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value);
         }
     }
 

@@ -1242,7 +1242,7 @@ class FilesStore {
     }
 
     const hasFiles = cbMenu.some(
-      (elem) => elem !== "all" && elem !== FilterType.DocumentsOnly
+      (elem) => elem !== "all" && elem !== FilterType.FoldersOnly
     );
 
     if (hasFiles) cbMenu.push(FilterType.FilesOnly);

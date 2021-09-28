@@ -45,6 +45,7 @@ const SnackBarWrapper = (props) => {
       btnText: t("Load"),
       onAction: () => props.onButtonClick(),
       opacity: 1,
+      countDownTime: 5 * 60 * 1000,
     };
 
     return <SnackBar {...barConfig} />;
@@ -55,8 +56,6 @@ const SnackBarWrapper = (props) => {
 const registerSW = () => {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     const wb = new Workbox(`/sw.js`);
-
-    //TODO: watch https://developers.google.com/web/tools/workbox/guides/advanced-recipes and https://github.com/webmaxru/prog-web-news/blob/5ff94b45c9d317409c21c0fbb7d76e92f064471b/src/app/app-shell/app-shell.component.ts
 
     const showSkipWaitingPrompt = (event) => {
       console.log(
@@ -75,11 +74,6 @@ const registerSW = () => {
       }
 
       try {
-        if (localStorage.getItem("sw_need_activation")) {
-          refresh();
-          return;
-        }
-
         const snackbarNode = document.createElement("div");
         snackbarNode.id = "snackbar";
         document.body.appendChild(snackbarNode);
@@ -101,6 +95,13 @@ const registerSW = () => {
       }
     };
 
+    window.addEventListener("beforeunload", async () => {
+      if (localStorage.getItem("sw_need_activation")) {
+        localStorage.removeItem("sw_need_activation");
+        wb.messageSkipWaiting();
+      }
+    });
+
     // Add an event listener to detect when the registered
     // service worker has installed but is waiting to activate.
     wb.addEventListener("waiting", showSkipWaitingPrompt);
@@ -108,6 +109,16 @@ const registerSW = () => {
     wb.register()
       .then((reg) => {
         console.log("Successful service worker registration", reg);
+
+        if (!window.swUpdateTimer) {
+          console.log("SW timer checks for updates every hour");
+          window.swUpdateTimer = setInterval(() => {
+            console.log("SW update timer check");
+            reg.update().catch((e) => {
+              console.error("SW update timer FAILED", e);
+            });
+          }, 60 * 60 * 1000);
+        }
       })
       .catch((err) => console.error("Service worker registration failed", err));
   } else {

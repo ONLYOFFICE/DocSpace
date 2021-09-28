@@ -109,7 +109,8 @@ class MediaViewer extends React.Component {
           _this.hammer.on("swiperight", _this.prevMedia);
         }
       } catch (ex) {
-        console.error("MediaViewer updateHammer", ex);
+        //console.error("MediaViewer updateHammer", ex);
+        this.hammer = null;
       }
     }, 500);
   }
@@ -122,7 +123,8 @@ class MediaViewer extends React.Component {
       onEmptyPlaylistError,
     } = this.props;
 
-    const { playlistPos } = this.state;
+    const { playlistPos, fileUrl } = this.state;
+    const src = playlist[playlistPos]?.src;
 
     if (visible !== prevProps.visible) {
       const newPlaylistPos =
@@ -134,6 +136,10 @@ class MediaViewer extends React.Component {
         visible: visible,
         playlistPos: newPlaylistPos,
       });
+    }
+
+    if (src && src !== fileUrl && playlistPos === prevState.playlistPos) {
+      this.setState({ fileUrl: src });
     }
 
     if (
@@ -190,28 +196,9 @@ class MediaViewer extends React.Component {
     if (ext === ".tiff" || ext === ".tif") {
       this.getTiffDataURL(src);
     }
-    var _this = this;
-    setTimeout(function () {
-      if (document.getElementsByClassName("react-viewer-canvas").length > 0) {
-        _this.hammer = Hammer(
-          document.getElementsByClassName("react-viewer-canvas")[0]
-        );
-        var pinch = new Hammer.Pinch();
-        _this.hammer.add([pinch]);
-        _this.hammer.on("pinchout", _this.handleZoomOut);
-        _this.hammer.on("pinchin", _this.handleZoomIn);
-        _this.hammer.on("pinchend", _this.handleZoomEnd);
-        _this.hammer.on("doubletap", _this.doubleTap);
-      } else {
-        _this.hammer = Hammer(
-          document.getElementsByClassName("videoViewerOverlay")[0]
-        );
-      }
-      if (_this.hammer) {
-        _this.hammer.on("swipeleft", _this.nextMedia);
-        _this.hammer.on("swiperight", _this.prevMedia);
-      }
-    }, 500);
+
+    this.updateHammer();
+
     document.addEventListener("keydown", this.onKeydown, false);
     document.addEventListener("keyup", this.onKeyup, false);
   }
@@ -227,6 +214,7 @@ class MediaViewer extends React.Component {
     }
     document.removeEventListener("keydown", this.onKeydown, false);
     document.removeEventListener("keyup", this.onKeyup, false);
+    this.onClose();
   }
 
   mapSupplied = {

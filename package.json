@@ -5,6 +5,7 @@
   "workspaces": [
     "packages/asc-web-components",
     "packages/asc-web-common",
+    "packages/browserslist-config-asc",
     "web/ASC.Web.Login",
     "web/ASC.Web.Client",
     "web/ASC.Web.Editor",
@@ -16,15 +17,15 @@
     "products/ASC.Calendar/Client"
   ],
   "scripts": {
-    "build": "lerna run build --parallel --ignore @appserver/common --ignore @appserver/components",
+    "build": "lerna run build --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
     "build:personal": "lerna run build --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor}",
     "bump": "lerna version --no-push --no-git-tag-version",
     "clean": "lerna run clean --parallel",
-    "deploy": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --ignore @appserver/common --ignore @appserver/components && shx cp -r public build/deploy && yarn sw-build",
+    "deploy": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc && shx cp -r public build/deploy && yarn sw-build",
     "deploy:personal": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor} && shx cp -r public build/deploy && yarn sw-build:personal",
-    "serve": "lerna run serve --parallel  --ignore @appserver/common --ignore @appserver/components",
-    "start": "lerna run start --parallel --ignore @appserver/common --ignore @appserver/components",
-    "start-prod": "lerna run start-prod --parallel --ignore @appserver/common --ignore @appserver/components",
+    "serve": "lerna run serve --parallel  --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
+    "start": "lerna run start --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
+    "start-prod": "lerna run start-prod --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
     "storybook": "yarn workspace @appserver/components storybook",
     "storybook-build": "yarn workspace @appserver/components run storybook-build",
     "sw-build": "workbox injectManifest config/workbox-config.js && yarn sw-modify && yarn sw-minimize",
@@ -46,10 +47,24 @@
     "wipe": "shx rm -rf node_modules yarn.lock web/**/node_modules products/**/node_modules"
   },
   "devDependencies": {
+    "browserslist": "^4.17.1",
     "lerna": "^4.0.0",
     "replace-in-files-cli": "^1.0.0",
     "shx": "^0.3.3",
     "terser": "^5.8.0",
     "workbox-cli": "^6.3.0"
-  }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {}
 }
