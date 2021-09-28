@@ -42,7 +42,7 @@ const PureSettingsItems = ({
 
     setSelectedNode(['common']);
     if (!expandedSetting || expandedSetting[0] !== 'settings') setExpandSettingsTree(`settings`);
-    if ((isTablet() || isMobile()) && showText) toggleShowText();
+    if (isMobile() && showText) toggleShowText();
     return history.push(combineUrl(AppServerConfig.proxyURL, homepage, '/settings/common'));
 
     // if (selectedTreeNode[0] !== path) {
