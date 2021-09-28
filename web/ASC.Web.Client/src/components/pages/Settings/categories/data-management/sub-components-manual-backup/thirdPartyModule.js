@@ -1,24 +1,18 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import Button from "@appserver/components/button";
-
-import { startBackup } from "@appserver/common/api/portal";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
-import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import { getFromSessionStorage } from "../../../utils";
 
-let selectedManualBackupFromSessionStorage = "";
 let selectedFolderPathFromSessionStorage = "";
 let selectedFolderFromSessionStorage = "";
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
-    selectedManualBackupFromSessionStorage = getFromSessionStorage(
-      "selectedManualStorageType"
-    );
+
     selectedFolderPathFromSessionStorage = getFromSessionStorage(
       "selectedFolderPath"
     );

@@ -7,7 +7,6 @@ import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import ComboBox from "@appserver/components/combobox";
 import { getBackupStorage } from "@appserver/common/api/settings";
-import { startBackup } from "@appserver/common/api/portal";
 
 import GoogleCloudStorage from "./googleCloudStorage";
 import RackspaceStorage from "./rackspaceStorage";

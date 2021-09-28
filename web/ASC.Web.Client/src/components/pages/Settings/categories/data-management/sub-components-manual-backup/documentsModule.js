@@ -1,21 +1,14 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import Button from "@appserver/components/button";
-import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
-import { startBackup } from "@appserver/common/api/portal";
+import { getFromSessionStorage } from "../../../utils";
 
-let selectedManualBackupFromSessionStorage = "";
 let selectedFolderPathFromSessionStorage = "";
 let selectedFolderFromSessionStorage = "";
 class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
-
-    selectedManualBackupFromSessionStorage = getFromSessionStorage(
-      "selectedManualStorageType"
-    );
 
     selectedFolderPathFromSessionStorage = getFromSessionStorage(
       "selectedFolderPath"
