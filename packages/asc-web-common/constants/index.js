@@ -142,6 +142,13 @@ export const LoaderStyle = {
   animate: true,
 };
 
+export const ThirdPartyStorages = Object.freeze({
+  GoogleId: "GoogleCloud",
+  RackspaceId: "Rackspace",
+  SelectelId: "Selectel",
+  AmazonId: "S3",
+});
+
 import config from "./AppServerConfig";
 
 export const AppServerConfig = config;
