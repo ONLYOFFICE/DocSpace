@@ -101,6 +101,10 @@ const StyledTile = styled.div`
     opacity: ${(props) => (props.checked ? 1 : 0)};
     flex: 0 0 16px;
     margin-right: 4px;
+
+    @media ${tablet} {
+      opacity: 1;
+    }
   }
 
   .file-checkbox {
