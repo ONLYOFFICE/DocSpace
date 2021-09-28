@@ -208,11 +208,10 @@ namespace ASC.Core.Data
                 .FirstOrDefault();
         }
 
-        public IDictionary<Guid, Group> GetGroups(int tenant, DateTime from)
+        public IEnumerable<Group> GetGroups(int tenant, DateTime from)
         {
             return GetGroupQuery(tenant, from)
-                .Select(FromDbGroupToGroup)
-                .ToDictionary(r => r.Id, r => r);
+                .Select(FromDbGroupToGroup);
         }
 
         public UserInfo GetUser(int tenant, Guid id)
@@ -321,6 +320,19 @@ namespace ASC.Core.Data
             SetUserPasswordHash(h2.Tenant, userId, passwordHash);
         }
 
+        public UserGroupRef GetUserGroupRef(int tenant, Guid groupId, UserGroupRefType refType)
+        {
+            IQueryable<UserGroup> q = UserDbContext.UserGroups;
+
+            if (tenant != Tenant.DEFAULT_TENANT)
+            {
+                q = q.Where(r => r.Tenant == tenant);
+            }
+
+            return q.Where(r => r.GroupId == groupId && r.RefType == refType && !r.Removed)
+                .Select(FromUserGroupToUserGroupRef).SingleOrDefault();
+        }
+
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
             IQueryable<UserGroup> q = UserDbContext.UserGroups;
@@ -360,12 +372,10 @@ namespace ASC.Core.Data
             return photo ?? new byte[0];
         }
 
-        public IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from)
+        public IEnumerable<UserInfo> GetUsers(int tenant, DateTime from)
         {
             return GetUserQuery(tenant, from)
-                .Select(FromUserToUserInfo)
-                .AsEnumerable()
-                .ToDictionary(r => r.ID, r => r);
+                .Select(FromUserToUserInfo);
         }
 
         public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
