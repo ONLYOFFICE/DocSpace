@@ -126,11 +126,11 @@ const StyledCatalogItemSibling = styled.div`
   height: 100%;
 
   background-color: ${(props) =>
-    props.isActive && props.theme.catalogItem.sibling.hover.backgroundColor};
+    props.isActive && props.theme.catalogItem.sibling.active.background};
 
   &:hover {
     background-color: ${(props) =>
-      props.theme.catalogItem.sibling.hover.backgroundColor};
+      props.theme.catalogItem.sibling.hover.background};
   }
 `;
 

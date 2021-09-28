@@ -1637,8 +1637,11 @@ const Base = {
       },
     },
     sibling: {
+      active: {
+        background: lightGrayishStrongBlue,
+      },
       hover: {
-        backgroundColor: lightGrayishStrongBlue,
+        background: grayLightMid,
       },
     },
     img: {
