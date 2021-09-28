@@ -1229,17 +1229,10 @@ namespace ASC.Api.Documents
         /// <param name="folderIds">Folder ID list</param>
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
-        [Create("fileops/move")]
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromBody([FromBody] BatchModel batchModel)
+        [Read("fileops/move")]
+        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck()
         {
-            return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
-        }
-
-        [Create("fileops/move")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromForm([FromForm] BatchModel batchModel)
-        {
-            return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
+            return FilesControllerHelperString.MoveOrCopyBatchCheck(BatchModel.FromQuery(HttpContext));
         }
 
         /// <summary>
