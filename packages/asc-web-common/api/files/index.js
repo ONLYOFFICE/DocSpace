@@ -490,8 +490,6 @@ export function checkFileConflicts(destFolderId, folderIds, fileIds) {
   paramsString +=
     fileIds.length > 0 ? `&fileIds=${fileIds.join("&fileIds=")}` : "";
 
-  debugger;
-
   return request({
     method: "get",
     url: `/files/fileops/move.json?destFolderId=${destFolderId}${paramsString}`,
