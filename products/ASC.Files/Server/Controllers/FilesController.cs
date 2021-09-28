@@ -422,15 +422,7 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@my/upload")]
-        public List<FileWrapper<int>> UploadFileToMyFromBody([FromBody] UploadModel uploadModel)
-        {
-            uploadModel.CreateNewIfExist = false;
-            return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderMy, uploadModel);
-        }
-
-        [Create("@my/upload")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public List<FileWrapper<int>> UploadFileToMyFromForm([FromForm] UploadModel uploadModel)
+        public object UploadFileToMyFromForm([FromForm] UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
             return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderMy, uploadModel);
@@ -455,15 +447,7 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@common/upload")]
-        public List<FileWrapper<int>> UploadFileToCommonFromBody([FromBody] UploadModel uploadModel)
-        {
-            uploadModel.CreateNewIfExist = false;
-            return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderCommon, uploadModel);
-        }
-
-        [Create("@common/upload")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public List<FileWrapper<int>> UploadFileToCommonFromForm([FromForm] UploadModel uploadModel)
+        public object UploadFileToCommonFromForm([FromForm] UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
             return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderCommon, uploadModel);
@@ -491,29 +475,14 @@ namespace ASC.Api.Documents
         /// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <returns>Uploaded file</returns>
-        [Create("{folderId}/upload")]
-        public List<FileWrapper<string>> UploadFileFromBody(string folderId, [FromBody] UploadModel uploadModel)
+        [Create("{folderId}/upload", order: int.MaxValue)]
+        public object UploadFileFromForm(string folderId, [FromForm] UploadModel uploadModel)
         {
             return FilesControllerHelperString.UploadFile(folderId, uploadModel);
         }
 
-        [Create("{folderId}/upload")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public List<FileWrapper<string>> UploadFileFromForm(string folderId, [FromForm] UploadModel uploadModel)
-        {
-            return FilesControllerHelperString.UploadFile(folderId, uploadModel);
-        }
-
-
-        [Create("{folderId:int}/upload")]
-        public List<FileWrapper<int>> UploadFileFromBody(int folderId, [FromBody] UploadModel uploadModel)
-        {
-            return FilesControllerHelperInt.UploadFile(folderId, uploadModel);
-        }
-
-        [Create("{folderId:int}/upload")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public List<FileWrapper<int>> UploadFileFromForm(int folderId, [FromForm] UploadModel uploadModel)
+        [Create("{folderId:int}/upload", order: int.MaxValue - 1)]
+        public object UploadFileFromForm(int folderId, [FromForm] UploadModel uploadModel)
         {
             return FilesControllerHelperInt.UploadFile(folderId, uploadModel);
         }
@@ -1260,17 +1229,10 @@ namespace ASC.Api.Documents
         /// <param name="folderIds">Folder ID list</param>
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
-        [Create("fileops/move")]
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromBody([FromBody] BatchModel batchModel)
+        [Read("fileops/move")]
+        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck()
         {
-            return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
-        }
-
-        [Create("fileops/move")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromForm([FromForm] BatchModel batchModel)
-        {
-            return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
+            return FilesControllerHelperString.MoveOrCopyBatchCheck(BatchModel.FromQuery(HttpContext));
         }
 
         /// <summary>
