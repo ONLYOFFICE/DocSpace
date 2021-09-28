@@ -104,7 +104,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     });
   };
 
-  fillInputValueArray = (inputNumber, valuesArray) => {
+  setFormSettings = (inputNumber, valuesArray) => {
     const { selectedId, availableStorage } = this.state;
     const { onMakeCopy } = this.props;
 
@@ -130,7 +130,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const formSettings = [...valuesArray];
     const inputsNumber = formSettings.length;
 
-    this.fillInputValueArray(inputsNumber, formSettings);
+    this.setFormSettings(inputsNumber, formSettings);
   };
   render() {
     const { t, helpUrlCreatingBackup, isLoadingData, maxProgress } = this.props;
