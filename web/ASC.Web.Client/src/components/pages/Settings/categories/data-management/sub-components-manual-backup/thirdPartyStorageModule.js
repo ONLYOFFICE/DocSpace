@@ -8,10 +8,10 @@ import Link from "@appserver/components/link";
 import ComboBox from "@appserver/components/combobox";
 import { getBackupStorage } from "@appserver/common/api/settings";
 
-import GoogleCloudStorage from "./googleCloudStorage";
-import RackspaceStorage from "./rackspaceStorage";
-import SelectelStorage from "./selectelStorage";
-import AmazonStorage from "./amazonStorage";
+import GoogleCloudStorage from "./storages/googleCloudStorage";
+import RackspaceStorage from "./storages/rackspaceStorage";
+import SelectelStorage from "./storages/selectelStorage";
+import AmazonStorage from "./storages/amazonStorage";
 import { getOptions } from "../utils/getOptions";
 import { saveToSessionStorage } from "../../../utils";
 import { ThirdPartyStorages } from "@appserver/common/constants";

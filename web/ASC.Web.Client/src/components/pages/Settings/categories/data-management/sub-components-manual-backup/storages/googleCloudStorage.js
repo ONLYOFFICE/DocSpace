@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
-import { saveToSessionStorage } from "../../../utils";
+import { saveToSessionStorage } from "../../../../utils";
 
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
