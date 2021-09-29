@@ -63,6 +63,7 @@ namespace ASC.Files.Helpers
         private DocumentServiceTrackerHelper DocumentServiceTracker { get; }
         private SettingsManager SettingsManager { get; }
         private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
         private ILog Logger { get; set; }
 
         /// <summary>
@@ -89,7 +90,8 @@ namespace ASC.Files.Helpers
             DocumentServiceTrackerHelper documentServiceTracker,
             IOptionsMonitor<ILog> optionMonitor,
             SettingsManager settingsManager,
-            EncryptionKeyPairHelper encryptionKeyPairHelper)
+            EncryptionKeyPairHelper encryptionKeyPairHelper,
+            IHttpContextAccessor httpContextAccessor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -110,6 +112,7 @@ namespace ASC.Files.Helpers
             DocumentServiceTracker = documentServiceTracker;
             SettingsManager = settingsManager;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
+            HttpContextAccessor = httpContextAccessor;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -118,27 +121,32 @@ namespace ASC.Files.Helpers
             return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType, withSubFolders).NotFoundIfNull();
         }
 
-        public List<FileWrapper<T>> UploadFile(T folderId, UploadModel uploadModel)
+        public object UploadFile(T folderId, UploadModel uploadModel)
         {
             if (uploadModel.StoreOriginalFileFlag.HasValue)
             {
                 FilesSettingsHelper.StoreOriginalFiles = uploadModel.StoreOriginalFileFlag.Value;
             }
 
-            if (uploadModel.Files != null && uploadModel.Files.Any())
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files == null || !files.Any())
             {
-                if (uploadModel.Files.Count() == 1)
+                files = uploadModel.Files;
+            }
+
+            if (files != null && files.Any())
+            {
+                if (files.Count() == 1)
                 {
                     //Only one file. return it
-                    var postedFile = uploadModel.Files.First();
-                    return new List<FileWrapper<T>>
-                    {
-                        InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
-                    };
+                    var postedFile = files.First();
+                    return InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus);
                 }
+
                 //For case with multiple files
                 return uploadModel.Files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)).ToList();
             }
+
             if (uploadModel.File != null)
             {
                 var fileName = "file" + MimeMapping.GetExtention(uploadModel.ContentType.MediaType);
@@ -149,9 +157,10 @@ namespace ASC.Files.Helpers
 
                 return new List<FileWrapper<T>>
                 {
-                    InsertFile(folderId, uploadModel.File, fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
+                    InsertFile(folderId, uploadModel.File.OpenReadStream(), fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
                 };
             }
+
             throw new InvalidOperationException("No input files");
         }
 
