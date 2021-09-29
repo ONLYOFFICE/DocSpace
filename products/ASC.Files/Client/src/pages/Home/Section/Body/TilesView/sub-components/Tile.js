@@ -111,6 +111,11 @@ const StyledTile = styled.div`
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
     margin-right: 4px;
+    margin-top: 3px;
+
+    @media ${tablet} {
+      display: flex;
+    }
   }
 
   .file-icon {
@@ -121,6 +126,10 @@ const StyledTile = styled.div`
 
     height: 24px;
     width: 24px;
+
+    @media ${tablet} {
+      display: none;
+    }
   }
 
   :hover {
