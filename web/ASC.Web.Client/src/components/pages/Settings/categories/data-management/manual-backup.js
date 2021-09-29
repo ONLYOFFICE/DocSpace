@@ -22,7 +22,7 @@ let selectedFolderFromSessionStorage = "";
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
-    this.manualBackup = true;
+
     selectedManualBackupFromSessionStorage = getFromSessionStorage(
       "selectedManualStorageType"
     );
