@@ -80,7 +80,7 @@ const FilesTile = (props) => {
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           dragging={dragging && isDragging}
-          //onClick={onMouseClick}
+          onClick={onMouseClick}
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}

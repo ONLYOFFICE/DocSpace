@@ -115,6 +115,7 @@ const StyledTile = styled.div`
 
     @media ${tablet} {
       display: flex;
+      margin-top: 2px;
     }
   }
 
