@@ -11,6 +11,9 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5001"
   },
+  "browserslist": [
+    "extends @appserver/browserslist-config-asc"
+  ],
   "dependencies": {
     "firebase": "^8.10.0",
     "react-string-format": "^0.1.4"

@@ -11,6 +11,9 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5017"
   },
+  "browserslist": [
+    "extends @appserver/browserslist-config-asc"
+  ],
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/plugin-proposal-class-properties": "^7.14.5",

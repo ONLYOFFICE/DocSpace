@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Backdrop from '@appserver/components/backdrop';
-import { isTablet, isDesktop, size } from '@appserver/components/utils/device';
+import { size, isDesktop, isTablet } from '@appserver/components/utils/device';
 import { Provider } from '@appserver/components/utils/context';
-import { isMobile } from 'react-device-detect';
+import { isMobile, isFirefox, isMobileOnly } from 'react-device-detect';
 import Article from './sub-components/article';
 import SubArticleHeader from './sub-components/article-header';
 import SubArticleMainButton from './sub-components/article-main-button';
@@ -26,7 +26,6 @@ import SubCatalogBackdrop from './sub-components/catalog-backdrop';
 import SubCatalogHeader from './sub-components/catalog-header';
 import SubCatalogMainButton from './sub-components/catalog-main-button';
 import SubCatalogBody from './sub-components/catalog-body';
-
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {
     z-index: 200;
@@ -143,9 +142,11 @@ class PageLayout extends React.Component {
   orientationChangeHandler = () => {
     const isValueExist = !!this.props.isArticlePinned;
     const isEnoughWidth = screen.availWidth > size.smallTablet;
+    const isPortrait = isFirefox && isMobileOnly && screen.orientation.type === 'portrait-primary';
 
-    if (!isEnoughWidth && isValueExist) {
+    if ((!isEnoughWidth && isValueExist) || isPortrait) {
       this.backdropClick();
+      return;
     }
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
