@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import CatalogItem from '@appserver/components/catalog-item';
 import { inject, observer } from 'mobx-react';
@@ -8,7 +7,7 @@ import { combineUrl } from '@appserver/common/utils';
 import config from '../../../../package.json';
 import { AppServerConfig } from '@appserver/common/constants';
 import withLoader from '../../../HOCs/withLoader';
-import { isTablet, isMobile } from '@appserver/components/utils/device';
+import { isMobile } from '@appserver/components/utils/device';
 
 const PureSettingsItems = ({
   match,
@@ -20,7 +19,6 @@ const PureSettingsItems = ({
   setIsLoading,
   t,
   showText,
-  homepage,
   toggleShowText,
 }) => {
   const { setting } = match.params;
@@ -41,16 +39,9 @@ const PureSettingsItems = ({
     setSelectedFolder(null);
 
     setSelectedNode(['common']);
-    if (!expandedSetting || expandedSetting[0] !== 'settings') setExpandSettingsTree(`settings`);
+    setExpandSettingsTree(['common']);
     if (isMobile() && showText) toggleShowText();
-    return history.push(combineUrl(AppServerConfig.proxyURL, homepage, '/settings/common'));
-
-    // if (selectedTreeNode[0] !== path) {
-    //   setSelectedNode(section);
-    //   return history.push(
-    //     combineUrl(AppServerConfig.proxyURL, config.homepage, `/settings/${path}`),
-    //   );
-    // }
+    history.push(combineUrl(AppServerConfig.proxyURL, config.homepage, '/settings/common'));
   };
 
   const isActive = () => {
@@ -78,10 +69,9 @@ export default inject(
   ({ auth, filesStore, settingsStore, treeFoldersStore, selectedFolderStore }) => {
     const { setIsLoading } = filesStore;
     const { setSelectedFolder } = selectedFolderStore;
-    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+    const { setSelectedNode } = treeFoldersStore;
     const { expandedSetting, setExpandSettingsTree } = settingsStore;
     return {
-      selectedTreeNode,
       expandedSetting,
       setIsLoading,
       setSelectedFolder,
@@ -89,7 +79,6 @@ export default inject(
       setExpandSettingsTree,
       showText: auth.settingsStore.showText,
       toggleShowText: auth.settingsStore.toggleShowText,
-      homepage: config.homepage,
     };
   },
 )(observer(SettingsItems));
