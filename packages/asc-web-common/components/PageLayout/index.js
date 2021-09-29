@@ -309,7 +309,7 @@ class PageLayout extends React.Component {
     const renderPageLayout = () => {
       return (
         <>
-          {showCatalog && isCatalogAvailable && (
+          {isCatalogAvailable && (
             <Catalog showText={showText}>
               {isCatalogHeaderAvailable && (
                 <>
@@ -333,10 +333,10 @@ class PageLayout extends React.Component {
               )}
             </Catalog>
           )}
-          {!showCatalog && isBackdropAvailable && (
+          {isBackdropAvailable && (
             <Backdrop zIndex={400} visible={isBackdropVisible} onClick={this.backdropClick} />
           )}
-          {!showCatalog && isArticleAvailable && (
+          {isArticleAvailable && (
             <Article visible={isArticleVisible} pinned={isArticlePinned} firstLoad={firstLoad}>
               {isArticleHeaderAvailable && (
                 <SubArticleHeader>
@@ -460,7 +460,7 @@ class PageLayout extends React.Component {
                       <></>
                     )}
 
-                    {!showCatalog && isArticleAvailable && (
+                    {isArticleAvailable && (
                       <SectionToggler visible={!isArticleVisible} onClick={this.showArticle} />
                     )}
                   </Section>

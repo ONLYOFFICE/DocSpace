@@ -288,25 +288,37 @@ class PureHome extends React.Component {
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
           dragging={dragging}>
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent onTreeDrop={this.onDrop} />
-          </PageLayout.ArticleBody>
+          {!showCatalog && (
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
+          )}
+          {!showCatalog && (
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+          )}
+          {!showCatalog && (
+            <PageLayout.ArticleBody>
+              <ArticleBodyContent onTreeDrop={this.onDrop} />
+            </PageLayout.ArticleBody>
+          )}
 
-          <PageLayout.CatalogHeader>
-            <CatalogHeaderContent />
-          </PageLayout.CatalogHeader>
-          <PageLayout.CatalogMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.CatalogMainButton>
-          <PageLayout.CatalogBody>
-            <CatalogBodyContent />
-          </PageLayout.CatalogBody>
+          {showCatalog && (
+            <PageLayout.CatalogHeader>
+              <CatalogHeaderContent />
+            </PageLayout.CatalogHeader>
+          )}
+          {showCatalog && (
+            <PageLayout.CatalogMainButton>
+              <CatalogMainButtonContent />
+            </PageLayout.CatalogMainButton>
+          )}
+          {showCatalog && (
+            <PageLayout.CatalogBody>
+              <CatalogBodyContent />
+            </PageLayout.CatalogBody>
+          )}
 
           <PageLayout.SectionHeader>
             <SectionHeaderContent />
