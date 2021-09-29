@@ -530,7 +530,10 @@ namespace ASC.Api.Documents
         [Create("{folderId}/insert", order: int.MaxValue)]
         public FileWrapper<string> InsertFile(string folderId, [FromForm] InsertFileModel model)
         {
-            return FilesControllerHelperString.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            using (model = InsertFileModel.FromQuery(HttpContext, model))
+            {
+                return FilesControllerHelperString.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            }
         }
 
         [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
@@ -541,7 +544,10 @@ namespace ASC.Api.Documents
 
         private FileWrapper<int> InsertFile(int folderId, InsertFileModel model)
         {
-            return FilesControllerHelperInt.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            using (model = InsertFileModel.FromQuery(HttpContext, model))
+            {
+                return FilesControllerHelperInt.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            }
         }
 
         /// <summary>
@@ -556,13 +562,13 @@ namespace ASC.Api.Documents
         [Update("{fileId}/update")]
         public FileWrapper<string> UpdateFileStreamFromForm(string fileId, [FromForm] FileStreamModel model)
         {
-            return FilesControllerHelperString.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperString.UpdateFileStream(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
         public FileWrapper<int> UpdateFileStreamFromForm(int fileId, [FromForm] FileStreamModel model)
         {
-            return FilesControllerHelperInt.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperInt.UpdateFileStream(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
 
@@ -580,14 +586,14 @@ namespace ASC.Api.Documents
         [Update("file/{fileId}/saveediting")]
         public FileWrapper<string> SaveEditingFromForm(string fileId, [FromForm] SaveEditingModel model)
         {
-            using var stream = model.Stream.OpenReadStream();
+            using var stream = FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream();
             return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         [Update("file/{fileId:int}/saveediting")]
         public FileWrapper<int> SaveEditingFromForm(int fileId, [FromForm] SaveEditingModel model)
         {
-            using var stream = model.Stream.OpenReadStream();
+            using var stream = FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream();
             return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 

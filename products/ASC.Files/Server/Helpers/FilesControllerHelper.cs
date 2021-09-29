@@ -18,6 +18,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.FederatedLogin.Helpers;
 using ASC.Files.Core;
+using ASC.Files.Core.Model;
 using ASC.Files.Model;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -680,6 +681,17 @@ namespace ASC.Files.Helpers
             }
 
             return wrapper;
+        }
+
+        internal IFormFile GetFileFromRequest(IModelWithFile model)
+        {
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files != null && files.Any())
+            {
+                return files.First();
+            }
+
+            return model.File;
         }
     }
 }
