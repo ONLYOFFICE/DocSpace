@@ -714,7 +714,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
       helpUrlCreatingBackup,
       isLoadingData,
       isCopyingToLocal,
-      isManualBackup,
       maxProgress,
       weekOptions,
       periodOptions,
@@ -768,7 +767,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
             isLoadingData={isLoadingData}
             isLoading={isLoading}
             availableStorage={availableStorage}
-            isManualBackup={isManualBackup}
             isCopyingToLocal={isCopyingToLocal}
             maxProgress={maxProgress}
             isChanged={isChanged}
@@ -787,7 +785,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
             isLoadingData={isLoadingData}
             isLoading={isLoading}
             availableStorage={availableStorage}
-            isManualBackup={isManualBackup}
             isCopyingToLocal={isCopyingToLocal}
             maxProgress={maxProgress}
             isChanged={isChanged}
@@ -806,7 +803,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
             isLoadingData={isLoadingData}
             isLoading={isLoading}
             availableStorage={availableStorage}
-            isManualBackup={isManualBackup}
             isCopyingToLocal={isCopyingToLocal}
             maxProgress={maxProgress}
             isChanged={isChanged}
@@ -825,7 +821,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
             isLoadingData={isLoadingData}
             isLoading={isLoading}
             availableStorage={availableStorage}
-            isManualBackup={isManualBackup}
             isCopyingToLocal={isCopyingToLocal}
             maxProgress={maxProgress}
             isChanged={isChanged}

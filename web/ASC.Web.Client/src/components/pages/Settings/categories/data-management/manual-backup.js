@@ -17,8 +17,7 @@ import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 
 let selectedManualBackupFromSessionStorage = "";
-let selectedFolderPathFromSessionStorage = "";
-let selectedFolderFromSessionStorage = "";
+
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -26,11 +25,6 @@ class ManualBackup extends React.Component {
     selectedManualBackupFromSessionStorage = getFromSessionStorage(
       "selectedManualStorageType"
     );
-
-    selectedFolderPathFromSessionStorage = getFromSessionStorage(
-      "selectedFolderPath"
-    );
-    selectedFolderFromSessionStorage = getFromSessionStorage("selectedFolder");
 
     const checkedDocuments = selectedManualBackupFromSessionStorage
       ? selectedManualBackupFromSessionStorage === "documents"
@@ -536,7 +530,6 @@ class ManualBackup extends React.Component {
             <ThirdPartyStorageModule
               maxProgress={maxProgress}
               isLoadingData={isLoadingData}
-              isManualBackup
               onMakeCopy={this.onMakeCopy}
             />
           )}
