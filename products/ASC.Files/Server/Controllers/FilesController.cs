@@ -1096,13 +1096,13 @@ namespace ASC.Api.Documents
         /// <short>File information</short>
         /// <category>Files</category>
         /// <returns>File info</returns>
-        [Read("file/{fileId}", DisableFormat = true)]
+        [Read("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
         public FileWrapper<string> GetFileInfo(string fileId, int version = -1)
         {
             return FilesControllerHelperString.GetFileInfo(fileId, version);
         }
 
-        [Read("file/{fileId:int}")]
+        [Read("file/{fileId:int}", order: int.MaxValue - 1)]
         public FileWrapper<int> GetFileInfo(int fileId, int version = -1)
         {
             return FilesControllerHelperInt.GetFileInfo(fileId, version);
