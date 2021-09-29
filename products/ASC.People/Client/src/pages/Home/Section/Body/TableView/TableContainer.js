@@ -5,13 +5,14 @@ import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import EmptyScreen from "../EmptyScreen";
+import { isMobile } from "react-device-detect";
 
 const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
   const ref = useRef(null);
 
   useEffect(() => {
     if (!sectionWidth) return;
-    if (sectionWidth < 1025) {
+    if (sectionWidth < 1025 || isMobile) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");

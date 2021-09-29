@@ -1,5 +1,5 @@
 importScripts(
-  "https://storage.googleapis.com/workbox-cdn/releases/6.2.3/workbox-sw.js"
+  "https://storage.googleapis.com/workbox-cdn/releases/6.3.0/workbox-sw.js"
 );
 
 workbox.setConfig({
@@ -20,8 +20,15 @@ clientsClaim();
 
 // PRECACHING
 
+const prefix = "appserver";
+
 // Setting custom cache name
-setCacheNameDetails({ precache: "wb6-precache", runtime: "wb6-runtime" });
+setCacheNameDetails({
+  prefix: prefix,
+  precache: "precache",
+  runtime: "runtime",
+  suffix: "v1.0.0",
+});
 
 // We inject manifest here using "workbox-build" in workbox-inject.js
 const precachRoutes = self.__WB_MANIFEST;
@@ -33,7 +40,7 @@ cleanupOutdatedCaches();
 
 // STATIC RESOURCES
 
-googleFontsCache({ cachePrefix: "wb6-gfonts" });
+googleFontsCache({ cachePrefix: `${prefix}-gfonts` });
 
 // TRANSLATIONS
 
@@ -42,13 +49,13 @@ registerRoute(
   // Use cache but update in the background.
   new StaleWhileRevalidate({
     // Use a custom cache name.
-    cacheName: "wb6-content-translation",
+    cacheName: `${prefix}-translation`,
   })
 );
 
 // CONTENT
 
-imageCache({ cacheName: "wb6-content-images", maxEntries: 60 });
+imageCache({ cacheName: `${prefix}-images`, maxEntries: 60 });
 
 // APP SHELL UPDATE FLOW
 

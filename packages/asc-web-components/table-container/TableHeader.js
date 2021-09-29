@@ -12,7 +12,7 @@ import TableHeaderCell from "./TableHeaderCell";
 import { size } from "../utils/device";
 import TableGroupMenu from "./TableGroupMenu";
 
-const minColumnSize = 90;
+const minColumnSize = 150;
 const settingsSize = 24;
 
 class TableHeader extends React.Component {
@@ -204,17 +204,18 @@ class TableHeader extends React.Component {
       sectionWidth,
     } = this.props;
 
-    const minSize = size.tablet + 24;
-
     let activeColumnIndex = null;
 
     const container = containerRef.current
       ? containerRef.current
       : document.getElementById("table-container");
 
+    const minSize = size.tablet;
+    const containerMargin = 25;
+
     if (
       !container ||
-      +container.clientWidth <= minSize ||
+      +container.clientWidth + containerMargin <= minSize ||
       sectionWidth <= minSize
     )
       return;
