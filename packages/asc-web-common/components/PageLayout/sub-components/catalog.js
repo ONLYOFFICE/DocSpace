@@ -53,15 +53,15 @@ const Catalog = (props) => {
   };
 
   const hideText = React.useCallback((event) => {
-    if (isMobile) {
-      event.preventDefault;
-      setShowText(false);
-    }
+    event.preventDefault;
+    setShowText(false);
   }, []);
 
   React.useEffect(() => {
-    window.addEventListener('popstate', hideText);
-    return () => window.removeEventListener('popstate', hideText);
+    if (isMobile) {
+      window.addEventListener('popstate', hideText);
+      return () => window.removeEventListener('popstate', hideText);
+    }
   }, [hideText]);
 
   return (
