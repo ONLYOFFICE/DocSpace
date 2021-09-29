@@ -6,6 +6,7 @@
 	<startmode>Automatic</startmode>
 	<onfailure action="restart" delay="10 sec"/>
 	<executable>{WindowsVolume}Apache\kafka\bin\windows\kafka-server-save-start.bat</executable>
+	<workingdirectory>{WindowsVolume}Apache\kafka</workingdirectory>
 	<log mode="roll-by-size">
   		<sizeThreshold>10240</sizeThreshold>
   		<keepFiles>8</keepFiles>
