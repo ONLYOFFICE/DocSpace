@@ -389,12 +389,9 @@
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
-    <ROW Name="ReplaceWindowsVolume" TxtUpdateSet="YourFile.txt" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceSlashes" TxtUpdateSet="YourFile.txt" FindPattern="/" ReplacePattern="\\" Options="2" Order="1" FileEncoding="-1"/>
     <ROW Name="ReplaceWindowsVolume" TxtUpdateSet="bat" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
-    <ROW Key="YourFile.txt" Component="APPDIR" FileName="*.properties" Directory="config_Dir" Options="25"/>
     <ROW Key="bat" Component="APPDIR" FileName="*.bat" Directory="windows_Dir" Options="25"/>
   </COMPONENT>
 </DOCUMENT>
