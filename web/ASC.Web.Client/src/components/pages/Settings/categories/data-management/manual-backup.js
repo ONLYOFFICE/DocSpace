@@ -82,6 +82,47 @@ class ManualBackup extends React.Component {
       saveToSessionStorage("selectedStorage", ""); //for  third party storages module
   };
 
+  checkDownloadingProgress = async () => {
+    try {
+      let response;
+      [this.commonThirdPartyList, response] = await Promise.all([
+        SelectFolderDialog.getCommonThirdPartyList(),
+        getBackupProgress(),
+      ]);
+
+      if (response && !response.error) {
+        response.link &&
+          response.link.slice(0, 1) === "/" &&
+          this.setState({
+            link: response.link,
+          });
+
+        this.setState({
+          downloadingProgress: response.progress,
+        });
+
+        if (response.progress !== 100) {
+          this._isMounted &&
+            this.setState({
+              isLoadingData: true,
+            });
+
+          this.timerId = setInterval(() => this.getProgress(), 1000);
+        } else {
+          this.clearSessionStorage();
+        }
+      } else {
+        this.clearSessionStorage();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    this.setState({
+      isLoading: false,
+    });
+  };
+
   componentDidMount() {
     this._isMounted = true;
 
@@ -90,41 +131,7 @@ class ManualBackup extends React.Component {
         isLoading: true,
       },
       function () {
-        SelectFolderDialog.getCommonThirdPartyList()
-          .then(
-            (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
-          )
-          .then(() => getBackupProgress())
-          .then((response) => {
-            if (response) {
-              if (!response.error) {
-                response.link &&
-                  response.link.slice(0, 1) === "/" &&
-                  this.setState({
-                    link: response.link,
-                  });
-                this.setState({
-                  downloadingProgress: response.progress,
-                });
-                if (response.progress !== 100) {
-                  this._isMounted &&
-                    this.setState({
-                      isLoadingData: true,
-                    });
-                  this.timerId = setInterval(() => this.getProgress(), 1000);
-                } else {
-                  this.clearSessionStorage();
-                }
-              } else {
-                this.clearSessionStorage();
-              }
-            }
-          })
-          .finally(() =>
-            this.setState({
-              isLoading: false,
-            })
-          );
+        this.checkDownloadingProgress();
       }
     );
   }
