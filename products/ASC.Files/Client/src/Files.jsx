@@ -94,7 +94,7 @@ class FilesContent extends React.Component {
       isLoaded,
     } = this.props;
     //console.log("componentDidUpdate: ", this.props);
-    if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
+    if (isAuthenticated && !this.isDesktopInit && isLoaded) {
       this.isDesktopInit = true;
       regDesktop(
         user,
