@@ -9,6 +9,7 @@ import Loaders from '@appserver/common/components/Loaders';
 
 const Items = ({ data, showText, selectedTreeNode, onClick, onBadgeClick }) => {
   const isActive = (item) => {
+    if (selectedTreeNode[0] === '@my' && item.key === '0-0') return true;
     if (selectedTreeNode.length > 0) return `${item.id}` === selectedTreeNode[0];
   };
   const getEndOfBlock = (item) => {
