@@ -231,8 +231,8 @@ class PageLayout extends React.Component {
       isArticlePinned,
       isDesktop,
       showText,
+      setShowText,
       toggleShowText,
-      showCatalog,
     } = this.props;
     let catalogHeaderContent = null;
     let catalogMainButtonContent = null;
@@ -310,7 +310,7 @@ class PageLayout extends React.Component {
       return (
         <>
           {isCatalogAvailable && (
-            <Catalog showText={showText}>
+            <Catalog showText={showText} setShowText={setShowText}>
               {isCatalogHeaderAvailable && (
                 <>
                   <SubCatalogBackdrop showText={showText} onClick={toggleShowText} />
