@@ -18,7 +18,15 @@ import { withTranslation } from 'react-i18next';
 import { setDocumentTitle } from '../../helpers/utils';
 import { inject, observer } from 'mobx-react';
 
-const PureSettings = ({ match, t, isLoading, isLoadedSettingsTree, setFirstLoad, tReady }) => {
+const PureSettings = ({
+  match,
+  t,
+  isLoading,
+  isLoadedSettingsTree,
+  setFirstLoad,
+  tReady,
+  showCatalog,
+}) => {
   const [title, setTitle] = useState('');
   const { setting } = match.params;
 
@@ -60,27 +68,39 @@ const PureSettings = ({ match, t, isLoading, isLoadedSettingsTree, setFirstLoad,
   return (
     <>
       <PageLayout>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
+        {!showCatalog && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
 
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent isDisabled={true} />
-        </PageLayout.ArticleMainButton>
+        {!showCatalog && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent isDisabled={true} />
+          </PageLayout.ArticleMainButton>
+        )}
 
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
+        {!showCatalog && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
-        <PageLayout.CatalogHeader>
-          <CatalogHeaderContent />
-        </PageLayout.CatalogHeader>
-        <PageLayout.CatalogMainButton>
-          <CatalogMainButtonContent />
-        </PageLayout.CatalogMainButton>
-        <PageLayout.CatalogBody>
-          <CatalogBodyContent />
-        </PageLayout.CatalogBody>
+        {showCatalog && (
+          <PageLayout.CatalogHeader>
+            <CatalogHeaderContent />
+          </PageLayout.CatalogHeader>
+        )}
+        {showCatalog && (
+          <PageLayout.CatalogMainButton>
+            <CatalogMainButtonContent />
+          </PageLayout.CatalogMainButton>
+        )}
+        {showCatalog && (
+          <PageLayout.CatalogBody>
+            <CatalogBodyContent />
+          </PageLayout.CatalogBody>
+        )}
 
         <PageLayout.SectionHeader>
           {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
@@ -108,7 +128,7 @@ const PureSettings = ({ match, t, isLoading, isLoadedSettingsTree, setFirstLoad,
 
 const Settings = withTranslation(['Settings', 'Common'])(PureSettings);
 
-export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
+export default inject(({ auth, filesStore, settingsStore, treeFoldersStore }) => {
   const { setFirstLoad, isLoading } = filesStore;
   const { setSelectedNode } = treeFoldersStore;
   const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
@@ -120,5 +140,7 @@ export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
     setFirstLoad,
     setSelectedNode,
     getFilesSettings,
+
+    showCatalog: auth.settingsStore.showCatalog,
   };
 })(withRouter(observer(Settings)));
