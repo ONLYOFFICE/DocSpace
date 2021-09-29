@@ -13,9 +13,8 @@ import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import { getOptions } from "../utils/getOptions";
-import { saveToSessionStorage } from "../../../utils";
 import { ThirdPartyStorages } from "@appserver/common/constants";
-
+import { getFromSessionStorage } from "../../../utils";
 const StyledComponent = styled.div`
   .backup_combo {
     margin-top: 16px;
@@ -33,11 +32,18 @@ const StyledComponent = styled.div`
   }
 `;
 
+let selectedStorageFromSessionStorage = "";
+let selectedIdFromSessionStorage = "";
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.isSetDefaultIdStorage = false;
+
+    selectedStorageFromSessionStorage = getFromSessionStorage(
+      "selectedStorage"
+    );
+    selectedIdFromSessionStorage = getFromSessionStorage("selectedStorageId");
 
     this.state = {
       availableOptions: [],
@@ -76,8 +82,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
               availableOptions: options,
               availableStorage: availableStorage,
 
-              selectedStorage: selectedStorage,
-              selectedId: selectedId,
+              selectedStorage:
+                selectedStorageFromSessionStorage || selectedStorage,
+              selectedId: selectedIdFromSessionStorage || selectedId,
             });
           })
           .finally(() => {
@@ -103,28 +110,35 @@ class ThirdPartyStorageModule extends React.PureComponent {
   };
 
   convertFormSettings = (inputNumber, valuesArray) => {
-    const { selectedId, availableStorage } = this.state;
+    const { selectedId, availableStorage, selectedStorage } = this.state;
     const { onMakeCopy } = this.props;
 
     let obj = {};
     let inputValueArray = [];
 
-    const selectedStorage = availableStorage[selectedId];
+    const availableStorageParams = availableStorage[selectedId];
 
     for (let i = 1; i <= inputNumber; i++) {
       obj = {
-        key: selectedStorage.properties[i - 1].name,
+        key: availableStorageParams.properties[i - 1].name,
         value: valuesArray[i - 1],
       };
       inputValueArray.push(obj);
     }
 
-    onMakeCopy(null, null, "5", "module", selectedId, inputValueArray);
+    onMakeCopy(
+      null,
+      "thirdPartyStorage",
+      "5",
+      "module",
+      selectedId,
+      inputValueArray,
+      selectedId,
+      selectedStorage
+    );
   };
 
   onMakeCopyIntoStorage = (valuesArray) => {
-    saveToSessionStorage("selectedManualStorageType", "thirdPartyStorage");
-
     const formSettings = [...valuesArray];
     const inputsNumber = formSettings.length;
 

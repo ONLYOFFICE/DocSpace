@@ -65,6 +65,23 @@ class ManualBackup extends React.Component {
     this._isMounted = false;
     this.timerId = null;
   }
+
+  clearSessionStorage = () => {
+    saveToSessionStorage("selectedManualStorageType", "");
+
+    getFromSessionStorage("selectedFolderPath") &&
+      saveToSessionStorage("selectedFolderPath", ""); //for documents, third party modules
+
+    getFromSessionStorage("selectedFolder") &&
+      saveToSessionStorage("selectedFolder", ""); //for documents, third party modules
+
+    getFromSessionStorage("selectedStorageId") &&
+      saveToSessionStorage("selectedStorageId", ""); //for  third party storages module
+
+    getFromSessionStorage("selectedStorage") &&
+      saveToSessionStorage("selectedStorage", ""); //for  third party storages module
+  };
+
   componentDidMount() {
     this._isMounted = true;
 
@@ -96,21 +113,10 @@ class ManualBackup extends React.Component {
                     });
                   this.timerId = setInterval(() => this.getProgress(), 1000);
                 } else {
-                  saveToSessionStorage("selectedManualStorageType", "");
-                  getFromSessionStorage("selectedFolderPath") &&
-                    saveToSessionStorage("selectedFolderPath", "");
-
-                  getFromSessionStorage("selectedFolder") &&
-                    saveToSessionStorage("selectedFolder", "");
+                  this.clearSessionStorage();
                 }
               } else {
-                saveToSessionStorage("selectedManualStorageType", "");
-
-                getFromSessionStorage("selectedFolderPath") &&
-                  saveToSessionStorage("selectedFolderPath", "");
-
-                getFromSessionStorage("selectedFolder") &&
-                  saveToSessionStorage("selectedFolder", "");
+                this.clearSessionStorage();
               }
             }
           })
@@ -148,13 +154,7 @@ class ManualBackup extends React.Component {
     getBackupProgress()
       .then((response) => {
         if (response.error.length > 0 && response.progress !== 100) {
-          saveToSessionStorage("selectedManualStorageType", "");
-
-          getFromSessionStorage("selectedFolderPath") &&
-            saveToSessionStorage("selectedFolderPath", "");
-
-          getFromSessionStorage("selectedFolder") &&
-            saveToSessionStorage("selectedFolder", "");
+          this.clearSessionStorage();
 
           clearInterval(this.timerId);
           this.timerId && toastr.error(`${t("CopyingError")}`);
@@ -169,13 +169,7 @@ class ManualBackup extends React.Component {
 
         if (response.progress === 100) {
           //debugger;
-          saveToSessionStorage("selectedManualStorageType", "");
-
-          getFromSessionStorage("selectedFolderPath") &&
-            saveToSessionStorage("selectedFolderPath", "");
-
-          getFromSessionStorage("selectedFolder") &&
-            saveToSessionStorage("selectedFolder", "");
+          this.clearSessionStorage();
 
           clearInterval(this.timerId);
 
@@ -201,14 +195,10 @@ class ManualBackup extends React.Component {
       })
       .catch((err) => {
         //console.log("error!", err);
-        saveToSessionStorage("selectedManualStorageType", "");
+        this.clearSessionStorage();
 
-        getFromSessionStorage("selectedFolderPath") &&
-          saveToSessionStorage("selectedFolderPath", "");
-
-        getFromSessionStorage("selectedFolder") &&
-          saveToSessionStorage("selectedFolder", "");
         clearInterval(this.timerId);
+
         this.timerId && toastr.error(`${t("CopyingError")}`);
         this.timerId = null;
         if (this._isMounted) {
@@ -342,7 +332,9 @@ class ManualBackup extends React.Component {
     moduleType,
     key,
     selectedId,
-    storageValues
+    storageValues,
+    selectedStorageId,
+    selectedStorage
   ) => {
     console.log("selectedFolder", selectedFolder);
     const storageParams = [
@@ -352,14 +344,18 @@ class ManualBackup extends React.Component {
       },
     ];
 
+    saveToSessionStorage("selectedManualStorageType", `${moduleName}`);
+
     if (selectedFolder) {
-      saveToSessionStorage("selectedManualStorageType", `${moduleName}`);
       saveToSessionStorage("selectedFolder", `${selectedFolder}`);
 
       SelectFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
         saveToSessionStorage("selectedFolderPath", `${folderPath}`);
       });
     } else {
+      saveToSessionStorage("selectedStorageId", `${selectedStorageId}`);
+      saveToSessionStorage("selectedStorage", `${selectedStorage}`);
+
       let obj = {};
 
       for (let i = 0; i < storageValues.length; i++) {
