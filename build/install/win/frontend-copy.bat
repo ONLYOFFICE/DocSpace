@@ -25,6 +25,6 @@ XCOPY "%PathToRepository%\products\ASC.Projects\Client\dist" "%PathToAppFolder%\
 XCOPY "%PathToRepository%\web\ASC.Web.Editor\dist" "%PathToAppFolder%\products\ASC.Files\editor" /S /Y /B /I
 XCOPY "%PathToRepository%\web\ASC.Web.Client\dist" "%PathToAppFolder%\studio\client" /S /Y /B /I
 XCOPY "%PathToRepository%\web\ASC.Web.Login\dist" "%PathToAppFolder%\studio\login" /S /Y /B /I
-XCOPY "%PathToRepository%\public" "%PathToAppFolder%\public" /S /Y /B /I
+XCOPY "%PathToRepository%\build\deploy\public" "%PathToAppFolder%\public" /S /Y /B /I
 XCOPY "%PathToRepository%\config\nginx" "%PathToAppFolder%\nginx\conf" /S /Y /B /I
 XCOPY "%PathToRepository%\config\*" "%PathToAppFolder%\config" /Y /B /I
