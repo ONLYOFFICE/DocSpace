@@ -40,6 +40,7 @@ read_unsupported_installation () {
 	esac
 }
 
+{ yum check-update postgresql; PSQLExitCode=$?; } || true #Checking for postgresql update
 { yum check-update $DIST*-release; exitCode=$?; } || true #Checking for distribution update
 
 UPDATE_AVAILABLE_CODE=100
@@ -50,6 +51,10 @@ if [[ $exitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
 	echo $RES_ERROR_REMINDER
 	echo $RES_QUESTIONS
 	read_unsupported_installation
+fi
+
+if rpm -qa | grep mariadb.*config >/dev/null 2>&1; then
+   echo $RES_MARIADB && exit 0
 fi
 
 # add epel repo
@@ -99,7 +104,7 @@ if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 	mkdir -p ${PRODUCT_DIR}/services/
 	getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
 	cd ${PRODUCT_DIR}/services/kafka
-	wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
+	curl https://downloads.apache.org/kafka/2.7.1/kafka_2.13-2.7.1.tgz -O
 	tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
 	chown -R kafka ${PRODUCT_DIR}/services/kafka
 	cd -
@@ -166,7 +171,7 @@ END
 
 fi
 
-${package_manager} -y install yum-plugin-versionlock
+${package_manager} -y install python3-dnf-plugin-versionlock || ${package_manager} -y install yum-plugin-versionlock
 ${package_manager} versionlock clear
 
 ${package_manager} -y install epel-release \
@@ -187,6 +192,10 @@ ${package_manager} -y install epel-release \
 			redis --enablerepo=remi \
 			java
 	
+if [[ $PSQLExitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
+	yum -y install postgresql-upgrade
+	postgresql-setup --upgrade || true
+fi
 postgresql-setup initdb	|| true
 
 semanage permissive -a httpd_t

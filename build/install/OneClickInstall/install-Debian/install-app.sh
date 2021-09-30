@@ -83,31 +83,7 @@ elif [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
 	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
 	MYSQL_SERVER_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 	
-	expect << EOF || true
-	
-	set timeout -1
-	log_user 1
-		
-	spawn apt-get install -y --only-upgrade ${product} elasticsearch=${ELASTIC_VERSION}
-		
-	expect {
-		"*** elasticsearch.yml (Y/I/N/O/D/Z)" {
-			send "\025Y\r"
-			expect {
-				"*** jvm.options (Y/I/N/O/D/Z)" {
-					send "\025Y\r"
-				}
-				"/etc/elasticsearch/elasticsearch.yml" {}
-			}
-		}
-		"*** jvm.options (Y/I/N/O/D/Z)" {
-			send "\025Y\r"
-		}
-	}
-		
-	expect eof
-	
-EOF
+	apt-get install -o DPkg::options::="--force-confnew" -y --only-upgrade ${product} elasticsearch=${ELASTIC_VERSION}
 fi
 
 if [ "${APPSERVER_INSTALLED}" = "false" ] || [ "${APPSERVER_NEED_UPDATE}" = "true" ]; then
