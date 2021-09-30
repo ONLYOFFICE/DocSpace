@@ -59,7 +59,6 @@ const FilesRowContent = ({
   updatedDate,
   fileOwner,
   linkStyles,
-  //onFilesClick,
   badgesComponent,
   isAdmin,
 }) => {
@@ -90,7 +89,6 @@ const FilesRowContent = ({
           fontWeight="600"
           fontSize="15px"
           target="_blank"
-          href={item.href}
           {...linkStyles}
           color="#333"
           isTextOverflow={true}

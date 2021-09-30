@@ -12,6 +12,7 @@ const TableHeaderCell = ({
   resizable,
   sortBy,
   sorted,
+  defaultSize,
 }) => {
   const { title, enable, active, minWidth } = column;
 
@@ -35,6 +36,7 @@ const TableHeaderCell = ({
       id={`column_${index + 1}`}
       data-enable={enable}
       data-min-width={minWidth}
+      data-default-size={defaultSize}
       onClick={onClick}
     >
       <div className="table-container_header-item">
@@ -73,6 +75,7 @@ TableHeaderCell.propTypes = {
   resizable: PropTypes.bool,
   sorted: PropTypes.bool,
   sortBy: PropTypes.string,
+  defaultSize: PropTypes.number,
 };
 
 export default TableHeaderCell;
