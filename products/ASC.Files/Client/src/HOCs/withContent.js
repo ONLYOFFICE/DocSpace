@@ -233,8 +233,17 @@ export default function withContent(WrappedContent) {
         onFilesClick,
         viewAs,
         element,
+        isDesktop,
       } = this.props;
-      const { id, fileExst, updated, createdBy, access, fileStatus } = item;
+      const {
+        id,
+        fileExst,
+        updated,
+        createdBy,
+        access,
+        fileStatus,
+        href,
+      } = item;
 
       const titleWithoutExt = getTitleWithoutExst(item);
 
@@ -258,6 +267,10 @@ export default function withContent(WrappedContent) {
       const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
         ? { noHover: true }
         : { onClick: onFilesClick };
+
+      if (!isDesktop && !isTrashFolder) {
+        linkStyles.href = item.href;
+      }
 
       const newItems = item.new || fileStatus === 2;
       const showNew = !!newItems;
