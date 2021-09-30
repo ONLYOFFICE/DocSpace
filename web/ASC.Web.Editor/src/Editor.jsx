@@ -616,14 +616,12 @@ const Editor = () => {
     setIsFileDialogVisible(true);
   };
 
-  const onSDKRequestMailMergeRecipients = (event) => {
-  
+  const onSDKRequestMailMergeRecipients = () => {
     setFilesType(mailMergeAction);
     setIsFileDialogVisible(true);
   };
 
   const onSDKRequestCompareFile = () => {
-   
     setFilesType(compareFilesAction);
     setIsFileDialogVisible(true);
   };
