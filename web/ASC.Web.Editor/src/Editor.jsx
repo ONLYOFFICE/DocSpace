@@ -88,7 +88,7 @@ const Editor = () => {
   const [extension, setExtension] = useState();
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
   const [openNewTab, setNewOpenTab] = useState(false);
-
+  const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const Editor = () => {
     const token = link.token;
 
     docEditor.insertImage({
-      c: "add",
+      ...typeInsertImageAction,
       fileType: link.filetype,
       ...(token && { token }),
       url: link.url,
@@ -610,17 +610,20 @@ const Editor = () => {
     }
   };
 
-  const onSDKRequestInsertImage = () => {
+  const onSDKRequestInsertImage = (event) => {
+    setTypeInsertImageAction(event.data);
     setFilesType(insertImageAction);
     setIsFileDialogVisible(true);
   };
 
-  const onSDKRequestMailMergeRecipients = () => {
+  const onSDKRequestMailMergeRecipients = (event) => {
+  
     setFilesType(mailMergeAction);
     setIsFileDialogVisible(true);
   };
 
   const onSDKRequestCompareFile = () => {
+   
     setFilesType(compareFilesAction);
     setIsFileDialogVisible(true);
   };
