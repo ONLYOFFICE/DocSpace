@@ -229,10 +229,10 @@ class FilesActionStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
-    const { tempSelection } = this.filesStore;
+    const { bufferSelection } = this.filesStore;
 
-    const selection = tempSelection
-      ? [tempSelection]
+    const selection = bufferSelection
+      ? [bufferSelection]
       : this.filesStore.selection;
 
     const fileIds = [];
@@ -313,7 +313,7 @@ class FilesActionStore {
   };
 
   onSelectItem = ({ id, isFolder }) => {
-    const { setTempSelection, selected, setSelected } = this.filesStore;
+    const { setBufferSelection, selected, setSelected } = this.filesStore;
     selected === "close" && setSelected("none");
 
     if (!id) return;
@@ -322,7 +322,7 @@ class FilesActionStore {
       (elm) => elm.id === id
     );
 
-    setTempSelection(item);
+    setBufferSelection(item);
   };
 
   deleteItemAction = (

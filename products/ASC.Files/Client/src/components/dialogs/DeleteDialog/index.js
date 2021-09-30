@@ -107,7 +107,7 @@ class DeleteDialogComponent extends React.Component {
   };
 
   onClose = () => {
-    this.props.setTempSelection(null);
+    this.props.setBufferSelection(null);
     this.props.setRemoveMediaItem(null);
     this.props.setDeleteDialogVisible(false);
   };
@@ -258,8 +258,8 @@ export default inject(
     const {
       selection,
       isLoading,
-      tempSelection,
-      setTempSelection,
+      bufferSelection,
+      setBufferSelection,
     } = filesStore;
     const { deleteAction, unsubscribeAction } = filesActionsStore;
     const { isPrivacyFolder, isRecycleBinFolder } = treeFoldersStore;
@@ -277,8 +277,8 @@ export default inject(
     return {
       selection: removeMediaItem
         ? [removeMediaItem]
-        : tempSelection
-        ? [tempSelection]
+        : bufferSelection
+        ? [bufferSelection]
         : selection,
       isLoading,
       isRootFolder: selectedFolderStore.isRootFolder,
@@ -294,7 +294,7 @@ export default inject(
       setRemoveMediaItem,
 
       personal,
-      setTempSelection,
+      setBufferSelection,
     };
   }
 )(withRouter(observer(DeleteDialog)));

@@ -70,7 +70,7 @@ class ChangeOwnerComponent extends React.Component {
   };
 
   onClose = () => {
-    this.props.setTempSelection(null);
+    this.props.setBufferSelection(null);
     this.props.setChangeOwnerPanelVisible(false);
   };
 
@@ -146,19 +146,19 @@ const ChangeOwnerPanel = withTranslation(["ChangeOwnerPanel", "Common"])(
 export default inject(({ auth, filesStore, dialogsStore }) => {
   const {
     selection,
-    tempSelection,
+    bufferSelection,
     setFile,
     setFolder,
     setFilesOwner,
     setIsLoading,
     isLoading,
-    setTempSelection,
+    setBufferSelection,
   } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
-    selection: tempSelection ? [tempSelection] : selection,
+    selection: bufferSelection ? [bufferSelection] : selection,
     isLoading,
     visible: ownerPanelVisible,
 
@@ -167,6 +167,6 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
     setIsLoading,
     setChangeOwnerPanelVisible,
     setFilesOwner,
-    setTempSelection,
+    setBufferSelection,
   };
 })(withRouter(observer(ChangeOwnerPanel)));

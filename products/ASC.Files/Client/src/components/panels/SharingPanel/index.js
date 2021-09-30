@@ -341,12 +341,12 @@ class SharingPanelComponent extends React.Component {
       onCancel,
       setSharingPanelVisible,
       selectUploadedFile,
-      setTempSelection,
+      setBufferSelection,
     } = this.props;
 
     setSharingPanelVisible(false);
     selectUploadedFile([]);
-    setTempSelection(null);
+    setBufferSelection(null);
     onCancel && onCancel();
   };
 
@@ -626,7 +626,7 @@ const SharingPanel = inject(
 
     const {
       selection,
-      tempSelection,
+      bufferSelection,
       canShareOwnerChange,
       getAccessOption,
       getExternalAccessOption,
@@ -638,7 +638,7 @@ const SharingPanel = inject(
       getFileInfo,
       getFolderInfo,
       isLoading,
-      setTempSelection,
+      setBufferSelection,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { setSharingPanelVisible, sharingPanelVisible } = dialogsStore;
@@ -656,8 +656,8 @@ const SharingPanel = inject(
       homepage: config.homepage,
       selection: uploadPanelVisible
         ? selectedUploadFile
-        : tempSelection
-        ? [tempSelection]
+        : bufferSelection
+        ? [bufferSelection]
         : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
@@ -679,7 +679,7 @@ const SharingPanel = inject(
       setShareFiles,
       getFileInfo,
       getFolderInfo,
-      setTempSelection,
+      setBufferSelection,
     };
   }
 )(

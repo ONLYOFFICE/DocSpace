@@ -46,7 +46,7 @@ class FilesStore {
   files = [];
   folders = [];
   selection = [];
-  tempSelection = [];
+  bufferSelection = [];
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
@@ -235,8 +235,8 @@ class FilesStore {
     this.selection = selection;
   };
 
-  setTempSelection = (tempSelection) => {
-    this.tempSelection = tempSelection;
+  setBufferSelection = (bufferSelection) => {
+    this.bufferSelection = bufferSelection;
   };
 
   //TODO: FILTER
