@@ -105,7 +105,7 @@ export default function withFileActions(WrappedFileItem) {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
 
-        if (e.detail === 1) this.onFilesClick(e);
+        if (e.detail === 1) this.fileContextClick();
       } else {
         this.fileContextClick();
       }

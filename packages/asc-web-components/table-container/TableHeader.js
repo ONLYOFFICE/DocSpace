@@ -14,6 +14,7 @@ import TableGroupMenu from "./TableGroupMenu";
 
 const minColumnSize = 150;
 const settingsSize = 24;
+const containerMargin = 25;
 
 class TableHeader extends React.Component {
   constructor(props) {
@@ -131,6 +132,8 @@ class TableHeader extends React.Component {
       .filter((x) => x.key !== this.props.columns[columnIndex - 1].key)
       .filter((x) => !x.defaultSize);
 
+    const defaultSize = this.props.columns[columnIndex - 1]?.defaultSize;
+
     let index = this.props.columns.length;
     while (index !== 0) {
       index--;
@@ -140,7 +143,9 @@ class TableHeader extends React.Component {
       if (isFind) {
         const someItemById = document.getElementById("column_" + (index + 1));
 
-        const columnSize = someItemById.clientWidth - minColumnSize;
+        const columnSize =
+          someItemById.clientWidth -
+          (defaultSize ? defaultSize : minColumnSize);
 
         if (columnSize >= minColumnSize) {
           return (gridTemplateColumns[index + 1] = columnSize + "px");
@@ -211,7 +216,6 @@ class TableHeader extends React.Component {
       : document.getElementById("table-container");
 
     const minSize = size.tablet;
-    const containerMargin = 25;
 
     if (
       !container ||
@@ -227,8 +231,7 @@ class TableHeader extends React.Component {
       : container.style.gridTemplateColumns.split(" ");
 
     const containerWidth = +container.clientWidth;
-    const newContainerWidth =
-      containerWidth - this.getSubstring(checkboxSize) - 80 - settingsSize; // TODO: 80
+    const newContainerWidth = containerWidth - this.getSubstring(checkboxSize);
 
     const oldWidth = tableContainer
       .map((column) => this.getSubstring(column))
@@ -242,7 +245,6 @@ class TableHeader extends React.Component {
     const isSingleTable = enableColumns.length > 0;
 
     let str = "";
-    let disableColumnWidth = 0;
 
     if (tableContainer.length > 1) {
       const gridTemplateColumns = [];
@@ -255,6 +257,7 @@ class TableHeader extends React.Component {
           index == 0 ||
           index == tableContainer.length - 1 ||
           (column ? column.dataset.enable === "true" : item !== "0px");
+        const defaultSize = column && column.dataset.defaultSize;
 
         const isActiveNow = item === "0px" && enable;
         if (isActiveNow && column) activeColumnIndex = index;
@@ -265,21 +268,18 @@ class TableHeader extends React.Component {
             this.getSubstring(gridTemplateColumns[1]) +
             this.getSubstring(item) +
             "px";
-        } else if (
-          item !== `${settingsSize}px` &&
-          item !== checkboxSize &&
-          item !== "80px"
-        ) {
+        } else if (item !== `${settingsSize}px` && item !== checkboxSize) {
           const percent = (this.getSubstring(item) / oldWidth) * 100;
 
           if (index == 1) {
-            const newItemWidth =
-              (containerWidth * percent) / 100 + disableColumnWidth + "px";
+            const newItemWidth = (containerWidth * percent) / 100 + "px";
             gridTemplateColumns.push(newItemWidth);
           } else {
             const newItemWidth =
               percent === 0
-                ? `${minColumnSize}px`
+                ? defaultSize
+                  ? `${defaultSize}px`
+                  : `${minColumnSize}px`
                 : (containerWidth * percent) / 100 + "px";
 
             gridTemplateColumns.push(newItemWidth);
@@ -295,8 +295,14 @@ class TableHeader extends React.Component {
 
       str = gridTemplateColumns.join(" ");
     } else {
+      const defaultSize = this.props.columns.find((col) => col.defaultSize)
+        ?.defaultSize;
+
       const column =
-        (newContainerWidth * (isSingleTable ? 60 : 100)) / 100 + "px";
+        (newContainerWidth * (isSingleTable ? 60 : 100)) / 100 -
+        (defaultSize || 0) -
+        containerMargin +
+        "px";
       const percent = 40 / enableColumns.length;
       const otherColumns = (newContainerWidth * percent) / 100 + "px";
 
@@ -387,6 +393,7 @@ class TableHeader extends React.Component {
                     sorted={sorted}
                     sortBy={sortBy}
                     resizable={resizable}
+                    defaultSize={column.defaultSize}
                     onMouseDown={this.onMouseDown}
                   />
                 );

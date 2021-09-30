@@ -73,8 +73,8 @@ namespace ASC.Web.Files.Core.Search
             (int, int, int) getCount(DateTime lastIndexed)
             {
                 var dataQuery = GetBaseQuery(lastIndexed)
-                    .OrderBy(r=> r.DbFile.Id)
-                    .Select(r=> r.DbFile.Id);
+                    .OrderBy(r => r.DbFile.Id)
+                    .Select(r => r.DbFile.Id);
 
                 var minid = dataQuery.FirstOrDefault();
 
@@ -86,21 +86,21 @@ namespace ASC.Web.Files.Core.Search
 
                 var count = GetBaseQuery(lastIndexed).Count();
 
-                return new (count, maxid, minid);
+                return new(count, maxid, minid);
             }
 
             List<DbFile> getData(long start, long stop, DateTime lastIndexed)
             {
                 return GetBaseQuery(lastIndexed)
-                    .Where(r=> r.DbFile.Id >= start && r.DbFile.Id <= stop)
-                    .Select(r=> r.DbFile)
+                    .Where(r => r.DbFile.Id >= start && r.DbFile.Id <= stop)
+                    .Select(r => r.DbFile)
                     .ToList();
 
             }
 
             List<int> getIds(DateTime lastIndexed)
             {
-                long start = 0;
+                var start = 0;
                 var result = new List<int>();
                 while (true)
                 {
@@ -167,7 +167,7 @@ namespace ASC.Web.Files.Core.Search
                     }
                 }
 
-                if(tasks.Any())
+                if (tasks.Any())
                 {
                     Task.WaitAll(tasks.ToArray());
                 }

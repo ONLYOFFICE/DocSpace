@@ -38,7 +38,7 @@ locale-gen en_US.UTF-8
 # add elasticsearch repo
 ELASTIC_VERSION="7.13.1"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+curl https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 echo "deb https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
 
 # add nodejs repo
@@ -49,7 +49,7 @@ curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 
 #add dotnet repo
-wget https://packages.microsoft.com/config/$DIST/$REV/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+curl https://packages.microsoft.com/config/$DIST/$REV/packages-microsoft-prod.deb -O
 dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 
@@ -61,7 +61,7 @@ if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 		adduser --quiet --home ${PRODUCT_DIR}/services/kafka --system kafka
 	fi
 	cd ${PRODUCT_DIR}/services/kafka
-	wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
+	curl https://downloads.apache.org/kafka/2.7.1/kafka_2.13-2.7.1.tgz -O
 	tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
 	chown -R kafka ${PRODUCT_DIR}/services/kafka
 	cd -
@@ -121,21 +121,6 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	echo mysql-server-8.0 mysql-server/root_password_again password ${MYSQL_SERVER_PASS} | debconf-set-selections
 
 	apt-get -y update
-
-elif dpkg -l | grep -q "mysql-server"; then
-expect << EOF || true
-	
-	set timeout -1
-	log_user 1
-	
-	spawn apt-get install -y --only-upgrade mysql-server mysql-client 
-	
-	expect "*** mysqld.cnf (Y/I/N/O/D/Z)"
-	send "\025N\r"
-	
-	expect eof
-
-EOF
 fi
 
 # add redis repo
@@ -144,7 +129,7 @@ if [ "$DIST" = "ubuntu" ]; then
 fi
 
 #add nginx repo
-wget http://nginx.org/keys/nginx_signing.key
+curl http://nginx.org/keys/nginx_signing.key -O
 apt-key add nginx_signing.key
 echo "deb [arch=$ARCH] http://nginx.org/packages/$DIST $DISTRIB_CODENAME nginx" | tee /etc/apt/sources.list.d/nginx.list
 rm nginx_signing.key
@@ -153,7 +138,7 @@ rm nginx_signing.key
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
 
 # install
-apt-get install -yq wget \
+apt-get install -o DPkg::options::="--force-confnew" -yq \
 				expect \
 				nano \
 				nodejs \
