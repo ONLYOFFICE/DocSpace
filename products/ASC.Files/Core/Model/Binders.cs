@@ -40,7 +40,12 @@ namespace ASC.Files.Model
                 return valueProviderResult.Select(ParseQueryParam).ToList();
             }
 
-            return new List<JsonElement>();
+            if (modelName.EndsWith("[]"))
+            {
+                return new List<JsonElement>();
+            }
+
+            return ParseQuery(bindingContext, $"{modelName}[]");
         }
 
         public static JsonElement ParseQueryParam(string data)
