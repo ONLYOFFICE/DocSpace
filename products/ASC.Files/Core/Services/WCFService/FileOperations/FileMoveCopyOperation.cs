@@ -82,7 +82,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             if (toFolderId.ValueKind == JsonValueKind.String)
             {
-                ThirdpartyFolderId = toFolderId.GetString();
+                if (!int.TryParse(toFolderId.GetString(), out var i))
+                {
+                    ThirdpartyFolderId = toFolderId.GetString();
+                }
+                else
+                {
+                    DaoFolderId = i;
+                }
             }
             else if (toFolderId.ValueKind == JsonValueKind.Number)
             {
@@ -135,6 +142,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private void Do<TTo>(IServiceScope scope, TTo tto)
         {
+            if (Folders.Count == 0 && Files.Count == 0) return;
+
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 

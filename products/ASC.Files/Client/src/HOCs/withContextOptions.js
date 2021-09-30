@@ -3,16 +3,15 @@ import { inject, observer } from "mobx-react";
 import copy from "copy-to-clipboard";
 import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
-import toastr from "studio/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import config from "../../package.json";
 
 export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
     onOpenLocation = () => {
       const { item, openLocationAction } = this.props;
-      const { id, folderId, fileExst } = item;
-
-      const locationId = !fileExst ? id : folderId;
+      const { parentId, folderId, fileExst } = item;
+      const locationId = !fileExst ? parentId : folderId;
       openLocationAction(locationId, !fileExst);
     };
 

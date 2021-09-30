@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Il campo Valida codice non può essere vuoto</value>
@@ -194,7 +194,7 @@
     <value>Chiave di Facebook</value>
   </data>
   <data name="ConsumersFacebookDescription" xml:space="preserve">
-    <value>Collega l'applicazione per registrarsi al portale usando l'account Facebook e cercare contatti.</value>
+    <value>Collega l'applicazione per registrarsi al portale usando l'account Facebook.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>Se aggiungi un'applicazione del servizio Facebook sarai in grado di collegare il tuo account Facebook al profilo così che tu possa entrare nel portale ONLYOFFICE® direttamente. Inoltre sarà possibile trovare il rispettivo profilo Facebook di un contatto nel modulo CRM e collegarlo alla pagina 'Modifica contatto/azienda'.</value>
@@ -652,6 +652,9 @@
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>La riassegnazione dei dati in corso per {0} non è completa.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptcha non valido</value>
   </data>
   <data name="SgServerRegion" xml:space="preserve">
     <value>Asia Pacifico (Singapore)</value>

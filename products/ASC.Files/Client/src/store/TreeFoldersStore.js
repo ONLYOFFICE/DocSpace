@@ -55,6 +55,7 @@ class TreeFoldersStore {
     if (rootItem) rootItem.newItems -= count;
   };
 
+  isMy = (myType) => myType === FolderType.USER;
   isCommon = (commonType) => commonType === FolderType.COMMON;
   isShare = (shareType) => shareType === FolderType.SHARE;
 

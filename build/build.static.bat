@@ -3,14 +3,24 @@ call runasadmin.bat "%~dpnx0"
 if %errorlevel% == 0 (
 PUSHD %~dp0..
 
+echo "mode=%1"
+
 REM call yarn wipe
 call yarn install
 
 REM call yarn build
-call yarn build
+IF "%1"=="" (
+    call yarn build
+) ELSE (
+    call yarn build:personal
+)
 
 REM call yarn wipe
-call yarn deploy
+IF "%1"=="" (
+    call yarn deploy
+) ELSE (
+    call yarn deploy:personal
+)
 
 REM copy nginx configurations to deploy folder
 xcopy config\nginx\onlyoffice.conf build\deploy\nginx\ /E /R /Y

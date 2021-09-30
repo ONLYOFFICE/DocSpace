@@ -4,8 +4,12 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId, version, doc) {
+export function openEdit(fileId, version, doc, view) {
   const params = []; // doc ? `?doc=${doc}` : "";
+
+  if (view) {
+    params.push(`view=${view}`);
+  }
 
   if (version) {
     params.push(`version=${version}`);
@@ -481,8 +485,15 @@ export function getProgress() {
 }
 
 export function checkFileConflicts(destFolderId, folderIds, fileIds) {
-  const data = { destFolderId, folderIds, fileIds };
-  return request({ method: "post", url: "/files/fileops/move", data });
+  let paramsString =
+    folderIds.length > 0 ? `&folderIds=${folderIds.join("&folderIds=")}` : "";
+  paramsString +=
+    fileIds.length > 0 ? `&fileIds=${fileIds.join("&fileIds=")}` : "";
+
+  return request({
+    method: "get",
+    url: `/files/fileops/move.json?destFolderId=${destFolderId}${paramsString}`,
+  });
 }
 
 export function copyToFolder(

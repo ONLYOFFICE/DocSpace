@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Base from "../themes/base";
 
 const IconWrapper = styled.div`
-  align-self: end;
+  align-self: start;
   display: flex;
   svg {
     width: ${(props) => props.theme.toastr.svg.width};

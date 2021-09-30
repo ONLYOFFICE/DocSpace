@@ -6,7 +6,6 @@ import {
   FileType,
   FileAction,
   AppServerConfig,
-  FilesFormats,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import { loopTreeFolders } from "../helpers/files-helpers";
@@ -16,6 +15,7 @@ import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
 import { openDocEditor } from "../helpers/utils";
+import toastr from "studio/toastr";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -236,6 +236,10 @@ class FilesStore {
 
   //TODO: FILTER
   setFilesFilter = (filter) => {
+    const key = `UserFilter=${this.userStore.user.id}`;
+    const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
+    localStorage.setItem(key, value);
+
     this.setFilterUrl(filter);
     this.filter = filter;
   };
@@ -263,46 +267,30 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false,
-    saveSorting = false
+    withSubfolders = false
   ) => {
-    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
-    filterData.folder = folderId;
-
-    if (saveSorting) {
-      filterData.sortBy = this.filter.sortBy;
-      filterData.pageCount = this.filter.pageCount;
-      filterData.sortOrder = this.filter.sortOrder;
-    }
-
     const {
       treeFolders,
-      //privacyFolder,
       setSelectedNode,
       getSubfolders,
     } = this.treeFoldersStore;
+
+    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
+    filterData.folder = folderId;
+
+    const filterStorageItem = localStorage.getItem(
+      `UserFilter=${this.userStore.user.id}`
+    );
+
+    if (filterStorageItem && !filter) {
+      const splitFilter = filterStorageItem.split(",");
+
+      filterData.sortBy = splitFilter[0];
+      filterData.pageCount = splitFilter[1];
+      filterData.sortOrder = splitFilter[2];
+    }
+
     setSelectedNode([folderId + ""]);
-
-    // if (privacyFolder && privacyFolder.id === +folderId) {
-    //   if (!this.settingsStore.isEncryptionSupport) {
-    //     filterData.total = 0;
-    //     this.setFilesFilter(filterData); //TODO: FILTER
-    //     if (clearFilter) {
-    //       this.setFolders([]);
-    //       this.setFiles([]);
-    //       this.fileActionStore.setAction({ type: null });
-    //       this.setSelected("close");
-
-    //       this.selectedFolderStore.setSelectedFolder({
-    //         folders: [],
-    //         ...privacyFolder,
-    //         pathParts: privacyFolder.pathParts,
-    //         ...{ new: 0 },
-    //       });
-    //     }
-    //     return Promise.resolve();
-    //   }
-    // }
 
     //TODO: fix @my
     let requestCounter = 1;
@@ -346,7 +334,8 @@ class FilesStore {
           this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
-        .catch(() => {
+        .catch((err) => {
+          toastr.error(err);
           if (!requestCounter) return;
           requestCounter--;
 
@@ -416,6 +405,7 @@ class FilesStore {
       isShare,
       isFavoritesFolder,
       isShareFolder,
+      isMy,
     } = this.treeFoldersStore;
 
     const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
@@ -424,6 +414,7 @@ class FilesStore {
       item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
+    const isMyFolder = isMy(item.rootFolderType);
 
     const { personal } = this.settingsStore;
     const { isDesktopClient } = this.authStore.settingsStore;
@@ -449,6 +440,7 @@ class FilesStore {
         "open-location",
         "mark-read",
         "mark-as-favorite",
+        "remove-from-favorites",
         "download",
         "download-as",
         "convert",
@@ -459,7 +451,6 @@ class FilesStore {
         "restore",
         "rename",
         "separator2",
-        "remove-from-favorites",
         "unsubscribe",
         "delete",
       ];
@@ -559,8 +550,9 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "copy",
           "move-to",
-          "sharing-settings",
+          //"sharing-settings",
           "unsubscribe",
+          "separator2",
         ]);
       }
 
@@ -636,6 +628,7 @@ class FilesStore {
             "move-to",
             "delete",
             "copy",
+            "separator2",
           ]);
           if (!isFavorite) {
             fileOptions = this.removeOptions(fileOptions, ["separator2"]);
@@ -654,7 +647,13 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["mark-read"]);
       }
 
-      if (!(isRecentFolder || isFavoritesFolder)) {
+      if (
+        !(
+          isRecentFolder ||
+          isFavoritesFolder ||
+          (isMyFolder && (this.filter.filterType || this.filter.search))
+        )
+      ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
       }
 
@@ -718,6 +717,7 @@ class FilesStore {
         "owner-change",
         "link-for-portal-users",
         "separator1",
+        "open-location",
         "download",
         "move", //category
         "move-to",
@@ -867,6 +867,10 @@ class FilesStore {
         ]);
       }
 
+      if (!(isMyFolder && (this.filter.filterType || this.filter.search))) {
+        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+      }
+
       return folderOptions;
     }
   };
@@ -979,9 +983,9 @@ class FilesStore {
       case FolderType.TRASH:
         return false;
       case FolderType.Favorites:
-        return false;
+        return true; // false;
       case FolderType.Recent:
-        return false;
+        return true; //false;
       case FolderType.Privacy:
         return true;
       default:
@@ -1106,12 +1110,18 @@ class FilesStore {
         canEdit,
       } = item;
 
+      const { canConvert } = this.formatsStore.docserviceStore;
+
       const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
         item.fileExst
       );
 
       const previewUrl = canOpenPlayer
-        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${id}`)
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/#preview/${id}`
+          )
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
@@ -1136,10 +1146,12 @@ class FilesStore {
           )
         : null;
 
+      const needConvert = canConvert(fileExst);
+
       const docUrl = combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/doceditor?fileId=${id}`
+        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
       );
 
       const href = isRecycleBinFolder
@@ -1204,12 +1216,75 @@ class FilesStore {
     return newItem;
   }
 
+  get cbMenuItems() {
+    const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = iconFormatsStore;
+    const { isImage, isVideo } = mediaViewersFormatsStore;
+
+    let cbMenu = ["all"];
+    const filesItems = [...this.files, ...this.folders];
+
+    if (this.folders.length) cbMenu.push(FilterType.FoldersOnly);
+    for (let item of filesItems) {
+      if (isDocument(item.fileExst)) cbMenu.push(FilterType.DocumentsOnly);
+      else if (isPresentation(item.fileExst))
+        cbMenu.push(FilterType.PresentationsOnly);
+      else if (isSpreadsheet(item.fileExst))
+        cbMenu.push(FilterType.SpreadsheetsOnly);
+      else if (isImage(item.fileExst)) cbMenu.push(FilterType.ImagesOnly);
+      else if (isVideo(item.fileExst)) cbMenu.push(FilterType.MediaOnly);
+      else if (isArchive(item.fileExst)) cbMenu.push(FilterType.ArchiveOnly);
+    }
+
+    const hasFiles = cbMenu.some(
+      (elem) => elem !== "all" && elem !== FilterType.FoldersOnly
+    );
+
+    if (hasFiles) cbMenu.push(FilterType.FilesOnly);
+
+    cbMenu = cbMenu.filter((item, index) => cbMenu.indexOf(item) === index);
+
+    return cbMenu;
+  }
+
+  getCheckboxItemLabel = (t, key) => {
+    switch (key) {
+      case "all":
+        return t("All");
+      case FilterType.FoldersOnly:
+        return t("Translations:Folders");
+      case FilterType.DocumentsOnly:
+        return t("Common:Documents");
+      case FilterType.PresentationsOnly:
+        return t("Translations:Presentations");
+      case FilterType.SpreadsheetsOnly:
+        return t("Translations:Spreadsheets");
+      case FilterType.ImagesOnly:
+        return t("Images");
+      case FilterType.MediaOnly:
+        return t("Media");
+      case FilterType.ArchiveOnly:
+        return t("Archives");
+      case FilterType.FilesOnly:
+        return t("AllFiles");
+
+      default:
+        return "";
+    }
+  };
+
   get sortedFiles() {
     const {
       isSpreadsheet,
       isPresentation,
+      isDocument,
     } = this.formatsStore.iconFormatsStore;
-    const { canWebEdit } = this.formatsStore.docserviceStore;
+    const { filesConverts } = this.formatsStore.docserviceStore;
 
     let sortedFiles = {
       documents: [],
@@ -1220,14 +1295,16 @@ class FilesStore {
 
     for (let item of this.selection) {
       item.checked = true;
-      item.format = FilesFormats.OriginalFormat;
+      item.format = null;
 
-      if (item.fileExst) {
+      const canConvert = filesConverts.find((f) => f[item.fileExst]);
+
+      if (item.fileExst && canConvert) {
         if (isSpreadsheet(item.fileExst)) {
           sortedFiles.spreadsheets.push(item);
         } else if (isPresentation(item.fileExst)) {
           sortedFiles.presentations.push(item);
-        } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)) {
+        } else if (isDocument(item.fileExst)) {
           sortedFiles.documents.push(item);
         } else {
           sortedFiles.other.push(item);
@@ -1278,11 +1355,12 @@ class FilesStore {
   }
 
   get isWebEditSelected() {
-    const { editedDocs } = this.formatsStore.docserviceStore;
+    const { filesConverts } = this.formatsStore.docserviceStore;
 
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return editedDocs.find((format) => selected.fileExst === format);
+      const index = filesConverts.findIndex((f) => f[selected.fileExst]);
+      return index !== -1;
     });
   }
 
@@ -1311,6 +1389,11 @@ class FilesStore {
 
   get hasSelection() {
     return !!this.selection.length;
+  }
+
+  get isEmptyFilesList() {
+    const filesList = [...this.files, ...this.folders];
+    return filesList.length <= 0;
   }
 
   getOptions = (selection, externalAccess = false) => {
@@ -1377,9 +1460,9 @@ class FilesStore {
           : splitValue.slice(1).join("_");
 
       if (fileType === "file") {
-        newSelection.push(this.files.find((f) => f.id == id && f.fileExst));
+        newSelection.push(this.files.find((f) => f.id == id));
       } else {
-        newSelection.push(this.folders.find((f) => f.id == id && !f.fileExst));
+        newSelection.push(this.folders.find((f) => f.id == id));
       }
     }
 
@@ -1471,7 +1554,7 @@ class FilesStore {
   };
 
   createThumbnails = () => {
-    const filesList = this.filesList;
+    const filesList = [...this.files, this.folders];
     const fileIds = [];
 
     filesList.map((file) => {

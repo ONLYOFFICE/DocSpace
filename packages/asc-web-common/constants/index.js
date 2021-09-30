@@ -109,21 +109,21 @@ export const ConflictResolveType = Object.freeze({
   Duplicate: 2,
 });
 export const providersData = Object.freeze({
-  Google: {
-    label: "Google",
+  google: {
+    label: "google",
     icon: "/static/images/share.google.react.svg",
   },
-  Facebook: {
-    label: "Facebook",
+  facebook: {
+    label: "facebook",
     icon: "/static/images/share.facebook.react.svg",
   },
-  Twitter: {
-    label: "Twitter",
+  twitter: {
+    label: "twitter",
     icon: "/static/images/share.twitter.react.svg",
     iconOptions: { color: "#2AA3EF" },
   },
-  LinkedIn: {
-    label: "LinkedIn",
+  linkedin: {
+    label: "linkedin",
     icon: "/static/images/share.linkedin.react.svg",
   },
 });
@@ -154,20 +154,6 @@ export const TenantTrustedDomainsType = Object.freeze({
   None: 0,
   Custom: 1,
   All: 2,
-});
-
-export const FilesFormats = Object.freeze({
-  OriginalFormat: 0,
-  TxtFormat: 1,
-  DocxFormat: 2,
-  OdtFormat: 3,
-  OdsFormat: 4,
-  OdpFormat: 5,
-  PdfFormat: 6,
-  RtfFormat: 7,
-  XlsxFormat: 8,
-  PptxFormat: 9,
-  CustomFormat: 10,
 });
 
 export const PasswordLimitSpecialCharacters = "!@#$%^&*";

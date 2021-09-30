@@ -422,15 +422,7 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@my/upload")]
-        public List<FileWrapper<int>> UploadFileToMyFromBody([FromBody] UploadModel uploadModel)
-        {
-            uploadModel.CreateNewIfExist = false;
-            return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderMy, uploadModel);
-        }
-
-        [Create("@my/upload")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public List<FileWrapper<int>> UploadFileToMyFromForm([FromForm] UploadModel uploadModel)
+        public object UploadFileToMyFromForm([FromForm] UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
             return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderMy, uploadModel);
@@ -455,15 +447,7 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@common/upload")]
-        public List<FileWrapper<int>> UploadFileToCommonFromBody([FromBody] UploadModel uploadModel)
-        {
-            uploadModel.CreateNewIfExist = false;
-            return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderCommon, uploadModel);
-        }
-
-        [Create("@common/upload")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public List<FileWrapper<int>> UploadFileToCommonFromForm([FromForm] UploadModel uploadModel)
+        public object UploadFileToCommonFromForm([FromForm] UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
             return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderCommon, uploadModel);
@@ -491,29 +475,14 @@ namespace ASC.Api.Documents
         /// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <returns>Uploaded file</returns>
-        [Create("{folderId}/upload")]
-        public List<FileWrapper<string>> UploadFileFromBody(string folderId, [FromBody] UploadModel uploadModel)
+        [Create("{folderId}/upload", order: int.MaxValue)]
+        public object UploadFileFromForm(string folderId, [FromForm] UploadModel uploadModel)
         {
             return FilesControllerHelperString.UploadFile(folderId, uploadModel);
         }
 
-        [Create("{folderId}/upload")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public List<FileWrapper<string>> UploadFileFromForm(string folderId, [FromForm] UploadModel uploadModel)
-        {
-            return FilesControllerHelperString.UploadFile(folderId, uploadModel);
-        }
-
-
-        [Create("{folderId:int}/upload")]
-        public List<FileWrapper<int>> UploadFileFromBody(int folderId, [FromBody] UploadModel uploadModel)
-        {
-            return FilesControllerHelperInt.UploadFile(folderId, uploadModel);
-        }
-
-        [Create("{folderId:int}/upload")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public List<FileWrapper<int>> UploadFileFromForm(int folderId, [FromForm] UploadModel uploadModel)
+        [Create("{folderId:int}/upload", order: int.MaxValue - 1)]
+        public object UploadFileFromForm(int folderId, [FromForm] UploadModel uploadModel)
         {
             return FilesControllerHelperInt.UploadFile(folderId, uploadModel);
         }
@@ -688,16 +657,16 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         [AllowAnonymous]
         [Read("file/{fileId}/openedit", Check = false)]
-        public Configuration<string> OpenEdit(string fileId, int version, string doc)
+        public Configuration<string> OpenEdit(string fileId, int version, string doc, bool view)
         {
-            return FilesControllerHelperString.OpenEdit(fileId, version, doc);
+            return FilesControllerHelperString.OpenEdit(fileId, version, doc, view);
         }
 
         [AllowAnonymous]
         [Read("file/{fileId:int}/openedit", Check = false)]
-        public Configuration<int> OpenEdit(int fileId, int version, string doc)
+        public Configuration<int> OpenEdit(int fileId, int version, string doc, bool view)
         {
-            return FilesControllerHelperInt.OpenEdit(fileId, version, doc);
+            return FilesControllerHelperInt.OpenEdit(fileId, version, doc, view);
         }
 
 
@@ -1077,8 +1046,8 @@ namespace ASC.Api.Documents
         public IEnumerable<FileEntryWrapper> ChangeOwner(ChangeOwnerModel model)
         {
             var result = new List<FileEntry>();
-            result.AddRange(FileStorageServiceInt.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.UserId));
-            result.AddRange(FileStorageService.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.UserId));
+            result.AddRange(FileStorageServiceInt.ChangeOwner(FileOperationsManager.GetIntIds(model.FolderIds), FileOperationsManager.GetIntIds(model.FileIds), model.UserId));
+            result.AddRange(FileStorageService.ChangeOwner(FileOperationsManager.GetStringIds(model.FolderIds), FileOperationsManager.GetStringIds(model.FileIds), model.UserId));
             return result.Select(FilesControllerHelperInt.GetFileEntryWrapper).ToList();
         }
 
@@ -1260,17 +1229,10 @@ namespace ASC.Api.Documents
         /// <param name="folderIds">Folder ID list</param>
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
-        [Create("fileops/move")]
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromBody([FromBody] BatchModel batchModel)
+        [Read("fileops/move")]
+        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck()
         {
-            return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
-        }
-
-        [Create("fileops/move")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromForm([FromForm] BatchModel batchModel)
-        {
-            return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
+            return FilesControllerHelperString.MoveOrCopyBatchCheck(BatchModel.FromQuery(HttpContext));
         }
 
         /// <summary>
@@ -1583,8 +1545,8 @@ namespace ASC.Api.Documents
         public IEnumerable<FileShareWrapper> GetSecurityInfoFromBody([FromBody] BaseBatchModel<JsonElement> model)
         {
             var result = new List<FileShareWrapper>();
-            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32())));
-            result.AddRange(FilesControllerHelperString.GetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString())));
+            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(FileOperationsManager.GetIntIds(model.FileIds), FileOperationsManager.GetIntIds(model.FolderIds)));
+            result.AddRange(FilesControllerHelperString.GetSecurityInfo(FileOperationsManager.GetStringIds(model.FileIds), FileOperationsManager.GetStringIds(model.FolderIds)));
             return result;
         }
 
@@ -1593,8 +1555,8 @@ namespace ASC.Api.Documents
         public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm] BaseBatchModel<JsonElement> model)
         {
             var result = new List<FileShareWrapper>();
-            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32())));
-            result.AddRange(FilesControllerHelperString.GetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString())));
+            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(FileOperationsManager.GetIntIds(model.FileIds), FileOperationsManager.GetIntIds(model.FolderIds)));
+            result.AddRange(FilesControllerHelperString.GetSecurityInfo(FileOperationsManager.GetStringIds(model.FileIds), FileOperationsManager.GetStringIds(model.FolderIds)));
             return result;
         }
 
@@ -1653,8 +1615,8 @@ namespace ASC.Api.Documents
         public IEnumerable<FileShareWrapper> SetSecurityInfo(SecurityInfoModel model)
         {
             var result = new List<FileShareWrapper>();
-            result.AddRange(FilesControllerHelperInt.SetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.Share, model.Notify, model.SharingMessage));
-            result.AddRange(FilesControllerHelperString.SetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.Share, model.Notify, model.SharingMessage));
+            result.AddRange(FilesControllerHelperInt.SetSecurityInfo(FileOperationsManager.GetIntIds(model.FileIds), FileOperationsManager.GetIntIds(model.FolderIds), model.Share, model.Notify, model.SharingMessage));
+            result.AddRange(FilesControllerHelperString.SetSecurityInfo(FileOperationsManager.GetStringIds(model.FileIds), FileOperationsManager.GetStringIds(model.FolderIds), model.Share, model.Notify, model.SharingMessage));
             return result;
         }
 
@@ -1708,8 +1670,8 @@ namespace ASC.Api.Documents
         [Delete("share")]
         public bool RemoveSecurityInfo(BaseBatchModel<JsonElement> model)
         {
-            FilesControllerHelperInt.RemoveSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList());
-            FilesControllerHelperString.RemoveSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList());
+            FilesControllerHelperInt.RemoveSecurityInfo(FileOperationsManager.GetIntIds(model.FileIds), FileOperationsManager.GetIntIds(model.FolderIds));
+            FilesControllerHelperString.RemoveSecurityInfo(FileOperationsManager.GetStringIds(model.FileIds), FileOperationsManager.GetStringIds(model.FolderIds));
             return true;
         }
 
@@ -1908,8 +1870,8 @@ namespace ASC.Api.Documents
 
         private bool AddFavorites(BaseBatchModel<JsonElement> model)
         {
-            FileStorageServiceInt.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
-            FileStorageService.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            FileStorageServiceInt.AddToFavorites(FileOperationsManager.GetIntIds(model.FolderIds), FileOperationsManager.GetIntIds(model.FileIds));
+            FileStorageService.AddToFavorites(FileOperationsManager.GetStringIds(model.FolderIds), FileOperationsManager.GetStringIds(model.FileIds));
             return true;
         }
 
@@ -1936,8 +1898,8 @@ namespace ASC.Api.Documents
         [Delete("favorites")]
         public bool DeleteFavorites(BaseBatchModel<JsonElement> model)
         {
-            FileStorageServiceInt.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
-            FileStorageService.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            FileStorageServiceInt.DeleteFavorites(FileOperationsManager.GetIntIds(model.FolderIds), FileOperationsManager.GetIntIds(model.FileIds));
+            FileStorageService.DeleteFavorites(FileOperationsManager.GetStringIds(model.FolderIds), FileOperationsManager.GetStringIds(model.FileIds));
             return true;
         }
 
@@ -2220,14 +2182,14 @@ namespace ASC.Api.Documents
         [Create("thumbnails")]
         public IEnumerable<JsonElement> CreateThumbnailsFromBody([FromBody] BaseBatchModel<JsonElement> model)
         {
-            return FileStorageService.CreateThumbnails(model.FileIds);
+            return FileStorageService.CreateThumbnails(model.FileIds.ToList());
         }
 
         [Create("thumbnails")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm] BaseBatchModel<JsonElement> model)
         {
-            return FileStorageService.CreateThumbnails(model.FileIds);
+            return FileStorageService.CreateThumbnails(model.FileIds.ToList());
         }
 
         public IEnumerable<string> CheckDocServiceUrl(CheckDocServiceUrlModel model)

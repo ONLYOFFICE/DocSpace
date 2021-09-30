@@ -5,7 +5,6 @@ import { withRouter } from "react-router";
 import queryString from "query-string";
 import history from "@appserver/common/history";
 import MediaViewer from "@appserver/common/components/MediaViewer";
-import FilesFilter from "@appserver/common/api/files/filter";
 import { createTreeFolders } from "../../../helpers/files-helpers";
 
 const FilesMediaViewer = (props) => {
@@ -86,8 +85,8 @@ const FilesMediaViewer = (props) => {
   };
 
   const onDownloadMediaFile = (id) => {
-    if (files.length > 0) {
-      let viewUrlFile = files.find((file) => file.id === id).viewUrl;
+    if (playlist.length > 0) {
+      let viewUrlFile = playlist.find((file) => file.fileId === id).src;
       return window.open(viewUrlFile, "_self");
     }
   };

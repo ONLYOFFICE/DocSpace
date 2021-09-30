@@ -317,7 +317,7 @@ namespace ASC.Web.Files.Services.WCFService
                 || parent.FolderType == FolderType.SHARE
                 || parent.RootFolderType == FolderType.Privacy;
 
-            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || 
+            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder ||
             (x is File<string> f1 && !FileConverter.IsConverting(f1) ||
              x is File<int> f2 && !FileConverter.IsConverting(f2)));
 
@@ -586,7 +586,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 fileWrapper.Title = UserControlsCommonResource.NewDocument + ".docx";
             }
-            
+
             var externalExt = false;
 
             var fileExt = !enableExternalExt ? FileUtility.GetInternalExtension(fileWrapper.Title) : FileUtility.GetFileExtension(fileWrapper.Title);
@@ -1168,7 +1168,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public List<FileOperationResult> MarkAsRead(IEnumerable<JsonElement> foldersId, IEnumerable<JsonElement> filesId)
+        public List<FileOperationResult> MarkAsRead(List<JsonElement> foldersId, List<JsonElement> filesId)
         {
             if (!foldersId.Any() && !filesId.Any()) return GetTasksStatuses();
             return FileOperationsManager.MarkAsRead(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId);
@@ -1381,14 +1381,14 @@ namespace ASC.Web.Files.Services.WCFService
         }
 
 
-        public (List<object>, List<object>) MoveOrCopyFilesCheck<T1>(IEnumerable<JsonElement> filesId, IEnumerable<JsonElement> foldersId, T1 destFolderId)
+        public (List<object>, List<object>) MoveOrCopyFilesCheck<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
         {
             var checkedFiles = new List<object>();
             var checkedFolders = new List<object>();
 
             var (filesInts, folderInts) = MoveOrCopyFilesCheck(
-                filesId.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()),
-                foldersId.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()),
+                FileOperationsManager.GetIntIds(filesId),
+                FileOperationsManager.GetIntIds(foldersId),
                 destFolderId);
 
             foreach (var i in filesInts)
@@ -1402,8 +1402,8 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var (filesStrings, folderStrings) = MoveOrCopyFilesCheck(
-                filesId.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()),
-                foldersId.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()),
+                FileOperationsManager.GetStringIds(filesId),
+                FileOperationsManager.GetStringIds(foldersId),
                 destFolderId);
 
             foreach (var i in filesStrings)
@@ -1426,6 +1426,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = DaoFactory.GetFolderDao<TFrom>();
             var fileDao = DaoFactory.GetFileDao<TFrom>();
             var destFolderDao = DaoFactory.GetFolderDao<TTo>();
+            var destFileDao = DaoFactory.GetFileDao<TTo>();
 
             var toFolder = destFolderDao.GetFolder(destFolderId);
             ErrorIf(toFolder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
@@ -1436,7 +1437,7 @@ namespace ASC.Web.Files.Services.WCFService
                 var file = fileDao.GetFile(id);
                 if (file != null
                     && !file.Encrypted
-                    && fileDao.IsExist(file.Title, toFolder.ID))
+                    && destFileDao.IsExist(file.Title, toFolder.ID))
                 {
                     checkedFiles.Add(id);
                 }
@@ -1476,7 +1477,7 @@ namespace ASC.Web.Files.Services.WCFService
             return (checkedFiles, checkedFolders);
         }
 
-        public List<FileOperationResult> MoveOrCopyItems(IEnumerable<JsonElement> foldersId, IEnumerable<JsonElement> filesId, JsonElement destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
+        public List<FileOperationResult> MoveOrCopyItems(List<JsonElement> foldersId, List<JsonElement> filesId, JsonElement destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
         {
             List<FileOperationResult> result;
             if (foldersId.Any() || filesId.Any())
@@ -2280,7 +2281,7 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.ConfirmDelete;
         }
 
-        public IEnumerable<JsonElement> CreateThumbnails(IEnumerable<JsonElement> fileIds)
+        public IEnumerable<JsonElement> CreateThumbnails(List<JsonElement> fileIds)
         {
             try
             {
@@ -2290,9 +2291,9 @@ namespace ASC.Web.Files.Services.WCFService
                     BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 
-                foreach(var f in fileIds.Where(r=> r.ValueKind == JsonValueKind.Number))
+                foreach (var f in FileOperationsManager.GetIntIds(fileIds))
                 {
-                    req.Files.Add(f.GetInt32());
+                    req.Files.Add(f);
                 }
 
                 ThumbnailNotify.Publish(req, CacheNotifyAction.Insert);

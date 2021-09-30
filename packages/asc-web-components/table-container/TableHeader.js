@@ -12,7 +12,7 @@ import TableHeaderCell from "./TableHeaderCell";
 import { size } from "../utils/device";
 import TableGroupMenu from "./TableGroupMenu";
 
-const minColumnSize = 90;
+const minColumnSize = 150;
 const settingsSize = 24;
 
 class TableHeader extends React.Component {
@@ -35,9 +35,7 @@ class TableHeader extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.sectionWidth >= size.tablet + 24) {
-      this.onResize();
-    }
+    this.onResize();
   }
 
   getSubstring = (str) => +str.substring(0, str.length - 2);
@@ -203,6 +201,7 @@ class TableHeader extends React.Component {
       columnStorageName,
       checkboxSize,
       resetColumnsSize,
+      sectionWidth,
     } = this.props;
 
     let activeColumnIndex = null;
@@ -211,7 +210,15 @@ class TableHeader extends React.Component {
       ? containerRef.current
       : document.getElementById("table-container");
 
-    if (!container) return;
+    const minSize = size.tablet;
+    const containerMargin = 25;
+
+    if (
+      !container ||
+      +container.clientWidth + containerMargin <= minSize ||
+      sectionWidth <= minSize
+    )
+      return;
 
     const storageSize =
       !resetColumnsSize && localStorage.getItem(columnStorageName);
