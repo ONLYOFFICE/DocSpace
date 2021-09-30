@@ -28,6 +28,7 @@ const PureThirdPartyMoveContainer = ({
   const deleteAfter = false; // TODO: get from settings
 
   const onClose = () => {
+    setTempSelection(null);
     setDestFolderId(false);
     setThirdPartyMoveDialogVisible(false);
   };
@@ -108,8 +109,10 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     destFolderId,
     setDestFolderId,
   } = dialogsStore;
-  const { selection } = filesStore;
+  const { tempSelection, setTempSelection } = filesStore;
   const { checkOperationConflict } = filesActionsStore;
+
+  const selection = tempSelection ? [tempSelection] : filesStore.selection;
 
   return {
     visible,
@@ -119,6 +122,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     provider: selection[0].providerKey,
     checkOperationConflict,
     selection,
+    setTempSelection,
   };
 })(
   withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(
