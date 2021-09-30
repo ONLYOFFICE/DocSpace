@@ -34,7 +34,7 @@ DocumentCatalogFolderLoader.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-  showText: PropTypes.func,
+  showText: PropTypes.bool,
 };
 
 DocumentCatalogFolderLoader.defaultProps = {

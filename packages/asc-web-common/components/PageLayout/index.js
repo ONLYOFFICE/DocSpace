@@ -121,7 +121,7 @@ class PageLayout extends React.Component {
     ) {
       this.backdropClick();
     }
-    console.log('rerender');
+
     if (isMobile && !this.props.userShowText && this.props.showText) this.props.setShowText(false);
     if (isMobileUtils() && !isMobile && !this.props.userShowText && this.props.showText)
       this.props.setShowText(false);
