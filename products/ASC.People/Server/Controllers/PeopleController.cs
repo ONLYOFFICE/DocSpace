@@ -464,7 +464,8 @@ namespace ASC.Employee.Core.Controllers
                 {
                     if (!SetupInfo.IsSecretEmail(model.Email) || SecurityContext.IsAuthenticated)
                     {
-                        throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+                        StudioNotifyService.SendAlreadyExist(model.Email);
+                        return string.Empty;
                     }
 
                     try

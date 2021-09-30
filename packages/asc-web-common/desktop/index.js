@@ -25,6 +25,8 @@ export function regDesktop(
     userId: user.id,
   };
 
+  console.log("regDesktop", data);
+
   let extendedData;
 
   if (isEncryption) {

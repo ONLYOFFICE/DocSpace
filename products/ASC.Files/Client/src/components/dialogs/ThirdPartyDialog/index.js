@@ -64,6 +64,7 @@ const ServiceItem = (props) => {
 const ThirdPartyDialog = (props) => {
   const {
     t,
+    i18n,
     tReady,
     isAdmin,
     googleConnectItem,
@@ -122,6 +123,11 @@ const ThirdPartyDialog = (props) => {
 
     setThirdPartyDialogVisible(false);
   };
+
+  const yandexLogoUrl =
+    i18n && i18n.language === "ru-RU"
+      ? "images/services/logo_yandex_ru.svg"
+      : "images/services/logo_yandex_en.svg";
 
   return (
     <ModalDialog
@@ -223,7 +229,7 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={yandexConnectItem}
               onClick={onShowService}
-              src="images/services/logo_yandex_ru.svg"
+              src={yandexLogoUrl}
             />
           )}
           {webDavConnectItem && (
@@ -231,7 +237,7 @@ const ThirdPartyDialog = (props) => {
               onClick={onShowService}
               className="service-item service-text"
               data-title={webDavConnectItem[0]}
-              data-key={webDavConnectItem[0]}
+              data-provider_key={webDavConnectItem[0]}
               noSelect
             >
               {t("ConnextOtherAccount")}
