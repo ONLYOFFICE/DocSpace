@@ -23,7 +23,11 @@ class ProfileActions extends React.PureComponent {
   };
 
   componentDidMount() {
-    this.getAvatar();
+    if (this.props.userIsUpdate) {
+      this.getAvatar();
+    } else {
+      this.setState({ avatar: this.state.user.avatar });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
