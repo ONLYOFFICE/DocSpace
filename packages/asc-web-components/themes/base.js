@@ -423,7 +423,7 @@ const Base = {
   row: {
     minHeight: "47px",
     width: "100%",
-    borderBottom: `1px solid ${globalColors.grayLightMid}`,
+    borderBottom: globalColors.grayLightMid,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -473,7 +473,7 @@ const Base = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
+    backgroundColorVertical: "#e5e5e5", //"rgba(0, 0, 0, 0.1)",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
   },
 

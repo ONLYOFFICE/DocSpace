@@ -5,10 +5,20 @@ import Base from "../themes/base";
 
 const StyledRow = styled.div`
   cursor: default;
-
+  position: relative;
   min-height: ${(props) => props.theme.row.minHeight};
   width: ${(props) => props.theme.row.width};
-  border-bottom: ${(props) => props.theme.row.borderBottom};
+  border-bottom: 2px solid transparent;
+
+  ::after {
+    position: absolute;
+    display: block;
+    bottom: 0px;
+    width: 100%;
+    height: 1px;
+    background-color: ${(props) => props.theme.row.borderBottom};
+    content: "";
+  }
 
   display: flex;
   flex-direction: row;

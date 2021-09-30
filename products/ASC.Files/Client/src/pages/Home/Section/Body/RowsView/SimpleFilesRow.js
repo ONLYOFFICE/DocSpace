@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
@@ -11,8 +11,24 @@ import withContextOptions from "../../../../../HOCs/withContextOptions";
 import SharedButton from "../../../../../components/SharedButton";
 import ItemIcon from "../../../../../components/ItemIcon";
 
+const checkedStyle = css`
+  background: #f8f9f9;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  @media (max-width: 1024px) {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+`;
+
 const StyledSimpleFilesRow = styled(Row)`
-  background: ${(props) => props.checked && "#f8f9f9"};
+  ${(props) => props.checked && checkedStyle};
+  position: unset;
   cursor: ${(props) => props.checked && `url(images/cursor.palm.svg), auto`};
   margin-top: -2px;
   ${(props) =>
@@ -97,6 +113,7 @@ const SimpleFilesRow = (props) => {
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
+        style={{ borderLeft: "none", borderRight: "none" }}
       >
         <StyledSimpleFilesRow
           key={item.id}

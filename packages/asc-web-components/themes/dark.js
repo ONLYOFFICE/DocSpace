@@ -389,7 +389,7 @@ const Dark = {
   row: {
     minHeight: "47px",
     width: "100%",
-    borderBottom: `1px solid ${globalColors.grayLightMid}`,
+    borderBottom: globalColors.grayLightMid,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",

@@ -14,6 +14,9 @@ import withBadges from "../../../../../HOCs/withBadges";
 const sideColor = "#A3A9AE";
 
 const SimpleFilesRowContent = styled(RowContent)`
+  .row-main-container-wrapper {
+    width: 100%;
+  }
   .badge-ext {
     margin-right: 8px;
   }
