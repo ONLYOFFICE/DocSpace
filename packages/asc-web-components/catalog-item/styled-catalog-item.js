@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 import { tablet } from "../utils/device";
+import { isMobile } from "react-device-detect";
 
 import Text from "@appserver/components/text";
 
@@ -23,6 +24,16 @@ const badgeWithoutText = css`
     right: ${(props) =>
       props.theme.catalogItem.badgeWithoutText.tablet.position};
   }
+  ${isMobile &&
+  css`
+    min-width: ${(props) =>
+      props.theme.catalogItem.badgeWithoutText.tablet.size};
+    min-height: ${(props) =>
+      props.theme.catalogItem.badgeWithoutText.tablet.size};
+    top: ${(props) => props.theme.catalogItem.badgeWithoutText.tablet.position};
+    right: ${(props) =>
+      props.theme.catalogItem.badgeWithoutText.tablet.position};
+  `}
 `;
 
 const StyledCatalogItemBadgeWrapper = styled.div`
@@ -48,6 +59,14 @@ const StyledCatalogItemBadgeWrapper = styled.div`
     min-height: ${(props) =>
       props.showText && props.theme.catalogItem.badgeWrapper.tablet.height};
   }
+
+  ${isMobile &&
+  css`
+    min-width: ${(props) =>
+      props.showText && props.theme.catalogItem.badgeWrapper.tablet.width};
+    min-height: ${(props) =>
+      props.showText && props.theme.catalogItem.badgeWrapper.tablet.height};
+  `}
 `;
 
 StyledCatalogItemBadgeWrapper.defaultProps = { theme: Base };
@@ -71,6 +90,15 @@ const StyledCatalogItemInitialText = styled(Text)`
     font-size: ${(props) =>
       props.theme.catalogItem.initialText.tablet.fontSize};
   }
+
+  ${isMobile &&
+  css`
+    width: ${(props) => props.theme.catalogItem.initialText.tablet.width};
+    line-height: ${(props) =>
+      props.theme.catalogItem.initialText.tablet.lineHeight};
+    font-size: ${(props) =>
+      props.theme.catalogItem.initialText.tablet.fontSize};
+  `}
 `;
 
 StyledCatalogItemInitialText.defaultProps = { theme: Base };
@@ -91,6 +119,14 @@ const StyledCatalogItemText = styled(Text)`
     font-size: ${(props) => props.theme.catalogItem.text.tablet.fontSize};
     font-weight: ${(props) => props.theme.catalogItem.text.tablet.fontWeight};
   }
+
+  ${isMobile &&
+  css`
+    margin-left: ${(props) => props.theme.catalogItem.text.tablet.marginLeft};
+    line-height: ${(props) => props.theme.catalogItem.text.tablet.lineHeight};
+    font-size: ${(props) => props.theme.catalogItem.text.tablet.fontSize};
+    font-weight: ${(props) => props.theme.catalogItem.text.tablet.fontWeight};
+  `}
 `;
 
 StyledCatalogItemText.defaultProps = { theme: Base };
@@ -116,6 +152,15 @@ const StyledCatalogItemImg = styled.div`
       height: ${(props) => props.theme.catalogItem.img.svg.tablet.height};
     }
   }
+
+  ${isMobile &&
+  css`
+    height: ${(props) => props.theme.catalogItem.img.svg.tablet.height};
+    svg {
+      width: ${(props) => props.theme.catalogItem.img.svg.tablet.width};
+      height: ${(props) => props.theme.catalogItem.img.svg.tablet.height};
+    }
+  `}
 `;
 
 StyledCatalogItemImg.defaultProps = { theme: Base };
@@ -160,6 +205,16 @@ const StyledCatalogItemContainer = styled.div`
       props.isEndOfBlock &&
       props.theme.catalogItem.container.tablet.marginBottom};
   }
+
+  ${isMobile &&
+  css`
+    min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+    padding: ${(props) =>
+      props.showText && props.theme.catalogItem.container.tablet.padding};
+    margin-bottom: ${(props) =>
+      props.isEndOfBlock &&
+      props.theme.catalogItem.container.tablet.marginBottom};
+  `}
 `;
 StyledCatalogItemContainer.defaultProps = { theme: Base };
 
