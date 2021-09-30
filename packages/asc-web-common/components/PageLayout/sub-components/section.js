@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { tablet, size, mobile } from '@appserver/components/utils/device';
-import { isIOS, isTablet, isSafari, isChrome, isMobile } from 'react-device-detect';
+import { isIOS, isTablet, isSafari, isChrome, isMobileOnly, isMobile } from 'react-device-detect';
 
 const tabletProps = css`
   .section-header_filter {
@@ -22,6 +22,11 @@ const StyledSection = styled.section`
   @media ${mobile} {
     display: ${(props) => (!props.showText ? 'flex' : 'none')};
   }
+
+  ${isMobileOnly &&
+  css`
+    display: ${(props) => (!props.showText ? 'flex' : 'none')} !important;
+  `}
   //width: ${(props) => `${props.widthProp}px`};
   .layout-progress-bar {
     position: fixed;

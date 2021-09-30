@@ -334,7 +334,7 @@ class SettingsStore {
 
   toggleShowText = () => {
     this.showText = !this.showText;
-    this.userShowText = true;
+    this.userShowText = !this.userShowText;
   };
 
   get firebaseHelper() {

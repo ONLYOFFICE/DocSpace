@@ -1,25 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Backdrop from '@appserver/components/backdrop';
-import { mobile } from '@appserver/components/utils/device';
 import CrossIcon from '@appserver/components/public/static/images/cross.react.svg';
-
-const StyledBackdrop = styled(Backdrop)`
-  display: none;
-  width: 100vw;
-  height: 64px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: rgba(6, 22, 38, 0.15);
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
-  cursor: initial;
-  @media ${mobile} {
-    display: block;
-  }
-`;
 
 const StyledControlContainer = styled.div`
   background: #9a9ea3;
@@ -33,6 +15,7 @@ const StyledControlContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 290;
 `;
 
 const StyledCrossIcon = styled(CrossIcon)`
@@ -45,13 +28,10 @@ const StyledCrossIcon = styled(CrossIcon)`
 
 const CatalogBackdrop = (props) => {
   const { showText, onClick, ...rest } = props;
-
   return (
-    <StyledBackdrop visible={showText} {...rest}>
-      <StyledControlContainer onClick={onClick}>
-        <StyledCrossIcon />
-      </StyledControlContainer>
-    </StyledBackdrop>
+    <StyledControlContainer onClick={onClick} {...rest}>
+      <StyledCrossIcon />
+    </StyledControlContainer>
   );
 };
 

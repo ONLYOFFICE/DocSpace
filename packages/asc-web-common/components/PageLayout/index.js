@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Backdrop from '@appserver/components/backdrop';
-import { size, isDesktop, isTablet } from '@appserver/components/utils/device';
+import {
+  size,
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+  isDesktop as isDesktopUtils,
+} from '@appserver/components/utils/device';
 import { Provider } from '@appserver/components/utils/context';
-import { isMobile, isFirefox, isMobileOnly } from 'react-device-detect';
+import { isMobile, isDesktop, isTablet, isFirefox, isMobileOnly } from 'react-device-detect';
 import Article from './sub-components/article';
 import SubArticleHeader from './sub-components/article-header';
 import SubArticleMainButton from './sub-components/article-main-button';
@@ -26,6 +31,7 @@ import SubCatalogBackdrop from './sub-components/catalog-backdrop';
 import SubCatalogHeader from './sub-components/catalog-header';
 import SubCatalogMainButton from './sub-components/catalog-main-button';
 import SubCatalogBody from './sub-components/catalog-body';
+
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {
     z-index: 200;
@@ -115,15 +121,13 @@ class PageLayout extends React.Component {
     ) {
       this.backdropClick();
     }
-
-    if (isDesktop()) return this.props.setShowText(true);
-    if (isTablet() && !this.props.userShowText) return this.props.setShowText(false);
-    if (this.props.showText && isTablet() && !this.props.userShowText)
-      return this.props.setShowText(false);
-    if (this.props.showText && isMobile && !this.props.userShowText)
-      return this.props.setShowText(false);
-    if (!isTablet() && !isMobile && !this.props.showText && !this.props.userShowText)
-      return this.props.setShowText(true);
+    console.log('rerender');
+    if (isMobile && !this.props.userShowText && this.props.showText) this.props.setShowText(false);
+    if (isMobileUtils() && !isMobile && !this.props.userShowText && this.props.showText)
+      this.props.setShowText(false);
+    if (isTabletUtils() && !isMobile && !this.props.userShowText && this.props.showText)
+      this.props.setShowText(false);
+    if (isDesktopUtils() && !isMobile) this.props.setShowText(true);
   }
 
   componentDidMount() {
@@ -232,6 +236,7 @@ class PageLayout extends React.Component {
       isArticlePinned,
       isDesktop,
       showText,
+      userShowText,
       setShowText,
       toggleShowText,
     } = this.props;
@@ -311,28 +316,33 @@ class PageLayout extends React.Component {
       return (
         <>
           {isCatalogAvailable && (
-            <Catalog showText={showText} setShowText={setShowText}>
-              {isCatalogHeaderAvailable && (
+            <>
+              {showText && (isMobileOnly || window.innerWidth <= 375) && (
                 <>
-                  <SubCatalogBackdrop showText={showText} onClick={toggleShowText} />
+                  <SubCatalogBackdrop onClick={toggleShowText} />
+                  <Backdrop visible={true} zIndex={201} />
+                </>
+              )}
+              <Catalog showText={showText} setShowText={setShowText}>
+                {isCatalogHeaderAvailable && (
                   <SubCatalogHeader showText={showText} onClick={toggleShowText}>
                     {catalogHeaderContent ? catalogHeaderContent.props.children : null}
                   </SubCatalogHeader>
-                </>
-              )}
+                )}
 
-              {isCatalogMainButtonAvailable && (
-                <SubCatalogMainButton showText={showText}>
-                  {catalogMainButtonContent ? catalogMainButtonContent.props.children : null}
-                </SubCatalogMainButton>
-              )}
+                {isCatalogMainButtonAvailable && (
+                  <SubCatalogMainButton showText={showText}>
+                    {catalogMainButtonContent ? catalogMainButtonContent.props.children : null}
+                  </SubCatalogMainButton>
+                )}
 
-              {isCatalogBodyAvailable && (
-                <SubCatalogBody showText={showText}>
-                  {catalogBodyContent ? catalogBodyContent.props.children : null}
-                </SubCatalogBody>
-              )}
-            </Catalog>
+                {isCatalogBodyAvailable && (
+                  <SubCatalogBody showText={showText}>
+                    {catalogBodyContent ? catalogBodyContent.props.children : null}
+                  </SubCatalogBody>
+                )}
+              </Catalog>
+            </>
           )}
           {isBackdropAvailable && (
             <Backdrop zIndex={400} visible={isBackdropVisible} onClick={this.backdropClick} />
@@ -585,9 +595,9 @@ export default inject(({ auth }) => {
     setIsBackdropVisible,
     isDesktop: isDesktopClient,
     showText,
-    userShowText,
     setShowText,
     toggleShowText,
     showCatalog,
+    userShowText,
   };
 })(observer(PageLayout));

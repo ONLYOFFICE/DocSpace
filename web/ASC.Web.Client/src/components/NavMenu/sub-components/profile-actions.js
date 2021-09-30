@@ -7,11 +7,13 @@ import Link from '@appserver/components/link';
 import ProfileMenu from './profile-menu';
 import api from '@appserver/common/api';
 import { mobile } from '@appserver/components/utils/device';
+import { isMobileOnly } from 'react-device-detect';
 
 const StyledDiv = styled.div`
   @media ${mobile} {
-    display: ${(props) => (props.isProduct && props.showCatalog ? 'none' : 'block')};
+    display: ${(props) => (props.isProduct && props.showCatalog ? 'none !important' : 'block')};
   }
+  display: ${(props) => (props.isProduct && props.showCatalog && isMobileOnly ? 'none' : 'block')};
 `;
 class ProfileActions extends React.PureComponent {
   constructor(props) {

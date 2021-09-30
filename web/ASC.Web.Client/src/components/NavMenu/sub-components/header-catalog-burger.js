@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { mobile } from '@appserver/components/utils/device';
+import { isMobileOnly } from 'react-device-detect';
 import MenuIcon from '@appserver/components/public/static/images/menu.react.svg';
+import { mobile } from '@appserver/components/utils/device';
 
 const StyledIconBox = styled.div`
-  display: none;
-
   @media ${mobile} {
-    display: ${(props) => (props.isProduct && props.showCatalog ? 'flex' : 'none')};
-    align-items: center;
+    display: ${(props) => (props.isProduct && props.showCatalog ? 'flex !important' : 'none')};
   }
+  display: ${(props) => (props.isProduct && props.showCatalog && isMobileOnly ? 'flex' : 'none')};
+  align-items: center;
 `;
 
 const StyledMenuIcon = styled(MenuIcon)`

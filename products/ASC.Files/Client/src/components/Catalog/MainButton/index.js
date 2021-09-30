@@ -5,6 +5,7 @@ import MainButton from '@appserver/components/main-button';
 import DropDownItem from '@appserver/components/drop-down-item';
 import { withTranslation } from 'react-i18next';
 import { isMobile } from 'react-device-detect';
+import { isMobile as isMobileUtils } from '@appserver/components/utils/device';
 import Loaders from '@appserver/common/components/Loaders';
 import { FileAction, AppServerConfig } from '@appserver/common/constants';
 import { encryptionUploadDialog } from '../../../helpers/desktop';
@@ -22,6 +23,7 @@ class CatalogMainButtonContent extends React.Component {
       extension: format,
       id: -1,
     });
+    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   onUploadFileClick = () => {
@@ -32,6 +34,7 @@ class CatalogMainButtonContent extends React.Component {
         this.goToHomePage();
         startUpload([encryptedFile], null, t);
       });
+      if (isMobile || isMobileUtils()) this.props.toggleShowText();
     } else {
       this.inputFilesElement.click();
     }
@@ -43,12 +46,14 @@ class CatalogMainButtonContent extends React.Component {
     const { homepage, history, filter } = this.props;
     const urlFilter = filter.toUrlParams();
     history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`));
+    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   onFileChange = (e) => {
     const { startUpload, t } = this.props;
     //this.goToHomePage();
     startUpload(e.target.files, null, t);
+    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   onInputClick = (e) => (e.target.value = null);
@@ -143,7 +148,7 @@ CatalogMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
+export default inject(({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
   const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
   const { isPrivacyFolder } = treeFoldersStore;
   const { startUpload } = uploadDataStore;
@@ -157,6 +162,8 @@ export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
 
     setAction: fileActionStore.setAction,
     startUpload,
+
+    toggleShowText: auth.settingsStore.toggleShowText,
   };
 })(
   withRouter(

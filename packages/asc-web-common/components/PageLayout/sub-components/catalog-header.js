@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Heading from '@appserver/components/heading';
-import { mobile, tablet } from '@appserver/components/utils/device';
+import { isMobileOnly, isTablet } from 'react-device-detect';
 import MenuIcon from '@appserver/components/public/static/images/menu.react.svg';
+import { tablet, mobile } from '@appserver/components/utils/device';
 
 const StyledCatalogHeader = styled.div`
   padding: 12px 20px 13px;
@@ -12,14 +13,26 @@ const StyledCatalogHeader = styled.div`
   align-items: center;
 
   @media ${tablet} {
-    padding: 16px 20px 17px;
+    padding: 16px 16px 17px;
     justify-content: ${(props) => (props.showText ? 'flex-start' : 'center')};
   }
 
   @media ${mobile} {
     border-bottom: 1px solid #eceef1;
-    padding: 28px 20px 12px;
+    padding: 8px 16px 17px;
   }
+
+  ${isTablet &&
+  css`
+    padding: 16px 16px 17px;
+    justify-content: ${(props) => (props.showText ? 'flex-start' : 'center')};
+  `}
+
+  ${isMobileOnly &&
+  css`
+    border-bottom: 1px solid #eceef1 !important;
+    padding: 8px 16px 17px !important;
+  `}
 `;
 
 const StyledHeading = styled(Heading)`
@@ -30,9 +43,18 @@ const StyledHeading = styled(Heading)`
     display: ${(props) => (props.showText ? 'block' : 'none')};
     margin-left: ${(props) => props.showText && '12px'};
   }
+
   @media ${mobile} {
     margin-left: 0;
   }
+  ${isTablet &&
+  css` {
+    display: ${(props) => (props.showText ? 'block' : 'none')};
+    margin-left: ${(props) => props.showText && '12px'};`}
+  ${isMobileOnly &&
+  css`
+    margin-left: 0 !important;
+  `}
 `;
 
 const StyledIconBox = styled.div`
@@ -47,6 +69,16 @@ const StyledIconBox = styled.div`
   @media ${mobile} {
     display: none;
   }
+
+  ${isTablet &&
+  css`
+    display: flex !important;
+  `}
+
+  ${isMobileOnly &&
+  css`
+    display: none !important;
+  `}
 `;
 
 const StyledMenuIcon = styled(MenuIcon)`

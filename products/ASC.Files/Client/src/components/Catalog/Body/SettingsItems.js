@@ -8,6 +8,7 @@ import config from '../../../../package.json';
 import { AppServerConfig } from '@appserver/common/constants';
 import withLoader from '../../../HOCs/withLoader';
 import { isMobile } from '@appserver/components/utils/device';
+import { isMobileOnly } from 'react-device-detect';
 
 const PureSettingsItems = ({
   match,
@@ -40,7 +41,7 @@ const PureSettingsItems = ({
 
     setSelectedNode(['common']);
     setExpandSettingsTree(['common']);
-    if (isMobile() && showText) toggleShowText();
+    if (isMobile() || isMobileOnly) toggleShowText();
     history.push(combineUrl(AppServerConfig.proxyURL, config.homepage, '/settings/common'));
   };
 

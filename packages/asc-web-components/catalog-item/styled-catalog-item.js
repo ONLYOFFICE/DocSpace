@@ -99,6 +99,7 @@ const StyledCatalogItemImg = styled.div`
   position: relative;
   z-index: 1;
   pointer-events: none;
+  height: ${(props) => props.theme.catalogItem.img.svg.height};
 
   svg {
     width: ${(props) => props.theme.catalogItem.img.svg.width};
@@ -109,6 +110,7 @@ const StyledCatalogItemImg = styled.div`
   }
 
   @media ${tablet} {
+    height: ${(props) => props.theme.catalogItem.img.svg.tablet.height};
     svg {
       width: ${(props) => props.theme.catalogItem.img.svg.tablet.width};
       height: ${(props) => props.theme.catalogItem.img.svg.tablet.height};

@@ -1,29 +1,32 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
-import { isMobile } from 'react-device-detect';
-import { mobile, tablet, isTablet } from '@appserver/components/utils/device';
+import { isMobile, isMobileOnly, isTablet } from 'react-device-detect';
+import { mobile, tablet } from '@appserver/components/utils/device';
 
 const StyledCatalog = styled.div`
-  @media (hover: none) {
-    position: relative;
-    top: 48px;
+  position: relative;
+  @media ${mobile} {
+    top: 8px;
   }
+  top: ${(props) => isMobileOnly && (props.showText ? '64px' : '56px')} !important;
+
+  z-index: ${(props) => (props.showText ? '202' : '100')};
   .resizable-block {
     display: flex;
     flex-direction: column;
-    min-width: 256px;
-    width: 256px;
+    min-width: ${(props) => (props.showText ? '256px' : '52px')};
+    width: ${(props) => (props.showText ? '256px' : '52px')};
     height: 100% !important;
     background: #f8f9f9;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     .resizable-border {
       div {
         cursor: ew-resize !important;
       }
     }
-
     @media ${tablet} {
       min-width: ${(props) => (props.showText ? '240px' : '52px')};
       max-width: ${(props) => (props.showText ? '240px' : '52px')};
@@ -35,10 +38,28 @@ const StyledCatalog = styled.div`
     @media ${mobile} {
       display: ${(props) => (props.showText ? 'flex' : 'none')};
       min-width: 100vw;
-      width: 100vw;
+      width: 100%;
       margin: 0;
       padding: 0;
     }
+
+    ${isTablet &&
+    css`
+      min-width: ${(props) => (props.showText ? '240px' : '52px')};
+      max-width: ${(props) => (props.showText ? '240px' : '52px')};
+      .resizable-border {
+        display: none;
+      }
+    `}
+
+    ${isMobileOnly &&
+    css`
+      display: ${(props) => (props.showText ? 'flex' : 'none')};
+      min-width: 100vw !important;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    `}
   }
 `;
 
@@ -58,7 +79,7 @@ const Catalog = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (isMobile) {
+    if (isMobileOnly) {
       window.addEventListener('popstate', hideText);
       return () => window.removeEventListener('popstate', hideText);
     }

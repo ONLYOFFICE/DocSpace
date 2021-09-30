@@ -10,7 +10,7 @@ import { isMobile, tablet } from '@appserver/components/utils/device';
 import FilesFilter from '@appserver/common/api/files/filter';
 import SettingsItems from './SettingsItems';
 import { combineUrl } from '@appserver/common/utils';
-import { isDesktop, isTablet } from 'react-device-detect';
+import { isDesktop, isTablet, isMobileOnly } from 'react-device-detect';
 import ThirdPartyList from './ThirdPartyList';
 import DownloadAppList from './DownloadAppList';
 import Banner from './Banner';
@@ -51,7 +51,7 @@ const CatalogBodyContent = (props) => {
     if (window.location.pathname.indexOf('/filter') > 0) {
       fetchFiles(data, null, true, false)
         .then(() => {
-          isMobile() && toggleShowText();
+          (isMobileOnly || isMobile()) && toggleShowText();
         })
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
@@ -62,7 +62,7 @@ const CatalogBodyContent = (props) => {
       filter.folder = data;
 
       const urlFilter = filter.toUrlParams();
-
+      if (isMobileOnly || isMobile()) toggleShowText();
       history.push(combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`));
     }
   }, []);
