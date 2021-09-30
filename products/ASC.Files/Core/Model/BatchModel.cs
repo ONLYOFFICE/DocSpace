@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Api.Collections;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ASC.Files.Model
 {
-    public class BaseBatchModel<T>
+    public class BaseBatchModel
     {
-        public IEnumerable<T> FolderIds { get; set; }
-        public IEnumerable<T> FileIds { get; set; }
+        public IEnumerable<JsonElement> FolderIds { get; set; }
+        public IEnumerable<JsonElement> FileIds { get; set; }
         public BaseBatchModel()
         {
-            FolderIds = new List<T>();
-            FileIds = new List<T>();
+            FolderIds = new List<JsonElement>();
+            FileIds = new List<JsonElement>();
         }
     }
 
-    public class DownloadModel : BaseBatchModel<JsonElement>
+    public class DownloadModel : BaseBatchModel
     {
         public IEnumerable<ItemKeyValuePair<JsonElement, string>> FileConvertIds { get; set; }
         public DownloadModel() : base()
@@ -30,10 +32,92 @@ namespace ASC.Files.Model
         }
     }
 
-    public class DeleteBatchModel : BaseBatchModel<JsonElement>
+    public class DeleteBatchModel : BaseBatchModel
     {
         public bool DeleteAfter { get; set; }
         public bool Immediately { get; set; }
+    }
+
+
+    public class DeleteBatchModelBinder : BaseBatchModelBinder
+    {
+        public override Task BindModelAsync(ModelBindingContext bindingContext)
+        {
+            base.BindModelAsync(bindingContext);
+            if (bindingContext == null)
+            {
+                throw new ArgumentNullException(nameof(bindingContext));
+            }
+
+            var baseResult = bindingContext.Result.Model as BaseBatchModel;
+
+            var result = new DeleteBatchModel();
+
+            result.FileIds = baseResult.FileIds;
+            result.FolderIds = baseResult.FolderIds;
+
+            var modelName = nameof(result.DeleteAfter);
+            var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+
+            if (valueProviderResult != ValueProviderResult.None)
+            {
+                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+                if (bool.TryParse(valueProviderResult.FirstValue, out var deleteAfter))
+                {
+                    result.DeleteAfter = deleteAfter;
+                }
+            }
+
+            modelName = nameof(result.Immediately);
+            valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+
+            if (valueProviderResult != ValueProviderResult.None)
+            {
+                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+                if (bool.TryParse(valueProviderResult.FirstValue, out var immediately))
+                {
+                    result.Immediately = immediately;
+                }
+            }
+
+            bindingContext.Result = ModelBindingResult.Success(result);
+
+            return Task.CompletedTask;
+        }
+    }
+
+    public class BaseBatchModelBinder : IModelBinder
+    {
+        public virtual Task BindModelAsync(ModelBindingContext bindingContext)
+        {
+            if (bindingContext == null)
+            {
+                throw new ArgumentNullException(nameof(bindingContext));
+            }
+
+            var result = new BaseBatchModel();
+
+            result.FileIds = ParseQuery(bindingContext, nameof(result.FileIds));
+            result.FolderIds = ParseQuery(bindingContext, nameof(result.FolderIds));
+
+            bindingContext.Result = ModelBindingResult.Success(result);
+
+            return Task.CompletedTask;
+        }
+
+        internal List<JsonElement> ParseQuery(ModelBindingContext bindingContext, string modelName)
+        {
+            var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+
+            if (valueProviderResult != ValueProviderResult.None)
+            {
+                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+
+                return valueProviderResult.Select(BatchModel.ParseQueryParam).ToList();
+            }
+
+            return new List<JsonElement>();
+        }
     }
 
     public class DeleteModel
@@ -42,7 +126,7 @@ namespace ASC.Files.Model
         public bool Immediately { get; set; }
     }
 
-    public class BatchModel : BaseBatchModel<JsonElement>
+    public class BatchModel : BaseBatchModel
     {
         public JsonElement DestFolderId { get; set; }
         public FileConflictResolveType ConflictResolveType { get; set; }

@@ -460,7 +460,7 @@ namespace ASC.Files.Helpers
                 .ToList();
         }
 
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<JsonElement> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel model)
         {
             return FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()).Select(FileOperationWraperHelper.Get).ToList();
         }

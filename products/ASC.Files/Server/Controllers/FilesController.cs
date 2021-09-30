@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -61,7 +60,6 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
 
 using Newtonsoft.Json.Linq;
 
@@ -1299,14 +1297,14 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/markasread")]
-        public IEnumerable<FileOperationWraper> MarkAsReadFromBody([FromBody] BaseBatchModel<JsonElement> model)
+        public IEnumerable<FileOperationWraper> MarkAsReadFromBody([FromBody] BaseBatchModel model)
         {
             return FilesControllerHelperString.MarkAsRead(model);
         }
 
         [Update("fileops/markasread")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> MarkAsReadFromForm([FromForm] BaseBatchModel<JsonElement> model)
+        public IEnumerable<FileOperationWraper> MarkAsReadFromForm([FromForm] BaseBatchModel model)
         {
             return FilesControllerHelperString.MarkAsRead(model);
         }
@@ -1377,7 +1375,7 @@ namespace ASC.Api.Documents
 
         [Update("fileops/delete")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> DeleteBatchItemsFromForm([FromForm] DeleteBatchModel batch)
+        public IEnumerable<FileOperationWraper> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchModel batch)
         {
             return FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately)
                 .Select(FileOperationWraperHelper.Get);
@@ -1551,7 +1549,7 @@ namespace ASC.Api.Documents
         }
 
         [Create("share")]
-        public IEnumerable<FileShareWrapper> GetSecurityInfoFromBody([FromBody] BaseBatchModel<JsonElement> model)
+        public IEnumerable<FileShareWrapper> GetSecurityInfoFromBody([FromBody] BaseBatchModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -1564,7 +1562,7 @@ namespace ASC.Api.Documents
 
         [Create("share")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm] BaseBatchModel<JsonElement> model)
+        public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm] BaseBatchModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -1686,7 +1684,7 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <returns>Shared file information</returns>
         [Delete("share")]
-        public bool RemoveSecurityInfo(BaseBatchModel<JsonElement> model)
+        public bool RemoveSecurityInfo(BaseBatchModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -1877,19 +1875,19 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File IDs</param>
         /// <returns></returns>
         [Create("favorites")]
-        public bool AddFavoritesFromBody([FromBody] BaseBatchModel<JsonElement> model)
+        public bool AddFavoritesFromBody([FromBody] BaseBatchModel model)
         {
             return AddFavorites(model);
         }
 
         [Create("favorites")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool AddFavoritesFromForm([FromForm] BaseBatchModel<JsonElement> model)
+        public bool AddFavoritesFromForm([FromForm] BaseBatchModel model)
         {
             return AddFavorites(model);
         }
 
-        private bool AddFavorites(BaseBatchModel<JsonElement> model)
+        private bool AddFavorites(BaseBatchModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -1920,7 +1918,7 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File IDs</param>
         /// <returns></returns>
         [Delete("favorites")]
-        public bool DeleteFavorites(BaseBatchModel<JsonElement> model)
+        public bool DeleteFavorites(BaseBatchModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -2207,14 +2205,14 @@ namespace ASC.Api.Documents
         /// <visible>false</visible>
         /// <returns></returns>
         [Create("thumbnails")]
-        public IEnumerable<JsonElement> CreateThumbnailsFromBody([FromBody] BaseBatchModel<JsonElement> model)
+        public IEnumerable<JsonElement> CreateThumbnailsFromBody([FromBody] BaseBatchModel model)
         {
             return FileStorageService.CreateThumbnails(model.FileIds.ToList());
         }
 
         [Create("thumbnails")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm] BaseBatchModel<JsonElement> model)
+        public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm] BaseBatchModel model)
         {
             return FileStorageService.CreateThumbnails(model.FileIds.ToList());
         }
@@ -2538,46 +2536,6 @@ namespace ASC.Api.Documents
             /// Is operation processed.
             /// </summary>
             public string Processed { get; set; }
-        }
-    }
-
-    public class BodySpecificAttribute : Attribute, IActionConstraint
-    {
-        public BodySpecificAttribute()
-        {
-        }
-
-        public int Order
-        {
-            get
-            {
-                return 0;
-            }
-        }
-
-        public bool Accept(ActionConstraintContext context)
-        {
-            var options = new JsonSerializerOptions
-            {
-                AllowTrailingCommas = true,
-                PropertyNameCaseInsensitive = true
-            };
-
-            try
-            {
-                context.RouteContext.HttpContext.Request.EnableBuffering();
-                _ = JsonSerializer.DeserializeAsync<BaseBatchModel<int>>(context.RouteContext.HttpContext.Request.Body, options).Result;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                context.RouteContext.HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
-            }
-
         }
     }
 }
