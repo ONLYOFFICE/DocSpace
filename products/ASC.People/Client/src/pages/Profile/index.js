@@ -1,17 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
-import toastr from "studio/toastr";
+import React from 'react';
+import PropTypes from 'prop-types';
+import PageLayout from '@appserver/common/components/PageLayout';
+import toastr from 'studio/toastr';
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
   ArticleBodyContent,
-} from "../../components/Article";
-import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { withRouter } from "react-router";
+} from '../../components/Article';
+import {
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+  CatalogBodyContent,
+} from '../../components/Catalog';
+import { SectionHeaderContent, SectionBodyContent } from './Section';
+import { withRouter } from 'react-router';
 
-import { inject, observer } from "mobx-react";
-import { withTranslation } from "react-i18next";
+import { inject, observer } from 'mobx-react';
+import { withTranslation } from 'react-i18next';
 
 class Profile extends React.Component {
   componentDidMount() {
@@ -32,19 +37,17 @@ class Profile extends React.Component {
     setFirstLoad(false);
     setIsEditTargetUser(false);
 
-    if (!userId) userId = "@self";
+    if (!userId) userId = '@self';
 
-    setDocumentTitle(t("Common:Profile"));
-    this.documentElement = document.getElementsByClassName("hidingHeader");
-    const queryString = ((location && location.search) || "").slice(1);
-    const queryParams = queryString.split("&");
-    const arrayOfQueryParams = queryParams.map((queryParam) =>
-      queryParam.split("=")
-    );
+    setDocumentTitle(t('Common:Profile'));
+    this.documentElement = document.getElementsByClassName('hidingHeader');
+    const queryString = ((location && location.search) || '').slice(1);
+    const queryParams = queryString.split('&');
+    const arrayOfQueryParams = queryParams.map((queryParam) => queryParam.split('='));
     const linkParams = Object.fromEntries(arrayOfQueryParams);
 
-    if (linkParams.email_change && linkParams.email_change === "success") {
-      toastr.success(t("ChangeEmailSuccess"));
+    if (linkParams.email_change && linkParams.email_change === 'success') {
+      toastr.success(t('ChangeEmailSuccess'));
     }
     if (!profile || profile.userName !== userId) {
       setIsLoading(true);
@@ -57,7 +60,7 @@ class Profile extends React.Component {
 
     if (!profile && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
-        this.documentElement[i].style.transition = "none";
+        this.documentElement[i].style.transition = 'none';
       }
     }
   }
@@ -74,7 +77,7 @@ class Profile extends React.Component {
 
     if (profile && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
-        this.documentElement[i].style.transition = "";
+        this.documentElement[i].style.transition = '';
       }
     }
   }
@@ -89,21 +92,44 @@ class Profile extends React.Component {
   render() {
     //console.log("Profile render");
 
-    const { profile } = this.props;
+    const { profile, showCatalog, isAdmin } = this.props;
 
     return (
       <PageLayout withBodyAutoFocus>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
+        {showCatalog && (
+          <PageLayout.CatalogHeader>
+            <CatalogHeaderContent />
+          </PageLayout.CatalogHeader>
+        )}
 
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
+        {showCatalog && isAdmin && (
+          <PageLayout.CatalogMainButton>
+            <CatalogMainButtonContent />
+          </PageLayout.CatalogMainButton>
+        )}
+        {showCatalog && (
+          <PageLayout.CatalogBody>
+            <CatalogBodyContent />
+          </PageLayout.CatalogBody>
+        )}
 
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
+        {!showCatalog && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
+
+        {!showCatalog && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
+
+        {!showCatalog && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
         <PageLayout.SectionHeader>
           <SectionHeaderContent profile={profile} />
@@ -150,6 +176,7 @@ export default withRouter(
       isEditTargetUser,
       setIsEditTargetUser,
       setLoadedProfile,
+      showCatalog: auth.settingsStore.showCatalog,
     };
-  })(observer(withTranslation(["Profile", "Common"])(Profile)))
+  })(observer(withTranslation(['Profile', 'Common'])(Profile))),
 );

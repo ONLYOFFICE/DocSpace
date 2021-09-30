@@ -14,7 +14,7 @@ import {
   StyledCatalogItemInitialText,
 } from "./styled-catalog-item";
 
-const getInitial = (text) => text.substring(0, 1);
+const getInitial = (text) => text.substring(0, 1).toUpperCase();
 
 const CatalogItem = (props) => {
   // console.log("render");

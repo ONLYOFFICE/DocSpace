@@ -73,7 +73,7 @@ StyledCatalogItemBadgeWrapper.defaultProps = { theme: Base };
 
 const StyledCatalogItemInitialText = styled(Text)`
   position: absolute;
-  top: 3px;
+  top: 2px;
   left: 0;
   text-align: center;
   width: ${(props) => props.theme.catalogItem.initialText.width};
@@ -171,6 +171,8 @@ const StyledCatalogItemSibling = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
+  min-height: ${(props) => props.theme.catalogItem.container.height};
+  max-height: ${(props) => props.theme.catalogItem.container.height};
 
   background-color: ${(props) =>
     props.isActive && props.theme.catalogItem.sibling.active.background};
@@ -179,6 +181,17 @@ const StyledCatalogItemSibling = styled.div`
     background-color: ${(props) =>
       props.theme.catalogItem.sibling.hover.background};
   }
+
+  @media ${tablet} {
+    min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+    max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+  }
+
+  ${isMobile &&
+  css`
+    min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+    max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+  `}
 `;
 
 StyledCatalogItemSibling.defaultProps = { theme: Base };
@@ -189,6 +202,7 @@ const StyledCatalogItemContainer = styled.div`
   align-items: center;
   min-width: ${(props) => props.theme.catalogItem.container.width};
   min-height: ${(props) => props.theme.catalogItem.container.height};
+  max-height: ${(props) => props.theme.catalogItem.container.height};
   position: relative;
   box-sizing: border-box;
   padding: ${(props) =>
@@ -199,6 +213,7 @@ const StyledCatalogItemContainer = styled.div`
 
   @media ${tablet} {
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+    max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     padding: ${(props) =>
       props.showText && props.theme.catalogItem.container.tablet.padding};
     margin-bottom: ${(props) =>
@@ -209,6 +224,7 @@ const StyledCatalogItemContainer = styled.div`
   ${isMobile &&
   css`
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+    max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     padding: ${(props) =>
       props.showText && props.theme.catalogItem.container.tablet.padding};
     margin-bottom: ${(props) =>
