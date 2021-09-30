@@ -339,7 +339,7 @@ class FilesStore {
           if (!requestCounter) return;
           requestCounter--;
 
-          if (folderId === "@my" && !this.isInit) {
+          if (folderId === "@my" /*  && !this.isInit */) {
             setTimeout(() => {
               return request();
             }, 5000);

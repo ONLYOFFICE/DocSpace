@@ -1237,9 +1237,9 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
         [Read("fileops/move")]
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck()
+        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
         {
-            return FilesControllerHelperString.MoveOrCopyBatchCheck(BatchModel.FromQuery(HttpContext));
+            return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
         }
 
         /// <summary>
@@ -1261,7 +1261,7 @@ namespace ASC.Api.Documents
 
         [Update("fileops/move")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> MoveBatchItemsFromForm([FromForm] BatchModel batchModel)
+        public IEnumerable<FileOperationWraper> MoveBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
         {
             return FilesControllerHelperString.MoveBatchItems(batchModel);
         }
@@ -1285,7 +1285,7 @@ namespace ASC.Api.Documents
 
         [Update("fileops/copy")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> CopyBatchItemsFromForm([FromForm] BatchModel batchModel)
+        public IEnumerable<FileOperationWraper> CopyBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
         {
             return FilesControllerHelperString.CopyBatchItems(batchModel);
         }
