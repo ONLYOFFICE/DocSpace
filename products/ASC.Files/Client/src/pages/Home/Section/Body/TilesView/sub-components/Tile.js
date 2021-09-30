@@ -101,12 +101,22 @@ const StyledTile = styled.div`
     opacity: ${(props) => (props.checked ? 1 : 0)};
     flex: 0 0 16px;
     margin-right: 4px;
+
+    @media ${tablet} {
+      opacity: 1;
+    }
   }
 
   .file-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
     margin-right: 4px;
+    margin-top: 3px;
+
+    @media ${tablet} {
+      display: flex;
+      margin-top: 2px;
+    }
   }
 
   .file-icon {
@@ -116,8 +126,12 @@ const StyledTile = styled.div`
     user-select: none;
     margin-top: 3px;
 
-    height: 32px;
-    width: 32px;
+    height: 24px;
+    width: 24px;
+
+    @media ${tablet} {
+      display: none;
+    }
   }
 
   :hover {

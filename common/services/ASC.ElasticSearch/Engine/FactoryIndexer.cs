@@ -182,9 +182,9 @@ namespace ASC.ElasticSearch
             return true;
         }
 
-        public bool CanIndexByContent()
+        public bool CanIndexByContent(T t)
         {
-            return SearchSettingsHelper.CanIndexByContent<T>(TenantManager.GetCurrentTenant().TenantId);
+            return Support(t) && SearchSettingsHelper.CanIndexByContent<T>(TenantManager.GetCurrentTenant().TenantId);
         }
 
         public bool Index(T data, bool immediately = true)

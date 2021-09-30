@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Net.Mime;
 
+using ASC.Files.Core.Model;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.Files.Model
 {
-    public class UploadModel
+    public class UploadModel : IModelWithFile
     {
         public IFormFile File { get; set; }
         public ContentType ContentType { get; set; }

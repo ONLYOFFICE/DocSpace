@@ -445,6 +445,7 @@ class MediaViewer extends React.Component {
       canDelete,
       canDownload,
       errorLabel,
+      previewFile,
     } = this.props;
 
     const currentFileId =
@@ -540,7 +541,7 @@ class MediaViewer extends React.Component {
         <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
           {!isImage && (
             <span>
-              {canDelete(currentFileId) && (
+              {canDelete(currentFileId) && !previewFile && (
                 <ControlBtn onClick={this.onDelete}>
                   <div className="deleteBtnContainer">
                     <StyledMediaDeleteIcon size="scale" />
@@ -578,6 +579,7 @@ MediaViewer.propTypes = {
   onEmptyPlaylistError: PropTypes.func,
   deleteDialogVisible: PropTypes.bool,
   errorLabel: PropTypes.string,
+  previewFile: PropTypes.bool,
 };
 
 MediaViewer.defaultProps = {
@@ -590,6 +592,7 @@ MediaViewer.defaultProps = {
   canDownload: () => {
     return true;
   },
+  previewFile: false,
 };
 
 export default MediaViewer;
