@@ -27,6 +27,30 @@ const StyledTableRow = styled(TableRow)`
     background: ${(props) => props.checked && "#f8f9f9 !important"};
     cursor: ${(props) => props.checked && "url(images/cursor.palm.svg), auto"};
   }
+
+  .table-container_row-checkbox-wrapper {
+    width: 50px;
+    margin-left: -24px;
+    padding-left: 24px;
+    border-bottom: 1px solid;
+    border-image-slice: 1;
+    border-image-source: ${(props) =>
+      !props.checked
+        ? `linear-gradient(to right, #ffffff 24px, #eceef1 24px)`
+        : `linear-gradient(to right, #f8f9f9 24px, #eceef1 24px)`};
+  }
+
+  .table-container_row-context-menu-wrapper {
+    margin-right: -20x;
+    width: 28px;
+    padding-right: 20px;
+    border-bottom: 1px solid;
+    border-image-slice: 1;
+    border-image-source: ${(props) =>
+      !props.checked
+        ? `linear-gradient(to left, #ffffff 24px, #eceef1 24px)`
+        : `linear-gradient(to left, #f8f9f9 24px, #eceef1 24px)`};
+  }
 `;
 
 const StyledDragAndDrop = styled(DragAndDrop)`
