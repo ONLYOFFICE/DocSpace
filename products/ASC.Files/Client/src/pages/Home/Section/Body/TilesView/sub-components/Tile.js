@@ -125,6 +125,7 @@ const StyledTile = styled.div`
     margin-right: 4px;
     user-select: none;
     margin-top: 3px;
+    margin-top: -4px;
 
     height: 24px;
     width: 24px;
@@ -132,6 +133,10 @@ const StyledTile = styled.div`
     @media ${tablet} {
       display: none;
     }
+  }
+
+  .file-icon_container {
+    min-width: 28px;
   }
 
   :hover {
