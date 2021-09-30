@@ -148,7 +148,7 @@ namespace ASC.Files.Model
             if (valueProviderResult != ValueProviderResult.None)
             {
                 bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                result.DestFolderId = BatchModel.ParseQueryParam(valueProviderResult.FirstValue);
+                result.DestFolderId = BaseBatchModelBinder.ParseQueryParam(valueProviderResult.FirstValue);
             }
 
             bindingContext.Result = ModelBindingResult.Success(result);
