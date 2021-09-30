@@ -7,9 +7,7 @@ import Loader from "@appserver/components/loader";
 import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
-
 import SelectFolderDialog from "files/SelectFolderDialog";
-
 import { StyledComponent } from "./styled-backup";
 import BackupListModalDialog from "./sub-components-restore-backup/backupListModalDialog";
 import Documents from "./sub-components-restore-backup/documents";
@@ -19,10 +17,7 @@ import LocalFile from "./sub-components-restore-backup/localFile";
 import { StyledRestoreModules } from "./styled-backup";
 import toastr from "@appserver/components/toast/toastr";
 import { startRestore } from "../../../../../../../../packages/asc-web-common/api/portal";
-const ICON_URL = "/images/icons/24/file_archive.svg";
-const FILTER_TYPE = 10;
-const FILTER_VALUE = "gz";
-const WITH_SUBFOLDERS = true;
+
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -37,10 +32,10 @@ class RestoreBackup extends React.Component {
       isCheckedThirdPartyStorage: false,
       isCheckedLocalFile: false,
       selectedFileId: "",
+      backupId: "",
+      storageType: "",
+      storageParams: "",
     };
-    this.backupId = "";
-    this.storageType = "";
-    this.storageParams = "";
   }
 
   componentDidMount() {
@@ -247,14 +242,23 @@ class RestoreBackup extends React.Component {
   };
 
   onSetRestoreParams = (backupId, storageType, storageParams) => {
-    this.backupId = backupId;
-    this.storageType = storageType;
-    this.storageParams = storageParams;
+    this.setState({
+      backupId,
+      storageType,
+      storageParams,
+    });
   };
 
   onRestoreClick = () => {
     console.log("restore button");
-    const { isNotify, isCheckedDocuments, selectedFileId } = this.state;
+    const {
+      isNotify,
+      isCheckedDocuments,
+      selectedFileId,
+      backupId,
+      storageType,
+      storageParams,
+    } = this.state;
 
     if (isCheckedDocuments) {
       this.backupId = "";
@@ -370,10 +374,6 @@ class RestoreBackup extends React.Component {
             isPanelVisible={isPanelVisible}
             onClose={this.onPanelClose}
             onClickInput={this.onClickInput}
-            iconUrl={ICON_URL}
-            filterType={FILTER_TYPE}
-            filterValue={FILTER_VALUE}
-            withSubfolders={WITH_SUBFOLDERS}
             onSelectFile={this.onSelectFile}
           />
         )}
@@ -382,10 +382,6 @@ class RestoreBackup extends React.Component {
             isPanelVisible={isPanelVisible}
             onClose={this.onPanelClose}
             onClickInput={this.onClickInput}
-            iconUrl={ICON_URL}
-            filterType={FILTER_TYPE}
-            filterValue={FILTER_VALUE}
-            withSubfolders={WITH_SUBFOLDERS}
             onSelectFile={this.onSelectFile}
           />
         )}
@@ -404,7 +400,6 @@ class RestoreBackup extends React.Component {
             t={t}
             isVisibleDialog={isVisibleDialog}
             isLoading={isLoading}
-            iconUrl={ICON_URL}
             onModalClose={this.onModalClose}
             isNotify={isNotify}
           />
