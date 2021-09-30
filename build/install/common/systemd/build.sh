@@ -60,6 +60,7 @@ SERVICE_NAME=(
 	crm
 	calendar
 	mail
+	ssoauth
 	)
 
 reassign_values (){
@@ -162,6 +163,11 @@ reassign_values (){
 		SERVICE_PORT="5022"
 		WORK_DIR="${BASE_DIR}/products/ASC.Mail/server/"
 		EXEC_FILE="ASC.Mail.dll"
+	;;
+	ssoauth )
+		SERVICE_PORT="9833"
+		WORK_DIR="${BASE_DIR}/services/ASC.SsoAuth.Svc/"
+		EXEC_FILE="ASC.SsoAuth.Svc.dll"
 	;;
   esac
   SERVICE_NAME="$1"
