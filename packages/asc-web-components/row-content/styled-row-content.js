@@ -91,7 +91,7 @@ MainContainerWrapper.defaultProps = { theme: Base };
 const MainContainer = styled.div`
   height: 20px;
   margin-right: 8px;
-  max-width: 86%;
+  max-width: 100%;
 
   ${(props) =>
     (props.widthProp && props.widthProp < size.tablet) || props.isMobile
