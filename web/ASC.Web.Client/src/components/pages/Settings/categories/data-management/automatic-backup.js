@@ -22,7 +22,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 
-import { StyledModules, StyledComponent } from "./styled-backup";
+import { StyledModules, StyledAutoBackup } from "./styled-backup";
 import ThirdPartyModule from "./sub-components-automatic-backup/thirdPartyModule";
 import DocumentsModule from "./sub-components-automatic-backup/documentsModule";
 import ThirdPartyStorageModule from "./sub-components-automatic-backup/thirdPartyStorageModule";
@@ -667,7 +667,7 @@ class AutomaticBackup extends React.PureComponent {
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledComponent>
+      <StyledAutoBackup>
         <RadioButtonGroup
           className="automatic-backup_main "
           name={"0"}
@@ -767,9 +767,6 @@ class AutomaticBackup extends React.PureComponent {
               <Text className="category-item-description">
                 {t("ThirdPartyResourceDescription")}
               </Text>
-              <Text className="category-item-description note_description">
-                {t("ThirdPartyResourceNoteDescription")}
-              </Text>
 
               {isShowThirdParty && (
                 <ThirdPartyModule
@@ -822,9 +819,7 @@ class AutomaticBackup extends React.PureComponent {
               <Text className="category-item-description">
                 {t("ThirdPartyStorageDescription")}
               </Text>
-              <Text className="category-item-description note_description">
-                {t("ThirdPartyStorageNoteDescription")}
-              </Text>
+
               {isShowThirdPartyStorage && (
                 <ThirdPartyStorageModule
                   isCopyingToLocal={isCopyingToLocal}
@@ -887,7 +882,7 @@ class AutomaticBackup extends React.PureComponent {
             onClick={this.onClickFloatingButton}
           />
         )}
-      </StyledComponent>
+      </StyledAutoBackup>
     );
   }
 }

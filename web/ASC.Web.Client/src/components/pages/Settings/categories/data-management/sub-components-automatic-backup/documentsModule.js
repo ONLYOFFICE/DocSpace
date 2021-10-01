@@ -11,7 +11,7 @@ import {
 
 import toastr from "@appserver/components/toast/toastr";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
-import { StyledComponent } from "../styled-backup";
+import { StyledAutoBackup } from "../styled-backup";
 import TextInput from "@appserver/components/text-input";
 
 let numberPeriodFromSessionStorage = null;
@@ -607,9 +607,9 @@ class DocumentsModule extends React.Component {
               isSavingProcess={isLoadingData}
             />
           ) : (
-            <StyledComponent>
+            <StyledAutoBackup>
               <TextInput className="input-with-folder-path" isDisabled={true} />
-            </StyledComponent>
+            </StyledAutoBackup>
           )}
           <ScheduleComponent
             weeklySchedule={weeklySchedule}

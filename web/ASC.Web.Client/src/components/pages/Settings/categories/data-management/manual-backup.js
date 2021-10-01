@@ -11,7 +11,7 @@ import ThirdPartyStorageModule from "./sub-components-manual-backup/ThirdPartySt
 
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
-import { StyledModules, StyledComponent } from "./styled-backup";
+import { StyledModules, StyledManualBackup } from "./styled-backup";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
@@ -388,7 +388,7 @@ class ManualBackup extends React.Component {
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledComponent>
+      <StyledManualBackup>
         <StyledModules>
           <RadioButton
             fontSize="13px"
@@ -536,7 +536,7 @@ class ManualBackup extends React.Component {
             percent={downloadingProgress}
           />
         )}
-      </StyledComponent>
+      </StyledManualBackup>
     );
   }
 }

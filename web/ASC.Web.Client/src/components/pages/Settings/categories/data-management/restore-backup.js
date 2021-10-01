@@ -8,13 +8,12 @@ import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
 import SelectFolderDialog from "files/SelectFolderDialog";
-import { StyledComponent } from "./styled-backup";
+import { StyledRestoreBackup, StyledRestoreModules } from "./styled-backup";
 import BackupListModalDialog from "./sub-components-restore-backup/backupListModalDialog";
 import Documents from "./sub-components-restore-backup/documents";
 import ThirdPartyResources from "./sub-components-restore-backup/thirdPartyResources";
 import ThirdPartyStorages from "./sub-components-restore-backup/thirdPartyStorages";
 import LocalFile from "./sub-components-restore-backup/localFile";
-import { StyledRestoreModules } from "./styled-backup";
 import toastr from "@appserver/components/toast/toastr";
 import { startRestore } from "../../../../../../../../packages/asc-web-common/api/portal";
 
@@ -294,7 +293,7 @@ class RestoreBackup extends React.Component {
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledComponent>
+      <StyledRestoreBackup>
         <Text className="category-item-description">
           {t("DataRestoreDescription")}
         </Text>
@@ -438,7 +437,7 @@ class RestoreBackup extends React.Component {
           size="medium"
           tabIndex={10}
         />
-      </StyledComponent>
+      </StyledRestoreBackup>
     );
   }
 }

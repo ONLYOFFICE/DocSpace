@@ -15,7 +15,7 @@ import TextInput from "@appserver/components/text-input";
 import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
-import { StyledComponent } from "../styled-backup";
+import { StyledAutoBackup } from "../styled-backup";
 
 let numberPeriodFromSessionStorage = null;
 let dayFromSessionStorage = "";
@@ -611,9 +611,9 @@ class ThirdPartyModule extends React.Component {
               isSavingProcess={isLoadingData}
             />
           ) : (
-            <StyledComponent>
+            <StyledAutoBackup>
               <TextInput className="input-with-folder-path" isDisabled={true} />
-            </StyledComponent>
+            </StyledAutoBackup>
           )}
           <ScheduleComponent
             weeklySchedule={weeklySchedule}

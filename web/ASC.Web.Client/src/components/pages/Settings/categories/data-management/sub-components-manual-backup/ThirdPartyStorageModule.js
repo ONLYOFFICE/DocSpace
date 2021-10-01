@@ -15,7 +15,7 @@ import AmazonStorage from "./storages/AmazonStorage";
 import { getOptions } from "../utils/getOptions";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import { getFromSessionStorage } from "../../../utils";
-import { StyledComponent } from "../styled-backup";
+import { StyledManualBackup } from "../styled-backup";
 
 let selectedStorageFromSessionStorage = "";
 let selectedIdFromSessionStorage = "";
@@ -153,7 +153,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     } = this.state;
 
     return (
-      <StyledComponent>
+      <StyledManualBackup>
         <Box marginProp="16px 0 16px 0">
           <Link
             color="#316DAA"
@@ -224,7 +224,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             isInvalidForm={this.isInvalidForm}
           />
         )}
-      </StyledComponent>
+      </StyledManualBackup>
     );
   }
 }

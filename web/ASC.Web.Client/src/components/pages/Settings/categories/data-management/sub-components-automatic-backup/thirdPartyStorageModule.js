@@ -21,7 +21,7 @@ import AmazonStorage from "./amazonStorage";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
 import { ThirdPartyStorages } from "@appserver/common/constants";
-import { StyledComponent } from "../styled-backup";
+import { StyledAutoBackup } from "../styled-backup";
 
 let googleStorageId = "GoogleCloud";
 let inputValueArray;
@@ -727,7 +727,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     } = this.state;
 
     return (
-      <StyledComponent>
+      <StyledAutoBackup>
         <Box marginProp="16px 0 16px 0">
           <Link
             color="#316DAA"
@@ -843,7 +843,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
           onSelectWeekDay={this.onSelectWeekDay}
           onSelectPeriod={this.onSelectPeriod}
         />
-      </StyledComponent>
+      </StyledAutoBackup>
     );
   }
 }

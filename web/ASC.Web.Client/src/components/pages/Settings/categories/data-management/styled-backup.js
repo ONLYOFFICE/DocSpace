@@ -1,24 +1,7 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import commonSettingsStyles from "../../utils/commonSettingsStyles";
 
-const StyledComponent = styled.div`
-  .manual-backup_buttons {
-    margin-top: 16px;
-  }
-
-  .inherit-title-link {
-    margin-bottom: 8px;
-  }
-  .note_description {
-    margin-top: 8px;
-  }
-
-  .automatic-backup_main {
-    margin-bottom: 30px;
-    .radio-button_text {
-      font-size: 13px;
-    }
-  }
+const commonStyles = css`
   .radio-button_text {
     margin-right: 7px;
     margin-left: 8px;
@@ -28,52 +11,6 @@ const StyledComponent = styled.div`
   .backup_radio-button {
     margin-bottom: 8px;
   }
-  .schedule-backup_combobox {
-    display: inline-block;
-    margin-right: 8px;
-    margin-top: 8px;
-  }
-
-  .input-with-folder-path {
-    margin-top: 16px;
-    margin-bottom: 8px;
-    width: 100%;
-    max-width: 350px;
-  }
-
-  .restore-source {
-    font-weight: 600;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    font-size: 15px;
-  }
-  .restore-warning {
-    font-weight: 600;
-    margin-top: 18px;
-    margin-bottom: 15px;
-    font-size: 19px;
-    color: #c30;
-  }
-  .restore-warning_link {
-    margin: 15px 0;
-  }
-  .restore-backup-checkbox {
-    margin-bottom: 24px;
-  }
-  .restore-backup-checkbox_notification {
-    margin-top: 15px;
-  }
-  .restore-backup_list {
-    color: #316daa;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .restore-backup_input {
-    margin: 16px 0;
-    max-width: 820px;
-  }
-
   .backup_combo {
     margin-top: 16px;
     width: 100%;
@@ -91,15 +28,82 @@ const StyledComponent = styled.div`
   }
 `;
 
+const StyledManualBackup = styled.div`
+  ${commonStyles}
+  .manual-backup_buttons {
+    margin-top: 16px;
+  }
+`;
+
+const StyledAutoBackup = styled.div`
+  ${commonStyles}
+  .automatic-backup_main {
+    margin-bottom: 30px;
+    .radio-button_text {
+      font-size: 13px;
+    }
+  }
+
+  .schedule-backup_combobox {
+    display: inline-block;
+    margin-right: 8px;
+    margin-top: 8px;
+  }
+
+  .input-with-folder-path {
+    margin-top: 16px;
+    margin-bottom: 8px;
+    width: 100%;
+    max-width: 350px;
+  }
+`;
+
+const StyledRestoreBackup = styled.div`
+  ${commonStyles}
+
+  .restore-source {
+    // restore
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 15px;
+  }
+  .restore-warning {
+    // restore
+    font-weight: 600;
+    margin-top: 18px;
+    margin-bottom: 15px;
+    font-size: 19px;
+    color: #c30;
+  }
+  .restore-warning_link {
+    // restore
+    margin: 15px 0;
+  }
+  .restore-backup-checkbox {
+    // restore
+    margin-bottom: 24px;
+  }
+  .restore-backup-checkbox_notification {
+    // restore
+    margin-top: 15px;
+  }
+  .restore-backup_list {
+    // restore
+    color: #316daa;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .restore-backup_input {
+    // restore
+    margin: 16px 0;
+    max-width: 820px;
+  }
+`;
+
 const StyledModules = styled.div`
   margin-bottom: 32px;
-
-  .category-item-description {
-    ${(props) => props.isDisabled && `color: #A3A9AE`}
-    max-width: 476px;
-    font-size: 12px;
-    line-height: 15px;
-  }
 `;
 
 const StyledRestoreModules = styled.div`
@@ -235,9 +239,11 @@ const StyledBackupList = styled.div`
 `;
 export {
   StyledModules,
-  StyledComponent,
+  StyledRestoreBackup,
   StyledScheduleComponent,
   StyledBackup,
   StyledRestoreModules,
   StyledBackupList,
+  StyledManualBackup,
+  StyledAutoBackup,
 };
