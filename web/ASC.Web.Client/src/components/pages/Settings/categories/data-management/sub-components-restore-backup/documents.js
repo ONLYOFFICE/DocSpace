@@ -11,7 +11,7 @@ class Documents extends React.Component {
         onClose={onClose}
         isPanelVisible={isPanelVisible}
         foldersType="common"
-        isCommonWithoutProvider
+        withoutProvider
         isArchiveOnly
         searchParam=".gz"
       />

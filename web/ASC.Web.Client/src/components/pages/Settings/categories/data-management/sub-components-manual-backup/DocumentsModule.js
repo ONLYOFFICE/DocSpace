@@ -81,7 +81,7 @@ class DocumentsModule extends React.Component {
           isPanelVisible={isPanelVisible}
           isSavingProcess={isCopyingLocal}
           foldersType="common"
-          isCommonWithoutProvider
+          withoutProvider
           fontSizeInput={"13px"}
         />
 

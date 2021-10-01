@@ -602,7 +602,7 @@ class DocumentsModule extends React.Component {
             isError={isError}
             onSetLoadingData={onSetLoadingData}
             foldersType="common"
-            isCommonWithoutProvider
+            withoutProvider
             isSavingProcess={isLoadingData}
           />
         ) : (
