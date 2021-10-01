@@ -32,6 +32,7 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Web;
 
@@ -404,7 +405,7 @@ namespace ASC.Web.Files.Utils
 
             var options = new JsonSerializerOptions()
             {
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 IgnoreReadOnlyProperties = true,
                 WriteIndented = false
             };

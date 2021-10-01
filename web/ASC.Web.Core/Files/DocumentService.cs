@@ -158,7 +158,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -268,7 +268,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -349,7 +349,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
