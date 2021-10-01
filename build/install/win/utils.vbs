@@ -59,7 +59,8 @@ Function MySQLConfigure
 		End If 
 
 		If service.Started Then			
-			shell.Run """" & installDir & "bin\mysqladmin"" -u root password " & dbpass, 0, true		
+			shell.Run """" & installDir & "bin\mysqladmin"" -u root password " & dbpass, 0, true
+            shell.Run "ALTER USER ""root""@""localhost"" IDENTIFIED WITH mysql_native_password BY " & """" & dbpass & """", 0, true		
         End If        
 		
         Set filesys = CreateObject("Scripting.FileSystemObject")
