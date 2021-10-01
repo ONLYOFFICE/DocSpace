@@ -372,6 +372,7 @@ class SharingPanelComponent extends React.Component {
     setSelection([]);
 
     selectUploadedFile([]);
+    setBufferSelection(null);
     onCancel && onCancel();
   };
 
@@ -660,6 +661,7 @@ const SharingPanel = inject(
 
     const {
       selection,
+      bufferSelection,
       canShareOwnerChange,
       getAccessOption,
       getExternalAccessOption,
@@ -672,6 +674,7 @@ const SharingPanel = inject(
       getFileInfo,
       getFolderInfo,
       isLoading,
+      setBufferSelection,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const {
@@ -692,7 +695,11 @@ const SharingPanel = inject(
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
       homepage: config.homepage,
-      selection: uploadPanelVisible ? selectedUploadFile : selection,
+      selection: uploadPanelVisible
+        ? selectedUploadFile
+        : bufferSelection
+        ? [bufferSelection]
+        : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
       isFolderActions,
@@ -717,6 +724,7 @@ const SharingPanel = inject(
       getFileInfo,
       getFolderInfo,
       id,
+      setBufferSelection,
       access,
     };
   }

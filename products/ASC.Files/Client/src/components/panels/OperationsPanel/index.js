@@ -27,6 +27,7 @@ const OperationsPanelComponent = (props) => {
     setMoveToPanelVisible,
     checkOperationConflict,
     setThirdPartyMoveDialogVisible,
+    setBufferSelection,
   } = props;
 
   const zIndex = 310;
@@ -35,14 +36,13 @@ const OperationsPanelComponent = (props) => {
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
   const onClose = () => {
+ 	!provider && setBufferSelection(null);
     if (isCopy) {
       setCopyPanelVisible(false);
       setIsFolderActions(false);
     } else {
       setMoveToPanelVisible(false);
-    }
-
-    setExpandedPanelKeys(null);
+    }    setExpandedPanelKeys(null);
   };
 
   const onSelect = (folder, treeNode) => {
@@ -155,7 +155,12 @@ export default inject(
     dialogsStore,
     filesActionsStore,
   }) => {
-    const { filter, selection } = filesStore;
+    const {
+      filter,
+      selection,
+      bufferSelection,
+      setBufferSelection,
+    } = filesStore;
     const {
       isRecycleBinFolder,
       operationsFolders,
@@ -175,7 +180,9 @@ export default inject(
       setIsFolderActions,
     } = dialogsStore;
 
-    const provider = selection.find((x) => x.providerKey);
+    const selections = bufferSelection ? [bufferSelection] : selection;
+
+    const provider = selections.find((x) => x.providerKey);
 
     return {
       expandedKeys: expandedPanelKeys
@@ -187,7 +194,7 @@ export default inject(
       operationsFolders,
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
-      selection,
+      selection: selections,
       isFolderActions,
 
       setCopyPanelVisible,
@@ -197,6 +204,7 @@ export default inject(
       setThirdPartyMoveDialogVisible,
       checkOperationConflict,
       setExpandedPanelKeys,
+      setBufferSelection,
     };
   }
 )(withRouter(observer(OperationsPanel)));

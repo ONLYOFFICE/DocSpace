@@ -92,9 +92,10 @@ class FilesContent extends React.Component {
       encryptionKeys,
       setEncryptionKeys,
       isLoaded,
+      isDesktop,
     } = this.props;
     //console.log("componentDidUpdate: ", this.props);
-    if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
+    if (isAuthenticated && !this.isDesktopInit && isDesktop && isLoaded) {
       this.isDesktopInit = true;
       regDesktop(
         user,
