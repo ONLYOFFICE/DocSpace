@@ -12,7 +12,25 @@ import SharedButton from "../../../../../components/SharedButton";
 import ItemIcon from "../../../../../components/ItemIcon";
 
 const checkedStyle = css`
-  background: #f8f9f9;
+  background: #f3f4f4;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  @media (max-width: 1024px) {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+`;
+
+const draggingStyle = css`
+  background: #f8f7bf;
+  &:hover {
+    background: #efefb2;
+  }
   margin-left: -24px;
   margin-right: -24px;
   padding-left: 24px;
@@ -30,14 +48,17 @@ const StyledWrapper = styled.div`
   .files-item {
     border-left: none;
     border-right: none;
+    margin-left: 0;
   }
 `;
 
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => props.checked && checkedStyle};
+  ${(props) => props.dragging && draggingStyle}
   position: unset;
   cursor: ${(props) => props.checked && `url(images/cursor.palm.svg), auto`};
   margin-top: -2px;
+
   ${(props) =>
     !props.contextOptions &&
     `
@@ -136,6 +157,7 @@ const SimpleFilesRow = (props) => {
           checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
+          dragging={dragging && isDragging}
         >
           <FilesRowContent
             item={item}
