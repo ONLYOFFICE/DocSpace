@@ -8,8 +8,7 @@ import { isMobile } from "react-device-detect";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 const StyledSectionHeader = styled.div`
-  border-bottom: 1px solid #eceef1;
-  height: 55px;
+  height: 41px;
   margin-right: 24px;
   margin-top: -1px;
   padding-bottom: 9px;
@@ -27,6 +26,22 @@ const StyledSectionHeader = styled.div`
     }
   `}
 
+  @media (min-width: 1314px) {
+    margin-left: -4px;
+    height: 31px;
+
+    .section-header {
+      margin-top: -4px;
+    }
+
+    .arrow-button {
+      svg {
+        width: 14px !important;
+      }
+      margin-right: 10px !important;
+    }
+  }
+
   @media ${tablet} {
     margin-right: 16px;
   }
@@ -38,8 +53,7 @@ const StyledSectionHeader = styled.div`
       width: 100%;
     `}
 
-    //padding-top: 4px;
-      ${isMobile &&
+    ${isMobile &&
     css`
       position: fixed;
       top: 56px;

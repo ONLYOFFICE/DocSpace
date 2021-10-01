@@ -21,6 +21,10 @@ const StyledHeading = styled(Heading)`
   font-weight: ${(props) => weight[props.headlineType]};
   color: ${(props) => (props.color ? props.color : props.theme.color)};
   ${NoUserSelect}
+
+  @media (min-width: 1314px) {
+    ${(props) => props.headlineType === "content" && "font-size: 18px"};
+  }
 `;
 StyledHeading.defaultProps = { theme: Base };
 
