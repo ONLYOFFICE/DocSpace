@@ -96,15 +96,17 @@ const Catalog = (props) => {
     return () => window.removeEventListener('resize', sizeChangeHandler);
   });
 
+  React.useEffect(() => {
+    sizeChangeHandler();
+  }, []);
+
   const sizeChangeHandler = () => {
     clearTimeout(refTimer.current);
 
     refTimer.current = setTimeout(() => {
-      if (isMobile && !props.userShowText && props.showText) props.setShowText(false);
-      if (isMobileUtils() && !isMobile && !props.userShowText && props.showText)
-        props.setShowText(false);
-      if (isTabletUtils() && !isMobile && !props.userShowText && props.showText)
-        props.setShowText(false);
+      if (isMobile && props.showText) props.setShowText(false);
+      if (isMobileUtils() && !isMobile && props.showText) props.setShowText(false);
+      if (isTabletUtils() && !isMobile && props.showText) props.setShowText(false);
       if (isDesktopUtils() && !isMobile) props.setShowText(true);
     }, 10);
   };
