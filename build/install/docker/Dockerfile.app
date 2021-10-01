@@ -73,6 +73,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0.4-focal-amd64 as builder
 ARG BUILD_PATH
 ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
 
 COPY --from=base /app/onlyoffice/config/*.json /app/onlyoffice/config/
 COPY --from=base /app/onlyoffice/config/*.config /app/onlyoffice/config/
