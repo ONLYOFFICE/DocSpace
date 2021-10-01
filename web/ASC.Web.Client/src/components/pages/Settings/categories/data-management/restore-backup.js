@@ -33,9 +33,10 @@ class RestoreBackup extends React.Component {
       selectedFileId: "",
       selectedFile: "",
       backupId: "",
-      storageType: "",
-      storageParams: "",
+      formSettings: {},
+      isErrors: {},
     };
+    this.Error;
   }
 
   componentDidMount() {
@@ -257,15 +258,18 @@ class RestoreBackup extends React.Component {
 
   onRestoreClick = () => {
     console.log("restore button");
+    console.log("formSettings", this.state.formSettings);
+
     const {
       isNotify,
       isCheckedDocuments,
       isCheckedLocalFile,
       selectedFileId,
       selectedFile,
+      isCheckedThirdPartyStorage,
     } = this.state;
 
-    if (!selectedFileId || !selectedFile) return;
+    //if (!selectedFileId || !selectedFile) return;
 
     let backupId, storageType, storageParams;
 
@@ -290,12 +294,53 @@ class RestoreBackup extends React.Component {
       ];
     }
 
-    startRestore(
-      backupId,
-      storageType,
-      storageParams,
-      isNotify
-    ).catch((error) => toastr.error(error));
+    if (isCheckedThirdPartyStorage) {
+      let errorObject = {};
+
+      for (let key of this.formNames) {
+        if (
+          this.state.formSettings[key] === "" ||
+          this.state.formSettings[key] === undefined ||
+          this.state.formSettings[key] === null
+        ) {
+          errorObject = { ...errorObject, [key]: "error" };
+        }
+      }
+
+      this.setState({
+        isErrors: errorObject,
+      });
+    }
+
+    // startRestore(
+    //   backupId,
+    //   storageType,
+    //   storageParams,
+    //   isNotify
+    // ).catch((error) => toastr.error(error));
+
+    //errorObject = {}
+  };
+
+  onSetFormNames = (namesArray) => {
+    this.formNames = namesArray;
+    console.log(" this.formNames", this.formNames);
+  };
+
+  onChange = (event) => {
+    const { target } = event;
+    const value = target.value;
+    const name = target.name;
+    const { formSettings } = this.state;
+
+    this.setState({ formSettings: { ...formSettings, ...{ [name]: value } } });
+  };
+
+  onResetFormSettings = () => {
+    this.setState({
+      formSettings: {},
+      isErrors: {},
+    });
   };
   render() {
     const { t } = this.props;
@@ -309,8 +354,11 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
       isCheckedLocalFile,
+      isMountThirdPartyStorage,
+      formSettings,
+      isErrors,
     } = this.state;
-
+    console.log(" this.setState", this.state);
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -338,7 +386,7 @@ class RestoreBackup extends React.Component {
           fontWeight="400"
           label={t("ThirdPartyResource")}
           name={"2"}
-          key={1}
+          key={2}
           onClick={this.onClickShowStorage}
           isChecked={isCheckedThirdParty}
           isDisabled={
@@ -353,7 +401,7 @@ class RestoreBackup extends React.Component {
           fontWeight="400"
           label={t("ThirdPartyStorage")}
           name={"3"}
-          key={1}
+          key={3}
           onClick={this.onClickShowStorage}
           isChecked={isCheckedThirdPartyStorage}
           isDisabled={false}
@@ -366,7 +414,7 @@ class RestoreBackup extends React.Component {
           fontWeight="400"
           label={t("LocalFile")}
           name={"4"}
-          key={1}
+          key={4}
           onClick={this.onClickShowStorage}
           isChecked={isCheckedLocalFile}
           isDisabled={false}
@@ -390,7 +438,16 @@ class RestoreBackup extends React.Component {
             onSelectFile={this.onSelectFile}
           />
         )}
-        {isCheckedThirdPartyStorage && <ThirdPartyStorages />}
+        {isCheckedThirdPartyStorage && (
+          <ThirdPartyStorages
+            onSetStorageForm={this.onSetStorageForm}
+            onSetCountInputs={this.onSetFormNames}
+            onChange={this.onChange}
+            formSettings={formSettings}
+            onResetFormSettings={this.onResetFormSettings}
+            isErrors={isErrors}
+          />
+        )}
         {isCheckedLocalFile && (
           <LocalFile onSelectLocalFile={this.onSelectLocalFile} />
         )}
@@ -432,6 +489,7 @@ class RestoreBackup extends React.Component {
           isChecked={isChecked}
           label={t("UserAgreement")}
         />
+
         <Button
           label={t("RestoreButton")}
           onClick={this.onRestoreClick}

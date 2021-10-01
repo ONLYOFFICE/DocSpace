@@ -126,5 +126,6 @@
   "RestoreBackup": "Restore",
   "ClearList": "Clear the list.",
   "EmptyBackupList": "No backups have been created yet. Create one or more backups for them to appear in this list.",
-  "LocalFile": "Local file"
+  "LocalFile": "Local file",
+  "Path": "Path"
 }

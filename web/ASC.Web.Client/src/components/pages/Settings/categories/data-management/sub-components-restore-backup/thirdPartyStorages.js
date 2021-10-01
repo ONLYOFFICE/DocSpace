@@ -5,8 +5,10 @@ import FileInput from "@appserver/components/file-input";
 import { getOptions } from "../utils/getOptions";
 import { getBackupStorage } from "../../../../../../../../../packages/asc-web-common/api/settings";
 import ComboBox from "@appserver/components/combobox";
-
-class ThirdPartyStorages extends React.Component {
+import { ThirdPartyStorages } from "@appserver/common/constants";
+import GoogleCloudStorage from "./storages/GoogleCloudStorage";
+import Button from "@appserver/components/button";
+class ThirdPartyStoragesModule extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,15 +48,37 @@ class ThirdPartyStorages extends React.Component {
         );
     });
   }
-  render() {
-    const { availableOptions, selectedStorage, isLoading } = this.state;
+  onSelect = (option) => {
+    const selectedStorageId = option.key;
+    const { availableStorage } = this.state;
 
+    this.setState({
+      selectedStorage: availableStorage[selectedStorageId].title,
+      selectedId: availableStorage[selectedStorageId].id,
+    });
+  };
+  render() {
+    const {
+      availableOptions,
+      selectedStorage,
+      isLoading,
+      selectedId,
+      availableStorage,
+    } = this.state;
+    const {
+      onSetFormNames,
+      formSettings,
+      onChange,
+      onResetFormSettings,
+      isErrors,
+    } = this.props;
+    console.log("selectedId", selectedId);
     return (
       <>
         <ComboBox
           options={availableOptions}
           selectedOption={{ key: 0, label: selectedStorage }}
-          onSelect={() => console.log("console")}
+          onSelect={this.onSelect}
           isDisabled={isLoading}
           noBorder={false}
           scaled={true}
@@ -62,10 +86,22 @@ class ThirdPartyStorages extends React.Component {
           dropDownMaxHeight={400}
           className="backup_combo"
         />
-        <FileInput scale className="restore-backup_input" />
+
+        {selectedId === ThirdPartyStorages.GoogleId && (
+          <GoogleCloudStorage
+            isLoading={isLoading}
+            availableStorage={availableStorage}
+            selectedId={selectedId}
+            onSetFormNames={onSetFormNames}
+            formSettings={formSettings}
+            onChange={onChange}
+            onResetFormSettings={onResetFormSettings}
+            isErrors={isErrors}
+          />
+        )}
       </>
     );
   }
 }
 
-export default ThirdPartyStorages;
+export default ThirdPartyStoragesModule;
