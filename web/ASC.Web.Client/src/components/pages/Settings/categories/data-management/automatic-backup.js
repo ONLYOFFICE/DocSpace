@@ -702,7 +702,7 @@ class AutomaticBackup extends React.PureComponent {
                 value="value"
                 className="backup_radio-button"
               />
-              <Text className="category-item-description">
+              <Text className="backup-description">
                 {t("DocumentsModuleDescription")}
               </Text>
               {isShowDocuments && (
@@ -764,7 +764,7 @@ class AutomaticBackup extends React.PureComponent {
                 value="value"
                 className="backup_radio-button"
               />
-              <Text className="category-item-description">
+              <Text className="backup-description">
                 {t("ThirdPartyResourceDescription")}
               </Text>
 
@@ -816,7 +816,7 @@ class AutomaticBackup extends React.PureComponent {
                 value="value"
                 className="backup_radio-button"
               />
-              <Text className="category-item-description">
+              <Text className="backup-description">
                 {t("ThirdPartyStorageDescription")}
               </Text>
 

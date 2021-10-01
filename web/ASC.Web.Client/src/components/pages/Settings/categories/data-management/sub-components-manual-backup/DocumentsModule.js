@@ -70,7 +70,7 @@ class DocumentsModule extends React.Component {
     const { isPanelVisible, isLoadingData, folderPath } = this.state;
 
     return (
-      <div className="category-item-wrapper">
+      <>
         <SelectFolderInput
           onSelectFolder={this.onSelectFolder}
           name={"common"}
@@ -105,7 +105,7 @@ class DocumentsModule extends React.Component {
             />
           )}
         </div>
-      </div>
+      </>
     );
   }
 }

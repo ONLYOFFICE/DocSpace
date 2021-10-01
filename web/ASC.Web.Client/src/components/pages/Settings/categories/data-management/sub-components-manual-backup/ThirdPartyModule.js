@@ -92,7 +92,7 @@ class ThirdPartyModule extends React.Component {
     } = this.props;
     const { isPanelVisible, isLoadingData, isError, folderPath } = this.state;
     return (
-      <div className="category-item-wrapper">
+      <>
         <Box marginProp="16px 0 16px 0">
           <Link
             color="#316DAA"
@@ -139,7 +139,7 @@ class ThirdPartyModule extends React.Component {
             />
           )}
         </div>
-      </div>
+      </>
     );
   }
 }

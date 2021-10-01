@@ -26,6 +26,12 @@ const commonStyles = css`
     max-width: 350px;
     font-size: 13px;
   }
+
+  .backup-description {
+    max-width: 476px;
+    font-size: 12px;
+    line-height: 15px;
+  }
 `;
 
 const StyledManualBackup = styled.div`

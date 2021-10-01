@@ -294,11 +294,8 @@ class RestoreBackup extends React.Component {
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledRestoreBackup>
-        <Text className="category-item-description">
+        <Text className="backup-description">
           {t("DataRestoreDescription")}
-        </Text>
-        <Text className="category-item-description restore-source">
-          {t("Source")}
         </Text>
 
         <StyledRestoreModules>

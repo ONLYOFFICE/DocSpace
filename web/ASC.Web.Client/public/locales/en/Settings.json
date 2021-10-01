@@ -114,7 +114,6 @@
   "ServiceUrl": "Service Url",
   "ForcePathStyle": "Force Path Style",
   "DataRestoreDescription": "Use this option to restore your portal from the previously saved backup file.",
-  "Source": "Source:",
   "RestoreSettingsWarning": "The portal will become unavailable during the restore process. After the restore is complete all the changes made after the date of the selected restore point will be lost.",
   "RestoreSettingsLink": "All current passwords will be reset. Portal users will get an email with the access restoration link.",
   "UserAgreement": "I understand and want to proceed",

@@ -589,63 +589,61 @@ class DocumentsModule extends React.Component {
     } = this.props;
 
     return (
-      <div className="category-item-wrapper">
-        <>
-          {!isLoading ? (
-            <SelectFolderInput
-              onSelectFolder={this.onSelectFolder}
-              name={"thirdParty"}
-              onClose={this.onClose}
-              onClickInput={this.onClickInput}
-              isPanelVisible={isPanelVisible}
-              folderPath={this.folderDocumentsModulePath}
-              isSetDefaultFolderPath={isSetDefaultFolderPath}
-              isError={isError}
-              onSetLoadingData={onSetLoadingData}
-              foldersType="common"
-              isCommonWithoutProvider
-              isSavingProcess={isLoadingData}
-            />
-          ) : (
-            <StyledAutoBackup>
-              <TextInput className="input-with-folder-path" isDisabled={true} />
-            </StyledAutoBackup>
-          )}
-          <ScheduleComponent
-            weeklySchedule={weeklySchedule}
-            monthlySchedule={monthlySchedule}
-            weekOptions={weekOptions}
-            selectedOption={selectedOption}
-            selectedWeekdayOption={selectedWeekdayOption}
-            selectedTimeOption={selectedTimeOption}
-            selectedMonthOption={selectedMonthOption}
-            selectedMaxCopies={selectedMaxCopies}
-            isLoadingData={isLoadingData}
-            periodOptions={periodOptions}
-            monthNumberOptionsArray={monthNumberOptionsArray}
-            timeOptionsArray={timeOptionsArray}
-            maxNumberCopiesArray={maxNumberCopiesArray}
-            onSelectMaxCopies={this.onSelectMaxCopies}
-            onSelectMonthNumberAndTimeOptions={
-              this.onSelectMonthNumberAndTimeOptions
-            }
-            onSelectWeekDay={this.onSelectWeekDay}
-            onSelectPeriod={this.onSelectPeriod}
+      <>
+        {!isLoading ? (
+          <SelectFolderInput
+            onSelectFolder={this.onSelectFolder}
+            name={"thirdParty"}
+            onClose={this.onClose}
+            onClickInput={this.onClickInput}
+            isPanelVisible={isPanelVisible}
+            folderPath={this.folderDocumentsModulePath}
+            isSetDefaultFolderPath={isSetDefaultFolderPath}
+            isError={isError}
+            onSetLoadingData={onSetLoadingData}
+            foldersType="common"
+            isCommonWithoutProvider
+            isSavingProcess={isLoadingData}
           />
-          {isChanged && (
-            <SaveCancelButtons
-              className="THIRD-PARTY team-template_buttons"
-              onSaveClick={this.onSaveModuleSettings}
-              onCancelClick={this.onCancelModuleSettings}
-              showReminder={false}
-              reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("Common:SaveButton")}
-              cancelButtonLabel={t("Common:CancelButton")}
-              isDisabled={isCopyingToLocal || isLoadingData}
-            />
-          )}
-        </>
-      </div>
+        ) : (
+          <StyledAutoBackup>
+            <TextInput className="input-with-folder-path" isDisabled={true} />
+          </StyledAutoBackup>
+        )}
+        <ScheduleComponent
+          weeklySchedule={weeklySchedule}
+          monthlySchedule={monthlySchedule}
+          weekOptions={weekOptions}
+          selectedOption={selectedOption}
+          selectedWeekdayOption={selectedWeekdayOption}
+          selectedTimeOption={selectedTimeOption}
+          selectedMonthOption={selectedMonthOption}
+          selectedMaxCopies={selectedMaxCopies}
+          isLoadingData={isLoadingData}
+          periodOptions={periodOptions}
+          monthNumberOptionsArray={monthNumberOptionsArray}
+          timeOptionsArray={timeOptionsArray}
+          maxNumberCopiesArray={maxNumberCopiesArray}
+          onSelectMaxCopies={this.onSelectMaxCopies}
+          onSelectMonthNumberAndTimeOptions={
+            this.onSelectMonthNumberAndTimeOptions
+          }
+          onSelectWeekDay={this.onSelectWeekDay}
+          onSelectPeriod={this.onSelectPeriod}
+        />
+        {isChanged && (
+          <SaveCancelButtons
+            className="THIRD-PARTY team-template_buttons"
+            onSaveClick={this.onSaveModuleSettings}
+            onCancelClick={this.onCancelModuleSettings}
+            showReminder={false}
+            reminderTest={t("YouHaveUnsavedChanges")}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("Common:CancelButton")}
+            isDisabled={isCopyingToLocal || isLoadingData}
+          />
+        )}
+      </>
     );
   }
 }
