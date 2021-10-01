@@ -366,6 +366,7 @@ class SharingPanelComponent extends React.Component {
       selectUploadedFile,
       setIsFolderActions,
       setSelection,
+      setBufferSelection,
     } = this.props;
 
     setSharingPanelVisible(false);
