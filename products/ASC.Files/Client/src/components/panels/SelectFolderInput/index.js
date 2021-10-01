@@ -97,19 +97,21 @@ class SelectFolderInputBody extends React.PureComponent {
       headerName,
       footer,
       fontSizeInput,
+      maxInputWidth,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
     return (
-      <StyledComponent>
+      <StyledComponent maxInputWidth={maxInputWidth}>
         <SimpleFileInput
           name={name}
-          className="input-with-folder-path"
+          className="select-folder_file-input"
           textField={fullFolderPath || baseFolderPath}
           isDisabled={isLoading || isSavingProcess || isDisabled}
           isError={isError}
           onClickInput={onClickInput}
           fontSizeInput={fontSizeInput}
+          maxInputWidth={maxInputWidth}
         />
 
         <SelectFolderDialog

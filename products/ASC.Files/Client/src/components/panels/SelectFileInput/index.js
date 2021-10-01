@@ -50,19 +50,21 @@ class SelectFileInputBody extends React.PureComponent {
       header,
       zIndex,
       fontSizeInput,
+      maxInputWidth,
     } = this.props;
     const { fileName } = this.state;
 
     return (
-      <StyledComponent>
+      <StyledComponent maxInputWidth={maxInputWidth}>
         <SimpleFileInput
           name={name}
-          className="file-input"
+          className="select-file_file-input"
           textField={fileName}
           isDisabled={isDisabled}
           isError={isError}
           onClickInput={onClickInput}
           fontSizeInput={fontSizeInput}
+          maxInputWidth={maxInputWidth}
         />
 
         {isPanelVisible && (

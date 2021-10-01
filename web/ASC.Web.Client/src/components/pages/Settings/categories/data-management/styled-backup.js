@@ -37,13 +37,10 @@ const StyledComponent = styled.div`
   .input-with-folder-path {
     margin-top: 16px;
     margin-bottom: 8px;
-  }
-
-  .input-with-folder-path,
-  .text-input-with-folder-path {
     width: 100%;
     max-width: 350px;
   }
+
   .restore-source {
     font-weight: 600;
     margin-top: 30px;
