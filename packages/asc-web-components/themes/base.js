@@ -473,7 +473,7 @@ const Base = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "#e5e5e5", //"rgba(0, 0, 0, 0.1)",
+    backgroundColorVertical: "#e5e5e5",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
   },
 

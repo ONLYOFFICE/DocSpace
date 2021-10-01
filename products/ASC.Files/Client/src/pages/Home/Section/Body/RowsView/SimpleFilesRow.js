@@ -26,6 +26,13 @@ const checkedStyle = css`
   }
 `;
 
+const StyledWrapper = styled.div`
+  .files-item {
+    border-left: none;
+    border-right: none;
+  }
+`;
+
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => props.checked && checkedStyle};
   position: unset;
@@ -105,7 +112,7 @@ const SimpleFilesRow = (props) => {
   );
 
   return (
-    <div ref={props.selectableRef}>
+    <StyledWrapper ref={props.selectableRef}>
       <DragAndDrop
         data-title={item.title}
         value={value}
@@ -113,7 +120,6 @@ const SimpleFilesRow = (props) => {
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
-        style={{ borderLeft: "none", borderRight: "none" }}
       >
         <StyledSimpleFilesRow
           key={item.id}
@@ -138,7 +144,7 @@ const SimpleFilesRow = (props) => {
           />
         </StyledSimpleFilesRow>
       </DragAndDrop>
-    </div>
+    </StyledWrapper>
   );
 };
 

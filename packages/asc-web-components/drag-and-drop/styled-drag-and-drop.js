@@ -18,7 +18,6 @@ user-select: none;*/
   position: relative;
 
   @media ${tablet} {
-    //border: none;
     margin-left: 0;
   }
   outline: none;
