@@ -371,7 +371,7 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders).NotFoundIfNull();
         }
 
-        [Read("{folderId:int}", order: int.MaxValue - 1)]
+        [Read("{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public FolderContentWrapper<int> GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders);
@@ -495,7 +495,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public FileWrapper<int> InsertFileToMyFromBody([FromForm] InsertFileModel model)
+        public FileWrapper<int> InsertFileToMyFromBody([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderMy, model);
         }
@@ -510,7 +510,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public FileWrapper<int> InsertFileToCommonFromBody([FromForm] InsertFileModel model)
+        public FileWrapper<int> InsertFileToCommonFromBody([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderCommon, model);
         }
@@ -526,26 +526,20 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("{folderId}/insert", order: int.MaxValue)]
-        public FileWrapper<string> InsertFile(string folderId, [FromForm] InsertFileModel model)
+        public FileWrapper<string> InsertFile(string folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
-            using (model = InsertFileModel.FromQuery(HttpContext, model))
-            {
-                return FilesControllerHelperString.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
-            }
+            return FilesControllerHelperString.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
-        public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm] InsertFileModel model)
+        public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
             return InsertFile(folderId, model);
         }
 
         private FileWrapper<int> InsertFile(int folderId, InsertFileModel model)
         {
-            using (model = InsertFileModel.FromQuery(HttpContext, model))
-            {
-                return FilesControllerHelperInt.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
-            }
+            return FilesControllerHelperInt.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         /// <summary>
@@ -916,26 +910,26 @@ namespace ASC.Api.Documents
         /// <param name="folderId">Parent folder ID</param>
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
-        [Create("folder/{folderId}", DisableFormat = true)]
+        [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
         public FolderWrapper<string> CreateFolderFromBody(string folderId, [FromBody] CreateFolderModel folderModel)
         {
             return FilesControllerHelperString.CreateFolder(folderId, folderModel.Title);
         }
 
-        [Create("folder/{folderId}", DisableFormat = true)]
+        [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FolderWrapper<string> CreateFolderFromForm(string folderId, [FromForm] CreateFolderModel folderModel)
         {
             return FilesControllerHelperString.CreateFolder(folderId, folderModel.Title);
         }
 
-        [Create("folder/{folderId:int}")]
+        [Create("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public FolderWrapper<int> CreateFolderFromBody(int folderId, [FromBody] CreateFolderModel folderModel)
         {
             return FilesControllerHelperInt.CreateFolder(folderId, folderModel.Title);
         }
 
-        [Create("folder/{folderId:int}")]
+        [Create("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FolderWrapper<int> CreateFolderFromForm(int folderId, [FromForm] CreateFolderModel folderModel)
         {
@@ -1008,26 +1002,26 @@ namespace ASC.Api.Documents
         /// <param name="folderId">Folder ID</param>
         /// <param name="title">New title</param>
         /// <returns>Folder contents</returns>
-        [Update("folder/{folderId}", DisableFormat = true)]
+        [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
         public FolderWrapper<string> RenameFolderFromBody(string folderId, [FromBody] CreateFolderModel folderModel)
         {
             return FilesControllerHelperString.RenameFolder(folderId, folderModel.Title);
         }
 
-        [Update("folder/{folderId}", DisableFormat = true)]
+        [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FolderWrapper<string> RenameFolderFromForm(string folderId, [FromForm] CreateFolderModel folderModel)
         {
             return FilesControllerHelperString.RenameFolder(folderId, folderModel.Title);
         }
 
-        [Update("folder/{folderId:int}")]
+        [Update("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public FolderWrapper<int> RenameFolderFromBody(int folderId, [FromBody] CreateFolderModel folderModel)
         {
             return FilesControllerHelperInt.RenameFolder(folderId, folderModel.Title);
         }
 
-        [Update("folder/{folderId:int}")]
+        [Update("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FolderWrapper<int> RenameFolderFromForm(int folderId, [FromForm] CreateFolderModel folderModel)
         {
@@ -1064,13 +1058,13 @@ namespace ASC.Api.Documents
         /// <short>Folder information</short>
         /// <category>Folders</category>
         /// <returns>Folder info</returns>
-        [Read("folder/{folderId}", DisableFormat = true)]
+        [Read("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
         public FolderWrapper<string> GetFolderInfo(string folderId)
         {
             return FilesControllerHelperString.GetFolderInfo(folderId);
         }
 
-        [Read("folder/{folderId:int}")]
+        [Read("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public FolderWrapper<int> GetFolderInfo(int folderId)
         {
             return FilesControllerHelperInt.GetFolderInfo(folderId);
@@ -1106,7 +1100,7 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.GetFileInfo(fileId, version);
         }
 
-        [Read("file/{fileId:int}", order: int.MaxValue - 1)]
+        [Read("file/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public FileWrapper<int> GetFileInfo(int fileId, int version = -1)
         {
             return FilesControllerHelperInt.GetFileInfo(fileId, version);
@@ -1121,31 +1115,32 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
-        [Update("file/{fileId}", DisableFormat = true)]
+        [Update("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
         public FileWrapper<string> UpdateFileFromBody(string fileId, [FromBody] UpdateFileModel model)
         {
             return FilesControllerHelperString.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
-        [Update("file/{fileId}", DisableFormat = true)]
+        [Update("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> UpdateFileFromForm(string fileId, [FromForm] UpdateFileModel model)
         {
             return FilesControllerHelperString.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
-        [Update("file/{fileId:int}")]
+        [Update("file/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public FileWrapper<int> UpdateFileFromBody(int fileId, [FromBody] UpdateFileModel model)
         {
             return FilesControllerHelperInt.UpdateFile(fileId, model.Title, model.LastVersion);
         }
 
-        [Update("file/{fileId:int}")]
+        [Update("file/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> UpdateFileFromForm(int fileId, [FromForm] UpdateFileModel model)
         {
             return FilesControllerHelperInt.UpdateFile(fileId, model.Title, model.LastVersion);
         }
+
 
         /// <summary>
         /// Deletes the file with the ID specified in the request
@@ -1156,13 +1151,13 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
-        [Delete("file/{fileId}", DisableFormat = true)]
+        [Delete("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
         public IEnumerable<FileOperationWraper> DeleteFile(string fileId, [FromBody] DeleteModel model)
         {
             return FilesControllerHelperString.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
         }
 
-        [Delete("file/{fileId:int}")]
+        [Delete("file/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public IEnumerable<FileOperationWraper> DeleteFile(int fileId, [FromBody] DeleteModel model)
         {
             return FilesControllerHelperInt.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
@@ -1216,7 +1211,7 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
-        [Delete("folder/{folderId}", DisableFormat = true)]
+        [Delete("folder/{folderId}", order: int.MaxValue - 1, DisableFormat = true)]
         public IEnumerable<FileOperationWraper> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperString.DeleteFolder(folderId, deleteAfter, immediately);
@@ -1304,7 +1299,7 @@ namespace ASC.Api.Documents
 
         [Update("fileops/markasread")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> MarkAsReadFromForm([FromForm] BaseBatchModel model)
+        public IEnumerable<FileOperationWraper> MarkAsReadFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
         {
             return FilesControllerHelperString.MarkAsRead(model);
         }
@@ -1562,7 +1557,7 @@ namespace ASC.Api.Documents
 
         [Create("share")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm] BaseBatchModel model)
+        public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -1882,7 +1877,7 @@ namespace ASC.Api.Documents
 
         [Create("favorites")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool AddFavoritesFromForm([FromForm] BaseBatchModel model)
+        public bool AddFavoritesFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
         {
             return AddFavorites(model);
         }
@@ -1918,7 +1913,7 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File IDs</param>
         /// <returns></returns>
         [Delete("favorites")]
-        public bool DeleteFavorites(BaseBatchModel model)
+        public bool DeleteFavorites([ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -2212,7 +2207,7 @@ namespace ASC.Api.Documents
 
         [Create("thumbnails")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm] BaseBatchModel model)
+        public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
         {
             return FileStorageService.CreateThumbnails(model.FileIds.ToList());
         }

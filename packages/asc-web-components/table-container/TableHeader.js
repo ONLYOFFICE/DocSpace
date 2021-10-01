@@ -226,6 +226,23 @@ class TableHeader extends React.Component {
 
     const storageSize =
       !resetColumnsSize && localStorage.getItem(columnStorageName);
+
+    const defaultSize = this.props.columns.find((col) => col.defaultSize)
+      ?.defaultSize;
+
+    //TODO: Fixed columns size if something went wrong
+    if (storageSize) {
+      const splitStorage = storageSize.split(" ");
+
+      if (
+        defaultSize &&
+        splitStorage[splitStorage.length - 2] !== `${defaultSize}px`
+      ) {
+        localStorage.removeItem(columnStorageName);
+        return this.onResize();
+      }
+    }
+
     const tableContainer = storageSize
       ? storageSize.split(" ")
       : container.style.gridTemplateColumns.split(" ");
@@ -275,12 +292,11 @@ class TableHeader extends React.Component {
             const newItemWidth = (containerWidth * percent) / 100 + "px";
             gridTemplateColumns.push(newItemWidth);
           } else {
-            const newItemWidth =
-              percent === 0
-                ? defaultSize
-                  ? `${defaultSize}px`
-                  : `${minColumnSize}px`
-                : (containerWidth * percent) / 100 + "px";
+            const newItemWidth = defaultSize
+              ? `${defaultSize}px`
+              : percent === 0
+              ? `${minColumnSize}px`
+              : (containerWidth * percent) / 100 + "px";
 
             gridTemplateColumns.push(newItemWidth);
           }
@@ -295,9 +311,6 @@ class TableHeader extends React.Component {
 
       str = gridTemplateColumns.join(" ");
     } else {
-      const defaultSize = this.props.columns.find((col) => col.defaultSize)
-        ?.defaultSize;
-
       const column =
         (newContainerWidth * (isSingleTable ? 60 : 100)) / 100 -
         (defaultSize || 0) -

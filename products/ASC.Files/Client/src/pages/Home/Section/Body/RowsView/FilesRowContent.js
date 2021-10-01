@@ -130,9 +130,7 @@ const FilesRowContent = ({
           color={sideColor}
           className="row_update-text"
         >
-          {(fileExst || contentLength || !providerKey) &&
-            updatedDate &&
-            updatedDate}
+          {updatedDate && updatedDate}
         </Text>
         <Text
           containerMinWidth="90px"

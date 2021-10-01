@@ -54,14 +54,6 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 
 		systemctl restart mysqld
 	fi
-elif [ "${UPDATE}" = "true" ] && [ "${MYSQL_FIRST_TIME_INSTALL}" != "true" ]; then
-	ENVIRONMENT="$(cat /etc/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
-	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
-	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
-	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 fi
 
 if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
@@ -115,11 +107,6 @@ expect << EOF
 	expect -re "Password"
 	send "\025$DS_DB_PWD\r"
 	
-	if { "${INSTALLATION_TYPE}" == "ENTERPRISE" || "${INSTALLATION_TYPE}" == "DEVELOPER" } {
-		expect "Configuring redis access..."
-		send "\025$DS_REDIS_HOST\r"
-	}
-	
 	expect "Configuring AMQP access... "
 	expect -re "Host"
 	send "\025$DS_RABBITMQ_HOST\r"
@@ -152,43 +139,51 @@ if rpm -q "firewalld"; then
 	systemctl restart firewalld.service
 fi
 
-if [ "$APPSERVER_INSTALLED" = "false" ] || [ "$UPDATE" = "true" ]; then
-	if [ "$APPSERVER_INSTALLED" = "false" ]; then
-		${package_manager} install -y ${package_sysname}-${product} 
-	else
-		${package_manager} -y update ${package_sysname}-${product}
-	fi
+{ ${package_manager} check-update ${package_sysname}-${product}; APPSERVER_CHECK_UPDATE=$?; } || true
+if [[ $APPSERVER_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
+	APPSERVER_NEED_UPDATE="true"
+fi
 
-	if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ] || [ "$UPDATE" = "true" ]; then
+if [ "$APPSERVER_INSTALLED" = "false" ]; then
+	${package_manager} install -y ${package_sysname}-${product} 
+elif [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
+	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
+	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
+	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
+	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
+
+	${package_manager} -y update ${package_sysname}-${product}
+fi
+
+if [ "${APPSERVER_INSTALLED}" = "false" ] || [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
 expect << EOF
-		set timeout -1
-		log_user 1
+	set timeout -1
+	log_user 1
 
-		if { "${UPDATE}" == "true" } {
-			spawn ${product}-configuration.sh -e ${ENVIRONMENT}
-		} else {
-			spawn ${product}-configuration.sh
-		}
+	if { "${UPDATE}" == "true" } {
+		spawn ${product}-configuration.sh -e ${ENVIRONMENT}
+	} else {
+		spawn ${product}-configuration.sh
+	}
 
-		expect -re "Database host:"
-		send "\025$MYSQL_SERVER_HOST\r"
+	expect -re "Database host:"
+	send "\025$MYSQL_SERVER_HOST\r"
 
-		expect -re "Database name:"
-		send "\025$MYSQL_SERVER_DB_NAME\r"
+	expect -re "Database name:"
+	send "\025$MYSQL_SERVER_DB_NAME\r"
 
-		expect -re "Database user:"
-		send "\025$MYSQL_SERVER_USER\r"
+	expect -re "Database user:"
+	send "\025$MYSQL_SERVER_USER\r"
 
-		expect -re "Database password:"
-		send "\025$MYSQL_ROOT_PASS\r"
+	expect -re "Database password:"
+	send "\025$MYSQL_ROOT_PASS\r"
 
-		expect eof	
+	expect eof	
 EOF
-		APPSERVER_INSTALLED="true";
-	else 
-		bash ${product}-configuration.sh
-		APPSERVER_INSTALLED="true";
-	fi
+	APPSERVER_INSTALLED="true";
 fi
 
 echo ""

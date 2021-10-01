@@ -337,10 +337,16 @@ class SharingPanelComponent extends React.Component {
   setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
 
   onClose = () => {
-    const { onCancel, setSharingPanelVisible, selectUploadedFile } = this.props;
+    const {
+      onCancel,
+      setSharingPanelVisible,
+      selectUploadedFile,
+      setBufferSelection,
+    } = this.props;
 
     setSharingPanelVisible(false);
     selectUploadedFile([]);
+    setBufferSelection(null);
     onCancel && onCancel();
   };
 
@@ -475,12 +481,12 @@ class SharingPanelComponent extends React.Component {
                         label={t("LinkText")}
                         onClick={this.onShowUsersPanel}
                       />
-                    {!isEncrypted && (
-                      <DropDownItem
-                        label={t("AddGroupsForSharingButton")}
-                        onClick={this.onShowGroupsPanel}
-                      />
-                    )}
+                      {!isEncrypted && (
+                        <DropDownItem
+                          label={t("AddGroupsForSharingButton")}
+                          onClick={this.onShowGroupsPanel}
+                        />
+                      )}
                     </DropDown>
                   </div>
 
@@ -620,6 +626,7 @@ const SharingPanel = inject(
 
     const {
       selection,
+      bufferSelection,
       canShareOwnerChange,
       getAccessOption,
       getExternalAccessOption,
@@ -631,6 +638,7 @@ const SharingPanel = inject(
       getFileInfo,
       getFolderInfo,
       isLoading,
+      setBufferSelection,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { setSharingPanelVisible, sharingPanelVisible } = dialogsStore;
@@ -646,7 +654,11 @@ const SharingPanel = inject(
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
       homepage: config.homepage,
-      selection: uploadPanelVisible ? selectedUploadFile : selection,
+      selection: uploadPanelVisible
+        ? selectedUploadFile
+        : selection.length
+        ? selection
+        : [bufferSelection],
       isLoading,
       isPrivacy: isPrivacyFolder,
       selectedUploadFile,
@@ -667,6 +679,7 @@ const SharingPanel = inject(
       setShareFiles,
       getFileInfo,
       getFolderInfo,
+      setBufferSelection,
     };
   }
 )(

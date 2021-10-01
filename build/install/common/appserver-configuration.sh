@@ -1,11 +1,15 @@
 #!/bin/bash
+
+set -e
+
 PRODUCT="appserver"
 ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
-NGINX_CONF="/etc/nginx/conf.d"
-SYSTEMD_DIR="/etc/systemd/system"
+NGINX_DIR="/etc/nginx"
+NGINX_CONF="${NGINX_DIR}/conf.d"
+SYSTEMD_DIR="/lib/systemd/system"
 
 MYSQL=""
 DB_HOST=""
@@ -167,7 +171,7 @@ install_json() {
 		set_core_machinekey
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
 		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
-		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" >/dev/null 2>&1
+		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
 		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" >/dev/null 2>&1
 		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
 		
@@ -177,21 +181,18 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
+	sed -i "s/Type=.*/Type=simple/" $SYSTEMD_DIR/${PRODUCT}-calendar.service >/dev/null 2>&1 #Fix non-start of service
 	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	for SVC in nginx mysqld ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
+	for SVC in nginx ${MYSQL_PACKAGE} ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
 	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
 	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
 	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
 	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
 	do
-		if systemctl is-active $SVC | grep -q "active"; then
-			systemctl restart $SVC.service >/dev/null 2>&1
-		else
-			systemctl enable $SVC.service  >/dev/null 2>&1
-			systemctl start $SVC.service  >/dev/null 2>&1
-		fi
+		systemctl enable $SVC.service >/dev/null 2>&1
+		systemctl restart $SVC.service
 	done
 	echo "OK"
 }
@@ -235,7 +236,7 @@ establish_mysql_conn(){
 	$MYSQL -e ";" >/dev/null 2>&1
 	ERRCODE=$?
 	if [ $ERRCODE -ne 0 ]; then
-		systemctl mysqld start >/dev/null 2>&1
+		systemctl ${MYSQL_PACKAGE} start >/dev/null 2>&1
 		$MYSQL -e ";" >/dev/null 2>&1 || { echo "FAILURE"; exit 1; }
 	fi
 
@@ -246,35 +247,45 @@ establish_mysql_conn(){
 	echo "OK"
 }
 
-mysql_check_connection() {
-	while ! $MYSQL -e ";" >/dev/null 2>&1; do
-    		sleep 1
-	done
-}
-
 change_mysql_config(){
-	local CNF_PATH="/etc/my.cnf";
-    local CNF_SERVICE_PATH="/usr/lib/systemd/system/mysqld.service";
-
-    if ! grep -q "\[mysqld\]" ${CNF_PATH}; then
-		CNF_PATH="/etc/my.cnf.d/server.cnf";
+	if [ "$DIST" = "RedHat" ]; then
+	
+		local CNF_PATH="/etc/my.cnf";
+		local CNF_SERVICE_PATH="/usr/lib/systemd/system/mysqld.service";
 
 		if ! grep -q "\[mysqld\]" ${CNF_PATH}; then
-			exit 1;
-		fi
-	fi 
+			CNF_PATH="/etc/my.cnf.d/server.cnf";
 
-	if ! grep -q "\[Unit\]" ${CNF_SERVICE_PATH}; then
-		CNF_SERVICE_PATH="/lib/systemd/system/mysqld.service";
-
-		if ! grep -q "\[Unit\]" ${CNF_SERVICE_PATH}; then
-			CNF_SERVICE_PATH="/lib/systemd/system/mariadb.service";
-				
-			if ! grep -q "\[Unit\]" ${CNF_SERVICE_PATH}; then 
+			if ! grep -q "\[mysqld\]" ${CNF_PATH}; then
 				exit 1;
 			fi
+		fi 
+
+		if ! grep -q "\[Unit\]" ${CNF_SERVICE_PATH}; then
+			CNF_SERVICE_PATH="/lib/systemd/system/mysqld.service";
+
+			if ! grep -q "\[Unit\]" ${CNF_SERVICE_PATH}; then
+				CNF_SERVICE_PATH="/lib/systemd/system/mariadb.service";
+					
+				if ! grep -q "\[Unit\]" ${CNF_SERVICE_PATH}; then 
+					exit 1;
+				fi
+			fi
+		fi 
+
+	elif [ "$DIST" = "Debian" ]; then
+
+		sed "s/#max_connections.*/max_connections = 1000/" -i /etc/mysql/my.cnf || true # ignore errors
+
+		CNF_PATH="/etc/mysql/mysql.conf.d/mysqld.cnf";
+		CNF_SERVICE_PATH="/lib/systemd/system/mysql.service";
+
+		if mysql -V | grep -q "MariaDB"; then
+			CNF_PATH="/etc/mysql/mariadb.conf.d/50-server.cnf";
+			CNF_SERVICE_PATH="/lib/systemd/system/mariadb.service";
 		fi
-	fi 
+
+	fi
 
     sed '/skip-networking/d' -i ${CNF_PATH} || true # ignore errors
 
@@ -319,28 +330,34 @@ change_mysql_config(){
 	else
 		sed "s/default-authentication-plugin.*/default-authentication-plugin = mysql_native_password/" -i ${CNF_PATH} || true # ignore errors
 	fi
-		
-	if ! grep -q "^LimitNOFILE"  ${CNF_SERVICE_PATH}; then
-		sed '/\[Service\]/a LimitNOFILE = infinity' -i ${CNF_SERVICE_PATH}
-	else
-		sed "s/LimitNOFILE.*/LimitNOFILE = infinity/" -i ${CNF_SERVICE_PATH} || true # ignore errors
-	fi
 
-	if ! grep -q "^LimitMEMLOCK"  ${CNF_SERVICE_PATH}; then
-		sed '/\[Service\]/a LimitMEMLOCK = infinity' -i ${CNF_SERVICE_PATH}
-	else
-		sed "s/LimitMEMLOCK.*/LimitMEMLOCK = infinity/" -i ${CNF_SERVICE_PATH} || true # ignore errors
+	if [ -e ${CNF_SERVICE_PATH} ]; then
+		
+		if ! grep -q "^LimitNOFILE"  ${CNF_SERVICE_PATH}; then
+			sed '/\[Service\]/a LimitNOFILE = infinity' -i ${CNF_SERVICE_PATH}
+		else
+			sed "s/LimitNOFILE.*/LimitNOFILE = infinity/" -i ${CNF_SERVICE_PATH} || true # ignore errors
+		fi
+
+		if ! grep -q "^LimitMEMLOCK"  ${CNF_SERVICE_PATH}; then
+			sed '/\[Service\]/a LimitMEMLOCK = infinity' -i ${CNF_SERVICE_PATH}
+		else
+			sed "s/LimitMEMLOCK.*/LimitMEMLOCK = infinity/" -i ${CNF_SERVICE_PATH} || true # ignore errors
+		fi
+	
 	fi
 
     systemctl daemon-reload >/dev/null 2>&1
-	systemctl restart mysqld >/dev/null 2>&1
+	systemctl restart ${MYSQL_PACKAGE} >/dev/null 2>&1
 }
 
 execute_mysql_script(){
 
 	change_mysql_config
 
-    mysql_check_connection
+    while ! $MYSQL -e ";" >/dev/null 2>&1; do
+    	sleep 1
+	done
     
     if [ "$DB_USER" = "root" ] && [ ! "$(mysql -V | grep ' 5.5.')" ]; then
 	   # allow connect via mysql_native_password with root and empty password
@@ -356,7 +373,7 @@ execute_mysql_script(){
 		echo -n "Installing MYSQL database... "
 
 		#Adding data to the db
-		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql
+		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql #Fix a bug related to an incorrect date
 		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
 		echo 'CREATE TABLE IF NOT EXISTS `Tenants` ( `id` varchar(200) NOT NULL, `Status` varchar(200) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> $SQL_DIR/onlyoffice.sql #Fix non-existent tables Tenants
 		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
@@ -377,35 +394,44 @@ execute_mysql_script(){
 
 setup_nginx(){
 	echo -n "Configuring nginx... "
-
-	mv -f $NGINX_CONF/default.conf $NGINX_CONF/default.conf.old >/dev/null 2>&1
-
+	
+	# Remove default nginx website
+	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
 
-    shopt -s nocasematch
-    PORTS=()
-	if $(getenforce) >/dev/null 2>&1; then
-		case $(getenforce) in
-			enforcing|permissive)
-				PORTS+=('8081') #Storybook
-				PORTS+=("$DOCUMENT_SERVER_PORT")
-				PORTS+=('5001') #ASC.Web.Studio
-				PORTS+=('5002') #ASC.People
-				PORTS+=('5008') #ASC.Files/client
-				PORTS+=('5013') #ASC.Files/editor
-				PORTS+=('5014') #ASC.CRM
-				setsebool -P httpd_can_network_connect on
-			;;
-			disabled)
-				:
-			;;
-		esac
+	if [ "$DIST" = "RedHat" ]; then
+		# Remove default nginx settings
+		DELETION_LINE=$(sed -n '/server {/=' /etc/nginx/nginx.conf | head -n 1)
+		if [ -n "$DELETION_LINE" ]; then 
+			sed "$DELETION_LINE,\$d" -i /etc/nginx/nginx.conf
+			echo "}" >> /etc/nginx/nginx.conf
+		fi
 
-		for PORT in ${PORTS[@]}; do
-			semanage port -a -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
-			semanage port -m -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
-			true
-		done
+		shopt -s nocasematch
+		PORTS=()
+		if $(getenforce) >/dev/null 2>&1; then
+			case $(getenforce) in
+				enforcing|permissive)
+					PORTS+=('8081') #Storybook
+					PORTS+=("$DOCUMENT_SERVER_PORT")
+					PORTS+=('5001') #ASC.Web.Studio
+					PORTS+=('5002') #ASC.People
+					PORTS+=('5008') #ASC.Files/client
+					PORTS+=('5013') #ASC.Files/editor
+					PORTS+=('5014') #ASC.CRM
+					setsebool -P httpd_can_network_connect on
+				;;
+				disabled)
+					:
+				;;
+			esac
+
+			for PORT in ${PORTS[@]}; do
+				semanage port -a -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
+				semanage port -m -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
+				true
+			done
+		fi
 	fi
     chown nginx:nginx /etc/nginx/* -R
     sudo sed -e 's/#//' -i $NGINX_CONF/onlyoffice.conf
@@ -427,8 +453,8 @@ setup_docs() {
 	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.inbox='true'" >/dev/null 2>&1
 	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.outbox='true'" >/dev/null 2>&1
 	
-	local DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | json services.CoAuthoring.secret.inbox.string)
-	local DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | json services.CoAuthoring.token.inbox.header)
+	local DOCUMENT_SERVER_JWT_SECRET=$(json -f ${DS_CONF} services.CoAuthoring.secret.inbox.string)
+	local DOCUMENT_SERVER_JWT_HEADER=$(json -f ${DS_CONF} services.CoAuthoring.token.inbox.header)
 
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
@@ -436,14 +462,16 @@ setup_docs() {
 	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
 	#Enable ds-example autostart
-	sudo sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini
-	sudo supervisorctl start ds:example >/dev/null 2>&1
+	sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini >/dev/null 2>&1 || sed 's,autostart=false,autostart=true,' -i /etc/supervisor/conf.d/ds-example.conf >/dev/null 2>&1
+	supervisorctl start ds:example >/dev/null 2>&1
 	
 	echo "OK"
 }
 
 change_elasticsearch_config(){
-	local ELASTIC_SEARCH_VERSION=$(rpm -qi elasticsearch | grep Version | tail -n1 | awk -F': ' '/Version/ {print $2}');
+
+	systemctl stop elasticsearch
+
 	local ELASTIC_SEARCH_CONF_PATH="/etc/elasticsearch/elasticsearch.yml"
 	local ELASTIC_SEARCH_JAVA_CONF_PATH="/etc/elasticsearch/jvm.options";
 
@@ -496,6 +524,8 @@ change_elasticsearch_config(){
 	if [ -d /etc/elasticsearch/ ]; then 
 		chmod g+ws /etc/elasticsearch/
 	fi
+
+	systemctl start elasticsearch
 }
 
 setup_elasticsearch() {
@@ -511,13 +541,13 @@ setup_elasticsearch() {
 
 setup_kafka() {
 
-	local KAFKA_SERVICE=$(systemctl --type=service | grep 'kafka' | tr -d '●' | awk '{print $1;}')
+	KAFKA_SERVICE=$(systemctl list-units --no-legend "*kafka*" | cut -f1 -d' ')
 
 	if [ -n ${KAFKA_SERVICE} ]; then
 
 		echo -n "Configuring kafka... "
 		
-		local KAFKA_DIR="$(cat $SYSTEMD_DIR/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)"
+		local KAFKA_DIR="$(grep -oP '(?<=ExecStop=).*(?=/bin)' $SYSTEMD_DIR/$KAFKA_SERVICE)"
 		local KAFKA_CONF="${KAFKA_DIR}/config"
 
 		#Change kafka config
@@ -531,40 +561,43 @@ setup_kafka() {
 		
 		#Save kafka parameters in .json
 		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
-
-		#Add topics for kafka
-		KAFKA_TOPICS=( ascchannelQuotaCacheItemAny
-			ascchannelTariffCacheItemRemove
-			ascchannelTenantCacheItemInsertOrUpdate
-			ascchannelTenantSettingRemove )
-
-		for i in "${KAFKA_TOPICS[@]}" 
-		do
-			${KAFKA_DIR}/bin/kafka-topics.sh --create --zookeeper ${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT} --topic $i --replication-factor 1 --partitions 3 >/dev/null 2>&1
-		done
 		
 		echo "OK"
 	fi
 
 }
 
+if command -v yum >/dev/null 2>&1; then
+	DIST="RedHat"
+	PACKAGE_MANAGER="rpm -q"
+	MYSQL_PACKAGE="mysqld"
+elif command -v apt >/dev/null 2>&1; then
+	DIST="Debian"
+	PACKAGE_MANAGER="dpkg -l"
+	MYSQL_PACKAGE="mysql"
+	mkdir -p /var/log/onlyoffice/appserver/ /etc/onlyoffice/appserver/.private/
+	chown -R onlyoffice:onlyoffice /var/www/appserver/ /var/log/onlyoffice/appserver/ /etc/onlyoffice/appserver/
+	chown -R kafka /var/www/appserver/services/kafka/
+	systemctl restart kafka zookeeper
+fi
+
 install_json
 
-if rpm -q mysql-community-client >/dev/null; then
+if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-community-client >/dev/null 2>&1; then
     input_db_params
     establish_mysql_conn || exit $?
     execute_mysql_script || exit $?
 fi 
 
-if rpm -q nginx >/dev/null; then
+if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then
     setup_nginx
 fi
 
-if rpm -q onlyoffice-documentserver >/dev/null || rpm -q onlyoffice-documentserver-de >/dev/null || rpm -q onlyoffice-documentserver-ee >/dev/null; then
+if $PACKAGE_MANAGER onlyoffice-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER onlyoffice-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER onlyoffice-documentserver-ee >/dev/null 2>&1; then
     setup_docs
 fi
 
-if rpm -q elasticsearch >/dev/null; then
+if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
     setup_elasticsearch
 fi
 
