@@ -121,27 +121,31 @@ class PageLayout extends React.Component {
     ) {
       this.backdropClick();
     }
-
-    if (isMobile && !this.props.userShowText && this.props.showText) this.props.setShowText(false);
-    if (isMobileUtils() && !isMobile && !this.props.userShowText && this.props.showText)
-      this.props.setShowText(false);
-    if (isTabletUtils() && !isMobile && !this.props.userShowText && this.props.showText)
-      this.props.setShowText(false);
-    if (isDesktopUtils() && !isMobile) this.props.setShowText(true);
   }
 
   componentDidMount() {
     window.addEventListener('orientationchange', this.orientationChangeHandler);
+    window.addEventListener('resize', this.sizeChangeHandler);
 
     this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
     window.removeEventListener('orientationchange', this.orientationChangeHandler);
+    window.removeEventListener('resize', this.sizeChangeHandler);
 
     if (this.intervalHandler) clearInterval(this.intervalHandler);
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
+
+  sizeChangeHandler = () => {
+    if (isMobile && !this.props.userShowText && this.props.showText) this.props.setShowText(false);
+    if (isMobileUtils() && !isMobile && !this.props.userShowText && this.props.showText)
+      this.props.setShowText(false);
+    if (isTabletUtils() && !isMobile && !this.props.userShowText && this.props.showText)
+      this.props.setShowText(false);
+    if (isDesktopUtils() && !isMobile) this.props.setShowText(true);
+  };
 
   orientationChangeHandler = () => {
     const isValueExist = !!this.props.isArticlePinned;
