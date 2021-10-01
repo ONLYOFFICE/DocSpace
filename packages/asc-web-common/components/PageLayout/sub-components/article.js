@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { Resizable } from "re-resizable";
 import { isMobile } from "react-device-detect";
-import { tablet, desktop } from "@appserver/components/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledArticle = styled.article`
   @media ${tablet} {
@@ -14,14 +14,6 @@ const StyledArticle = styled.article`
         position: fixed;
         z-index: 400;
       `}
-
-    ${(props) =>
-      props.visible && props.pinned && `border-right: 1px solid #eceef1`}
-  }
-
-  @media ${desktop} {
-    border-right: 1px solid #eceef1;
-    box-sizing: border-box;
   }
 
   .resizable-block {
