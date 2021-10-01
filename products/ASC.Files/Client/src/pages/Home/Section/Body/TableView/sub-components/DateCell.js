@@ -15,7 +15,7 @@ const DateCell = ({ create, updatedDate, createdDate, sideColor, item }) => {
       className="row_update-text"
       truncate
     >
-      {(fileExst || contentLength || !providerKey) && date && date}
+      {date && date}
     </StyledText>
   );
 };
