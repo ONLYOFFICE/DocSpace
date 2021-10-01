@@ -45,7 +45,7 @@ const StyledTile = styled.div`
         content: "";
         position: absolute;
         top: -5px;
-        left: 1px;
+        left: 0px;
         border-top: 1px solid #d0d5da;
         border-top-left-radius: 3px;
         border-left: 1px solid #d0d5da;
@@ -53,10 +53,6 @@ const StyledTile = styled.div`
         height: 8px;
         background-color: #fff;
         border-bottom: transparent;
-
-        @media ${tablet} {
-          left: 0px;
-        }
       }
       &:after {
         content: "";
@@ -110,7 +106,7 @@ const StyledTile = styled.div`
   .file-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
-    margin-right: 4px;
+    margin-right: ${(props) => (props.isFolder ? "8px" : "4px")};
     margin-top: 3px;
 
     @media ${tablet} {
@@ -125,7 +121,7 @@ const StyledTile = styled.div`
     margin-right: 4px;
     user-select: none;
     margin-top: 3px;
-    margin-top: -4px;
+    margin-top: ${(props) => (props.isFolder ? "-6px" : "-4px")};
 
     height: 24px;
     width: 24px;
@@ -319,6 +315,8 @@ class Tile extends React.PureComponent {
 
     const icon = this.getIconFile();
 
+    console.log(this.props);
+
     return (
       <StyledTile
         ref={this.tile}
@@ -331,16 +329,16 @@ class Tile extends React.PureComponent {
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
-            {renderCheckbox && (
+            {renderCheckbox && id !== -1 && (
               <Checkbox
-                className="checkbox"
+                className="checkbox file-checkbox"
                 isChecked={checked}
                 isIndeterminate={indeterminate}
                 onChange={this.changeCheckbox}
               />
             )}
-            {renderElement && !(isFolder || (!fileExst && id === -1)) && (
-              <StyledElement>{element}</StyledElement>
+            {renderElement && !(!fileExst && id === -1) && (
+              <StyledElement className="file-icon">{element}</StyledElement>
             )}
             <StyledContent
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
@@ -368,15 +366,17 @@ class Tile extends React.PureComponent {
           <>
             <StyledFileTileTop>{icon}</StyledFileTileTop>
             <StyledFileTileBottom>
-              <div className="file-icon_container">
-                <div className="file-icon">{element}</div>
-                <Checkbox
-                  className="file-checkbox"
-                  isChecked={checked}
-                  isIndeterminate={indeterminate}
-                  onChange={this.changeCheckbox}
-                />
-              </div>
+              {id !== -1 && (
+                <div className="file-icon_container">
+                  <div className="file-icon">{element}</div>
+                  <Checkbox
+                    className="file-checkbox"
+                    isChecked={checked}
+                    isIndeterminate={indeterminate}
+                    onChange={this.changeCheckbox}
+                  />
+                </div>
+              )}
               <StyledContent
                 className="styled-content"
                 isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
