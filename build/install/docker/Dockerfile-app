@@ -71,6 +71,7 @@ RUN rm -rf /var/lib/apt/lists/*
 ### STAGE 2: Build ###
 FROM mcr.microsoft.com/dotnet/aspnet:5.0.4-focal-amd64 as builder
 ARG BUILD_PATH
+ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 
 COPY --from=base /app/onlyoffice/config/*.json /app/onlyoffice/config/
@@ -146,7 +147,7 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
 FROM builder AS api_system
 WORKDIR ${BUILD_PATH}/services/apisystem/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service .
 
 CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
@@ -155,7 +156,7 @@ CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 FROM builder AS backup
 WORKDIR ${BUILD_PATH}/services/backup/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service .
 
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
@@ -164,7 +165,7 @@ CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/pr
 FROM builder AS calendar
 WORKDIR ${BUILD_PATH}/products/ASC.Calendar/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Calendar/server/ .
 
 CMD ["ASC.Calendar.dll", "ASC.Calendar"]
@@ -173,7 +174,7 @@ CMD ["ASC.Calendar.dll", "ASC.Calendar"]
 FROM builder AS crm
 WORKDIR ${BUILD_PATH}/products/ASC.CRM/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.CRM/server/ .
 
 CMD ["ASC.CRM.dll", "ASC.CRM"]
@@ -182,7 +183,7 @@ CMD ["ASC.CRM.dll", "ASC.CRM"]
 FROM builder AS data_storage_encryption
 WORKDIR ${BUILD_PATH}/services/storage.encryption/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/ .
 
 CMD ["ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
@@ -191,7 +192,7 @@ CMD ["ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
 FROM builder AS files
 WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Files/server/ .
 
 CMD ["ASC.Files.dll", "ASC.Files"]
@@ -200,7 +201,7 @@ CMD ["ASC.Files.dll", "ASC.Files"]
 FROM builder AS files_services
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.Service/service/ .
 
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
@@ -209,7 +210,7 @@ CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/ww
 FROM builder AS mail
 WORKDIR ${BUILD_PATH}/products/ASC.Mail/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Mail/server/ .
 
 CMD ["ASC.Mail.dll", "ASC.Mail"]
@@ -218,7 +219,7 @@ CMD ["ASC.Mail.dll", "ASC.Mail"]
 FROM builder AS data_storage_migration
 WORKDIR ${BUILD_PATH}/services/storage.migration/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/ .
 
 CMD ["ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
@@ -227,7 +228,7 @@ CMD ["ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
 FROM builder AS notify
 WORKDIR ${BUILD_PATH}/services/notify/service
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify/service/ .
 
 CMD ["ASC.Notify.dll", "ASC.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
@@ -236,7 +237,7 @@ CMD ["ASC.Notify.dll", "ASC.Notify", "core:products:folder=/var/www/products/", 
 FROM builder AS people_server
 WORKDIR ${BUILD_PATH}/products/ASC.People/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People/server/ .
 
 CMD ["ASC.People.dll", "ASC.People"]
@@ -245,7 +246,7 @@ CMD ["ASC.People.dll", "ASC.People"]
 FROM builder AS projects_server
 WORKDIR ${BUILD_PATH}/products/ASC.Projects/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Projects/server/ .
 
 CMD ["ASC.Projects.dll", "ASC.Projects"]
@@ -254,7 +255,7 @@ CMD ["ASC.Projects.dll", "ASC.Projects"]
 FROM builder AS socket
 WORKDIR ${BUILD_PATH}/services/socket.io.svc/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO.Svc/service/ .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/  ${BUILD_PATH}/ASC.Socket.IO/
 
@@ -264,7 +265,7 @@ CMD ["ASC.Socket.IO.Svc.dll", "ASC.Socket.IO.Svc"]
 FROM builder AS studio_notify
 WORKDIR ${BUILD_PATH}/services/studio.notify/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Studio.Notify/service/ .
 
 CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
@@ -273,7 +274,7 @@ CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify", "core:products:folder=/var/ww
 FROM builder AS telegram_service
 WORKDIR ${BUILD_PATH}/services/telegram/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.TelegramService/service/ .
 
 CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
@@ -282,7 +283,7 @@ CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
 FROM builder AS thumbnails
 WORKDIR ${BUILD_PATH}/services/thumb/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ ${BUILD_PATH}/services/thumb/client
 
@@ -292,7 +293,7 @@ CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 FROM builder AS urlshortener
 WORKDIR  ${BUILD_PATH}/services/urlshortener/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener.Svc/service/ .
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ ${BUILD_PATH}/services/urlshortener/client
 
@@ -302,7 +303,7 @@ CMD ["ASC.UrlShortener.Svc.dll", "ASC.UrlShortener.Svc"]
 FROM builder AS api
 WORKDIR ${BUILD_PATH}/studio/api/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Api/service/ .
 
 CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
@@ -311,7 +312,7 @@ CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
 FROM builder AS studio
 WORKDIR ${BUILD_PATH}/studio/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
@@ -320,7 +321,7 @@ CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 FROM builder AS ssoauth
 WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.SsoAuth.Svc/service/ .
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ ${BUILD_PATH}/ASC.SsoAuth/
 
