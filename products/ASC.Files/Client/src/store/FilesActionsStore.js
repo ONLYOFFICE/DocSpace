@@ -322,6 +322,8 @@ class FilesActionStore {
       (elm) => elm.id === id
     );
 
+    item.isFolder = isFolder;
+
     setBufferSelection(item);
   };
 
