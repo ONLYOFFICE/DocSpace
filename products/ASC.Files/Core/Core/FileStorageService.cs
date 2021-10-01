@@ -815,29 +815,39 @@ namespace ASC.Web.Files.Services.WCFService
                     return DocumentServiceHelper.GetDocKey(fileId, -1, DateTime.MinValue);
                 }
 
-                Configuration<string> configuration;
+                Configuration<T> configuration;
 
                 app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+                string key;
+
                 if (app == null)
                 {
-                    DocumentServiceHelper.GetParams(fileId.ToString(), -1, doc, true, true, false, out configuration);
+                    DocumentServiceHelper.GetParams(fileId, -1, doc, true, true, false, out configuration);
+                    ErrorIf(!configuration.EditorConfig.ModeWrite
+                        || !(configuration.Document.Permissions.Edit
+                        || configuration.Document.Permissions.ModifyFilter
+                        || configuration.Document.Permissions.Review
+                        || configuration.Document.Permissions.FillForms
+                        || configuration.Document.Permissions.Comment),
+                        !string.IsNullOrEmpty(configuration.ErrorMessage) ? configuration.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+                    key = configuration.Document.Key;
                 }
                 else
                 {
                     var file = app.GetFile(fileId.ToString(), out var editable);
-                    DocumentServiceHelper.GetParams(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false, out configuration);
+                    DocumentServiceHelper.GetParams(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false, out var configuration1);
+                    ErrorIf(!configuration1.EditorConfig.ModeWrite
+                                || !(configuration1.Document.Permissions.Edit
+                                     || configuration1.Document.Permissions.ModifyFilter
+                                     || configuration1.Document.Permissions.Review
+                                     || configuration1.Document.Permissions.FillForms
+                                     || configuration1.Document.Permissions.Comment),
+                                !string.IsNullOrEmpty(configuration1.ErrorMessage) ? configuration1.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+                    key = configuration1.Document.Key;
                 }
 
-                ErrorIf(!configuration.EditorConfig.ModeWrite
-                        || !(configuration.Document.Permissions.Edit
-                             || configuration.Document.Permissions.ModifyFilter
-                             || configuration.Document.Permissions.Review
-                             || configuration.Document.Permissions.FillForms
-                             || configuration.Document.Permissions.Comment),
-                        !string.IsNullOrEmpty(configuration.ErrorMessage) ? configuration.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
-                var key = configuration.Document.Key;
 
-                if (!DocumentServiceTrackerHelper.StartTrack(fileId.ToString(), key))
+                if (!DocumentServiceTrackerHelper.StartTrack(fileId, key))
                 {
                     throw new Exception(FilesCommonResource.ErrorMassage_StartEditing);
                 }
