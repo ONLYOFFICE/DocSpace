@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import commonSettingsStyles from "../../utils/commonSettingsStyles";
 
 const INPUT_LENGTH = "350px";
-
+const TEXT_LENGTH = "1024px";
 const commonStyles = css`
   .radio-button_text {
     margin-right: 7px;
@@ -30,7 +30,7 @@ const commonStyles = css`
   }
 
   .backup-description {
-    max-width: 476px;
+    max-width: ${TEXT_LENGTH};
     font-size: 12px;
     line-height: 15px;
   }
@@ -79,8 +79,8 @@ const StyledRestoreBackup = styled.div`
     font-weight: 600;
     margin-top: 18px;
     margin-bottom: 15px;
-    font-size: 19px;
-    color: #c30;
+    font-size: 16px;
+    color: #f21c0e;
   }
   .restore-warning_link {
     margin: 15px 0;
@@ -90,11 +90,13 @@ const StyledRestoreBackup = styled.div`
   }
   .restore-backup-checkbox_notification {
     margin-top: 15px;
+    max-width: ${TEXT_LENGTH};
   }
   .restore-backup_list {
     color: #316daa;
-    text-decoration: underline;
+    text-decoration: underline dotted;
     cursor: pointer;
+    font-weight: 600;
   }
 
   .restore-backup_input {

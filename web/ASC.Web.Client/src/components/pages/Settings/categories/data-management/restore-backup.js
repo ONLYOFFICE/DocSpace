@@ -246,6 +246,7 @@ class RestoreBackup extends React.Component {
       selectedFile: data,
     });
   };
+
   onSetRestoreParams = (backupId, storageType, storageParams) => {
     this.setState({
       backupId,
@@ -413,14 +414,14 @@ class RestoreBackup extends React.Component {
           label={t("UserNotification")}
         />
 
-        <Text className="category-item-description restore-source restore-warning">
+        <Text className="backup-description restore-source restore-warning">
           {t("Common:Warning")}
           {"!"}
         </Text>
-        <Text className="category-item-description ">
+        <Text className="backup-description ">
           {t("RestoreSettingsWarning")}
         </Text>
-        <Text className="category-item-description restore-warning_link">
+        <Text className="backup-description restore-warning_link">
           {t("RestoreSettingsLink")}
         </Text>
 
