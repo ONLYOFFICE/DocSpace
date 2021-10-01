@@ -69,8 +69,8 @@ class FilesActionStore {
     const deleteAfter = false; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
 
-    const folderIds = [];
-    const fileIds = [];
+    let folderIds = [];
+    let fileIds = [];
 
     let i = 0;
     while (selection.length !== i) {
@@ -80,6 +80,13 @@ class FilesActionStore {
         folderIds.push(selection[i].id);
       }
       i++;
+    }
+
+    if (this.dialogsStore.isFolderActions) {
+      folderIds = [];
+      fileIds = [];
+
+      folderIds.push(selection[0]);
     }
 
     if (folderIds.length || fileIds.length) {
@@ -120,6 +127,12 @@ class FilesActionStore {
       ? translations.deleteFromTrash
       : translations.deleteSelectedElem;
 
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      updatedFolder = this.selectedFolderStore.parentId;
+    }
+
     getProgress()
       .then((res) => {
         const currentProcess = res.find((x) => x.id === id);
@@ -141,7 +154,10 @@ class FilesActionStore {
             alert: false,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(this.selectedFolderStore.id, filter, true, true);
+
+          fetchFiles(updatedFolder, filter, true, true).finally(() =>
+            this.dialogsStore.setIsFolderActions(false)
+          );
         }
       })
       .catch((err) => {

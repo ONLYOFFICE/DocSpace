@@ -226,7 +226,11 @@ class SectionHeaderContent extends React.Component {
       .catch((err) => toastr.error(err));
 
   renameAction = () => console.log("renameAction click");
-  onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
+  onOpenSharingPanel = () => {
+    this.props.setSelection([this.props.currentFolderId]);
+    this.props.setIsFolderActions(true);
+    return this.props.setSharingPanelVisible(true);
+  };
 
   onDeleteAction = () => {
     const {
@@ -235,37 +239,53 @@ class SectionHeaderContent extends React.Component {
       confirmDelete,
       setDeleteDialogVisible,
       isThirdPartySelection,
+      currentFolderId,
     } = this.props;
 
-    if (confirmDelete || isThirdPartySelection) {
-      setDeleteDialogVisible(true);
-    } else {
-      const translations = {
-        deleteOperation: t("Translations:DeleteOperation"),
-        deleteFromTrash: t("Translations:DeleteFromTrash"),
-        deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-      };
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      deleteFromTrash: t("Translations:DeleteFromTrash"),
+      deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+    };
 
-      deleteAction(translations).catch((err) => toastr.error(err));
-    }
+    this.props.setIsFolderActions(true);
+
+    deleteAction(translations, [currentFolderId]).catch((err) =>
+      toastr.error(err)
+    );
+
+    // TODO: uncomment after fix selection
+
+    // if (confirmDelete || isThirdPartySelection) {
+    //   setDeleteDialogVisible(true);
+    // } else {
+    //   const translations = {
+    //     deleteOperation: t("Translations:DeleteOperation"),
+    //     deleteFromTrash: t("Translations:DeleteFromTrash"),
+    //     deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+    //   };
+
+    //   deleteAction(translations).catch((err) => toastr.error(err));
+    // }
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
-    const { t } = this.props;
+    const { t, personal } = this.props;
+
     return [
       {
         key: "sharing-settings",
         label: t("SharingSettings"),
         onClick: this.onOpenSharingPanel,
-        disabled: true,
+        disabled: personal ? true : false,
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: true,
+        disabled: personal ? true : false,
       },
       { key: "separator-2", isSeparator: true },
       {
@@ -296,7 +316,7 @@ class SectionHeaderContent extends React.Component {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: true,
+        disabled: false,
       },
     ];
   };
@@ -428,19 +448,18 @@ class SectionHeaderContent extends React.Component {
                           getData={this.getContextOptionsPlus}
                           isDisabled={false}
                         />
-                        {personal && (
-                          <ContextMenuButton
-                            className="option-button"
-                            directionX="right"
-                            iconName="images/vertical-dots.react.svg"
-                            size={17}
-                            color="#A3A9AE"
-                            hoverColor="#657077"
-                            isFill
-                            getData={this.getContextOptionsFolder}
-                            isDisabled={false}
-                          />
-                        )}
+
+                        <ContextMenuButton
+                          className="option-button"
+                          directionX="right"
+                          iconName="images/vertical-dots.react.svg"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsFolder}
+                          isDisabled={false}
+                        />
                       </>
                     ) : (
                       canCreate && (
@@ -479,6 +498,7 @@ export default inject(
   }) => {
     const {
       setSelected,
+      setSelection,
       fileActionStore,
       fetchFiles,
       filter,
@@ -522,6 +542,7 @@ export default inject(
       cbMenuItems,
 
       setSelected,
+      setSelection,
       setAction,
       setIsLoading,
       fetchFiles,
