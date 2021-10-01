@@ -147,6 +147,7 @@ const PureThirdPartyListContainer = ({
         .catch((e) => console.error(e));
     } else {
       data.title = connectedCloudsTitleTranslation(data.title, t);
+      data.provider_key = data.key;
       setConnectItem(data);
       setConnectDialogVisible(true);
       redirectAction();
