@@ -28,6 +28,12 @@ const StyledCatalog = styled.div`
     background: #f8f9f9;
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
     .resizable-border {
       div {
         cursor: ew-resize !important;
