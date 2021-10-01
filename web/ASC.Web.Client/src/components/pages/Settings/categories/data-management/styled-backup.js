@@ -99,20 +99,19 @@ const StyledRestoreBackup = styled.div`
     margin: 16px 0;
     max-width: 820px;
   }
+  .restore-description {
+    margin-bottom: 32px;
+  }
 `;
 
 const StyledModules = styled.div`
   margin-bottom: 32px;
-`;
 
-const StyledRestoreModules = styled.div`
-  .category-item-description {
+  .backup-description {
     ${(props) => props.isDisabled && `color: #A3A9AE`}
   }
-  .radio-button_text {
-    font-weight: normal;
-  }
 `;
+
 const StyledScheduleComponent = styled.div`
   .time_options {
     .drop-down_variable-size {
@@ -241,7 +240,6 @@ export {
   StyledRestoreBackup,
   StyledScheduleComponent,
   StyledBackup,
-  StyledRestoreModules,
   StyledBackupList,
   StyledManualBackup,
   StyledAutoBackup,

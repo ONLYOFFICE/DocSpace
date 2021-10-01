@@ -8,7 +8,7 @@ import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
 import SelectFolderDialog from "files/SelectFolderDialog";
-import { StyledRestoreBackup, StyledRestoreModules } from "./styled-backup";
+import { StyledRestoreBackup } from "./styled-backup";
 import BackupListModalDialog from "./sub-components-restore-backup/backupListModalDialog";
 import Documents from "./sub-components-restore-backup/documents";
 import ThirdPartyResources from "./sub-components-restore-backup/thirdPartyResources";
@@ -294,76 +294,64 @@ class RestoreBackup extends React.Component {
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledRestoreBackup>
-        <Text className="backup-description">
-          {t("DataRestoreDescription")}
-        </Text>
+        <div className="restore-description">
+          <Text className="backup-description">
+            {t("DataRestoreDescription")}
+          </Text>
+        </div>
+        <RadioButton
+          fontSize="13px"
+          fontWeight="400"
+          label={t("DocumentsModule")}
+          name={"1"}
+          key={1}
+          onClick={this.onClickShowStorage}
+          isChecked={isCheckedDocuments}
+          isDisabled={false}
+          value="value"
+          className="backup_radio-button"
+        />
 
-        <StyledRestoreModules>
-          <RadioButton
-            fontSize="13px"
-            fontWeight="400"
-            label={t("DocumentsModule")}
-            name={"1"}
-            key={1}
-            onClick={this.onClickShowStorage}
-            isChecked={isCheckedDocuments}
-            isDisabled={false}
-            value="value"
-            className="backup_radio-button"
-          />
-        </StyledRestoreModules>
-
-        <StyledRestoreModules
+        <RadioButton
+          fontSize="13px"
+          fontWeight="400"
+          label={t("ThirdPartyResource")}
+          name={"2"}
+          key={1}
+          onClick={this.onClickShowStorage}
+          isChecked={isCheckedThirdParty}
           isDisabled={
             this.commonThirdPartyList && this.commonThirdPartyList.length === 0
           }
-        >
-          <RadioButton
-            fontSize="13px"
-            fontWeight="400"
-            label={t("ThirdPartyResource")}
-            name={"2"}
-            key={1}
-            onClick={this.onClickShowStorage}
-            isChecked={isCheckedThirdParty}
-            isDisabled={
-              this.commonThirdPartyList &&
-              this.commonThirdPartyList.length === 0
-            }
-            value="value"
-            className="backup_radio-button"
-          />
-        </StyledRestoreModules>
+          value="value"
+          className="backup_radio-button"
+        />
 
-        <StyledRestoreModules>
-          <RadioButton
-            fontSize="13px"
-            fontWeight="400"
-            label={t("ThirdPartyStorage")}
-            name={"3"}
-            key={1}
-            onClick={this.onClickShowStorage}
-            isChecked={isCheckedThirdPartyStorage}
-            isDisabled={false}
-            value="value"
-            className="backup_radio-button"
-          />
-        </StyledRestoreModules>
+        <RadioButton
+          fontSize="13px"
+          fontWeight="400"
+          label={t("ThirdPartyStorage")}
+          name={"3"}
+          key={1}
+          onClick={this.onClickShowStorage}
+          isChecked={isCheckedThirdPartyStorage}
+          isDisabled={false}
+          value="value"
+          className="backup_radio-button"
+        />
 
-        <StyledRestoreModules>
-          <RadioButton
-            fontSize="13px"
-            fontWeight="400"
-            label={t("LocalFile")}
-            name={"4"}
-            key={1}
-            onClick={this.onClickShowStorage}
-            isChecked={isCheckedLocalFile}
-            isDisabled={false}
-            value="value"
-            className="backup_radio-button"
-          />
-        </StyledRestoreModules>
+        <RadioButton
+          fontSize="13px"
+          fontWeight="400"
+          label={t("LocalFile")}
+          name={"4"}
+          key={1}
+          onClick={this.onClickShowStorage}
+          isChecked={isCheckedLocalFile}
+          isDisabled={false}
+          value="value"
+          className="backup_radio-button"
+        />
 
         {isCheckedDocuments && (
           <Documents
