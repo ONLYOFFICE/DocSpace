@@ -27,6 +27,18 @@ const FolderStyles = css`
   box-sizing: border-box;
 `;
 
+const draggingStyle = css`
+  background-color: #f8f7bf;
+`;
+
+const draggingHoverStyle = css`
+  background-color: #efefb2;
+`;
+
+const checkedStyle = css`
+  background: #f3f4f4 !important;
+`;
+
 const StyledTile = styled.div`
   cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
   min-height: 57px;
@@ -38,6 +50,7 @@ const StyledTile = styled.div`
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => props.isFolder && FolderStyles}
+  ${(props) => props.checked && checkedStyle}
     ${(props) =>
     props.isFolder &&
     css`
@@ -70,28 +83,21 @@ const StyledTile = styled.div`
         }
       }
     `}
-    ${(props) =>
-    props.isFolder &&
-    props.dragging &&
-    css`
-      &:before {
-        background-color: #f8f7bf;
-      }
-      &:after {
-        background-color: #f8f7bf;
-      }
-    `}
-    ${(props) =>
-    props.isFolder &&
-    props.dragging &&
-    css`
-      &:hover:before {
-        background-color: #efefb2;
-      }
-      &:hover:after {
-        background-color: #efefb2;
-      }
-    `};
+
+  &:before, 
+  &:after {
+    ${(props) => props.isFolder && props.dragging && draggingStyle};
+  }
+
+  &:before,
+  &:after {
+    ${(props) => props.checked && checkedStyle};
+  }
+
+  &:hover:before,
+  &:hover:after {
+    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
+  }
 
   .checkbox {
     opacity: ${(props) => (props.checked ? 1 : 0)};
@@ -136,15 +142,19 @@ const StyledTile = styled.div`
   }
 
   :hover {
-    .checkbox {
-      opacity: 1;
-    }
-    .file-checkbox {
-      display: flex;
-    }
-    .file-icon {
-      display: none;
-    }
+    ${(props) =>
+      !props.dragging &&
+      css`
+        .checkbox {
+          opacity: 1;
+        }
+        .file-checkbox {
+          display: flex;
+        }
+        .file-icon {
+          display: none;
+        }
+      `}
   }
 `;
 
@@ -314,8 +324,6 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
-
-    console.log(this.props);
 
     return (
       <StyledTile

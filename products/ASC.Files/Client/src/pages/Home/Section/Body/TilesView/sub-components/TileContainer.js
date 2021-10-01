@@ -17,6 +17,18 @@ const StyledGridWrapper = styled.div`
   padding-right: 2px;
   box-sizing: border-box;
   padding-left: 1px;
+
+  @media (min-width: 1314px) {
+    margin-left: -6px !important;
+  }
+
+  @media (min-width: 1024px) {
+    margin-left: -2px;
+  }
+
+  @media (max-width: 1024px) {
+    margin-left: -2px;
+  }
 `;
 
 const StyledTileContainer = styled.div`
@@ -28,10 +40,6 @@ const StyledTileContainer = styled.div`
 
     &.file {
       padding: 0;
-
-      .drag-and-drop {
-        margin: -1px;
-      }
     }
     &.folder {
       padding: 0;
@@ -49,6 +57,14 @@ const StyledTileContainer = styled.div`
 
     &.files {
       padding-top: 8px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .tile-item-wrapper {
+      &.file {
+        margin-left: 2px;
+      }
     }
   }
 `;
