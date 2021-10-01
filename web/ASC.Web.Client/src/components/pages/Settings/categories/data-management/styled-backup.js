@@ -1,6 +1,8 @@
 import styled, { css } from "styled-components";
 import commonSettingsStyles from "../../utils/commonSettingsStyles";
 
+const INPUT_LENGTH = "350px";
+
 const commonStyles = css`
   .radio-button_text {
     margin-right: 7px;
@@ -14,16 +16,16 @@ const commonStyles = css`
   .backup_combo {
     margin-top: 16px;
     width: 100%;
-    max-width: 350px;
+    max-width: ${INPUT_LENGTH};
     .combo-button-label {
       width: 100%;
-      max-width: 350px;
+      max-width: ${INPUT_LENGTH};
     }
   }
   .backup_text-input {
     margin: 10px 0;
     width: 100%;
-    max-width: 350px;
+    max-width: ${INPUT_LENGTH};
     font-size: 13px;
   }
 
@@ -60,7 +62,7 @@ const StyledAutoBackup = styled.div`
     margin-top: 16px;
     margin-bottom: 8px;
     width: 100%;
-    max-width: 350px;
+    max-width: ${INPUT_LENGTH};
   }
 `;
 
@@ -97,7 +99,7 @@ const StyledRestoreBackup = styled.div`
 
   .restore-backup_input {
     margin: 16px 0;
-    max-width: 820px;
+    max-width: ${INPUT_LENGTH};
   }
   .restore-description {
     margin-bottom: 32px;
