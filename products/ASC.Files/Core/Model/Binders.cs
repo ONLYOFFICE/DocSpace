@@ -1,35 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using ASC.Files.Core.Model;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+#nullable enable
 
 namespace ASC.Files.Model
 {
-    public class BaseBatchModelBinder : IModelBinder
+    public static class ModelBindingContextExtension
     {
-        public virtual Task BindModelAsync(ModelBindingContext bindingContext)
+        internal static bool GetFirstValue(this ModelBindingContext bindingContext, string modelName, out string? firstValue)
         {
-            if (bindingContext == null)
+            var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
+
+            if (valueProviderResult != ValueProviderResult.None)
             {
-                throw new ArgumentNullException(nameof(bindingContext));
+                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+                firstValue = valueProviderResult.FirstValue;
+                return true;
             }
 
-            var result = new BaseBatchModel();
-
-            result.FileIds = ParseQuery(bindingContext, nameof(result.FileIds));
-            result.FolderIds = ParseQuery(bindingContext, nameof(result.FolderIds));
-
-            bindingContext.Result = ModelBindingResult.Success(result);
-
-            return Task.CompletedTask;
+            firstValue = null;
+            return false;
         }
 
-        internal List<JsonElement> ParseQuery(ModelBindingContext bindingContext, string modelName)
+        internal static bool GetBoolValue(this ModelBindingContext bindingContext, string modelName, out bool firstValue)
+        {
+            if (GetFirstValue(bindingContext, modelName, out var deleteAfterValue) &&
+                bool.TryParse(deleteAfterValue, out var deleteAfter))
+            {
+                firstValue = deleteAfter;
+                return true;
+            }
+
+            firstValue = false;
+            return false;
+        }
+
+        internal static List<JsonElement> ParseQuery(this ModelBindingContext bindingContext, string modelName)
         {
             var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
 
@@ -48,7 +64,7 @@ namespace ASC.Files.Model
             return ParseQuery(bindingContext, $"{modelName}[]");
         }
 
-        public static JsonElement ParseQueryParam(string data)
+        public static JsonElement ParseQueryParam(string? data)
         {
             if (int.TryParse(data, out _))
             {
@@ -56,6 +72,27 @@ namespace ASC.Files.Model
             }
 
             return JsonSerializer.Deserialize<JsonElement>($"\"{data}\"");
+        }
+    }
+
+
+    public class BaseBatchModelBinder : IModelBinder
+    {
+        public virtual Task BindModelAsync(ModelBindingContext bindingContext)
+        {
+            if (bindingContext == null)
+            {
+                throw new ArgumentNullException(nameof(bindingContext));
+            }
+
+            var result = new BaseBatchModel();
+
+            result.FileIds = bindingContext.ParseQuery(nameof(result.FileIds));
+            result.FolderIds = bindingContext.ParseQuery(nameof(result.FolderIds));
+
+            bindingContext.Result = ModelBindingResult.Success(result);
+
+            return Task.CompletedTask;
         }
     }
 
@@ -69,35 +106,28 @@ namespace ASC.Files.Model
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
+            var result = new DeleteBatchModel();
+
             var baseResult = bindingContext.Result.Model as BaseBatchModel;
 
-            var result = new DeleteBatchModel();
+            if (baseResult == null)
+            {
+                bindingContext.Result = ModelBindingResult.Success(result);
+
+                return Task.CompletedTask;
+            }
 
             result.FileIds = baseResult.FileIds;
             result.FolderIds = baseResult.FolderIds;
 
-            var modelName = nameof(result.DeleteAfter);
-            var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-
-            if (valueProviderResult != ValueProviderResult.None)
+            if (bindingContext.GetBoolValue(nameof(result.DeleteAfter), out var deleteAfter))
             {
-                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                if (bool.TryParse(valueProviderResult.FirstValue, out var deleteAfter))
-                {
-                    result.DeleteAfter = deleteAfter;
-                }
+                result.DeleteAfter = deleteAfter;
             }
 
-            modelName = nameof(result.Immediately);
-            valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-
-            if (valueProviderResult != ValueProviderResult.None)
+            if (bindingContext.GetBoolValue(nameof(result.Immediately), out var immediately))
             {
-                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                if (bool.TryParse(valueProviderResult.FirstValue, out var immediately))
-                {
-                    result.Immediately = immediately;
-                }
+                result.Immediately = immediately;
             }
 
             bindingContext.Result = ModelBindingResult.Success(result);
@@ -116,45 +146,85 @@ namespace ASC.Files.Model
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
+            var result = new BatchModel();
+
             var baseResult = bindingContext.Result.Model as BaseBatchModel;
 
-            var result = new BatchModel();
+            if (baseResult == null)
+            {
+                bindingContext.Result = ModelBindingResult.Success(result);
+
+                return Task.CompletedTask;
+            }
 
             result.FileIds = baseResult.FileIds;
             result.FolderIds = baseResult.FolderIds;
 
-            var modelName = nameof(result.DeleteAfter);
-            var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-
-            if (valueProviderResult != ValueProviderResult.None)
+            if (bindingContext.GetBoolValue(nameof(result.DeleteAfter), out var deleteAfter))
             {
-                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                if (bool.TryParse(valueProviderResult.FirstValue, out var deleteAfter))
-                {
-                    result.DeleteAfter = deleteAfter;
-                }
+                result.DeleteAfter = deleteAfter;
             }
 
-            modelName = nameof(result.ConflictResolveType);
-            valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-
-            if (valueProviderResult != ValueProviderResult.None)
+            if (bindingContext.GetFirstValue(nameof(result.ConflictResolveType), out var сonflictResolveTypeValue))
             {
-                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                if (Enum.TryParse<FileConflictResolveType>(valueProviderResult.FirstValue, out var conflictResolveType))
+                if (Enum.TryParse<FileConflictResolveType>(сonflictResolveTypeValue, out var conflictResolveType))
                 {
                     result.ConflictResolveType = conflictResolveType;
                 }
             }
 
-            modelName = nameof(result.DestFolderId);
-            valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-
-            if (valueProviderResult != ValueProviderResult.None)
+            if (bindingContext.GetFirstValue(nameof(result.DestFolderId), out var firstValue))
             {
-                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-                result.DestFolderId = BaseBatchModelBinder.ParseQueryParam(valueProviderResult.FirstValue);
+                result.DestFolderId = ModelBindingContextExtension.ParseQueryParam(firstValue);
             }
+
+            bindingContext.Result = ModelBindingResult.Success(result);
+
+            return Task.CompletedTask;
+        }
+    }
+
+    public class InsertFileModelBinder : IModelBinder
+    {
+        public Task BindModelAsync(ModelBindingContext bindingContext)
+        {
+            if (bindingContext == null)
+            {
+                throw new ArgumentNullException(nameof(bindingContext));
+            }
+
+            var defaultBindingContext = bindingContext as DefaultModelBindingContext;
+            var composite = bindingContext.ValueProvider as CompositeValueProvider;
+
+            if (defaultBindingContext != null && composite != null && !composite.Any())
+            {
+                bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
+            }
+
+            var result = new InsertFileModel();
+
+            if (bindingContext.GetBoolValue(nameof(result.CreateNewIfExist), out var createNewIfExist))
+            {
+                result.CreateNewIfExist = createNewIfExist;
+            }
+
+            if (bindingContext.GetBoolValue(nameof(result.KeepConvertStatus), out var keepConvertStatus))
+            {
+                result.KeepConvertStatus = keepConvertStatus;
+            }
+
+            if (bindingContext.GetFirstValue(nameof(result.Title), out var firstValue))
+            {
+                result.Title = firstValue;
+            }
+
+            bindingContext.HttpContext.Request.EnableBuffering();
+
+            bindingContext.HttpContext.Request.Body.Position = 0;
+
+            result.Stream = new MemoryStream();
+            bindingContext.HttpContext.Request.Body.CopyToAsync(result.Stream).Wait();
+            result.Stream.Position = 0;
 
             bindingContext.Result = ModelBindingResult.Success(result);
 

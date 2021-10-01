@@ -495,7 +495,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public FileWrapper<int> InsertFileToMyFromBody([FromForm] InsertFileModel model)
+        public FileWrapper<int> InsertFileToMyFromBody([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderMy, model);
         }
@@ -510,7 +510,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public FileWrapper<int> InsertFileToCommonFromBody([FromForm] InsertFileModel model)
+        public FileWrapper<int> InsertFileToCommonFromBody([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderCommon, model);
         }
@@ -526,26 +526,20 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("{folderId}/insert", order: int.MaxValue)]
-        public FileWrapper<string> InsertFile(string folderId, [FromForm] InsertFileModel model)
+        public FileWrapper<string> InsertFile(string folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
-            using (model = InsertFileModel.FromQuery(HttpContext, model))
-            {
-                return FilesControllerHelperString.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
-            }
+            return FilesControllerHelperString.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
-        public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm] InsertFileModel model)
+        public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
             return InsertFile(folderId, model);
         }
 
         private FileWrapper<int> InsertFile(int folderId, InsertFileModel model)
         {
-            using (model = InsertFileModel.FromQuery(HttpContext, model))
-            {
-                return FilesControllerHelperInt.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
-            }
+            return FilesControllerHelperInt.InsertFile(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         /// <summary>
