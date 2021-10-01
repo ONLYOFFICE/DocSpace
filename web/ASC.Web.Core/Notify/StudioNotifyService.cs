@@ -797,6 +797,19 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
         }
 
+        public void SendAlreadyExist(string email)
+        {
+            var userInfo = UserManager.GetUserByEmail(email);
+            if (!UserManager.UserExists(userInfo)) return;
+
+            client.SendNoticeToAsync(
+                CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
+                StudioNotifyHelper.RecipientFromEmail(email, false),
+                new[] { EMailSenderName },
+                new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
+                new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
+        }
+
         public void SendUserWelcomePersonal(UserInfo newUserInfo)
         {
             client.SendNoticeToAsync(
