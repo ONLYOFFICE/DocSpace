@@ -1,14 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Backdrop from '@appserver/components/backdrop';
-import {
-  size,
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-  isDesktop as isDesktopUtils,
-} from '@appserver/components/utils/device';
+import { size } from '@appserver/components/utils/device';
 import { Provider } from '@appserver/components/utils/context';
-import { isMobile, isDesktop, isTablet, isFirefox, isMobileOnly } from 'react-device-detect';
+import { isMobile, isTablet, isFirefox, isMobileOnly } from 'react-device-detect';
 import Article from './sub-components/article';
 import SubArticleHeader from './sub-components/article-header';
 import SubArticleMainButton from './sub-components/article-main-button';
@@ -125,27 +120,16 @@ class PageLayout extends React.Component {
 
   componentDidMount() {
     window.addEventListener('orientationchange', this.orientationChangeHandler);
-    window.addEventListener('resize', this.sizeChangeHandler);
 
     this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
     window.removeEventListener('orientationchange', this.orientationChangeHandler);
-    window.removeEventListener('resize', this.sizeChangeHandler);
 
     if (this.intervalHandler) clearInterval(this.intervalHandler);
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
-
-  sizeChangeHandler = () => {
-    if (isMobile && !this.props.userShowText && this.props.showText) this.props.setShowText(false);
-    if (isMobileUtils() && !isMobile && !this.props.userShowText && this.props.showText)
-      this.props.setShowText(false);
-    if (isTabletUtils() && !isMobile && !this.props.userShowText && this.props.showText)
-      this.props.setShowText(false);
-    if (isDesktopUtils() && !isMobile) this.props.setShowText(true);
-  };
 
   orientationChangeHandler = () => {
     const isValueExist = !!this.props.isArticlePinned;

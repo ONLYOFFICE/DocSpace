@@ -3,7 +3,13 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Resizable } from 're-resizable';
 import { isMobile, isMobileOnly, isTablet } from 'react-device-detect';
-import { mobile, tablet, isMobile as isMobileUtils } from '@appserver/components/utils/device';
+import {
+  mobile,
+  tablet,
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+  isDesktop as isDesktopUtils,
+} from '@appserver/components/utils/device';
 
 const StyledCatalog = styled.div`
   position: relative;
@@ -65,6 +71,7 @@ const StyledCatalog = styled.div`
 
 const Catalog = (props) => {
   const { showText, setShowText, children, ...rest } = props;
+  const refTimer = React.useRef(null);
 
   const enable = {
     top: false,
@@ -84,6 +91,24 @@ const Catalog = (props) => {
       return () => window.removeEventListener('popstate', hideText);
     }
   }, [hideText]);
+  React.useEffect(() => {
+    window.addEventListener('resize', sizeChangeHandler);
+    return () => window.removeEventListener('resize', sizeChangeHandler);
+  });
+
+  const sizeChangeHandler = () => {
+    clearTimeout(refTimer.current);
+
+    refTimer.current = setTimeout(() => {
+      console.log('handler');
+      if (isMobile && !props.userShowText && props.showText) props.setShowText(false);
+      if (isMobileUtils() && !isMobile && !props.userShowText && props.showText)
+        props.setShowText(false);
+      if (isTabletUtils() && !isMobile && !props.userShowText && props.showText)
+        props.setShowText(false);
+      if (isDesktopUtils() && !isMobile) props.setShowText(true);
+    }, 200);
+  };
 
   return (
     <StyledCatalog showText={showText} {...rest}>
