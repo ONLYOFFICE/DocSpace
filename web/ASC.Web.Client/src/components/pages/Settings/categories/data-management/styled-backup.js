@@ -62,14 +62,12 @@ const StyledRestoreBackup = styled.div`
   ${commonStyles}
 
   .restore-source {
-    // restore
     font-weight: 600;
     margin-top: 30px;
     margin-bottom: 15px;
     font-size: 15px;
   }
   .restore-warning {
-    // restore
     font-weight: 600;
     margin-top: 18px;
     margin-bottom: 15px;
@@ -77,26 +75,21 @@ const StyledRestoreBackup = styled.div`
     color: #c30;
   }
   .restore-warning_link {
-    // restore
     margin: 15px 0;
   }
   .restore-backup-checkbox {
-    // restore
     margin-bottom: 24px;
   }
   .restore-backup-checkbox_notification {
-    // restore
     margin-top: 15px;
   }
   .restore-backup_list {
-    // restore
     color: #316daa;
     text-decoration: underline;
     cursor: pointer;
   }
 
   .restore-backup_input {
-    // restore
     margin: 16px 0;
     max-width: 820px;
   }
