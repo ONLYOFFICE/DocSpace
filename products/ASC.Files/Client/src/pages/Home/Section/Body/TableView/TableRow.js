@@ -16,16 +16,55 @@ import AuthorCell from "./sub-components/AuthorCell";
 import DateCell from "./sub-components/DateCell";
 import TypeCell from "./sub-components/TypeCell";
 import globalColors from "@appserver/components/utils/globalColors";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
 
 const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
+const rowCheckboxCheckedStyle = css`
+  border-image-source: linear-gradient(to right, #f3f4f4 24px, #eceef1 24px);
+`;
+const contextMenuWrapperCheckedStyle = css`
+  border-image-source: linear-gradient(to left, #f3f4f4 24px, #eceef1 24px);
+`;
+
+const rowCheckboxDraggingStyle = css`
+  border-image-source: linear-gradient(to right, #f8f7bf 24px, #eceef1 24px);
+`;
+
+const contextMenuWrapperDraggingStyle = css`
+  border-image-source: linear-gradient(to left, #f8f7bf 24px, #eceef1 24px);
+`;
+
+const rowCheckboxDraggingHoverStyle = css`
+  border-image-source: linear-gradient(
+    to right,
+    rgb(239, 239, 178) 24px,
+    #eceef1 24px
+  );
+`;
+const contextMenuWrapperDraggingHoverStyle = css`
+  border-image-source: linear-gradient(
+    to left,
+    rgb(239, 239, 178) 24px,
+    #eceef1 24px
+  );
+`;
+
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
-    background: ${(props) => props.checked && "#f8f9f9 !important"};
+    background: ${(props) => props.checked && "#F3F4F4 !important"};
     cursor: ${(props) => props.checked && "url(images/cursor.palm.svg), auto"};
+  }
+
+  &:hover {
+    .table-container_row-checkbox-wrapper {
+      ${(props) => props.dragging && rowCheckboxDraggingHoverStyle}
+    }
+    .table-container_row-context-menu-wrapper {
+      ${(props) => props.dragging && contextMenuWrapperDraggingHoverStyle}
+    }
   }
 
   .table-container_row-checkbox-wrapper {
@@ -34,10 +73,10 @@ const StyledTableRow = styled(TableRow)`
     padding-left: 24px;
     border-bottom: 1px solid;
     border-image-slice: 1;
-    border-image-source: ${(props) =>
-      !props.checked
-        ? `linear-gradient(to right, #ffffff 24px, #eceef1 24px)`
-        : `linear-gradient(to right, #f8f9f9 24px, #eceef1 24px)`};
+    border-image-source: linear-gradient(to right, #ffffff 24px, #eceef1 24px);
+
+    ${(props) => props.checked && rowCheckboxCheckedStyle};
+    ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
 
   .table-container_row-context-menu-wrapper {
@@ -46,10 +85,10 @@ const StyledTableRow = styled(TableRow)`
     padding-right: 20px;
     border-bottom: 1px solid;
     border-image-slice: 1;
-    border-image-source: ${(props) =>
-      !props.checked
-        ? `linear-gradient(to left, #ffffff 24px, #eceef1 24px)`
-        : `linear-gradient(to left, #f8f9f9 24px, #eceef1 24px)`};
+    border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
+
+    ${(props) => props.checked && contextMenuWrapperCheckedStyle};
+    ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
   }
 `;
 
