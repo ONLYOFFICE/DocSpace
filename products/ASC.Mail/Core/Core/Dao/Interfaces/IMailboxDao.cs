@@ -53,7 +53,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         bool SetMailboxRemoved(Mailbox mailbox);
 
-        bool RemoveMailbox(Mailbox mailbox);
+        bool RemoveMailbox(Mailbox mailbox, MailDbContext context);
 
         bool Enable(IMailboxExp exp, bool enabled);
 

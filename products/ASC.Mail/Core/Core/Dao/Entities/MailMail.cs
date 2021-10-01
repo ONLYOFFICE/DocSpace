@@ -33,10 +33,10 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
         [Column("id_mailbox", TypeName = "int(11)")]
-        public int IdMailbox { get; set; }
+        public int MailboxId { get; set; }
         [Required]
         [Column("id_user", TypeName = "varchar(255)")]
-        public string IdUser { get; set; }
+        public string UserId { get; set; }
         [Column("tenant", TypeName = "int(11)")]
         public int TenantId { get; set; }
         [Column("uidl", TypeName = "varchar(255)")]
@@ -97,7 +97,7 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("spam", TypeName = "int(11)")]
         public bool Spam { get; set; }
         [Column("time_modified", TypeName = "timestamp")]
-        public DateTime TimeModified { get; set; }
+        public DateTime LastModifiedOn { get; set; }
         [Column("is_removed")]
         public bool IsRemoved { get; set; }
         [Column("mime_message_id", TypeName = "varchar(255)")]
@@ -157,25 +157,25 @@ namespace ASC.Mail.Core.Dao.Entities
             {
                 entity.Ignore(r => r.Document);
 
-                entity.HasIndex(e => e.TimeModified)
+                entity.HasIndex(e => e.LastModifiedOn)
                     .HasDatabaseName("time_modified");
 
-                entity.HasIndex(e => new { e.IdMailbox, e.MimeMessageId })
+                entity.HasIndex(e => new { e.MailboxId, e.MimeMessageId })
                     .HasDatabaseName("mime_message_id");
 
-                entity.HasIndex(e => new { e.Md5, e.IdMailbox })
+                entity.HasIndex(e => new { e.Md5, e.MailboxId })
                     .HasDatabaseName("md5");
 
-                entity.HasIndex(e => new { e.Uidl, e.IdMailbox })
+                entity.HasIndex(e => new { e.Uidl, e.MailboxId })
                     .HasDatabaseName("uidl");
 
-                entity.HasIndex(e => new { e.ChainId, e.IdMailbox, e.Folder })
+                entity.HasIndex(e => new { e.ChainId, e.MailboxId, e.Folder })
                     .HasDatabaseName("chain_index_folders");
 
-                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Folder, e.ChainDate })
+                entity.HasIndex(e => new { e.TenantId, e.UserId, e.Folder, e.ChainDate })
                     .HasDatabaseName("list_conversations");
 
-                entity.HasIndex(e => new { e.TenantId, e.IdUser, e.Folder, e.DateSent })
+                entity.HasIndex(e => new { e.TenantId, e.UserId, e.Folder, e.DateSent })
                     .HasDatabaseName("list_messages");
 
                 entity.Property(e => e.Address)
@@ -212,7 +212,7 @@ namespace ASC.Mail.Core.Dao.Entities
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.IdUser)
+                entity.Property(e => e.UserId)
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
@@ -245,7 +245,7 @@ namespace ASC.Mail.Core.Dao.Entities
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.TimeModified)
+                entity.Property(e => e.LastModifiedOn)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 

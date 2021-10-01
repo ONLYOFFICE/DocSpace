@@ -69,7 +69,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         public virtual Expression<Func<MailMail, bool>> GetExpression()
         {
             Expression<Func<MailMail, bool>> filterExp = m => 
-                m.TenantId == Tenant && m.IdUser == User && m.IsRemoved == false;
+                m.TenantId == Tenant && m.UserId == User && m.IsRemoved == false;
 
             var t = ServiceProvider.GetService<MailMail>();
             if (!FactoryIndexer.Support(t))
@@ -166,7 +166,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (Filter.Options.ApplyTo.Mailboxes.Any())
             {
-                filterExp = filterExp.And(m => Filter.Options.ApplyTo.Mailboxes.Contains(m.IdMailbox));
+                filterExp = filterExp.And(m => Filter.Options.ApplyTo.Mailboxes.Contains(m.MailboxId));
             }
 
             switch (Filter.Options.ApplyTo.WithAttachments)
@@ -269,7 +269,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (filter.Options.ApplyTo.Mailboxes.Any())
             {
-                selector.In(r => r.IdMailbox, filter.Options.ApplyTo.Mailboxes);
+                selector.In(r => r.MailboxId, filter.Options.ApplyTo.Mailboxes);
             }
 
             if (filter.Options.ApplyTo.WithAttachments != ApplyToAttachmentsType.WithAndWithoutAttachments)
@@ -279,7 +279,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             }
 
             selector
-                .Where(r => r.IdUser, userId.ToString())
+                .Where(r => r.UserId, userId.ToString())
                 .Sort(r => r.DateSent, true);
 
             if (!factoryIndexer.TrySelectIds(s => selector, out List<int> mailIds, out total))

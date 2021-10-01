@@ -2047,7 +2047,7 @@ namespace ASC.Mail.Core.Engine
                         continue;
                     }
 
-                    Expression<Func<Dao.Entities.MailMail, bool>> innerWhere = m => m.ChainId == chain.ChainId && m.IdMailbox == chain.MailboxId;
+                    Expression<Func<Dao.Entities.MailMail, bool>> innerWhere = m => m.ChainId == chain.ChainId && m.MailboxId == chain.MailboxId;
 
                     if (chain.Folder == FolderType.Inbox || chain.Folder == FolderType.Sent)
                     {

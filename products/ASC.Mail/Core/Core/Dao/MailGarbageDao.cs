@@ -50,9 +50,9 @@ namespace ASC.Mail.Core.Dao
         public int GetMailboxAttachsCount(MailBoxData mailBoxData)
         {
             var count = MailDbContext.MailMail
-                .Where(m => m.IdMailbox == mailBoxData.MailBoxId
+                .Where(m => m.MailboxId == mailBoxData.MailBoxId
                     && m.TenantId == mailBoxData.TenantId
-                    && m.IdUser == mailBoxData.UserId)
+                    && m.UserId == mailBoxData.UserId)
                 .Join(MailDbContext.MailAttachment, m => m.Id, a => a.IdMail,
                     (m, a) => new
                     {
@@ -67,9 +67,9 @@ namespace ASC.Mail.Core.Dao
         public List<MailAttachGarbage> GetMailboxAttachs(MailBoxData mailBoxData, int limit)
         {
             var list = MailDbContext.MailMail
-                .Where(m => m.IdMailbox == mailBoxData.MailBoxId
+                .Where(m => m.MailboxId == mailBoxData.MailBoxId
                     && m.TenantId == mailBoxData.TenantId
-                    && m.IdUser == mailBoxData.UserId)
+                    && m.UserId == mailBoxData.UserId)
                 .Join(MailDbContext.MailAttachment, m => m.Id, a => a.IdMail,
                     (m, a) => new
                     {
@@ -101,9 +101,9 @@ namespace ASC.Mail.Core.Dao
         public int GetMailboxMessagesCount(MailBoxData mailBoxData)
         {
             var count = MailDbContext.MailMail
-                .Where(m => m.IdMailbox == mailBoxData.MailBoxId
+                .Where(m => m.MailboxId == mailBoxData.MailBoxId
                     && m.TenantId == mailBoxData.TenantId
-                    && m.IdUser == mailBoxData.UserId)
+                    && m.UserId == mailBoxData.UserId)
                 .Count();
 
             return count;
@@ -112,9 +112,9 @@ namespace ASC.Mail.Core.Dao
         public List<MailMessageGarbage> GetMailboxMessages(MailBoxData mailBoxData, int limit)
         {
             var list = MailDbContext.MailMail
-                .Where(m => m.IdMailbox == mailBoxData.MailBoxId
+                .Where(m => m.MailboxId == mailBoxData.MailBoxId
                     && m.TenantId == mailBoxData.TenantId
-                    && m.IdUser == mailBoxData.UserId)
+                    && m.UserId == mailBoxData.UserId)
                 .Select(r => new MailMessageGarbage(mailBoxData.UserId, r.Id, r.Stream))
                 .Take(limit)
                 .ToList();

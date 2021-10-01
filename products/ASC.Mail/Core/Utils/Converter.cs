@@ -203,7 +203,7 @@ namespace ASC.Mail.Utils
             {
                 Id = message.Id,
                 TenantId = tenant,
-                IdUser = userId.ToString(),
+                UserId = userId.ToString(),
                 FromText = message.From,
                 ToText = message.To,
                 Cc = message.Cc,
@@ -211,7 +211,7 @@ namespace ASC.Mail.Utils
                 Subject = message.Subject,
                 Folder = (byte)message.Folder,
                 DateSent = message.Date,
-                IdMailbox = message.MailboxId,
+                MailboxId = message.MailboxId,
                 ChainId = message.ChainId,
                 ChainDate = message.ChainDate,
                 IsRemoved = false,
@@ -219,7 +219,8 @@ namespace ASC.Mail.Utils
                 Importance = message.Important,
                 HasAttachments = message.HasAttachments,
                 WithCalendar = !string.IsNullOrEmpty(message.CalendarUid),
-                TimeModified = now
+                LastModifiedOn = now,
+                Stream = message.StreamId
             };
 
             if (message.Folder == FolderType.UserFolder && message.UserFolderId.HasValue)

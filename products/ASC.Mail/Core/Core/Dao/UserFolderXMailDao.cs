@@ -177,7 +177,7 @@ namespace ASC.Mail.Core.Dao
                     UserFoldertXMail = ufxm,
                     MailMail = m
                 })
-                .Where(o => o.MailMail.IdMailbox == mailboxId && o.MailMail.TenantId == Tenant && o.MailMail.IdUser == UserId)
+                .Where(o => o.MailMail.MailboxId == mailboxId && o.MailMail.TenantId == Tenant && o.MailMail.UserId == UserId)
                 .Select(o => o.UserFoldertXMail);
 
             MailDbContext.MailUserFolderXMail.RemoveRange(queryDelete);

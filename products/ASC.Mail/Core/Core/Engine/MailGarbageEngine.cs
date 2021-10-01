@@ -284,7 +284,7 @@ namespace ASC.Mail.Core.Engine
 
             RemoveUserFolders(Log);
 
-            RemoveUserMailboxes(tenant, user, Log);
+            //RemoveUserMailboxes(tenant, user, Log);
 
             //TODO: RemoveUserTags
 
@@ -390,7 +390,7 @@ namespace ASC.Mail.Core.Engine
             {
                 if (NeedRemove(mailbox, Log))
                 {
-                    Log.DebugFormat($"Mailbox {mailbox.MailBoxId} has been marked for deletion. Removal started...");
+                    Log.DebugFormat($"Mailbox {mailbox.MailBoxId} need remove. Removal started...");
                     RemoveMailboxData(mailbox, true, Log);
                 }
                 else if (mailbox.IsRemoved)
@@ -420,10 +420,11 @@ namespace ASC.Mail.Core.Engine
                 using var scope = ServiceProvider.CreateScope();
 
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(mailbox.TenantId);
-                var mailDaoFactory = scope.ServiceProvider.GetService<MailDaoFactory>();
-                var factory = scope.ServiceProvider.GetService<MailEnginesFactory>();
 
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
+
+                var mbEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+                var factory = scope.ServiceProvider.GetService<MailDaoFactory>();
 
                 if (!mailbox.IsRemoved)
                 {
@@ -444,7 +445,7 @@ namespace ASC.Mail.Core.Engine
 
                     log.Info("SetMailboxRemoved()");
 
-                    factory.MailboxEngine.RemoveMailBox(mailbox, needRecalculateFolders);
+                    mbEngine.RemoveMailBox(mailbox, needRecalculateFolders);
 
                     mailbox.IsRemoved = true;
                 }
@@ -457,8 +458,7 @@ namespace ASC.Mail.Core.Engine
 
                 log.Debug("GetMailboxAttachsCount()");
 
-
-                var countAttachs = mailDaoFactory.GetMailGarbageDao().GetMailboxAttachsCount(mailbox);
+                var countAttachs = factory.GetMailGarbageDao().GetMailboxAttachsCount(mailbox);
 
                 log.InfoFormat("Found {0} garbage attachments", countAttachs);
 
@@ -468,7 +468,7 @@ namespace ASC.Mail.Core.Engine
 
                     log.DebugFormat("GetMailboxAttachsGarbage(limit = {0})", MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
-                    var attachGrbgList = mailDaoFactory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
+                    var attachGrbgList = factory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                     sumCount += attachGrbgList.Count;
 
@@ -483,11 +483,11 @@ namespace ASC.Mail.Core.Engine
 
                         log.Debug("CleanupMailboxAttachs()");
 
-                        mailDaoFactory.GetMailGarbageDao().CleanupMailboxAttachs(attachGrbgList);
+                        factory.GetMailGarbageDao().CleanupMailboxAttachs(attachGrbgList);
 
                         log.Debug("GetMailboxAttachs()");
 
-                        attachGrbgList = mailDaoFactory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
+                        attachGrbgList = factory.GetMailGarbageDao().GetMailboxAttachs(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                         if (!attachGrbgList.Any()) continue;
 
@@ -500,7 +500,7 @@ namespace ASC.Mail.Core.Engine
 
                 log.Debug("GetMailboxMessagesCount()");
 
-                var countMessages = mailDaoFactory.GetMailGarbageDao().GetMailboxMessagesCount(mailbox);
+                var countMessages = factory.GetMailGarbageDao().GetMailboxMessagesCount(mailbox);
 
                 log.InfoFormat("Found {0} garbage messages", countMessages);
 
@@ -510,7 +510,7 @@ namespace ASC.Mail.Core.Engine
 
                     log.DebugFormat("GetMailboxMessagesGarbage(limit = {0})", MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
-                    var messageGrbgList = mailDaoFactory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
+                    var messageGrbgList = factory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                     sumCount += messageGrbgList.Count;
 
@@ -525,11 +525,11 @@ namespace ASC.Mail.Core.Engine
 
                         log.Debug("CleanupMailboxMessages()");
 
-                        mailDaoFactory.GetMailGarbageDao().CleanupMailboxMessages(messageGrbgList);
+                        factory.GetMailGarbageDao().CleanupMailboxMessages(messageGrbgList);
 
                         log.Debug("GetMailboxMessages()");
 
-                        messageGrbgList = mailDaoFactory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
+                        messageGrbgList = factory.GetMailGarbageDao().GetMailboxMessages(mailbox, (int)MailSettings.Cleaner.MaxFilesToRemoveAtOnce);
 
                         if (!messageGrbgList.Any()) continue;
 
@@ -542,7 +542,7 @@ namespace ASC.Mail.Core.Engine
 
                 log.Debug("ClearMailboxData()");
 
-                CleanupMailboxData(mailbox, totalMailRemove, mailDaoFactory);
+                CleanupMailboxData(mailbox, totalMailRemove, factory);
 
                 log.DebugFormat("Garbage mailbox '{0}' was totaly removed.", mailbox.EMail.Address);
             }
@@ -568,7 +568,7 @@ namespace ASC.Mail.Core.Engine
             var mb = mailDaoFactory.GetMailboxDao().GetMailBox(exp);
 
             var deleteMailboxMessagesQuery = mailDbContext.MailMail
-                .Where(m => m.IdMailbox == mb.Id && m.TenantId == mb.Tenant && m.IdUser == mb.User);
+                .Where(m => m.MailboxId == mb.Id && m.TenantId == mb.Tenant && m.UserId == mb.User);
 
             mailDbContext.MailMail.RemoveRange(deleteMailboxMessagesQuery);
 
@@ -581,7 +581,7 @@ namespace ASC.Mail.Core.Engine
 
             mailDbContext.SaveChanges();
 
-            mailDaoFactory.GetMailboxDao().RemoveMailbox(mb);
+            mailDaoFactory.GetMailboxDao().RemoveMailbox(mb, mailDbContext);
 
             if (totalRemove)
             {
@@ -721,7 +721,7 @@ namespace ASC.Mail.Core.Engine
                             string.Format("Mailbox (id:{0}) user '{1}' not equals to removed user: '{2}'",
                                 mailbox.MailBoxId, mailbox.UserId, user));
 
-                    RemoveMailboxData(mailbox, true, log);
+                    //RemoveMailboxData(mailbox, true, log);
                 }
                 catch (Exception ex)
                 {

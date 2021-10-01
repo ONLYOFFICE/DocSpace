@@ -44,7 +44,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Attachment
         {
             var exp = base.GetExpression();
 
-            exp = exp.And(a => a.Mail.IdUser == User);
+            exp = exp.And(a => a.Mail.UserId == User);
 
             return exp;
         }

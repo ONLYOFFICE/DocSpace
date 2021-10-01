@@ -287,7 +287,7 @@ namespace ASC.Mail.Core.Engine
                     indexer.Delete(
                         r => new Selector<MailMail>(ServiceProvider)
                             .Where(m => m.Id, id)
-                            .Where(e => e.IdUser, user.ToString())
+                            .Where(e => e.UserId, user.ToString())
                             .Where(e => e.TenantId, tenant)));
             }
             catch (Exception ex)
@@ -307,8 +307,8 @@ namespace ASC.Mail.Core.Engine
                     return;
 
                 var selector = new Selector<MailMail>(ServiceProvider)
-                    .Where(m => m.IdMailbox, mailBox.MailBoxId)
-                    .Where(e => e.IdUser, mailBox.UserId)
+                    .Where(m => m.MailboxId, mailBox.MailBoxId)
+                    .Where(e => e.UserId, mailBox.UserId)
                     .Where(e => e.TenantId, mailBox.TenantId);
 
                 var indexer = ServiceProvider.GetService<FactoryIndexer<MailMail>>();

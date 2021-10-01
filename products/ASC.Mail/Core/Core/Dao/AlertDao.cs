@@ -132,16 +132,12 @@ namespace ASC.Mail.Core.Dao
 
         public int DeleteAlerts(int mailboxId)
         {
-            using var tr = MailDbContext.Database.BeginTransaction();
-
             var range = MailDbContext.MailAlerts
                 .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdMailbox == mailboxId);
 
             MailDbContext.MailAlerts.RemoveRange(range);
 
             var count = MailDbContext.SaveChanges();
-
-            tr.Commit();
 
             return count;
         }

@@ -142,7 +142,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (Filter.MailboxId.HasValue)
             {
-                filterExp = filterExp.And(m => m.IdMailbox == Filter.MailboxId.Value);
+                filterExp = filterExp.And(m => m.MailboxId == Filter.MailboxId.Value);
             }
 
             if (!string.IsNullOrEmpty(Filter.SearchText)) //TODO: fix  && !FactoryIndexer<MailWrapper>.Support)
@@ -161,7 +161,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 filterExp = filterExp.And(m => Ids.Contains(m.Id));
             }
 
-            filterExp = filterExp.And(m => m.TenantId == Tenant && m.IdUser == User && m.IsRemoved == false);
+            filterExp = filterExp.And(m => m.TenantId == Tenant && m.UserId == User && m.IsRemoved == false);
 
             return filterExp;
         }
@@ -240,7 +240,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (filter.MailboxId.HasValue)
             {
-                selector.Where(s => s.IdMailbox, filter.MailboxId.Value);
+                selector.Where(s => s.MailboxId, filter.MailboxId.Value);
             }
 
             if (filter.Unread.HasValue)
@@ -308,7 +308,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 selector.Limit(0, pageSize);
             }
 
-            selector.Where(r => r.IdUser, userId.ToString())
+            selector.Where(r => r.UserId, userId.ToString())
                 .Sort(r => r.DateSent, filter.SortOrder == DefineConstants.ASCENDING);
 
             return factoryIndexer.TrySelectIds(s => selector, out ids, out total);

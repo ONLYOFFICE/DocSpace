@@ -129,7 +129,7 @@ namespace ASC.Mail.Core.Dao
                     TagMail = tm,
                     Mail = m
                 })
-                .Where(t => t.Mail.IdMailbox == mailboxId)
+                .Where(t => t.Mail.MailboxId == mailboxId)
                 .Select(t => t.TagMail.IdTag)
                 .Distinct()
                 .ToList();
@@ -149,7 +149,7 @@ namespace ASC.Mail.Core.Dao
                 g.Mail.ChainId == chainId
                 && g.Mail.IsRemoved == false
                 && g.Mail.Folder == (int)folder
-                && g.Mail.IdMailbox == mailboxId
+                && g.Mail.MailboxId == mailboxId
                 && g.Tag.Tenant == Tenant
                 && g.Tag.IdUser == UserId)
                 .OrderBy(g => g.Tag.TimeCreated)
@@ -193,7 +193,7 @@ namespace ASC.Mail.Core.Dao
                     TagMail = tm,
                     Mail = m
                 })
-                .Where(t => t.Mail.IdMailbox == mailboxId)
+                .Where(t => t.Mail.MailboxId == mailboxId)
                 .Select(t => t.TagMail);
 
             MailDbContext.MailTagMail.RemoveRange(deleteQuery);

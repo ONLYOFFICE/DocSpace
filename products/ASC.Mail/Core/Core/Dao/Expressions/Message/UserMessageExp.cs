@@ -44,7 +44,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         {
             var exp = base.GetExpression();
 
-            exp = exp.And(m => m.IdUser == User);
+            exp = exp.And(m => m.UserId == User);
 
             return exp;
         }

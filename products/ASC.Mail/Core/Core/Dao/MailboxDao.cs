@@ -239,16 +239,16 @@ namespace ASC.Mail.Core.Dao
             return result > 0;
         }
 
-        public bool RemoveMailbox(Mailbox mailbox)
+        public bool RemoveMailbox(Mailbox mailbox, MailDbContext context)
         {
             var mailMailbox = new MailMailbox
             {
                 Id = (uint)mailbox.Id
             };
 
-            MailDbContext.MailMailbox.Remove(mailMailbox);
+            context.MailMailbox.Remove(mailMailbox);
 
-            var result = MailDbContext.SaveChanges();
+            var result = context.SaveChanges();
 
             return result > 0;
         }
