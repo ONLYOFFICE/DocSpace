@@ -112,7 +112,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
   const { bufferSelection, setBufferSelection } = filesStore;
   const { checkOperationConflict } = filesActionsStore;
 
-  const selection = bufferSelection ? [bufferSelection] : filesStore.selection;
+  const selection = selection.length ? filesStore.selection : [bufferSelection];
 
   return {
     visible,

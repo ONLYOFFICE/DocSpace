@@ -231,9 +231,9 @@ class FilesActionStore {
     } = this.uploadDataStore.secondaryProgressDataStore;
     const { bufferSelection } = this.filesStore;
 
-    const selection = bufferSelection
-      ? [bufferSelection]
-      : this.filesStore.selection;
+    const selection = this.filesStore.selection.length
+      ? this.filesStore.selection
+      : [bufferSelection];
 
     const fileIds = [];
     const folderIds = [];
@@ -314,13 +314,15 @@ class FilesActionStore {
 
   onSelectItem = ({ id, isFolder }) => {
     const { setBufferSelection, selected, setSelected } = this.filesStore;
-    selected === "close" && setSelected("none");
+    /* selected === "close" &&  */ setSelected("none");
 
     if (!id) return;
 
     const item = this.filesStore[isFolder ? "folders" : "files"].find(
       (elm) => elm.id === id
     );
+
+    item.isFolder = isFolder;
 
     setBufferSelection(item);
   };
