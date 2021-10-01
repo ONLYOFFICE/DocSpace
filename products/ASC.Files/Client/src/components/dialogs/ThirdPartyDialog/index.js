@@ -207,8 +207,6 @@ const ThirdPartyDialog = (props) => {
               capability={webDavConnectItem}
               onClick={onShowService}
               src="images/services/logo_nextcloud.svg"
-              data-title={webDavConnectItem[0]}
-              data-provider_key={webDavConnectItem[0]}
             />
           )}
 
@@ -217,8 +215,6 @@ const ThirdPartyDialog = (props) => {
               capability={webDavConnectItem}
               onClick={onShowService}
               src="images/services/logo_owncloud.svg"
-              data-title={webDavConnectItem[0]}
-              data-provider_key={webDavConnectItem[0]}
             />
           )}
 
@@ -241,7 +237,7 @@ const ThirdPartyDialog = (props) => {
               onClick={onShowService}
               className="service-item service-text"
               data-title={webDavConnectItem[0]}
-              data-provider_key={webDavConnectItem[0]}
+              data-key={webDavConnectItem[0]}
               noSelect
             >
               {t("ConnextOtherAccount")}
