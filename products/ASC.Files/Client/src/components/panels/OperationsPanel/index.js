@@ -165,7 +165,7 @@ export default inject(
       setThirdPartyMoveDialogVisible,
     } = dialogsStore;
 
-    const selections = bufferSelection ? [bufferSelection] : selection;
+    const selections = selection.length ? selection : [bufferSelection];
 
     const provider = selections.find((x) => x.providerKey);
 

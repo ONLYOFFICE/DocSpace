@@ -158,7 +158,7 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
-    selection: bufferSelection ? [bufferSelection] : selection,
+    selection: selection.length ? selection : [bufferSelection],
     isLoading,
     visible: ownerPanelVisible,
 

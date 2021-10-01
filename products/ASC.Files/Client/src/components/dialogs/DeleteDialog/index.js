@@ -277,9 +277,9 @@ export default inject(
     return {
       selection: removeMediaItem
         ? [removeMediaItem]
-        : bufferSelection
-        ? [bufferSelection]
-        : selection,
+        : selection.length
+        ? selection
+        : [bufferSelection],
       isLoading,
       isRootFolder: selectedFolderStore.isRootFolder,
       visible,
