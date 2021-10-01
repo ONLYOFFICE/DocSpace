@@ -32,11 +32,9 @@ class RestoreBackup extends React.Component {
       isCheckedLocalFile: false,
       selectedFileId: "",
       selectedFile: "",
-      backupId: "",
       formSettings: {},
       isErrors: {},
     };
-    this.Error;
   }
 
   componentDidMount() {
@@ -245,14 +243,6 @@ class RestoreBackup extends React.Component {
   onSelectLocalFile = (data) => {
     this.setState({
       selectedFile: data,
-    });
-  };
-
-  onSetRestoreParams = (backupId, storageType, storageParams) => {
-    this.setState({
-      backupId,
-      storageType,
-      storageParams,
     });
   };
 
