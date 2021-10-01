@@ -82,6 +82,7 @@ class DocumentsModule extends React.Component {
           isSavingProcess={isCopyingLocal}
           foldersType="common"
           isCommonWithoutProvider
+          fontSizeInput={"13px"}
         />
 
         <div className="manual-backup_buttons">

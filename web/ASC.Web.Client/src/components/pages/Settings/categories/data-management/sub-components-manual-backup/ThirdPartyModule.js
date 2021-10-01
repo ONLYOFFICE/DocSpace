@@ -99,6 +99,7 @@ class ThirdPartyModule extends React.Component {
             target="_blank"
             isHovered={true}
             href={helpUrlCreatingBackup}
+            fontSize="12px"
           >
             {t("Common:LearnMore")}
           </Link>
@@ -115,6 +116,7 @@ class ThirdPartyModule extends React.Component {
           isError={isError}
           folderPath={folderPath}
           foldersType="third-party"
+          fontSizeInput={"13px"}
         />
 
         <div className="manual-backup_buttons">

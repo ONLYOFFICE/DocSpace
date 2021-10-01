@@ -96,6 +96,7 @@ SimpleFileInput.propTypes = {
   isDisabled: PropTypes.bool,
   /** Used as HTML `name` property */
   name: PropTypes.string,
+  fontSizeInput: PropTypes.string,
 };
 
 SimpleFileInput.defaultProps = {

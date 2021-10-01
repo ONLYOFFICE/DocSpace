@@ -15,22 +15,7 @@ import AmazonStorage from "./storages/AmazonStorage";
 import { getOptions } from "../utils/getOptions";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import { getFromSessionStorage } from "../../../utils";
-const StyledComponent = styled.div`
-  .backup_combo {
-    margin-top: 16px;
-    width: 100%;
-    max-width: 820px;
-    .combo-button-label {
-      width: 100%;
-      max-width: 820px;
-    }
-  }
-  .backup_text-input {
-    margin: 10px 0;
-    width: 100%;
-    max-width: 820px;
-  }
-`;
+import { StyledComponent } from "../styled-backup";
 
 let selectedStorageFromSessionStorage = "";
 let selectedIdFromSessionStorage = "";
@@ -175,6 +160,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             target="_blank"
             isHovered={true}
             href={helpUrlCreatingBackup}
+            fontSize="12px"
           >
             {t("Common:LearnMore")}
           </Link>

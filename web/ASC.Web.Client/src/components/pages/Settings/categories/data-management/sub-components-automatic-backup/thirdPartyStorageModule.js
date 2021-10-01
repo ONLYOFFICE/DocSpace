@@ -21,19 +21,7 @@ import AmazonStorage from "./amazonStorage";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
 import { ThirdPartyStorages } from "@appserver/common/constants";
-
-const StyledComponent = styled.div`
-  .backup_combo {
-    margin-top: 16px;
-    width: 100%;
-    max-width: 820px;
-  }
-  .backup_text-input {
-    margin: 10px 0;
-    width: 100%;
-    max-width: 820px;
-  }
-`;
+import { StyledComponent } from "../styled-backup";
 
 let googleStorageId = "GoogleCloud";
 let inputValueArray;

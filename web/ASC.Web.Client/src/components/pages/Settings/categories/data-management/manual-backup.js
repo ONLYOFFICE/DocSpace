@@ -493,10 +493,6 @@ class ManualBackup extends React.Component {
           <Text className="category-item-description">
             {t("ThirdPartyResourceDescription")}
           </Text>
-          <Text className="category-item-description note_description">
-            {t("ThirdPartyResourceNoteDescription")}
-          </Text>
-
           {isCheckedThirdParty && (
             <ThirdPartyModule
               maxProgress={maxProgress}
@@ -522,9 +518,6 @@ class ManualBackup extends React.Component {
           />
           <Text className="category-item-description">
             {t("ThirdPartyStorageDescription")}
-          </Text>
-          <Text className="category-item-description note_description">
-            {t("ThirdPartyStorageNoteDescription")}
           </Text>
           {isCheckedThirdPartyStorage && (
             <ThirdPartyStorageModule

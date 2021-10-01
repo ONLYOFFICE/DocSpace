@@ -2,15 +2,10 @@ import styled from "styled-components";
 import commonSettingsStyles from "../../utils/commonSettingsStyles";
 
 const StyledComponent = styled.div`
-  ${commonSettingsStyles}
-
   .manual-backup_buttons {
     margin-top: 16px;
   }
 
-  .backup_combobox {
-    margin-top: 8px;
-  }
   .inherit-title-link {
     margin-bottom: 8px;
   }
@@ -27,15 +22,16 @@ const StyledComponent = styled.div`
   .radio-button_text {
     margin-right: 7px;
     margin-left: 8px;
-    //font-size: 19px;
+    font-size: 13px;
     font-weight: 600;
   }
   .backup_radio-button {
     margin-bottom: 8px;
   }
-  .backup_combobox {
+  .schedule-backup_combobox {
     display: inline-block;
     margin-right: 8px;
+    margin-top: 8px;
   }
 
   .input-with-folder-path {
@@ -46,7 +42,7 @@ const StyledComponent = styled.div`
   .input-with-folder-path,
   .text-input-with-folder-path {
     width: 100%;
-    max-width: 820px;
+    max-width: 350px;
   }
   .restore-source {
     font-weight: 600;
@@ -75,17 +71,40 @@ const StyledComponent = styled.div`
     text-decoration: underline;
     cursor: pointer;
   }
+
   .restore-backup_input {
     margin: 16px 0;
     max-width: 820px;
   }
-`;
-const StyledModules = styled.div`
-  margin-bottom: 40px;
-  .category-item-description {
-    ${(props) => props.isDisabled && `color: #A3A9AE`}
+
+  .backup_combo {
+    margin-top: 16px;
+    width: 100%;
+    max-width: 350px;
+    .combo-button-label {
+      width: 100%;
+      max-width: 350px;
+    }
+  }
+  .backup_text-input {
+    margin: 10px 0;
+    width: 100%;
+    max-width: 350px;
+    font-size: 13px;
   }
 `;
+
+const StyledModules = styled.div`
+  margin-bottom: 32px;
+
+  .category-item-description {
+    ${(props) => props.isDisabled && `color: #A3A9AE`}
+    max-width: 476px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+`;
+
 const StyledRestoreModules = styled.div`
   .category-item-description {
     ${(props) => props.isDisabled && `color: #A3A9AE`}

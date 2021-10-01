@@ -49,6 +49,7 @@ class SelectFileInputBody extends React.PureComponent {
       loadingLabel,
       header,
       zIndex,
+      fontSizeInput,
     } = this.props;
     const { fileName } = this.state;
 
@@ -61,6 +62,7 @@ class SelectFileInputBody extends React.PureComponent {
           isDisabled={isDisabled}
           isError={isError}
           onClickInput={onClickInput}
+          fontSizeInput={fontSizeInput}
         />
 
         {isPanelVisible && (

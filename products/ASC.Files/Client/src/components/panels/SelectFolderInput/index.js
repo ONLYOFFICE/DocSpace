@@ -96,6 +96,7 @@ class SelectFolderInputBody extends React.PureComponent {
       header,
       headerName,
       footer,
+      fontSizeInput,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
@@ -108,6 +109,7 @@ class SelectFolderInputBody extends React.PureComponent {
           isDisabled={isLoading || isSavingProcess || isDisabled}
           isError={isError}
           onClickInput={onClickInput}
+          fontSizeInput={fontSizeInput}
         />
 
         <SelectFolderDialog

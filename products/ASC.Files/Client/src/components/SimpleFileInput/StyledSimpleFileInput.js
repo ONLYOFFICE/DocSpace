@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
 
 const paddingRightStyle = (props) =>
@@ -14,7 +14,12 @@ const StyledFileInput = styled.div`
   outline: none;
   .file-text-input {
     width: 100%;
-    max-width: 820px;
+    max-width: ${(props) => (props.maxWidth ? props.maxWidth : "350px")};
+    ${(props) =>
+      props.fontSizeInput &&
+      css`
+        font-size: ${props.fontSizeInput};
+      `}
   }
   width: ${(props) =>
     (props.scale && "100%") ||
