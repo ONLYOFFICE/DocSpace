@@ -46,7 +46,7 @@ class FilesStore {
   files = [];
   folders = [];
   selection = [];
-  bufferSelection = [];
+  bufferSelection = null;
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
