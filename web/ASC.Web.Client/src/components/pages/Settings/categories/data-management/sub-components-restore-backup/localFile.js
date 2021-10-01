@@ -1,28 +1,15 @@
 import React from "react";
 import FileInput from "@appserver/components/file-input";
 
-const LocalFile = ({ onSetRestoreParams }) => {
-  const onInputFileHandler = (file) => {
+const LocalFile = ({ onSelectLocalFile }) => {
+  const onClickInput = (file) => {
     let data = new FormData();
     data.append("files", file);
 
-    const backupId = "";
-    const storageType = "3";
-    const storageParams = [
-      {
-        key: "filePath",
-        value: data,
-      },
-    ];
-
-    onSetRestoreParams(backupId, storageType, storageParams);
+    onSelectLocalFile(data);
   };
   return (
-    <FileInput
-      onInput={onInputFileHandler}
-      scale
-      className="restore-backup_input"
-    />
+    <FileInput onInput={onClickInput} scale className="restore-backup_input" />
   );
 };
 

@@ -31,6 +31,7 @@ class RestoreBackup extends React.Component {
       isCheckedThirdPartyStorage: false,
       isCheckedLocalFile: false,
       selectedFileId: "",
+      selectedFile: "",
       backupId: "",
       storageType: "",
       storageParams: "",
@@ -240,6 +241,11 @@ class RestoreBackup extends React.Component {
     });
   };
 
+  onSelectLocalFile = (data) => {
+    this.setState({
+      selectedFile: data,
+    });
+  };
   onSetRestoreParams = (backupId, storageType, storageParams) => {
     this.setState({
       backupId,
@@ -253,26 +259,40 @@ class RestoreBackup extends React.Component {
     const {
       isNotify,
       isCheckedDocuments,
+      isCheckedLocalFile,
       selectedFileId,
-      backupId,
-      storageType,
-      storageParams,
+      selectedFile,
     } = this.state;
 
+    if (!selectedFileId || !selectedFile) return;
+
+    let backupId, storageType, storageParams;
+
     if (isCheckedDocuments) {
-      this.backupId = "";
-      this.storageType = "0";
-      this.storageParams = [
+      backupId = "";
+      storageType = "0";
+      storageParams = [
         {
           key: "filePath",
           value: selectedFileId,
         },
       ];
     }
+    if (isCheckedLocalFile) {
+      backupId = "";
+      storageType = "3";
+      storageParams = [
+        {
+          key: "filePath",
+          value: selectedFile,
+        },
+      ];
+    }
+
     startRestore(
-      this.backupId,
-      this.storageType,
-      this.storageParams,
+      backupId,
+      storageType,
+      storageParams,
       isNotify
     ).catch((error) => toastr.error(error));
   };
@@ -371,10 +391,7 @@ class RestoreBackup extends React.Component {
         )}
         {isCheckedThirdPartyStorage && <ThirdPartyStorages />}
         {isCheckedLocalFile && (
-          <LocalFile
-            onSelectFile={this.onSelectFile}
-            onSetRestoreParams={this.onSetRestoreParams}
-          />
+          <LocalFile onSelectLocalFile={this.onSelectLocalFile} />
         )}
         <Text className="restore-backup_list" onClick={this.onClickBackupList}>
           {t("BackupList")}
