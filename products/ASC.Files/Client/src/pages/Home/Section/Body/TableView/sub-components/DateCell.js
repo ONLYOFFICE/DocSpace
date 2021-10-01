@@ -1,9 +1,7 @@
 import React from "react";
 import { StyledText } from "./CellStyles";
 
-const DateCell = ({ create, updatedDate, createdDate, sideColor, item }) => {
-  const { fileExst, contentLength, providerKey } = item;
-
+const DateCell = ({ create, updatedDate, createdDate, sideColor }) => {
   const date = create ? createdDate : updatedDate;
 
   return (
