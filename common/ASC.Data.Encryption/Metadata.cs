@@ -187,15 +187,14 @@ namespace ASC.Data.Encryption
 
         public SymmetricAlgorithm GetCryptographyAlgorithm()
         {
-            return new RijndaelManaged
-            {
-                KeySize = keySize,
-                BlockSize = blockSize,
-                Key = Key,
-                IV = IV,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
+            var aes = Aes.Create();
+            aes.KeySize = keySize;
+            aes.BlockSize = blockSize;
+            aes.Key = Key;
+            aes.IV = IV;
+            aes.Padding = PaddingMode.PKCS7;
+            aes.Mode = CipherMode.CBC;
+            return aes;
         }
 
         public void ComputeAndWriteHmacHash(Stream stream)

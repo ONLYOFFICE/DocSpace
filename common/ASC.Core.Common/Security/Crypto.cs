@@ -58,7 +58,7 @@ namespace ASC.Core
 
         public static string GetV(string data, int keyno, bool reverse)
         {
-            var hasher = Rijndael.Create();
+            var hasher = Aes.Create();
             hasher.Key = keyno == 1 ? GetSK1(false) : GetSK2(false);
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
@@ -91,7 +91,7 @@ namespace ASC.Core
 
         internal static byte[] GetV(byte[] data, int keyno, bool reverse)
         {
-            var hasher = Rijndael.Create();
+            var hasher = Aes.Create();
             hasher.Key = keyno == 1 ? GetSK1(false) : GetSK2(false);
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
