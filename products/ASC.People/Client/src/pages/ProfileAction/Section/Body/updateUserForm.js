@@ -101,12 +101,37 @@ class UpdateUserForm extends React.Component {
     this.onSelectGroups = this.onSelectGroups.bind(this);
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
 
+    this.handleWindowBeforeUnload = this.handleWindowBeforeUnload.bind(this);
+
     this.mainFieldsContainerRef = React.createRef();
   }
 
   componentDidMount() {
     this.props.setIsEditTargetUser(true);
+
+    this.unblock = this.props.history.block((targetLocation) => {
+      if (this.props.isEdit) {
+        this.props.setIsVisibleDataLossDialog(true);
+        return false;
+      }
+
+      return true;
+    });
+
+    window.addEventListener("beforeunload", this.handleWindowBeforeUnload);
   }
+
+  componentWillUnmount() {
+    this.unblock();
+    window.removeEventListener("beforeunload", this.handleWindowBeforeUnload);
+  }
+
+  handleWindowBeforeUnload = (e) => {
+    if (this.props.isEdit) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.match.params.userId !== prevProps.match.params.userId) {
@@ -317,6 +342,8 @@ class UpdateUserForm extends React.Component {
       profile,
       personal,
     } = this.props;
+
+    this.unblock();
 
     if (personal) {
       history.push(combineUrl(AppServerConfig.proxyURL, "/my"));
