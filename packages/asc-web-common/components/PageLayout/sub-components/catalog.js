@@ -100,14 +100,13 @@ const Catalog = (props) => {
     clearTimeout(refTimer.current);
 
     refTimer.current = setTimeout(() => {
-      console.log('handler');
       if (isMobile && !props.userShowText && props.showText) props.setShowText(false);
       if (isMobileUtils() && !isMobile && !props.userShowText && props.showText)
         props.setShowText(false);
       if (isTabletUtils() && !isMobile && !props.userShowText && props.showText)
         props.setShowText(false);
       if (isDesktopUtils() && !isMobile) props.setShowText(true);
-    }, 200);
+    }, 10);
   };
 
   return (
