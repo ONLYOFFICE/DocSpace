@@ -1,8 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-
-import TextInput from "@appserver/components/text-input";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import SelectelSettings from "../consumer-storage-settings/SelectelSettings";
 
 class SelectelStorage extends React.Component {
   constructor(props) {
@@ -19,8 +18,11 @@ class SelectelStorage extends React.Component {
         : "";
 
     this.state = {
-      private_container: this.defaultPrivateValue,
-      public_container: this.defaultPublicValue,
+      formSettings: {
+        private_container: this.defaultPrivateValue,
+        public_container: this.defaultPublicValue,
+      },
+      formErrors: {},
       isError: false,
       isChangedInput: false,
     };
@@ -46,27 +48,34 @@ class SelectelStorage extends React.Component {
   }
 
   onChange = (event) => {
+    const { formSettings } = this.state;
     const { target } = event;
     const value = target.value;
     const name = target.name;
 
-    this.setState({ [name]: value, isChangedInput: true });
-  };
-
-  isInvalidForm = () => {
-    const { private_container, public_container } = this.state;
-    if (private_container || public_container) return false;
-
     this.setState({
-      isError: true,
+      isChangedInput: true,
+      formSettings: { ...formSettings, [name]: value },
     });
-    return true;
   };
-  onSaveSettings = () => {
-    const { fillInputValueArray } = this.props;
-    const { private_container, public_container } = this.state;
 
-    if (this.isInvalidForm()) return;
+  onSaveSettings = () => {
+    const { fillInputValueArray, isInvalidForm } = this.props;
+    const { formSettings } = this.state;
+    const { private_container, public_container } = formSettings;
+
+    const isInvalid = isInvalidForm({
+      private_container,
+      public_container,
+    });
+
+    const hasError = isInvalid[0];
+    const errors = isInvalid[1];
+
+    if (hasError) {
+      this.setState({ formErrors: errors });
+      return;
+    }
 
     const valuesArray = [private_container, public_container];
 
@@ -95,12 +104,7 @@ class SelectelStorage extends React.Component {
   };
 
   render() {
-    const {
-      private_container,
-      public_container,
-      isChangedInput,
-      isError,
-    } = this.state;
+    const { isChangedInput, formSettings, formErrors } = this.state;
     const {
       t,
       isLoadingData,
@@ -108,31 +112,21 @@ class SelectelStorage extends React.Component {
 
       isCopyingToLocal,
       isChanged,
+      availableStorage,
+      selectedId,
     } = this.props;
 
     return (
       <>
-        <TextInput
-          name="private_container"
-          className="backup_text-input"
-          scale={true}
-          value={private_container}
-          hasError={isError}
+        <SelectelSettings
+          formSettings={formSettings}
           onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.privatePlaceholder || ""}
-          tabIndex={1}
-        />
-        <TextInput
-          name="public_container"
-          className="backup_text-input"
-          scale={true}
-          value={public_container}
-          hasError={isError}
-          onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.publicPlaceholder || ""}
-          tabIndex={1}
+          isLoading={isLoading}
+          isLoadingData={isLoadingData}
+          isError={formErrors}
+          availableStorage={availableStorage}
+          selectedId={selectedId}
+          t={t}
         />
 
         {(isChanged || isChangedInput) && (

@@ -696,6 +696,23 @@ class ThirdPartyStorageModule extends React.PureComponent {
     startBackup("5", storageParams);
     setInterval();
   };
+
+  isInvalidForm = (formSettings) => {
+    let errors = {};
+    let firstError = false;
+
+    for (let key in formSettings) {
+      const elem = formSettings[key];
+      errors[key] = !elem.trim();
+
+      if (!elem.trim() && !firstError) {
+        firstError = true;
+      }
+    }
+
+    return [firstError, errors];
+  };
+
   render() {
     const {
       t,
@@ -765,6 +782,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             currentStorageId={
               this.isSetDefaultIdStorage ? defaultSelectedId : ""
             }
+            isInvalidForm={this.isInvalidForm}
           />
         )}
 
@@ -783,6 +801,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             currentStorageId={
               this.isSetDefaultIdStorage ? defaultSelectedId : ""
             }
+            isInvalidForm={this.isInvalidForm}
           />
         )}
 
@@ -801,6 +820,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             currentStorageId={
               this.isSetDefaultIdStorage ? defaultSelectedId : ""
             }
+            isInvalidForm={this.isInvalidForm}
           />
         )}
 
@@ -819,6 +839,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             currentStorageId={
               this.isSetDefaultIdStorage ? defaultSelectedId : ""
             }
+            isInvalidForm={this.isInvalidForm}
           />
         )}
 

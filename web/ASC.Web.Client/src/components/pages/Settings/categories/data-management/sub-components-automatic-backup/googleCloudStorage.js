@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import TextInput from "@appserver/components/text-input";
+import GoogleCloudSettings from "../consumer-storage-settings/GoogleCloudSettings";
 
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
@@ -15,7 +16,10 @@ class GoogleCloudStorage extends React.Component {
         : "";
 
     this.state = {
-      bucket: this.defaultBucketValue,
+      formSettings: {
+        bucket: this.defaultBucketValue,
+      },
+      formErrors: {},
       isError: false,
       isChangedInput: false,
     };
@@ -36,27 +40,32 @@ class GoogleCloudStorage extends React.Component {
   }
 
   onChange = (event) => {
+    const { formSettings } = this.state;
     const { target } = event;
     const value = target.value;
     const name = target.name;
 
-    this.setState({ [name]: value, isChangedInput: true });
-  };
-
-  isInvalidForm = () => {
-    const { bucket } = this.state;
-    if (bucket) return false;
-
     this.setState({
-      isError: true,
+      isChangedInput: true,
+      formSettings: { ...formSettings, [name]: value },
     });
-    return true;
   };
-  onSaveSettings = () => {
-    const { fillInputValueArray } = this.props;
-    const { bucket } = this.state;
 
-    if (this.isInvalidForm()) return;
+  onSaveSettings = () => {
+    const { fillInputValueArray, isInvalidForm } = this.props;
+    const { formSettings } = this.state;
+    const { bucket } = formSettings;
+    const isInvalid = isInvalidForm({
+      bucket,
+    });
+
+    const hasError = isInvalid[0];
+    const errors = isInvalid[1];
+
+    if (hasError) {
+      this.setState({ formErrors: errors });
+      return;
+    }
 
     const inputNumber = 1;
     const valuesArray = [bucket];
@@ -82,27 +91,26 @@ class GoogleCloudStorage extends React.Component {
   };
 
   render() {
-    const { bucket, isChangedInput, isError } = this.state;
+    const { bucket, isChangedInput, formErrors, formSettings } = this.state;
     const {
       t,
       isLoadingData,
       isLoading,
       isCopyingToLocal,
       isChanged,
+      availableStorage,
+      selectedId,
     } = this.props;
 
     return (
       <>
-        <TextInput
-          name="bucket"
-          className="backup_text-input"
-          scale={true}
-          value={bucket}
-          hasError={isError}
+        <GoogleCloudSettings
+          formSettings={formSettings}
           onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.placeholder}
-          tabIndex={1}
+          isLoading={isLoading}
+          isError={formErrors}
+          availableStorage={availableStorage}
+          selectedId={selectedId}
         />
 
         {(isChanged || isChangedInput) && (
