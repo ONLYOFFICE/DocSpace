@@ -131,17 +131,20 @@ class ThirdPartyStorageModule extends React.PureComponent {
   };
 
   isInvalidForm = (formSettings) => {
+    let errors = {};
+    let firstError = false;
+
     for (let key in formSettings) {
       const elem = formSettings[key];
+      errors[key] = !elem.trim();
 
-      if (!elem.trim()) {
-        return true;
+      if (!elem.trim() && !firstError) {
+        firstError = true;
       }
     }
 
-    return false;
+    return [firstError, errors];
   };
-
   render() {
     const { t, helpUrlCreatingBackup, isLoadingData, maxProgress } = this.props;
     const {

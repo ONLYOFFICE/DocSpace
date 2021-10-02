@@ -1,17 +1,21 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
+import SelectelSettings from "../../consumer-storage-settings/SelectelSettings";
 
 class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);
     const { availableStorage, selectedId } = this.props;
 
+    this.namesArray = SelectelSettings.formNames();
+
     this.state = {
-      private_container: "",
-      public_container: "",
-      isError: false,
+      formSettings: {
+        private_container: "",
+        public_container: "",
+      },
+      formErrors: {},
     };
 
     this.isDisabled =
@@ -27,61 +31,58 @@ class SelectelStorage extends React.Component {
   }
 
   onChange = (event) => {
+    const { formSettings } = this.state;
     const { target } = event;
     const value = target.value;
     const name = target.name;
 
-    this.setState({ [name]: value });
+    this.setState({ formSettings: { ...formSettings, [name]: value } });
   };
 
   onMakeCopy = () => {
-    const { private_container, public_container, isError } = this.state;
+    const { formSettings } = this.state;
+    const { private_container, public_container } = formSettings;
     const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
 
-    const valuesArray = [private_container, public_container];
+    const isInvalid = isInvalidForm({
+      private_container,
+      public_container,
+    });
 
-    if (isInvalidForm(valuesArray)) {
-      this.setState({
-        isError: true,
-      });
+    const hasError = isInvalid[0];
+    const errors = isInvalid[1];
+
+    if (hasError) {
+      this.setState({ formErrors: errors });
       return;
     }
 
-    isError &&
-      this.setState({
-        isError: false,
-      });
-
-    onMakeCopyIntoStorage(valuesArray);
+    onMakeCopyIntoStorage(this.namesArray);
+    this.setState({ formErrors: {} });
   };
 
   render() {
-    const { private_container, public_container, isError } = this.state;
-    const { t, isLoadingData, isLoading, maxProgress } = this.props;
+    const { formSettings, formErrors } = this.state;
+    const {
+      t,
+      isLoadingData,
+      isLoading,
+      maxProgress,
+      selectedId,
+      availableStorage,
+    } = this.props;
 
     return (
       <>
-        <TextInput
-          name="private_container"
-          className="backup_text-input"
-          scale={true}
-          value={private_container}
-          hasError={isError}
+        <SelectelSettings
+          formSettings={formSettings}
           onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.privatePlaceholder || ""}
-          tabIndex={1}
-        />
-        <TextInput
-          name="public_container"
-          className="backup_text-input"
-          scale={true}
-          value={public_container}
-          hasError={isError}
-          onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.publicPlaceholder || ""}
-          tabIndex={1}
+          isLoading={isLoading}
+          isLoadingData={isLoadingData}
+          isError={formErrors}
+          availableStorage={availableStorage}
+          selectedId={selectedId}
+          t={t}
         />
 
         <div className="manual-backup_buttons">

@@ -1,23 +1,26 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
-
+import AmazonSettings from "../../consumer-storage-settings/AmazonSettings";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
     const { t, availableStorage, selectedId } = this.props;
 
     this.state = {
-      bucket: "",
-      forcePathStyle: "",
-      region: "",
-      serviceUrl: "",
-      sse: "",
-      useHttp: "",
-      isError: false,
+      formSettings: {
+        bucket: "",
+        forcePathStyle: "",
+        region: "",
+        serviceUrl: "",
+        sse: "",
+        useHttp: "",
+      },
+      formErrors: {},
       isChangedInput: false,
     };
+    this.namesArray = AmazonSettings.formNames();
+
     this.isDisabled =
       availableStorage[selectedId] && !availableStorage[selectedId].isSet;
 
@@ -40,125 +43,57 @@ class AmazonStorage extends React.Component {
   }
 
   onChange = (event) => {
+    const { formSettings } = this.state;
     const { target } = event;
     const value = target.value;
     const name = target.name;
 
-    this.setState({ [name]: value });
+    this.setState({ formSettings: { ...formSettings, [name]: value } });
   };
 
   onMakeCopy = () => {
-    const {
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-      isError,
-    } = this.state;
-
+    const { formSettings } = this.state;
+    const { bucket, region } = formSettings;
     const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
 
-    if (isInvalidForm([bucket, region])) {
-      this.setState({
-        isError: true,
-      });
+    const isInvalid = isInvalidForm({
+      bucket,
+      region,
+    });
+
+    const hasError = isInvalid[0];
+    const errors = isInvalid[1];
+
+    if (hasError) {
+      this.setState({ formErrors: errors });
       return;
     }
 
-    isError &&
-      this.setState({
-        isError: false,
-      });
-
-    const valuesArray = [
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    ];
-
-    onMakeCopyIntoStorage(valuesArray);
+    onMakeCopyIntoStorage(this.namesArray);
+    this.setState({ formErrors: {} });
   };
   render() {
+    const { formSettings, formErrors } = this.state;
     const {
-      isError,
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    } = this.state;
-    const { t, isLoadingData, isLoading, maxProgress } = this.props;
+      t,
+      isLoadingData,
+      isLoading,
+      maxProgress,
+      availableStorage,
+      selectedId,
+    } = this.props;
 
     return (
       <>
-        <TextInput
-          name="bucket"
-          className="backup_text-input"
-          scale={true}
-          value={bucket}
-          hasError={isError}
+        <AmazonSettings
+          formSettings={formSettings}
           onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.defaultBucketPlaceholder || ""}
-          tabIndex={1}
-        />
-
-        <TextInput
-          name="region"
-          className="backup_text-input"
-          scale={true}
-          value={region}
-          hasError={isError}
-          onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.defaultRegionPlaceholder || ""}
-          tabIndex={1}
-        />
-        <TextInput
-          name="serviceUrl"
-          className="backup_text-input"
-          scale={true}
-          value={serviceUrl}
-          onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.defaultServiceUrlPlaceholder || ""}
-          tabIndex={1}
-        />
-        <TextInput
-          name="forcePathStyle"
-          className="backup_text-input"
-          scale={true}
-          value={forcePathStyle}
-          onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.defaultForcePathStylePlaceholder || ""}
-          tabIndex={1}
-        />
-        <TextInput
-          name="useHttp"
-          className="backup_text-input"
-          scale={true}
-          value={useHttp}
-          onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.defaultUseHttpPlaceholder || ""}
-          tabIndex={1}
-        />
-        <TextInput
-          name="sse"
-          className="backup_text-input"
-          scale={true}
-          value={sse}
-          onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.defaultSSEPlaceholder || ""}
-          tabIndex={1}
+          isLoading={isLoading}
+          isLoadingData={isLoadingData}
+          isError={formErrors}
+          availableStorage={availableStorage}
+          selectedId={selectedId}
+          t={t}
         />
 
         <div className="manual-backup_buttons">

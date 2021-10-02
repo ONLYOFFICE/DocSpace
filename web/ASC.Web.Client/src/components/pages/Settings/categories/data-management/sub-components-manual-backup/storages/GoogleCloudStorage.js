@@ -1,8 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-
 import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
+import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSettings";
 
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
@@ -10,9 +9,12 @@ class GoogleCloudStorage extends React.Component {
     const { availableStorage, selectedId } = this.props;
 
     this.state = {
-      bucket: "",
+      formSettings: {
+        bucket: "",
+      },
       isError: false,
       isChangedInput: false,
+      formErrors: {},
     };
     this.isDisabled =
       availableStorage[selectedId] && !availableStorage[selectedId].isSet;
@@ -24,59 +26,55 @@ class GoogleCloudStorage extends React.Component {
   }
 
   onChange = (event) => {
+    const { formSettings } = this.state;
     const { target } = event;
     const value = target.value;
     const name = target.name;
 
-    this.setState({ [name]: value });
-  };
-
-  isInvalidForm = () => {
-    const { bucket } = this.state;
-    if (bucket) return false;
-
-    this.setState({
-      isError: true,
-    });
-    return true;
+    this.setState({ formSettings: { ...formSettings, [name]: value } });
   };
 
   onMakeCopy = () => {
-    const { bucket, isError } = this.state;
+    const { formSettings } = this.state;
+    const { bucket } = formSettings;
     const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
 
-    const valuesArray = [bucket];
+    const isInvalid = isInvalidForm({
+      bucket,
+    });
 
-    if (isInvalidForm(valuesArray)) {
-      this.setState({
-        isError: true,
-      });
+    const hasError = isInvalid[0];
+    const errors = isInvalid[1];
+
+    if (hasError) {
+      this.setState({ formErrors: errors });
       return;
     }
 
-    isError &&
-      this.setState({
-        isError: false,
-      });
-
-    onMakeCopyIntoStorage(valuesArray);
+    onMakeCopyIntoStorage([bucket]);
+    this.setState({ formErrors: {} });
   };
   render() {
-    const { bucket, isError } = this.state;
-    const { t, isLoadingData, isLoading, maxProgress } = this.props;
+    const { formSettings, formErrors } = this.state;
+    const {
+      t,
+      isLoadingData,
+      isLoading,
+      maxProgress,
+      availableStorage,
+      selectedId,
+    } = this.props;
 
     return (
       <>
-        <TextInput
-          name="bucket"
-          className="backup_text-input"
-          scale={true}
-          value={bucket}
-          hasError={isError}
+        <GoogleCloudSettings
+          formSettings={formSettings}
           onChange={this.onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.placeholder}
-          tabIndex={1}
+          isLoading={isLoading}
+          isError={formErrors}
+          availableStorage={availableStorage}
+          selectedId={selectedId}
+          isLoadingData={isLoadingData}
         />
 
         <div className="manual-backup_buttons">
