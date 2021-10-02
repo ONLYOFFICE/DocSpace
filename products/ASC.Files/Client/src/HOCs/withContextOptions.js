@@ -200,15 +200,8 @@ export default function withContextOptions(WrappedComponent) {
         t,
         deleteItemAction,
       } = this.props;
-      const {
-        id,
-        title,
-        fileExst,
-        contentLength,
-        folderId,
-        providerKey,
-        rootFolderId,
-      } = item;
+      const { id, title, providerKey, rootFolderId, isFolder } = item;
+
       const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
       if (isRootThirdPartyFolder) {
@@ -224,13 +217,7 @@ export default function withContextOptions(WrappedComponent) {
         successRemoveFolder: t("FolderRemoved"),
       };
 
-      deleteItemAction(
-        id,
-        folderId,
-        translations,
-        fileExst || contentLength,
-        providerKey
-      );
+      deleteItemAction(id, translations, !isFolder, providerKey);
     };
 
     onClickShare = () => {
