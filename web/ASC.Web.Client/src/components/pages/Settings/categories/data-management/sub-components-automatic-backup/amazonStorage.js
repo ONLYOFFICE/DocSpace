@@ -138,7 +138,7 @@ class AmazonStorage extends React.Component {
 
     this.setState({
       isChangedInput: false,
-      isError: false,
+      formErrors: {},
     });
     fillInputValueArray(inputNumber, valuesArray);
   };
@@ -148,13 +148,15 @@ class AmazonStorage extends React.Component {
 
     this.setState({
       isChangedInput: false,
-      isError: false,
-      bucket: this.defaultBucketValue,
-      forcePathStyle: this.defaultForcePathStyleValue,
-      region: this.defaultRegionValue,
-      serviceUrl: this.defaultServiceUrlValue,
-      sse: this.defaultSSEValue,
-      useHttp: this.defaultUseHttpValue,
+      formErrors: {},
+      formSettings: {
+        bucket: this.defaultBucketValue,
+        forcePathStyle: this.defaultForcePathStyleValue,
+        region: this.defaultRegionValue,
+        serviceUrl: this.defaultServiceUrlValue,
+        sse: this.defaultSSEValue,
+        useHttp: this.defaultUseHttpValue,
+      },
     });
     onCancelSettings();
   };

@@ -98,7 +98,7 @@ class RackspaceStorage extends React.Component {
 
     this.setState({
       isChangedInput: false,
-      isError: false,
+      formErrors: {},
     });
     fillInputValueArray(inputNumber, valuesArray);
   };
@@ -108,10 +108,12 @@ class RackspaceStorage extends React.Component {
 
     this.setState({
       isChangedInput: false,
-      isError: false,
-      private_container: this.defaultPrivateValue,
-      public_container: this.defaultPublicValue,
-      region: this.defaultRegion,
+      formErrors: {},
+      formSettings: {
+        private_container: this.defaultPrivateValue,
+        public_container: this.defaultPublicValue,
+        region: this.defaultRegion,
+      },
     });
     onCancelSettings();
   };

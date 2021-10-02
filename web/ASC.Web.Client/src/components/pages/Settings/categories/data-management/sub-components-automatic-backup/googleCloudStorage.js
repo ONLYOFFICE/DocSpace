@@ -74,7 +74,7 @@ class GoogleCloudStorage extends React.Component {
 
     this.setState({
       isChangedInput: false,
-      isError: false,
+      formErrors: {},
     });
     fillInputValueArray(inputNumber, valuesArray);
   };
@@ -84,8 +84,10 @@ class GoogleCloudStorage extends React.Component {
 
     this.setState({
       isChangedInput: false,
-      isError: false,
-      bucket: this.defaultBucketValue,
+      formErrors: {},
+      formSettings: {
+        bucket: this.defaultBucketValue,
+      },
     });
     onCancelSettings();
   };

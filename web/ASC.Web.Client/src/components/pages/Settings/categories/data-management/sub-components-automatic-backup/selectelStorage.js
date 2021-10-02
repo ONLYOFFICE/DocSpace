@@ -86,7 +86,7 @@ class SelectelStorage extends React.Component {
 
     this.setState({
       isChangedInput: false,
-      isError: false,
+      formErrors: {},
     });
     fillInputValueArray(inputNumber, valuesArray);
   };
@@ -96,9 +96,11 @@ class SelectelStorage extends React.Component {
 
     this.setState({
       isChangedInput: false,
-      isError: false,
-      private_container: this.defaultPrivateValue,
-      public_container: this.defaultPublicValue,
+      formErrors: {},
+      formSettings: {
+        private_container: this.defaultPrivateValue,
+        public_container: this.defaultPublicValue,
+      },
     });
     onCancelSettings();
   };
