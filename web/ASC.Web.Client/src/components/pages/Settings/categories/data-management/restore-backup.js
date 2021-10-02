@@ -288,15 +288,13 @@ class RestoreBackup extends React.Component {
       let errorObject = {};
 
       for (let key of this.formNames) {
-        if (
-          this.state.formSettings[key] === "" ||
-          this.state.formSettings[key] === undefined ||
-          this.state.formSettings[key] === null
-        ) {
-          errorObject = { ...errorObject, [key]: "error" };
-        }
+        errorObject = {
+          ...errorObject,
+          [key]: this.state.formSettings[key]
+            ? !this.state.formSettings[key].trim()
+            : true,
+        };
       }
-
       this.setState({
         isErrors: errorObject,
       });
@@ -431,7 +429,7 @@ class RestoreBackup extends React.Component {
         {isCheckedThirdPartyStorage && (
           <ThirdPartyStorages
             onSetStorageForm={this.onSetStorageForm}
-            onSetCountInputs={this.onSetFormNames}
+            onSetFormNames={this.onSetFormNames}
             onChange={this.onChange}
             formSettings={formSettings}
             onResetFormSettings={this.onResetFormSettings}

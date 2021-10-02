@@ -1,13 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
-
-import FileInput from "@appserver/components/file-input";
 import { getOptions } from "../utils/getOptions";
 import { getBackupStorage } from "../../../../../../../../../packages/asc-web-common/api/settings";
 import ComboBox from "@appserver/components/combobox";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
-import Button from "@appserver/components/button";
+import AmazonStorage from "./storages/AmazonStorage";
+import RackspaceStorage from "./storages/RackspaceStorage";
+import SelectelStorage from "./storages/SelectelStorage";
+
 class ThirdPartyStoragesModule extends React.Component {
   constructor(props) {
     super(props);
@@ -89,6 +89,42 @@ class ThirdPartyStoragesModule extends React.Component {
 
         {selectedId === ThirdPartyStorages.GoogleId && (
           <GoogleCloudStorage
+            isLoading={isLoading}
+            availableStorage={availableStorage}
+            selectedId={selectedId}
+            onSetFormNames={onSetFormNames}
+            formSettings={formSettings}
+            onChange={onChange}
+            onResetFormSettings={onResetFormSettings}
+            isErrors={isErrors}
+          />
+        )}
+        {selectedId === ThirdPartyStorages.RackspaceId && (
+          <RackspaceStorage
+            isLoading={isLoading}
+            availableStorage={availableStorage}
+            selectedId={selectedId}
+            onSetFormNames={onSetFormNames}
+            formSettings={formSettings}
+            onChange={onChange}
+            onResetFormSettings={onResetFormSettings}
+            isErrors={isErrors}
+          />
+        )}
+        {selectedId === ThirdPartyStorages.SelectelId && (
+          <SelectelStorage
+            isLoading={isLoading}
+            availableStorage={availableStorage}
+            selectedId={selectedId}
+            onSetFormNames={onSetFormNames}
+            formSettings={formSettings}
+            onChange={onChange}
+            onResetFormSettings={onResetFormSettings}
+            isErrors={isErrors}
+          />
+        )}
+        {selectedId === ThirdPartyStorages.AmazonId && (
+          <AmazonStorage
             isLoading={isLoading}
             availableStorage={availableStorage}
             selectedId={selectedId}

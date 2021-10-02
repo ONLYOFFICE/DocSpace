@@ -1,14 +1,15 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import TextInput from "@appserver/components/text-input";
-import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSettings";
+import RackspaceSettings from "../../consumer-storage-settings/RackspaceSettings";
 
-class GoogleCloudStorage extends React.Component {
+class RackspaceStorage extends React.Component {
   constructor(props) {
     super(props);
     const { onSetFormNames } = this.props;
 
-    onSetFormNames(["bucket", "path"]);
+    this.namesArray = RackspaceSettings.formNames();
+    onSetFormNames([...this.namesArray, "path"]);
   }
 
   componentWillUnmount() {
@@ -25,10 +26,10 @@ class GoogleCloudStorage extends React.Component {
       availableStorage,
       selectedId,
     } = this.props;
-
+    console.log("isErrors", isErrors);
     return (
       <>
-        <GoogleCloudSettings
+        <RackspaceSettings
           formSettings={formSettings}
           onChange={onChange}
           isLoading={isLoading}
@@ -36,6 +37,7 @@ class GoogleCloudStorage extends React.Component {
           availableStorage={availableStorage}
           selectedId={selectedId}
         />
+
         <TextInput
           name="path"
           className="backup_text-input"
@@ -44,11 +46,11 @@ class GoogleCloudStorage extends React.Component {
           onChange={onChange}
           isDisabled={isLoading || this.isDisabled}
           placeholder={t("Path")}
-          tabIndex={2}
+          tabIndex={this.namesArray.length}
           hasError={isErrors?.path}
         />
       </>
     );
   }
 }
-export default withTranslation("Settings")(GoogleCloudStorage);
+export default withTranslation("Settings")(RackspaceStorage);
