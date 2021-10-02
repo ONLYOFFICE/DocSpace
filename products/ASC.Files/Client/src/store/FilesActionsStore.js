@@ -56,7 +56,18 @@ class FilesActionStore {
     }
   };
 
-  deleteAction = (translations, newSelection = null) => {
+  deleteCB = () => {
+    const {
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    const { filter, fetchFiles } = this.filesStore;
+    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() =>
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
+    );
+  };
+
+  deleteAction = async (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
@@ -65,6 +76,14 @@ class FilesActionStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations.deleteOperation,
+      alert: false,
+    });
 
     const deleteAfter = false; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
@@ -84,112 +103,70 @@ class FilesActionStore {
 
     if (folderIds.length || fileIds.length) {
       this.isMediaOpen();
-      return removeFiles(folderIds, fileIds, deleteAfter, immediately)
-        .then((res) => {
-          const id = res[0] && res[0].id ? res[0].id : null;
-          const currentProcess = res.find((x) => x.id === id);
-          setSecondaryProgressBarData({
-            icon: "trash",
-            visible: true,
-            label: translations.deleteOperation,
-            percent: currentProcess.progress,
-            alert: false,
-          });
 
-          this.loopDeleteOperation(id, translations);
-        })
-        .catch((err) => {
-          setSecondaryProgressBarData({
-            visible: true,
-            alert: true,
-          });
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      try {
+        await removeFiles(folderIds, fileIds, deleteAfter, immediately).then(
+          async (res) => {
+            const data = res[0] ? res[0] : null;
+            const pbData = {
+              icon: "trash",
+              label: translations.deleteOperation,
+            };
+            await this.uploadDataStore.loopFilesOperations(
+              data,
+              pbData,
+              this.deleteCB
+            );
+          }
+        );
+      } catch (err) {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
         });
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        return toastr.error(err.message ? err.message : err);
+      }
     }
   };
 
-  loopDeleteOperation = (id, translations) => {
-    const { filter, fetchFiles } = this.filesStore;
-    const { isRecycleBinFolder, setTreeFolders } = this.treeFoldersStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
+  // loopFilesOperations = (id, translations) => {
+  //   const {
+  //     setSecondaryProgressBarData,
+  //     clearSecondaryProgressData,
+  //   } = this.uploadDataStore.secondaryProgressDataStore;
 
-    const successMessage = isRecycleBinFolder
-      ? translations.deleteFromTrash
-      : translations.deleteSelectedElem;
-
-    getProgress()
-      .then((res) => {
-        const currentProcess = res.find((x) => x.id === id);
-        if (currentProcess && currentProcess.progress !== 100) {
-          setSecondaryProgressBarData({
-            icon: "trash",
-            percent: currentProcess.progress,
-            label: translations.deleteOperation,
-            visible: true,
-            alert: false,
-          });
-          setTimeout(() => this.loopDeleteOperation(id, translations), 1000);
-        } else {
-          setSecondaryProgressBarData({
-            icon: "trash",
-            percent: 100,
-            label: translations.deleteOperation,
-            visible: true,
-            alert: false,
-          });
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(this.selectedFolderStore.id, filter, true, true);
-        }
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
-  loopFilesOperations = (id, translations) => {
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
-
-    getProgress()
-      .then((res) => {
-        const currentProcess = res.find((x) => x.id === id);
-        if (currentProcess && currentProcess.progress !== 100) {
-          setSecondaryProgressBarData({
-            icon: "file",
-            percent: currentProcess.progress,
-            label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
-            visible: true,
-            alert: false,
-          });
-          setTimeout(() => this.loopFilesOperations(id, translations), 1000);
-        } else {
-          setSecondaryProgressBarData({
-            icon: "file",
-            percent: 100,
-            label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
-            visible: true,
-            alert: false,
-          });
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        }
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
+  //   getProgress()
+  //     .then((res) => {
+  //       const currentProcess = res.find((x) => x.id === id);
+  //       if (currentProcess && currentProcess.progress !== 100) {
+  //         setSecondaryProgressBarData({
+  //           icon: "file",
+  //           percent: currentProcess.progress,
+  //           label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
+  //           visible: true,
+  //           alert: false,
+  //         });
+  //         setTimeout(() => this.loopFilesOperations(id, translations), 1000);
+  //       } else {
+  //         setSecondaryProgressBarData({
+  //           icon: "file",
+  //           percent: 100,
+  //           label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
+  //           visible: true,
+  //           alert: false,
+  //         });
+  //         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       setSecondaryProgressBarData({
+  //         visible: true,
+  //         alert: true,
+  //       });
+  //       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+  //     });
+  // };
 
   getDownloadProgress = (data, label) => {
     const {
@@ -366,8 +343,8 @@ class FilesActionStore {
     this.isMediaOpen();
     return deleteFile(fileId)
       .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopDeleteProgress(id, currentFolderId, false, translations);
+        // const id = res[0] && res[0].id ? res[0].id : null;
+        // this.loopDeleteProgress(id, currentFolderId, translations);
       })
       .then(() => toastr.success(translations.successRemoveFile))
       .catch((err) => {
@@ -397,63 +374,68 @@ class FilesActionStore {
 
     return deleteFolder(folderId, currentFolderId)
       .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopDeleteProgress(id, currentFolderId, true, translations);
+        //const id = res[0] && res[0].id ? res[0].id : null;
+        //this.loopDeleteProgress(id, currentFolderId, translations);
+
+        const data = res[0] ? res[0] : null;
       })
       .then(() => toastr.success(translations.successRemoveFolder))
       .catch((err) => {
-        toastr.error(err);
+        //toastr.error(err);
+
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
         });
+        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        return Promise.reject(err);
       });
   };
 
-  loopDeleteProgress = (id, folderId, isFolder, translations) => {
-    const { filter, fetchFiles } = this.filesStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
+  // loopDeleteProgress = (id, folderId, translations) => {
+  //   const { filter, fetchFiles } = this.filesStore;
+  //   const {
+  //     setSecondaryProgressBarData,
+  //     clearSecondaryProgressData,
+  //   } = this.uploadDataStore.secondaryProgressDataStore;
 
-    getProgress().then((res) => {
-      const deleteProgress = res.find((x) => x.id === id);
-      if (deleteProgress && deleteProgress.progress !== 100) {
-        setSecondaryProgressBarData({
-          icon: "trash",
-          visible: true,
-          percent: deleteProgress.progress,
-          label: translations.deleteOperation,
-          alert: false,
-        });
-        setTimeout(
-          () => this.loopDeleteProgress(id, folderId, isFolder, translations),
-          1000
-        );
-      } else {
-        setSecondaryProgressBarData({
-          icon: "trash",
-          visible: true,
-          percent: 100,
-          label: translations.deleteOperation,
-          alert: false,
-        });
-        fetchFiles(folderId, filter, true, true)
-          .catch((err) => {
-            setSecondaryProgressBarData({
-              visible: true,
-              alert: true,
-            });
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          })
-          .finally(() =>
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
-          );
-      }
-    });
-  };
+  //   getProgress().then((res) => {
+  //     const deleteProgress = res.find((x) => x.id === id);
+  //     if (deleteProgress && deleteProgress.progress !== 100) {
+  //       setSecondaryProgressBarData({
+  //         icon: "trash",
+  //         visible: true,
+  //         percent: deleteProgress.progress,
+  //         label: translations.deleteOperation,
+  //         alert: false,
+  //       });
+  //       setTimeout(
+  //         () => this.loopDeleteProgress(id, folderId, translations),
+  //         1000
+  //       );
+  //     } else {
+  //       setSecondaryProgressBarData({
+  //         icon: "trash",
+  //         visible: true,
+  //         percent: 100,
+  //         label: translations.deleteOperation,
+  //         alert: false,
+  //       });
+  //       fetchFiles(folderId, filter, true, true)
+  //         .catch((err) => {
+  //           setSecondaryProgressBarData({
+  //             visible: true,
+  //             alert: true,
+  //           });
+  //           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+  //         })
+  //         .finally(() =>
+  //           setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
+  //         );
+  //     }
+  //   });
+  // };
 
   lockFileAction = (id, locked) => {
     const { setFile } = this.filesStore;
@@ -588,8 +570,8 @@ class FilesActionStore {
 
     return markAsRead(folderIds, fileId)
       .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopFilesOperations(id);
+        //const id = res[0] && res[0].id ? res[0].id : null;
+        //this.loopFilesOperations(id);
       })
       .then(() => item && this.setNewBadgeCount(item))
       .catch((err) => toastr.error(err));
