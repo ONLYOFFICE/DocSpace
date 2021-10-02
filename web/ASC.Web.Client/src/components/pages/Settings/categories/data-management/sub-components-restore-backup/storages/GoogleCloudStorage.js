@@ -42,7 +42,7 @@ class GoogleCloudStorage extends React.Component {
           scale={true}
           value={formSettings.path}
           onChange={onChange}
-          isDisabled={isLoading || this.isDisabled}
+          isDisabled={isLoading || !availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={2}
           hasError={isErrors?.path}
