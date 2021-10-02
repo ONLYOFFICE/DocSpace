@@ -26,9 +26,6 @@ class GoogleCloudStorage extends React.Component {
     this.isDisabled =
       availableStorage[selectedId] && !availableStorage[selectedId].isSet;
 
-    this.placeholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[0].title;
     this._isMounted = false;
   }
 
@@ -93,7 +90,7 @@ class GoogleCloudStorage extends React.Component {
   };
 
   render() {
-    const { bucket, isChangedInput, formErrors, formSettings } = this.state;
+    const { isChangedInput, formErrors, formSettings } = this.state;
     const {
       t,
       isLoadingData,
@@ -111,8 +108,7 @@ class GoogleCloudStorage extends React.Component {
           onChange={this.onChange}
           isLoading={isLoading}
           isError={formErrors}
-          availableStorage={availableStorage}
-          selectedId={selectedId}
+          selectedStorage={availableStorage[selectedId]}
         />
 
         {(isChanged || isChangedInput) && (

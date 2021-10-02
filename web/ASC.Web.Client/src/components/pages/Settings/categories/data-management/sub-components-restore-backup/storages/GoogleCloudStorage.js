@@ -33,8 +33,7 @@ class GoogleCloudStorage extends React.Component {
           onChange={onChange}
           isLoading={isLoading}
           isError={isErrors}
-          availableStorage={availableStorage}
-          selectedId={selectedId}
+          selectedStorage={availableStorage[selectedId]}
         />
         <TextInput
           name="path"

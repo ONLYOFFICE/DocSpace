@@ -50,21 +50,6 @@ class AmazonStorage extends React.Component {
     this.isDisabled =
       availableStorage[selectedId] && !availableStorage[selectedId].isSet;
 
-    this.defaultBucketPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[0].title;
-
-    this.defaultForcePathStylePlaceholder = t("ForcePathStyle");
-
-    this.defaultRegionPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[2].title;
-
-    this.defaultServiceUrlPlaceholder = t("ServiceUrl");
-
-    this.defaultSSEPlaceholder = t("SSE");
-
-    this.defaultUseHttpPlaceholder = t("UseHttp");
     this._isMounted = false;
   }
 
@@ -181,8 +166,7 @@ class AmazonStorage extends React.Component {
           isLoading={isLoading}
           isLoadingData={isLoadingData}
           isError={formErrors}
-          availableStorage={availableStorage}
-          selectedId={selectedId}
+          selectedStorage={availableStorage[selectedId]}
           t={t}
         />
 

@@ -21,20 +21,17 @@ class AmazonSettings extends React.Component {
 
   constructor(props) {
     super(props);
-    const { t, availableStorage, selectedId } = this.props;
+    const { t, selectedStorage } = this.props;
 
-    this.isDisabled =
-      availableStorage[selectedId] && !availableStorage[selectedId].isSet;
+    this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
     this.bucketPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[0].title;
+      selectedStorage && selectedStorage.properties[0].title;
 
     this.forcePathStylePlaceholder = t("ForcePathStyle");
 
     this.regionPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[2].title;
+      selectedStorage && selectedStorage.properties[2].title;
 
     this.serviceUrlPlaceholder = t("ServiceUrl");
     this.SSEPlaceholder = t("SSE");

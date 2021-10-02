@@ -21,18 +21,6 @@ class RackspaceStorage extends React.Component {
     this.isDisabled =
       availableStorage[selectedId] && !availableStorage[selectedId].isSet;
 
-    this.privatePlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[0].title;
-
-    this.publicPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[1].title;
-
-    this.regionPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[2].title;
-
     this._isMounted = false;
   }
 
@@ -86,8 +74,7 @@ class RackspaceStorage extends React.Component {
           isLoading={isLoading}
           isLoadingData={isLoadingData}
           isError={formErrors}
-          availableStorage={availableStorage}
-          selectedId={selectedId}
+          selectedStorage={availableStorage[selectedId]}
           t={t}
         />
 

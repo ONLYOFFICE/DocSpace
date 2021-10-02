@@ -10,18 +10,15 @@ class SelectelSettings extends React.Component {
 
   constructor(props) {
     super(props);
-    const { availableStorage, selectedId } = this.props;
+    const { selectedStorage } = this.props;
 
-    this.isDisabled =
-      availableStorage[selectedId] && !availableStorage[selectedId].isSet;
+    this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
     this.privatePlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[0].title;
+      selectedStorage && selectedStorage.properties[0].title;
 
     this.publicPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[1].title;
+      selectedStorage && selectedStorage.properties[1].title;
   }
 
   render() {

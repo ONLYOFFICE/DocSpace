@@ -20,14 +20,6 @@ class SelectelStorage extends React.Component {
 
     this.isDisabled =
       availableStorage[selectedId] && !availableStorage[selectedId].isSet;
-
-    this.privatePlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[0].title;
-
-    this.publicPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[1].title;
   }
 
   onChange = (event) => {
@@ -80,8 +72,7 @@ class SelectelStorage extends React.Component {
           isLoading={isLoading}
           isLoadingData={isLoadingData}
           isError={formErrors}
-          availableStorage={availableStorage}
-          selectedId={selectedId}
+          selectedStorage={availableStorage[selectedId]}
           t={t}
         />
 

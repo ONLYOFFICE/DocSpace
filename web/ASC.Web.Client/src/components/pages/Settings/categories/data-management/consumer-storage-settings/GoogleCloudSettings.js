@@ -4,14 +4,12 @@ import TextInput from "@appserver/components/text-input";
 class GoogleCloudSettings extends React.Component {
   constructor(props) {
     super(props);
-    const { availableStorage, selectedId } = this.props;
+    const { selectedStorage } = this.props;
 
-    this.isDisabled =
-      availableStorage[selectedId] && !availableStorage[selectedId].isSet;
+    this.isDisabled = selectedStorage && !selectedStorage.isSet;
 
     this.bucketPlaceholder =
-      availableStorage[selectedId] &&
-      availableStorage[selectedId].properties[0].title;
+      selectedStorage && selectedStorage.properties[0].title;
   }
 
   render() {
