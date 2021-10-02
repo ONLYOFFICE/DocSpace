@@ -130,44 +130,6 @@ class FilesActionStore {
     }
   };
 
-  // loopFilesOperations = (id, translations) => {
-  //   const {
-  //     setSecondaryProgressBarData,
-  //     clearSecondaryProgressData,
-  //   } = this.uploadDataStore.secondaryProgressDataStore;
-
-  //   getProgress()
-  //     .then((res) => {
-  //       const currentProcess = res.find((x) => x.id === id);
-  //       if (currentProcess && currentProcess.progress !== 100) {
-  //         setSecondaryProgressBarData({
-  //           icon: "file",
-  //           percent: currentProcess.progress,
-  //           label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
-  //           visible: true,
-  //           alert: false,
-  //         });
-  //         setTimeout(() => this.loopFilesOperations(id, translations), 1000);
-  //       } else {
-  //         setSecondaryProgressBarData({
-  //           icon: "file",
-  //           percent: 100,
-  //           label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
-  //           visible: true,
-  //           alert: false,
-  //         });
-  //         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       setSecondaryProgressBarData({
-  //         visible: true,
-  //         alert: true,
-  //       });
-  //       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-  //     });
-  // };
-
   getDownloadProgress = (data, label) => {
     const {
       setSecondaryProgressBarData,
@@ -510,9 +472,10 @@ class FilesActionStore {
     });
 
     return markAsRead(folderIds, fileId)
-      .then((res) => {
-        //const id = res[0] && res[0].id ? res[0].id : null;
-        //this.loopFilesOperations(id);
+      .then(async (res) => {
+        const data = res[0] ? res[0] : null;
+        const pbData = { icon: "file" };
+        await this.uploadDataStore.loopFilesOperations(data, pbData);
       })
       .then(() => item && this.setNewBadgeCount(item))
       .catch((err) => toastr.error(err));

@@ -898,7 +898,7 @@ class UploadDataStore {
       alert: false,
     });
 
-    operationCB();
+    operationCB && operationCB();
   };
 
   moveToCopyToCB = (destFolderId, pbData, isCopy) => {
