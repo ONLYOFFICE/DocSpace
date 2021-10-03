@@ -2,7 +2,6 @@ import { makeAutoObservable } from "mobx";
 
 import {
   removeFiles,
-  getProgress,
   deleteFile,
   deleteFolder,
   finalizeVersion,
@@ -12,6 +11,7 @@ import {
   checkFileConflicts,
   removeShareFiles,
   getSubfolders,
+  emptyTrash,
 } from "@appserver/common/api/files";
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -127,6 +127,43 @@ class FilesActionStore {
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return toastr.error(err.message ? err.message : err);
       }
+    }
+  };
+
+  emptyTrash = async (translations) => {
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations.deleteOperation,
+      alert: false,
+    });
+
+    try {
+      await emptyTrash().then(async (res) => {
+        const data = res[0] ? res[0] : null;
+        const pbData = {
+          icon: "trash",
+          label: translations.deleteOperation,
+        };
+        await this.uploadDataStore.loopFilesOperations(
+          data,
+          pbData,
+          this.deleteCB
+        );
+      });
+    } catch (err) {
+      setSecondaryProgressBarData({
+        visible: true,
+        alert: true,
+      });
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      return toastr.error(err.message ? err.message : err);
     }
   };
 
@@ -744,6 +781,7 @@ class FilesActionStore {
       });
     return this.convertToArray(itemsCollection);
   };
+
   getPrivacyFolderOption = (itemsCollection, t) => {
     const moveTo = this.getOption("moveTo", t);
     const deleteOption = this.getOption("delete", t);
