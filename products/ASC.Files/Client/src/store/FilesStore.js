@@ -1388,7 +1388,12 @@ class FilesStore {
   }
 
   get selectionTitle() {
-    if (this.selection.length === 0) return null;
+    if (this.selection.length === 0) {
+      if (this.bufferSelection) {
+        return this.bufferSelection.title;
+      }
+      return null;
+    }
     return this.selection.find((el) => el.title).title;
   }
 

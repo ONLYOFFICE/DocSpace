@@ -559,7 +559,8 @@ class FilesActionStore {
     try {
       conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
     } catch (err) {
-      return toastr.error(err.message);
+      this.filesStore.setBufferSelection(null);
+      return toastr.error(err.message ? err.message : err);
     }
 
     if (conflicts.length) {
@@ -570,6 +571,7 @@ class FilesActionStore {
       try {
         await this.uploadDataStore.itemOperationToFolder(operationData);
       } catch (err) {
+        this.filesStore.setBufferSelection(null);
         return toastr.error(err.message ? err.message : err);
       }
     }
