@@ -768,8 +768,8 @@ class UploadDataStore {
 
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
-        return this.loopFilesOperations(data, pbData, () =>
-          this.moveToCopyToCB(destFolderId, pbData, true)
+        return this.loopFilesOperations(data, pbData).then(() =>
+          this.moveToCopyTo(destFolderId, pbData, true)
         );
       })
       .catch((err) => {
@@ -806,8 +806,8 @@ class UploadDataStore {
       .then((res) => {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "move" };
-        return this.loopFilesOperations(data, pbData, () =>
-          this.moveToCopyToCB(destFolderId, pbData, false)
+        return this.loopFilesOperations(data, pbData).then(() =>
+          this.moveToCopyTo(destFolderId, pbData, false)
         );
       })
       .catch((err) => {
@@ -859,7 +859,7 @@ class UploadDataStore {
         );
   };
 
-  loopFilesOperations = async (data, pbData, operationCB) => {
+  loopFilesOperations = async (data, pbData) => {
     const label = this.secondaryProgressDataStore.label;
 
     const {
@@ -874,9 +874,12 @@ class UploadDataStore {
       return;
     }
 
+    let operationItem = null;
+
     while (progress !== 100) {
       await this.getOperationProgress(data.id)
         .then((item) => {
+          operationItem = item;
           progress = item ? item.progress : 100;
 
           setSecondaryProgressBarData({
@@ -889,19 +892,10 @@ class UploadDataStore {
         })
         .catch((err) => Promise.reject(err));
     }
-
-    setSecondaryProgressBarData({
-      icon: pbData.icon,
-      label: pbData.label || label,
-      percent: 100,
-      visible: true,
-      alert: false,
-    });
-
-    operationCB && operationCB();
+    return Promise.resolve(operationItem);
   };
 
-  moveToCopyToCB = (destFolderId, pbData, isCopy) => {
+  moveToCopyTo = (destFolderId, pbData, isCopy) => {
     const { treeFolders, setTreeFolders } = this.treeFoldersStore;
     const { fetchFiles, filter } = this.filesStore;
     const {

@@ -56,7 +56,7 @@ class FilesActionStore {
     }
   };
 
-  deleteCB = () => {
+  updateCurrentFolder = () => {
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
@@ -112,11 +112,8 @@ class FilesActionStore {
               icon: "trash",
               label: translations.deleteOperation,
             };
-            await this.uploadDataStore.loopFilesOperations(
-              data,
-              pbData,
-              this.deleteCB
-            );
+            await this.uploadDataStore.loopFilesOperations(data, pbData);
+            this.updateCurrentFolder();
           }
         );
       } catch (err) {
@@ -151,11 +148,8 @@ class FilesActionStore {
           icon: "trash",
           label: translations.deleteOperation,
         };
-        await this.uploadDataStore.loopFilesOperations(
-          data,
-          pbData,
-          this.deleteCB
-        );
+        await this.uploadDataStore.loopFilesOperations(data, pbData);
+        this.updateCurrentFolder();
       });
     } catch (err) {
       setSecondaryProgressBarData({
@@ -167,44 +161,50 @@ class FilesActionStore {
     }
   };
 
-  getDownloadProgress = (data, label) => {
+  downloadFilesOperation = () => {};
+
+  downloadFiles = async (fileConvertIds, folderIds, label) => {
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
-    const url = data.url;
 
-    return getProgress()
-      .then((res) => {
-        const currentItem = res.find((x) => x.id === data.id);
-        if (!url) {
-          setSecondaryProgressBarData({
-            icon: "file",
-            visible: true,
-            percent: currentItem.progress,
-            label,
-            alert: false,
-          });
-          setTimeout(() => this.getDownloadProgress(currentItem, label), 1000);
-        } else {
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          return (window.location.href = url);
+    setSecondaryProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label,
+      alert: false,
+    });
+
+    try {
+      await downloadFiles(fileConvertIds, folderIds).then(async (res) => {
+        const data = res[0] ? res[0] : null;
+        const pbData = {
+          icon: "file",
+          label,
+        };
+        const item = await this.uploadDataStore.loopFilesOperations(
+          data,
+          pbData
+        );
+
+        if (item.url) {
+          window.location.href = item.url;
         }
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
+    } catch (err) {
+      setSecondaryProgressBarData({
+        visible: true,
+        alert: true,
+      });
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      return toastr.error(err.message ? err.message : err);
+    }
   };
 
   downloadAction = (label) => {
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
     const { bufferSelection } = this.filesStore;
 
     const selection = this.filesStore.selection.length
@@ -230,25 +230,7 @@ class FilesActionStore {
       }
     }
 
-    setSecondaryProgressBarData({
-      icon: "file",
-      visible: true,
-      percent: 0,
-      label,
-      alert: false,
-    });
-
-    return downloadFiles(fileIds, folderIds)
-      .then((res) => {
-        this.getDownloadProgress(res[0], label);
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
+    return this.downloadFiles(fileIds, folderIds, label);
   };
 
   editCompleteAction = async (id, selectedItem, isCancelled = false) => {
@@ -347,22 +329,16 @@ class FilesActionStore {
       return deleteFile(itemId)
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(
-            data,
-            pbData,
-            this.deleteCB
-          );
+          await this.uploadDataStore.loopFilesOperations(data, pbData);
+          this.updateCurrentFolder();
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else {
       return deleteFolder(itemId)
         .then(async (res) => {
           const data = res[0] ? res[0] : null;
-          await this.uploadDataStore.loopFilesOperations(
-            data,
-            pbData,
-            this.deleteCB
-          );
+          await this.uploadDataStore.loopFilesOperations(data, pbData);
+          this.updateCurrentFolder();
         })
         .then(() => toastr.success(translations.successRemoveFolder));
     }
