@@ -311,13 +311,15 @@ class TableHeader extends React.Component {
     } else {
       this.resetColumns();
     }
-    container.style.gridTemplateColumns = str;
-    if (this.headerRef.current) {
-      this.headerRef.current.style.gridTemplateColumns = str;
-      this.headerRef.current.style.width = containerWidth + "px";
-    }
+    if (str) {
+      container.style.gridTemplateColumns = str;
+      if (this.headerRef.current) {
+        this.headerRef.current.style.gridTemplateColumns = str;
+        this.headerRef.current.style.width = containerWidth + "px";
+      }
 
-    localStorage.setItem(columnStorageName, str);
+      localStorage.setItem(columnStorageName, str);
+    }
   };
 
   resetColumns = () => {
@@ -363,7 +365,8 @@ class TableHeader extends React.Component {
       this.headerRef.current.style.width = containerWidth + "px";
     }
 
-    localStorage.setItem(columnStorageName, str);
+    str && localStorage.setItem(columnStorageName, str);
+
     this.onResize();
   };
 
