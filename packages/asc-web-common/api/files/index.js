@@ -823,3 +823,12 @@ export function getEditDiff(fileId, version) {
     url: `files/file/${fileId}/edit/diff?version=${version}`,
   });
 }
+
+export function restoreDocumentsVersion(fileId, version) {
+  const options = {
+    method: "get",
+    url: `files/file/${fileId}/restoreversion?version=${version}`,
+  };
+
+  return request(options);
+}

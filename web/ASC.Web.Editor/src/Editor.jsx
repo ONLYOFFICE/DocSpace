@@ -29,6 +29,7 @@ import {
   getFileVersionInfo,
   getEditHistory,
   getEditDiff,
+  restoreDocumentsVersion,
 } from "@appserver/common/api/files";
 import FilesFilter from "@appserver/common/api/files/filter";
 
@@ -461,11 +462,6 @@ const Editor = () => {
     }
   };
 
-  const onSDKRequestRestore = (event) => {
-    const restoreVersion = event.data.version;
-    console.log("version in restore func", restoreVersion);
-  };
-
   const onSDKRequestHistoryData = async (event) => {
     const version = event.data;
     console.log("version", version);
@@ -546,6 +542,30 @@ const Editor = () => {
       docEditor.refreshHistory({
         currentVersion: getCurrentDocumentVersion(fileHistory, historyLength),
         history: getDocumentHistory(fileHistory, historyLength),
+      });
+    } catch (e) {
+      docEditor.refreshHistory({
+        error: `${e}`, //TODO: maybe need to display something else.
+      });
+    }
+  };
+
+  const onSDKRequestRestore = async (event) => {
+    const restoreVersion = event.data.version;
+    console.log("version in restore func", restoreVersion);
+    try {
+      const updateVersions = await restoreDocumentsVersion(
+        fileId,
+        restoreVersion
+      );
+      const historyLength = updateVersions.length;
+      console.log("restore", updateVersions);
+      docEditor.refreshHistory({
+        currentVersion: getCurrentDocumentVersion(
+          updateVersions,
+          historyLength
+        ),
+        history: getDocumentHistory(updateVersions, historyLength),
       });
     } catch (e) {
       docEditor.refreshHistory({
