@@ -66,7 +66,7 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    const deleteAfter = true; //Delete after finished TODO: get from settings
+    const deleteAfter = false; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
 
     const folderIds = [];
@@ -229,7 +229,12 @@ class FilesActionStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
-    const { selection } = this.filesStore;
+    const { bufferSelection } = this.filesStore;
+
+    const selection = bufferSelection
+      ? [bufferSelection]
+      : this.filesStore.selection;
+
     const fileIds = [];
     const folderIds = [];
     const items = [];
@@ -308,7 +313,7 @@ class FilesActionStore {
   };
 
   onSelectItem = ({ id, isFolder }) => {
-    const { setSelection, selected, setSelected } = this.filesStore;
+    const { setBufferSelection, selected, setSelected } = this.filesStore;
     selected === "close" && setSelected("none");
 
     if (!id) return;
@@ -316,7 +321,8 @@ class FilesActionStore {
     const item = this.filesStore[isFolder ? "folders" : "files"].find(
       (elm) => elm.id === id
     );
-    setSelection([item]);
+
+    setBufferSelection(item);
   };
 
   deleteItemAction = (
@@ -590,7 +596,7 @@ class FilesActionStore {
   moveDragItems = (destFolderId, folderTitle, translations) => {
     const folderIds = [];
     const fileIds = [];
-    const deleteAfter = true;
+    const deleteAfter = false;
 
     const { selection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
@@ -663,7 +669,7 @@ class FilesActionStore {
       try {
         await this.uploadDataStore.itemOperationToFolder(operationData);
       } catch (err) {
-        return toastr.error(err.message);
+        return toastr.error(err.message ? err.message : err);
       }
     }
   };

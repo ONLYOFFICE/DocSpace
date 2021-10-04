@@ -186,7 +186,7 @@ namespace ASC.Data.Backup
             {
                 var amazonSettings = CoreConfiguration.GetSection<AmazonS3Settings>();
 
-                var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>("S3");
+                var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>("s3");
                 if (!consumer.IsSet)
                 {
                     consumer["acesskey"] = amazonSettings.AccessKeyId;

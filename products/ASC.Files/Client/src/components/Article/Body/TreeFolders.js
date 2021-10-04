@@ -122,10 +122,10 @@ class TreeFolders extends React.Component {
         iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "kDrive":
-        iconUrl = "/static/images/catalog.folder.react.svg";
+        iconUrl = "/static/images/cloud.services.kdrive.react.svg";
         break;
       case "Yandex":
-        iconUrl = "/static/images/catalog.folder.react.svg";
+        iconUrl = "/static/images/cloud.services.yandex.react.svg";
         break;
       case "NextCloud":
         iconUrl = "/static/images/cloud.services.nextcloud.react.svg";
@@ -134,7 +134,7 @@ class TreeFolders extends React.Component {
         iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "WebDav":
-        iconUrl = "/static/images/catalog.folder.react.svg";
+        iconUrl = "/static/images/cloud.services.webdav.react.svg";
         break;
       default:
         break;

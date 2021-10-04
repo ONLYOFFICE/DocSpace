@@ -10,17 +10,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Bitly",
+		  "key": "bitly",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Bitly",
+		  "key": "bitly",
 		  "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Bitly",
+		  "name": "bitly",
 		  "order": "13",
 		  "props": {
 			"bitlyClientId": "",
@@ -41,17 +41,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Telegram",
+		  "key": "telegram",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Telegram",
+		  "key": "telegram",
 		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Telegram",
+		  "name": "telegram",
 		  "order": "13",
 		  "props": {
 			"telegramBotToken": "",
@@ -73,17 +73,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Box",
+		  "key": "box",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Box",
+		  "key": "box",
 		  "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Box",
+		  "name": "box",
 		  "order": "3",
 		  "props": {
 			"boxClientId": "",
@@ -104,17 +104,17 @@
 		  "type": "ASC.Web.Core.Sms.ClickatellProvider, ASC.Web.Core"
 		}, 
 		{
-		  "key": "Clickatell",
+		  "key": "clickatell",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Clickatell",
+		  "key": "clickatell",
 		  "type": "ASC.Web.Core.Sms.ClickatellProvider, ASC.Web.Core"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Clickatell",
+		  "name": "clickatell",
 		  "order": "10",
 		  "props": {
 			"clickatellapiKey": ""
@@ -131,17 +131,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "DocuSign",
+		  "key": "docuSign",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "DocuSign",
+		  "key": "docuSign",
 		  "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "DocuSign",
+		  "name": "docuSign",
 		  "order": "1",
 		  "props": {
 			"docuSignClientId": "",
@@ -163,17 +163,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.DropboxLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "DropBox",
+		  "key": "dropbox",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "DropBox",
+		  "key": "dropbox",
 		  "type": "ASC.FederatedLogin.LoginProviders.DropboxLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "DropBox",
+		  "name": "dropbox",
 		  "order": "2",
 		  "props": {
 			"dropboxClientId": "",
@@ -196,17 +196,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Facebook",
+		  "key": "facebook",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Facebook",
+		  "key": "facebook",
 		  "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Facebook",
+		  "name": "facebook",
 		  "order": "6",
 		  "props": {
 			"facebookClientId": "",
@@ -227,17 +227,17 @@
 		  "type": "ASC.Web.Core.Jabber.FireBase, ASC.Web.Core"
 		}, 
 		{
-		  "key": "Firebase",
+		  "key": "firebase",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Firebase",
+		  "key": "firebase",
 		  "type": "ASC.Web.Core.Jabber.FireBase, ASC.Web.Core"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Firebase",
+		  "name": "firebase",
 		  "order": "12",
 		  "props": {
 			"firebase_apiKey": "",
@@ -257,17 +257,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Google",
+		  "key": "google",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Google",
+		  "key": "google",
 		  "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Google",
+		  "name": "google",
 		  "order": "5",
 		  "props": {
 			"googleClientId": "",
@@ -288,17 +288,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "LinkedIn",
+		  "key": "linkedin",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "LinkedIn",
+		  "key": "linkedin",
 		  "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "LinkedIn",
+		  "name": "linkedin",
 		  "order": "8",
 		  "props": {
 			"linkedInKey": "",
@@ -319,17 +319,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Mailru",
+		  "key": "mailru",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Mailru",
+		  "key": "mailru",
 		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Mailru",
+		  "name": "mailru",
 		  "order": "4",
 		  "props": {
 			"mailRuClientId": "",
@@ -350,17 +350,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.OneDriveLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "SkyDrive",
+		  "key": "skydrive",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "SkyDrive",
+		  "key": "skydrive",
 		  "type": "ASC.FederatedLogin.LoginProviders.OneDriveLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "SkyDrive",
+		  "name": "skydrive",
 		  "order": "4",
 		  "props": {
 			"skydriveappkey": "",
@@ -381,17 +381,17 @@
 		  "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core"
 		}, 
 		{
-		  "key": "Smsc",
+		  "key": "smsc",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Smsc",
+		  "key": "smsc",
 		  "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Smsc",
+		  "name": "smsc",
 		  "order": "11",
 		  "props": {
 			"smsclogin": "",
@@ -413,17 +413,17 @@
 		  "type": "ASC.Web.Core.Sms.TwilioProvider, ASC.Web.Core"
 		}, 
 		{
-		  "key": "Twilio",
+		  "key": "twilio",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Twilio",
+		  "key": "twilio",
 		  "type": "ASC.Web.Core.Sms.TwilioProvider, ASC.Web.Core"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Twilio",
+		  "name": "twilio",
 		  "order": "9",
 		  "props": {
 			"twilioAccountSid": "",
@@ -442,17 +442,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Yahoo",
+		  "key": "yahoo",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Yahoo",
+		  "key": "yahoo",
 		  "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Yahoo",
+		  "name": "yahoo",
 		  "order": "14",
 		  "props": {
 			"yahooClientId": "",
@@ -473,17 +473,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Vk",
+		  "key": "vk",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Vk",
+		  "key": "vk",
 		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Vk",
+		  "name": "vk",
 		  "order": "14",
 		  "props": {
 			"vkClientId": "",
@@ -504,17 +504,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Wordpress",
+		  "key": "wordpress",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Wordpress",
+		  "key": "wordpress",
 		  "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Wordpress",
+		  "name": "wordpress",
 		  "order": "15",
 		  "props": {
 			"wpClientId": "",
@@ -535,17 +535,17 @@
 		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
 		}, 
 		{
-		  "key": "Yandex",
+		  "key": "yandex",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Yandex",
+		  "key": "yandex",
 		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Yandex",
+		  "name": "yandex",
 		  "order": "15",
 		  "props": {
 			"yandexClientId": "",
@@ -566,17 +566,17 @@
 		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "S3",
+		  "key": "s3",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "S3",
+		  "key": "s3",
 		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "S3",
+		  "name": "s3",
 		  "order": "20",
 		  "props": {
 			"acesskey": "",
@@ -604,17 +604,17 @@
 		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "GoogleCloud",
+		  "key": "googlecloud",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "GoogleCloud",
+		  "key": "googlecloud",
 		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "GoogleCloud",
+		  "name": "googlecloud",
 		  "order": "21",
 		  "props": {
 			"json": ""
@@ -635,17 +635,17 @@
 		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Rackspace",
+		  "key": "rackspace",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Rackspace",
+		  "key": "rackspace",
 		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Rackspace",
+		  "name": "rackspace",
 		  "order": "22",
 		  "props": {
 			"username": "",
@@ -669,17 +669,17 @@
 		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Selectel",
+		  "key": "selectel",
 		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
 		}, 
 		{
-		  "key": "Selectel",
+		  "key": "selectel",
 		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
 		}
       ],
 	  "instanceScope": "perlifetimescope",
 	  "parameters": {
-		  "name": "Selectel",
+		  "name": "selectel",
 		  "order": "23",
 		  "props": {
 			"authUser": "",

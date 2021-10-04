@@ -109,21 +109,21 @@ export const ConflictResolveType = Object.freeze({
   Duplicate: 2,
 });
 export const providersData = Object.freeze({
-  Google: {
-    label: "Google",
+  google: {
+    label: "google",
     icon: "/static/images/share.google.react.svg",
   },
-  Facebook: {
-    label: "Facebook",
+  facebook: {
+    label: "facebook",
     icon: "/static/images/share.facebook.react.svg",
   },
-  Twitter: {
-    label: "Twitter",
+  twitter: {
+    label: "twitter",
     icon: "/static/images/share.twitter.react.svg",
     iconOptions: { color: "#2AA3EF" },
   },
-  LinkedIn: {
-    label: "LinkedIn",
+  linkedin: {
+    label: "linkedin",
     icon: "/static/images/share.linkedin.react.svg",
   },
 });

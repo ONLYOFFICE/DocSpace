@@ -121,7 +121,7 @@ const TreeNodeMenu = styled(TreeNode)`
   ${NoUserSelect}
 
   .rc-tree-node-selected {
-    max-width: ${(props) => (props.newItems > 999 ? "71%" : "98%")} !important;
+    max-width: ${(props) => (props.newItems > 999 ? "71%" : "102%")} !important;
   }
 
   ${(props) =>

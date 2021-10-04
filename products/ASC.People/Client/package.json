@@ -11,6 +11,9 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5002"
   },
+  "browserslist": [
+    "extends @appserver/browserslist-config-asc"
+  ],
   "dependencies": {
     "copy-to-clipboard": "^3.3.1"
   },

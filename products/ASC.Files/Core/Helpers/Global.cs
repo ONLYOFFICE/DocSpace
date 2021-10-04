@@ -38,6 +38,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core;
@@ -319,8 +320,8 @@ namespace ASC.Web.Files.Classes
             return (T)Convert.ChangeType(GetFolderProjects(daoFactory), typeof(T));
         }
 
-        internal static readonly IDictionary<string, int> UserRootFolderCache =
-            new ConcurrentDictionary<string, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
+        internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
+            new ConcurrentDictionary<string, Lazy<int>>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
         public T GetFolderMy<T>(FileMarker fileMarker, IDaoFactory daoFactory)
         {
@@ -334,19 +335,14 @@ namespace ASC.Web.Files.Classes
 
             var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
-            if (!UserRootFolderCache.TryGetValue(cacheKey, out var myFolderId))
-            {
-                myFolderId = GetFolderIdAndProccessFirstVisit<int>(fileMarker, daoFactory, true);
-                if (!Equals(myFolderId, 0))
-                    UserRootFolderCache[cacheKey] = myFolderId;
-            }
-            return myFolderId;
+            var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, true)));
+            return myFolderId.Value;
         }
 
         protected internal void SetFolderMy(object value)
         {
             var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, value);
-            UserRootFolderCache.Remove(cacheKey);
+            UserRootFolderCache.Remove(cacheKey, out _);
         }
 
         public bool IsFirstVisit(IDaoFactory daoFactory)
@@ -381,7 +377,7 @@ namespace ASC.Web.Files.Classes
 
             if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
             {
-                commonFolderId = GetFolderIdAndProccessFirstVisit<int>(fileMarker, daoFactory, false);
+                commonFolderId = GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, false);
                 if (!Equals(commonFolderId, 0))
                     CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
             }
@@ -526,10 +522,10 @@ namespace ASC.Web.Files.Classes
             TrashFolderCache.Remove(cacheKey);
         }
 
-        private T GetFolderIdAndProccessFirstVisit<T>(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
+        private int GetFolderIdAndProccessFirstVisit(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
         {
-            var folderDao = daoFactory.GetFolderDao<T>();
-            var fileDao = daoFactory.GetFileDao<T>();
+            var folderDao = (FolderDao)daoFactory.GetFolderDao<int>();
+            var fileDao = (FileDao)daoFactory.GetFileDao<int>();
 
             var id = my ? folderDao.GetFolderIDUser(false) : folderDao.GetFolderIDCommon(false);
 
@@ -563,7 +559,7 @@ namespace ASC.Web.Files.Classes
             return id;
         }
 
-        private void SaveStartDocument<T>(FileMarker fileMarker, IFolderDao<T> folderDao, IFileDao<T> fileDao, T folderId, string path, IDataStore storeTemplate)
+        private void SaveStartDocument(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
         {
             foreach (var file in storeTemplate.ListFilesRelative("", path, "*", false))
             {
@@ -572,7 +568,7 @@ namespace ASC.Web.Files.Classes
 
             foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
             {
-                var folder = ServiceProvider.GetService<Folder<T>>();
+                var folder = ServiceProvider.GetService<Folder<int>>();
                 folder.Title = folderName;
                 folder.FolderID = folderId;
 
@@ -582,7 +578,7 @@ namespace ASC.Web.Files.Classes
             }
         }
 
-        private void SaveFile<T>(FileMarker fileMarker, IFileDao<T> fileDao, T folder, string filePath, IDataStore storeTemp)
+        private void SaveFile(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp)
         {
             try
             {
@@ -591,7 +587,7 @@ namespace ASC.Web.Files.Classes
                     return;
 
                 var fileName = Path.GetFileName(filePath);
-                var file = ServiceProvider.GetService<File<T>>();
+                var file = ServiceProvider.GetService<File<int>>();
 
                 file.Title = fileName;
                 file.FolderID = folder;
@@ -600,7 +596,7 @@ namespace ASC.Web.Files.Classes
                 using (var stream = storeTemp.GetReadStream("", filePath))
                 {
                     file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
-                    file = fileDao.SaveFile(file, stream);
+                    file = fileDao.SaveFile(file, stream, false);
                 }
 
                 var pathThumb = filePath + "." + Global.ThumbnailExtension;

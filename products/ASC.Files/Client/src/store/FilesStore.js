@@ -46,6 +46,7 @@ class FilesStore {
   files = [];
   folders = [];
   selection = [];
+  bufferSelection = [];
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
@@ -234,6 +235,10 @@ class FilesStore {
     this.selection = selection;
   };
 
+  setBufferSelection = (bufferSelection) => {
+    this.bufferSelection = bufferSelection;
+  };
+
   //TODO: FILTER
   setFilesFilter = (filter) => {
     const key = `UserFilter=${this.userStore.user.id}`;
@@ -339,7 +344,7 @@ class FilesStore {
           if (!requestCounter) return;
           requestCounter--;
 
-          if (folderId === "@my" && !this.isInit) {
+          if (folderId === "@my" /*  && !this.isInit */) {
             setTimeout(() => {
               return request();
             }, 5000);
@@ -1242,7 +1247,7 @@ class FilesStore {
     }
 
     const hasFiles = cbMenu.some(
-      (elem) => elem !== "all" && elem !== FilterType.DocumentsOnly
+      (elem) => elem !== "all" && elem !== FilterType.FoldersOnly
     );
 
     if (hasFiles) cbMenu.push(FilterType.FilesOnly);

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 import { size } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
-import { isMobile } from "react-device-detect";
+import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 import Article from "./sub-components/article";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
@@ -114,9 +114,14 @@ class PageLayout extends React.Component {
   orientationChangeHandler = () => {
     const isValueExist = !!this.props.isArticlePinned;
     const isEnoughWidth = screen.availWidth > size.smallTablet;
+    const isPortrait =
+      isFirefox &&
+      isMobileOnly &&
+      screen.orientation.type === "portrait-primary";
 
-    if (!isEnoughWidth && isValueExist) {
+    if ((!isEnoughWidth && isValueExist) || isPortrait) {
       this.backdropClick();
+      return;
     }
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();

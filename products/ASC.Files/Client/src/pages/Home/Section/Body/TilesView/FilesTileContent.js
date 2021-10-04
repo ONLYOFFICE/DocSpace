@@ -77,7 +77,6 @@ const FilesTileContent = ({
   item,
   titleWithoutExt,
   linkStyles,
-  onFilesClick,
   badgesComponent,
 }) => {
   const { fileExst } = item;
@@ -97,7 +96,6 @@ const FilesTileContent = ({
           fontWeight="600"
           fontSize="14px"
           target="_blank"
-          href={item.href}
           {...linkStyles}
           color="#333"
           isTextOverflow
