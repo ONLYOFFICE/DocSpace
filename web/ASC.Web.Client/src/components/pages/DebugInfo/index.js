@@ -6,11 +6,13 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Box from "@appserver/components/box";
 import Scrollbar from "@appserver/components/scrollbar";
+import { getModalType } from "@appserver/components/utils/device";
 import axios from "axios";
 
 const DebugInfoDialog = (props) => {
   const { visible, onClose, user } = props;
   const [md, setMd] = useState();
+  const [modalType, setModalType] = useState(getModalType());
 
   useEffect(() => {
     async function loadMD() {
@@ -27,8 +29,17 @@ const DebugInfoDialog = (props) => {
     loadMD();
   }, []);
 
+  const onResize = (type) => {
+    setModalType(type);
+  };
+
   return (
-    <ModalDialog visible={visible} onClose={onClose} contentHeight="500px">
+    <ModalDialog
+      visible={visible}
+      onClose={onClose}
+      contentHeight="500px"
+      onResize={onResize}
+    >
       <ModalDialog.Header>Debug Info</ModalDialog.Header>
       <ModalDialog.Body>
         {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
@@ -39,10 +50,11 @@ const DebugInfoDialog = (props) => {
         )}
         <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
         <hr />
-        <Box overflowProp="auto" heightProp="300px">
-          <Scrollbar stype="mediumBlack">
-            {md && <ReactMarkdown children={md} />}
-          </Scrollbar>
+        <Box
+          overflowProp="auto"
+          heightProp={modalType === "modal" ? "300px" : "70vh"}
+        >
+          <Scrollbar>{md && <ReactMarkdown children={md} />}</Scrollbar>
         </Box>
       </ModalDialog.Body>
     </ModalDialog>
