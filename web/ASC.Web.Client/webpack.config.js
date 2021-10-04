@@ -3,6 +3,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const DefinePlugin = require("webpack").DefinePlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
@@ -14,6 +15,7 @@ const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
+const version = pkg.version;
 
 const config = {
   entry: "./src/index",
@@ -214,6 +216,15 @@ const config = {
           },
         },
       ],
+    }),
+    new DefinePlugin({
+      VERSION: JSON.stringify(version),
+      BUILD_AT: DefinePlugin.runtimeValue(function () {
+        const timeElapsed = Date.now();
+        const today = new Date(timeElapsed);
+        return JSON.stringify(today.toISOString().split(".")[0] + "Z");
+      }, true),
+      DEBUG_INFO: true,
     }),
   ],
 };

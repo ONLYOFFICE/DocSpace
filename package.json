@@ -6,6 +6,7 @@
     "packages/asc-web-components",
     "packages/asc-web-common",
     "packages/browserslist-config-asc",
+    "packages/debug-info",
     "web/ASC.Web.Login",
     "web/ASC.Web.Client",
     "web/ASC.Web.Editor",
@@ -44,7 +45,8 @@
     "sw-studio-login-replace": "replace-in-files --string='studio/login/' --replacement='login/' build/deploy/public/sw.js",
     "sw-studio-replace": "replace-in-files --string='studio/client/' --replacement='/' build/deploy/public/sw.js",
     "test": "yarn workspace @appserver/components test",
-    "wipe": "shx rm -rf node_modules yarn.lock web/**/node_modules products/**/node_modules"
+    "wipe": "shx rm -rf node_modules yarn.lock web/**/node_modules products/**/node_modules",
+    "debug-info": "node packages/debug-info/src/index.js --unreleased-only --template debuginfo --output public/debuginfo.md"
   },
   "devDependencies": {
     "browserslist": "^4.17.1",

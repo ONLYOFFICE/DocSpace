@@ -1,0 +1,32 @@
+{
+  "name": "@appserver/debuginfo",
+  "version": "0.0.1",
+  "description": "Command line tool for generating debug info by commit history",
+  "main": "./src/index.js",
+  "engines": {
+    "node": ">=8.3"
+  },
+  "dependencies": {
+    "commander": "^7.2.0",
+    "handlebars": "^4.7.7",
+    "node-fetch": "^2.6.5",
+    "parse-github-url": "^1.0.2",
+    "semver": "^7.3.5"
+  },
+  "nyc": {
+    "all": true,
+    "include": "src",
+    "exclude": "src/index.js",
+    "sourceMap": false,
+    "instrument": false,
+    "report-dir": "./coverage",
+    "temp-dir": "./coverage/.nyc_output",
+    "require": [
+      "@babel/register"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ]
+  }
+}
