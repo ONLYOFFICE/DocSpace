@@ -15,10 +15,11 @@ const DebugInfoDialog = (props) => {
   const [modalType, setModalType] = useState(getModalType());
 
   useEffect(() => {
+    if (md || !visible) return;
+
     async function loadMD() {
       try {
         const response = await axios.get("/debuginfo.md");
-        console.log(response, response.data);
         setMd(response.data);
       } catch (e) {
         console.error(e);
@@ -27,7 +28,7 @@ const DebugInfoDialog = (props) => {
     }
 
     loadMD();
-  }, []);
+  }, [md, visible]);
 
   const onResize = (type) => {
     setModalType(type);
