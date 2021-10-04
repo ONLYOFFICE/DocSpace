@@ -1913,7 +1913,20 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File IDs</param>
         /// <returns></returns>
         [Delete("favorites")]
-        public bool DeleteFavorites([ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+        [Consumes("application/json")]
+        public bool DeleteFavoritesFromBody([FromBody] BaseBatchModel model)
+        {
+            return DeleteFavorites(model);
+        }
+
+        [Delete("favorites")]
+        public bool DeleteFavoritesFromQuery([FromQuery][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+        {
+            return DeleteFavorites(model);
+        }
+
+
+        private bool DeleteFavorites(BaseBatchModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
