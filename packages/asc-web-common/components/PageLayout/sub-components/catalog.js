@@ -16,7 +16,7 @@ const StyledCatalog = styled.div`
   @media ${mobile} {
     top: 8px;
   }
-  top: ${(props) => isMobileOnly && (props.showText ? '64px' : '56px')} !important;
+  top: ${(props) => isMobile && (props.showText ? '64px' : '56px')} !important;
 
   z-index: ${(props) => (props.showText && (isMobileOnly || isMobileUtils()) ? '201' : '100')};
   .resizable-block {
