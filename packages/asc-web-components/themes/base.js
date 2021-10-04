@@ -176,6 +176,9 @@ const Base = {
     padding: "5px 10px",
     borderRadius: "3px",
     lineHeight: "22px",
+    fontSize: "15px",
+    fontWeight: 700,
+    textColor: "#FFF",
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
