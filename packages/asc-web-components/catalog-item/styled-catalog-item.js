@@ -58,6 +58,9 @@ const StyledCatalogItemBadgeWrapper = styled.div`
       props.showText && props.theme.catalogItem.badgeWrapper.tablet.width};
     min-height: ${(props) =>
       props.showText && props.theme.catalogItem.badgeWrapper.tablet.height};
+    margin-right: ${(props) =>
+      props.showText &&
+      props.theme.catalogItem.badgeWrapper.tablet.marginRight};
   }
 
   ${isMobile &&
@@ -78,6 +81,7 @@ const StyledCatalogItemInitialText = styled(Text)`
   text-align: center;
   width: ${(props) => props.theme.catalogItem.initialText.width};
   line-height: ${(props) => props.theme.catalogItem.initialText.lineHeight};
+  max-height: ${(props) => props.theme.catalogItem.initialText.lineHeight};
   color: ${(props) => props.theme.catalogItem.initialText.color};
   font-size: ${(props) => props.theme.catalogItem.initialText.fontSize};
   font-weight: ${(props) => props.theme.catalogItem.initialText.fontWeight};
@@ -112,6 +116,9 @@ const StyledCatalogItemText = styled(Text)`
   color: ${(props) => props.theme.catalogItem.text.color};
   font-size: ${(props) => props.theme.catalogItem.text.fontSize};
   font-weight: ${(props) => props.theme.catalogItem.text.fontWeight};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media ${tablet} {
     margin-left: ${(props) => props.theme.catalogItem.text.tablet.marginLeft};

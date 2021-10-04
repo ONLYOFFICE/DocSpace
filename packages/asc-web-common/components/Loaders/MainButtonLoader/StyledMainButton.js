@@ -1,12 +1,7 @@
-import styled from "styled-components";
-import { desktop } from "@appserver/components/utils/device";
+import styled from 'styled-components';
 
 const StyledContainer = styled.div`
-  width: 209px;
-
-  @media ${desktop} {
-    width: 225px;
-  }
+  width: 208px;
 `;
 
 export default StyledContainer;

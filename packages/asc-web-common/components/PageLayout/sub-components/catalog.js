@@ -16,7 +16,7 @@ const StyledCatalog = styled.div`
   @media ${mobile} {
     top: 8px;
   }
-  top: ${(props) => isMobile && (props.showText ? '64px' : '56px')} !important;
+  top: ${isMobile && '64px'} !important;
 
   z-index: ${(props) => (props.showText && (isMobileOnly || isMobileUtils()) ? '201' : '100')};
   .resizable-block {
@@ -29,6 +29,7 @@ const StyledCatalog = styled.div`
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
+    padding-bottom: 44px;
 
     &::-webkit-scrollbar {
       width: 0;
@@ -53,6 +54,7 @@ const StyledCatalog = styled.div`
       width: 100%;
       margin: 0;
       padding: 0;
+      padding-bottom: 44px;
     }
 
     ${isTablet &&
@@ -71,6 +73,7 @@ const StyledCatalog = styled.div`
       width: 100%;
       margin: 0;
       padding: 0;
+      padding-bottom: 44px;
     `}
   }
 `;
@@ -78,7 +81,6 @@ const StyledCatalog = styled.div`
 const Catalog = (props) => {
   const { showText, setShowText, children, ...rest } = props;
   const refTimer = React.useRef(null);
-
   const enable = {
     top: false,
     right: !isMobile,
@@ -105,7 +107,6 @@ const Catalog = (props) => {
   React.useEffect(() => {
     sizeChangeHandler();
   }, []);
-
   const sizeChangeHandler = () => {
     clearTimeout(refTimer.current);
 
@@ -114,12 +115,15 @@ const Catalog = (props) => {
       if (isMobileUtils() && !isMobile && props.showText) props.setShowText(false);
       if (isTabletUtils() && !isMobile && props.showText) props.setShowText(false);
       if (isDesktopUtils() && !isMobile) props.setShowText(true);
-    }, 10);
+    }, 100);
   };
 
   return (
     <StyledCatalog showText={showText} {...rest}>
       <Resizable
+        defaultSize={{
+          width: 256,
+        }}
         enable={enable}
         className="resizable-block"
         handleWrapperClass="resizable-border not-selectable">

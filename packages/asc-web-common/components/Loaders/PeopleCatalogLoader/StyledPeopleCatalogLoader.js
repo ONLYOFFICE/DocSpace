@@ -8,27 +8,16 @@ const StyledContainer = styled.div`
   max-width: 216px;
   padding: 0 20px;
 
+  display: flex;
+  flex-direction: column;
+
   @media ${tablet} {
     width: ${(props) => (props.showText ? '240px' : '52px')};
-    padding: ${(props) => (props.showText ? '0 16px' : '10px 16px')};
+    padding: 0 16px;
   }
 
   @media ${mobile} {
     width: 100%;
-    padding: 0 16px;
-  }
-`;
-
-const StyledBlock = styled.div`
-  margin: 0;
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-
-  @media ${tablet} {
-    margin-bottom: 24px;
   }
 `;
 
@@ -44,4 +33,4 @@ const StyledRectangleLoader = styled(RectangleLoader)`
   }
 `;
 
-export { StyledBlock, StyledContainer, StyledRectangleLoader };
+export { StyledContainer, StyledRectangleLoader };

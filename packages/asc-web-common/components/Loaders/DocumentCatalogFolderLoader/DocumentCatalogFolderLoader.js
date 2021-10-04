@@ -11,20 +11,20 @@ const DocumentCatalogFolderLoader = ({ id, className, style, showText, ...rest }
   return (
     <StyledContainer id={id} className={className} style={style} showText={showText}>
       <StyledBlock>
-        <StyledRectangleLoader width="100%" {...rest} />
-        <StyledRectangleLoader width="100%" {...rest} />
-        <StyledRectangleLoader width="100%" {...rest} />
-        <StyledRectangleLoader width="100%" {...rest} />
+        <StyledRectangleLoader {...rest} />
+        <StyledRectangleLoader {...rest} />
+        <StyledRectangleLoader {...rest} />
+        <StyledRectangleLoader {...rest} />
       </StyledBlock>
       <StyledBlock>
-        <StyledRectangleLoader width="100%" {...rest} />
-        <StyledRectangleLoader width="100%" {...rest} />
+        <StyledRectangleLoader {...rest} />
+        <StyledRectangleLoader {...rest} />
       </StyledBlock>
       <StyledBlock>
-        <StyledRectangleLoader width="100%" {...rest} />
+        <StyledRectangleLoader {...rest} />
       </StyledBlock>
       <StyledBlock>
-        <StyledRectangleLoader width="100%" {...rest} />
+        <StyledRectangleLoader {...rest} />
       </StyledBlock>
     </StyledContainer>
   );

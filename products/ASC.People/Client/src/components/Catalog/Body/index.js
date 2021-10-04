@@ -11,6 +11,7 @@ import config from '../../../../package.json';
 import { combineUrl } from '@appserver/common/utils';
 import { AppServerConfig } from '@appserver/common/constants';
 import CatalogItem from '@appserver/components/catalog-item';
+import withLoader from '../../../HOCs/withLoader';
 
 const departmentsIcon = 'images/departments.group.react.svg';
 const groupIcon = '/static/images/catalog.folder.react.svg';
@@ -26,12 +27,12 @@ const CatalogBodyContent = ({
   filter,
   selectGroup,
   isVisitor,
+  isAdmin,
   isLoaded,
   setDocumentTitle,
 }) => {
   React.useEffect(() => {
     changeTitleDocument();
-    setFirstLoad(false);
   }, []);
 
   React.useEffect(() => {
@@ -56,6 +57,7 @@ const CatalogBodyContent = ({
       selectGroup(groupId);
       if (isMobileOnly || isMobile()) toggleShowText();
     } else {
+      setFirstLoad(true);
       const newFilter = isRoot ? Filter.getDefault() : filter.clone();
 
       if (!isRoot) newFilter.group = groupId;
@@ -84,31 +86,33 @@ const CatalogBodyContent = ({
     });
     return items;
   };
+
   return (
-    !isVisitor &&
-    (!isLoaded ? (
-      <Loaders.TreeFolders />
-    ) : (
-      <>
-        <CatalogItem
-          key={'root'}
-          id={'departments'}
-          icon={departmentsIcon}
-          onClick={onClick}
-          text={groupsCaption}
-          showText={showText}
-          isActive={isActive('root')}
-        />
-        {getItems(groups)}
-      </>
-    ))
+    <>
+      {!isVisitor && (
+        <div style={!isAdmin ? { marginTop: '16px' } : null}>
+          <CatalogItem
+            key={'root'}
+            id={'departments'}
+            icon={departmentsIcon}
+            onClick={onClick}
+            text={groupsCaption}
+            showText={showText}
+            isActive={isActive('root')}
+          />
+          {getItems(groups)}
+        </div>
+      )}
+    </>
   );
 };
 
-const BodyContent = withTranslation('Article')(withRouter(CatalogBodyContent));
+const BodyContent = withTranslation('Article')(
+  withRouter(withLoader(CatalogBodyContent)(<Loaders.PeopleCatalogLoader />)),
+);
 
 export default inject(({ auth, peopleStore }) => {
-  const { settingsStore, isLoaded, setDocumentTitle, isAdmin } = auth;
+  const { settingsStore, setDocumentTitle, isAdmin } = auth;
   const { customNames, showText, toggleShowText } = settingsStore;
   const {
     groupsStore,
@@ -123,7 +127,7 @@ export default inject(({ auth, peopleStore }) => {
   const { isEdit, setIsVisibleDataLossDialog } = editingFormStore;
   const { selectedGroup, selectGroup } = selectedGroupStore;
   const selectedKeys = selectedGroup ? [selectedGroup] : ['root'];
-  const { setFirstLoad, isLoading } = loadingStore;
+  const { setFirstLoad, isLoading, setIsLoading, isLoaded } = loadingStore;
   return {
     setDocumentTitle,
     isLoaded,
@@ -137,6 +141,7 @@ export default inject(({ auth, peopleStore }) => {
     isEdit,
     setIsVisibleDataLossDialog,
     isLoading,
+    setIsLoading,
     filter,
     setFirstLoad,
     showText,

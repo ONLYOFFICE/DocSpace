@@ -33,6 +33,8 @@ const Home = ({
   setIsRefresh,
   selectedGroup,
   showCatalog,
+  firstLoad,
+  setFirstLoad,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -45,6 +47,7 @@ const Home = ({
       const newFilter = Filter.getFilter(location);
       console.log('PEOPLE URL changed', pathname, newFilter);
       getUsersList(newFilter).finally(() => {
+        setFirstLoad(false);
         setIsLoading(false);
         setIsRefresh(false);
       });
@@ -61,9 +64,15 @@ const Home = ({
     isLoading ? showLoader() : hideLoader();
   }, [isLoading]);
 
+  useEffect(() => {});
+
   return (
     <>
-      <PageLayout withBodyScroll withBodyAutoFocus={!isMobile} isLoading={isLoading}>
+      <PageLayout
+        withBodyScroll
+        withBodyAutoFocus={!isMobile}
+        isLoading={isLoading}
+        firstLoad={firstLoad}>
         {showCatalog && (
           <PageLayout.CatalogHeader>
             <CatalogHeaderContent />
@@ -127,11 +136,11 @@ Home.propTypes = {
 
 export default inject(({ auth, peopleStore }) => {
   const { settingsStore } = auth;
-  const { showCatalog, showText, toggleShowText, userShowText } = settingsStore;
+  const { showCatalog } = settingsStore;
   const { usersStore, selectedGroupStore, loadingStore } = peopleStore;
   const { getUsersList } = usersStore;
   const { selectedGroup } = selectedGroupStore;
-  const { isLoading, setIsLoading, setIsRefresh } = loadingStore;
+  const { isLoading, setIsLoading, setIsRefresh, firstLoad, setFirstLoad } = loadingStore;
 
   return {
     isAdmin: auth.isAdmin,
@@ -141,5 +150,7 @@ export default inject(({ auth, peopleStore }) => {
     setIsRefresh,
     selectedGroup,
     showCatalog,
+    firstLoad,
+    setFirstLoad,
   };
 })(observer(withRouter(Home)));

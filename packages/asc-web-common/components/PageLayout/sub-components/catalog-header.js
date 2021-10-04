@@ -14,29 +14,34 @@ const StyledCatalogHeader = styled.div`
 
   @media ${tablet} {
     padding: 16px 16px 17px;
+    margin: 0;
     justify-content: ${(props) => (props.showText ? 'flex-start' : 'center')};
   }
 
   @media ${mobile} {
     border-bottom: 1px solid #eceef1;
-    padding: 8px 16px 17px;
+    padding: 8px 14px 17px;
+    margin: 0;
   }
 
   ${isTablet &&
   css`
     padding: 16px 16px 17px;
     justify-content: ${(props) => (props.showText ? 'flex-start' : 'center')};
+    margin: 0;
   `}
 
   ${isMobileOnly &&
   css`
     border-bottom: 1px solid #eceef1 !important;
-    padding: 8px 16px 17px !important;
+    padding: 8px 14px 17px !important;
+    margin: 0;
   `}
 `;
 
 const StyledHeading = styled(Heading)`
   margin: 0;
+  padding: 0;
   font-weight: bold;
   line-height: 28px;
   @media ${tablet} {
@@ -44,13 +49,16 @@ const StyledHeading = styled(Heading)`
     margin-left: ${(props) => props.showText && '12px'};
   }
 
+  ${isTablet &&
+  css`
+    display: ${(props) => (props.showText ? 'block' : 'none')};
+    margin-left: ${(props) => props.showText && '12px'};
+  `}
+
   @media ${mobile} {
     margin-left: 0;
   }
-  ${isTablet &&
-  css` {
-    display: ${(props) => (props.showText ? 'block' : 'none')};
-    margin-left: ${(props) => props.showText && '12px'};`}
+
   ${isMobileOnly &&
   css`
     margin-left: 0 !important;
