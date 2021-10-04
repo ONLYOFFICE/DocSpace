@@ -474,17 +474,20 @@ const Editor = () => {
       const versionDifference = await getEditDiff(fileId, version);
       const changesUrl = versionDifference.changesUrl;
       const previous = versionDifference.previous;
+      const token = versionDifference.token;
 
       docEditor.setHistoryData({
         ...(changesUrl && { changesUrl }),
         key: versionDifference.key,
+        fileType: versionDifference.fileType,
         ...(previous && {
           previous: {
+            fileType: previous.fileType,
             key: previous.key,
             url: previous.url,
           },
         }),
-        // token: versionDifference.token, //TODO: need to add.
+        ...(token && { token }),
         url: versionDifference.url,
         version,
       });
@@ -519,7 +522,7 @@ const Editor = () => {
         key: fileHistory[i].key,
         user: {
           id: fileHistory[i].user.id,
-          name: fileHistory[i].user.displayName,
+          name: fileHistory[i].user.name,
         },
         version,
         versionGroup,
