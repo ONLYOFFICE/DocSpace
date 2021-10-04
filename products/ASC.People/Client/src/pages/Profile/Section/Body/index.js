@@ -267,7 +267,7 @@ class SectionBodyContent extends React.PureComponent {
         return (
           <React.Fragment key={`${item.provider}ProviderItem`}>
             <div>
-              {item.provider === "Facebook" ? (
+              {item.provider === "facebook" ? (
                 <FacebookButton
                   noHover={true}
                   iconName={icon}

@@ -3,7 +3,7 @@ import IconButton from "@appserver/components/icon-button";
 import Link from "@appserver/components/link";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
-import toastr from "studio/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";

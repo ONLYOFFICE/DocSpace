@@ -111,6 +111,21 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hi there!
+        ///There was an attempt to register a new ONLYOFFICE Personal account using this email. If it was you, we want to inform you that the account already exists — proceed to ONLYOFFICE Personal and log in.
+        ///If you lost your password, you can recover it on password recovery page.
+        ///If you didn’t attempt to register a new account, probably someone else did it by mistake. In this case, please ignore this email.
+        ///
+        ///Have a nice day!
+        ///ONLYOFFICE team.
+        /// </summary>
+        public static string pattern_personal_custom_mode_already_exist {
+            get {
+                return ResourceManager.GetString("pattern_personal_custom_mode_already_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Want to change the email on your cloud office account?
         ///
         ///Click the button below and log in* to your cloud.
@@ -248,6 +263,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_personal_custom_mode_after_registration7 {
             get {
                 return ResourceManager.GetString("subject_personal_custom_mode_after_registration7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log in to your ONLYOFFICE Personal account.
+        /// </summary>
+        public static string subject_personal_custom_mode_already_exist {
+            get {
+                return ResourceManager.GetString("subject_personal_custom_mode_already_exist", resourceCulture);
             }
         }
         

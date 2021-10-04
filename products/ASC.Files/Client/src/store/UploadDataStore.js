@@ -766,8 +766,8 @@ class UploadDataStore {
       .then((res) => {
         if (res[0]?.error) return Promise.reject(res[0].error);
 
-        const id = res[0] && res[0].id ? res[0].id : null;
-        return this.loopFilesOperations(id, destFolderId, true);
+        const data = res[0] ? res[0] : null;
+        return this.loopFilesOperations(data, destFolderId, true);
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -801,8 +801,8 @@ class UploadDataStore {
       deleteAfter
     )
       .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopFilesOperations(id, destFolderId, false);
+        const data = res[0] ? res[0] : null;
+        return this.loopFilesOperations(data, destFolderId, false);
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -853,7 +853,7 @@ class UploadDataStore {
         );
   };
 
-  loopFilesOperations = (id, destFolderId, isCopy) => {
+  loopFilesOperations = async (data, destFolderId, isCopy) => {
     const label = this.secondaryProgressDataStore.label;
     const treeFolders = this.treeFoldersStore.treeFolders;
 
@@ -862,59 +862,68 @@ class UploadDataStore {
       setSecondaryProgressBarData,
     } = this.secondaryProgressDataStore;
 
-    return this.getOperationProgress(id)
-      .then((item) => {
-        if (item && item.progress !== 100) {
+    let progress = data.progress;
+
+    if (!data) {
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      return;
+    }
+
+    while (progress !== 100) {
+      await this.getOperationProgress(data.id)
+        .then((item) => {
+          progress = item ? item.progress : 100;
+
           setSecondaryProgressBarData({
             icon: isCopy ? "duplicate" : "move",
             label,
-            percent: item.progress,
+            percent: progress,
             visible: true,
             alert: false,
           });
-        } else {
-          setSecondaryProgressBarData({
-            icon: isCopy ? "duplicate" : "move",
-            label,
-            percent: 100,
-            visible: true,
-            alert: false,
+        })
+        .catch((err) => Promise.reject(err));
+    }
+
+    setSecondaryProgressBarData({
+      icon: isCopy ? "duplicate" : "move",
+      label,
+      percent: 100,
+      visible: true,
+      alert: false,
+    });
+
+    getFolder(destFolderId).then((data) => {
+      let newTreeFolders = treeFolders;
+      let path = data.pathParts.slice(0);
+      let folders = data.folders;
+      let foldersCount = data.current.foldersCount;
+      loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+
+      if (!isCopy || destFolderId === this.selectedFolderStore.id) {
+        this.filesStore
+          .fetchFiles(
+            this.selectedFolderStore.id,
+            this.filesStore.filter,
+            true,
+            true
+          )
+          .finally(() => {
+            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           });
+      } else {
+        setSecondaryProgressBarData({
+          icon: "duplicate",
+          label,
+          percent: 100,
+          visible: true,
+          alert: false,
+        });
 
-          getFolder(destFolderId).then((data) => {
-            let newTreeFolders = treeFolders;
-            let path = data.pathParts.slice(0);
-            let folders = data.folders;
-            let foldersCount = data.current.foldersCount;
-            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-
-            if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-              this.filesStore
-                .fetchFiles(
-                  this.selectedFolderStore.id,
-                  this.filesStore.filter,
-                  true,
-                  true
-                )
-                .finally(() => {
-                  setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-                });
-            } else {
-              setSecondaryProgressBarData({
-                icon: "duplicate",
-                label,
-                percent: 100,
-                visible: true,
-                alert: false,
-              });
-
-              setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-              this.treeFoldersStore.setTreeFolders(newTreeFolders);
-            }
-          });
-        }
-      })
-      .catch((err) => Promise.reject(err));
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        this.treeFoldersStore.setTreeFolders(newTreeFolders);
+      }
+    });
   };
 
   getOperationProgress = async (id) => {
