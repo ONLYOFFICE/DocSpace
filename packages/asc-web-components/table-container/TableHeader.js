@@ -13,6 +13,7 @@ import { size } from "../utils/device";
 import TableGroupMenu from "./TableGroupMenu";
 
 const minColumnSize = 150;
+const defaultMinColumnSize = 90;
 const settingsSize = 24;
 const containerMargin = 25;
 
@@ -80,7 +81,7 @@ class TableHeader extends React.Component {
 
     const minSize = leftColumn.dataset.minWidth
       ? leftColumn.dataset.minWidth
-      : minColumnSize;
+      : defaultMinColumnSize;
 
     if (leftColumn.clientWidth <= minSize) {
       if (colIndex === 1) return false;
@@ -117,7 +118,10 @@ class TableHeader extends React.Component {
     const offset = this.getSubstring(widths[+columnIndex]) - newWidth;
     const column2Width = this.getSubstring(widths[colIndex]);
 
-    if (column2Width + offset >= minColumnSize) {
+    const defaultColumn = document.getElementById("column_" + colIndex);
+    if (defaultColumn.dataset.defaultSize) return;
+
+    if (column2Width + offset >= defaultMinColumnSize) {
       widths[+columnIndex] = newWidth + "px";
       widths[colIndex] = column2Width + offset + "px";
     } else {
@@ -167,7 +171,7 @@ class TableHeader extends React.Component {
 
     const minSize = column.dataset.minWidth
       ? column.dataset.minWidth
-      : minColumnSize;
+      : defaultMinColumnSize;
 
     if (newWidth <= minSize) {
       const columnChanged = this.moveToLeft(widths, newWidth);
@@ -248,18 +252,10 @@ class TableHeader extends React.Component {
       : container.style.gridTemplateColumns.split(" ");
 
     const containerWidth = +container.clientWidth;
-    const newContainerWidth = containerWidth - this.getSubstring(checkboxSize);
 
     const oldWidth = tableContainer
       .map((column) => this.getSubstring(column))
       .reduce((x, y) => x + y);
-
-    const enableColumns = this.props.columns
-      .filter((x) => !x.default)
-      .filter((x) => x.enable)
-      .filter((x) => !x.defaultSize);
-
-    const isSingleTable = enableColumns.length > 0;
 
     let str = "";
 
@@ -306,39 +302,72 @@ class TableHeader extends React.Component {
       }
 
       if (activeColumnIndex) {
-        this.addNewColumns(gridTemplateColumns, activeColumnIndex);
+        localStorage.removeItem(columnStorageName);
+        return this.resetColumns();
+        //this.addNewColumns(gridTemplateColumns, activeColumnIndex);
       }
 
       str = gridTemplateColumns.join(" ");
     } else {
-      const column =
-        (newContainerWidth * (isSingleTable ? 60 : 100)) / 100 -
-        (defaultSize || 0) -
-        containerMargin +
-        "px";
-      const percent = 40 / enableColumns.length;
-      const otherColumns = (newContainerWidth * percent) / 100 + "px";
-
-      str = `${checkboxSize} ${column} `;
-      for (let col of this.props.columns) {
-        if (!col.default) {
-          str += col.enable
-            ? col.defaultSize
-              ? `${col.defaultSize}px `
-              : `${otherColumns} `
-            : "0px ";
-        }
+      this.resetColumns();
+    }
+    if (str) {
+      container.style.gridTemplateColumns = str;
+      if (this.headerRef.current) {
+        this.headerRef.current.style.gridTemplateColumns = str;
+        this.headerRef.current.style.width = containerWidth + "px";
       }
 
-      str += `${settingsSize}px`;
+      localStorage.setItem(columnStorageName, str);
     }
+  };
+
+  resetColumns = () => {
+    const { containerRef, checkboxSize, columnStorageName } = this.props;
+    const defaultSize = this.props.columns.find((col) => col.defaultSize)
+      ?.defaultSize;
+
+    let str = "";
+
+    const enableColumns = this.props.columns
+      .filter((x) => x.enable)
+      .filter((x) => !x.defaultSize);
+
+    const container = containerRef.current
+      ? containerRef.current
+      : document.getElementById("table-container");
+    const containerWidth = +container.clientWidth;
+
+    const percent = 100 / enableColumns.length;
+    const newContainerWidth =
+      containerWidth -
+      this.getSubstring(checkboxSize) -
+      containerMargin -
+      defaultSize;
+    const otherColumns = (newContainerWidth * percent) / 100 + "px";
+
+    str = `${checkboxSize} `;
+    for (let col of this.props.columns) {
+      str += col.enable
+        ? /*  col.minWidth
+          ? `${col.minWidth}px `
+          :  */ col.defaultSize
+          ? `${col.defaultSize}px `
+          : `${otherColumns} `
+        : "0px ";
+    }
+
+    str += `${settingsSize}px`;
+
     container.style.gridTemplateColumns = str;
     if (this.headerRef.current) {
       this.headerRef.current.style.gridTemplateColumns = str;
       this.headerRef.current.style.width = containerWidth + "px";
     }
 
-    localStorage.setItem(columnStorageName, str);
+    str && localStorage.setItem(columnStorageName, str);
+
+    this.onResize();
   };
 
   onChange = (checked) => {
