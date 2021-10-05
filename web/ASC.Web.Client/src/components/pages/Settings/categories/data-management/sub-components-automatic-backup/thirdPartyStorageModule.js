@@ -23,7 +23,7 @@ import ScheduleComponent from "../sub-components-automatic-backup/scheduleCompon
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import { StyledAutoBackup } from "../styled-backup";
 
-let googleStorageId = "GoogleCloud";
+let googleStorageId = ThirdPartyStorages.GoogleId;
 let inputValueArray;
 
 let numberPeriodFromSessionStorage = null;
