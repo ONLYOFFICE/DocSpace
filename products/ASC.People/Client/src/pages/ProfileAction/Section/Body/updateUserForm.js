@@ -783,6 +783,9 @@ class UpdateUserForm extends React.Component {
               isRequired={true}
               hasError={errors.firstName}
               labelText={`${t("FirstName")}:`}
+              {...(Boolean(profile.firstName.trim()) && {
+                errorMessage: t("ErrorInvalidUserFirstName"),
+              })}
               inputName="firstName"
               inputValue={profile.firstName}
               inputIsDisabled={isLoading}
@@ -795,6 +798,9 @@ class UpdateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
+              {...(Boolean(profile.lastName.trim()) && {
+                errorMessage: t("ErrorInvalidUserLastName"),
+              })}
               labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
