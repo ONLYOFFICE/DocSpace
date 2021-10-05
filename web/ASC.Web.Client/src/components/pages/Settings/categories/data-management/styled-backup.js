@@ -254,6 +254,56 @@ const StyledBackupList = styled.div`
   .restore_context-options {
     margin-top: 16px;
   }
+
+  .backup-list_icon {
+    grid-area: icon-name;
+  }
+
+  .backup-list_entry-title {
+    font-weight: 600;
+  }
+  .backup-list_file-exst {
+    color: #a3a9ae;
+  }
+
+  .backup-list_full-name {
+    grid-area: full-name;
+    display: flex;
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        padding-top: 4px;
+      `}
+  }
+  .backup-list_children {
+    grid-area: children;
+    margin-right: 16px;
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        margin-top: -17px;
+      `}
+  }
+  .backup-list_file-name {
+    border-radius: 3px;
+
+    cursor: default;
+    border-bottom: 1px solid #eceef1;
+    align-items: center;
+    display: grid;
+
+    ${(props) =>
+      props.displayType === "aside"
+        ? css`
+            height: 56px;
+            grid-template-areas: "icon-name full-name children";
+          `
+        : css`
+            height: 36px;
+            grid-template-areas: "icon-name full-name children";
+          `}
+    grid-template-columns: 32px 1fr;
+  }
 `;
 export {
   StyledModules,
