@@ -56,9 +56,10 @@ done
 echo "== FRONT-END-BUILD =="
 
 cd ${SRC_PATH}
+yarn install
+
 if [ "$DEBUG_INFO" = true ]; then
 	yarn debug-info
 fi 
-yarn install
 yarn ${BUILD_ARGS}
 yarn ${DEPLOY_ARGS}
