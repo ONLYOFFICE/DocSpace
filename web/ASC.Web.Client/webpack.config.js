@@ -21,6 +21,10 @@ const config = {
   entry: "./src/index",
   mode: "development",
 
+  stats: {
+    errorDetails: true,
+  },
+
   devServer: {
     devMiddleware: {
       publicPath: homepage,
@@ -38,7 +42,9 @@ const config = {
       //   errors: true,
       //   warnings: true,
       // }
-      overlay: true,
+      overlay: {
+        warnings: false,
+      },
       progress: true,
     },
     port: 5001,
