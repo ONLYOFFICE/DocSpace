@@ -2,7 +2,8 @@ import styled, { css } from "styled-components";
 import commonSettingsStyles from "../../utils/commonSettingsStyles";
 
 const INPUT_LENGTH = "350px";
-const TEXT_LENGTH = "1024px";
+const TEXT_LENGTH = "476px";
+
 const commonStyles = css`
   .radio-button_text {
     margin-right: 7px;
@@ -158,15 +159,25 @@ const StyledBackupList = styled.div`
     margin-bottom: 16px;
   }
   .backup-list-row-list {
-    height: ${(props) => (props.displayType === "aside" ? "100vh" : "234px")};
+    height: ${(props) => (props.displayType === "aside" ? "100vh" : "130px")};
     width: 100%;
   }
   .backup-list_modal-dialog_body {
-    height: 300px;
+    // min-height: 94px;
+    // max-height: 210px;
+    height: 210px;
+  }
+  .restore_dialog-button {
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        width: 293px;
+      `}
   }
   .backup-list_options {
     display: flex;
   }
+
   .backup-list_trash-icon {
     width: 16px;
     height: 16px;
@@ -187,20 +198,20 @@ const StyledBackupList = styled.div`
     margin-bottom: 16px;
   }
   .backup-list_aside-header_description {
-    margin-top: 16px;
+    //margin-top: 16px;
   }
   .backup-list_modal-header_description {
-    margin-bottom: 16px;
+    //margin-bottom: 16px;
   }
   .backup-list_modal-header_description,
   .backup-list_aside-header_description {
-    display: flex;
+    /* display: flex;
     display: contents;
-    overflow-wrap: break-word;
+    overflow-wrap: break-word; */
   }
   .backup-list_clear-link {
-    margin-left: 4px;
-    text-decoration: underline;
+    //margin-left: 4px;
+    text-decoration: underline dotted;
   }
   .backup-list_aside-body_wrapper {
     height: calc(100% - 200px);
@@ -234,9 +245,13 @@ const StyledBackupList = styled.div`
   .backup-list_trash-icon,
   .backup-list_restore-link {
     cursor: pointer;
+    text-decoration: underline;
   }
   .backup-list_trash-icon {
     margin-top: 1px;
+  }
+  .restore_context-options {
+    margin-top: 16px;
   }
 `;
 export {
