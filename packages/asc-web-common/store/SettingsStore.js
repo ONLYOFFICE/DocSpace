@@ -90,6 +90,7 @@ class SettingsStore {
     appServer: version,
     documentServer: "6.4.1",
   };
+  debugInfo = false;
 
   constructor() {
     makeAutoObservable(this);
