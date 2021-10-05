@@ -90,7 +90,7 @@ const CatalogBodyContent = ({
   return (
     <>
       {!isVisitor && (
-        <div style={!isAdmin ? { marginTop: '16px' } : null}>
+        <div style={!isAdmin && isMobileOnly ? { marginTop: '16px' } : null}>
           <CatalogItem
             key={'root'}
             id={'departments'}
