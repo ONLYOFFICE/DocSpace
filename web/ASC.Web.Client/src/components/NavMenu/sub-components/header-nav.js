@@ -185,10 +185,12 @@ const HeaderNav = ({
         buildVersionInfo={buildVersionInfo}
       />
 
-      <DebugInfoDialog
-        visible={visibleDebugDialog}
-        onClose={onCloseDebugDialog}
-      />
+      {DEBUG_INFO && (
+        <DebugInfoDialog
+          visible={visibleDebugDialog}
+          onClose={onCloseDebugDialog}
+        />
+      )}
     </StyledNav>
   );
 };

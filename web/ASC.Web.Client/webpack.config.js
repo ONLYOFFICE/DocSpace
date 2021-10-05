@@ -11,11 +11,25 @@ const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 
 const path = require("path");
+const fs = require("fs");
+
 const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
 const version = pkg.version;
+
+const debugInfoPath = path.join(__dirname, "../../public/debuginfo.md");
+let showDebugInfo = false;
+try {
+  if (fs.existsSync(debugInfoPath)) {
+    showDebugInfo = true;
+  }
+} catch (err) {
+  showDebugInfo = false;
+}
+
+console.log("Show Debug Info", showDebugInfo, debugInfoPath);
 
 const config = {
   entry: "./src/index",
@@ -224,7 +238,7 @@ const config = {
         const today = new Date(timeElapsed);
         return JSON.stringify(today.toISOString().split(".")[0] + "Z");
       }, true),
-      DEBUG_INFO: true,
+      DEBUG_INFO: showDebugInfo,
     }),
   ],
 };
