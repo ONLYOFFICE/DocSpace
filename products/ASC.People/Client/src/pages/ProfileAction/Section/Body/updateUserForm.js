@@ -214,7 +214,18 @@ class UpdateUserForm extends React.Component {
 
   onInputChange(event) {
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile[event.target.name] = event.target.value;
+
+    let value = event.target.value;
+    let title = event.target.name;
+    const regexp = /[\[\]\d+=:!@#$%^&*(){}±§<>+;"'~`№,._|\/\\]/g;
+    if (regexp.test(value)) {
+      stateCopy.errors[title] = true;
+    } else {
+      if (this.state.errors[title]) stateCopy.errors[title] = false;
+    }
+
+    stateCopy.profile[title] = value;
+
     this.setState(stateCopy);
     this.setIsEdit();
   }
