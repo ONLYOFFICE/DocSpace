@@ -30,7 +30,15 @@ const PureConnectDialogContainer = (props) => {
     personal,
     getSubfolders,
   } = props;
-  const { corporate, title, link, token, provider_id, provider_key } = item;
+  const {
+    corporate,
+    title,
+    link,
+    token,
+    provider_id,
+    provider_key,
+    key,
+  } = item;
 
   const provider = providers.find((el) => el.provider_id === item.provider_id);
   const folderTitle = provider ? provider.customer_title : title;
@@ -51,7 +59,10 @@ const PureConnectDialogContainer = (props) => {
 
   const isAccount = !!link;
   const showUrlField =
-    provider_key === "WebDav" || provider_key === "SharePoint";
+    provider_key === "WebDav" ||
+    provider_key === "SharePoint" ||
+    key === "WebDav" ||
+    key === "SharePoint";
 
   const onChangeUrl = (e) => {
     setIsUrlValid(true);
@@ -109,7 +120,7 @@ const PureConnectDialogContainer = (props) => {
       oAuthToken,
       isCorporate,
       customerTitle,
-      provider_key,
+      provider_key || key,
       provider_id
     )
       .then(async () => {

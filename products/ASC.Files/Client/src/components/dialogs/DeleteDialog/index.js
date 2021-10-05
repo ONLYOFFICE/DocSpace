@@ -67,7 +67,7 @@ class DeleteDialogComponent extends React.Component {
 
     if (!selection.length) return;
 
-    deleteAction(translations, selection).catch((err) => toastr.error(err));
+    deleteAction(translations, selection);
   };
 
   onUnsubscribe = () => {
@@ -277,9 +277,9 @@ export default inject(
     return {
       selection: removeMediaItem
         ? [removeMediaItem]
-        : bufferSelection
-        ? [bufferSelection]
-        : selection,
+        : selection.length
+        ? selection
+        : [bufferSelection],
       isLoading,
       isRootFolder: selectedFolderStore.isRootFolder,
       visible,

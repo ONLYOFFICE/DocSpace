@@ -35,6 +35,7 @@ const StyledDragAndDrop = styled(DragAndDrop)`
 
 const StyledShare = styled.div`
   cursor: pointer;
+  margin: 0 auto;
 
   .share-button {
     padding: 4px;

@@ -237,7 +237,7 @@ class SectionHeaderContent extends React.Component {
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
       };
 
-      deleteAction(translations).catch((err) => toastr.error(err));
+      deleteAction(translations);
     }
   };
 

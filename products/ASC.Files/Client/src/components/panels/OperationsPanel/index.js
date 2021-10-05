@@ -25,7 +25,6 @@ const OperationsPanelComponent = (props) => {
     setMoveToPanelVisible,
     checkOperationConflict,
     setThirdPartyMoveDialogVisible,
-    setBufferSelection,
   } = props;
 
   const zIndex = 310;
@@ -34,7 +33,6 @@ const OperationsPanelComponent = (props) => {
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
   const onClose = () => {
-    !provider && setBufferSelection(null);
     isCopy ? setCopyPanelVisible(false) : setMoveToPanelVisible(false);
     setExpandedPanelKeys(null);
   };
@@ -142,12 +140,7 @@ export default inject(
     dialogsStore,
     filesActionsStore,
   }) => {
-    const {
-      filter,
-      selection,
-      bufferSelection,
-      setBufferSelection,
-    } = filesStore;
+    const { filter, selection, bufferSelection } = filesStore;
     const {
       isRecycleBinFolder,
       operationsFolders,
@@ -165,7 +158,7 @@ export default inject(
       setThirdPartyMoveDialogVisible,
     } = dialogsStore;
 
-    const selections = bufferSelection ? [bufferSelection] : selection;
+    const selections = selection.length ? selection : [bufferSelection];
 
     const provider = selections.find((x) => x.providerKey);
 
@@ -187,7 +180,6 @@ export default inject(
       setThirdPartyMoveDialogVisible,
       checkOperationConflict,
       setExpandedPanelKeys,
-      setBufferSelection,
     };
   }
 )(withRouter(observer(OperationsPanel)));

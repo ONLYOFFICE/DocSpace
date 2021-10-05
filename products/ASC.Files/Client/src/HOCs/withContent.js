@@ -214,9 +214,9 @@ export default function withContent(WrappedContent) {
     };
 
     getTableStatusByDate = (create) => {
-      const { created, updated, fileExst } = this.props.item;
+      const { created, updated } = this.props.item;
 
-      const date = fileExst ? updated : created;
+      const date = create ? created : updated;
       const dateLabel = new Date(date).toLocaleString(this.props.culture);
       return dateLabel;
     };
