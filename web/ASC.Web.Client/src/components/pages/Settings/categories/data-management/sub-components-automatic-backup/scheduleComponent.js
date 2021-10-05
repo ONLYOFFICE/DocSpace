@@ -2,7 +2,7 @@ import React from "react";
 import ComboBox from "@appserver/components/combobox";
 import { useTranslation } from "react-i18next";
 import { StyledScheduleComponent } from "../styled-backup";
-
+import Text from "@appserver/components/text";
 const ScheduleComponent = ({
   weeklySchedule,
   monthlySchedule,
@@ -27,6 +27,7 @@ const ScheduleComponent = ({
   //console.log("selectedWeekdayOption", selectedWeekdayOption);
   return (
     <StyledScheduleComponent>
+      <Text className="schedule_description"> {t("ScheduleDescription")}</Text>
       <div className="main_options">
         <ComboBox
           options={periodOptions}
@@ -39,8 +40,8 @@ const ScheduleComponent = ({
           noBorder={false}
           scaled={false}
           scaledOptions={true}
-          size="content"
-          className="schedule-backup_combobox "
+          dropDownMaxHeight={400}
+          className="schedule-backup_combobox days_option"
         />
         {weeklySchedule && (
           <ComboBox
@@ -54,7 +55,6 @@ const ScheduleComponent = ({
             noBorder={false}
             scaled={false}
             scaledOptions={true}
-            size="content"
             className="schedule-backup_combobox"
           />
         )}
@@ -70,8 +70,7 @@ const ScheduleComponent = ({
             noBorder={false}
             scaled={false}
             scaledOptions={true}
-            dropDownMaxHeight={300}
-            size="content"
+            dropDownMaxHeight={400}
             className="schedule-backup_combobox month_options"
           />
         )}
@@ -86,8 +85,7 @@ const ScheduleComponent = ({
           noBorder={false}
           scaled={false}
           scaledOptions={true}
-          dropDownMaxHeight={300}
-          size="content"
+          dropDownMaxHeight={400}
           className="schedule-backup_combobox time_options"
         />
       </div>
@@ -103,8 +101,7 @@ const ScheduleComponent = ({
           noBorder={false}
           scaled={false}
           scaledOptions={true}
-          dropDownMaxHeight={300}
-          size="content"
+          dropDownMaxHeight={400}
           className="schedule-backup_combobox max_copies"
         />
       </div>

@@ -134,7 +134,7 @@ const StyledScheduleComponent = styled.div`
 
   .max_copies {
     width: 100%;
-    max-width: 820px;
+    max-width: ${INPUT_LENGTH};
   }
   .combo-button {
     width: 100% !important;
