@@ -26,6 +26,10 @@ export default function withFileActions(WrappedFileItem) {
       id !== -1 && onSelectItem({ id, isFolder });
     };
 
+    onHideContextMenu = () => {
+      this.props.setBufferSelection(null);
+    };
+
     onDropZoneUpload = (files, uploadToFolder) => {
       const { t, dragging, setDragging, startUpload } = this.props;
 
@@ -256,6 +260,7 @@ export default function withFileActions(WrappedFileItem) {
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
           onMouseClick={this.onMouseClick}
+          onHideContextMenu={this.onHideContextMenu}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -318,6 +323,8 @@ export default function withFileActions(WrappedFileItem) {
         openDocEditor,
         getFolderInfo,
         viewAs,
+        bufferSelection,
+        setBufferSelection,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -340,6 +347,11 @@ export default function withFileActions(WrappedFileItem) {
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
       const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
+
+      const isActive =
+        bufferSelection &&
+        bufferSelection.id === item.id &&
+        bufferSelection.fileExst === item.fileExst; // need for select row item
 
       return {
         t,
@@ -383,6 +395,8 @@ export default function withFileActions(WrappedFileItem) {
         personal: auth.settingsStore.personal,
         isItemsSelected: selection.length > 0,
         setNewBadgeCount,
+        isActive,
+        setBufferSelection,
       };
     }
   )(observer(WithFileActions));
