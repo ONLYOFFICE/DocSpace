@@ -5,6 +5,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "@appserver/components/toast/toastr";
 import config from "../../package.json";
+import saveAs from "file-saver";
 
 export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
@@ -147,10 +148,36 @@ export default function withContextOptions(WrappedComponent) {
 
       openDocEditor(id, providerKey, tab, urlFormation);
     };
+
+    isPwa = () => {
+      return ["fullscreen", "standalone", "minimal-ui"].some(
+        (displayMode) =>
+          window.matchMedia("(display-mode: " + displayMode + ")").matches
+      );
+    };
+
     onClickDownload = () => {
       const { item, downloadAction, t } = this.props;
       const { fileExst, contentLength, viewUrl } = item;
       const isFile = !!fileExst && contentLength;
+
+      if (this.isPwa()) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", viewUrl);
+        xhr.responseType = "blob";
+
+        xhr.onload = () => {
+          saveAs(xhr.response, item.title);
+        };
+
+        xhr.onerror = () => {
+          console.error("download failed", viewUrl);
+        };
+
+        xhr.send();
+        return;
+      }
+
       isFile
         ? window.open(viewUrl, "_self")
         : downloadAction(t("Translations:ArchivingData")).catch((err) =>
