@@ -67,6 +67,7 @@ const HeaderNav = ({
   userIsUpdate,
   setUserIsUpdate,
   buildVersionInfo,
+  debugInfo,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -135,7 +136,7 @@ const HeaderNav = ({
       },
     ];
 
-    if (DEBUG_INFO) {
+    if (debugInfo) {
       actions.splice(3, 0, {
         key: "DebugBtn",
         label: "Debug Info",
@@ -185,7 +186,7 @@ const HeaderNav = ({
         buildVersionInfo={buildVersionInfo}
       />
 
-      {DEBUG_INFO && (
+      {debugInfo && (
         <DebugInfoDialog
           visible={visibleDebugDialog}
           onClose={onCloseDebugDialog}
@@ -220,6 +221,7 @@ export default withRouter(
       defaultPage,
       personal: isPersonal,
       buildVersionInfo,
+      debugInfo,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
@@ -237,6 +239,7 @@ export default withRouter(
       userIsUpdate,
       setUserIsUpdate,
       buildVersionInfo,
+      debugInfo,
     };
   })(observer(HeaderNav))
 );

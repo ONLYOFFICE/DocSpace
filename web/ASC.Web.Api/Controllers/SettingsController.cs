@@ -325,6 +325,12 @@ namespace ASC.Api.Settings
                     AppId = Configuration["firebase:appId"] ?? "",
                     MeasurementId = Configuration["firebase:measurementId"] ?? ""
                 };
+
+                bool debugInfo;
+                if (bool.TryParse(Configuration["debug-info:enabled"], out debugInfo))
+                {
+                    settings.DebugInfo = debugInfo;
+                }
             }
             else
             {
