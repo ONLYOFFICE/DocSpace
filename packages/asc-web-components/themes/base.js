@@ -1686,7 +1686,7 @@ const Base = {
       marginLeft: "20px",
       tablet: {
         width: "48px",
-        height: "48px",
+        height: "44px",
         marginRight: "-16px",
       },
     },
