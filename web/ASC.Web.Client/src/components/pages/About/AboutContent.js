@@ -27,9 +27,8 @@ const StyledAboutBody = styled.div`
   }
 `;
 
-const AboutContent = ({ personal, versionAppServer }) => {
+const AboutContent = ({ personal, buildVersionInfo }) => {
   const { t } = useTranslation("About");
-  const versionEditor = "6.3.1";
   const license = "AGPL-3.0";
   const linkAppServer = "https://github.com/ONLYOFFICE/AppServer";
   const linkDocs = "https://github.com/ONLYOFFICE/DocumentServer";
@@ -70,7 +69,7 @@ const AboutContent = ({ personal, versionAppServer }) => {
           &nbsp;ONLYOFFICE App Server&nbsp;
         </Link>
         <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
-          v.{versionAppServer}
+          v.{buildVersionInfo.appServer}
         </Text>
       </div>
 
@@ -89,7 +88,7 @@ const AboutContent = ({ personal, versionAppServer }) => {
           &nbsp;ONLYOFFICE Docs&nbsp;
         </Link>
         <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
-          v.{versionEditor}
+          v.{buildVersionInfo.documentServer}
         </Text>
       </div>
 

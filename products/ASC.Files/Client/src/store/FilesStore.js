@@ -1298,7 +1298,13 @@ class FilesStore {
       other: [],
     };
 
-    for (let item of this.selection) {
+    const selection = this.selection.length
+      ? this.selection
+      : this.bufferSelection
+      ? [this.bufferSelection]
+      : [];
+
+    for (let item of selection) {
       item.checked = true;
       item.format = null;
 
@@ -1362,7 +1368,13 @@ class FilesStore {
   get isWebEditSelected() {
     const { filesConverts } = this.formatsStore.docserviceStore;
 
-    return this.selection.some((selected) => {
+    const selection = this.selection.length
+      ? this.selection
+      : this.bufferSelection
+      ? [this.bufferSelection]
+      : [];
+
+    return selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
       const index = filesConverts.findIndex((f) => f[selected.fileExst]);
       return index !== -1;
@@ -1388,7 +1400,12 @@ class FilesStore {
   }
 
   get selectionTitle() {
-    if (this.selection.length === 0) return null;
+    if (this.selection.length === 0) {
+      if (this.bufferSelection) {
+        return this.bufferSelection.title;
+      }
+      return null;
+    }
     return this.selection.find((el) => el.title).title;
   }
 

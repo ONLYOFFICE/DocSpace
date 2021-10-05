@@ -11,11 +11,9 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5008"
   },
-  "browserslist": [
-    "extends @appserver/browserslist-config-asc"
-  ],
   "dependencies": {
-    "copy-to-clipboard": "^3.3.1"
+    "copy-to-clipboard": "^3.3.1",
+    "file-saver": "^2.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",

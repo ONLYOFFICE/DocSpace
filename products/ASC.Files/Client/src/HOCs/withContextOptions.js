@@ -5,6 +5,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "@appserver/components/toast/toastr";
 import config from "../../package.json";
+import saveAs from "file-saver";
 
 export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
@@ -147,10 +148,36 @@ export default function withContextOptions(WrappedComponent) {
 
       openDocEditor(id, providerKey, tab, urlFormation);
     };
+
+    isPwa = () => {
+      return ["fullscreen", "standalone", "minimal-ui"].some(
+        (displayMode) =>
+          window.matchMedia("(display-mode: " + displayMode + ")").matches
+      );
+    };
+
     onClickDownload = () => {
       const { item, downloadAction, t } = this.props;
       const { fileExst, contentLength, viewUrl } = item;
       const isFile = !!fileExst && contentLength;
+
+      if (this.isPwa()) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", viewUrl);
+        xhr.responseType = "blob";
+
+        xhr.onload = () => {
+          saveAs(xhr.response, item.title);
+        };
+
+        xhr.onerror = () => {
+          console.error("download failed", viewUrl);
+        };
+
+        xhr.send();
+        return;
+      }
+
       isFile
         ? window.open(viewUrl, "_self")
         : downloadAction(t("Translations:ArchivingData")).catch((err) =>
@@ -200,15 +227,8 @@ export default function withContextOptions(WrappedComponent) {
         t,
         deleteItemAction,
       } = this.props;
-      const {
-        id,
-        title,
-        fileExst,
-        contentLength,
-        folderId,
-        providerKey,
-        rootFolderId,
-      } = item;
+      const { id, title, providerKey, rootFolderId, isFolder } = item;
+
       const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
       if (isRootThirdPartyFolder) {
@@ -224,13 +244,7 @@ export default function withContextOptions(WrappedComponent) {
         successRemoveFolder: t("FolderRemoved"),
       };
 
-      deleteItemAction(
-        id,
-        folderId,
-        translations,
-        fileExst || contentLength,
-        providerKey
-      );
+      deleteItemAction(id, translations, !isFolder, providerKey);
     };
 
     onClickShare = () => {
