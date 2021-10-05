@@ -238,9 +238,12 @@ class TableHeader extends React.Component {
     if (storageSize) {
       const splitStorage = storageSize.split(" ");
 
+      const isInvalid = splitStorage.some((s) => s === "NaNpx");
+
       if (
-        defaultSize &&
-        splitStorage[splitStorage.length - 2] !== `${defaultSize}px`
+        (defaultSize &&
+          splitStorage[splitStorage.length - 2] !== `${defaultSize}px`) ||
+        isInvalid
       ) {
         localStorage.removeItem(columnStorageName);
         return this.onResize();
@@ -343,7 +346,7 @@ class TableHeader extends React.Component {
       containerWidth -
       this.getSubstring(checkboxSize) -
       containerMargin -
-      defaultSize;
+      (defaultSize || 0);
     const otherColumns = (newContainerWidth * percent) / 100 + "px";
 
     str = `${checkboxSize} `;
