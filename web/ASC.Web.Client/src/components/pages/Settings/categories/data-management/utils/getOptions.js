@@ -1,5 +1,7 @@
+import { ThirdPartyStorages } from "@appserver/common/constants";
+
 export const getOptions = (storageBackup) => {
-  let googleStorageId = "GoogleCloud";
+  let googleStorageId = ThirdPartyStorages.GoogleId;
   let options = [];
   let availableStorage = {};
   let firstSet = false;

@@ -143,10 +143,10 @@ export const LoaderStyle = {
 };
 
 export const ThirdPartyStorages = Object.freeze({
-  GoogleId: "GoogleCloud",
-  RackspaceId: "Rackspace",
-  SelectelId: "Selectel",
-  AmazonId: "S3",
+  GoogleId: "googlecloud",
+  RackspaceId: "rackspace",
+  SelectelId: "selectel",
+  AmazonId: "s3",
 });
 
 import config from "./AppServerConfig";
