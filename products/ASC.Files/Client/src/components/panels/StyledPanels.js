@@ -750,23 +750,13 @@ const StyledFilesList = styled.div`
   .modal-dialog_file-name {
     border-radius: 3px;
     ${(props) => props.isChecked && `background:#eceef1;`}
-    cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
+    cursor: pointer;
     border-bottom: 1px solid #eceef1;
     align-items: center;
     display: grid;
 
     ${(props) =>
-      props.noCheckBox
-        ? props.displayType === "aside"
-          ? css`
-              height: 56px;
-              grid-template-areas: "icon-name full-name full-name" "checked-button icon-name owner-name owner-name";
-            `
-          : css`
-              height: 36px;
-              grid-template-areas: "icon-name full-name owner-name";
-            `
-        : props.displayType === "aside"
+      props.displayType === "aside"
         ? css`
             height: 56px;
             grid-template-areas: "checked-button icon-name full-name full-name" "checked-button icon-name owner-name owner-name";
@@ -775,8 +765,8 @@ const StyledFilesList = styled.div`
             height: 36px;
             grid-template-areas: "checked-button icon-name full-name owner-name";
           `}
-    grid-template-columns: ${(props) =>
-      props.noCheckBox ? "32px 1fr" : "22px 32px 1fr"}
+    grid-template-columns: 
+       22px 32px 1fr}
   }
 `;
 export {

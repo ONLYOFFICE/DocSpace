@@ -6,26 +6,6 @@ import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import RadioButton from "@appserver/components/radio-button";
 
-const CheckboxRender = ({ isMultiSelect, index, isChecked, onSelectFile }) => {
-  return isMultiSelect ? ( //  it will be needed
-    <Checkbox
-      label=""
-      isChecked={isChecked}
-      className="select-file-dialog_checked"
-    />
-  ) : (
-    <RadioButton
-      fontSize="13px"
-      fontWeight="400"
-      name={`${index}`}
-      label=""
-      isChecked={isChecked}
-      onClick={onSelectFile}
-      value=""
-      className="select-file-dialog_checked"
-    />
-  );
-};
 const FilesListRow = (props) => {
   const {
     displayType,
@@ -38,6 +18,7 @@ const FilesListRow = (props) => {
     iconSrc,
     isChecked,
     noCheckBox,
+    isMultiSelect,
   } = props;
   return (
     <StyledFilesList
@@ -51,7 +32,24 @@ const FilesListRow = (props) => {
         className="modal-dialog_file-name"
         onClick={onSelectFile}
       >
-        {!noCheckBox && <CheckboxRender {...props} />}
+        {isMultiSelect ? ( //  it will be needed
+          <Checkbox
+            label=""
+            isChecked={isChecked}
+            className="select-file-dialog_checked"
+          />
+        ) : (
+          <RadioButton
+            fontSize="13px"
+            fontWeight="400"
+            name={`${index}`}
+            label=""
+            isChecked={isChecked}
+            onClick={onSelectFile}
+            value=""
+            className="select-file-dialog_checked"
+          />
+        )}
 
         <ReactSVG src={iconSrc} className="select-file-dialog_icon" />
         <div data-index={index} className="files-list_full-name">
@@ -70,9 +68,7 @@ const FilesListRow = (props) => {
 };
 
 FilesListRow.defaultProps = {
-  needRowSelection: true,
   isMultiSelect: false,
-  noCheckBox: false,
 };
 
 export default inject(({ formatsStore }, { fileExst }) => {
