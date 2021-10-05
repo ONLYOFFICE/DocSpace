@@ -110,6 +110,7 @@ class GroupSelector extends React.Component {
         selectedOptions={selectedOptions}
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
+        isDefaultDisplayDropDown={false}
         isDisabled={isDisabled}
         searchPlaceHolderLabel={
           searchPlaceHolderLabel || t("SearchPlaceholder")

@@ -254,6 +254,7 @@ class PeopleSelector extends React.Component {
         searchPlaceHolderLabel={
           searchPlaceHolderLabel || t("SearchUsersPlaceholder")
         }
+        isDefaultDisplayDropDown={false}
         selectButtonLabel={t("Translations:AddMembers")}
         selectAllLabel={t("Common:SelectAll")}
         groupsHeaderLabel={groupsCaption}

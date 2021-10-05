@@ -44,7 +44,10 @@ class DropDown extends React.PureComponent {
   componentDidMount() {
     if (this.props.open) {
       this.props.enableOnClickOutside();
-      this.checkPosition();
+      if (this.props.isDefaultMode) {
+        return this.checkPositionPortal();
+      }
+      return this.checkPosition();
     }
   }
 
@@ -57,8 +60,11 @@ class DropDown extends React.PureComponent {
     if (this.props.open !== prevProps.open) {
       if (this.props.open) {
         this.props.enableOnClickOutside();
-        this.checkPosition();
         this.bindDocumentResizeListener();
+        if (this.props.isDefaultMode) {
+          return this.checkPositionPortal();
+        }
+        return this.checkPosition();
       } else {
         this.props.disableOnClickOutside();
       }
@@ -79,7 +85,11 @@ class DropDown extends React.PureComponent {
     if (!this.documentResizeListener) {
       this.documentResizeListener = (e) => {
         if (this.props.open) {
-          this.checkPosition();
+          if (this.props.isDefaultMode) {
+            this.checkPositionPortal();
+          } else {
+            this.checkPosition();
+          }
         }
       };
 
@@ -95,6 +105,29 @@ class DropDown extends React.PureComponent {
   }
 
   checkPosition = () => {
+    if (!this.dropDownRef.current) return;
+
+    const rects = this.dropDownRef.current.getBoundingClientRect();
+    const container = { width: window.innerWidth, height: window.innerHeight };
+    const left = rects.left < 0 && rects.width < container.width;
+    const right =
+      rects.width &&
+      rects.left < 250 &&
+      rects.left > rects.width &&
+      rects.width < container.width;
+    const top = rects.bottom > container.height && rects.top > rects.height;
+    const bottom = rects.top < 0;
+    const x = left ? "left" : right ? "right" : this.state.directionX;
+    const y = bottom ? "bottom" : top ? "top" : this.state.directionY;
+
+    this.setState({
+      directionX: x,
+      directionY: y,
+      width: rects.width,
+    });
+  };
+
+  checkPositionPortal = () => {
     const parent = this.props.forwardedRef;
     const rects = parent.current.getBoundingClientRect();
 
@@ -209,8 +242,14 @@ class DropDown extends React.PureComponent {
     );
   }
   render() {
+    const { isDefaultMode } = this.props;
     const element = this.renderDropDown();
-    return <Portal element={element} appendTo={this.props.appendTo} />;
+
+    if (isDefaultMode) {
+      return <Portal element={element} appendTo={this.props.appendTo} />;
+    }
+
+    return element;
   }
 }
 
@@ -276,6 +315,8 @@ DropDownContainer.propTypes = {
   /** Display disabled items or not */
   showDisabledItems: PropTypes.bool,
   forwardedRef: PropTypes.shape({ current: PropTypes.any }),
+  /** Defines the operation mode of the component, by default with the portal */
+  isDefaultMode: PropTypes.bool,
 };
 
 DropDownContainer.defaultProps = {
@@ -283,6 +324,7 @@ DropDownContainer.defaultProps = {
   directionY: "bottom",
   withBackdrop: true,
   showDisabledItems: false,
+  isDefaultMode: true,
 };
 
 export default DropDownContainer;
