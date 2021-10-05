@@ -238,17 +238,21 @@ class UpdateUserForm extends React.Component {
   }
 
   onInputChange(event) {
+    const { userFormValidation } = this.props;
     var stateCopy = Object.assign({}, this.state);
+    const value = event.target.value;
+    const title = event.target.name;
 
-    let value = event.target.value;
-    let title = event.target.name;
-    const regexp = /^[\p{L}\p{M}'\-]+$/gu;
-    const isValid = regexp.test(value);
+    const regExp = userFormValidation[0];
+    const flag = userFormValidation[1];
+
+    const dynamicRegExp = new RegExp(`${regExp}`, `${flag}`);
+
+    const isValid = dynamicRegExp.test(value);
 
     if (!isValid) {
       stateCopy.errors[title] = true;
     } else {
-      
       if (this.state.errors[title]) stateCopy.errors[title] = false;
     }
 
@@ -1049,6 +1053,7 @@ export default withRouter(
     isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
     personal: auth.settingsStore.personal,
     setUserIsUpdate: auth.userStore.setUserIsUpdate,
+    userFormValidation: auth.settingsStore.userFormValidation,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

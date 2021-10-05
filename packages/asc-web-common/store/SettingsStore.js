@@ -92,6 +92,8 @@ class SettingsStore {
   };
   debugInfo = false;
 
+  userFormValidation = ["^[\\p{L}\\p{M}'-]+$", "gu"];
+
   constructor() {
     makeAutoObservable(this);
   }
