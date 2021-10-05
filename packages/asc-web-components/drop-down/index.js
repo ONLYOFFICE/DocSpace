@@ -45,7 +45,7 @@ class DropDown extends React.PureComponent {
     if (this.props.open) {
       this.props.enableOnClickOutside();
       if (this.props.isDefaultMode) {
-        return this.checkPositionPortal();
+        return setTimeout(() => this.checkPositionPortal(), 0); // ditry, but need after render for ref
       }
       return this.checkPosition();
     }
