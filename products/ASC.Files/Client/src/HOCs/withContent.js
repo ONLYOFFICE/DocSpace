@@ -182,11 +182,15 @@ export default function withContent(WrappedContent) {
     };
 
     renameTitle = (e) => {
-      const { t } = this.props;
+      const { t, folderFormValidation } = this.props;
 
       let title = e.target.value;
       //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
-      const regexp = new RegExp('[*+:"<>?|\\\\/]', "gim");
+      const regexp = new RegExp(
+        `${folderFormValidation[0]}`,
+        `${folderFormValidation[1]}`
+      );
+
       if (title.match(regexp)) {
         toastr.warning(t("ContainsSpecCharacter"));
       }
@@ -324,7 +328,11 @@ export default function withContent(WrappedContent) {
         id: fileActionId,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
-      const { culture, isDesktopClient } = auth.settingsStore;
+      const {
+        culture,
+        isDesktopClient,
+        folderFormValidation,
+      } = auth.settingsStore;
 
       return {
         setIsLoading,
@@ -346,6 +354,7 @@ export default function withContent(WrappedContent) {
         homepage: config.homepage,
         viewer: auth.userStore.user,
         viewAs,
+        folderFormValidation,
       };
     }
   )(observer(WithContent));
