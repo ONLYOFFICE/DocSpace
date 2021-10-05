@@ -217,10 +217,13 @@ class UpdateUserForm extends React.Component {
 
     let value = event.target.value;
     let title = event.target.name;
-    const regexp = /[\[\]\d+=:!@#$%^&*(){}±§<>+;"'~`№,._|\/\\]/g;
-    if (regexp.test(value)) {
+    const regexp = /^[\p{L}\p{M}'\-]+$/gu;
+    const isValid = regexp.test(value);
+
+    if (!isValid) {
       stateCopy.errors[title] = true;
     } else {
+      
       if (this.state.errors[title]) stateCopy.errors[title] = false;
     }
 
