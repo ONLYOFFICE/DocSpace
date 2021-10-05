@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -216,6 +217,70 @@ namespace ASC.Files.Model
             if (bindingContext.GetFirstValue(nameof(result.Title), out var firstValue))
             {
                 result.Title = firstValue;
+            }
+
+            bindingContext.HttpContext.Request.EnableBuffering();
+
+            bindingContext.HttpContext.Request.Body.Position = 0;
+
+            result.Stream = new MemoryStream();
+            bindingContext.HttpContext.Request.Body.CopyToAsync(result.Stream).Wait();
+            result.Stream.Position = 0;
+
+            bindingContext.Result = ModelBindingResult.Success(result);
+
+            return Task.CompletedTask;
+        }
+    }
+
+    public class UploadModelBinder : IModelBinder
+    {
+        public Task BindModelAsync(ModelBindingContext bindingContext)
+        {
+            if (bindingContext == null)
+            {
+                throw new ArgumentNullException(nameof(bindingContext));
+            }
+
+            var defaultBindingContext = bindingContext as DefaultModelBindingContext;
+            var composite = bindingContext.ValueProvider as CompositeValueProvider;
+
+            if (defaultBindingContext != null && composite != null && !composite.Any())
+            {
+                bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
+            }
+
+            var result = new UploadModel();
+
+            if (bindingContext.GetBoolValue(nameof(result.CreateNewIfExist), out var createNewIfExist))
+            {
+                result.CreateNewIfExist = createNewIfExist;
+            }
+
+            if (bindingContext.GetBoolValue(nameof(result.KeepConvertStatus), out var keepConvertStatus))
+            {
+                result.KeepConvertStatus = keepConvertStatus;
+            }
+
+            if (bindingContext.GetBoolValue(nameof(result.StoreOriginalFileFlag), out var storeOriginalFileFlag))
+            {
+                result.StoreOriginalFileFlag = storeOriginalFileFlag;
+            }
+
+            if (bindingContext.GetFirstValue(nameof(result.ContentType), out var contentType))
+            {
+                if (!string.IsNullOrEmpty(contentType))
+                {
+                    result.ContentType = new ContentType(contentType);
+                }
+            }
+
+            if (bindingContext.GetFirstValue(nameof(result.ContentDisposition), out var contentDisposition))
+            {
+                if (!string.IsNullOrEmpty(contentDisposition))
+                {
+                    result.ContentDisposition = new ContentDisposition(contentDisposition);
+                }
             }
 
             bindingContext.HttpContext.Request.EnableBuffering();
