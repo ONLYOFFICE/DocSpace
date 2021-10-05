@@ -264,21 +264,30 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
+  scrollToErrorForm = () => {
+    const element = this.mainFieldsContainerRef.current;
+    const parent = element.closest(".scroll-body");
+    (parent || window).scrollTo(0, element.offsetTop);
+  };
   validate() {
-    const { profile } = this.state;
-    const errors = {
+    const { profile, errors } = this.state;
+
+    if (errors.firstName || errors.lastName) {
+      this.scrollToErrorForm();
+      return;
+    }
+
+    const errorsObj = {
       firstName: !profile.firstName.trim(),
       lastName: !profile.lastName.trim(),
     };
-    const hasError = errors.firstName || errors.lastName;
+    const hasError = errorsObj.firstName || errorsObj.lastName;
 
     if (hasError) {
-      const element = this.mainFieldsContainerRef.current;
-      const parent = element.closest(".scroll-body");
-      (parent || window).scrollTo(0, element.offsetTop);
+      this.scrollToErrorForm();
     }
 
-    this.setState({ errors: errors });
+    this.setState({ errors: errorsObj });
     return !hasError;
   }
 
