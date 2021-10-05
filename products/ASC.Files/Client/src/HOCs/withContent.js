@@ -169,12 +169,10 @@ export default function withContent(WrappedContent) {
                     encryptedFile,
                     true,
                     false
-                  ).then(() =>
-                    openDocEditor(file.id, file.providerKey, tab, file.webUrl)
-                  );
+                  ).then(() => openDocEditor(file.id, file.providerKey, tab));
                 });
               }
-              return openDocEditor(file.id, file.providerKey, tab, file.webUrl);
+              return openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
@@ -216,9 +214,9 @@ export default function withContent(WrappedContent) {
     };
 
     getTableStatusByDate = (create) => {
-      const { created, updated, fileExst } = this.props.item;
+      const { created, updated } = this.props.item;
 
-      const date = fileExst ? updated : created;
+      const date = create ? created : updated;
       const dateLabel = new Date(date).toLocaleString(this.props.culture);
       return dateLabel;
     };
@@ -235,8 +233,17 @@ export default function withContent(WrappedContent) {
         onFilesClick,
         viewAs,
         element,
+        isDesktop,
       } = this.props;
-      const { id, fileExst, updated, createdBy, access, fileStatus } = item;
+      const {
+        id,
+        fileExst,
+        updated,
+        createdBy,
+        access,
+        fileStatus,
+        href,
+      } = item;
 
       const titleWithoutExt = getTitleWithoutExst(item);
 
@@ -260,6 +267,10 @@ export default function withContent(WrappedContent) {
       const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
         ? { noHover: true }
         : { onClick: onFilesClick };
+
+      if (!isDesktop && !isTrashFolder) {
+        linkStyles.href = item.href;
+      }
 
       const newItems = item.new || fileStatus === 2;
       const showNew = !!newItems;

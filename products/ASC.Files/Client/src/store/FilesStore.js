@@ -46,6 +46,7 @@ class FilesStore {
   files = [];
   folders = [];
   selection = [];
+  bufferSelection = null;
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
@@ -234,8 +235,16 @@ class FilesStore {
     this.selection = selection;
   };
 
+  setBufferSelection = (bufferSelection) => {
+    this.bufferSelection = bufferSelection;
+  };
+
   //TODO: FILTER
   setFilesFilter = (filter) => {
+    const key = `UserFilter=${this.userStore.user.id}`;
+    const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
+    localStorage.setItem(key, value);
+
     this.setFilterUrl(filter);
     this.filter = filter;
   };
@@ -263,46 +272,30 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false,
-    saveSorting = false
+    withSubfolders = false
   ) => {
-    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
-    filterData.folder = folderId;
-
-    if (saveSorting) {
-      filterData.sortBy = this.filter.sortBy;
-      filterData.pageCount = this.filter.pageCount;
-      filterData.sortOrder = this.filter.sortOrder;
-    }
-
     const {
       treeFolders,
-      //privacyFolder,
       setSelectedNode,
       getSubfolders,
     } = this.treeFoldersStore;
+
+    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
+    filterData.folder = folderId;
+
+    const filterStorageItem = localStorage.getItem(
+      `UserFilter=${this.userStore.user.id}`
+    );
+
+    if (filterStorageItem && !filter) {
+      const splitFilter = filterStorageItem.split(",");
+
+      filterData.sortBy = splitFilter[0];
+      filterData.pageCount = splitFilter[1];
+      filterData.sortOrder = splitFilter[2];
+    }
+
     setSelectedNode([folderId + ""]);
-
-    // if (privacyFolder && privacyFolder.id === +folderId) {
-    //   if (!this.settingsStore.isEncryptionSupport) {
-    //     filterData.total = 0;
-    //     this.setFilesFilter(filterData); //TODO: FILTER
-    //     if (clearFilter) {
-    //       this.setFolders([]);
-    //       this.setFiles([]);
-    //       this.fileActionStore.setAction({ type: null });
-    //       this.setSelected("close");
-
-    //       this.selectedFolderStore.setSelectedFolder({
-    //         folders: [],
-    //         ...privacyFolder,
-    //         pathParts: privacyFolder.pathParts,
-    //         ...{ new: 0 },
-    //       });
-    //     }
-    //     return Promise.resolve();
-    //   }
-    // }
 
     //TODO: fix @my
     let requestCounter = 1;
@@ -351,7 +344,7 @@ class FilesStore {
           if (!requestCounter) return;
           requestCounter--;
 
-          if (folderId === "@my" && !this.isInit) {
+          if (folderId === "@my" /*  && !this.isInit */) {
             setTimeout(() => {
               return request();
             }, 5000);
@@ -562,8 +555,9 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "copy",
           "move-to",
-          "sharing-settings",
+          //"sharing-settings",
           "unsubscribe",
+          "separator2",
         ]);
       }
 
@@ -639,6 +633,7 @@ class FilesStore {
             "move-to",
             "delete",
             "copy",
+            "separator2",
           ]);
           if (!isFavorite) {
             fileOptions = this.removeOptions(fileOptions, ["separator2"]);
@@ -661,7 +656,7 @@ class FilesStore {
         !(
           isRecentFolder ||
           isFavoritesFolder ||
-          (isMyFolder && this.filter.filterType)
+          (isMyFolder && (this.filter.filterType || this.filter.search))
         )
       ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
@@ -727,6 +722,7 @@ class FilesStore {
         "owner-change",
         "link-for-portal-users",
         "separator1",
+        "open-location",
         "download",
         "move", //category
         "move-to",
@@ -876,6 +872,10 @@ class FilesStore {
         ]);
       }
 
+      if (!(isMyFolder && (this.filter.filterType || this.filter.search))) {
+        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+      }
+
       return folderOptions;
     }
   };
@@ -988,9 +988,9 @@ class FilesStore {
       case FolderType.TRASH:
         return false;
       case FolderType.Favorites:
-        return false;
+        return true; // false;
       case FolderType.Recent:
-        return false;
+        return true; //false;
       case FolderType.Privacy:
         return true;
       default:
@@ -1122,7 +1122,11 @@ class FilesStore {
       );
 
       const previewUrl = canOpenPlayer
-        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/view/${id}`)
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/#preview/${id}`
+          )
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
@@ -1217,6 +1221,68 @@ class FilesStore {
     return newItem;
   }
 
+  get cbMenuItems() {
+    const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = iconFormatsStore;
+    const { isImage, isVideo } = mediaViewersFormatsStore;
+
+    let cbMenu = ["all"];
+    const filesItems = [...this.files, ...this.folders];
+
+    if (this.folders.length) cbMenu.push(FilterType.FoldersOnly);
+    for (let item of filesItems) {
+      if (isDocument(item.fileExst)) cbMenu.push(FilterType.DocumentsOnly);
+      else if (isPresentation(item.fileExst))
+        cbMenu.push(FilterType.PresentationsOnly);
+      else if (isSpreadsheet(item.fileExst))
+        cbMenu.push(FilterType.SpreadsheetsOnly);
+      else if (isImage(item.fileExst)) cbMenu.push(FilterType.ImagesOnly);
+      else if (isVideo(item.fileExst)) cbMenu.push(FilterType.MediaOnly);
+      else if (isArchive(item.fileExst)) cbMenu.push(FilterType.ArchiveOnly);
+    }
+
+    const hasFiles = cbMenu.some(
+      (elem) => elem !== "all" && elem !== FilterType.FoldersOnly
+    );
+
+    if (hasFiles) cbMenu.push(FilterType.FilesOnly);
+
+    cbMenu = cbMenu.filter((item, index) => cbMenu.indexOf(item) === index);
+
+    return cbMenu;
+  }
+
+  getCheckboxItemLabel = (t, key) => {
+    switch (key) {
+      case "all":
+        return t("All");
+      case FilterType.FoldersOnly:
+        return t("Translations:Folders");
+      case FilterType.DocumentsOnly:
+        return t("Common:Documents");
+      case FilterType.PresentationsOnly:
+        return t("Translations:Presentations");
+      case FilterType.SpreadsheetsOnly:
+        return t("Translations:Spreadsheets");
+      case FilterType.ImagesOnly:
+        return t("Images");
+      case FilterType.MediaOnly:
+        return t("Media");
+      case FilterType.ArchiveOnly:
+        return t("Archives");
+      case FilterType.FilesOnly:
+        return t("AllFiles");
+
+      default:
+        return "";
+    }
+  };
+
   get sortedFiles() {
     const {
       isSpreadsheet,
@@ -1232,7 +1298,13 @@ class FilesStore {
       other: [],
     };
 
-    for (let item of this.selection) {
+    const selection = this.selection.length
+      ? this.selection
+      : this.bufferSelection
+      ? [this.bufferSelection]
+      : [];
+
+    for (let item of selection) {
       item.checked = true;
       item.format = null;
 
@@ -1296,7 +1368,13 @@ class FilesStore {
   get isWebEditSelected() {
     const { filesConverts } = this.formatsStore.docserviceStore;
 
-    return this.selection.some((selected) => {
+    const selection = this.selection.length
+      ? this.selection
+      : this.bufferSelection
+      ? [this.bufferSelection]
+      : [];
+
+    return selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
       const index = filesConverts.findIndex((f) => f[selected.fileExst]);
       return index !== -1;
@@ -1322,12 +1400,22 @@ class FilesStore {
   }
 
   get selectionTitle() {
-    if (this.selection.length === 0) return null;
+    if (this.selection.length === 0) {
+      if (this.bufferSelection) {
+        return this.bufferSelection.title;
+      }
+      return null;
+    }
     return this.selection.find((el) => el.title).title;
   }
 
   get hasSelection() {
     return !!this.selection.length;
+  }
+
+  get isEmptyFilesList() {
+    const filesList = [...this.files, ...this.folders];
+    return filesList.length <= 0;
   }
 
   getOptions = (selection, externalAccess = false) => {
@@ -1488,7 +1576,7 @@ class FilesStore {
   };
 
   createThumbnails = () => {
-    const filesList = this.filesList;
+    const filesList = [...this.files, this.folders];
     const fileIds = [];
 
     filesList.map((file) => {

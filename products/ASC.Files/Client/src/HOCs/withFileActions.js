@@ -5,6 +5,7 @@ import { checkProtocol } from "../helpers/files-helpers";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
+import { isMobile } from "react-device-detect";
 
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
@@ -48,20 +49,20 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         isPrivacy,
+        isTrashFolder,
         onSelectItem,
         item,
       } = this.props;
 
       const { id, isFolder } = item;
-      e.preventDefault();
 
       const notSelectable = e.target.classList.contains("not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
 
-      if (isPrivacy || (!draggable && !isFileName)) return;
+      if (isPrivacy || isTrashFolder || (!draggable && !isFileName)) return e;
 
-      if (window.innerWidth < 1025 || notSelectable) {
-        return;
+      if (window.innerWidth < 1025 || notSelectable || isMobile) {
+        return e;
       }
 
       if (!draggable) {
@@ -75,8 +76,9 @@ export default function withFileActions(WrappedFileItem) {
         : false;
       const label = e.currentTarget.getAttribute("label");
       if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
-        return;
+        return e;
       }
+      e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
     };
@@ -103,7 +105,7 @@ export default function withFileActions(WrappedFileItem) {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
 
-        if (e.detail === 1) this.onFilesClick(e);
+        if (e.detail === 1) this.fileContextClick();
       } else {
         this.fileContextClick();
       }
@@ -148,13 +150,13 @@ export default function withFileActions(WrappedFileItem) {
         setIsLoading(true);
         //addExpandedKeys(parentFolder + "");
 
-        fetchFiles(id, null, true, false, true)
+        fetchFiles(id, null, true, false)
           .then((data) => {
             const pathParts = data.selectedFolder.pathParts;
             const newExpandedKeys = createNewExpandedKeys(pathParts);
             setExpandedKeys(newExpandedKeys);
 
-            this.setNewBadgeCount(item);
+            setNewBadgeCount(item);
           })
           .catch((err) => {
             toastr.error(err);
@@ -229,8 +231,8 @@ export default function withFileActions(WrappedFileItem) {
 
       const isShareable = allowShareIn && item.canShare;
 
-      const isMobile = sectionWidth < 500;
-      const displayShareButton = isMobile
+      const isMobileView = sectionWidth < 500;
+      const displayShareButton = isMobileView
         ? "26px"
         : !isShareable
         ? "38px"
@@ -285,7 +287,12 @@ export default function withFileActions(WrappedFileItem) {
       },
       { item, t, history }
     ) => {
-      const { selectRowAction, onSelectItem, markAsRead } = filesActionsStore;
+      const {
+        selectRowAction,
+        onSelectItem,
+        markAsRead,
+        setNewBadgeCount,
+      } = filesActionsStore;
       const {
         setSharingPanelVisible,
         setConvertDialogVisible,
@@ -313,7 +320,7 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
       } = filesStore;
       const { startUpload } = uploadDataStore;
-      const { type, extension, id, setNewBadgeCount } = fileActionStore;
+      const { type, extension, id } = fileActionStore;
       const { mediaViewersFormatsStore, docserviceStore } = formatsStore;
       const { setMediaViewerData } = mediaViewerDataStore;
 

@@ -1,0 +1,13 @@
+{
+  "name": "@appserver/browserslist-config-asc",
+  "version": "1.0.0",
+  "description": "Shared browserslist for AppServer libraries and apps",
+  "main": "browserlist.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "appserver",
+    "browserslist"
+  ]
+}

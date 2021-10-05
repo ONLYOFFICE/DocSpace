@@ -44,7 +44,7 @@ import i18n from "./i18n";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
-
+import { isMobile } from "react-device-detect";
 import store from "studio/store";
 
 const { auth: authStore } = store;
@@ -88,7 +88,7 @@ const Editor = () => {
   const [extension, setExtension] = useState();
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
   const [openNewTab, setNewOpenTab] = useState(false);
-
+  const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
@@ -104,23 +104,32 @@ const Editor = () => {
   };
 
   const insertImage = (link) => {
+    const token = link.token;
+
     docEditor.insertImage({
-      c: "add",
+      ...typeInsertImageAction,
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
 
   const mailMerge = (link) => {
+    const token = link.token;
+
     docEditor.setMailMergeRecipients({
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
 
   const compareFiles = (link) => {
+    const token = link.token;
+
     docEditor.setRevisedFile({
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
@@ -381,7 +390,7 @@ const Editor = () => {
       setFavicon(config.documentType);
       setDocumentTitle(docTitle);
 
-      if (window.innerWidth < 720) {
+      if (isMobile) {
         config.type = "mobile";
       }
 
@@ -585,17 +594,24 @@ const Editor = () => {
       docTitle = newTitle;
     }
 
-    if (!newTitle)
+    if (!newTitle) {
+      const onlyNumbers = new RegExp("^[0-9]+$");
+      const isFileWithoutProvider = onlyNumbers.test(fileId);
+
+      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+
       favorite
-        ? markAsFavorite([+fileId])
+        ? markAsFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error))
-        : removeFromFavorite([+fileId])
+        : removeFromFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error));
+    }
   };
 
-  const onSDKRequestInsertImage = () => {
+  const onSDKRequestInsertImage = (event) => {
+    setTypeInsertImageAction(event.data);
     setFilesType(insertImageAction);
     setIsFileDialogVisible(true);
   };

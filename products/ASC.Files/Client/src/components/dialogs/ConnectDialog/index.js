@@ -58,7 +58,11 @@ const PureConnectDialogContainer = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const isAccount = !!link;
-  const showUrlField = title === "WebDav" || title === "SharePoint";
+  const showUrlField =
+    provider_key === "WebDav" ||
+    provider_key === "SharePoint" ||
+    key === "WebDav" ||
+    key === "SharePoint";
 
   const onChangeUrl = (e) => {
     setIsUrlValid(true);
@@ -160,7 +164,7 @@ const PureConnectDialogContainer = (props) => {
 
   const onReconnect = () => {
     let authModal = window.open("", "Authorization", "height=600, width=1020");
-    openConnectWindow(title, authModal).then((modal) =>
+    openConnectWindow(provider_key, authModal).then((modal) =>
       getOAuthToken(modal).then((token) => {
         authModal.close();
         setToken(token);
@@ -236,6 +240,7 @@ const PureConnectDialogContainer = (props) => {
               errorMessage={t("Common:RequiredField")}
             >
               <TextInput
+                isAutoFocussed={!showUrlField}
                 hasError={!isLoginValid}
                 isDisabled={isLoading}
                 tabIndex={2}

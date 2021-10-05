@@ -70,6 +70,7 @@ class ChangeOwnerComponent extends React.Component {
   };
 
   onClose = () => {
+    this.props.setBufferSelection(null);
     this.props.setChangeOwnerPanelVisible(false);
   };
 
@@ -78,9 +79,9 @@ class ChangeOwnerComponent extends React.Component {
     const { showPeopleSelector, owner } = this.state;
 
     const ownerName = owner.displayName ? owner.displayName : owner.label;
-    const fileName = selection[0].title;
+    const fileName = selection[0]?.title;
     const id = owner.id ? owner.id : owner.key;
-    const disableSaveButton = owner && selection[0].createdBy.id === id;
+    const disableSaveButton = owner && selection[0]?.createdBy.id === id;
     const zIndex = 310;
 
     return (
@@ -145,17 +146,19 @@ const ChangeOwnerPanel = withTranslation(["ChangeOwnerPanel", "Common"])(
 export default inject(({ auth, filesStore, dialogsStore }) => {
   const {
     selection,
+    bufferSelection,
     setFile,
     setFolder,
     setFilesOwner,
     setIsLoading,
     isLoading,
+    setBufferSelection,
   } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
-    selection,
+    selection: selection.length ? selection : [bufferSelection],
     isLoading,
     visible: ownerPanelVisible,
 
@@ -164,5 +167,6 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
     setIsLoading,
     setChangeOwnerPanelVisible,
     setFilesOwner,
+    setBufferSelection,
   };
 })(withRouter(observer(ChangeOwnerPanel)));

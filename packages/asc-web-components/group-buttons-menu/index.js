@@ -48,15 +48,17 @@ class GroupButtonsMenu extends React.Component {
     item.onClick && item.onClick(e);
   };
 
-  componentDidMount() {
-    this.groupMenuElement = document.getElementById("groupMenu");
+  updateItemsWidth = () => {
+    const groupMenuElement = document.getElementById("groupMenu");
 
-    const groupMenuItems = this.groupMenuElement
-      ? this.groupMenuElement.children
-      : [0];
+    const groupMenuItems = groupMenuElement ? groupMenuElement.children : [0];
     const groupMenuItemsArray = [...groupMenuItems];
 
     this.widthsArray = groupMenuItemsArray.map((item) => item.offsetWidth);
+  };
+
+  componentDidMount() {
+    this.updateItemsWidth();
 
     window.addEventListener("resize", this.throttledResize);
     window.addEventListener("orientationchange", this.throttledResize);
@@ -78,16 +80,11 @@ class GroupButtonsMenu extends React.Component {
       if (
         this.state.priorityItems.length !== prevState.priorityItems.length &&
         this.props.sectionWidth === prevProps.sectionWidth &&
-        this.state.moreItems.length === prevState.moreItems.length &&
-        this.state.moreItems.length === 0
+        this.state.moreItems.length === prevState.moreItems.length
       ) {
-        const groupMenuItems = this.groupMenuElement
-          ? this.groupMenuElement.children
-          : [0];
-        const groupMenuItemsArray = [...groupMenuItems];
-
-        this.widthsArray = groupMenuItemsArray.map((item) => item.offsetWidth);
+        this.updateItemsWidth();
       }
+
       this.updateMenu();
     }
   }

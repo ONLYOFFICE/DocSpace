@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Net.Mime;
+
+using ASC.Files.Core.Model;
 
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.Files.Model
 {
-    public class UploadModel
+    public class UploadModel : IModelWithFile
     {
-        public Stream File { get; set; }
+        public IFormFile File { get; set; }
         public ContentType ContentType { get; set; }
         public ContentDisposition ContentDisposition { get; set; }
         public IEnumerable<IFormFile> Files { get; set; }
