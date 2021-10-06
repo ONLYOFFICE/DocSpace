@@ -68,10 +68,12 @@ namespace ASC.Common.Caching
     public class AscCache : ICache
     {
         private IMemoryCache MemoryCache { get; }
+        private ConcurrentDictionary<string, object> MemoryCacheKeys { get; }
 
         public AscCache(IMemoryCache memoryCache)
         {
             MemoryCache = memoryCache;
+            MemoryCacheKeys = new ConcurrentDictionary<string, object>();
         }
 
         public T Get<T>(string key) where T : class
@@ -81,12 +83,27 @@ namespace ASC.Common.Caching
 
         public void Insert(string key, object value, TimeSpan sligingExpiration)
         {
-            MemoryCache.Set(key, value, new MemoryCacheEntryOptions(){ SlidingExpiration = sligingExpiration });
+            var options = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(sligingExpiration)
+                .RegisterPostEvictionCallback(EvictionCallback);
+
+            MemoryCache.Set(key, value, options);
+            MemoryCacheKeys.TryAdd(key, null);
         }
 
         public void Insert(string key, object value, DateTime absolutExpiration)
         {
-            MemoryCache.Set(key, value, absolutExpiration == DateTime.MaxValue ? DateTimeOffset.MaxValue : new DateTimeOffset(absolutExpiration));
+            var options = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(absolutExpiration == DateTime.MaxValue ? DateTimeOffset.MaxValue : new DateTimeOffset(absolutExpiration))
+                .RegisterPostEvictionCallback(EvictionCallback);
+
+            MemoryCache.Set(key, value, options);
+            MemoryCacheKeys.TryAdd(key, null);
+        }
+
+        private void EvictionCallback(object key, object value, EvictionReason reason, object state)
+        {
+            MemoryCacheKeys.TryRemove(key.ToString(), out _);
         }
 
         public void Remove(string key)
@@ -96,21 +113,19 @@ namespace ASC.Common.Caching
 
         public void Remove(Regex pattern)
         {
-            //var cache = GetCache();
+            var copy = MemoryCacheKeys.ToDictionary(p => p.Key, p => p.Value);
+            var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
 
-            //var copy = cache.ToDictionary(p => p.Key, p => p.Value);
-
-            //var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
-            //foreach (var key in keys)
-            //{
-            //    cache.Remove(key);
-            //}
+            foreach (var key in keys)
+            {
+                MemoryCache.Remove(key);
+            }
         }
 
 
         public ConcurrentDictionary<string, T> HashGetAll<T>(string key)
         {
-            return MemoryCache.GetOrCreate(key, r=> new ConcurrentDictionary<string, T>());
+            return MemoryCache.GetOrCreate(key, r => new ConcurrentDictionary<string, T>());
         }
 
         public T HashGet<T>(string key, string field)
