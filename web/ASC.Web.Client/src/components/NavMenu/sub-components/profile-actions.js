@@ -99,7 +99,7 @@ class ProfileActions extends React.PureComponent {
         showCatalog={this.props.showCatalog}
         ref={this.ref}>
         <Avatar
-          style={{width: '32px'; height: '32px'}}
+          style={{ width: '32px', height: '32px' }}
           onClick={this.onClick}
           role={userRole}
           size="small"
