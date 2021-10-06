@@ -86,6 +86,7 @@ class DownloadDialogComponent extends React.Component {
       window.open(viewUrl, "_self");
       this.onClose();
     } else if (fileConvertIds.length || folderIds.length) {
+      this.onClose();
       downloadFiles(fileConvertIds, folderIds, t("Translations:ArchivingData"));
     }
   };
