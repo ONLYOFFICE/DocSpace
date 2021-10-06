@@ -45,7 +45,7 @@ const Header = styled.header`
     width: 146px;
     height: 24px;
     position: relative;
-    padding: 4px 20px 0 6px;
+    padding: 3px 20px 0 6px;
     cursor: pointer;
   }
 `;

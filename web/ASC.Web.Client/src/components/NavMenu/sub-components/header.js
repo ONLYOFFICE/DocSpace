@@ -95,7 +95,7 @@ const Header = styled.header`
         !props.isPersonal &&
         css`
           display: ${(props) => (props.module ? "none" : "block")};
-          padding: 0px 20px 0 6px;
+          padding: 3px 20px 0 6px;
         `}
     }
   }
