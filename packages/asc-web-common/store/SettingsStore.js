@@ -93,7 +93,7 @@ class SettingsStore {
   debugInfo = false;
 
   userFormValidation = /^[\p{L}\p{M}'\-]+$/gu;
-  folderFormValidation = /[*+:"<>?|\/]/gim;
+  folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
   constructor() {
     makeAutoObservable(this);

@@ -243,13 +243,7 @@ class UpdateUserForm extends React.Component {
     const value = event.target.value;
     const title = event.target.name;
 
-    const isValid = userFormValidation.test(value);
-
     if (!value.match(userFormValidation)) {
-      console.log(
-        "title.match(userFormValidation)",
-        value.match(userFormValidation)
-      );
       stateCopy.errors[title] = true;
     } else {
       if (this.state.errors[title]) stateCopy.errors[title] = false;
@@ -641,6 +635,7 @@ class UpdateUserForm extends React.Component {
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+    const isEmpty = Boolean(profile.firstName.trim());
     //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent = (
       <>
@@ -816,7 +811,7 @@ class UpdateUserForm extends React.Component {
               isRequired={true}
               hasError={errors.firstName}
               labelText={`${t("FirstName")}:`}
-              {...(Boolean(profile.firstName.trim()) && {
+              {...(!isEmpty && {
                 errorMessage: t("ErrorInvalidUserFirstName"),
               })}
               inputName="firstName"
@@ -831,7 +826,7 @@ class UpdateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
-              {...(Boolean(profile.lastName.trim()) && {
+              {...(!isEmpty && {
                 errorMessage: t("ErrorInvalidUserLastName"),
               })}
               labelText={`${t("Common:LastName")}:`}
