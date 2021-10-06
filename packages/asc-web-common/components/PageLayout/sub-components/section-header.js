@@ -11,7 +11,6 @@ const StyledSectionHeader = styled.div`
   height: 41px;
   margin-right: 24px;
   margin-top: -1px;
-  padding-bottom: 9px;
   ${NoUserSelect}
   ${isMobile &&
   css`

@@ -42,6 +42,10 @@ const StyledContainer = styled.div`
     align-items: center;
     max-width: calc(100vw - 32px);
 
+    .headline-header {
+      font-size: 18px;
+    }
+
     @media ${tablet} {
       .headline-header {
         margin-left: -1px;
@@ -49,7 +53,6 @@ const StyledContainer = styled.div`
     }
     .arrow-button {
       margin-right: 15px;
-      min-width: 17px;
 
       @media ${tablet} {
         padding: 8px 0 8px 8px;
@@ -60,7 +63,7 @@ const StyledContainer = styled.div`
 
     .add-button {
       margin-bottom: -1px;
-      margin-left: 16px;
+      margin-left: 14px;
 
       @media ${tablet} {
         margin-left: auto;
@@ -390,7 +393,7 @@ class SectionHeaderContent extends React.Component {
                     {!isRootFolder && (
                       <IconButton
                         iconName="/static/images/arrow.path.react.svg"
-                        size="17"
+                        size={14}
                         color="#A3A9AE"
                         hoverColor="#657077"
                         isFill={true}
@@ -402,6 +405,7 @@ class SectionHeaderContent extends React.Component {
                       className="headline-header"
                       type="content"
                       truncate={true}
+                      fontSize="18px"
                     >
                       {title}
                     </Headline>
@@ -411,7 +415,7 @@ class SectionHeaderContent extends React.Component {
                           className="add-button"
                           directionX="right"
                           iconName="images/plus.svg"
-                          size={17}
+                          size={14}
                           color="#A3A9AE"
                           hoverColor="#657077"
                           isFill
@@ -423,7 +427,7 @@ class SectionHeaderContent extends React.Component {
                             className="option-button"
                             directionX="right"
                             iconName="images/vertical-dots.react.svg"
-                            size={17}
+                            size={14}
                             color="#A3A9AE"
                             hoverColor="#657077"
                             isFill
@@ -438,7 +442,7 @@ class SectionHeaderContent extends React.Component {
                           className="add-button"
                           directionX="right"
                           iconName="images/plus.svg"
-                          size={17}
+                          size={14}
                           color="#A3A9AE"
                           hoverColor="#657077"
                           isFill
