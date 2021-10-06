@@ -242,7 +242,6 @@ class SelectFileDialogModalView extends React.Component {
                 />
                 <Button
                   className="modal-dialog-button"
-                  primary
                   size="medium"
                   label={t("Common:CloseButton")}
                   onClick={onClose}
