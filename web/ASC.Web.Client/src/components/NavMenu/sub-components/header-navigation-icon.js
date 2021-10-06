@@ -39,7 +39,7 @@ const HeaderNavigationIcon = ({
   ...rest
 }) => {
   const color = active ? activeColor : baseColor;
-  console.log(iconUrl);
+
   return (
     url !== '/settings' && (
       <div style={{ position: 'relative', width: '20px', height: '20px', marginRight: '22px' }}>
