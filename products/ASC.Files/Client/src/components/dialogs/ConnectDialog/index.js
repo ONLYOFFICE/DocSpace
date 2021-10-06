@@ -78,7 +78,16 @@ const PureConnectDialogContainer = (props) => {
   };
   const onChangeFolderName = (e) => {
     setIsTitleValid(true);
-    setCustomerTitleValue(e.target.value);
+    let title = e.target.value;
+    //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
+    const regexp = new RegExp('[*+:"<>?|\\\\/]', "gim");
+
+    if (title.match(regexp)) {
+      toastr.warning(t("Home:ContainsSpecCharacter"));
+    }
+    title = title.replace(regexp, "_");
+
+    setCustomerTitleValue(title);
   };
   const onChangeMakeShared = () => setMakeShared(!isCorporate);
 
@@ -313,6 +322,7 @@ const ConnectDialog = withTranslation([
   "ConnectDialog",
   "Common",
   "Translations",
+  "Home",
 ])(PureConnectDialogContainer);
 
 export default inject(
