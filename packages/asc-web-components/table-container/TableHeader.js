@@ -280,8 +280,17 @@ class TableHeader extends React.Component {
 
         if (!enable) {
           gridTemplateColumns.push("0px");
-          gridTemplateColumns[1] =
-            this.getSubstring(gridTemplateColumns[1]) +
+
+          let colIndex = 1;
+          let leftEnableColumn = gridTemplateColumns[index - colIndex];
+          while (leftEnableColumn === "0px") {
+            colIndex++;
+            leftEnableColumn = gridTemplateColumns[index - colIndex];
+          }
+
+          //added the size of the disabled column to the left column
+          gridTemplateColumns[index - colIndex] =
+            this.getSubstring(gridTemplateColumns[index - colIndex]) +
             this.getSubstring(item) +
             "px";
         } else if (item !== `${settingsSize}px` && item !== checkboxSize) {
