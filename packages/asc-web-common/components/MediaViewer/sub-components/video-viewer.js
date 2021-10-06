@@ -256,6 +256,7 @@ class VideoViewer extends Component {
     loop: false,
     isNew: false,
     error: false,
+    loaded: false,
   };
 
   componentDidMount() {
@@ -377,7 +378,7 @@ class VideoViewer extends Component {
   };
 
   onPlay = () => {
-    this.setState({ playing: !this.state.isNew, isNew: false });
+    this.setState({ playing: !this.state.isNew, isNew: false, loaded: true });
   };
 
   render() {
@@ -395,6 +396,7 @@ class VideoViewer extends Component {
       playbackRate,
       pip,
       error,
+      loaded,
     } = this.state;
     const { errorLabel } = this.props;
 
@@ -461,11 +463,13 @@ class VideoViewer extends Component {
             <ReactPlayer
               ref={this.ref}
               className="react-player"
+              style={{ opacity: loaded ? 1 : 0 }}
               width="100%"
               height="100%"
               url={url}
               pip={pip}
               playing={playing}
+              playsinline={true}
               controls={controls}
               light={light}
               loop={loop}
