@@ -3,9 +3,7 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Link as LinkWithoutRedirect } from 'react-router-dom';
-import { isMobileOnly } from 'react-device-detect';
 import NavItem from './nav-item';
-import Headline from '@appserver/common/components/Headline';
 import Nav from './nav';
 import NavLogoItem from './nav-logo-item';
 import Link from '@appserver/components/link';
@@ -19,6 +17,7 @@ import i18n from '../i18n';
 import { combineUrl } from '@appserver/common/utils';
 import { AppServerConfig } from '@appserver/common/constants';
 import NoUserSelect from '@appserver/components/utils/commonStyles';
+import HeaderNavigationIcon from './header-navigation-icon';
 
 const { proxyURL } = AppServerConfig;
 
@@ -29,78 +28,23 @@ const Header = styled.header`
   background-color: ${backgroundColor};
   display: flex;
   width: 100vw;
-  height: 56px;
+  height: 48px;
 
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     ${NoUserSelect}
-    ${(props) =>
-      props.module &&
-      !props.isPersonal &&
-      css`
-        @media ${tablet} {
-          display: none;
-        }
-      `}
-  }
-
-  .header-module-title {
-    display: block;
-    font-size: 21px;
-    line-height: 0;
-    margin-top: -5px;
-    cursor: pointer;
-
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-user-drag: none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-
-    @media ${desktop} {
-      display: none;
-    }
-  }
-
-  .header-logo-min_icon {
-    display: none;
-    cursor: pointer;
-
-    width: 24px;
-    height: 24px;
-
-    @media (max-width: 620px) {
-      padding: 0 12px 0 0;
-      display: ${(props) => props.module && 'block'};
-    }
   }
 
   .header-logo-icon {
-    width: ${(props) => (props.isPersonal ? '220px' : '146px')};
-    ${(props) => props.isPersonal && `margin-left: 20px;`}
     height: 24px;
     position: relative;
-    padding: ${(props) => (!props.isPersonal ? '0 20px 0 6px' : '0')};
+    margin-left: 20px;
     cursor: pointer;
 
     @media ${tablet} {
-      ${(props) => props.isPersonal && `margin-left: 16px;`}
+      margin-left: 16px;
     }
-
-    @media (max-width: 620px) {
-      ${(props) =>
-        !props.isPersonal &&
-        css`
-          display: ${(props) => (props.module ? 'none' : 'block')};
-          padding: 0px 20px 0 6px;
-        `}
-    }
-  }
-  .mobile-short-logo {
-    width: 146px;
   }
 `;
 
@@ -126,6 +70,19 @@ const versionBadgeProps = {
   fontWeight: '600',
   fontSize: '13px',
 };
+
+const StyledNavigationIconsWrapper = styled.div`
+  height: 20px;
+  position: absolute;
+  left: 280px;
+  display: flex;
+  justify-content: flex-start;
+
+  .header-navigation__icon {
+    cursor: pointer;
+    margin-right: 22px;
+  }
+`;
 
 const HeaderComponent = ({
   currentProductName,
@@ -182,31 +139,39 @@ const HeaderComponent = ({
         isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader">
-        {!isPersonal && (
-          <NavItem badgeNumber={totalNotifications} onClick={onClick} noHover={true} />
-        )}
-
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
             <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
-          ) : !isMobileOnly ? (
+          ) : (
             <img
               alt="logo"
               className="header-logo-icon"
               src={combineUrl(AppServerConfig.proxyURL, '/static/images/personal.logo.react.svg')}
             />
-          ) : (
-            <img
-              className="header-logo-icon mobile-short-logo"
-              src={combineUrl(AppServerConfig.proxyURL, '/static/images/nav.logo.opened.react.svg')}
-            />
           )}
         </LinkWithoutRedirect>
 
         {!isPersonal && (
-          <Headline className="header-module-title" type="header" color="#FFF" onClick={onClick}>
-            {currentProductName}
-          </Headline>
+          <StyledNavigationIconsWrapper>
+            {mainModules.map(
+              ({ id, iconUrl, notifications, link, separator }) =>
+                iconUrl &&
+                !separator && (
+                  <HeaderNavigationIcon
+                    key={id}
+                    id={id}
+                    data-id={id}
+                    data-link={link}
+                    active={id == currentProductId}
+                    iconUrl={iconUrl}
+                    badgeNumber={notifications}
+                    onClick={onItemClick}
+                    onBadgeClick={onBadgeClick}
+                    url={link}
+                  />
+                ),
+            )}
+          </StyledNavigationIconsWrapper>
         )}
       </Header>
 

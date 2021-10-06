@@ -19,6 +19,7 @@ const homepage = config.homepage;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, '/about');
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, '/settings');
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, '/products/people/view/@self');
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, '/my');
 
@@ -28,7 +29,7 @@ const StyledNav = styled.nav`
   align-items: center;
   position: absolute;
   right: 0;
-  height: 56px;
+  height: 48px;
   z-index: 190 !important;
 
   .profile-menu {
@@ -83,6 +84,10 @@ const HeaderNav = ({
     }
   }, []);
 
+  const onSettingsClick = useCallback(() => {
+    history.push(SETTINGS_URL);
+  });
+
   const onCloseDialog = () => setVisibleDialog(false);
 
   const onSwitchToDesktopClick = useCallback(() => {
@@ -99,6 +104,13 @@ const HeaderNav = ({
         label: t('Common:Profile'),
         onClick: onProfileClick,
         url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
+      },
+      {
+        key: 'SettingsBtn',
+        ...(!isPersonal && {
+          label: t('Common:Settings'),
+          onClick: onSettingsClick,
+        }),
       },
       {
         key: 'SwitchToBtn',

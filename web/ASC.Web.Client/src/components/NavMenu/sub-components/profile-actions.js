@@ -10,6 +10,8 @@ import { mobile } from '@appserver/components/utils/device';
 import { isMobileOnly } from 'react-device-detect';
 
 const StyledDiv = styled.div`
+  width: 32px;
+  height: 32px;
   @media ${mobile} {
     display: ${(props) => (props.isProduct && props.showCatalog ? 'none !important' : 'block')};
   }
@@ -97,6 +99,7 @@ class ProfileActions extends React.PureComponent {
         showCatalog={this.props.showCatalog}
         ref={this.ref}>
         <Avatar
+          style={{width: '32px'; height: '32px'}}
           onClick={this.onClick}
           role={userRole}
           size="small"

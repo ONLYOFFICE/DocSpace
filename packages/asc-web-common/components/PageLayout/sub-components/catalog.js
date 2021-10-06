@@ -16,7 +16,7 @@ const StyledCatalog = styled.div`
   @media ${mobile} {
     top: 8px;
   }
-  top: ${isMobile && '56px'} !important;
+  top: ${isMobile && '48px'} !important;
   top: ${isMobileOnly && '64px'} !important;
 
   z-index: ${(props) => (props.showText && (isMobileOnly || isMobileUtils()) ? '201' : '100')};
