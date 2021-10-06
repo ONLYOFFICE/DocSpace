@@ -41,7 +41,7 @@ const HeaderNavigationIcon = ({
   const color = active ? activeColor : baseColor;
 
   return (
-    url !== '/settings' && (
+    (url === '/products/people/' || url === '/products/files/') && (
       <div style={{ position: 'relative', width: '20px', height: '20px', marginRight: '22px' }}>
         <StyledReactSVG
           src={iconUrl}

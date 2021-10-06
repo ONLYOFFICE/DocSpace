@@ -12,7 +12,8 @@ import { useTranslation } from 'react-i18next';
 
 import Box from '@appserver/components/box';
 import Text from '@appserver/components/text';
-import { desktop, tablet } from '@appserver/components/utils/device';
+import { desktop, mobile, tablet } from '@appserver/components/utils/device';
+import { isMobileOnly, isMobile } from 'react-device-detect';
 import i18n from '../i18n';
 import { combineUrl } from '@appserver/common/utils';
 import { AppServerConfig } from '@appserver/common/constants';
@@ -74,9 +75,17 @@ const versionBadgeProps = {
 const StyledNavigationIconsWrapper = styled.div`
   height: 20px;
   position: absolute;
-  left: 280px;
-  display: flex;
+  left: ${isMobile ? '254px' : '280px'};
+  display: ${isMobileOnly ? 'none' : 'flex'};
   justify-content: flex-start;
+
+  @media ${tablet} {
+    left: 254px;
+  }
+
+  @media ${mobile} {
+    display: none;
+  }
 
   .header-navigation__icon {
     cursor: pointer;
