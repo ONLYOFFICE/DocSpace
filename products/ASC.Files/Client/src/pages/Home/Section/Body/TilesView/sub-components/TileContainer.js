@@ -7,6 +7,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import Heading from "@appserver/components/heading";
 import ContextMenu from "@appserver/components/context-menu";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledGridWrapper = styled.div`
   display: grid;
@@ -18,7 +19,7 @@ const StyledGridWrapper = styled.div`
   box-sizing: border-box;
   padding-left: 1px;
 
-  @media (min-width: 1314px) {
+  @media ${tablet} {
     margin-left: -6px !important;
   }
 

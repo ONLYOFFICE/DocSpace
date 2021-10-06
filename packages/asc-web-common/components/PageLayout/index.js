@@ -340,6 +340,7 @@ class PageLayout extends React.Component {
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
                         isArticlePinned={isArticlePinned}
+                        viewAs={viewAs}
                       >
                         {sectionHeaderContent
                           ? sectionHeaderContent.props.children

@@ -24,22 +24,26 @@ const StyledSectionHeader = styled.div`
     }
   `}
 
-  /* @media (min-width: 1314px) {
-    margin-left: -4px; //TODO:
-    height: 31px;
+  
+  @media ${tablet} {
+    ${(props) =>
+      props.viewAs !== "tablet" &&
+      css`
+        margin-left: -4px;
+        height: 31px;
 
-    //TODO:
-    .section-header {
-      margin-top: -4px;
-    }
+        .section-header {
+          margin-top: -4px;
+        }
 
-    .arrow-button {
-      svg {
-        width: 14px !important;
-      }
-      margin-right: 10px !important;
-    }
-  } */
+        .arrow-button {
+          svg {
+            width: 14px !important;
+          }
+          margin-right: 10px !important;
+        }
+      `}
+  }
 
   @media ${tablet} {
     margin-right: 16px;
@@ -116,7 +120,7 @@ class SectionHeader extends React.Component {
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
 
-    const { isArticlePinned, isHeaderVisible, ...rest } = this.props;
+    const { isArticlePinned, isHeaderVisible, viewAs, ...rest } = this.props;
 
     return (
       <LayoutContextConsumer>
@@ -124,6 +128,7 @@ class SectionHeader extends React.Component {
           <StyledSectionHeader
             isArticlePinned={isArticlePinned}
             isSectionHeaderVisible={value.isVisible}
+            viewAs={viewAs}
           >
             <div
               className={classnames("section-header hidingHeader", {

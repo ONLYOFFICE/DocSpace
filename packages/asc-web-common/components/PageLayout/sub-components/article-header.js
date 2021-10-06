@@ -6,13 +6,13 @@ import { tablet } from "@appserver/components/utils/device";
 const StyledArticleHeader = styled.div`
   height: 39px;
 
-  /* @media (min-width: 1314px) {
+  @media ${tablet} {
     height: 39px;
 
     .headline-heading {
       margin-top: -5px;
     }
-  } */
+  }
 
   @media ${tablet} {
     display: none;

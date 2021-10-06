@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Heading from "@appserver/components/heading";
 import Base from "@appserver/components/themes/base";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { tablet } from "@appserver/components/utils/device";
 const size = {
   header: "28px",
   menu: "23px",
@@ -20,10 +21,10 @@ const StyledHeading = styled(Heading)`
   font-size: ${(props) => size[props.headlineType]};
   font-weight: ${(props) => weight[props.headlineType]};
   color: ${(props) => (props.color ? props.color : props.theme.color)};
-  ${NoUserSelect}//
-  /* @media (min-width: 1314px) {
+  ${NoUserSelect}
+  @media ${tablet} {
     ${(props) => props.headlineType === "content" && "font-size: 18px"};
-  } */
+  }
 `;
 StyledHeading.defaultProps = { theme: Base };
 
