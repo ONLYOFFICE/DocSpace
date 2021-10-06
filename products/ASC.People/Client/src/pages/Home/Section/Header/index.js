@@ -55,7 +55,7 @@ const StyledContainer = styled.div`
           `}
 
         position: absolute;
-        top: 56px;
+        top: 48px;
         z-index: 180;
       }
     }

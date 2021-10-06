@@ -85,7 +85,7 @@ const StyledContainer = styled.div`
         ${(props) =>
           !props.isDesktop &&
           css`
-            top: 56px;
+            top: 48px;
           `}
         z-index: 180;
       }
