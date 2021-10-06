@@ -1,24 +1,24 @@
 REM echo ######## Extracting and preparing files to build ########
-%sevenzip% x %cd%\build\install\win\nginx-1.21.1.zip -o"%cd%\build\install\win\Files" -y
-xcopy "%cd%\build\install\win\Files\nginx-1.21.1" "%cd%\build\install\win\Files\nginx" /S /Y /B /I
-rmdir %cd%\build\install\win\Files\nginx-1.21.1 /s /q
-rmdir %cd%\build\install\win\kafka-zookeeper /s /q
-md %cd%\build\install\win\kafka-zookeeper
-md %cd%\build\install\win\Files\nginx\temp
-md %cd%\build\install\win\Files\nginx\logs
-%tar% -xvf %cd%\build\install\win\apache-zookeeper-3.7.0-bin.tar.gz -C %cd%\build\install\win\kafka-zookeeper
-%tar% -xvf %cd%\build\install\win\kafka_2.12-2.8.0.tgz -C %cd%\build\install\win\kafka-zookeeper
+%sevenzip% x build\install\win\nginx-1.21.1.zip -o"build\install\win\Files" -y
+xcopy "build\install\win\Files\nginx-1.21.1" "build\install\win\Files\nginx" /S /Y /B /I
+rmdir build\install\win\Files\nginx-1.21.1 /s /q
+rmdir build\install\win\kafka-zookeeper /s /q
+md build\install\win\kafka-zookeeper
+md build\install\win\Files\nginx\temp
+md build\install\win\Files\nginx\logs
+%tar% -xvf build\install\win\apache-zookeeper-3.7.0-bin.tar.gz -C build\install\win\kafka-zookeeper
+%tar% -xvf build\install\win\kafka_2.12-2.8.0.tgz -C build\install\win\kafka-zookeeper
 REM del /f /q build\install\win\apache-zookeeper-3.7.0-bin.*
 REM del /f /q build\install\win\kafka_2.12-2.8.0.*
-copy "%cd%\build\install\win\zookeeper-server-save-start.bat" "%cd%\build\install\win\kafka-zookeeper\kafka_2.12-2.8.0\bin\windows\zookeeper-server-save-start.bat" /Y
-copy "%cd%\build\install\win\kafka-server-save-start.bat" "%cd%\build\install\win\kafka-zookeeper\kafka_2.12-2.8.0\bin\windows\kafka-server-save-start.bat" /Y
-xcopy "%cd%\build\install\win\tools" "%cd%\build\install\win\Files\tools" /S /Y /B /I
-copy "%cd%\build\install\win\WinSW.NET4.exe" "%cd%\build\install\win\Files\tools\OnlyofficeProxy.exe" /Y
-copy "%cd%\build\install\win\WinSW.NET4new.exe" "%cd%\build\install\win\Files\tools\kafka.exe" /Y
-copy "%cd%\build\install\win\WinSW.NET4new.exe" "%cd%\build\install\win\Files\tools\zookeeper.exe" /Y
-copy "%cd%\build\install\win\nginx.conf" "%cd%\build\install\win\Files\nginx\conf\nginx.conf" /Y
-copy "%cd%\build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin\conf\zoo_sample.cfg" "%cd%\build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin\conf\zoo.cfg" /Y
-del /f /q "%cd%\build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin\conf\zoo_sample.cfg"
+copy "build\install\win\zookeeper-server-save-start.bat" "build\install\win\kafka-zookeeper\kafka_2.12-2.8.0\bin\windows\zookeeper-server-save-start.bat" /Y
+copy "build\install\win\kafka-server-save-start.bat" "build\install\win\kafka-zookeeper\kafka_2.12-2.8.0\bin\windows\kafka-server-save-start.bat" /Y
+xcopy "build\install\win\tools" "build\install\win\Files\tools" /S /Y /B /I
+copy "build\install\win\WinSW.NET4.exe" "build\install\win\Files\tools\OnlyofficeProxy.exe" /Y
+copy "build\install\win\WinSW.NET4new.exe" "build\install\win\Files\tools\kafka.exe" /Y
+copy "build\install\win\WinSW.NET4new.exe" "build\install\win\Files\tools\zookeeper.exe" /Y
+copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /Y
+copy "build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin\conf\zoo_sample.cfg" "build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin\conf\zoo.cfg" /Y
+del /f /q "build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin\conf\zoo_sample.cfg"
 
 REM echo ######## Edit zookeeper/kafka cfg and proprties files ########
 %sed% -i "s/dataDir.*/dataDir=.\/..\/zookeeper\/Data/g" build/install/win/kafka-zookeeper/apache-zookeeper-3.7.0-bin/conf/zoo.cfg
