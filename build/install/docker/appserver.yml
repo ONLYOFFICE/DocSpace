@@ -18,7 +18,6 @@ x-service:
       DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
       DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
       DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL}
-      DOCUMENT_SERVER_URL_CONVERTER: ${DOCUMENT_SERVER_URL_CONVERTER}
       KAFKA_HOST: ${KAFKA_HOST}
       ELK_HOST: ${ELK_HOST}
       PROXY_HOST: ${PROXY_HOST}
@@ -32,7 +31,6 @@ x-service:
     - calendar_data:/var/www/products/ASC.Calendar/server/
     - mail_data:/var/www/products/ASC.Mail/server/
     
-
 services: 
   onlyoffice-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
@@ -55,97 +53,64 @@ services:
       - "9200"
       - "9300"
 
-  onlyoffice-zookeeper:
-    image: zookeeper:latest
-    container_name: ${ZOO_HOST}
-    restart: always
-    expose:
-      - "2181"
-    environment:
-      ZOO_MY_ID: 1
-      ZOO_PORT: ${ZOO_PORT:-2181}
-      ZOO_SERVER: ${ZOO_SERVER}
-    volumes:
-    - zoo_data:/data
-    - zoo_log:/datalog
-
-  onlyoffice-kafka:
-    image: confluentinc/cp-kafka:latest
-    container_name: ${KAFKA_HOST}
-    restart: always
-    expose:
-      - "9092"
-    depends_on:
-    - onlyoffice-zookeeper
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
-      KAFKA_INTER_BROKER_LISTENER_NAME: ${KAFKA_INTER_BROKER_LISTENER_NAME}
-      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER_CONNECT}
-      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
-      KAFKA_LOG4J_LOGGERS: ${KAFKA_LOG4J_LOGGERS}
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
-    volumes:
-    - kafka_data:/var/lib/kafka/data
-
   onlyoffice-api-system:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-api-system:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-api-system:${DOCKER_TAG}"
     container_name: ${API_SYSTEM_HOST}
   
   onlyoffice-backup:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-backup:${DOCKER_TAG}"
     container_name: ${BACKUP_HOST}
   
   onlyoffice-calendar:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-calendar:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-calendar:${DOCKER_TAG}"
     container_name: ${CALENDAR_HOST}
 
   onlyoffice-crm:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-crm:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-crm:${DOCKER_TAG}"
     container_name: ${CRM_HOST}
   
   onlyoffice-storage-encryption:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-storage-encryption:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-storage-encryption:${DOCKER_TAG}"
     container_name: ${STORAGE_ENCRYPTION_HOST}
   
   onlyoffice-files:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-files:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-files:${DOCKER_TAG}"
     container_name: ${FILES_HOST}
 
   onlyoffice-files-services:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-files-services:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-files-services:${DOCKER_TAG}"
     container_name: ${FILES_SERVICES_HOST}
 
   onlyoffice-mail:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-mail:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-mail:${DOCKER_TAG}"
     container_name: ${MAIL_HOST}
 
   onlyoffice-storage-migration:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-storage-migration:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-storage-migration:${DOCKER_TAG}"
     container_name: ${STORAGE_MIGRATION_HOST}
   
   onlyoffice-people-server:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-people-server:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-people-server:${DOCKER_TAG}"
     container_name: ${PEOPLE_SERVER_HOST}
 
   onlyoffice-projects-server:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-projects-server:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-projects-server:${DOCKER_TAG}"
     container_name: ${PROJECTS_SERVER_HOST}
 
   onlyoffice-socket:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-socket:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-socket:${DOCKER_TAG}"
     container_name: ${SOCKET_HOST}
     expose:
     - ${SERVICE_PORT}
@@ -153,17 +118,17 @@ services:
   
   onlyoffice-studio-notify:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-studio-notify:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-studio-notify:${DOCKER_TAG}"
     container_name: ${STUDIO_NOTIFY_HOST}
 
   onlyoffice-telegram-service:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-telegram-service:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-telegram-service:${DOCKER_TAG}"
     container_name: ${TELEGRAM_SERVICE_HOST}
 
   onlyoffice-thumbnails:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-thumbnails:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-thumbnails:${DOCKER_TAG}"
     container_name: ${THUMBNAILS_HOST}
     expose:
     - ${SERVICE_PORT}
@@ -171,7 +136,7 @@ services:
     
   onlyoffice-urlshortener:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-urlshortener:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-urlshortener:${DOCKER_TAG}"
     container_name: ${URLSHORTENER_HOST}
     expose:
     - ${SERVICE_PORT}
@@ -179,24 +144,24 @@ services:
 
   onlyoffice-api:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-api:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-api:${DOCKER_TAG}"
     container_name: ${API_HOST}
 
   onlyoffice-studio:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-studio:${DOCKER_TAG}"
     container_name: ${STUDIO_HOST}
    
   onlyoffice-ssoauth:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-ssoauth:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-ssoauth:${DOCKER_TAG}"
     container_name: ${SSOAUTH_HOST}
     expose:
     - ${SERVICE_PORT}
     - "9834"
 
   onlyoffice-proxy:
-    image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
     container_name: ${PROXY_HOST}
     restart: always
     expose:
@@ -257,10 +222,7 @@ networks:
       name: ${NETWORK_NAME}
 
 volumes:
-  kafka_data:
   es_data:
-  zoo_data:
-  zoo_log:
   proxy_log:
   app_data:
   files_data:
