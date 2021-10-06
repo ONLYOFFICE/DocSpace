@@ -136,7 +136,6 @@ const SelectFileDialogAsideView = ({
                 isDisabled={selectedFile.length === 0}
               />
               <Button
-                primary
                 size="big"
                 label={t("Common:CloseButton")}
                 onClick={onClose}
