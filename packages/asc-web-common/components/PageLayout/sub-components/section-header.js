@@ -21,7 +21,6 @@ const StyledSectionHeader = styled.div`
     margin-top: 64px;
     @media ${tablet} {
       margin-top: 55px;
-      padding-bottom: 18px;
     }
   `}
 
