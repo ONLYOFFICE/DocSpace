@@ -29,6 +29,7 @@ const PureConnectDialogContainer = (props) => {
     setConnectDialogVisible,
     personal,
     getSubfolders,
+    folderFormValidation,
   } = props;
   const {
     corporate,
@@ -80,12 +81,11 @@ const PureConnectDialogContainer = (props) => {
     setIsTitleValid(true);
     let title = e.target.value;
     //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
-    const regexp = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
-    if (title.match(regexp)) {
+    if (title.match(folderFormValidation)) {
       toastr.warning(t("Home:ContainsSpecCharacter"));
     }
-    title = title.replace(regexp, "_");
+    title = title.replace(folderFormValidation, "_");
 
     setCustomerTitleValue(title);
   };
@@ -340,7 +340,11 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const { getOAuthToken, personal } = auth.settingsStore;
+    const {
+      getOAuthToken,
+      personal,
+      folderFormValidation,
+    } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -364,6 +368,7 @@ export default inject(
       providers,
       visible,
       item,
+      folderFormValidation,
 
       getOAuthToken,
       getSubfolders,

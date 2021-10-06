@@ -238,8 +238,19 @@ class UpdateUserForm extends React.Component {
   }
 
   onInputChange(event) {
+    const { userFormValidation } = this.props;
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile[event.target.name] = event.target.value;
+    const value = event.target.value;
+    const title = event.target.name;
+
+    if (!value.match(userFormValidation)) {
+      stateCopy.errors[title] = true;
+    } else {
+      if (this.state.errors[title]) stateCopy.errors[title] = false;
+    }
+
+    stateCopy.profile[title] = value;
+
     this.setState(stateCopy);
     this.setIsEdit();
   }
@@ -278,21 +289,30 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
+  scrollToErrorForm = () => {
+    const element = this.mainFieldsContainerRef.current;
+    const parent = element.closest(".scroll-body");
+    (parent || window).scrollTo(0, element.offsetTop);
+  };
   validate() {
-    const { profile } = this.state;
-    const errors = {
+    const { profile, errors } = this.state;
+
+    if (errors.firstName || errors.lastName) {
+      this.scrollToErrorForm();
+      return;
+    }
+
+    const errorsObj = {
       firstName: !profile.firstName.trim(),
       lastName: !profile.lastName.trim(),
     };
-    const hasError = errors.firstName || errors.lastName;
+    const hasError = errorsObj.firstName || errorsObj.lastName;
 
     if (hasError) {
-      const element = this.mainFieldsContainerRef.current;
-      const parent = element.closest(".scroll-body");
-      (parent || window).scrollTo(0, element.offsetTop);
+      this.scrollToErrorForm();
     }
 
-    this.setState({ errors: errors });
+    this.setState({ errors: errorsObj });
     return !hasError;
   }
 
@@ -615,6 +635,8 @@ class UpdateUserForm extends React.Component {
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+    const notEmptyFirstName = Boolean(profile.firstName.trim());
+    const notEmptyLastName = Boolean(profile.lastName.trim());
     //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent = (
       <>
@@ -790,6 +812,9 @@ class UpdateUserForm extends React.Component {
               isRequired={true}
               hasError={errors.firstName}
               labelText={`${t("FirstName")}:`}
+              {...(notEmptyFirstName && {
+                errorMessage: t("ErrorInvalidUserFirstName"),
+              })}
               inputName="firstName"
               inputValue={profile.firstName}
               inputIsDisabled={isLoading}
@@ -802,6 +827,9 @@ class UpdateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
+              {...(notEmptyLastName && {
+                errorMessage: t("ErrorInvalidUserLastName"),
+              })}
               labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
@@ -1020,6 +1048,7 @@ export default withRouter(
     isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
     personal: auth.settingsStore.personal,
     setUserIsUpdate: auth.userStore.setUserIsUpdate,
+    userFormValidation: auth.settingsStore.userFormValidation,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(
