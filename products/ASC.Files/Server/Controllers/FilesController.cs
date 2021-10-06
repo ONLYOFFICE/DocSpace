@@ -420,7 +420,7 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@my/upload")]
-        public object UploadFileToMyFromForm([FromForm] UploadModel uploadModel)
+        public object UploadFileToMyFromForm([FromForm][ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
             return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderMy, uploadModel);
@@ -445,7 +445,7 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@common/upload")]
-        public object UploadFileToCommonFromForm([FromForm] UploadModel uploadModel)
+        public object UploadFileToCommonFromForm([FromForm][ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
             return FilesControllerHelperInt.UploadFile(GlobalFolderHelper.FolderCommon, uploadModel);
@@ -474,13 +474,13 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <returns>Uploaded file</returns>
         [Create("{folderId}/upload", order: int.MaxValue)]
-        public object UploadFileFromForm(string folderId, [FromForm] UploadModel uploadModel)
+        public object UploadFileFromForm(string folderId, [FromForm][ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
         {
             return FilesControllerHelperString.UploadFile(folderId, uploadModel);
         }
 
         [Create("{folderId:int}/upload", order: int.MaxValue - 1)]
-        public object UploadFileFromForm(int folderId, [FromForm] UploadModel uploadModel)
+        public object UploadFileFromForm(int folderId, [FromForm][ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
         {
             return FilesControllerHelperInt.UploadFile(folderId, uploadModel);
         }
