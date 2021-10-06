@@ -39,7 +39,7 @@ const StyledContainer = styled.header`
           .navMenuHeaderUnAuth {
             position: fixed;
             z-index: 160;
-            top: ${(props) => (props.isVisible ? "0" : "-56px")};
+            top: ${(props) => (props.isVisible ? "0" : "-48px")};
 
             transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
             -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
@@ -54,7 +54,7 @@ const StyledContainer = styled.header`
   #ipl-progress-indicator {
     position: fixed;
     z-index: 190;
-    top: ${(props) => (props.isDesktop ? "0" : "56px")};
+    top: ${(props) => (props.isDesktop ? "0" : "48px")};
     left: -6px;
     width: 0%;
     height: 3px;

@@ -34,11 +34,11 @@ const StyledArticle = styled.article`
     }
     ${isMobile &&
     css`
-      margin-top: 56px;
-      height: calc(100% - 56px) !important;
+      margin-top: 48px;
+      height: calc(100% - 48px) !important;
       width: 240px !important;
       @media ${tablet} {
-        margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
+        margin-top: ${(props) => (props.pinned ? "48px;" : "0;")};
       }
     `}
     @media ${tablet} {

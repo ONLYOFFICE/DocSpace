@@ -26,10 +26,11 @@ const StyledSectionHeader = styled.div`
     }
   `}
 
-  @media (min-width: 1314px) {
-    margin-left: -4px;
+  /* @media (min-width: 1314px) {
+    margin-left: -4px; //TODO:
     height: 31px;
 
+    //TODO:
     .section-header {
       margin-top: -4px;
     }
@@ -40,7 +41,7 @@ const StyledSectionHeader = styled.div`
       }
       margin-right: 10px !important;
     }
-  }
+  } */
 
   @media ${tablet} {
     margin-right: 16px;
@@ -56,7 +57,7 @@ const StyledSectionHeader = styled.div`
     ${isMobile &&
     css`
       position: fixed;
-      top: 56px;
+      top: 48px;
 
       width: ${(props) =>
         props.isArticlePinned ? `calc(100% - 272px)` : "100%"};

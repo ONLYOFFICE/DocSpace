@@ -5,9 +5,9 @@ import equal from "fast-deep-equal/react";
 const StyledSectionFilter = styled.div`
   margin: 16px 24px 9px 0;
 
-  @media (min-width: 1314px) {
+  /* @media (min-width: 1314px) {
     margin-left: -4px;
-  }
+  } */
 `;
 
 class SectionFilter extends React.Component {

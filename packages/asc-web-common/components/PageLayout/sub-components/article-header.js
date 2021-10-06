@@ -1,19 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 import equal from "fast-deep-equal/react";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledArticleHeader = styled.div`
-  height: 64px;
+  height: 39px;
 
-  @media (min-width: 1314px) {
+  /* @media (min-width: 1314px) {
     height: 39px;
 
     .headline-heading {
       margin-top: -5px;
     }
-  }
+  } */
 
-  @media (max-width: 1313px) {
+  @media ${tablet} {
     display: none;
   }
 `;

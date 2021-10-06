@@ -29,7 +29,7 @@ const Header = styled.header`
   background-color: ${backgroundColor};
   display: flex;
   width: 100vw;
-  height: 56px;
+  height: 48px;
 
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);

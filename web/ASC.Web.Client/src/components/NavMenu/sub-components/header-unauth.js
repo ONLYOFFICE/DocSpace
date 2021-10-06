@@ -15,7 +15,7 @@ const Header = styled.header`
   background-color: ${backgroundColor};
   display: flex;
   width: calc(100vw - 64px);
-  height: 56px;
+  height: 48px;
   justify-content: left;
   padding: 0 32px;
 
