@@ -635,7 +635,7 @@ class UpdateUserForm extends React.Component {
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
-    const isEmpty = Boolean(profile.firstName.trim());
+    const notEmpty = Boolean(profile.firstName.trim());
     //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent = (
       <>
@@ -811,7 +811,7 @@ class UpdateUserForm extends React.Component {
               isRequired={true}
               hasError={errors.firstName}
               labelText={`${t("FirstName")}:`}
-              {...(!isEmpty && {
+              {...(isEmpty && {
                 errorMessage: t("ErrorInvalidUserFirstName"),
               })}
               inputName="firstName"
@@ -826,7 +826,7 @@ class UpdateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
-              {...(!isEmpty && {
+              {...(isEmpty && {
                 errorMessage: t("ErrorInvalidUserLastName"),
               })}
               labelText={`${t("Common:LastName")}:`}
