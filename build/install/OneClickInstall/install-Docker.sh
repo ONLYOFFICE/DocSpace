@@ -34,6 +34,7 @@
 PRODUCT="onlyoffice"
 BASE_DIR="/app/$PRODUCT";
 STATUS=""
+SRV_VERSION=""
 
 NETWORK=${PRODUCT}
 
@@ -251,8 +252,15 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-ls | --local_scripts )
+		-ls | --localscripts )
 			if [ "$2" != "" ]; then
+				shift
+			fi
+		;;
+		
+		-vas | --versionappserver )
+			if [ "$2" != "" ]; then
+				SRV_VERSION=$2
 				shift
 			fi
 		;;
@@ -265,6 +273,7 @@ while [ "$1" != "" ]; do
 			echo "      -un, --username                   dockerhub username"
 			echo "      -p, --password                    dockerhub password"
 			echo "      -ias, --installappserver          install or update appserver (true|false)"
+			echo "      -vas, --versionappserver          select the version to install appserver (latest|develop|version number)"
 			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
@@ -828,6 +837,7 @@ install_appserver () {
 	reconfigure SERVICE_PORT ${SERVICE_PORT}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
+	reconfigure SRV_VERSION ${SRV_VERSION}
 
 	if [[ -n $EXTERNAL_PORT ]]; then
 		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/appserver.yml

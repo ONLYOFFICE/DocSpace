@@ -1462,7 +1462,7 @@ namespace ASC.Files.Core.Data
 
         protected internal DbFile InitDocument(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {
@@ -1496,7 +1496,7 @@ namespace ASC.Files.Core.Data
 
         protected internal async Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {

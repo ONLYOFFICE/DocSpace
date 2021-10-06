@@ -166,3 +166,12 @@ Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    mail
+
+%package        ssoauth
+Summary:        ssoauth
+Group:          Applications/Internet
+Requires:       %name-common
+Requires:       dotnet-sdk-5.0
+Requires:       nodejs >= 12.0
+AutoReqProv:    no
+%description    ssoauth
