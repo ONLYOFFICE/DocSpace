@@ -55,15 +55,30 @@ const getGroups = (commits) => {
   // Edit: to add it in the array format instead
   const groupArrays = Object.keys(grouped)
     .map((niceDate) => {
+      if (grouped[niceDate].length === 0) return null;
+
+      const date = new Date(grouped[niceDate][0].date);
+
       return {
         niceDate,
+        date,
         authors: getGroupedByAuthor(grouped[niceDate]),
       };
     })
-    .filter((g) => g.authors.length > 0)
+    .filter((g) => g !== null && g.authors.length > 0);
+
+  const sortedGroups = groupArrays
+    .slice()
+    .sort((a, b) => {
+      return b.date - a.date;
+    })
     .slice(0, 30); // last 30 days only
 
-  return groupArrays;
+  // sortedGroups.forEach(({ niceDate }, i) =>
+  //   console.log("niceDate", i, niceDate)
+  // );
+
+  return sortedGroups;
 };
 
 const getGroupedByAuthor = (commits) => {

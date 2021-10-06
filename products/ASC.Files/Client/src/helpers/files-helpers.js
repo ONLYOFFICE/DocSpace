@@ -1,5 +1,7 @@
 import { runInAction } from "mobx";
 import { EDITOR_PROTOCOL } from "./constants";
+import { combineUrl } from "@appserver/common/utils";
+import { homepage } from "../../package.json";
 
 export const presentInArray = (array, search, caseInsensitive = false) => {
   let pattern = caseInsensitive ? search.toLowerCase() : search;
@@ -156,13 +158,20 @@ export const checkProtocol = (fileId, withRedirect) =>
       reject();
       window.removeEventListener("blur", onBlur);
       withRedirect &&
-        window.open(`/products/files/private?fileId=${fileId}`, "_blank");
+        window.open(
+          combineUrl("", homepage, `private?fileId=${fileId}`),
+          "_blank"
+        );
     }, 1000);
 
     window.addEventListener("blur", onBlur);
 
     window.open(
-      `${EDITOR_PROTOCOL}:${window.location.origin}/products/files/doceditor?fileId=${fileId}`,
+      combineUrl(
+        `${EDITOR_PROTOCOL}:${window.location.origin}`,
+        homepage,
+        `doceditor?fileId=${fileId}`
+      ),
       "_self"
     );
   });
