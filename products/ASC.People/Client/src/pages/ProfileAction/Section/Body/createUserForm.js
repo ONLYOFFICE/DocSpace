@@ -247,9 +247,7 @@ class CreateUserForm extends React.Component {
     const value = event.target.value;
     const title = event.target.name;
 
-    const isValid = userFormValidation.test(value);
-
-    if (!isValid) {
+    if (!value.match(userFormValidation)) {
       stateCopy.errors[title] = true;
     } else {
       if (this.state.errors[title]) stateCopy.errors[title] = false;
@@ -459,6 +457,9 @@ class CreateUserForm extends React.Component {
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
 
+    const notEmptyFirstName = Boolean(profile.firstName.trim());
+    const notEmptyLastName = Boolean(profile.lastName.trim());
+
     return (
       <>
         <MainContainer>
@@ -493,7 +494,7 @@ class CreateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.firstName}
-              {...(Boolean(profile.firstName.trim()) && {
+              {...(notEmptyFirstName && {
                 errorMessage: t("ErrorInvalidUserFirstName"),
               })}
               labelText={`${t("FirstName")}:`}
@@ -507,7 +508,7 @@ class CreateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
-              {...(Boolean(profile.lastName.trim()) && {
+              {...(notEmptyLastName && {
                 errorMessage: t("ErrorInvalidUserLastName"),
               })}
               labelText={`${t("Common:LastName")}:`}
