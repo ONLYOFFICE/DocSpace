@@ -186,15 +186,11 @@ export default function withContent(WrappedContent) {
 
       let title = e.target.value;
       //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
-      const regexp = new RegExp(
-        `${folderFormValidation[0]}`,
-        `${folderFormValidation[1]}`
-      );
 
-      if (title.match(regexp)) {
+      if (title.match(folderFormValidation)) {
         toastr.warning(t("ContainsSpecCharacter"));
       }
-      title = title.replace(regexp, "_");
+      title = title.replace(folderFormValidation, "_");
       return this.setState({ itemTitle: title });
     };
 

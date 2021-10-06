@@ -247,12 +247,7 @@ class CreateUserForm extends React.Component {
     const value = event.target.value;
     const title = event.target.name;
 
-    const regExp = userFormValidation[0];
-    const flag = userFormValidation[1];
-
-    const dynamicRegExp = new RegExp(`${regExp}`, `${flag}`);
-
-    const isValid = dynamicRegExp.test(value);
+    const isValid = userFormValidation.test(value);
 
     if (!isValid) {
       stateCopy.errors[title] = true;

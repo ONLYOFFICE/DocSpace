@@ -243,14 +243,13 @@ class UpdateUserForm extends React.Component {
     const value = event.target.value;
     const title = event.target.name;
 
-    const regExp = userFormValidation[0];
-    const flag = userFormValidation[1];
+    const isValid = userFormValidation.test(value);
 
-    const dynamicRegExp = new RegExp(`${regExp}`, `${flag}`);
-
-    const isValid = dynamicRegExp.test(value);
-
-    if (!isValid) {
+    if (!value.match(userFormValidation)) {
+      console.log(
+        "title.match(userFormValidation)",
+        value.match(userFormValidation)
+      );
       stateCopy.errors[title] = true;
     } else {
       if (this.state.errors[title]) stateCopy.errors[title] = false;
