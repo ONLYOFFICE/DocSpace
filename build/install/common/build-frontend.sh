@@ -57,7 +57,7 @@ echo "== FRONT-END-BUILD =="
 
 cd ${SRC_PATH}
 yarn install
-
+# debug config
 if [ "$DEBUG_INFO" = true ]; then
 	yarn debug-info
 fi 
