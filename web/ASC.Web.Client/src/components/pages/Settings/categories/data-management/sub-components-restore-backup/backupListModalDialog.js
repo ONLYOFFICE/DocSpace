@@ -34,7 +34,9 @@ class BackupListModalDialog extends React.Component {
       hasNextPage: true,
       isNextPageLoading: false,
       displayType: this.getDisplayType(),
+      backupListHeight: 0,
     };
+
     this.throttledResize = throttle(this.setDisplayType, 300);
   }
   componentDidMount() {
@@ -49,6 +51,7 @@ class BackupListModalDialog extends React.Component {
         .then((backupList) =>
           this.setState({
             filesList: backupList,
+            backupListHeight: backupList.length * 40,
           })
         )
         .finally(() => this.setState({ isLoading: false }));
@@ -83,17 +86,23 @@ class BackupListModalDialog extends React.Component {
     });
   };
   onDeleteClick = (e) => {
-    const { filesList } = this.state;
+    const { filesList, backupListHeight } = this.state;
+
     const index =
       e.target.dataset.index ||
-      (e.target.farthestViewportElement &&
-        e.target.farthestViewportElement.dataset.index);
+      e.target.farthestViewportElement?.dataset?.index;
+
     if (!index) return;
 
     this.setState({ isLoading: true }, function () {
       deleteBackup(filesList[+index].id)
         .then(() => getBackupHistory())
-        .then((backupList) => this.setState({ filesList: backupList }))
+        .then((backupList) =>
+          this.setState({
+            filesList: backupList,
+            backupListHeight: backupListHeight - 40,
+          })
+        )
         .catch((error) => console.log("backup list error", error))
         .finally(() => this.setState({ isLoading: false }));
     });
@@ -103,10 +112,10 @@ class BackupListModalDialog extends React.Component {
     const { isNotify } = this.props;
     const index =
       e.target.dataset.index ||
-      (e.target.farthestViewportElement &&
-        e.target.farthestViewportElement.dataset.index);
+      e.target.farthestViewportElement?.dataset?.index;
+    console.log("index", index);
     if (!index) return;
-
+    return;
     this.setState({ isLoading: true }, function () {
       const backupId = filesList[+index].id;
       const storageType = "0";
@@ -131,25 +140,32 @@ class BackupListModalDialog extends React.Component {
   };
   render() {
     const { onModalClose, isVisibleDialog, t, iconUrl } = this.props;
-    const { filesList, displayType, isLoading } = this.state;
+    const { filesList, displayType, isLoading, backupListHeight } = this.state;
     // console.log("filesList", filesList);
     return (
       <ModalDialog visible={isVisibleDialog} onClose={onModalClose}>
         <ModalDialog.Header>{t("BackupList")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <StyledBackupList displayType={displayType}>
+          <StyledBackupList displayType={displayType} height={backupListHeight}>
             <div className="backup-list_modal-dialog_body">
-              <div className="backup-list_modal-header_wrapper_description">
-                <Text className="backup-list_modal-header_description">
-                  {t("BackupListDeleteWarning")}
+              {filesList.length > 0 && (
+                <div className="backup-list_modal-header_wrapper_description">
+                  <Text
+                    fontSize="12px"
+                    marginBottom={"4px"}
+                    className="backup-list_modal-header_description"
+                  >
+                    {t("BackupListDeleteWarning")}
+                  </Text>
                   <Link
                     className="backup-list_clear-link"
                     onClick={this.onCleanListClick}
+                    fontWeight={600}
                   >
                     {t("ClearList")}
                   </Link>
-                </Text>
-              </div>
+                </div>
+              )}
               {!isLoading ? (
                 filesList.length > 0 ? (
                   <BackupListBody
@@ -157,15 +173,18 @@ class BackupListModalDialog extends React.Component {
                     displayType={displayType}
                     needRowSelection={false}
                     filesList={filesList}
-                    onIconClick={this.onDeleteClick}
+                    height={filesList.length * 40}
+                    onDeleteClick={this.onDeleteClick}
                     onRestoreClick={this.onRestoreClick}
                     iconUrl={iconUrl}
                   />
                 ) : (
-                  <Text>{t("EmptyBackupList")}</Text>
+                  <Text fontSize="12px" color="#A3A9AE" textAlign="center">
+                    {t("EmptyBackupList")}
+                  </Text>
                 )
               ) : (
-                <div key="loader">
+                <div className="loader" key="loader">
                   <Loader
                     type="oval"
                     size="16px"
@@ -183,14 +202,15 @@ class BackupListModalDialog extends React.Component {
           </StyledBackupList>
         </ModalDialog.Body>
         <ModalDialog.Footer>
-          <Button
-            className="modal-dialog-button"
-            primary
-            size="big"
-            label={t("Common:CloseButton")}
-            tabIndex={1}
-            onClick={onModalClose}
-          />
+          <StyledBackupList displayType={displayType}>
+            <Button
+              className="restore_dialog-button"
+              size="medium"
+              label={t("Common:CloseButton")}
+              tabIndex={1}
+              onClick={onModalClose}
+            />
+          </StyledBackupList>
         </ModalDialog.Footer>
       </ModalDialog>
     );

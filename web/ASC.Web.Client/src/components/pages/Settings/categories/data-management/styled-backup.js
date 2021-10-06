@@ -156,17 +156,25 @@ const StyledBackup = styled.div`
 
 const StyledBackupList = styled.div`
   height: 100%;
+  .loader {
+    height: ${(props) => (props.height <= 187 ? `${props.height}px` : "187px")};
+  }
   .backup-list_modal-header_wrapper_description {
     margin-bottom: 16px;
   }
   .backup-list-row-list {
-    height: ${(props) => (props.displayType === "aside" ? "100vh" : "130px")};
+    height: ${(props) =>
+      props.displayType === "aside"
+        ? "100vh"
+        : props.height <= 187
+        ? `${props.height}px`
+        : "187px"};
     width: 100%;
   }
   .backup-list_modal-dialog_body {
-    // min-height: 94px;
-    // max-height: 210px;
-    height: 210px;
+    min-height: 94px;
+    max-height: 294px;
+    //height: 210px;
   }
   .restore_dialog-button {
     ${(props) =>
@@ -206,12 +214,12 @@ const StyledBackupList = styled.div`
   }
   .backup-list_modal-header_description,
   .backup-list_aside-header_description {
+    margin-bottom: 4px;
     /* display: flex;
     display: contents;
     overflow-wrap: break-word; */
   }
   .backup-list_clear-link {
-    //margin-left: 4px;
     text-decoration: underline dotted;
   }
   .backup-list_aside-body_wrapper {
@@ -225,6 +233,7 @@ const StyledBackupList = styled.div`
     width: 290px;
   }
   .backup-list_restore-link {
+    font-size: 12px;
     margin-right: 16px;
     color: #a3a9ae;
     max-width: 200px;
@@ -295,11 +304,11 @@ const StyledBackupList = styled.div`
     ${(props) =>
       props.displayType === "aside"
         ? css`
-            height: 56px;
+            height: 40px;
             grid-template-areas: "icon-name full-name children";
           `
         : css`
-            height: 36px;
+            height: 40px;
             grid-template-areas: "icon-name full-name children";
           `}
     grid-template-columns: 32px 1fr;
