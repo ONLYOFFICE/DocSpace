@@ -14,14 +14,15 @@ const StyledSectionHeader = styled.div`
   ${NoUserSelect}
   ${isMobile &&
   css`
-    height: 49px;
+    height: 20px;
+    /* height: 49px;
     min-height: 48px;
-    max-height: 49px;
+    max-height: 49px; */
     width: ${(props) => !props.isLoaded && "100%"};
     margin-top: 64px;
-    @media ${tablet} {
+    /* @media ${tablet} {
       margin-top: 55px;
-    }
+    } */
   `}
 
   
@@ -29,7 +30,7 @@ const StyledSectionHeader = styled.div`
     ${(props) =>
       props.viewAs !== "tablet" &&
       css`
-        height: 43px;
+        height: 49px;
 
         .arrow-button {
           svg {

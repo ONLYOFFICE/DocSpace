@@ -278,7 +278,7 @@ const Base = {
     },
 
     checkbox: {
-      margin: "auto 0 auto 24px",
+      margin: "16px 0 16px 24px",
       tabletMargin: "auto 0 auto 16px",
     },
   },
@@ -287,7 +287,8 @@ const Base = {
     top: "0",
     background: white,
     boxShadow: " 0px 10px 18px -8px rgba(0, 0, 0, 0.100306)",
-    height: "56px",
+    height: "48px",
+    tabletHeight: "56px",
     padding: "0 18px 19px 0",
     width: "100%",
     zIndex: "189",
@@ -295,7 +296,8 @@ const Base = {
 
     closeButton: {
       right: "11px",
-      top: "10px",
+      top: "6px",
+      tabletTop: "10px",
       width: "20px",
       height: "20px",
       padding: "8px",
