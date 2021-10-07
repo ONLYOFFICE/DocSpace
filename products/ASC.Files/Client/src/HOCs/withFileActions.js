@@ -56,6 +56,8 @@ export default function withFileActions(WrappedFileItem) {
         isTrashFolder,
         onSelectItem,
         item,
+        bufferSelection,
+        setBufferSelection,
       } = this.props;
 
       const { id, isFolder } = item;
@@ -63,15 +65,20 @@ export default function withFileActions(WrappedFileItem) {
       const notSelectable = e.target.classList.contains("not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
 
-      if (isPrivacy || isTrashFolder || (!draggable && !isFileName)) return e;
+      if (
+        isPrivacy ||
+        isTrashFolder ||
+        (!draggable && !isFileName && !bufferSelection)
+      )
+        return e;
 
       if (window.innerWidth < 1025 || notSelectable || isMobile) {
         return e;
       }
 
-      if (!draggable) {
-        id !== -1 && onSelectItem({ id, isFolder });
-      }
+      // if (!draggable) {
+      //   id !== -1 && onSelectItem({ id, isFolder });
+      // }
 
       const mouseButton = e.which
         ? e.which !== 1
@@ -85,6 +92,7 @@ export default function withFileActions(WrappedFileItem) {
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
+      setBufferSelection(null);
     };
 
     onMarkAsRead = (id) =>
@@ -397,6 +405,7 @@ export default function withFileActions(WrappedFileItem) {
         setNewBadgeCount,
         isActive,
         setBufferSelection,
+        bufferSelection,
       };
     }
   )(observer(WithFileActions));
