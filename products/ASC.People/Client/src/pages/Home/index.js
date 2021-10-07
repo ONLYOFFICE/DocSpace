@@ -17,26 +17,28 @@ import {
 } from "./Section";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
+import { withTranslation } from "react-i18next";
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
 
-const Home = ({
+const PureHome = ({
   isLoading,
   history,
   getUsersList,
   setIsLoading,
   setIsRefresh,
   selectedGroup,
+  tReady,
 }) => {
   const { location } = history;
   const { pathname } = location;
-  console.log("People Home render");
+  //console.log("People Home render");
 
   useEffect(() => {
     if (pathname.indexOf("/people/filter") > -1) {
       setIsLoading(true);
       setIsRefresh(true);
       const newFilter = Filter.getFilter(location);
-      console.log("PEOPLE URL changed", pathname, newFilter);
+      //console.log("PEOPLE URL changed", pathname, newFilter);
       getUsersList(newFilter).finally(() => {
         setIsLoading(false);
         setIsRefresh(false);
@@ -88,7 +90,7 @@ const Home = ({
         </PageLayout.SectionBody>
 
         <PageLayout.SectionPaging>
-          <SectionPagingContent />
+          <SectionPagingContent tReady={tReady} />
         </PageLayout.SectionPaging>
       </PageLayout>
 
@@ -97,9 +99,11 @@ const Home = ({
   );
 };
 
-Home.propTypes = {
+PureHome.propTypes = {
   isLoading: PropTypes.bool,
 };
+
+const Home = withTranslation("Home")(PureHome);
 
 export default inject(({ peopleStore }) => {
   const { usersStore, selectedGroupStore, loadingStore } = peopleStore;
