@@ -265,7 +265,7 @@ namespace ASC.Data.Encryption
         {
             var hmacKey = new byte[hmacKeyLength];
 
-            using (var sha512 = new SHA512Managed())
+            using (var sha512 = SHA512.Create())
             {
                 hmacKey = sha512.ComputeHash(Key);
             }
