@@ -52,3 +52,11 @@ del /f /q build\install\win\Files\nginx\conf\sed*
 del /f /q build\install\win\Files\nginx\conf\includes\sed*
 del /f /q build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin\conf\sed*
 del /f /q build\install\win\kafka-zookeeper\kafka_2.12-2.8.0\config\sed*
+
+REM echo ######## Build kafka/zookeeper ########
+%AdvancedInstaller% /rebuild "build\install\win\Apache ZooKeeper.aip"
+copy "build\install\win\Apache ZooKeeper-SetupFiles\Apache ZooKeeper.msi" "build\install\win\Apache ZooKeeper.msi" /Y
+rmdir "build\install\win\Apache ZooKeeper-SetupFiles" /s /q
+%AdvancedInstaller% /rebuild "build\install\win\Apache Kafka.aip"
+copy "build\install\win\Apache Kafka-SetupFiles\Apache Kafka.msi" "build\install\win\Apache Kafka.msi" /Y
+rmdir "build\install\win\Apache Kafka-SetupFiles" /s /q
