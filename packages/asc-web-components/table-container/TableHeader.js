@@ -141,52 +141,25 @@ class TableHeader extends React.Component {
 
     const newSize = maxSize - defaultColSize;
 
-    const ADD = () => {
+    const AddColumn = () => {
       gridTemplateColumns[indexOfMaxSize] = newSize + "px";
       gridTemplateColumns[activeColumnIndex] = defaultColSize + "px";
       return false;
     };
 
-    const RESET = () => {
+    const ResetColumnsSize = () => {
       localStorage.removeItem(columnStorageName);
       this.resetColumns();
       return true;
     };
 
     if (indexOfMaxSize === 1) {
-      if (newSize <= 180 || newSize <= defaultColSize) return RESET();
-      else return ADD();
-    } else if (newSize <= defaultColSize) return RESET();
-    else return ADD();
+      if (newSize <= 180 || newSize <= defaultColSize)
+        return ResetColumnsSize();
+      else return AddColumn();
+    } else if (newSize <= defaultColSize) return ResetColumnsSize();
+    else return AddColumn();
   };
-
-  // addNewColumns = (gridTemplateColumns, columnIndex) => {
-  //   const filterColumns = this.props.columns
-  //     .filter((x) => x.enable)
-  //     .filter((x) => x.key !== this.props.columns[columnIndex - 1].key)
-  //     .filter((x) => !x.defaultSize);
-
-  //   const defaultSize = this.props.columns[columnIndex - 1]?.defaultSize;
-
-  //   let index = this.props.columns.length;
-  //   while (index !== 0) {
-  //     index--;
-  //     const someItem = this.props.columns[index];
-
-  //     const isFind = filterColumns.find((x) => x.key === someItem.key);
-  //     if (isFind) {
-  //       const someItemById = document.getElementById("column_" + (index + 1));
-
-  //       const columnSize =
-  //         someItemById.clientWidth -
-  //         (defaultSize ? defaultSize : minColumnSize);
-
-  //       if (columnSize >= minColumnSize) {
-  //         return (gridTemplateColumns[index + 1] = columnSize + "px");
-  //       }
-  //     }
-  //   }
-  // };
 
   onMouseMove = (e) => {
     const { columnIndex } = this.state;
