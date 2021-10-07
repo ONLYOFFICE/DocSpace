@@ -116,6 +116,7 @@ export default function withFileActions(WrappedFileItem) {
       if (viewAs === "tile") {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
+        if (e.detail === 1) this.onContentFileSelect(!checked, item);
       }
     };
     onFilesClick = (e) => {
