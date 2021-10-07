@@ -265,9 +265,7 @@ const Editor = () => {
           fileInfo = await getFileInfo(fileId);
 
           if (url.indexOf("#message/") > -1) {
-            const needConvert = canConvert(fileInfo.fileExst);
-
-            if (needConvert) {
+            if (canConvert(fileInfo.fileExst)) {
               const url = await convertDocumentUrl();
               history.pushState({}, null, url);
             }
