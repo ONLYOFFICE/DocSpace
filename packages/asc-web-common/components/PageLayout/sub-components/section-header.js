@@ -30,7 +30,8 @@ const StyledSectionHeader = styled.div`
       props.viewAs !== "tablet" &&
       css`
         margin-left: -4px;
-        height: 31px;
+        height: 37px;
+        margin-top: 11px;
 
         .section-header {
           margin-top: -4px;
