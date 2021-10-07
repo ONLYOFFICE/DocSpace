@@ -244,10 +244,7 @@ namespace ASC.Data.Encryption
         {
             var random = new byte[length];
 
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(random);
-            }
+            random = RandomNumberGenerator.GetBytes(length);
 
             return random;
         }
