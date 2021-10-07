@@ -87,7 +87,8 @@ export default function withFileActions(WrappedFileItem) {
       this.props.markAsRead([], [`${id}`], this.props.item);
 
     onMouseClick = (e) => {
-      const { viewAs, isItemsSelected, item, checked } = this.props;
+      const { viewAs, isItemsSelected, item, onClickItem } = this.props;
+      const { id, isFolder } = item;
 
       if (
         e.target.closest(".checkbox") ||
@@ -105,11 +106,11 @@ export default function withFileActions(WrappedFileItem) {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
 
-        if (e.detail === 1) this.onContentFileSelect(!checked, item);
+        if (e.detail === 1) onClickItem({ id, isFolder });
       }
 
       if (e.detail === 1) {
-        this.onContentFileSelect(!checked, item);
+        onClickItem({ id, isFolder });
       }
     };
     onFilesClick = (e) => {
@@ -294,6 +295,7 @@ export default function withFileActions(WrappedFileItem) {
         onSelectItem,
         markAsRead,
         setNewBadgeCount,
+        onClickItem,
       } = filesActionsStore;
       const {
         setSharingPanelVisible,
@@ -348,6 +350,7 @@ export default function withFileActions(WrappedFileItem) {
         item,
         selectRowAction,
         onSelectItem,
+        onClickItem,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
         dragging,

@@ -285,6 +285,21 @@ class FilesActionStore {
     setBufferSelection(item);
   };
 
+  onClickItem = ({ id, isFolder }) => {
+    const { setSelection, selected, setSelected } = this.filesStore;
+    selected === "close" && setSelected("none");
+
+    if (!id) return;
+
+    const item = this.filesStore[isFolder ? "folders" : "files"].find(
+      (elm) => elm.id === id
+    );
+
+    item.isFolder = isFolder;
+
+    setSelection([item]);
+  };
+
   deleteItemAction = async (itemId, translations, isFile, isThirdParty) => {
     const {
       setSecondaryProgressBarData,
