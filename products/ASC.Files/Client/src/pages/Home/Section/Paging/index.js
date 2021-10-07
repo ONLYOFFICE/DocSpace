@@ -21,7 +21,7 @@ const SectionPagingContent = ({
         e.preventDefault();
         return;
       }
-      console.log("Next Clicked", e);
+      //console.log("Next Clicked", e);
 
       const newFilter = filter.clone();
       newFilter.page++;
@@ -41,7 +41,7 @@ const SectionPagingContent = ({
         return;
       }
 
-      console.log("Prev Clicked", e);
+      //console.log("Prev Clicked", e);
 
       const newFilter = filter.clone();
       newFilter.page--;
@@ -56,7 +56,7 @@ const SectionPagingContent = ({
 
   const onChangePageSize = useCallback(
     (pageItem) => {
-      console.log("Paging onChangePageSize", pageItem);
+      //console.log("Paging onChangePageSize", pageItem);
 
       const newFilter = filter.clone();
       newFilter.page = 0;
@@ -72,7 +72,7 @@ const SectionPagingContent = ({
 
   const onChangePage = useCallback(
     (pageItem) => {
-      console.log("Paging onChangePage", pageItem);
+      //console.log("Paging onChangePage", pageItem);
 
       const newFilter = filter.clone();
       newFilter.page = pageItem.key;
