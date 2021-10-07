@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Core.Common.EF.Model
 {
     public class Regions
@@ -7,5 +9,24 @@ namespace ASC.Core.Common.EF.Model
         public string Provider { get; set; }
 
         public string ConnectionString { get; set; }
+    }
+
+    public static class RegionsExtension
+    {
+        public static ModelBuilderWrapper AddRegions(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddRegions, Provider.MySql);
+
+            return modelBuilder;
+        }
+
+        public static void MySqlAddRegions(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Regions>(entity =>
+            {
+                entity.HasKey(e => e.Region);
+            });
+        }
     }
 }
