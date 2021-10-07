@@ -598,6 +598,7 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit")]
+        [Consumes("application/json")]
         public object StartEditFromBody(string fileId, [FromBody] StartEditModel model)
         {
             return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
@@ -611,9 +612,16 @@ namespace ASC.Api.Documents
         }
 
         [Create("file/{fileId:int}/startedit")]
+        [Consumes("application/json")]
         public object StartEditFromBody(int fileId, [FromBody] StartEditModel model)
         {
             return FilesControllerHelperInt.StartEdit(fileId, model.EditingAlone, model.Doc);
+        }
+
+        [Create("file/{fileId:int}/startedit")]
+        public object StartEdit(int fileId)
+        {
+            return FilesControllerHelperInt.StartEdit(fileId, false, null);
         }
 
         [Create("file/{fileId:int}/startedit")]
