@@ -5,7 +5,7 @@ import { checkProtocol } from "../helpers/files-helpers";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
-import { isMobile } from "react-device-detect";
+import { isMobile, isDesktop } from "react-device-detect";
 
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
@@ -110,7 +110,7 @@ export default function withFileActions(WrappedFileItem) {
       )
         return;
 
-      if (e.detail === 1) {
+      if (e.detail === 1 && isDesktop) {
         onSelectItem({ id, isFolder });
       }
 

@@ -12,8 +12,9 @@ import SharedButton from "../../../../../components/SharedButton";
 import ItemIcon from "../../../../../components/ItemIcon";
 
 const StyledSimpleFilesRow = styled(Row)`
-  background: ${(props) => props.checked && "#f8f9f9"};
-  cursor: ${(props) => props.checked && `url(images/cursor.palm.svg), auto`};
+  background: ${(props) => (props.checked || props.isSelected) && "#f8f9f9"};
+  cursor: ${(props) =>
+    (props.checked || props.isSelected) && `url(images/cursor.palm.svg), auto`};
   margin-top: -2px;
   ${(props) =>
     !props.contextOptions &&
@@ -72,6 +73,7 @@ const SimpleFilesRow = (props) => {
     onMouseClick,
     isEdit,
     showShare,
+    isSelected,
   } = props;
 
   const sharedButton =
@@ -113,6 +115,7 @@ const SimpleFilesRow = (props) => {
           checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
+          isSelected={isSelected}
         >
           <FilesRowContent
             item={item}
