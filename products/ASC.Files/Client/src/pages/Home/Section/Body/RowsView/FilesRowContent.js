@@ -69,6 +69,7 @@ const FilesRowContent = ({
     foldersCount,
     providerKey,
     access,
+    title,
   } = item;
 
   const withAccess = isAdmin || access === 0;
@@ -85,7 +86,7 @@ const FilesRowContent = ({
         <Link
           containerWidth="55%"
           type="page"
-          title={titleWithoutExt}
+          title={title}
           fontWeight="600"
           fontSize="15px"
           target="_blank"
@@ -101,7 +102,6 @@ const FilesRowContent = ({
               color="#A3A9AE"
               fontSize="15px"
               fontWeight={600}
-              title={fileExst}
               truncate={true}
             >
               {fileExst}
