@@ -27,7 +27,7 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onHideContextMenu = () => {
-      this.props.setBufferSelection(null);
+      //this.props.setBufferSelection(null);
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {

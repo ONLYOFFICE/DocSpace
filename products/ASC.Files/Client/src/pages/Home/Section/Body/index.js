@@ -30,7 +30,6 @@ const SectionBodyContent = (props) => {
     setSelection,
     tooltipPageX,
     tooltipPageY,
-    setBufferSelection,
   } = props;
 
   useEffect(() => {
@@ -68,7 +67,6 @@ const SectionBodyContent = (props) => {
       !e.target.closest(".not-selectable")
     )
       setSelection([]);
-    setBufferSelection(null);
   };
 
   const onMouseMove = (e) => {
@@ -225,7 +223,6 @@ export default inject(
       setSelection,
       tooltipPageX,
       tooltipPageY,
-      setBufferSelection,
     } = filesStore;
 
     return {
@@ -245,7 +242,6 @@ export default inject(
       setSelection,
       tooltipPageX,
       tooltipPageY,
-      setBufferSelection,
     };
   }
 )(
