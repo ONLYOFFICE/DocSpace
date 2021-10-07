@@ -96,7 +96,7 @@ export default function withFileActions(WrappedFileItem) {
         checked,
       } = this.props;
       const { id, isFolder } = item;
-      console.log(e.detail);
+
       if (
         e.target.closest(".checkbox") ||
         e.target.tagName === "INPUT" ||
