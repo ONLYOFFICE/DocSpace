@@ -65,7 +65,7 @@ const StyledSnackBar = styled(Box)`
     font-size: 13px;
     color: "#000";
     cursor: pointer;
-    line-height: 12px;
+    line-height: 14px;
     text-decoration: underline;
   }
 `;

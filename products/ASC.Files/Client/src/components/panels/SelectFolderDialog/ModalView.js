@@ -69,7 +69,6 @@ const SelectFolderDialogModalView = ({
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
-                  primary
                   size="medium"
                   label={t("Common:CloseButton")}
                   onClick={onClose}

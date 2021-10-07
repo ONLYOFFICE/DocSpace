@@ -14,7 +14,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
-import { openDocEditor } from "../helpers/utils";
+import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
 
 const { FilesFilter } = api;
@@ -1572,7 +1572,7 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openDocEditor(id, providerKey, tab, url);
+    return openEditor(id, providerKey, tab, url);
   };
 
   createThumbnails = () => {

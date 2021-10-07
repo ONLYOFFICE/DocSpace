@@ -114,15 +114,15 @@ export default function withContextOptions(WrappedComponent) {
         setConvertItem(item);
         setConvertDialogVisible(true);
       } else {
-        this.openDocEditor(false);
+        this.gotoDocEditor(false);
       }
     };
 
     onPreviewClick = () => {
-      this.openDocEditor(true);
+      this.gotoDocEditor(true);
     };
 
-    openDocEditor = (preview = false) => {
+    gotoDocEditor = (preview = false) => {
       const { item, openDocEditor, isDesktop } = this.props;
       const { id, providerKey, fileExst } = item;
 
