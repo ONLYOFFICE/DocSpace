@@ -31,14 +31,14 @@
  # terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  #
 
-COMPANY="onlyoffice"
+PACKAGE_SYSNAME="onlyoffice"
 PRODUCT="appserver"
-BASE_DIR="/app/$COMPANY";
+BASE_DIR="/app/$PACKAGE_SYSNAME";
 STATUS=""
 DOCKER_TAG=""
 GIT_BRANCH="develop"
 
-NETWORK=${COMPANY}
+NETWORK=${PACKAGE_SYSNAME}
 
 DISK_REQUIREMENTS=40960;
 MEMORY_REQUIREMENTS=5500;
@@ -727,7 +727,7 @@ set_jwt_secret () {
 	CURRENT_JWT_SECRET="";
 
 	if [[ -z ${JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${COMPANY}-document-server" "JWT_SECRET");
+		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-document-server" "JWT_SECRET");
 
 		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
 			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
@@ -735,7 +735,7 @@ set_jwt_secret () {
 	fi
 
 	if [[ -z ${JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${COMPANY}-api" "DOCUMENT_SERVER_JWT_SECRET");
+		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "DOCUMENT_SERVER_JWT_SECRET");
 
 		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
 			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
@@ -761,7 +761,7 @@ set_core_machinekey () {
 	fi
 
 	if [[ -z ${CORE_MACHINEKEY} ]]; then
-		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${COMPANY}-api" "$APP_CORE_MACHINEKEY");
+		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "$APP_CORE_MACHINEKEY");
 
 		if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
 			APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
