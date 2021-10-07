@@ -20,7 +20,6 @@ const FilesMediaViewer = (props) => {
     mediaViewerImageFormats,
     location,
     setRemoveMediaItem,
-    selectedFolderId,
     userAccess,
     deleteDialogVisible,
     previewFile,
@@ -73,13 +72,7 @@ const FilesMediaViewer = (props) => {
       let file = files.find((file) => file.id === id);
       if (file) {
         setRemoveMediaItem(file);
-        deleteItemAction(
-          file.id,
-          selectedFolderId,
-          translations,
-          true,
-          file.providerKey
-        );
+        deleteItemAction(file.id, translations, true, file.providerKey);
       }
     }
   };
@@ -141,7 +134,6 @@ export default inject(
     filesActionsStore,
     formatsStore,
     dialogsStore,
-    selectedFolderStore,
     treeFoldersStore,
   }) => {
     const {
@@ -174,7 +166,6 @@ export default inject(
       mediaViewerMediaFormats: media,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
-      selectedFolderId: selectedFolderStore.id,
       fetchFiles,
       previewFile,
       setIsLoading,

@@ -1,0 +1,12 @@
+{{#each releases}}
+  {{#commit-list groups heading='## Changelog'}}
+    ### {{niceDate}}:
+      {{#each authors}}
+        #### {{author}}: 
+          {{#each commits}}
+          - {{subject}} {{#if href}}[`{{shorthash}}`]({{href}}){{/if}}
+          {{/each}}
+      {{/each}}
+  {{/commit-list}}
+
+{{/each}}

@@ -67,7 +67,7 @@ class DeleteDialogComponent extends React.Component {
 
     if (!selection.length) return;
 
-    deleteAction(translations, selection).catch((err) => toastr.error(err));
+    deleteAction(translations, selection);
   };
 
   onUnsubscribe = () => {

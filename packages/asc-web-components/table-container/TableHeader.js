@@ -130,32 +130,35 @@ class TableHeader extends React.Component {
     }
   };
 
-  addNewColumns = (gridTemplateColumns, columnIndex) => {
-    const filterColumns = this.props.columns
-      .filter((x) => x.enable)
-      .filter((x) => x.key !== this.props.columns[columnIndex - 1].key)
-      .filter((x) => !x.defaultSize);
+  addNewColumns = (gridTemplateColumns, activeColumnIndex, containerWidth) => {
+    const { columns, columnStorageName } = this.props;
+    const filterColumns = columns.filter((x) => !x.defaultSize);
 
-    const defaultSize = this.props.columns[columnIndex - 1]?.defaultSize;
+    const clearSize = gridTemplateColumns.map((c) => this.getSubstring(c));
+    const maxSize = Math.max.apply(Math, clearSize);
+    const defaultColSize = containerWidth / filterColumns.length;
+    const indexOfMaxSize = clearSize.findIndex((s) => s === maxSize);
 
-    let index = this.props.columns.length;
-    while (index !== 0) {
-      index--;
-      const someItem = this.props.columns[index];
+    const newSize = maxSize - defaultColSize;
 
-      const isFind = filterColumns.find((x) => x.key === someItem.key);
-      if (isFind) {
-        const someItemById = document.getElementById("column_" + (index + 1));
+    const AddColumn = () => {
+      gridTemplateColumns[indexOfMaxSize] = newSize + "px";
+      gridTemplateColumns[activeColumnIndex] = defaultColSize + "px";
+      return false;
+    };
 
-        const columnSize =
-          someItemById.clientWidth -
-          (defaultSize ? defaultSize : minColumnSize);
+    const ResetColumnsSize = () => {
+      localStorage.removeItem(columnStorageName);
+      this.resetColumns();
+      return true;
+    };
 
-        if (columnSize >= minColumnSize) {
-          return (gridTemplateColumns[index + 1] = columnSize + "px");
-        }
-      }
-    }
+    if (indexOfMaxSize === 1) {
+      if (newSize <= 180 || newSize <= defaultColSize)
+        return ResetColumnsSize();
+      else return AddColumn();
+    } else if (newSize <= defaultColSize) return ResetColumnsSize();
+    else return AddColumn();
   };
 
   onMouseMove = (e) => {
@@ -280,8 +283,17 @@ class TableHeader extends React.Component {
 
         if (!enable) {
           gridTemplateColumns.push("0px");
-          gridTemplateColumns[1] =
-            this.getSubstring(gridTemplateColumns[1]) +
+
+          let colIndex = 1;
+          let leftEnableColumn = gridTemplateColumns[index - colIndex];
+          while (leftEnableColumn === "0px") {
+            colIndex++;
+            leftEnableColumn = gridTemplateColumns[index - colIndex];
+          }
+
+          //added the size of the disabled column to the left column
+          gridTemplateColumns[index - colIndex] =
+            this.getSubstring(gridTemplateColumns[index - colIndex]) +
             this.getSubstring(item) +
             "px";
         } else if (item !== `${settingsSize}px` && item !== checkboxSize) {
@@ -305,9 +317,12 @@ class TableHeader extends React.Component {
       }
 
       if (activeColumnIndex) {
-        localStorage.removeItem(columnStorageName);
-        return this.resetColumns();
-        //this.addNewColumns(gridTemplateColumns, activeColumnIndex);
+        const needReset = this.addNewColumns(
+          gridTemplateColumns,
+          activeColumnIndex,
+          containerWidth
+        );
+        if (needReset) return;
       }
 
       str = gridTemplateColumns.join(" ");

@@ -14,7 +14,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
-import { openDocEditor } from "../helpers/utils";
+import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
 
 const { FilesFilter } = api;
@@ -1298,7 +1298,13 @@ class FilesStore {
       other: [],
     };
 
-    for (let item of this.selection) {
+    const selection = this.selection.length
+      ? this.selection
+      : this.bufferSelection
+      ? [this.bufferSelection]
+      : [];
+
+    for (let item of selection) {
       item.checked = true;
       item.format = null;
 
@@ -1362,7 +1368,13 @@ class FilesStore {
   get isWebEditSelected() {
     const { filesConverts } = this.formatsStore.docserviceStore;
 
-    return this.selection.some((selected) => {
+    const selection = this.selection.length
+      ? this.selection
+      : this.bufferSelection
+      ? [this.bufferSelection]
+      : [];
+
+    return selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
       const index = filesConverts.findIndex((f) => f[selected.fileExst]);
       return index !== -1;
@@ -1388,7 +1400,12 @@ class FilesStore {
   }
 
   get selectionTitle() {
-    if (this.selection.length === 0) return null;
+    if (this.selection.length === 0) {
+      if (this.bufferSelection) {
+        return this.bufferSelection.title;
+      }
+      return null;
+    }
     return this.selection.find((el) => el.title).title;
   }
 
@@ -1555,7 +1572,7 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openDocEditor(id, providerKey, tab, url);
+    return openEditor(id, providerKey, tab, url);
   };
 
   createThumbnails = () => {

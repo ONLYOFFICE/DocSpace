@@ -69,7 +69,12 @@ const TableRow = (props) => {
       </TableCell>
       {children}
       <div>
-        <TableCell {...selectionProp} style={style} forwardedRef={row}>
+        <TableCell
+          {...selectionProp}
+          style={style}
+          forwardedRef={row}
+          className={`${selectionProp?.className} table-container_row-context-menu-wrapper`}
+        >
           <ContextMenu
             onHide={onHideContextMenu}
             ref={cm}

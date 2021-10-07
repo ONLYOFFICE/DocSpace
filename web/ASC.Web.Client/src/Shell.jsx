@@ -368,7 +368,16 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     return (
       <PrivateRoute
         key={m.id}
-        path={appURL}
+        path={
+          m.appName === "files"
+            ? [
+                "/Products/Files",
+                "/Products/Files/",
+                "/Products/Files/?desktop=true",
+                appURL,
+              ]
+            : appURL
+        }
         component={System}
         system={system}
       />
