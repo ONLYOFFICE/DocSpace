@@ -89,6 +89,7 @@ class ComboBox extends React.Component {
       toggleAction,
       textOverflow,
       showDisabledItems,
+      isDefaultMode,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -146,6 +147,7 @@ class ComboBox extends React.Component {
             {...dropDownMaxHeightProp}
             {...dropDownManualWidthProp}
             showDisabledItems={showDisabledItems}
+            isDefaultMode={isDefaultMode}
           >
             {advancedOptions
               ? advancedOptions
@@ -212,6 +214,8 @@ ComboBox.propTypes = {
   textOverflow: PropTypes.bool,
   /** Disables clicking on the icon */
   disableIconClick: PropTypes.bool,
+  /** Defines the operation mode of the component, by default with the portal */
+  isDefaultMode: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -223,6 +227,7 @@ ComboBox.defaultProps = {
   size: "base",
   disableIconClick: true,
   showDisabledItems: false,
+  isDefaultMode: true,
 };
 
 export default ComboBox;

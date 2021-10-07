@@ -144,7 +144,7 @@ class DropDown extends React.PureComponent {
     if (
       this.props.directionY === "top" ||
       (this.props.directionY === "both" &&
-        rects.top + dropDownHeight > viewport.height)
+        rects.bottom + dropDownHeight > viewport.height)
     ) {
       bottom -= parent.current.clientHeight + dropDownHeight;
     }
