@@ -38,8 +38,8 @@
     "style-loader": "3.2.1",
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "5.52.1",
-    "webpack-cli": "4.8.0",
-    "webpack-dev-server": "4.2.0"
+    "webpack-cli": "4.9.0",
+    "webpack-dev-server": "4.3.1"
   },
   "id": "f4d98afd-d336-4332-8778-3c6945c81ea0",
   "title": "ONLYOFFICE"

@@ -49,7 +49,7 @@
     "debug-info": "node packages/debug-info --unreleased-only --template debuginfo --output public/debuginfo.md"
   },
   "devDependencies": {
-    "lerna": "^4.0.0",
+    "lerna": "3.22.1",
     "replace-in-files-cli": "^1.0.0",
     "shx": "^0.3.3",
     "terser": "^5.8.0",
