@@ -87,9 +87,16 @@ export default function withFileActions(WrappedFileItem) {
       this.props.markAsRead([], [`${id}`], this.props.item);
 
     onMouseClick = (e) => {
-      const { viewAs, isItemsSelected, item, onClickItem } = this.props;
+      const {
+        viewAs,
+        isItemsSelected,
+        item,
+        onClickItem,
+        onSelectItem,
+        checked,
+      } = this.props;
       const { id, isFolder } = item;
-
+      console.log(e.detail);
       if (
         e.target.closest(".checkbox") ||
         e.target.tagName === "INPUT" ||
@@ -102,15 +109,18 @@ export default function withFileActions(WrappedFileItem) {
       )
         return;
 
+      if (e.detail === 1) {
+        onClickItem({ id, isFolder });
+      }
+
+      if (e.detail === 0) {
+        !checked && onClickItem({ id, isFolder });
+        onSelectItem({ id, isFolder });
+      }
+
       if (viewAs === "tile") {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
-
-        if (e.detail === 1) onClickItem({ id, isFolder });
-      }
-
-      if (e.detail === 1) {
-        onClickItem({ id, isFolder });
       }
     };
     onFilesClick = (e) => {

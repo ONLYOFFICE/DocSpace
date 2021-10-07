@@ -272,7 +272,7 @@ class FilesActionStore {
 
   onSelectItem = ({ id, isFolder }) => {
     const { setBufferSelection, selected, setSelected } = this.filesStore;
-    /* selected === "close" &&  */ setSelected("none");
+    /* selected === "close" &&   setSelected("none");*/
 
     if (!id) return;
 
