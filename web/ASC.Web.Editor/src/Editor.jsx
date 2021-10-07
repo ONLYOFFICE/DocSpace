@@ -526,14 +526,17 @@ const Editor = () => {
   const onSDKRequestEditRights = async () => {
     console.log("ONLYOFFICE Document Editor requests editing rights");
     const index = url.indexOf("&action=view");
-    let convertUrl = url.substring(0, index);
 
-    if (canConvert(fileInfo.fileExst)) {
-      convertUrl = await convertDocumentUrl();
+    if (index) {
+      let convertUrl = url.substring(0, index);
+
+      if (canConvert(fileInfo.fileExst)) {
+        convertUrl = await convertDocumentUrl();
+      }
+
+      history.pushState({}, null, convertUrl);
+      document.location.reload();
     }
-
-    history.pushState({}, null, convertUrl);
-    document.location.reload();
   };
 
   const [isVisible, setIsVisible] = useState(false);
