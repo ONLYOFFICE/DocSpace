@@ -260,7 +260,6 @@ const Editor = () => {
         );
         return;
       }
-
       if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
@@ -269,7 +268,8 @@ const Editor = () => {
             const needConvert = canConvert(fileInfo.fileExst);
 
             if (needConvert) {
-              location.href = await convertDocumentUrl();
+              const url = await convertDocumentUrl();
+              history.pushState({}, null, url);
             }
           }
         } catch (err) {
