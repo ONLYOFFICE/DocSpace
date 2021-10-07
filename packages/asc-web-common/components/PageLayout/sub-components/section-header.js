@@ -29,13 +29,7 @@ const StyledSectionHeader = styled.div`
     ${(props) =>
       props.viewAs !== "tablet" &&
       css`
-        margin-left: -4px;
-        height: 37px;
-        margin-top: 11px;
-
-        .section-header {
-          margin-top: -4px;
-        }
+        height: 43px;
 
         .arrow-button {
           svg {
