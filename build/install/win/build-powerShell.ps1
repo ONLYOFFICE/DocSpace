@@ -1,3 +1,5 @@
+######## Downloading components ########
+
 $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12,Tls13'
 [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
 
