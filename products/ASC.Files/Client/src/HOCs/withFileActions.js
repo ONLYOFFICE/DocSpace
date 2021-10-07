@@ -14,8 +14,9 @@ export default function withFileActions(WrappedFileItem) {
     }
 
     onContentFileSelect = (checked, file) => {
-      const { selectRowAction } = this.props;
+      const { selectRowAction, setBufferSelection } = this.props;
       if (!file || file.id === -1) return;
+      setBufferSelection(null);
       selectRowAction(checked, file);
     };
 
@@ -335,6 +336,7 @@ export default function withFileActions(WrappedFileItem) {
         getFolderInfo,
         viewAs,
         bufferSelection,
+        setBufferSelection,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -402,6 +404,7 @@ export default function withFileActions(WrappedFileItem) {
         isItemsSelected: selection.length > 0,
         setNewBadgeCount,
         bufferSelection,
+        setBufferSelection,
       };
     }
   )(observer(WithFileActions));
