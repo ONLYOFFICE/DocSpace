@@ -221,6 +221,11 @@ const Editor = () => {
     );
   };
 
+  const convertDocumentUrl = async () => {
+    const convert = await convertFile(fileId, true);
+    return convert[0].result.webUrl;
+  };
+
   const init = async () => {
     try {
       if (!fileId) return;
@@ -264,8 +269,7 @@ const Editor = () => {
             const needConvert = canConvert(fileInfo.fileExst);
 
             if (needConvert) {
-              const convert = await convertFile(fileId, true);
-              location.href = convert[0].result.webUrl;
+              location.href = await convertDocumentUrl();
             }
           }
         } catch (err) {
@@ -296,7 +300,7 @@ const Editor = () => {
 
       isSharingAccess = fileInfo && fileInfo.canShare;
 
-      if (url.indexOf("action=view") !== -1) {
+      if (view) {
         config.editorConfig.mode = "view";
       }
 
@@ -488,6 +492,7 @@ const Editor = () => {
           onRequestSaveAs,
           onRequestMailMergeRecipients,
           onRequestCompareFile,
+          onRequestEditRights: onSDKRequestEditRights,
         },
       };
 
@@ -516,6 +521,19 @@ const Editor = () => {
     console.log(
       "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
     );
+  };
+
+  const onSDKRequestEditRights = async () => {
+    console.log("ONLYOFFICE Document Editor requests editing rights");
+    const index = url.indexOf("&action=view");
+    let convertUrl = url.substring(0, index);
+
+    if (canConvert(fileInfo.fileExst)) {
+      convertUrl = await convertDocumentUrl();
+    }
+
+    history.pushState({}, null, convertUrl);
+    document.location.reload();
   };
 
   const [isVisible, setIsVisible] = useState(false);
