@@ -110,11 +110,6 @@ export default function withFileActions(WrappedFileItem) {
         return;
 
       if (e.detail === 1) {
-        onClickItem({ id, isFolder });
-      }
-
-      if (e.detail === 0) {
-        !checked && onClickItem({ id, isFolder });
         onSelectItem({ id, isFolder });
       }
 
@@ -228,6 +223,7 @@ export default function withFileActions(WrappedFileItem) {
         personal,
         canWebEdit,
         canViewedDocs,
+        bufferSelection,
       } = this.props;
       const { fileExst, access, id } = item;
 
@@ -261,6 +257,10 @@ export default function withFileActions(WrappedFileItem) {
 
       const checkedProps = isEdit || id <= 0 ? false : checked;
 
+      const isSelected =
+        bufferSelection?.id === item.id &&
+        bufferSelection?.fileExst === item.fileExst;
+
       return (
         <WrappedFileItem
           onContentFileSelect={this.onContentFileSelect}
@@ -279,6 +279,7 @@ export default function withFileActions(WrappedFileItem) {
           checkedProps={checkedProps}
           dragging={dragging}
           isEdit={isEdit}
+          isSelected={isSelected}
           {...this.props}
         />
       );
@@ -332,6 +333,7 @@ export default function withFileActions(WrappedFileItem) {
         openDocEditor,
         getFolderInfo,
         viewAs,
+        bufferSelection,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -398,6 +400,7 @@ export default function withFileActions(WrappedFileItem) {
         personal: auth.settingsStore.personal,
         isItemsSelected: selection.length > 0,
         setNewBadgeCount,
+        bufferSelection,
       };
     }
   )(observer(WithFileActions));

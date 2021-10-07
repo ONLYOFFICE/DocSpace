@@ -24,8 +24,11 @@ const { acceptBackground, background } = Base.dragAndDrop;
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
-    background: ${(props) => props.checked && "#f8f9f9 !important"};
-    cursor: ${(props) => props.checked && "url(images/cursor.palm.svg), auto"};
+    background: ${(props) =>
+      (props.checked || props.isSelected) && "#f8f9f9 !important"};
+    cursor: ${(props) =>
+      (props.checked || props.isSelected) &&
+      "url(images/cursor.palm.svg), auto"};
   }
 `;
 
@@ -95,6 +98,7 @@ const FilesTableRow = (props) => {
     onMouseDown,
     showShare,
     personal,
+    isSelected,
   } = props;
 
   const sharedButton =
@@ -162,6 +166,7 @@ const FilesTableRow = (props) => {
         onClick={onMouseClick}
         {...contextOptionsProps}
         checked={checkedProps}
+        isSelected={isSelected}
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell {...props} />
