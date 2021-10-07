@@ -31,7 +31,7 @@ const StyledNav = styled.nav`
   align-items: center;
   position: absolute;
   right: 0;
-  height: 56px;
+  height: 48px;
   z-index: 190 !important;
 
   .profile-menu {

@@ -13,6 +13,7 @@ import { tablet } from "@appserver/components/utils/device";
 const commonStyles = css`
   flex-grow: 1;
   height: 100%;
+  border-left: none;
 
   -webkit-user-select: none;
 

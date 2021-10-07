@@ -27,6 +27,18 @@ const FolderStyles = css`
   box-sizing: border-box;
 `;
 
+const draggingStyle = css`
+  background-color: #f8f7bf;
+`;
+
+const draggingHoverStyle = css`
+  background-color: #efefb2;
+`;
+
+const checkedStyle = css`
+  background: #f3f4f4 !important;
+`;
+
 const StyledTile = styled.div`
   cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
   min-height: 57px;
@@ -38,6 +50,7 @@ const StyledTile = styled.div`
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => props.isFolder && FolderStyles}
+  ${(props) => props.checked && checkedStyle}
     ${(props) =>
     props.isFolder &&
     css`
@@ -45,7 +58,7 @@ const StyledTile = styled.div`
         content: "";
         position: absolute;
         top: -5px;
-        left: 1px;
+        left: 0px;
         border-top: 1px solid #d0d5da;
         border-top-left-radius: 3px;
         border-left: 1px solid #d0d5da;
@@ -53,10 +66,6 @@ const StyledTile = styled.div`
         height: 8px;
         background-color: #fff;
         border-bottom: transparent;
-
-        @media ${tablet} {
-          left: 0px;
-        }
       }
       &:after {
         content: "";
@@ -74,28 +83,21 @@ const StyledTile = styled.div`
         }
       }
     `}
-    ${(props) =>
-    props.isFolder &&
-    props.dragging &&
-    css`
-      &:before {
-        background-color: #f8f7bf;
-      }
-      &:after {
-        background-color: #f8f7bf;
-      }
-    `}
-    ${(props) =>
-    props.isFolder &&
-    props.dragging &&
-    css`
-      &:hover:before {
-        background-color: #efefb2;
-      }
-      &:hover:after {
-        background-color: #efefb2;
-      }
-    `};
+
+  &:before, 
+  &:after {
+    ${(props) => props.isFolder && props.dragging && draggingStyle};
+  }
+
+  &:before,
+  &:after {
+    ${(props) => props.checked && checkedStyle};
+  }
+
+  &:hover:before,
+  &:hover:after {
+    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
+  }
 
   .checkbox {
     opacity: ${(props) => (props.checked ? 1 : 0)};
@@ -110,7 +112,7 @@ const StyledTile = styled.div`
   .file-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
-    margin-right: 4px;
+    margin-right: ${(props) => (props.isFolder ? "8px" : "4px")};
     margin-top: 3px;
 
     @media ${tablet} {
@@ -125,6 +127,7 @@ const StyledTile = styled.div`
     margin-right: 4px;
     user-select: none;
     margin-top: 3px;
+    margin-top: ${(props) => (props.isFolder ? "-6px" : "-4px")};
 
     height: 24px;
     width: 24px;
@@ -134,16 +137,24 @@ const StyledTile = styled.div`
     }
   }
 
+  .file-icon_container {
+    min-width: 28px;
+  }
+
   :hover {
-    .checkbox {
-      opacity: 1;
-    }
-    .file-checkbox {
-      display: flex;
-    }
-    .file-icon {
-      display: none;
-    }
+    ${(props) =>
+      !props.dragging &&
+      css`
+        .checkbox {
+          opacity: 1;
+        }
+        .file-checkbox {
+          display: flex;
+        }
+        .file-icon {
+          display: none;
+        }
+      `}
   }
 `;
 
@@ -326,16 +337,16 @@ class Tile extends React.PureComponent {
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
-            {renderCheckbox && (
+            {renderCheckbox && id !== -1 && (
               <Checkbox
-                className="checkbox"
+                className="checkbox file-checkbox"
                 isChecked={checked}
                 isIndeterminate={indeterminate}
                 onChange={this.changeCheckbox}
               />
             )}
-            {renderElement && !(isFolder || (!fileExst && id === -1)) && (
-              <StyledElement>{element}</StyledElement>
+            {renderElement && !(!fileExst && id === -1) && (
+              <StyledElement className="file-icon">{element}</StyledElement>
             )}
             <StyledContent
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
@@ -363,15 +374,17 @@ class Tile extends React.PureComponent {
           <>
             <StyledFileTileTop>{icon}</StyledFileTileTop>
             <StyledFileTileBottom>
-              <div className="file-icon_container">
-                <div className="file-icon">{element}</div>
-                <Checkbox
-                  className="file-checkbox"
-                  isChecked={checked}
-                  isIndeterminate={indeterminate}
-                  onChange={this.changeCheckbox}
-                />
-              </div>
+              {id !== -1 && (
+                <div className="file-icon_container">
+                  <div className="file-icon">{element}</div>
+                  <Checkbox
+                    className="file-checkbox"
+                    isChecked={checked}
+                    isIndeterminate={indeterminate}
+                    onChange={this.changeCheckbox}
+                  />
+                </div>
+              )}
               <StyledContent
                 className="styled-content"
                 isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
