@@ -26,7 +26,7 @@ namespace ASC.Core.Common.EF
 
         internal string MigrateAssembly { get; set; }
         internal ILoggerFactory LoggerFactory { get; set; }
-        internal ConnectionStringSettings ConnectionStringSettings { get; set; }
+        public ConnectionStringSettings ConnectionStringSettings { get; set; }
         protected internal Provider Provider { get; set; }
 
         public static ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
