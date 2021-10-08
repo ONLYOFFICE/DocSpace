@@ -53,7 +53,7 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledSimpleFilesRow = styled(Row)`
-  ${(props) => props.checked && checkedStyle};
+  ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
   position: unset;
   cursor: ${(props) => props.checked && `url(images/cursor.palm.svg), auto`};
@@ -116,6 +116,7 @@ const SimpleFilesRow = (props) => {
     onMouseClick,
     isEdit,
     showShare,
+    isActive,
   } = props;
 
   const sharedButton =
@@ -158,6 +159,7 @@ const SimpleFilesRow = (props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
+          isActive={isActive}
         >
           <FilesRowContent
             item={item}
