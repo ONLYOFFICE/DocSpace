@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Row from "@appserver/components/row";
 import { tablet } from "@appserver/components/utils/device";
 
@@ -111,7 +111,11 @@ const StyledVersionRow = styled(Row)`
       display: block;
       margin-left: auto;
       margin-top: 5px;
-
+      ${(props) =>
+        props.isRestoring &&
+        css`
+          cursor: default;
+        `}
       :last-child {
         margin-left: 8px;
       }

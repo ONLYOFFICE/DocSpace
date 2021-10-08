@@ -35,6 +35,8 @@ const VersionRow = (props) => {
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
 
+  const [isRestoring, setIsRestoring] = useState(false);
+
   const canEdit = info.access === 1 || info.access === 0;
 
   const title = `${new Date(info.updated).toLocaleString(culture)} ${
@@ -64,7 +66,11 @@ const VersionRow = (props) => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    restoreVersion(info.id, info.version).catch((err) => toastr.error(err));
+    setIsRestoring(true);
+
+    restoreVersion(info.id, info.version)
+      .catch((err) => toastr.error(err))
+      .finally(() => setIsRestoring(false));
   };
 
   const onVersionClick = () => {
@@ -93,6 +99,7 @@ const VersionRow = (props) => {
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
       canEdit={canEdit}
+      isRestoring={isRestoring}
     >
       <>
         <Box displayProp="flex">
@@ -188,7 +195,7 @@ const VersionRow = (props) => {
           <div className="version_links-container">
             {canEdit && (
               <Link
-                onClick={onRestoreClick}
+                {...(!isRestoring && { onClick: onRestoreClick })}
                 {...linkStyles}
                 className="version_link-action"
               >
