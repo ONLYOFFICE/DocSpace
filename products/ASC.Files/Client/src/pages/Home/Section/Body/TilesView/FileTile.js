@@ -35,6 +35,7 @@ const FilesTile = (props) => {
     onFilesClick,
     onMouseClick,
     showShare,
+    isActive,
   } = props;
   const temporaryIcon = getIcon(
     96,
@@ -86,6 +87,7 @@ const FilesTile = (props) => {
           checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
+          isActive={isActive}
         >
           <FilesTileContent
             item={item}

@@ -435,7 +435,8 @@ class ContextMenu extends Component {
   bindDocumentClickListener() {
     if (!this.documentClickListener) {
       this.documentClickListener = (e) => {
-        if (this.isOutsideClicked(e) && e.button !== 2) {
+        if (this.isOutsideClicked(e)) {
+          //TODO: (&& e.button !== 2) restore after global usage
           this.hide(e);
 
           this.setState({
@@ -445,6 +446,7 @@ class ContextMenu extends Component {
       };
 
       document.addEventListener("click", this.documentClickListener);
+      document.addEventListener("mousedown", this.documentClickListener);
     }
   }
 
@@ -476,6 +478,7 @@ class ContextMenu extends Component {
   unbindDocumentClickListener() {
     if (this.documentClickListener) {
       document.removeEventListener("click", this.documentClickListener);
+      document.removeEventListener("mousedown", this.documentClickListener);
       this.documentClickListener = null;
     }
   }

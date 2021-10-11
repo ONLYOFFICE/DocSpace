@@ -439,6 +439,7 @@ class FilesActionStore {
 
   openLocationAction = (locationId, isFolder) => {
     const locationFilter = isFolder ? this.filesStore.filter : null;
+    this.filesStore.setBufferSelection(null);
     return this.filesStore.fetchFiles(locationId, locationFilter);
     /*.then(() =>
       //isFolder ? null : this.selectRowAction(!checked, item)

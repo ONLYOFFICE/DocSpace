@@ -54,8 +54,10 @@ const contextMenuWrapperDraggingHoverStyle = css`
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
-    background: ${(props) => props.checked && "#F3F4F4 !important"};
-    cursor: ${(props) => props.checked && "url(images/cursor.palm.svg), auto"};
+    background: ${(props) =>
+      (props.checked || props.isActive) && "#F3F4F4 !important"};
+    cursor: ${(props) =>
+      (props.checked || props.isActive) && "url(images/cursor.palm.svg), auto"};
   }
 
   &:hover {
@@ -158,6 +160,8 @@ const FilesTableRow = (props) => {
     onMouseDown,
     showShare,
     personal,
+    isActive,
+    onHideContextMenu,
   } = props;
 
   const sharedButton =
@@ -225,6 +229,8 @@ const FilesTableRow = (props) => {
         onClick={onMouseClick}
         {...contextOptionsProps}
         checked={checkedProps}
+        isActive={isActive}
+        onHideContextMenu={onHideContextMenu}
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell {...props} />

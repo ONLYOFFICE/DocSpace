@@ -50,7 +50,7 @@ const StyledTile = styled.div`
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => props.isFolder && FolderStyles}
-  ${(props) => props.checked && checkedStyle}
+  ${(props) => (props.checked || props.isActive) && checkedStyle}
     ${(props) =>
     props.isFolder &&
     css`
@@ -91,7 +91,7 @@ const StyledTile = styled.div`
 
   &:before,
   &:after {
-    ${(props) => props.checked && checkedStyle};
+    ${(props) => (props.checked || props.isActive) && checkedStyle};
   }
 
   &:hover:before,
@@ -293,6 +293,7 @@ class Tile extends React.PureComponent {
       dragging,
       isRecycleBin,
       item,
+      isActive,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -334,6 +335,7 @@ class Tile extends React.PureComponent {
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
         checked={checked}
+        isActive={isActive}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
