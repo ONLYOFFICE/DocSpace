@@ -71,12 +71,16 @@ class SelectFolderModalDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { storeFolderId, canCreate, showButtons } = this.props;
+    const { storeFolderId, canCreate, showButtons, isReset } = this.props;
     if (showButtons && storeFolderId !== prevProps.storeFolderId) {
       this.setState({
         canCreate: canCreate,
         isLoading: false,
       });
+    }
+
+    if (isReset && isReset !== prevProps.isReset) {
+      this.onResetInfo();
     }
   }
   trySwitch = async () => {
@@ -347,9 +351,18 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   onSelect = async (folder) => {
-    const { onSelectFolder, onClose, showButtons, onSetFullPath } = this.props;
-    const { folderId } = this.state;
+    const {
+      onSelectFolder,
+      onClose,
+      showButtons,
+      onSetFullPath,
+      onSetLoadingData,
+      onSetLoadingInput,
+    } = this.props;
 
+    const { folderId } = this.state;
+    onSetLoadingData && onSetLoadingData(true);
+    onSetLoadingInput && onSetLoadingInput(true);
     let requests = [];
 
     if (isArrayEqual([folder[0]], [folderId])) {
@@ -414,6 +427,57 @@ class SelectFolderModalDialog extends React.Component {
     onSave && onSave(e, folderId);
     onClose && onClose();
   };
+
+  onResetInfo = async () => {
+    //debugger;
+    const { id, foldersType, onSelectFolder, onSetFullPath } = this.props;
+    switch (foldersType) {
+      case "common":
+        try {
+          if (!id) {
+            folderList = await SelectFolderDialog.getCommonFolders();
+          }
+
+          onSelectFolder && onSelectFolder(`${id ? id : folderList[0].id}`);
+
+          this.setState({
+            folderId: `${id ? id : folderList[0].id}`,
+          });
+
+          onSetFullPath("");
+
+          this.loadersCompletes();
+        } catch (err) {
+          console.error(err);
+          this.loadersCompletes();
+        }
+
+        break;
+
+      case "third-party":
+        try {
+          if (!id) {
+            folderList = await SelectFolderDialog.getCommonThirdPartyList();
+          }
+
+          onSelectFolder && onSelectFolder(`${id ? id : folderList[0].id}`);
+
+          this.setState({
+            folderId: `${id ? id : folderList[0].id}`,
+          });
+
+          onSetFullPath("");
+
+          this.loadersCompletes();
+        } catch (err) {
+          console.error(err);
+
+          this.loadersCompletes();
+        }
+        break;
+    }
+  };
+
   render() {
     const {
       t,
@@ -622,6 +686,7 @@ class SelectFolderDialog extends React.Component {
     }
     return newArray;
   };
+
   render() {
     return (
       <MobxProvider auth={authStore} {...stores}>

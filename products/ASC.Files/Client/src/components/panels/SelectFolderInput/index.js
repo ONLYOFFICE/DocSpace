@@ -33,25 +33,6 @@ class SelectFolderInputBody extends React.PureComponent {
     setFirstLoad(false);
   }
 
-  componentDidUpdate(prevProps) {
-    const { isSetDefaultFolderPath, folderPath } = this.props;
-
-    if (
-      isSetDefaultFolderPath &&
-      isSetDefaultFolderPath !== prevProps.isSetDefaultFolderPath
-    ) {
-      this.setState({
-        fullFolderPath: this.state.fullFolderPathDefault,
-      });
-    }
-    if (folderPath !== prevProps.folderPath) {
-      this.setState({
-        fullFolderPath: folderPath,
-        fullFolderPathDefault: folderPath,
-      });
-    }
-  }
-
   onSetFullPath = (pathName) => {
     this.setState({
       fullFolderPath: pathName,
@@ -98,6 +79,7 @@ class SelectFolderInputBody extends React.PureComponent {
       footer,
       fontSizeInput,
       maxInputWidth,
+      isReset,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
@@ -138,6 +120,7 @@ class SelectFolderInputBody extends React.PureComponent {
           header={header}
           headerName={headerName}
           footer={footer}
+          isReset={isReset}
         />
       </StyledComponent>
     );
