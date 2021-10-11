@@ -1,14 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Design;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AutoMigrationCreator
 {
@@ -18,7 +8,7 @@ namespace AutoMigrationCreator
         {
             var counter = 0;
             var ctxTypesFinder = new ContextFinder(settings);
-            
+
             foreach (var contextType in ctxTypesFinder.GetContextsTypes())
             {
                 var context = DbContextActivator.CreateInstance(contextType, settings.ConnectionStringSettings);
@@ -30,7 +20,6 @@ namespace AutoMigrationCreator
                 context = DbContextActivator.CreateInstance(contextType, settings.ConnectionStringSettings); //Hack: refresh context
 
                 var migrationGenerator = new MigrationGenerator(context);
-
                 migrationGenerator.Generate();
 
                 counter++;

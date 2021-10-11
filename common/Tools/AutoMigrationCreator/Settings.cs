@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 using Microsoft.Extensions.Configuration;
 
@@ -13,8 +8,6 @@ namespace AutoMigrationCreator
     {
         public string Name { get; set; }
         public string ConnectionString { get; set; }
-        public string MigrationPath { get; set; } = "D:\\AppServer\\common\\ASC.Core.Common\\Migrations\\MySql\\";
-        public string AssemblyName { get; set; } = "ASC.Core.Common";
 
         private ConnectionStringSettings _connectionStringSettings;
         public ConnectionStringSettings ConnectionStringSettings
@@ -27,7 +20,7 @@ namespace AutoMigrationCreator
                 return _connectionStringSettings;
             }
         }
-        
+
         private Settings() { }
 
         public static Settings GetSettings(IConfiguration configuration)

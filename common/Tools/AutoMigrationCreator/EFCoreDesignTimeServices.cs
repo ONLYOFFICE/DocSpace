@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace AutoMigrationCreator
 {
     public static class EFCoreDesignTimeServices
-{
+    {
         public static ServiceProvider GetServiceProvider(BaseDbContext context)
         {
             var serviceCollection = new ServiceCollection();

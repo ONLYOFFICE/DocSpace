@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 using ASC.Core.Common.EF;
 
@@ -41,7 +37,7 @@ namespace AutoMigrationCreator
             return assemblyTypes.Where(b => b.BaseType == _baseType);
         }
 
-        private IEnumerable<Type> GetProviderDependetContextTypes(IEnumerable<Type> assemblyTypes, 
+        private IEnumerable<Type> GetProviderDependetContextTypes(IEnumerable<Type> assemblyTypes,
             IEnumerable<Type> indepentedTypes)
         {
             var provider = GetProviderName();
