@@ -294,6 +294,7 @@ class Tile extends React.PureComponent {
       isRecycleBin,
       item,
       isActive,
+      isEdit,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -339,7 +340,7 @@ class Tile extends React.PureComponent {
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
-            {renderCheckbox && id !== -1 && (
+            {renderCheckbox && id !== -1 && !isEdit && (
               <Checkbox
                 className="checkbox file-checkbox"
                 isChecked={checked}
@@ -347,7 +348,7 @@ class Tile extends React.PureComponent {
                 onChange={this.changeCheckbox}
               />
             )}
-            {renderElement && !(!fileExst && id === -1) && (
+            {renderElement && !(!fileExst && id === -1) && !isEdit && (
               <StyledElement className="file-icon">{element}</StyledElement>
             )}
             <StyledContent
@@ -376,7 +377,7 @@ class Tile extends React.PureComponent {
           <>
             <StyledFileTileTop>{icon}</StyledFileTileTop>
             <StyledFileTileBottom>
-              {id !== -1 && (
+              {id !== -1 && !isEdit && (
                 <div className="file-icon_container">
                   <div className="file-icon">{element}</div>
                   <Checkbox
