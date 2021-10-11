@@ -1,4 +1,4 @@
-call build/generateMigrations.bat
+call build/createMigrations.bat
 PUSHD %~dp0..
 dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
 
