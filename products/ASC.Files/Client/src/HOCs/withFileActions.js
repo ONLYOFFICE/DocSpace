@@ -56,8 +56,8 @@ export default function withFileActions(WrappedFileItem) {
         isTrashFolder,
         onSelectItem,
         item,
-        bufferSelection,
         setBufferSelection,
+        isActive,
       } = this.props;
 
       const { id, isFolder } = item;
@@ -68,7 +68,7 @@ export default function withFileActions(WrappedFileItem) {
       if (
         isPrivacy ||
         isTrashFolder ||
-        (!draggable && !isFileName && !bufferSelection)
+        (!draggable && !isFileName && !isActive)
       )
         return e;
 
@@ -359,7 +359,8 @@ export default function withFileActions(WrappedFileItem) {
       const isActive =
         bufferSelection &&
         bufferSelection.id === item.id &&
-        bufferSelection.fileExst === item.fileExst; // need for select row item
+        bufferSelection.fileExst === item.fileExst &&
+        !selection.length; // need for select row item
 
       return {
         t,
