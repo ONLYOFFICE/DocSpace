@@ -31,12 +31,14 @@
  # terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  #
 
-PRODUCT="onlyoffice"
-BASE_DIR="/app/$PRODUCT";
+PACKAGE_SYSNAME="onlyoffice"
+PRODUCT="appserver"
+BASE_DIR="/app/$PACKAGE_SYSNAME";
 STATUS=""
-SRV_VERSION=""
+DOCKER_TAG=""
+GIT_BRANCH="develop"
 
-NETWORK=${PRODUCT}
+NETWORK=${PACKAGE_SYSNAME}
 
 DISK_REQUIREMENTS=40960;
 MEMORY_REQUIREMENTS=5500;
@@ -46,6 +48,7 @@ DIST="";
 REV="";
 KERNEL="";
 
+INSTALL_KAFKA="true";
 INSTALL_MYSQL_SERVER="true";
 INSTALL_DOCUMENT_SERVER="true";
 INSTALL_APPSERVER="true";
@@ -129,6 +132,13 @@ while [ "$1" != "" ]; do
 		-imysql | --installmysql )
 			if [ "$2" != "" ]; then
 				INSTALL_MYSQL_SERVER=$2
+				shift
+			fi
+		;;		
+		
+		-ikafka | --installkafka )
+			if [ "$2" != "" ]; then
+				INSTALL_KAFKA=$2
 				shift
 			fi
 		;;
@@ -258,9 +268,17 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
-		-vas | --versionappserver )
+		-tag | --dockertag )
 			if [ "$2" != "" ]; then
-				SRV_VERSION=$2
+				DOCKER_TAG=$2
+				shift
+			fi
+		;;
+		
+		-gb | --gitbranch )
+			if [ "$2" != "" ]; then
+				PARAMETERS="$PARAMETERS ${1}";
+				GIT_BRANCH=$2
 				shift
 			fi
 		;;
@@ -275,7 +293,8 @@ while [ "$1" != "" ]; do
 			echo "      -ias, --installappserver          install or update appserver (true|false)"
 			echo "      -vas, --versionappserver          select the version to install appserver (latest|develop|version number)"
 			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
-			echo "      -imysql, --installmysql           install or update mysql (true|false)"
+			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
+			echo "      -ikafka, --installkafka           install or update kafka (true|false)"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          appserver database name"
 			echo "      -mysqlu, --mysqluser              appserver database user"
@@ -708,7 +727,7 @@ set_jwt_secret () {
 	CURRENT_JWT_SECRET="";
 
 	if [[ -z ${JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PRODUCT}-document-server" "JWT_SECRET");
+		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-document-server" "JWT_SECRET");
 
 		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
 			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
@@ -716,7 +735,7 @@ set_jwt_secret () {
 	fi
 
 	if [[ -z ${JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PRODUCT}-api" "DOCUMENT_SERVER_JWT_SECRET");
+		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "DOCUMENT_SERVER_JWT_SECRET");
 
 		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
 			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
@@ -742,7 +761,7 @@ set_core_machinekey () {
 	fi
 
 	if [[ -z ${CORE_MACHINEKEY} ]]; then
-		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${PRODUCT}-api" "$APP_CORE_MACHINEKEY");
+		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "$APP_CORE_MACHINEKEY");
 
 		if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
 			APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
@@ -764,11 +783,12 @@ download_files () {
 		install_service wget
 	fi
 	
-	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/AppServer/develop/build/install/docker"
+	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${PRODUCT}/${GIT_BRANCH}/build/install/docker"
 	wget -q -O $BASE_DIR/.env "${DOWNLOAD_URL_PREFIX}/.env"
-	wget -q -O $BASE_DIR/appserver.yml "${DOWNLOAD_URL_PREFIX}/appserver.yml"
 	wget -q -O $BASE_DIR/db.yml "${DOWNLOAD_URL_PREFIX}/db.yml"
 	wget -q -O $BASE_DIR/ds.yml "${DOWNLOAD_URL_PREFIX}/ds.yml"
+	wget -q -O $BASE_DIR/kafka.yml "${DOWNLOAD_URL_PREFIX}/kafka.yml"
+	wget -q -O $BASE_DIR/appserver.yml "${DOWNLOAD_URL_PREFIX}/appserver.yml"
 	wget -q -O $BASE_DIR/config/createdb.sql "${DOWNLOAD_URL_PREFIX}/config/createdb.sql"
 	wget -q -O $BASE_DIR/config/onlyoffice.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.sql"
 	wget -q -O $BASE_DIR/config/onlyoffice.data.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.data.sql"
@@ -825,19 +845,23 @@ install_document_server () {
 	docker-compose -f $BASE_DIR/ds.yml up -d
 }
 
+install_kafka () {
+	reconfigure ZOO_PORT ${ZOO_PORT}
+	reconfigure ZOO_HOST ${ZOO_HOST}
+	reconfigure KAFKA_HOST ${KAFKA_HOST}
+
+	docker-compose -f $BASE_DIR/kafka.yml up -d
+}
+
 install_appserver () {
 	if ! command_exists docker-compose; then
 		install_docker_compose
 	fi
-
-	reconfigure ZOO_PORT ${ZOO_PORT}
-	reconfigure ZOO_HOST ${ZOO_HOST}
-	reconfigure KAFKA_HOST ${KAFKA_HOST}
 	reconfigure ELK_HOST ${ELK_HOST}
 	reconfigure SERVICE_PORT ${SERVICE_PORT}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
-	reconfigure SRV_VERSION ${SRV_VERSION}
+	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	if [[ -n $EXTERNAL_PORT ]]; then
 		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/appserver.yml
@@ -886,12 +910,16 @@ start_installation () {
 		install_document_server
 	fi
 
+	if [ "$INSTALL_KAFKA" == "true" ]; then
+		install_kafka
+	fi
+
 	if [ "$INSTALL_APPSERVER" == "true" ]; then
 		install_appserver
 	fi
 
 	echo ""
-	echo "Thank you for installing ONLYOFFICE Appserver."
+	echo "Thank you for installing ONLYOFFICE ${PRODUCT^^}."
 	echo "In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://dev.onlyoffice.org"
 	echo ""
 
