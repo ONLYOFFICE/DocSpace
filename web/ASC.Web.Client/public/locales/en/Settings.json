@@ -102,7 +102,7 @@
   "ThirdPartyStorage": "Third-party storage",
   "ThirdPartyStorageDescription": "��������� ����� ����� ���� ��������� �� ��������� ���������. The corresponding service must be previously connected in the Integration section. Otherwise the following settings will be disabled.",
   "DisableAutomaticBackup": "Disable",
-  "EnableAutomaticBackup": "Enable",
+  "EnableAutomaticBackup": "Давать возможность автоматически копировать данные",
   "MonthlyPeriodSchedule": "Every month",
   "DailyPeriodSchedule": "Every day",
   "WeeklyPeriodSchedule": "Every week",

@@ -102,7 +102,7 @@
   "ThirdPartyStorage": "Стороннее хранилище",
   "ThirdPartyStorageDescription": "Резервная копия может быть сохранена на стороннем хранилище. Соответствующий сервис необходимо предварительно подключить в разделе 'Интеграция'. В противном случае указанные ниже настройки будут неактивны.",
   "DisableAutomaticBackup": "Запрещать",
-  "EnableAutomaticBackup": "Давать возможность",
+  "EnableAutomaticBackup": "Давать возможность автоматически копировать данные",
   "MonthlyPeriodSchedule": "Каждый месяц",
   "DailyPeriodSchedule": "Каждый день",
   "WeeklyPeriodSchedule": "Каждую неделю",
