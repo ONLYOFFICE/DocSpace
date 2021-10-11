@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -8,6 +8,9 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "dbip_location",
                 columns: table => new
@@ -41,7 +44,8 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_dbip_location", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "mobile_app_install",
@@ -56,20 +60,25 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.user_email, x.app_type });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "regions",
+                name: "Regions",
                 columns: table => new
                 {
-                    Region = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    Provider = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    connection_string = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    Region = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Provider = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ConnectionString = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_regions", x => x.Region);
-                });
+                    table.PrimaryKey("PK_Regions", x => x.Region);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "ip_start",
@@ -86,7 +95,7 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                 name: "mobile_app_install");
 
             migrationBuilder.DropTable(
-                name: "regions");
+                name: "Regions");
         }
     }
 }

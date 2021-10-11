@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -8,30 +8,38 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
-                name: "api_keys",
+                name: "ApiKeys",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    access_token = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    AccessToken = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_api_keys", x => x.Id);
-                });
+                    table.PrimaryKey("PK_ApiKeys", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "greylisting_whitelist",
+                name: "GreyListingWhiteList",
                 columns: table => new
                 {
-                    Comment = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    Source = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    Comment = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Source = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_greylisting_whitelist", x => x.Comment);
-                });
+                    table.PrimaryKey("PK_GreyListingWhiteList", x => x.Comment);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "mail_mailbox",
@@ -50,7 +58,7 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                     is_removed = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     is_processed = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     is_server_mailbox = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    is_teamlab_mailbox = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsTeamlabMailbox = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     imap = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     user_online = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     is_default = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -82,7 +90,8 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_mail_mailbox", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "mail_mailbox_provider",
@@ -102,27 +111,8 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_mail_mailbox_provider", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "mail_mailbox_server",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    id_provider = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Hostname = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Port = table.Column<int>(type: "int", nullable: false),
-                    socket_type = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    UserName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Authentication = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    is_user_data = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mail_mailbox_server", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "mail_server_server",
@@ -141,7 +131,34 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_mail_server_server", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "MailboxServer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IdProvider = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Hostname = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Port = table.Column<int>(type: "int", nullable: false),
+                    SocketType = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Authentication = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsUserData = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MailboxServer", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
                 table: "mail_mailbox_provider",
@@ -404,10 +421,10 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "api_keys");
+                name: "ApiKeys");
 
             migrationBuilder.DropTable(
-                name: "greylisting_whitelist");
+                name: "GreyListingWhiteList");
 
             migrationBuilder.DropTable(
                 name: "mail_mailbox");
@@ -416,10 +433,10 @@ namespace ASC.Core.Common.Migrations.MySql.MailDbContextMySql
                 name: "mail_mailbox_provider");
 
             migrationBuilder.DropTable(
-                name: "mail_mailbox_server");
+                name: "mail_server_server");
 
             migrationBuilder.DropTable(
-                name: "mail_server_server");
+                name: "MailboxServer");
         }
     }
 }
