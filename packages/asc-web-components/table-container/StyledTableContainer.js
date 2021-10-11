@@ -48,6 +48,7 @@ const StyledTableContainer = styled.div`
       #eceef1 calc(100% - 24px),
       #ffffff calc(100% - 24px)
     );
+    border-top: 0;
   }
 
   .content-container {
