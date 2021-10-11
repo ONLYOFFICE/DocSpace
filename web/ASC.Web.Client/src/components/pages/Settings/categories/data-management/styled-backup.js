@@ -52,7 +52,9 @@ const StyledAutoBackup = styled.div`
       font-size: 13px;
     }
   }
-
+  .backup_toggle-btn {
+    position: static;
+  }
   .schedule-backup_combobox {
     display: inline-block;
     margin-right: 8px;

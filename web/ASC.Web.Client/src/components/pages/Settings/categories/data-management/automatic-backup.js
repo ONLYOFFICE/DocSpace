@@ -8,10 +8,12 @@ import RadioButtonGroup from "@appserver/components/radio-button-group";
 import RadioButton from "@appserver/components/radio-button";
 import moment from "moment";
 
+import Button from "@appserver/components/button";
 import {
   deleteBackupSchedule,
   getBackupProgress,
   getBackupSchedule,
+  createBackupSchedule,
 } from "@appserver/common/api/portal";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
@@ -26,17 +28,32 @@ import { StyledModules, StyledAutoBackup } from "./styled-backup";
 import ThirdPartyModule from "./sub-components-automatic-backup/thirdPartyModule";
 import DocumentsModule from "./sub-components-automatic-backup/documentsModule";
 import ThirdPartyStorageModule from "./sub-components-automatic-backup/thirdPartyStorageModule";
+import { getFromSessionStorage, saveToSessionStorage } from "../../utils";
+import ToggleButton from "@appserver/components/toggle-button";
 
 const { proxyURL } = AppServerConfig;
 
-let defaultStorageType = "";
+// let defaultStorageType = "";
 
-let defaultSelectedOption = "";
+// let defaultSelectedOption = "";
 
-let defaultMonthly = false;
-let defaultWeekly = false;
-let defaultDaily = false;
+// let defaultMonthly = false;
+// let defaultWeekly = false;
+// let defaultDaily = false;
 
+// let numberPeriodFromSessionStorage = null;
+// let dayFromSessionStorage = "";
+// let timeFromSessionStorage = "";
+// let maxCopiesFromSessionStorage = "";
+// const settingNames = ["day", "time", "maxCopies", "numberPeriod"];
+
+const DOCUMENT_TYPE = 0;
+const RESOURCES_TYPE = 1;
+const STORAGE_TYPE = 5;
+
+const EVERY_DAY = 0;
+const EVERY_WEEK = 1;
+const EVERY_MONTH = 2;
 class AutomaticBackup extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -48,75 +65,81 @@ class AutomaticBackup extends React.PureComponent {
     this._isMounted = false;
 
     this.state = {
-      isShowDocuments: false,
-      isShowThirdParty: false,
-      isShowThirdPartyStorage: false,
-
       isCheckedDocuments: false,
       isCheckedThirdParty: false,
       isCheckedThirdPartyStorage: false,
+      isShowedStorageTypes: false,
 
-      monthlySchedule: false,
-      dailySchedule: false,
-      weeklySchedule: false,
+      defaultMonthlySchedule: false,
+      defaultDailySchedule: false,
+      defaultWeeklySchedule: false,
 
-      selectedWeekdayOption: "",
-      selectedPermission: "disable",
-      weekOptions: [],
+      selectedMonthlySchedule: false,
+      selectedDailySchedule: false,
+      selectedWeeklySchedule: false,
+
+      isEnable: false,
+      //weekOptions: [],
 
       defaultSelectedFolder: "",
-      defaultStorageType: "",
+      defaultStorageTypeNumber: "",
       defaultHour: "",
-      defaultPeriod: "",
+      defaultPeriodNumber: "",
       defaultDay: "",
-      defaultMaxCopies: "",
-      defaultSelectedOption: "",
-      defaultSelectedWeekdayOption: "",
+      defaultMaxCopiesNumber: "",
+      defaultWeekdayLabel: "",
+      defaultPeriodLabel: "",
+
+      selectedPeriodLabel: "",
+      selectedWeekdayLabel: "",
+      selectedHour: "",
+      selectedMonthDay: "",
+      selectedMaxCopiesNumber: "",
+      selectedFolderDocument: "",
+      selectedFolderResources: "",
+      selectedStorageTypeNumber: "",
+
+      isSetDefaultFolderPath: false,
 
       isCopyingToLocal: true,
       isLoadingData: false,
       isLoading: false,
       isDisableOptions: false,
-
-      selectedFolder: "",
-
+      folderPath: "",
       isChanged: false,
       isSetDefaultFolderPath: false,
       downloadingProgress: 100,
     };
 
-    this.periodOptions = [
+    this.periodsObject = [
       {
-        key: 1,
+        key: 0,
         label: t("DailyPeriodSchedule"),
       },
       {
-        key: 2,
+        key: 1,
         label: t("WeeklyPeriodSchedule"),
       },
       {
-        key: 3,
+        key: 2,
         label: t("MonthlyPeriodSchedule"),
       },
     ];
 
-    this.timeOptionsArray = [];
-    this.getTimeOptions();
-    this.monthNumberOptionsArray = [];
-    this.getMonthNumbersOption();
-
+    this.hoursArray = [];
+    this.getTime();
+    this.monthNumbersArray = [];
+    this.getMonthNumbers();
     this.maxNumberCopiesArray = [];
     this.getMaxNumberCopies();
+    this.weekdaysLabelArray = [];
 
-    this.weekdaysOptions = [];
-    this.arrayWeekdays = moment.weekdays();
     this._isMounted = false;
   }
 
   componentDidMount() {
     this._isMounted = true;
-    const { selectedFolder } = this.state;
-    this.getWeekdaysOptions();
+    this.getWeekdays();
 
     getBackupProgress().then((response) => {
       if (response) {
@@ -149,18 +172,9 @@ class AutomaticBackup extends React.PureComponent {
 
         .then((selectedSchedule) => {
           if (selectedSchedule) {
-            const folderId = selectedSchedule.storageParams.folderId;
-            this.setState({
-              defaultSelectedFolder: folderId,
-              defaultStorageType: `${selectedSchedule.storageType}`,
-              defaultHour: `${selectedSchedule.cronParams.hour}:00`,
-              defaultPeriod: `${selectedSchedule.cronParams.period}`,
-              defaultDay: selectedSchedule.cronParams.day,
-              defaultMaxCopies: `${selectedSchedule.backupsStored}`,
-            });
-
-            this.onSetDefaultOptions();
+            this.onSetDefaultOptions(selectedSchedule);
           } else {
+            this.onSetDefaultOptions();
             this._isMounted &&
               this.setState({
                 isLoading: false,
@@ -170,524 +184,720 @@ class AutomaticBackup extends React.PureComponent {
     });
   }
 
-  changedDefaultOptions = (
-    defaultSelectedFolder,
-    defaultStorageType,
-    defaultHour,
-    defaultPeriod,
-    defaultDay,
-    defaultMaxCopies
-  ) => {
-    this._isMounted &&
-      this.setState({
-        defaultSelectedFolder: defaultSelectedFolder,
-        defaultStorageType: defaultStorageType,
-        defaultHour: defaultHour,
-        defaultPeriod: defaultPeriod,
-        defaultDay: defaultDay,
-        defaultMaxCopies: defaultMaxCopies,
-      });
-  };
-
   componentWillUnmount() {
     this._isMounted = false;
     clearInterval(this.timerId);
   }
 
-  onSetDefaultOptions = () => {
-    const {
-      isLoading,
-      defaultPeriod,
-      defaultStorageType,
-      defaultDay,
-    } = this.state;
+  onSetDefaultOptions = (selectedSchedule) => {
     //debugger;
 
-    if (defaultStorageType === "0") {
+    let checkedStorage = {};
+
+    const defaultOptions = {
+      defaultSelectedFolder: selectedSchedule
+        ? `${selectedSchedule.storageParams.folderId}`
+        : "",
+      defaultStorageTypeNumber: selectedSchedule
+        ? `${selectedSchedule.storageType}`
+        : "0",
+      defaultHour: selectedSchedule
+        ? `${selectedSchedule.cronParams.hour}:00`
+        : "12:00",
+      defaultPeriodNumber: selectedSchedule
+        ? `${selectedSchedule.cronParams.period}`
+        : "0",
+      defaultDay: selectedSchedule ? `${selectedSchedule.cronParams.day}` : "0",
+      defaultMaxCopiesNumber: selectedSchedule
+        ? `${selectedSchedule.backupsStored}`
+        : "10",
+
+      isEnable: true,
+    };
+
+    const selectedOptions = {
+      selectedFolder: selectedSchedule
+        ? `${selectedSchedule.storageParams.folderId}`
+        : "",
+      selectedStorageTypeNumber: selectedSchedule
+        ? `${selectedSchedule.storageType}`
+        : "0",
+      selectedHour: selectedSchedule
+        ? `${selectedSchedule.cronParams.hour}:00`
+        : "12:00",
+
+      selectedMaxCopiesNumber: selectedSchedule
+        ? `${selectedSchedule.backupsStored}`
+        : "10",
+    };
+    if (+defaultOptions.defaultStorageTypeNumber === DOCUMENT_TYPE) {
       // Documents Module
-      this._isMounted &&
-        this.setState({
-          selectedPermission: "enable",
-          isShowedStorageTypes: true,
-
-          isShowDocuments: true,
-          isCheckedDocuments: true,
-        });
-    }
-    if (defaultStorageType === "1") {
-      // ThirdPartyResource Module
-      this._isMounted &&
-        this.setState({
-          selectedPermission: "enable",
-          isShowedStorageTypes: true,
-
-          isShowThirdParty: true,
-          isCheckedThirdParty: true,
-        });
-    }
-
-    if (defaultStorageType === "5") {
-      // ThirdPartyStorage Module
-      this._isMounted &&
-        this.setState({
-          selectedPermission: "enable",
-          isShowedStorageTypes: true,
-
-          isShowThirdPartyStorage: true,
-          isCheckedThirdPartyStorage: true,
-        });
-    }
-
-    if (+defaultPeriod === 1) {
-      //Every Week option
-      //debugger;
-      const arrayIndex = defaultDay - 1;
-      defaultWeekly = true;
-
-      this._isMounted &&
-        this.setState({
-          defaultSelectedOption: this.periodOptions[1].label,
-          selectedWeekdayOption: this.weekdaysOptions[arrayIndex].label,
-          defaultSelectedWeekdayOption: defaultDay,
-          weeklySchedule: true,
-        });
+      checkedStorage.isCheckedDocuments = true;
     } else {
-      if (+defaultPeriod === 2) {
-        //Every Month option
-        defaultMonthly = true;
-        this._isMounted &&
-          this.setState({
-            defaultSelectedOption: this.periodOptions[2].label,
-            monthlySchedule: true,
-          });
+      if (+defaultOptions.defaultStorageTypeNumber === RESOURCES_TYPE) {
+        // ThirdPartyResource Module
+        checkedStorage.isCheckedThirdParty = true;
       } else {
-        defaultDaily = true;
-        this._isMounted &&
-          this.setState({
-            defaultSelectedOption: this.periodOptions[0].label,
-            dailySchedule: true,
-          });
+        if (+defaultOptions.defaultStorageTypeNumber === STORAGE_TYPE) {
+          // ThirdPartyStorage Module
+          checkedStorage.isCheckedThirdPartyStorage = true;
+        }
       }
     }
 
-    this._isMounted &&
-      isLoading &&
-      this.setState({
-        isLoading: false,
-      });
+    this.onSetDefaultPeriodOption(
+      checkedStorage,
+      defaultOptions,
+      selectedOptions
+    );
   };
-  getProgress = () => {
-    const { t } = this.props;
 
-    getBackupProgress()
-      .then((res) => {
-        if (res) {
-          if (res.error.length > 0 && res.progress !== 100) {
-            clearInterval(this.timerId);
-            this.timerId && toastr.error(`${res.error}`);
-            console.log("error", res.error);
-            this.timerId = null;
-            this.setState({
-              isCopyingToLocal: true,
-            });
-            return;
-          }
-          if (this._isMounted) {
-            this.setState({
-              downloadingProgress: res.progress,
-            });
-          }
-          if (res.progress === 100) {
-            clearInterval(this.timerId);
+  onSetDefaultPeriodOption = (
+    checkedStorage,
+    defaultOptions,
+    selectedOptions
+  ) => {
+    if (+defaultOptions.defaultPeriodNumber === EVERY_WEEK) {
+      //Every Week option
+      //debugger;
 
-            this.timerId && toastr.success(`${t("SuccessCopied")}`);
-            this.timerId = null;
-            if (this._isMounted) {
-              this.setState({
-                isCopyingToLocal: false,
-              });
-            }
-          }
-        }
-      })
-      .catch((err) => {
-        clearInterval(timerId);
-        timerId && toastr.error(err);
-        console.log("err", err);
+      this._isMounted &&
+        this.setState({
+          ...checkedStorage,
+          defaultPeriodLabel: this.periodsObject[EVERY_WEEK].label,
+          selectedPeriodLabel: this.periodsObject[EVERY_WEEK].label,
+          defaultWeekdayLabel: this.weekdaysLabelArray[
+            defaultOptions.defaultDay ? defaultOptions.defaultDay - 1 : 0
+          ].label,
 
-        timerId = null;
-        if (this._isMounted) {
+          selectedWeekdayLabel: this.weekdaysLabelArray[
+            defaultOptions.defaultDay ? defaultOptions.defaultDay - 1 : 0
+          ].label,
+
+          selectedWeekday: defaultOptions.defaultDay,
+          defaultWeeklySchedule: true,
+          selectMonthlySchedule: true,
+          selectedMonthDay: "1",
+          isLoading: false,
+          ...defaultOptions,
+          ...selectedOptions,
+        });
+    } else {
+      if (+defaultOptions.defaultPeriodNumber === EVERY_MONTH) {
+        //Every Month option
+
+        this._isMounted &&
           this.setState({
-            downloadingProgress: 100,
+            ...checkedStorage,
+            defaultPeriodLabel: this.periodsObject[EVERY_MONTH].label,
+            selectedPeriodLabel: this.periodsObject[EVERY_MONTH].label,
+            defaultWeekdayLabel: this.weekdaysLabelArray[0].label,
+            selectedWeekdayLabel: this.weekdaysLabelArray[0].label,
+            selectedMonthDay: defaultOptions.defaultDay,
+            selectedWeekday: "1",
+            defaultMonthlySchedule: true,
+            selectedMonthlySchedule: true,
+            isLoading: false,
+            ...defaultOptions,
+            ...selectedOptions,
           });
-        }
-      });
+      } else {
+        this._isMounted &&
+          this.setState({
+            ...checkedStorage,
+            defaultPeriodLabel: this.periodsObject[EVERY_DAY].label,
+            selectedPeriodLabel: this.periodsObject[EVERY_DAY].label,
+            defaultWeekdayLabel: this.weekdaysLabelArray[0].label,
+            selectedWeekdayLabel: this.weekdaysLabelArray[0].label,
+            defaultDailySchedule: true,
+            selectedDailySchedule: true,
+            selectedMonthDay: "1",
+            selectedWeekday: "1",
+            isLoading: false,
+            ...defaultOptions,
+            ...selectedOptions,
+          });
+      }
+    }
   };
 
-  getTimeOptions = () => {
+  getTime = () => {
     for (let item = 0; item < 24; item++) {
       let obj = {
         key: item,
         label: `${item}:00`,
       };
-      this.timeOptionsArray.push(obj);
+      this.hoursArray.push(obj);
     }
   };
 
-  getMonthNumbersOption = () => {
+  getMonthNumbers = () => {
     for (let item = 1; item <= 31; item++) {
       let obj = {
-        key: item + 24,
+        key: item,
         label: `${item}`,
       };
-      this.monthNumberOptionsArray.push(obj);
+      this.monthNumbersArray.push(obj);
     }
   };
 
   getMaxNumberCopies = () => {
-    const { t } = this.props;
     for (let item = 1; item <= 30; item++) {
       let obj = {
         key: `${item}`,
-        label: `${item} ${t("MaxCopies")}`,
+        label: `${item}`,
       };
       this.maxNumberCopiesArray.push(obj);
     }
   };
-  getWeekdaysOptions = () => {
-    for (let item = 0; item < this.arrayWeekdays.length; item++) {
+  getWeekdays = () => {
+    const gettingWeekdays = moment.weekdays();
+
+    for (let item = 0; item < gettingWeekdays.length; item++) {
       let obj = {
         key: `${item + 1}`,
-        label: `${this.arrayWeekdays[item]}`,
+        label: `${gettingWeekdays[item]}`,
       };
-      this.weekdaysOptions.push(obj);
+      this.weekdaysLabelArray.push(obj);
     }
+
     const isEnglishLanguage = this.lng === "en";
 
-    this._isMounted &&
+    if (!isEnglishLanguage) {
+      this.weekdaysLabelArray.push(this.weekdaysLabelArray.shift());
+    }
+  };
+
+  onClickPermissions = () => {
+    const { isEnable } = this.state;
+
+    if (!isEnable) {
       this.setState({
-        weekOptions: this.weekdaysOptions,
-        selectedWeekdayOption: isEnglishLanguage
-          ? this.weekdaysOptions[0].label
-          : this.weekdaysOptions[1].label,
+        isEnable: true,
+        isCheckedDocuments: true,
+        selectedStorageTypeNumber: `${DOCUMENT_TYPE}`,
+        isChanged: true,
       });
+    } else {
+      this.setState({
+        isEnable: false,
+        isCheckedDocuments: false,
+        isCheckedThirdParty: false,
+        isCheckedThirdPartyStorage: false,
+        isChanged: true,
+      });
+    }
+  };
+
+  onSelectMaxCopies = (options) => {
+    const key = options.key;
+    const label = options.label;
+
+    //saveToSessionStorage("maxCopies", label);
+
+    this.setState(
+      {
+        selectedMaxCopiesNumber: key,
+        // selectedMaxCopies: label,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
+  };
+
+  onSelectWeekDay = (options) => {
+    console.log("options", options);
+
+    const key = options.key;
+    const label = options.label;
+    //debugger;
+    //saveToSessionStorage("day", key);
+
+    this.setState(
+      {
+        selectedWeekday: key,
+        selectedWeekdayLabel: label,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
+  };
+  onSelectTime = (options) => {
+    const label = options.label;
+
+    // saveToSessionStorage("time", label);
+    this.setState({ selectedTimeOption: label }),
+      function () {
+        this.checkChanges();
+      };
+  };
+
+  onSelectMonthNumber = (options) => {
+    const key = options.key;
+    const label = options.label;
+
+    this.setState(
+      {
+        selectedMonthDay: label,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
+  };
+
+  onSelectTime = (options) => {
+    const key = options.key;
+    const label = options.label;
+
+    this.setState({ selectedHour: label }, function () {
+      this.checkChanges();
+    });
+  };
+
+  onSelectPeriod = (options) => {
+    console.log("options", options);
+
+    const key = options.key;
+    const label = options.label;
+
+    saveToSessionStorage("numberPeriod", key);
+
+    this.setState({ selectedPeriodLabel: label });
+
+    if (key === EVERY_DAY) {
+      this.setState(
+        {
+          selectedWeeklySchedule: false,
+          selectedMonthlySchedule: false,
+          selectedDailySchedule: true,
+        },
+        function () {
+          this.checkChanges();
+        }
+      );
+    } else {
+      if (key === EVERY_WEEK) {
+        this.setState(
+          {
+            selectedWeeklySchedule: true,
+            selectedMonthlySchedule: false,
+            selectedDailySchedule: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        );
+      } else {
+        this.setState(
+          {
+            selectedWeeklySchedule: false,
+            selectedMonthlySchedule: true,
+            selectedDailySchedule: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        );
+      }
+    }
+  };
+
+  onSelectFolder = (folderId) => {
+    this.setState({
+      selectedFolder: folderId,
+    });
+  };
+
+  checkChanges = () => {
+    const {
+      isChanged,
+      defaultStorageTypeNumber,
+      selectedStorageTypeNumber,
+    } = this.state;
+
+    if (defaultStorageTypeNumber !== selectedStorageTypeNumber) {
+      !isChanged &&
+        this.setState({
+          isChanged: true,
+        });
+      return;
+    } else {
+      const changed = this.checkOptions();
+      isChanged !== changed &&
+        this.setState({
+          isChanged: changed,
+        });
+      return;
+    }
+  };
+  checkOptions = () => {
+    const {
+      defaultHour,
+      defaultDay,
+      defaultMaxCopiesNumber,
+      defaultWeekdayLabel,
+
+      defaultWeeklySchedule,
+      defaultDailySchedule,
+      defaultMonthlySchedule,
+      defaultSelectedFolder,
+
+      selectedMaxCopiesNumber,
+      selectedHour,
+      selectedMonthDay,
+      selectedWeekdayLabel,
+      selectedMonthlySchedule,
+      selectedDailySchedule,
+      selectedWeeklySchedule,
+      selectedFolder,
+    } = this.state;
+
+    if (selectedHour !== defaultHour) {
+      return true;
+    }
+
+    if (+selectedMaxCopiesNumber !== +defaultMaxCopiesNumber) {
+      return true;
+    }
+
+    if (selectedDailySchedule !== defaultDailySchedule) {
+      return true;
+    }
+
+    if (selectedMonthlySchedule) {
+      if (selectedMonthlySchedule !== defaultMonthlySchedule) return true;
+      if (selectedMonthDay !== defaultDay) {
+        return true;
+      }
+    }
+
+    if (selectedWeeklySchedule) {
+      if (selectedWeeklySchedule !== defaultWeeklySchedule) return true;
+      if (selectedWeekdayLabel !== defaultWeekdayLabel) {
+        return true;
+      }
+    }
+
+    if (selectedFolder !== defaultSelectedFolder) return true;
+
+    return false;
+  };
+
+  setDocumentsModule = () => {
+    return {
+      isCheckedDocuments: true,
+      isCheckedThirdParty: false,
+      isCheckedThirdPartyStorage: false,
+      selectedStorageTypeNumber: `${DOCUMENT_TYPE}`,
+    };
+  };
+
+  setResourcesModule = () => {
+    return {
+      isCheckedDocuments: false,
+      isCheckedThirdParty: true,
+      isCheckedThirdPartyStorage: false,
+      selectedStorageTypeNumber: `${RESOURCES_TYPE}`,
+    };
+  };
+
+  setStorageModule = () => {
+    return {
+      isCheckedDocuments: false,
+      isCheckedThirdParty: false,
+      isCheckedThirdPartyStorage: true,
+      selectedStorageTypeNumber: `${STORAGE_TYPE}`,
+    };
+  };
+  onClickShowStorage = (e) => {
+    const name = +e.target.name;
+
+    //debugger;
+    let options = {};
+    if (name === DOCUMENT_TYPE) {
+      options = this.setDocumentsModule();
+      this.setState(
+        {
+          ...options,
+          isError: false,
+        },
+        function () {
+          this.checkChanges();
+        }
+      );
+    } else {
+      if (name === RESOURCES_TYPE) {
+        options = this.setResourcesModule();
+        this.setState(
+          {
+            ...options,
+            selectedFolderResources: "",
+            isError: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        );
+      } else {
+        options = this.setStorageModule();
+        this.setState(
+          {
+            ...options,
+          },
+          function () {
+            this.checkChanges();
+          }
+        );
+      }
+    }
   };
 
   onCancelModuleSettings = () => {
     const {
-      isShowDocuments,
-      isShowThirdParty,
-      selectedPermission,
-      isCheckedDocuments,
-      monthlySchedule,
-      weeklySchedule,
-      dailySchedule,
-      defaultSelectedFolder,
-      defaultStorageType,
+      isError,
+      defaultStorageTypeNumber,
+      defaultMonthlySchedule,
+      defaultWeeklySchedule,
+      defaultHour,
+      defaultPeriodLabel,
+      defaultWeekdayLabel,
+      defaultMaxCopiesNumber,
+      defaultDailySchedule,
+      defaultDay,
     } = this.state;
 
-    this.setState({
-      isChanged: false,
-      selectedFolder: defaultSelectedFolder,
-    });
+    let storageObj = {};
 
-    if (defaultStorageType) {
-      //debugger;
-      selectedPermission === "disable" &&
-        this.setState({
-          selectedPermission: "enable",
-          isShowedStorageTypes: true,
-        });
-
-      this.setState({
-        selectedOption: defaultSelectedOption,
-      });
-
-      if (
-        monthlySchedule === defaultWeekly ||
-        monthlySchedule === defaultDaily
-      ) {
-        this.setState({
-          monthlySchedule: false,
-        });
-      }
-
-      if (
-        weeklySchedule === defaultMonthly ||
-        weeklySchedule === defaultDaily
-      ) {
-        this.setState({
-          weeklySchedule: false,
-        });
-      }
-
-      if (dailySchedule === defaultMonthly || dailySchedule === defaultWeekly) {
-        this.setState({
-          dailySchedule: false,
-        });
-      }
-      this.onSetDefaultOptions();
-
-      if (+defaultStorageType === 0) {
-        // Documents Module
-        isShowThirdParty
-          ? this.setState({
-              isShowThirdParty: false,
-              isCheckedThirdParty: false,
-            })
-          : this.setState({
-              isShowThirdPartyStorage: false,
-              isCheckedThirdPartyStorage: false,
-            });
-      }
-
-      if (+defaultStorageType === 1) {
-        // ThirdPartyResource Module
-        isShowDocuments || isCheckedDocuments
-          ? this.setState({
-              isShowDocuments: false,
-              isCheckedDocuments: false,
-            })
-          : this.setState({
-              isShowThirdPartyStorage: false,
-              isCheckedThirdPartyStorage: false,
-            });
-      }
-
-      if (+defaultStorageType === 5) {
-        // ThirdPartyStorage Module
-        isShowDocuments
-          ? this.setState({
-              isShowDocuments: false,
-              isCheckedDocuments: false,
-            })
-          : this.setState({
-              isShowThirdParty: false,
-              isCheckedThirdParty: false,
-            });
-      }
+    if (+defaultStorageTypeNumber === DOCUMENT_TYPE) {
+      storageObj = this.setDocumentsModule();
     } else {
-      this.setState({
-        selectedPermission: "disable",
-        isShowedStorageTypes: false,
-
-        isCheckedDocuments: false,
-        isCheckedThirdParty: false,
-        isCheckedThirdPartyStorage: false,
-
-        isShowDocuments: false,
-        isShowThirdParty: false,
-        isShowThirdPartyStorage: false,
-      });
+      if (+defaultStorageTypeNumber === RESOURCES_TYPE) {
+        storageObj = this.setResourcesModule();
+      } else {
+        storageObj = this.setStorageModule();
+      }
     }
+    console.log(
+      "defaultMonthlySchedule",
+      defaultMonthlySchedule,
+      "defaultWeeklySchedule",
+      defaultWeeklySchedule,
+      "defaultDailySchedule",
+      defaultDailySchedule
+    );
+
+    let dayOption = {};
+    if (+defaultStorageTypeNumber === STORAGE_TYPE) {
+      dayOption = {
+        selectedWeekday: defaultDay,
+      };
+    } else if (+defaultStorageTypeNumber === RESOURCES_TYPE) {
+      dayOption = {
+        selectedMonthDay: defaultDay,
+      };
+    }
+
+    this.setState({
+      selectedMonthlySchedule: defaultMonthlySchedule,
+      selectedWeeklySchedule: defaultWeeklySchedule,
+      selectedDailySchedule: defaultDailySchedule,
+      selectedHour: defaultHour,
+      selectedPeriodLabel: defaultPeriodLabel,
+      selectedMonthDay: defaultDay,
+      selectedWeekdayLabel: defaultWeekdayLabel,
+      selectedMaxCopiesNumber: defaultMaxCopiesNumber,
+      selectedStorageTypeNumber: defaultStorageTypeNumber,
+      ...(isError && { isError: false }),
+      isChanged: false,
+      isReset: true,
+      ...storageObj,
+      ...dayOption,
+    });
   };
-  onClickShowStorage = (e) => {
-    const name = e.target.name;
-
-    //debugger;
-
-    +name === 0
-      ? this.setState(
-          {
-            isShowDocuments: true,
-            isCheckedDocuments: true,
-            isShowThirdParty: false,
-            isCheckedThirdParty: false,
-            isShowThirdPartyStorage: false,
-            isCheckedThirdPartyStorage: false,
-          },
-          function () {
-            // this.checkChanges();
-          }
-        )
-      : +name === 1
-      ? this.setState(
-          {
-            isShowDocuments: false,
-            isCheckedDocuments: false,
-            isShowThirdParty: true,
-            isCheckedThirdParty: true,
-            isShowThirdPartyStorage: false,
-            isCheckedThirdPartyStorage: false,
-          },
-          function () {
-            // this.checkChanges();
-          }
-        )
-      : this.setState(
-          {
-            isShowDocuments: false,
-            isCheckedDocuments: false,
-            isShowThirdParty: false,
-            isCheckedThirdParty: false,
-            isShowThirdPartyStorage: true,
-            isCheckedThirdPartyStorage: true,
-          },
-          function () {
-            //this.checkChanges();
-          }
-        );
-  };
-
-  onClickPermissions = (e) => {
+  onSaveModuleSettings = async () => {
     const {
+      selectedFolderDocument,
+      selectedFolderResources,
+      selectedMaxCopiesNumber,
+      selectedMonthlySchedule,
+      selectedWeeklySchedule,
+      selectedWeekday,
+      selectedHour,
+      selectedMonthDay,
+
       isCheckedDocuments,
       isCheckedThirdParty,
-      isCheckedThirdPartyStorage,
-      defaultStorageType,
     } = this.state;
-    const name = e.target.defaultValue;
-    if (name === "enable") {
+
+    const { t } = this.props;
+    debugger;
+    if (
+      (isCheckedDocuments && !selectedFolderDocument) ||
+      (isCheckedThirdParty && !selectedFolderResources)
+    ) {
       this.setState({
-        isShowedStorageTypes: true,
-        selectedPermission: "enable",
+        isError: true,
       });
+      return;
+    }
 
-      //this.checkChanges();
+    this.setState({ isLoadingData: true }, function () {
+      let day, period, storageType;
 
-      if (isCheckedDocuments) {
-        this.setState({
-          isShowDocuments: true,
-        });
+      if (selectedWeeklySchedule) {
+        period = `${EVERY_WEEK}`;
+        day = `${selectedWeekday}`;
       } else {
-        if (isCheckedThirdParty) {
-          this.setState({
-            isShowThirdParty: true,
-          });
+        if (selectedMonthlySchedule) {
+          period = `${EVERY_MONTH}`;
+          day = `${selectedMonthDay}`;
         } else {
-          if (isCheckedThirdPartyStorage) {
-            this.setState({
-              isShowThirdPartyStorage: true,
-            });
-          } else {
-            this.setState({
-              isCheckedDocuments: true,
-              isShowDocuments: true,
-              isChanged: true,
-            });
-          }
+          period = `${EVERY_DAY}`;
+          day = null;
         }
       }
-    } else {
-      this.setState({
-        isShowedStorageTypes: false,
-        isShowDocuments: false,
-        isShowThirdParty: false,
-        isShowThirdPartyStorage: false,
-        isCheckedThirdParty: false,
-        isCheckedThirdPartyStorage: false,
-        isChanged: !defaultStorageType ? false : true,
-        selectedPermission: "disable",
-      });
-    }
-    //debugger;
-  };
-  onClickDeleteSchedule = () => {
-    const { t } = this.props;
-    this.setState({ isLoadingData: true }, function () {
-      deleteBackupSchedule()
-        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+
+      let time = selectedHour.substring(0, selectedHour.indexOf(":"));
+
+      let selectedFolder;
+
+      if (isCheckedDocuments) {
+        storageType = `${DOCUMENT_TYPE}`;
+        selectedFolder = selectedFolderDocument;
+      } else {
+        if (isCheckedThirdParty) {
+          storageType = `${RESOURCES_TYPE}`;
+          selectedFolder = selectedFolderResources;
+        } else {
+          storageType = `${STORAGE_TYPE}`;
+        }
+      }
+      const storageParams = [
+        {
+          key: "folderId",
+          value: selectedFolder,
+        },
+      ];
+
+      let folderId;
+
+      createBackupSchedule(
+        storageType,
+        storageParams,
+        selectedMaxCopiesNumber,
+        period,
+        time,
+        day
+      )
         .then(() => getBackupSchedule())
-        .then(() => {
-          this.setState({
-            defaultStorageType: "",
-          });
+        .then((selectedSchedule) => {
+          if (selectedSchedule) {
+            folderId = selectedSchedule.storageParams.folderId;
+            this.onSetDefaultOptions(selectedSchedule);
+            toastr.success(t("SuccessfullySaveSettingsMessage"));
+          } else this.onSetDefaultOptions();
+          if (selectedSchedule.storageType === DOCUMENT_TYPE) {
+            this.setState({
+              defaultMonthlySchedule: false,
+              defaultWeeklySchedule: false,
+            });
+          } else if (selectedSchedule.storageType === RESOURCES_TYPE) {
+            this.setState({
+              defaultMonthlySchedule: false,
+              defaultDailySchedule: false,
+            });
+          } else
+            this.setState({
+              defaultDailySchedule: false,
+              defaultWeeklySchedule: false,
+            });
         })
-        .catch((error) => toastr.error(error))
-        .finally(() =>
-          this.setState({ isLoadingData: false, isChanged: false })
+        .catch((e) => console.error(e))
+        .finally(
+          () =>
+            this._isMounted &&
+            this.setState({
+              isLoadingData: false,
+              isChanged: false,
+              isError: false,
+            })
         );
     });
   };
 
-  fillStorageFields = (moduleName = "", storageFiledValue = "") => {
-    //debugger;
-    this.moduleName = moduleName;
-    this.storageFiledValue = storageFiledValue;
-    this.onSaveModuleSettings();
+  onSelectFolder = (folderId) => {
+    const { isCheckedThirdParty } = this.state;
+    let folderType = {};
+    if (isCheckedThirdParty) {
+      folderType = {
+        selectedFolderResources: folderId,
+      };
+    } else {
+      folderType = {
+        selectedFolderDocument: folderId,
+      };
+    }
+
+    this.setState(
+      {
+        ...folderType,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
   };
 
-  onSetLoadingData = (isLoading) => {
-    this._isMounted &&
-      this.setState({
-        isLoadingData: isLoading,
-      });
-  };
-  onSetDisableOptions = (isDisable) => {
+  onSetLoadingData = (loading) => {
     this.setState({
-      isDisableOptions: isDisable,
+      isLoadingData: loading,
+      isReset: false,
     });
   };
 
-  onClickFloatingButton = () => {
-    const { history } = this.props;
-    history.push(
-      combineUrl(proxyURL, "/settings/datamanagement/backup/manual-backup")
-    );
-  };
   render() {
     const { t } = this.props;
     const {
-      isShowedStorageTypes,
-      isCheckedDocuments,
-      isCheckedThirdParty,
-      isCheckedThirdPartyStorage,
-      isShowDocuments,
-      isShowThirdParty,
-      isShowThirdPartyStorage,
-      weeklySchedule,
-      monthlySchedule,
-      weekOptions,
-      selectedOption,
-      selectedWeekdayOption,
-      selectedTimeOption,
-      selectedMonthOption,
-      selectedMaxCopies,
-      isCopyingToLocal,
-      isLoadingData,
-
-      selectedPermission,
       isLoading,
       isChanged,
-
-      isDisableOptions,
       downloadingProgress,
-
-      defaultStorageType,
-      defaultHour,
-      defaultMaxCopies,
-      defaultPeriod,
-      defaultDay,
-      defaultSelectedWeekdayOption,
+      isEnable,
       defaultSelectedFolder,
-      defaultSelectedOption,
-      dailySchedule,
+
+      selectedMonthlySchedule,
+      selectedWeeklySchedule,
+      selectedHour,
+      selectedPeriodLabel,
+      selectedMonthDay,
+      selectedWeekdayLabel,
+      selectedMaxCopiesNumber,
+      isReset,
+
+      isCheckedDocuments,
+      isCheckedThirdParty,
+      isLoadingData,
+      defaultStorageTypeNumber,
+      isCheckedThirdPartyStorage,
+      isError,
     } = this.state;
 
+    const resourcesModule = +defaultStorageTypeNumber === RESOURCES_TYPE;
+    console.log("auto backup render", this.state);
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledAutoBackup>
-        <RadioButtonGroup
-          className="automatic-backup_main "
-          name={"0"}
-          options={[
-            {
-              label: t("DisableAutomaticBackup"),
-              value: "disable",
-            },
-            {
-              label: t("EnableAutomaticBackup"),
-              value: "enable",
-            },
-          ]}
-          isDisabled={isLoadingData}
-          onClick={this.onClickPermissions}
-          orientation="vertical"
-          selected={selectedPermission}
+        <ToggleButton
+          className="backup_toggle-btn"
+          label={t("EnableAutomaticBackup")}
+          onChange={this.onClickPermissions}
+          isChecked={isEnable}
         />
 
-        {isShowedStorageTypes && (
+        {isEnable && (
           <>
             <StyledModules>
               <RadioButton
@@ -705,41 +915,33 @@ class AutomaticBackup extends React.PureComponent {
               <Text className="backup-description">
                 {t("DocumentsModuleDescription")}
               </Text>
-              {isShowDocuments && (
-                <>
-                  <DocumentsModule
-                    isLoadingData={isLoadingData}
-                    weeklySchedule={weeklySchedule}
-                    monthlySchedule={monthlySchedule}
-                    weekOptions={weekOptions}
-                    selectedWeekdayOption={selectedWeekdayOption}
-                    weekdaysOptions={this.weekdaysOptions}
-                    periodOptions={this.periodOptions}
-                    lng={this.lng}
-                    monthNumberOptionsArray={this.monthNumberOptionsArray}
-                    timeOptionsArray={this.timeOptionsArray}
-                    maxNumberCopiesArray={this.maxNumberCopiesArray}
-                    defaultStorageType={defaultStorageType}
-                    defaultSelectedFolder={defaultSelectedFolder}
-                    defaultSelectedOption={defaultSelectedOption}
-                    defaultHour={defaultHour}
-                    defaultMaxCopies={defaultMaxCopies}
-                    defaultPeriod={defaultPeriod}
-                    defaultDay={defaultDay}
-                    defaultSelectedWeekdayOption={defaultSelectedWeekdayOption}
-                    defaultWeekly={defaultWeekly}
-                    defaultDaily={defaultDaily}
-                    defaultMonthly={defaultMonthly}
-                    monthlySchedule={monthlySchedule}
-                    dailySchedule={dailySchedule}
-                    weeklySchedule={weeklySchedule}
-                    isCopyingToLocal={isCopyingToLocal}
-                    onCancelModuleSettings={this.onCancelModuleSettings}
-                    changedDefaultOptions={this.changedDefaultOptions}
-                    onSetDefaultOptions={this.onSetDefaultOptions}
-                    onSetLoadingData={this.onSetLoadingData}
-                  />
-                </>
+              {isCheckedDocuments && (
+                <DocumentsModule
+                  selectedPeriodLabel={selectedPeriodLabel}
+                  selectedWeekdayLabel={selectedWeekdayLabel}
+                  selectedMonthDay={selectedMonthDay}
+                  selectedHour={selectedHour}
+                  selectedMaxCopies={selectedMaxCopiesNumber}
+                  monthNumbersArray={this.monthNumbersArray}
+                  hoursArray={this.hoursArray}
+                  maxNumberCopiesArray={this.maxNumberCopiesArray}
+                  periodsObject={this.periodsObject}
+                  weekdaysLabelArray={this.weekdaysLabelArray}
+                  onSelectPeriod={this.onSelectPeriod}
+                  onSelectWeekDay={this.onSelectWeekDay}
+                  onSelectMonthNumber={this.onSelectMonthNumber}
+                  onSelectTime={this.onSelectTime}
+                  onSelectMaxCopies={this.onSelectMaxCopies}
+                  onSelectFolder={this.onSelectFolder}
+                  onSetLoadingData={this.onSetLoadingData}
+                  weeklySchedule={selectedWeeklySchedule}
+                  monthlySchedule={selectedMonthlySchedule}
+                  defaultSelectedFolder={defaultSelectedFolder}
+                  isReset={isReset}
+                  resourcesModule={resourcesModule}
+                  isLoadingData={isLoadingData}
+                  isError={isError}
+                />
               )}
             </StyledModules>
 
@@ -768,38 +970,32 @@ class AutomaticBackup extends React.PureComponent {
                 {t("ThirdPartyResourceDescription")}
               </Text>
 
-              {isShowThirdParty && (
+              {isCheckedThirdParty && (
                 <ThirdPartyModule
-                  isLoadingData={isLoadingData}
-                  weeklySchedule={weeklySchedule}
-                  monthlySchedule={monthlySchedule}
-                  weekOptions={weekOptions}
-                  selectedWeekdayOption={selectedWeekdayOption}
-                  weekdaysOptions={this.weekdaysOptions}
-                  periodOptions={this.periodOptions}
-                  lng={this.lng}
-                  monthNumberOptionsArray={this.monthNumberOptionsArray}
-                  timeOptionsArray={this.timeOptionsArray}
+                  selectedPeriodLabel={selectedPeriodLabel}
+                  selectedWeekdayLabel={selectedWeekdayLabel}
+                  selectedMonthDay={selectedMonthDay}
+                  selectedHour={selectedHour}
+                  selectedMaxCopies={selectedMaxCopiesNumber}
+                  monthNumbersArray={this.monthNumbersArray}
+                  hoursArray={this.hoursArray}
                   maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  defaultStorageType={defaultStorageType}
-                  defaultSelectedFolder={defaultSelectedFolder}
-                  defaultSelectedOption={defaultSelectedOption}
-                  defaultHour={defaultHour}
-                  defaultMaxCopies={defaultMaxCopies}
-                  defaultPeriod={defaultPeriod}
-                  defaultDay={defaultDay}
-                  defaultSelectedWeekdayOption={defaultSelectedWeekdayOption}
-                  defaultWeekly={defaultWeekly}
-                  defaultDaily={defaultDaily}
-                  defaultMonthly={defaultMonthly}
-                  monthlySchedule={monthlySchedule}
-                  dailySchedule={dailySchedule}
-                  weeklySchedule={weeklySchedule}
-                  isCopyingToLocal={isCopyingToLocal}
-                  onCancelModuleSettings={this.onCancelModuleSettings}
-                  changedDefaultOptions={this.changedDefaultOptions}
-                  onSetDefaultOptions={this.onSetDefaultOptions}
+                  periodsObject={this.periodsObject}
+                  weekdaysLabelArray={this.weekdaysLabelArray}
+                  onSelectPeriod={this.onSelectPeriod}
+                  onSelectWeekDay={this.onSelectWeekDay}
+                  onSelectMonthNumber={this.onSelectMonthNumber}
+                  onSelectTime={this.onSelectTime}
+                  onSelectMaxCopies={this.onSelectMaxCopies}
+                  onSelectFolder={this.onSelectFolder}
                   onSetLoadingData={this.onSetLoadingData}
+                  weeklySchedule={selectedWeeklySchedule}
+                  monthlySchedule={selectedMonthlySchedule}
+                  defaultSelectedFolder={defaultSelectedFolder}
+                  isReset={isReset}
+                  resourcesModule={resourcesModule}
+                  isLoadingData={isLoadingData}
+                  isError={isError}
                 />
               )}
             </StyledModules>
@@ -820,59 +1016,55 @@ class AutomaticBackup extends React.PureComponent {
                 {t("ThirdPartyStorageDescription")}
               </Text>
 
-              {isShowThirdPartyStorage && (
+              {isCheckedThirdPartyStorage && (
                 <ThirdPartyStorageModule
-                  isCopyingToLocal={isCopyingToLocal}
                   isLoadingData={isLoadingData}
-                  isDisableOptions={isDisableOptions}
-                  weeklySchedule={weeklySchedule}
-                  monthlySchedule={monthlySchedule}
-                  weekOptions={weekOptions}
-                  selectedWeekdayOption={selectedWeekdayOption}
-                  weekdaysOptions={this.weekdaysOptions}
-                  periodOptions={this.periodOptions}
-                  lng={this.lng}
-                  monthNumberOptionsArray={this.monthNumberOptionsArray}
-                  timeOptionsArray={this.timeOptionsArray}
+                  selectedPeriodLabel={selectedPeriodLabel}
+                  selectedWeekdayLabel={selectedWeekdayLabel}
+                  selectedMonthDay={selectedMonthDay}
+                  selectedHour={selectedHour}
+                  selectedMaxCopies={selectedMaxCopiesNumber}
+                  monthNumbersArray={this.monthNumbersArray}
+                  hoursArray={this.hoursArray}
                   maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  defaultStorageType={defaultStorageType}
-                  defaultSelectedFolder={defaultSelectedFolder}
-                  defaultSelectedOption={defaultSelectedOption}
-                  defaultHour={defaultHour}
-                  defaultMaxCopies={defaultMaxCopies}
-                  defaultPeriod={defaultPeriod}
-                  defaultDay={defaultDay}
-                  defaultSelectedWeekdayOption={defaultSelectedWeekdayOption}
-                  defaultWeekly={defaultWeekly}
-                  defaultDaily={defaultDaily}
-                  defaultMonthly={defaultMonthly}
-                  monthlySchedule={monthlySchedule}
-                  dailySchedule={dailySchedule}
-                  weeklySchedule={weeklySchedule}
-                  isCopyingToLocal={isCopyingToLocal}
-                  onCancelModuleSettings={this.onCancelModuleSettings}
-                  changedDefaultOptions={this.changedDefaultOptions}
-                  onSetDefaultOptions={this.onSetDefaultOptions}
+                  periodsObject={this.periodsObject}
+                  weekdaysLabelArray={this.weekdaysLabelArray}
+                  onSelectPeriod={this.onSelectPeriod}
+                  onSelectWeekDay={this.onSelectWeekDay}
+                  onSelectMonthNumber={this.onSelectMonthNumber}
+                  onSelectTime={this.onSelectTime}
+                  onSelectMaxCopies={this.onSelectMaxCopies}
+                  onSelectFolder={this.onSelectFolder}
                   onSetLoadingData={this.onSetLoadingData}
+                  weeklySchedule={selectedWeeklySchedule}
+                  monthlySchedule={selectedMonthlySchedule}
                 />
               )}
             </StyledModules>
           </>
         )}
 
-        {!isShowedStorageTypes && isChanged && (
-          <SaveCancelButtons
-            className="team-template_buttons"
-            onSaveClick={this.onClickDeleteSchedule}
-            onCancelClick={this.onCancelModuleSettings}
-            showReminder={false}
-            reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Common:CancelButton")}
-            isDisabled={isCopyingToLocal || isLoadingData}
-          />
-        )}
+        {isChanged && (
+          <>
+            <Button
+              label={t("Common:Save")}
+              onClick={this.onSaveModuleSettings}
+              primary
+              //isDisabled={!isChecked}
+              size="medium"
+              tabIndex={10}
+            />
 
+            <Button
+              label={t("Common: Cancel")}
+              onClick={this.onCancelModuleSettings}
+              primary
+              //isDisabled={!isChecked}
+              size="medium"
+              tabIndex={10}
+            />
+          </>
+        )}
         {downloadingProgress > 0 && downloadingProgress !== 100 && (
           <FloatingButton
             className="layout-progress-bar"

@@ -6,34 +6,39 @@ import Text from "@appserver/components/text";
 const ScheduleComponent = ({
   weeklySchedule,
   monthlySchedule,
-  weekOptions,
-  selectedOption,
-  selectedWeekdayOption,
-  selectedTimeOption,
-  selectedMonthOption,
-  timeOptionsArray,
-  periodOptions,
-  monthNumberOptionsArray,
-  onSelectMonthNumberAndTimeOptions,
+
+  selectedPeriodLabel,
+  selectedWeekdayLabel,
+  selectedHour,
+  selectedMonthDay,
   selectedMaxCopies,
+
   onSelectMaxCopies,
-  maxNumberCopiesArray,
   onSelectPeriod,
   onSelectWeekDay,
+  onSelectMonthNumber,
+  onSelectTime,
+
   isLoadingData,
   isDisableOptions,
+
+  periodsObject,
+  weekdaysLabelArray,
+  monthNumbersArray,
+  hoursArray,
+  maxNumberCopiesArray,
 }) => {
   const { t } = useTranslation("Settings");
-  //console.log("selectedWeekdayOption", selectedWeekdayOption);
+
   return (
     <StyledScheduleComponent>
       <Text className="schedule_description"> {t("ScheduleDescription")}</Text>
       <div className="main_options">
         <ComboBox
-          options={periodOptions}
+          options={periodsObject}
           selectedOption={{
             key: 0,
-            label: selectedOption,
+            label: selectedPeriodLabel,
           }}
           onSelect={onSelectPeriod}
           isDisabled={isLoadingData || isDisableOptions}
@@ -45,27 +50,28 @@ const ScheduleComponent = ({
         />
         {weeklySchedule && (
           <ComboBox
-            options={weekOptions}
+            options={weekdaysLabelArray}
             selectedOption={{
               key: 0,
-              label: selectedWeekdayOption,
+              label: selectedWeekdayLabel,
             }}
             onSelect={onSelectWeekDay}
             isDisabled={isLoadingData || isDisableOptions}
             noBorder={false}
             scaled={false}
             scaledOptions={true}
+            dropDownMaxHeight={400}
             className="schedule-backup_combobox"
           />
         )}
         {monthlySchedule && (
           <ComboBox
-            options={monthNumberOptionsArray}
+            options={monthNumbersArray}
             selectedOption={{
               key: 0,
-              label: selectedMonthOption,
+              label: selectedMonthDay,
             }}
-            onSelect={onSelectMonthNumberAndTimeOptions}
+            onSelect={onSelectMonthNumber}
             isDisabled={isLoadingData || isDisableOptions}
             noBorder={false}
             scaled={false}
@@ -75,12 +81,12 @@ const ScheduleComponent = ({
           />
         )}
         <ComboBox
-          options={timeOptionsArray}
+          options={hoursArray}
           selectedOption={{
             key: 0,
-            label: selectedTimeOption,
+            label: selectedHour,
           }}
-          onSelect={onSelectMonthNumberAndTimeOptions}
+          onSelect={onSelectTime}
           isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
