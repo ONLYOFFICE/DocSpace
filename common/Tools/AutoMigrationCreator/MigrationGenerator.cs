@@ -1,8 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 using ASC.Core.Common.EF;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +17,7 @@ namespace AutoMigrationCreator
         private string _assemblyName;
         private string _typeName;
         private string _contextFolderName;
+        private Regex _pattern = new Regex(@"\d+$", RegexOptions.Compiled);
         private string ContextFolderName
         {
             get
@@ -35,17 +38,15 @@ namespace AutoMigrationCreator
 
         public void Generate()
         {
-            var scaffolder = GetScaffolder();
+            var scaffolder = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
+                .GetService<IMigrationsScaffolder>();
 
-            var migration = scaffolder.ScaffoldMigration($"{ContextFolderName + DateTime.Now.ToString("MM-dd-yyyy-HH-mm-ss")}",
+            var name = GenerateMigrationName();
+
+            var migration = scaffolder.ScaffoldMigration(name,
                 $"{_assemblyName}", $"Migrations.{_providerName}.{ContextFolderName}");
 
             SaveMigration(migration);
-        }
-
-        private IMigrationsScaffolder GetScaffolder()
-        {
-            return EFCoreDesignTimeServices.GetServiceProvider(_dbContext).GetService<IMigrationsScaffolder>();
         }
 
         private void SaveMigration(ScaffoldedMigration migration)
@@ -62,6 +63,33 @@ namespace AutoMigrationCreator
             File.WriteAllText(migrationPath, migration.MigrationCode);
             File.WriteAllText(designerPath, migration.MetadataCode);
             File.WriteAllText(snapshotPath, migration.SnapshotCode);
+        }
+
+        private string GetLastMigrationName()
+        {
+            var migrations = _dbContext.Database.GetPendingMigrations();
+
+            if (!migrations.Any()) migrations = _dbContext.Database.GetAppliedMigrations();
+
+            if (!migrations.Any()) return string.Empty;
+
+            var lastMigration = migrations.Last();
+
+            return lastMigration;
+        }
+
+        private string GenerateMigrationName()
+        {
+            var last = GetLastMigrationName();
+
+            if (string.IsNullOrEmpty(last)) return ContextFolderName;
+
+            var migrationNumber = _pattern.Match(last).Value;
+
+            if (string.IsNullOrEmpty(migrationNumber))
+                return ContextFolderName + "_Upgrade1";
+
+            return ContextFolderName + "_Upgrade" + (int.Parse(migrationNumber) + 1);
         }
     }
 }
