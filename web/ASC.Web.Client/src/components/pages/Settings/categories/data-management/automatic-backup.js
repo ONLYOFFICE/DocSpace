@@ -135,6 +135,7 @@ class AutomaticBackup extends React.PureComponent {
     this.weekdaysLabelArray = [];
 
     this._isMounted = false;
+    this.timerId = null;
   }
 
   componentDidMount() {
@@ -252,6 +253,53 @@ class AutomaticBackup extends React.PureComponent {
     );
   };
 
+  getProgress = () => {
+    const { t } = this.props;
+
+    getBackupProgress()
+      .then((res) => {
+        if (res) {
+          if (res.error.length > 0 && res.progress !== 100) {
+            clearInterval(this.timerId);
+            this.timerId && toastr.error(`${res.error}`);
+            console.log("error", res.error);
+            this.timerId = null;
+            this.setState({
+              isCopyingToLocal: true,
+            });
+            return;
+          }
+          if (this._isMounted) {
+            this.setState({
+              downloadingProgress: res.progress,
+            });
+          }
+          if (res.progress === 100) {
+            clearInterval(this.timerId);
+
+            this.timerId && toastr.success(`${t("SuccessCopied")}`);
+            this.timerId = null;
+            if (this._isMounted) {
+              this.setState({
+                isCopyingToLocal: false,
+              });
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        clearInterval(timerId);
+        timerId && toastr.error(err);
+        console.log("err", err);
+
+        timerId = null;
+        if (this._isMounted) {
+          this.setState({
+            downloadingProgress: 100,
+          });
+        }
+      });
+  };
   onSetDefaultPeriodOption = (
     checkedStorage,
     defaultOptions,
@@ -858,6 +906,12 @@ class AutomaticBackup extends React.PureComponent {
     });
   };
 
+  onClickFloatingButton = () => {
+    const { history } = this.props;
+    history.push(
+      combineUrl(proxyURL, "/settings/datamanagement/backup/manual-backup")
+    );
+  };
   render() {
     const { t } = this.props;
     const {
@@ -882,10 +936,11 @@ class AutomaticBackup extends React.PureComponent {
       defaultStorageTypeNumber,
       isCheckedThirdPartyStorage,
       isError,
+      isCopyingToLocal,
     } = this.state;
 
     const resourcesModule = +defaultStorageTypeNumber === RESOURCES_TYPE;
-    console.log("auto backup render", this.state);
+    console.log("auto backup render");
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -1050,7 +1105,7 @@ class AutomaticBackup extends React.PureComponent {
               label={t("Common:Save")}
               onClick={this.onSaveModuleSettings}
               primary
-              //isDisabled={!isChecked}
+              isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
             />
@@ -1059,7 +1114,7 @@ class AutomaticBackup extends React.PureComponent {
               label={t("Common: Cancel")}
               onClick={this.onCancelModuleSettings}
               primary
-              //isDisabled={!isChecked}
+              isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
             />
