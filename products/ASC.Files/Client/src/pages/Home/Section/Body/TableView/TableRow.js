@@ -77,6 +77,9 @@ const StyledTableRow = styled(TableRow)`
     border-image-slice: 1;
     border-image-source: linear-gradient(to right, #ffffff 24px, #eceef1 24px);
 
+    border-top: 0;
+    border-right: 0;
+
     ${(props) => props.checked && rowCheckboxCheckedStyle};
     ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
@@ -88,6 +91,9 @@ const StyledTableRow = styled(TableRow)`
     border-bottom: 1px solid;
     border-image-slice: 1;
     border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
+
+    border-top: 0;
+    border-left: 0;
 
     ${(props) => props.checked && contextMenuWrapperCheckedStyle};
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
