@@ -18,7 +18,7 @@ import TypeCell from "./sub-components/TypeCell";
 import globalColors from "@appserver/components/utils/globalColors";
 import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
-
+import { isSafari } from "react-device-detect";
 const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
@@ -54,6 +54,7 @@ const contextMenuWrapperDraggingHoverStyle = css`
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
+    ${isSafari && `border-image-slice: 0 !important`};
     background: ${(props) =>
       (props.checked || props.isActive) && "#F3F4F4 !important"};
     cursor: ${(props) =>
