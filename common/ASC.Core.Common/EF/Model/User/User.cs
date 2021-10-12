@@ -49,7 +49,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUser, Provider.MySql)
-                .Add(PgSqlAddUser, Provider.Postgre)
+                .Add(PgSqlAddUser, Provider.PostgreSql)
                 .HasData(
                 new User
                 {

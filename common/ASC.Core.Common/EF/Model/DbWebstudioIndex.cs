@@ -19,7 +19,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbWebstudioIndex, Provider.MySql)
-                .Add(PgSqlAddDbWebstudioIndex, Provider.Postgre);
+                .Add(PgSqlAddDbWebstudioIndex, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)

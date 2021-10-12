@@ -20,7 +20,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddWebstudioUserVisit, Provider.MySql)
-                .Add(PgSqlAddWebstudioUserVisit, Provider.Postgre);
+                .Add(PgSqlAddWebstudioUserVisit, Provider.PostgreSql);
                 //.HasData(
                 //new DbWebstudioUserVisit 
                 //{ 

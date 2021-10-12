@@ -41,7 +41,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenant, Provider.MySql)
-                .Add(PgSqlAddDbTenant, Provider.Postgre)
+                .Add(PgSqlAddDbTenant, Provider.PostgreSql)
                 .HasData(
                 new DbTenant
                 {
