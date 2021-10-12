@@ -253,7 +253,10 @@ const Editor = () => {
 
       if (!doc && !successAuth) {
         window.open(
-          combineUrl(AppServerConfig.proxyURL, "/login"),
+          combineUrl(
+            AppServerConfig.proxyURL,
+            personal ? "/sign-in" : "/login"
+          ),
           "_self",
           "",
           true

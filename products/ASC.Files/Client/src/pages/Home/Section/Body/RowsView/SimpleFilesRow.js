@@ -56,7 +56,10 @@ const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
   position: unset;
-  cursor: ${(props) => props.checked && `url(images/cursor.palm.svg), auto`};
+  cursor: ${(props) =>
+    !props.isThirdPartyFolder &&
+    (props.checked || props.isActive) &&
+    "url(images/cursor.palm.svg), auto"};
   margin-top: -2px;
 
   ${(props) =>
@@ -160,6 +163,7 @@ const SimpleFilesRow = (props) => {
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
+          isThirdPartyFolder={item.isThirdPartyFolder}
         >
           <FilesRowContent
             item={item}
