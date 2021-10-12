@@ -34,7 +34,6 @@ class DropDown extends React.PureComponent {
     super(props);
 
     this.state = {
-      width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
       directionX: props.directionX,
       directionY: props.directionY,
     };
@@ -123,7 +122,7 @@ class DropDown extends React.PureComponent {
     this.setState({
       directionX: x,
       directionY: y,
-      width: rects.width,
+      width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
     });
   };
 
@@ -154,6 +153,9 @@ class DropDown extends React.PureComponent {
     } else if (this.props.directionX === "right") {
       this.dropDownRef.current.style.left =
         rects.right - this.dropDownRef.current.clientWidth + "px";
+    } else if (rects.left + dropDownRects.width > viewport.width) {
+      this.dropDownRef.current.style.left =
+        rects.right - this.dropDownRef.current.clientWidth + "px";
     } else {
       this.dropDownRef.current.style.left = left + "px";
     }
@@ -163,7 +165,7 @@ class DropDown extends React.PureComponent {
     this.setState({
       directionX: this.props.directionX,
       directionY: this.props.directionY,
-      width: dropDownRects.width,
+      width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
     });
   };
 
@@ -244,7 +246,6 @@ class DropDown extends React.PureComponent {
   render() {
     const { isDefaultMode } = this.props;
     const element = this.renderDropDown();
-
     if (isDefaultMode) {
       return <Portal element={element} appendTo={this.props.appendTo} />;
     }
