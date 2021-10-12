@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Security;
 using System.ServiceModel.Security;
@@ -1779,9 +1780,11 @@ namespace ASC.Employee.Core.Controllers
         {
             using (var memstream = new MemoryStream())
             {
-                var req = WebRequest.Create(url);
-                using (var response = req.GetResponse())
-                using (var stream = response.GetResponseStream())
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+                
+                var httpClient = new HttpClient();
+                using (var stream = httpClient.Send(request).Content.ReadAsStream())
                 {
                     var buffer = new byte[512];
                     int bytesRead;
@@ -2026,11 +2029,15 @@ namespace ASC.Employee.Core.Controllers
             {
                 files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Scheme | UriPartial.Authority) + "/" + files.TrimStart('/');
             }
-            var request = WebRequest.Create(files);
-            using var response = (HttpWebResponse)request.GetResponse();
-            using var inputStream = response.GetResponseStream();
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(files);
+
+            var httpClient = new HttpClient();
+
+            var response = httpClient.Send(request);
+            using var inputStream = response.Content.ReadAsStream();
             using var br = new BinaryReader(inputStream);
-            var imageByteArray = br.ReadBytes((int)response.ContentLength);
+            var imageByteArray = br.ReadBytes((int)inputStream.Length);
             UserPhotoManager.SaveOrUpdatePhoto(user.ID, imageByteArray);
         }
 

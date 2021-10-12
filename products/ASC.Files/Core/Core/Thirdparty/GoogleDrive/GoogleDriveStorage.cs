@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Web;
@@ -219,19 +220,21 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                                             HttpUtility.UrlEncode(requiredMimeType));
             }
 
-            var request = WebRequest.Create(GoogleLoginProvider.GoogleUrlFile + downloadArg);
-            request.Method = "GET";
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFile + downloadArg);
+            request.Method = HttpMethod.Get;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
-            var response = (HttpWebResponse)request.GetResponse();
+            var httpClient = new HttpClient();
+            var response = httpClient.Send(request);
 
             if (offset == 0 && file.Size.HasValue && file.Size > 0)
             {
-                return new ResponseStream(response.GetResponseStream(), file.Size.Value);
+                return new ResponseStream(response.Content.ReadAsStream(), file.Size.Value);
             }
 
             var tempBuffer = TempStream.Create();
-            using (var str = response.GetResponseStream())
+            using (var str = response.Content.ReadAsStream())
             {
                 if (str != null)
                 {
@@ -366,23 +369,20 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 body = !string.IsNullOrEmpty(titleData + parentData) ? string.Format("{{{0}{1}}}", titleData, parentData) : "";
             }
 
-            var request = WebRequest.Create(GoogleLoginProvider.GoogleUrlFileUpload + fileId + "?uploadType=resumable");
-            request.Method = method;
+            var request1  = new HttpRequestMessage();
+            request1.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + fileId + "?uploadType=resumable");
+            request1.Method = new HttpMethod(method);
+            request1.Headers.Add("X-Upload-Content-Type", MimeMapping.GetMimeMapping(driveFile.Name));
+            request1.Headers.Add("X-Upload-Content-Length", contentLength.ToString(CultureInfo.InvariantCulture));
+            request1.Headers.Add("Authorization", "Bearer " + AccessToken);
+            request1.Content = new StringContent(body, Encoding.UTF8, "application/json; charset=UTF-8");
 
-            var bytes = Encoding.UTF8.GetBytes(body);
-            request.ContentLength = bytes.Length;
-            request.ContentType = "application/json; charset=UTF-8";
-            request.Headers.Add("X-Upload-Content-Type", MimeMapping.GetMimeMapping(driveFile.Name));
-            request.Headers.Add("X-Upload-Content-Length", contentLength.ToString(CultureInfo.InvariantCulture));
-            request.Headers.Add("Authorization", "Bearer " + AccessToken);
-
-            request.GetRequestStream().Write(bytes, 0, bytes.Length);
+            var httpClient = new HttpClient();
+            var response = httpClient.Send(request1);
 
             var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength);
-            using (var response = request.GetResponse())
-            {
-                uploadSession.Location = response.Headers["Location"];
-            }
+            
+            uploadSession.Location = response.Headers.Location.ToString();// todo check
             uploadSession.Status = ResumableUploadSessionStatus.Started;
 
             return uploadSession;
@@ -396,32 +396,29 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (googleDriveSession.Status != ResumableUploadSessionStatus.Started)
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");
 
-            var request = WebRequest.Create(googleDriveSession.Location);
-            request.Method = "PUT";
-            request.ContentLength = chunkLength;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(googleDriveSession.Location);
+            request.Method = HttpMethod.Put;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
                                                                googleDriveSession.BytesTransfered,
                                                                googleDriveSession.BytesTransfered + chunkLength - 1,
                                                                googleDriveSession.BytesToTransfer));
+            request.Content = new StreamContent(stream);
+            var httpClient = new HttpClient();
+            HttpResponseMessage response = null;
 
-            using (var requestStream = request.GetRequestStream())
-            {
-                stream.CopyTo(requestStream);
-            }
-
-            HttpWebResponse response;
             try
             {
-                response = (HttpWebResponse)request.GetResponse();
+                response = httpClient.Send(request);
             }
-            catch (WebException exception)
+            catch (HttpRequestException exception)
             {
-                if (exception.Status == WebExceptionStatus.ProtocolError)
-                {
-                    if (exception.Response != null && exception.Response.Headers.AllKeys.Contains("Range"))
+                if (exception.StatusCode == HttpStatusCode.NotFound/*WebExceptionStatus.ProtocolError*/)//todo
+                {/*
+                    if (exception. != null && exception.Response.Headers.AllKeys.Contains("Range"))
                     {
-                        response = (HttpWebResponse)exception.Response;
+                        response = exception.Response;
                     }
                     else if (exception.Message.Equals("Invalid status code: 308", StringComparison.InvariantCulture)) //response is null (unix)
                     {
@@ -430,7 +427,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                     else
                     {
                         throw;
-                    }
+                    }*/
                 }
                 else
                 {
@@ -445,7 +442,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
                 if (response != null)
                 {
-                    var locationHeader = response.Headers["Location"];
+                    var locationHeader = response.Headers.Location.ToString();//todo check
                     if (!string.IsNullOrEmpty(locationHeader))
                     {
                         uplSession.Location = locationHeader;
@@ -456,7 +453,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 googleDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
-                using var responseStream = response.GetResponseStream();
+                using var responseStream = response.Content.ReadAsStream();
                 if (responseStream == null) return;
                 string responseString;
                 using (var readStream = new StreamReader(responseStream))
@@ -466,11 +463,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 var responseJson = JObject.Parse(responseString);
 
                 googleDriveSession.FileId = responseJson.Value<string>("id");
-            }
-
-            if (response != null)
-            {
-                response.Close();
             }
         }
 

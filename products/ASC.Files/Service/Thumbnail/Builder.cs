@@ -22,6 +22,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -283,7 +284,8 @@ namespace ASC.Files.ThumbnailBuilder
         {
             logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.ID, thumbnailUrl);
 
-            var req = (HttpWebRequest)WebRequest.Create(thumbnailUrl);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(thumbnailUrl);
 
             //HACK: http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
@@ -291,7 +293,9 @@ namespace ASC.Files.ThumbnailBuilder
                 ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true;
             }
 
-            using (var stream = new ResponseStream(req.GetResponse()))
+            var httpClient = new HttpClient();
+
+            using (var stream = new ResponseStream(httpClient.Send(request)))
             {
                 Crop(fileDao, file, stream);
             }

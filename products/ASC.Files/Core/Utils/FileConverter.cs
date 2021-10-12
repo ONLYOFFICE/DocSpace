@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -680,7 +681,12 @@ namespace ASC.Web.Files.Utils
             {
                 ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
             }
-            return new ResponseStream(((HttpWebRequest)WebRequest.Create(convertUri)).GetResponse());
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(convertUri);
+            
+            var httpClient = new HttpClient();
+
+            return new ResponseStream(httpClient.Send(request));
         }
 
         public File<T> ExecSync<T>(File<T> file, string doc)
@@ -805,7 +811,10 @@ namespace ASC.Web.Files.Utils
             newFile.Comment = string.Format(FilesCommonResource.CommentConvert, file.Title);
             newFile.ThumbnailStatus = Thumbnail.Waiting;
 
-            var req = (HttpWebRequest)WebRequest.Create(convertedFileUrl);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(convertedFileUrl); 
+
+            var httpClient = new HttpClient();
 
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
             {
@@ -814,24 +823,19 @@ namespace ASC.Web.Files.Utils
 
             try
             {
-                using var convertedFileStream = new ResponseStream(req.GetResponse());
+                using var convertedFileStream = new ResponseStream(httpClient.Send(request));
                 newFile.ContentLength = convertedFileStream.Length;
                 newFile = fileDao.SaveFile(newFile, convertedFileStream);
             }
-            catch (WebException e)
+            catch (HttpRequestException e)
             {
-                using var response = e.Response;
-                var httpResponse = (HttpWebResponse)response;
-                var errorString = string.Format("WebException: {0}", httpResponse.StatusCode);
+                var errorString = string.Format("HttpRequestException: {0}", e.StatusCode);
 
-                if (httpResponse.StatusCode != HttpStatusCode.NotFound)
+                if (e.StatusCode != HttpStatusCode.NotFound)
                 {
-                    using var responseStream = response.GetResponseStream();
-                    if (responseStream != null)
+                    if (e.Message != null)
                     {
-                        using var readStream = new StreamReader(responseStream);
-                        var text = readStream.ReadToEnd();
-                        errorString += string.Format(" Error message: {0}", text);
+                        errorString += string.Format(" Error message: {0}", e.Message);
                     }
                 }
 

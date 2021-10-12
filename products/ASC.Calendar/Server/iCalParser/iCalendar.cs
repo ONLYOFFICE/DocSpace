@@ -35,6 +35,7 @@ using ASC.Web.Core.Calendars;
 using System.IO;
 using System.Net;
 using ASC.Core;
+using System.Net.Http;
 
 namespace ASC.Calendar.iCalParser
 {
@@ -69,9 +70,13 @@ namespace ASC.Calendar.iCalParser
                     url = new Regex("webcal").Replace(url, "http", 1);
                 }
 
-                var req = (HttpWebRequest)WebRequest.Create(url);
-                using (var resp = req.GetResponse())
-                using (var stream = resp.GetResponseStream())
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+
+                var httpClient = new HttpClient();
+                var response = httpClient.Send(request);
+
+                using (var stream = response.Content.ReadAsStream())
                 {
                     var ms = new MemoryStream();
                     stream.CopyTo(ms);

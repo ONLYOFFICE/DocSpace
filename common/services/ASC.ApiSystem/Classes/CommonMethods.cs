@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -169,17 +170,16 @@ namespace ASC.ApiSystem.Controllers
                 return false;
             }
 
-            var webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.Method = WebRequestMethods.Http.Post;
-            webRequest.Accept = "application/x-www-form-urlencoded";
-            webRequest.ContentLength = 0;
+            var request = new HttpRequestMessage();
+            request.Method = HttpMethod.Post;
+            request.Headers.Add("Accept", "application/x-www-form-urlencoded");
 
             try
             {
-                using var response = webRequest.GetResponse();
+                var httpClient = new HttpClient();
+                var response1 = httpClient.Send(request);
 
-                using var stream = response.GetResponseStream();
-
+                using var stream = response1.Content.ReadAsStream();
                 using var reader = new StreamReader(stream, Encoding.UTF8);
 
                 var result = reader.ReadToEnd();
@@ -306,17 +306,16 @@ namespace ASC.ApiSystem.Controllers
                 var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha:private-key"], ip, response);
                 var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
 
-                var webRequest = (HttpWebRequest)WebRequest.Create(url);
-                webRequest.Method = WebRequestMethods.Http.Post;
-                webRequest.ContentType = "application/x-www-form-urlencoded";
-                webRequest.ContentLength = data.Length;
-                using (var writer = new StreamWriter(webRequest.GetRequestStream()))
-                {
-                    writer.Write(data);
-                }
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+                request.Method = HttpMethod.Post;
+                request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                request.Content = new StringContent(data);
 
-                using var webResponse = webRequest.GetResponse();
-                using var reader = new StreamReader(webResponse.GetResponseStream());
+                var httpClient = new HttpClient();
+                using var stream = httpClient.Send(request).Content.ReadAsStream();
+                using var reader = new StreamReader(stream);
+
                 var resp = reader.ReadToEnd();
                 var resObj = JObject.Parse(resp);
 

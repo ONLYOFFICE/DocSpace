@@ -29,7 +29,9 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 
 using ASC.Common;
@@ -242,11 +244,14 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             if (string.IsNullOrEmpty(_amiId))
             {
                 var getAmiIdUrl = SetupInfo.AmiMetaUrl + "instance-id";
-                var request = (HttpWebRequest)WebRequest.Create(getAmiIdUrl);
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(getAmiIdUrl);
+
+                var httpClient = new HttpClient();
+
                 try
                 {
-                    using (var response = request.GetResponse())
-                    using (var responseStream = response.GetResponseStream())
+                    using (var responseStream = httpClient.Send(request).Content.ReadAsStream())
                     using (var reader = new StreamReader(responseStream))
                     {
                         _amiId = reader.ReadToEnd();
@@ -272,21 +277,22 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 if (string.IsNullOrEmpty(url)) return;
 
                 url += "/post.ashx";
-
-                using (var webClient = new WebClient())
-                {
-                    var values = new NameValueCollection
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+                var values = new NameValueCollection
                         {
                             { "type", "sendsubscription" },
                             { "subscr_type", "Opensource" },
                             { "email", user.Email }
                         };
+                var data = JsonSerializer.Serialize(values);
+                request.Content = new StringContent(data);
 
-                    var responseBody = webClient.UploadValues(url, values);
-                    var responseBodyStr = Encoding.UTF8.GetString(responseBody);
+                var httpClient = new HttpClient();
+                var response = httpClient.Send(request);
 
-                    Log.Debug("Subscribe response: " + responseBodyStr);
-                }
+                Log.Debug("Subscribe response: " + response);//toto write
+
             }
             catch (Exception e)
             {

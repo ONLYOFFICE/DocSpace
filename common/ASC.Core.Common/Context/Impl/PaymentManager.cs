@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -110,21 +111,15 @@ namespace ASC.Core
 
             var now = DateTime.UtcNow;
             var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(TenantManager.GetCurrentTenant().TenantAlias);
-            using var webClient = new WebClient();
-            webClient.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
-            try
-            {
-                webClient.DownloadData(partnerUrl + actionUrl);
-            }
-            catch (WebException we)
-            {
-                var error = GetException(we);
-                if (error != null)
-                {
-                    throw error;
-                }
-                throw;
-            }
+
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
+            request.RequestUri = new Uri(partnerUrl + actionUrl);
+
+            var httpClient = new HttpClient();
+
+            httpClient.Send(request); 
+
             tariffService.ClearCache(TenantManager.GetCurrentTenant().TenantId);
 
             var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
@@ -145,27 +140,5 @@ namespace ASC.Core
             return string.Format("ASC :{0}:{1}", now, hash);
         }
 
-        private static Exception GetException(WebException we)
-        {
-            var response = (HttpWebResponse)we.Response;
-            if (response.StatusCode == HttpStatusCode.InternalServerError)
-            {
-                using var stream = response.GetResponseStream();
-                using var reader = new StreamReader(stream, Encoding.UTF8);
-                var result = reader.ReadToEnd();
-                var excInfo = JsonConvert.DeserializeObject<ExceptionJson>(result);
-                return (Exception)Activator.CreateInstance(Type.GetType(excInfo.exceptionType, true), excInfo.exceptionMessage);
-            }
-            return null;
-        }
-
-
-        private class ExceptionJson
-        {
-            public string message = null;
-            public string exceptionMessage = null;
-            public string exceptionType = null;
-            public string stackTrace = null;
-        }
     }
 }

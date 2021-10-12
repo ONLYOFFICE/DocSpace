@@ -28,6 +28,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Xml;
 
@@ -125,13 +126,13 @@ namespace ASC.Web.CRM.Classes
                 file.Title = string.Format("{0}{1}", invoice.Number, FormatPdf);
                 file.FolderID = _daoFactory.GetFileDao().GetRoot();
 
-                var request = WebRequest.Create(urlToFile);
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(urlToFile);
 
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
+                var httpClient = new HttpClient();
+
+                using (var stream = httpClient.Send(request).Content.ReadAsStream())
                 {
-                    file.ContentLength = response.ContentLength;
-
                     _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
                     file = _daoFactory.GetFileDao().SaveFile(file, stream);
                 }
@@ -244,27 +245,27 @@ namespace ASC.Web.CRM.Classes
         {
             File<int> file = null;
 
-            var request = (HttpWebRequest)WebRequest.Create(url);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(url);
 
-            using (var response = request.GetResponse())
+            var httpClient = new HttpClient();
+
+            using (var stream = httpClient.Send(request).Content.ReadAsStream())
             {
-                using (var stream = response.GetResponseStream())
+                if (stream != null)
                 {
-                    if (stream != null)
+                    var document = _serviceProvider.GetService<File<int>>();
+
+                    document.Title = string.Format("{0}{1}", data.Number, FormatPdf);
+                    document.FolderID = _daoFactory.GetFileDao().GetRoot();
+                    document.ContentLength = stream.Length;
+
+                    if (data.GetInvoiceFile(daoFactory) != null)
                     {
-                        var document = _serviceProvider.GetService<File<int>>();
-
-                        document.Title = string.Format("{0}{1}", data.Number, FormatPdf);
-                        document.FolderID = _daoFactory.GetFileDao().GetRoot();
-                        document.ContentLength = response.ContentLength;
-
-                        if (data.GetInvoiceFile(daoFactory) != null)
-                        {
-                            document.ID = data.FileID;
-                        }
-
-                        file = _daoFactory.GetFileDao().SaveFile(document, stream);
+                        document.ID = data.FileID;
                     }
+
+                    file = _daoFactory.GetFileDao().SaveFile(document, stream);
                 }
             }
 

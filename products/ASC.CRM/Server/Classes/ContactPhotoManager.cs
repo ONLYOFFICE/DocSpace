@@ -31,6 +31,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -540,14 +541,15 @@ namespace ASC.Web.CRM.Classes
 
         public PhotoData UploadPhoto(String imageUrl, int contactID, bool uploadOnly, bool checkFormat = true)
         {
-            var request = (HttpWebRequest)WebRequest.Create(imageUrl);
-            using (var response = request.GetResponse())
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(imageUrl);
+            
+            var httpClient = new HttpClient();
+
+            using (var inputStream = httpClient.Send(request).Content.ReadAsStream())
             {
-                using (var inputStream = response.GetResponseStream())
-                {
-                    var imageData = ToByteArray(inputStream, (int)response.ContentLength);
-                    return UploadPhoto(imageData, contactID, uploadOnly, checkFormat);
-                }
+                var imageData = ToByteArray(inputStream, (int)inputStream.Length);
+                return UploadPhoto(imageData, contactID, uploadOnly, checkFormat);
             }
         }
 
@@ -575,18 +577,19 @@ namespace ASC.Web.CRM.Classes
 
         public PhotoData UploadPhotoToTemp(String imageUrl, String tmpDirName, bool checkFormat = true)
         {
-            var request = (HttpWebRequest)WebRequest.Create(imageUrl);
-            using (var response = request.GetResponse())
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(imageUrl);
+            
+            var httpClient = new HttpClient();
+            var q = httpClient.Send(request);
+            using (var inputStream = httpClient.Send(request).Content.ReadAsStream())
             {
-                using (var inputStream = response.GetResponseStream())
+                var imageData = ToByteArray(inputStream, (int)inputStream.Length);
+                if (string.IsNullOrEmpty(tmpDirName))
                 {
-                    var imageData = ToByteArray(inputStream, (int)response.ContentLength);
-                    if (string.IsNullOrEmpty(tmpDirName))
-                    {
-                        tmpDirName = Guid.NewGuid().ToString();
-                    }
-                    return UploadPhotoToTemp(imageData, tmpDirName, checkFormat);
+                    tmpDirName = Guid.NewGuid().ToString();
                 }
+                return UploadPhotoToTemp(imageData, tmpDirName, checkFormat);
             }
         }
 

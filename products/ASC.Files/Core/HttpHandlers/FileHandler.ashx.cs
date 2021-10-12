@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1165,7 +1166,8 @@ namespace ASC.Web.Files
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
 
-            var req = WebRequest.Create(fileUri);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(fileUri);
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono)
@@ -1173,8 +1175,10 @@ namespace ASC.Web.Files
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
+            var httpClient = new HttpClient();
+
             var fileDao = DaoFactory.GetFileDao<T>();
-            using var fileStream = req.GetResponse().GetResponseStream();
+            using var fileStream = httpClient.Send(request).Content.ReadAsStream();
             file.ContentLength = fileStream.Length;
 
             return fileDao.SaveFile(file, fileStream);

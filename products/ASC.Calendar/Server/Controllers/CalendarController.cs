@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Text.Json;
@@ -1026,15 +1027,17 @@ namespace ASC.Calendar.Controllers
         {
             var authorization = DataProvider.GetUserAuthorization(encoded);
 
-            var webRequest = (HttpWebRequest)WebRequest.Create(calUrl);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "text/calendar; charset=utf-8";
-            webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+            var request = new HttpRequestMessage();
+            request.Method = HttpMethod.Get;
+            request.RequestUri = new Uri(calUrl);
+            request.Headers.Add("Content-Type", "text/xml; charset=utf-8");
+            request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
             try
             {
-                using (var webResponse = webRequest.GetResponse())
-                using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                var httpClient = new HttpClient();
+                var response = httpClient.Send(request);
+                using (var reader = new StreamReader(response.Content.ReadAsStream()))
                 {
                     string ics = reader.ReadToEnd();
                     if (!string.IsNullOrEmpty(ics))
@@ -1045,15 +1048,11 @@ namespace ASC.Calendar.Controllers
 
                 }
             }
-            catch (WebException exception)
+            catch (HttpRequestException exception)
             {
-                if (exception.Status == WebExceptionStatus.ProtocolError && exception.Response != null)
+                if (exception.StatusCode == HttpStatusCode.NotFound)
                 {
-                    var resp = (HttpWebResponse)exception.Response;
-                    if (resp.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        return "NotFound";
-                    }
+                    return "NotFound";
                 }
                 Log.Info("ERROR. Get calendar CalDav url: " + exception.Message);
                 return "";
@@ -1087,24 +1086,20 @@ namespace ASC.Calendar.Controllers
             var requestUrl = calDavServerUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + calDavGuid + (isSharedCalendar ? "-shared" : "");
 
             try
-            {             
-                var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
-                webRequest.Method = "MKCOL";
-                webRequest.ContentType = "text/plain;charset=UTF-8";
+            {
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(requestUrl);
+                request.Method = new HttpMethod("MKCOL");
 
                 var authorization = isSharedCalendar ? DataProvider.GetSystemAuthorization() : DataProvider.GetUserAuthorization(email);
-                webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
-                var encoding = new UTF8Encoding();
-                byte[] bytes = encoding.GetBytes(data);
-                webRequest.ContentLength = bytes.Length;
-                using (Stream writeStream = webRequest.GetRequestStream())
-                {
-                    writeStream.Write(bytes, 0, bytes.Length);
-                }
+                request.Content = new StringContent(data, Encoding.UTF8, "text/xml; charset=utf-8");
 
-                using (var webResponse = webRequest.GetResponse())
-                using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                var httpClient = new HttpClient();
+                var response = httpClient.Send(request);
+
+                using (var reader = new StreamReader(response.Content.ReadAsStream()))
                 {
                     reader.ReadToEnd();
                     return calDavServerUrl + "/" + currentUserName + "/" + calDavGuid + (isSharedCalendar ? "-shared" : "");
@@ -1270,9 +1265,12 @@ namespace ASC.Calendar.Controllers
             {
                 try
                 {
-                    var req = (HttpWebRequest)WebRequest.Create(calendar.ICalUrl);
-                    using (var resp = req.GetResponse())
-                    using (var stream = resp.GetResponseStream())
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri(calendar.ICalUrl);
+                    var httpClient = new HttpClient();
+                    var response = httpClient.Send(request);
+                    
+                    using (var stream = response.Content.ReadAsStream())
                     {
                         var ms = new MemoryStream();
                         stream.CopyTo(ms);
@@ -1332,9 +1330,12 @@ namespace ASC.Calendar.Controllers
             {
                 try
                 {
-                    var req = (HttpWebRequest)WebRequest.Create(iCalUrl);
-                    using (var resp = req.GetResponse())
-                    using (var stream = resp.GetResponseStream())
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri(iCalUrl);
+
+                    var httpClient = new HttpClient();
+                    var response = httpClient.Send(request);
+                    using (var stream = response.Content.ReadAsStream())
                     {
                         var ms = new MemoryStream();
                         stream.CopyTo(ms);
@@ -1757,29 +1758,22 @@ namespace ASC.Calendar.Controllers
 
                     try
                     {
-                        var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
-                        webRequest.Method = "DELETE";
+                        var request = new HttpRequestMessage();
+                        request.RequestUri = new Uri(requestUrl);
+                        request.Method = HttpMethod.Delete;  
 
                         var authorization = isShared ? DataProvider.GetSystemAuthorization() : DataProvider.GetUserAuthorization(email);
-                        webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                        request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
-                        using (var webResponse = webRequest.GetResponse())
-                        using (var reader = new StreamReader(webResponse.GetResponseStream())) { }
+                        var httpClient = new HttpClient();
+                        httpClient.Send(request);
                     }
-                    catch (WebException ex)
+                    catch (HttpRequestException ex)
                     {
-                        if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
-                        {
-                            var resp = (HttpWebResponse)ex.Response;
-                            if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Conflict)
-                                Log.Debug("ERROR: " + ex.Message);
-                            else
-                                Log.Error("ERROR: " + ex.Message);
-                        }
+                        if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
+                            Log.Debug("ERROR: " + ex.Message);
                         else
-                        {
                             Log.Error("ERROR: " + ex.Message);
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -4065,38 +4059,24 @@ namespace ASC.Calendar.Controllers
 
                         try
                         {
-                            var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
-                            webRequest.Method = "PUT";
-                            webRequest.ContentType = "text/calendar; charset=utf-8";
+                            var request = new HttpRequestMessage();
+                            request.RequestUri = new Uri(requestUrl);
+                            request.Method = HttpMethod.Put;
 
                             var authorization = isShared ? DataProvider.GetSystemAuthorization() : DataProvider.GetUserAuthorization(userEmail);
-                            webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                            request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
-                            var encoding = new UTF8Encoding();
-                            byte[] bytes = encoding.GetBytes(ics);
-                            webRequest.ContentLength = bytes.Length;
-                            using (var writeStream = webRequest.GetRequestStream())
-                            {
-                                writeStream.Write(bytes, 0, bytes.Length);
-                            }
+                            request.Content = new StringContent(ics, Encoding.UTF8, "text/calendar; charset=utf-8");
 
-                            using (var webResponse = webRequest.GetResponse())
-                            using (var reader = new StreamReader(webResponse.GetResponseStream())) { }
+                            var httpClient = new HttpClient();
+                            httpClient.Send(request);
                         }
-                        catch (WebException ex)
+                        catch (HttpRequestException ex)
                         {
-                            if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
-                            {
-                                var resp = (HttpWebResponse)ex.Response;
-                                if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Conflict)
-                                    Log.Debug("ERROR: " + ex.Message);
-                                else
-                                    Log.Error("ERROR: " + ex.Message);
-                            }
+                            if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
+                                Log.Debug("ERROR: " + ex.Message);
                             else
-                            {
                                 Log.Error("ERROR: " + ex.Message);
-                            }
                         }
                         catch (Exception ex)
                         {
@@ -4201,19 +4181,21 @@ namespace ASC.Calendar.Controllers
                 try
                 {
                     SecurityContext.AuthenticateMeWithoutCookie(ownerId);
-
-                    var webRequest = (HttpWebRequest)WebRequest.Create(eventURl);
-                    webRequest.Method = "GET";
-                    webRequest.ContentType = "text/calendar; charset=utf-8";
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri(eventURl);
+                    request.Method = HttpMethod.Get;
 
                     var _email = UserManager.GetUsers(ownerId).Email;
                     var authorization = sharedPostfixIndex != -1 ? DataProvider.GetSystemAuthorization() : DataProvider.GetUserAuthorization(_email);
-                    webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                    request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                    request.Headers.Add("Content-Type", "text/calendar; charset=utf-8");
 
                     Log.Info(String.Format("UpdateCalDavEvent eventURl: {0}", eventURl));
 
-                    using (var webResponse = webRequest.GetResponse())
-                    using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                    var httpClient = new HttpClient();
+                    var response = httpClient.Send(request);
+
+                    using (var reader = new StreamReader(response.Content.ReadAsStream()))
                     {
                         string ics = reader.ReadToEnd();
                         Log.Info(String.Format("UpdateCalDavEvent: {0}", ics));
@@ -4388,20 +4370,12 @@ namespace ASC.Calendar.Controllers
                     }
                 }
             }
-            catch (WebException ex)
+            catch (HttpRequestException ex)
             {
-                if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
-                {
-                    var resp = (HttpWebResponse)ex.Response;
-                    if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Conflict)
-                        Log.Debug("ERROR: " + ex.Message);
-                    else
-                        Log.Error("ERROR: " + ex.Message);
-                }
+                if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
+                    Log.Debug("ERROR: " + ex.Message);
                 else
-                {
                     Log.Error("ERROR: " + ex.Message);
-                }
             }
             catch (Exception ex)
             {
@@ -4566,23 +4540,18 @@ namespace ASC.Calendar.Controllers
 
             try
             {
-                var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
-                webRequest.Method = "PROPPATCH";
-                webRequest.ContentType = "text/calendar; charset=utf-8";
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(requestUrl);
+                request.Method = new HttpMethod("PROPPATCH");
 
                 var authorization = isSharedCalendar ? DataProvider.GetSystemAuthorization() : DataProvider.GetUserAuthorization(email);
-                webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                request.Content = new StringContent(data, Encoding.UTF8, "text/calendar; charset=utf-8");
 
-                var encoding = new UTF8Encoding();
-                byte[] bytes = encoding.GetBytes(data);
-                webRequest.ContentLength = bytes.Length;
-                using (var writeStream = webRequest.GetRequestStream())
-                {
-                    writeStream.Write(bytes, 0, bytes.Length);
-                }
+                var httpClient = new HttpClient();
+                var response= httpClient.Send(request);
 
-                using (var webResponse = webRequest.GetResponse())
-                using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                using (var reader = new StreamReader(response.Content.ReadAsStream()))
                 {
                     return requestUrl;
                 }
@@ -4710,28 +4679,20 @@ namespace ASC.Calendar.Controllers
 
                 try
                 {
-                    var webRequest = (HttpWebRequest)WebRequest.Create(requestDeleteUrl);
-                    webRequest.Method = "DELETE";
-                    webRequest.Headers.Add("Authorization", "Basic " + encoded);
-                    using (var webResponse = webRequest.GetResponse())
-                    using (var reader = new StreamReader(webResponse.GetResponseStream()))
-                    {
-                    }
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri(requestDeleteUrl);
+                    request.Method = HttpMethod.Delete;
+                    request.Headers.Add("Authorization", "Basic " + encoded);
+                    
+                    var httpClient = new HttpClient();
+                    httpClient.Send(request);
                 }
-                catch (WebException ex)
+                catch (HttpRequestException ex)
                 {
-                    if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
-                    {
-                        var resp = (HttpWebResponse)ex.Response;
-                        if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Conflict)
-                            Log.Debug("ERROR: " + ex.Message);
-                        else
-                            Log.Error("ERROR: " + ex.Message);
-                    }
+                    if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
+                        Log.Debug("ERROR: " + ex.Message);
                     else
-                    {
                         Log.Error("ERROR: " + ex.Message);
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -4783,28 +4744,20 @@ namespace ASC.Calendar.Controllers
 
             try
             {
-                var webRequest = (HttpWebRequest)WebRequest.Create(requestDeleteUrl);
-                webRequest.Method = "DELETE";
-                webRequest.Headers.Add("Authorization", "Basic " + encoded);
-                using (var webResponse = webRequest.GetResponse())
-                using (var reader = new StreamReader(webResponse.GetResponseStream()))
-                {
-                }
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(requestDeleteUrl);
+                request.Method = HttpMethod.Delete;
+                request.Headers.Add("Authorization", "Basic " + encoded);
+
+                var httpClient = new HttpClient();
+                httpClient.Send(request);
             }
-            catch (WebException ex)
+            catch (HttpRequestException ex)
             {
-                if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
-                {
-                    var resp = (HttpWebResponse)ex.Response;
-                    if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Conflict)
-                        Log.Debug("ERROR: " + ex.Message);
-                    else
-                        Log.Error("ERROR: " + ex.Message);
-                }
+                if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
+                    Log.Debug("ERROR: " + ex.Message);
                 else
-                {
                     Log.Error("ERROR: " + ex.Message);
-                }
             }
             catch (Exception ex)
             {

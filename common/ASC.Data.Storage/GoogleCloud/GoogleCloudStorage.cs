@@ -769,32 +769,17 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var totalBytes = "*";
 
-            var BufferSize = 2 * 4096;
-
             if (chunkLength != defaultChunkSize)
                 totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
 
             var contentRangeHeader = string.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
 
-            var request = HttpWebRequest.CreateHttp(uploadUri);
-
-            request.Method = HttpMethod.Put.ToString();
-            request.ContentLength = chunkLength;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(uploadUri);
+            request.Method = HttpMethod.Put;
             request.Headers.Add("Content-Range", contentRangeHeader);
-
-            using (var rs = request.GetRequestStream())
-            {
-                var buffer = new byte[BufferSize];
-
-                int readed;
-
-                while ((readed = stream.Read(buffer, 0, BufferSize)) != 0)
-                {
-                    rs.Write(buffer, 0, readed);
-                }
-
-                stream.Close();
-            }
+            request.Content = new StreamContent(stream);
+            
 
             long MAX_RETRIES = 100;
             int millisecondsTimeout;
@@ -807,16 +792,15 @@ namespace ASC.Data.Storage.GoogleCloud
 
                 try
                 {
-                    var response = request.GetResponse();
-                    var status = ((HttpWebResponse)response).StatusCode;
+                    var httpClient = new HttpClient();
+                    var response = httpClient.Send(request);
+                    var status = response.StatusCode;
 
                     break;
                 }
-                catch (WebException ex)
+                catch (HttpRequestException ex)
                 {
-                    var response = (HttpWebResponse)ex.Response;
-
-                    var status = (int)response.StatusCode;
+                    var status = (int)ex.StatusCode;
 
                     if (status == 408 || status == 500 || status == 502 || status == 503 || status == 504)
                     {

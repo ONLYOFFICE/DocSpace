@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Web;
 using ASC.Api.Core;
@@ -798,15 +799,17 @@ namespace ASC.Calendar.BusinessObjects
 
             try
             {
-                var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
-                webRequest.Method = "DELETE";
-                webRequest.ContentType = "text/xml; charset=utf-8";
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(requestUrl);
+                request.Method = HttpMethod.Delete;
 
                 var authorization = isShared ? GetSystemAuthorization() : GetUserAuthorization(email);
-                webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
-                using (var webResponse = webRequest.GetResponse())
-                using (var reader = new StreamReader(webResponse.GetResponseStream())){}
+                request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+                request.Headers.Add("Content-Type", "text/xml; charset=utf-8");
+
+                var httpClient = new HttpClient();
+                httpClient.Send(request);
             }
             catch (Exception ex)
             {
