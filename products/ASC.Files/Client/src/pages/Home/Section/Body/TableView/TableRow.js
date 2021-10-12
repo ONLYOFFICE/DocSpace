@@ -58,7 +58,9 @@ const StyledTableRow = styled(TableRow)`
     background: ${(props) =>
       (props.checked || props.isActive) && "#F3F4F4 !important"};
     cursor: ${(props) =>
-      (props.checked || props.isActive) && "url(images/cursor.palm.svg), auto"};
+      !props.isThirdPartyFolder &&
+      (props.checked || props.isActive) &&
+      "url(images/cursor.palm.svg), auto"};
   }
 
   &:hover {
@@ -238,6 +240,7 @@ const FilesTableRow = (props) => {
         checked={checkedProps}
         isActive={isActive}
         onHideContextMenu={onHideContextMenu}
+        isThirdPartyFolder={item.isThirdPartyFolder}
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell {...props} />
