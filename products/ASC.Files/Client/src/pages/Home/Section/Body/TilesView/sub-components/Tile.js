@@ -349,19 +349,17 @@ class Tile extends React.PureComponent {
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
-            <div className="file-icon_container">
-              {renderCheckbox && id !== -1 && !isEdit && (
+            {renderElement && !(!fileExst && id === -1) && !isEdit && (
+              <div className="file-icon_container">
+                <StyledElement className="file-icon">{element}</StyledElement>
                 <Checkbox
                   className="checkbox file-checkbox"
                   isChecked={checked}
                   isIndeterminate={indeterminate}
                   onChange={this.changeCheckbox}
                 />
-              )}
-              {renderElement && !(!fileExst && id === -1) && !isEdit && (
-                <StyledElement className="file-icon">{element}</StyledElement>
-              )}
-            </div>
+              </div>
+            )}
             <StyledContent
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
