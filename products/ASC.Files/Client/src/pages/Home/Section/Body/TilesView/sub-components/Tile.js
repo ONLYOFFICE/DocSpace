@@ -144,6 +144,10 @@ const StyledTile = styled.div`
 
   .file-icon_container {
     min-width: 36px;
+
+    @media ${tablet} {
+      min-width: 28px;
+    }
   }
 
   :hover {
@@ -345,17 +349,19 @@ class Tile extends React.PureComponent {
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
-            {renderCheckbox && id !== -1 && !isEdit && (
-              <Checkbox
-                className="checkbox file-checkbox"
-                isChecked={checked}
-                isIndeterminate={indeterminate}
-                onChange={this.changeCheckbox}
-              />
-            )}
-            {renderElement && !(!fileExst && id === -1) && !isEdit && (
-              <StyledElement className="file-icon">{element}</StyledElement>
-            )}
+            <div className="file-icon_container">
+              {renderCheckbox && id !== -1 && !isEdit && (
+                <Checkbox
+                  className="checkbox file-checkbox"
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={this.changeCheckbox}
+                />
+              )}
+              {renderElement && !(!fileExst && id === -1) && !isEdit && (
+                <StyledElement className="file-icon">{element}</StyledElement>
+              )}
+            </div>
             <StyledContent
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
