@@ -97,9 +97,12 @@ class ComboBox extends React.Component {
       ? { maxHeight: dropDownMaxHeight }
       : {};
 
-    const dropDownManualWidthProp = this.ref.current
-      ? { manualWidth: this.ref.current.clientWidth + "px" }
-      : {};
+    const dropDownManualWidthProp =
+      scaledOptions && !isDefaultMode
+        ? { manualWidth: "100%" }
+        : scaledOptions && this.ref.current
+        ? { manualWidth: this.ref.current.clientWidth + "px" }
+        : { manualWidth: "200px" };
 
     const optionsLength = options.length
       ? options.length

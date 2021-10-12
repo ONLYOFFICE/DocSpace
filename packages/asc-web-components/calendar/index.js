@@ -493,6 +493,7 @@ class Calendar extends Component {
           <ComboBoxStyle>
             <ComboBoxMonthStyle size={size}>
               <ComboBox
+                isDefaultMode={false}
                 scaled={true}
                 scaledOptions={true}
                 dropDownMaxHeight={dropDownSizeMonth}
@@ -504,6 +505,7 @@ class Calendar extends Component {
             </ComboBoxMonthStyle>
             <ComboBoxDateStyle>
               <ComboBox
+                isDefaultMode={false}
                 scaled={true}
                 scaledOptions={true}
                 dropDownMaxHeight={dropDownSizeYear}
