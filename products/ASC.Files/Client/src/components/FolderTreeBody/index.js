@@ -84,13 +84,14 @@ FolderTreeBody.defaultProps = {
 
 export default inject(
   ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { filter } = filesStore;
+    const { filter, isLoading } = filesStore;
     const { expandedPanelKeys } = treeFoldersStore;
     return {
       expandedKeys: expandedPanelKeys
         ? expandedPanelKeys
         : selectedFolderStore.pathParts,
       filter,
+      isLoading,
     };
   }
 )(observer(FolderTreeBody));
