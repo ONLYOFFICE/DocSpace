@@ -33,6 +33,24 @@ const StyledTableContainer = styled.div`
     border-right: 2px solid #d0d5da;
   }
 
+  .table-container_group-menu {
+    padding-left: 24px;
+    margin-left: -24px;
+    padding-right: 24px;
+    margin-right: -24px;
+
+    border-bottom: 1px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(
+      to right,
+      #ffffff 24px,
+      #eceef1 24px,
+      #eceef1 calc(100% - 24px),
+      #ffffff calc(100% - 24px)
+    );
+    border-top: 0;
+  }
+
   .content-container {
     overflow: hidden;
   }

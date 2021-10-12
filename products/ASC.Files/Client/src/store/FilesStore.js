@@ -98,6 +98,7 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
+    this.selection = this.selection.filter((x) => !x.isThirdPartyFolder); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -1061,9 +1062,10 @@ class FilesStore {
     const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
+    const iconSize = this.viewAs === "tile" ? 32 : 24;
     const icon = this.fileActionStore.extension
-      ? getFileIcon(`.${this.fileActionStore.extension}`, 24)
-      : getFolderIcon(null, 24);
+      ? getFileIcon(`.${this.fileActionStore.extension}`, iconSize)
+      : getFolderIcon(null, iconSize);
 
     items.unshift({
       id: -1,
@@ -1129,12 +1131,11 @@ class FilesStore {
           )
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
+      const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const icon =
-        this.viewAs !== "tile"
-          ? getIcon(24, fileExst, providerKey, contentLength)
-          : getIcon(32, fileExst, providerKey, contentLength);
+      const iconSize = this.viewAs === "tile" ? 32 : 24;
+      const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;
       this.folders.map((x) => {
@@ -1211,6 +1212,7 @@ class FilesStore {
         previewUrl,
         folderUrl,
         href,
+        isThirdPartyFolder,
       };
     });
 

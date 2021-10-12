@@ -221,6 +221,11 @@ const Editor = () => {
     );
   };
 
+  const convertDocumentUrl = async () => {
+    const convert = await convertFile(fileId, true);
+    return convert[0].result.webUrl;
+  };
+
   const init = async () => {
     try {
       if (!fileId) return;
@@ -248,24 +253,24 @@ const Editor = () => {
 
       if (!doc && !successAuth) {
         window.open(
-          combineUrl(AppServerConfig.proxyURL, "/login"),
+          combineUrl(
+            AppServerConfig.proxyURL,
+            personal ? "/sign-in" : "/login"
+          ),
           "_self",
           "",
           true
         );
         return;
       }
-
       if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
 
           if (url.indexOf("#message/") > -1) {
-            const needConvert = canConvert(fileInfo.fileExst);
-
-            if (needConvert) {
-              const convert = await convertFile(fileId, true);
-              location.href = convert[0].result.webUrl;
+            if (canConvert(fileInfo.fileExst)) {
+              const url = await convertDocumentUrl();
+              history.pushState({}, null, url);
             }
           }
         } catch (err) {
@@ -296,7 +301,7 @@ const Editor = () => {
 
       isSharingAccess = fileInfo && fileInfo.canShare;
 
-      if (url.indexOf("action=view") !== -1) {
+      if (view) {
         config.editorConfig.mode = "view";
       }
 
@@ -488,6 +493,7 @@ const Editor = () => {
           onRequestSaveAs,
           onRequestMailMergeRecipients,
           onRequestCompareFile,
+          onRequestEditRights: onSDKRequestEditRights,
         },
       };
 
@@ -516,6 +522,22 @@ const Editor = () => {
     console.log(
       "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
     );
+  };
+
+  const onSDKRequestEditRights = async () => {
+    console.log("ONLYOFFICE Document Editor requests editing rights");
+    const index = url.indexOf("&action=view");
+
+    if (index) {
+      let convertUrl = url.substring(0, index);
+
+      if (canConvert(fileInfo.fileExst)) {
+        convertUrl = await convertDocumentUrl();
+      }
+
+      history.pushState({}, null, convertUrl);
+      document.location.reload();
+    }
   };
 
   const [isVisible, setIsVisible] = useState(false);

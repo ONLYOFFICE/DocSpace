@@ -68,6 +68,7 @@ const RowContent = (props) => {
         mainContainerWidth={mainContainerWidth}
         widthProp={sectionWidth}
         isMobile={isMobile}
+        className="row-main-container-wrapper"
       >
         <MainContainer
           className="rowMainContainer"

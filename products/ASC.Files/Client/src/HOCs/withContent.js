@@ -15,6 +15,7 @@ import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 import { getDefaultFileName } from "../helpers/utils";
+import ItemIcon from "../components/ItemIcon";
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
@@ -274,11 +275,16 @@ export default function withContent(WrappedContent) {
 
       const newItems = item.new || fileStatus === 2;
       const showNew = !!newItems;
+      const elementIcon = element ? (
+        element
+      ) : (
+        <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+      );
 
       return isEdit ? (
         <EditingWrapperComponent
           className={"editing-wrapper-component"}
-          elementIcon={element}
+          elementIcon={elementIcon}
           itemTitle={itemTitle}
           itemId={id}
           viewAs={viewAs}

@@ -428,8 +428,15 @@ class FilesActionStore {
   };
 
   selectRowAction = (checked, file) => {
-    const { selected, setSelected, selectFile, deselectFile } = this.filesStore;
+    const {
+      selected,
+      setSelected,
+      selectFile,
+      deselectFile,
+      setBufferSelection,
+    } = this.filesStore;
     //selected === "close" && setSelected("none");
+    setBufferSelection(null);
     if (checked) {
       selectFile(file);
     } else {
@@ -439,6 +446,7 @@ class FilesActionStore {
 
   openLocationAction = (locationId, isFolder) => {
     const locationFilter = isFolder ? this.filesStore.filter : null;
+    this.filesStore.setBufferSelection(null);
     return this.filesStore.fetchFiles(locationId, locationFilter);
     /*.then(() =>
       //isFolder ? null : this.selectRowAction(!checked, item)
