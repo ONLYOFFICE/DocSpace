@@ -97,6 +97,7 @@ class ContactsField extends React.Component {
         <ComboBox
           options={options}
           onSelect={onItemAdd}
+          scaledOptions={true}
           selectedOption={{
             key: prefix,
             label: addItemText,
@@ -106,6 +107,7 @@ class ContactsField extends React.Component {
           isDisabled={isDisabled}
           scaled={true}
           className="field-select"
+          directionY="both"
         />
       </Container>
     );
