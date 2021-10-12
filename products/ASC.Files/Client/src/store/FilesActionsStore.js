@@ -428,8 +428,15 @@ class FilesActionStore {
   };
 
   selectRowAction = (checked, file) => {
-    const { selected, setSelected, selectFile, deselectFile } = this.filesStore;
+    const {
+      selected,
+      setSelected,
+      selectFile,
+      deselectFile,
+      setBufferSelection,
+    } = this.filesStore;
     //selected === "close" && setSelected("none");
+    setBufferSelection(null);
     if (checked) {
       selectFile(file);
     } else {
