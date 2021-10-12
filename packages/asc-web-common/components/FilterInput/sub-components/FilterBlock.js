@@ -235,6 +235,7 @@ class FilterItem extends React.Component {
                   scaled={false}
                   noBorder={true}
                   opened={opened}
+                  textOverflow={true}
                   directionX="left"
                   toggleAction={this.toggleCombobox}
                   dropDownMaxHeight={300}

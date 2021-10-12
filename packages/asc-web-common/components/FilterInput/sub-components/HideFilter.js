@@ -26,7 +26,7 @@ class HideFilter extends React.Component {
   }
 
   onClick = (state, e) => {
-    if (!state && e && this.dropDownRef.current.contains(e.target)) {
+    if (!state && e) {
       return;
     }
     if (!this.props.isDisabled) {
@@ -58,8 +58,7 @@ class HideFilter extends React.Component {
             <StyledExpanderDownIcon size="scale" />
           </Caret>
         </StyledHideFilterButton>
-
-        <div className="dropdown-style" ref={this.dropDownRef}>
+        <div className="dropdown-style">
           <DropDown
             forwardedRef={this.ref}
             className="drop-down hide-filter-drop-down"

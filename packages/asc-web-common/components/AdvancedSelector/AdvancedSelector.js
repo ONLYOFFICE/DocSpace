@@ -103,7 +103,7 @@ class AdvancedSelector extends React.Component {
           <DropDown
             forwardedRef={this.ref}
             open={isOpen}
-            isDefaultMode={isDefaultDisplayDropDown ? true : false}
+            isDefaultMode={isDefaultDisplayDropDown}
             className="dropdown-container"
             clickOutsideAction={this.onClose}
           >
