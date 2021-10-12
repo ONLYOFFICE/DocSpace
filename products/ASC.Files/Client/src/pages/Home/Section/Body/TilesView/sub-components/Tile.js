@@ -129,8 +129,13 @@ const StyledTile = styled.div`
     margin-top: 3px;
     margin-top: ${(props) => (props.isFolder ? "-6px" : "-4px")};
 
-    height: 24px;
-    width: 24px;
+    height: 32px;
+    width: 32px;
+
+    img {
+      height: 32px;
+      width: 32px;
+    }
 
     @media ${tablet} {
       display: none;
@@ -138,7 +143,7 @@ const StyledTile = styled.div`
   }
 
   .file-icon_container {
-    min-width: 28px;
+    min-width: 36px;
   }
 
   :hover {
