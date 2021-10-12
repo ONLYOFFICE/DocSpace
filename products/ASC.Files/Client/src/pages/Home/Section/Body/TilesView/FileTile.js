@@ -36,10 +36,15 @@ const FilesTile = (props) => {
     onMouseClick,
     showShare,
     isActive,
+    isEdit,
   } = props;
+
+  const temporaryExtension =
+    item.id === -1 ? `.${item.fileExst}` : item.fileExst;
+
   const temporaryIcon = getIcon(
     96,
-    item.fileExst,
+    temporaryExtension,
     item.providerKey,
     item.contentLength
   );
@@ -88,6 +93,7 @@ const FilesTile = (props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
+          isEdit={isEdit}
         >
           <FilesTileContent
             item={item}

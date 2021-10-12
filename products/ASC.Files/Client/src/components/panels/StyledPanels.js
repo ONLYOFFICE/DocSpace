@@ -574,6 +574,11 @@ const StyledSelectFolderPanel = styled.div`
             height: ${props.heightContent};
           `}
   }
+
+  span.rc-tree-title {
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "243px" : "466px"};
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {

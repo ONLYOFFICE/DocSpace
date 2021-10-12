@@ -1061,9 +1061,10 @@ class FilesStore {
     const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
+    const iconSize = this.viewAs !== "tile" ? 24 : 32;
     const icon = this.fileActionStore.extension
-      ? getFileIcon(`.${this.fileActionStore.extension}`, 24)
-      : getFolderIcon(null, 24);
+      ? getFileIcon(`.${this.fileActionStore.extension}`, iconSize)
+      : getFolderIcon(null, iconSize);
 
     items.unshift({
       id: -1,

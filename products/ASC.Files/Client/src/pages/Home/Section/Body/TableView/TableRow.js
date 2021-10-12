@@ -18,7 +18,7 @@ import TypeCell from "./sub-components/TypeCell";
 import globalColors from "@appserver/components/utils/globalColors";
 import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
-
+import { isSafari } from "react-device-detect";
 const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
@@ -54,6 +54,7 @@ const contextMenuWrapperDraggingHoverStyle = css`
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
+    ${isSafari && `border-image-slice: 0 !important`};
     background: ${(props) =>
       (props.checked || props.isActive) && "#F3F4F4 !important"};
     cursor: ${(props) =>
@@ -77,6 +78,9 @@ const StyledTableRow = styled(TableRow)`
     border-image-slice: 1;
     border-image-source: linear-gradient(to right, #ffffff 24px, #eceef1 24px);
 
+    border-top: 0;
+    border-right: 0;
+
     ${(props) => props.checked && rowCheckboxCheckedStyle};
     ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
@@ -88,6 +92,9 @@ const StyledTableRow = styled(TableRow)`
     border-bottom: 1px solid;
     border-image-slice: 1;
     border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
+
+    border-top: 0;
+    border-left: 0;
 
     ${(props) => props.checked && contextMenuWrapperCheckedStyle};
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
