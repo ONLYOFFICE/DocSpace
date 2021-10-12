@@ -4,7 +4,6 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
 {
@@ -15,19 +14,17 @@ namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64)
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.ApiKeys", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("AccessToken")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -37,10 +34,10 @@ namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.GreyListingWhiteList", b =>
                 {
                     b.Property<string>("Comment")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Source")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Comment");
 
@@ -51,171 +48,159 @@ namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("address");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("address")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("BeginDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("begin_date")
                         .HasDefaultValueSql("'1975-01-01 00:00:00'");
 
                     b.Property<DateTime?>("DateAuthError")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_auth_error");
 
                     b.Property<DateTime>("DateChecked")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_checked");
 
                     b.Property<DateTime>("DateCreated")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_created");
 
                     b.Property<DateTime>("DateLoginDelayExpires")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_login_delay_expires")
                         .HasDefaultValueSql("'1975-01-01 00:00:00'");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp")
                         .HasColumnName("date_modified")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateTime>("DateUserChecked")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("date_user_checked");
 
                     b.Property<string>("EmailInFolder")
                         .HasColumnType("text")
-                        .HasColumnName("email_in_folder");
+                        .HasColumnName("email_in_folder")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Enabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("enabled")
-                        .HasDefaultValueSql("'1'::smallint");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<int>("IdInServer")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id_in_server");
 
                     b.Property<int>("IdSmtpServer")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id_smtp_server");
 
                     b.Property<string>("IdUser")
                         .IsRequired()
-                        .HasMaxLength(38)
-                        .HasColumnType("character varying(38)")
-                        .HasColumnName("id_user");
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("id_user")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Imap")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("imap")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("imap");
 
                     b.Property<string>("ImapIntervals")
-                        .HasColumnType("text")
-                        .HasColumnName("imap_intervals");
+                        .HasColumnType("mediumtext")
+                        .HasColumnName("imap_intervals")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("IsDefault")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_default")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_default");
 
                     b.Property<bool>("IsProcessed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_processed")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_processed");
 
                     b.Property<bool>("IsRemoved")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_removed")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_removed");
 
                     b.Property<bool>("IsServerMailbox")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_server_mailbox")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_server_mailbox");
 
                     b.Property<bool>("IsTeamlabMailbox")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("LoginDelay")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("login_delay")
                         .HasDefaultValueSql("'30'");
 
                     b.Property<int>("MsgCountLast")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("msg_count_last");
 
                     b.Property<string>("Name")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("name")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Pop3Password")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("pop3_password")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("QuotaError")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("quota_error")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("quota_error");
 
                     b.Property<int>("SizeLast")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("size_last");
 
                     b.Property<string>("SmtpPassword")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("smtp_password")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Tenant")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant");
 
                     b.Property<string>("Token")
                         .HasColumnType("text")
-                        .HasColumnName("token");
+                        .HasColumnName("token")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("TokenType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("token_type")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("int")
+                        .HasColumnName("token_type");
 
                     b.Property<bool>("UserOnline")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("user_online")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("user_online");
 
                     b.HasKey("Id");
 
@@ -234,47 +219,44 @@ namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
                     b.HasIndex("Tenant", "IdUser")
                         .HasDatabaseName("user_id_index");
 
-                    b.ToTable("mail_mailbox", "onlyoffice");
+                    b.ToTable("mail_mailbox");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Mail.MailboxProvider", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("DisplayName")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("display_name")
-                        .HasDefaultValueSql("NULL::character varying");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("DisplayShortName")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("display_short_name")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Documentation")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("documentation")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("name");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("name")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
-                    b.ToTable("mail_mailbox_provider", "onlyoffice");
+                    b.ToTable("mail_mailbox_provider");
 
                     b.HasData(
                         new
@@ -1847,32 +1829,31 @@ namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Authentication")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Hostname")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("IdProvider")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsUserData")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("Port")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("SocketType")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Type")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -1883,33 +1864,35 @@ namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("ConnectionString")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("connection_string");
+                        .HasColumnName("connection_string")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("ImapSettingsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("imap_settings_id");
 
                     b.Property<string>("MxRecord")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
+                        .HasColumnType("varchar(128)")
                         .HasColumnName("mx_record")
-                        .HasDefaultValueSql("' '");
+                        .HasDefaultValueSql("''")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("ServerType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("server_type");
 
                     b.Property<int>("SmtpSettingsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("smtp_settings_id");
 
                     b.HasKey("Id");
@@ -1917,7 +1900,7 @@ namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
                     b.HasIndex("ServerType")
                         .HasDatabaseName("mail_server_server_type_server_type_fk_id");
 
-                    b.ToTable("mail_server_server", "onlyoffice");
+                    b.ToTable("mail_server_server");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,7 +4,6 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.PostgreSql.ResourceDbContextPostgreSql
 {
@@ -15,236 +14,246 @@ namespace ASC.Core.Common.Migrations.PostgreSql.ResourceDbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64)
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResAuthors", b =>
                 {
                     b.Property<string>("Login")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("login");
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("login")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("isAdmin");
 
                     b.Property<DateTime>("LastVisit")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("lastVisit");
 
                     b.Property<bool>("Online")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("online");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("password");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("password")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Login")
-                        .HasName("res_authors_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("res_authors", "onlyoffice");
+                    b.ToTable("res_authors");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResAuthorsFile", b =>
                 {
                     b.Property<string>("AuthorLogin")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("authorLogin");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("authorLogin")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("FileId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("fileid");
 
                     b.Property<bool>("WriteAccess")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("writeAccess");
 
                     b.HasKey("AuthorLogin", "FileId")
-                        .HasName("res_authorsfile_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("FileId")
                         .HasDatabaseName("res_authorsfile_FK2");
 
-                    b.ToTable("res_authorsfile", "onlyoffice");
+                    b.ToTable("res_authorsfile");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResAuthorsLang", b =>
                 {
                     b.Property<string>("AuthorLogin")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("authorLogin");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("authorLogin")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("CultureTitle")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("cultureTitle");
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("cultureTitle")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("AuthorLogin", "CultureTitle")
-                        .HasName("res_authorslang_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("CultureTitle")
                         .HasDatabaseName("res_authorslang_FK2");
 
-                    b.ToTable("res_authorslang", "onlyoffice");
+                    b.ToTable("res_authorslang");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResCultures", b =>
                 {
                     b.Property<string>("Title")
-                        .HasColumnType("character varying")
-                        .HasColumnName("title");
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("title")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Available")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("available")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("available");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("creationDate")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("character varying")
-                        .HasColumnName("value");
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("value")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Title")
-                        .HasName("res_cultures_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("res_cultures", "onlyoffice");
+                    b.ToTable("res_cultures");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResData", b =>
                 {
                     b.Property<int>("FileId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("fileid");
 
                     b.Property<string>("CultureTitle")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("cultureTitle");
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("cultureTitle")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Title")
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)")
-                        .HasColumnName("title");
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("title")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("AuthorLogin")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("authorLogin")
-                        .HasDefaultValueSql("'Console'");
+                        .HasDefaultValueSql("'Console'")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
-                        .HasColumnName("description");
+                        .HasColumnName("description")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Flag")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("flag");
 
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("Link")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)")
+                        .HasColumnType("varchar(120)")
                         .HasColumnName("link")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ResourceType")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
+                        .HasColumnType("varchar(20)")
                         .HasColumnName("resourceType")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("TextValue")
                         .HasColumnType("text")
-                        .HasColumnName("textValue");
+                        .HasColumnName("textValue")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("TimeChanges")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp")
                         .HasColumnName("timeChanges")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("FileId", "CultureTitle", "Title")
-                        .HasName("res_data_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("CultureTitle")
                         .HasDatabaseName("resources_FK2");
 
                     b.HasIndex("Id")
                         .IsUnique()
-                        .HasDatabaseName("id_res_data");
+                        .HasDatabaseName("id");
 
                     b.HasIndex("TimeChanges")
                         .HasDatabaseName("dateIndex");
 
-                    b.ToTable("res_data", "onlyoffice");
+                    b.ToTable("res_data");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResFiles", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp")
                         .HasColumnName("creationDate")
-                        .HasDefaultValueSql("'1975-03-03 00:00:00'");
+                        .HasDefaultValueSql("'0000-00-00 00:00:00'");
 
                     b.Property<bool>("IsLock")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasColumnName("isLock")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("isLock");
 
                     b.Property<DateTime>("LastUpdate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp")
                         .HasColumnName("lastUpdate")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("ModuleName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("moduleName");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("moduleName")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("projectName");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("projectName")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ResName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("resName");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("resName")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
@@ -252,43 +261,53 @@ namespace ASC.Core.Common.Migrations.PostgreSql.ResourceDbContextPostgreSql
                         .IsUnique()
                         .HasDatabaseName("resname");
 
-                    b.ToTable("res_files", "onlyoffice");
+                    b.ToTable("res_files");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Resource.ResReserve", b =>
                 {
                     b.Property<int>("FileId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("fileid");
 
                     b.Property<string>("Title")
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)")
-                        .HasColumnName("title");
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("title")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("CultureTitle")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("cultureTitle");
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("cultureTitle")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Flag")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("flag");
 
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("TextValue")
                         .HasColumnType("text")
-                        .HasColumnName("textValue");
+                        .HasColumnName("textValue")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("FileId", "Title", "CultureTitle")
-                        .HasName("res_reserve_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("res_reserve", "onlyoffice");
+                    b.HasIndex("CultureTitle")
+                        .HasDatabaseName("resources_FK2");
+
+                    b.HasIndex("Id")
+                        .IsUnique()
+                        .HasDatabaseName("id");
+
+                    b.ToTable("res_reserve");
                 });
 #pragma warning restore 612, 618
         }

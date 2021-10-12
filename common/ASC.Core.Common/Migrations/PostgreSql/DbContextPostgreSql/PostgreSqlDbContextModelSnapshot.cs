@@ -4,7 +4,6 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
 {
@@ -15,56 +14,60 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:Enum:onlyoffice.enum_dbip_location", "ipv4,ipv6")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64)
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbipLocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("AddrType")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("enum('ipv4','ipv6')")
+                        .HasColumnName("addr_type")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("city");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("city")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasMaxLength(2)
-                        .HasColumnType("character varying(2)")
-                        .HasColumnName("country");
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("country")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("District")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("district")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("GeonameId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("geoname_id");
 
                     b.Property<string>("IPEnd")
                         .IsRequired()
-                        .HasMaxLength(39)
-                        .HasColumnType("character varying(39)")
-                        .HasColumnName("ip_end");
+                        .HasColumnType("varchar(39)")
+                        .HasColumnName("ip_end")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("IPStart")
                         .IsRequired()
-                        .HasMaxLength(39)
-                        .HasColumnType("character varying(39)")
-                        .HasColumnName("ip_start");
+                        .HasColumnType("varchar(39)")
+                        .HasColumnName("ip_start")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("Latitude")
                         .HasColumnType("bigint")
@@ -76,77 +79,77 @@ namespace ASC.Core.Common.Migrations.PostgreSql.DbContextPostgreSql
 
                     b.Property<int>("Processed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("processed")
-                        .HasDefaultValueSql("1");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<string>("StateProv")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("stateprov");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("stateprov")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("TimezoneName")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("timezone_name")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<double>("TimezoneOffset")
-                        .HasColumnType("double precision")
+                        .HasColumnType("double")
                         .HasColumnName("timezone_offset");
 
                     b.Property<string>("ZipCode")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("zipcode")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IPStart")
                         .HasDatabaseName("ip_start");
 
-                    b.ToTable("dbip_location", "onlyoffice");
+                    b.ToTable("dbip_location");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.MobileAppInstall", b =>
                 {
                     b.Property<string>("UserEmail")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("user_email");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("user_email")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("AppType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("app_type");
 
                     b.Property<DateTime>("LastSign")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("last_sign");
 
                     b.Property<DateTime>("RegisteredOn")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("registered_on");
 
                     b.HasKey("UserEmail", "AppType")
-                        .HasName("mobile_app_install_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("mobile_app_install", "onlyoffice");
+                    b.ToTable("mobile_app_install");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Regions", b =>
                 {
                     b.Property<string>("Region")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ConnectionString")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Provider")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Region");
 

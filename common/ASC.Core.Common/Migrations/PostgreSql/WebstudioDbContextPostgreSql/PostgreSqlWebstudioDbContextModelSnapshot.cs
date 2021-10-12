@@ -4,7 +4,6 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.PostgreSql.WebstudioDbContextPostgreSql
 {
@@ -15,63 +14,67 @@ namespace ASC.Core.Common.Migrations.PostgreSql.WebstudioDbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64)
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioIndex", b =>
                 {
                     b.Property<string>("IndexName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("index_name");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("index_name")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp")
                         .HasColumnName("last_modified")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("IndexName")
-                        .HasName("webstudio_index_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("webstudio_index", "onlyoffice");
+                    b.ToTable("webstudio_index");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("TenantID");
 
-                    b.Property<Guid>("Id")
-                        .HasMaxLength(64)
-                        .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("ID")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("UserId")
-                        .HasMaxLength(64)
-                        .HasColumnType("uuid")
-                        .HasColumnName("UserID");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("UserID")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Data")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("mediumtext")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("TenantId", "Id", "UserId")
-                        .HasName("webstudio_settings_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("Id")
                         .HasDatabaseName("ID");
 
-                    b.ToTable("webstudio_settings", "onlyoffice");
+                    b.ToTable("webstudio_settings");
 
                     b.HasData(
                         new
                         {
                             TenantId = 1,
-                            Id = new Guid("9a925891-1f92-4ed7-b277-d6f649739f06"),
-                            UserId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Id = "9a925891-1f92-4ed7-b277-d6f649739f06",
+                            UserId = "00000000-0000-0000-0000-000000000000",
                             Data = "{'Completed':false}"
                         });
                 });
@@ -79,42 +82,44 @@ namespace ASC.Core.Common.Migrations.PostgreSql.WebstudioDbContextPostgreSql
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioUserVisit", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenantid");
 
                     b.Property<DateTime>("VisitDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("visitdate");
 
-                    b.Property<Guid>("ProductId")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
-                        .HasColumnName("productid");
+                    b.Property<string>("ProductId")
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("productid")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("UserId")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
-                        .HasColumnName("userid");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("userid")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("FirstVisitTime")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("firstvisittime");
 
                     b.Property<DateTime>("LastVisitTime")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("lastvisittime");
 
                     b.Property<int>("VisitCount")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("visitcount");
 
                     b.HasKey("TenantId", "VisitDate", "ProductId", "UserId")
-                        .HasName("webstudio_uservisit_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("VisitDate")
                         .HasDatabaseName("visitdate");
 
-                    b.ToTable("webstudio_uservisit", "onlyoffice");
+                    b.ToTable("webstudio_uservisit");
                 });
 #pragma warning restore 612, 618
         }

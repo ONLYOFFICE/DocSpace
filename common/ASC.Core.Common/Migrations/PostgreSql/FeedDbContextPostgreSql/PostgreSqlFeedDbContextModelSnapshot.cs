@@ -4,7 +4,6 @@ using ASC.Core.Common.EF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Core.Common.Migrations.PostgreSql.FeedDbContextPostgreSql
 {
@@ -15,71 +14,78 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FeedDbContextPostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64)
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FeedAggregate", b =>
                 {
                     b.Property<string>("Id")
-                        .HasMaxLength(88)
-                        .HasColumnType("character varying(88)")
-                        .HasColumnName("id");
+                        .HasColumnType("varchar(88)")
+                        .HasColumnName("id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("AggregateDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("aggregated_date");
 
-                    b.Property<Guid>("Author")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("char(38)")
                         .HasColumnName("author")
-                        .IsFixedLength(true);
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("created_date");
 
                     b.Property<string>("GroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(70)
-                        .HasColumnType("character varying(70)")
+                        .HasColumnType("varchar(70)")
                         .HasColumnName("group_id")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Json")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("json");
+                        .HasColumnType("mediumtext")
+                        .HasColumnName("json")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Keywords")
                         .HasColumnType("text")
-                        .HasColumnName("keywords");
+                        .HasColumnName("keywords")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("char(38)")
                         .HasColumnName("modified_by")
-                        .IsFixedLength(true);
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("modified_date");
 
                     b.Property<string>("Module")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("module");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("module")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Product")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("product");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("product")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Tenant")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant");
 
                     b.HasKey("Id");
@@ -93,72 +99,76 @@ namespace ASC.Core.Common.Migrations.PostgreSql.FeedDbContextPostgreSql
                     b.HasIndex("Tenant", "Product")
                         .HasDatabaseName("product");
 
-                    b.ToTable("feed_aggregate", "onlyoffice");
+                    b.ToTable("feed_aggregate");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FeedLast", b =>
                 {
                     b.Property<string>("LastKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("last_key");
+                        .HasColumnType("varchar(128)")
+                        .HasColumnName("last_key")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastDate")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("last_date");
 
                     b.HasKey("LastKey")
-                        .HasName("feed_last_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("feed_last", "onlyoffice");
+                    b.ToTable("feed_last");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FeedReaded", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
                     b.Property<int>("Tenant")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("user_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
                     b.Property<string>("Module")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("module");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("module")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("timestamp");
 
-                    b.HasKey("UserId", "Tenant", "Module")
-                        .HasName("feed_readed_pkey");
+                    b.HasKey("Tenant", "UserId", "Module")
+                        .HasName("PRIMARY");
 
-                    b.ToTable("feed_readed", "onlyoffice");
+                    b.ToTable("feed_readed");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FeedUsers", b =>
                 {
                     b.Property<string>("FeedId")
-                        .HasMaxLength(88)
-                        .HasColumnType("character varying(88)")
-                        .HasColumnName("feed_id");
+                        .HasColumnType("varchar(88)")
+                        .HasColumnName("feed_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("UserId")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("UserId")
+                        .HasColumnType("char(38)")
                         .HasColumnName("user_id")
-                        .IsFixedLength(true);
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("FeedId", "UserId")
-                        .HasName("feed_users_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("user_id_feed_users");
+                        .HasDatabaseName("user_id");
 
-                    b.ToTable("feed_users", "onlyoffice");
+                    b.ToTable("feed_users");
                 });
 #pragma warning restore 612, 618
         }
