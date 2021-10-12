@@ -8,6 +8,7 @@ namespace AutoMigrationCreator
     {
         public string Name { get; set; }
         public string ConnectionString { get; set; }
+        public string ProviderName { get; set; }
 
         private ConnectionStringSettings _connectionStringSettings;
         public ConnectionStringSettings ConnectionStringSettings
@@ -15,7 +16,7 @@ namespace AutoMigrationCreator
             get
             {
                 if (_connectionStringSettings == null)
-                    _connectionStringSettings = new ConnectionStringSettings(Name, ConnectionString);
+                    _connectionStringSettings = new ConnectionStringSettings(Name, ConnectionString, ProviderName);
 
                 return _connectionStringSettings;
             }
