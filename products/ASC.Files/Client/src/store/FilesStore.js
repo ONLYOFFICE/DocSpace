@@ -98,6 +98,7 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
+    this.selection = this.selection.filter((x) => !x.isThirdPartyFolder); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -1130,6 +1131,7 @@ class FilesStore {
           )
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
+      const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
       const icon = getIcon(24, fileExst, providerKey, contentLength);
@@ -1209,6 +1211,7 @@ class FilesStore {
         previewUrl,
         folderUrl,
         href,
+        isThirdPartyFolder,
       };
     });
 
