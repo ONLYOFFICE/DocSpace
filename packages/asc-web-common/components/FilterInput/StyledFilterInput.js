@@ -70,9 +70,9 @@ const StyledFilterInput = styled.div`
       width: auto;
       padding-left: 4px;
     }
-    > div:last-child {
+    /* > div:last-child {
       max-width: 220px;
-    }
+    } */
     .combo-button-label {
       color: #333;
     }
