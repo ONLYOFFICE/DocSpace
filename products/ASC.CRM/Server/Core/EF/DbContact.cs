@@ -97,7 +97,7 @@ namespace ASC.CRM.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbContact, Provider.MySql)
-                .Add(PgSqlAddDbContact, Provider.Postgre);
+                .Add(PgSqlAddDbContact, Provider.PostgreSql);
 
             return modelBuilder;
         }
