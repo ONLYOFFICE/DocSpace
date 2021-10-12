@@ -60,7 +60,7 @@ export default function withFileActions(WrappedFileItem) {
         isActive,
       } = this.props;
 
-      const { id, isFolder } = item;
+      const { id, isFolder, isThirdPartyFolder } = item;
 
       const notSelectable = e.target.classList.contains("not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
@@ -72,7 +72,12 @@ export default function withFileActions(WrappedFileItem) {
       )
         return e;
 
-      if (window.innerWidth < 1025 || notSelectable || isMobile) {
+      if (
+        window.innerWidth < 1025 ||
+        notSelectable ||
+        isMobile ||
+        isThirdPartyFolder
+      ) {
         return e;
       }
 
