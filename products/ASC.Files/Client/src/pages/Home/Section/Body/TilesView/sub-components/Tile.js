@@ -195,6 +195,8 @@ const StyledFileTileBottom = styled.div`
   padding-right: 0;
   min-height: 56px;
   box-sizing: border-box;
+  border-top: ${(props) =>
+    (props.checked || props.isActive) && "1px solid #D0D5DA"};
 `;
 
 const StyledContent = styled.div`
@@ -385,7 +387,7 @@ class Tile extends React.PureComponent {
         ) : (
           <>
             <StyledFileTileTop>{icon}</StyledFileTileTop>
-            <StyledFileTileBottom>
+            <StyledFileTileBottom checked={checked} isActive={isActive}>
               {id !== -1 && !isEdit && (
                 <div className="file-icon_container">
                   <div className="file-icon">{element}</div>
