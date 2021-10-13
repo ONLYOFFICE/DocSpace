@@ -503,11 +503,6 @@ const Editor = () => {
 
       const newConfig = Object.assign(config, events);
 
-      const tempElm = document.getElementById("loader");
-      if (tempElm) {
-        tempElm.outerHTML = "";
-      }
-
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
     } catch (error) {
       console.log(error);
@@ -524,6 +519,11 @@ const Editor = () => {
       const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
+    }
+
+    const tempElm = document.getElementById("loader");
+    if (tempElm) {
+      tempElm.outerHTML = "";
     }
   };
 
