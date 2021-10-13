@@ -6,13 +6,13 @@ import { toast } from "react-toastify";
 import { Trans } from "react-i18next";
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
-import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
   loadScript,
-  //showLoader,
-  //hideLoader,
+  isRetina,
+  getCookie,
+  setCookie,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -92,6 +92,10 @@ const Editor = () => {
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
+    if (isRetina() && getCookie("is_retina") == null) {
+      setCookie("is_retina", true, { path: "/" });
+    }
+
     init();
   }, []);
 
@@ -499,6 +503,11 @@ const Editor = () => {
 
       const newConfig = Object.assign(config, events);
 
+      const tempElm = document.getElementById("loader");
+      if (tempElm) {
+        tempElm.outerHTML = "";
+      }
+
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
     } catch (error) {
       console.log(error);
@@ -834,9 +843,7 @@ const Editor = () => {
           )}
         </>
       ) : (
-        <Box paddingProp="16px">
-          <Loaders.Rectangle height="96vh" />
-        </Box>
+        <></>
       )}
     </Box>
   );
