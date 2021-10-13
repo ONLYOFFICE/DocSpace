@@ -32,7 +32,6 @@ using ASC.Core.Common;
 using ASC.Core.Tenants;
 
 using Twilio.Clients;
-using Twilio.Http;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Rest.Api.V2010.Account.Queue;
 using Twilio.Types;

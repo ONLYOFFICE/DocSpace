@@ -28,11 +28,7 @@ using System;
 
 
 using ASC.Common.Mapping;
-using ASC.Core.Common.EF;
 using ASC.CRM.Core;
-using ASC.Web.Core.Calendars;
-
-using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {

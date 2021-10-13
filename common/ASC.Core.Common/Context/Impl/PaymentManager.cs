@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -40,8 +38,6 @@ using ASC.Core.Billing;
 
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-
-using Newtonsoft.Json;
 
 
 namespace ASC.Core

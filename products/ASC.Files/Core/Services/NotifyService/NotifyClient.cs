@@ -32,7 +32,6 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;

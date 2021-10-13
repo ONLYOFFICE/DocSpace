@@ -30,7 +30,6 @@ using System.Text.Json.Serialization;
 
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
 

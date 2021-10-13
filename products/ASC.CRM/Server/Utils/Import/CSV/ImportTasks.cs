@@ -33,7 +33,6 @@ using System.Linq;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.CRM.Core.Dao;
-using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Web.Core.Users;

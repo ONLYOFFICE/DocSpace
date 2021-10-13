@@ -27,13 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using ASC.Calendar.Resources;
 using ASC.Common.Utils;
 using ASC.Web.Core.Calendars;
 using System.IO;
-using System.Net;
 using ASC.Core;
 using System.Net.Http;
 

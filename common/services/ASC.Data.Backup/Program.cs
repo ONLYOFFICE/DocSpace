@@ -27,7 +27,7 @@ namespace ASC.Data.Backup
         public static IHostBuilder CreateHostBuilder(string[] args) => 
             Host.CreateDefaultBuilder(args)
                 .UseSystemd()
-                .UseWindowsService()
+                .TryUseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -26,12 +26,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
+
 using ASC.Api.Core;
 using ASC.Calendar.Core.Dao;
 using ASC.Calendar.Core.Dao.Models;
@@ -45,6 +44,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Calendars;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

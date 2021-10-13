@@ -27,8 +27,6 @@
 using System;
 using System.Text.Json.Serialization;
 
-using ASC.Files.Core.Security;
-
 namespace ASC.Files.Core
 {
     [Serializable]
