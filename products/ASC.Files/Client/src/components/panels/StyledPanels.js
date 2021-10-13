@@ -673,6 +673,10 @@ const StyledSelectFilePanel = styled.div`
       ${(props) =>
         props.isHeaderChildren ? `padding-top: 0;` : `padding-top: 16px;`}
       border-right: 1px solid #dee2e6;
+      span.rc-tree-title {
+        max-width: ${(props) =>
+          props.displayType === "aside" ? "243px" : "181px"};
+      }
     }
   }
   .select-file-dialog-aside_buttons {
