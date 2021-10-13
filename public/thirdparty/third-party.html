@@ -52,10 +52,10 @@
         const searchUrl = location.search.substring(1);
         const object = JSON.parse(
           '{"' +
-            decodeURIComponent(searchUrl)
+            decodeURIComponent(searchUrl
               .replace(/"/g, '\\"')
               .replace(/&/g, '","')
-              .replace(/=/g, '":"') +
+              .replace(/=/g, '":"')) +
             '"}'
         );
 
