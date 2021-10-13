@@ -11,6 +11,9 @@ import {
   combineUrl,
   getObjectByLocation,
   loadScript,
+  isRetina,
+  getCookie,
+  setCookie,
   //showLoader,
   //hideLoader,
 } from "@appserver/common/utils";
@@ -92,6 +95,10 @@ const Editor = () => {
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
+    if (isRetina() && getCookie("is_retina") == null) {
+      setCookie("is_retina", true, { path: "/" });
+    }
+
     init();
   }, []);
 
