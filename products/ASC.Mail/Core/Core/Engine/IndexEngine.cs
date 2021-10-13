@@ -143,7 +143,7 @@ namespace ASC.Mail.Core.Engine
                 Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
             };
 
-            if (!FactoryIndexerMailMail.CanIndexByContent()) return mail;
+            if (!FactoryIndexerMailMail.CanIndexByContent(mail)) return mail;
 
             try
             {

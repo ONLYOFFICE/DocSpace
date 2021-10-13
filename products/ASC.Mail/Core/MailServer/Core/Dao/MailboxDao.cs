@@ -24,18 +24,21 @@
 */
 
 
+using System.Linq;
+
+using ASC.Common;
+using ASC.Core.Common.EF;
 using ASC.Mail.Server.Core.Dao.Interfaces;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Server.Utils;
-using ASC.Core.Common.EF;
-using System.Linq;
 
 namespace ASC.Mail.Server.Core.Dao
 {
-    public class MailboxDao : BaseDao, IMailboxDao
+    [Scope]
+    public class MailboxDao : BaseServerDao, IMailboxDao
     {
-        public MailboxDao(MailServerDbContext db)
-            : base(db)
+        public MailboxDao(DbContextManager<MailServerDbContext> dbContext)
+            : base(dbContext)
         {
         }
 
@@ -43,16 +46,16 @@ namespace ASC.Mail.Server.Core.Dao
         {
             mailbox.Password = PostfixPasswordEncryptor.EncryptString(HashType.Md5, mailbox.Password);
 
-            var entry = Db.AddOrUpdate(r => r.Mailbox, mailbox);
+            var entry = MailServerDbContext.AddOrUpdate(r => r.Mailbox, mailbox);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }
 
         public int ChangePassword(string username, string newPassword)
         {
-            var mb = Db.Mailbox
+            var mb = MailServerDbContext.Mailbox
                 .Where(mb => mb.Username
                     .Equals(username, System.StringComparison.InvariantCultureIgnoreCase))
                 .SingleOrDefault();
@@ -62,31 +65,30 @@ namespace ASC.Mail.Server.Core.Dao
 
             mb.Password = PostfixPasswordEncryptor.EncryptString(HashType.Md5, newPassword);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }
 
         public int Remove(string address)
         {
-            var query = Db.Mailbox.Where(a =>
+            var query = MailServerDbContext.Mailbox.Where(a =>
                 a.Username.Equals(address, System.StringComparison.InvariantCultureIgnoreCase));
 
-            Db.Mailbox.RemoveRange(query);
+            MailServerDbContext.Mailbox.RemoveRange(query);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }
 
         public int RemoveByDomain(string domain)
         {
-            var query = Db.Mailbox.Where(a =>
-                a.Domain.Equals(domain, System.StringComparison.InvariantCultureIgnoreCase));
+            var query = MailServerDbContext.Mailbox.Where(a => a.Domain.ToLower() == domain.ToLower());
 
-            Db.Mailbox.RemoveRange(query);
+            MailServerDbContext.Mailbox.RemoveRange(query);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }

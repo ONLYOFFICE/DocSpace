@@ -92,6 +92,7 @@ namespace ASC.Mail.StorageCleaner.Service
                     diHelper.TryAdd<StorageCleanerLauncher>();
                     services.AddHostedService<StorageCleanerLauncher>();
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.TryAdd<StorageCleanerScope>();
                     services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>

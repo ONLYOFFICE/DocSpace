@@ -24,37 +24,39 @@
 */
 
 
+using System.Linq;
+
+using ASC.Common;
+using ASC.Core.Common.EF;
 using ASC.Mail.Server.Core.Dao.Interfaces;
 using ASC.Mail.Server.Core.Entities;
-using ASC.Core.Common.EF;
-using System.Linq;
 
 namespace ASC.Mail.Server.Core.Dao
 {
-    public class DomainDao : BaseDao, IDomainDao
+    [Scope]
+    public class DomainDao : BaseServerDao, IDomainDao
     {
-        public DomainDao(MailServerDbContext db) 
-            : base(db)
+        public DomainDao(DbContextManager<MailServerDbContext> dbContext)
+            : base(dbContext)
         {
         }
 
         public int Save(Domain domain)
         {
-            var entry = Db.AddOrUpdate(r => r.Domain, domain);
+            var entry = MailServerDbContext.AddOrUpdate(r => r.Domain, domain);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }
 
         public int Remove(string domain)
         {
-            var query = Db.Domain.Where(a =>
-                a.DomainName.Equals(domain, System.StringComparison.InvariantCultureIgnoreCase));
+            var query = MailServerDbContext.Domain.Where(a => a.DomainName.ToLower() == domain.ToLower());
 
-            Db.Domain.RemoveRange(query);
+            MailServerDbContext.Domain.RemoveRange(query);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }
