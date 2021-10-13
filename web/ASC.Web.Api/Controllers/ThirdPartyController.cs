@@ -52,10 +52,11 @@ namespace ASC.Web.Api.Controllers
         [Read("{provider}")]
         public object Get(LoginProviderEnum provider)
         {
+            var desktop = HttpContext.Request.Query["desktop"] == "true";
             switch (provider)
             {
                 case LoginProviderEnum.Google:
-                    return OAuth20TokenHelper.RequestCode<GoogleLoginProvider>(
+                    return OAuth20TokenHelper.RequestCode<GoogleLoginProvider>(desktop,
                                                                         GoogleLoginProvider.GoogleScopeDrive,
                                                                         new Dictionary<string, string>
                                                                             {
@@ -64,26 +65,27 @@ namespace ASC.Web.Api.Controllers
                                                                             });
 
                 case LoginProviderEnum.Dropbox:
-                    return OAuth20TokenHelper.RequestCode<DropboxLoginProvider>(
+                    return OAuth20TokenHelper.RequestCode<DropboxLoginProvider>(desktop,
                                                         additionalArgs: new Dictionary<string, string>
                                                             {
                                                                             { "force_reauthentication", "true" }
                                                             });
 
                 case LoginProviderEnum.Docusign:
-                    return OAuth20TokenHelper.RequestCode<DocuSignLoginProvider>(DocuSignLoginProvider.DocuSignLoginProviderScopes,
+                    return OAuth20TokenHelper.RequestCode<DocuSignLoginProvider>(desktop,
+                                                                            DocuSignLoginProvider.DocuSignLoginProviderScopes,
                                                                             new Dictionary<string, string>
                                                                                 {
                                                                             { "prompt", "login" }
                                                                                 });
                 case LoginProviderEnum.Box:
-                    return OAuth20TokenHelper.RequestCode<BoxLoginProvider>();
+                    return OAuth20TokenHelper.RequestCode<BoxLoginProvider>(desktop);
 
                 case LoginProviderEnum.OneDrive:
-                    return OAuth20TokenHelper.RequestCode<OneDriveLoginProvider>(OneDriveLoginProvider.OneDriveLoginProviderScopes);
+                    return OAuth20TokenHelper.RequestCode<OneDriveLoginProvider>(desktop, OneDriveLoginProvider.OneDriveLoginProviderScopes);
 
                 case LoginProviderEnum.Wordpress:
-                    return OAuth20TokenHelper.RequestCode<WordpressLoginProvider>();
+                    return OAuth20TokenHelper.RequestCode<WordpressLoginProvider>(desktop);
 
             }
 

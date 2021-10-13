@@ -97,11 +97,11 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
+        public override LoginProfile ProcessAuthoriztion(HttpContext context, bool desktop, IDictionary<string, string> @params)
         {
             try
             {
-                var token = Auth(context, Scopes, out var redirect);
+                var token = Auth(context, desktop, Scopes, out var redirect);
 
                 if (redirect)
                 {

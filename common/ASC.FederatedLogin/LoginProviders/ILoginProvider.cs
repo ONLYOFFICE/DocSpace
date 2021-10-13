@@ -34,7 +34,7 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     public interface ILoginProvider : IOAuthProvider
     {
-        LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params);
+        LoginProfile ProcessAuthoriztion(HttpContext context, bool desktop, IDictionary<string, string> @params);
 
         LoginProfile GetLoginProfile(string accessToken);
     }

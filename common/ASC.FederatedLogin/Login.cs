@@ -104,7 +104,7 @@ namespace ASC.FederatedLogin
             {
                 try
                 {
-                    var profile = ProviderManager.Process(Auth, context, _params);
+                    var profile = ProviderManager.Process(Auth, context, _params.ContainsKey("desktop") && _params["desktop"] == "true", _params);
                     if (profile != null)
                     {
                         await SendClientData(context, profile);

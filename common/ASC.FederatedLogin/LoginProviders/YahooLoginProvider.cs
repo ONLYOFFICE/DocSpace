@@ -70,7 +70,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public OAuth20Token Auth(HttpContext context)
         {
-            return Auth(context, Scopes, out var _);
+            return Auth(context, context.Request.Query["desktop"] == "true", Scopes, out var _);
         }
 
         public override LoginProfile GetLoginProfile(string accessToken)

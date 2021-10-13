@@ -93,7 +93,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public OAuth20Token Auth(HttpContext context)
         {
-            return Auth(context, GoogleScopeContacts, out var _, (context.Request.Query["access_type"].ToString() ?? "") == "offline"
+            return Auth(context, context.Request.Query["desktop"] == "true", GoogleScopeContacts, out var _, (context.Request.Query["access_type"].ToString() ?? "") == "offline"
                                                           ? new Dictionary<string, string>
                                                               {
                                                                   { "access_type", "offline" },
