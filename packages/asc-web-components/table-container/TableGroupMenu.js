@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
 import { StyledTableGroupMenu } from "./StyledTableContainer";
@@ -10,10 +10,8 @@ const TableGroupMenu = (props) => {
     isChecked,
     isIndeterminate,
     headerMenu,
-    containerRef,
     onChange,
     checkboxOptions,
-    columnStorageName,
     checkboxMargin,
     ...rest
   } = props;
@@ -22,20 +20,9 @@ const TableGroupMenu = (props) => {
     onChange && onChange(e.target && e.target.checked);
   };
 
-  const width = containerRef.current
-    ? containerRef.current.clientWidth + "px"
-    : "100%";
-
-  useEffect(() => {
-    const storageSize = localStorage.getItem(columnStorageName);
-    if (containerRef.current)
-      containerRef.current.style.gridTemplateColumns = storageSize;
-  }, [containerRef]);
-
   return (
     <>
       <StyledTableGroupMenu
-        width={width}
         className="table-container_group-menu"
         checkboxMargin={checkboxMargin}
         {...rest}
@@ -73,12 +60,10 @@ const TableGroupMenu = (props) => {
 TableGroupMenu.propTypes = {
   isChecked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
-  headerMenu: PropTypes.arrayOf(PropTypes.object),
+  headerMenu: PropTypes.arrayOf(PropTypes.object).isRequired,
   checkboxOptions: PropTypes.any.isRequired,
   onClick: PropTypes.func,
   onChange: PropTypes.func,
-  containerRef: PropTypes.shape({ current: PropTypes.any }),
-  columnStorageName: PropTypes.string,
   checkboxMargin: PropTypes.string,
 };
 

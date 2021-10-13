@@ -15,6 +15,7 @@ import IconButton from "@appserver/components/icon-button";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
+import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 
 const StyledContainer = styled.div`
   .header-container {
@@ -310,7 +311,13 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const { t, getHeaderMenu, cbMenuItems, getCheckboxItemLabel } = this.props;
+    const {
+      t,
+      getHeaderMenu,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      viewAs,
+    } = this.props;
 
     const headerMenu = getHeaderMenu(t);
     const children = cbMenuItems.map((key, index) => {
@@ -329,6 +336,24 @@ class SectionHeaderContent extends React.Component {
         onSelect: this.onSelect,
       },
     ];
+
+    const checkboxOptions = (
+      <>
+        {cbMenuItems.map((key) => {
+          const label = getCheckboxItemLabel(t, key);
+          return (
+            <DropDownItem
+              key={key}
+              label={label}
+              data-key={key}
+              onClick={this.onSelect}
+            />
+          );
+        })}
+      </>
+    );
+
+    if (viewAs === "table") return checkboxOptions;
 
     menu = [...menu, ...headerMenu];
 
@@ -351,9 +376,11 @@ class SectionHeaderContent extends React.Component {
       isTabletView,
       personal,
       viewAs,
+      getHeaderMenu,
     } = this.props;
 
     const menuItems = this.getMenuItems();
+    const headerMenu = getHeaderMenu(t);
 
     return (
       <Consumer>
@@ -366,21 +393,32 @@ class SectionHeaderContent extends React.Component {
             isDesktop={isDesktop}
             isTabletView={isTabletView}
           >
-            {isHeaderVisible && viewAs !== "table" ? (
-              <div className="group-button-menu-container">
-                <GroupButtonsMenu
-                  checked={isHeaderChecked}
+            {isHeaderVisible ? (
+              viewAs === "table" ? (
+                <TableGroupMenu
+                  checkboxOptions={menuItems}
+                  // onChange={onChange}
+                  isChecked={isHeaderChecked}
                   isIndeterminate={isHeaderIndeterminate}
-                  onChange={this.onCheck}
-                  menuItems={menuItems}
-                  visible={isHeaderVisible}
-                  moreLabel={t("Common:More")}
-                  closeTitle={t("Common:CloseButton")}
-                  onClose={this.onClose}
-                  selected={menuItems[0].label}
-                  sectionWidth={context.sectionWidth}
+                  headerMenu={headerMenu}
+                  // columnStorageName={columnStorageName}
                 />
-              </div>
+              ) : (
+                <div className="group-button-menu-container">
+                  <GroupButtonsMenu
+                    checked={isHeaderChecked}
+                    isIndeterminate={isHeaderIndeterminate}
+                    onChange={this.onCheck}
+                    menuItems={menuItems}
+                    visible={isHeaderVisible}
+                    moreLabel={t("Common:More")}
+                    closeTitle={t("Common:CloseButton")}
+                    onClose={this.onClose}
+                    selected={menuItems[0].label}
+                    sectionWidth={context.sectionWidth}
+                  />
+                </div>
+              )
             ) : (
               <div className="header-container">
                 {!title || !tReady ? (

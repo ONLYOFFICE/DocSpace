@@ -1,14 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
-const HeaderStyles = css`
-  height: 39px;
-  position: fixed;
-  background: #fff;
-  z-index: 1;
-  border-bottom: 1px solid #eceef1;
-`;
-
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
 
@@ -70,28 +62,6 @@ const StyledTableContainer = styled.div`
       width: 22px;
     }
 
-    .table-container_group-menu-combobox {
-      height: 24px;
-      width: 16px;
-      margin-bottom: 16px;
-
-      .combo-button {
-        height: 24px;
-        margin-top: 8px;
-        width: 16px;
-
-        .combo-buttons_arrow-icon {
-          margin: 8px 16px 0 0;
-
-          /* svg {
-            path {
-              fill: #333;
-            }
-          } */
-        }
-      }
-    }
-
     .table-container_group-menu-separator {
       border-right: 1px solid #eceef1;
       width: 2px;
@@ -102,12 +72,18 @@ const StyledTableContainer = styled.div`
 `;
 
 const StyledTableGroupMenu = styled.div`
+  position: relative;
+  background: #fff;
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: ${(props) => props.width};
-
-  ${HeaderStyles}
+  width: 100%;
+  z-index: 200;
+  height: 52px;
+  box-shadow: 0px 5px 20px rgba(4, 15, 27, 7%);
+  border-radius: 0px 0px 6px 6px;
+  margin: 0px -24px;
+  width: calc(100% + 48px);
 
   .table-container_group-menu-checkbox {
     ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
@@ -116,12 +92,37 @@ const StyledTableGroupMenu = styled.div`
   .table-container_group-menu_button {
     margin-right: 8px;
   }
+
+  .table-container_group-menu-combobox {
+    height: 24px;
+    width: 16px;
+    margin-bottom: 16px;
+
+    .combo-button {
+      height: 24px;
+      margin-top: 8px;
+      width: 16px;
+
+      .combo-buttons_arrow-icon {
+        margin: 8px 16px 0 0;
+
+        /* svg {
+            path {
+              fill: #333;
+            }
+          } */
+      }
+    }
+  }
 `;
 
 const StyledTableHeader = styled.div`
+  position: fixed;
+  background: #fff;
   display: grid;
-
-  ${HeaderStyles}
+  z-index: 1;
+  height: 39px;
+  border-bottom: 1px solid #eceef1;
 
   .table-container_header-checkbox {
     ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}

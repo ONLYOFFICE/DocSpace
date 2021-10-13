@@ -10,7 +10,6 @@ import Checkbox from "../checkbox";
 import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
 import { size } from "../utils/device";
-import TableGroupMenu from "./TableGroupMenu";
 
 const minColumnSize = 150;
 const defaultMinColumnSize = 90;
@@ -393,78 +392,52 @@ class TableHeader extends React.Component {
   };
 
   render() {
-    const {
-      columns,
-      sortBy,
-      sorted,
-      isHeaderVisible,
-      checkboxOptions,
-      containerRef,
-      onChange,
-      isChecked,
-      isIndeterminate,
-      headerMenu,
-      columnStorageName,
-      hasAccess,
-      ...rest
-    } = this.props;
+    const { columns, sortBy, sorted, hasAccess, ...rest } = this.props;
 
     //console.log("TABLE HEADER RENDER", columns);
 
     return (
       <>
-        {isHeaderVisible ? (
-          <TableGroupMenu
-            checkboxOptions={checkboxOptions}
-            containerRef={containerRef}
-            onChange={onChange}
-            isChecked={isChecked}
-            isIndeterminate={isIndeterminate}
-            headerMenu={headerMenu}
-            columnStorageName={columnStorageName}
-            {...rest}
-          />
-        ) : (
-          <StyledTableHeader
-            className="table-container_header"
-            ref={this.headerRef}
-            {...rest}
-          >
-            <StyledTableRow>
-              {hasAccess ? (
-                <Checkbox
-                  className="table-container_header-checkbox"
-                  onChange={this.onChange}
-                  isChecked={false}
+        <StyledTableHeader
+          className="table-container_header"
+          ref={this.headerRef}
+          {...rest}
+        >
+          <StyledTableRow>
+            {hasAccess ? (
+              <Checkbox
+                className="table-container_header-checkbox"
+                onChange={this.onChange}
+                isChecked={false}
+              />
+            ) : (
+              <div></div>
+            )}
+
+            {columns.map((column, index) => {
+              const nextColumn = this.getNextColumn(columns, index);
+              const resizable = nextColumn ? nextColumn.resizable : false;
+
+              return (
+                <TableHeaderCell
+                  key={column.key}
+                  index={index}
+                  column={column}
+                  sorted={sorted}
+                  sortBy={sortBy}
+                  resizable={resizable}
+                  defaultSize={column.defaultSize}
+                  onMouseDown={this.onMouseDown}
                 />
-              ) : (
-                <div></div>
-              )}
+              );
+            })}
 
-              {columns.map((column, index) => {
-                const nextColumn = this.getNextColumn(columns, index);
-                const resizable = nextColumn ? nextColumn.resizable : false;
+            <div className="table-container_header-settings">
+              <TableSettings columns={columns} />
+            </div>
+          </StyledTableRow>
+        </StyledTableHeader>
 
-                return (
-                  <TableHeaderCell
-                    key={column.key}
-                    index={index}
-                    column={column}
-                    sorted={sorted}
-                    sortBy={sortBy}
-                    resizable={resizable}
-                    defaultSize={column.defaultSize}
-                    onMouseDown={this.onMouseDown}
-                  />
-                );
-              })}
-
-              <div className="table-container_header-settings">
-                <TableSettings columns={columns} />
-              </div>
-            </StyledTableRow>
-          </StyledTableHeader>
-        )}
         <StyledEmptyTableContainer />
       </>
     );
@@ -484,12 +457,6 @@ TableHeader.propTypes = {
   columnStorageName: PropTypes.string,
   checkboxSize: PropTypes.string,
   sectionWidth: PropTypes.number,
-  isHeaderVisible: PropTypes.bool,
-  checkboxOptions: PropTypes.any.isRequired,
-  isChecked: PropTypes.bool,
-  onChange: PropTypes.func,
-  isIndeterminate: PropTypes.bool,
-  headerMenu: PropTypes.arrayOf(PropTypes.object),
   onClick: PropTypes.func,
   hasAccess: PropTypes.bool,
   resetColumnsSize: PropTypes.bool,
