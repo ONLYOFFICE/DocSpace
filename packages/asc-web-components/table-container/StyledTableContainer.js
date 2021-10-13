@@ -61,13 +61,6 @@ const StyledTableContainer = styled.div`
     .table-container_group-menu-checkbox {
       width: 22px;
     }
-
-    .table-container_group-menu-separator {
-      border-right: 1px solid #eceef1;
-      width: 2px;
-      height: 10px;
-      margin: 0 8px;
-    }
   }
 `;
 
@@ -86,7 +79,15 @@ const StyledTableGroupMenu = styled.div`
   width: calc(100% + 48px);
 
   .table-container_group-menu-checkbox {
+    margin-left: 24px;
     ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
+  }
+
+  .table-container_group-menu-separator {
+    border-right: 1px solid #d0d5da;
+    width: 2px;
+    height: 20px;
+    margin: 0 8px;
   }
 
   .table-container_group-menu_button {
@@ -96,21 +97,11 @@ const StyledTableGroupMenu = styled.div`
   .table-container_group-menu-combobox {
     height: 24px;
     width: 16px;
-    margin-bottom: 16px;
+    margin: 3px 0px 0px 3px;
 
     .combo-button {
-      height: 24px;
-      margin-top: 8px;
-      width: 16px;
-
       .combo-buttons_arrow-icon {
-        margin: 8px 16px 0 0;
-
-        /* svg {
-            path {
-              fill: #333;
-            }
-          } */
+        margin: 1px 16px 0 0;
       }
     }
   }

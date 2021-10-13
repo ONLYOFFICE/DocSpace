@@ -89,6 +89,7 @@ class ComboBox extends React.Component {
       toggleAction,
       textOverflow,
       showDisabledItems,
+      comboIcon,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -132,6 +133,7 @@ class ComboBox extends React.Component {
           isOpen={isOpen}
           size={size}
           scaled={scaled}
+          comboIcon={comboIcon}
         />
         {displayType !== "toggle" && (
           <DropDown
@@ -210,6 +212,7 @@ ComboBox.propTypes = {
   textOverflow: PropTypes.bool,
   /** Disables clicking on the icon */
   disableIconClick: PropTypes.bool,
+  comboIcon: PropTypes.string,
 };
 
 ComboBox.defaultProps = {

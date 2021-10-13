@@ -34,6 +34,8 @@ const TableGroupMenu = (props) => {
           isIndeterminate={isIndeterminate}
         />
         <ComboBox
+          comboIcon="/static/images/triangle.navigation.down.react.svg"
+          noBorder
           advancedOptions={checkboxOptions}
           className="table-container_group-menu-combobox not-selectable"
           options={[]}
