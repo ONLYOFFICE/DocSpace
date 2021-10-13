@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { Trans } from "react-i18next";
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
-import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
@@ -14,8 +13,6 @@ import {
   isRetina,
   getCookie,
   setCookie,
-  //showLoader,
-  //hideLoader,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -506,6 +503,11 @@ const Editor = () => {
 
       const newConfig = Object.assign(config, events);
 
+      const tempElm = document.getElementById("loader");
+      if (tempElm) {
+        tempElm.outerHTML = "";
+      }
+
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
     } catch (error) {
       console.log(error);
@@ -841,9 +843,7 @@ const Editor = () => {
           )}
         </>
       ) : (
-        <Box paddingProp="16px">
-          <Loaders.Rectangle height="96vh" />
-        </Box>
+        <></>
       )}
     </Box>
   );
