@@ -31,7 +31,10 @@ const ScheduleComponent = ({
   const { t } = useTranslation("Settings");
 
   return (
-    <StyledScheduleComponent>
+    <StyledScheduleComponent
+      weeklySchedule={weeklySchedule}
+      monthlySchedule={monthlySchedule}
+    >
       <Text className="schedule_description"> {t("ScheduleDescription")}</Text>
       <div className="main_options">
         <ComboBox
@@ -45,7 +48,7 @@ const ScheduleComponent = ({
           noBorder={false}
           scaled={false}
           scaledOptions={true}
-          dropDownMaxHeight={400}
+          dropDownMaxHeight={500}
           className="schedule-backup_combobox days_option"
         />
         {weeklySchedule && (
@@ -61,7 +64,7 @@ const ScheduleComponent = ({
             scaled={false}
             scaledOptions={true}
             dropDownMaxHeight={400}
-            className="schedule-backup_combobox"
+            className="schedule-backup_combobox weekly_option"
           />
         )}
         {monthlySchedule && (

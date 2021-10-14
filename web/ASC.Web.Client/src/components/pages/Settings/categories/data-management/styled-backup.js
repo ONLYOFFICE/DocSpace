@@ -63,11 +63,6 @@ const StyledAutoBackup = styled.div`
   .toggle-button-text {
     font-weight: 600;
   }
-  .schedule-backup_combobox {
-    display: inline-block;
-    margin-right: 8px;
-    margin-top: 8px;
-  }
 
   .input-with-folder-path {
     margin-top: 16px;
@@ -139,20 +134,34 @@ const StyledModules = styled.div`
 
 const StyledScheduleComponent = styled.div`
   .time_options,
-  .days_option {
+  .weekly_option,
+  .month_options {
+    width: 171px;
     .drop-down_variable-size {
       width: 171px !important;
     }
   }
-  .month_options {
-    .drop-down_variable-size {
-      width: 46px !important;
-    }
-  }
-  .main_options {
-    max-width: 820px;
+  .schedule-backup_combobox {
+    display: inline-block;
+    margin-right: 8px;
+    margin-top: 8px;
   }
 
+  .main_options {
+    max-width: 363px;
+  }
+  .days_option {
+    width: ${(props) =>
+      props.weeklySchedule || props.monthlySchedule
+        ? `${INPUT_LENGTH}`
+        : "171px"};
+    .drop-down_variable-size {
+      width: ${(props) =>
+        props.weeklySchedule || props.monthlySchedule
+          ? `${INPUT_LENGTH}`
+          : "171px"} !important;
+    }
+  }
   .max_copies {
     width: 100%;
     max-width: ${INPUT_LENGTH};
