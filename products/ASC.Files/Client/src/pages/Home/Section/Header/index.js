@@ -448,7 +448,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/plus.svg"
+                          iconName="images/header.plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -475,7 +475,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/plus.svg"
+                          iconName="images/header.plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"

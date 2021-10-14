@@ -16,7 +16,7 @@ class FilterButton extends React.PureComponent {
     //console.log('render FilterButton)
     return (
       <ContextMenuButton
-        className="filter-button"
+        //className="filter-button"
         directionY="bottom"
         getData={getData}
         iconName="/static/images/rectangle.filter.react.svg"

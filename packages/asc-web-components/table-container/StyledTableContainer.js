@@ -114,6 +114,8 @@ const StyledTableHeader = styled.div`
   z-index: 1;
   height: 39px;
   border-bottom: 1px solid #eceef1;
+  margin: 0 -24px;
+  padding: 0 24px;
 
   .table-container_header-checkbox {
     ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
