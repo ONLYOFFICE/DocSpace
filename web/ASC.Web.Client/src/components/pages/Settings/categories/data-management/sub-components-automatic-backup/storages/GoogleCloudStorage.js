@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
+import { StyledAutoBackup } from "../../styled-backup";
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -103,7 +104,7 @@ class GoogleCloudStorage extends React.Component {
     } = this.props;
 
     return (
-      <>
+      <StyledAutoBackup>
         <GoogleCloudSettings
           formSettings={formSettings}
           onChange={this.onChange}
@@ -134,7 +135,7 @@ class GoogleCloudStorage extends React.Component {
           //isChanged - from auto backup, monitor  period, time and etc. options;
           //isChangedThirdParty - from storages module, monitors selection storage changes
           //isChangedInput - monitors inputs changes
-          <>
+          <div className="backup_storages-buttons">
             <Button
               label={t("Common:Save")}
               onClick={this.onSaveSettings}
@@ -142,19 +143,19 @@ class GoogleCloudStorage extends React.Component {
               isDisabled={isCopyingToLocal || this.isDisabled}
               size="medium"
               tabIndex={10}
+              className="save-button"
             />
 
             <Button
               label={t("Common: Cancel")}
               onClick={this.onCancelSettings}
-              primary
               isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
             />
-          </>
+          </div>
         )}
-      </>
+      </StyledAutoBackup>
     );
   }
 }

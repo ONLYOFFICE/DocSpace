@@ -1020,9 +1020,11 @@ class AutomaticBackup extends React.PureComponent {
           onChange={this.onClickPermissions}
           isChecked={isEnable}
         />
-
+        <Text className="backup_toggle-btn-description">
+          {t("DocumentsModuleDescription")}
+        </Text>
         {isEnable && (
-          <>
+          <div className="backup_modules">
             <StyledModules>
               <RadioButton
                 fontSize="13px"
@@ -1168,10 +1170,11 @@ class AutomaticBackup extends React.PureComponent {
                   setBackupScheduleOptions={this.setBackupScheduleOptions}
                   isChanged={isChanged}
                   onCancelModuleSettings={this.onCancelModuleSettings}
+                  isCopyingToLocal={isCopyingToLocal}
                 />
               )}
             </StyledModules>
-          </>
+          </div>
         )}
 
         {isChanged && !isCheckedThirdPartyStorage && (
@@ -1183,12 +1186,12 @@ class AutomaticBackup extends React.PureComponent {
               isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
+              className="save-button"
             />
 
             <Button
               label={t("Common: Cancel")}
               onClick={this.onCancelModuleSettings}
-              primary
               isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}

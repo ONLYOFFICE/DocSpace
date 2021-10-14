@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import RackspaceSettings from "../../consumer-storage-settings/RackspaceSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
+import { StyledAutoBackup } from "../../styled-backup";
 class RackspaceStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -116,7 +117,7 @@ class RackspaceStorage extends React.Component {
     } = this.props;
 
     return (
-      <>
+      <StyledAutoBackup>
         <RackspaceSettings
           formSettings={formSettings}
           onChange={this.onChange}
@@ -151,7 +152,7 @@ class RackspaceStorage extends React.Component {
           //isChanged - from auto backup, monitor  period, time and etc. options;
           //isChangedThirdParty - from storages module, monitors selection storage changes
           //isChangedInput - monitors inputs changes
-          <>
+          <div className="backup_storages-buttons">
             <Button
               label={t("Common:Save")}
               onClick={this.onSaveSettings}
@@ -159,19 +160,19 @@ class RackspaceStorage extends React.Component {
               isDisabled={isCopyingToLocal || this.isDisabled}
               size="medium"
               tabIndex={10}
+              className="save-button"
             />
 
             <Button
               label={t("Common: Cancel")}
               onClick={this.onCancelSettings}
-              primary
               isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
             />
-          </>
+          </div>
         )}
-      </>
+      </StyledAutoBackup>
     );
   }
 }

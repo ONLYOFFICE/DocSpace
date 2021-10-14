@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import AmazonSettings from "../../consumer-storage-settings/AmazonSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
+import { StyledAutoBackup } from "../../styled-backup";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -137,7 +138,7 @@ class AmazonStorage extends React.Component {
     } = this.props;
 
     return (
-      <>
+      <StyledAutoBackup>
         <AmazonSettings
           formSettings={formSettings}
           onChange={this.onChange}
@@ -172,7 +173,7 @@ class AmazonStorage extends React.Component {
           //isChanged - from auto backup, monitor  period, time and etc. options;
           //isChangedThirdParty - from storages module, monitors selection storage changes
           //isChangedInput - monitors inputs changes
-          <>
+          <div className="backup_storages-buttons">
             <Button
               label={t("Common:Save")}
               onClick={this.onSaveSettings}
@@ -180,19 +181,19 @@ class AmazonStorage extends React.Component {
               isDisabled={isCopyingToLocal || this.isDisabled}
               size="medium"
               tabIndex={10}
+              className="save-button"
             />
 
             <Button
               label={t("Common: Cancel")}
               onClick={this.onCancelSettings}
-              primary
               isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
             />
-          </>
+          </div>
         )}
-      </>
+      </StyledAutoBackup>
     );
   }
 }

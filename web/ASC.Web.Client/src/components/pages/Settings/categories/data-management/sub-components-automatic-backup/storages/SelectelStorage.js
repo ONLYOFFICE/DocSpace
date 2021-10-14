@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import SelectelSettings from "../../consumer-storage-settings/SelectelSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
+import { StyledAutoBackup } from "../../styled-backup";
 class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -110,7 +111,7 @@ class SelectelStorage extends React.Component {
     } = this.props;
 
     return (
-      <>
+      <StyledAutoBackup>
         <SelectelSettings
           formSettings={formSettings}
           onChange={this.onChange}
@@ -145,7 +146,7 @@ class SelectelStorage extends React.Component {
           //isChanged - from auto backup, monitor  period, time and etc. options;
           //isChangedThirdParty - from storages module, monitors selection storage changes
           //isChangedInput - monitors inputs changes
-          <>
+          <div className="backup_storages-buttons">
             <Button
               label={t("Common:Save")}
               onClick={this.onSaveSettings}
@@ -153,6 +154,7 @@ class SelectelStorage extends React.Component {
               isDisabled={isCopyingToLocal || this.isDisabled}
               size="medium"
               tabIndex={10}
+              className="save-button"
             />
 
             <Button
@@ -163,9 +165,9 @@ class SelectelStorage extends React.Component {
               size="medium"
               tabIndex={10}
             />
-          </>
+          </div>
         )}
-      </>
+      </StyledAutoBackup>
     );
   }
 }

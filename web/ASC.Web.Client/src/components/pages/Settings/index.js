@@ -30,7 +30,7 @@ const DataManagementSettings = lazy(() =>
   import("./categories/data-management/backup")
 );
 const AutomaticBackup = lazy(() =>
-  import("./categories/data-management/automatic-backup.js")
+  import("./categories/data-management/AutomaticBackup.js")
 );
 const ManualBackup = lazy(() =>
   import("./categories/data-management/manual-backup.js")

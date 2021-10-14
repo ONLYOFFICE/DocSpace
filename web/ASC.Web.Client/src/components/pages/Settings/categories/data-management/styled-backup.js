@@ -55,6 +55,14 @@ const StyledAutoBackup = styled.div`
   .backup_toggle-btn {
     position: static;
   }
+  .backup_toggle-btn-description {
+    margin-bottom: 40px;
+    margin-left: 37px;
+    max-width: 500px;
+  }
+  .toggle-button-text {
+    font-weight: 600;
+  }
   .schedule-backup_combobox {
     display: inline-block;
     margin-right: 8px;
@@ -66,6 +74,16 @@ const StyledAutoBackup = styled.div`
     margin-bottom: 8px;
     width: 100%;
     max-width: ${INPUT_LENGTH};
+  }
+  .save-button {
+    margin-right: 8px;
+  }
+  .backup_modules {
+    margin-left: 60px;
+  }
+  .backup_storages-buttons {
+    margin-left: -63px;
+    margin-top: 40px;
   }
 `;
 
