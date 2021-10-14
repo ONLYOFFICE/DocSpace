@@ -604,6 +604,7 @@ const Selector = (props) => {
                 scaled={true}
                 scaledOptions={true}
                 size="content"
+                isDefaultMode={false}
                 onSelect={onGroupSelect}
               />
               {isMultiSelect &&
