@@ -2,7 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectelSettings from "../../consumer-storage-settings/SelectelSettings";
 import Button from "@appserver/components/button";
-import ScheduleComponent from "../../sub-components-automatic-backup/scheduleComponent";
+import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
 class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);

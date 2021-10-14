@@ -1,9 +1,10 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import SelectFolderInput from "files/SelectFolderInput";
-import ScheduleComponent from "./scheduleComponent";
+import ScheduleComponent from "./ScheduleComponent";
 
-class DocumentsModule extends React.Component {
+class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
 
@@ -25,9 +26,10 @@ class DocumentsModule extends React.Component {
   };
 
   render() {
-    const { isPanelVisible, isLoading } = this.state;
+    const { isPanelVisible } = this.state;
     const {
       isLoadingData,
+
       onSetLoadingData,
       onSelectFolder,
 
@@ -56,10 +58,23 @@ class DocumentsModule extends React.Component {
       isReset,
       resourcesModule,
       isError,
+      //helpUrlCreatingBackup,
+      // t,
     } = this.props;
-    console.log("defaultSelectedFolder", defaultSelectedFolder);
+
     return (
       <>
+        {/* <Box marginProp="16px 0 16px 0">
+          <Link
+            color="#316DAA"
+            target="_blank"
+            isHovered={true}
+            href={helpUrlCreatingBackup}
+          >
+            {t("Common:LearnMore")}
+          </Link>
+        </Box> */}
+
         <SelectFolderInput
           onSelectFolder={onSelectFolder}
           onClose={this.onClose}
@@ -67,10 +82,9 @@ class DocumentsModule extends React.Component {
           isPanelVisible={isPanelVisible}
           isError={isError}
           onSetLoadingData={onSetLoadingData}
-          foldersType="common"
-          withoutProvider
+          foldersType="third-party"
           isSavingProcess={isLoadingData}
-          id={!resourcesModule ? defaultSelectedFolder : ""}
+          id={resourcesModule ? defaultSelectedFolder : ""}
           isReset={isReset}
           onSetLoadingData={onSetLoadingData}
         />
@@ -99,4 +113,9 @@ class DocumentsModule extends React.Component {
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(DocumentsModule);
+export default inject(({ auth }) => {
+  const { helpUrlCreatingBackup } = auth.settingsStore;
+  return {
+    helpUrlCreatingBackup,
+  };
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

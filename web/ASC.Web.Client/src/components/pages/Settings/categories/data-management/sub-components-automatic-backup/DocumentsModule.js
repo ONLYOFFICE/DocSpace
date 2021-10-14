@@ -1,10 +1,9 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
 import SelectFolderInput from "files/SelectFolderInput";
-import ScheduleComponent from "./scheduleComponent";
+import ScheduleComponent from "./ScheduleComponent";
 
-class ThirdPartyModule extends React.Component {
+class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
 
@@ -26,10 +25,9 @@ class ThirdPartyModule extends React.Component {
   };
 
   render() {
-    const { isPanelVisible } = this.state;
+    const { isPanelVisible, isLoading } = this.state;
     const {
       isLoadingData,
-
       onSetLoadingData,
       onSelectFolder,
 
@@ -58,23 +56,10 @@ class ThirdPartyModule extends React.Component {
       isReset,
       resourcesModule,
       isError,
-      //helpUrlCreatingBackup,
-      // t,
     } = this.props;
-
+    console.log("defaultSelectedFolder", defaultSelectedFolder);
     return (
       <>
-        {/* <Box marginProp="16px 0 16px 0">
-          <Link
-            color="#316DAA"
-            target="_blank"
-            isHovered={true}
-            href={helpUrlCreatingBackup}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </Box> */}
-
         <SelectFolderInput
           onSelectFolder={onSelectFolder}
           onClose={this.onClose}
@@ -82,9 +67,10 @@ class ThirdPartyModule extends React.Component {
           isPanelVisible={isPanelVisible}
           isError={isError}
           onSetLoadingData={onSetLoadingData}
-          foldersType="third-party"
+          foldersType="common"
+          withoutProvider
           isSavingProcess={isLoadingData}
-          id={resourcesModule ? defaultSelectedFolder : ""}
+          id={!resourcesModule ? defaultSelectedFolder : ""}
           isReset={isReset}
           onSetLoadingData={onSetLoadingData}
         />
@@ -113,9 +99,4 @@ class ThirdPartyModule extends React.Component {
     );
   }
 }
-export default inject(({ auth }) => {
-  const { helpUrlCreatingBackup } = auth.settingsStore;
-  return {
-    helpUrlCreatingBackup,
-  };
-})(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));
+export default withTranslation(["Settings", "Common"])(DocumentsModule);

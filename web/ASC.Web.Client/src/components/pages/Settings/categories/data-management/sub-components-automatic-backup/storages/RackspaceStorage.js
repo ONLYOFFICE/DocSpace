@@ -2,7 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import RackspaceSettings from "../../consumer-storage-settings/RackspaceSettings";
 import Button from "@appserver/components/button";
-import ScheduleComponent from "../../sub-components-automatic-backup/scheduleComponent";
+import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
 class RackspaceStorage extends React.Component {
   constructor(props) {
     super(props);
