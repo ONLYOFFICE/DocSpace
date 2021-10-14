@@ -64,7 +64,7 @@ const StyledTileContainer = styled.div`
   @media (min-width: 1024px) {
     .tile-item-wrapper {
       &.file {
-        margin-left: 2px;
+        margin-left: 1px;
       }
     }
   }
