@@ -57,7 +57,7 @@ class DocumentsModule extends React.Component {
       resourcesModule,
       isError,
     } = this.props;
-
+    console.log("defaultSelectedFolder", defaultSelectedFolder);
     return (
       <>
         <SelectFolderInput

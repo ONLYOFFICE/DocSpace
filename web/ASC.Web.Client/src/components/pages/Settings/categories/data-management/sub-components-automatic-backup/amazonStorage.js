@@ -1,39 +1,24 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import AmazonSettings from "../consumer-storage-settings/AmazonSettings";
-
+import Button from "@appserver/components/button";
+import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { t, availableStorage, selectedId, currentStorageId } = this.props;
+    const { selectedStorage } = this.props;
 
-    this.defaultBucketValue =
-      currentStorageId && availableStorage && selectedId === currentStorageId
-        ? availableStorage[currentStorageId].properties[0].value
-        : "";
+    this.defaultBucketValue = selectedStorage.properties[0]?.value;
 
-    this.defaultForcePathStyleValue =
-      currentStorageId && availableStorage && selectedId === currentStorageId
-        ? availableStorage[currentStorageId].properties[1].value
-        : "";
-    this.defaultRegionValue =
-      currentStorageId && availableStorage && selectedId === currentStorageId
-        ? availableStorage[currentStorageId].properties[2].value
-        : "";
-    this.defaultServiceUrlValue =
-      currentStorageId && availableStorage && selectedId === currentStorageId
-        ? availableStorage[currentStorageId].properties[3].value
-        : "";
-    this.defaultSSEValue =
-      currentStorageId && availableStorage && selectedId === currentStorageId
-        ? availableStorage[currentStorageId].properties[4].value
-        : "";
+    this.defaultForcePathStyleValue = selectedStorage.properties[1]?.value;
 
-    this.defaultUseHttpValue =
-      currentStorageId && availableStorage && selectedId === currentStorageId
-        ? availableStorage[currentStorageId].properties[5].value
-        : "";
+    this.defaultRegionValue = selectedStorage.properties[2]?.value;
+
+    this.defaultServiceUrlValue = selectedStorage.properties[3]?.value;
+
+    this.defaultSSEValue = selectedStorage.properties[4]?.value;
+
+    this.defaultUseHttpValue = selectedStorage.properties[5]?.value;
 
     this.state = {
       formSettings: {
@@ -47,17 +32,7 @@ class AmazonStorage extends React.Component {
       formErrors: {},
       isChangedInput: false,
     };
-    this.isDisabled =
-      availableStorage[selectedId] && !availableStorage[selectedId].isSet;
-
-    this._isMounted = false;
-  }
-
-  componentDidMount() {
-    this._isMounted = true;
-  }
-  componentWillUnmount() {
-    this._isMounted = false;
+    this.isDisabled = !selectedStorage?.isSet;
   }
 
   onChange = (event) => {
@@ -65,7 +40,6 @@ class AmazonStorage extends React.Component {
     const { target } = event;
     const value = target.value;
     const name = target.name;
-
     this.setState({
       isChangedInput: true,
       formSettings: { ...formSettings, [name]: value },
@@ -73,7 +47,7 @@ class AmazonStorage extends React.Component {
   };
 
   onSaveSettings = () => {
-    const { fillInputValueArray, isInvalidForm } = this.props;
+    const { convertSettings, isInvalidForm } = this.props;
     const { formSettings } = this.state;
     const {
       bucket,
@@ -87,10 +61,6 @@ class AmazonStorage extends React.Component {
     const isInvalid = isInvalidForm({
       bucket,
       region,
-      forcePathStyle,
-      serviceUrl,
-      sse,
-      useHttp,
     });
 
     const hasError = isInvalid[0];
@@ -110,30 +80,20 @@ class AmazonStorage extends React.Component {
       useHttp,
     ];
 
-    const inputNumber = valuesArray.length;
-
-    this.defaultBucketValue = bucket;
-
-    this.defaultForcePathStyleValue = forcePathStyle;
-    this.defaultRegionValue = region;
-    this.defaultServiceUrlValue = serviceUrl;
-    this.defaultSSEValue = sse;
-
-    this.defaultUseHttpValue = useHttp;
-
     this.setState({
       isChangedInput: false,
       formErrors: {},
     });
-    fillInputValueArray(inputNumber, valuesArray);
+    convertSettings(valuesArray.length, valuesArray);
+    // debugger;
   };
 
   onCancelSettings = () => {
-    const { onCancelSettings } = this.props;
+    const { onCancelModuleSettings } = this.props;
+
+    onCancelModuleSettings();
 
     this.setState({
-      isChangedInput: false,
-      formErrors: {},
       formSettings: {
         bucket: this.defaultBucketValue,
         forcePathStyle: this.defaultForcePathStyleValue,
@@ -142,20 +102,38 @@ class AmazonStorage extends React.Component {
         sse: this.defaultSSEValue,
         useHttp: this.defaultUseHttpValue,
       },
+      formErrors: {},
+      isChangedInput: false,
     });
-    onCancelSettings();
   };
-
   render() {
     const { isChangedInput, formSettings, formErrors } = this.state;
     const {
       t,
       isLoadingData,
-      isLoading,
       isCopyingToLocal,
       isChanged,
-      selectedId,
-      availableStorage,
+      selectedStorage,
+
+      selectedPeriodLabel,
+      selectedWeekdayLabel,
+      selectedMonthDay,
+      selectedHour,
+      selectedMaxCopies,
+      monthNumbersArray,
+      hoursArray,
+      maxNumberCopiesArray,
+      periodsObject,
+      weekdaysLabelArray,
+      onSelectPeriod,
+      onSelectWeekDay,
+      onSelectMonthNumber,
+      onSelectTime,
+      onSelectMaxCopies,
+      weeklySchedule,
+      monthlySchedule,
+
+      isChangedThirdParty,
     } = this.props;
 
     return (
@@ -163,26 +141,56 @@ class AmazonStorage extends React.Component {
         <AmazonSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoading={isLoading}
           isLoadingData={isLoadingData}
           isError={formErrors}
-          selectedStorage={availableStorage[selectedId]}
+          selectedStorage={selectedStorage}
           t={t}
         />
 
-        {(isChanged || isChangedInput) && (
-          <SaveCancelButtons
-            className="team-template_buttons"
-            onSaveClick={this.onSaveSettings}
-            onCancelClick={this.onCancelSettings}
-            showReminder={false}
-            reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Common:CancelButton")}
-            isDisabled={
-              isCopyingToLocal || isLoadingData || isLoading || this.isDisabled
-            }
-          />
+        <ScheduleComponent
+          isLoadingData={isLoadingData}
+          selectedPeriodLabel={selectedPeriodLabel}
+          selectedWeekdayLabel={selectedWeekdayLabel}
+          selectedMonthDay={selectedMonthDay}
+          selectedHour={selectedHour}
+          selectedMaxCopies={selectedMaxCopies}
+          monthNumbersArray={monthNumbersArray}
+          hoursArray={hoursArray}
+          maxNumberCopiesArray={maxNumberCopiesArray}
+          periodsObject={periodsObject}
+          weekdaysLabelArray={weekdaysLabelArray}
+          onSelectPeriod={onSelectPeriod}
+          onSelectWeekDay={onSelectWeekDay}
+          onSelectMonthNumber={onSelectMonthNumber}
+          onSelectTime={onSelectTime}
+          onSelectMaxCopies={onSelectMaxCopies}
+          weeklySchedule={weeklySchedule}
+          monthlySchedule={monthlySchedule}
+        />
+
+        {(isChanged || isChangedThirdParty || isChangedInput) && (
+          //isChanged - from auto backup, monitor  period, time and etc. options;
+          //isChangedThirdParty - from storages module, monitors selection storage changes
+          //isChangedInput - monitors inputs changes
+          <>
+            <Button
+              label={t("Common:Save")}
+              onClick={this.onSaveSettings}
+              primary
+              isDisabled={isCopyingToLocal || this.isDisabled}
+              size="medium"
+              tabIndex={10}
+            />
+
+            <Button
+              label={t("Common: Cancel")}
+              onClick={this.onCancelSettings}
+              primary
+              isDisabled={isCopyingToLocal}
+              size="medium"
+              tabIndex={10}
+            />
+          </>
         )}
       </>
     );

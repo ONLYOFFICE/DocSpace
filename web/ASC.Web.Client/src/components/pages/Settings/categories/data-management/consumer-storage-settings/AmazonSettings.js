@@ -41,7 +41,6 @@ class AmazonSettings extends React.Component {
   render() {
     const {
       isError,
-      serviceUrl,
       isLoadingData,
       isLoading,
       onChange,
@@ -77,7 +76,7 @@ class AmazonSettings extends React.Component {
           name={urlInput}
           className="backup_text-input"
           scale
-          value={serviceUrl}
+          value={formSettings.serviceUrl}
           onChange={onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.serviceUrlPlaceholder || ""}

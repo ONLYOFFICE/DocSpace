@@ -1,21 +1,16 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import SelectelSettings from "../consumer-storage-settings/SelectelSettings";
-
+import Button from "@appserver/components/button";
+import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
 class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { availableStorage, selectedId, currentStorageId } = this.props;
+    const { selectedStorage } = this.props;
 
-    this.defaultPrivateValue =
-      currentStorageId && availableStorage && selectedId === currentStorageId
-        ? availableStorage[currentStorageId].properties[0].value
-        : "";
-    this.defaultPublicValue =
-      currentStorageId && availableStorage && selectedId === currentStorageId
-        ? availableStorage[currentStorageId].properties[1].value
-        : "";
+    this.defaultPrivateValue = selectedStorage.properties[0].value;
+
+    this.defaultPublicValue = selectedStorage.properties[1].value;
 
     this.state = {
       formSettings: {
@@ -26,17 +21,7 @@ class SelectelStorage extends React.Component {
       isError: false,
       isChangedInput: false,
     };
-    this.isDisabled =
-      availableStorage[selectedId] && !availableStorage[selectedId].isSet;
-
-    this._isMounted = false;
-  }
-
-  componentDidMount() {
-    this._isMounted = true;
-  }
-  componentWillUnmount() {
-    this._isMounted = false;
+    this.isDisabled = !selectedStorage.isSet;
   }
 
   onChange = (event) => {
@@ -52,7 +37,7 @@ class SelectelStorage extends React.Component {
   };
 
   onSaveSettings = () => {
-    const { fillInputValueArray, isInvalidForm } = this.props;
+    const { convertSettings, isInvalidForm } = this.props;
     const { formSettings } = this.state;
     const { private_container, public_container } = formSettings;
 
@@ -71,30 +56,26 @@ class SelectelStorage extends React.Component {
 
     const valuesArray = [private_container, public_container];
 
-    const inputNumber = valuesArray.length;
-
-    this.defaultPrivateValue = private_container;
-    this.defaultPublicValue = public_container;
-
     this.setState({
       isChangedInput: false,
       formErrors: {},
     });
-    fillInputValueArray(inputNumber, valuesArray);
+    convertSettings(valuesArray.length, valuesArray);
   };
 
   onCancelSettings = () => {
-    const { onCancelSettings } = this.props;
+    const { onCancelModuleSettings } = this.props;
+
+    onCancelModuleSettings();
 
     this.setState({
-      isChangedInput: false,
-      formErrors: {},
       formSettings: {
         private_container: this.defaultPrivateValue,
         public_container: this.defaultPublicValue,
       },
+      formErrors: {},
+      isChangedInput: false,
     });
-    onCancelSettings();
   };
 
   render() {
@@ -102,12 +83,30 @@ class SelectelStorage extends React.Component {
     const {
       t,
       isLoadingData,
-      isLoading,
 
       isCopyingToLocal,
       isChanged,
-      availableStorage,
-      selectedId,
+      selectedStorage,
+
+      selectedPeriodLabel,
+      selectedWeekdayLabel,
+      selectedMonthDay,
+      selectedHour,
+      selectedMaxCopies,
+      monthNumbersArray,
+      hoursArray,
+      maxNumberCopiesArray,
+      periodsObject,
+      weekdaysLabelArray,
+      onSelectPeriod,
+      onSelectWeekDay,
+      onSelectMonthNumber,
+      onSelectTime,
+      onSelectMaxCopies,
+      weeklySchedule,
+      monthlySchedule,
+
+      isChangedThirdParty,
     } = this.props;
 
     return (
@@ -115,26 +114,56 @@ class SelectelStorage extends React.Component {
         <SelectelSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoading={isLoading}
           isLoadingData={isLoadingData}
           isError={formErrors}
-          selectedStorage={availableStorage[selectedId]}
+          selectedStorage={selectedStorage}
           t={t}
         />
 
-        {(isChanged || isChangedInput) && (
-          <SaveCancelButtons
-            className="team-template_buttons"
-            onSaveClick={this.onSaveSettings}
-            onCancelClick={this.onCancelSettings}
-            showReminder={false}
-            reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Common:CancelButton")}
-            isDisabled={
-              isCopyingToLocal || isLoadingData || isLoading || this.isDisabled
-            }
-          />
+        <ScheduleComponent
+          isLoadingData={isLoadingData}
+          selectedPeriodLabel={selectedPeriodLabel}
+          selectedWeekdayLabel={selectedWeekdayLabel}
+          selectedMonthDay={selectedMonthDay}
+          selectedHour={selectedHour}
+          selectedMaxCopies={selectedMaxCopies}
+          monthNumbersArray={monthNumbersArray}
+          hoursArray={hoursArray}
+          maxNumberCopiesArray={maxNumberCopiesArray}
+          periodsObject={periodsObject}
+          weekdaysLabelArray={weekdaysLabelArray}
+          onSelectPeriod={onSelectPeriod}
+          onSelectWeekDay={onSelectWeekDay}
+          onSelectMonthNumber={onSelectMonthNumber}
+          onSelectTime={onSelectTime}
+          onSelectMaxCopies={onSelectMaxCopies}
+          weeklySchedule={weeklySchedule}
+          monthlySchedule={monthlySchedule}
+        />
+
+        {(isChanged || isChangedThirdParty || isChangedInput) && (
+          //isChanged - from auto backup, monitor  period, time and etc. options;
+          //isChangedThirdParty - from storages module, monitors selection storage changes
+          //isChangedInput - monitors inputs changes
+          <>
+            <Button
+              label={t("Common:Save")}
+              onClick={this.onSaveSettings}
+              primary
+              isDisabled={isCopyingToLocal || this.isDisabled}
+              size="medium"
+              tabIndex={10}
+            />
+
+            <Button
+              label={t("Common: Cancel")}
+              onClick={this.onCancelSettings}
+              primary
+              isDisabled={isCopyingToLocal}
+              size="medium"
+              tabIndex={10}
+            />
+          </>
         )}
       </>
     );
