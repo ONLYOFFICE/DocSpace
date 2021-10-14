@@ -62,7 +62,6 @@ class AmazonStorage extends React.Component {
     const {
       t,
       isLoadingData,
-      isLoading,
       maxProgress,
       availableStorage,
       selectedId,
@@ -73,7 +72,6 @@ class AmazonStorage extends React.Component {
         <AmazonSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoading={isLoading}
           isLoadingData={isLoadingData}
           isError={formErrors}
           selectedStorage={availableStorage[selectedId]}

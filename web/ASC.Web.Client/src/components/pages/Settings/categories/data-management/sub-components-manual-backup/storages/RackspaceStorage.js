@@ -60,7 +60,6 @@ class RackspaceStorage extends React.Component {
     const {
       t,
       isLoadingData,
-      isLoading,
       maxProgress,
       selectedId,
       availableStorage,
@@ -71,7 +70,6 @@ class RackspaceStorage extends React.Component {
         <RackspaceSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoading={isLoading}
           isLoadingData={isLoadingData}
           isError={formErrors}
           selectedStorage={availableStorage[selectedId]}

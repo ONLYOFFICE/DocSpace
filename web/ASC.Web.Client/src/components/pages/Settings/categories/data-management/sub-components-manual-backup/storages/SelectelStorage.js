@@ -58,7 +58,6 @@ class SelectelStorage extends React.Component {
     const {
       t,
       isLoadingData,
-      isLoading,
       maxProgress,
       selectedId,
       availableStorage,
@@ -69,7 +68,6 @@ class SelectelStorage extends React.Component {
         <SelectelSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoading={isLoading}
           isLoadingData={isLoadingData}
           isError={formErrors}
           selectedStorage={availableStorage[selectedId]}

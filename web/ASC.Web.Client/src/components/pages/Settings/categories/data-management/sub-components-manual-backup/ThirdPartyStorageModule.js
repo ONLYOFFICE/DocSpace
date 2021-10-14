@@ -183,7 +183,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
         {selectedId === ThirdPartyStorages.GoogleId && !isLoading && (
           <GoogleCloudStorage
             isLoadingData={isLoadingData}
-            isLoading={isLoading}
             availableStorage={availableStorage}
             maxProgress={maxProgress}
             selectedId={selectedId}
@@ -195,7 +194,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
         {selectedId === ThirdPartyStorages.RackspaceId && !isLoading && (
           <RackspaceStorage
             isLoadingData={isLoadingData}
-            isLoading={isLoading}
             availableStorage={availableStorage}
             maxProgress={maxProgress}
             selectedId={selectedId}
@@ -207,7 +205,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
         {selectedId === ThirdPartyStorages.SelectelId && !isLoading && (
           <SelectelStorage
             isLoadingData={isLoadingData}
-            isLoading={isLoading}
             availableStorage={availableStorage}
             maxProgress={maxProgress}
             selectedId={selectedId}
@@ -219,7 +216,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
         {selectedId === ThirdPartyStorages.AmazonId && !isLoading && (
           <AmazonStorage
             isLoadingData={isLoadingData}
-            isLoading={isLoading}
             availableStorage={availableStorage}
             maxProgress={maxProgress}
             selectedId={selectedId}

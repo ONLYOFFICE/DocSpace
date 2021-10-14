@@ -56,7 +56,6 @@ class GoogleCloudStorage extends React.Component {
     const {
       t,
       isLoadingData,
-      isLoading,
       maxProgress,
       availableStorage,
       selectedId,
@@ -67,7 +66,6 @@ class GoogleCloudStorage extends React.Component {
         <GoogleCloudSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoading={isLoading}
           isError={formErrors}
           selectedStorage={availableStorage[selectedId]}
           isLoadingData={isLoadingData}
