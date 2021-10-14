@@ -1,13 +1,9 @@
 import React from "react";
 import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
-
 import { inject, observer } from "mobx-react";
-
-import RadioButtonGroup from "@appserver/components/radio-button-group";
 import RadioButton from "@appserver/components/radio-button";
 import moment from "moment";
-
 import Button from "@appserver/components/button";
 import {
   deleteBackupSchedule,
@@ -15,37 +11,19 @@ import {
   getBackupSchedule,
   createBackupSchedule,
 } from "@appserver/common/api/portal";
-import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
 import SelectFolderDialog from "files/SelectFolderDialog";
-
 import Loader from "@appserver/components/loader";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import FloatingButton from "@appserver/common/components/FloatingButton";
-
 import { StyledModules, StyledAutoBackup } from "./styled-backup";
-import ThirdPartyModule from "./sub-components-automatic-backup/thirdPartyModule";
-import DocumentsModule from "./sub-components-automatic-backup/documentsModule";
-import ThirdPartyStorageModule from "./sub-components-automatic-backup/thirdPartyStorageModule";
-import { getFromSessionStorage, saveToSessionStorage } from "../../utils";
+import ThirdPartyModule from "./sub-components-automatic-backup/ThirdPartyModule";
+import DocumentsModule from "./sub-components-automatic-backup/DocumentsModule";
+import ThirdPartyStorageModule from "./sub-components-automatic-backup/ThirdPartyStorageModule";
 import ToggleButton from "@appserver/components/toggle-button";
 
 const { proxyURL } = AppServerConfig;
-
-// let defaultStorageType = "";
-
-// let defaultSelectedOption = "";
-
-// let defaultMonthly = false;
-// let defaultWeekly = false;
-// let defaultDaily = false;
-
-// let numberPeriodFromSessionStorage = null;
-// let dayFromSessionStorage = "";
-// let timeFromSessionStorage = "";
-// let maxCopiesFromSessionStorage = "";
-// const settingNames = ["day", "time", "maxCopies", "numberPeriod"];
 
 const DOCUMENT_TYPE = 0;
 const RESOURCES_TYPE = 1;
@@ -470,7 +448,6 @@ class AutomaticBackup extends React.PureComponent {
     const key = options.key;
     const label = options.label;
     //debugger;
-    //saveToSessionStorage("day", key);
 
     this.setState(
       {
@@ -485,7 +462,6 @@ class AutomaticBackup extends React.PureComponent {
   onSelectTime = (options) => {
     const label = options.label;
 
-    // saveToSessionStorage("time", label);
     this.setState({ selectedTimeOption: label }),
       function () {
         this.checkChanges();
@@ -803,8 +779,6 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedThirdParty,
       isEnable,
     } = this.state;
-
-    const { t } = this.props;
 
     if (!isEnable) {
       this.deleteSchedule();
