@@ -105,7 +105,6 @@ class DropDown extends React.PureComponent {
 
   checkPosition = () => {
     if (!this.dropDownRef.current) return;
-
     const rects = this.dropDownRef.current.getBoundingClientRect();
     const container = { width: window.innerWidth, height: window.innerHeight };
     const left = rects.left < 0 && rects.width < container.width;
@@ -116,7 +115,13 @@ class DropDown extends React.PureComponent {
       rects.width < container.width;
     const top = rects.bottom > container.height && rects.top > rects.height;
     const bottom = rects.top < 0;
-    const x = left ? "left" : right ? "right" : this.state.directionX;
+    const x = left
+      ? "left"
+      : right
+      ? "right"
+      : rects.left < 250 || rects.right + rects.width > container.width
+      ? "right"
+      : this.state.directionX;
     const y = bottom ? "bottom" : top ? "top" : this.state.directionY;
 
     this.setState({
