@@ -151,10 +151,6 @@ class FilesTableHeader extends React.Component {
     fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
   };
 
-  setSelected = (checked) => {
-    this.props.setSelected && this.props.setSelected(checked ? "all" : "none");
-  };
-
   render() {
     const { containerRef, filter, sectionWidth, userId } = this.props;
     const { sortBy, sortOrder } = filter;
@@ -165,7 +161,6 @@ class FilesTableHeader extends React.Component {
         checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
-        setSelected={this.setSelected}
         containerRef={containerRef}
         columns={columns}
         columnStorageName={`${COLUMNS_SIZE}=${userId}`}
@@ -179,7 +174,6 @@ class FilesTableHeader extends React.Component {
 export default inject(
   ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
     const {
-      setSelected,
       isHeaderVisible,
       setIsLoading,
       filter,
@@ -198,7 +192,6 @@ export default inject(
       withContent,
       personal,
 
-      setSelected,
       setIsLoading,
       fetchFiles,
       userId: auth.userStore.user.id,

@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
+import { tablet } from "../utils/device";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
@@ -77,6 +78,11 @@ const StyledTableGroupMenu = styled.div`
   border-radius: 0px 0px 6px 6px;
   margin: 0px -24px;
   width: calc(100% + 48px);
+
+  @media ${tablet} {
+    height: 60px;
+    width: calc(100% + 40px);
+  }
 
   .table-container_group-menu-checkbox {
     margin-left: 24px;

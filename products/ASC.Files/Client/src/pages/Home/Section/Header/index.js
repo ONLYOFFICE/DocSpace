@@ -311,31 +311,12 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const {
-      t,
-      getHeaderMenu,
-      cbMenuItems,
-      getCheckboxItemLabel,
-      viewAs,
-    } = this.props;
+    const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
 
-    const headerMenu = getHeaderMenu(t);
     const children = cbMenuItems.map((key, index) => {
       const label = getCheckboxItemLabel(t, key);
       return <DropDownItem key={key} label={label} data-index={index} />;
     });
-
-    let menu = [
-      {
-        label: t("Common:Select"),
-        isDropdown: true,
-        isSeparator: true,
-        isSelect: true,
-        fontWeight: "bold",
-        children,
-        onSelect: this.onSelect,
-      },
-    ];
 
     const checkboxOptions = (
       <>
@@ -353,11 +334,7 @@ class SectionHeaderContent extends React.Component {
       </>
     );
 
-    if (viewAs === "table") return checkboxOptions;
-
-    menu = [...menu, ...headerMenu];
-
-    return menu;
+    return checkboxOptions;
   };
 
   render() {
@@ -394,31 +371,14 @@ class SectionHeaderContent extends React.Component {
             isTabletView={isTabletView}
           >
             {isHeaderVisible ? (
-              viewAs === "table" ? (
-                <TableGroupMenu
-                  checkboxOptions={menuItems}
-                  // onChange={onChange}
-                  isChecked={isHeaderChecked}
-                  isIndeterminate={isHeaderIndeterminate}
-                  headerMenu={headerMenu}
-                  // columnStorageName={columnStorageName}
-                />
-              ) : (
-                <div className="group-button-menu-container">
-                  <GroupButtonsMenu
-                    checked={isHeaderChecked}
-                    isIndeterminate={isHeaderIndeterminate}
-                    onChange={this.onCheck}
-                    menuItems={menuItems}
-                    visible={isHeaderVisible}
-                    moreLabel={t("Common:More")}
-                    closeTitle={t("Common:CloseButton")}
-                    onClose={this.onClose}
-                    selected={menuItems[0].label}
-                    sectionWidth={context.sectionWidth}
-                  />
-                </div>
-              )
+              <TableGroupMenu
+                checkboxOptions={menuItems}
+                // onChange={onChange}
+                isChecked={isHeaderChecked}
+                isIndeterminate={isHeaderIndeterminate}
+                headerMenu={headerMenu}
+                // columnStorageName={columnStorageName}
+              />
             ) : (
               <div className="header-container">
                 {!title || !tReady ? (

@@ -387,12 +387,8 @@ class TableHeader extends React.Component {
     this.onResize();
   };
 
-  onChange = (checked) => {
-    this.props.setSelected(checked);
-  };
-
   render() {
-    const { columns, sortBy, sorted, hasAccess, ...rest } = this.props;
+    const { columns, sortBy, sorted, ...rest } = this.props;
 
     //console.log("TABLE HEADER RENDER", columns);
 
@@ -404,15 +400,7 @@ class TableHeader extends React.Component {
           {...rest}
         >
           <StyledTableRow>
-            {hasAccess ? (
-              <Checkbox
-                className="table-container_header-checkbox"
-                onChange={this.onChange}
-                isChecked={false}
-              />
-            ) : (
-              <div></div>
-            )}
+            <div></div>
 
             {columns.map((column, index) => {
               const nextColumn = this.getNextColumn(columns, index);
@@ -451,7 +439,6 @@ TableHeader.defaultProps = {
 TableHeader.propTypes = {
   containerRef: PropTypes.shape({ current: PropTypes.any }).isRequired,
   columns: PropTypes.array.isRequired,
-  setSelected: PropTypes.func.isRequired,
   sortBy: PropTypes.string,
   sorted: PropTypes.bool,
   columnStorageName: PropTypes.string,

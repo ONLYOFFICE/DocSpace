@@ -651,6 +651,7 @@ class FilesActionStore {
           return {
             label: t("Share"),
             onClick: () => setSharingPanelVisible(true),
+            iconUrl: "/static/images/share.react.svg",
           };
 
       case "copy":
@@ -659,6 +660,7 @@ class FilesActionStore {
           return {
             label: t("Translations:Copy"),
             onClick: () => setCopyPanelVisible(true),
+            iconUrl: "/static/images/copyTo.react.svg",
           };
 
       case "download":
@@ -670,6 +672,7 @@ class FilesActionStore {
               this.downloadAction(
                 t("Translations:ArchivingData")
               ).catch((err) => toastr.error(err)),
+            iconUrl: "/static/images/download.react.svg",
           };
 
       case "downloadAs":
@@ -678,6 +681,7 @@ class FilesActionStore {
           return {
             label: t("Translations:DownloadAs"),
             onClick: () => setDownloadDialogVisible(true),
+            iconUrl: "/static/images/downloadAs.react.svg",
           };
 
       case "moveTo":
@@ -686,6 +690,7 @@ class FilesActionStore {
           return {
             label: t("MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
+            iconUrl: "/static/images/move.react.svg",
           };
 
       case "delete":
@@ -708,6 +713,7 @@ class FilesActionStore {
                 );
               }
             },
+            iconUrl: "/static/images/delete.react.svg",
           };
     }
   };
