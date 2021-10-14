@@ -119,7 +119,7 @@ class DropDown extends React.PureComponent {
       ? "left"
       : right
       ? "right"
-      : rects.left < 250 || rects.right + rects.width > container.width
+      : rects.right + rects.width > container.width
       ? "right"
       : this.state.directionX;
     const y = bottom ? "bottom" : top ? "top" : this.state.directionY;
@@ -133,6 +133,7 @@ class DropDown extends React.PureComponent {
 
   checkPositionPortal = () => {
     const parent = this.props.forwardedRef;
+    if (!parent.current) return;
     const rects = parent.current.getBoundingClientRect();
 
     let dropDownHeight = this.dropDownRef.current.offsetParent
