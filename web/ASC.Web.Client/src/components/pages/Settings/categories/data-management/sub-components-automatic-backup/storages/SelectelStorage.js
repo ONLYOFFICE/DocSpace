@@ -1,18 +1,21 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import GoogleCloudSettings from "../consumer-storage-settings/GoogleCloudSettings";
+import SelectelSettings from "../../consumer-storage-settings/SelectelSettings";
 import Button from "@appserver/components/button";
-import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
-class GoogleCloudStorage extends React.Component {
+import ScheduleComponent from "../../sub-components-automatic-backup/scheduleComponent";
+class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);
     const { selectedStorage } = this.props;
 
-    this.defaultBucketValue = selectedStorage.properties[0].value;
+    this.defaultPrivateValue = selectedStorage.properties[0].value;
+
+    this.defaultPublicValue = selectedStorage.properties[1].value;
 
     this.state = {
       formSettings: {
-        bucket: this.defaultBucketValue,
+        private_container: this.defaultPrivateValue,
+        public_container: this.defaultPublicValue,
       },
       formErrors: {},
       isError: false,
@@ -36,9 +39,11 @@ class GoogleCloudStorage extends React.Component {
   onSaveSettings = () => {
     const { convertSettings, isInvalidForm } = this.props;
     const { formSettings } = this.state;
-    const { bucket } = formSettings;
+    const { private_container, public_container } = formSettings;
+
     const isInvalid = isInvalidForm({
-      bucket,
+      private_container,
+      public_container,
     });
 
     const hasError = isInvalid[0];
@@ -49,7 +54,7 @@ class GoogleCloudStorage extends React.Component {
       return;
     }
 
-    const valuesArray = [bucket];
+    const valuesArray = [private_container, public_container];
 
     this.setState({
       isChangedInput: false,
@@ -65,7 +70,8 @@ class GoogleCloudStorage extends React.Component {
 
     this.setState({
       formSettings: {
-        bucket: this.defaultBucketValue,
+        private_container: this.defaultPrivateValue,
+        public_container: this.defaultPublicValue,
       },
       formErrors: {},
       isChangedInput: false,
@@ -73,10 +79,11 @@ class GoogleCloudStorage extends React.Component {
   };
 
   render() {
-    const { isChangedInput, formErrors, formSettings } = this.state;
+    const { isChangedInput, formSettings, formErrors } = this.state;
     const {
       t,
       isLoadingData,
+
       isCopyingToLocal,
       isChanged,
       selectedStorage,
@@ -104,12 +111,15 @@ class GoogleCloudStorage extends React.Component {
 
     return (
       <>
-        <GoogleCloudSettings
+        <SelectelSettings
           formSettings={formSettings}
           onChange={this.onChange}
+          isLoadingData={isLoadingData}
           isError={formErrors}
           selectedStorage={selectedStorage}
+          t={t}
         />
+
         <ScheduleComponent
           isLoadingData={isLoadingData}
           selectedPeriodLabel={selectedPeriodLabel}
@@ -130,6 +140,7 @@ class GoogleCloudStorage extends React.Component {
           weeklySchedule={weeklySchedule}
           monthlySchedule={monthlySchedule}
         />
+
         {(isChanged || isChangedThirdParty || isChangedInput) && (
           //isChanged - from auto backup, monitor  period, time and etc. options;
           //isChangedThirdParty - from storages module, monitors selection storage changes
@@ -158,4 +169,4 @@ class GoogleCloudStorage extends React.Component {
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(GoogleCloudStorage);
+export default withTranslation(["Settings", "Common"])(SelectelStorage);

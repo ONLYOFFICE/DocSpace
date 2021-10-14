@@ -1,24 +1,18 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import RackspaceSettings from "../consumer-storage-settings/RackspaceSettings";
+import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSettings";
 import Button from "@appserver/components/button";
-import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
-class RackspaceStorage extends React.Component {
+import ScheduleComponent from "../../sub-components-automatic-backup/scheduleComponent";
+class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
     const { selectedStorage } = this.props;
 
-    this.defaultPrivateValue = selectedStorage.properties[0].value;
-
-    this.defaultPublicValue = selectedStorage.properties[1].value;
-
-    this.defaultRegion = selectedStorage.properties[2].value;
+    this.defaultBucketValue = selectedStorage.properties[0].value;
 
     this.state = {
       formSettings: {
-        private_container: this.defaultPrivateValue,
-        public_container: this.defaultPublicValue,
-        region: this.defaultRegion,
+        bucket: this.defaultBucketValue,
       },
       formErrors: {},
       isError: false,
@@ -42,12 +36,9 @@ class RackspaceStorage extends React.Component {
   onSaveSettings = () => {
     const { convertSettings, isInvalidForm } = this.props;
     const { formSettings } = this.state;
-    const { private_container, public_container, region } = formSettings;
-
+    const { bucket } = formSettings;
     const isInvalid = isInvalidForm({
-      private_container,
-      region,
-      public_container,
+      bucket,
     });
 
     const hasError = isInvalid[0];
@@ -58,7 +49,7 @@ class RackspaceStorage extends React.Component {
       return;
     }
 
-    const valuesArray = [private_container, public_container, region];
+    const valuesArray = [bucket];
 
     this.setState({
       isChangedInput: false,
@@ -74,9 +65,7 @@ class RackspaceStorage extends React.Component {
 
     this.setState({
       formSettings: {
-        private_container: this.defaultPrivateValue,
-        public_container: this.defaultPublicValue,
-        region: this.defaultRegion,
+        bucket: this.defaultBucketValue,
       },
       formErrors: {},
       isChangedInput: false,
@@ -84,14 +73,12 @@ class RackspaceStorage extends React.Component {
   };
 
   render() {
-    const { isChangedInput, formSettings, formErrors } = this.state;
+    const { isChangedInput, formErrors, formSettings } = this.state;
     const {
       t,
       isLoadingData,
-
       isCopyingToLocal,
       isChanged,
-
       selectedStorage,
 
       selectedPeriodLabel,
@@ -117,15 +104,12 @@ class RackspaceStorage extends React.Component {
 
     return (
       <>
-        <RackspaceSettings
+        <GoogleCloudSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoadingData={isLoadingData}
           isError={formErrors}
           selectedStorage={selectedStorage}
-          t={t}
         />
-
         <ScheduleComponent
           isLoadingData={isLoadingData}
           selectedPeriodLabel={selectedPeriodLabel}
@@ -146,7 +130,6 @@ class RackspaceStorage extends React.Component {
           weeklySchedule={weeklySchedule}
           monthlySchedule={monthlySchedule}
         />
-
         {(isChanged || isChangedThirdParty || isChangedInput) && (
           //isChanged - from auto backup, monitor  period, time and etc. options;
           //isChangedThirdParty - from storages module, monitors selection storage changes
@@ -175,4 +158,4 @@ class RackspaceStorage extends React.Component {
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(RackspaceStorage);
+export default withTranslation(["Settings", "Common"])(GoogleCloudStorage);

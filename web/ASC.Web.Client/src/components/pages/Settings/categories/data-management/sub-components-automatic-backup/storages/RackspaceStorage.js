@@ -1,38 +1,30 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import AmazonSettings from "../consumer-storage-settings/AmazonSettings";
+import RackspaceSettings from "../../consumer-storage-settings/RackspaceSettings";
 import Button from "@appserver/components/button";
-import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
-class AmazonStorage extends React.Component {
+import ScheduleComponent from "../../sub-components-automatic-backup/scheduleComponent";
+class RackspaceStorage extends React.Component {
   constructor(props) {
     super(props);
     const { selectedStorage } = this.props;
 
-    this.defaultBucketValue = selectedStorage.properties[0]?.value;
+    this.defaultPrivateValue = selectedStorage.properties[0].value;
 
-    this.defaultForcePathStyleValue = selectedStorage.properties[1]?.value;
+    this.defaultPublicValue = selectedStorage.properties[1].value;
 
-    this.defaultRegionValue = selectedStorage.properties[2]?.value;
-
-    this.defaultServiceUrlValue = selectedStorage.properties[3]?.value;
-
-    this.defaultSSEValue = selectedStorage.properties[4]?.value;
-
-    this.defaultUseHttpValue = selectedStorage.properties[5]?.value;
+    this.defaultRegion = selectedStorage.properties[2].value;
 
     this.state = {
       formSettings: {
-        bucket: this.defaultBucketValue,
-        forcePathStyle: this.defaultForcePathStyleValue,
-        region: this.defaultRegionValue,
-        serviceUrl: this.defaultServiceUrlValue,
-        sse: this.defaultSSEValue,
-        useHttp: this.defaultUseHttpValue,
+        private_container: this.defaultPrivateValue,
+        public_container: this.defaultPublicValue,
+        region: this.defaultRegion,
       },
       formErrors: {},
+      isError: false,
       isChangedInput: false,
     };
-    this.isDisabled = !selectedStorage?.isSet;
+    this.isDisabled = !selectedStorage.isSet;
   }
 
   onChange = (event) => {
@@ -40,6 +32,7 @@ class AmazonStorage extends React.Component {
     const { target } = event;
     const value = target.value;
     const name = target.name;
+
     this.setState({
       isChangedInput: true,
       formSettings: { ...formSettings, [name]: value },
@@ -49,18 +42,12 @@ class AmazonStorage extends React.Component {
   onSaveSettings = () => {
     const { convertSettings, isInvalidForm } = this.props;
     const { formSettings } = this.state;
-    const {
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    } = formSettings;
+    const { private_container, public_container, region } = formSettings;
 
     const isInvalid = isInvalidForm({
-      bucket,
+      private_container,
       region,
+      public_container,
     });
 
     const hasError = isInvalid[0];
@@ -71,21 +58,13 @@ class AmazonStorage extends React.Component {
       return;
     }
 
-    const valuesArray = [
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    ];
+    const valuesArray = [private_container, public_container, region];
 
     this.setState({
       isChangedInput: false,
       formErrors: {},
     });
     convertSettings(valuesArray.length, valuesArray);
-    // debugger;
   };
 
   onCancelSettings = () => {
@@ -95,24 +74,24 @@ class AmazonStorage extends React.Component {
 
     this.setState({
       formSettings: {
-        bucket: this.defaultBucketValue,
-        forcePathStyle: this.defaultForcePathStyleValue,
-        region: this.defaultRegionValue,
-        serviceUrl: this.defaultServiceUrlValue,
-        sse: this.defaultSSEValue,
-        useHttp: this.defaultUseHttpValue,
+        private_container: this.defaultPrivateValue,
+        public_container: this.defaultPublicValue,
+        region: this.defaultRegion,
       },
       formErrors: {},
       isChangedInput: false,
     });
   };
+
   render() {
     const { isChangedInput, formSettings, formErrors } = this.state;
     const {
       t,
       isLoadingData,
+
       isCopyingToLocal,
       isChanged,
+
       selectedStorage,
 
       selectedPeriodLabel,
@@ -138,7 +117,7 @@ class AmazonStorage extends React.Component {
 
     return (
       <>
-        <AmazonSettings
+        <RackspaceSettings
           formSettings={formSettings}
           onChange={this.onChange}
           isLoadingData={isLoadingData}
@@ -196,4 +175,4 @@ class AmazonStorage extends React.Component {
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(AmazonStorage);
+export default withTranslation(["Settings", "Common"])(RackspaceStorage);

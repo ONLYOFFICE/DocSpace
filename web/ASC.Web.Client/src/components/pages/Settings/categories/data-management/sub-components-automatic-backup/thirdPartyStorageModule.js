@@ -5,10 +5,10 @@ import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import ComboBox from "@appserver/components/combobox";
 import { getBackupStorage } from "@appserver/common/api/settings";
-import GoogleCloudStorage from "./GoogleCloudStorage";
-import RackspaceStorage from "./RackspaceStorage";
-import SelectelStorage from "./SelectelStorage";
-import AmazonStorage from "./AmazonStorage";
+import GoogleCloudStorage from "./storages/GoogleCloudStorage";
+import RackspaceStorage from "./storages/RackspaceStorage";
+import SelectelStorage from "./storages/SelectelStorage";
+import AmazonStorage from "./storages/AmazonStorage";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import { StyledAutoBackup } from "../styled-backup";
 

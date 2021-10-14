@@ -1,27 +1,38 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectelSettings from "../consumer-storage-settings/SelectelSettings";
+import AmazonSettings from "../../consumer-storage-settings/AmazonSettings";
 import Button from "@appserver/components/button";
-import ScheduleComponent from "../sub-components-automatic-backup/scheduleComponent";
-class SelectelStorage extends React.Component {
+import ScheduleComponent from "../../sub-components-automatic-backup/scheduleComponent";
+class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
     const { selectedStorage } = this.props;
 
-    this.defaultPrivateValue = selectedStorage.properties[0].value;
+    this.defaultBucketValue = selectedStorage.properties[0]?.value;
 
-    this.defaultPublicValue = selectedStorage.properties[1].value;
+    this.defaultForcePathStyleValue = selectedStorage.properties[1]?.value;
+
+    this.defaultRegionValue = selectedStorage.properties[2]?.value;
+
+    this.defaultServiceUrlValue = selectedStorage.properties[3]?.value;
+
+    this.defaultSSEValue = selectedStorage.properties[4]?.value;
+
+    this.defaultUseHttpValue = selectedStorage.properties[5]?.value;
 
     this.state = {
       formSettings: {
-        private_container: this.defaultPrivateValue,
-        public_container: this.defaultPublicValue,
+        bucket: this.defaultBucketValue,
+        forcePathStyle: this.defaultForcePathStyleValue,
+        region: this.defaultRegionValue,
+        serviceUrl: this.defaultServiceUrlValue,
+        sse: this.defaultSSEValue,
+        useHttp: this.defaultUseHttpValue,
       },
       formErrors: {},
-      isError: false,
       isChangedInput: false,
     };
-    this.isDisabled = !selectedStorage.isSet;
+    this.isDisabled = !selectedStorage?.isSet;
   }
 
   onChange = (event) => {
@@ -29,7 +40,6 @@ class SelectelStorage extends React.Component {
     const { target } = event;
     const value = target.value;
     const name = target.name;
-
     this.setState({
       isChangedInput: true,
       formSettings: { ...formSettings, [name]: value },
@@ -39,11 +49,18 @@ class SelectelStorage extends React.Component {
   onSaveSettings = () => {
     const { convertSettings, isInvalidForm } = this.props;
     const { formSettings } = this.state;
-    const { private_container, public_container } = formSettings;
+    const {
+      bucket,
+      forcePathStyle,
+      region,
+      serviceUrl,
+      sse,
+      useHttp,
+    } = formSettings;
 
     const isInvalid = isInvalidForm({
-      private_container,
-      public_container,
+      bucket,
+      region,
     });
 
     const hasError = isInvalid[0];
@@ -54,13 +71,21 @@ class SelectelStorage extends React.Component {
       return;
     }
 
-    const valuesArray = [private_container, public_container];
+    const valuesArray = [
+      bucket,
+      forcePathStyle,
+      region,
+      serviceUrl,
+      sse,
+      useHttp,
+    ];
 
     this.setState({
       isChangedInput: false,
       formErrors: {},
     });
     convertSettings(valuesArray.length, valuesArray);
+    // debugger;
   };
 
   onCancelSettings = () => {
@@ -70,20 +95,22 @@ class SelectelStorage extends React.Component {
 
     this.setState({
       formSettings: {
-        private_container: this.defaultPrivateValue,
-        public_container: this.defaultPublicValue,
+        bucket: this.defaultBucketValue,
+        forcePathStyle: this.defaultForcePathStyleValue,
+        region: this.defaultRegionValue,
+        serviceUrl: this.defaultServiceUrlValue,
+        sse: this.defaultSSEValue,
+        useHttp: this.defaultUseHttpValue,
       },
       formErrors: {},
       isChangedInput: false,
     });
   };
-
   render() {
     const { isChangedInput, formSettings, formErrors } = this.state;
     const {
       t,
       isLoadingData,
-
       isCopyingToLocal,
       isChanged,
       selectedStorage,
@@ -111,7 +138,7 @@ class SelectelStorage extends React.Component {
 
     return (
       <>
-        <SelectelSettings
+        <AmazonSettings
           formSettings={formSettings}
           onChange={this.onChange}
           isLoadingData={isLoadingData}
@@ -169,4 +196,4 @@ class SelectelStorage extends React.Component {
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(SelectelStorage);
+export default withTranslation(["Settings", "Common"])(AmazonStorage);
