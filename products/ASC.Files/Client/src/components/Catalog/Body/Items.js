@@ -7,9 +7,10 @@ import { withTranslation } from 'react-i18next';
 import withLoader from '../../../HOCs/withLoader';
 import Loaders from '@appserver/common/components/Loaders';
 
-const Items = ({ data, showText, selectedTreeNode, onClick, onBadgeClick }) => {
+const Items = ({ data, showText, pathParts, selectedTreeNode, onClick, onBadgeClick }) => {
   const isActive = (item) => {
     if (selectedTreeNode.length > 0) {
+      if (pathParts.includes(item.id)) return true;
       if (selectedTreeNode[0] === '@my' && item.key === '0-0') return true;
       return `${item.id}` === selectedTreeNode[0];
     }
@@ -126,11 +127,12 @@ Items.propTypes = {
   onClickBadge: PropTypes.func,
 };
 
-export default inject(({ auth, treeFoldersStore }) => {
+export default inject(({ auth, treeFoldersStore, selectedFolderStore }) => {
   const { treeFolders, selectedTreeNode } = treeFoldersStore;
 
   return {
     showText: auth.settingsStore.showText,
+    pathParts: selectedFolderStore.pathParts,
     data: treeFolders,
     selectedTreeNode,
   };
