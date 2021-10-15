@@ -42,16 +42,16 @@ class DeleteDialogComponent extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener("keydown", this.onKeydown, false);
+    document.addEventListener("keyup", this.onKeyUp, false);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.onKeydown, false);
+    document.removeEventListener("keyup", this.onKeyUp, false);
   }
 
-  onKeydown = (e) => {
+  onKeyUp = (e) => {
     if (e.keyCode === 27) this.onClose();
-    if (e.keyCode === 13) this.onDelete();
+    if (e.keyCode === 13 || e.which === 13) this.onDelete();
   };
 
   onDelete = () => {
