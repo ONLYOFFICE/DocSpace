@@ -76,21 +76,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             return this;
         }
-
-        public DiscDataStore(
-            TempStream tempStream,
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options,
-            EncryptionSettingsHelper encryptionSettingsHelper,
-            EncryptionFactory encryptionFactory)
-    : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
-        {
-            EncryptionSettingsHelper = encryptionSettingsHelper;
-            EncryptionFactory = encryptionFactory;
-        }
-
+              
         public DiscDataStore(
             TempStream tempStream,
             TenantManager tenantManager,
