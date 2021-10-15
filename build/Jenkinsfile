@@ -23,7 +23,7 @@ pipeline {
 					stages {
 						stage('Frontend') {
 							steps {
-								bat '"C:\Program Files (x86)\Yarn\bin\yarn" install --frozen-lockfile --force && yarn build'
+								bat '\"C:\Program Files (x86)\Yarn\bin\yarn\" install --frozen-lockfile --force && yarn build'
 							}
 						}
 						stage('Backend') {
