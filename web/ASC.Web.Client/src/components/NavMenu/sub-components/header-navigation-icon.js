@@ -23,8 +23,8 @@ const StyledReactSVG = styled(ReactSVG)`
 
 const StyledBadge = styled(Badge)`
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: -8px;
+  right: -8px;
 `;
 
 const HeaderNavigationIcon = ({
@@ -55,7 +55,7 @@ const HeaderNavigationIcon = ({
           color={color}
         />
 
-        <StyledBadge onClick={onBadgeClick} maxWidth={'12px'} />
+        <StyledBadge onClick={onBadgeClick} label={badgeNumber} maxWidth={'6px'} fontSize={'9px'} />
       </div>
     )
   );
