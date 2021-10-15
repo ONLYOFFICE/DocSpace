@@ -1,24 +1,24 @@
-import { makeAutoObservable } from "mobx";
-import api from "@appserver/common/api";
+import { makeAutoObservable } from 'mobx';
+import api from '@appserver/common/api';
 import {
   FolderType,
   FilterType,
   FileType,
   FileAction,
   AppServerConfig,
-} from "@appserver/common/constants";
-import history from "@appserver/common/history";
-import { loopTreeFolders } from "../helpers/files-helpers";
-import config from "../../package.json";
-import { combineUrl } from "@appserver/common/utils";
-import { updateTempContent } from "@appserver/common/utils";
-import { thumbnailStatuses } from "../helpers/constants";
-import { isMobile } from "react-device-detect";
-import { openDocEditor } from "../helpers/utils";
-import toastr from "studio/toastr";
+} from '@appserver/common/constants';
+import history from '@appserver/common/history';
+import { loopTreeFolders } from '../helpers/files-helpers';
+import config from '../../package.json';
+import { combineUrl } from '@appserver/common/utils';
+import { updateTempContent } from '@appserver/common/utils';
+import { thumbnailStatuses } from '../helpers/constants';
+import { isMobile } from 'react-device-detect';
+import { openDocEditor } from '../helpers/utils';
+import toastr from 'studio/toastr';
 
 const { FilesFilter } = api;
-const storageViewAs = localStorage.getItem("viewAs");
+const storageViewAs = localStorage.getItem('viewAs');
 
 class FilesStore {
   authStore;
@@ -32,10 +32,9 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs =
-    isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
+  viewAs = isMobile && storageViewAs !== 'tile' ? 'row' : storageViewAs || 'table';
   dragging = false;
-  privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
+  privacyInstructions = 'https://www.onlyoffice.com/private-rooms.aspx';
   isInit = false;
 
   tooltipPageX = 0;
@@ -47,7 +46,7 @@ class FilesStore {
   folders = [];
   selection = [];
   bufferSelection = [];
-  selected = "close";
+  selected = 'close';
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
 
@@ -59,10 +58,10 @@ class FilesStore {
     selectedFolderStore,
     treeFoldersStore,
     formatsStore,
-    filesSettingsStore
+    filesSettingsStore,
   ) {
     const pathname = window.location.pathname.toLowerCase();
-    this.isEditor = pathname.indexOf("doceditor") !== -1;
+    this.isEditor = pathname.indexOf('doceditor') !== -1;
 
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -81,7 +80,7 @@ class FilesStore {
 
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
-    localStorage.setItem("viewAs", viewAs);
+    localStorage.setItem('viewAs', viewAs);
   };
 
   setDragging = (dragging) => {
@@ -113,11 +112,11 @@ class FilesStore {
     let operationName;
 
     if (this.authStore.isAdmin && isShareFolder) {
-      operationName = "copy";
+      operationName = 'copy';
     } else if (!this.authStore.isAdmin && (isShareFolder || isCommonFolder)) {
-      operationName = "copy";
+      operationName = 'copy';
     } else {
-      operationName = "move";
+      operationName = 'move';
     }
 
     return {
@@ -152,10 +151,7 @@ class FilesStore {
     }
 
     if (!this.isEditor) {
-      requests.push(
-        getPortalCultures(),
-        this.treeFoldersStore.fetchTreeFolders()
-      );
+      requests.push(getPortalCultures(), this.treeFoldersStore.fetchTreeFolders());
 
       if (isDesktopClient) {
         requests.push(getIsEncryptionSupport(), getEncryptionKeys());
@@ -191,7 +187,7 @@ class FilesStore {
   getFilesChecked = (file, selected) => {
     const type = file.fileType;
     switch (selected) {
-      case "all":
+      case 'all':
         return true;
       case FilterType.FoldersOnly.toString():
         return file.parentId;
@@ -259,43 +255,26 @@ class FilesStore {
 
   setFilterUrl = (filter) => {
     const urlFilter = filter.toUrlParams();
-    history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/filter?${urlFilter}`
-      )
-    );
+    history.push(combineUrl(AppServerConfig.proxyURL, config.homepage, `/filter?${urlFilter}`));
   };
 
-  fetchFiles = (
-    folderId,
-    filter,
-    clearFilter = true,
-    withSubfolders = false
-  ) => {
-    const {
-      treeFolders,
-      setSelectedNode,
-      getSubfolders,
-    } = this.treeFoldersStore;
+  fetchFiles = (folderId, filter, clearFilter = true, withSubfolders = false) => {
+    const { treeFolders, setSelectedNode, getSubfolders } = this.treeFoldersStore;
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
-    const filterStorageItem = localStorage.getItem(
-      `UserFilter=${this.userStore.user.id}`
-    );
+    const filterStorageItem = localStorage.getItem(`UserFilter=${this.userStore.user.id}`);
 
     if (filterStorageItem && !filter) {
-      const splitFilter = filterStorageItem.split(",");
+      const splitFilter = filterStorageItem.split(',');
 
       filterData.sortBy = splitFilter[0];
       filterData.pageCount = splitFilter[1];
       filterData.sortOrder = splitFilter[2];
     }
 
-    setSelectedNode([folderId + ""]);
+    setSelectedNode([folderId + '']);
 
     //TODO: fix @my
     let requestCounter = 1;
@@ -303,8 +282,7 @@ class FilesStore {
       api.files
         .getFolder(folderId, filterData)
         .then(async (data) => {
-          const isRecycleBinFolder =
-            data.current.rootFolderType === FolderType.TRASH;
+          const isRecycleBinFolder = data.current.rootFolderType === FolderType.TRASH;
 
           if (!isRecycleBinFolder && withSubfolders) {
             const path = data.pathParts.slice(0);
@@ -313,8 +291,7 @@ class FilesStore {
             loopTreeFolders(path, treeFolders, subfolders, foldersCount);
           }
 
-          const isPrivacyFolder =
-            data.current.rootFolderType === FolderType.Privacy;
+          const isPrivacyFolder = data.current.rootFolderType === FolderType.Privacy;
 
           filterData.total = data.total;
           this.setFilesFilter(filterData); //TODO: FILTER
@@ -323,13 +300,24 @@ class FilesStore {
 
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
-            this.setSelected("close");
+            this.setSelected('close');
           }
+
+          const navigationPath = await Promise.all(
+            data.pathParts.map(async (folder) => {
+              const data = await api.files.getFolderInfo(folder);
+
+              return { id: folder, title: data.title };
+            }),
+          ).then((res) => {
+            return res.filter((item, index) => index !== res.length - 1).reverse();
+          });
 
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
             ...data.current,
             pathParts: data.pathParts,
+            navigationPath: navigationPath,
             ...{ new: data.new },
           });
 
@@ -344,15 +332,13 @@ class FilesStore {
           if (!requestCounter) return;
           requestCounter--;
 
-          if (folderId === "@my" /*  && !this.isInit */) {
+          if (folderId === '@my' /*  && !this.isInit */) {
             setTimeout(() => {
               return request();
             }, 5000);
           } else {
             this.treeFoldersStore.fetchTreeFolders();
-            return this.fetchFiles(
-              this.userStore.user.isVisitor ? "@common" : "@my"
-            );
+            return this.fetchFiles(this.userStore.user.isVisitor ? '@common' : '@my');
           }
         });
 
@@ -360,9 +346,7 @@ class FilesStore {
   };
 
   isFileSelected = (fileId, parentId) => {
-    const item = this.selection.find(
-      (x) => x.id === fileId && x.parentId === parentId
-    );
+    const item = this.selection.find((x) => x.id === fileId && x.parentId === parentId);
 
     return item !== undefined;
   };
@@ -376,26 +360,19 @@ class FilesStore {
   deselectFile = (file) => {
     const { id, parentId } = file;
     const isFileSelected = this.isFileSelected(id, parentId);
-    if (isFileSelected)
-      this.selection = this.selection.filter((x) => x.id !== id);
+    if (isFileSelected) this.selection = this.selection.filter((x) => x.id !== id);
   };
 
-  removeOptions = (options, toRemoveArray) =>
-    options.filter((o) => !toRemoveArray.includes(o));
+  removeOptions = (options, toRemoveArray) => options.filter((o) => !toRemoveArray.includes(o));
 
   getFilesContextOptions = (item, canOpenPlayer) => {
-    const isVisitor =
-      (this.userStore.user && this.userStore.user.isVisitor) || false;
+    const isVisitor = (this.userStore.user && this.userStore.user.isVisitor) || false;
     const isFile = !!item.fileExst || item.contentLength;
-    const isFavorite =
-      item.fileStatus === 32 ||
-      item.fileStatus === 33 ||
-      item.fileStatus === 34;
+    const isFavorite = item.fileStatus === 32 || item.fileStatus === 33 || item.fileStatus === 34;
     const isFullAccess = item.access < 2;
     const withoutShare = false; //TODO: need this prop
     const isThirdPartyItem = !!item.providerKey;
-    const hasNew =
-      item.new > 0 || item.fileStatus === 2 || item.fileStatus === 34;
+    const hasNew = item.new > 0 || item.fileStatus === 2 || item.fileStatus === 34;
     const canConvert = false; //TODO: fix of added convert check;
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
@@ -415,8 +392,7 @@ class FilesStore {
 
     const { canWebEdit, canViewedDocs } = this.formatsStore.docserviceStore;
 
-    const isThirdPartyFolder =
-      item.providerKey && item.id === item.rootFolderId;
+    const isThirdPartyFolder = item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
     const isMyFolder = isMy(item.rootFolderType);
@@ -427,229 +403,212 @@ class FilesStore {
     if (isFile) {
       let fileOptions = [
         //"open",
-        "edit",
-        "preview",
-        "view",
-        "separator0",
-        "sharing-settings",
-        "external-link",
-        "owner-change",
-        "link-for-portal-users",
-        "send-by-email",
-        "docu-sign",
-        "version", //category
-        "finalize-version",
-        "show-version-history",
-        "block-unblock-version", //need split
-        "separator1",
-        "open-location",
-        "mark-read",
-        "mark-as-favorite",
-        "remove-from-favorites",
-        "download",
-        "download-as",
-        "convert",
-        "move", //category
-        "move-to",
-        "copy-to",
-        "copy",
-        "restore",
-        "rename",
-        "separator2",
-        "unsubscribe",
-        "delete",
+        'edit',
+        'preview',
+        'view',
+        'separator0',
+        'sharing-settings',
+        'external-link',
+        'owner-change',
+        'link-for-portal-users',
+        'send-by-email',
+        'docu-sign',
+        'version', //category
+        'finalize-version',
+        'show-version-history',
+        'block-unblock-version', //need split
+        'separator1',
+        'open-location',
+        'mark-read',
+        'mark-as-favorite',
+        'remove-from-favorites',
+        'download',
+        'download-as',
+        'convert',
+        'move', //category
+        'move-to',
+        'copy-to',
+        'copy',
+        'restore',
+        'rename',
+        'separator2',
+        'unsubscribe',
+        'delete',
       ];
 
       if (personal) {
         fileOptions = this.removeOptions(fileOptions, [
-          "owner-change",
-          "link-for-portal-users",
-          "docu-sign",
-          "mark-read",
-          "unsubscribe",
+          'owner-change',
+          'link-for-portal-users',
+          'docu-sign',
+          'mark-read',
+          'unsubscribe',
         ]);
 
         if (!this.isWebEditSelected && !canViewedDocs(item.fileExst)) {
-          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+          fileOptions = this.removeOptions(fileOptions, ['sharing-settings']);
         }
       }
 
       if (!this.isWebEditSelected) {
-        fileOptions = this.removeOptions(fileOptions, ["download-as"]);
+        fileOptions = this.removeOptions(fileOptions, ['download-as']);
       }
 
       if (!canConvert || isEncrypted) {
-        fileOptions = this.removeOptions(fileOptions, ["convert"]);
+        fileOptions = this.removeOptions(fileOptions, ['convert']);
       }
 
       if (!canOpenPlayer) {
-        fileOptions = this.removeOptions(fileOptions, ["view"]);
+        fileOptions = this.removeOptions(fileOptions, ['view']);
       } else {
-        fileOptions = this.removeOptions(fileOptions, ["edit", "preview"]);
+        fileOptions = this.removeOptions(fileOptions, ['edit', 'preview']);
       }
 
       if (!isDocuSign) {
-        fileOptions = this.removeOptions(fileOptions, ["docu-sign"]);
+        fileOptions = this.removeOptions(fileOptions, ['docu-sign']);
       }
 
       if (isEditing) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "finalize-version",
-          "move-to",
-          "delete",
-        ]);
+        fileOptions = this.removeOptions(fileOptions, ['finalize-version', 'move-to', 'delete']);
         if (isThirdPartyFolder) {
-          fileOptions = this.removeOptions(fileOptions, ["rename"]);
+          fileOptions = this.removeOptions(fileOptions, ['rename']);
         }
       }
 
       if (isFavorite) {
-        fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
+        fileOptions = this.removeOptions(fileOptions, ['mark-as-favorite']);
       } else {
-        fileOptions = this.removeOptions(fileOptions, [
-          "remove-from-favorites",
-        ]);
+        fileOptions = this.removeOptions(fileOptions, ['remove-from-favorites']);
 
         if (isFavoritesFolder) {
-          fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
+          fileOptions = this.removeOptions(fileOptions, ['mark-as-favorite']);
         }
       }
 
       if (isFavoritesFolder) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "move-to",
-          "delete",
-          "copy",
-        ]);
+        fileOptions = this.removeOptions(fileOptions, ['move-to', 'delete', 'copy']);
 
         if (!isFavorite) {
-          fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+          fileOptions = this.removeOptions(fileOptions, ['separator2']);
         }
       }
 
       if (isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, [
-          "open",
-          "edit",
-          "link-for-portal-users",
-          "external-link",
-          "send-by-email",
-          "block-unblock-version", //need split
-          "version", //category
-          "finalize-version",
-          "copy-to",
-          "copy",
-          "mark-as-favorite",
+          'open',
+          'edit',
+          'link-for-portal-users',
+          'external-link',
+          'send-by-email',
+          'block-unblock-version', //need split
+          'version', //category
+          'finalize-version',
+          'copy-to',
+          'copy',
+          'mark-as-favorite',
         ]);
       }
 
       if (isRecentFolder) {
-        fileOptions = this.removeOptions(fileOptions, ["delete"]);
+        fileOptions = this.removeOptions(fileOptions, ['delete']);
 
         if (!isFavorite) {
-          fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+          fileOptions = this.removeOptions(fileOptions, ['separator2']);
         }
       }
 
       if (isFavoritesFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
-          "copy",
-          "move-to",
+          'copy',
+          'move-to',
           //"sharing-settings",
-          "unsubscribe",
-          "separator2",
+          'unsubscribe',
+          'separator2',
         ]);
       }
 
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
-          "open",
-          "open-location",
-          "view",
-          "preview",
-          "edit",
-          "link-for-portal-users",
-          "sharing-settings",
-          "external-link",
-          "send-by-email",
-          "block-unblock-version", //need split
-          "version", //category
-          "finalize-version",
-          "show-version-history",
-          "move", //category
-          "move-to",
-          "copy-to",
-          "copy",
-          "mark-read",
-          "mark-as-favorite",
-          "remove-from-favorites",
-          "rename",
-          "separator0",
-          "separator1",
+          'open',
+          'open-location',
+          'view',
+          'preview',
+          'edit',
+          'link-for-portal-users',
+          'sharing-settings',
+          'external-link',
+          'send-by-email',
+          'block-unblock-version', //need split
+          'version', //category
+          'finalize-version',
+          'show-version-history',
+          'move', //category
+          'move-to',
+          'copy-to',
+          'copy',
+          'mark-read',
+          'mark-as-favorite',
+          'remove-from-favorites',
+          'rename',
+          'separator0',
+          'separator1',
         ]);
       } else {
-        fileOptions = this.removeOptions(fileOptions, ["restore"]);
+        fileOptions = this.removeOptions(fileOptions, ['restore']);
       }
 
       if (!isFullAccess) {
         fileOptions = this.removeOptions(fileOptions, [
-          "finalize-version",
-          "rename",
-          "block-unblock-version",
-          "copy",
-          "sharing-settings",
+          'finalize-version',
+          'rename',
+          'block-unblock-version',
+          'copy',
+          'sharing-settings',
         ]);
       }
 
       if (isVisitor) {
         fileOptions = this.removeOptions(fileOptions, [
-          "block-unblock-version",
-          "finalize-version",
-          "mark-as-favorite",
-          "remove-from-favorites",
+          'block-unblock-version',
+          'finalize-version',
+          'mark-as-favorite',
+          'remove-from-favorites',
         ]);
 
         if (!isFullAccess) {
-          fileOptions = this.removeOptions(fileOptions, ["rename"]);
+          fileOptions = this.removeOptions(fileOptions, ['rename']);
         }
       }
 
       if (!this.canShareOwnerChange(item)) {
-        fileOptions = this.removeOptions(fileOptions, ["owner-change"]);
+        fileOptions = this.removeOptions(fileOptions, ['owner-change']);
       }
 
       if (isThirdPartyItem) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "owner-change",
-          "finalize-version",
-          "copy",
-        ]);
+        fileOptions = this.removeOptions(fileOptions, ['owner-change', 'finalize-version', 'copy']);
       }
 
       if (isCommonFolder) {
         if (!this.userAccess) {
           fileOptions = this.removeOptions(fileOptions, [
-            "owner-change",
-            "move-to",
-            "delete",
-            "copy",
-            "separator2",
+            'owner-change',
+            'move-to',
+            'delete',
+            'copy',
+            'separator2',
           ]);
           if (!isFavorite) {
-            fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+            fileOptions = this.removeOptions(fileOptions, ['separator2']);
           }
         }
       }
 
       if (withoutShare) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "sharing-settings",
-          "external-link",
-        ]);
+        fileOptions = this.removeOptions(fileOptions, ['sharing-settings', 'external-link']);
       }
 
       if (!hasNew) {
-        fileOptions = this.removeOptions(fileOptions, ["mark-read"]);
+        fileOptions = this.removeOptions(fileOptions, ['mark-read']);
       }
 
       if (
@@ -659,221 +618,192 @@ class FilesStore {
           (isMyFolder && (this.filter.filterType || this.filter.search))
         )
       ) {
-        fileOptions = this.removeOptions(fileOptions, ["open-location"]);
+        fileOptions = this.removeOptions(fileOptions, ['open-location']);
       }
 
       if (isShareItem) {
         if (!isFullAccess) {
-          fileOptions = this.removeOptions(fileOptions, ["edit"]);
+          fileOptions = this.removeOptions(fileOptions, ['edit']);
         }
 
         if (isShareFolder) {
-          fileOptions = this.removeOptions(fileOptions, [
-            "copy",
-            "move-to",
-            "delete",
-          ]);
+          fileOptions = this.removeOptions(fileOptions, ['copy', 'move-to', 'delete']);
         }
       } else if (!isEncrypted) {
-        fileOptions = this.removeOptions(fileOptions, ["unsubscribe"]);
+        fileOptions = this.removeOptions(fileOptions, ['unsubscribe']);
       }
 
       if (isPrivacyFolder) {
         fileOptions = this.removeOptions(fileOptions, [
-          "preview",
-          "view",
-          "separator0",
-          "copy",
-          "download-as",
+          'preview',
+          'view',
+          'separator0',
+          'copy',
+          'download-as',
         ]);
 
         if (!isDesktopClient) {
-          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+          fileOptions = this.removeOptions(fileOptions, ['sharing-settings']);
         }
 
         fileOptions = this.removeOptions(
           fileOptions,
-          isFileOwner ? ["unsubscribe"] : ["move-to", "delete"]
+          isFileOwner ? ['unsubscribe'] : ['move-to', 'delete'],
         );
       }
 
       if (
         !canWebEdit(item.fileExst) &&
         !canViewedDocs(item.fileExst) &&
-        !fileOptions.includes("view")
+        !fileOptions.includes('view')
       ) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "edit",
-          "preview",
-          "separator0",
-        ]);
+        fileOptions = this.removeOptions(fileOptions, ['edit', 'preview', 'separator0']);
       }
 
       if (!canWebEdit(item.fileExst) && canViewedDocs(item.fileExst)) {
-        fileOptions = this.removeOptions(fileOptions, ["edit"]);
+        fileOptions = this.removeOptions(fileOptions, ['edit']);
       }
 
       return fileOptions;
     } else {
       let folderOptions = [
-        "open",
-        "separator0",
-        "sharing-settings",
-        "owner-change",
-        "link-for-portal-users",
-        "separator1",
-        "open-location",
-        "download",
-        "move", //category
-        "move-to",
-        "copy-to",
-        "mark-read",
-        "restore",
-        "rename",
-        "change-thirdparty-info",
-        "separator2",
-        "unsubscribe",
-        "delete",
+        'open',
+        'separator0',
+        'sharing-settings',
+        'owner-change',
+        'link-for-portal-users',
+        'separator1',
+        'open-location',
+        'download',
+        'move', //category
+        'move-to',
+        'copy-to',
+        'mark-read',
+        'restore',
+        'rename',
+        'change-thirdparty-info',
+        'separator2',
+        'unsubscribe',
+        'delete',
       ];
 
       if (personal) {
         folderOptions = this.removeOptions(folderOptions, [
-          "sharing-settings",
-          "owner-change",
-          "link-for-portal-users",
-          "separator1",
-          "docu-sign",
-          "mark-read",
-          "unsubscribe",
+          'sharing-settings',
+          'owner-change',
+          'link-for-portal-users',
+          'separator1',
+          'docu-sign',
+          'mark-read',
+          'unsubscribe',
         ]);
       }
 
       if (isPrivacyFolder) {
-        folderOptions = this.removeOptions(folderOptions, [
-          "sharing-settings",
-          "copy",
-          "copy-to",
-        ]);
+        folderOptions = this.removeOptions(folderOptions, ['sharing-settings', 'copy', 'copy-to']);
 
         if (!isDesktopClient) {
-          folderOptions = this.removeOptions(folderOptions, ["rename"]);
+          folderOptions = this.removeOptions(folderOptions, ['rename']);
         }
       }
 
       if (isShareItem) {
         if (isShareFolder) {
-          folderOptions = this.removeOptions(folderOptions, [
-            "move-to",
-            "delete",
-          ]);
+          folderOptions = this.removeOptions(folderOptions, ['move-to', 'delete']);
         }
       } else {
-        folderOptions = this.removeOptions(folderOptions, ["unsubscribe"]);
+        folderOptions = this.removeOptions(folderOptions, ['unsubscribe']);
       }
 
       if (isRecycleBinFolder) {
         folderOptions = this.removeOptions(folderOptions, [
-          "open",
-          "link-for-portal-users",
-          "sharing-settings",
-          "move",
-          "move-to",
-          "copy-to",
-          "mark-read",
-          "rename",
-          "separator0",
-          "separator1",
+          'open',
+          'link-for-portal-users',
+          'sharing-settings',
+          'move',
+          'move-to',
+          'copy-to',
+          'mark-read',
+          'rename',
+          'separator0',
+          'separator1',
         ]);
       } else {
-        folderOptions = this.removeOptions(folderOptions, ["restore"]);
+        folderOptions = this.removeOptions(folderOptions, ['restore']);
       }
 
       if (!isFullAccess) {
         //TODO: if added Projects, add project folder check
-        folderOptions = this.removeOptions(folderOptions, [
-          "rename",
-          "change-thirdparty-info",
-        ]);
+        folderOptions = this.removeOptions(folderOptions, ['rename', 'change-thirdparty-info']);
       }
 
       if (!this.canShareOwnerChange(item)) {
-        folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
+        folderOptions = this.removeOptions(folderOptions, ['owner-change']);
       }
 
       if (!isFullAccess) {
         folderOptions = this.removeOptions(folderOptions, [
-          "owner-change",
-          "move-to",
-          "delete",
-          "change-thirdparty-info",
+          'owner-change',
+          'move-to',
+          'delete',
+          'change-thirdparty-info',
         ]);
 
         if (!isShareItem) {
-          folderOptions = this.removeOptions(folderOptions, ["separator2"]);
+          folderOptions = this.removeOptions(folderOptions, ['separator2']);
         }
 
         if (isVisitor) {
-          folderOptions = this.removeOptions(folderOptions, ["rename"]);
+          folderOptions = this.removeOptions(folderOptions, ['rename']);
         }
       }
 
       if (withoutShare) {
-        folderOptions = this.removeOptions(folderOptions, ["sharing-settings"]);
+        folderOptions = this.removeOptions(folderOptions, ['sharing-settings']);
       }
 
       if (!hasNew) {
-        folderOptions = this.removeOptions(folderOptions, ["mark-read"]);
+        folderOptions = this.removeOptions(folderOptions, ['mark-read']);
       }
 
       if (isThirdPartyFolder) {
-        folderOptions = this.removeOptions(folderOptions, ["move-to"]);
+        folderOptions = this.removeOptions(folderOptions, ['move-to']);
 
         if (isDesktopClient) {
-          folderOptions = this.removeOptions(folderOptions, [
-            "separator2",
-            "delete",
-          ]);
+          folderOptions = this.removeOptions(folderOptions, ['separator2', 'delete']);
         }
       } else {
-        folderOptions = this.removeOptions(folderOptions, [
-          "change-thirdparty-info",
-        ]);
+        folderOptions = this.removeOptions(folderOptions, ['change-thirdparty-info']);
       }
 
       if (isThirdPartyItem) {
-        folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
+        folderOptions = this.removeOptions(folderOptions, ['owner-change']);
 
         if (isShareFolder) {
-          folderOptions = this.removeOptions(folderOptions, [
-            "change-thirdparty-info",
-          ]);
+          folderOptions = this.removeOptions(folderOptions, ['change-thirdparty-info']);
         } else {
           if (isDesktopClient) {
-            folderOptions = this.removeOptions(folderOptions, [
-              "change-thirdparty-info",
-            ]);
+            folderOptions = this.removeOptions(folderOptions, ['change-thirdparty-info']);
           }
 
-          folderOptions = this.removeOptions(folderOptions, ["remove"]);
+          folderOptions = this.removeOptions(folderOptions, ['remove']);
 
           if (!item) {
             //For damaged items
             folderOptions = this.removeOptions(folderOptions, [
-              "open",
-              "download",
-              "copy-to",
-              "rename",
+              'open',
+              'download',
+              'copy-to',
+              'rename',
             ]);
           }
         }
       } else {
-        folderOptions = this.removeOptions(folderOptions, [
-          "change-thirdparty-info",
-        ]);
+        folderOptions = this.removeOptions(folderOptions, ['change-thirdparty-info']);
       }
 
       if (!(isMyFolder && (this.filter.filterType || this.filter.search))) {
-        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+        folderOptions = this.removeOptions(folderOptions, ['open-location']);
       }
 
       return folderOptions;
@@ -928,9 +858,7 @@ class FilesStore {
   };
 
   updateFile = (fileId, title) => {
-    return api.files
-      .updateFile(fileId, title)
-      .then((file) => this.setFile(file));
+    return api.files.updateFile(fileId, title).then((file) => this.setFile(file));
   };
 
   renameFolder = (folderId, title) => {
@@ -955,8 +883,7 @@ class FilesStore {
     const isCommonFolder =
       this.treeFoldersStore.commonFolder &&
       this.selectedFolderStore.pathParts &&
-      this.treeFoldersStore.commonFolder.id ===
-        this.selectedFolderStore.pathParts[0];
+      this.treeFoldersStore.commonFolder.id === this.selectedFolderStore.pathParts[0];
 
     if (item.providerKey || !isCommonFolder) {
       return false;
@@ -971,8 +898,7 @@ class FilesStore {
 
   get canShare() {
     const folderType = this.selectedFolderStore.rootFolderType;
-    const isVisitor =
-      (this.userStore.user && this.userStore.user.isVisitor) || false;
+    const isVisitor = (this.userStore.user && this.userStore.user.isVisitor) || false;
 
     if (isVisitor) {
       return false;
@@ -1001,20 +927,14 @@ class FilesStore {
   get currentFilesCount() {
     const serviceFilesCount = this.getServiceFilesCount();
     const filesCount = this.getFilesCount();
-    return this.selectedFolderStore.providerItem
-      ? serviceFilesCount
-      : filesCount;
+    return this.selectedFolderStore.providerItem ? serviceFilesCount : filesCount;
   }
 
   get iconOfDraggedFile() {
     const { getIcon } = this.formatsStore.iconFormatsStore;
 
     if (this.selection.length === 1) {
-      return getIcon(
-        24,
-        this.selection[0].fileExst,
-        this.selection[0].providerKey
-      );
+      return getIcon(24, this.selection[0].fileExst, this.selection[0].providerKey);
     }
     return null;
   }
@@ -1041,13 +961,10 @@ class FilesStore {
         return true;
       case FolderType.SHARE:
         const canCreateInSharedFolder = this.selectedFolderStore.access === 1;
-        return (
-          !this.selectedFolderStore.isRootFolder && canCreateInSharedFolder
-        );
+        return !this.selectedFolderStore.isRootFolder && canCreateInSharedFolder;
       case FolderType.Privacy:
         return (
-          this.authStore.settingsStore.isDesktopClient &&
-          this.settingsStore.isEncryptionSupport
+          this.authStore.settingsStore.isDesktopClient && this.settingsStore.isEncryptionSupport
         );
       case FolderType.COMMON:
         return this.authStore.isAdmin;
@@ -1067,7 +984,7 @@ class FilesStore {
 
     items.unshift({
       id: -1,
-      title: "",
+      title: '',
       parentId: this.selectedFolderStore.id,
       fileExst: this.fileActionStore.extension,
       icon,
@@ -1117,22 +1034,16 @@ class FilesStore {
 
       const { canConvert } = this.formatsStore.docserviceStore;
 
-      const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
-        item.fileExst
-      );
+      const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(item.fileExst);
 
       const previewUrl = canOpenPlayer
-        ? combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            `/#preview/${id}`
-          )
+        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/#preview/${id}`)
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
       const icon =
-        this.viewAs !== "tile"
+        this.viewAs !== 'tile'
           ? getIcon(24, fileExst, providerKey, contentLength)
           : getIcon(32, fileExst, providerKey, contentLength);
 
@@ -1144,11 +1055,7 @@ class FilesStore {
       const { isRecycleBinFolder } = this.treeFoldersStore;
 
       const folderUrl = isFolder
-        ? combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            `/filter?folder=${id}`
-          )
+        ? combineUrl(AppServerConfig.proxyURL, config.homepage, `/filter?folder=${id}`)
         : null;
 
       const needConvert = canConvert(fileExst);
@@ -1156,7 +1063,7 @@ class FilesStore {
       const docUrl = combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
+        `/doceditor?fileId=${id}${needConvert ? '&action=view' : ''}`,
       );
 
       const href = isRecycleBinFolder
@@ -1223,32 +1130,23 @@ class FilesStore {
 
   get cbMenuItems() {
     const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = iconFormatsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } = iconFormatsStore;
     const { isImage, isVideo } = mediaViewersFormatsStore;
 
-    let cbMenu = ["all"];
+    let cbMenu = ['all'];
     const filesItems = [...this.files, ...this.folders];
 
     if (this.folders.length) cbMenu.push(FilterType.FoldersOnly);
     for (let item of filesItems) {
       if (isDocument(item.fileExst)) cbMenu.push(FilterType.DocumentsOnly);
-      else if (isPresentation(item.fileExst))
-        cbMenu.push(FilterType.PresentationsOnly);
-      else if (isSpreadsheet(item.fileExst))
-        cbMenu.push(FilterType.SpreadsheetsOnly);
+      else if (isPresentation(item.fileExst)) cbMenu.push(FilterType.PresentationsOnly);
+      else if (isSpreadsheet(item.fileExst)) cbMenu.push(FilterType.SpreadsheetsOnly);
       else if (isImage(item.fileExst)) cbMenu.push(FilterType.ImagesOnly);
       else if (isVideo(item.fileExst)) cbMenu.push(FilterType.MediaOnly);
       else if (isArchive(item.fileExst)) cbMenu.push(FilterType.ArchiveOnly);
     }
 
-    const hasFiles = cbMenu.some(
-      (elem) => elem !== "all" && elem !== FilterType.FoldersOnly
-    );
+    const hasFiles = cbMenu.some((elem) => elem !== 'all' && elem !== FilterType.FoldersOnly);
 
     if (hasFiles) cbMenu.push(FilterType.FilesOnly);
 
@@ -1259,36 +1157,32 @@ class FilesStore {
 
   getCheckboxItemLabel = (t, key) => {
     switch (key) {
-      case "all":
-        return t("All");
+      case 'all':
+        return t('All');
       case FilterType.FoldersOnly:
-        return t("Translations:Folders");
+        return t('Translations:Folders');
       case FilterType.DocumentsOnly:
-        return t("Common:Documents");
+        return t('Common:Documents');
       case FilterType.PresentationsOnly:
-        return t("Translations:Presentations");
+        return t('Translations:Presentations');
       case FilterType.SpreadsheetsOnly:
-        return t("Translations:Spreadsheets");
+        return t('Translations:Spreadsheets');
       case FilterType.ImagesOnly:
-        return t("Images");
+        return t('Images');
       case FilterType.MediaOnly:
-        return t("Media");
+        return t('Media');
       case FilterType.ArchiveOnly:
-        return t("Archives");
+        return t('Archives');
       case FilterType.FilesOnly:
-        return t("AllFiles");
+        return t('AllFiles');
 
       default:
-        return "";
+        return '';
     }
   };
 
   get sortedFiles() {
-    const {
-      isSpreadsheet,
-      isPresentation,
-      isDocument,
-    } = this.formatsStore.iconFormatsStore;
+    const { isSpreadsheet, isPresentation, isDocument } = this.formatsStore.iconFormatsStore;
     const { filesConverts } = this.formatsStore.docserviceStore;
 
     let sortedFiles = {
@@ -1330,8 +1224,7 @@ class FilesStore {
         return false;
       case FolderType.COMMON:
         return (
-          this.authStore.isAdmin ||
-          this.selection.some((x) => x.access === 0 || x.access === 1)
+          this.authStore.isAdmin || this.selection.some((x) => x.access === 0 || x.access === 1)
         );
       case FolderType.Privacy:
         return true;
@@ -1343,10 +1236,7 @@ class FilesStore {
   }
 
   get isAccessedSelected() {
-    return (
-      this.selection.length &&
-      this.selection.every((x) => x.access === 1 || x.access === 0)
-    );
+    return this.selection.length && this.selection.every((x) => x.access === 1 || x.access === 0);
   }
 
   get isThirdPartyRootSelection() {
@@ -1411,12 +1301,12 @@ class FilesStore {
     } = this.formatsStore.docserviceStore;
 
     if (selection[0].encrypted) {
-      return ["FullAccess", "DenyAccess"];
+      return ['FullAccess', 'DenyAccess'];
     }
 
     let AccessOptions = [];
 
-    AccessOptions.push("ReadOnly", "DenyAccess");
+    AccessOptions.push('ReadOnly', 'DenyAccess');
 
     const webEdit = selection.find((x) => canWebEdit(x.fileExst));
 
@@ -1424,18 +1314,16 @@ class FilesStore {
 
     const webReview = selection.find((x) => canWebReview(x.fileExst));
 
-    const formFillingDocs = selection.find((x) =>
-      canFormFillingDocs(x.fileExst)
-    );
+    const formFillingDocs = selection.find((x) => canFormFillingDocs(x.fileExst));
 
     const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
 
-    if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+    if (webEdit || !externalAccess) AccessOptions.push('FullAccess');
 
-    if (webComment) AccessOptions.push("Comment");
-    if (webReview) AccessOptions.push("Review");
-    if (formFillingDocs) AccessOptions.push("FormFilling");
-    if (webFilter) AccessOptions.push("FilterEditing");
+    if (webComment) AccessOptions.push('Comment');
+    if (webReview) AccessOptions.push('Review');
+    if (formFillingDocs) AccessOptions.push('FormFilling');
+    if (webFilter) AccessOptions.push('FilterEditing');
 
     return AccessOptions;
   };
@@ -1455,16 +1343,16 @@ class FilesStore {
     const newSelection = [];
 
     for (let item of items) {
-      const value = item.getAttribute("value");
-      const splitValue = value && value.split("_");
+      const value = item.getAttribute('value');
+      const splitValue = value && value.split('_');
 
       const fileType = splitValue[0];
       const id =
-        splitValue[splitValue.length - 1] === "draggable"
-          ? splitValue.slice(1, -1).join("_")
-          : splitValue.slice(1).join("_");
+        splitValue[splitValue.length - 1] === 'draggable'
+          ? splitValue.slice(1, -1).join('_')
+          : splitValue.slice(1).join('_');
 
-      if (fileType === "file") {
+      if (fileType === 'file') {
         newSelection.push(this.files.find((f) => f.id == id));
       } else {
         newSelection.push(this.folders.find((f) => f.id == id));
@@ -1475,7 +1363,7 @@ class FilesStore {
 
     //need fo table view
     const clearSelection = Object.values(
-      newSelection.reduce((item, n) => ((item[n.id] = n), item), {})
+      newSelection.reduce((item, n) => ((item[n.id] = n), item), {}),
     );
 
     this.setSelection(clearSelection);
@@ -1486,43 +1374,19 @@ class FilesStore {
     return api.files.getShareFiles(fileIds, folderIds);
   }
 
-  setShareFiles = (
-    folderIds,
-    fileIds,
-    share,
-    notify,
-    sharingMessage,
-    externalAccess,
-    ownerId
-  ) => {
+  setShareFiles = (folderIds, fileIds, share, notify, sharingMessage, externalAccess, ownerId) => {
     let externalAccessRequest = [];
     if (fileIds.length === 1 && externalAccess !== null) {
-      externalAccessRequest = fileIds.map((id) =>
-        api.files.setExternalAccess(id, externalAccess)
-      );
+      externalAccessRequest = fileIds.map((id) => api.files.setExternalAccess(id, externalAccess));
     }
 
-    const ownerChangeRequest = ownerId
-      ? [this.setFilesOwner(folderIds, fileIds, ownerId)]
-      : [];
+    const ownerChangeRequest = ownerId ? [this.setFilesOwner(folderIds, fileIds, ownerId)] : [];
 
     const shareRequest = !!share.length
-      ? [
-          api.files.setShareFiles(
-            fileIds,
-            folderIds,
-            share,
-            notify,
-            sharingMessage
-          ),
-        ]
+      ? [api.files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage)]
       : [];
 
-    const requests = [
-      ...ownerChangeRequest,
-      ...shareRequest,
-      ...externalAccessRequest,
-    ];
+    const requests = [...ownerChangeRequest, ...shareRequest, ...externalAccessRequest];
 
     return Promise.all(requests);
   };

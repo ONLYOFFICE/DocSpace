@@ -1,32 +1,32 @@
-import React from "react";
+import React from 'react';
 //import PropTypes from "prop-types";
-import { withRouter } from "react-router";
-import { isMobile } from "react-device-detect";
-import axios from "axios";
-import toastr from "@appserver/components/toast/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
-import { showLoader, hideLoader } from "@appserver/common/utils";
-import FilesFilter from "@appserver/common/api/files/filter";
-import { getGroup } from "@appserver/common/api/groups";
-import { getUserById } from "@appserver/common/api/people";
-import { withTranslation, Trans } from "react-i18next";
+import { withRouter } from 'react-router';
+import { isMobile } from 'react-device-detect';
+import axios from 'axios';
+import toastr from '@appserver/components/toast/toastr';
+import PageLayout from '@appserver/common/components/PageLayout';
+import { showLoader, hideLoader } from '@appserver/common/utils';
+import FilesFilter from '@appserver/common/api/files/filter';
+import { getGroup } from '@appserver/common/api/groups';
+import { getUserById } from '@appserver/common/api/people';
+import { withTranslation, Trans } from 'react-i18next';
 import {
   ArticleBodyContent,
   ArticleHeaderContent,
   ArticleMainButtonContent,
-} from "../../components/Article";
+} from '../../components/Article';
 import {
   SectionBodyContent,
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
-} from "./Section";
+} from './Section';
 
-import { createTreeFolders } from "../../helpers/files-helpers";
-import MediaViewer from "./MediaViewer";
-import DragTooltip from "../../components/DragTooltip";
-import { observer, inject } from "mobx-react";
-import config from "../../../package.json";
+import { createTreeFolders } from '../../helpers/files-helpers';
+import MediaViewer from './MediaViewer';
+import DragTooltip from '../../components/DragTooltip';
+import { observer, inject } from 'mobx-react';
+import config from '../../../package.json';
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -42,19 +42,17 @@ class PureHome extends React.Component {
       getFileInfo,
     } = this.props;
 
-    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
+    const reg = new RegExp(`${homepage}((/?)$|/filter)`, 'gm'); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 
-    if (window.location.href.indexOf("/files/#preview") > 1) {
+    if (window.location.href.indexOf('/files/#preview') > 1) {
       const pathname = window.location.href;
-      const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
+      const fileId = pathname.slice(pathname.indexOf('#preview') + 9);
 
       getFileInfo(fileId)
         .then((data) => {
-          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
-            data.fileExst
-          );
+          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(data.fileExst);
           const file = { ...data, canOpenPlayer };
           setToPreviewFile(file, true);
         })
@@ -83,7 +81,7 @@ class PureHome extends React.Component {
 
     if (filterObj && filterObj.authorType) {
       const authorType = filterObj.authorType;
-      const indexOfUnderscore = authorType.indexOf("_");
+      const indexOfUnderscore = authorType.indexOf('_');
       const type = authorType.slice(0, indexOfUnderscore);
       const itemId = authorType.slice(indexOfUnderscore + 1);
 
@@ -105,9 +103,9 @@ class PureHome extends React.Component {
     const newFilter = filter ? filter.clone() : FilesFilter.getDefault();
     const requests = [Promise.resolve(newFilter)];
 
-    if (type === "group") {
+    if (type === 'group') {
       requests.push(getGroup(itemId));
-    } else if (type === "user") {
+    } else if (type === 'user') {
       requests.push(getUserById(itemId));
     }
 
@@ -117,16 +115,16 @@ class PureHome extends React.Component {
       .all(requests)
       .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
-        console.warn("Filter restored by default", err);
+        console.warn('Filter restored by default', err);
       })
       .then((data) => {
         const filter = data[0];
         const result = data[1];
         if (result) {
-          const type = result.displayName ? "user" : "group";
+          const type = result.displayName ? 'user' : 'group';
           const selectedItem = {
             key: result.id,
-            label: type === "user" ? result.displayName : result.name,
+            label: type === 'user' ? result.displayName : result.name,
             type,
           };
           filter.selectedItem = selectedItem;
@@ -154,7 +152,7 @@ class PureHome extends React.Component {
   fetchDefaultFiles = () => {
     const { isVisitor, fetchFiles, setIsLoading, setFirstLoad } = this.props;
     const filterObj = FilesFilter.getDefault();
-    const folderId = isVisitor ? "@common" : filterObj.folder;
+    const folderId = isVisitor ? '@common' : filterObj.folder;
 
     fetchFiles(folderId).finally(() => {
       setIsLoading(false);
@@ -171,31 +169,31 @@ class PureHome extends React.Component {
   showOperationToast = (type, qty, title) => {
     const { t } = this.props;
     switch (type) {
-      case "move":
+      case 'move':
         if (qty > 1) {
           return toastr.success(
             <Trans t={t} i18nKey="MoveItems" ns="Home">
               {{ qty }} elements has been moved
-            </Trans>
+            </Trans>,
           );
         }
         return toastr.success(
           <Trans t={t} i18nKey="MoveItem" ns="Home">
             {{ title }} moved
-          </Trans>
+          </Trans>,
         );
-      case "duplicate":
+      case 'duplicate':
         if (qty > 1) {
           return toastr.success(
             <Trans t={t} i18nKey="CopyItems" ns="Home">
               {{ qty }} elements copied
-            </Trans>
+            </Trans>,
           );
         }
         return toastr.success(
           <Trans t={t} i18nKey="CopyItem" ns="Home">
             {{ title }} copied
-          </Trans>
+          </Trans>,
         );
       default:
         break;
@@ -213,8 +211,7 @@ class PureHome extends React.Component {
     } = this.props;
     setUploadPanelVisible(!uploadPanelVisible);
 
-    if (primaryProgressDataVisible && uploaded && converted)
-      clearPrimaryProgressData();
+    if (primaryProgressDataVisible && uploaded && converted) clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {
@@ -227,15 +224,8 @@ class PureHome extends React.Component {
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
-    if (
-      isProgressFinished &&
-      isProgressFinished !== prevProps.isProgressFinished
-    ) {
-      this.showOperationToast(
-        secondaryProgressDataStoreIcon,
-        selectionLength,
-        selectionTitle
-      );
+    if (isProgressFinished && isProgressFinished !== prevProps.isProgressFinished) {
+      this.showOperationToast(secondaryProgressDataStoreIcon, selectionLength, selectionTitle);
     }
   }
 
@@ -283,16 +273,13 @@ class PureHome extends React.Component {
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
           viewAs={viewAs}
           hideAside={
-            !!fileActionId ||
-            primaryProgressDataVisible ||
-            secondaryProgressDataStoreVisible
+            !!fileActionId || primaryProgressDataVisible || secondaryProgressDataStoreVisible
           }
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
-          dragging={dragging}
-        >
+          dragging={dragging}>
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
@@ -325,21 +312,11 @@ class PureHome extends React.Component {
   }
 }
 
-const Home = withTranslation("Home")(PureHome);
+const Home = withTranslation('Home')(PureHome);
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    uploadDataStore,
-    treeFoldersStore,
-    mediaViewerDataStore,
-    formatsStore,
-  }) => {
-    const {
-      secondaryProgressDataStore,
-      primaryProgressDataStore,
-    } = uploadDataStore;
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore, mediaViewerDataStore, formatsStore }) => {
+    const { secondaryProgressDataStore, primaryProgressDataStore } = uploadDataStore;
     const {
       firstLoad,
       setFirstLoad,
@@ -358,12 +335,7 @@ export default inject(
     const { mediaViewersFormatsStore } = formatsStore;
 
     const { id } = fileActionStore;
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      expandedKeys,
-      setExpandedKeys,
-    } = treeFoldersStore;
+    const { isRecycleBinFolder, isPrivacyFolder, expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -381,17 +353,10 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
-    const selectionTitle = isProgressFinished
-      ? filesStore.selectionTitle
-      : null;
+    const selectionTitle = isProgressFinished ? filesStore.selectionTitle : null;
 
     const { setToPreviewFile } = mediaViewerDataStore;
     if (!firstLoad) {
@@ -444,5 +409,5 @@ export default inject(
       mediaViewersFormatsStore,
       getFileInfo,
     };
-  }
+  },
 )(withRouter(observer(Home)));
