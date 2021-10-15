@@ -120,6 +120,8 @@ const StyledTableGroupMenu = styled.div`
 
 const StyledTableHeader = styled.div`
   display: grid;
+  margin: 0 -24px;
+  padding: 0 24px;
 
   ${HeaderStyles}
 

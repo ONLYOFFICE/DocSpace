@@ -1486,7 +1486,9 @@ class FilesStore {
       if (fileType === "file") {
         newSelection.push(this.files.find((f) => f.id == id));
       } else {
-        newSelection.push(this.folders.find((f) => f.id == id));
+        const selectableFolder = this.folders.find((f) => f.id == id);
+        selectableFolder.isFolder = true;
+        newSelection.push(selectableFolder);
       }
     }
 
