@@ -8,7 +8,7 @@ pipeline {
 					stages {
 						stage('Frontend') {
 							steps {
-								sh 'yarn install && yarn build'
+								sh 'yarn install --frozen-lockfile && yarn build'
 							}
 						}
 						stage('Backend') {
@@ -23,7 +23,7 @@ pipeline {
 					stages {
 						stage('Frontend') {
 							steps {
-								bat 'yarn install && yarn build'
+								bat 'yarn install --frozen-lockfile && yarn build'
 							}
 						}
 						stage('Backend') {
