@@ -45,6 +45,7 @@ class DownloadDialogComponent extends React.Component {
     const { documents, spreadsheets, presentations, other } = this.state;
     const files = [];
     const folders = [];
+    let singleFileUrl = null;
 
     const collectItems = (itemList) => {
       for (let item of itemList) {
@@ -54,8 +55,10 @@ class DownloadDialogComponent extends React.Component {
               item.format === this.props.t("OriginalFormat")
                 ? item.fileExst
                 : item.format;
-            const viewUrl = item.viewUrl;
-            files.push({ key: item.id, value: format, viewUrl });
+            if (!singleFileUrl) {
+              singleFileUrl = item.viewUrl;
+            }
+            files.push({ key: item.id, value: format });
           } else {
             folders.push(item.id);
           }
@@ -68,22 +71,21 @@ class DownloadDialogComponent extends React.Component {
     collectItems(presentations);
     collectItems(other);
 
-    return [files, folders];
+    return [files, folders, singleFileUrl];
   };
 
   onDownload = () => {
     const { t, downloadFiles } = this.props;
 
-    const [fileConvertIds, folderIds] = this.getDownloadItems();
+    const [fileConvertIds, folderIds, singleFileUrl] = this.getDownloadItems();
 
     if (fileConvertIds.length === 1 && folderIds.length === 0) {
       // Single file download as
       const file = fileConvertIds[0];
-      let viewUrl = file.viewUrl;
-      if (file.value) {
-        viewUrl = `${viewUrl}&outputtype=${file.value}`;
+      if (file.value && singleFileUrl) {
+        const viewUrl = `${singleFileUrl}&outputtype=${file.value}`;
+        window.open(viewUrl, "_self");
       }
-      window.open(viewUrl, "_self");
       this.onClose();
     } else if (fileConvertIds.length || folderIds.length) {
       this.onClose();
