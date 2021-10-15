@@ -535,7 +535,7 @@ class FilterInput extends React.Component {
 
     if (searchWidth) {
       const asideView =
-        searchWidth && searchWidth < 350 && window.innerWidth < 1025;
+        searchWidth && searchWidth < 390 && window.innerWidth < 1360;
 
       this.setState({
         asideView,
