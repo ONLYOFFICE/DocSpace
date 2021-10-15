@@ -28,6 +28,7 @@ const OperationsPanelComponent = (props) => {
     checkOperationConflict,
     setThirdPartyMoveDialogVisible,
     setBufferSelection,
+    parentFolderId,
   } = props;
 
   const zIndex = 310;
@@ -36,18 +37,23 @@ const OperationsPanelComponent = (props) => {
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
   const onClose = () => {
- 	!provider && setBufferSelection(null);
+    !provider && setBufferSelection(null);
     if (isCopy) {
       setCopyPanelVisible(false);
       setIsFolderActions(false);
     } else {
       setMoveToPanelVisible(false);
-    }    setExpandedPanelKeys(null);
+    }
+    setExpandedPanelKeys(null);
   };
 
   const onSelect = (folder, treeNode) => {
     const folderTitle = treeNode.node.props.title;
     const destFolderId = isNaN(+folder[0]) ? folder[0] : +folder[0];
+
+    if (isFolderActions && destFolderId === parentFolderId) {
+      return onClose();
+    }
 
     if (currentFolderId === destFolderId) {
       return onClose();
@@ -189,6 +195,7 @@ export default inject(
         ? expandedPanelKeys
         : selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
+      parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
       filter,
       operationsFolders,
