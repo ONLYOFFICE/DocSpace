@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
-import { tablet } from "../utils/device";
+import { mobile, tablet } from "../utils/device";
+import Scrollbar from "../scrollbar";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
@@ -82,6 +83,10 @@ const StyledTableGroupMenu = styled.div`
   @media ${tablet} {
     height: 60px;
     width: calc(100% + 40px);
+  }
+
+  @media ${mobile} {
+    height: 52px;
   }
 
   .table-container_group-menu-checkbox {
@@ -248,6 +253,12 @@ const StyledEmptyTableContainer = styled.div`
   height: 40px;
 `;
 
+const StyledScrollbar = styled(Scrollbar)`
+  .scroll-body {
+    display: flex;
+  }
+`;
+
 StyledTableRow.defaultProps = { theme: Base };
 
 export {
@@ -260,4 +271,5 @@ export {
   StyledTableSettings,
   StyledTableGroupMenu,
   StyledEmptyTableContainer,
+  StyledScrollbar,
 };

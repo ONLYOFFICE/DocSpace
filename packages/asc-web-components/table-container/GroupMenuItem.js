@@ -3,13 +3,16 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 import Button from "../button";
-import { tablet } from "../utils/device";
+import { mobile, tablet } from "../utils/device";
 
 const StyledButton = styled(Button)`
   border: none;
-  padding: 0px 10px 0 10px;
+  padding: 4px 10px 0 10px;
+  height: 50px;
+  min-width: fit-content;
 
-  :hover {
+  :hover,
+  :active {
     border: none;
   }
 
@@ -26,6 +29,13 @@ const StyledButton = styled(Button)`
       padding: 0;
       margin: 0 auto;
     }
+  }
+
+  @media ${mobile} {
+    padding: 18px 16px 0 16px;
+    height: 50px;
+    font-size: 0;
+    line-height: 0;
   }
 `;
 

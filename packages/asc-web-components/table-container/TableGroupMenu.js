@@ -1,9 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
-import { StyledTableGroupMenu } from "./StyledTableContainer";
+import { StyledTableGroupMenu, StyledScrollbar } from "./StyledTableContainer";
 import ComboBox from "../combobox";
-import Scrollbar from "../scrollbar";
 import GroupMenuItem from "./GroupMenuItem";
 
 const TableGroupMenu = (props) => {
@@ -43,11 +42,11 @@ const TableGroupMenu = (props) => {
           selectedOption={{}}
         />
         <div className="table-container_group-menu-separator" />
-        {/* <Scrollbar> */}
-        {headerMenu.map((item, index) => (
-          <GroupMenuItem key={index} item={item} />
-        ))}
-        {/* </Scrollbar> */}
+        <StyledScrollbar>
+          {headerMenu.map((item, index) => (
+            <GroupMenuItem key={index} item={item} />
+          ))}
+        </StyledScrollbar>
       </StyledTableGroupMenu>
     </>
   );
