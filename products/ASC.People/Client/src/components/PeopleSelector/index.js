@@ -229,6 +229,7 @@ class PeopleSelector extends React.Component {
       embeddedComponent,
       selectedOptions,
       showCounter,
+      smallSectionWidth,
     } = this.props;
 
     console.log("CustomAllGroups", t("CustomAllGroups", { groupsCaption }));
@@ -243,6 +244,7 @@ class PeopleSelector extends React.Component {
         groups={groups}
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
+        smallSectionWidth={smallSectionWidth}
         loadNextPage={this.loadNextPage}
         size={size}
         displayType={displayType}

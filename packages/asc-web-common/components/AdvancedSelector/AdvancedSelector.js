@@ -93,6 +93,7 @@ class AdvancedSelector extends React.Component {
       style,
       withoutAside,
       isDefaultDisplayDropDown,
+      smallSectionWidth,
     } = this.props;
 
     //console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
@@ -103,6 +104,7 @@ class AdvancedSelector extends React.Component {
           <DropDown
             forwardedRef={this.ref}
             open={isOpen}
+            smallSectionWidth={smallSectionWidth}
             isDefaultMode={isDefaultDisplayDropDown}
             className="dropdown-container"
             clickOutsideAction={this.onClose}

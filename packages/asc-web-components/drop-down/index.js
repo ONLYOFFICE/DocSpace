@@ -105,6 +105,7 @@ class DropDown extends React.PureComponent {
 
   checkPosition = () => {
     if (!this.dropDownRef.current) return;
+    const { smallSectionWidth } = this.props;
     const rects = this.dropDownRef.current.getBoundingClientRect();
     const container = { width: window.innerWidth, height: window.innerHeight };
     const left = rects.left < 0 && rects.width < container.width;
@@ -117,9 +118,7 @@ class DropDown extends React.PureComponent {
     const bottom = rects.top < 0;
     const x = left
       ? "left"
-      : right
-      ? "right"
-      : rects.right + rects.width > container.width
+      : right || smallSectionWidth
       ? "right"
       : this.state.directionX;
     const y = bottom ? "bottom" : top ? "top" : this.state.directionY;
@@ -324,6 +323,8 @@ DropDownContainer.propTypes = {
   forwardedRef: PropTypes.shape({ current: PropTypes.any }),
   /** Defines the operation mode of the component, by default with the portal */
   isDefaultMode: PropTypes.bool,
+  /** Needed to open correctly people and group selector when the section width is small */
+  smallSectionWidth: PropTypes.bool,
 };
 
 DropDownContainer.defaultProps = {

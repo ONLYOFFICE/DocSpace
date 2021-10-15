@@ -160,6 +160,7 @@ class FilterItem extends React.Component {
       groupsCaption,
       defaultOption,
       asideView,
+      smallSectionWidth,
     } = this.props;
     return (
       <StyledFilterItem key={id} id={id} block={block} opened={opened}>
@@ -186,6 +187,7 @@ class FilterItem extends React.Component {
                 isMultiSelect={false}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                smallSectionWidth={smallSectionWidth}
                 displayType={asideView ? "aside" : "auto"}
               />
             </>
@@ -213,6 +215,7 @@ class FilterItem extends React.Component {
                 defaultOption={defaultOption}
                 defaultOptionLabel={defaultOptionLabel}
                 onCancel={this.onCancelSelector}
+                smallSectionWidth={smallSectionWidth}
                 onSelect={this.onSelectGroup}
                 displayType={asideView ? "aside" : "auto"}
               />
@@ -318,7 +321,11 @@ class FilterBlock extends React.Component {
     });
   };
   getFilterItems = () => {
-    const { openFilterItems, hiddenFilterItems } = this.props;
+    const {
+      openFilterItems,
+      hiddenFilterItems,
+      smallSectionWidth,
+    } = this.props;
     const { asideView } = this.props;
     const _this = this;
     let result = [];
@@ -342,6 +349,7 @@ class FilterBlock extends React.Component {
           <FilterItem
             block={false}
             isDisabled={_this.props.isDisabled}
+            smallSectionWidth={smallSectionWidth}
             key={key}
             groupItems={_this.props.getFilterData().filter(function (t) {
               return t.group == group && t.group != t.key;
@@ -394,6 +402,7 @@ class FilterBlock extends React.Component {
             opened={key.indexOf("_-1") == -1 ? false : true}
             label={label}
             onClose={_this.onDeleteFilterItem}
+            smallSectionWidth={smallSectionWidth}
             typeSelector={typeSelector}
             groupsCaption={groupsCaption}
             defaultOptionLabel={defaultOptionLabel}
