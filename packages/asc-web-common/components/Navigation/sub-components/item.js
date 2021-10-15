@@ -14,7 +14,7 @@ import { tablet, isTablet, isMobile as IsMobileUtils } from '@appserver/componen
 
 const StyledItem = styled.div`
   height: auto;
-  width: fit-content !important;
+  width: auto !important;
   position: relative;
   display: grid;
   align-items: end;

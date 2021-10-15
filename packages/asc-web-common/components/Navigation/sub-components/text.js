@@ -25,7 +25,6 @@ const StyledTextContainer = styled.div`
 `;
 
 const StyledHeadline = styled(Headline)`
-  min-width: 30px;
   width: 100%;
   font-weight: 700;
   font-size: ${isMobile ? '21px !important' : '18px'};

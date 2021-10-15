@@ -54,23 +54,24 @@ const StyledContainer = styled.div`
   top: -1px;
   align-items: center;
   min-width: 100px;
+  width: 100%;
   max-width: calc(100vw - 32px);
   height: ${isMobile ? (isMobileOnly ? '53px !important' : '61px !important') : '53px'};
   padding: ${isMobile ? '0px 16px' : '0px 24px'};
-  @media ${tablet} {
-    padding: 0px 16px;
-    height: 61px;
-  }
 
-  @media ${mobile} {
-    height: 53px;
-  }
   display: grid;
   grid-template-columns: ${(props) =>
     props.canCreate ? 'auto auto auto auto 1fr' : 'auto auto auto 1fr'};
 
   @media ${tablet} {
-    grid-template-columns: ${(props) => (props.canCreate ? 'auto 1fr auto auto' : 'auto 1fr auto')};
+    top: ${!isMobile && '0px'};
+    padding: 0px 16px;
+    height: 61px;
+    grid-template-columns: auto 1fr auto;
+  }
+
+  @media ${mobile} {
+    height: 53px;
   }
 
   .arrow-button {
