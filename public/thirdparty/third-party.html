@@ -73,6 +73,7 @@
       const code = urlParams ? urlParams.code || null : null;
       const error = urlParams ? urlParams.error || null : null;
       const desktop = urlParams ? urlParams.desktop || false : false;
+      const p = urlParams ? urlParams.p || false : false;
     </script>
   </head>
   <body id="third-party-body">
@@ -82,7 +83,7 @@
     if (code) {
       localStorage.setItem("code", code);
       if (desktop) {
-        window.location = `/login.ashx?code=${code}&desktop=true`;
+        window.location = `/login.ashx?code=${code}&desktop=true&p=${p}`;
       }
     } else if (error) {
       renderError(error);

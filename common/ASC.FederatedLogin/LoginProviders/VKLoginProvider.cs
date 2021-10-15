@@ -102,16 +102,16 @@ namespace ASC.FederatedLogin.LoginProviders
         }
 
 
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, bool desktop, IDictionary<string, string> @params)
+        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
         {
             try
             {
-                var token = Auth(context, desktop, Scopes, out var redirect, context.Request.Query["access_type"] == "offline"
+                var token = Auth(context, Scopes, out var redirect, context.Request.Query["access_type"] == "offline"
                                       ? new Dictionary<string, string>
                                           {
                                                               { "revoke", "1" }
                                           }
-                                      : null);
+                                      : null, additionalStateArgs);
 
                 if (redirect)
                 {

@@ -2,12 +2,16 @@
 <html>
 <head>
     <script language="javascript" type="text/javascript">
-        try {
-            window.opener.%CALLBACK%(%PROFILE%);
+        if (%DESKTOP%) {
+            console.log(%PROFILE%);
+        } else {
+            try {
+                window.opener.%CALLBACK%(%PROFILE%);
+            }
+            catch (ex) {
+            }
+            window.close();
         }
-        catch (ex) {
-        }
-        window.close();
     </script>
 </head>
 <body></body>
