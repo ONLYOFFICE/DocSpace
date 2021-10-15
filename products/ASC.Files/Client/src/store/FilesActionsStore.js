@@ -191,7 +191,13 @@ class FilesActionStore {
 
         if (item.url) {
           window.location.href = item.url;
+        } else {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
         }
+
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
     } catch (err) {
