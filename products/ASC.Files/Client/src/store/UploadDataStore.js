@@ -876,7 +876,7 @@ class UploadDataStore {
 
     let operationItem = null;
 
-    while (progress !== 100 && !data.url) {
+    while (progress !== 100) {
       await this.getOperationProgress(data.id)
         .then((item) => {
           operationItem = item;
