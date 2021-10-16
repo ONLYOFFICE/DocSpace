@@ -27,7 +27,7 @@ const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
 );
 const DataManagementSettings = lazy(() =>
-  import("./categories/data-management/backup")
+  import("./categories/data-management/Backup")
 );
 const AutomaticBackup = lazy(() =>
   import("./categories/data-management/AutomaticBackup.js")
