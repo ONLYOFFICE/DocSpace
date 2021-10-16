@@ -1,7 +1,7 @@
 import React from "react";
 import { ReactSVG } from "react-svg";
 import Text from "@appserver/components/text";
-import { StyledBackupList } from "../styled-backup";
+import { StyledBackupList } from "../StyledBackup";
 const ListRow = (props) => {
   const {
     displayType,

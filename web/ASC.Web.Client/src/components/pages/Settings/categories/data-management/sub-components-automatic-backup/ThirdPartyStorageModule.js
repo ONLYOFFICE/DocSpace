@@ -10,7 +10,7 @@ import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import { ThirdPartyStorages } from "@appserver/common/constants";
-import { StyledAutoBackup } from "../styled-backup";
+import { StyledAutoBackup } from "../StyledBackup";
 
 let googleStorageId = ThirdPartyStorages.GoogleId;
 let inputValueArray;

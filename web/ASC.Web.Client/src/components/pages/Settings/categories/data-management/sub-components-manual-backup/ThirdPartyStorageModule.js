@@ -15,7 +15,7 @@ import AmazonStorage from "./storages/AmazonStorage";
 import { getOptions } from "../utils/getOptions";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import { getFromSessionStorage } from "../../../utils";
-import { StyledManualBackup } from "../styled-backup";
+import { StyledManualBackup } from "../StyledBackup";
 
 let selectedStorageFromSessionStorage = "";
 let selectedIdFromSessionStorage = "";

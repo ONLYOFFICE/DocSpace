@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
-import { StyledAutoBackup } from "../../styled-backup";
+import { StyledAutoBackup } from "../../StyledBackup";
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);

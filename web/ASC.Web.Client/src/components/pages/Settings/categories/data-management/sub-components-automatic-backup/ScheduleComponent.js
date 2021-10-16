@@ -1,7 +1,7 @@
 import React from "react";
 import ComboBox from "@appserver/components/combobox";
 import { useTranslation } from "react-i18next";
-import { StyledScheduleComponent } from "../styled-backup";
+import { StyledScheduleComponent } from "../StyledBackup";
 import Text from "@appserver/components/text";
 const ScheduleComponent = ({
   weeklySchedule,

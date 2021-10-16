@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import AmazonSettings from "../../consumer-storage-settings/AmazonSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
-import { StyledAutoBackup } from "../../styled-backup";
+import { StyledAutoBackup } from "../../StyledBackup";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);

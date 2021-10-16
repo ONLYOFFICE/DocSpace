@@ -8,7 +8,7 @@ import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
 import SelectFolderDialog from "files/SelectFolderDialog";
-import { StyledRestoreBackup } from "./styled-backup";
+import { StyledRestoreBackup } from "./StyledBackup";
 import BackupListModalDialog from "./sub-components-restore-backup/backupListModalDialog";
 import Documents from "./sub-components-restore-backup/documents";
 import ThirdPartyResources from "./sub-components-restore-backup/thirdPartyResources";

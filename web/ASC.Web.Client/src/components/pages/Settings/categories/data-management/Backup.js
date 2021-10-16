@@ -15,7 +15,7 @@ import {
   getBackupSchedule,
 } from "@appserver/common/api/portal";
 import Loader from "@appserver/components/loader";
-import { StyledBackup } from "./styled-backup";
+import { StyledBackup } from "./StyledBackup";
 
 const { proxyURL } = AppServerConfig;
 

@@ -10,7 +10,7 @@ import Loader from "@appserver/components/loader";
 
 import utils from "@appserver/components/utils";
 import Link from "@appserver/components/link";
-import { StyledBackupList } from "../styled-backup";
+import { StyledBackupList } from "../StyledBackup";
 import {
   deleteBackup,
   deleteBackupHistory,

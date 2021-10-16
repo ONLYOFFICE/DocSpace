@@ -11,7 +11,7 @@ import ThirdPartyStorageModule from "./sub-components-manual-backup/ThirdPartySt
 
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
-import { StyledModules, StyledManualBackup } from "./styled-backup";
+import { StyledModules, StyledManualBackup } from "./StyledBackup";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";

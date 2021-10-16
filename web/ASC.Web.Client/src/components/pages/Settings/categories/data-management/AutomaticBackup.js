@@ -17,7 +17,7 @@ import Loader from "@appserver/components/loader";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import FloatingButton from "@appserver/common/components/FloatingButton";
-import { StyledModules, StyledAutoBackup } from "./styled-backup";
+import { StyledModules, StyledAutoBackup } from "./StyledBackup";
 import ThirdPartyModule from "./sub-components-automatic-backup/ThirdPartyModule";
 import DocumentsModule from "./sub-components-automatic-backup/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components-automatic-backup/ThirdPartyStorageModule";
