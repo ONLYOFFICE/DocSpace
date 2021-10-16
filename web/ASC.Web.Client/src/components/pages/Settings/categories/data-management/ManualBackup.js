@@ -223,7 +223,7 @@ class ManualBackup extends React.Component {
     const { link } = this.state;
     const url = window.location.origin;
     const downloadUrl = `${url}` + `${link}`;
-    window.open(downloadUrl, "_blank");
+    window.open(downloadUrl, "_self");
   };
 
   onClickShowStorage = (e) => {
