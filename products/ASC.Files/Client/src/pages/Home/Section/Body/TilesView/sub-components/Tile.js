@@ -6,6 +6,7 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
+import { isDesktop } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 
@@ -116,7 +117,7 @@ const StyledTile = styled.div`
     margin-top: 3px;
 
     @media ${tablet} {
-      display: flex;
+      //display: flex;
       margin-top: 2px;
     }
   }
@@ -136,10 +137,6 @@ const StyledTile = styled.div`
       height: 32px;
       width: 32px;
     }
-
-    @media ${tablet} {
-      display: none;
-    }
   }
 
   .file-icon_container {
@@ -147,12 +144,14 @@ const StyledTile = styled.div`
 
     @media ${tablet} {
       min-width: 28px;
+      margin-right: ${(props) => (props.isFolder ? "10px" : "12px")};
     }
   }
 
   :hover {
     ${(props) =>
       !props.dragging &&
+      props.isDesktop &&
       css`
         .checkbox {
           opacity: 1;
@@ -292,6 +291,13 @@ class Tile extends React.PureComponent {
     onSelect && onSelect(e.target.checked, item);
   };
 
+  onFileIconClick = () => {
+    if (isDesktop) return;
+
+    const { onSelect, item } = this.props;
+    onSelect && onSelect(true, item);
+  };
+
   render() {
     const {
       checked,
@@ -348,12 +354,18 @@ class Tile extends React.PureComponent {
         isRecycleBin={isRecycleBin}
         checked={checked}
         isActive={isActive}
+        isDesktop={isDesktop}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderElement && !(!fileExst && id === -1) && !isEdit && (
               <div className="file-icon_container">
-                <StyledElement className="file-icon">{element}</StyledElement>
+                <StyledElement
+                  className="file-icon"
+                  onClick={this.onFileIconClick}
+                >
+                  {element}
+                </StyledElement>
                 <Checkbox
                   className="checkbox file-checkbox"
                   isChecked={checked}
@@ -390,7 +402,9 @@ class Tile extends React.PureComponent {
             <StyledFileTileBottom checked={checked} isActive={isActive}>
               {id !== -1 && !isEdit && (
                 <div className="file-icon_container">
-                  <div className="file-icon">{element}</div>
+                  <div className="file-icon" onClick={this.onFileIconClick}>
+                    {element}
+                  </div>
                   <Checkbox
                     className="file-checkbox"
                     isChecked={checked}
