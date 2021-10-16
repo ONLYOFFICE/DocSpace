@@ -172,8 +172,10 @@ const StyledFileTileTop = styled.div`
   align-items: baseline;
   background-color: #f8f9f9;
   padding: 13px;
-  height: 157px;
+  height: ${(props) => (props.checked || props.isActive ? "156px" : "157px")};
   position: relative;
+  border-bottom: ${(props) =>
+    (props.checked || props.isActive) && "1px solid #D0D5DA"};
 
   .thumbnail-image,
   .temporary-icon > .injected-svg {
@@ -194,8 +196,6 @@ const StyledFileTileBottom = styled.div`
   padding-right: 0;
   min-height: 56px;
   box-sizing: border-box;
-  border-top: ${(props) =>
-    (props.checked || props.isActive) && "1px solid #D0D5DA"};
 `;
 
 const StyledContent = styled.div`
@@ -398,8 +398,10 @@ class Tile extends React.PureComponent {
           </>
         ) : (
           <>
-            <StyledFileTileTop>{icon}</StyledFileTileTop>
-            <StyledFileTileBottom checked={checked} isActive={isActive}>
+            <StyledFileTileTop checked={checked} isActive={isActive}>
+              {icon}
+            </StyledFileTileTop>
+            <StyledFileTileBottom>
               {id !== -1 && !isEdit && (
                 <div className="file-icon_container">
                   <div className="file-icon" onClick={this.onFileIconClick}>
