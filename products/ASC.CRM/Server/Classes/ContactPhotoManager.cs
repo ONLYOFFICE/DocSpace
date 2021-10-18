@@ -26,8 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -43,6 +41,9 @@ using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -274,14 +275,14 @@ namespace ASC.Web.CRM.Classes
             {
                 var data = resizeWorkerItem.ImageData;
                 using (var stream = new MemoryStream(data))
-                using (var img = new Bitmap(stream))
+                using (var img = Image.Load(stream, out var format))
                 {
-                    var imgFormat = img.RawFormat;
-                    if (fotoSize != img.Size)
+                    var imgFormat = format;
+                    if (fotoSize != img.Size())
                     {
                         using (var img2 = CommonPhotoManager.DoThumbnail(img, fotoSize, false, false, false))
                         {
-                            data = CommonPhotoManager.SaveToBytes(img2, Global.GetImgFormatName(imgFormat));
+                            data = CommonPhotoManager.SaveToBytes(img2, imgFormat);
                         }
                     }
                     else
@@ -610,14 +611,11 @@ namespace ASC.Web.CRM.Classes
             return ResizeToBigSize(imageData, tmpDirName);
         }
 
-        public ImageFormat CheckImgFormat(byte[] imageData)
+        public IImageFormat CheckImgFormat(byte[] imageData)
         {
-            using (var stream = new MemoryStream(imageData))
-            using (var img = new Bitmap(stream))
+            using (var img = Image.Load(imageData, out var format))
             {
-                var format = img.RawFormat;
-
-                if (!format.Equals(ImageFormat.Png) && !format.Equals(ImageFormat.Jpeg))
+                if (!format.Name.Equals("PNG") && !format.Equals("JPEG"))
                     throw new Exception(CRMJSResource.ErrorMessage_NotImageSupportFormat);
 
                 return format;

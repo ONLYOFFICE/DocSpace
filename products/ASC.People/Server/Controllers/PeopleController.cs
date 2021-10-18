@@ -1,8 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -46,6 +44,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -959,7 +960,7 @@ namespace ASC.Employee.Core.Controllers
                 }
 
             }
-            catch (UnknownImageFormatException)
+            catch (Web.Core.Users.UnknownImageFormatException)
             {
                 result.Success = false;
                 result.Message = PeopleResource.ErrorUnknownFileImageType;
@@ -2042,13 +2043,11 @@ namespace ASC.Employee.Core.Controllers
 
         private static void CheckImgFormat(byte[] data)
         {
-            ImageFormat imgFormat;
-
+            IImageFormat imgFormat;
             try
             {
-                using var stream = new MemoryStream(data);
-                using var img = new Bitmap(stream);
-                imgFormat = img.RawFormat;
+                using var img = Image.Load(data, out var format);
+                imgFormat = format;
             }
             catch (OutOfMemoryException)
             {
@@ -2056,12 +2055,12 @@ namespace ASC.Employee.Core.Controllers
             }
             catch (ArgumentException error)
             {
-                throw new UnknownImageFormatException(error);
+                throw new Web.Core.Users.UnknownImageFormatException(error);
             }
 
-            if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
+            if (imgFormat.Name != "PNG" && imgFormat.Name != "JPEG")
             {
-                throw new UnknownImageFormatException();
+                throw new Web.Core.Users.UnknownImageFormatException();
             }
         }
     }

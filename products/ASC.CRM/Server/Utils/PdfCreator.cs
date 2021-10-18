@@ -40,6 +40,7 @@ using ASC.Files.Core;
 using ASC.Web.Files.Services.DocumentService;
 
 using ICSharpCode.SharpZipLib.Zip;
+using SixLabors.ImageSharp;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -389,8 +390,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 else
                 {
-                    using (var stream = new MemoryStream(logo))
-                    using (var img = System.Drawing.Image.FromStream(stream))
+                    using (var img = Image.Load(logo))
                     {
                         var cx = img.Width * 9525; //1px =  9525emu
                         var cy = img.Height * 9525; //1px =  9525emu

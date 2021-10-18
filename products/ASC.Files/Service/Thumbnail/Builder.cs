@@ -17,8 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -39,6 +37,9 @@ using ASC.Web.Files.Services.DocumentService;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace ASC.Files.ThumbnailBuilder
 {
@@ -323,20 +324,20 @@ namespace ASC.Files.ThumbnailBuilder
 
         private void Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
         {
-            using (var sourceBitmap = new Bitmap(stream))
+            using (var sourceImg = Image.Load(stream))
             {
-                using (var targetBitmap = GetImageThumbnail(sourceBitmap))
+                using (var targetImg = GetImageThumbnail(sourceImg))
                 {
                     using (var targetStream = new MemoryStream())
                     {
-                        targetBitmap.Save(targetStream, System.Drawing.Imaging.ImageFormat.Png);
+                        targetImg.Save(targetStream, PngFormat.Instance);
                         fileDao.SaveThumbnail(file, targetStream);
                     }
                 }
             }
         }
 
-        private Image GetImageThumbnail(Bitmap sourceBitmap)
+        private Image GetImageThumbnail(Image sourceBitmap)
         {
             //bad for small or disproportionate images
             //return sourceBitmap.GetThumbnailImage(config.ThumbnaillWidth, config.ThumbnaillHeight, () => false, IntPtr.Zero);
@@ -366,7 +367,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var targetThumbnailSettings = new UserPhotoThumbnailSettings(point, size);
 
-            return UserPhotoThumbnailManager.GetBitmap(sourceBitmap, targetSize, targetThumbnailSettings, InterpolationMode.Bilinear);
+            return UserPhotoThumbnailManager.GetImage(sourceBitmap, targetSize, targetThumbnailSettings);
         }
     }
 }

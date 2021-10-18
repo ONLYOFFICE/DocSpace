@@ -24,12 +24,15 @@
 */
 
 
-using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+
 
 namespace ASC.Web.Core
 {
@@ -43,11 +46,11 @@ namespace ASC.Web.Core
             var realWidth = image.Width;
             var realHeight = image.Height;
 
-            var thumbnail = new Bitmap(width, height);
+            Image thumbnail;
 
             var maxSide = realWidth > realHeight ? realWidth : realHeight;
             var minSide = realWidth < realHeight ? realWidth : realHeight;
-
+            
             var alignWidth = true;
             if (crop) alignWidth = (minSide == realWidth);
             else alignWidth = (maxSide == realWidth);
@@ -65,37 +68,28 @@ namespace ASC.Web.Core
 
             if (rectangle)
             {
+                thumbnail = new Image<Rgba32>(width, height);
                 locationY = (int)((height / 2.0) - (finalHeigth / 2.0));
                 locationX = (int)((width / 2.0) - (finalWidth / 2.0));
 
-                var rect = new Rectangle(locationX, locationY, finalWidth, finalHeigth);
-
-                using var graphic = Graphics.FromImage(thumbnail);
                 if (!transparent)
                 {
-                    graphic.Clear(Color.White);
-                    graphic.SmoothingMode = SmoothingMode.HighQuality;
+                    thumbnail.Mutate(x=> x.Clear(Color.White));
                 }
-                graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using var wrapMode = new ImageAttributes();
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphic.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                var point = new Point(locationX, locationY);
+                image.Mutate(y => y.Resize(finalWidth, finalHeigth));
+                thumbnail.Mutate(x => x.DrawImage(image, point, 1));
             }
             else
             {
-                thumbnail = new Bitmap(finalWidth, finalHeigth);
+                thumbnail = new Image<Rgba32>(finalWidth, finalHeigth);
 
-                using var graphic = Graphics.FromImage(thumbnail);
                 if (!transparent)
                 {
-                    graphic.Clear(Color.White);
-                    graphic.SmoothingMode = SmoothingMode.HighQuality;
+                    thumbnail.Mutate(x => x.Clear(Color.White));
                 }
-                graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphic.DrawImage(image, 0, 0, finalWidth, finalHeigth);
+                image.Mutate(y => y.Resize(finalWidth, finalHeigth));
+                thumbnail.Mutate(x => x.DrawImage(image, 1));
             }
 
             return thumbnail;
@@ -104,48 +98,24 @@ namespace ASC.Web.Core
         public static byte[] SaveToBytes(Image img)
         {
             using var memoryStream = new MemoryStream();
-            img.Save(memoryStream, ImageFormat.Png);
+            img.Save(memoryStream, PngFormat.Instance);
             return memoryStream.ToArray();
         }
 
-        public static byte[] SaveToBytes(Image img, string formatName)
+        public static byte[] SaveToBytes(Image img, IImageFormat imageFormat)
         {
             byte[] data;
             using (var memoryStream = new MemoryStream())
             {
-                var encParams = new EncoderParameters(1);
-                encParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)100);
-                img.Save(memoryStream, GetCodecInfo(formatName), encParams);
+                img.Save(memoryStream, imageFormat);
                 data = memoryStream.ToArray();
             }
             return data;
         }
 
-        public static ImageCodecInfo GetCodecInfo(string formatName)
+        public static string GetImgFormatName(IImageFormat format)
         {
-            var mimeType = string.Format("image/{0}", formatName);
-            if (mimeType == "image/jpg") mimeType = "image/jpeg";
-            var encoders = ImageCodecInfo.GetImageEncoders();
-            var encoder = encoders.FirstOrDefault(e => e.MimeType.Equals(mimeType, StringComparison.InvariantCultureIgnoreCase));
-            if (encoder != null)
-            {
-                return encoder;
-            }
-            return 0 < encoders.Length ? encoders[0] : null;
-        }
-
-        public static string GetImgFormatName(ImageFormat format)
-        {
-            if (format.Equals(ImageFormat.Bmp)) return "bmp";
-            if (format.Equals(ImageFormat.Emf)) return "emf";
-            if (format.Equals(ImageFormat.Exif)) return "exif";
-            if (format.Equals(ImageFormat.Gif)) return "gif";
-            if (format.Equals(ImageFormat.Icon)) return "icon";
-            if (format.Equals(ImageFormat.Jpeg)) return "jpeg";
-            if (format.Equals(ImageFormat.Png)) return "png";
-            if (format.Equals(ImageFormat.Tiff)) return "tiff";
-            if (format.Equals(ImageFormat.Wmf)) return "wmf";
-            return "jpg";
+            return format.Name.ToLower();
         }
     }
 }
