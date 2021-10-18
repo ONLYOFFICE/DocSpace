@@ -161,7 +161,13 @@ class FilterItem extends React.Component {
       defaultOption,
       asideView,
       smallSectionWidth,
+      openItems,
     } = this.props;
+
+    const openInAside =
+      (window.innerWidth < 1360 && openItems >= 3) ||
+      (window.innerWidth < 1170 && openItems >= 2);
+
     return (
       <StyledFilterItem key={id} id={id} block={block} opened={opened}>
         <StyledFilterItemContent isDisabled={isDisabled} isOpen={isOpen}>
@@ -217,7 +223,7 @@ class FilterItem extends React.Component {
                 onCancel={this.onCancelSelector}
                 smallSectionWidth={smallSectionWidth}
                 onSelect={this.onSelectGroup}
-                displayType={asideView ? "aside" : "auto"}
+                displayType={asideView || openInAside ? "aside" : "auto"}
               />
             </>
           )}
@@ -237,6 +243,7 @@ class FilterItem extends React.Component {
                   size="content"
                   scaled={false}
                   noBorder={true}
+                  isDefaultMode={false}
                   opened={opened}
                   textOverflow={true}
                   directionX="left"
@@ -368,6 +375,7 @@ class FilterBlock extends React.Component {
             selectedItem={selectedItem}
             onFilterRender={_this.props.onFilterRender}
             asideView={asideView}
+            openItems={openFilterItems.length}
           ></FilterItem>
         );
       });
