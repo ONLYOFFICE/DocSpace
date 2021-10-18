@@ -158,7 +158,6 @@ class FilesTableHeader extends React.Component {
 
     return (
       <TableHeader
-        checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
         containerRef={containerRef}

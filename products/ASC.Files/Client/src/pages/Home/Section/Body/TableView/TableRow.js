@@ -73,7 +73,7 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox-wrapper {
-    width: 50px;
+    min-width: 30px;
     margin-left: -24px;
     padding-left: 24px;
     border-bottom: 1px solid;
@@ -233,19 +233,22 @@ const FilesTableRow = (props) => {
         selectionProp={selectionProp}
         key={item.id}
         item={item}
-        element={element}
         fileContextClick={fileContextClick}
-        onContentSelect={onContentFileSelect}
         onClick={onMouseClick}
         {...contextOptionsProps}
-        checked={checkedProps}
         isActive={isActive}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
       >
         <TableCell {...dragStyles} {...selectionProp}>
-          <FileNameCell {...props} />
+          <FileNameCell
+            onContentSelect={onContentFileSelect}
+            checked={checkedProps}
+            element={element}
+            {...selectionProp}
+            {...props}
+          />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (

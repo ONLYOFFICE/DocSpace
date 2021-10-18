@@ -67,8 +67,9 @@ const SectionBodyContent = (props) => {
       !e.target.closest(".files-item") &&
       !e.target.closest(".not-selectable")
     ) {
-      setSelection([]);
-      setBufferSelection(null);
+      // TODO: need fix clear selection
+      //setSelection([]);
+      //setBufferSelection(null);
     }
   };
 

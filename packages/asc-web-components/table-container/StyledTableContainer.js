@@ -141,7 +141,7 @@ const StyledTableHeaderCell = styled.div`
   cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
 
   .header-container-text-icon {
-    padding: 16px 0 0 4px;
+    padding: 13px 0 0 4px;
 
     display: ${(props) =>
       props.isActive && props.showIcon ? "block" : "none"};

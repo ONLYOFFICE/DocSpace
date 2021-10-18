@@ -43,9 +43,9 @@ const TableRow = (props) => {
     return contextOptions;
   };
 
-  const onChange = (e) => {
-    onContentSelect && onContentSelect(e.target.checked, item);
-  };
+  // const onChange = (e) => {
+  //   onContentSelect && onContentSelect(e.target.checked, item);
+  // };
 
   return (
     <StyledTableRow
@@ -53,7 +53,7 @@ const TableRow = (props) => {
       className={`${className} table-container_row`}
       {...rest}
     >
-      <TableCell
+      {/* <TableCell
         hasAccess={hasAccess}
         checked={checked}
         {...selectionProp}
@@ -66,7 +66,7 @@ const TableRow = (props) => {
           onChange={onChange}
           isChecked={checked}
         />
-      </TableCell>
+      </TableCell> */}
       {children}
       <div>
         <TableCell
