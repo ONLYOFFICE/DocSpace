@@ -302,8 +302,9 @@ class SectionHeaderContent extends React.Component {
     this.props.setSelected(checked ? "all" : "none");
   };
 
-  onSelect = (item) => {
-    this.props.setSelected(item.key);
+  onSelect = (e) => {
+    const key = e.currentTarget.dataset.key;
+    this.props.setSelected(key);
   };
 
   onClose = () => {
@@ -313,10 +314,10 @@ class SectionHeaderContent extends React.Component {
   getMenuItems = () => {
     const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
 
-    const children = cbMenuItems.map((key, index) => {
-      const label = getCheckboxItemLabel(t, key);
-      return <DropDownItem key={key} label={label} data-index={index} />;
-    });
+    // const children = cbMenuItems.map((key, index) => {
+    //   const label = getCheckboxItemLabel(t, key);
+    //   return <DropDownItem key={key} label={label} data-index={index} />;
+    // });
 
     const checkboxOptions = (
       <>
@@ -335,6 +336,10 @@ class SectionHeaderContent extends React.Component {
     );
 
     return checkboxOptions;
+  };
+
+  onChange = (checked) => {
+    this.props.setSelected(checked ? "all" : "none");
   };
 
   render() {
@@ -373,11 +378,10 @@ class SectionHeaderContent extends React.Component {
             {isHeaderVisible ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
-                // onChange={onChange}
+                onChange={this.onChange}
                 isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
-                // columnStorageName={columnStorageName}
               />
             ) : (
               <div className="header-container">
