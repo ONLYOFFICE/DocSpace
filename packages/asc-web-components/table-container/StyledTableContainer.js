@@ -149,7 +149,7 @@ const StyledTableHeaderCell = styled.div`
       props.sorted &&
       css`
         transform: scale(1, -1);
-        padding: 14px 0 0 4px;
+        padding: 12px 0 0 4px;
       `}
   }
 

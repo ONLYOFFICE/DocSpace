@@ -232,7 +232,6 @@ const FilesTableRow = (props) => {
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
         key={item.id}
-        item={item}
         fileContextClick={fileContextClick}
         onClick={onMouseClick}
         {...contextOptionsProps}
