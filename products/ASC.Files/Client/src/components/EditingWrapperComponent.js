@@ -107,7 +107,7 @@ const EditingWrapper = styled.div`
   }
 
   .is-edit {
-    margin-top: 4px;
+    /* margin-top: 4px; */
   }
 `;
 
