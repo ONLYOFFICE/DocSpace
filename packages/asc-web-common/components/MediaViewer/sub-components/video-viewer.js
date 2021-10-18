@@ -456,10 +456,9 @@ class VideoViewer extends Component {
         height={height}
         left={left}
         top={height + controlsHeight}
-        onClick={this.handlePlayPause}
       >
         <div>
-          <div className="playerWrapper">
+          <div className="playerWrapper" onClick={this.handlePlayPause}>
             <ReactPlayer
               ref={this.ref}
               className="react-player"

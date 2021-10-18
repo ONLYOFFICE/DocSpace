@@ -97,7 +97,7 @@ export default function withFileActions(WrappedFileItem) {
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
-      setBufferSelection(null);
+      !isActive && setBufferSelection(null);
     };
 
     onMarkAsRead = (id) =>
