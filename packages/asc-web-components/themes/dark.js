@@ -1135,7 +1135,7 @@ const Dark = {
   dropDown: {
     fontWeight: "600",
     fontSize: "13px",
-    zIndex: "200",
+    zIndex: "400",
     background: white,
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",

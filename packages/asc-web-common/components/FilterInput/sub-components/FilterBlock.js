@@ -162,10 +162,11 @@ class FilterItem extends React.Component {
       asideView,
       smallSectionWidth,
       openItems,
+      sectionWidth,
     } = this.props;
 
     const openInAside =
-      (window.innerWidth < 1360 && openItems >= 3) ||
+      ((window.innerWidth < 1360 || sectionWidth) < 1080 && openItems >= 3) ||
       (window.innerWidth < 1170 && openItems >= 2);
 
     return (
@@ -332,6 +333,7 @@ class FilterBlock extends React.Component {
       openFilterItems,
       hiddenFilterItems,
       smallSectionWidth,
+      sectionWidth,
     } = this.props;
     const { asideView } = this.props;
     const _this = this;
@@ -356,6 +358,7 @@ class FilterBlock extends React.Component {
           <FilterItem
             block={false}
             isDisabled={_this.props.isDisabled}
+            sectionWidth={sectionWidth}
             smallSectionWidth={smallSectionWidth}
             key={key}
             groupItems={_this.props.getFilterData().filter(function (t) {

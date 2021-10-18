@@ -896,6 +896,7 @@ class FilterInput extends React.Component {
                 hiddenFilterItems={hiddenFilterItems}
                 iconSize={iconSize}
                 smallSectionWidth={smallSectionWidth}
+                sectionWidth={sectionWidth}
                 getFilterData={getFilterData}
                 onClickFilterItem={this.onClickFilterItem}
                 onDeleteFilterItem={this.onDeleteFilterItem}
