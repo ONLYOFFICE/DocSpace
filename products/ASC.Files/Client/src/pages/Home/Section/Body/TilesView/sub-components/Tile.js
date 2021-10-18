@@ -115,9 +115,9 @@ const StyledTile = styled.div`
     flex: 0 0 16px;
     margin-right: ${(props) => (props.isFolder ? "8px" : "4px")};
     margin-top: 3px;
+    justify-content: center;
 
     @media ${tablet} {
-      //display: flex;
       margin-top: 2px;
     }
   }
