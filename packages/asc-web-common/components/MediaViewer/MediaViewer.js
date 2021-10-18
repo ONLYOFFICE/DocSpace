@@ -125,6 +125,8 @@ class MediaViewer extends React.Component {
 
     const { playlistPos, fileUrl } = this.state;
     const src = playlist[playlistPos]?.src;
+    const title = playlist[playlistPos]?.title;
+    const ext = this.getFileExtension(title);
 
     if (visible !== prevProps.visible) {
       const newPlaylistPos =
@@ -138,7 +140,13 @@ class MediaViewer extends React.Component {
       });
     }
 
-    if (src && src !== fileUrl && playlistPos === prevState.playlistPos) {
+    if (
+      src &&
+      src !== fileUrl &&
+      playlistPos === prevState.playlistPos &&
+      ext !== ".tif" &&
+      ext !== ".tiff"
+    ) {
       this.setState({ fileUrl: src });
     }
 
@@ -147,10 +155,6 @@ class MediaViewer extends React.Component {
       visible === prevProps.visible &&
       playlistPos !== prevState.playlistPos
     ) {
-      const currentFile = playlist[playlistPos];
-      const { src, title } = currentFile;
-      const ext = this.getFileExtension(title);
-
       if (ext === ".tiff" || ext === ".tif") {
         this.getTiffDataURL(src);
       } else {

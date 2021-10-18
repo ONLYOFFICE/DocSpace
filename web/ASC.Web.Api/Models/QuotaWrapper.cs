@@ -115,7 +115,7 @@ namespace ASC.Web.Studio.Core.Quota
             MaxUsersCount = TenantExtra.GetTenantQuota().ActiveUsers;
             UsersCount = coreBaseSettings.Personal ? 1 : TenantStatisticsProvider.GetUsersCount();
             MaxVisitors = coreBaseSettings.Standalone ? -1 : constants.CoefficientOfVisitors * TenantExtra.GetTenantQuota().ActiveUsers;
-            VisitorsCount = TenantStatisticsProvider.GetVisitorsCount();
+            VisitorsCount = coreBaseSettings.Personal ? 0 : TenantStatisticsProvider.GetVisitorsCount();
 
             StorageUsage = quotaRows
                     .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
