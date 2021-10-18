@@ -36,9 +36,8 @@ const StyledIconWrapper = styled.div`
 
 const StyledText = styled(Text)`
   margin-left: 10px;
-  /* line-height: 20px; */
   position: relative;
-  bottom: -1px;
+  bottom: ${(props) => (props.isRoot ? '-2px' : '-1px')};
 `;
 
 const Item = ({ id, title, isRoot, onClick, ...rest }) => {

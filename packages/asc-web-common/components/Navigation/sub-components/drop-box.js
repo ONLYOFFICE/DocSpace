@@ -152,7 +152,7 @@ const DropBox = React.forwardRef(
     const countItems = navigationItems.length;
 
     const getItemSize = (index) => {
-      if (index === countItems - 1) return 29;
+      if (index === countItems - 1) return 31;
       return isMobile || IsMobileUtils() || isTabletUtils() ? 36 : 30;
     };
 
@@ -160,40 +160,12 @@ const DropBox = React.forwardRef(
       const itemsHeight = navigationItems.map((item, index) => getItemSize(index));
 
       const currentHeight = itemsHeight.reduce((a, b) => a + b);
-      console.log(
-        currentHeight,
-        window.innerHeight,
-        currentHeight + 30 > window.innerHeight - 110
-          ? window.innerHeight - 110
-          : currentHeight + 20,
-      );
-      return currentHeight + 30 > window.innerHeight - 110
-        ? window.innerHeight - 110
-        : currentHeight + 20;
+      // 22 is padding-bottom last item
+      // 109 is nav height + height section header
+      return currentHeight + 22 > window.innerHeight - 109
+        ? window.innerHeight - 109
+        : currentHeight + 22;
     }, [height]);
-
-    // useEffect(() => {
-    //   const items = [];
-    //   const itemsText = [];
-    //   const sectionWidth = document.getElementById('section').offsetWidth;
-    //   navigationItems.forEach((item) => {
-    //     items.push(document.getElementById(item.id));
-    //     itemsText.push(document.getElementById(`item-text-${item.id}`));
-    //   });
-    //   let maxTextWidth = 0;
-
-    //   itemsText.forEach((item) => {
-    //     item.offsetWidth > maxTextWidth ? (maxTextWidth = item.offsetWidth) : null;
-    //   });
-
-    //   if (sectionWidth < maxTextWidth + 57) {
-    //     setCurrentWidth(sectionWidth);
-    //   } else {
-    //     setCurrentWidth(maxTextWidth + 57);
-    //   }
-
-    //   items.forEach((item, index) => {});
-    // }, []);
 
     return (
       <StyledBox ref={ref} width={width} height={getListHeight()} changeWidth={changeWidth}>
