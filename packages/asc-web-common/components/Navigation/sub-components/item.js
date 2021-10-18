@@ -36,10 +36,9 @@ const StyledIconWrapper = styled.div`
 
 const StyledText = styled(Text)`
   margin-left: 10px;
-  height: 19px;
-  line-height: 19px;
+  /* line-height: 20px; */
   position: relative;
-  bottom: -2px;
+  bottom: -1px;
 `;
 
 const Item = ({ id, title, isRoot, onClick, ...rest }) => {

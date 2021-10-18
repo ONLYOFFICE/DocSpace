@@ -160,11 +160,16 @@ const DropBox = React.forwardRef(
       const itemsHeight = navigationItems.map((item, index) => getItemSize(index));
 
       const currentHeight = itemsHeight.reduce((a, b) => a + b);
-
-      if (isMobileOnly)
-        return currentHeight + 30 > height - 109 ? height - 109 : currentHeight + 30;
-      if (isMobile) return currentHeight + 30 > height - 120 ? height - 120 : currentHeight + 30;
-      return currentHeight + 20 > height - 53 ? height - 53 : currentHeight + 20;
+      console.log(
+        currentHeight,
+        window.innerHeight,
+        currentHeight + 30 > window.innerHeight - 110
+          ? window.innerHeight - 110
+          : currentHeight + 20,
+      );
+      return currentHeight + 30 > window.innerHeight - 110
+        ? window.innerHeight - 110
+        : currentHeight + 20;
     }, [height]);
 
     // useEffect(() => {
@@ -189,8 +194,9 @@ const DropBox = React.forwardRef(
 
     //   items.forEach((item, index) => {});
     // }, []);
+
     return (
-      <StyledBox ref={ref} width={width} height={height + 20} changeWidth={changeWidth}>
+      <StyledBox ref={ref} width={width} height={getListHeight()} changeWidth={changeWidth}>
         <StyledContainer canCreate={canCreate}>
           <ArrowButton isRootFolder={isRootFolder} onBackToParentFolder={onBackToParentFolder} />
           <Text title={title} isOpen={true} onClick={toggleDropBox} />
