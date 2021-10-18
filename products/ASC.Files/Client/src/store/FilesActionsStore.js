@@ -184,10 +184,11 @@ class FilesActionStore {
           icon: "file",
           label,
         };
-        const item = await this.uploadDataStore.loopFilesOperations(
-          data,
-          pbData
-        );
+
+        const item =
+          data?.finished && data?.url
+            ? data
+            : await this.uploadDataStore.loopFilesOperations(data, pbData);
 
         if (item.url) {
           window.location.href = item.url;

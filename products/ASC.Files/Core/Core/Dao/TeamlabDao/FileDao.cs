@@ -439,7 +439,7 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                FilesDbContext.Files.Add(toInsert);
+                FilesDbContext.AddOrUpdate(r => r.Files, toInsert);
                 FilesDbContext.SaveChanges();
 
                 tx.Commit();
