@@ -52,6 +52,7 @@ const PeopleTableRow = (props) => {
         <TableCell
           hasAccess={isAdmin}
           className="table-container_row-checkbox-wrapper"
+          checked={checkedProps.checked}
         >
           <div className="table-container_element">{element}</div>
           <Checkbox

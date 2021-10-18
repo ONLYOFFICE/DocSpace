@@ -16,7 +16,7 @@ const TableHeaderCell = ({
 }) => {
   const { title, enable, active, minWidth } = column;
 
-  const isActive = column.sortBy === sortBy || active;
+  const isActive = (sortBy && column.sortBy === sortBy) || active;
 
   const onClick = (e) => {
     column.onClick && column.onClick(column.sortBy, e);

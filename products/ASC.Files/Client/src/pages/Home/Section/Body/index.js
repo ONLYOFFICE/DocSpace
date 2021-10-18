@@ -68,8 +68,8 @@ const SectionBodyContent = (props) => {
       !e.target.closest(".not-selectable") &&
       !e.target.closest(".table-container_group-menu")
     ) {
-      // setSelection([]);
-      // setBufferSelection(null);
+      setSelection([]);
+      setBufferSelection(null);
     }
   };
 
