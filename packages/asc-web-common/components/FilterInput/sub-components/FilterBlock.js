@@ -166,8 +166,9 @@ class FilterItem extends React.Component {
     } = this.props;
 
     const openInAside =
-      ((window.innerWidth < 1360 || sectionWidth) < 1080 && openItems >= 3) ||
-      (window.innerWidth < 1170 && openItems >= 2);
+      ((window.innerWidth < 1360 || sectionWidth < 1080) && openItems >= 3) ||
+      ((window.innerWidth < 1170 || sectionWidth < 1000) && openItems >= 2) ||
+      sectionWidth < 780;
 
     return (
       <StyledFilterItem key={id} id={id} block={block} opened={opened}>
@@ -408,6 +409,7 @@ class FilterBlock extends React.Component {
               return t.group == group && t.group != t.key;
             })}
             onSelectFilterItem={_this.props.onClickFilterItem}
+            sectionWidth={sectionWidth}
             id={key}
             groupLabel={groupLabel}
             opened={key.indexOf("_-1") == -1 ? false : true}
