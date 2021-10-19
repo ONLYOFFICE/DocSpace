@@ -27,16 +27,31 @@ const commonStyles = css`
       ` height: 100%;
     box-sizing: border-box;
 `}
-    flex: 1 0 auto;
     padding: 17px 7px 16px 24px;
-    outline: none;
     ${(props) =>
+      !props.isLoadingContent &&
+      css`
+        flex: 1 0 auto;
+
+        outline: none;
+            ${(props) =>
       props.viewAs == "tile" &&
       css`
         padding-right: 0;
         padding-left: 20px;
       `}
 
+        .section-wrapper {
+          display: flex;
+          flex-direction: column;
+          min-height: 100%;
+        }
+
+        .people-row-container,
+        .files-row-container {
+          margin-top: -22px;
+        }
+      `}
     @media ${tablet} {
       padding: 16px 0 16px 24px;
     }
@@ -132,8 +147,9 @@ class SectionBody extends React.Component {
       viewAs,
       withScroll,
       isLoaded,
+      isLoadingContent,
     } = this.props;
-
+    console.log("isLoaded", isLoaded);
     const focusProps = autoFocus
       ? {
           ref: this.focusRef,
@@ -172,7 +188,7 @@ class SectionBody extends React.Component {
         ) : (
           <div className="section-wrapper">
             {children}
-            {/* <StyledSpacer pinned={pinned} /> */}
+            <StyledSpacer pinned={pinned} />
           </div>
         )}
       </StyledDropZoneBody>
@@ -182,6 +198,7 @@ class SectionBody extends React.Component {
         withScroll={withScroll}
         pinned={pinned}
         isLoaded={isLoaded}
+        isLoadingContent={isLoadingContent}
       >
         {withScroll ? (
           !isMobile ? (
@@ -203,7 +220,7 @@ class SectionBody extends React.Component {
           )
         ) : (
           <div className="section-wrapper">
-            {children}
+            <div className="section-wrapper-content">{children}</div>
             {/* <StyledSpacer pinned={pinned} /> */}
           </div>
         )}
@@ -227,6 +244,7 @@ SectionBody.propTypes = {
   ]),
   viewAs: PropTypes.string,
   isLoaded: PropTypes.bool,
+  isLoadingContent: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
@@ -234,6 +252,7 @@ SectionBody.defaultProps = {
   pinned: false,
   uploadFiles: false,
   withScroll: true,
+  isLoadingContent: false,
 };
 
 export default inject(({ auth }) => {

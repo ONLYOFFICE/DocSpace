@@ -210,6 +210,7 @@ class PageLayout extends React.Component {
       isBackdropVisible,
       isArticlePinned,
       isDesktop,
+      isLoadingContent,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -377,6 +378,7 @@ class PageLayout extends React.Component {
                           autoFocus={isMobile || isTabletView ? false : true}
                           pinned={isArticlePinned}
                           viewAs={viewAs}
+                          isLoadingContent={isLoadingContent}
                         >
                           {isSectionFilterAvailable && (
                             <SubSectionFilter className="section-body_filter">
