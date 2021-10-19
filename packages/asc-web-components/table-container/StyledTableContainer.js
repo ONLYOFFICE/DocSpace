@@ -10,6 +10,8 @@ const HeaderStyles = css`
 `;
 
 const StyledTableContainer = styled.div`
+  -moz-user-select: none;
+
   width: 100%;
   max-width: 100%;
   margin-top: -18px;
@@ -29,6 +31,24 @@ const StyledTableContainer = styled.div`
     margin: 14px 8px 0 auto;
     z-index: 1;
     border-right: 2px solid #d0d5da;
+  }
+
+  .table-container_group-menu {
+    padding-left: 24px;
+    margin-left: -24px;
+    padding-right: 24px;
+    margin-right: -24px;
+
+    border-bottom: 1px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(
+      to right,
+      #ffffff 24px,
+      #eceef1 24px,
+      #eceef1 calc(100% - 24px),
+      #ffffff calc(100% - 24px)
+    );
+    border-top: 0;
   }
 
   .content-container {
@@ -100,6 +120,8 @@ const StyledTableGroupMenu = styled.div`
 
 const StyledTableHeader = styled.div`
   display: grid;
+  margin: 0 -24px;
+  padding: 0 24px;
 
   ${HeaderStyles}
 
@@ -113,6 +135,31 @@ const StyledTableHeader = styled.div`
 `;
 
 const StyledTableHeaderCell = styled.div`
+  cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
+
+  .header-container-text-icon {
+    padding: 16px 0 0 4px;
+
+    display: ${(props) =>
+      props.isActive && props.showIcon ? "block" : "none"};
+    ${(props) =>
+      props.sorted &&
+      css`
+        transform: scale(1, -1);
+        padding: 14px 0 0 4px;
+      `}
+  }
+
+  :hover {
+    .header-container-text-icon {
+      ${(props) =>
+        props.showIcon &&
+        css`
+          display: block;
+        `};
+    }
+  }
+
   .table-container_header-item {
     display: flex;
     user-select: none;
@@ -120,25 +167,6 @@ const StyledTableHeaderCell = styled.div`
 
   .header-container-text-wrapper {
     display: flex;
-    cursor: pointer;
-
-    .header-container-text-icon {
-      padding: 16px 0 0 4px;
-
-      display: ${(props) => (props.isActive ? "block" : "none")};
-      ${(props) =>
-        props.sorted &&
-        css`
-          transform: scale(1, -1);
-          padding: 14px 0 0 4px;
-        `}
-    }
-
-    :hover {
-      .header-container-text-icon {
-        display: block;
-      }
-    }
   }
 
   .header-container-text {

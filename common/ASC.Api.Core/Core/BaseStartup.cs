@@ -94,6 +94,7 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<ProductSecurityFilter>();
             DIHelper.TryAdd<TenantStatusFilter>();
             DIHelper.TryAdd<ConfirmAuthHandler>();
+            DIHelper.TryAdd<CookieAuthHandler>();
             DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));

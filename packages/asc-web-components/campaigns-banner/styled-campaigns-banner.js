@@ -36,7 +36,7 @@ const BannerWrapper = styled.div`
 
   .banner-btn:active {
     color: #fff;
-    background: #ed7309;
+    background: #2da7db;
     border: none;
   }
 `;

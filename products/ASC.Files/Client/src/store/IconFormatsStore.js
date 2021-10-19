@@ -255,6 +255,8 @@ class IconFormatsStore {
         return `${folderPath}/djvu.svg`;
       case ".doc":
         return `${folderPath}/doc.svg`;
+      case ".docm":
+        return `${folderPath}/docm.svg`;
       case ".docx":
         return `${folderPath}/docx.svg`;
       case ".dotx":
@@ -269,8 +271,12 @@ class IconFormatsStore {
         return `${folderPath}/fb2.svg`;
       case ".flv":
         return `${folderPath}/flv.svg`;
+      case ".fodt":
+        return `${folderPath}/fodt.svg`;
       case ".iaf":
         return `${folderPath}/iaf.svg`;
+      case ".ics":
+        return `${folderPath}/ics.svg`;
       case ".m2ts":
         return `${folderPath}/m2ts.svg`;
       case ".mht":
@@ -319,6 +325,8 @@ class IconFormatsStore {
         return `${folderPath}/webm.svg`;
       case ".xls":
         return `${folderPath}/xls.svg`;
+      case ".xlsm":
+        return `${folderPath}/xlsm.svg`;
       case ".xlsx":
         return `${folderPath}/xlsx.svg`;
       case ".xps":
@@ -353,6 +361,8 @@ class IconFormatsStore {
         return `${folderPath}/djvu.svg`;
       case ".doc":
         return `${folderPath}/doc.svg`;
+      case ".docm":
+        return `${folderPath}/docm.svg`;
       case ".docx":
         return `${folderPath}/docx.svg`;
       case ".dotx":
@@ -367,8 +377,12 @@ class IconFormatsStore {
         return `${folderPath}/fb2.svg`;
       case ".flv":
         return `${folderPath}/flv.svg`;
+      case ".fodt":
+        return `${folderPath}/fodt.svg`;
       case ".iaf":
         return `${folderPath}/iaf.svg`;
+      case ".ics":
+        return `${folderPath}/ics.svg`;
       case ".m2ts":
         return `${folderPath}/m2ts.svg`;
       case ".mht":
@@ -417,6 +431,8 @@ class IconFormatsStore {
         return `${folderPath}/webm.svg`;
       case ".xls":
         return `${folderPath}/xls.svg`;
+      case ".xlsm":
+        return `${folderPath}/xlsm.svg`;
       case ".xlsx":
         return `${folderPath}/xlsx.svg`;
       case ".xps":

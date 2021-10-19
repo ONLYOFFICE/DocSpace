@@ -3,16 +3,17 @@ import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
 const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
-  const { fileExst } = item;
+  const { fileExst, title } = item;
   return (
     <Link
       type="page"
-      title={titleWithoutExt}
+      title={title}
       fontWeight="600"
-      fontSize="15px"
+      fontSize="13px"
       {...linkStyles}
       color="#333"
       isTextOverflow
+      className="item-file-name"
     >
       {titleWithoutExt}
       {fileExst ? (
@@ -20,9 +21,8 @@ const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
           className="badge-ext"
           as="span"
           color="#A3A9AE"
-          fontSize="15px"
+          fontSize="13px"
           fontWeight={600}
-          title={fileExst}
           truncate={true}
         >
           {fileExst}

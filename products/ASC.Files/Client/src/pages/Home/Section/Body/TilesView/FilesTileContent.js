@@ -77,11 +77,9 @@ const FilesTileContent = ({
   item,
   titleWithoutExt,
   linkStyles,
-  isTrashFolder,
-  onFilesClick,
   badgesComponent,
 }) => {
-  const { fileExst } = item;
+  const { fileExst, title } = item;
 
   return (
     <>
@@ -91,12 +89,13 @@ const FilesTileContent = ({
         //disableSideInfo
       >
         <Link
-          className="title-link"
+          className="title-link item-file-name"
           containerWidth="100%"
           type="page"
-          title={titleWithoutExt}
+          title={title}
           fontWeight="600"
           fontSize="14px"
+          target="_blank"
           {...linkStyles}
           color="#333"
           isTextOverflow
@@ -109,7 +108,6 @@ const FilesTileContent = ({
               color="#A3A9AE"
               fontSize="14px"
               fontWeight={600}
-              title={fileExst}
               truncate={true}
             >
               {fileExst}

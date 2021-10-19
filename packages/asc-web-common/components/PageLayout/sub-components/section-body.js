@@ -13,6 +13,9 @@ import { tablet } from "@appserver/components/utils/device";
 const commonStyles = css`
   flex-grow: 1;
   height: 100%;
+  border-left: none;
+
+  -webkit-user-select: none;
 
   .section-wrapper-content {
     flex: 1 0 auto;
@@ -120,6 +123,7 @@ class SectionBody extends React.Component {
         viewAs={viewAs}
         pinned={pinned}
         isLoaded={isLoaded}
+        className="section-body"
       >
         {withScroll ? (
           !isMobile ? (

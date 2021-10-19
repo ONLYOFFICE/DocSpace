@@ -18,6 +18,7 @@ import { desktop, tablet } from "@appserver/components/utils/device";
 import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const { proxyURL } = AppServerConfig;
 
@@ -28,11 +29,12 @@ const Header = styled.header`
   background-color: ${backgroundColor};
   display: flex;
   width: 100vw;
-  height: 56px;
+  height: 48px;
 
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+    ${NoUserSelect}
     ${(props) =>
       props.module &&
       !props.isPersonal &&
@@ -93,7 +95,7 @@ const Header = styled.header`
         !props.isPersonal &&
         css`
           display: ${(props) => (props.module ? "none" : "block")};
-          padding: 0px 20px 0 6px;
+          padding: 3px 20px 0 6px;
         `}
     }
   }

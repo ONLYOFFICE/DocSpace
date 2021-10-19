@@ -15,6 +15,7 @@ class TextField extends React.Component {
       isRequired,
       hasError,
       labelText,
+      errorMessage,
 
       inputName,
       inputValue,
@@ -25,15 +26,18 @@ class TextField extends React.Component {
       tooltipContent,
       helpButtonHeaderContent,
       maxLength,
+      maxLabelWidth,
     } = this.props;
 
     return (
       <FieldContainer
         isRequired={isRequired}
         hasError={hasError}
+        errorMessage={errorMessage}
         labelText={labelText}
         tooltipContent={tooltipContent}
         helpButtonHeaderContent={helpButtonHeaderContent}
+        maxLabelWidth={maxLabelWidth}
       >
         <TextInput
           name={inputName}

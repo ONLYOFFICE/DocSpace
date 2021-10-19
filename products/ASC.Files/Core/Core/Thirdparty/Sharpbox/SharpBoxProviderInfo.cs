@@ -166,7 +166,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 storage.Open(config, new GenericNetworkCredentials { Password = _authData.Password, UserName = _authData.Login });
             }
-            return storage;
+            return Storage = storage;
         }
 
         public void Dispose()

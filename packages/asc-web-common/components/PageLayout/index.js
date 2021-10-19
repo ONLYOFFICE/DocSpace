@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 import { size } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
-import { isMobile } from "react-device-detect";
+import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 import Article from "./sub-components/article";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
@@ -114,9 +114,14 @@ class PageLayout extends React.Component {
   orientationChangeHandler = () => {
     const isValueExist = !!this.props.isArticlePinned;
     const isEnoughWidth = screen.availWidth > size.smallTablet;
+    const isPortrait =
+      isFirefox &&
+      isMobileOnly &&
+      screen.orientation.type === "portrait-primary";
 
-    if (!isEnoughWidth && isValueExist) {
+    if ((!isEnoughWidth && isValueExist) || isPortrait) {
       this.backdropClick();
+      return;
     }
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
@@ -204,6 +209,7 @@ class PageLayout extends React.Component {
       isArticleVisible,
       isBackdropVisible,
       isArticlePinned,
+      isDesktop,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -297,7 +303,7 @@ class PageLayout extends React.Component {
                 </SubArticleMainButton>
               )}
               {isArticleBodyAvailable && (
-                <SubArticleBody pinned={isArticlePinned}>
+                <SubArticleBody pinned={isArticlePinned} isDesktop={isDesktop}>
                   {articleBodyContent
                     ? articleBodyContent.props.children
                     : null}
@@ -334,6 +340,7 @@ class PageLayout extends React.Component {
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
                         isArticlePinned={isArticlePinned}
+                        viewAs={viewAs}
                       >
                         {sectionHeaderContent
                           ? sectionHeaderContent.props.children
@@ -348,7 +355,6 @@ class PageLayout extends React.Component {
                           style={{
                             display: "grid",
                             paddingRight: "20px",
-                            paddingTop: "10px",
                           }}
                         ></div>
                         <SubSectionFilter className="section-header_filter">
@@ -455,7 +461,8 @@ class PageLayout extends React.Component {
         {!isMobile && uploadFiles && !dragging && (
           <StyledSelectoWrapper>
             <Selecto
-              dragContainer={".main"}
+              boundContainer={".section-wrapper"}
+              dragContainer={".section-body"}
               selectableTargets={[".files-item"]}
               hitRate={0}
               selectByClick={false}
@@ -524,6 +531,7 @@ export default inject(({ auth }) => {
     setArticleVisibleOnUnpin,
     setIsArticleVisible,
     setIsBackdropVisible,
+    isDesktopClient,
   } = settingsStore;
 
   return {
@@ -537,5 +545,6 @@ export default inject(({ auth }) => {
     setIsArticleVisible,
     isBackdropVisible,
     setIsBackdropVisible,
+    isDesktop: isDesktopClient,
   };
 })(observer(PageLayout));

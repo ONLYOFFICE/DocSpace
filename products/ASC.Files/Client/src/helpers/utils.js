@@ -76,6 +76,20 @@ export const openDocEditor = async (
   return Promise.resolve();
 };
 
+export const getDataSaveAs = async (params) => {
+  try {
+    const data = await request({
+      baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+      method: "get",
+      url: `/httphandlers/filehandler.ashx?${params}`,
+      responseType: "text",
+    });
+
+    return data;
+  } catch (e) {
+    console.error("error");
+  }
+};
 export const SaveAs = (title, url, folderId, openNewTab) => {
   const options = {
     action: "create",
@@ -84,27 +98,95 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
     folderid: folderId,
     response: openNewTab ? null : "message",
   };
+
   const params = toUrlParams(options, true);
-  !openNewTab
-    ? request({
-        baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
-        method: "get",
-        url: `/httphandlers/filehandler.ashx?${params}`,
-      })
-        .then((data) => console.log("data", data))
-        .catch((e) => console.error("error", e))
-    : window.open(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/httphandlers/filehandler.ashx?${params}`
-        ),
-        "_blank"
-      );
+  if (!openNewTab) {
+    return getDataSaveAs(params);
+  } else {
+    window.open(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/httphandlers/filehandler.ashx?${params}`
+      ),
+      "_blank"
+    );
+  }
 };
 
 export const canConvert = (fileExst) => {
   const { canConvert } = docserviceStore;
 
   return canConvert(fileExst);
+};
+
+export const connectedCloudsTitleTranslation = (key, t) => {
+  switch (key) {
+    case "Box":
+
+    case "BoxNet":
+      return t("Translations:FolderTitleBoxNet");
+
+    case "DropBox":
+    case "DropboxV2":
+      return t("Translations:FolderTitleDropBox");
+
+    case "DocuSign":
+      return t("Translations:FolderTitleDocuSign");
+
+    case "Google":
+    case "GoogleDrive":
+      return t("Translations:FolderTitleGoogle");
+
+    case "OneDrive":
+    case "SkyDrive":
+      return t("Translations:FolderTitleSkyDrive");
+
+    case "SharePoint":
+      return t("Translations:FolderTitleSharePoint");
+    case "WebDav":
+      return t("Translations:FolderTitleWebDav");
+    case "kDrive":
+      return t("Translations:FolderTitlekDrive");
+    case "Yandex":
+      return t("Translations:FolderTitleYandex");
+
+    default:
+      return key;
+  }
+};
+
+export const connectedCloudsTypeTitleTranslation = (key, t) => {
+  switch (key) {
+    case "Box":
+    case "BoxNet":
+      return t("Translations:TypeTitleBoxNet");
+
+    case "DropBox":
+    case "DropboxV2":
+      return t("Translations:TypeTitleDropBox");
+
+    case "DocuSign":
+      return t("Translations:TypeTitleDocuSign");
+
+    case "Google":
+    case "GoogleDrive":
+      return t("Translations:TypeTitleGoogle");
+
+    case "OneDrive":
+    case "SkyDrive":
+      return t("Translations:TypeTitleSkyDrive");
+
+    case "SharePoint":
+      return t("Translations:TypeTitleSharePoint");
+    case "WebDav":
+      return t("Translations:TypeTitleWebDav");
+    case "kDrive":
+      return t("Translations:TypeTitlekDrive");
+    case "Yandex":
+      return t("Translations:TypeTitleYandex");
+
+    default:
+      return key;
+  }
 };

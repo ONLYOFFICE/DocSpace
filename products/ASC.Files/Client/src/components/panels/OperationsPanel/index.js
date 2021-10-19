@@ -28,7 +28,7 @@ const OperationsPanelComponent = (props) => {
   } = props;
 
   const zIndex = 310;
-  const deleteAfter = true; // TODO: get from settings
+  const deleteAfter = false; // TODO: get from settings
 
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
@@ -140,7 +140,7 @@ export default inject(
     dialogsStore,
     filesActionsStore,
   }) => {
-    const { filter, selection } = filesStore;
+    const { filter, selection, bufferSelection } = filesStore;
     const {
       isRecycleBinFolder,
       operationsFolders,
@@ -158,7 +158,9 @@ export default inject(
       setThirdPartyMoveDialogVisible,
     } = dialogsStore;
 
-    const provider = selection.find((x) => x.providerKey);
+    const selections = selection.length ? selection : [bufferSelection];
+
+    const provider = selections.find((x) => x.providerKey);
 
     return {
       expandedKeys: expandedPanelKeys
@@ -170,7 +172,7 @@ export default inject(
       operationsFolders,
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
-      selection,
+      selection: selections,
 
       setCopyPanelVisible,
       setMoveToPanelVisible,

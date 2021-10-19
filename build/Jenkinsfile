@@ -8,12 +8,12 @@ pipeline {
 					stages {
 						stage('Frontend') {
 							steps {
-								sh 'yarn install && yarn build'
+								sh 'yarn install --frozen-lockfile && yarn build'
 							}
 						}
 						stage('Backend') {
 							steps {
-								sh 'dotnet build ASC.Web.sln'
+								sh 'dotnet build -c Release ASC.Web.sln'
 							}
 						}
 					}
@@ -23,12 +23,12 @@ pipeline {
 					stages {
 						stage('Frontend') {
 							steps {
-								bat 'yarn install && yarn build'
+								bat "yarn install --frozen-lockfile && yarn build"
 							}
 						}
 						stage('Backend') {
 							steps {
-								bat 'dotnet build ASC.Web.sln'
+								bat 'dotnet build -c Release ASC.Web.sln'
 							}
 						}
 					}
@@ -43,7 +43,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								sh "yarn install && yarn build && cd ${env.WORKSPACE}/packages/asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+								sh "yarn install --frozen-lockfile && yarn build && cd ${env.WORKSPACE}/packages/asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 							}
 							post {
 								success {
@@ -72,7 +72,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								bat "yarn install && yarn build && cd ${env.WORKSPACE}\\packages\\asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+								bat "yarn install --frozen-lockfile && yarn build && cd ${env.WORKSPACE}\\packages\\asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 							}
 							post {
 								success {

@@ -27,9 +27,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
-    <ProjectReference Include="..\..\common\ASC.Webhooks.Core\ASC.Webhooks.Core.csproj" />
+    <ProjectReference Include="..\..\common\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
     <ProjectReference Include="..\..\common\services\ASC.AuditTrail\ASC.AuditTrail.csproj" />
-    <ProjectReference Include="..\..\common\services\ASC.Data.Backup\ASC.Data.Backup.csproj" />
+    <ProjectReference Include="..\..\common\ASC.Webhooks.Core\ASC.Webhooks.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

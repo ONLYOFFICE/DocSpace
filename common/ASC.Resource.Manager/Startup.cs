@@ -1,5 +1,4 @@
 ﻿using ASC.Common;
-using ASC.Common.Logging;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +25,7 @@ namespace ASC.Resource.Manager
             diHelper.Configure(services);
             services.AddSingleton(Configuration);
             diHelper.TryAdd<ProgramScope>();
-            LogNLogExtension.ConfigureLog(diHelper);
+            //LogNLogExtension.ConfigureLog(diHelper);
         }
     }
 }

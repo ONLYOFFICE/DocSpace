@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Das Feld mit dem Prüfcode darf nicht leer sein</value>
@@ -210,7 +210,7 @@
     <value>Facebook-Schlüssel</value>
   </data>
   <data name="ConsumersFacebookDescription" xml:space="preserve">
-    <value>Verbinden Sie die Anwendung, um sich ins Portal via Facebook anzumelden und Kontakte zu suchen.</value>
+    <value>Verbinden Sie die Anwendung, um sich ins Portal via Facebook anzumelden.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>Wenn man die Anwendung des Facebook -Dienstes hinzufügt, kann man sein Facebook-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen Facebook-Login-Daten an. Sie können auch ein Facebook-Konto des Kontakts im CRM-Modul finden und mit "Person / Firma bearbeiten" verknüpfen.
@@ -697,6 +697,9 @@
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>Die Neuzuweisung der Daten für {0} ist nicht abgeschlossen.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Ungültiges Recaptcha</value>
   </data>
   <data name="SgServerRegion" xml:space="preserve">
     <value>Asien-Pazifik (Singapur)</value>

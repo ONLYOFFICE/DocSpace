@@ -299,7 +299,7 @@ namespace ASC.Api.Settings
 
         [Read("", Check = false)]
         [AllowAnonymous]
-        public SettingsWrapper GetSettings()
+        public SettingsWrapper GetSettings(bool? withpassword)
         {
             var settings = new SettingsWrapper
             {
@@ -330,6 +330,12 @@ namespace ASC.Api.Settings
                     AppId = Configuration["firebase:appId"] ?? "",
                     MeasurementId = Configuration["firebase:measurementId"] ?? ""
                 };
+
+                bool debugInfo;
+                if (bool.TryParse(Configuration["debug-info:enabled"], out debugInfo))
+                {
+                    settings.DebugInfo = debugInfo;
+                }
             }
             else
             {
@@ -355,6 +361,11 @@ namespace ASC.Api.Settings
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
 
+                settings.RecaptchaPublicKey = SetupInfo.RecaptchaPublicKey;
+            }
+
+            if (!AuthContext.IsAuthenticated || (withpassword.HasValue && withpassword.Value))
+            {
                 settings.PasswordHash = PasswordHasher;
             }
 
@@ -507,10 +518,13 @@ namespace ASC.Api.Settings
 
                 var trustedDomainSettings = SettingsManager.Load<StudioTrustedDomainSettings>();
                 var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
-                var enableInviteUsers = TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers;
+                if (!CoreBaseSettings.Personal)
+                {
+                    var enableInviteUsers = TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers;
 
-                if (!enableInviteUsers)
-                    emplType = EmployeeType.Visitor;
+                    if (!enableInviteUsers)
+                        emplType = EmployeeType.Visitor;
+                }
 
                 switch (Tenant.TrustedDomainsType)
                 {

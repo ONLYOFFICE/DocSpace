@@ -51,6 +51,8 @@ Text.propTypes = {
   isItalic: PropTypes.bool,
   /** Sets the 'display' property */
   display: PropTypes.string,
+  /** Disable selection of text*/
+  noSelect: PropTypes.bool,
 };
 
 Text.defaultProps = {
@@ -61,6 +63,7 @@ Text.defaultProps = {
   isBold: false,
   isInline: false,
   isItalic: false,
+  noSelect: false,
 };
 
 export default Text;
