@@ -287,9 +287,10 @@ class FilesActionStore {
       (elm) => elm.id === id
     );
 
-    item.isFolder = isFolder;
-
-    setBufferSelection(item);
+    if (item) {
+      item.isFolder = isFolder;
+      setBufferSelection(item);
+    }
   };
 
   deleteItemAction = async (itemId, translations, isFile, isThirdParty) => {
