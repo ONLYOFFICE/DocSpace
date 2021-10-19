@@ -51,6 +51,7 @@ class PureVersionHistory extends React.Component {
         secondaryProgressBarIcon="file"
         showSecondaryButtonAlert={false}
         withBodyScroll={false}
+        isLoadingContent={isLoading}
       >
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />

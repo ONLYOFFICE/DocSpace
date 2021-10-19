@@ -33,6 +33,7 @@ const VersionRow = (props) => {
     updateCommentVersion,
     onSetRestoreProcess,
     isRestoreProcess,
+    isTabletView,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
@@ -66,7 +67,6 @@ const VersionRow = (props) => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-  
     onSetRestoreProcess(true);
     restoreVersion(info.id, info.version)
       .catch((err) => toastr.error(err))
@@ -103,6 +103,7 @@ const VersionRow = (props) => {
       canEdit={canEdit}
       isRestoreProcess={isRestoreProcess}
       isVersion={isVersion}
+      isTabletView={isTabletView}
     >
       <>
         <Box displayProp="flex">
@@ -248,7 +249,7 @@ const VersionRow = (props) => {
 
 export default inject(({ auth, versionHistoryStore }) => {
   const { user } = auth.userStore;
-  const { culture } = auth.settingsStore;
+  const { culture, isTabletView } = auth.settingsStore;
   const language = (user && user.cultureName) || culture || "en-US";
 
   const {
@@ -259,7 +260,7 @@ export default inject(({ auth, versionHistoryStore }) => {
 
   return {
     culture: language,
-
+    isTabletView,
     markAsVersion,
     restoreVersion,
     updateCommentVersion,

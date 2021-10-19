@@ -68,7 +68,9 @@ class SectionBodyContent extends React.Component {
         </RowContainer>
       </div>
     ) : (
-      <Loaders.HistoryRows title="version-history-body-loader" />
+      <div className="loader-history-rows" style={{ paddingRight: "16px" }}>
+        <Loaders.HistoryRows title="version-history-body-loader" />
+      </div>
     );
   }
 }
