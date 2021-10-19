@@ -3,7 +3,7 @@
     public class WebhookEntry
     {
         public int Id { get; set; }
-        public string Data { get; set; }
+        public string Payload { get; set; }
         public string Uri { get; set; }
         public string SecretKey { get; set; }
 
@@ -13,7 +13,7 @@
             if (toCompareWith == null)
                 return false;
             return this.Id == toCompareWith.Id &&
-                this.Data == toCompareWith.Data &&
+                this.Payload == toCompareWith.Payload &&
                 this.Uri == toCompareWith.Uri &&
                 this.SecretKey == toCompareWith.SecretKey;
         }

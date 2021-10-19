@@ -17,7 +17,7 @@ namespace ASC.Webhooks.Core.Dao
     public partial class WebhooksDbContext : BaseDbContext
     {
         public virtual DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
-        public virtual DbSet<WebhooksPayload> WebhooksPayloads { get; set; }
+        public virtual DbSet<WebhooksLog> WebhooksLogs { get; set; }
 
         public WebhooksDbContext() { }
         public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options)
@@ -42,7 +42,7 @@ namespace ASC.Webhooks.Core.Dao
             ModelBuilderWrapper
             .From(modelBuilder, Provider)
             .AddWebhooksConfig()
-            .AddWebhooksPayload();
+            .AddWebhooksLog();
         }
     }
 

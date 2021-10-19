@@ -2940,6 +2940,9 @@ namespace ASC.Api.Settings
             WebhookDbWorker.AddWebhookConfig(model);
         }
 
+        /// <summary>
+        /// Update config for webhooks
+        /// </summary>
         [Update("webhook")]
         public void UpdateWebhook(WebhooksConfig model)
         {
@@ -2948,6 +2951,9 @@ namespace ASC.Api.Settings
             WebhookDbWorker.UpdateWebhookConfig(model);
         }
 
+        /// <summary>
+        /// Remove config for webhooks
+        /// </summary>
         [Delete("webhook")]
         public void RemoveWebhook(WebhooksConfig model)
         {
@@ -2955,6 +2961,16 @@ namespace ASC.Api.Settings
             if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
             WebhookDbWorker.RemoveWebhookConfig(model);
         }
+
+        /// <summary>
+        /// Read Webhooks history for actual tenant
+        /// </summary>
+        [Read("webhooks")]
+        public List<WebhooksLog> TenantWebhooks()
+        {
+            return WebhookDbWorker.GetTenantWebhooks();
+        }
+
 
         private readonly int maxCount = 10;
         private readonly int expirationMinutes = 2;

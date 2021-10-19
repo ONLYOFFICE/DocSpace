@@ -35,18 +35,20 @@ namespace ASC.Webhooks.Core.Dao.Models
 
                 entity.Property(e => e.ConfigId)
                    .HasColumnType("int")
-                   .HasColumnName("ConfigID");
+                   .HasColumnName("config_id");
 
-                entity.Property(e => e.TenantId).HasColumnType("int unsigned");
+                entity.Property(e => e.TenantId)
+                    .HasColumnName("tenant_id")
+                    .HasColumnType("int unsigned");
 
                 entity.Property(e => e.Uri)
                     .HasMaxLength(50)
-                    .HasColumnName("URI")
+                    .HasColumnName("uri")
                     .HasDefaultValueSql("''");
 
                 entity.Property(e => e.SecretKey)
                     .HasMaxLength(50)
-                    .HasColumnName("SecretKey")
+                    .HasColumnName("secret_key")
                     .HasDefaultValueSql("''");
             });
         }     

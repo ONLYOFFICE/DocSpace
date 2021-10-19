@@ -27,13 +27,13 @@ namespace ASC.Webhooks.Tests
         [Read("testMethod")]
         public string GetMethod()
         {
-            return JsonSerializer.Serialize("testContent");
+            return "testContent";
         }
 
         [Create("testMethod")]
         public string PostMethod()
         {
-            return JsonSerializer.Serialize("testContent");
+            return "testContent";
         }
 
         [Create("SuccessRequest")]
