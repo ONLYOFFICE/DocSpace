@@ -227,7 +227,7 @@ class SectionHeaderContent extends React.Component {
 
   renameAction = () => console.log("renameAction click");
   onOpenSharingPanel = () => {
-    this.props.setSelection([this.props.currentFolderId]);
+    this.props.setBufferSelection(this.props.currentFolderId);
     this.props.setIsFolderActions(true);
     return this.props.setSharingPanelVisible(true);
   };
