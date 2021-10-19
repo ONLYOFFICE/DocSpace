@@ -3,7 +3,8 @@
 <head>
     <script language="javascript" type="text/javascript">
         if (%DESKTOP%) {
-            console.log(%PROFILE%);
+			localStorage.setItem("profile", %PROFILE%);
+			window.location.href = "/";
         } else {
             try {
                 window.opener.%CALLBACK%(%PROFILE%);
