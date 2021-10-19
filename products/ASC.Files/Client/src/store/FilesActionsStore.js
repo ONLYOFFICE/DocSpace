@@ -184,14 +184,21 @@ class FilesActionStore {
           icon: "file",
           label,
         };
-        const item = await this.uploadDataStore.loopFilesOperations(
-          data,
-          pbData
-        );
+
+        const item =
+          data?.finished && data?.url
+            ? data
+            : await this.uploadDataStore.loopFilesOperations(data, pbData);
 
         if (item.url) {
           window.location.href = item.url;
+        } else {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
         }
+
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
     } catch (err) {
@@ -280,9 +287,10 @@ class FilesActionStore {
       (elm) => elm.id === id
     );
 
-    item.isFolder = isFolder;
-
-    setBufferSelection(item);
+    if (item) {
+      item.isFolder = isFolder;
+      setBufferSelection(item);
+    }
   };
 
   deleteItemAction = async (itemId, translations, isFile, isThirdParty) => {

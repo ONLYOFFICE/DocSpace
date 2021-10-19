@@ -233,6 +233,21 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         resultString.Add(val, item.Value);
                     }
                 }
+                else if (item.Key.ValueKind == JsonValueKind.Object)
+                {
+                    var key = item.Key.GetProperty("key");
+
+                    var val = item.Key.GetProperty("value").GetString();
+
+                    if (key.ValueKind == JsonValueKind.Number)
+                    {
+                        resultInt.Add(key.GetInt32(), val);
+                    }
+                    else
+                    {
+                        resultString.Add(key.GetString(), val);
+                    }
+                }
             }
 
             return (resultInt, resultString);

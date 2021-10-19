@@ -171,6 +171,7 @@ const FilesTableRow = (props) => {
     personal,
     isActive,
     onHideContextMenu,
+    onFilesClick,
   } = props;
 
   const sharedButton =
@@ -241,6 +242,7 @@ const FilesTableRow = (props) => {
         isActive={isActive}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
+        onDoubleClick={onFilesClick}
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell {...props} />

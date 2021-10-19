@@ -104,8 +104,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : new string[] { };
 
-            const int bigSize = 5 * 1024 * 1024;
-            if (storage.IsSupportInternalUri && bigSize < storage.GetFileSize(_domain, path))
+            if (storage.IsSupportInternalUri)
             {
                 var uri = storage.GetInternalUri(_domain, path, TimeSpan.FromMinutes(15), headers);
 

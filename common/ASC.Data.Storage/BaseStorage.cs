@@ -53,35 +53,22 @@ namespace ASC.Data.Storage
         protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IOptionsMonitor<ILog> Options { get; }
-
-        public BaseStorage(
-            TempStream tempStream,
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options)
-        {
-            TempStream = tempStream;
-            TenantManager = tenantManager;
-            PathUtils = pathUtils;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            Options = options;
-            Log = options.CurrentValue;
-        }
-
+            
         public BaseStorage(
             TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options) : this(
-            tempStream,
-            tenantManager,
-            pathUtils,
-            emailValidationKeyProvider,
-            options)
+            IOptionsMonitor<ILog> options)
         {
+
+            TempStream = tempStream;
+            TenantManager = tenantManager;
+            PathUtils = pathUtils;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            Options = options;
+            Log = options.CurrentValue;
             HttpContextAccessor = httpContextAccessor;
         }
 
