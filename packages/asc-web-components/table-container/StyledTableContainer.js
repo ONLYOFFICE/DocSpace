@@ -77,12 +77,11 @@ const StyledTableGroupMenu = styled.div`
   height: 52px;
   box-shadow: 0px 5px 20px rgba(4, 15, 27, 7%);
   border-radius: 0px 0px 6px 6px;
-  margin: 0px -24px;
-  width: calc(100% + 48px);
+  margin: 0;
+  width: 100%;
 
   @media ${tablet} {
     height: 60px;
-    width: calc(100% + 40px);
   }
 
   @media ${mobile} {

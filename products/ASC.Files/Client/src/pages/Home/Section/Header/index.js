@@ -10,7 +10,6 @@ import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import DropDownItem from "@appserver/components/drop-down-item";
-import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import IconButton from "@appserver/components/icon-button";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
@@ -18,6 +17,15 @@ import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 
 const StyledContainer = styled.div`
+  .table-container_group-menu {
+    margin: 0px -24px;
+    width: calc(100% + 48px);
+
+    @media ${tablet} {
+      width: calc(100% + 40px);
+    }
+  }
+
   .header-container {
     position: relative;
     ${(props) =>
@@ -298,10 +306,6 @@ class SectionHeaderContent extends React.Component {
     fetchFiles(parentId, filter).finally(() => setIsLoading(false));
   };
 
-  onCheck = (checked) => {
-    this.props.setSelected(checked ? "all" : "none");
-  };
-
   onSelect = (e) => {
     const key = e.currentTarget.dataset.key;
     this.props.setSelected(key);
@@ -313,11 +317,6 @@ class SectionHeaderContent extends React.Component {
 
   getMenuItems = () => {
     const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
-
-    // const children = cbMenuItems.map((key, index) => {
-    //   const label = getCheckboxItemLabel(t, key);
-    //   return <DropDownItem key={key} label={label} data-index={index} />;
-    // });
 
     const checkboxOptions = (
       <>
@@ -357,7 +356,6 @@ class SectionHeaderContent extends React.Component {
       isDesktop,
       isTabletView,
       personal,
-      viewAs,
       getHeaderMenu,
     } = this.props;
 
@@ -480,7 +478,6 @@ export default inject(
       isHeaderChecked,
       isThirdPartySelection,
       setIsLoading,
-      viewAs,
       cbMenuItems,
       getCheckboxItemLabel,
     } = filesStore;
@@ -509,7 +506,6 @@ export default inject(
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,
-      viewAs,
       cbMenuItems,
 
       setSelected,
