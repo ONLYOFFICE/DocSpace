@@ -101,9 +101,11 @@ const StyledTile = styled.div`
   }
 
   .checkbox {
+    display: flex;
     opacity: ${(props) => (props.checked ? 1 : 0)};
     flex: 0 0 16px;
     margin-right: 4px;
+    justify-content: center;
 
     @media ${tablet} {
       opacity: 1;
@@ -144,8 +146,11 @@ const StyledTile = styled.div`
 
     @media ${tablet} {
       min-width: 28px;
-      margin-right: ${(props) => (props.isFolder ? "10px" : "12px")};
     }
+  }
+
+  .styled-content {
+    padding-left: ${(props) => (props.isFolder ? "10px" : "12px")};
   }
 
   :hover {
@@ -375,6 +380,7 @@ class Tile extends React.PureComponent {
               </div>
             )}
             <StyledContent
+              className="styled-content"
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
               {children}
