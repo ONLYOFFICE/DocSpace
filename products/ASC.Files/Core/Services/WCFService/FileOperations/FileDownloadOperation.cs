@@ -36,6 +36,7 @@ using ASC.Common.Threading;
 using ASC.Common.Web;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
+using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
@@ -117,9 +118,42 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     MimeMapping.GetMimeMapping(path),
                     "attachment; filename=\"" + fileName + "\"");
                 Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, archiveExtension);
+
+                TaskInfo.SetProperty(PROGRESS, 100);
+                TaskInfo.SetProperty(RESULT, Result);
+                TaskInfo.SetProperty(FINISHED, true);
+
             }
 
-            FillDistributedTask();
+            TaskInfo.PublishChanges();
+        }
+
+        public override void PublishChanges(DistributedTask task)
+        {
+            var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
+            var daoTask = DaoOperation.GetDistributedTask();
+
+            var error1 = thirdpartyTask.GetProperty<string>(ERROR);
+            var error2 = daoTask.GetProperty<string>(ERROR);
+
+            if (!string.IsNullOrEmpty(error1))
+            {
+                Error = error1;
+            }
+            else if (!string.IsNullOrEmpty(error2))
+            {
+                Error = error2;
+            }
+
+            successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
+
+            var progressSteps = ThirdPartyOperation.Total + DaoOperation.Total + 1;
+
+            var progress = (int)(successProcessed / (double)progressSteps * 100);
+
+            base.FillDistributedTask();
+
+            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : progress);
             TaskInfo.PublishChanges();
         }
     }
@@ -146,6 +180,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             if (!Files.Any() && !Folders.Any()) return;
 
             entriesPathId = GetEntriesPathId(scope);
+
             if (entriesPathId == null || entriesPathId.Count == 0)
             {
                 if (Files.Count > 0)
@@ -157,6 +192,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
 
             ReplaceLongPath(entriesPathId);
+
+            Total = entriesPathId.Count;
+
+            TaskInfo.PublishChanges();
         }
 
         private ItemNameValueCollection<T> ExecPathFromFile(IServiceScope scope, File<T> file, string path)
@@ -236,7 +275,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             return entriesPathId;
         }
-
+            
         internal void CompressToZip(Stream stream, IServiceScope scope)
         {
             if (entriesPathId == null) return;
@@ -345,6 +384,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                         compressTo.CloseEntry();
                         counter++;
+
+                        if (!Equals(entryId, default(T)) && file != null)
+                        {
+                            ProcessedFile(entryId);
+                        }
+                        else
+                        {
+                            ProcessedFolder(default(T));
+                        }
                     }
 
                     ProgressStep();
