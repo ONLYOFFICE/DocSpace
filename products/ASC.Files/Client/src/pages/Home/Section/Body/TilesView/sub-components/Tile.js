@@ -143,10 +143,6 @@ const StyledTile = styled.div`
 
   .file-icon_container {
     min-width: 36px;
-
-    @media ${tablet} {
-      min-width: 28px;
-    }
   }
 
   .styled-content {
