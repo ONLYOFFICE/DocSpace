@@ -10,6 +10,12 @@ import Scrollbar from "@appserver/components/scrollbar";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import { tablet } from "@appserver/components/utils/device";
 
+const paddingStyles = css`
+  padding: 17px 7px 16px 24px;
+  @media ${tablet} {
+    padding: 16px 0 16px 24px;
+  }
+`;
 const commonStyles = css`
   flex-grow: 1;
   ${(props) => !props.withScroll && `height: 100%;`}
@@ -17,37 +23,28 @@ const commonStyles = css`
   -webkit-user-select: none;
 
   .section-wrapper {
-    ${(props) => !props.withScroll && `display: flex; height: 100%;`}
+    ${(props) =>
+      !props.withScroll &&
+      `display: flex; height: 100%; box-sizing:border-box`};
+    ${(props) => !props.withScroll && paddingStyles}
   }
 
   .section-wrapper-content {
-    ${(props) =>
-      !props.withScroll &&
-      ` height: 100%;
-    box-sizing: border-box;
-`}
-    padding: 17px 7px 16px 24px;
-    ${(props) =>
-      !props.isLoadingContent &&
-      css`
-        flex: 1 0 auto;
+    ${paddingStyles}
+    flex: 1 0 auto;
 
-        outline: none;
-        ${(props) => props.viewAs == "tile" && "padding-right:0;"}
+    outline: none;
+    ${(props) => props.viewAs == "tile" && "padding-right:0;"}
 
-        .section-wrapper {
-          display: flex;
-          flex-direction: column;
-          min-height: 100%;
-        }
+    .section-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
 
-        .people-row-container,
-        .files-row-container {
-          margin-top: -22px;
-        }
-      `}
-    @media ${tablet} {
-      padding: 16px 0 16px 24px;
+    .people-row-container,
+    .files-row-container {
+      margin-top: -22px;
     }
   }
 `;
@@ -127,7 +124,6 @@ class SectionBody extends React.Component {
       viewAs,
       withScroll,
       isLoaded,
-      isLoadingContent,
     } = this.props;
     console.log("isLoaded", isLoaded);
     const focusProps = autoFocus
@@ -178,7 +174,6 @@ class SectionBody extends React.Component {
         withScroll={withScroll}
         pinned={pinned}
         isLoaded={isLoaded}
-        isLoadingContent={isLoadingContent}
       >
         {withScroll ? (
           !isMobile ? (
@@ -200,7 +195,7 @@ class SectionBody extends React.Component {
           )
         ) : (
           <div className="section-wrapper">
-            <div className="section-wrapper-content">{children}</div>
+            {children}
             {/* <StyledSpacer pinned={pinned} /> */}
           </div>
         )}
@@ -224,7 +219,6 @@ SectionBody.propTypes = {
   ]),
   viewAs: PropTypes.string,
   isLoaded: PropTypes.bool,
-  isLoadingContent: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
@@ -232,7 +226,6 @@ SectionBody.defaultProps = {
   pinned: false,
   uploadFiles: false,
   withScroll: true,
-  isLoadingContent: false,
 };
 
 export default inject(({ auth }) => {
