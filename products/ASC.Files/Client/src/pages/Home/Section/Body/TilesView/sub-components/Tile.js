@@ -146,7 +146,7 @@ const StyledTile = styled.div`
   }
 
   .styled-content {
-    padding-left: ${(props) => (props.isFolder ? "10px" : "12px")};
+    padding-left: 8px;
   }
 
   :hover {
