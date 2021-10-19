@@ -6,6 +6,12 @@ import VersionRow from "./VersionRow";
 import { inject, observer } from "mobx-react";
 
 class SectionBodyContent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isRestoreProcess: false,
+    };
+  }
   componentDidMount() {
     const { match, setFirstLoad } = this.props;
     const fileId = match.params.fileId || this.props.fileId;
@@ -21,34 +27,46 @@ class SectionBodyContent extends React.Component {
     setIsLoading(true);
     fetchFileVersions(fileId).then(() => setIsLoading(false));
   };
+
+  onSetRestoreProcess = (isRestoreProcess) => {
+    this.setState({
+      isRestoreProcess,
+    });
+  };
   render() {
     const { versions, culture, isLoading } = this.props;
+    const { isRestoreProcess } = this.state;
     //console.log("VersionHistory SectionBodyContent render()", versions);
 
     let itemVersion = null;
 
     return versions && !isLoading ? (
-      <RowContainer useReactWindow={false}>
-        {versions.map((info, index) => {
-          let isVersion = true;
-          if (itemVersion === info.versionGroup) {
-            isVersion = false;
-          } else {
-            itemVersion = info.versionGroup;
-          }
+      <div style={{ height: "100%", width: "100%" }}>
+        <RowContainer useReactWindow={true} itemHeight={66}>
+          {versions.map((info, index) => {
+            console.log("render row");
+            let isVersion = true;
+            if (itemVersion === info.versionGroup) {
+              isVersion = false;
+            } else {
+              itemVersion = info.versionGroup;
+            }
 
-          return (
-            <VersionRow
-              getFileVersions={this.getFileVersions}
-              isVersion={isVersion}
-              key={`${info.id}-${index}`}
-              info={info}
-              index={index}
-              culture={culture}
-            />
-          );
-        })}
-      </RowContainer>
+            return (
+              <VersionRow
+                getFileVersions={this.getFileVersions}
+                isVersion={isVersion}
+                key={`${info.id}-${index}`}
+                info={info}
+                index={index}
+                culture={culture}
+                isRestoreProcess={isRestoreProcess}
+                onSetRestoreProcess={this.onSetRestoreProcess}
+              />
+            );
+          })}
+        </RowContainer>
+      </div>
     ) : (
       <Loaders.HistoryRows title="version-history-body-loader" />
     );

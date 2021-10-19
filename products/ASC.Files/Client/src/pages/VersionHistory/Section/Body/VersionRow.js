@@ -31,6 +31,8 @@ const VersionRow = (props) => {
     markAsVersion,
     restoreVersion,
     updateCommentVersion,
+    onSetRestoreProcess,
+    isRestoreProcess,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
@@ -64,7 +66,13 @@ const VersionRow = (props) => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    restoreVersion(info.id, info.version).catch((err) => toastr.error(err));
+  
+    onSetRestoreProcess(true);
+    restoreVersion(info.id, info.version)
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        onSetRestoreProcess(false);
+      });
   };
 
   const onVersionClick = () => {
@@ -93,6 +101,8 @@ const VersionRow = (props) => {
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
       canEdit={canEdit}
+      isRestoreProcess={isRestoreProcess}
+      isVersion={isVersion}
     >
       <>
         <Box displayProp="flex">
