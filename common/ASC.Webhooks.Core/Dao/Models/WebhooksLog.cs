@@ -18,7 +18,7 @@ namespace ASC.Webhooks.Core.Dao.Models
         public string RequestPayload { get; set; }
         public string RequestHeaders { get; set; }
         public string ResponsePayload { get; set; }
-        public string ResponseHeaders{ get; set; }
+        public string ResponseHeaders { get; set; }
         public DateTime CreationTime { get; set; }
         public string Event { get; set; }
         public ProcessStatus Status { get; set; }
@@ -30,7 +30,7 @@ namespace ASC.Webhooks.Core.Dao.Models
         {
             modelBuilder
                 .Add(MySqlAddWebhooksLog, Provider.MySql);
-                //.Add(PgSqlAddUser, Provider.Postgre)
+            //.Add(PgSqlAddUser, Provider.Postgre)
 
             return modelBuilder;
         }
@@ -92,7 +92,7 @@ namespace ASC.Webhooks.Core.Dao.Models
                     .HasColumnType("varchar")
                     .HasColumnName("status")
                     .HasMaxLength(50);
-            });      
+            });
         }
     }
 }

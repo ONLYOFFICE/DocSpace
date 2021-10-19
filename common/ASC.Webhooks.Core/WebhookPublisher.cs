@@ -17,7 +17,6 @@ namespace ASC.Webhooks.Core
         private DbWorker DbWorker { get; }
         private TenantManager TenantManager { get; }
         private ICacheNotify<WebhookRequest> WebhookNotify { get; }
-        private ILog Log { get; }
 
         public WebhookPublisher(
             DbWorker dbWorker,
@@ -27,7 +26,6 @@ namespace ASC.Webhooks.Core
         {
             DbWorker = dbWorker;
             TenantManager = tenantManager;
-            Log = options.Get("ASC.Webhooks.Core");
             WebhookNotify = webhookNotify;
         }
 
@@ -39,12 +37,12 @@ namespace ASC.Webhooks.Core
             foreach (var config in webhookConfigs)
             {
                 var webhooksLog = new WebhooksLog
-                {   
+                {
                     Uid = Guid.NewGuid().ToString(),
                     TenantId = tenantId,
                     Event = eventName,
                     CreationTime = DateTime.UtcNow,
-                    RequestPayload = requestPayload,                 
+                    RequestPayload = requestPayload,
                     Status = ProcessStatus.InProcess,
                     ConfigId = config.ConfigId
                 };

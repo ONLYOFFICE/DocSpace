@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.Json;
 
 using ASC.Common;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Primitives;
 
 namespace ASC.Api.Core.Middleware
 {

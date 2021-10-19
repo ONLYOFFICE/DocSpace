@@ -51,6 +51,6 @@ namespace ASC.Webhooks.Core.Dao.Models
                     .HasColumnName("secret_key")
                     .HasDefaultValueSql("''");
             });
-        }     
+        }
     }
 }
