@@ -5,7 +5,6 @@ import NoUserSelect from "../utils/commonStyles";
 import { CameraIcon } from "./svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
-
 const EditLink = styled.div`
   padding-left: ${(props) => props.theme.avatar.editLink.paddingLeft};
   padding-right: ${(props) => props.theme.avatar.editLink.paddingRight};
@@ -29,21 +28,17 @@ const EmptyIcon = styled(CameraIcon)`
 EmptyIcon.defaultProps = { theme: Base };
 
 const EditContainer = styled.div`
-  box-sizing: ${(props) => props.theme.avatar.editContainer.boxSizing};
   position: absolute;
-  width: ${(props) => props.theme.avatar.editContainer.width};
-  height: ${(props) => props.theme.avatar.editContainer.height};
-  top: ${(props) => props.theme.avatar.editContainer.top};
-  left: ${(props) => props.theme.avatar.editContainer.left};
-  transform: ${(props) => props.theme.avatar.editContainer.transform};
-  padding: ${(props) => props.theme.avatar.editContainer.padding};
-  text-align: ${(props) => props.theme.avatar.editContainer.textAlign};
-  line-height: ${(props) => props.theme.avatar.editContainer.lineHeight};
+  display: flex;
+  right: ${(props) => props.theme.avatar.editContainer.right};
+  bottom: ${(props) => props.theme.avatar.editContainer.bottom};
+  background-color: ${(props) =>
+    props.theme.avatar.editContainer.backgroundColor};
   border-radius: ${(props) => props.theme.avatar.editContainer.borderRadius};
-  background: ${(props) =>
-    props.gradient
-      ? props.theme.avatar.editContainer.linearGradient
-      : props.theme.avatar.editContainer.transparent};
+  height: ${(props) => props.theme.avatar.editContainer.height};
+  width: ${(props) => props.theme.avatar.editContainer.width};
+  align-items: center;
+  justify-content: center;
 `;
 EditContainer.defaultProps = { theme: Base };
 

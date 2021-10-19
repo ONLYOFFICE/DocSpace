@@ -917,19 +917,12 @@ const Base = {
     },
 
     editContainer: {
-      boxSizing: "border-box",
-      width: "100%",
-      height: "100%",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      padding: "75% 16px 5px",
-      textAlign: "center",
-      lineHeight: "19px",
+      right: "4px",
+      bottom: "4px",
+      backgroundColor: "#265a8f",
       borderRadius: "50%",
-      linearGradient:
-        "linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%)",
-      transparent: "transparent",
+      height: "32px",
+      width: "32px",
     },
 
     editLink: {
