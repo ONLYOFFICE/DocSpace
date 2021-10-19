@@ -12,12 +12,21 @@ import { tablet, desktop } from "@appserver/components/utils/device";
 
 const commonStyles = css`
   flex-grow: 1;
-  height: 100%;
+  ${(props) => !props.withScroll && `height: 100%;`}
   border-left: none;
 
   -webkit-user-select: none;
 
+  .section-wrapper {
+    ${(props) => !props.withScroll && `display: flex; height: 100%;`}
+  }
+
   .section-wrapper-content {
+    ${(props) =>
+      !props.withScroll &&
+      ` height: 100%;
+    box-sizing: border-box;
+`}
     flex: 1 0 auto;
     padding: 17px 7px 16px 24px;
     outline: none;
@@ -56,7 +65,16 @@ const StyledSectionBody = styled.div`
     props.withScroll &&
     `
     margin-left: -24px;
-  `}
+  `} 
+
+  .additional-scroll-height {
+    ${(props) =>
+      !props.withScroll &&
+      !props.pinned &&
+      `  height: 64px;
+  
+`}
+  }
 `;
 
 const StyledDropZoneBody = styled(DragAndDrop)`
@@ -154,7 +172,7 @@ class SectionBody extends React.Component {
         ) : (
           <div className="section-wrapper">
             {children}
-            <StyledSpacer pinned={pinned} />
+            {/* <StyledSpacer pinned={pinned} /> */}
           </div>
         )}
       </StyledDropZoneBody>
@@ -186,7 +204,7 @@ class SectionBody extends React.Component {
         ) : (
           <div className="section-wrapper">
             {children}
-            <StyledSpacer pinned={pinned} />
+            {/* <StyledSpacer pinned={pinned} /> */}
           </div>
         )}
       </StyledSectionBody>
