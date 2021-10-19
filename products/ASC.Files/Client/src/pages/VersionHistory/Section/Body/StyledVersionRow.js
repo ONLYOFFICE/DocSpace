@@ -12,6 +12,7 @@ const StyledVersionRow = styled(Row)`
   .row_content {
     position: relative;
     padding-top: 14px;
+    ${(props) => !props.isTabletView && "padding-right:16px"}
   }
 
   .version_badge {
