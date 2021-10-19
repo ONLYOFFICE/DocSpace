@@ -875,12 +875,14 @@ class UploadDataStore {
     }
 
     let operationItem = null;
+    let url;
 
-    while (progress !== 100) {
+    while (progress !== 100 && url) {
       await this.getOperationProgress(data.id)
         .then((item) => {
           operationItem = item;
           progress = item ? item.progress : 100;
+          url = item.url;
 
           setSecondaryProgressBarData({
             icon: pbData.icon,
