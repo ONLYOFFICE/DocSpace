@@ -240,33 +240,28 @@ class SectionHeaderContent extends React.Component {
       setDeleteDialogVisible,
       isThirdPartySelection,
       currentFolderId,
+      getFolderInfo,
+      setBufferSelection,
     } = this.props;
-
-    const translations = {
-      deleteOperation: t("Translations:DeleteOperation"),
-      deleteFromTrash: t("Translations:DeleteFromTrash"),
-      deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-    };
 
     this.props.setIsFolderActions(true);
 
-    deleteAction(translations, [currentFolderId]).catch((err) =>
-      toastr.error(err)
-    );
+    if (confirmDelete || isThirdPartySelection) {
+      getFolderInfo(currentFolderId).then((data) => {
+        setBufferSelection(data);
+        setDeleteDialogVisible(true);
+      });
+    } else {
+      const translations = {
+        deleteOperation: t("Translations:DeleteOperation"),
+        deleteFromTrash: t("Translations:DeleteFromTrash"),
+        deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+      };
 
-    // TODO: uncomment after fix selection
-
-    // if (confirmDelete || isThirdPartySelection) {
-    //   setDeleteDialogVisible(true);
-    // } else {
-    //   const translations = {
-    //     deleteOperation: t("Translations:DeleteOperation"),
-    //     deleteFromTrash: t("Translations:DeleteFromTrash"),
-    //     deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-    //   };
-
-    //   deleteAction(translations).catch((err) => toastr.error(err));
-    // }
+      deleteAction(translations, [currentFolderId], true).catch((err) =>
+        toastr.error(err)
+      );
+    }
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
@@ -511,6 +506,8 @@ export default inject(
       viewAs,
       cbMenuItems,
       getCheckboxItemLabel,
+      getFolderInfo,
+      setBufferSelection,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -540,6 +537,7 @@ export default inject(
       personal: auth.settingsStore.personal,
       viewAs,
       cbMenuItems,
+      getFolderInfo,
 
       setSelected,
       setSelection,
@@ -549,6 +547,7 @@ export default inject(
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setBufferSelection,
       setIsFolderActions,
       deleteAction,
       setDeleteDialogVisible,

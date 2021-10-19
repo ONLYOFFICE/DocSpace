@@ -56,7 +56,7 @@ class FilesActionStore {
     }
   };
 
-  deleteAction = (translations, newSelection = null) => {
+  deleteAction = (translations, newSelection = null, withoutDialog = false) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
@@ -82,7 +82,7 @@ class FilesActionStore {
       i++;
     }
 
-    if (this.dialogsStore.isFolderActions) {
+    if (this.dialogsStore.isFolderActions && withoutDialog) {
       folderIds = [];
       fileIds = [];
 
