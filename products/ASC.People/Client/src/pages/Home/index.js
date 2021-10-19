@@ -38,7 +38,7 @@ const Home = ({
 }) => {
   const { location } = history;
   const { pathname } = location;
-  console.log('People Home render');
+  // console.log('People Home render');
 
   useEffect(() => {
     if (pathname.indexOf('/people/filter') > -1) {
