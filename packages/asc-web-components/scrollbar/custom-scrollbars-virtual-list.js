@@ -2,7 +2,7 @@
 import React from "react";
 import Scrollbar from "../scrollbar";
 
-class CustomScrollbars extends React.Component {
+export class CustomScrollbars extends React.Component {
   refSetter = (scrollbarsRef, forwardedRef) => {
     if (scrollbarsRef) {
       forwardedRef(scrollbarsRef.view);
