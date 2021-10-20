@@ -256,6 +256,9 @@ const StyledScrollbar = styled(Scrollbar)`
   .scroll-body {
     display: flex;
   }
+  .nav-thumb-horizontal {
+    display: none !important;
+  }
 `;
 
 StyledTableRow.defaultProps = { theme: Base };

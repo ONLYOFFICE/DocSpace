@@ -40,6 +40,8 @@ const TableGroupMenu = (props) => {
           className="table-container_group-menu-combobox not-selectable"
           options={[]}
           selectedOption={{}}
+          manualY="42px"
+          manualX="-32px"
         />
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>
