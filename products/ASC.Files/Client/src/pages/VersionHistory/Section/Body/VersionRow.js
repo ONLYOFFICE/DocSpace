@@ -35,7 +35,7 @@ const VersionRow = (props) => {
     isRestoreProcess,
     isTabletView,
     onUpdateHeight,
-    length,
+    versionsListLength,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
@@ -99,20 +99,15 @@ const VersionRow = (props) => {
 
   const onClickProp = canEdit ? { onClick: onVersionClick } : {};
 
-  // console.log(
-  //   "document",
-  //   index,
-
-  //   document?.getElementsByClassName(`HELLO_${index}`)[0]?.clientHeight
-  // );
   useEffect(() => {
-    onUpdateHeight(
-      index,
-      document?.getElementsByClassName(`HELLO_${index}`)[0]?.clientHeight
-    );
-  }, [showEditPanel, length]);
+    const newRowHeight = document.getElementsByClassName(
+      `version-row_${index}`
+    )[0]?.clientHeight;
 
-  // console.log("updating");
+    newRowHeight && onUpdateHeight(index, newRowHeight);
+  }, [showEditPanel, versionsListLength]);
+
+  console.log("updating");
 
   return (
     <StyledVersionRow
@@ -123,7 +118,7 @@ const VersionRow = (props) => {
       isVersion={isVersion}
       isTabletView={isTabletView}
     >
-      <div className={`HELLO_${index}`}>
+      <div className={`version-row_${index}`}>
         <Box displayProp="flex">
           <VersionBadge
             className="version_badge"

@@ -68,7 +68,6 @@ class SectionBodyContent extends React.Component {
     let isVersion = true;
 
     if (index > 0 && prevVersion === versions[index].versionGroup) {
-      //console.log("isVersion if");
       isVersion = false;
     }
 
@@ -79,7 +78,7 @@ class SectionBodyContent extends React.Component {
           isVersion={isVersion}
           key={`${versions[index].id}-${index}`}
           info={versions[index]}
-          length={versions.length}
+          versionsListLength={versions.length}
           index={index}
           culture={culture}
           isRestoreProcess={isRestoreProcess}
@@ -90,13 +89,9 @@ class SectionBodyContent extends React.Component {
     );
   }, areEqual);
   render() {
-    const { versions, culture, isLoading, isTabletView } = this.props;
-    const { isRestoreProcess, itemHeight } = this.state;
-    //console.log("VersionHistory SectionBodyContent render()", versions);
-    //console.log("this.state.", this.state, "versions.length", versions?.length);
+    const { versions, isLoading } = this.props;
 
     const renderList = ({ height, width }) => {
-      //console.log("this.state. render list", this.state);
       return (
         <List
           key={this.listKey}
