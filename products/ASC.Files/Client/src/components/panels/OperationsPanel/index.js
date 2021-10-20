@@ -83,7 +83,6 @@ const OperationsPanelComponent = (props) => {
     let fileIds = [];
     let folderIds = [];
 
-    console.log(items);
 
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
