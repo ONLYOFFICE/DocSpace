@@ -698,9 +698,9 @@ const SharingPanel = inject(
       homepage: config.homepage,
       selection: uploadPanelVisible
         ? selectedUploadFile
-        : bufferSelection
-        ? [bufferSelection]
-        : selection,
+        : selection.length
+        ? selection
+        : [bufferSelection],
       isLoading,
       isPrivacy: isPrivacyFolder,
       isFolderActions,

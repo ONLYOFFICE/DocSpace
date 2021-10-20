@@ -23,7 +23,6 @@ const StyledContainer = styled.div`
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    padding-bottom: 56px;
     ${isMobile &&
     css`
       position: sticky;
@@ -56,7 +55,7 @@ const StyledContainer = styled.div`
           `}
 
         position: absolute;
-        top: 56px;
+        top: 48px;
         z-index: 180;
       }
     }

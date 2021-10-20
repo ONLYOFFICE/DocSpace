@@ -91,7 +91,6 @@ const StyledContainer = styled.div`
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    padding-bottom: 56px;
 
     ${isMobile &&
     css`
@@ -129,7 +128,7 @@ const StyledContainer = styled.div`
         ${(props) =>
           !props.isDesktop &&
           css`
-            top: 56px;
+            top: 48px;
           `}
         z-index: 180;
       }
@@ -435,7 +434,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/plus.svg"
+                          iconName="images/header.plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -461,7 +460,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/plus.svg"
+                          iconName="images/header.plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"

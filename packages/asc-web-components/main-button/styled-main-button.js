@@ -97,6 +97,12 @@ const StyledMainButton = styled.div`
     margin: ${(props) => props.theme.mainButton.margin};
     height: ${(props) => props.theme.mainButton.height};
   }
+
+  .main-button_text {
+    font-size: ${(props) => props.theme.mainButton.fontSize};
+    font-weight: ${(props) => props.theme.mainButton.fontWeight};
+    color: ${(props) => props.theme.mainButton.textColor};
+  }
 `;
 StyledMainButton.defaultProps = { theme: Base };
 

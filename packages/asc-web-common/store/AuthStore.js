@@ -256,7 +256,7 @@ class AuthStore {
           window.AscDesktopEditor.cloudCryptoCommand(
             "share",
             {
-              cryptoEngineId: desktopConstants.guid,
+              cryptoEngineId: desktopConstants.cryptoEngineId,
               file: [file.viewUrl],
               keys: keys,
             },

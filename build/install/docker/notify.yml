@@ -18,7 +18,6 @@ x-service:
       DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
       DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
       DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL}
-      DOCUMENT_SERVER_URL_CONVERTER: ${DOCUMENT_SERVER_URL_CONVERTER}
       KAFKA_HOST: ${KAFKA_HOST}
       ELK_HOST: ${ELK_HOST}
       PROXY_HOST: ${PROXY_HOST}
@@ -35,7 +34,7 @@ x-service:
 services:
   onlyoffice-notify:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
+    image: "${REPO}/${STATUS}appserver-notify:${DOCKER_TAG}"
     container_name: ${NOTIFY_HOST}
 
 networks:

@@ -14,6 +14,7 @@ ARG SRC_PATH
 ARG BUILD_PATH
 ARG BUILD_ARGS=build
 ARG DEPLOY_ARGS=deploy
+ARG DEBUG_INFO=true
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
@@ -36,21 +37,19 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
     apt-get install -y nodejs
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
-    echo ${GIT_BRANCH}  && \
-    git clone --depth 1 --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
+RUN echo ${GIT_BRANCH}  && \
+    git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
-    cd ${SRC_PATH} && \
+RUN cd ${SRC_PATH} && \
     mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
     mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
     mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     sed -i "s/\"number\".*,/\"number\": \"${PRODUCT_VERSION}.${BUILD_NUMBER}\",/g" /app/onlyoffice/config/appsettings.json && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd ${SRC_PATH}/build/install/common/ && \
-    bash build-frontend.sh -sp ${SRC_PATH} -ba ${BUILD_ARGS} -da ${DEPLOY_ARGS} && \
-    bash build-backend.sh -sp ${SRC_PATH}  && \
-    bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH}  && \
+    bash build-frontend.sh -sp "${SRC_PATH}" -ba "${BUILD_ARGS}" -da "${DEPLOY_ARGS}" -di "${DEBUG_INFO}" && \
+    bash build-backend.sh -sp "${SRC_PATH}"  && \
+    bash publish-backend.sh -sp "${SRC_PATH}" -bp "${BUILD_PATH}"  && \
     cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
     rm -rf ${SRC_PATH}/common/* && \
     rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
@@ -62,7 +61,6 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     rm -rf ${SRC_PATH}/products/ASC.Mail/Server/* && \
     rm -rf ${SRC_PATH}/products/ASC.People/Server/* && \
     rm -rf ${SRC_PATH}/products/ASC.Projects/Server/* 
-
 
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 

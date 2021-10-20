@@ -6,8 +6,8 @@ import { inject, observer } from "mobx-react";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 const LogoItem = styled.div`
   display: flex;
-  min-width: 56px;
-  min-height: 56px;
+  min-width: 48px;
+  min-height: 48px;
   align-items: center;
   padding: 0 16px;
   cursor: pointer;

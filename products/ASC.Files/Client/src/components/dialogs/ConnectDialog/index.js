@@ -29,8 +29,17 @@ const PureConnectDialogContainer = (props) => {
     setConnectDialogVisible,
     personal,
     getSubfolders,
+    folderFormValidation,
   } = props;
-  const { corporate, title, link, token, provider_id, provider_key } = item;
+  const {
+    corporate,
+    title,
+    link,
+    token,
+    provider_id,
+    provider_key,
+    key,
+  } = item;
 
   const provider = providers.find((el) => el.provider_id === item.provider_id);
   const folderTitle = provider ? provider.customer_title : title;
@@ -51,7 +60,10 @@ const PureConnectDialogContainer = (props) => {
 
   const isAccount = !!link;
   const showUrlField =
-    provider_key === "WebDav" || provider_key === "SharePoint";
+    provider_key === "WebDav" ||
+    provider_key === "SharePoint" ||
+    key === "WebDav" ||
+    key === "SharePoint";
 
   const onChangeUrl = (e) => {
     setIsUrlValid(true);
@@ -67,7 +79,15 @@ const PureConnectDialogContainer = (props) => {
   };
   const onChangeFolderName = (e) => {
     setIsTitleValid(true);
-    setCustomerTitleValue(e.target.value);
+    let title = e.target.value;
+    //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
+
+    if (title.match(folderFormValidation)) {
+      toastr.warning(t("Home:ContainsSpecCharacter"));
+    }
+    title = title.replace(folderFormValidation, "_");
+
+    setCustomerTitleValue(title);
   };
   const onChangeMakeShared = () => setMakeShared(!isCorporate);
 
@@ -109,7 +129,7 @@ const PureConnectDialogContainer = (props) => {
       oAuthToken,
       isCorporate,
       customerTitle,
-      provider_key,
+      provider_key || key,
       provider_id
     )
       .then(async () => {
@@ -302,6 +322,7 @@ const ConnectDialog = withTranslation([
   "ConnectDialog",
   "Common",
   "Translations",
+  "Home",
 ])(PureConnectDialogContainer);
 
 export default inject(
@@ -319,7 +340,11 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const { getOAuthToken, personal } = auth.settingsStore;
+    const {
+      getOAuthToken,
+      personal,
+      folderFormValidation,
+    } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -343,6 +368,7 @@ export default inject(
       providers,
       visible,
       item,
+      folderFormValidation,
 
       getOAuthToken,
       getSubfolders,

@@ -19,5 +19,7 @@
   "TemporaryPassword": "Mot de passe temporaire",
   "TermsOfUsePopupHelperLink": "Savoir plus à propos de termes d'utilisation ",
   "UpdatingProcess": "Mis à jour...",
-  "WriteComment": "Ajouter un commentaire"
+  "WriteComment": "Ajouter un commentaire",
+  "ErrorInvalidUserLastName": "Prénom invalide",
+  "ErrorInvalidUserFirstName": "Nom invalide"
 }
