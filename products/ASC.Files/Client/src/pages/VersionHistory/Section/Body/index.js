@@ -1,19 +1,25 @@
-import React from "react";
+import React, { memo } from "react";
 import { withRouter } from "react-router";
-import RowContainer from "@appserver/components/row-container";
 import Loaders from "@appserver/common/components/Loaders";
 import VersionRow from "./VersionRow";
 import { inject, observer } from "mobx-react";
+import { VariableSizeList as List, areEqual } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isRestoreProcess: false,
+      rowSizes: {},
     };
+    this.listKey = 0;
+    this.listRef = React.createRef();
   }
+
   componentDidMount() {
-    const { match, setFirstLoad } = this.props;
+    const { match, setFirstLoad, versions } = this.props;
     const fileId = match.params.fileId || this.props.fileId;
 
     if (fileId && fileId !== this.props.fileId) {
@@ -29,43 +35,82 @@ class SectionBodyContent extends React.Component {
   };
 
   onSetRestoreProcess = (isRestoreProcess) => {
+    console.log("onSetRestoreProcess", isRestoreProcess);
     this.setState({
       isRestoreProcess,
     });
   };
-  render() {
-    const { versions, culture, isLoading } = this.props;
-    const { isRestoreProcess } = this.state;
-    //console.log("VersionHistory SectionBodyContent render()", versions);
+  onUpdateHeight = (i, itemHeight) => {
+    if (this.listRef.current) {
+      this.listRef.current.resetAfterIndex(i);
+    }
 
-    let itemVersion = null;
+    this.setState((prevState) => ({
+      rowSizes: {
+        ...prevState.rowSizes,
+        [i]: itemHeight + 24, //composed of itemHeight = clientHeight of div and padding-top = 12px and padding-bottom = 12px
+      },
+    }));
+  };
+
+  getSize = (i) => {
+    return this.state.rowSizes[i] ? this.state.rowSizes[i] : 66;
+  };
+
+  renderRow = memo(({ index, style }) => {
+    const { versions, culture } = this.props;
+    const { isRestoreProcess } = this.state;
+    console.log("isRestoreProcess row", this.state);
+    let isVersion = true;
+    if (this.itemVersion === versions[index].versionGroup) {
+      isVersion = false;
+    } else {
+      this.itemVersion = versions[index].versionGroup;
+    }
+    return (
+      <div style={style}>
+        <VersionRow
+          getFileVersions={this.getFileVersions}
+          isVersion={isVersion}
+          key={`${versions[index].id}-${index}`}
+          info={versions[index]}
+          length={versions.length}
+          index={index}
+          culture={culture}
+          isRestoreProcess={isRestoreProcess}
+          onSetRestoreProcess={this.onSetRestoreProcess}
+          onUpdateHeight={this.onUpdateHeight}
+        />
+      </div>
+    );
+  }, areEqual);
+  render() {
+    const { versions, culture, isLoading, isTabletView } = this.props;
+    const { isRestoreProcess, itemHeight } = this.state;
+    //console.log("VersionHistory SectionBodyContent render()", versions);
+    console.log("this.state.", this.state, "versions.length", versions?.length);
+    this.itemVersion = null;
+    const renderList = ({ height, width }) => {
+      console.log("this.state. render list", this.state);
+      return (
+        <List
+          ref={this.listRef}
+          className="List"
+          height={height}
+          width={width}
+          itemSize={this.getSize}
+          itemCount={versions.length}
+          itemData={versions}
+          outerElementType={CustomScrollbarsVirtualList}
+        >
+          {this.renderRow}
+        </List>
+      );
+    };
 
     return versions && !isLoading ? (
       <div style={{ height: "100%", width: "100%" }}>
-        <RowContainer useReactWindow={true} itemHeight={66}>
-          {versions.map((info, index) => {
-            console.log("render row");
-            let isVersion = true;
-            if (itemVersion === info.versionGroup) {
-              isVersion = false;
-            } else {
-              itemVersion = info.versionGroup;
-            }
-
-            return (
-              <VersionRow
-                getFileVersions={this.getFileVersions}
-                isVersion={isVersion}
-                key={`${info.id}-${index}`}
-                info={info}
-                index={index}
-                culture={culture}
-                isRestoreProcess={isRestoreProcess}
-                onSetRestoreProcess={this.onSetRestoreProcess}
-              />
-            );
-          })}
-        </RowContainer>
+        <AutoSizer>{renderList}</AutoSizer>
       </div>
     ) : (
       <div className="loader-history-rows" style={{ paddingRight: "16px" }}>
@@ -86,6 +131,7 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
 
   return {
     culture: auth.settingsStore.culture,
+    isTabletView: auth.settingsStore.isTabletView,
     isLoading,
     versions,
     fileId,
