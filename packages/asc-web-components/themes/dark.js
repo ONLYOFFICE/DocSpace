@@ -880,8 +880,8 @@ const Dark = {
       },
     },
     editContainer: {
-      right: "4px",
-      bottom: "4px",
+      right: "0px",
+      bottom: "0px",
       backgroundColor: "#265a8f",
       borderRadius: "50%",
       height: "32px",
