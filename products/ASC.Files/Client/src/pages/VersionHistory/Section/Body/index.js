@@ -63,13 +63,15 @@ class SectionBodyContent extends React.Component {
   renderRow = memo(({ index, style }) => {
     const { versions, culture } = this.props;
     const { isRestoreProcess } = this.state;
-    console.log("isRestoreProcess row", this.state);
+
+    const prevVersion = versions[index > 0 ? index - 1 : index].versionGroup;
     let isVersion = true;
-    if (this.itemVersion === versions[index].versionGroup) {
+
+    if (index > 0 && prevVersion === versions[index].versionGroup) {
+      //console.log("isVersion if");
       isVersion = false;
-    } else {
-      this.itemVersion = versions[index].versionGroup;
     }
+
     return (
       <div style={style}>
         <VersionRow
@@ -91,10 +93,10 @@ class SectionBodyContent extends React.Component {
     const { versions, culture, isLoading, isTabletView } = this.props;
     const { isRestoreProcess, itemHeight } = this.state;
     //console.log("VersionHistory SectionBodyContent render()", versions);
-    console.log("this.state.", this.state, "versions.length", versions?.length);
-    this.itemVersion = null;
+    //console.log("this.state.", this.state, "versions.length", versions?.length);
+
     const renderList = ({ height, width }) => {
-      console.log("this.state. render list", this.state);
+      //console.log("this.state. render list", this.state);
       return (
         <List
           key={this.listKey}
