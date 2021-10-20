@@ -63,6 +63,10 @@ const StyledTableRow = styled(TableRow)`
       "url(images/cursor.palm.svg), auto"};
   }
 
+  .table-container_element {
+    margin-left: ${(props) => (props.item.isFolder ? "-3px" : "-4px")};
+  }
+
   &:hover {
     .table-container_row-checkbox-wrapper {
       ${(props) => props.dragging && rowCheckboxDraggingHoverStyle}
