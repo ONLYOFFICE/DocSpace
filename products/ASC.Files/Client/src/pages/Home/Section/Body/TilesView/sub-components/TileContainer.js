@@ -7,7 +7,6 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import Heading from "@appserver/components/heading";
 import ContextMenu from "@appserver/components/context-menu";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
-import { tablet } from "@appserver/components/utils/device";
 
 const StyledGridWrapper = styled.div`
   display: grid;
@@ -15,21 +14,7 @@ const StyledGridWrapper = styled.div`
   width: 100%;
   grid-gap: ${(props) => (props.isFolders ? "13px 14px" : "16px 18px")};
   padding-bottom: 24px;
-  padding-right: 2px;
   box-sizing: border-box;
-  padding-left: 1px;
-
-  @media ${tablet} {
-    margin-left: -6px !important;
-  }
-
-  @media (min-width: 1024px) {
-    margin-left: -2px;
-  }
-
-  @media (max-width: 1024px) {
-    margin-left: -2px;
-  }
 `;
 
 const StyledTileContainer = styled.div`
