@@ -888,14 +888,6 @@ const Dark = {
       width: "32px",
     },
 
-    editLink: {
-      paddingLeft: "10px",
-      paddingRight: "10px",
-      borderBottom: "none",
-      display: "inline-block",
-      maxWidth: "100%",
-      textDecoration: "underline dashed",
-    },
     image: {
       width: "100%",
       height: "100%",

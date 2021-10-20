@@ -5,22 +5,6 @@ import NoUserSelect from "../utils/commonStyles";
 import { CameraIcon } from "./svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
-const EditLink = styled.div`
-  padding-left: ${(props) => props.theme.avatar.editLink.paddingLeft};
-  padding-right: ${(props) => props.theme.avatar.editLink.paddingRight};
-
-  a:hover {
-    border-bottom: ${(props) => props.theme.avatar.editLink.borderBottom};
-  }
-
-  span {
-    display: ${(props) => props.theme.avatar.editLink.display};
-    max-width: ${(props) => props.theme.avatar.editLink.maxWidth};
-    text-decoration: ${(props) => props.theme.avatar.editLink.textDecoration};
-  }
-`;
-EditLink.defaultProps = { theme: Base };
-
 const EmptyIcon = styled(CameraIcon)`
   ${commonIconsStyles}
   border-radius: ${(props) => props.theme.avatar.image.borderRadius};
@@ -124,7 +108,6 @@ const StyledAvatar = styled.div`
 StyledAvatar.defaultProps = { theme: Base };
 
 export {
-  EditLink,
   EmptyIcon,
   EditContainer,
   AvatarWrapper,
