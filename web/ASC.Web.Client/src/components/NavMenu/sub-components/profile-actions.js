@@ -106,7 +106,7 @@ class ProfileActions extends React.PureComponent {
           style={{ width: '32px', height: '32px' }}
           onClick={this.onClick}
           role={userRole}
-          size="small"
+          size="min"
           source={avatar}
           userName={user.displayName}
           className="icon-profile-menu"

@@ -23,6 +23,7 @@ const PureThirdPartyMoveContainer = ({
   setDestFolderId,
   checkOperationConflict,
   setThirdPartyMoveDialogVisible,
+  setBufferSelection,
 }) => {
   const zIndex = 310;
   const deleteAfter = false; // TODO: get from settings
@@ -112,7 +113,9 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
   const { bufferSelection, setBufferSelection } = filesStore;
   const { checkOperationConflict } = filesActionsStore;
 
-  const selection = bufferSelection ? [bufferSelection] : filesStore.selection;
+  const selection = filesStore.selection.length
+    ? filesStore.selection
+    : [bufferSelection];
 
   return {
     visible,

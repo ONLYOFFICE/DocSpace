@@ -380,7 +380,8 @@ class PageLayout extends React.Component {
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
-                        isArticlePinned={isArticlePinned}>
+                        isArticlePinned={isArticlePinned}
+                        viewAs={viewAs}>
                         {sectionHeaderContent ? sectionHeaderContent.props.children : null}
                       </SubSectionHeader>
                     )}
@@ -485,7 +486,7 @@ class PageLayout extends React.Component {
         {!isMobile && uploadFiles && !dragging && (
           <StyledSelectoWrapper>
             <Selecto
-              boundContainer={'.section-body'}
+              boundContainer={'.section-wrapper'}
               dragContainer={'.section-body'}
               selectableTargets={['.files-item']}
               hitRate={0}

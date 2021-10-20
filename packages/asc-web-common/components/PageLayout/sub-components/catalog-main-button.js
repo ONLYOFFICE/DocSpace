@@ -5,7 +5,7 @@ import { mobile, tablet } from '@appserver/components/utils/device';
 
 const StyledCatalogMainButton = styled.div`
   padding: 0px 20px 16px;
-
+  max-width: 216px;
   @media ${tablet} {
     display: ${(props) => (props.showText ? 'block' : 'none')};
     padding: 0 16px 16px;

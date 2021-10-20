@@ -360,13 +360,19 @@ namespace ASC.Files.Helpers
 
         public FileWrapper<T> UpdateFile(T fileId, string title, int lastVersion)
         {
+            File<T> newFile = null;
             if (!string.IsNullOrEmpty(title))
-                FileStorageService.FileRename(fileId, title);
+            {
+                newFile = FileStorageService.FileRename(fileId, title);
+            }
 
             if (lastVersion > 0)
-                FileStorageService.UpdateToVersion(fileId, lastVersion);
+            {
+                var pair = FileStorageService.UpdateToVersion(fileId, lastVersion);
+                newFile = pair.Key;
+            }
 
-            return GetFileInfo(fileId);
+            return newFile != null ? FileWrapperHelper.Get(newFile) : GetFileInfo(fileId);
         }
 
         public IEnumerable<FileOperationWraper> DeleteFile(T fileId, bool deleteAfter, bool immediately)

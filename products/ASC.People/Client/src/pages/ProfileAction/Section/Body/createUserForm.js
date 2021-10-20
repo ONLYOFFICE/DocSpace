@@ -242,8 +242,19 @@ class CreateUserForm extends React.Component {
   }
 
   onInputChange = (event) => {
+    const { userFormValidation } = this.props;
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile[event.target.name] = event.target.value;
+    const value = event.target.value;
+    const title = event.target.name;
+
+    if (!value.match(userFormValidation)) {
+      stateCopy.errors[title] = true;
+    } else {
+      if (this.state.errors[title]) stateCopy.errors[title] = false;
+    }
+
+    stateCopy.profile[title] = value;
+
     this.setState(stateCopy);
     this.setIsEdit();
   };
@@ -262,8 +273,20 @@ class CreateUserForm extends React.Component {
     this.setIsEdit();
   };
 
+  scrollToErrorForm = () => {
+    const element = this.mainFieldsContainerRef.current;
+    const parent = element.closest(".scroll-body");
+    (parent || window).scrollTo(0, element.offsetTop);
+  };
+
   validate = () => {
     const { profile, errors: stateErrors } = this.state;
+
+    if (stateErrors.firstName || stateErrors.lastName) {
+      this.scrollToErrorForm();
+      return;
+    }
+
     const errors = {
       firstName: !profile.firstName.trim(),
       lastName: !profile.lastName.trim(),
@@ -274,9 +297,7 @@ class CreateUserForm extends React.Component {
       errors.firstName || errors.lastName || errors.email || errors.password;
 
     if (hasError) {
-      const element = this.mainFieldsContainerRef.current;
-      const parent = element.closest(".scroll-body");
-      (parent || window).scrollTo(0, element.offsetTop);
+      this.scrollToErrorForm();
     }
 
     this.setState({ errors: errors });
@@ -436,6 +457,9 @@ class CreateUserForm extends React.Component {
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
 
+    const notEmptyFirstName = Boolean(profile.firstName.trim());
+    const notEmptyLastName = Boolean(profile.lastName.trim());
+
     return (
       <>
         <MainContainer>
@@ -470,6 +494,9 @@ class CreateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.firstName}
+              {...(notEmptyFirstName && {
+                errorMessage: t("ErrorInvalidUserFirstName"),
+              })}
               labelText={`${t("FirstName")}:`}
               inputName="firstName"
               inputValue={profile.firstName}
@@ -481,6 +508,9 @@ class CreateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
+              {...(notEmptyLastName && {
+                errorMessage: t("ErrorInvalidUserLastName"),
+              })}
               labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
@@ -687,6 +717,7 @@ export default withRouter(
     setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
+    userFormValidation: auth.settingsStore.userFormValidation,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

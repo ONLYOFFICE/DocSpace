@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import NavItem from './nav-item';
 import ProfileActions from './profile-actions';
 import { useTranslation } from 'react-i18next';
 import { tablet } from '@appserver/components/utils/device';
@@ -9,8 +10,9 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
 import { AppServerConfig } from '@appserver/common/constants';
 import config from '../../../../package.json';
-import { isDesktop, isMobile } from 'react-device-detect';
+import { isDesktop } from 'react-device-detect';
 import AboutDialog from '../../pages/About/AboutDialog';
+import DebugInfoDialog from '../../pages/DebugInfo';
 import HeaderCatalogBurger from './header-catalog-burger';
 
 const { proxyURL } = AppServerConfig;
@@ -61,15 +63,17 @@ const HeaderNav = ({
   isAuthenticated,
   peopleAvailable,
   isPersonal,
-  versionAppServer,
   userIsUpdate,
   setUserIsUpdate,
+  buildVersionInfo,
+  debugInfo,
   currentProductId,
   toggleShowText,
   showCatalog,
 }) => {
   const { t } = useTranslation(['NavMenu', 'Common', 'About']);
-  const [visibleDialog, setVisibleDialog] = useState(false);
+  const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
+  const [visibleDebugDialog, setVisibleDebugDialog] = useState(false);
 
   const onProfileClick = useCallback(() => {
     peopleAvailable ? history.push(PROFILE_SELF_URL) : history.push(PROFILE_MY_URL);
@@ -77,7 +81,7 @@ const HeaderNav = ({
 
   const onAboutClick = useCallback(() => {
     if (isDesktop) {
-      setVisibleDialog(true);
+      setVisibleAboutDialog(true);
     } else {
       history.push(ABOUT_URL);
     }
@@ -88,6 +92,12 @@ const HeaderNav = ({
   });
 
   const onCloseDialog = () => setVisibleDialog(false);
+  const onDebugClick = useCallback(() => {
+    setVisibleDebugDialog(true);
+  }, []);
+
+  const onCloseAboutDialog = () => setVisibleAboutDialog(false);
+  const onCloseDebugDialog = () => setVisibleDebugDialog(false);
 
   const onSwitchToDesktopClick = useCallback(() => {
     deleteCookie('desktop_view');
@@ -97,7 +107,7 @@ const HeaderNav = ({
   const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
   const getCurrentUserActions = useCallback(() => {
-    return [
+    const actions = [
       {
         key: 'ProfileBtn',
         label: t('Common:Profile'),
@@ -132,6 +142,16 @@ const HeaderNav = ({
         onClick: onLogoutClick,
       },
     ];
+
+    if (debugInfo) {
+      actions.splice(3, 0, {
+        key: 'DebugBtn',
+        label: 'Debug Info',
+        onClick: onDebugClick,
+      });
+    }
+
+    return actions;
   }, [onProfileClick, onAboutClick, onLogoutClick]);
   //console.log("HeaderNav render");
   return (
@@ -158,11 +178,13 @@ const HeaderNav = ({
 
       <AboutDialog
         t={t}
-        visible={visibleDialog}
-        onClose={onCloseDialog}
+        visible={visibleAboutDialog}
+        onClose={onCloseAboutDialog}
         personal={isPersonal}
-        versionAppServer={versionAppServer}
+        buildVersionInfo={buildVersionInfo}
       />
+
+      {debugInfo && <DebugInfoDialog visible={visibleDebugDialog} onClose={onCloseDebugDialog} />}
     </StyledNav>
   );
 };
@@ -190,9 +212,12 @@ export default withRouter(
       currentProductId,
       toggleShowText,
       showCatalog,
+      buildVersionInfo,
+      debugInfo,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
+
     return {
       isPersonal,
       user,
@@ -209,6 +234,8 @@ export default withRouter(
       currentProductId,
       toggleShowText,
       showCatalog,
+      buildVersionInfo,
+      debugInfo,
     };
   })(observer(HeaderNav)),
 );

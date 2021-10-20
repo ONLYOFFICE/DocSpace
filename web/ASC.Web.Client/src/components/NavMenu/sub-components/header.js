@@ -46,6 +46,18 @@ const Header = styled.header`
     @media ${tablet} {
       margin-left: 16px;
     }
+
+    /* @media (max-width: 620px) {
+      ${(props) =>
+      !props.isPersonal &&
+      css`
+        display: ${(props) => (props.module ? 'none' : 'block')};
+        padding: 3px 20px 0 6px;
+      `}
+    } */
+  }
+  .mobile-short-logo {
+    width: 146px;
   }
 `;
 
