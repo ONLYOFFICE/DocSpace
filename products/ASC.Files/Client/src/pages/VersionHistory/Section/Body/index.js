@@ -36,6 +36,9 @@ class SectionBodyContent extends React.Component {
 
   onSetRestoreProcess = (isRestoreProcess) => {
     console.log("onSetRestoreProcess", isRestoreProcess);
+
+    this.listKey += 1;
+
     this.setState({
       isRestoreProcess,
     });
@@ -94,6 +97,7 @@ class SectionBodyContent extends React.Component {
       console.log("this.state. render list", this.state);
       return (
         <List
+          key={this.listKey}
           ref={this.listRef}
           className="List"
           height={height}
