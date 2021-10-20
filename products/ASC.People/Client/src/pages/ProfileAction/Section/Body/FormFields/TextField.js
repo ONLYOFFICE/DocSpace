@@ -9,8 +9,6 @@ class TextField extends React.Component {
   }
 
   render() {
-    console.log("TextField render");
-
     const {
       isRequired,
       hasError,
