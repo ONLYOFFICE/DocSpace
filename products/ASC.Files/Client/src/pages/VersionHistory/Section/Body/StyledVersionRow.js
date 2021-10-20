@@ -4,14 +4,14 @@ import { tablet } from "@appserver/components/utils/device";
 
 const StyledVersionRow = styled(Row)`
   @media ${tablet} {
-    height: 66px;
     box-sizing: border-box;
     position: relative;
   }
 
   .row_content {
     position: relative;
-    padding-top: 14px;
+    padding-top: 12px;
+    padding-bottom: 12px;
     ${(props) => !props.isTabletView && "padding-right:16px"}
   }
 

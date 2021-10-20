@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
@@ -34,6 +34,8 @@ const VersionRow = (props) => {
     onSetRestoreProcess,
     isRestoreProcess,
     isTabletView,
+    onUpdateHeight,
+    length,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
@@ -96,6 +98,22 @@ const VersionRow = (props) => {
   ];
 
   const onClickProp = canEdit ? { onClick: onVersionClick } : {};
+
+  // console.log(
+  //   "document",
+  //   index,
+
+  //   document?.getElementsByClassName(`HELLO_${index}`)[0]?.clientHeight
+  // );
+  useEffect(() => {
+    onUpdateHeight(
+      index,
+      document?.getElementsByClassName(`HELLO_${index}`)[0]?.clientHeight
+    );
+  }, [showEditPanel, length]);
+
+  // console.log("updating");
+
   return (
     <StyledVersionRow
       showEditPanel={showEditPanel}
@@ -105,7 +123,7 @@ const VersionRow = (props) => {
       isVersion={isVersion}
       isTabletView={isTabletView}
     >
-      <>
+      <div className={`HELLO_${index}`}>
         <Box displayProp="flex">
           <VersionBadge
             className="version_badge"
@@ -242,7 +260,7 @@ const VersionRow = (props) => {
             </Box>
           </Box>
         )}
-      </>
+      </div>
     </StyledVersionRow>
   );
 };
