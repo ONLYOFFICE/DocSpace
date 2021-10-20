@@ -22,7 +22,8 @@ const StyledContainer = styled.div`
     width: calc(100% + 48px);
 
     @media ${tablet} {
-      width: calc(100% + 40px);
+      margin: 0 -16px;
+      width: calc(100% + 32px);
     }
   }
 
