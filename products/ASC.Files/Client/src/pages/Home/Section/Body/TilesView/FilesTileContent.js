@@ -54,7 +54,7 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 
   .title-link {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .favorite,
@@ -83,18 +83,14 @@ const FilesTileContent = ({
 
   return (
     <>
-      <SimpleFilesTileContent
-        sideColor="#333"
-        isFile={fileExst}
-        //disableSideInfo
-      >
+      <SimpleFilesTileContent sideColor="#333" isFile={fileExst}>
         <Link
           className="title-link item-file-name"
           containerWidth="100%"
           type="page"
           title={title}
           fontWeight="600"
-          fontSize="14px"
+          fontSize="13px"
           target="_blank"
           {...linkStyles}
           color="#333"
@@ -106,7 +102,7 @@ const FilesTileContent = ({
               className="badge-ext"
               as="span"
               color="#A3A9AE"
-              fontSize="14px"
+              fontSize="13px"
               fontWeight={600}
               truncate={true}
             >

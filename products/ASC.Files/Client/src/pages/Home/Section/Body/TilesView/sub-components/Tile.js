@@ -115,7 +115,7 @@ const StyledTile = styled.div`
   .file-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
-    margin-right: ${(props) => (props.isFolder ? "8px" : "4px")};
+    //margin-right: ${(props) => (props.isFolder ? "8px" : "4px")};
     margin-top: 3px;
     justify-content: center;
 
@@ -129,24 +129,23 @@ const StyledTile = styled.div`
     flex: 0 0 auto;
     margin-right: 4px;
     user-select: none;
-    margin-top: 3px;
-    margin-top: ${(props) => (props.isFolder ? "-6px" : "-4px")};
+    margin-top: ${(props) => (props.isFolder ? "-8px" : "-6px")};
 
-    height: 32px;
-    width: 32px;
+    height: 24px;
+    width: 24px;
 
     img {
-      height: 32px;
-      width: 32px;
+      height: 24px;
+      width: 24px;
     }
   }
 
   .file-icon_container {
-    min-width: 36px;
+    min-width: 28px;
   }
 
   .styled-content {
-    padding-left: ${(props) => (props.isFolder ? "10px" : "12px")};
+    padding-left: 10px;
   }
 
   :hover {
