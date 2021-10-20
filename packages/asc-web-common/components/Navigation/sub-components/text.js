@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import ExpanderDownIcon from '@appserver/components/public/static/images/expander-down.react.svg';
@@ -11,7 +11,6 @@ import { tablet } from '@appserver/components/utils/device';
 import { isMobile } from 'react-device-detect';
 
 const StyledTextContainer = styled.div`
-  height: ${isMobile ? '21px !important' : '18px'};
   width: fit-content;
   position: relative;
   display: grid;
@@ -19,9 +18,6 @@ const StyledTextContainer = styled.div`
 
   align-items: center;
   ${(props) => !props.isRootFolder && 'cursor: pointer'};
-  @media ${tablet} {
-    height: 21px;
-  }
 `;
 
 const StyledHeadline = styled(Headline)`

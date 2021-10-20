@@ -383,6 +383,7 @@ class AvatarEditorBody extends React.Component {
                         onImageChange={this.throttledSetCroppedImage}
                         onPositionChange={this.onPositionChange}
                         onImageReady={this.onImageReady}
+                        crossOrigin="anonymous"
                       />
                       <Box className="editor-buttons">
                         <Box></Box>

@@ -50,12 +50,12 @@ const StyledBox = styled.div`
 `;
 
 const StyledContainer = styled.div`
+  margin: 14px 0 7px;
   position: relative;
   top: -1px;
   align-items: center;
   min-width: 100px;
   max-width: calc(100vw - 32px);
-  height: ${isMobile ? (isMobileOnly ? '53px !important' : '61px !important') : '53px'};
   padding: ${isMobile ? '0px 16px' : '0px 24px'};
   display: grid;
   grid-template-columns: ${(props) =>
@@ -64,51 +64,47 @@ const StyledContainer = styled.div`
   @media ${tablet} {
     top: ${!isMobile && '0px'};
     padding: 0px 16px;
-    height: 61px;
+
     grid-template-columns: ${(props) => (props.canCreate ? 'auto 1fr auto' : 'auto 1fr auto')};
   }
 
   @media ${mobile} {
-    height: 53px;
   }
 
   .arrow-button {
     margin-right: 15px;
     min-width: 17px;
-    padding: 16px 0 12px;
+
     align-items: center;
 
     @media ${tablet} {
-      padding: 20px 0 16px 8px;
+      padding: 0 0 0 8px;
       margin-left: -8px;
       margin-right: 16px;
     }
   }
 
   .add-button {
-    margin-bottom: -1px;
     margin-left: 16px;
 
     @media ${tablet} {
       margin-left: auto;
 
       & > div:first-child {
-        padding: 8px 8px 8px 8px;
+        padding: 0px 8px 8px 8px;
         margin-right: -8px;
       }
     }
   }
 
   .option-button {
-    margin-bottom: -1px;
-
     @media (min-width: 1024px) {
       margin-left: 8px;
     }
 
     @media ${tablet} {
       & > div:first-child {
-        padding: 8px 8px 8px 8px;
+        padding: 0px 8px 8px 8px;
         margin-right: -8px;
       }
     }
@@ -117,7 +113,6 @@ const StyledContainer = styled.div`
 
 const Row = React.memo(({ data, index, style }) => {
   const isRoot = index === data[0].length - 1;
-  const paddingBottom = isRoot ? '20px' : 0;
   return (
     <Item
       key={data[0][index].id}
@@ -125,7 +120,7 @@ const Row = React.memo(({ data, index, style }) => {
       title={data[0][index].title}
       isRoot={isRoot}
       onClick={data[1]}
-      style={{ ...style, paddingBottom: paddingBottom }}
+      style={{ ...style }}
     />
   );
 });
@@ -134,7 +129,6 @@ const DropBox = React.forwardRef(
   (
     {
       width,
-      height,
       changeWidth,
       isRootFolder,
       onBackToParentFolder,
@@ -149,26 +143,26 @@ const DropBox = React.forwardRef(
     },
     ref,
   ) => {
+    const [dropBoxHeight, setDropBoxHeight] = React.useState(0);
     const countItems = navigationItems.length;
 
     const getItemSize = (index) => {
-      if (index === countItems - 1) return 31;
+      if (index === countItems - 1) return 51;
       return isMobile || IsMobileUtils() || isTabletUtils() ? 36 : 30;
     };
 
-    const getListHeight = useCallback(() => {
+    React.useEffect(() => {
       const itemsHeight = navigationItems.map((item, index) => getItemSize(index));
 
       const currentHeight = itemsHeight.reduce((a, b) => a + b);
-      // 22 is padding-bottom last item
-      // 109 is nav height + height section header
-      return currentHeight + 22 > window.innerHeight - 109
-        ? window.innerHeight - 109
-        : currentHeight + 22;
-    }, [height]);
+
+      setDropBoxHeight(
+        currentHeight > window.innerHeight - 97 ? window.innerHeight - 97 : currentHeight,
+      );
+    });
 
     return (
-      <StyledBox ref={ref} width={width} height={getListHeight()} changeWidth={changeWidth}>
+      <StyledBox ref={ref} width={width} changeWidth={changeWidth}>
         <StyledContainer canCreate={canCreate}>
           <ArrowButton isRootFolder={isRootFolder} onBackToParentFolder={onBackToParentFolder} />
           <Text title={title} isOpen={true} onClick={toggleDropBox} />
@@ -182,7 +176,7 @@ const DropBox = React.forwardRef(
         </StyledContainer>
 
         <VariableSizeList
-          height={getListHeight()}
+          height={dropBoxHeight}
           width={'auto'}
           itemCount={countItems}
           itemSize={getItemSize}

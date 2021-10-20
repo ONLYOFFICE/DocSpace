@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Backdrop from "../backdrop";
 import Aside from "../aside";
 import Heading from "../heading";
-import { desktop } from "../utils/device";
+import { getModalType } from "../utils/device";
 import throttle from "lodash/throttle";
 import Box from "../box";
 import {
@@ -49,7 +49,7 @@ class ModalDialog extends React.Component {
   getTypeByWidth() {
     if (this.props.displayType !== "auto") return this.props.displayType;
 
-    return window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "modal";
+    return getModalType();
   }
 
   resize() {
@@ -59,6 +59,8 @@ class ModalDialog extends React.Component {
     if (type === this.state.displayType) return;
 
     this.setState({ displayType: type });
+
+    this.props.onResize && this.props.onResize(type);
   }
 
   popstate() {
@@ -230,6 +232,7 @@ ModalDialog.propTypes = {
   scale: PropTypes.bool,
   /** Will be triggered when a close button is clicked */
   onClose: PropTypes.func,
+  onResize: PropTypes.func,
   /** CSS z-index */
   zIndex: PropTypes.number,
   /** CSS padding props for body section */

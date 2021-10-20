@@ -9,24 +9,38 @@ import { tablet, desktop } from '@appserver/components/utils/device';
 import NoUserSelect from '@appserver/components/utils/commonStyles';
 const StyledSectionHeader = styled.div`
   position: relative;
-  border-bottom: 1px solid #eceef1;
-  height: 55px;
+  height: 41px;
   margin-right: 24px;
   margin-top: -1px;
-  padding-bottom: 9px;
   ${NoUserSelect}
   ${isMobile &&
   css`
-    height: 49px;
+    height: 20px;
+    /* height: 49px;
     min-height: 48px;
-    max-height: 49px;
+    max-height: 49px; */
     width: ${(props) => !props.isLoaded && '100%'};
     margin-top: 64px;
-    @media ${tablet} {
+    /* @media ${tablet} {
       margin-top: 55px;
-      padding-bottom: 18px;
-    }
+    } */
   `}
+
+  
+  @media ${tablet} {
+    ${(props) =>
+      props.viewAs !== 'tablet' &&
+      css`
+        height: 49px;
+
+        .arrow-button {
+          svg {
+            width: 14px !important;
+          }
+          margin-right: 10px !important;
+        }
+      `}
+  }
 
   @media ${tablet} {
     margin-right: 16px;
@@ -39,11 +53,10 @@ const StyledSectionHeader = styled.div`
       width: 100%;
     `}
 
-    //padding-top: 4px;
-      ${isMobile &&
+    ${isMobile &&
     css`
       position: fixed;
-      top: 56px;
+      top: 48px;
 
       width: ${(props) => (props.isArticlePinned ? `calc(100% - 272px)` : '100%')};
 
@@ -102,14 +115,15 @@ class SectionHeader extends React.Component {
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
 
-    const { isArticlePinned, isHeaderVisible, ...rest } = this.props;
+    const { isArticlePinned, isHeaderVisible, viewAs, ...rest } = this.props;
 
     return (
       <LayoutContextConsumer>
         {(value) => (
           <StyledSectionHeader
             isArticlePinned={isArticlePinned}
-            isSectionHeaderVisible={value.isVisible}>
+            isSectionHeaderVisible={value.isVisible}
+            viewAs={viewAs}>
             <div
               className={classnames('section-header hidingHeader', {
                 'section-header--hidden': value.isVisible === undefined ? false : !value.isVisible,

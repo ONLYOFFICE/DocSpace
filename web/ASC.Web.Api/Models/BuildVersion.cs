@@ -28,12 +28,14 @@ using System.Text.Json.Serialization;
 
 
 using ASC.Common;
+using ASC.Web.Core.Files;
+using ASC.Web.Files.Services.DocumentService;
 
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Api.Settings
 {
-    [Singletone]
+    [Scope]
     public class BuildVersion
     {
         public string CommunityServer { get; set; }
@@ -47,9 +49,17 @@ namespace ASC.Api.Settings
         [JsonIgnore]
         private IConfiguration Configuration { get; }
 
-        public BuildVersion(IConfiguration configuration)
+        [JsonIgnore]
+        private FilesLinkUtility FilesLinkUtility { get; }
+
+        [JsonIgnore]
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+
+        public BuildVersion(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DocumentServiceConnector documentServiceConnector)
         {
             Configuration = configuration;
+            FilesLinkUtility = filesLinkUtility;
+            DocumentServiceConnector = documentServiceConnector;
         }
 
         public BuildVersion GetCurrentBuildVersion()
@@ -67,15 +77,12 @@ namespace ASC.Api.Settings
             return Configuration["version:number"] ?? "8.5.0";
         }
 
-        private static string GetDocumentVersion()
+        private string GetDocumentVersion()
         {
-            return "";
-            //TODO
-            /*
             if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
                 return null;
 
-            return DocumentServiceConnector.GetVersion();*/
+            return DocumentServiceConnector.GetVersion();
         }
 
         private static string GetMailServerVersion()

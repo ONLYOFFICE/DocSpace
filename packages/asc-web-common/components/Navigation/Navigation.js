@@ -84,7 +84,6 @@ const Navigation = ({
               ref={dropBoxRef}
               changeWidth={changeWidth}
               width={context.sectionWidth}
-              height={context.sectionHeight}
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
               title={title}

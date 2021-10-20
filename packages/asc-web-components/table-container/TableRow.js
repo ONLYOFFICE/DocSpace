@@ -9,6 +9,7 @@ import Checkbox from "../checkbox";
 const TableRow = (props) => {
   const {
     fileContextClick,
+    onHideContextMenu,
     children,
     contextOptions,
     checked,
@@ -68,8 +69,17 @@ const TableRow = (props) => {
       </TableCell>
       {children}
       <div>
-        <TableCell {...selectionProp} style={style} forwardedRef={row}>
-          <ContextMenu ref={cm} model={contextOptions}></ContextMenu>
+        <TableCell
+          {...selectionProp}
+          style={style}
+          forwardedRef={row}
+          className={`${selectionProp?.className} table-container_row-context-menu-wrapper`}
+        >
+          <ContextMenu
+            onHide={onHideContextMenu}
+            ref={cm}
+            model={contextOptions}
+          ></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
               color="#A3A9AE"
@@ -100,6 +110,7 @@ TableRow.propTypes = {
   checked: PropTypes.bool,
   element: PropTypes.any,
   onContentSelect: PropTypes.func,
+  onHideContextMenu: PropTypes.func,
   item: PropTypes.object,
   selectionProp: PropTypes.object,
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),

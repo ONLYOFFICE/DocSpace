@@ -17,7 +17,7 @@ const StyledItem = styled.div`
   width: auto !important;
   position: relative;
   display: grid;
-  align-items: end;
+  align-items: ${(props) => (props.isRoot ? 'baseline' : 'end')};
   grid-template-columns: 17px auto;
   cursor: pointer;
   padding: ${isMobile ? '0px 16px' : '0px 24px'};
@@ -37,7 +37,7 @@ const StyledIconWrapper = styled.div`
 const StyledText = styled(Text)`
   margin-left: 10px;
   position: relative;
-  bottom: ${(props) => (props.isRoot ? '-2px' : '-1px')};
+  bottom: ${(props) => (props.isRoot ? '2px' : '-1px')};
 `;
 
 const Item = ({ id, title, isRoot, onClick, ...rest }) => {

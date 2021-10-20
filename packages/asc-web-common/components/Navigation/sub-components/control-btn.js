@@ -60,4 +60,12 @@ const ControlButtons = ({
   );
 };
 
+ControlButtons.propTypes = {
+  personal: PropTypes.bool,
+  isRootFolder: PropTypes.bool,
+  canCreate: PropTypes.bool,
+  getContextOptionsFolder: PropTypes.func,
+  getContextOptionsPlus: PropTypes.func,
+};
+
 export default React.memo(ControlButtons);

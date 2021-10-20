@@ -14,6 +14,9 @@ import withBadges from "../../../../../HOCs/withBadges";
 const sideColor = "#A3A9AE";
 
 const SimpleFilesRowContent = styled(RowContent)`
+  .row-main-container-wrapper {
+    width: 100%;
+  }
   .badge-ext {
     margin-right: 8px;
   }
@@ -66,6 +69,7 @@ const FilesRowContent = ({
     foldersCount,
     providerKey,
     access,
+    title,
   } = item;
 
   const withAccess = isAdmin || access === 0;
@@ -82,7 +86,7 @@ const FilesRowContent = ({
         <Link
           containerWidth="55%"
           type="page"
-          title={titleWithoutExt}
+          title={title}
           fontWeight="600"
           fontSize="15px"
           target="_blank"
@@ -98,7 +102,6 @@ const FilesRowContent = ({
               color="#A3A9AE"
               fontSize="15px"
               fontWeight={600}
-              title={fileExst}
               truncate={true}
             >
               {fileExst}
@@ -127,9 +130,7 @@ const FilesRowContent = ({
           color={sideColor}
           className="row_update-text"
         >
-          {(fileExst || contentLength || !providerKey) &&
-            updatedDate &&
-            updatedDate}
+          {updatedDate && updatedDate}
         </Text>
         <Text
           containerMinWidth="90px"

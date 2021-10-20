@@ -79,9 +79,9 @@ class ChangeOwnerComponent extends React.Component {
     const { showPeopleSelector, owner } = this.state;
 
     const ownerName = owner.displayName ? owner.displayName : owner.label;
-    const fileName = selection[0].title;
+    const fileName = selection[0]?.title;
     const id = owner.id ? owner.id : owner.key;
-    const disableSaveButton = owner && selection[0].createdBy.id === id;
+    const disableSaveButton = owner && selection[0]?.createdBy.id === id;
     const zIndex = 310;
 
     return (
@@ -158,7 +158,7 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
-    selection: bufferSelection ? [bufferSelection] : selection,
+    selection: selection.length ? selection : [bufferSelection],
     isLoading,
     visible: ownerPanelVisible,
 
