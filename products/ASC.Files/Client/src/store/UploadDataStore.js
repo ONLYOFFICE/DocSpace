@@ -874,27 +874,25 @@ class UploadDataStore {
       return;
     }
 
-    let operationItem = null;
-    let url;
+    let operationItem = data;
+    let finished = data.finished;
 
-    while (progress !== 100 && !url) {
-      await this.getOperationProgress(data.id)
-        .then((item) => {
-          operationItem = item;
-          progress = item ? item.progress : 100;
-          url = item.url;
+    while (!finished) {
+      const item = await this.getOperationProgress(data.id);
+      operationItem = item;
+      progress = item ? item.progress : 100;
+      finished = item.finished;
 
-          setSecondaryProgressBarData({
-            icon: pbData.icon,
-            label: pbData.label || label,
-            percent: progress,
-            visible: true,
-            alert: false,
-          });
-        })
-        .catch((err) => Promise.reject(err));
+      setSecondaryProgressBarData({
+        icon: pbData.icon,
+        label: pbData.label || label,
+        percent: progress,
+        visible: true,
+        alert: false,
+      });
     }
-    return Promise.resolve(operationItem);
+
+    return operationItem;
   };
 
   moveToCopyTo = (destFolderId, pbData, isCopy) => {
