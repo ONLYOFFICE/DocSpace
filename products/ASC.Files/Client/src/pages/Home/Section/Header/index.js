@@ -210,19 +210,23 @@ class SectionHeaderContent extends React.Component {
 
   onMoveAction = () => {
     this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
     return this.props.setMoveToPanelVisible(true);
   };
   onCopyAction = () => {
     this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
     return this.props.setCopyPanelVisible(true);
   };
-  downloadAction = () =>
+  downloadAction = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
     this.props
-      .downloadAction(
-        this.props.t("Translations:ArchivingData"),
-        this.props.currentFolderId
-      )
+      .downloadAction(this.props.t("Translations:ArchivingData"), [
+        this.props.currentFolderId,
+      ])
       .catch((err) => toastr.error(err));
+  };
 
   renameAction = () => console.log("renameAction click");
   onOpenSharingPanel = () => {

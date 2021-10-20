@@ -61,13 +61,24 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      updatedFolder = this.selectedFolderStore.parentId;
+    }
+
     const { filter, fetchFiles } = this.filesStore;
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() =>
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
-    );
+    fetchFiles(updatedFolder, filter, true, true).finally(() => {
+      this.dialogsStore.setIsFolderActions(false);
+      return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+    });
   };
 
-  deleteAction = async (translations, newSelection = null, withoutDialog = false) => {
+  deleteAction = async (
+    translations,
+    newSelection = null,
+    withoutDialog = false
+  ) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
@@ -242,6 +253,14 @@ class FilesActionStore {
         folderIds.push(item.id);
         items.push({ id: item.id });
       }
+    }
+
+    if (this.dialogsStore.isFolderActions) {
+      fileIds = [];
+      folderIds = [];
+
+      folderIds.push(bufferSelection);
+      this.dialogsStore.setIsFolderActions(false);
     }
 
     return this.downloadFiles(fileIds, folderIds, label);
