@@ -32,7 +32,6 @@ const VersionRow = (props) => {
     restoreVersion,
     updateCommentVersion,
     onSetRestoreProcess,
-    isRestoreProcess,
     isTabletView,
     onUpdateHeight,
     versionsListLength,
@@ -108,21 +107,21 @@ const VersionRow = (props) => {
     newRowHeight && onUpdateHeight(index, newRowHeight);
   }, [showEditPanel, versionsListLength]);
 
-  console.log("updating");
+  //console.log("updating");
 
   return (
     <StyledVersionRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
       canEdit={canEdit}
-      isRestoreProcess={isRestoreProcess}
-      isVersion={isVersion}
       isTabletView={isTabletView}
     >
       <div className={`version-row_${index}`}>
         <Box displayProp="flex">
           <VersionBadge
-            className="version_badge"
+            className={`version_badge ${
+              isVersion ? "versioned" : "not-versioned"
+            }`}
             isVersion={isVersion}
             index={index}
             versionGroup={info.versionGroup}
