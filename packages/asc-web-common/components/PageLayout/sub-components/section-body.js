@@ -125,7 +125,7 @@ class SectionBody extends React.Component {
       withScroll,
       isLoaded,
     } = this.props;
-    console.log("isLoaded", isLoaded);
+
     const focusProps = autoFocus
       ? {
           ref: this.focusRef,
