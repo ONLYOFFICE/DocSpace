@@ -149,6 +149,7 @@ const EditingWrapperComponent = (props) => {
   };
 
   const onFocus = (e) => e.target.select();
+  const onBlur = (e) => onClickUpdateItem(e, false);
 
   return (
     <EditingWrapper viewAs={viewAs}>
@@ -164,6 +165,7 @@ const EditingWrapperComponent = (props) => {
         onKeyUp={onKeyUpUpdateItem}
         onKeyDown={onEscapeKeyPress}
         onFocus={onFocus}
+        onBlur={onBlur}
         isDisabled={isLoading}
         data-itemid={itemId}
         withBorder={!isTable}
