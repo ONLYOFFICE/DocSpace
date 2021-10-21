@@ -108,7 +108,8 @@ const StyledVersionHistoryPanel = styled.div`
     }
   }
   .version-history-panel-body {
-    padding: ${(props) => (props.isLoading ? "16px 0" : null)};
+    padding-top: ${(props) => (props.isLoading ? "16px" : null)};
+    padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
     margin-left: 16px;
     border-top: 1px solid #eceef1;
 
