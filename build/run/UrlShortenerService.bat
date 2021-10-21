@@ -1,6 +1,6 @@
 @echo off
 PUSHD %~dp0..
-set servicepath=%cd%\deploy\services\urlshortener\service
+set servicepath=%cd%\deploy\services\urlshortener\service\
 set servicename=ASC.UrlShortener.Svc
 
 PUSHD %~dp0..\..
