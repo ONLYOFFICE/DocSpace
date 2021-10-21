@@ -107,8 +107,6 @@ const VersionRow = (props) => {
     newRowHeight && onUpdateHeight(index, newRowHeight);
   }, [showEditPanel, versionsListLength]);
 
-  //console.log("updating");
-
   return (
     <StyledVersionRow
       showEditPanel={showEditPanel}
