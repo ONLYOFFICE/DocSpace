@@ -115,6 +115,7 @@ const VersionRow = (props) => {
       contextOptions={contextOptions}
       canEdit={canEdit}
       isTabletView={isTabletView}
+      isSavingComment={isSavingComment}
     >
       <div className={`version-row_${index}`}>
         <Box displayProp="flex">
