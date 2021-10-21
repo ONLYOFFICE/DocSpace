@@ -18,7 +18,7 @@ const FileList = ({ uploadDataFiles }) => {
         <List
           style={style}
           height={height}
-          width={width - 3}
+          width={width}
           itemData={uploadDataFiles}
           itemCount={uploadDataFiles.length}
           itemSize={56}
