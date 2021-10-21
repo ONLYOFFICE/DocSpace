@@ -74,7 +74,7 @@ class FilesTableHeader extends React.Component {
         key: "Share",
         title: "",
         enable: withContent,
-        defaultSize: 80,
+        defaultSize: 120,
         resizable: false,
       },
     ];
@@ -188,12 +188,12 @@ class FilesTableHeader extends React.Component {
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
           return (
-        <DropDownItem
+            <DropDownItem
               key={key}
               label={label}
               data-key={key}
-          onClick={this.onSelect}
-        />
+              onClick={this.onSelect}
+            />
           );
         })}
       </>

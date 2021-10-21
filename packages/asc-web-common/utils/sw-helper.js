@@ -54,6 +54,9 @@ const SnackBarWrapper = (props) => {
 };
 
 const registerSW = () => {
+  return; //TODO: Enable service-worker after fix of infinite reloading (Bug 53063)
+
+  /*
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     const wb = new Workbox(`/sw.js`);
 
@@ -124,6 +127,8 @@ const registerSW = () => {
   } else {
     console.log("SKIP registerSW because of DEV mode");
   }
+
+  */
 };
 
 window.SW = {

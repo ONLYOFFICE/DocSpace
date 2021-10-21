@@ -91,7 +91,6 @@ const StyledContainer = styled.div`
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    padding-bottom: 56px;
 
     ${isMobile &&
     css`
@@ -129,7 +128,7 @@ const StyledContainer = styled.div`
         ${(props) =>
           !props.isDesktop &&
           css`
-            top: 56px;
+            top: 48px;
           `}
         z-index: 180;
       }
@@ -209,15 +208,32 @@ class SectionHeaderContent extends React.Component {
     toastr.success(t("Translations:LinkCopySuccess"));
   };
 
-  onMoveAction = () => this.props.setMoveToPanelVisible(true);
-  onCopyAction = () => this.props.setCopyPanelVisible(true);
-  downloadAction = () =>
+  onMoveAction = () => {
+    this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
+    return this.props.setMoveToPanelVisible(true);
+  };
+  onCopyAction = () => {
+    this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
+    return this.props.setCopyPanelVisible(true);
+  };
+  downloadAction = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
     this.props
-      .downloadAction(this.props.t("Translations:ArchivingData"))
+      .downloadAction(this.props.t("Translations:ArchivingData"), [
+        this.props.currentFolderId,
+      ])
       .catch((err) => toastr.error(err));
+  };
 
   renameAction = () => console.log("renameAction click");
-  onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
+  onOpenSharingPanel = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
+    return this.props.setSharingPanelVisible(true);
+  };
 
   onDeleteAction = () => {
     const {
@@ -226,10 +242,18 @@ class SectionHeaderContent extends React.Component {
       confirmDelete,
       setDeleteDialogVisible,
       isThirdPartySelection,
+      currentFolderId,
+      getFolderInfo,
+      setBufferSelection,
     } = this.props;
 
+    this.props.setIsFolderActions(true);
+
     if (confirmDelete || isThirdPartySelection) {
-      setDeleteDialogVisible(true);
+      getFolderInfo(currentFolderId).then((data) => {
+        setBufferSelection(data);
+        setDeleteDialogVisible(true);
+      });
     } else {
       const translations = {
         deleteOperation: t("Translations:DeleteOperation"),
@@ -237,45 +261,48 @@ class SectionHeaderContent extends React.Component {
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
       };
 
-      deleteAction(translations).catch((err) => toastr.error(err));
+      deleteAction(translations, [currentFolderId], true).catch((err) =>
+        toastr.error(err)
+      );
     }
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
-    const { t } = this.props;
+    const { t, personal } = this.props;
+
     return [
       {
         key: "sharing-settings",
         label: t("SharingSettings"),
         onClick: this.onOpenSharingPanel,
-        disabled: true,
+        disabled: personal ? true : false,
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: false,
+        disabled: personal ? true : false,
       },
       { key: "separator-2", isSeparator: true },
       {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "rename",
@@ -287,7 +314,7 @@ class SectionHeaderContent extends React.Component {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: true,
+        disabled: false,
       },
     ];
   };
@@ -411,7 +438,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/plus.svg"
+                          iconName="images/header.plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -419,26 +446,25 @@ class SectionHeaderContent extends React.Component {
                           getData={this.getContextOptionsPlus}
                           isDisabled={false}
                         />
-                        {!personal && (
-                          <ContextMenuButton
-                            className="option-button"
-                            directionX="right"
-                            iconName="images/vertical-dots.react.svg"
-                            size={17}
-                            color="#A3A9AE"
-                            hoverColor="#657077"
-                            isFill
-                            getData={this.getContextOptionsFolder}
-                            isDisabled={false}
-                          />
-                        )}
+
+                        <ContextMenuButton
+                          className="option-button"
+                          directionX="right"
+                          iconName="images/vertical-dots.react.svg"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsFolder}
+                          isDisabled={false}
+                        />
                       </>
                     ) : (
                       canCreate && (
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/plus.svg"
+                          iconName="images/header.plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -470,6 +496,7 @@ export default inject(
   }) => {
     const {
       setSelected,
+      setSelection,
       fileActionStore,
       fetchFiles,
       filter,
@@ -482,6 +509,8 @@ export default inject(
       viewAs,
       cbMenuItems,
       getCheckboxItemLabel,
+      getFolderInfo,
+      setBufferSelection,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -489,6 +518,7 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
+      setIsFolderActions,
     } = dialogsStore;
 
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
@@ -510,14 +540,18 @@ export default inject(
       personal: auth.settingsStore.personal,
       viewAs,
       cbMenuItems,
+      getFolderInfo,
 
       setSelected,
+      setSelection,
       setAction,
       setIsLoading,
       fetchFiles,
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setBufferSelection,
+      setIsFolderActions,
       deleteAction,
       setDeleteDialogVisible,
       downloadAction,

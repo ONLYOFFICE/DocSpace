@@ -5,7 +5,7 @@ set -e
 package_manager="yum"
 package_sysname="onlyoffice";
 product="appserver"
-
+GIT_BRANCH="develop"
 package_services="";	
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
@@ -28,6 +28,14 @@ while [ "$1" != "" ]; do
 		-u | --update )
 			if [ "$2" != "" ]; then
 				UPDATE=$2
+				shift
+			fi
+		;;
+		
+		-gb | --gitbranch )
+			if [ "$2" != "" ]; then
+				PARAMETERS="$PARAMETERS ${1}";
+				GIT_BRANCH=$2
 				shift
 			fi
 		;;
@@ -80,7 +88,7 @@ gpgkey=http://static.teamlab.info.s3.amazonaws.com/k8s
 END
 
 #DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/install-appserver/install-RedHat"
-DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/develop/build/install/OneClickInstall/install-RedHat"
+DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-RedHat"
 
 if [ "$LOCAL_SCRIPTS" = "true" ]; then
 	source install-RedHat/bootstrap.sh

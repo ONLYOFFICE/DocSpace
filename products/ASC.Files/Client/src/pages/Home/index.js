@@ -42,7 +42,7 @@ class PureHome extends React.Component {
       getFileInfo,
     } = this.props;
 
-    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
+    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 

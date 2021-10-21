@@ -5,6 +5,7 @@ set -e
 package_sysname="onlyoffice";
 DS_COMMON_NAME="onlyoffice";
 product="appserver"
+GIT_BRANCH="develop"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
 RES_CHECK_PORTS="please, make sure that the ports are free.";
@@ -17,6 +18,14 @@ while [ "$1" != "" ]; do
 		-u | --update )
 			if [ "$2" != "" ]; then
 				UPDATE=$2
+				shift
+			fi
+		;;
+		
+		-gb | --gitbranch )
+			if [ "$2" != "" ]; then
+				PARAMETERS="$PARAMETERS ${1}";
+				GIT_BRANCH=$2
 				shift
 			fi
 		;;
@@ -56,7 +65,7 @@ if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -
   apt-get install -yq curl;
 fi
 
-DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/develop/build/install/OneClickInstall/install-Debian"
+DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-Debian"
 if [ "${LOCAL_SCRIPTS}" == "true" ]; then
 	source install-Debian/bootstrap.sh
 else

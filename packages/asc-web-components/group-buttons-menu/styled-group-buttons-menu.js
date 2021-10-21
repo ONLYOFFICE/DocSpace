@@ -17,6 +17,10 @@ const StyledGroupButtonsMenu = styled.div`
   display: ${(props) => (props.visible ? "block" : "none")};
   z-index: ${(props) => props.theme.groupButtonsMenu.zIndex};
 
+  @media ${tablet} {
+    height: ${(props) => props.theme.groupButtonsMenu.tabletHeight};
+  }
+
   @media ${desktop} {
     margin-top: ${(props) => props.theme.groupButtonsMenu.marginTop};
   }
@@ -36,6 +40,8 @@ const CloseButton = styled.div`
 
   @media ${tablet} {
     right: 3px;
+    height: ${(props) => props.theme.groupButtonsMenu.closeButton.tabletHeight};
+    top: ${(props) => props.theme.groupButtonsMenu.closeButton.tabletTop};
   }
 
   &:hover {

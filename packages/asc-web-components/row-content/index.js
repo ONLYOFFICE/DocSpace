@@ -12,26 +12,25 @@ import {
 } from "./styled-row-content";
 
 const getSideInfo = (content, convert) => {
-  let info = "";
+  let info = [];
   let child = null;
   const lastIndex = content.length - 1;
 
   content.map((element, index) => {
-    const delimiter = index === lastIndex ? "" : " | ";
     if (index > 1) {
       if (!convert && index === lastIndex) {
         child = element;
       } else {
-        info +=
-          element.props && element.props.children
-            ? element.props.children + delimiter
-            : "";
+        element.props &&
+          element.props.children &&
+          info.push(element.props.children);
       }
     }
   });
+
   return (
     <>
-      {info}
+      {info.join(" | ")}
       {child}
     </>
   );
@@ -69,6 +68,7 @@ const RowContent = (props) => {
         mainContainerWidth={mainContainerWidth}
         widthProp={sectionWidth}
         isMobile={isMobile}
+        className="row-main-container-wrapper"
       >
         <MainContainer
           className="rowMainContainer"

@@ -408,7 +408,7 @@ namespace ASC.Web.Files
                                 {
                                     if (!readLink && fileDao.IsSupportedPreSignedUri(file))
                                     {
-                                        context.Response.Redirect(fileDao.GetPreSignedUri(file, TimeSpan.FromHours(1)).ToString(), true);
+                                        context.Response.Redirect(fileDao.GetPreSignedUri(file, TimeSpan.FromHours(1)).ToString(), false);
 
                                         return;
                                     }

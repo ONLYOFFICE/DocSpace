@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
@@ -9,7 +9,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
-import StyledVersionRow from "./StyledVersionRow";
+import { StyledVersionRow } from "./StyledVersionHistory";
 import ExternalLinkIcon from "../../../../../public/images/external.link.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
@@ -31,9 +31,14 @@ const VersionRow = (props) => {
     markAsVersion,
     restoreVersion,
     updateCommentVersion,
+    onSetRestoreProcess,
+    isTabletView,
+    onUpdateHeight,
+    versionsListLength,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
+  const [isSavingComment, setIsSavingComment] = useState(false);
 
   const canEdit = info.access === 1 || info.access === 0;
 
@@ -50,10 +55,12 @@ const VersionRow = (props) => {
   const onChange = (e) => setCommentValue(e.target.value);
 
   const onSaveClick = () => {
+    setIsSavingComment(true);
     updateCommentVersion(info.id, commentValue, info.version)
       .catch((err) => toastr.error(err))
       .finally(() => {
         onEditComment();
+        setIsSavingComment(false);
       });
   };
 
@@ -64,7 +71,12 @@ const VersionRow = (props) => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    restoreVersion(info.id, info.version).catch((err) => toastr.error(err));
+    onSetRestoreProcess(true);
+    restoreVersion(info.id, info.version)
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        onSetRestoreProcess(false);
+      });
   };
 
   const onVersionClick = () => {
@@ -88,16 +100,29 @@ const VersionRow = (props) => {
   ];
 
   const onClickProp = canEdit ? { onClick: onVersionClick } : {};
+
+  useEffect(() => {
+    const newRowHeight = document.getElementsByClassName(
+      `version-row_${index}`
+    )[0]?.clientHeight;
+
+    newRowHeight && onUpdateHeight(index, newRowHeight);
+  }, [showEditPanel, versionsListLength]);
+
   return (
     <StyledVersionRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
       canEdit={canEdit}
+      isTabletView={isTabletView}
+      isSavingComment={isSavingComment}
     >
-      <>
+      <div className={`version-row_${index}`}>
         <Box displayProp="flex">
           <VersionBadge
-            className="version_badge"
+            className={`version_badge ${
+              isVersion ? "versioned" : "not-versioned"
+            }`}
             isVersion={isVersion}
             index={index}
             versionGroup={info.versionGroup}
@@ -140,6 +165,7 @@ const VersionRow = (props) => {
                   fontSize={12}
                   heightTextArea={54}
                   value={commentValue}
+                  isDisabled={isSavingComment}
                 />
                 <Box className="version_modal-dialog">
                   <ModalDialog
@@ -158,10 +184,12 @@ const VersionRow = (props) => {
                         onChange={onChange}
                         heightTextArea={298}
                         value={commentValue}
+                        isDisabled={isSavingComment}
                       />
                     </ModalDialog.Body>
                     <ModalDialog.Footer>
                       <Button
+                        isDisabled={isSavingComment}
                         className="version_save-button"
                         label={t("Common:SaveButton")}
                         size="big"
@@ -211,6 +239,7 @@ const VersionRow = (props) => {
               displayProp="inline-block"
             >
               <Button
+                isDisabled={isSavingComment}
                 size="base"
                 scale={true}
                 primary
@@ -223,6 +252,7 @@ const VersionRow = (props) => {
               displayProp="inline-block"
             >
               <Button
+                isDisabled={isSavingComment}
                 size="base"
                 scale={true}
                 onClick={onCancelClick}
@@ -231,14 +261,14 @@ const VersionRow = (props) => {
             </Box>
           </Box>
         )}
-      </>
+      </div>
     </StyledVersionRow>
   );
 };
 
 export default inject(({ auth, versionHistoryStore }) => {
   const { user } = auth.userStore;
-  const { culture } = auth.settingsStore;
+  const { culture, isTabletView } = auth.settingsStore;
   const language = (user && user.cultureName) || culture || "en-US";
 
   const {
@@ -249,7 +279,7 @@ export default inject(({ auth, versionHistoryStore }) => {
 
   return {
     culture: language,
-
+    isTabletView,
     markAsVersion,
     restoreVersion,
     updateCommentVersion,

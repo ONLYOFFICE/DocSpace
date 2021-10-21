@@ -92,7 +92,6 @@ const SelectFolderDialogAsideView = ({
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
-                  primary
                   size="big"
                   label={t("Common:CloseButton")}
                   onClick={onClose}

@@ -108,9 +108,13 @@ const StyledVersionHistoryPanel = styled.div`
     }
   }
   .version-history-panel-body {
-    padding: ${(props) => (props.isLoading ? "16px 0" : null)};
-    margin: 0 16px;
+    padding-top: ${(props) => (props.isLoading ? "16px" : null)};
+    padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
+    margin-left: 16px;
     border-top: 1px solid #eceef1;
+
+    height: calc(100% - 53px);
+    box-sizing: border-box;
 
     .version-comment-wrapper {
       margin-left: 79px;
@@ -170,6 +174,7 @@ const StyledContent = styled.div`
   box-sizing: border-box;
   position: relative;
   width: 100%;
+  height: 100%;
   background-color: #fff;
 
   .header_aside-panel-header {
@@ -574,6 +579,11 @@ const StyledSelectFolderPanel = styled.div`
             height: ${props.heightContent};
           `}
   }
+
+  span.rc-tree-title {
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "243px" : "466px"};
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {
@@ -668,6 +678,10 @@ const StyledSelectFilePanel = styled.div`
       ${(props) =>
         props.isHeaderChildren ? `padding-top: 0;` : `padding-top: 16px;`}
       border-right: 1px solid #dee2e6;
+      span.rc-tree-title {
+        max-width: ${(props) =>
+          props.displayType === "aside" ? "243px" : "181px"};
+      }
     }
   }
   .select-file-dialog-aside_buttons {
