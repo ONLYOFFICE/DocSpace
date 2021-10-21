@@ -109,14 +109,14 @@ export default function withContent(WrappedContent) {
       return this.completeAction(e);
     };
 
-    onClickUpdateItem = (e) => {
+    onClickUpdateItem = (e, open = true) => {
       const { fileActionType } = this.props;
       fileActionType === FileAction.Create
-        ? this.createItem(e)
+        ? this.createItem(e, open)
         : this.updateItem(e);
     };
 
-    createItem = (e) => {
+    createItem = (e, open) => {
       const {
         createFile,
         item,
@@ -141,7 +141,7 @@ export default function withContent(WrappedContent) {
       }
 
       let tab =
-        !isDesktop && item.fileExst
+        !isDesktop && item.fileExst && open
           ? window.open(
               combineUrl(
                 AppServerConfig.proxyURL,
@@ -170,10 +170,12 @@ export default function withContent(WrappedContent) {
                     encryptedFile,
                     true,
                     false
-                  ).then(() => openDocEditor(file.id, file.providerKey, tab));
+                  ).then(
+                    () => open && openDocEditor(file.id, file.providerKey, tab)
+                  );
                 });
               }
-              return openDocEditor(file.id, file.providerKey, tab);
+              return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
