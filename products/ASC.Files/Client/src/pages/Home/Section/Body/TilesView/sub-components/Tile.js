@@ -6,7 +6,7 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 
@@ -115,9 +115,14 @@ const StyledTile = styled.div`
   .file-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
-    //margin-right: ${(props) => (props.isFolder ? "8px" : "4px")};
     margin-top: 3px;
     justify-content: center;
+
+    ${(props) =>
+      isMobile &&
+      css`
+        margin-left: ${props.isFolder ? "10px" : "8px"};
+      `}
 
     @media ${tablet} {
       margin-top: 2px;
@@ -131,12 +136,12 @@ const StyledTile = styled.div`
     user-select: none;
     margin-top: ${(props) => (props.isFolder ? "-8px" : "-6px")};
 
-    height: 24px;
-    width: 24px;
+    height: ${isMobile ? "32px" : "24px"};
+    width: ${isMobile ? "32px" : "24px"};
 
     img {
-      height: 24px;
-      width: 24px;
+      height: ${isMobile ? "32px" : "24px"};
+      width: ${isMobile ? "32px" : "24px"};
     }
   }
 
@@ -172,10 +177,12 @@ const StyledFileTileTop = styled.div`
   align-items: baseline;
   background-color: #f8f9f9;
   padding: 13px;
-  height: ${(props) => (props.checked || props.isActive ? "156px" : "157px")};
+  height: ${(props) => (props.checked || props.isActive ? "156px" : "156px")};
   position: relative;
   border-bottom: ${(props) =>
-    (props.checked || props.isActive) && "1px solid #D0D5DA"};
+    props.checked || props.isActive
+      ? "1px solid #D0D5DA"
+      : "1px solid transparent"};
 
   .thumbnail-image,
   .temporary-icon > .injected-svg {

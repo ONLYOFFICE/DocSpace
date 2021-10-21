@@ -9,6 +9,7 @@ import Text from "@appserver/components/text";
 import TileContent from "./sub-components/TileContent";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
+import { isMobile } from "react-device-detect";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .row-main-container {
@@ -54,7 +55,7 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 
   .title-link {
-    font-size: 13px;
+    font-size: ${isMobile ? "15px" : "13px"};
   }
 
   .favorite,
@@ -90,7 +91,7 @@ const FilesTileContent = ({
           type="page"
           title={title}
           fontWeight="600"
-          fontSize="13px"
+          fontSize={isMobile ? "15px" : "13px"}
           target="_blank"
           {...linkStyles}
           color="#333"
@@ -102,7 +103,7 @@ const FilesTileContent = ({
               className="badge-ext"
               as="span"
               color="#A3A9AE"
-              fontSize="13px"
+              fontSize={isMobile ? "15px" : "13px"}
               fontWeight={600}
               truncate={true}
             >
