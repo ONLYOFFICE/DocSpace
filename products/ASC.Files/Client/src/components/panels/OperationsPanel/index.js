@@ -16,8 +16,10 @@ const OperationsPanelComponent = (props) => {
     visible,
     provider,
     selection,
+    isFolderActions,
     isRecycleBin,
     setDestFolderId,
+    setIsFolderActions,
     currentFolderId,
     operationsFolders,
     setCopyPanelVisible,
@@ -25,7 +27,7 @@ const OperationsPanelComponent = (props) => {
     setMoveToPanelVisible,
     checkOperationConflict,
     setThirdPartyMoveDialogVisible,
-    setBufferSelection,
+    parentFolderId,
   } = props;
 
   const zIndex = 310;
@@ -34,14 +36,22 @@ const OperationsPanelComponent = (props) => {
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
   const onClose = () => {
-    !provider && setBufferSelection(null);
-    isCopy ? setCopyPanelVisible(false) : setMoveToPanelVisible(false);
+    if (isCopy) {
+      setCopyPanelVisible(false);
+      setIsFolderActions(false);
+    } else {
+      setMoveToPanelVisible(false);
+    }
     setExpandedPanelKeys(null);
   };
 
   const onSelect = (folder, treeNode) => {
     const folderTitle = treeNode.node.props.title;
     const destFolderId = isNaN(+folder[0]) ? folder[0] : +folder[0];
+
+    if (isFolderActions && destFolderId === parentFolderId) {
+      return onClose();
+    }
 
     if (currentFolderId === destFolderId) {
       return onClose();
@@ -70,8 +80,9 @@ const OperationsPanelComponent = (props) => {
         ? selection.filter((x) => !x.providerKey)
         : selection;
 
-    const fileIds = [];
-    const folderIds = [];
+    let fileIds = [];
+    let folderIds = [];
+
 
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
@@ -81,6 +92,13 @@ const OperationsPanelComponent = (props) => {
       } else {
         folderIds.push(item.id);
       }
+    }
+
+    if (isFolderActions) {
+      fileIds = [];
+      folderIds = [];
+
+      folderIds.push(currentFolderId);
     }
 
     if (!folderIds.length && !fileIds.length) return;
@@ -142,12 +160,7 @@ export default inject(
     dialogsStore,
     filesActionsStore,
   }) => {
-    const {
-      filter,
-      selection,
-      bufferSelection,
-      setBufferSelection,
-    } = filesStore;
+    const { filter, selection, bufferSelection } = filesStore;
     const {
       isRecycleBinFolder,
       operationsFolders,
@@ -159,13 +172,15 @@ export default inject(
     const {
       moveToPanelVisible,
       copyPanelVisible,
+      isFolderActions,
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setDestFolderId,
       setThirdPartyMoveDialogVisible,
+      setIsFolderActions,
     } = dialogsStore;
 
-    const selections = bufferSelection ? [bufferSelection] : selection;
+    const selections = selection.length ? selection : [bufferSelection];
 
     const provider = selections.find((x) => x.providerKey);
 
@@ -174,20 +189,22 @@ export default inject(
         ? expandedPanelKeys
         : selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
+      parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
       filter,
       operationsFolders,
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
       selection: selections,
+      isFolderActions,
 
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setDestFolderId,
+      setIsFolderActions,
       setThirdPartyMoveDialogVisible,
       checkOperationConflict,
       setExpandedPanelKeys,
-      setBufferSelection,
     };
   }
 )(withRouter(observer(OperationsPanel)));

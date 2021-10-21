@@ -580,6 +580,11 @@ const StyledSelectFolderPanel = styled.div`
             height: ${props.heightContent};
           `}
   }
+
+  span.rc-tree-title {
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "243px" : "466px"};
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {
@@ -674,6 +679,10 @@ const StyledSelectFilePanel = styled.div`
       ${(props) =>
         props.isHeaderChildren ? `padding-top: 0;` : `padding-top: 16px;`}
       border-right: 1px solid #dee2e6;
+      span.rc-tree-title {
+        max-width: ${(props) =>
+          props.displayType === "aside" ? "243px" : "181px"};
+      }
     }
   }
   .select-file-dialog-aside_buttons {

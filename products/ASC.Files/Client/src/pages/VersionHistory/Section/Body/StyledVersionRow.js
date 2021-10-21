@@ -112,7 +112,11 @@ const StyledVersionRow = styled(Row)`
       display: block;
       margin-left: auto;
       margin-top: 5px;
-
+      ${(props) =>
+        props.isRestoring &&
+        css`
+          cursor: default;
+        `}
       :last-child {
         margin-left: 8px;
       }

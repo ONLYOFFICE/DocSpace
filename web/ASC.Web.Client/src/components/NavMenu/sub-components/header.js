@@ -29,7 +29,7 @@ const Header = styled.header`
   background-color: ${backgroundColor};
   display: flex;
   width: 100vw;
-  height: 56px;
+  height: 48px;
 
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -95,7 +95,7 @@ const Header = styled.header`
         !props.isPersonal &&
         css`
           display: ${(props) => (props.module ? "none" : "block")};
-          padding: 0px 20px 0 6px;
+          padding: 3px 20px 0 6px;
         `}
     }
   }

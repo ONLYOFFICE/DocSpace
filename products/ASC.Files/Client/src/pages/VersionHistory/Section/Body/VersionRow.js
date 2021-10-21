@@ -39,6 +39,8 @@ const VersionRow = (props) => {
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
 
+  const [isRestoring, setIsRestoring] = useState(false);
+
   const canEdit = info.access === 1 || info.access === 0;
 
   const title = `${new Date(info.updated).toLocaleString(culture)} ${

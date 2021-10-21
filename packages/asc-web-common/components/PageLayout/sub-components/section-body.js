@@ -19,6 +19,7 @@ const paddingStyles = css`
 const commonStyles = css`
   flex-grow: 1;
   ${(props) => !props.withScroll && `height: 100%;`}
+  border-left: none;
 
   -webkit-user-select: none;
 
