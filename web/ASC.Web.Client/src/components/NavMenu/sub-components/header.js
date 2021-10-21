@@ -133,22 +133,22 @@ const HeaderComponent = ({
     backdropClick();
   };
 
-  const onBadgeClick = (e) => {
+  const onBadgeClick = React.useCallback((e) => {
     if (!e) return;
     const id = e.currentTarget.dataset.id;
     const item = mainModules.find((m) => m.id === id);
     toggleAside();
 
     if (item) item.onBadgeClick(e);
-  };
+  }, []);
 
-  const onItemClick = (e) => {
+  const onItemClick = React.useCallback((e) => {
     if (!e) return;
     const link = e.currentTarget.dataset.link;
     history.push(link);
     backdropClick();
     e.preventDefault();
-  };
+  }, []);
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
 
@@ -174,24 +174,28 @@ const HeaderComponent = ({
 
         {!isPersonal && (
           <StyledNavigationIconsWrapper>
-            {mainModules.map(
-              ({ id, iconUrl, notifications, link, separator }) =>
-                iconUrl &&
-                !separator && (
-                  <HeaderNavigationIcon
-                    key={id}
-                    id={id}
-                    data-id={id}
-                    data-link={link}
-                    active={id == currentProductId}
-                    iconUrl={iconUrl}
-                    badgeNumber={notifications}
-                    onClick={onItemClick}
-                    onBadgeClick={onBadgeClick}
-                    url={link}
-                  />
-                ),
-            )}
+            {mainModules.map((item) => {
+              return (
+                <React.Fragment key={item.id}>
+                  {item.iconUrl &&
+                    !item.separator &&
+                    (item.appName === 'files' || item.appName === 'people') && (
+                      <HeaderNavigationIcon
+                        key={item.id}
+                        id={item.id}
+                        data-id={item.id}
+                        data-link={item.link}
+                        active={item.id == currentProductId}
+                        iconUrl={item.iconUrl}
+                        badgeNumber={item.notifications}
+                        onItemClick={onItemClick}
+                        onBadgeClick={onBadgeClick}
+                        url={item.link}
+                      />
+                    )}
+                </React.Fragment>
+              );
+            })}
           </StyledNavigationIconsWrapper>
         )}
       </Header>

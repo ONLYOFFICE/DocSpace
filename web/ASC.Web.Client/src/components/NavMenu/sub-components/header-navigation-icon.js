@@ -33,30 +33,19 @@ const HeaderNavigationIcon = ({
   link,
   active,
   badgeNumber,
-  onClick,
+  onItemClick,
   onBadgeClick,
   url,
   ...rest
 }) => {
   const color = active ? activeColor : baseColor;
+  console.log(iconUrl);
   return (
-    (url === '/products/people/' || url === '/products/files/') && (
-      <div style={{ position: 'relative', width: '20px', height: '20px', marginRight: '22px' }}>
-        <StyledReactSVG
-          src={iconUrl}
-          href={url}
-          onClick={onClick}
-          {...rest}
-          beforeInjection={(svg) => {
-            svg.setAttribute('style', `width: 20px; height: 20px;`);
-            svg.setAttribute('fill', color);
-          }}
-          color={color}
-        />
+    <div style={{ position: 'relative', width: '20px', height: '20px', marginRight: '22px' }}>
+      <StyledReactSVG src={iconUrl} href={url} onClick={onItemClick} {...rest} color={color} />
 
-        <StyledBadge onClick={onBadgeClick} label={badgeNumber} maxWidth={'6px'} fontSize={'9px'} />
-      </div>
-    )
+      <StyledBadge onClick={onBadgeClick} label={badgeNumber} maxWidth={'6px'} fontSize={'9px'} />
+    </div>
   );
 };
 
