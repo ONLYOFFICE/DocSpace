@@ -1,6 +1,110 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import Row from "@appserver/components/row";
 import { tablet } from "@appserver/components/utils/device";
+
+const StyledBody = styled.div`
+  height: 100%;
+  width: 100%;
+  .version-list {
+    height: 100%;
+    width: 100%;
+  }
+
+  .loader-history-rows {
+    padding-right: 16px;
+  }
+`;
+
+const StyledVersionList = styled.div`
+
+.row_context-menu-wrapper {
+    .expandButton {
+      ${(props) =>
+        props.isRestoreProcess &&
+        `
+        touch-action: none;
+        pointer-events: none;
+        `}
+      svg {
+        path {
+          ${(props) =>
+            props.isRestoreProcess &&
+            `
+              fill: #d0d5da;
+            `};
+        }
+      }
+    }
+  
+  }
+
+  .row_content {
+
+    .version_link,
+    .version-link-file,
+    .version_content-length,
+    .version_link-action,
+    .row_context-menu-wrapper,
+    .version_text {
+      ${(props) =>
+        props.isRestoreProcess &&
+        `
+          color: #d0d5da;
+          touch-action: none;
+          pointer-events: none;
+        `}
+    }
+
+    .versioned, .not-versioned {
+      ${(props) =>
+        props.isRestoreProcess &&
+        `
+        touch-action: none;
+        pointer-events: none;
+        `}
+    }
+
+    .versioned { 
+        svg {
+            path {
+          ${(props) =>
+            props.isRestoreProcess &&
+            `
+              fill: #d0d5da;
+            `};
+        }
+      }
+    }
+
+    .not-versioned{
+        svg {
+            path {
+
+          ${(props) =>
+            props.isRestoreProcess &&
+            `
+              stroke: #d0d5da;
+            `};
+        }
+      }
+    }
+
+}
+    .icon-link {
+      ${(props) =>
+        props.isRestoreProcess &&
+        `
+        touch-action: none;
+        pointer-events: none;
+        `}
+      svg {
+        path {
+          ${(props) => props.isRestoreProcess && " fill: #d0d5da"}
+        }
+      }
+    }
+  }
+`;
 
 const StyledVersionRow = styled(Row)`
   @media ${tablet} {
@@ -171,4 +275,4 @@ const StyledVersionRow = styled(Row)`
   }
 `;
 
-export default StyledVersionRow;
+export { StyledBody, StyledVersionRow, StyledVersionList };

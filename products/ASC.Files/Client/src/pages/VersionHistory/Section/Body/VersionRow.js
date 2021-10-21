@@ -9,7 +9,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
-import StyledVersionRow from "./StyledVersionRow";
+import { StyledVersionRow } from "./StyledVersionHistory";
 import ExternalLinkIcon from "../../../../../public/images/external.link.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";

@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 import { VariableSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
-import StyledVersionList from "./StyledVersionList";
+import { StyledBody, StyledVersionList } from "./StyledVersionHistory";
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
@@ -103,14 +103,18 @@ class SectionBodyContent extends React.Component {
       );
     };
 
-    return versions && !isLoading ? (
-      <div style={{ height: "100%", width: "100%" }}>
-        <AutoSizer>{renderList}</AutoSizer>
-      </div>
-    ) : (
-      <div className="loader-history-rows" style={{ paddingRight: "16px" }}>
-        <Loaders.HistoryRows title="version-history-body-loader" />
-      </div>
+    return (
+      <StyledBody>
+        {versions && !isLoading ? (
+          <div className="version-list">
+            <AutoSizer>{renderList}</AutoSizer>
+          </div>
+        ) : (
+          <div className="loader-history-rows">
+            <Loaders.HistoryRows title="version-history-body-loader" />
+          </div>
+        )}
+      </StyledBody>
     );
   }
 }
