@@ -444,8 +444,9 @@ const Dark = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "rgba(255, 255, 255, 0.5)",
+    backgroundColorVertical: "rgba(208, 213, 218, 1)",
     backgroundColorHorizontal: "rgba(255, 255, 255, 0.5)",
+    hoverBackgroundColorVertical: "rgba(163, 169, 174, 1)",
   },
 
   modalDialog: {

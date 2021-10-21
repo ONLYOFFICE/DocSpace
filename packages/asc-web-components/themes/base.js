@@ -478,8 +478,9 @@ const Base = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "#e5e5e5",
+    backgroundColorVertical: "rgba(208, 213, 218, 1)",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
+    hoverBackgroundColorVertical: "rgba(163, 169, 174, 1)",
   },
 
   modalDialog: {
