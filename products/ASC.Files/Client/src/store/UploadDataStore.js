@@ -389,7 +389,7 @@ class UploadDataStore {
       this.uploadToFolder = null;
       this.percent = 0;
     }
-    if (this.converted) {
+    if (this.uploaded && this.converted) {
       this.files = [];
       this.filesToConversion = [];
     }
