@@ -56,6 +56,7 @@ const SimpleFilesTileContent = styled(TileContent)`
 
   .title-link {
     font-size: ${isMobile ? "15px" : "13px"};
+    margin-top: 2px;
   }
 
   .favorite,

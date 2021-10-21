@@ -116,13 +116,15 @@ const StyledTile = styled.div`
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
     margin-top: 3px;
-    justify-content: center;
 
-    ${(props) =>
-      isMobile &&
-      css`
-        margin-left: ${props.isFolder ? "8px" : "6px"};
-      `}
+    margin-left: ${(props) =>
+      isMobile
+        ? css`
+            ${props.isFolder ? "6px" : "12px"};
+          `
+        : css`
+            ${props.isFolder ? "5px" : "8px"}
+          `};
 
     @media ${tablet} {
       margin-top: 2px;
@@ -143,14 +145,32 @@ const StyledTile = styled.div`
       height: ${isMobile ? "32px" : "24px"};
       width: ${isMobile ? "32px" : "24px"};
     }
+
+    margin-left: ${(props) =>
+      isMobile
+        ? css`
+            ${props.isFolder ? "2px" : "4px"};
+          `
+        : css`
+            ${props.isFolder ? "2px" : "4px"}
+          `};
   }
 
   .file-icon_container {
-    min-width: 28px;
+    min-width: ${isMobile ? "36px" : "28px"};
   }
 
   .styled-content {
     padding-left: 10px;
+
+    padding-left: ${(props) =>
+      isMobile
+        ? css`
+            ${props.isFolder ? "8px" : "12px"};
+          `
+        : css`
+            ${props.isFolder ? "10px" : "13px"}
+          `};
   }
 
   :hover {
