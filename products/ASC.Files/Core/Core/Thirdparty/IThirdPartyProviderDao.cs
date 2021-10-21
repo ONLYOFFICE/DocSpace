@@ -85,7 +85,7 @@ namespace ASC.Files.Thirdparty
             return null;
         }
 
-        public Task<Stream> GetFileStreamAsync(File<string> file)
+        public virtual Task<Stream> GetFileStreamAsync(File<string> file)
         {
             return Task.FromResult(GetFileStream(file));
         }
@@ -284,6 +284,37 @@ namespace ASC.Files.Thirdparty
                 };
 
                 FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
+                FilesDbContext.SaveChanges();
+            }
+            return result;
+        }
+
+        protected async Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
+        {
+            if (id == null) return null;
+
+            string result;
+            if (id.StartsWith(Id))
+            {
+                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
+            }
+            else
+            {
+                result = await FilesDbContext.ThirdpartyIdMapping
+                        .Where(r => r.HashId == id)
+                        .Select(r => r.Id)
+                        .FirstOrDefaultAsync();
+            }
+            if (saveIfNotExist)
+            {
+                var newMapping = new DbFilesThirdpartyIdMapping
+                {
+                    Id = id,
+                    HashId = result,
+                    TenantId = TenantID
+                };
+
+                await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping);
                 FilesDbContext.SaveChanges();
             }
             return result;
@@ -526,6 +557,8 @@ namespace ASC.Files.Thirdparty
         }
 
         protected abstract IEnumerable<string> GetChildren(string folderId);
+
+        protected abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
 
         #endregion
 

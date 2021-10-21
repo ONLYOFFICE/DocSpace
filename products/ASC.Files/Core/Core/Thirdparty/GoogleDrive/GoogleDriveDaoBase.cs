@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Common.Web;
@@ -214,6 +215,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return ToFolder(GetDriveEntry(""));
         }
 
+        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
+        {
+            return ToFolder(await GetDriveEntryAsync(""));
+        }
+
         protected DriveFile GetDriveEntry(string entryId)
         {
             var driveId = MakeDriveId(entryId);
@@ -228,15 +234,42 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
         }
 
+        protected async Task<DriveFile> GetDriveEntryAsync(string entryId)
+        {
+            var driveId = MakeDriveId(entryId);
+            try
+            {
+                var entry = await ProviderInfo.GetDriveEntryAsync(driveId);
+                return entry;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDriveEntry(ex, driveId);
+            }
+        }
+
         protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetDriveEntries(folderId).Select(entry => MakeId(entry.Id));
+        }
+
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+        {
+            var entries = await GetDriveEntriesAsync(folderId);
+            return entries.Select(entry => MakeId(entry.Id));
         }
 
         protected List<DriveFile> GetDriveEntries(object parentId, bool? folder = null)
         {
             var parentDriveId = MakeDriveId(parentId);
             var entries = ProviderInfo.GetDriveEntries(parentDriveId, folder);
+            return entries;
+        }
+
+        protected async Task<List<DriveFile>> GetDriveEntriesAsync(object parentId, bool? folder = null)
+        {
+            var parentDriveId = MakeDriveId(parentId);
+            var entries = await ProviderInfo.GetDriveEntriesAsync(parentDriveId, folder);
             return entries;
         }
 

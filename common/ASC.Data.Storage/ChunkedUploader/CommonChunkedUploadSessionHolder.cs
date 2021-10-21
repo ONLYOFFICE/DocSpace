@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Common.Utils;
@@ -171,6 +172,37 @@ namespace ASC.Core.ChunkedUploader
                 using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
                 {
                     stream.CopyTo(bufferStream);
+                }
+
+                uploadSession.BytesUploaded += chunkLength;
+
+                if (uploadSession.BytesTotal == uploadSession.BytesUploaded)
+                {
+                    return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite,
+                        4096, FileOptions.DeleteOnClose);
+                }
+            }
+
+            return Stream.Null;
+        }
+
+        public async Task<Stream> UploadSingleChunkAsync(CommonChunkedUploadSession uploadSession, Stream stream, long chunkLength)
+        {
+            if (uploadSession.BytesTotal == 0)
+                uploadSession.BytesTotal = chunkLength;
+
+            if (uploadSession.BytesTotal >= chunkLength)
+            {
+                //This is hack fixing strange behaviour of plupload in flash mode.
+
+                if (string.IsNullOrEmpty(uploadSession.ChunksBuffer))
+                {
+                    uploadSession.ChunksBuffer = TempPath.GetTempFileName();
+                }
+
+                using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
+                {
+                    await stream.CopyToAsync(bufferStream);
                 }
 
                 uploadSession.BytesUploaded += chunkLength;

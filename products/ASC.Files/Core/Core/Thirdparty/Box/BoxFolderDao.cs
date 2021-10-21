@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -43,6 +44,7 @@ using ASC.Web.Studio.Core;
 
 using Box.V2.Models;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
@@ -80,26 +82,52 @@ namespace ASC.Files.Thirdparty.Box
 
         public Folder<string> GetFolder(string folderId)
         {
-            return ToFolder(GetBoxFolder(folderId));
+            return GetFolderAsync(folderId).Result;
+        }
+
+        public async Task<Folder<string>> GetFolderAsync(string folderId)
+        {
+            return ToFolder(await GetBoxFolderAsync(folderId));
         }
 
         public Folder<string> GetFolder(string title, string parentId)
         {
-            return ToFolder(GetBoxItems(parentId, true)
-                                .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFolder);
+            return GetFolderAsync(title, parentId).Result;
+        }
+
+        public async Task<Folder<string>> GetFolderAsync(string title, string parentId)
+        {
+            var items = await GetBoxItemsAsync(parentId, true);
+            return ToFolder(items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFolder);
         }
 
         public Folder<string> GetRootFolderByFile(string fileId)
         {
-            return GetRootFolder(fileId);
+            return GetRootFolderByFileAsync(fileId).Result;
+        }
+
+        public async Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
+        {
+            return await GetRootFolderAsync(fileId);
         }
 
         public List<Folder<string>> GetFolders(string parentId)
         {
-            return GetBoxItems(parentId, true).Select(item => ToFolder(item as BoxFolder)).ToList();
+            return GetFoldersAsync(parentId).Result;
+        }
+
+        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId)
+        {
+            var items =  await GetBoxItemsAsync(parentId, true);
+            return items.Select(item => ToFolder(item as BoxFolder)).ToList();
         }
 
         public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        {
+            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).Result;
+        }
+
+        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -107,7 +135,8 @@ namespace ASC.Files.Thirdparty.Box
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
                 return new List<Folder<string>>();
 
-            var folders = GetFolders(parentId).AsEnumerable(); //TODO:!!!
+            var foldersList = await GetFoldersAsync(parentId);
+            var folders = foldersList.AsEnumerable(); //TODO:!!!
 
             if (subjectID != Guid.Empty)
             {
@@ -155,13 +184,41 @@ namespace ASC.Files.Thirdparty.Box
             return folders.ToList();
         }
 
+        public async Task<List<Folder<string>>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        {
+            if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
+                || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
+                || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
+                || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+                return new List<Folder<string>>();
+
+            var folders = folderIds.Select(GetFolder);
+
+            if (subjectID.HasValue && subjectID != Guid.Empty)
+            {
+                folders = folders.Where(x => subjectGroup
+                                                 ? UserManager.IsUserInGroup(x.CreateBy, subjectID.Value)
+                                                 : x.CreateBy == subjectID);
+            }
+
+            if (!string.IsNullOrEmpty(searchText))
+                folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+
+            return folders.ToList();
+        }
+
         public List<Folder<string>> GetParentFolders(string folderId)
+        {
+            return GetParentFoldersAsync(folderId).Result;
+        }
+
+        public async Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
         {
             var path = new List<Folder<string>>();
 
             while (folderId != null)
             {
-                var boxFolder = GetBoxFolder(folderId);
+                var boxFolder = await GetBoxFolderAsync(folderId);
 
                 if (boxFolder is ErrorFolder)
                 {
@@ -180,23 +237,28 @@ namespace ASC.Files.Thirdparty.Box
 
         public string SaveFolder(Folder<string> folder)
         {
+            return SaveFolderAsync(folder).Result;
+        }
+
+        public async Task<string> SaveFolderAsync(Folder<string> folder)
+        {
             if (folder == null) throw new ArgumentNullException("folder");
             if (folder.ID != null)
             {
-                return RenameFolder(folder, folder.Title);
+                return await RenameFolderAsync(folder, folder.Title);
             }
 
             if (folder.FolderID != null)
             {
                 var boxFolderId = MakeBoxId(folder.FolderID);
 
-                folder.Title = GetAvailableTitle(folder.Title, boxFolderId, IsExist);
+                folder.Title = await GetAvailableTitleAsync(folder.Title, boxFolderId, IsExistAsync);
 
-                var boxFolder = ProviderInfo.Storage.CreateFolder(folder.Title, boxFolderId);
+                var boxFolder = await ProviderInfo.Storage.CreateFolderAsync(folder.Title, boxFolderId);
 
-                ProviderInfo.CacheReset(boxFolder);
+                await ProviderInfo.CacheResetAsync(boxFolder);
                 var parentFolderId = GetParentFolderId(boxFolder);
-                if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
+                if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId);
 
                 return MakeId(boxFolder);
             }
@@ -209,24 +271,35 @@ namespace ASC.Files.Thirdparty.Box
                 .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        public async Task<bool> IsExistAsync(string title, string folderId)
+        {
+            var items = await GetBoxItemsAsync(folderId, true);
+            return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
+        }
+
         public void DeleteFolder(string folderId)
         {
-            var boxFolder = GetBoxFolder(folderId);
+            DeleteFolderAsync(folderId).Wait();
+        }
+
+        public async Task DeleteFolderAsync(string folderId)
+        {
+            var boxFolder = await GetBoxFolderAsync(folderId);
             var id = MakeId(boxFolder);
 
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
-                var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
+                var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                    .Where(r => r.Id.StartsWith(id))
                    .Select(r => r.HashId)
-                   .ToList();
+                   .ToListAsync();
 
-                var link = Query(FilesDbContext.TagLink)
+                var link = await Query(FilesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToList();
+                    .ToListAsync();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -237,43 +310,48 @@ namespace ASC.Files.Thirdparty.Box
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext .SaveChangesAsync();
 
                 tx.Commit();
             }
 
             if (!(boxFolder is ErrorFolder))
             {
-                ProviderInfo.Storage.DeleteItem(boxFolder);
+                await ProviderInfo.Storage.DeleteItemAsync(boxFolder);
             }
 
-            ProviderInfo.CacheReset(boxFolder.Id, true);
+            await ProviderInfo.CacheResetAsync(boxFolder.Id, true);
             var parentFolderId = GetParentFolderId(boxFolder);
-            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
+            if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId);
         }
 
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
-            var boxFolder = GetBoxFolder(folderId);
+            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
+        {
+            var boxFolder = await GetBoxFolderAsync(folderId);
             if (boxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
-            var toBoxFolder = GetBoxFolder(toFolderId);
+            var toBoxFolder = await GetBoxFolderAsync(toFolderId);
             if (toBoxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
             var fromFolderId = GetParentFolderId(boxFolder);
 
-            var newTitle = GetAvailableTitle(boxFolder.Name, toBoxFolder.Id, IsExist);
+            var newTitle = await GetAvailableTitleAsync(boxFolder.Name, toBoxFolder.Id, IsExistAsync);
             boxFolder = ProviderInfo.Storage.MoveFolder(boxFolder.Id, newTitle, toBoxFolder.Id);
 
-            ProviderInfo.CacheReset(boxFolder.Id, false);
-            ProviderInfo.CacheReset(fromFolderId);
-            ProviderInfo.CacheReset(toBoxFolder.Id);
+            await ProviderInfo.CacheResetAsync(boxFolder.Id, false);
+            await ProviderInfo.CacheResetAsync(fromFolderId);
+            await ProviderInfo.CacheResetAsync(toBoxFolder.Id);
 
             return MakeId(boxFolder.Id);
         }
@@ -295,7 +373,12 @@ namespace ASC.Files.Thirdparty.Box
 
         public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
+            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                     folderId, this, BoxDaoSelector.GetFileDao(folderId), BoxDaoSelector.ConvertId,
                     toFolderId, FolderDao, FileDao, r => r,
                     true, cancellationToken);
@@ -305,14 +388,19 @@ namespace ASC.Files.Thirdparty.Box
 
         public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
+            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
             if (toFolderId is int tId)
             {
-                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tId, cancellationToken) as Folder<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tsId, cancellationToken) as Folder<TTo>;
             }
 
             throw new NotImplementedException();
@@ -320,25 +408,35 @@ namespace ASC.Files.Thirdparty.Box
 
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
-            var boxFolder = GetBoxFolder(folderId);
+            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
+        {
+            var boxFolder = await GetBoxFolderAsync(folderId);
             if (boxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
-            var toBoxFolder = GetBoxFolder(toFolderId);
+            var toBoxFolder = await GetBoxFolderAsync(toFolderId);
             if (toBoxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
-            var newTitle = GetAvailableTitle(boxFolder.Name, toBoxFolder.Id, IsExist);
-            var newBoxFolder = ProviderInfo.Storage.CopyFolder(boxFolder.Id, newTitle, toBoxFolder.Id);
+            var newTitle = await GetAvailableTitleAsync(boxFolder.Name, toBoxFolder.Id, IsExistAsync);
+            var newBoxFolder = await ProviderInfo.Storage.CopyFolderAsync(boxFolder.Id, newTitle, toBoxFolder.Id);
 
-            ProviderInfo.CacheReset(newBoxFolder);
-            ProviderInfo.CacheReset(newBoxFolder.Id, false);
-            ProviderInfo.CacheReset(toBoxFolder.Id);
+            await ProviderInfo.CacheResetAsync(newBoxFolder);
+            await ProviderInfo.CacheResetAsync(newBoxFolder.Id, false);
+            await ProviderInfo.CacheResetAsync(toBoxFolder.Id);
 
             return ToFolder(newBoxFolder);
         }
 
         public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
+            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, BoxDaoSelector.GetFileDao(folderId), BoxDaoSelector.ConvertId,
                 toFolderId, FolderDao, FileDao, r => r,
                 false, cancellationToken);
@@ -373,39 +471,55 @@ namespace ASC.Files.Thirdparty.Box
 
         public string RenameFolder(Folder<string> folder, string newTitle)
         {
-            var boxFolder = GetBoxFolder(folder.ID);
+            return RenameFolderAsync(folder, newTitle).Result;
+        }
+
+        public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
+        {
+            var boxFolder = await GetBoxFolderAsync(folder.ID);
             var parentFolderId = GetParentFolderId(boxFolder);
 
             if (IsRoot(boxFolder))
             {
                 //It's root folder
-                DaoSelector.RenameProvider(ProviderInfo, newTitle);
+                await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
                 //rename provider customer title
             }
             else
             {
-                newTitle = GetAvailableTitle(newTitle, parentFolderId, IsExist);
+                newTitle = await GetAvailableTitleAsync(newTitle, parentFolderId, IsExistAsync);
 
                 //rename folder
-                boxFolder = ProviderInfo.Storage.RenameFolder(boxFolder.Id, newTitle);
+                boxFolder = await ProviderInfo.Storage.RenameFolderAsync(boxFolder.Id, newTitle);
             }
 
-            ProviderInfo.CacheReset(boxFolder);
-            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
+            await ProviderInfo.CacheResetAsync(boxFolder);
+            if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId);
 
             return MakeId(boxFolder.Id);
         }
 
         public int GetItemsCount(string folderId)
         {
+            return GetItemsCountAsync(folderId).Result;
+        }
+
+        public Task<int> GetItemsCountAsync(string folderId)
+        {
             throw new NotImplementedException();
         }
 
         public bool IsEmpty(string folderId)
         {
+            return IsEmptyAsync(folderId).Result;
+        }
+
+        public async Task<bool> IsEmptyAsync(string folderId)
+        {
             var boxFolderId = MakeBoxId(folderId);
             //note: without cache
-            return ProviderInfo.Storage.GetItems(boxFolderId, 1).Count == 0;
+            var items = await ProviderInfo.Storage.GetItemsAsync(boxFolderId, 1);
+            return items.Count == 0;
         }
 
         public bool UseTrashForRemove(Folder<string> folder)
@@ -435,7 +549,12 @@ namespace ASC.Files.Thirdparty.Box
 
         public long GetMaxUploadSize(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = ProviderInfo.Storage.GetMaxUploadSize();
+            return GetMaxUploadSizeAsync(folderId, chunkedUpload).Result;
+        }
+
+        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
+        {
+            var storageMaxUploadSize = await ProviderInfo.Storage.GetMaxUploadSizeAsync();
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

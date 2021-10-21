@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -193,6 +194,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             return ToFolder(GetDropboxFolder(string.Empty));
         }
+        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
+        {
+            return ToFolder(await GetDropboxFolderAsync(string.Empty));
+        }
 
         protected FolderMetadata GetDropboxFolder(string folderId)
         {
@@ -200,6 +205,20 @@ namespace ASC.Files.Thirdparty.Dropbox
             try
             {
                 var folder = ProviderInfo.GetDropboxFolder(dropboxFolderPath);
+                return folder;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorFolder(ex, dropboxFolderPath);
+            }
+        }
+
+        protected async Task<FolderMetadata> GetDropboxFolderAsync(string folderId)
+        {
+            var dropboxFolderPath = MakeDropboxPath(folderId);
+            try
+            {
+                var folder = await ProviderInfo.GetDropboxFolderAsync(dropboxFolderPath);
                 return folder;
             }
             catch (Exception ex)
@@ -222,15 +241,53 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
         }
 
+        protected async Task<FileMetadata> GetDropboxFileAsync(object fileId)
+        {
+            var dropboxFilePath = MakeDropboxPath(fileId);
+            try
+            {
+                var file = await ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
+                return file;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorFile(ex, dropboxFilePath);
+            }
+        }
+
         protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetDropboxItems(folderId).Select(MakeId);
+        }
+
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+        {
+            var items = await GetDropboxItemsAsync(folderId);
+            return items.Select(MakeId);
         }
 
         protected List<Metadata> GetDropboxItems(object parentId, bool? folder = null)
         {
             var dropboxFolderPath = MakeDropboxPath(parentId);
             var items = ProviderInfo.GetDropboxItems(dropboxFolderPath);
+
+            if (folder.HasValue)
+            {
+                if (folder.Value)
+                {
+                    return items.Where(i => i.AsFolder != null).ToList();
+                }
+
+                return items.Where(i => i.AsFile != null).ToList();
+            }
+
+            return items;
+        }
+
+        protected async Task<List<Metadata>> GetDropboxItemsAsync(object parentId, bool? folder = null)
+        {
+            var dropboxFolderPath = MakeDropboxPath(parentId);
+            var items = await ProviderInfo.GetDropboxItemsAsync(dropboxFolderPath);
 
             if (folder.HasValue)
             {
@@ -297,6 +354,30 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
 
             while (isExist(requestTitle, parentFolderPath))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderPath, Func<string, string, Task<bool>> isExist)
+        {
+            if (!await isExist(requestTitle, parentFolderPath)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (await isExist(requestTitle, parentFolderPath))
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }

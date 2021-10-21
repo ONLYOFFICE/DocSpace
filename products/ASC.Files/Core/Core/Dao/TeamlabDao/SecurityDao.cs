@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -40,6 +41,8 @@ using ASC.Files.Core.Security;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.Data
 {
@@ -196,6 +199,21 @@ namespace ASC.Files.Core.Data
             return GetPureShareRecordsDb(files, folders);
         }
 
+        public async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
+        {
+            if (entries == null) return new List<FileShareRecord>();
+
+            var files = new List<string>();
+            var folders = new List<string>();
+
+            foreach (var entry in entries)
+            {
+                await SelectFilesAndFoldersForShareAsync(entry, files, folders, null);
+            }
+
+            return GetPureShareRecordsDb(files, folders);
+        }
+
         public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<T> entry)
         {
             if (entry == null) return new List<FileShareRecord>();
@@ -220,6 +238,22 @@ namespace ASC.Files.Core.Data
             }
 
             result.AddRange(FromQuery(q));
+
+            return result;
+        }
+
+        private async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsDbAsync(List<string> files, List<string> folders)
+        {
+            var result = new List<FileShareRecord>();
+
+            var q = GetQuery(r => folders.Contains(r.EntryId) && r.EntryType == FileEntryType.Folder);
+
+            if (files.Any())
+            {
+                q = q.Union(GetQuery(r => files.Contains(r.EntryId) && r.EntryType == FileEntryType.File));
+            }
+
+            result.AddRange(await FromQueryAsync(q));
 
             return result;
         }
@@ -279,6 +313,26 @@ namespace ASC.Files.Core.Data
             if (folders != null) folders.Add(MappingID(folderId).ToString());
         }
 
+        private async Task SelectFilesAndFoldersForShareAsync(FileEntry<T> entry, ICollection<string> files, ICollection<string> folders, ICollection<int> foldersInt)
+        {
+            T folderId;
+            if (entry.FileEntryType == FileEntryType.File)
+            {
+                var fileId = await MappingIDAsync(entry.ID);
+                folderId = ((File<T>)entry).FolderID;
+                if (!files.Contains(fileId.ToString())) files.Add(fileId.ToString());
+            }
+            else
+            {
+                folderId = entry.ID;
+            }
+
+            if (foldersInt != null && int.TryParse(folderId.ToString(), out var folderIdInt) && !foldersInt.Contains(folderIdInt)) foldersInt.Add(folderIdInt);
+
+            var mappedId = await MappingIDAsync(folderId);
+            if (folders != null) folders.Add(mappedId.ToString());
+        }
+
         private IEnumerable<FileShareRecord> SaveFilesAndFoldersForShare(List<string> files, List<int> folders)
         {
             var q = Query(FilesDbContext.Security)
@@ -331,6 +385,14 @@ namespace ASC.Files.Core.Data
         {
             return filesSecurities
                 .ToList()
+                .Select(ToFileShareRecord)
+                .ToList();
+        }
+
+        protected async Task<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
+        {
+            var files = await filesSecurities.ToListAsync();
+            return files
                 .Select(ToFileShareRecord)
                 .ToList();
         }

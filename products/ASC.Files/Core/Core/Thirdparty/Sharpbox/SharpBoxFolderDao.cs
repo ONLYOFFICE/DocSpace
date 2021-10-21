@@ -31,6 +31,7 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading;
+using System.Threading.Tasks;
 
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
@@ -47,6 +48,7 @@ using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
@@ -83,32 +85,62 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public Folder<string> GetFolder(string folderId)
         {
-            return ToFolder(GetFolderById(folderId));
+            return GetFolderAsync(folderId).Result;
+        }
+
+        public Task<Folder<string>> GetFolderAsync(string folderId)
+        {
+            return Task.FromResult(ToFolder(GetFolderById(folderId)));
         }
 
         public Folder<string> GetFolder(string title, string parentId)
         {
+            return GetFolderAsync(title, parentId).Result;
+        }
+
+        public Task<Folder<string>> GetFolderAsync(string title, string parentId)
+        {
             var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
-            return ToFolder(parentFolder.OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name.Equals(title, StringComparison.OrdinalIgnoreCase)));
+            return Task.FromResult(ToFolder(parentFolder.OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name.Equals(title, StringComparison.OrdinalIgnoreCase))));
         }
 
         public Folder<string> GetRootFolder(string folderId)
         {
-            return ToFolder(RootFolder());
+            return GetRootFolderAsync(folderId).Result;
+        }
+
+        public Task<Folder<string>> GetRootFolderAsync(string folderId)
+        {
+            return Task.FromResult(ToFolder(RootFolder()));
         }
 
         public Folder<string> GetRootFolderByFile(string fileId)
         {
-            return ToFolder(RootFolder());
+            return GetRootFolderByFileAsync(fileId).Result;
+        }
+
+        public Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
+        {
+            return Task.FromResult(ToFolder(RootFolder()));
         }
 
         public List<Folder<string>> GetFolders(string parentId)
         {
+            return GetFoldersAsync(parentId).Result;
+        }
+
+        public Task<List<Folder<string>>> GetFoldersAsync(string parentId)
+        {
             var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
-            return parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToList();
+            return Task.FromResult(parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToList());
         }
 
         public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        {
+            return GetFoldersAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders).Result;
+        }
+
+        public async Task<List<Folder<string>>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -116,7 +148,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
                 return new List<Folder<string>>();
 
-            var folders = GetFolders(parentId).AsEnumerable(); //TODO:!!!
+            var foldersList = await GetFoldersAsync(parentId);
+            var folders = foldersList.AsEnumerable(); //TODO:!!!
 
             //Filter
             if (subjectID != Guid.Empty)
@@ -165,7 +198,35 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return folders.ToList();
         }
 
+        public async Task<List<Folder<string>>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        {
+            if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
+                || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
+                || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
+                || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+                return new List<Folder<string>>();
+
+            var folders = folderIds.Select(GetFolder);
+
+            if (subjectID.HasValue && subjectID != Guid.Empty)
+            {
+                folders = folders.Where(x => subjectGroup
+                                                 ? UserManager.IsUserInGroup(x.CreateBy, subjectID.Value)
+                                                 : x.CreateBy == subjectID);
+            }
+
+            if (!string.IsNullOrEmpty(searchText))
+                folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+
+            return folders.ToList();
+        }
+
         public List<Folder<string>> GetParentFolders(string folderId)
+        {
+            return GetParentFoldersAsync(folderId).Result;
+        }
+
+        public Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
         {
             var path = new List<Folder<string>>();
             var folder = GetFolderById(folderId);
@@ -177,10 +238,15 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 } while ((folder = folder.Parent) != null);
             }
             path.Reverse();
-            return path;
+            return Task.FromResult(path);
         }
 
         public string SaveFolder(Folder<string> folder)
+        {
+            return SaveFolderAsync(folder).Result;
+        }
+
+        public async Task<string> SaveFolderAsync(Folder<string> folder)
         {
             try
             {
@@ -194,7 +260,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     var parentFolder = GetFolderById(folder.FolderID);
 
-                    folder.Title = GetAvailableTitle(folder.Title, parentFolder, IsExist);
+                    folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync);
 
                     var newFolder = ProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
                     return MakeId(newFolder);
@@ -221,22 +287,27 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public void DeleteFolder(string folderId)
         {
+            DeleteFolderAsync(folderId).Wait();
+        }
+
+        public async Task DeleteFolderAsync(string folderId)
+        {
             var folder = GetFolderById(folderId);
             var id = MakeId(folder);
 
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
-                var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
+                var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                    .Where(r => r.Id.StartsWith(id))
                    .Select(r => r.HashId)
-                   .ToList();
+                   .ToListAsync();
 
-                var link = Query(FilesDbContext.TagLink)
+                var link = await Query(FilesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToList();
+                    .ToListAsync();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -247,13 +318,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 tx.Commit();
             }
@@ -264,9 +335,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public bool IsExist(string title, ICloudDirectoryEntry folder)
         {
+            return IsExistAsync(title, folder).Result;
+        }
+
+        public Task<bool> IsExistAsync(string title, ICloudDirectoryEntry folder)
+        {
             try
             {
-                return ProviderInfo.Storage.GetFileSystemObject(title, folder) != null;
+                return Task.FromResult(ProviderInfo.Storage.GetFileSystemObject(title, folder) != null);
             }
             catch (ArgumentException)
             {
@@ -276,19 +352,24 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
 
             }
-            return false;
+            return Task.FromResult(false);
         }
 
         public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
+            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken), typeof(TTo));
             }
 
             throw new NotImplementedException();
@@ -296,7 +377,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
+            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, SharpBoxDaoSelector.GetFileDao(folderId), SharpBoxDaoSelector.ConvertId,
                 toFolderId, FolderDao, FileDao, r => r,
                 true, cancellationToken);
@@ -305,6 +391,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
         }
 
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
+        {
+            return MoveFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var entry = GetFolderById(folderId);
             var folder = GetFolderById(toFolderId);
@@ -316,7 +407,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             var newFolderId = MakeId(entry);
 
-            UpdatePathInDB(oldFolderId, newFolderId);
+            await UpdatePathInDBAsync(oldFolderId, newFolderId);
 
             return newFolderId;
         }
@@ -338,7 +429,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
+            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, SharpBoxDaoSelector.GetFileDao(folderId), SharpBoxDaoSelector.ConvertId,
                 toFolderId, FolderDao, FileDao, r => r,
                 false, cancellationToken);
@@ -348,10 +444,16 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
+            return CopyFolderAsync(folderId, toFolderId, cancellationToken).Result;
+        }
+
+        public Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
+        {
             var folder = GetFolderById(folderId);
             if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(folderId), MakePath(toFolderId)))
                 throw new Exception("Error while copying");
-            return ToFolder(GetFolderById(toFolderId).OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name == folder.Name));
+
+            return Task.FromResult(ToFolder(GetFolderById(toFolderId).OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name == folder.Name)));
         }
 
         public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
@@ -381,6 +483,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public string RenameFolder(Folder<string> folder, string newTitle)
         {
+            return RenameFolderAsync(folder, newTitle).Result;
+        }
+
+        public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
+        {
             var entry = GetFolderById(folder.ID);
 
             var oldId = MakeId(entry);
@@ -389,13 +496,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if ("/".Equals(MakePath(folder.ID)))
             {
                 //It's root folder
-                DaoSelector.RenameProvider(ProviderInfo, newTitle);
+                await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
                 //rename provider customer title
             }
             else
             {
                 var parentFolder = GetFolderById(folder.FolderID);
-                newTitle = GetAvailableTitle(newTitle, parentFolder, IsExist);
+                newTitle = await GetAvailableTitleAsync(newTitle, parentFolder, IsExistAsync);
 
                 //rename folder
                 if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
@@ -407,19 +514,29 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 }
             }
 
-            UpdatePathInDB(oldId, newId);
+            await UpdatePathInDBAsync(oldId, newId);
 
             return newId;
         }
 
         public int GetItemsCount(string folderId)
         {
+            return GetItemsCountAsync(folderId).Result;
+        }
+
+        public Task<int> GetItemsCountAsync(string folderId)
+        {
             throw new NotImplementedException();
         }
 
         public bool IsEmpty(string folderId)
         {
-            return GetFolderById(folderId).Count == 0;
+            return IsEmptyAsync(folderId).Result;
+        }
+
+        public Task<bool> IsEmptyAsync(string folderId)
+        {
+            return Task.FromResult(GetFolderById(folderId).Count == 0);
         }
 
         public bool UseTrashForRemove(Folder<string> folder)
@@ -450,6 +567,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public long GetMaxUploadSize(string folderId, bool chunkedUpload)
         {
+            return GetMaxUploadSizeAsync(folderId, chunkedUpload).Result;
+        }
+
+        public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
+        {
             var storageMaxUploadSize =
                 chunkedUpload
                     ? ProviderInfo.Storage.CurrentConfiguration.Limits.MaxChunkedUploadFileSize
@@ -458,7 +580,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (storageMaxUploadSize == -1)
                 storageMaxUploadSize = long.MaxValue;
 
-            return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
+            return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize));
         }
     }
 }

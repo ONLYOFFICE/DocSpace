@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
@@ -151,6 +152,13 @@ namespace ASC.Files.Thirdparty
         {
             var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
             dbDao.UpdateProviderInfo(provider.ID, newTitle, null, provider.RootFolderType);
+            provider.UpdateTitle(newTitle); //This will update cached version too
+        }
+
+        public async Task RenameProviderAsync(T provider, string newTitle)
+        {
+            var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
+            await dbDao.UpdateProviderInfoAsync(provider.ID, newTitle, null, provider.RootFolderType);
             provider.UpdateTitle(newTitle); //This will update cached version too
         }
 

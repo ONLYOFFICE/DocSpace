@@ -100,6 +100,53 @@ namespace ASC.Common.Caching
             }
         }
 
+        public async Task PublishAsync(T obj, CacheNotifyAction cacheNotifyAction)
+        {
+            if (ClientConfig == null)
+            {
+                MemoryCacheNotify.Publish(obj, cacheNotifyAction);
+                return;
+            }
+
+            try
+            {
+                if (Producer == null)
+                {
+                    Producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(ClientConfig))
+                    .SetErrorHandler((_, e) => Log.Error(e))
+                    .SetKeySerializer(KeySerializer)
+                    .SetValueSerializer(ValueSerializer)
+                    .Build();
+                }
+
+                var channelName = GetChannelName(cacheNotifyAction);
+
+                if (Actions.TryGetValue(channelName, out var onchange))
+                {
+                    onchange(obj);
+                }
+
+                var message = new Message<AscCacheItem, T>
+                {
+                    Value = obj,
+                    Key = new AscCacheItem
+                    {
+                        Id = ByteString.CopyFrom(Key.ToByteArray())
+                    }
+                };
+
+                await Producer.ProduceAsync(channelName, message);
+            }
+            catch (ProduceException<Null, string> e)
+            {
+                Log.Error(e);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
         public void Subscribe(Action<T> onchange, CacheNotifyAction cacheNotifyAction)
         {
             if (ClientConfig == null)
@@ -245,6 +292,18 @@ namespace ASC.Common.Caching
                     a(obj);
                 }
             }
+        }
+
+        public async Task PublishAsync(T obj, CacheNotifyAction action)
+        {
+            if (actions.TryGetValue(GetKey(action), out var onchange) && onchange != null)
+            {
+                foreach (var a in onchange)
+                {
+                    a(obj);
+                }
+            }
+            await Task.FromResult(0);
         }
 
         public void Subscribe(Action<T> onchange, CacheNotifyAction notifyAction)

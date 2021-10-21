@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -202,12 +203,31 @@ namespace ASC.Files.Thirdparty.Box
             return ToFolder(GetBoxFolder("0"));
         }
 
+        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
+        {
+            return ToFolder(await GetBoxFolderAsync("0"));
+        }
+
         protected BoxFolder GetBoxFolder(string folderId)
         {
             var boxFolderId = MakeBoxId(folderId);
             try
             {
                 var folder = ProviderInfo.GetBoxFolder(boxFolderId);
+                return folder;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorFolder(ex, boxFolderId);
+            }
+        }
+
+        protected async Task<BoxFolder> GetBoxFolderAsync(string folderId)
+        {
+            var boxFolderId = MakeBoxId(folderId);
+            try
+            {
+                var folder = await ProviderInfo.GetBoxFolderAsync(boxFolderId);
                 return folder;
             }
             catch (Exception ex)
@@ -230,15 +250,53 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
+        protected async Task<BoxFile> GetBoxFileAsync(string fileId)
+        {
+            var boxFileId = MakeBoxId(fileId);
+            try
+            {
+                var file = await ProviderInfo.GetBoxFileAsync(boxFileId);
+                return file;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorFile(ex, boxFileId);
+            }
+        }
+
         protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetBoxItems(folderId).Select(entry => MakeId(entry.Id));
+        }
+
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+        {
+            var items = await GetBoxItemsAsync(folderId);
+            return items.Select(entry => MakeId(entry.Id));
         }
 
         protected List<BoxItem> GetBoxItems(string parentId, bool? folder = null)
         {
             var boxFolderId = MakeBoxId(parentId);
             var items = ProviderInfo.GetBoxItems(boxFolderId);
+
+            if (folder.HasValue)
+            {
+                if (folder.Value)
+                {
+                    return items.Where(i => i is BoxFolder).ToList();
+                }
+
+                return items.Where(i => i is BoxFile).ToList();
+            }
+
+            return items;
+        }
+
+        protected async Task<List<BoxItem>> GetBoxItemsAsync(string parentId, bool? folder = null)
+        {
+            var boxFolderId = MakeBoxId(parentId);
+            var items = await ProviderInfo.GetBoxItemsAsync(boxFolderId);
 
             if (folder.HasValue)
             {
@@ -305,6 +363,30 @@ namespace ASC.Files.Thirdparty.Box
             }
 
             while (isExist(requestTitle, parentFolderId))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
+        {
+            if (!await isExist(requestTitle, parentFolderId)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (!await isExist(requestTitle, parentFolderId))
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }

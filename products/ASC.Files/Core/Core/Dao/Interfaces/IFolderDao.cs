@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Files.Core.Security;
@@ -42,6 +43,7 @@ namespace ASC.Files.Core
         /// <param name="folderId">folder id</param>
         /// <returns>folder</returns>
         Folder<T> GetFolder(T folderId);
+        Task<Folder<T>> GetFolderAsync(T folderId);
 
         /// <summary>
         ///     Returns the folder with the given name and id of the root
@@ -50,13 +52,14 @@ namespace ASC.Files.Core
         /// <param name="parentId"></param>
         /// <returns></returns>
         Folder<T> GetFolder(string title, T parentId);
-
+        Task<Folder<T>> GetFolderAsync(string title, T parentId);
         /// <summary>
         ///    Gets the root folder
         /// </summary>
         /// <param name="folderId">folder id</param>
         /// <returns>root folder</returns>
         Folder<T> GetRootFolder(T folderId);
+        Task<Folder<T>> GetRootFolderAsync(T folderId);
 
         /// <summary>
         ///    Gets the root folder
@@ -64,13 +67,14 @@ namespace ASC.Files.Core
         /// <param name="fileId">file id</param>
         /// <returns>root folder</returns>
         Folder<T> GetRootFolderByFile(T fileId);
+        Task<Folder<T>> GetRootFolderByFileAsync(T fileId);
 
         /// <summary>
         ///     Get a list of folders in current folder.
         /// </summary>
         /// <param name="parentId"></param>
         List<Folder<T>> GetFolders(T parentId);
-
+        Task<List<Folder<T>>> GetFoldersAsync(T parentId);
         /// <summary>
         /// Get a list of folders.
         /// </summary>
@@ -83,6 +87,7 @@ namespace ASC.Files.Core
         /// <param name="withSubfolders"></param>
         /// <returns></returns>
         List<Folder<T>> GetFolders(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
+        Task<List<Folder<T>>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false);
 
         /// <summary>
         /// Gets the folder (s) by ID (s)
@@ -96,6 +101,7 @@ namespace ASC.Files.Core
         /// <param name="checkShare"></param>
         /// <returns></returns>
         List<Folder<T>> GetFolders(IEnumerable<T> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
+        Task<List<Folder<T>>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
 
         /// <summary>
         ///     Get folder, contains folder with id
@@ -103,20 +109,20 @@ namespace ASC.Files.Core
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
         List<Folder<T>> GetParentFolders(T folderId);
-
+        Task<List<Folder<T>>> GetParentFoldersAsync(T folderId);
         /// <summary>
         ///     save or update folder
         /// </summary>
         /// <param name="folder"></param>
         /// <returns></returns>
         T SaveFolder(Folder<T> folder);
-
+        Task<T> SaveFolderAsync(Folder<T> folder);
         /// <summary>
         ///     delete folder
         /// </summary>
         /// <param name="folderId">folder id</param>
         void DeleteFolder(T folderId);
-
+        Task DeleteFolderAsync(T folderId);
         /// <summary>
         ///  move folder
         /// </summary>
@@ -126,7 +132,9 @@ namespace ASC.Files.Core
         T MoveFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
         TTo MoveFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
         string MoveFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
+        Task<string> MoveFolderAsync(T folderId, string toFolderId, CancellationToken? cancellationToken);
         int MoveFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
+        Task<int> MoveFolderAsync(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>
         ///     copy folder
@@ -139,7 +147,8 @@ namespace ASC.Files.Core
         Folder<T> CopyFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
         Folder<TTo> CopyFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
         Folder<string> CopyFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
-        Folder<int> CopyFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
+        Task<Folder<string>> CopyFolderAsync(T folderId, string toFolderId, CancellationToken? cancellationToken);
+        Task<Folder<int>> CopyFolderAsync(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>
         /// Validate the transfer operation directory to another directory.
@@ -160,6 +169,7 @@ namespace ASC.Files.Core
         /// <param name="folder"></param>
         /// <param name="newTitle">new name</param>
         T RenameFolder(Folder<T> folder, string newTitle);
+        Task<T> RenameFolderAsync(Folder<T> folder, string newTitle);
 
         /// <summary>
         ///    Gets the number of files and folders to the container in your
@@ -167,6 +177,7 @@ namespace ASC.Files.Core
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
         int GetItemsCount(T folderId);
+        Task<int> GetItemsCountAsync(T folderId);
 
         /// <summary>
         ///    Check folder on emptiness
@@ -174,7 +185,7 @@ namespace ASC.Files.Core
         /// <param name="folderId">folder id</param>
         /// <returns></returns>
         bool IsEmpty(T folderId);
-
+        Task<bool> IsEmptyAsync(T folderId);
         /// <summary>
         /// Check the need to use the trash before removing
         /// </summary>
@@ -207,6 +218,7 @@ namespace ASC.Files.Core
         /// <param name="chunkedUpload">Determines whenever supposed upload will be chunked (true) or not (false)</param>
         /// <returns>Maximum size of file which can be uploaded to folder</returns>
         long GetMaxUploadSize(T folderId, bool chunkedUpload = false);
+        Task<long> GetMaxUploadSizeAsync(T folderId, bool chunkedUpload = false);
 
         #region Only for TMFolderDao
 

@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Files.Thirdparty;
@@ -36,11 +37,18 @@ namespace ASC.Files.Core
     public interface IProviderDao
     {
         IProviderInfo GetProviderInfo(int linkId);
+        Task<IProviderInfo> GetProviderInfoAsync(int linkId);
         List<IProviderInfo> GetProvidersInfo();
+        Task<List<IProviderInfo>> GetProvidersInfoAsync();
         List<IProviderInfo> GetProvidersInfo(FolderType folderType, string searchText = null);
+        Task<List<IProviderInfo>> GetProvidersInfoAsync(FolderType folderType, string searchText = null);
         List<IProviderInfo> GetProvidersInfo(Guid userId);
+        Task<List<IProviderInfo>> GetProvidersInfoAsync(Guid userId);
         int SaveProviderInfo(string providerKey, string customerTitle, AuthData authData, FolderType folderType);
+        Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType);
         int UpdateProviderInfo(int linkId, string customerTitle, AuthData authData, FolderType folderType, Guid? userId = null);
+        Task<int> UpdateProviderInfoAsync(int linkId, string customerTitle, AuthData authData, FolderType folderType, Guid? userId = null);
         void RemoveProviderInfo(int linkId);
+        Task RemoveProviderInfoAsync(int linkId);
     }
 }

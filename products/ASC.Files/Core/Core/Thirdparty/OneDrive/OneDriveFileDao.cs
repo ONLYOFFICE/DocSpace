@@ -42,6 +42,7 @@ using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OneDrive.Sdk;
 
@@ -76,12 +77,17 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public void InvalidateCache(string fileId)
         {
-            var onedriveFileId = MakeOneDriveId(fileId);
-            ProviderInfo.CacheReset(onedriveFileId);
+            InvalidateCacheAsync(fileId).Wait();
+        }
 
-            var onedriveFile = GetOneDriveItem(fileId);
+        public async Task InvalidateCacheAsync(string fileId)
+        {
+            var onedriveFileId = MakeOneDriveId(fileId);
+            await ProviderInfo.CacheResetAsync(onedriveFileId);
+
+            var onedriveFile = await GetOneDriveItemAsync(fileId);
             var parentId = GetParentFolderId(onedriveFile);
-            if (parentId != null) ProviderInfo.CacheReset(parentId);
+            if (parentId != null) await ProviderInfo.CacheResetAsync(parentId);
         }
 
         public File<string> GetFile(string fileId)
@@ -91,7 +97,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public async Task<File<string>> GetFileAsync(string fileId)
         {
-            return await new Task<File<string>>(() => GetFile(fileId, 1));
+            return await GetFileAsync(fileId, 1);
         }
 
         public File<string> GetFile(string fileId, int fileVersion)
@@ -101,46 +107,77 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
         {
-            return await new Task<File<string>>(() => ToFile(GetOneDriveItem(fileId)));
+            return ToFile(await GetOneDriveItemAsync(fileId));
         }
 
         public File<string> GetFile(string parentId, string title)
         {
-            return ToFile(GetOneDriveItems(parentId, false)
-                              .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase) && item.File != null));
+            return GetFileAsync(parentId, title).Result;
         }
 
-        public Task<File<string>> GetFileAsync(string parentId, string title)
+        public async Task<File<string>> GetFileAsync(string parentId, string title)
         {
-            throw new NotImplementedException();
+            var items = await GetOneDriveItemsAsync(parentId, false);
+            return ToFile(items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase) && item.File != null));
         }
 
         public File<string> GetFileStable(string fileId, int fileVersion)
         {
-            return ToFile(GetOneDriveItem(fileId));
+            return GetFileStableAsync(fileId, fileVersion).Result;
         }
 
-        public Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
+        public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
         {
-            throw new NotImplementedException();
+            return ToFile(await GetOneDriveItemAsync(fileId));
         }
 
         public List<File<string>> GetFileHistory(string fileId)
         {
-            return new List<File<string>> { GetFile(fileId) };
+            return GetFileHistoryAsync(fileId).Result;
+        }
+
+        public async Task<List<File<string>>> GetFileHistoryAsync(string fileId)
+        {
+            return new List<File<string>> { await GetFileAsync(fileId) };
         }
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
-            if (fileIds == null || !fileIds.Any()) return new List<File<string>>();
-            return fileIds.Select(GetOneDriveItem).Select(ToFile).ToList();
+            return GetFilesAsync(fileIds).Result;
+        }
+
+        public async Task<List<File<string>>> GetFilesAsync(IEnumerable<string> fileIds)
+        {
+            var list = new List<File<string>>();
+
+            if (fileIds == null || !fileIds.Any()) return list;
+
+            await foreach (var file in FilesIterator(fileIds))
+            {
+                list.Add(file);
+            }
+
+            return list;
+        }
+        public async IAsyncEnumerable<File<string>> FilesIterator(IEnumerable<string> fileIds)
+        {
+            foreach (var e in fileIds)
+            {
+                yield return ToFile(await GetOneDriveItemAsync(e));
+            }
         }
 
         public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
+            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
+        }
+
+        public async Task<List<File<string>>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        {
             if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
-            var files = GetFiles(fileIds).AsEnumerable();
+            var filesList = await GetFilesAsync(fileIds);
+            var files = filesList.AsEnumerable();
 
             //Filter
             if (subjectID != Guid.Empty)
@@ -171,10 +208,10 @@ namespace ASC.Files.Thirdparty.OneDrive
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                        {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                        });
+                    {
+                        FileType fileType;
+                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                    });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -190,15 +227,27 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public List<string> GetFiles(string parentId)
         {
-            return GetOneDriveItems(parentId, false).Select(entry => MakeId(entry.Id)).ToList();
+            return GetFilesAsync(parentId).Result;
+        }
+
+        public async Task<List<string>> GetFilesAsync(string parentId)
+        {
+            var items = await GetOneDriveItemsAsync(parentId, false);
+            return items.Select(entry => MakeId(entry.Id)).ToList();
         }
 
         public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
+            return GetFilesAsync(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).Result;
+        }
+
+        public async Task<List<File<string>>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        {
             if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
             //Get only files
-            var files = GetOneDriveItems(parentId, false).Select(ToFile);
+            var items = await GetOneDriveItemsAsync(parentId, false);
+            var files = items.Select(ToFile);
 
             //Filter
             if (subjectID != Guid.Empty)
@@ -229,10 +278,10 @@ namespace ASC.Files.Thirdparty.OneDrive
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                        {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                        });
+                    {
+                        FileType fileType;
+                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                    });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -258,24 +307,39 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public override Stream GetFileStream(File<string> file)
         {
-            return GetFileStream(file, 0);
+            return GetFileStreamAsync(file).Result;
+        }
+
+        public override async Task<Stream> GetFileStreamAsync(File<string> file)
+        {
+            return await GetFileStreamAsync(file, 0);
         }
 
         public Stream GetFileStream(File<string> file, long offset)
         {
-            var onedriveFileId = MakeOneDriveId(file.ID);
-            ProviderInfo.CacheReset(onedriveFileId);
+            return GetFileStreamAsync(file, offset).Result;
+        }
 
-            var onedriveFile = GetOneDriveItem(file.ID);
+        public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
+        {
+            var onedriveFileId = MakeOneDriveId(file.ID);
+            await ProviderInfo.CacheResetAsync(onedriveFileId);
+
+            var onedriveFile = await GetOneDriveItemAsync(file.ID);
             if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
-            var fileStream = ProviderInfo.Storage.DownloadStream(onedriveFile, (int)offset);
+            var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(onedriveFile, (int)offset);
 
             return fileStream;
         }
 
         public Uri GetPreSignedUri(File<string> file, TimeSpan expires)
+        {
+            return GetPreSignedUriAsync(file, expires).Result;
+        }
+
+        public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
         {
             throw new NotSupportedException();
         }
@@ -285,7 +349,17 @@ namespace ASC.Files.Thirdparty.OneDrive
             return false;
         }
 
+        public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
+        {
+            return Task.FromResult(false);
+        }
+
         public File<string> SaveFile(File<string> file, Stream fileStream)
+        {
+            return SaveFileAsync(file, fileStream).Result;
+        }
+
+        public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
             if (file == null) throw new ArgumentNullException("file");
             if (fileStream == null) throw new ArgumentNullException("fileStream");
@@ -294,49 +368,59 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             if (file.ID != null)
             {
-                newOneDriveFile = ProviderInfo.Storage.SaveStream(MakeOneDriveId(file.ID), fileStream);
+                newOneDriveFile = await ProviderInfo.Storage.SaveStreamAsync(MakeOneDriveId(file.ID), fileStream);
                 if (!newOneDriveFile.Name.Equals(file.Title))
                 {
                     file.Title = GetAvailableTitle(file.Title, GetParentFolderId(newOneDriveFile), IsExist);
-                    newOneDriveFile = ProviderInfo.Storage.RenameItem(newOneDriveFile.Id, file.Title);
+                    newOneDriveFile = await ProviderInfo.Storage.RenameItemAsync(newOneDriveFile.Id, file.Title);
                 }
             }
             else if (file.FolderID != null)
             {
                 var folderId = MakeOneDriveId(file.FolderID);
-                var folder = GetOneDriveItem(folderId);
+                var folder = await GetOneDriveItemAsync(folderId);
                 file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
-                newOneDriveFile = ProviderInfo.Storage.CreateFile(fileStream, file.Title, MakeOneDrivePath(folder));
+                newOneDriveFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, MakeOneDrivePath(folder));
             }
 
-            if (newOneDriveFile != null) ProviderInfo.CacheReset(newOneDriveFile.Id);
+            if (newOneDriveFile != null) await ProviderInfo.CacheResetAsync(newOneDriveFile.Id);
             var parentId = GetParentFolderId(newOneDriveFile);
-            if (parentId != null) ProviderInfo.CacheReset(parentId);
+            if (parentId != null) await ProviderInfo.CacheResetAsync(parentId);
 
             return ToFile(newOneDriveFile);
         }
 
         public File<string> ReplaceFileVersion(File<string> file, Stream fileStream)
         {
-            return SaveFile(file, fileStream);
+            return SaveFileAsync(file, fileStream).Result;
+        }
+
+        public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+        {
+            return await SaveFileAsync(file, fileStream);
         }
 
         public void DeleteFile(string fileId)
         {
-            var onedriveFile = GetOneDriveItem(fileId);
+            DeleteFileAsync(fileId).Wait();
+        }
+
+        public async Task DeleteFileAsync(string fileId)
+        {
+            var onedriveFile = await GetOneDriveItemAsync(fileId);
             if (onedriveFile == null) return;
             var id = MakeId(onedriveFile.Id);
 
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
-                var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
+                var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.Id.StartsWith(id))
                     .Select(r => r.HashId)
-                    .ToList();
+                    .ToListAsync();
 
-                var link = Query(FilesDbContext.TagLink)
+                var link = await Query(FilesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToList();
+                    .ToListAsync();
 
                 FilesDbContext.TagLink.RemoveRange(link);
                 FilesDbContext.SaveChanges();
@@ -375,16 +459,27 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        public async Task<bool> IsExistAsync(string title, object folderId)
+        {
+            var items = await GetOneDriveItemsAsync(folderId.ToString(), false);
+            return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
+        }
+
         public TTo MoveFile<TTo>(string fileId, TTo toFolderId)
+        {
+            return MoveFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<TTo> MoveFileAsync<TTo>(string fileId, TTo toFolderId)
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(MoveFile(fileId, tId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(MoveFile(fileId, tsId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
             }
 
             throw new NotImplementedException();
@@ -392,7 +487,12 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public int MoveFile(string fileId, int toFolderId)
         {
-            var moved = CrossDao.PerformCrossDaoFileCopy(
+            return MoveFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<int> MoveFileAsync(string fileId, int toFolderId)
+        {
+            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, OneDriveDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
                 true);
@@ -402,34 +502,44 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public string MoveFile(string fileId, string toFolderId)
         {
-            var onedriveFile = GetOneDriveItem(fileId);
+            return MoveFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<string> MoveFileAsync(string fileId, string toFolderId)
+        {
+            var onedriveFile = await GetOneDriveItemAsync(fileId);
             if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
-            var toOneDriveFolder = GetOneDriveItem(toFolderId);
+            var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId);
             if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var fromFolderId = GetParentFolderId(onedriveFile);
 
             var newTitle = GetAvailableTitle(onedriveFile.Name, toOneDriveFolder.Id, IsExist);
-            onedriveFile = ProviderInfo.Storage.MoveItem(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
+            onedriveFile = await ProviderInfo.Storage.MoveItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
 
-            ProviderInfo.CacheReset(onedriveFile.Id);
-            ProviderInfo.CacheReset(fromFolderId);
-            ProviderInfo.CacheReset(toOneDriveFolder.Id);
+            await ProviderInfo.CacheResetAsync(onedriveFile.Id);
+            await ProviderInfo.CacheResetAsync(fromFolderId);
+            await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id);
 
             return MakeId(onedriveFile.Id);
         }
 
         public File<TTo> CopyFile<TTo>(string fileId, TTo toFolderId)
         {
+            return CopyFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<File<TTo>> CopyFileAsync<TTo>(string fileId, TTo toFolderId)
+        {
             if (toFolderId is int tId)
             {
-                return CopyFile(fileId, tId) as File<TTo>;
+                return await CopyFileAsync(fileId, tId) as File<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return CopyFile(fileId, tsId) as File<TTo>;
+                return await CopyFileAsync(fileId, tsId) as File<TTo>;
             }
 
             throw new NotImplementedException();
@@ -437,7 +547,12 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<int> CopyFile(string fileId, int toFolderId)
         {
-            var moved = CrossDao.PerformCrossDaoFileCopy(
+            return CopyFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
+        {
+            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                     fileId, this, OneDriveDaoSelector.ConvertId,
                     toFolderId, FileDao, r => r,
                     false);
@@ -447,38 +562,53 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<string> CopyFile(string fileId, string toFolderId)
         {
-            var onedriveFile = GetOneDriveItem(fileId);
+            return CopyFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
+        {
+            var onedriveFile = await GetOneDriveItemAsync(fileId);
             if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
-            var toOneDriveFolder = GetOneDriveItem(toFolderId);
+            var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId);
             if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var newTitle = GetAvailableTitle(onedriveFile.Name, toOneDriveFolder.Id, IsExist);
-            var newOneDriveFile = ProviderInfo.Storage.CopyItem(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
+            var newOneDriveFile = await ProviderInfo.Storage.CopyItemAsync(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
 
-            ProviderInfo.CacheReset(newOneDriveFile.Id);
-            ProviderInfo.CacheReset(toOneDriveFolder.Id);
+            await ProviderInfo.CacheResetAsync(newOneDriveFile.Id);
+            await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id);
 
             return ToFile(newOneDriveFile);
         }
 
         public string FileRename(File<string> file, string newTitle)
         {
-            var onedriveFile = GetOneDriveItem(file.ID);
+            return FileRenameAsync(file, newTitle).Result;
+        }
+
+        public async Task<string> FileRenameAsync(File<string> file, string newTitle)
+        {
+            var onedriveFile = await GetOneDriveItemAsync(file.ID);
             newTitle = GetAvailableTitle(newTitle, GetParentFolderId(onedriveFile), IsExist);
 
-            onedriveFile = ProviderInfo.Storage.RenameItem(onedriveFile.Id, newTitle);
+            onedriveFile = await ProviderInfo.Storage.RenameItemAsync(onedriveFile.Id, newTitle);
 
-            ProviderInfo.CacheReset(onedriveFile.Id);
+            await ProviderInfo.CacheResetAsync(onedriveFile.Id);
             var parentId = GetParentFolderId(onedriveFile);
-            if (parentId != null) ProviderInfo.CacheReset(parentId);
+            if (parentId != null) await ProviderInfo.CacheResetAsync(parentId);
 
             return MakeId(onedriveFile.Id);
         }
 
         public string UpdateComment(string fileId, int fileVersion, string comment)
         {
-            return string.Empty;
+            return UpdateCommentAsync(fileId, fileVersion, comment).Result;
+        }
+
+        public Task<string> UpdateCommentAsync(string fileId, int fileVersion, string comment)
+        {
+            return Task.FromResult(string.Empty);
         }
 
         public void CompleteVersion(string fileId, int fileVersion)
@@ -487,6 +617,12 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public void ContinueVersion(string fileId, int fileVersion)
         {
+            ContinueVersionAsync(fileId, fileVersion).Wait();
+        }
+
+        public Task ContinueVersionAsync(string fileId, int fileVersion)
+        {
+            return Task.FromResult(0);
         }
 
         public bool UseTrashForRemove(File<string> file)
@@ -511,6 +647,11 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public ChunkedUploadSession<string> CreateUploadSession(File<string> file, long contentLength)
         {
+            return CreateUploadSessionAsync(file, contentLength).Result;
+        }
+
+        public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+        {
             if (SetupInfo.ChunkUploadSize > contentLength)
                 return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
 
@@ -519,15 +660,15 @@ namespace ASC.Files.Thirdparty.OneDrive
             Item onedriveFile;
             if (file.ID != null)
             {
-                onedriveFile = GetOneDriveItem(file.ID);
+                onedriveFile = await GetOneDriveItemAsync(file.ID);
             }
             else
             {
-                var folder = GetOneDriveItem(file.FolderID);
+                var folder = await GetOneDriveItemAsync(file.FolderID);
                 onedriveFile = new Item { Name = file.Title, ParentReference = new ItemReference { Id = folder.Id } };
             }
 
-            var onedriveSession = ProviderInfo.Storage.CreateResumableSession(onedriveFile, contentLength);
+            var onedriveSession = await ProviderInfo.Storage.CreateResumableSessionAsync(onedriveFile, contentLength);
             if (onedriveSession != null)
             {
                 uploadSession.Items["OneDriveSession"] = onedriveSession;
@@ -543,12 +684,17 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
         {
+            return UploadChunkAsync(uploadSession, stream, chunkLength).Result;
+        }
+
+        public async Task<File<string>> UploadChunkAsync(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
+        {
             if (!uploadSession.UseChunks)
             {
                 if (uploadSession.BytesTotal == 0)
                     uploadSession.BytesTotal = chunkLength;
 
-                uploadSession.File = SaveFile(uploadSession.File, stream);
+                uploadSession.File = await SaveFileAsync(uploadSession.File, stream);
                 uploadSession.BytesUploaded = chunkLength;
                 return uploadSession.File;
             }
@@ -556,20 +702,20 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (uploadSession.Items.ContainsKey("OneDriveSession"))
             {
                 var oneDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("OneDriveSession");
-                ProviderInfo.Storage.Transfer(oneDriveSession, stream, chunkLength);
+                await ProviderInfo.Storage.TransferAsync(oneDriveSession, stream, chunkLength);
             }
             else
             {
                 var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
                 using var fs = new FileStream(tempPath, FileMode.Append);
-                stream.CopyTo(fs);
+                await stream.CopyToAsync(fs);
             }
 
             uploadSession.BytesUploaded += chunkLength;
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
-                uploadSession.File = FinalizeUploadSession(uploadSession);
+                uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
             }
             else
             {
@@ -580,22 +726,32 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         private File<string> FinalizeUploadSession(ChunkedUploadSession<string> uploadSession)
         {
+            return FinalizeUploadSessionAsync(uploadSession).Result;
+        }
+
+        private async Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+        {
             if (uploadSession.Items.ContainsKey("OneDriveSession"))
             {
                 var oneDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("OneDriveSession");
 
-                ProviderInfo.CacheReset(oneDriveSession.FileId);
+                await ProviderInfo.CacheResetAsync(oneDriveSession.FileId);
                 var parentDriveId = oneDriveSession.FolderId;
-                if (parentDriveId != null) ProviderInfo.CacheReset(parentDriveId);
+                if (parentDriveId != null) await ProviderInfo.CacheResetAsync(parentDriveId);
 
-                return ToFile(GetOneDriveItem(oneDriveSession.FileId));
+                return ToFile(await GetOneDriveItemAsync(oneDriveSession.FileId));
             }
 
             using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
-            return SaveFile(uploadSession.File, fs);
+            return await SaveFileAsync(uploadSession.File, fs);
         }
 
         public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)
+        {
+            AbortUploadSessionAsync(uploadSession).Wait();
+        }
+
+        public async Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
         {
             if (uploadSession.Items.ContainsKey("OneDriveSession"))
             {
@@ -603,7 +759,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 if (oneDriveSession.Status != ResumableUploadSessionStatus.Completed)
                 {
-                    ProviderInfo.Storage.CancelTransfer(oneDriveSession);
+                    await ProviderInfo.Storage.CancelTransferAsync(oneDriveSession);
 
                     oneDriveSession.Status = ResumableUploadSessionStatus.Aborted;
                 }

@@ -42,7 +42,7 @@ namespace ASC.Files.Core
         ///     Clear the application cache for the specific file
         /// </summary>
         void InvalidateCache(T fileId);
-
+        Task InvalidateCacheAsync(T fileId);
         /// <summary>
         ///     Receive file
         /// </summary>
@@ -84,6 +84,7 @@ namespace ASC.Files.Core
         /// <param name="fileId"></param>
         /// <returns></returns>
         List<File<T>> GetFileHistory(T fileId);
+        Task<List<File<T>>> GetFileHistoryAsync(T fileId);
 
         /// <summary>
         ///     Gets the file (s) by ID (s)
@@ -91,6 +92,7 @@ namespace ASC.Files.Core
         /// <param name="fileIds">id file</param>
         /// <returns></returns>
         List<File<T>> GetFiles(IEnumerable<T> fileIds);
+        Task<List<File<T>>> GetFilesAsync(IEnumerable<T> fileIds);
 
         /// <summary>
         ///     Gets the file (s) by ID (s) for share
@@ -103,6 +105,7 @@ namespace ASC.Files.Core
         /// <param name="searchInContent"></param>
         /// <returns></returns>
         List<File<T>> GetFilesFiltered(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+        Task<List<File<T>>> GetFilesFilteredAsync(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
 
         /// <summary>
         /// 
@@ -128,6 +131,7 @@ namespace ASC.Files.Core
         ///    Return only the latest versions of files of a folder
         /// </remarks>
         List<File<T>> GetFiles(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
+        Task<List<File<T>>> GetFilesAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
 
         /// <summary>
         /// Get stream of file
@@ -145,6 +149,7 @@ namespace ASC.Files.Core
         /// <param name="offset"></param>
         /// <returns>Stream</returns>
         Stream GetFileStream(File<T> file, long offset);
+        Task<Stream> GetFileStreamAsync(File<T> file, long offset);
 
         /// <summary>
         /// Get presigned uri
@@ -153,6 +158,7 @@ namespace ASC.Files.Core
         /// <param name="expires"></param>
         /// <returns>Stream uri</returns>
         Uri GetPreSignedUri(File<T> file, TimeSpan expires);
+        Task<Uri> GetPreSignedUriAsync(File<T> file, TimeSpan expires);
 
         /// <summary>
         ///  Check is supported PreSignedUri
@@ -160,6 +166,7 @@ namespace ASC.Files.Core
         /// <param name="file"></param>
         /// <returns>Stream uri</returns>
         bool IsSupportedPreSignedUri(File<T> file);
+        Task<bool> IsSupportedPreSignedUriAsync(File<T> file);
 
         /// <summary>
         ///  Saves / updates the version of the file
@@ -176,7 +183,7 @@ namespace ASC.Files.Core
         /// Save in all other cases
         /// </remarks>
         File<T> SaveFile(File<T> file, Stream fileStream);
-
+        Task<File<T>> SaveFileAsync(File<T> file, Stream fileStream);
         /// <summary>
         /// 
         /// </summary>
@@ -184,13 +191,13 @@ namespace ASC.Files.Core
         /// <param name="fileStream"></param>
         /// <returns></returns>
         File<T> ReplaceFileVersion(File<T> file, Stream fileStream);
-
+        Task<File<T>> ReplaceFileVersionAsync(File<T> file, Stream fileStream);
         /// <summary>
         ///   Deletes a file including all previous versions
         /// </summary>
         /// <param name="fileId">file id</param>
         void DeleteFile(T fileId);
-
+        Task DeleteFileAsync(T fileId);
         /// <summary>
         ///     Checks whether or not file
         /// </summary>
@@ -198,16 +205,20 @@ namespace ASC.Files.Core
         /// <param name="folderId">folder id</param>
         /// <returns>Returns true if the file exists, otherwise false</returns>
         bool IsExist(string title, object folderId);
-
+        Task<bool> IsExistAsync(string title, object folderId);
         /// <summary>
         ///   Moves a file or set of files in a folder
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <param name="toFolderId">The ID of the destination folder</param>
         T MoveFile(T fileId, T toFolderId);
+        Task<T> MoveFileAsync(T fileId, T toFolderId);
         TTo MoveFile<TTo>(T fileId, TTo toFolderId);
+        Task<TTo> MoveFileAsync<TTo>(T fileId, TTo toFolderId);
         string MoveFile(T fileId, string toFolderId);
+        Task<string> MoveFileAsync(T fileId, string toFolderId);
         int MoveFile(T fileId, int toFolderId);
+        Task<int> MoveFileAsync(T fileId, int toFolderId);
 
         /// <summary>
         ///  Copy the files in a folder
@@ -215,9 +226,13 @@ namespace ASC.Files.Core
         /// <param name="fileId">file id</param>
         /// <param name="toFolderId">The ID of the destination folder</param>
         File<T> CopyFile(T fileId, T toFolderId);
+        Task<File<T>> CopyFileAsync(T fileId, T toFolderId);
         File<TTo> CopyFile<TTo>(T fileId, TTo toFolderId);
+        Task<File<TTo>> CopyFileAsync<TTo>(T fileId, TTo toFolderId);
         File<string> CopyFile(T fileId, string toFolderId);
+        Task<File<string>> CopyFileAsync(T fileId, string toFolderId);
         File<int> CopyFile(T fileId, int toFolderId);
+        Task<File<int>> CopyFileAsync(T fileId, int toFolderId);
 
         /// <summary>
         ///   Rename file
@@ -225,6 +240,7 @@ namespace ASC.Files.Core
         /// <param name="file"></param>
         /// <param name="newTitle">new name</param>
         T FileRename(File<T> file, string newTitle);
+        Task<T> FileRenameAsync(File<T> file, string newTitle);
 
         /// <summary>
         ///   Update comment file
@@ -233,38 +249,36 @@ namespace ASC.Files.Core
         /// <param name="fileVersion">file version</param>
         /// <param name="comment">new comment</param>
         string UpdateComment(T fileId, int fileVersion, string comment);
-
+        Task<string> UpdateCommentAsync(T fileId, int fileVersion, string comment);
         /// <summary>
         ///   Complete file version
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion">file version</param>
         void CompleteVersion(T fileId, int fileVersion);
-
         /// <summary>
         ///   Continue file version
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion">file version</param>
         void ContinueVersion(T fileId, int fileVersion);
-
+        Task ContinueVersionAsync(T fileId, int fileVersion);
         /// <summary>
         /// Check the need to use the trash before removing
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
         bool UseTrashForRemove(File<T> file);
-
         string GetUniqFilePath(File<T> file, string fileTitle);
 
         #region chunking
 
         ChunkedUploadSession<T> CreateUploadSession(File<T> file, long contentLength);
-
+        Task<ChunkedUploadSession<T>> CreateUploadSessionAsync(File<T> file, long contentLength);
         File<T> UploadChunk(ChunkedUploadSession<T> uploadSession, Stream chunkStream, long chunkLength);
-
+        Task<File<T>> UploadChunkAsync(ChunkedUploadSession<T> uploadSession, Stream chunkStream, long chunkLength);
         void AbortUploadSession(ChunkedUploadSession<T> uploadSession);
-
+        Task AbortUploadSessionAsync(ChunkedUploadSession<T> uploadSession);
         #endregion
 
         #region Only in TMFileDao

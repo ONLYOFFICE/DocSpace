@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -38,6 +39,7 @@ using ASC.Files.Core.EF;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 using Folder = Microsoft.SharePoint.Client.Folder;
@@ -71,6 +73,30 @@ namespace ASC.Files.Thirdparty.SharePoint
             }
 
             while (isExist(requestTitle, parentFolderID))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, Folder parentFolderID, Func<string, Folder, Task<bool>> isExist)
+        {
+            if (!await isExist(requestTitle, parentFolderID)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.Ordinal) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.Ordinal);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (await isExist(requestTitle, parentFolderID))
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
@@ -138,9 +164,68 @@ namespace ASC.Files.Thirdparty.SharePoint
             tx.Commit();
         }
 
+        protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
+        {
+            if (oldValue.Equals(newValue)) return;
+
+            using var tx = FilesDbContext.Database.BeginTransaction();
+            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.Id.StartsWith(oldValue))
+                .Select(r => r.Id)
+                .ToListAsync();
+
+            foreach (var oldID in oldIDs)
+            {
+                var oldHashID = await MappingIDAsync(oldID);
+                var newID = oldID.Replace(oldValue, newValue);
+                var newHashID = await MappingIDAsync(newID);
+
+                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                    .Where(r => r.HashId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var m in mappingForUpdate)
+                {
+                    m.Id = newID;
+                    m.HashId = newHashID;
+                }
+
+                FilesDbContext.SaveChanges();
+
+                var securityForUpdate = await Query(FilesDbContext.Security)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var s in securityForUpdate)
+                {
+                    s.EntryId = newHashID;
+                }
+
+                FilesDbContext.SaveChanges();
+
+                var linkForUpdate = await Query(FilesDbContext.TagLink)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var l in linkForUpdate)
+                {
+                    l.EntryId = newHashID;
+                }
+
+                FilesDbContext.SaveChanges();
+            }
+
+            tx.Commit();
+        }
+
         protected string MappingID(string id)
         {
             return MappingID(id, false);
+        }
+
+        protected async Task<string> MappingIDAsync(string id)
+        {
+            return await MappingIDAsync(id, false);
         }
 
         protected override string MakeId(string path = null)
@@ -152,6 +237,16 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             var subFolders = ProviderInfo.GetFolderFolders(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
             var files = ProviderInfo.GetFolderFiles(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+            return subFolders.Concat(files);
+        }
+
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+        {
+            var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
+            var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+
+            var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
+            var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
             return subFolders.Concat(files);
         }
     }

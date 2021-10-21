@@ -44,6 +44,7 @@ using ASC.Web.Studio.Core;
 
 using Box.V2.Models;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
@@ -76,22 +77,27 @@ namespace ASC.Files.Thirdparty.Box
 
         public void InvalidateCache(string fileId)
         {
-            var boxFileId = MakeBoxId(fileId);
-            ProviderInfo.CacheReset(boxFileId, true);
+            InvalidateCacheAsync(fileId).Wait();
+        }
 
-            var boxFile = GetBoxFile(fileId);
+        public async Task InvalidateCacheAsync(string fileId)
+        {
+            var boxFileId = MakeBoxId(fileId);
+            await ProviderInfo.CacheResetAsync(boxFileId, true);
+
+            var boxFile = await GetBoxFileAsync(fileId);
             var parentPath = GetParentFolderId(boxFile);
-            if (parentPath != null) ProviderInfo.CacheReset(parentPath);
+            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath);
         }
 
         public File<string> GetFile(string fileId)
         {
-            return GetFileAsync(fileId).Result;
+            return GetFile(fileId, 1);
         }
 
         public async Task<File<string>> GetFileAsync(string fileId)
         {
-            return await new Task<File<string>>(() => GetFile(fileId, 1));
+            return await GetFileAsync(fileId, 1);
         }
 
         public File<string> GetFile(string fileId, int fileVersion)
@@ -101,46 +107,82 @@ namespace ASC.Files.Thirdparty.Box
 
         public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
         {
-            return await new Task<File<string>>(() => ToFile(GetBoxFile(fileId)));
+            return ToFile(await GetBoxFileAsync(fileId));
         }
 
         public File<string> GetFile(string parentId, string title)
         {
-            return ToFile(GetBoxItems(parentId, false)
-                              .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFile);
+            return GetFileAsync(parentId, title).Result;
         }
 
         public async Task<File<string>> GetFileAsync(string parentId, string title)
         {
-            throw new NotImplementedException();
+            var items = await GetBoxItemsAsync(parentId, false);
+            return ToFile(items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFile);
         }
 
         public File<string> GetFileStable(string fileId, int fileVersion)
         {
-            return ToFile(GetBoxFile(fileId));
+            return GetFileStableAsync(fileId, fileVersion).Result;
         }
 
-        public async Task<File<string>> GetFileStableAsync(string parentId, int fileVersion)
+        public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion)
         {
-            throw new NotImplementedException();
+            return ToFile(await GetBoxFileAsync(fileId));
         }
 
         public List<File<string>> GetFileHistory(string fileId)
         {
-            return new List<File<string>> { GetFileAsync(fileId).Result };
+            return GetFileHistoryAsync(fileId).Result;
         }
+
+        public async Task<List<File<string>>> GetFileHistoryAsync(string fileId)
+        {
+            return new List<File<string>> { await GetFileAsync(fileId) };
+        }
+
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
+            //if (fileIds == null || !fileIds.Any()) return new List<File<string>>();
+            //return fileIds.Select(GetBoxFile).Select(ToFile).ToList();
+
+            return GetFilesAsync(fileIds).Result;
+        }
+
+        public async Task<List<File<string>>> GetFilesAsync(IEnumerable<string> fileIds)
+        {
+            var list = new List<File<string>>();
+
             if (fileIds == null || !fileIds.Any()) return new List<File<string>>();
-            return fileIds.Select(GetBoxFile).Select(ToFile).ToList();
+
+            await foreach (var file in FilesIterator(fileIds))
+            {
+                list.Add(file);
+            }
+
+            return list;
+        }
+
+        public async IAsyncEnumerable<File<string>> FilesIterator(IEnumerable<string> fileIds)
+        {
+            foreach (var e in fileIds)
+            {
+                yield return ToFile(await GetBoxFileAsync(e));
+            }
         }
 
         public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
+            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
+        }
+
+        public async Task<List<File<string>>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        {
             if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
-            var files = GetFiles(fileIds).AsEnumerable();
+            var filesList = await GetFilesAsync(fileIds);
+            var files = filesList.AsEnumerable();
 
             //Filter
             if (subjectID != Guid.Empty)
@@ -171,10 +213,10 @@ namespace ASC.Files.Thirdparty.Box
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                        {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                        });
+                    {
+                        FileType fileType;
+                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                    });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -191,6 +233,12 @@ namespace ASC.Files.Thirdparty.Box
         public List<string> GetFiles(string parentId)
         {
             return GetBoxItems(parentId, false).Select(entry => MakeId(entry.Id)).ToList();
+        }
+
+        public async Task<List<string>> GetFilesAsync(string parentId)
+        {
+            var items = await GetBoxItemsAsync(parentId, false);
+            return items.Select(entry => MakeId(entry.Id)).ToList();
         }
 
         public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -256,36 +304,125 @@ namespace ASC.Files.Thirdparty.Box
             return files.ToList();
         }
 
+        public async Task<List<File<string>>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        {
+            if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
+
+            //Get only files
+            var filesWait = await GetBoxItemsAsync(parentId, false);
+            var files = filesWait.Select(item => ToFile(item as BoxFile));
+
+            //Filter
+            if (subjectID != Guid.Empty)
+            {
+                files = files.Where(x => subjectGroup
+                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                             : x.CreateBy == subjectID);
+            }
+
+            switch (filterType)
+            {
+                case FilterType.FoldersOnly:
+                    return new List<File<string>>();
+                case FilterType.DocumentsOnly:
+                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
+                    break;
+                case FilterType.PresentationsOnly:
+                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
+                    break;
+                case FilterType.SpreadsheetsOnly:
+                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
+                    break;
+                case FilterType.ImagesOnly:
+                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
+                    break;
+                case FilterType.ArchiveOnly:
+                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
+                    break;
+                case FilterType.MediaOnly:
+                    files = files.Where(x =>
+                    {
+                        FileType fileType;
+                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                    });
+                    break;
+                case FilterType.ByExtension:
+                    if (!string.IsNullOrEmpty(searchText))
+                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Contains(searchText));
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(searchText))
+                files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+
+            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+
+            files = orderBy.SortedBy switch
+            {
+                SortedByType.Author => orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy),
+                SortedByType.AZ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
+                _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+            };
+            return files.ToList();
+        }
+
         public override Stream GetFileStream(File<string> file)
         {
-            return GetFileStream(file, 0);
+            return GetFileStreamAsync(file).Result;
+        }
+
+        public override async Task<Stream> GetFileStreamAsync(File<string> file)
+        {
+            return await GetFileStreamAsync(file, 0);
         }
 
         public Stream GetFileStream(File<string> file, long offset)
         {
-            var boxFileId = MakeBoxId(file.ID);
-            ProviderInfo.CacheReset(boxFileId, true);
+            return GetFileStreamAsync(file, offset).Result;
+        }
 
-            var boxFile = GetBoxFile(file.ID);
+        public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
+        {
+            var boxFileId = MakeBoxId(file.ID);
+            await ProviderInfo.CacheResetAsync(boxFileId, true);
+
+            var boxFile = await GetBoxFileAsync(file.ID);
             if (boxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
-            var fileStream = ProviderInfo.Storage.DownloadStream(boxFile, (int)offset);
+            var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(boxFile, (int)offset);
 
             return fileStream;
         }
 
         public Uri GetPreSignedUri(File<string> file, TimeSpan expires)
         {
+            return GetPreSignedUriAsync(file, expires).Result;
+        }
+
+        public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
+        {
             throw new NotSupportedException();
         }
 
         public bool IsSupportedPreSignedUri(File<string> file)
         {
-            return false;
+            return IsSupportedPreSignedUriAsync(file).Result;
+        }
+
+        public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
+        {
+            return Task.FromResult(false);
         }
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
+        {
+            return SaveFileAsync(file, fileStream).Result;
+        }
+
+        public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
             if (file == null) throw new ArgumentNullException("file");
             if (fileStream == null) throw new ArgumentNullException("fileStream");
@@ -295,37 +432,47 @@ namespace ASC.Files.Thirdparty.Box
             if (file.ID != null)
             {
                 var fileId = MakeBoxId(file.ID);
-                newBoxFile = ProviderInfo.Storage.SaveStream(fileId, fileStream);
+                newBoxFile = await ProviderInfo.Storage.SaveStreamAsync(fileId, fileStream);
 
                 if (!newBoxFile.Name.Equals(file.Title))
                 {
-                    var folderId = GetParentFolderId(GetBoxFile(fileId));
+                    var folderId = GetParentFolderId(await GetBoxFileAsync(fileId));
                     file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
-                    newBoxFile = ProviderInfo.Storage.RenameFile(fileId, file.Title);
+                    newBoxFile = await ProviderInfo.Storage.RenameFileAsync(fileId, file.Title);
                 }
             }
             else if (file.FolderID != null)
             {
                 var folderId = MakeBoxId(file.FolderID);
                 file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
-                newBoxFile = ProviderInfo.Storage.CreateFile(fileStream, file.Title, folderId);
+                newBoxFile = await  ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderId);
             }
 
-            ProviderInfo.CacheReset(newBoxFile);
+            await ProviderInfo.CacheResetAsync(newBoxFile);
             var parentId = GetParentFolderId(newBoxFile);
-            if (parentId != null) ProviderInfo.CacheReset(parentId);
+            if (parentId != null) await ProviderInfo.CacheResetAsync(parentId);
 
             return ToFile(newBoxFile);
         }
 
         public File<string> ReplaceFileVersion(File<string> file, Stream fileStream)
         {
-            return SaveFile(file, fileStream);
+            return ReplaceFileVersionAsync(file, fileStream).Result;
+        }
+
+        public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+        {
+            return await SaveFileAsync(file, fileStream);
         }
 
         public void DeleteFile(string fileId)
         {
-            var boxFile = GetBoxFile(fileId);
+            DeleteFileAsync(fileId).Wait();
+        }
+
+        public async Task DeleteFileAsync(string fileId)
+        {
+            var boxFile = await GetBoxFileAsync(fileId);
             if (boxFile == null) return;
             var id = MakeId(boxFile.Id);
 
@@ -333,18 +480,16 @@ namespace ASC.Files.Thirdparty.Box
             {
                 var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.Id.StartsWith(id))
-                    .Select(r => r.HashId)
-                    .ToList();
+                    .Select(r => r.HashId);
 
                 var link = Query(FilesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToList();
+                    .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.TagLink.RemoveRange(link);
                 FilesDbContext.SaveChanges();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
-                    .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
+                    .Where(r => Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
 
                 FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
@@ -379,16 +524,27 @@ namespace ASC.Files.Thirdparty.Box
                 .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        public async Task<bool> IsExistAsync(string title, object folderId)
+        {
+            var item = await GetBoxItemsAsync(folderId.ToString(), false);
+            return item.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
+        }
+
         public TTo MoveFile<TTo>(string fileId, TTo toFolderId)
+        {
+            return MoveFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<TTo> MoveFileAsync<TTo>(string fileId, TTo toFolderId)
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(MoveFile(fileId, tId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(MoveFile(fileId, tsId), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
             }
 
             throw new NotImplementedException();
@@ -396,7 +552,12 @@ namespace ASC.Files.Thirdparty.Box
 
         public int MoveFile(string fileId, int toFolderId)
         {
-            var moved = CrossDao.PerformCrossDaoFileCopy(
+            return MoveFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<int> MoveFileAsync(string fileId, int toFolderId)
+        {
+            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, BoxDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
                 true);
@@ -406,34 +567,44 @@ namespace ASC.Files.Thirdparty.Box
 
         public string MoveFile(string fileId, string toFolderId)
         {
-            var boxFile = GetBoxFile(fileId);
+            return MoveFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<string> MoveFileAsync(string fileId, string toFolderId)
+        {
+            var boxFile = await GetBoxFileAsync(fileId);
             if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
-            var toBoxFolder = GetBoxFolder(toFolderId);
+            var toBoxFolder = await GetBoxFolderAsync(toFolderId);
             if (toBoxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var fromFolderId = GetParentFolderId(boxFile);
 
             var newTitle = GetAvailableTitle(boxFile.Name, toBoxFolder.Id, IsExist);
-            boxFile = ProviderInfo.Storage.MoveFile(boxFile.Id, newTitle, toBoxFolder.Id);
+            boxFile = await ProviderInfo.Storage.MoveFileAsync(boxFile.Id, newTitle, toBoxFolder.Id);
 
-            ProviderInfo.CacheReset(boxFile.Id, true);
-            ProviderInfo.CacheReset(fromFolderId);
-            ProviderInfo.CacheReset(toBoxFolder.Id);
+            await ProviderInfo.CacheResetAsync(boxFile.Id, true);
+            await ProviderInfo.CacheResetAsync(fromFolderId);
+            await ProviderInfo.CacheResetAsync(toBoxFolder.Id);
 
             return MakeId(boxFile.Id);
         }
 
         public File<TTo> CopyFile<TTo>(string fileId, TTo toFolderId)
         {
+            return CopyFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<File<TTo>> CopyFileAsync<TTo>(string fileId, TTo toFolderId)
+        {
             if (toFolderId is int tId)
             {
-                return CopyFile(fileId, tId) as File<TTo>;
+                return await CopyFileAsync(fileId, tId) as File<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return CopyFile(fileId, tsId) as File<TTo>;
+                return await CopyFileAsync(fileId, tsId) as File<TTo>;
             }
 
             throw new NotImplementedException();
@@ -441,24 +612,34 @@ namespace ASC.Files.Thirdparty.Box
 
         public File<string> CopyFile(string fileId, string toFolderId)
         {
-            var boxFile = GetBoxFile(fileId);
+            return CopyFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
+        {
+            var boxFile = await GetBoxFileAsync(fileId);
             if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
-            var toBoxFolder = GetBoxFolder(toFolderId);
+            var toBoxFolder = await GetBoxFolderAsync(toFolderId);
             if (toBoxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var newTitle = GetAvailableTitle(boxFile.Name, toBoxFolder.Id, IsExist);
             var newBoxFile = ProviderInfo.Storage.CopyFile(boxFile.Id, newTitle, toBoxFolder.Id);
 
-            ProviderInfo.CacheReset(newBoxFile);
-            ProviderInfo.CacheReset(toBoxFolder.Id);
+            await ProviderInfo.CacheResetAsync(newBoxFile);
+            await ProviderInfo.CacheResetAsync (toBoxFolder.Id);
 
             return ToFile(newBoxFile);
         }
 
         public File<int> CopyFile(string fileId, int toFolderId)
         {
-            var moved = CrossDao.PerformCrossDaoFileCopy(
+            return CopyFileAsync(fileId, toFolderId).Result;
+        }
+
+        public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
+        {
+            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, BoxDaoSelector.ConvertId,
                 toFolderId, FileDao, r => r,
                 false);
@@ -468,21 +649,31 @@ namespace ASC.Files.Thirdparty.Box
 
         public string FileRename(File<string> file, string newTitle)
         {
-            var boxFile = GetBoxFile(file.ID);
+            return FileRenameAsync(file, newTitle).Result;
+        }
+
+        public async Task<string> FileRenameAsync(File<string> file, string newTitle)
+        {
+            var boxFile = await GetBoxFileAsync(file.ID);
             newTitle = GetAvailableTitle(newTitle, GetParentFolderId(boxFile), IsExist);
 
-            boxFile = ProviderInfo.Storage.RenameFile(boxFile.Id, newTitle);
+            boxFile = await ProviderInfo.Storage.RenameFileAsync(boxFile.Id, newTitle);
 
-            ProviderInfo.CacheReset(boxFile);
+            await ProviderInfo.CacheResetAsync(boxFile);
             var parentId = GetParentFolderId(boxFile);
-            if (parentId != null) ProviderInfo.CacheReset(parentId);
+            if (parentId != null) await ProviderInfo.CacheResetAsync(parentId);
 
             return MakeId(boxFile.Id);
         }
 
         public string UpdateComment(string fileId, int fileVersion, string comment)
         {
-            return string.Empty;
+            return UpdateCommentAsync(fileId, fileVersion, comment).Result;
+        }
+
+        public Task<string> UpdateCommentAsync(string fileId, int fileVersion, string comment)
+        {
+            return Task.FromResult(string.Empty);
         }
 
         public void CompleteVersion(string fileId, int fileVersion)
@@ -491,6 +682,12 @@ namespace ASC.Files.Thirdparty.Box
 
         public void ContinueVersion(string fileId, int fileVersion)
         {
+            ContinueVersionAsync(fileId, fileVersion).Wait();
+        }
+
+        public Task ContinueVersionAsync(string fileId, int fileVersion)
+        {
+            return Task.FromResult(0);
         }
 
         public bool UseTrashForRemove(File<string> file)
@@ -515,25 +712,35 @@ namespace ASC.Files.Thirdparty.Box
 
         public ChunkedUploadSession<string> CreateUploadSession(File<string> file, long contentLength)
         {
+            return CreateUploadSessionAsync(file, contentLength).Result;
+        }
+
+        public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+        {
             if (SetupInfo.ChunkUploadSize > contentLength)
-                return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
+                return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
 
             var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
             uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
 
             uploadSession.File = RestoreIds(uploadSession.File);
-            return uploadSession;
+            return Task.FromResult(uploadSession);
         }
 
         public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
+        {
+            return UploadChunkAsync(uploadSession, stream, chunkLength).Result;
+        }
+
+        public async Task<File<string>> UploadChunkAsync(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {
                 if (uploadSession.BytesTotal == 0)
                     uploadSession.BytesTotal = chunkLength;
 
-                uploadSession.File = SaveFile(uploadSession.File, stream);
+                uploadSession.File = await SaveFileAsync(uploadSession.File, stream);
                 uploadSession.BytesUploaded = chunkLength;
                 return uploadSession.File;
             }
@@ -541,7 +748,7 @@ namespace ASC.Files.Thirdparty.Box
             var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
             using (var fs = new FileStream(tempPath, FileMode.Append))
             {
-                stream.CopyTo(fs);
+                await stream.CopyToAsync(fs);
             }
 
             uploadSession.BytesUploaded += chunkLength;
@@ -550,7 +757,7 @@ namespace ASC.Files.Thirdparty.Box
             {
                 using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
                                                FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
-                uploadSession.File = SaveFile(uploadSession.File, fs);
+                uploadSession.File = await SaveFileAsync(uploadSession.File, fs);
             }
             else
             {
@@ -562,12 +769,18 @@ namespace ASC.Files.Thirdparty.Box
 
         public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)
         {
+            AbortUploadSessionAsync(uploadSession).Wait();
+        }
+
+        public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+        {
             if (uploadSession.Items.ContainsKey("TempPath"))
             {
                 File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
             }
-        }
 
+            return Task.FromResult(0);
+        }
         #endregion
     }
 }

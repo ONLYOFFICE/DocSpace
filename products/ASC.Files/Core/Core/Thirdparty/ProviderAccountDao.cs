@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
@@ -53,6 +54,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -116,27 +118,49 @@ namespace ASC.Files.Thirdparty
 
         public virtual IProviderInfo GetProviderInfo(int linkId)
         {
-            return GetProvidersInfoInternal(linkId).Single();
+            return GetProviderInfoAsync(linkId).Result;
+        }
+
+        public virtual async Task<IProviderInfo> GetProviderInfoAsync(int linkId)
+        {
+            var providersInfo = await GetProvidersInfoInternalAsync(linkId);
+            return providersInfo.Single();
         }
 
         public virtual List<IProviderInfo> GetProvidersInfo()
         {
-            return GetProvidersInfoInternal();
+            return GetProvidersInfoAsync().Result;
+        }
+
+        public virtual async Task<List<IProviderInfo>> GetProvidersInfoAsync()
+        {
+            return await GetProvidersInfoInternalAsync();
         }
 
         public virtual List<IProviderInfo> GetProvidersInfo(FolderType folderType, string searchText = null)
         {
-            return GetProvidersInfoInternal(folderType: folderType, searchText: searchText);
+            return GetProvidersInfoAsync(folderType, searchText).Result;
+        }
+
+        public virtual async Task<List<IProviderInfo>> GetProvidersInfoAsync(FolderType folderType, string searchText = null)
+        {
+            return await GetProvidersInfoInternalAsync(folderType: folderType, searchText: searchText);
         }
 
         public virtual List<IProviderInfo> GetProvidersInfo(Guid userId)
         {
+            return GetProvidersInfoAsync(userId).Result;
+        }
+
+        public virtual async Task<List<IProviderInfo>> GetProvidersInfoAsync(Guid userId)
+        {
             try
             {
-                return FilesDbContext.ThirdpartyAccount
+                var thirdpartyAccounts = await FilesDbContext.ThirdpartyAccount
                     .Where(r => r.TenantId == TenantID)
                     .Where(r => r.UserId == userId)
-                    .ToList()
+                    .ToListAsync();
+                return thirdpartyAccounts
                     .Select(ToProviderInfo)
                     .ToList();
             }
@@ -148,6 +172,11 @@ namespace ASC.Files.Thirdparty
         }
 
         private List<IProviderInfo> GetProvidersInfoInternal(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
+        {
+            return GetProvidersInfoInternalAsync(linkId, folderType, searchText).Result;
+        }
+
+        private async Task<List<IProviderInfo>> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
         {
             var querySelect = FilesDbContext.ThirdpartyAccount.Where(r => r.TenantId == TenantID);
 
@@ -173,8 +202,8 @@ namespace ASC.Files.Thirdparty
 
             try
             {
-                return querySelect.ToList()
-                    .Select(ToProviderInfo)
+                var query = await querySelect.ToListAsync();
+                return query.Select(ToProviderInfo)
                     .ToList();
             }
             catch (Exception e)
@@ -186,6 +215,11 @@ namespace ASC.Files.Thirdparty
         }
 
         public virtual int SaveProviderInfo(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
+        {
+            return SaveProviderInfoAsync(providerKey, customerTitle, authData, folderType).Result;
+        }
+
+        public virtual async Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
         {
             ProviderTypes prKey;
             try
@@ -218,8 +252,8 @@ namespace ASC.Files.Thirdparty
                 Url = authData.Url ?? ""
             };
 
-            var res = FilesDbContext.AddOrUpdate(r => r.ThirdpartyAccount, dbFilesThirdpartyAccount);
-            FilesDbContext.SaveChanges();
+            var res = await FilesDbContext.AddOrUpdateAsync(r => r.ThirdpartyAccount, dbFilesThirdpartyAccount);
+            await FilesDbContext.SaveChangesAsync();
             return res.Id;
         }
 
@@ -230,10 +264,15 @@ namespace ASC.Files.Thirdparty
 
         public virtual int UpdateProviderInfo(int linkId, AuthData authData)
         {
-            var forUpdate = FilesDbContext.ThirdpartyAccount
+            return UpdateProviderInfoAsync(linkId, authData).Result;
+        }
+
+        public virtual async Task<int> UpdateProviderInfoAsync(int linkId, AuthData authData)
+        {
+            var forUpdate = await FilesDbContext.ThirdpartyAccount
                 .Where(r => r.Id == linkId)
                 .Where(r => r.TenantId == TenantID)
-                .ToList();
+                .ToListAsync();
 
             foreach (var f in forUpdate)
             {
@@ -243,12 +282,17 @@ namespace ASC.Files.Thirdparty
                 f.Url = authData.Url ?? "";
             }
 
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
 
             return forUpdate.Count == 1 ? linkId : default;
         }
 
         public virtual int UpdateProviderInfo(int linkId, string customerTitle, AuthData newAuthData, FolderType folderType, Guid? userId = null)
+        {
+            return UpdateProviderInfoAsync(linkId, customerTitle, newAuthData, folderType, userId).Result;
+        }
+
+        public virtual async Task<int> UpdateProviderInfoAsync(int linkId, string customerTitle, AuthData newAuthData, FolderType folderType, Guid? userId = null)
         {
             var authData = new AuthData();
             if (newAuthData != null && !newAuthData.IsEmpty())
@@ -261,7 +305,7 @@ namespace ASC.Files.Thirdparty
                 DbFilesThirdpartyAccount input;
                 try
                 {
-                    input = querySelect.Single();
+                    input = await querySelect.SingleAsync();
                 }
                 catch (Exception e)
                 {
@@ -289,10 +333,10 @@ namespace ASC.Files.Thirdparty
                     throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, key));
             }
 
-            var toUpdate = FilesDbContext.ThirdpartyAccount
+            var toUpdate = await FilesDbContext.ThirdpartyAccount
                 .Where(r => r.Id == linkId)
                 .Where(r => r.TenantId == TenantID)
-                .ToList();
+                .ToListAsync();
 
             foreach (var t in toUpdate)
             {
@@ -320,44 +364,49 @@ namespace ASC.Files.Thirdparty
                 }
             }
 
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
             return toUpdate.Count == 1 ? linkId : default;
         }
 
         public virtual void RemoveProviderInfo(int linkId)
         {
+            RemoveProviderInfoAsync(linkId).Wait();
+        }
+
+        public virtual async Task RemoveProviderInfoAsync(int linkId)
+        {
             using var tx = FilesDbContext.Database.BeginTransaction();
             var folderId = GetProviderInfo(linkId).RootFolderId.ToString();
 
-            var entryIDs = FilesDbContext.ThirdpartyIdMapping
+            var entryIDs = await FilesDbContext.ThirdpartyIdMapping
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => r.Id.StartsWith(folderId))
                 .Select(r => r.HashId)
-                .ToList();
+                .ToListAsync();
 
-            var forDelete = FilesDbContext.Security
+            var forDelete = await FilesDbContext.Security
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => entryIDs.Any(a => a == r.EntryId))
-                .ToList();
+                .ToListAsync();
 
             FilesDbContext.Security.RemoveRange(forDelete);
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
 
-            var linksForDelete = FilesDbContext.TagLink
+            var linksForDelete = await FilesDbContext.TagLink
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => entryIDs.Any(e => e == r.EntryId))
-                .ToList();
+                .ToListAsync();
 
             FilesDbContext.TagLink.RemoveRange(linksForDelete);
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
 
-            var accountsForDelete = FilesDbContext.ThirdpartyAccount
+            var accountsForDelete = await FilesDbContext.ThirdpartyAccount
                 .Where(r => r.Id == linkId)
                 .Where(r => r.TenantId == TenantID)
-                .ToList();
+                .ToListAsync();
 
             FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
 
             tx.Commit();
         }

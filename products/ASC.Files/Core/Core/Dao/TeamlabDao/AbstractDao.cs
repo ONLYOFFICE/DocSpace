@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Caching;
 using ASC.Core;
@@ -133,6 +134,30 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
         }
 
+        protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
+        {
+            var folders = await FilesDbContext.Folders
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => FilesDbContext.Tree.Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
+                .ToListAsync();
+
+            foreach (var f in folders)
+            {
+                var filesCount =
+                    FilesDbContext.Files
+                    .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
+                    .Where(r => r.file.TenantId == f.TenantId)
+                    .Where(r => r.tree.ParentId == f.Id)
+                    .Select(r => r.file.Id)
+                    .Distinct()
+                    .CountAsync();
+
+                f.FilesCount = await filesCount;
+            }
+
+            FilesDbContext.SaveChanges();
+        }
+
         protected object MappingID(object id, bool saveIfNotExist)
         {
             if (id == null) return null;
@@ -175,6 +200,50 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
+        protected async Task<object> MappingIDAsync(object id, bool saveIfNotExist)
+        {
+            if (id == null) return null;
+
+            var isNumeric = int.TryParse(id.ToString(), out var n);
+
+            if (isNumeric) return n;
+
+            object result;
+
+            if (id.ToString().StartsWith("sbox")
+                || id.ToString().StartsWith("box")
+                || id.ToString().StartsWith("dropbox")
+                || id.ToString().StartsWith("spoint")
+                || id.ToString().StartsWith("drive")
+                || id.ToString().StartsWith("onedrive"))
+            {
+                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
+            }
+            else
+            {
+                result = await Query(FilesDbContext.ThirdpartyIdMapping)
+                    .Where(r => r.HashId == id.ToString())
+                    .Select(r => r.Id)
+                    .FirstOrDefaultAsync();
+            }
+
+            if (saveIfNotExist)
+            {
+                var newItem = new DbFilesThirdpartyIdMapping
+                {
+                    Id = id.ToString(),
+                    HashId = result.ToString(),
+                    TenantId = TenantID
+                };
+
+                await FilesDbContext.AddOrUpdateAsync(r => r.ThirdpartyIdMapping, newItem);
+            }
+
+            return result;
+        }
+
+
+
         protected int MappingID(int id)
         {
             return id;
@@ -182,6 +251,10 @@ namespace ASC.Files.Core.Data
         protected object MappingID(object id)
         {
             return MappingID(id, false);
+        }
+        protected async Task<object> MappingIDAsync(object id)
+        {
+            return await MappingIDAsync(id, false);
         }
 
         internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch

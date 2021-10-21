@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -122,6 +123,11 @@ namespace ASC.Web.Files.Utils
         public Stream UploadSingleChunk<T>(ChunkedUploadSession<T> uploadSession, Stream stream, long chunkLength)
         {
             return CommonSessionHolder().UploadSingleChunk(uploadSession, stream, chunkLength);
+        }
+
+        public async Task<Stream> UploadSingleChunkAsync<T>(ChunkedUploadSession<T> uploadSession, Stream stream, long chunkLength)
+        {
+            return await CommonSessionHolder().UploadSingleChunkAsync(uploadSession, stream, chunkLength);
         }
 
         private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)

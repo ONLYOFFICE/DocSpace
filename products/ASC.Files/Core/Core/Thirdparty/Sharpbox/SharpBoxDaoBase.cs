@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
@@ -45,6 +46,7 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
@@ -158,6 +160,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return MappingID(id, false);
         }
 
+        protected async Task<string> MappingIDAsync(string id)
+        {
+            return await MappingIDAsync(id, false);
+        }
+
         protected void UpdatePathInDB(string oldValue, string newValue)
         {
             if (oldValue.Equals(newValue)) return;
@@ -200,6 +207,60 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 var linkForUpdate = Query(FilesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
                     .ToList();
+
+                foreach (var l in linkForUpdate)
+                {
+                    l.EntryId = newHashID;
+                }
+
+                FilesDbContext.SaveChanges();
+            }
+
+            tx.Commit();
+        }
+
+        protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
+        {
+            if (oldValue.Equals(newValue)) return;
+
+            using var tx = FilesDbContext.Database.BeginTransaction();
+            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.Id.StartsWith(oldValue))
+                .Select(r => r.Id)
+                .ToListAsync();
+
+            foreach (var oldID in oldIDs)
+            {
+                var oldHashID = await MappingIDAsync(oldID);
+                var newID = oldID.Replace(oldValue, newValue);
+                var newHashID = await MappingIDAsync (newID);
+
+                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                    .Where(r => r.HashId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var m in mappingForUpdate)
+                {
+                    m.Id = newID;
+                    m.HashId = newHashID;
+                }
+
+                FilesDbContext.SaveChanges();
+
+                var securityForUpdate = await Query(FilesDbContext.Security)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var s in securityForUpdate)
+                {
+                    s.EntryId = newHashID;
+                }
+
+                FilesDbContext.SaveChanges();
+
+                var linkForUpdate = await Query(FilesDbContext.TagLink)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToListAsync();
 
                 foreach (var l in linkForUpdate)
                 {
@@ -453,11 +514,42 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return requestTitle;
         }
 
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, Task<bool>> isExist)
+        {
+            if (!await isExist(requestTitle, parentFolder)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (await isExist(requestTitle, parentFolder))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
         protected override IEnumerable<string> GetChildren(string folderId)
         {
             var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
             var files = GetFolderFiles(folderId).Select(x => MakeId(x));
             return subFolders.Concat(files);
+        }
+
+        protected override Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+        {
+            var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
+            var files = GetFolderFiles(folderId).Select(x => MakeId(x));
+            return Task.FromResult(subFolders.Concat(files));
         }
 
         private static string MatchEvaluator(Match match)
