@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 import { VariableSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
-
+import StyledVersionList from "./StyledVersionList";
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
@@ -37,8 +37,6 @@ class SectionBodyContent extends React.Component {
   onSetRestoreProcess = (isRestoreProcess) => {
     console.log("onSetRestoreProcess", isRestoreProcess);
 
-    this.listKey += 1;
-
     this.setState({
       isRestoreProcess,
     });
@@ -62,7 +60,6 @@ class SectionBodyContent extends React.Component {
 
   renderRow = memo(({ index, style }) => {
     const { versions, culture } = this.props;
-    const { isRestoreProcess } = this.state;
 
     const prevVersion = versions[index > 0 ? index - 1 : index].versionGroup;
     let isVersion = true;
@@ -70,6 +67,7 @@ class SectionBodyContent extends React.Component {
     if (index > 0 && prevVersion === versions[index].versionGroup) {
       isVersion = false;
     }
+    console.log("render row", this.state, "versions.length", versions.length);
 
     return (
       <div style={style}>
@@ -81,7 +79,6 @@ class SectionBodyContent extends React.Component {
           versionsListLength={versions.length}
           index={index}
           culture={culture}
-          isRestoreProcess={isRestoreProcess}
           onSetRestoreProcess={this.onSetRestoreProcess}
           onUpdateHeight={this.onUpdateHeight}
         />
@@ -92,23 +89,30 @@ class SectionBodyContent extends React.Component {
     const { versions, isLoading } = this.props;
 
     const renderList = ({ height, width }) => {
+      console.log(
+        "render list",
+        this.state,
+        "versions.length",
+        versions.length
+      );
       return (
-        <List
-          key={this.listKey}
-          ref={this.listRef}
-          className="List"
-          height={height}
-          width={width}
-          itemSize={this.getSize}
-          itemCount={versions.length}
-          itemData={versions}
-          outerElementType={CustomScrollbarsVirtualList}
-        >
-          {this.renderRow}
-        </List>
+        <StyledVersionList isRestoreProcess={this.state.isRestoreProcess}>
+          <List
+            ref={this.listRef}
+            className="List"
+            height={height}
+            width={width}
+            itemSize={this.getSize}
+            itemCount={versions.length}
+            itemData={versions}
+            outerElementType={CustomScrollbarsVirtualList}
+          >
+            {this.renderRow}
+          </List>
+        </StyledVersionList>
       );
     };
-
+    console.log("versions", versions);
     return versions && !isLoading ? (
       <div style={{ height: "100%", width: "100%" }}>
         <AutoSizer>{renderList}</AutoSizer>

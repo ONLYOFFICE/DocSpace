@@ -131,23 +131,7 @@ const StyledVersionRow = styled(Row)`
     display: none;
 
     right: 16px !important;
-    .expandButton {
-      ${(props) =>
-        props.isRestoreProcess &&
-        `
-        touch-action: none;
-        pointer-events: none;
-        `}
-      svg {
-        path {
-          ${(props) =>
-            props.isRestoreProcess &&
-            `
-              fill: #d0d5da;
-            `};
-        }
-      }
-    }
+
     @media ${tablet} {
       display: block;
       position: absolute;
@@ -158,54 +142,6 @@ const StyledVersionRow = styled(Row)`
 
   .row_content {
     display: block;
-
-    .version_link,
-    .version-link-file,
-    .version_content-length,
-    .version_link-action,
-    .row_context-menu-wrapper,
-    .version_text {
-      ${(props) =>
-        props.isRestoreProcess &&
-        `
-          color: #d0d5da;
-          touch-action: none;
-          pointer-events: none;
-        `}
-    }
-
-    .version_badge {
-      ${(props) =>
-        props.isRestoreProcess &&
-        `
-        touch-action: none;
-        pointer-events: none;
-        `}
-      svg {
-        path {
-          ${(props) =>
-            props.isVersion &&
-            props.isRestoreProcess &&
-            `
-              fill: #d0d5da;
-            `};
-        }
-      }
-    }
-
-    .icon-link {
-      ${(props) =>
-        props.isRestoreProcess &&
-        `
-        touch-action: none;
-        pointer-events: none;
-        `}
-      svg {
-        path {
-          ${(props) => props.isRestoreProcess && " fill: #d0d5da"}
-        }
-      }
-    }
   }
 
   .modal-dialog-aside-footer {
