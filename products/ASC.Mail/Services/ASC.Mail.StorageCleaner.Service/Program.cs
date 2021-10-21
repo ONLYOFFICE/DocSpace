@@ -86,6 +86,7 @@ namespace ASC.Mail.StorageCleaner.Service
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddHttpContextAccessor();
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
 
