@@ -7,7 +7,7 @@ PUSHD %~dp0..\..
 set servicesource=%cd%\common\services\ASC.Socket.IO.Svc\
 
 if "%1%" == "service" (
-  set servicepath=%servicepath%%servicename%.exe urls=http://0.0.0.0:5028 $STORAGE_ROOT=..\..\..\..\..\Data  log:dir=..\..\..\..\..\Logs log:name=socket pathToConf=..\..\..\..\..\config core:products:folder=..\..\..\products core:products:subfolder=server
+  set servicepath=%servicepath%%servicename%.exe urls=http://0.0.0.0:5028 $STORAGE_ROOT=..\..\..\..\..\Data  log:dir=..\..\..\..\..\Logs log:name=socket pathToConf=..\..\..\..\..\config core:products:folder=..\..\..\products core:products:subfolder=server socket:path=..\client
 ) else (
 	if NOT "%1%" == "publish" (
 		call %servicepath%%servicename%.exe
