@@ -121,7 +121,7 @@ const StyledTile = styled.div`
     ${(props) =>
       isMobile &&
       css`
-        margin-left: ${props.isFolder ? "10px" : "8px"};
+        margin-left: ${props.isFolder ? "8px" : "6px"};
       `}
 
     @media ${tablet} {
