@@ -16,6 +16,7 @@ class SectionBodyContent extends React.Component {
     };
     this.listKey = 0;
     this.listRef = React.createRef();
+    this.timerId = null;
   }
 
   componentDidMount() {
@@ -34,10 +35,26 @@ class SectionBodyContent extends React.Component {
     fetchFileVersions(fileId).then(() => setIsLoading(false));
   };
 
-  onSetRestoreProcess = (isRestoreProcess) => {
-    this.setState({
-      isRestoreProcess,
-    });
+  onSetRestoreProcess = (restoring) => {
+    const { isRestoreProcess } = this.state;
+
+    if (restoring) {
+      this.timerId = setTimeout(
+        () =>
+          this.setState({
+            isRestoreProcess: restoring,
+          }),
+        100
+      );
+    } else {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+
+      restoring !== isRestoreProcess &&
+        this.setState({
+          isRestoreProcess: restoring,
+        });
+    }
   };
   onUpdateHeight = (i, itemHeight) => {
     if (this.listRef.current) {
@@ -85,6 +102,7 @@ class SectionBodyContent extends React.Component {
     const { versions, isLoading } = this.props;
 
     const renderList = ({ height, width }) => {
+      console.log("this.state", this.state);
       return (
         <StyledVersionList isRestoreProcess={this.state.isRestoreProcess}>
           <List
