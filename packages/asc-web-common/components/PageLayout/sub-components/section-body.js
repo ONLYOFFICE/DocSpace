@@ -195,10 +195,7 @@ class SectionBody extends React.Component {
             </div>
           )
         ) : (
-          <div className="section-wrapper">
-            {children}
-            {/* <StyledSpacer pinned={pinned} /> */}
-          </div>
+          <div className="section-wrapper">{children}</div>
         )}
       </StyledSectionBody>
     );
