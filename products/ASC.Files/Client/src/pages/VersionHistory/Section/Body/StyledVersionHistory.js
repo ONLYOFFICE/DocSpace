@@ -240,6 +240,24 @@ const StyledVersionRow = styled(Row)`
 
     right: 16px !important;
 
+    .expandButton {
+      ${(props) =>
+        props.isSavingComment &&
+        `
+        touch-action: none;
+        pointer-events: none;
+        `}
+      svg {
+        path {
+          ${(props) =>
+            props.isSavingComment &&
+            `
+              fill: #d0d5da;
+            `};
+        }
+      }
+    }
+
     @media ${tablet} {
       display: block;
       position: absolute;
@@ -250,6 +268,16 @@ const StyledVersionRow = styled(Row)`
 
   .row_content {
     display: block;
+
+    .version_link-action {
+      ${(props) =>
+        props.isSavingComment &&
+        `
+          color: #d0d5da;
+          touch-action: none;
+          pointer-events: none;
+        `}
+    }
   }
 
   .modal-dialog-aside-footer {
