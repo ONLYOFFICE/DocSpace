@@ -491,7 +491,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 var message = fileData.MailMerge.Message;
                 Stream attach = null;
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 switch (fileData.MailMerge.Type)
                 {
                     case MailMergeType.AttachDocx:
@@ -617,8 +617,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                 }
-                
-                var httpClient = new HttpClient();
+
+                using var httpClient = new HttpClient();
                 var stream = httpClient.Send(request).Content.ReadAsStream();
 
                 using (var fileStream = new ResponseStream(stream, stream.Length))
@@ -650,8 +650,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                 }
-                
-                var httpClient = new HttpClient();
+
+                using var httpClient = new HttpClient();
                 var stream = httpClient.Send(request).Content.ReadAsStream();
 
                 using var differenceStream = new ResponseStream(stream, stream.Length);

@@ -175,7 +175,7 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 var response = httpClient.Send(request);
 
                 using var stream = response.Content.ReadAsStream();
@@ -311,7 +311,7 @@ namespace ASC.ApiSystem.Controllers
                 request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
                 request.Content = new StringContent(data);
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 using var stream = httpClient.Send(request).Content.ReadAsStream();
                 using var reader = new StreamReader(stream);
 

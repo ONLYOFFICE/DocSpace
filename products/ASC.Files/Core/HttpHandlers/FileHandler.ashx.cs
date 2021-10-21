@@ -1175,7 +1175,7 @@ namespace ASC.Web.Files
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             var fileDao = DaoFactory.GetFileDao<T>();
             using var fileStream = httpClient.Send(request).Content.ReadAsStream();

@@ -1358,7 +1358,7 @@ namespace ASC.Api.Settings
                     var body = JsonSerializer.Serialize(data);//todo check
                     request.Content = new StringContent(body);
 
-                    var httpClient = new HttpClient();
+                    using var httpClient = new HttpClient();
                     httpClient.Send(request);
 
                 }

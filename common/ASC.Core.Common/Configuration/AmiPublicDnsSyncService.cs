@@ -83,7 +83,7 @@ namespace ASC.Core.Configuration
                 request.RequestUri = new Uri("http://169.254.169.254/latest/meta-data/public-hostname");
                 request.Method = HttpMethod.Get;
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
 
                 var responce = httpClient.Send(request);

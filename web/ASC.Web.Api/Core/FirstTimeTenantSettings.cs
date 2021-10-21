@@ -245,7 +245,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(getAmiIdUrl);
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
 
                 try
                 {
@@ -286,7 +286,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 var data = JsonSerializer.Serialize(values);
                 request.Content = new StringContent(data);
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 var response = httpClient.Send(request);
 
                 Log.Debug("Subscribe response: " + response);//toto write

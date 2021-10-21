@@ -264,7 +264,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Headers.Add("Content-Type", "application/json; charset=UTF-8");
 
-            var httpClient  = new HttpClient();
+            using var httpClient  = new HttpClient();
             var response = httpClient.Send(request);
             
             var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
@@ -303,7 +303,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                                                                oneDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var response = httpClient.Send(request);
             
             if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
@@ -330,7 +330,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             request.RequestUri = new Uri(oneDriveSession.Location);
             request.Method = HttpMethod.Delete;
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             httpClient.Send(request);
         }
     }

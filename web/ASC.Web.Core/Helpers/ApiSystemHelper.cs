@@ -158,7 +158,7 @@ namespace ASC.Web.Core.Helpers
             request.Headers.Add("accept", "application/json");
             request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var response = httpClient.Send(request);
             using var stream = response.Content.ReadAsStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);

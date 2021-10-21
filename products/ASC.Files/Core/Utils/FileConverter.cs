@@ -683,8 +683,8 @@ namespace ASC.Web.Files.Utils
             }
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertUri);
-            
-            var httpClient = new HttpClient();
+
+            using var httpClient = new HttpClient();
 
             return new ResponseStream(httpClient.Send(request));
         }
@@ -812,9 +812,9 @@ namespace ASC.Web.Files.Utils
             newFile.ThumbnailStatus = Thumbnail.Waiting;
 
             var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(convertedFileUrl); 
+            request.RequestUri = new Uri(convertedFileUrl);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
             {

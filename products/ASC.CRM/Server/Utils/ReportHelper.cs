@@ -223,7 +223,7 @@ namespace ASC.Web.CRM.Classes
 
         private async void SaveReportFile(ReportState state, string url)
         {
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var responseData = await httpClient.GetByteArrayAsync(url);
 
             using (var stream = new System.IO.MemoryStream(responseData))

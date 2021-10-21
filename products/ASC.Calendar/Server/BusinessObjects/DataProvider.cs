@@ -808,7 +808,7 @@ namespace ASC.Calendar.BusinessObjects
                 request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
                 request.Headers.Add("Content-Type", "text/xml; charset=utf-8");
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 httpClient.Send(request);
             }
             catch (Exception ex)

@@ -1782,8 +1782,8 @@ namespace ASC.Employee.Core.Controllers
             {
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
-                
-                var httpClient = new HttpClient();
+
+                using var httpClient = new HttpClient();
                 using (var stream = httpClient.Send(request).Content.ReadAsStream())
                 {
                     var buffer = new byte[512];
@@ -2032,7 +2032,7 @@ namespace ASC.Employee.Core.Controllers
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(files);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             var response = httpClient.Send(request);
             using var inputStream = response.Content.ReadAsStream();

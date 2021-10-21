@@ -1035,7 +1035,7 @@ namespace ASC.Calendar.Controllers
 
             try
             {
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 var response = httpClient.Send(request);
                 using (var reader = new StreamReader(response.Content.ReadAsStream()))
                 {
@@ -1096,7 +1096,7 @@ namespace ASC.Calendar.Controllers
 
                 request.Content = new StringContent(data, Encoding.UTF8, "text/xml; charset=utf-8");
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 var response = httpClient.Send(request);
 
                 using (var reader = new StreamReader(response.Content.ReadAsStream()))
@@ -1267,7 +1267,7 @@ namespace ASC.Calendar.Controllers
                 {
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(calendar.ICalUrl);
-                    var httpClient = new HttpClient();
+                    using var httpClient = new HttpClient();
                     var response = httpClient.Send(request);
                     
                     using (var stream = response.Content.ReadAsStream())
@@ -1333,7 +1333,7 @@ namespace ASC.Calendar.Controllers
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(iCalUrl);
 
-                    var httpClient = new HttpClient();
+                    using var httpClient = new HttpClient();
                     var response = httpClient.Send(request);
                     using (var stream = response.Content.ReadAsStream())
                     {
@@ -1765,7 +1765,7 @@ namespace ASC.Calendar.Controllers
                         var authorization = isShared ? DataProvider.GetSystemAuthorization() : DataProvider.GetUserAuthorization(email);
                         request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
 
-                        var httpClient = new HttpClient();
+                        using var httpClient = new HttpClient();
                         httpClient.Send(request);
                     }
                     catch (HttpRequestException ex)
@@ -4068,7 +4068,7 @@ namespace ASC.Calendar.Controllers
 
                             request.Content = new StringContent(ics, Encoding.UTF8, "text/calendar; charset=utf-8");
 
-                            var httpClient = new HttpClient();
+                            using var httpClient = new HttpClient();
                             httpClient.Send(request);
                         }
                         catch (HttpRequestException ex)
@@ -4192,7 +4192,7 @@ namespace ASC.Calendar.Controllers
 
                     Log.Info(String.Format("UpdateCalDavEvent eventURl: {0}", eventURl));
 
-                    var httpClient = new HttpClient();
+                    using var httpClient = new HttpClient();
                     var response = httpClient.Send(request);
 
                     using (var reader = new StreamReader(response.Content.ReadAsStream()))
@@ -4548,7 +4548,7 @@ namespace ASC.Calendar.Controllers
                 request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
                 request.Content = new StringContent(data, Encoding.UTF8, "text/calendar; charset=utf-8");
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 var response= httpClient.Send(request);
 
                 using (var reader = new StreamReader(response.Content.ReadAsStream()))
@@ -4683,8 +4683,8 @@ namespace ASC.Calendar.Controllers
                     request.RequestUri = new Uri(requestDeleteUrl);
                     request.Method = HttpMethod.Delete;
                     request.Headers.Add("Authorization", "Basic " + encoded);
-                    
-                    var httpClient = new HttpClient();
+
+                    using var httpClient = new HttpClient();
                     httpClient.Send(request);
                 }
                 catch (HttpRequestException ex)
@@ -4749,7 +4749,7 @@ namespace ASC.Calendar.Controllers
                 request.Method = HttpMethod.Delete;
                 request.Headers.Add("Authorization", "Basic " + encoded);
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 httpClient.Send(request);
             }
             catch (HttpRequestException ex)

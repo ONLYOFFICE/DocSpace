@@ -225,7 +225,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Method = HttpMethod.Get;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var response = httpClient.Send(request);
 
             if (offset == 0 && file.Size.HasValue && file.Size > 0)
@@ -377,7 +377,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Content = new StringContent(body, Encoding.UTF8, "application/json; charset=UTF-8");
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var response = httpClient.Send(request);
 
             var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength);
@@ -405,7 +405,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                                                                googleDriveSession.BytesTransfered + chunkLength - 1,
                                                                googleDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             HttpResponseMessage response = null;
 
             try

@@ -294,7 +294,7 @@ namespace ASC.Files.ThumbnailBuilder
                 ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true;
             }
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             using (var stream = new ResponseStream(httpClient.Send(request)))
             {

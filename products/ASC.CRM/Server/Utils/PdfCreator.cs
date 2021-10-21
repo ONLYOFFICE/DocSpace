@@ -129,7 +129,7 @@ namespace ASC.Web.CRM.Classes
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(urlToFile);
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
 
                 using (var stream = httpClient.Send(request).Content.ReadAsStream())
                 {
@@ -248,7 +248,7 @@ namespace ASC.Web.CRM.Classes
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(url);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             using (var stream = httpClient.Send(request).Content.ReadAsStream())
             {

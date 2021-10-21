@@ -310,7 +310,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
@@ -470,8 +470,8 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.RequestUri = new Uri(BoxUrlFile.Replace("{fileId}", fileId) + "/content");
                 request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
-                
-                var httpClient = new HttpClient();
+
+                using var httpClient = new HttpClient();
 
                 using var stream = new ResponseStream(httpClient.Send(request));
                 stream.CopyTo(context.Response.Body);

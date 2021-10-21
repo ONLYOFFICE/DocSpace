@@ -42,7 +42,7 @@ namespace ASC.FederatedLogin.Helpers
             request.RequestUri = new Uri(uri);
             request.Method = new HttpMethod(method);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
 
             if (headers != null)

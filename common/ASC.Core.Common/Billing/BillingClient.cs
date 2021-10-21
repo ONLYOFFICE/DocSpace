@@ -226,7 +226,7 @@ namespace ASC.Core.Billing
                 request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
             }
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
 
             var data = new Dictionary<string, List<string>>();

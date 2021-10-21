@@ -112,7 +112,7 @@ namespace ASC.Core
             request.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
             request.RequestUri = new Uri(partnerUrl + actionUrl);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             httpClient.Send(request); 
 

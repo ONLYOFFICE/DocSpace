@@ -127,7 +127,7 @@ namespace ASC.Web.Core.Files
             request.Method = HttpMethod.Post;
             request.Headers.Add("accept", "text/xml; charset=utf-8");
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new ConvertionBody
@@ -237,7 +237,7 @@ namespace ASC.Web.Core.Files
             request.RequestUri = new Uri(documentTrackerUrl);
             request.Method = HttpMethod.Post;
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new CommandBody
@@ -317,8 +317,8 @@ namespace ASC.Web.Core.Files
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(docbuilderUrl);
             request.Method = HttpMethod.Post;
-            
-            var httpClient = new HttpClient();
+
+            using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new BuilderBody
@@ -397,7 +397,7 @@ namespace ASC.Web.Core.Files
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(healthcheckUrl);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var response = httpClient.Send(request);

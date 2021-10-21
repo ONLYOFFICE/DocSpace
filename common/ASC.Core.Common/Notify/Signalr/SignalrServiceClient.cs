@@ -374,7 +374,7 @@ namespace ASC.Core.Notify.Signalr
 
             request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             var response = httpClient.Send(request);
             using (var stream = response.Content.ReadAsStream())

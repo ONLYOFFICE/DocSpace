@@ -116,7 +116,7 @@ namespace ASC.Web.Core.Utility
             request.Headers.Add("Authorization", CreateAuthToken());
             request.Headers.Add("Encoding", Encoding.UTF8.ToString());//todo check 
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var response = httpClient.Send(request);
 
             var stream = response.Content.ReadAsStream();

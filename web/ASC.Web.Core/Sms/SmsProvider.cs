@@ -170,8 +170,8 @@ namespace ASC.Web.Core.Sms
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
                 request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                
-                var httpClient = new HttpClient();
+
+                using var httpClient = new HttpClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
 
                 var response = httpClient.Send(request);
@@ -265,7 +265,7 @@ namespace ASC.Web.Core.Sms
                     request.RequestUri = new Uri(url);
                     request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                    var httpClient = new HttpClient();
+                    using var httpClient = new HttpClient();
                     httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
 
                     var response = httpClient.Send(request);

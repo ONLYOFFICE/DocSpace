@@ -343,7 +343,7 @@ namespace ASC.ApiSystem.Controllers
             request.Headers.Add("accept", "application/json");
             request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             if (data != null)
             {

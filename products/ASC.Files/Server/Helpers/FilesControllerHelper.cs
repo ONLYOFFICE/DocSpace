@@ -244,7 +244,7 @@ namespace ASC.Files.Helpers
 
             var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(createSessionUrl);

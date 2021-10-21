@@ -241,7 +241,7 @@ namespace ASC.Data.Storage
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(path);
                 request.Method = HttpMethod.Head;
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 var response = httpClient.Send(request);
 
                 return response.StatusCode == HttpStatusCode.OK;

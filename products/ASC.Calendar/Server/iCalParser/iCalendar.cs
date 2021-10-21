@@ -71,7 +71,7 @@ namespace ASC.Calendar.iCalParser
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
                 var response = httpClient.Send(request);
 
                 using (var stream = response.Content.ReadAsStream())

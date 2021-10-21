@@ -543,8 +543,8 @@ namespace ASC.Web.CRM.Classes
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(imageUrl);
-            
-            var httpClient = new HttpClient();
+
+            using var httpClient = new HttpClient();
 
             using (var inputStream = httpClient.Send(request).Content.ReadAsStream())
             {
@@ -579,8 +579,8 @@ namespace ASC.Web.CRM.Classes
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(imageUrl);
-            
-            var httpClient = new HttpClient();
+
+            using var httpClient = new HttpClient();
             using (var inputStream = httpClient.Send(request).Content.ReadAsStream())
             {
                 var imageData = ToByteArray(inputStream, (int)inputStream.Length);

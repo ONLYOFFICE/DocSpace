@@ -791,7 +791,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
                 try
                 {
-                    var httpClient = new HttpClient();
+                    using var httpClient = new HttpClient();
                     var response = httpClient.Send(request);
                     var status = response.StatusCode;
 

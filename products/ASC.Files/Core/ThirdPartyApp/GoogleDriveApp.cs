@@ -315,7 +315,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "/{fileId}?uploadType=media".Replace("{fileId}", fileId));
@@ -521,7 +521,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
 
                 var response = httpClient.Send(request);
                 using var stream = new ResponseStream(response);
@@ -732,7 +732,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(contentUrl);
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             using var content = new ResponseStream(httpClient.Send(request));
             return CreateFile(content, fileName, folderId, token);
@@ -742,7 +742,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             Logger.Debug("GoogleDriveApp: create file");
 
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "?uploadType=multipart");
@@ -847,7 +847,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                                                   fileId,
                                                   HttpUtility.UrlEncode(requiredMimeType));
 
-                var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(downloadUrl);
