@@ -20,5 +20,7 @@
   "TemporaryPassword": "Временный пароль",
   "TermsOfUsePopupHelperLink": "Подробнее об условиях использования",
   "UpdatingProcess": "Обновление...",
-  "WriteComment": "Добавить комментарий"
+  "WriteComment": "Добавить комментарий",
+  "ErrorInvalidUserLastName": "Недопустимая фамилия",
+  "ErrorInvalidUserFirstName": "Недопустимое имя"
 }

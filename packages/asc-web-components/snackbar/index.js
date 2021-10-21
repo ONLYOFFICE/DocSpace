@@ -113,9 +113,13 @@ class SnackBar extends React.Component {
                 </Text>
 
                 {btnText && (
-                  <button className="button" onClick={this.onActionClick}>
-                    <Text color={textColor}>{btnText}</Text>
-                  </button>
+                  <Text
+                    color={textColor}
+                    className="button"
+                    onClick={this.onActionClick}
+                  >
+                    {btnText}
+                  </Text>
                 )}
 
                 {countDownTime > -1 && (

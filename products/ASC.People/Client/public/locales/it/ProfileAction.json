@@ -19,5 +19,7 @@
   "TemporaryPassword": "Password temporanea",
   "TermsOfUsePopupHelperLink": "Maggiori dettagli sui termini di utilizzo",
   "UpdatingProcess": "Caricamento in corso...",
-  "WriteComment": "Aggiungi commento"
+  "WriteComment": "Aggiungi commento",
+  "ErrorInvalidUserLastName": "Cognome non valido",
+  "ErrorInvalidUserFirstName": "Nome non valido"
 }

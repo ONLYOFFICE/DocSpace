@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
 
 const StyledHeader = styled.div`
-  height: 56px;
+  height: 48px;
   align-items: center;
   display: grid;
   grid-template-columns: 208px 1fr 36px;
