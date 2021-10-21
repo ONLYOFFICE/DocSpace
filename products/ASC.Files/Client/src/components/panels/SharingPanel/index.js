@@ -84,7 +84,11 @@ class SharingPanelComponent extends React.Component {
   };
 
   updateRowData = (newRowData) => {
-    const { getFileInfo, getFolderInfo } = this.props;
+    const { getFileInfo, getFolderInfo, isFolderActions, id } = this.props;
+
+    if (isFolderActions) {
+      return getFolderInfo(id);
+    }
 
     for (let item of newRowData) {
       !item.fileExst ? getFolderInfo(item.id) : getFileInfo(item.id);
@@ -111,7 +115,9 @@ class SharingPanelComponent extends React.Component {
       isDesktop,
       setEncryptionAccess,
       setShareFiles,
+      setIsFolderActions,
       onSuccess,
+      isFolderActions,
     } = this.props;
 
     let folderIds = [];
@@ -157,6 +163,13 @@ class SharingPanelComponent extends React.Component {
       } else {
         folderIds.push(item.id);
       }
+    }
+
+    if (isFolderActions) {
+      folderIds = [];
+      fileIds = [];
+
+      folderIds.push(selection[0]);
     }
 
     const owner = shareDataItems.find((x) => x.isOwner);
@@ -211,7 +224,10 @@ class SharingPanelComponent extends React.Component {
       })
       .then(() => onSuccess && onSuccess())
       .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsFolderActions(false);
+        setIsLoading(false);
+      });
   };
   onNotifyUsersChange = () =>
     this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
@@ -246,9 +262,10 @@ class SharingPanelComponent extends React.Component {
   };
 
   getData = () => {
-    const { selection } = this.props;
-    const folderId = [];
-    const fileId = [];
+    const { selection, id, access } = this.props;
+
+    let folderId = [];
+    let fileId = [];
 
     for (let item of selection) {
       if (item.access === 1 || item.access === 0) {
@@ -258,6 +275,13 @@ class SharingPanelComponent extends React.Component {
           folderId.push(item.id);
         }
       }
+    }
+
+    if (this.props.isFolderActions) {
+      folderId = [];
+      fileId = [];
+
+      folderId = access === 1 || access === 0 ? [id] : [];
     }
 
     return [folderId, fileId];
@@ -275,7 +299,6 @@ class SharingPanelComponent extends React.Component {
     const returnValue = this.getData();
     const folderId = returnValue[0];
     const fileId = returnValue[1];
-
     if (folderId.length !== 0 || fileId.length !== 0) {
       !isMobile && setIsLoading(true);
       getShareUsers(folderId, fileId)
@@ -353,10 +376,14 @@ class SharingPanelComponent extends React.Component {
       onCancel,
       setSharingPanelVisible,
       selectUploadedFile,
+      setIsFolderActions,
+      setSelection,
       setBufferSelection,
     } = this.props;
 
     setSharingPanelVisible(false);
+    setSelection([]);
+
     selectUploadedFile([]);
     setBufferSelection(null);
     onCancel && onCancel();
@@ -690,11 +717,20 @@ class SharingPanelComponent extends React.Component {
 
 const SharingPanel = inject(
   (
-    { auth, filesStore, uploadDataStore, dialogsStore, treeFoldersStore },
+    {
+      auth,
+      filesStore,
+      uploadDataStore,
+      dialogsStore,
+      treeFoldersStore,
+      selectedFolderStore,
+    },
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { personal, customNames, isDesktopClient } = auth.settingsStore;
+
+    const { id, access } = selectedFolderStore;
 
     const {
       selection,
@@ -707,13 +743,19 @@ const SharingPanel = inject(
       getShareUsers,
       setShareFiles,
       setIsLoading,
+      setSelection,
       getFileInfo,
       getFolderInfo,
       isLoading,
       setBufferSelection,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
-    const { setSharingPanelVisible, sharingPanelVisible } = dialogsStore;
+    const {
+      setSharingPanelVisible,
+      sharingPanelVisible,
+      setIsFolderActions,
+      isFolderActions,
+    } = dialogsStore;
     const {
       selectedUploadFile,
       selectUploadedFile,
@@ -733,11 +775,14 @@ const SharingPanel = inject(
         : [bufferSelection],
       isLoading,
       isPrivacy: isPrivacyFolder,
+      isFolderActions,
       selectedUploadFile,
       canShareOwnerChange,
 
       setIsLoading,
       setSharingPanelVisible,
+      setIsFolderActions,
+      setSelection,
       sharingPanelVisible,
       selectUploadedFile,
       updateUploadedItem,
@@ -751,7 +796,9 @@ const SharingPanel = inject(
       setShareFiles,
       getFileInfo,
       getFolderInfo,
+      id,
       setBufferSelection,
+      access,
     };
   }
 )(

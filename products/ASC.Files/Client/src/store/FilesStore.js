@@ -1573,6 +1573,7 @@ class FilesStore {
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
+    return folderInfo;
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {

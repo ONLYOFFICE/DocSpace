@@ -904,7 +904,15 @@ class UploadDataStore {
       label,
     } = this.secondaryProgressDataStore;
 
-    getFolder(destFolderId).then((data) => {
+    let receivedFolder = destFolderId;
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      receivedFolder = this.selectedFolderStore.parentId;
+      updatedFolder = destFolderId;
+    }
+
+    getFolder(receivedFolder).then((data) => {
       let newTreeFolders = treeFolders;
       let path = data.pathParts.slice(0);
       let folders = data.folders;
@@ -912,11 +920,12 @@ class UploadDataStore {
       loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-        fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(
-          () => {
+        this.filesStore
+          .fetchFiles(updatedFolder, this.filesStore.filter, true, true)
+          .finally(() => {
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          }
-        );
+            this.dialogsStore.setIsFolderActions(false);
+          });
       } else {
         setSecondaryProgressBarData({
           icon: pbData.icon,
