@@ -176,8 +176,6 @@ const StyledContent = styled.div`
   height: 100%;
   background-color: #fff;
 
-  .version-history-panel-body {
-  }
   .header_aside-panel-header {
     max-width: 500px;
     margin: 0 0 0 16px;
