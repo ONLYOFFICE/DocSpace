@@ -121,6 +121,7 @@ export default function withContent(WrappedContent) {
         createFile,
         item,
         setIsLoading,
+        isLoading,
         openDocEditor,
         isPrivacy,
         isDesktop,
@@ -130,6 +131,8 @@ export default function withContent(WrappedContent) {
         createFolder,
       } = this.props;
       const { itemTitle } = this.state;
+
+      if (isLoading) return;
 
       setIsLoading(true);
 
@@ -317,6 +320,7 @@ export default function withContent(WrappedContent) {
       const { editCompleteAction } = filesActionsStore;
       const {
         setIsLoading,
+        isLoading,
         openDocEditor,
         updateFile,
         renameFolder,
@@ -340,6 +344,7 @@ export default function withContent(WrappedContent) {
 
       return {
         setIsLoading,
+        isLoading,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
         updateFile,
