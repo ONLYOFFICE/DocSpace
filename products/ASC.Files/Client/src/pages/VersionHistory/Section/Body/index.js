@@ -35,8 +35,6 @@ class SectionBodyContent extends React.Component {
   };
 
   onSetRestoreProcess = (isRestoreProcess) => {
-    console.log("onSetRestoreProcess", isRestoreProcess);
-
     this.setState({
       isRestoreProcess,
     });
@@ -67,8 +65,6 @@ class SectionBodyContent extends React.Component {
     if (index > 0 && prevVersion === versions[index].versionGroup) {
       isVersion = false;
     }
-    console.log("render row", this.state, "versions.length", versions.length);
-
     return (
       <div style={style}>
         <VersionRow
@@ -89,12 +85,6 @@ class SectionBodyContent extends React.Component {
     const { versions, isLoading } = this.props;
 
     const renderList = ({ height, width }) => {
-      console.log(
-        "render list",
-        this.state,
-        "versions.length",
-        versions.length
-      );
       return (
         <StyledVersionList isRestoreProcess={this.state.isRestoreProcess}>
           <List
@@ -112,7 +102,7 @@ class SectionBodyContent extends React.Component {
         </StyledVersionList>
       );
     };
-    console.log("versions", versions);
+
     return versions && !isLoading ? (
       <div style={{ height: "100%", width: "100%" }}>
         <AutoSizer>{renderList}</AutoSizer>
@@ -136,7 +126,6 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
 
   return {
     culture: auth.settingsStore.culture,
-    isTabletView: auth.settingsStore.isTabletView,
     isLoading,
     versions,
     fileId,
