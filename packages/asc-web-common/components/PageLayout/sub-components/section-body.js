@@ -125,8 +125,9 @@ class SectionBody extends React.Component {
   // }
 
   componentDidMount() {
+    const { withScroll } = this.props;
     if (!this.props.autoFocus) return;
-    this.focusRef.current.focus();
+    if (withScroll) this.focusRef.current.focus();
   }
 
   componentWillUnmount() {
