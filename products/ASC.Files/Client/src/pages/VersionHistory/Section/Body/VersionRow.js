@@ -38,7 +38,7 @@ const VersionRow = (props) => {
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
-
+  const [isSavingComment, setIsSavingComment] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
 
   const canEdit = info.access === 1 || info.access === 0;
@@ -56,10 +56,12 @@ const VersionRow = (props) => {
   const onChange = (e) => setCommentValue(e.target.value);
 
   const onSaveClick = () => {
+    setIsSavingComment(true);
     updateCommentVersion(info.id, commentValue, info.version)
       .catch((err) => toastr.error(err))
       .finally(() => {
         onEditComment();
+        setIsSavingComment(false);
       });
   };
 
@@ -163,6 +165,7 @@ const VersionRow = (props) => {
                   fontSize={12}
                   heightTextArea={54}
                   value={commentValue}
+                  isDisabled={isSavingComment}
                 />
                 <Box className="version_modal-dialog">
                   <ModalDialog
@@ -181,10 +184,12 @@ const VersionRow = (props) => {
                         onChange={onChange}
                         heightTextArea={298}
                         value={commentValue}
+                        isDisabled={isSavingComment}
                       />
                     </ModalDialog.Body>
                     <ModalDialog.Footer>
                       <Button
+                        isDisabled={isSavingComment}
                         className="version_save-button"
                         label={t("Common:SaveButton")}
                         size="big"
@@ -234,6 +239,7 @@ const VersionRow = (props) => {
               displayProp="inline-block"
             >
               <Button
+                isDisabled={isSavingComment}
                 size="base"
                 scale={true}
                 primary
@@ -246,6 +252,7 @@ const VersionRow = (props) => {
               displayProp="inline-block"
             >
               <Button
+                isDisabled={isSavingComment}
                 size="base"
                 scale={true}
                 onClick={onCancelClick}
