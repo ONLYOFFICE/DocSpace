@@ -102,7 +102,6 @@ class SectionBodyContent extends React.Component {
     const { versions, isLoading } = this.props;
 
     const renderList = ({ height, width }) => {
-      console.log("this.state", this.state);
       return (
         <StyledVersionList isRestoreProcess={this.state.isRestoreProcess}>
           <List
