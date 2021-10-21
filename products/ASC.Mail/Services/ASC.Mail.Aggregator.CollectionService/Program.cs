@@ -94,6 +94,7 @@ namespace ASC.Mail.Aggregator.CollectionService
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddHttpContextAccessor();
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
                     diHelper.TryAdd<FactoryIndexerMailMail>();
