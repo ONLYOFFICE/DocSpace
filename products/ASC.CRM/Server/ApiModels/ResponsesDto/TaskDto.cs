@@ -29,12 +29,12 @@ using System;
 
 using ASC.Api.Core;
 using ASC.Common.Mapping;
+using ASC.CRM.Core.Entities;
 using ASC.CRM.Mapping;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
 
-using Task = ASC.CRM.Core.Entities.Task;
 
 namespace ASC.CRM.ApiModels
 {

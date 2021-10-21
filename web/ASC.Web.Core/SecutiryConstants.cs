@@ -24,7 +24,7 @@
 */
 
 
-using Action = ASC.Common.Security.Authorizing.Action;
+using ASC.Common.Security.Authorizing;
 
 namespace ASC.Web.Studio.Core
 {

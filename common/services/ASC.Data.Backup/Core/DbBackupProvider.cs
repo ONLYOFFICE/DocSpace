@@ -36,8 +36,6 @@ using System.Xml.Linq;
 using ASC.Common;
 using ASC.Common.Utils;
 
-using ConfigurationManager = System.Configuration.ConfigurationManager;
-
 namespace ASC.Data.Backup
 {
     [Scope]

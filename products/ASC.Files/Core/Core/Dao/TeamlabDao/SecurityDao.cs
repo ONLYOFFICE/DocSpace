@@ -41,8 +41,6 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]

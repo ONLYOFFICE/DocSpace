@@ -38,8 +38,6 @@ using ASC.Web.Api.Models;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Api.Documents
 {
     /// <summary>

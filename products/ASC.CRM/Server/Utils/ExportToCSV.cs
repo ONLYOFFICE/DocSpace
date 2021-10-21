@@ -60,8 +60,6 @@ using ICSharpCode.SharpZipLib.Zip;
 
 using Microsoft.Extensions.Options;
 
-using Task = ASC.CRM.Core.Entities.Task;
-
 namespace ASC.Web.CRM.Classes
 {
     [Transient]

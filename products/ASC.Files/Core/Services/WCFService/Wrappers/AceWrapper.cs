@@ -30,8 +30,7 @@ using System.Text.Json.Serialization;
 
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
+using ASC.Files.Core.Security;
 
 namespace ASC.Web.Files.Services.WCFService
 {

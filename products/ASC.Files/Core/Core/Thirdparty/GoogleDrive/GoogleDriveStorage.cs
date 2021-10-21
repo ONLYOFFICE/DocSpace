@@ -369,20 +369,20 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 body = !string.IsNullOrEmpty(titleData + parentData) ? string.Format("{{{0}{1}}}", titleData, parentData) : "";
             }
 
-            var request1  = new HttpRequestMessage();
-            request1.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + fileId + "?uploadType=resumable");
-            request1.Method = new HttpMethod(method);
-            request1.Headers.Add("X-Upload-Content-Type", MimeMapping.GetMimeMapping(driveFile.Name));
-            request1.Headers.Add("X-Upload-Content-Length", contentLength.ToString(CultureInfo.InvariantCulture));
-            request1.Headers.Add("Authorization", "Bearer " + AccessToken);
-            request1.Content = new StringContent(body, Encoding.UTF8, "application/json; charset=UTF-8");
+            var request  = new HttpRequestMessage();
+            request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + fileId + "?uploadType=resumable");
+            request.Method = new HttpMethod(method);
+            request.Headers.Add("X-Upload-Content-Type", MimeMapping.GetMimeMapping(driveFile.Name));
+            request.Headers.Add("X-Upload-Content-Length", contentLength.ToString(CultureInfo.InvariantCulture));
+            request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json; charset=UTF-8");
 
             var httpClient = new HttpClient();
-            var response = httpClient.Send(request1);
+            var response = httpClient.Send(request);
 
             var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength);
             
-            uploadSession.Location = response.Headers.Location.ToString();// todo check
+            uploadSession.Location = response.Headers.Location.ToString();
             uploadSession.Status = ResumableUploadSessionStatus.Started;
 
             return uploadSession;
@@ -412,27 +412,21 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 response = httpClient.Send(request);
             }
-            catch (HttpRequestException exception)
+            catch (HttpRequestException exception) // todo create catch
             {
-                if (exception.StatusCode == HttpStatusCode.NotFound/*WebExceptionStatus.ProtocolError*/)//todo
-                {/*
-                    if (exception. != null && exception.Response.Headers.AllKeys.Contains("Range"))
-                    {
-                        response = exception.Response;
-                    }
-                    else if (exception.Message.Equals("Invalid status code: 308", StringComparison.InvariantCulture)) //response is null (unix)
-                    {
-                        response = null;
-                    }
-                    else
-                    {
-                        throw;
-                    }*/
+                /*if (exception. != null && exception.Response.Headers.AllKeys.Contains("Range"))
+                {
+                    response = exception.Response;
+                }
+                else if (exception.Message.Equals("Invalid status code: 308", StringComparison.InvariantCulture)) //response is null (unix)
+                {
+                    response = null;
                 }
                 else
                 {
                     throw;
-                }
+                }*/
+                throw exception;
             }
 
             if (response == null || response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
@@ -442,7 +436,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
                 if (response != null)
                 {
-                    var locationHeader = response.Headers.Location.ToString();//todo check
+                    var locationHeader = response.Headers.Location.ToString();
                     if (!string.IsNullOrEmpty(locationHeader))
                     {
                         uplSession.Location = locationHeader;

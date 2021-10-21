@@ -287,7 +287,7 @@ namespace ASC.Web.CRM.Classes
                     }
                     else
                     {
-                        data = Global.SaveToBytes(img);
+                        data = CommonPhotoManager.SaveToBytes(img, imgFormat);
                     }
 
                     var fileExtension = String.Concat("." + Global.GetImgFormatName(imgFormat));
@@ -581,7 +581,6 @@ namespace ASC.Web.CRM.Classes
             request.RequestUri = new Uri(imageUrl);
             
             var httpClient = new HttpClient();
-            var q = httpClient.Send(request);
             using (var inputStream = httpClient.Send(request).Content.ReadAsStream())
             {
                 var imageData = ToByteArray(inputStream, (int)inputStream.Length);

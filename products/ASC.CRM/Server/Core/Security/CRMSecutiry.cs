@@ -39,6 +39,7 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Files.Core;
+using ASC.Files.Core.Security;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
@@ -48,9 +49,7 @@ using Autofac;
 
 using Action = ASC.Common.Security.Authorizing.Action;
 using Constants = ASC.Core.Users.Constants;
-using FileShare = ASC.Files.Core.Security.FileShare;
 using SecurityContext = ASC.Core.SecurityContext;
-using Task = ASC.CRM.Core.Entities.Task;
 
 namespace ASC.CRM.Core
 {

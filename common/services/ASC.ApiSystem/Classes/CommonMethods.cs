@@ -176,9 +176,9 @@ namespace ASC.ApiSystem.Controllers
             try
             {
                 var httpClient = new HttpClient();
-                var response1 = httpClient.Send(request);
+                var response = httpClient.Send(request);
 
-                using var stream = response1.Content.ReadAsStream();
+                using var stream = response.Content.ReadAsStream();
                 using var reader = new StreamReader(stream, Encoding.UTF8);
 
                 var result = reader.ReadToEnd();

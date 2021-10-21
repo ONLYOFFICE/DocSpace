@@ -28,9 +28,8 @@ using System;
 
 using ASC.Common;
 using ASC.Core;
+using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.WCFService;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Api.Documents
 {

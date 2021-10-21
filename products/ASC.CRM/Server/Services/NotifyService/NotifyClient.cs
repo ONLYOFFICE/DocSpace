@@ -49,8 +49,6 @@ using ASC.Notify.Recipients;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-using Task = ASC.CRM.Core.Entities.Task;
-
 namespace ASC.Web.CRM.Services.NotifyService
 {
     [Scope]

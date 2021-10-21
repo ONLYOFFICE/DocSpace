@@ -221,11 +221,6 @@ namespace ASC.Web.CRM.Classes
             return format.Name.ToLower();
         }
 
-        public static byte[] SaveToBytes(Image img)
-        {
-            return CommonPhotoManager.SaveToBytes(img);
-        }
-
         private static readonly string[] Formats = new[]
                                                        {
                                                            "o",

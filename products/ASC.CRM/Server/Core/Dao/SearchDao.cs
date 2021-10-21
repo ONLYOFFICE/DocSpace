@@ -1,3 +1,4 @@
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -49,8 +50,6 @@ using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-
-using Task = ASC.CRM.Core.Entities.Task;
 
 namespace ASC.CRM.Core.Dao
 {

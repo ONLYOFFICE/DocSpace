@@ -26,8 +26,6 @@
 
 using System.Configuration;
 
-using ConfigurationManager = System.Configuration.ConfigurationManager;
-
 namespace ASC.Data.Backup.Utils
 {
     internal static class ConfigurationProvider

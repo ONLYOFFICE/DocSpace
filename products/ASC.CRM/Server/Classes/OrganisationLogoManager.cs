@@ -104,7 +104,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 else
                 {
-                    data = Global.SaveToBytes(img);
+                    data = CommonPhotoManager.SaveToBytes(img, imgFormat);
                 }
 
                 using (var fileStream = new MemoryStream(data))

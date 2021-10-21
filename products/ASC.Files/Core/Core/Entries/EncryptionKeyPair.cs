@@ -38,8 +38,6 @@ using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Studio.Core;
 
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Web.Files.Core.Entries
 {
     public class EncryptionKeyPair

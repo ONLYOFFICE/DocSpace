@@ -30,12 +30,11 @@ using ASC.Common;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
-
-using Task = ASC.CRM.Core.Entities.Task;
 
 namespace ASC.CRM.Mapping
 {

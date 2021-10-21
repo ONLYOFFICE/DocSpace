@@ -33,8 +33,6 @@ using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-
-using Task = ASC.CRM.Core.Entities.Task;
 #endregion
 
 namespace ASC.CRM.Core

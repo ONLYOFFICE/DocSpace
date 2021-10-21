@@ -27,6 +27,8 @@
 using System;
 using System.Text.Json.Serialization;
 
+using ASC.Files.Core.Security;
+
 namespace ASC.Files.Core
 {
     [Serializable]
@@ -71,7 +73,7 @@ namespace ASC.Files.Core
 
         public string Error { get; set; }
 
-        public Security.FileShare Access { get; set; }
+        public FileShare Access { get; set; }
 
         public bool Shared { get; set; }
 

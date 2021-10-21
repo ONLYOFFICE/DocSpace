@@ -20,7 +20,6 @@ using AutoMapper;
 
 using Microsoft.AspNetCore.Mvc;
 
-using Task = ASC.CRM.Core.Entities.Task;
 
 namespace ASC.CRM.Api
 {

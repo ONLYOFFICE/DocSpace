@@ -52,8 +52,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
