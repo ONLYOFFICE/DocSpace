@@ -1180,7 +1180,7 @@ const Dark = {
       maxWidth: "175px",
 
       lineHeightWithoutBorder: "16px",
-      lineHeightTextDecoration: "underline dashed transparent",
+      lineHeightTextDecoration: "underline dashed",
     },
 
     childrenButton: {
