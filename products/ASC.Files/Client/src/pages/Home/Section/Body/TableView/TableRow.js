@@ -249,6 +249,7 @@ const FilesTableRow = (props) => {
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
+        checked={checkedProps}
       >
         <TableCell {...dragStyles} {...selectionProp}>
           <FileNameCell
