@@ -362,6 +362,11 @@ const StyledBody = styled.div`
 const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
+
+  .link-row__container {
+    height: 47px;
+  }
+
   .row_content {
     overflow: visible;
     height: auto;
