@@ -21,7 +21,12 @@ const commonStyles = css`
     flex: 1 0 auto;
     padding: 17px 7px 16px 24px;
     outline: none;
-    ${(props) => props.viewAs == "tile" && "padding-right:0;"}
+    ${(props) =>
+      props.viewAs == "tile" &&
+      css`
+        padding-right: 0;
+        padding-left: 20px;
+      `}
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;

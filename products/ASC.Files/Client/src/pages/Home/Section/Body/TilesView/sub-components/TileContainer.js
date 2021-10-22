@@ -1,35 +1,50 @@
 /* eslint-disable react/display-name */
 import React, { memo } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import Heading from "@appserver/components/heading";
 import ContextMenu from "@appserver/components/context-menu";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
-import { tablet } from "@appserver/components/utils/device";
+
+import { tablet, desktop } from "@appserver/components/utils/device";
+
+const foldersStyle = css`
+  grid-gap: 19px 14px;
+
+  @media ${desktop} {
+    margin-left: -1px;
+    padding-right: 1px;
+  }
+
+  @media ${tablet} {
+    grid-gap: 17px 12px;
+    margin-left: -1px;
+  }
+`;
+
+const filesStyle = css`
+  grid-gap: 14px 18px;
+
+  @media ${desktop} {
+    padding-right: 5px;
+  }
+
+  @media ${tablet} {
+    grid-gap: 12px 14px;
+    margin-left: -1px;
+    padding-right: 2px;
+  }
+`;
 
 const StyledGridWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   width: 100%;
-  grid-gap: ${(props) => (props.isFolders ? "13px 14px" : "16px 18px")};
   padding-bottom: 24px;
-  padding-right: 2px;
   box-sizing: border-box;
-  padding-left: 1px;
-
-  @media ${tablet} {
-    margin-left: -6px !important;
-  }
-
-  @media (min-width: 1024px) {
-    margin-left: -2px;
-  }
-
-  @media (max-width: 1024px) {
-    margin-left: -2px;
-  }
+  ${(props) => (props.isFolders ? foldersStyle : filesStyle)};
 `;
 
 const StyledTileContainer = styled.div`
@@ -59,6 +74,8 @@ const StyledTileContainer = styled.div`
     &.files {
       padding-top: 8px;
     }
+
+    margin-left: -1px;
   }
 
   @media (min-width: 1024px) {
@@ -67,6 +84,10 @@ const StyledTileContainer = styled.div`
         margin-left: 1px;
       }
     }
+  }
+
+  @media ${tablet} {
+    margin-right: -3px;
   }
 `;
 
