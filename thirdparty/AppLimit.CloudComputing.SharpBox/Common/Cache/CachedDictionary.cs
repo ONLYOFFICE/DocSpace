@@ -49,7 +49,7 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Cache
             Debug.Print("inserted root key {0}", rootKey);
 #endif
             MemoryCache.Remove(rootKey);
-            MemoryCache.Set(rootKey, DateTime.UtcNow.Ticks, new MemoryCacheEntryOptions() { AbsoluteExpiration = DateTime.MaxValue, SlidingExpiration = TimeSpan.Zero, Priority = CacheItemPriority.NeverRemove });
+            MemoryCache.Set(rootKey, DateTime.UtcNow.Ticks, new MemoryCacheEntryOptions() { Priority = CacheItemPriority.NeverRemove });
         }
 
         public override void Reset(string rootKey, string key)
@@ -65,6 +65,17 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Cache
         public override void Add(string rootkey, string key, T newValue)
         {
             var builtrootkey = BuildKey(string.Empty, string.IsNullOrEmpty(rootkey) ? "root" : rootkey);
+            var options =  new MemoryCacheEntryOptions
+                {
+                    Priority = CacheItemPriority.Normal,
+                    AbsoluteExpiration = AbsoluteExpiration
+                };
+            
+            if (SlidingExpiration != TimeSpan.Zero)
+            {
+                options.SlidingExpiration = SlidingExpiration;
+            }
+
             if (!MemoryCache.TryGetValue(builtrootkey, out _))
             {
 #if (DEBUG)
@@ -72,11 +83,7 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Cache
 #endif
                 //Insert root if no present
                 MemoryCache.Remove(builtrootkey);
-                MemoryCache.Set(builtrootkey, DateTime.UtcNow.Ticks, new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = AbsoluteExpiration,
-                    SlidingExpiration = SlidingExpiration
-                });
+                MemoryCache.Set(builtrootkey, DateTime.UtcNow.Ticks, options);
 
                 MemoryCache.Remove(BuildKey(key, rootkey));
             }
@@ -85,18 +92,8 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Cache
             {
                 var buildKey = BuildKey(key, rootkey);
                 MemoryCache.Remove(buildKey);
-                var options = new MemoryCacheEntryOptions
-                {
-                    Priority = CacheItemPriority.Normal,
-                    AbsoluteExpiration = AbsoluteExpiration,
-                    SlidingExpiration = SlidingExpiration,
-                };
-                MemoryCache.Set(BuildKey(key, rootkey), newValue, new MemoryCacheEntryOptions
-                {
-                    Priority = CacheItemPriority.Normal,
-                    AbsoluteExpiration = AbsoluteExpiration,
-                    SlidingExpiration = SlidingExpiration
-                });
+                
+                MemoryCache.Set(BuildKey(key, rootkey), newValue, options);
                 //TODO
                 //options.AddExpirationToken(Microsoft.Extensions.Primitives.CancellationChangeToken);
                 //new CacheDependency(null, new[] { _baseKey, builtrootkey }),

@@ -70,16 +70,7 @@ namespace ASC.Data.Storage.GoogleCloud
         private Uri _bucketSSlRoot;
 
         private bool _lowerCasing = true;
-
-        public GoogleCloudStorage(
-            TempStream tempStream,
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
-        {
-        }
-
+            
         public GoogleCloudStorage(
             TempStream tempStream,
             TenantManager tenantManager,

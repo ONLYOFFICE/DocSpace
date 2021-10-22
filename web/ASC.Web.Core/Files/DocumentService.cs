@@ -35,6 +35,7 @@ using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -161,7 +162,11 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "text/xml; charset=utf-8");
 
@@ -265,7 +270,11 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
@@ -343,7 +352,11 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 

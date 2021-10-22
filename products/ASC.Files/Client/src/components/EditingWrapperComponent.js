@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
@@ -38,6 +38,19 @@ const EditingWrapper = styled.div`
   align-items: center;
 
   ${(props) =>
+    props.viewAs === "table" &&
+    css`
+      grid-column-start: 1;
+      grid-column-end: -1;
+
+      border-bottom: 1px solid #eceef1;
+      padding-bottom: 4px;
+      margin-top: 4px;
+
+      margin-left: -4px;
+    `}
+
+  ${(props) =>
     props.viewAs === "tile" &&
     `margin-right: 12px !important; margin-left: -4px;`}
 
@@ -46,7 +59,12 @@ const EditingWrapper = styled.div`
   }
   .edit-text {
     height: 32px;
-    font-size: 15px;
+    font-size: ${(props) =>
+      props.viewAs === "table"
+        ? "13px"
+        : props.viewAs === "tile"
+        ? "14px"
+        : "15px"};
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
@@ -59,6 +77,19 @@ const EditingWrapper = styled.div`
     margin-left: 8px;
     height: 32px;
     padding: 8px 7px 7px 7px;
+
+    ${(props) =>
+      props.viewAs === "table" &&
+      css`
+        width: 24px;
+        height: 24px;
+        border: 1px transparent;
+        padding: 4px 0 0 0;
+
+        :hover {
+          border: 1px solid #d0d5da;
+        }
+      `}
 
     &:last-child {
       margin-left: 4px;
@@ -76,6 +107,10 @@ const EditingWrapper = styled.div`
     width: 14px;
     height: 14px;
   }
+
+  .is-edit {
+    margin-top: 4px;
+  }
 `;
 
 const EditingWrapperComponent = (props) => {
@@ -87,7 +122,10 @@ const EditingWrapperComponent = (props) => {
     cancelUpdateItem,
     isLoading,
     viewAs,
+    elementIcon,
   } = props;
+
+  const isTable = viewAs === "table";
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
@@ -113,9 +151,11 @@ const EditingWrapperComponent = (props) => {
   };
 
   const onFocus = (e) => e.target.select();
+  const onBlur = (e) => onClickUpdateItem(e, false);
 
   return (
     <EditingWrapper viewAs={viewAs}>
+      {isTable && elementIcon}
       <TextInput
         className="edit-text"
         name="title"
@@ -124,11 +164,13 @@ const EditingWrapperComponent = (props) => {
         tabIndex={1}
         isAutoFocussed={true}
         onChange={renameTitle}
-        onKeyPress={onKeyUpUpdateItem}
+        onKeyUp={onKeyUpUpdateItem}
         onKeyDown={onEscapeKeyPress}
         onFocus={onFocus}
+        onBlur={onBlur}
         isDisabled={isLoading}
         data-itemid={itemId}
+        withBorder={!isTable}
       />
       <Button
         className="edit-button not-selectable"

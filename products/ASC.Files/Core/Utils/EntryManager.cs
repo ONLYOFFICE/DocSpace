@@ -241,7 +241,7 @@ namespace ASC.Web.Files.Utils
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
-        
+
         private ICache Cache { get; set; }
         private FileTrackerHelper FileTracker { get; }
         private EntryStatusManager EntryStatusManager { get; }
@@ -292,7 +292,7 @@ namespace ASC.Web.Files.Utils
             BreadCrumbsManager breadCrumbsManager,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ICache cache,
             FileTrackerHelper fileTracker,
             EntryStatusManager entryStatusManager)
@@ -465,7 +465,7 @@ namespace ASC.Web.Files.Utils
 
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
-                
+
                 CalculateTotal();
             }
             else if (parent.FolderType == FolderType.Templates)
@@ -617,7 +617,7 @@ namespace ASC.Web.Files.Utils
 
             var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
-            List<FileEntry> files = GetRecentByIds(fileIds.Where(r => r.EntryId is int).Select(r=> (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
+            List<FileEntry> files = GetRecentByIds(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
             files.AddRange(GetRecentByIds(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
 
             var listFileIds = fileIds.Select(tag => tag.EntryId).ToList();
@@ -643,7 +643,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true);
                 files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
                 files = FileSecurity.FilterRead(files).ToList();

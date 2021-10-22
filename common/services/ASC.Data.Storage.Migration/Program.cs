@@ -49,6 +49,7 @@ namespace ASC.Data.Storage.Migration
                         .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
+                        .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()

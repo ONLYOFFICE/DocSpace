@@ -39,7 +39,6 @@ class PureVersionHistoryPanel extends React.Component {
     const { visible, isLoading, versions, showProgressBar } = this.props;
     const zIndex = 310;
 
-    console.log("showProgressBar", showProgressBar);
     return (
       <StyledVersionHistoryPanel
         className="version-history-modal-dialog"
@@ -52,7 +51,7 @@ class PureVersionHistoryPanel extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="version-history-aside-panel">
+        <Aside className="version-history-aside-panel" withoutBodyScroll>
           <StyledContent>
             <StyledHeaderContent className="version-history-panel-header">
               {versions && !isLoading ? (

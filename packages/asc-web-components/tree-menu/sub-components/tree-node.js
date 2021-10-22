@@ -113,7 +113,7 @@ const TreeNodeMenu = styled(TreeNode)`
   font-family: Open Sans;
   font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 24px;
 
   position: relative;
@@ -121,7 +121,7 @@ const TreeNodeMenu = styled(TreeNode)`
   ${NoUserSelect}
 
   .rc-tree-node-selected {
-    max-width: ${(props) => (props.newItems > 999 ? "71%" : "98%")} !important;
+    max-width: ${(props) => (props.newItems > 999 ? "71%" : "102%")} !important;
   }
 
   ${(props) =>

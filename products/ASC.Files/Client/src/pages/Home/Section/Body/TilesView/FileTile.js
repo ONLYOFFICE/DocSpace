@@ -33,12 +33,18 @@ const FilesTile = (props) => {
     //element,
     getIcon,
     onFilesClick,
-    onMouseUp,
+    onMouseClick,
     showShare,
+    isActive,
+    isEdit,
   } = props;
+
+  const temporaryExtension =
+    item.id === -1 ? `.${item.fileExst}` : item.fileExst;
+
   const temporaryIcon = getIcon(
     96,
-    item.fileExst,
+    temporaryExtension,
     item.providerKey,
     item.contentLength
   );
@@ -46,7 +52,12 @@ const FilesTile = (props) => {
   const { thumbnailUrl } = item;
   const sharedButton =
     item.canShare && showShare ? (
-      <SharedButton t={t} id={item.id} isFolder={item.isFolder} />
+      <SharedButton
+        t={t}
+        id={item.id}
+        shared={item.shared}
+        isFolder={item.isFolder}
+      />
     ) : null;
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -75,12 +86,14 @@ const FilesTile = (props) => {
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           dragging={dragging && isDragging}
-          onMouseUp={onMouseUp}
+          onClick={onMouseClick}
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
-          {...checkedProps}
+          checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
+          isActive={isActive}
+          isEdit={isEdit}
         >
           <FilesTileContent
             item={item}

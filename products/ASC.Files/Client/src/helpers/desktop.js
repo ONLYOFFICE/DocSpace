@@ -8,7 +8,7 @@ export function encryptionUploadDialog(callback) {
   const filter = docserviceStore.encryptedDocs.map((f) => "*" + f).join(" ");
 
   const data = {
-    cryptoEngineId: desktopConstants.guid,
+    cryptoEngineId: desktopConstants.cryptoEngineId,
     filter: filter,
   };
 
@@ -30,7 +30,7 @@ export function setEncryptionAccess(file) {
         window.AscDesktopEditor.cloudCryptoCommand(
           "share",
           {
-            cryptoEngineId: desktopConstants.guid,
+            cryptoEngineId: desktopConstants.cryptoEngineId,
             file: [file.viewUrl],
             keys: keys,
           },

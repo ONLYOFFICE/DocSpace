@@ -4,8 +4,15 @@ import equal from "fast-deep-equal/react";
 import { tablet } from "@appserver/components/utils/device";
 
 const StyledArticleHeader = styled.div`
-  border-bottom: 1px solid #eceef1;
-  height: 64px;
+  height: 39px;
+
+  @media ${tablet} {
+    height: 39px;
+
+    .headline-heading {
+      margin-top: -5px;
+    }
+  }
 
   @media ${tablet} {
     display: none;

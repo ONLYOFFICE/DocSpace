@@ -77,17 +77,7 @@ namespace ASC.Data.Storage.S3
         private bool _revalidateCloudFront;
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
-
-        public S3Storage(
-            TempStream tempStream,
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
-        {
-        }
-
+        
         public S3Storage(
             TempStream tempStream,
             TenantManager tenantManager,
@@ -907,16 +897,19 @@ namespace ASC.Data.Storage.S3
 
                 return true;
             }
-            catch (AmazonS3Exception ex)
+            catch (AggregateException agg)
             {
-                if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
+                if (agg.InnerException is AmazonS3Exception ex)
                 {
-                    return false;
-                }
+                    if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
+                    {
+                        return false;
+                    }
 
-                if (string.Equals(ex.ErrorCode, "NotFound"))
-                {
-                    return false;
+                    if (string.Equals(ex.ErrorCode, "NotFound"))
+                    {
+                        return false;
+                    }
                 }
 
                 throw;

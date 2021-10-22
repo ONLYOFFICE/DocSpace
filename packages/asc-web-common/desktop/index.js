@@ -4,8 +4,8 @@ import omit from "lodash/omit";
 
 export const desktopConstants = Object.freeze({
   domain: window.location.origin,
-  provider: "AppServer",
-  guid: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
+  provider: "onlyoffice",
+  cryptoEngineId: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
 });
 
 export function regDesktop(
@@ -25,13 +25,15 @@ export function regDesktop(
     userId: user.id,
   };
 
+  console.log("regDesktop", data);
+
   let extendedData;
 
   if (isEncryption) {
     extendedData = {
       ...data,
       encryptionKeys: {
-        cryptoEngineId: desktopConstants.guid,
+        cryptoEngineId: desktopConstants.cryptoEngineId,
       },
     };
 

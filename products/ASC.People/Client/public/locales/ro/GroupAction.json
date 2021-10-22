@@ -2,7 +2,6 @@
   "CustomNewDepartment": "{{groupCaption}} (creare)",
   "GroupAction": "Acțiune de grup",
   "Members": "Membrii",
-  "Name": "Numele",
   "SearchAddedMembers": "Căutare după membrii adăugați",
   "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' a fost salvat cu succes"
 }

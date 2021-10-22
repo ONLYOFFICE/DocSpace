@@ -7,7 +7,7 @@ import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { inject, observer } from "mobx-react";
 
-const StyledOperationDialog = styled.div`
+const StyledOperationDialog = styled(ModalDialog)`
   .operation-button {
     margin-right: 8px;
   }
@@ -23,11 +23,13 @@ const PureThirdPartyMoveContainer = ({
   setDestFolderId,
   checkOperationConflict,
   setThirdPartyMoveDialogVisible,
+  setBufferSelection,
 }) => {
   const zIndex = 310;
-  const deleteAfter = true; // TODO: get from settings
+  const deleteAfter = false; // TODO: get from settings
 
   const onClose = () => {
+    setBufferSelection(null);
     setDestFolderId(false);
     setThirdPartyMoveDialogVisible(false);
   };
@@ -51,6 +53,10 @@ const PureThirdPartyMoveContainer = ({
       fileIds,
       deleteAfter,
       isCopy,
+      translations: {
+        copy: t("Translations:CopyOperation"),
+        move: t("Translations:MoveToOperation"),
+      },
     };
 
     checkOperationConflict(data);
@@ -58,43 +64,41 @@ const PureThirdPartyMoveContainer = ({
   };
 
   return (
-    <StyledOperationDialog>
-      <ModalDialog
-        isLoading={!tReady}
-        visible={visible}
-        zIndex={zIndex}
-        onClose={onClose}
-      >
-        <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text>{t("MoveConfirmationMessage", { provider })}</Text>
-          <br />
-          <Text>{t("MoveConfirmationAlert")}</Text>
-        </ModalDialog.Body>
+    <StyledOperationDialog
+      isLoading={!tReady}
+      visible={visible}
+      zIndex={zIndex}
+      onClose={onClose}
+    >
+      <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text>{t("MoveConfirmationMessage", { provider })}</Text>
+        <br />
+        <Text>{t("MoveConfirmationAlert")}</Text>
+      </ModalDialog.Body>
 
-        <ModalDialog.Footer>
-          <Button
-            className="operation-button"
-            label={t("Translations:Move")}
-            size="big"
-            primary
-            onClick={startOperation}
-          />
-          <Button
-            data-copy="copy"
-            className="operation-button"
-            label={t("Translations:Copy")}
-            size="big"
-            onClick={startOperation}
-          />
-          <Button
-            className="operation-button"
-            label={t("Common:CancelButton")}
-            size="big"
-            onClick={onClose}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
+      <ModalDialog.Footer>
+        <Button
+          className="operation-button"
+          label={t("Translations:Move")}
+          size="big"
+          primary
+          onClick={startOperation}
+        />
+        <Button
+          data-copy="copy"
+          className="operation-button"
+          label={t("Translations:Copy")}
+          size="big"
+          onClick={startOperation}
+        />
+        <Button
+          className="operation-button"
+          label={t("Common:CancelButton")}
+          size="big"
+          onClick={onClose}
+        />
+      </ModalDialog.Footer>
     </StyledOperationDialog>
   );
 };
@@ -106,8 +110,12 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     destFolderId,
     setDestFolderId,
   } = dialogsStore;
-  const { selection } = filesStore;
+  const { bufferSelection, setBufferSelection } = filesStore;
   const { checkOperationConflict } = filesActionsStore;
+
+  const selection = filesStore.selection.length
+    ? filesStore.selection
+    : [bufferSelection];
 
   return {
     visible,
@@ -117,6 +125,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     provider: selection[0].providerKey,
     checkOperationConflict,
     selection,
+    setBufferSelection,
   };
 })(
   withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(

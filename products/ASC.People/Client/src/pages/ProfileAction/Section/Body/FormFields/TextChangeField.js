@@ -18,8 +18,6 @@ class TextChangeField extends React.Component {
   }
 
   render() {
-    console.log("TextChangeField render");
-
     const {
       isRequired,
       hasError,
@@ -37,6 +35,7 @@ class TextChangeField extends React.Component {
       tooltipContent,
       helpButtonHeaderContent,
       dataDialog,
+      maxLabelWidth,
     } = this.props;
 
     return (
@@ -46,6 +45,7 @@ class TextChangeField extends React.Component {
         labelText={labelText}
         tooltipContent={tooltipContent}
         helpButtonHeaderContent={helpButtonHeaderContent}
+        maxLabelWidth={maxLabelWidth}
       >
         <InputContainer>
           <TextInput

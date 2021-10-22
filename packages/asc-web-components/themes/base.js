@@ -176,6 +176,9 @@ const Base = {
     padding: "5px 10px",
     borderRadius: "3px",
     lineHeight: "22px",
+    fontSize: "15px",
+    fontWeight: 700,
+    textColor: "#FFF",
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -275,7 +278,7 @@ const Base = {
     },
 
     checkbox: {
-      margin: "auto 0 auto 24px",
+      margin: "16px 0 16px 24px",
       tabletMargin: "auto 0 auto 16px",
     },
   },
@@ -284,7 +287,8 @@ const Base = {
     top: "0",
     background: white,
     boxShadow: " 0px 10px 18px -8px rgba(0, 0, 0, 0.100306)",
-    height: "56px",
+    height: "48px",
+    tabletHeight: "56px",
     padding: "0 18px 19px 0",
     width: "100%",
     zIndex: "189",
@@ -292,7 +296,8 @@ const Base = {
 
     closeButton: {
       right: "11px",
-      top: "10px",
+      top: "6px",
+      tabletTop: "10px",
       width: "20px",
       height: "20px",
       padding: "8px",
@@ -423,7 +428,7 @@ const Base = {
   row: {
     minHeight: "47px",
     width: "100%",
-    borderBottom: `1px solid ${globalColors.grayLightMid}`,
+    borderBottom: globalColors.grayLightMid,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -473,8 +478,9 @@ const Base = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
+    backgroundColorVertical: "rgba(208, 213, 218, 1)",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
+    hoverBackgroundColorVertical: "rgba(163, 169, 174, 1)",
   },
 
   modalDialog: {
@@ -649,7 +655,6 @@ const Base = {
 
   textInput: {
     fontWeight: "normal",
-    userSelect: "none",
     placeholderColor: gray,
     disablePlaceholderColor: grayMid,
 
@@ -913,28 +918,12 @@ const Base = {
     },
 
     editContainer: {
-      boxSizing: "border-box",
-      width: "100%",
-      height: "100%",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      padding: "75% 16px 5px",
-      textAlign: "center",
-      lineHeight: "19px",
+      right: "0px",
+      bottom: "0px",
+      backgroundColor: "#265a8f",
       borderRadius: "50%",
-      linearGradient:
-        "linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%)",
-      transparent: "transparent",
-    },
-
-    editLink: {
-      paddingLeft: "10px",
-      paddingRight: "10px",
-      borderBottom: "none",
-      display: "inline-block",
-      maxWidth: "100%",
-      textDecoration: "underline dashed",
+      height: "32px",
+      width: "32px",
     },
 
     image: {
@@ -1399,7 +1388,7 @@ const Base = {
       maxWidth: "175px",
 
       lineHeightWithoutBorder: "16px",
-      lineHeightTextDecoration: "underline dashed transparent",
+      lineHeightTextDecoration: "underline dashed",
     },
 
     childrenButton: {

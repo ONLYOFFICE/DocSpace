@@ -19,6 +19,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.FederatedLogin.Helpers;
 using ASC.Files.Core;
+using ASC.Files.Core.Model;
 using ASC.Files.Model;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -64,6 +65,7 @@ namespace ASC.Files.Helpers
         private DocumentServiceTrackerHelper DocumentServiceTracker { get; }
         private SettingsManager SettingsManager { get; }
         private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
         private ILog Logger { get; set; }
 
         /// <summary>
@@ -90,7 +92,8 @@ namespace ASC.Files.Helpers
             DocumentServiceTrackerHelper documentServiceTracker,
             IOptionsMonitor<ILog> optionMonitor,
             SettingsManager settingsManager,
-            EncryptionKeyPairHelper encryptionKeyPairHelper)
+            EncryptionKeyPairHelper encryptionKeyPairHelper,
+            IHttpContextAccessor httpContextAccessor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -111,6 +114,7 @@ namespace ASC.Files.Helpers
             DocumentServiceTracker = documentServiceTracker;
             SettingsManager = settingsManager;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
+            HttpContextAccessor = httpContextAccessor;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -119,27 +123,32 @@ namespace ASC.Files.Helpers
             return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType, withSubFolders).NotFoundIfNull();
         }
 
-        public List<FileWrapper<T>> UploadFile(T folderId, UploadModel uploadModel)
+        public object UploadFile(T folderId, UploadModel uploadModel)
         {
             if (uploadModel.StoreOriginalFileFlag.HasValue)
             {
                 FilesSettingsHelper.StoreOriginalFiles = uploadModel.StoreOriginalFileFlag.Value;
             }
 
-            if (uploadModel.Files != null && uploadModel.Files.Any())
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files == null || !files.Any())
             {
-                if (uploadModel.Files.Count() == 1)
+                files = uploadModel.Files;
+            }
+
+            if (files != null && files.Any())
+            {
+                if (files.Count() == 1)
                 {
                     //Only one file. return it
-                    var postedFile = uploadModel.Files.First();
-                    return new List<FileWrapper<T>>
-                    {
-                        InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
-                    };
+                    var postedFile = files.First();
+                    return InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus);
                 }
+
                 //For case with multiple files
                 return uploadModel.Files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)).ToList();
             }
+
             if (uploadModel.File != null)
             {
                 var fileName = "file" + MimeMapping.GetExtention(uploadModel.ContentType.MediaType);
@@ -150,9 +159,10 @@ namespace ASC.Files.Helpers
 
                 return new List<FileWrapper<T>>
                 {
-                    InsertFile(folderId, uploadModel.File, fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
+                    InsertFile(folderId, uploadModel.File.OpenReadStream(), fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
                 };
             }
+
             throw new InvalidOperationException("No input files");
         }
 
@@ -201,13 +211,16 @@ namespace ASC.Files.Helpers
             return FileStorageService.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
         }
 
-        public Configuration<T> OpenEdit(T fileId, int version, string doc)
+        public Configuration<T> OpenEdit(T fileId, int version, string doc, bool view)
         {
-            DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
+            DocumentServiceHelper.GetParams(fileId, version, doc, true, !view, true, out var configuration);
             configuration.EditorType = EditorType.External;
-            configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.File.ID.ToString());
+            if (configuration.EditorConfig.ModeWrite)
+            {
+                configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
+            }
 
-            if (configuration.Document.Info.File.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
+            if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
             {
                 var keyPair = EncryptionKeyPairHelper.GetKeyPair();
                 if (keyPair != null)
@@ -219,8 +232,8 @@ namespace ASC.Files.Helpers
                     };
                 }
             }
-            
-            if (!configuration.Document.Info.File.Encrypted && !configuration.Document.Info.File.ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.File);
+
+            if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.GetFile());
 
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
@@ -351,13 +364,19 @@ namespace ASC.Files.Helpers
 
         public FileWrapper<T> UpdateFile(T fileId, string title, int lastVersion)
         {
+            File<T> newFile = null;
             if (!string.IsNullOrEmpty(title))
-                FileStorageService.FileRename(fileId, title);
+            {
+                newFile = FileStorageService.FileRename(fileId, title);
+            }
 
             if (lastVersion > 0)
-                FileStorageService.UpdateToVersion(fileId, lastVersion);
+            {
+                var pair = FileStorageService.UpdateToVersion(fileId, lastVersion);
+                newFile = pair.Key;
+            }
 
-            return GetFileInfo(fileId);
+            return newFile != null ? FileWrapperHelper.Get(newFile) : GetFileInfo(fileId);
         }
 
         public IEnumerable<FileOperationWraper> DeleteFile(T fileId, bool deleteAfter, bool immediately)
@@ -366,17 +385,17 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<ConversationResult<T>> StartConversion(T fileId)
+        public IEnumerable<ConversationResult<T>> StartConversion(T fileId, bool sync = false)
         {
-            return CheckConversion(fileId, true);
+            return CheckConversion(fileId, true, sync);
         }
 
-        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start)
+        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start, bool sync = false)
         {
             return FileStorageService.CheckConversion(new List<List<string>>
             {
                 new List<string> { fileId.ToString(), "0", start.ToString() }
-            })
+            }, sync)
             .Select(r =>
             {
                 var o = new ConversationResult<T>
@@ -423,11 +442,11 @@ namespace ASC.Files.Helpers
 
             if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
             {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetInt32());
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetInt32());
             }
             else
             {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetString());
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetString());
             }
 
             var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
@@ -439,21 +458,21 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
         {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
                 .Select(FileOperationWraperHelper.Get)
                 .ToList();
         }
 
         public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
         {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
                 .Select(FileOperationWraperHelper.Get)
                 .ToList();
         }
 
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<JsonElement> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel model)
         {
-            return FileStorageService.MarkAsRead(model.FolderIds, model.FileIds).Select(FileOperationWraperHelper.Get).ToList();
+            return FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()).Select(FileOperationWraperHelper.Get).ToList();
         }
 
         public IEnumerable<FileOperationWraper> TerminateTasks()
@@ -497,19 +516,24 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)
         {
             var files = FileStorageService.GetFileHistory(fileId);
-            return files.Select(r=> FileWrapperHelper.Get(r)).ToList();
+            return files.Select(r => FileWrapperHelper.Get(r)).ToList();
         }
 
         public IEnumerable<FileWrapper<T>> ChangeHistory(T fileId, int version, bool continueVersion)
         {
             var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
-            return history.Select(r=> FileWrapperHelper.Get(r)).ToList();
+            return history.Select(r => FileWrapperHelper.Get(r)).ToList();
         }
 
         public FileWrapper<T> LockFile(T fileId, bool lockFile)
         {
             var result = FileStorageService.LockFile(fileId, lockFile);
             return FileWrapperHelper.Get(result);
+        }
+
+        public DocumentService.FileLink GetPresignedUri(T fileId)
+        {
+            return FileStorageService.GetPresignedUri(fileId);
         }
 
         public string UpdateComment(T fileId, int version, string comment)
@@ -547,7 +571,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
-            return SetSecurityInfo(new List<T>(), new List<T> { folderId}, share, notify, sharingMessage);
+            return SetSecurityInfo(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage);
         }
 
         public IEnumerable<FileShareWrapper> SetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
@@ -667,6 +691,17 @@ namespace ASC.Files.Helpers
             }
 
             return wrapper;
+        }
+
+        internal IFormFile GetFileFromRequest(IModelWithFile model)
+        {
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files != null && files.Any())
+            {
+                return files.First();
+            }
+
+            return model.File;
         }
     }
 }

@@ -91,7 +91,6 @@ const StyledContainer = styled.div`
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    padding-bottom: 56px;
 
     ${isMobile &&
     css`
@@ -129,7 +128,7 @@ const StyledContainer = styled.div`
         ${(props) =>
           !props.isDesktop &&
           css`
-            top: 56px;
+            top: 48px;
           `}
         z-index: 180;
       }
@@ -209,16 +208,32 @@ class SectionHeaderContent extends React.Component {
     toastr.success(t("Translations:LinkCopySuccess"));
   };
 
-  onMoveAction = () => this.props.setMoveToPanelVisible(true);
-  onCopyAction = () => this.props.setCopyPanelVisible(true);
-  downloadAction = () =>
+  onMoveAction = () => {
+    this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
+    return this.props.setMoveToPanelVisible(true);
+  };
+  onCopyAction = () => {
+    this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
+    return this.props.setCopyPanelVisible(true);
+  };
+  downloadAction = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
     this.props
-      .downloadAction(this.props.t("Translations:ArchivingData"))
+      .downloadAction(this.props.t("Translations:ArchivingData"), [
+        this.props.currentFolderId,
+      ])
       .catch((err) => toastr.error(err));
+  };
 
-  downloadAsAction = () => this.props.setDownloadDialogVisible(true);
   renameAction = () => console.log("renameAction click");
-  onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
+  onOpenSharingPanel = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
+    return this.props.setSharingPanelVisible(true);
+  };
 
   onDeleteAction = () => {
     const {
@@ -226,10 +241,19 @@ class SectionHeaderContent extends React.Component {
       deleteAction,
       confirmDelete,
       setDeleteDialogVisible,
+      isThirdPartySelection,
+      currentFolderId,
+      getFolderInfo,
+      setBufferSelection,
     } = this.props;
 
-    if (confirmDelete) {
-      setDeleteDialogVisible(true);
+    this.props.setIsFolderActions(true);
+
+    if (confirmDelete || isThirdPartySelection) {
+      getFolderInfo(currentFolderId).then((data) => {
+        setBufferSelection(data);
+        setDeleteDialogVisible(true);
+      });
     } else {
       const translations = {
         deleteOperation: t("Translations:DeleteOperation"),
@@ -237,45 +261,48 @@ class SectionHeaderContent extends React.Component {
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
       };
 
-      deleteAction(translations).catch((err) => toastr.error(err));
+      deleteAction(translations, [currentFolderId], true).catch((err) =>
+        toastr.error(err)
+      );
     }
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
-    const { t } = this.props;
+    const { t, personal } = this.props;
+
     return [
       {
         key: "sharing-settings",
         label: t("SharingSettings"),
         onClick: this.onOpenSharingPanel,
-        disabled: true,
+        disabled: personal ? true : false,
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: false,
+        disabled: personal ? true : false,
       },
       { key: "separator-2", isSeparator: true },
       {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: "rename",
@@ -287,7 +314,7 @@ class SectionHeaderContent extends React.Component {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: true,
+        disabled: false,
       },
     ];
   };
@@ -311,21 +338,13 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const {
-      t,
-      selectionCount,
-      isAccessedSelected,
-      isWebEditSelected,
-      isViewedSelected,
-      deleteDialogVisible,
-      isRecycleBin,
-      isThirdPartySelection,
-      isPrivacy,
-      isFavoritesFolder,
-      isRecentFolder,
-      isShareFolder,
-      personal,
-    } = this.props;
+    const { t, getHeaderMenu, cbMenuItems, getCheckboxItemLabel } = this.props;
+
+    const headerMenu = getHeaderMenu(t);
+    const children = cbMenuItems.map((key, index) => {
+      const label = getCheckboxItemLabel(t, key);
+      return <DropDownItem key={key} label={label} data-index={index} />;
+    });
 
     let menu = [
       {
@@ -334,127 +353,12 @@ class SectionHeaderContent extends React.Component {
         isSeparator: true,
         isSelect: true,
         fontWeight: "bold",
-        children: [
-          <DropDownItem key="all" label={t("All")} data-index={0} />,
-          <DropDownItem
-            key={FilterType.FoldersOnly}
-            label={t("Translations:Folders")}
-            data-index={1}
-          />,
-          <DropDownItem
-            key={FilterType.DocumentsOnly}
-            label={t("Common:Documents")}
-            data-index={2}
-          />,
-          <DropDownItem
-            key={FilterType.PresentationsOnly}
-            label={t("Translations:Presentations")}
-            data-index={3}
-          />,
-          <DropDownItem
-            key={FilterType.SpreadsheetsOnly}
-            label={t("Translations:Spreadsheets")}
-            data-index={4}
-          />,
-          <DropDownItem
-            key={FilterType.ImagesOnly}
-            label={t("Images")}
-            data-index={5}
-          />,
-          <DropDownItem
-            key={FilterType.MediaOnly}
-            label={t("Media")}
-            data-index={6}
-          />,
-          <DropDownItem
-            key={FilterType.ArchiveOnly}
-            label={t("Archives")}
-            data-index={7}
-          />,
-          <DropDownItem
-            key={FilterType.FilesOnly}
-            label={t("AllFiles")}
-            data-index={8}
-          />,
-        ],
+        children,
         onSelect: this.onSelect,
-      },
-      {
-        label: t("Share"),
-        disabled:
-          isFavoritesFolder ||
-          isRecentFolder ||
-          !isAccessedSelected ||
-          selectionCount > 1,
-        onClick: this.onOpenSharingPanel,
-      },
-      {
-        label: t("Common:Download"),
-        disabled: !selectionCount,
-        onClick: this.downloadAction,
-      },
-      {
-        label: t("Translations:DownloadAs"),
-        disabled: !selectionCount || !isWebEditSelected,
-        onClick: this.downloadAsAction,
-      },
-      {
-        label: t("MoveTo"),
-        disabled:
-          isFavoritesFolder ||
-          isRecentFolder ||
-          !isAccessedSelected ||
-          !selectionCount ||
-          isThirdPartySelection,
-        onClick: this.onMoveAction,
-      },
-      {
-        label: t("Translations:Copy"),
-        disabled: !selectionCount,
-        onClick: this.onCopyAction,
-      },
-      {
-        label: t("Common:Delete"),
-        disabled:
-          !selectionCount || !deleteDialogVisible || isThirdPartySelection,
-        onClick: this.onDeleteAction,
       },
     ];
 
-    if (isRecycleBin) {
-      menu.push({
-        label: t("EmptyRecycleBin"),
-        onClick: this.onEmptyTrashAction,
-      });
-
-      menu.splice(4, 2, {
-        label: t("Translations:Restore"),
-        onClick: this.onMoveAction,
-      });
-
-      menu.splice(1, 1);
-    }
-
-    if (isPrivacy) {
-      menu.splice(1, 1);
-      menu.splice(2, 1);
-      menu.splice(3, 1);
-    }
-
-    if (isShareFolder) {
-      menu.splice(4, 1);
-    }
-
-    if (isRecentFolder || isFavoritesFolder) {
-      menu.splice(1, 1);
-    }
-
-    if (
-      (personal && !isWebEditSelected && !isViewedSelected) ||
-      selectionCount > 1
-    ) {
-      menu.splice(1, 1);
-    }
+    menu = [...menu, ...headerMenu];
 
     return menu;
   };
@@ -474,6 +378,7 @@ class SectionHeaderContent extends React.Component {
       isDesktop,
       isTabletView,
       personal,
+      viewAs,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -489,7 +394,7 @@ class SectionHeaderContent extends React.Component {
             isDesktop={isDesktop}
             isTabletView={isTabletView}
           >
-            {isHeaderVisible ? (
+            {isHeaderVisible && viewAs !== "table" ? (
               <div className="group-button-menu-container">
                 <GroupButtonsMenu
                   checked={isHeaderChecked}
@@ -533,7 +438,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/plus.svg"
+                          iconName="images/header.plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -541,26 +446,25 @@ class SectionHeaderContent extends React.Component {
                           getData={this.getContextOptionsPlus}
                           isDisabled={false}
                         />
-                        {!personal && (
-                          <ContextMenuButton
-                            className="option-button"
-                            directionX="right"
-                            iconName="images/vertical-dots.react.svg"
-                            size={17}
-                            color="#A3A9AE"
-                            hoverColor="#657077"
-                            isFill
-                            getData={this.getContextOptionsFolder}
-                            isDisabled={false}
-                          />
-                        )}
+
+                        <ContextMenuButton
+                          className="option-button"
+                          directionX="right"
+                          iconName="images/vertical-dots.react.svg"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsFolder}
+                          isDisabled={false}
+                        />
                       </>
                     ) : (
                       canCreate && (
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/plus.svg"
+                          iconName="images/header.plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -586,46 +490,38 @@ export default inject(
     auth,
     filesStore,
     dialogsStore,
-    treeFoldersStore,
     selectedFolderStore,
     filesActionsStore,
     settingsStore,
   }) => {
     const {
       setSelected,
+      setSelection,
       fileActionStore,
       fetchFiles,
-      selection,
       filter,
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      userAccess,
-      isAccessedSelected,
       isThirdPartySelection,
-      isWebEditSelected,
       setIsLoading,
-      isViewedSelected,
+      viewAs,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      getFolderInfo,
+      setBufferSelection,
     } = filesStore;
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      isFavoritesFolder,
-      isRecentFolder,
-      isShareFolder,
-    } = treeFoldersStore;
     const { setAction } = fileActionStore;
     const {
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
-      setEmptyTrashDialogVisible,
-      setDownloadDialogVisible,
       setDeleteDialogVisible,
+      setIsFolderActions,
     } = dialogsStore;
 
-    const { deleteAction, downloadAction } = filesActionsStore;
+    const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
     return {
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -633,38 +529,34 @@ export default inject(
       title: selectedFolderStore.title,
       parentId: selectedFolderStore.parentId,
       currentFolderId: selectedFolderStore.id,
-      isRecycleBin: isRecycleBinFolder,
-      isPrivacy: isPrivacyFolder,
-      isFavoritesFolder,
-      isRecentFolder,
-      isShareFolder,
       filter,
       canCreate,
-      selectionCount: selection.length,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      deleteDialogVisible: userAccess,
-      isAccessedSelected,
       isThirdPartySelection,
-      isWebEditSelected,
-      isViewedSelected,
       isTabletView: auth.settingsStore.isTabletView,
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,
+      viewAs,
+      cbMenuItems,
+      getFolderInfo,
 
       setSelected,
+      setSelection,
       setAction,
       setIsLoading,
       fetchFiles,
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
-      setEmptyTrashDialogVisible,
+      setBufferSelection,
+      setIsFolderActions,
       deleteAction,
       setDeleteDialogVisible,
-      setDownloadDialogVisible,
       downloadAction,
+      getHeaderMenu,
+      getCheckboxItemLabel,
     };
   }
 )(

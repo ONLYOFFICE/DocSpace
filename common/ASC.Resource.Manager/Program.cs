@@ -35,9 +35,9 @@ namespace ASC.Resource.Manager
 
             var copy = new List<string>();
 
-            for(var i =0;i<args.Length;i++)
+            for (var i = 0; i < args.Length; i++)
             {
-                if(args[i] == "--pathToConf" || args[i] == "--ConnectionStrings:default:connectionString")
+                if (args[i] == "--pathToConf" || args[i] == "--ConnectionStrings:default:connectionString")
                 {
                     i++;
                     continue;
@@ -50,7 +50,7 @@ namespace ASC.Resource.Manager
 
         public static void Export(Options options)
         {
-            
+
             var services = new ServiceCollection();
             var startup = new Startup(Args);
             startup.ConfigureServices(services);
@@ -68,13 +68,13 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                //project = "WebStudio";
-                //module = "Tips";
-                //filePath = "TipsResource.resx";
+                project = "WebStudio";
+                module = "WebStudio";
+                filePath = "Resource.resx";
                 //culture = "ru";
-                //exportPath = @"C:\Git\portals\";
+                exportPath = @"C:\Git\portals_core\";
                 //key = "*,HtmlMaster*";
-                //key = "*";
+                key = "*";
 
                 if (format == "json")
                 {
@@ -208,7 +208,7 @@ namespace ASC.Resource.Manager
                         //File.Delete(designerPath);
 
                         nsp = matches[0].Groups[1].Value;
-                        
+
                         do
                         {
                             asmbl = Directory.GetFiles(assmlPath, "*.csproj").FirstOrDefault();
@@ -232,7 +232,7 @@ namespace ASC.Resource.Manager
                         }
 
                         key = CheckExist(fileName, $"{nsp}.{name},{assName}", exportPath);
-                        var additional =  string.Join(",", keys.Where(r => r.Length > 1 && r.Contains("*")).ToArray());
+                        var additional = string.Join(",", keys.Where(r => r.Length > 1 && r.Contains("*")).ToArray());
 
                         if (!string.IsNullOrEmpty(additional))
                         {
@@ -256,13 +256,14 @@ namespace ASC.Resource.Manager
 
                     var exportPath1 = exportPath;
 
-                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => {
+                    ParallelEnumerable.ForAll(cultures.AsParallel(), c =>
+                    {
                         if (export == JsonManager.Export)
                         {
                             var files = Directory.GetFiles(exportPath1, $"{fileName}", SearchOption.AllDirectories);
 
-                            exportPath = files.FirstOrDefault(r=>  Path.GetDirectoryName(r) == c);
-                            if(exportPath == null)
+                            exportPath = files.FirstOrDefault(r => Path.GetDirectoryName(r) == c);
+                            if (exportPath == null)
                             {
                                 exportPath = Path.GetDirectoryName(Path.GetDirectoryName(files.FirstOrDefault()));
                             }
@@ -277,7 +278,7 @@ namespace ASC.Resource.Manager
 
                     Console.WriteLine(filePath);
                     if (string.IsNullOrEmpty(asmbl)) return;
-                    AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r=> r.Item2));
+                    AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r => r.Item2));
                     var assmblName = Path.GetFileNameWithoutExtension(asmbl);
                     var f = Path.GetDirectoryName(filePath.Substring(assmlPath.Length + 1)).Replace('\\', '.');
                     nsp = assmblName;
@@ -359,7 +360,8 @@ namespace ASC.Resource.Manager
             _ = Parallel.ForEach(csFiles, localInit, func(@$"\W+{resName}\.(\w*)"), localFinally);
             _ = Parallel.ForEach(csFiles, localInit, func(@$"CustomNamingPeople\.Substitute\<{resName}\>\(""(\w*)""\)"), localFinally);
             _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)""[\),\,]"), localFinally);
-            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)""\s*\+"), (r) => {
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)""\s*\+"), (r) =>
+            {
 
                 if (!bag.Contains(r) && !string.IsNullOrEmpty(r))
                 {
@@ -370,7 +372,8 @@ namespace ASC.Resource.Manager
 
             if (fileName == "TipsResource.resx")
             {
-                _ = Parallel.ForEach(xmlFiles, localInit, func(@$"<tip id=""(\w*)"""), (r) => {
+                _ = Parallel.ForEach(xmlFiles, localInit, func(@$"<tip id=""(\w*)"""), (r) =>
+                {
 
                     if (!string.IsNullOrEmpty(r))
                     {
@@ -387,19 +390,19 @@ namespace ASC.Resource.Manager
 
             if (fileName == "AuditReportResource.resx")
             {
-                _ = Parallel.ForEach(csFiles.Where(r=> r.EndsWith("ActionMapper.cs")), localInit, func(@$"ResourceName\s*=\s*""(\w*)"""), localFinally);
+                _ = Parallel.ForEach(csFiles.Where(r => r.EndsWith("ActionMapper.cs")), localInit, func(@$"ResourceName\s*=\s*""(\w*)"""), localFinally);
                 _ = Parallel.ForEach(csFiles, localInit, func(@$"\[Event\(""(\w*)"""), localFinally);
             }
 
             if (fileName == "NamingPeopleResource.resx")
             {
-                _ = Parallel.ForEach(xmlFiles.Where(r=> r.EndsWith("PeopleNames.xml")), localInit, func(@$"\>(\w*)\<"), localFinally);
+                _ = Parallel.ForEach(xmlFiles.Where(r => r.EndsWith("PeopleNames.xml")), localInit, func(@$"\>(\w*)\<"), localFinally);
             }
 
             return string.Join(',', bag.ToArray().Distinct());
         }
 
-        private static void AddResourceForCsproj(string csproj, string fileName, IEnumerable<Tuple<string,string>> files)
+        private static void AddResourceForCsproj(string csproj, string fileName, IEnumerable<Tuple<string, string>> files)
         {
             if (!files.Any()) return;
 
@@ -408,13 +411,13 @@ namespace ASC.Resource.Manager
 
             foreach (var file in files)
             {
-                var node = doc.Root.Elements().FirstOrDefault(r => 
+                var node = doc.Root.Elements().FirstOrDefault(r =>
                 r.Name == ItemGroupXname &&
-                r.Elements(EmbededXname).Any(x=>
+                r.Elements(EmbededXname).Any(x =>
                 {
                     var attr = x.Attribute(IncludeAttribute);
                     return attr != null && attr.Value == fileName;
-                })) ?? 
+                })) ??
                 doc.Root.Elements().FirstOrDefault(r =>
                 r.Name == ItemGroupXname &&
                 r.Elements(EmbededXname).Any());
@@ -438,7 +441,7 @@ namespace ASC.Resource.Manager
                         var attr = r.Attribute(IncludeAttribute);
                         return attr != null && attr.Value == file.Item2;
                     });
-                    
+
                     referenceNotExist = reference == null;
                     if (referenceNotExist)
                     {
@@ -463,7 +466,7 @@ namespace ASC.Resource.Manager
 
         private static void Sort(string path)
         {
-            foreach(var f in Directory.GetFiles(path))
+            foreach (var f in Directory.GetFiles(path))
             {
                 if (File.ReadAllText(f) == "{}")
                 {
@@ -496,7 +499,7 @@ namespace ASC.Resource.Manager
 
         private static void SortFromFolder(string path)
         {
-            foreach(var f in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
+            foreach (var f in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
             {
                 if (File.ReadAllText(f) == "{}") continue;
 
@@ -504,7 +507,7 @@ namespace ASC.Resource.Manager
                 var baseDir = Path.GetDirectoryName(f);
                 var baseDirName = Path.GetFileName(baseDir);
 
-                if(baseDirName != "en")
+                if (baseDirName != "en")
                 {
                     name = name.Replace(".json", $".{baseDirName}.json");
                 }
@@ -516,10 +519,10 @@ namespace ASC.Resource.Manager
 
         private static void SortJson(string path)
         {
-            foreach(var f in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+            foreach (var f in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
             {
                 var text = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(f, Encoding.UTF8));
-                text = text.OrderBy(r => r.Key).ToDictionary(r=> r.Key, r=> r.Value);
+                text = text.OrderBy(r => r.Key).ToDictionary(r => r.Key, r => r.Value);
                 File.WriteAllText(f, JsonSerializer.Serialize(text, new JsonSerializerOptions() { WriteIndented = true }), Encoding.UTF8);
             }
         }
