@@ -16,8 +16,6 @@ class DepartmentField extends React.Component {
   };
 
   render() {
-    console.log("DepartmentField render");
-
     const {
       isRequired,
       isDisabled,

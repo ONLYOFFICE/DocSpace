@@ -16,6 +16,11 @@ const StyledScrollbar = styled(Scrollbars)`
         ? props.color
         : props.theme.scrollbar.backgroundColorHorizontal};
   }
+
+  .nav-thumb-vertical:hover {
+    background-color: ${(props) =>
+      props.theme.scrollbar.hoverBackgroundColorVertical};
+  }
 `;
 
 StyledScrollbar.defaultProps = {

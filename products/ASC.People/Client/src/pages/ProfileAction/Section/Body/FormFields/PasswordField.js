@@ -11,8 +11,6 @@ class PasswordField extends React.Component {
   }
 
   render() {
-    console.log("PasswordField render");
-
     const {
       isRequired,
       hasError,

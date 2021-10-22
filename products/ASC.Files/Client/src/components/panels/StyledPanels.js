@@ -92,11 +92,11 @@ const StyledVersionHistoryPanel = styled.div`
   ${PanelStyles}
   .version-history-modal-dialog {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
-    width: 720px;
+    width: 500px;
   }
   .version-history-aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
-    width: 720px;
+    width: 500px;
   }
   .version-history-panel-header {
     height: 53px;
