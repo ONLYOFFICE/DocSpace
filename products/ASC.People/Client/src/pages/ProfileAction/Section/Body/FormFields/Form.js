@@ -22,7 +22,7 @@ const MainContainer = styled.div`
 
   .departments-field {
     position: relative;
-    margin: 0 0 40px 0;
+    margin: 0;
     max-width: 835px;
 
     .department-add-btn {
@@ -47,6 +47,8 @@ const AvatarContainer = styled.div`
 const MainFieldsContainer = styled.div`
   flex-grow: 1;
   ${(props) => props.noSelect && NoUserSelect}
+  margin: ${(props) =>
+    `0 0 ${props.marginBottom ? props.marginBottom : "40px"} 0`};
 `;
 
 export { MainContainer, AvatarContainer, MainFieldsContainer };
