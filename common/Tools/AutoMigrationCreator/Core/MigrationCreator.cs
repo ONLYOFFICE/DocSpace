@@ -1,28 +1,35 @@
 ﻿using System;
 
+using AutoMigrationCreator.Core;
+
 namespace AutoMigrationCreator
 {
     public class MigrationCreator
     {
-        public static void Run(Settings settings)
+        public static void Run()
         {
             var counter = 0;
-            var ctxTypesFinder = new ContextFinder(settings);
+            var solution = new Solution();
 
-            foreach (var contextType in ctxTypesFinder.GetContextsTypes())
+            foreach (var projectInfo in solution.GetProjects())
             {
-                var context = DbContextActivator.CreateInstance(contextType, settings.ConnectionStringSettings);
+                var ctxTypesFinder = new ContextFinder(projectInfo);
 
-                var modelDiffChecker = new ModelDifferenceChecker(context);
+                foreach (var contextType in ctxTypesFinder.GetContextsTypes())
+                {
+                    var context = DbContextActivator.CreateInstance(contextType);
 
-                if (!modelDiffChecker.IsDifferent()) continue;
+                    var modelDiffChecker = new ModelDifferenceChecker(context);
 
-                context = DbContextActivator.CreateInstance(contextType, settings.ConnectionStringSettings); //Hack: refresh context
+                    if (!modelDiffChecker.IsDifferent()) continue;
 
-                var migrationGenerator = new MigrationGenerator(context);
-                migrationGenerator.Generate();
+                    context = DbContextActivator.CreateInstance(contextType); //Hack: refresh context
 
-                counter++;
+                    var migrationGenerator = new MigrationGenerator(context, projectInfo);
+                    migrationGenerator.Generate();
+
+                    counter++;
+                }
             }
 
             Console.WriteLine($"Created {counter} migrations");
