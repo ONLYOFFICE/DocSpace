@@ -1062,7 +1062,7 @@ class FilesStore {
     const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
-    const iconSize = this.viewAs === "tile" ? 32 : 24;
+    const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
     const icon = this.fileActionStore.extension
       ? getFileIcon(`.${this.fileActionStore.extension}`, iconSize)
       : getFolderIcon(null, iconSize);
@@ -1134,7 +1134,7 @@ class FilesStore {
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const iconSize = this.viewAs === "tile" ? 32 : 24;
+      const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
       const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;
@@ -1573,6 +1573,7 @@ class FilesStore {
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
+    return folderInfo;
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {

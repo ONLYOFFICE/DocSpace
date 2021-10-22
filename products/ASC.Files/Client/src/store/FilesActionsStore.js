@@ -61,13 +61,24 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      updatedFolder = this.selectedFolderStore.parentId;
+    }
+
     const { filter, fetchFiles } = this.filesStore;
-    fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(() =>
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
-    );
+    fetchFiles(updatedFolder, filter, true, true).finally(() => {
+      this.dialogsStore.setIsFolderActions(false);
+      return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+    });
   };
 
-  deleteAction = async (translations, newSelection = null) => {
+  deleteAction = async (
+    translations,
+    newSelection = null,
+    withoutDialog = false
+  ) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
@@ -88,8 +99,8 @@ class FilesActionStore {
     const deleteAfter = false; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
 
-    const folderIds = [];
-    const fileIds = [];
+    let folderIds = [];
+    let fileIds = [];
 
     let i = 0;
     while (selection.length !== i) {
@@ -99,6 +110,13 @@ class FilesActionStore {
         folderIds.push(selection[i].id);
       }
       i++;
+    }
+
+    if (this.dialogsStore.isFolderActions && withoutDialog) {
+      folderIds = [];
+      fileIds = [];
+
+      folderIds.push(selection[0]);
     }
 
     if (folderIds.length || fileIds.length) {
@@ -211,18 +229,18 @@ class FilesActionStore {
     }
   };
 
-  downloadAction = (label) => {
+  downloadAction = (label, folderId) => {
     const { bufferSelection } = this.filesStore;
 
     const selection = this.filesStore.selection.length
       ? this.filesStore.selection
       : [bufferSelection];
 
-    const fileIds = [];
-    const folderIds = [];
+    let fileIds = [];
+    let folderIds = [];
     const items = [];
 
-    if (selection.length === 1 && selection[0].fileExst) {
+    if (selection.length === 1 && selection[0].fileExst && !folderId) {
       window.open(selection[0].viewUrl, "_self");
       return Promise.resolve();
     }
@@ -235,6 +253,14 @@ class FilesActionStore {
         folderIds.push(item.id);
         items.push({ id: item.id });
       }
+    }
+
+    if (this.dialogsStore.isFolderActions) {
+      fileIds = [];
+      folderIds = [];
+
+      folderIds.push(bufferSelection);
+      this.dialogsStore.setIsFolderActions(false);
     }
 
     return this.downloadFiles(fileIds, folderIds, label);

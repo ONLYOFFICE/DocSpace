@@ -50,12 +50,12 @@ class PureVersionHistory extends React.Component {
 
     return (
       <PageLayout
-        withBodyScroll={true}
         withBodyAutoFocus={true}
         headerBorderBottom={true}
         showSecondaryProgressBar={showProgressBar}
         secondaryProgressBarIcon="file"
-        showSecondaryButtonAlert={false}>
+        showSecondaryButtonAlert={false}
+        withBodyScroll={false}>
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
         </PageLayout.ArticleHeader>

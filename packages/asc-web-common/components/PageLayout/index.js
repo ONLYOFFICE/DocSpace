@@ -394,7 +394,7 @@ class PageLayout extends React.Component {
                             display: 'grid',
                             paddingRight: '20px',
                           }}></div>
-                        <SubSectionFilter className="section-header_filter">
+                        <SubSectionFilter className="section-header_filter" viewAs={viewAs}>
                           {sectionFilterContent ? sectionFilterContent.props.children : null}
                         </SubSectionFilter>
                       </>
