@@ -1,19 +1,124 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import Row from "@appserver/components/row";
 import { tablet } from "@appserver/components/utils/device";
 
-const StyledVersionRow = styled(Row)`
-  min-height: 70px;
+const StyledBody = styled.div`
+  height: 100%;
+  width: 100%;
+  .version-list {
+    height: 100%;
+    width: 100%;
+  }
 
+  .loader-history-rows {
+    padding-right: 16px;
+  }
+`;
+
+const StyledVersionList = styled.div`
+
+.row_context-menu-wrapper {
+    .expandButton {
+      ${(props) =>
+        props.isRestoreProcess &&
+        `
+        touch-action: none;
+        pointer-events: none;
+        `}
+      svg {
+        path {
+          ${(props) =>
+            props.isRestoreProcess &&
+            `
+              fill: #d0d5da;
+            `};
+        }
+      }
+    }
+  
+  }
+
+  .row_content {
+
+    .version_link,
+    .version-link-file,
+    .version_content-length,
+    .version_link-action,
+    .row_context-menu-wrapper,
+    .version_text {
+      ${(props) =>
+        props.isRestoreProcess &&
+        `
+          color: #d0d5da;
+          touch-action: none;
+          pointer-events: none;
+        `}
+    }
+
+    .versioned, .not-versioned {
+      ${(props) =>
+        props.isRestoreProcess &&
+        `
+        touch-action: none;
+        pointer-events: none;
+        `}
+    }
+
+    .versioned { 
+        svg {
+            path {
+          ${(props) =>
+            props.isRestoreProcess &&
+            `
+              fill: #d0d5da;
+            `};
+        }
+      }
+    }
+
+    .not-versioned{
+        svg {
+            path {
+
+          ${(props) =>
+            props.isRestoreProcess &&
+            `
+              stroke: #d0d5da;
+            `};
+        }
+      }
+    }
+
+}
+    .icon-link {
+      ${(props) =>
+        props.isRestoreProcess &&
+        `
+        touch-action: none;
+        pointer-events: none;
+        `}
+      svg {
+        path {
+          ${(props) => props.isRestoreProcess && " fill: #d0d5da"}
+        }
+      }
+    }
+  }
+`;
+
+const StyledVersionRow = styled(Row)`
   @media ${tablet} {
-    min-height: 69px;
+    box-sizing: border-box;
     position: relative;
   }
 
   .row_content {
     position: relative;
-    padding-top: 14px;
-    padding-bottom: 14px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    ${(props) => props.isTabletView && "height: auto"};
+    ${(props) => !props.isTabletView && "padding-right:16px"};
   }
 
   .version_badge {
@@ -133,6 +238,26 @@ const StyledVersionRow = styled(Row)`
   .row_context-menu-wrapper {
     display: none;
 
+    right: 16px !important;
+
+    .expandButton {
+      ${(props) =>
+        props.isSavingComment &&
+        `
+        touch-action: none;
+        pointer-events: none;
+        `}
+      svg {
+        path {
+          ${(props) =>
+            props.isSavingComment &&
+            `
+              fill: #d0d5da;
+            `};
+        }
+      }
+    }
+
     @media ${tablet} {
       display: block;
       position: absolute;
@@ -143,6 +268,16 @@ const StyledVersionRow = styled(Row)`
 
   .row_content {
     display: block;
+
+    .version_link-action {
+      ${(props) =>
+        props.isSavingComment &&
+        `
+          color: #d0d5da;
+          touch-action: none;
+          pointer-events: none;
+        `}
+    }
   }
 
   .modal-dialog-aside-footer {
@@ -168,4 +303,4 @@ const StyledVersionRow = styled(Row)`
   }
 `;
 
-export default StyledVersionRow;
+export { StyledBody, StyledVersionRow, StyledVersionList };

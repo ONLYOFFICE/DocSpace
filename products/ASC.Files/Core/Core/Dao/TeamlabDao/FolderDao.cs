@@ -515,6 +515,7 @@ namespace ASC.Files.Core.Data
 
                 var toInsert = FilesDbContext.Tree
                     .Where(r => r.FolderId == toFolderId)
+                    .OrderBy(r => r.Level)
                     .ToList();
 
                 foreach (var subfolder in subfolders)
@@ -525,7 +526,7 @@ namespace ASC.Files.Core.Data
                         {
                             FolderId = subfolder.Key,
                             ParentId = f.ParentId,
-                            Level = f.Level + 1
+                            Level = subfolder.Value + 1 + f.Level
                         };
                         FilesDbContext.AddOrUpdate(r => r.Tree, newTree);
                     }

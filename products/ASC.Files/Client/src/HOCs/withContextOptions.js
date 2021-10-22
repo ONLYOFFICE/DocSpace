@@ -248,9 +248,10 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickShare = () => {
-      const { onSelectItem, setSharingPanelVisible, id, isFolder } = this.props;
-      onSelectItem({ id, isFolder });
-      setSharingPanelVisible(true);
+      const { setSharingPanelVisible } = this.props;
+      setTimeout(() => {
+        setSharingPanelVisible(true);
+      }, 10); //TODO: remove delay after fix context menu callback
     };
 
     onClickMarkRead = () => {

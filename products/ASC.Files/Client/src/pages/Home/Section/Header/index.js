@@ -84,15 +84,30 @@ class SectionHeaderContent extends React.Component {
     toastr.success(t('Translations:LinkCopySuccess'));
   };
 
-  onMoveAction = () => this.props.setMoveToPanelVisible(true);
-  onCopyAction = () => this.props.setCopyPanelVisible(true);
-  downloadAction = () =>
+  onMoveAction = () => {
+    this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
+    return this.props.setMoveToPanelVisible(true);
+  };
+  onCopyAction = () => {
+    this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
+    return this.props.setCopyPanelVisible(true);
+  };
+  downloadAction = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
     this.props
-      .downloadAction(this.props.t('Translations:ArchivingData'))
+      .downloadAction(this.props.t('Translations:ArchivingData'), [this.props.currentFolderId])
       .catch((err) => toastr.error(err));
+  };
 
   renameAction = () => console.log('renameAction click');
-  onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
+  onOpenSharingPanel = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
+    return this.props.setSharingPanelVisible(true);
+  };
 
   onDeleteAction = () => {
     const {
@@ -101,10 +116,18 @@ class SectionHeaderContent extends React.Component {
       confirmDelete,
       setDeleteDialogVisible,
       isThirdPartySelection,
+      currentFolderId,
+      getFolderInfo,
+      setBufferSelection,
     } = this.props;
 
+    this.props.setIsFolderActions(true);
+
     if (confirmDelete || isThirdPartySelection) {
-      setDeleteDialogVisible(true);
+      getFolderInfo(currentFolderId).then((data) => {
+        setBufferSelection(data);
+        setDeleteDialogVisible(true);
+      });
     } else {
       const translations = {
         deleteOperation: t('Translations:DeleteOperation'),
@@ -112,45 +135,46 @@ class SectionHeaderContent extends React.Component {
         deleteSelectedElem: t('Translations:DeleteSelectedElem'),
       };
 
-      deleteAction(translations);
+      deleteAction(translations, [currentFolderId], true).catch((err) => toastr.error(err));
     }
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
-    const { t } = this.props;
+    const { t, personal } = this.props;
+
     return [
       {
         key: 'sharing-settings',
         label: t('SharingSettings'),
         onClick: this.onOpenSharingPanel,
-        disabled: true,
+        disabled: personal ? true : false,
       },
       {
         key: 'link-portal-users',
         label: t('LinkForPortalUsers'),
         onClick: this.createLinkForPortalUsers,
-        disabled: false,
+        disabled: personal ? true : false,
       },
       { key: 'separator-2', isSeparator: true },
       {
         key: 'move-to',
         label: t('MoveTo'),
         onClick: this.onMoveAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: 'copy',
         label: t('Translations:Copy'),
         onClick: this.onCopyAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: 'download',
         label: t('Common:Download'),
         onClick: this.downloadAction,
-        disabled: true,
+        disabled: false,
       },
       {
         key: 'rename',
@@ -162,7 +186,7 @@ class SectionHeaderContent extends React.Component {
         key: 'delete',
         label: t('Common:Delete'),
         onClick: this.onDeleteAction,
-        disabled: true,
+        disabled: false,
       },
     ];
   };
@@ -269,6 +293,7 @@ export default inject(
   }) => {
     const {
       setSelected,
+      setSelection,
       fileActionStore,
       fetchFiles,
       filter,
@@ -281,6 +306,8 @@ export default inject(
       viewAs,
       cbMenuItems,
       getCheckboxItemLabel,
+      getFolderInfo,
+      setBufferSelection,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -288,6 +315,7 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
+      setIsFolderActions,
     } = dialogsStore;
 
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
@@ -312,15 +340,18 @@ export default inject(
       viewAs,
       cbMenuItems,
       setSelectedNode: treeFoldersStore.setSelectedNode,
-      getFolderInfo: treeFoldersStore.getFolderInfo,
+      getFolderInfo,
 
       setSelected,
+      setSelection,
       setAction,
       setIsLoading,
       fetchFiles,
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setBufferSelection,
+      setIsFolderActions,
       deleteAction,
       setDeleteDialogVisible,
       downloadAction,
