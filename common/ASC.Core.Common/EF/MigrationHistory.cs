@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 
 using ASC.Common;
 
@@ -7,12 +8,12 @@ namespace ASC.Core.Common.EF
     [Singletone]
     public class MigrationHistory
     {
-        private ConcurrentDictionary<string, bool> _historyStore
-            = new ConcurrentDictionary<string, bool>();
+        private ConcurrentDictionary<Type, bool> _historyStore
+            = new ConcurrentDictionary<Type, bool>();
 
-        public bool TryAddMigratedContext(string contextTypeName)
+        public bool TryAddMigratedContext(Type contextType)
         {
-            return _historyStore.TryAdd(contextTypeName, true);
+            return _historyStore.TryAdd(contextType, true);
         }
     }
 }

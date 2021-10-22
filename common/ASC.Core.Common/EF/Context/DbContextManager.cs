@@ -36,7 +36,7 @@ namespace ASC.Core.Common.EF
                 if (t is BaseDbContext dbContext)
                 {
                     if (Configuration["migration:enabled"] == "true"
-                        && MigrationHistory.TryAddMigratedContext(t.ToString()))
+                        && MigrationHistory.TryAddMigratedContext(t.GetType()))
                     {
                         dbContext.Migrate();
                     }
