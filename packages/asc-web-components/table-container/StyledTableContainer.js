@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { mobile, tablet } from "../utils/device";
 import Scrollbar from "../scrollbar";
+import { isMobile } from "react-device-detect";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
@@ -257,7 +258,7 @@ const StyledScrollbar = styled(Scrollbar)`
     display: flex;
   }
   .nav-thumb-horizontal {
-    display: none !important;
+    ${isMobile && "display: none !important"};
   }
 `;
 
