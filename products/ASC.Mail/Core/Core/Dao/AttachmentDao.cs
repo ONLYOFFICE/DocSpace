@@ -155,7 +155,7 @@ namespace ASC.Mail.Core.Dao
                 Tenant = r.Tenant,
                 MailboxId = r.IdMailbox,
                 Stream = r.Mail.Stream,
-                User = r.Mail.IdUser
+                User = r.Mail.UserId
             };
 
             return a;

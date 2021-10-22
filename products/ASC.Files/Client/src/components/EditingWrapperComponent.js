@@ -161,7 +161,7 @@ const EditingWrapperComponent = (props) => {
         tabIndex={1}
         isAutoFocussed={true}
         onChange={renameTitle}
-        onKeyPress={onKeyUpUpdateItem}
+        onKeyUp={onKeyUpUpdateItem}
         onKeyDown={onEscapeKeyPress}
         onFocus={onFocus}
         isDisabled={isLoading}

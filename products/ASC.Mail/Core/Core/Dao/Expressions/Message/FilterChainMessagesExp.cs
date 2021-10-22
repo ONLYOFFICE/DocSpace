@@ -142,7 +142,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (filter.MailboxId.HasValue)
             {
-                selector.Where(r => r.IdMailbox, filter.MailboxId.Value);
+                selector.Where(r => r.MailboxId, filter.MailboxId.Value);
             }
 
             if (filter.Unread.HasValue)
@@ -227,7 +227,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 selector.Limit(0, filter.PageSize.Value);
             }
 
-            selector.Where(r => r.IdUser, userId.ToString())
+            selector.Where(r => r.UserId, userId.ToString())
                 .Sort(r => r.ChainDate, filter.SortOrder == DefineConstants.ASCENDING);
 
             if (!factoryIndexer.TrySelect(s => selector, out IReadOnlyCollection<MailMail> result))

@@ -14,7 +14,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
 import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
-import { openDocEditor } from "../helpers/utils";
+import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
 
 const { FilesFilter } = api;
@@ -46,6 +46,7 @@ class FilesStore {
   files = [];
   folders = [];
   selection = [];
+  bufferSelection = null;
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
@@ -97,6 +98,7 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
+    this.selection = this.selection.filter((x) => !x.isThirdPartyFolder); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -234,6 +236,10 @@ class FilesStore {
     this.selection = selection;
   };
 
+  setBufferSelection = (bufferSelection) => {
+    this.bufferSelection = bufferSelection;
+  };
+
   //TODO: FILTER
   setFilesFilter = (filter) => {
     const key = `UserFilter=${this.userStore.user.id}`;
@@ -339,7 +345,7 @@ class FilesStore {
           if (!requestCounter) return;
           requestCounter--;
 
-          if (folderId === "@my" && !this.isInit) {
+          if (folderId === "@my" /*  && !this.isInit */) {
             setTimeout(() => {
               return request();
             }, 5000);
@@ -1056,9 +1062,10 @@ class FilesStore {
     const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
+    const iconSize = this.viewAs === "tile" ? 32 : 24;
     const icon = this.fileActionStore.extension
-      ? getFileIcon(`.${this.fileActionStore.extension}`, 24)
-      : getFolderIcon(null, 24);
+      ? getFileIcon(`.${this.fileActionStore.extension}`, iconSize)
+      : getFolderIcon(null, iconSize);
 
     items.unshift({
       id: -1,
@@ -1124,12 +1131,11 @@ class FilesStore {
           )
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
+      const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const icon =
-        this.viewAs !== "tile"
-          ? getIcon(24, fileExst, providerKey, contentLength)
-          : getIcon(32, fileExst, providerKey, contentLength);
+      const iconSize = this.viewAs === "tile" ? 32 : 24;
+      const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;
       this.folders.map((x) => {
@@ -1206,6 +1212,7 @@ class FilesStore {
         previewUrl,
         folderUrl,
         href,
+        isThirdPartyFolder,
       };
     });
 
@@ -1242,7 +1249,7 @@ class FilesStore {
     }
 
     const hasFiles = cbMenu.some(
-      (elem) => elem !== "all" && elem !== FilterType.DocumentsOnly
+      (elem) => elem !== "all" && elem !== FilterType.FoldersOnly
     );
 
     if (hasFiles) cbMenu.push(FilterType.FilesOnly);
@@ -1293,7 +1300,13 @@ class FilesStore {
       other: [],
     };
 
-    for (let item of this.selection) {
+    const selection = this.selection.length
+      ? this.selection
+      : this.bufferSelection
+      ? [this.bufferSelection]
+      : [];
+
+    for (let item of selection) {
       item.checked = true;
       item.format = null;
 
@@ -1357,7 +1370,13 @@ class FilesStore {
   get isWebEditSelected() {
     const { filesConverts } = this.formatsStore.docserviceStore;
 
-    return this.selection.some((selected) => {
+    const selection = this.selection.length
+      ? this.selection
+      : this.bufferSelection
+      ? [this.bufferSelection]
+      : [];
+
+    return selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
       const index = filesConverts.findIndex((f) => f[selected.fileExst]);
       return index !== -1;
@@ -1383,7 +1402,12 @@ class FilesStore {
   }
 
   get selectionTitle() {
-    if (this.selection.length === 0) return null;
+    if (this.selection.length === 0) {
+      if (this.bufferSelection) {
+        return this.bufferSelection.title;
+      }
+      return null;
+    }
     return this.selection.find((el) => el.title).title;
   }
 
@@ -1462,7 +1486,9 @@ class FilesStore {
       if (fileType === "file") {
         newSelection.push(this.files.find((f) => f.id == id));
       } else {
-        newSelection.push(this.folders.find((f) => f.id == id));
+        const selectableFolder = this.folders.find((f) => f.id == id);
+        selectableFolder.isFolder = true;
+        newSelection.push(selectableFolder);
       }
     }
 
@@ -1547,10 +1573,11 @@ class FilesStore {
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
+    return folderInfo;
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    return openDocEditor(id, providerKey, tab, url);
+    return openEditor(id, providerKey, tab, url);
   };
 
   createThumbnails = () => {

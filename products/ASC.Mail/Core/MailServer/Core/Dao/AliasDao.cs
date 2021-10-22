@@ -24,48 +24,51 @@
 */
 
 
+using System.Linq;
+
+using ASC.Common;
+using ASC.Core.Common.EF;
 using ASC.Mail.Server.Core.Dao.Interfaces;
 using ASC.Mail.Server.Core.Entities;
-using System.Linq;
 
 namespace ASC.Mail.Server.Core.Dao
 {
-    public class AliasDao : BaseDao, IAliasDao
+    [Scope]
+    public class AliasDao : BaseServerDao, IAliasDao
     {
-        public AliasDao(MailServerDbContext db)
-            : base(db)
+        public AliasDao(DbContextManager<MailServerDbContext> dbContext)
+            : base(dbContext)
         {
         }
 
         public int Save(Alias alias)
         {
-            Db.Alias.Add(alias);
+            MailServerDbContext.Alias.Add(alias);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }
 
         public int Remove(string address)
         {
-            var query = Db.Alias.Where(a => 
+            var query = MailServerDbContext.Alias.Where(a =>
                 a.Address.Equals(address, System.StringComparison.InvariantCultureIgnoreCase));
-            
-            Db.RemoveRange(query);
 
-            var result = Db.SaveChanges();
+            MailServerDbContext.RemoveRange(query);
+
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }
 
         public int RemoveByDomain(string domain)
         {
-            var query = Db.Alias.Where(a =>
-                a.Domain.Equals(domain, System.StringComparison.InvariantCultureIgnoreCase));
+            var query = MailServerDbContext.Alias.Where(a => a.Domain.ToLower() == domain.ToLower());
 
-            Db.Alias.RemoveRange(query);
+            MailServerDbContext.Alias.RemoveRange(query);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }

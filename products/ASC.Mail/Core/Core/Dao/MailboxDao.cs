@@ -239,16 +239,16 @@ namespace ASC.Mail.Core.Dao
             return result > 0;
         }
 
-        public bool RemoveMailbox(Mailbox mailbox)
+        public bool RemoveMailbox(Mailbox mailbox, MailDbContext context)
         {
             var mailMailbox = new MailMailbox
             {
                 Id = (uint)mailbox.Id
             };
 
-            MailDbContext.MailMailbox.Remove(mailMailbox);
+            context.MailMailbox.Remove(mailMailbox);
 
-            var result = MailDbContext.SaveChanges();
+            var result = context.SaveChanges();
 
             return result > 0;
         }
@@ -306,15 +306,17 @@ namespace ASC.Mail.Core.Dao
 
         public bool SetNextLoginDelay(IMailboxExp exp, TimeSpan delay)
         {
-            var mailbox = MailDbContext.MailMailbox
-                .Where(exp.GetExpression())
-                .FirstOrDefault();
+            var mailboxes = MailDbContext.MailMailbox
+                .Where(exp.GetExpression());
 
-            if (mailbox == null)
+            if (mailboxes == null)
                 return false;
 
-            mailbox.IsProcessed = false;
-            mailbox.DateLoginDelayExpires = DateTime.UtcNow.Add(delay);
+            foreach (var mailbox in mailboxes)
+            {
+                mailbox.IsProcessed = false;
+                mailbox.DateLoginDelayExpires = DateTime.UtcNow.Add(delay);
+            }
 
             var result = MailDbContext.SaveChanges();
 

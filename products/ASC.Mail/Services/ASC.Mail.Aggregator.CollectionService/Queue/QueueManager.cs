@@ -577,7 +577,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
                         var type = mailbox.GetTenantStatus(tenantManager, securityContext, apiHelper, (int)MailSettings.Aggregator.TenantOverdueDays, Log);
 
                         Log.InfoFormat("TryLockMailbox -> Returned tenant {0} status: {1}.", mailbox.TenantId, type);
-
                         switch (type)
                         {
                             case DefineConstants.TariffType.LongDead:
@@ -598,7 +597,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Queue
 
                             case DefineConstants.TariffType.Overdue:
                                 Log.InfoFormat("Tenant {0} is not paid. Stop processing mailboxes.", mailbox.TenantId);
-
                                 mailboxEngine.SetNextLoginDelay(new TenantMailboxExp(mailbox.TenantId),
                                     MailSettings.Defines.OverdueAccountDelay);
 

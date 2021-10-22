@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
@@ -11,10 +11,57 @@ import withContextOptions from "../../../../../HOCs/withContextOptions";
 import SharedButton from "../../../../../components/SharedButton";
 import ItemIcon from "../../../../../components/ItemIcon";
 
+const checkedStyle = css`
+  background: #f3f4f4;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  @media (max-width: 1024px) {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+`;
+
+const draggingStyle = css`
+  background: #f8f7bf;
+  &:hover {
+    background: #efefb2;
+  }
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  @media (max-width: 1024px) {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+`;
+
+const StyledWrapper = styled.div`
+  .files-item {
+    border-left: none;
+    border-right: none;
+    margin-left: 0;
+  }
+`;
+
 const StyledSimpleFilesRow = styled(Row)`
-  background: ${(props) => props.checked && "#f8f9f9"};
-  cursor: ${(props) => props.checked && `url(images/cursor.palm.svg), auto`};
+  ${(props) => (props.checked || props.isActive) && checkedStyle};
+  ${(props) => props.dragging && draggingStyle}
+  position: unset;
+  cursor: ${(props) =>
+    !props.isThirdPartyFolder &&
+    (props.checked || props.isActive) &&
+    "url(images/cursor.palm.svg), auto"};
   margin-top: -2px;
+
   ${(props) =>
     !props.contextOptions &&
     `
@@ -72,6 +119,7 @@ const SimpleFilesRow = (props) => {
     onMouseClick,
     isEdit,
     showShare,
+    isActive,
   } = props;
 
   const sharedButton =
@@ -89,7 +137,7 @@ const SimpleFilesRow = (props) => {
   );
 
   return (
-    <div ref={props.selectableRef}>
+    <StyledWrapper ref={props.selectableRef}>
       <DragAndDrop
         data-title={item.title}
         value={value}
@@ -113,6 +161,9 @@ const SimpleFilesRow = (props) => {
           checked={checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
+          dragging={dragging && isDragging}
+          isActive={isActive}
+          isThirdPartyFolder={item.isThirdPartyFolder}
         >
           <FilesRowContent
             item={item}
@@ -121,7 +172,7 @@ const SimpleFilesRow = (props) => {
           />
         </StyledSimpleFilesRow>
       </DragAndDrop>
-    </div>
+    </StyledWrapper>
   );
 };
 

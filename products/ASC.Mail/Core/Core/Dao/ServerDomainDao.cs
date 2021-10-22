@@ -35,6 +35,8 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Mail.Core.Dao
 {
     [Scope]
@@ -72,25 +74,9 @@ namespace ASC.Mail.Core.Dao
 
         public int Delete(int id)
         {
-            var mailServerDomain = new MailServerDomain
-            {
-                Id = id,
-                Tenant = Tenant
-            };
+            var result = MailDbContext.Database.ExecuteSqlRaw("DELETE FROM mail_server_domain m WHERE m.id = {0} AND m.tenant = {1}", id, Tenant);
 
-            MailDbContext.MailServerDomain.Remove(mailServerDomain);
-
-            var result = MailDbContext.SaveChanges();
-
-            var mailServerDns = new MailServerDns
-            {
-                IdDomain = id,
-                Tenant = Tenant
-            };
-
-            MailDbContext.MailServerDns.Remove(mailServerDns);
-
-            MailDbContext.SaveChanges();
+            MailDbContext.Database.ExecuteSqlRaw("DELETE FROM mail_server_dns m WHERE m.id_domain = {0} AND m.tenant = {1}", id, Tenant);
 
             return result;
         }

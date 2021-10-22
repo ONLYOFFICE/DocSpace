@@ -67,7 +67,7 @@ namespace ASC.Mail.Core.Search
         {
             IQueryable<MailMail> GetBaseQuery(DateTime lastIndexed) =>
                 MailDbContext.MailMail
-                        .Where(r => r.TimeModified >= lastIndexed)
+                        .Where(r => r.LastModifiedOn >= lastIndexed)
                         .Join(MailDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { DbEntity = f, DbTenant = t })
                         .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active)
                         .Select(r => r.DbEntity);

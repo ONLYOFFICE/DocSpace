@@ -84,7 +84,7 @@ namespace ASC.Mail.Core.Dao
         public Dictionary<int, int> GetChainUserFolderCount(bool? unread = null)
         {
             var query = MailDbContext.MailUserFolderXMail
-                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
+                .Join(MailDbContext.MailMail, x => x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
@@ -117,7 +117,7 @@ namespace ASC.Mail.Core.Dao
         public Dictionary<int, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
             var query = MailDbContext.MailUserFolderXMail
-                .Join(MailDbContext.MailMail, x => (int)x.IdMail, m => m.Id,
+                .Join(MailDbContext.MailMail, x => x.IdMail, m => m.Id,
                 (x, m) => new
                 {
                     UFxMail = x,
@@ -133,6 +133,8 @@ namespace ASC.Mail.Core.Dao
                 .Where(t =>
                 t.UFxMail.Tenant == Tenant
                 && t.UFxMail.IdUser == UserId
+                && t.Chain.Tenant == Tenant
+                && t.Chain.IdUser == UserId
                 && userFolderIds.Contains(t.UFxMail.IdFolder));
 
 

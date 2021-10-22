@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 namespace ASC.Mail.StorageCleaner.Service
 {
     class Program
@@ -85,12 +86,14 @@ namespace ASC.Mail.StorageCleaner.Service
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddHttpContextAccessor();
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd<StorageCleanerLauncher>();
                     services.AddHostedService<StorageCleanerLauncher>();
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.TryAdd<StorageCleanerScope>();
                     services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>

@@ -11,7 +11,6 @@ using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Mapping;
 using ASC.Common.Utils;
-using ASC.ElasticSearch;
 using ASC.Mail.Aggregator.CollectionService.Console;
 using ASC.Mail.Aggregator.CollectionService.Service;
 using ASC.Mail.Core.Search;
@@ -95,10 +94,9 @@ namespace ASC.Mail.Aggregator.CollectionService
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddHttpContextAccessor();
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-                    services.AddHostedService<ServiceLauncher>();
-                    diHelper.TryAdd<ServiceLauncher>();
                     diHelper.TryAdd<FactoryIndexerMailMail>();
                     diHelper.TryAdd<FactoryIndexerMailContact>();
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));

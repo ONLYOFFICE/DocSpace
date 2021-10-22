@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -119,16 +120,12 @@ namespace ASC.Mail.Core.Dao
 
         public int DeleteAutoreply(int mailboxId)
         {
-            using var tr = MailDbContext.Database.BeginTransaction();
-
             var range = MailDbContext.MailMailboxAutoreply
                 .Where(r => r.Tenant == Tenant && r.IdMailbox == mailboxId);
 
             MailDbContext.MailMailboxAutoreply.RemoveRange(range);
 
             var count = MailDbContext.SaveChanges();
-
-            tr.Commit();
 
             return count;
         }

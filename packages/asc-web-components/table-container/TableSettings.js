@@ -49,7 +49,7 @@ const TableSettings = ({ columns }) => {
           return (
             column.onChange && (
               <Checkbox
-                className="table-container_settings-checkbox"
+                className="table-container_settings-checkbox not-selectable"
                 isChecked={column.enable}
                 onChange={onChange}
                 key={column.key}

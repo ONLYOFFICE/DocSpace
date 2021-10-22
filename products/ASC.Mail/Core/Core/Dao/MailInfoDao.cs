@@ -356,7 +356,7 @@ namespace ASC.Mail.Core.Dao
                 Folder = (FolderType)r.Folder,
                 ChainId = r.ChainId,
                 ChainDate = r.ChainDate,
-                MailboxId = r.IdMailbox,
+                MailboxId = r.MailboxId,
                 CalendarUid = string.IsNullOrEmpty(r.CalendarUid) ? null : r.CalendarUid,
                 Stream = r.Stream,
                 Uidl = r.Uidl,

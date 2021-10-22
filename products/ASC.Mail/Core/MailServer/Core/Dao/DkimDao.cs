@@ -24,37 +24,39 @@
 */
 
 
+using System.Linq;
+
+using ASC.Common;
+using ASC.Core.Common.EF;
 using ASC.Mail.Server.Core.Dao.Interfaces;
 using ASC.Mail.Server.Core.Entities;
-using ASC.Core.Common.EF;
-using System.Linq;
 
 namespace ASC.Mail.Server.Core.Dao
 {
-    public class DkimDao : BaseDao, IDkimDao
+    [Scope]
+    public class DkimDao : BaseServerDao, IDkimDao
     {
-        public DkimDao(MailServerDbContext db)
-            : base(db)
+        public DkimDao(DbContextManager<MailServerDbContext> dbContext)
+            : base(dbContext)
         {
         }
 
         public int Save(Dkim dkim)
         {
-            var entry = Db.AddOrUpdate(r => r.Dkim, dkim);
+            var entry = MailServerDbContext.AddOrUpdate(r => r.Dkim, dkim);
 
-            Db.SaveChanges();
+            MailServerDbContext.SaveChanges();
 
             return (int)entry.Id;
         }
 
         public int Remove(string domain)
         {
-            var query = Db.Dkim.Where(d =>
-                d.DomainName.Equals(domain, System.StringComparison.InvariantCultureIgnoreCase));
+            var query = MailServerDbContext.Dkim.Where(d => d.DomainName.ToLower() == domain.ToLower());
 
-            Db.Dkim.RemoveRange(query);
+            MailServerDbContext.Dkim.RemoveRange(query);
 
-            var result = Db.SaveChanges();
+            var result = MailServerDbContext.SaveChanges();
 
             return result;
         }

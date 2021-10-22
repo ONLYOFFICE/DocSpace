@@ -236,13 +236,13 @@ export function toCommunityHostname(hostname) {
 
 export function getProviderTranslation(provider, t) {
   switch (provider) {
-    case "Google":
+    case "google":
       return t("Common:SignInWithGoogle");
-    case "Facebook":
+    case "facebook":
       return t("Common:SignInWithFacebook");
-    case "Twitter":
+    case "twitter":
       return t("Common:SignInWithTwitter");
-    case "LinkedIn":
+    case "linkedin":
       return t("Common:SignInWithLinkedIn");
   }
 }
@@ -292,4 +292,18 @@ export function loadScript(url, id, onLoad, onError) {
   } catch (e) {
     console.error(e);
   }
+}
+
+export function isRetina() {
+  if (window.devicePixelRatio > 1) return true;
+
+  var mediaQuery =
+    "(-webkit-min-device-pixel-ratio: 1.5),\
+      (min--moz-device-pixel-ratio: 1.5),\
+      (-o-min-device-pixel-ratio: 3/2),\
+      (min-resolution: 1.5dppx),\
+      (min-device-pixel-ratio: 1.5)";
+
+  if (window.matchMedia && window.matchMedia(mediaQuery).matches) return true;
+  return false;
 }

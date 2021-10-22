@@ -61,9 +61,9 @@ namespace ASC.Mail.Core.Dao
             var mailMail = new MailMail
             {
                 Id = mail.Id,
-                IdMailbox = mail.MailboxId,
+                MailboxId = mail.MailboxId,
                 TenantId = mail.Tenant,
-                IdUser = mail.User,
+                UserId = mail.User,
                 Address = mail.Address,
                 Uidl = mail.Uidl,
                 Md5 = mail.Md5,
@@ -129,7 +129,7 @@ namespace ASC.Mail.Core.Dao
         public List<string> GetExistingUidls(int mailboxId, List<string> uidlList)
         {
             var existingUidls = MailDbContext.MailMail
-                .Where(m => m.IdMailbox == mailboxId && uidlList.Contains(m.Uidl))
+                .Where(m => m.MailboxId == mailboxId && uidlList.Contains(m.Uidl))
                 .Select(m => m.Uidl)
                 .ToList();
 
@@ -144,7 +144,7 @@ namespace ASC.Mail.Core.Dao
 
             foreach (var mail in mails)
             {
-                mail.TimeModified = now;
+                mail.LastModifiedOn = now;
             }
 
             var result = MailDbContext.SaveChanges();
@@ -157,8 +157,8 @@ namespace ASC.Mail.Core.Dao
             var mail = new Core.Entities.Mail
             {
                 Id = r.Id,
-                MailboxId = r.IdMailbox,
-                User = r.IdUser,
+                MailboxId = r.MailboxId,
+                User = r.UserId,
                 Tenant = r.TenantId,
                 Address = r.Address,
                 Uidl = r.Uidl,
@@ -183,7 +183,7 @@ namespace ASC.Mail.Core.Dao
                 FolderRestore = (FolderType)r.FolderRestore,
                 Spam = r.Spam,
                 IsRemoved = r.IsRemoved,
-                TimeModified = r.TimeModified,
+                TimeModified = r.LastModifiedOn,
                 MimeMessageId = r.MimeMessageId,
                 MimeInReplyTo = r.MimeInReplyTo,
                 ChainId = r.ChainId,

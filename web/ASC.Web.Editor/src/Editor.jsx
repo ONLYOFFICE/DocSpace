@@ -6,13 +6,13 @@ import { toast } from "react-toastify";
 import { Trans } from "react-i18next";
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
-import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
   loadScript,
-  //showLoader,
-  //hideLoader,
+  isRetina,
+  getCookie,
+  setCookie,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -44,7 +44,7 @@ import i18n from "./i18n";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
-
+import { isMobile } from "react-device-detect";
 import store from "studio/store";
 
 const { auth: authStore } = store;
@@ -88,10 +88,14 @@ const Editor = () => {
   const [extension, setExtension] = useState();
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
   const [openNewTab, setNewOpenTab] = useState(false);
-
+  const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
+    if (isRetina() && getCookie("is_retina") == null) {
+      setCookie("is_retina", true, { path: "/" });
+    }
+
     init();
   }, []);
 
@@ -104,23 +108,32 @@ const Editor = () => {
   };
 
   const insertImage = (link) => {
+    const token = link.token;
+
     docEditor.insertImage({
-      c: "add",
+      ...typeInsertImageAction,
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
 
   const mailMerge = (link) => {
+    const token = link.token;
+
     docEditor.setMailMergeRecipients({
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
 
   const compareFiles = (link) => {
+    const token = link.token;
+
     docEditor.setRevisedFile({
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
@@ -212,6 +225,11 @@ const Editor = () => {
     );
   };
 
+  const convertDocumentUrl = async () => {
+    const convert = await convertFile(fileId, true);
+    return convert[0].result.webUrl;
+  };
+
   const init = async () => {
     try {
       if (!fileId) return;
@@ -239,24 +257,24 @@ const Editor = () => {
 
       if (!doc && !successAuth) {
         window.open(
-          combineUrl(AppServerConfig.proxyURL, "/login"),
+          combineUrl(
+            AppServerConfig.proxyURL,
+            personal ? "/sign-in" : "/login"
+          ),
           "_self",
           "",
           true
         );
         return;
       }
-
       if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
 
           if (url.indexOf("#message/") > -1) {
-            const needConvert = canConvert(fileInfo.fileExst);
-
-            if (needConvert) {
-              const convert = await convertFile(fileId, true);
-              location.href = convert[0].result.webUrl;
+            if (canConvert(fileInfo.fileExst)) {
+              const url = await convertDocumentUrl();
+              history.pushState({}, null, url);
             }
           }
         } catch (err) {
@@ -287,7 +305,7 @@ const Editor = () => {
 
       isSharingAccess = fileInfo && fileInfo.canShare;
 
-      if (url.indexOf("action=view") !== -1) {
+      if (view) {
         config.editorConfig.mode = "view";
       }
 
@@ -381,7 +399,7 @@ const Editor = () => {
       setFavicon(config.documentType);
       setDocumentTitle(docTitle);
 
-      if (window.innerWidth < 720) {
+      if (isMobile) {
         config.type = "mobile";
       }
 
@@ -479,6 +497,7 @@ const Editor = () => {
           onRequestSaveAs,
           onRequestMailMergeRecipients,
           onRequestCompareFile,
+          onRequestEditRights: onSDKRequestEditRights,
         },
       };
 
@@ -501,12 +520,33 @@ const Editor = () => {
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
     }
+
+    const tempElm = document.getElementById("loader");
+    if (tempElm) {
+      tempElm.outerHTML = "";
+    }
   };
 
   const onSDKInfo = (event) => {
     console.log(
       "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
     );
+  };
+
+  const onSDKRequestEditRights = async () => {
+    console.log("ONLYOFFICE Document Editor requests editing rights");
+    const index = url.indexOf("&action=view");
+
+    if (index) {
+      let convertUrl = url.substring(0, index);
+
+      if (canConvert(fileInfo.fileExst)) {
+        convertUrl = await convertDocumentUrl();
+      }
+
+      history.pushState({}, null, convertUrl);
+      document.location.reload();
+    }
   };
 
   const [isVisible, setIsVisible] = useState(false);
@@ -601,7 +641,8 @@ const Editor = () => {
     }
   };
 
-  const onSDKRequestInsertImage = () => {
+  const onSDKRequestInsertImage = (event) => {
+    setTypeInsertImageAction(event.data);
     setFilesType(insertImageAction);
     setIsFileDialogVisible(true);
   };
@@ -802,9 +843,7 @@ const Editor = () => {
           )}
         </>
       ) : (
-        <Box paddingProp="16px">
-          <Loaders.Rectangle height="96vh" />
-        </Box>
+        <></>
       )}
     </Box>
   );

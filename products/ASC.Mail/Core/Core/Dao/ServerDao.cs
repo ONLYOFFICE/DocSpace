@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -51,14 +52,15 @@ namespace ASC.Mail.Core.Dao
         public Core.Entities.Server Get(int tenant)
         {
             var server = MailDbContext.MailServerServer
-                .Join(MailDbContext.MailServerServerXTenant, s => s.Id, x => x.IdServer, 
-                    (s, x) => new { 
+                .Join(MailDbContext.MailServerServerXTenant, s => s.Id, x => x.IdServer,
+                    (s, x) => new
+                    {
                         Server = s,
                         Xtenant = x
                     })
                 .Where(o => o.Xtenant.IdTenant == tenant)
                 .Select(o => ToServer(o.Server))
-                .SingleOrDefault();
+                .FirstOrDefault();
 
             return server;
         }
@@ -142,7 +144,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        protected Core.Entities.Server ToServer(MailServerServer r)
+        protected static Core.Entities.Server ToServer(MailServerServer r)
         {
             var s = new Core.Entities.Server
             {

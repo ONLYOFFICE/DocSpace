@@ -187,7 +187,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
-        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
         {
             if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
@@ -238,7 +238,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return FromQuery(query).Select(ToFile).ToList();
+            return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).Select(ToFile).ToList();
         }
 
 
@@ -374,7 +374,7 @@ namespace ASC.Files.Core.Data
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
 
-            if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+            if (checkQuota && CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
                 if (personalMaxSpace - GlobalSpace.GetUserUsedSpace(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
@@ -439,7 +439,7 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                FilesDbContext.Files.Add(toInsert);
+                FilesDbContext.AddOrUpdate(r => r.Files, toInsert);
                 FilesDbContext.SaveChanges();
 
                 tx.Commit();
@@ -1462,7 +1462,7 @@ namespace ASC.Files.Core.Data
 
         protected internal DbFile InitDocument(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {
@@ -1496,7 +1496,7 @@ namespace ASC.Files.Core.Data
 
         protected internal async Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {

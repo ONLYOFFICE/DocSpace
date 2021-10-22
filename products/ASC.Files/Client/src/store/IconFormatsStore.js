@@ -255,6 +255,8 @@ class IconFormatsStore {
         return `${folderPath}/djvu.svg`;
       case ".doc":
         return `${folderPath}/doc.svg`;
+      case ".docm":
+        return `${folderPath}/docm.svg`;
       case ".docx":
         return `${folderPath}/docx.svg`;
       case ".dotx":
@@ -359,6 +361,8 @@ class IconFormatsStore {
         return `${folderPath}/djvu.svg`;
       case ".doc":
         return `${folderPath}/doc.svg`;
+      case ".docm":
+        return `${folderPath}/docm.svg`;
       case ".docx":
         return `${folderPath}/docx.svg`;
       case ".dotx":

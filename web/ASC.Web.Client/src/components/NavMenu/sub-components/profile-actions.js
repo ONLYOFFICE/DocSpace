@@ -23,7 +23,11 @@ class ProfileActions extends React.PureComponent {
   };
 
   componentDidMount() {
-    this.getAvatar();
+    if (this.props.userIsUpdate) {
+      this.getAvatar();
+    } else {
+      this.setState({ avatar: this.state.user.avatar });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -86,7 +90,7 @@ class ProfileActions extends React.PureComponent {
         <Avatar
           onClick={this.onClick}
           role={userRole}
-          size="small"
+          size="min"
           source={avatar}
           userName={user.displayName}
           className="icon-profile-menu"

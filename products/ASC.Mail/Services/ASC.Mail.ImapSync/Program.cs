@@ -94,6 +94,7 @@ namespace ASC.Mail.ImapSync
                 })
             .ConfigureServices((hostContext, services) =>
             {
+                services.AddHttpContextAccessor();
                 services.AddMemoryCache();
                 var diHelper = new DIHelper(services);
                 services.AddHostedService<ServiceLauncher>();

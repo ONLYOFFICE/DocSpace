@@ -46,6 +46,7 @@ using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -68,6 +69,7 @@ namespace ASC.Mail.Core.Engine
         private QuotaEngine QuotaEngine { get; }
         private CacheEngine CacheEngine { get; }
         private IndexEngine IndexEngine { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public MailboxEngine(
             TenantManager tenantManager,
@@ -79,6 +81,7 @@ namespace ASC.Mail.Core.Engine
             CacheEngine cacheEngine,
             IndexEngine indexEngine,
             IOptionsMonitor<ILog> option,
+            IServiceProvider serviceProvider,
             MailSettings mailSettings) : base(mailSettings)
         {
             TenantManager = tenantManager;
@@ -94,6 +97,8 @@ namespace ASC.Mail.Core.Engine
             IndexEngine = indexEngine;
 
             Log = option.Get("ASC.Mail.MailboxEngine");
+
+            ServiceProvider = serviceProvider;
         }
 
         public MailBoxData GetMailboxData(IMailboxExp exp)
@@ -712,12 +717,18 @@ namespace ASC.Mail.Core.Engine
 
             long freedQuotaSize;
 
-            using (var tx = MailDaoFactory.BeginTransaction())
+            using var scope = ServiceProvider.CreateScope();
+
+            var factory = scope.ServiceProvider.GetService<MailDaoFactory>();
+
+            using (var tx = factory.BeginTransaction())
             {
                 if (mailbox.MailBoxId <= 0)
                     throw new Exception("MailBox id is 0");
 
                 freedQuotaSize = RemoveMailBoxInfo(mailbox);
+
+                Log.Debug($"Free quota size: {freedQuotaSize}");
 
                 QuotaEngine.QuotaUsedDelete(freedQuotaSize);
 
@@ -753,7 +764,14 @@ namespace ASC.Mail.Core.Engine
             //TODO: Check timeout on big mailboxes
             //using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveMailboxTimeout))
 
-            using (var tx = MailDaoFactory.BeginTransaction())
+            using var scope = ServiceProvider.CreateScope();
+
+            var factory = scope.ServiceProvider.GetService<MailDaoFactory>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+            tenantManager.SetCurrentTenant(mailBoxData.MailBoxId);
+
+            using (var tx = factory.BeginTransaction())
             {
                 if (mailBoxData.MailBoxId <= 0)
                     throw new Exception("MailBox id is 0");
@@ -767,7 +785,7 @@ namespace ASC.Mail.Core.Engine
                         mailBoxData.MailBoxId, mailBoxData.TenantId, mailBoxData.UserId));
                 }
 
-                MailDaoFactory.GetMailboxDao().SetMailboxRemoved(mailbox);
+                factory.GetMailboxDao().SetMailboxRemoved(mailbox);
 
                 var folderTypes = Enum.GetValues(typeof(FolderType)).Cast<int>().ToList();
 
@@ -776,56 +794,56 @@ namespace ASC.Mail.Core.Engine
                         .SetMailboxId(mailBoxData.MailBoxId)
                         .Build();
 
-                MailDaoFactory.GetChainDao().Delete(exp);
+                factory.GetChainDao().Delete(exp);
 
-                MailDaoFactory.GetCrmLinkDao().RemoveCrmLinks(mailBoxData.MailBoxId);
+                factory.GetCrmLinkDao().RemoveCrmLinks(mailBoxData.MailBoxId);
 
                 var exp1 = SimpleMessagesExp.CreateBuilder(mailBoxData.TenantId, mailBoxData.UserId)
                         .SetMailboxId(mailBoxData.MailBoxId)
                         .Build();
 
-                MailDaoFactory.GetMailInfoDao().SetFieldValue(exp1,
+                factory.GetMailInfoDao().SetFieldValue(exp1,
                     "IsRemoved",
                     true);
 
                 var exp2 = new ConcreteMailboxAttachmentsExp(mailBoxData.MailBoxId, mailBoxData.TenantId, mailBoxData.UserId,
                     onlyEmbedded: null);
 
-                totalAttachmentsSize = MailDaoFactory.GetAttachmentDao().GetAttachmentsSize(exp2);
+                totalAttachmentsSize = factory.GetAttachmentDao().GetAttachmentsSize(exp2);
 
-                MailDaoFactory.GetAttachmentDao().SetAttachmnetsRemoved(exp2);
+                factory.GetAttachmentDao().SetAttachmnetsRemoved(exp2);
 
-                var tagIds = MailDaoFactory.GetTagMailDao().GetTagIds(mailBoxData.MailBoxId);
+                var tagIds = factory.GetTagMailDao().GetTagIds(mailBoxData.MailBoxId);
 
-                MailDaoFactory.GetTagMailDao().DeleteByMailboxId(mailBoxData.MailBoxId);
+                factory.GetTagMailDao().DeleteByMailboxId(mailBoxData.MailBoxId);
 
                 foreach (var tagId in tagIds)
                 {
-                    var tag = MailDaoFactory.GetTagDao().GetTag(tagId);
+                    var tag = factory.GetTagDao().GetTag(tagId);
 
                     if (tag == null)
                         continue;
 
-                    var count = MailDaoFactory.GetTagMailDao().CalculateTagCount(tag.Id);
+                    var count = factory.GetTagMailDao().CalculateTagCount(tag.Id);
 
                     tag.Count = count;
 
-                    MailDaoFactory.GetTagDao().SaveTag(tag);
+                    factory.GetTagDao().SaveTag(tag);
                 }
 
-                MailDaoFactory.GetMailboxSignatureDao()
+                factory.GetMailboxSignatureDao()
                     .DeleteSignature(mailBoxData.MailBoxId);
 
-                MailDaoFactory.GetMailboxAutoreplyDao()
+                factory.GetMailboxAutoreplyDao()
                     .DeleteAutoreply(mailBoxData.MailBoxId);
 
-                MailDaoFactory.GetMailboxAutoreplyHistoryDao()
+                factory.GetMailboxAutoreplyHistoryDao()
                     .DeleteAutoreplyHistory(mailBoxData.MailBoxId);
 
-                MailDaoFactory.GetAlertDao()
+                factory.GetAlertDao()
                     .DeleteAlerts(mailBoxData.MailBoxId);
 
-                MailDaoFactory.GetUserFolderXMailDao()
+                factory.GetUserFolderXMailDao()
                     .RemoveByMailbox(mailBoxData.MailBoxId);
 
                 tx.Commit();

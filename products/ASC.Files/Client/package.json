@@ -12,7 +12,8 @@
     "start-prod": "webpack --mode production && serve dist -p 5008"
   },
   "dependencies": {
-    "copy-to-clipboard": "^3.3.1"
+    "copy-to-clipboard": "^3.3.1",
+    "file-saver": "^2.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -38,8 +39,8 @@
     "style-loader": "3.2.1",
     "terser-webpack-plugin": "^5.2.4",
     "webpack": "5.52.1",
-    "webpack-cli": "4.8.0",
-    "webpack-dev-server": "4.2.0"
+    "webpack-cli": "4.9.0",
+    "webpack-dev-server": "4.3.1"
   },
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE"

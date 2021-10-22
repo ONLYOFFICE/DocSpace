@@ -18,6 +18,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.FederatedLogin.Helpers;
 using ASC.Files.Core;
+using ASC.Files.Core.Model;
 using ASC.Files.Model;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -63,6 +64,7 @@ namespace ASC.Files.Helpers
         private DocumentServiceTrackerHelper DocumentServiceTracker { get; }
         private SettingsManager SettingsManager { get; }
         private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
         private ILog Logger { get; set; }
 
         /// <summary>
@@ -89,7 +91,8 @@ namespace ASC.Files.Helpers
             DocumentServiceTrackerHelper documentServiceTracker,
             IOptionsMonitor<ILog> optionMonitor,
             SettingsManager settingsManager,
-            EncryptionKeyPairHelper encryptionKeyPairHelper)
+            EncryptionKeyPairHelper encryptionKeyPairHelper,
+            IHttpContextAccessor httpContextAccessor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -110,6 +113,7 @@ namespace ASC.Files.Helpers
             DocumentServiceTracker = documentServiceTracker;
             SettingsManager = settingsManager;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
+            HttpContextAccessor = httpContextAccessor;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -118,27 +122,32 @@ namespace ASC.Files.Helpers
             return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType, withSubFolders).NotFoundIfNull();
         }
 
-        public List<FileWrapper<T>> UploadFile(T folderId, UploadModel uploadModel)
+        public object UploadFile(T folderId, UploadModel uploadModel)
         {
             if (uploadModel.StoreOriginalFileFlag.HasValue)
             {
                 FilesSettingsHelper.StoreOriginalFiles = uploadModel.StoreOriginalFileFlag.Value;
             }
 
-            if (uploadModel.Files != null && uploadModel.Files.Any())
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files == null || !files.Any())
             {
-                if (uploadModel.Files.Count() == 1)
+                files = uploadModel.Files;
+            }
+
+            if (files != null && files.Any())
+            {
+                if (files.Count() == 1)
                 {
                     //Only one file. return it
-                    var postedFile = uploadModel.Files.First();
-                    return new List<FileWrapper<T>>
-                    {
-                        InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
-                    };
+                    var postedFile = files.First();
+                    return InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus);
                 }
+
                 //For case with multiple files
                 return uploadModel.Files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)).ToList();
             }
+
             if (uploadModel.File != null)
             {
                 var fileName = "file" + MimeMapping.GetExtention(uploadModel.ContentType.MediaType);
@@ -149,9 +158,10 @@ namespace ASC.Files.Helpers
 
                 return new List<FileWrapper<T>>
                 {
-                    InsertFile(folderId, uploadModel.File, fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
+                    InsertFile(folderId, uploadModel.File.OpenReadStream(), fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
                 };
             }
+
             throw new InvalidOperationException("No input files");
         }
 
@@ -350,13 +360,19 @@ namespace ASC.Files.Helpers
 
         public FileWrapper<T> UpdateFile(T fileId, string title, int lastVersion)
         {
+            File<T> newFile = null;
             if (!string.IsNullOrEmpty(title))
-                FileStorageService.FileRename(fileId, title);
+            {
+                newFile = FileStorageService.FileRename(fileId, title);
+            }
 
             if (lastVersion > 0)
-                FileStorageService.UpdateToVersion(fileId, lastVersion);
+            {
+                var pair = FileStorageService.UpdateToVersion(fileId, lastVersion);
+                newFile = pair.Key;
+            }
 
-            return GetFileInfo(fileId);
+            return newFile != null ? FileWrapperHelper.Get(newFile) : GetFileInfo(fileId);
         }
 
         public IEnumerable<FileOperationWraper> DeleteFile(T fileId, bool deleteAfter, bool immediately)
@@ -422,11 +438,11 @@ namespace ASC.Files.Helpers
 
             if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
             {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetInt32());
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetInt32());
             }
             else
             {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetString());
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetString());
             }
 
             var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
@@ -438,21 +454,21 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
         {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
                 .Select(FileOperationWraperHelper.Get)
                 .ToList();
         }
 
         public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
         {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
                 .Select(FileOperationWraperHelper.Get)
                 .ToList();
         }
 
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<JsonElement> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel model)
         {
-            return FileStorageService.MarkAsRead(model.FolderIds, model.FileIds).Select(FileOperationWraperHelper.Get).ToList();
+            return FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()).Select(FileOperationWraperHelper.Get).ToList();
         }
 
         public IEnumerable<FileOperationWraper> TerminateTasks()
@@ -671,6 +687,17 @@ namespace ASC.Files.Helpers
             }
 
             return wrapper;
+        }
+
+        internal IFormFile GetFileFromRequest(IModelWithFile model)
+        {
+            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
+            if (files != null && files.Any())
+            {
+                return files.First();
+            }
+
+            return model.File;
         }
     }
 }

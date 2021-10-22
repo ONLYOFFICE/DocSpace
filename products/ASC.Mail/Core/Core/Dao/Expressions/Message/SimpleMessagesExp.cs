@@ -94,7 +94,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (!string.IsNullOrEmpty(User))
             {
-                exp = exp.And(m => m.IdUser == User);
+                exp = exp.And(m => m.UserId == User);
             }
 
             if (MessageId.HasValue)
@@ -129,7 +129,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             if (MailboxId.HasValue)
             {
-                exp = exp.And(m => m.IdMailbox == MailboxId.Value);
+                exp = exp.And(m => m.MailboxId == MailboxId.Value);
             }
 
             if (!string.IsNullOrEmpty(Md5))

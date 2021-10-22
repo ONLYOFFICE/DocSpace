@@ -3,14 +3,13 @@ import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
 const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
-  const { fileExst } = item;
+  const { fileExst, title } = item;
   return (
     <Link
       type="page"
-      title={titleWithoutExt}
+      title={title}
       fontWeight="600"
       fontSize="13px"
-      href={item.href}
       {...linkStyles}
       color="#333"
       isTextOverflow
@@ -24,7 +23,6 @@ const FileNameCell = ({ item, titleWithoutExt, linkStyles }) => {
           color="#A3A9AE"
           fontSize="13px"
           fontWeight={600}
-          title={fileExst}
           truncate={true}
         >
           {fileExst}

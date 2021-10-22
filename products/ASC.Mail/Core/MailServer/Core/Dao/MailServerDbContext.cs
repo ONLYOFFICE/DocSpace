@@ -4,18 +4,32 @@
 using Microsoft.EntityFrameworkCore;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Core.Common.EF;
+using ASC.Common;
+using System.Collections.Generic;
+using System;
+using ASC.Core.Common.EF.Model;
 
 namespace ASC.Mail.Server.Core.Dao
 {
     public partial class MailServerDbContext : BaseDbContext
     {
-        public MailServerDbContext()
-        {
-        }
+        public MailServerDbContext() { }
 
-        public MailServerDbContext(DbContextOptions<MailServerDbContext> options)
-            : base(options)
+        public MailServerDbContext(DbContextOptions<MailServerDbContext> options) : base(options) { }
+
+        public class MySqlMailServerDbContext : MailServerDbContext { }
+        public class PostgreMailServerDbContext : MailServerDbContext { }
+
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlMailServerDbContext() } ,
+                    { Provider.Postgre, () => new PostgreMailServerDbContext() } ,
+                };
+            }
         }
 
         public virtual DbSet<Alias> Alias { get; set; }
@@ -24,15 +38,11 @@ namespace ASC.Mail.Server.Core.Dao
         public virtual DbSet<Domain> Domain { get; set; }
         public virtual DbSet<Mailbox> Mailbox { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            ModelBuilderWrapper.From(modelBuilder, Provider)
+                .AddDbTenant();
+
             modelBuilder.Entity<Alias>(entity =>
             {
                 entity.HasKey(e => e.Address)
@@ -387,5 +397,13 @@ namespace ASC.Mail.Server.Core.Dao
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+
+    public static class MailServerDbExtension
+    {
+        public static DIHelper AddMailServerDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<MailServerDbContext>();
+        }
     }
 }

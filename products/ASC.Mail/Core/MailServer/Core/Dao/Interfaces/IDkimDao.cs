@@ -24,10 +24,12 @@
 */
 
 
+using ASC.Common;
 using ASC.Mail.Server.Core.Entities;
 
 namespace ASC.Mail.Server.Core.Dao.Interfaces
 {
+    [Scope(typeof(IDkimDao))]
     public interface IDkimDao
     {
         int Save(Dkim dkim);

@@ -77,10 +77,9 @@ const FilesTileContent = ({
   item,
   titleWithoutExt,
   linkStyles,
-  onFilesClick,
   badgesComponent,
 }) => {
-  const { fileExst } = item;
+  const { fileExst, title } = item;
 
   return (
     <>
@@ -93,11 +92,10 @@ const FilesTileContent = ({
           className="title-link item-file-name"
           containerWidth="100%"
           type="page"
-          title={titleWithoutExt}
+          title={title}
           fontWeight="600"
           fontSize="14px"
           target="_blank"
-          href={item.href}
           {...linkStyles}
           color="#333"
           isTextOverflow
@@ -110,7 +108,6 @@ const FilesTileContent = ({
               color="#A3A9AE"
               fontSize="14px"
               fontWeight={600}
-              title={fileExst}
               truncate={true}
             >
               {fileExst}

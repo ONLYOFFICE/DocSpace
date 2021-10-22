@@ -81,15 +81,7 @@ namespace ASC.Mail.Core.Dao
 
         public int DeleteAutoreplyHistory(int mailboxId)
         {
-            var model = new MailMailboxAutoreplyHistory
-            {
-                IdMailbox = mailboxId,
-                Tenant = Tenant
-            };
-
-            MailDbContext.MailMailboxAutoreplyHistory.Remove(model);
-
-            var count = MailDbContext.SaveChanges();
+            var count = MailDbContext.Database.ExecuteSqlRaw("DELETE FROM mail_mailbox_autoreply_history m WHERE m.id_mailbox = {0} AND m.tenant = {1}", mailboxId, Tenant);
 
             return count;
         }
