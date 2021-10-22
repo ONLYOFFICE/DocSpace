@@ -18,7 +18,12 @@ const StyledSectionHeader = styled.div`
     margin-top: 64px;
   `}
 
-  
+  @media ${desktop} {
+    ${(props) =>
+      (props.viewAs === "table" || props.viewAs === "tile") &&
+      "margin-left: -4px"};
+  }
+
   @media ${tablet} {
     ${(props) =>
       props.viewAs !== "tablet" &&

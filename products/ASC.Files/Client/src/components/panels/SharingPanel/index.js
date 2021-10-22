@@ -19,6 +19,7 @@ import {
   StyledFooter,
   StyledHeaderContent,
   StyledSharingBody,
+  StyledModalRowContainer,
 } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
@@ -26,9 +27,12 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import ModalDialogContainer from "../../dialogs/ModalDialogContainer";
+import ModalDialog from "@appserver/components/modal-dialog";
+import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -50,6 +54,7 @@ class SharingPanelComponent extends React.Component {
       showPanel: false,
       accessOptions: [],
       filesOwnerId: null,
+      showEmbeddingContent: false,
     };
 
     this.ref = React.createRef();
@@ -74,6 +79,7 @@ class SharingPanelComponent extends React.Component {
     newDataItems[0].access = rights;
     this.setState({
       shareDataItems: newDataItems,
+      showEmbeddingContent: false,
     });
   };
 
@@ -343,6 +349,12 @@ class SharingPanelComponent extends React.Component {
       shareLink: link,
     });
 
+  onShowEmbeddingContainer = (link) =>
+    this.setState({
+      showEmbeddingContent: !this.state.showEmbeddingContent,
+      shareLink: link,
+    });
+
   onShowGroupsPanel = () =>
     this.setState({
       showAddGroupsPanel: !this.state.showAddGroupsPanel,
@@ -448,6 +460,7 @@ class SharingPanelComponent extends React.Component {
       //showPanel,
       accessOptions,
       externalAccessOptions,
+      showEmbeddingContent,
     } = this.state;
 
     const visible = sharingPanelVisible;
@@ -460,7 +473,66 @@ class SharingPanelComponent extends React.Component {
     const internalLink =
       selection.length === 1 && !isEncrypted && this.getInternalLink();
 
-    return (
+    return isPersonal && !isMobileOnly ? (
+      <ModalDialog
+        isLoading={!tReady}
+        visible={visible}
+        displayType="modal"
+        onClose={this.onClose}
+      >
+        <ModalDialog.Header>{t("SharingSettingsTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <StyledModalRowContainer>
+            {!isLoading ? (
+              shareDataItems.map((item, index) => (
+                <SharingRow
+                  t={t}
+                  isPersonal={isPersonal}
+                  index={index}
+                  key={`${item.sharedTo.id}_${index}`}
+                  selection={selection}
+                  item={item}
+                  isMyId={isMyId}
+                  accessOptions={accessOptions}
+                  externalAccessOptions={externalAccessOptions}
+                  canShareOwnerChange={canShareOwnerChange}
+                  onChangeItemAccess={this.onChangeItemAccess}
+                  internalLink={internalLink}
+                  onRemoveUserClick={this.onRemoveUserItemClick}
+                  onShowEmbeddingPanel={this.onShowEmbeddingContainer}
+                  onToggleLink={this.onToggleLink}
+                  onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
+                  isLoading={isLoading}
+                  documentTitle={documentTitle}
+                />
+              ))
+            ) : (
+              <Loaders.Rectangle
+                height="47px"
+                animate={0}
+                foregroundColor="#f8f9f9"
+                backgroundColor="#f8f9f9"
+                backgroundOpacity={1}
+                foregroundOpacity={1}
+              />
+            )}
+            {showEmbeddingContent && (
+              <EmbeddingBody embeddingLink={shareLink} />
+            )}
+          </StyledModalRowContainer>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            className="sharing_panel-button"
+            label={t("Common:SaveButton")}
+            size="big"
+            primary
+            onClick={this.onSaveClick}
+            isDisabled={isLoading}
+          />
+        </ModalDialog.Footer>
+      </ModalDialog>
+    ) : (
       <StyledAsidePanel visible={visible}>
         <Backdrop
           onClick={this.onClose}
