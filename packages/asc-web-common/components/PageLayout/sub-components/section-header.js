@@ -19,10 +19,11 @@ const StyledSectionHeader = styled.div`
     min-height: 48px;
     max-height: 49px; */
     width: ${(props) => !props.isLoaded && "100%"};
-    margin-top: 64px;
-    /* @media ${tablet} {
-      margin-top: 55px;
-    } */
+
+    margin-top: 62px;
+    @media ${tablet} {
+      margin-top: 48px;
+    }
   `}
 
   @media ${desktop} {
@@ -86,7 +87,7 @@ const StyledSectionHeader = styled.div`
         padding-bottom: 0 !important;
         > div:first-child {
           top: ${(props) =>
-            !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
+            !props.isSectionHeaderVisible ? "48px" : "0px"} !important;
 
           @media ${desktop} {
             ${isMobile &&
