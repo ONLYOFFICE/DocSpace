@@ -1,5 +1,4 @@
-﻿
-using ASC.Core.Common.EF;
+﻿using ASC.Core.Common.EF;
 
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
