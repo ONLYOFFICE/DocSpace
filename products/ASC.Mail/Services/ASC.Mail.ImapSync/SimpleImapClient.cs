@@ -75,24 +75,24 @@ namespace ASC.Mail.ImapSync
         {
             if (!IsReady) return;
 
-            if (sender is IMailFolder imap_folder)
+            if (!(sender is IMailFolder imap_folder)) return;
+
+            _log.Debug($"ImapMessageFlagsChanged. Folder= {ImapWorkFolder.Name} Index={e.Index}.");
+
+            MessageDescriptor messageSummary = ImapMessagesList?.FirstOrDefault(x => x.Index == e.Index);
+
+            if (messageSummary == null)
             {
-                _log.Debug($"ImapMessageFlagsChanged. Folder= {ImapWorkFolder.Name} Index={e.Index}.");
+                _log.Warn($"ImapMessageFlagsChanged. No Message summary. Folder= {ImapWorkFolder.Name} Index={e.Index}.");
 
-                MessageDescriptor messageSummary = ImapMessagesList?.FirstOrDefault(x => x.Index == e.Index);
-
-                if (messageSummary == null)
-                {
-                    _log.Warn($"ImapMessageFlagsChanged. No Message summary. Folder= {ImapWorkFolder.Name} Index={e.Index}.");
-
-                    return;
-                }
-
-                if (messageSummary.Flags.HasValue)
-                {
-                    CompareFlags(imap_folder, messageSummary, e.Flags);
-                }
+                return;
             }
+
+            if (messageSummary.Flags.HasValue)
+            {
+                CompareFlags(imap_folder, messageSummary, e.Flags);
+            }
+
         }
 
         private void ImapFolderCountChanged(object sender, EventArgs e)
@@ -410,35 +410,18 @@ namespace ASC.Mail.ImapSync
                 ImapMessagesList = newMessagesList;
 
                 MessagesListUpdated?.Invoke(this, EventArgs.Empty);
+
+                return;
             }
-            else
+
+
+            foreach (var newMessage in newMessagesList)
             {
-                foreach (var newMessage in newMessagesList)
+                var oldMessage = ImapMessagesList.FirstOrDefault(x => x.UniqueId == newMessage.UniqueId);
+
+                if (oldMessage == null)
                 {
-                    var oldMessage = ImapMessagesList.FirstOrDefault(x => x.UniqueId == newMessage.UniqueId);
-
-                    if (oldMessage == null)
-                    {
-                        try
-                        {
-                            var mimeMessage = ImapWorkFolder.GetMessage(newMessage.UniqueId, CancelToken);
-
-                            _log.Debug($"UpdateMessagesList: New message detected {newMessage.UniqueId}.");
-
-                            NewMessage(this, (mimeMessage, newMessage));
-                        }
-                        catch (Exception ex)
-                        {
-                            _log.Error($"UpdateMessagesList: Try fetch one message from imap with UniqueId={newMessage.UniqueId}: {ex.Message}.");
-                        }
-                    }
-                    else
-                    {
-                        if (newMessage.Flags.HasValue)
-                        {
-                            CompareFlags(ImapWorkFolder, oldMessage, newMessage.Flags.Value);
-                        }
-                    }
+                    TryGetNewMessage(newMessage.UniqueId);
                 }
             }
 

@@ -25,7 +25,6 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.Caching;
 using ASC.Mail.Configuration;
-using ASC.Mail.Core.Engine;
 
 using MailKit.Security;
 
@@ -109,30 +108,17 @@ namespace ASC.Mail.ImapSync
         {
             if (clients.ContainsKey(cashedTenantUserMailBox.UserName))
             {
-                if (clients[cashedTenantUserMailBox.UserName] != null)
-                {
-                    clients[cashedTenantUserMailBox.UserName]?.CheckRedis(cashedTenantUserMailBox.MailBoxId, cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
+                clients[cashedTenantUserMailBox.UserName]?.CheckRedis(cashedTenantUserMailBox.MailBoxId, cashedTenantUserMailBox.Folder, cashedTenantUserMailBox.tags);
 
-                    _log.Info($"User Activity -> {cashedTenantUserMailBox.MailBoxId}, folder={cashedTenantUserMailBox.Folder}. ");
+                _log.Info($"User Activity -> {cashedTenantUserMailBox.MailBoxId}, folder={cashedTenantUserMailBox.Folder}. ");
 
-                    return;
-                }
-                else
-                {
-                    clients.TryRemove(cashedTenantUserMailBox.UserName, out MailImapClient trash);
-
-                    _log.Debug($"User Activity -> Client UserName={cashedTenantUserMailBox.UserName} removed.");
-                }
+                return;
             }
 
             CreateClientSemaphore.Wait();
 
             try
             {
-                if (clients.ContainsKey(cashedTenantUserMailBox.UserName)) return;
-
-                clients.TryAdd(cashedTenantUserMailBox.UserName, null);
-
                 CreateMailClient(cashedTenantUserMailBox.UserName, cashedTenantUserMailBox.Tenant);
             }
             finally
@@ -155,7 +141,7 @@ namespace ASC.Mail.ImapSync
                 }
                 else
                 {
-                    clients.TryUpdate(userName, client, null);
+                    clients.TryAdd(userName, client);
 
                     client.OnCriticalError += Client_DeleteClient;
                 }

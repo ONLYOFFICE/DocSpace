@@ -29,6 +29,7 @@ using ASC.Core.Common.Caching;
 using ASC.Core.Notify.Signalr;
 using ASC.Core.Users;
 using ASC.Data.Storage;
+using ASC.Mail.Clients;
 using ASC.Mail.Configuration;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
@@ -175,10 +176,10 @@ namespace ASC.Mail.ImapSync
 
             securityContext = clientScope.GetService<SecurityContext>();
             securityContext.AuthenticateMe(new Guid(UserName));
-
+            _storageFactory = clientScope.GetService<StorageFactory>();
             _mailInfoDao = clientScope.GetService<IMailInfoDao>();
             _mailEnginesFactory = clientScope.GetService<MailEnginesFactory>();
-            _storageFactory = clientScope.GetService<StorageFactory>();
+            
             _folderEngine = clientScope.GetService<FolderEngine>();
             _signalrServiceClient = clientScope.GetService<IOptionsSnapshot<SignalrServiceClient>>().Get("mail");
             _redisClient = clientScope.GetService<RedisClient>();
@@ -249,7 +250,7 @@ namespace ASC.Mail.ImapSync
             simpleImapClient.NewMessage += ImapClient_NewMessage;
             simpleImapClient.MessagesListUpdated += ImapClient_MessagesListUpdated;
             simpleImapClient.NewActionFromImap += ImapClient_NewActionFromImap;
-            simpleImapClient.OnCriticalError += ImapClient_OnCriticalError; ;
+            simpleImapClient.OnCriticalError += ImapClient_OnCriticalError; 
             simpleImapClient.OnUidlsChange += ImapClient_OnUidlsChange;
 
             simpleImapClients.Add(mailbox, simpleImapClient);
@@ -535,17 +536,19 @@ namespace ASC.Mail.ImapSync
                     return result;
                 }
 
+                _log.Info("DoOptionalOperations->START");
+
+                DoOptionalOperations(messageDB, message, simpleImapClient.Account, folder, _log, _mailEnginesFactory);
+
+                _log.Info("DoOptionalOperations->END");
+
                 var messageInfo = MailInfoDao.ToMailInfo(messageDB.ToMailMail(Tenant, Guid.Parse(UserName)), "");
 
                 simpleImapClient.WorkFolderMails.Add(messageInfo);
 
                 _log.Info($"Message saved (id: {messageDB.Id}, From: '{messageDB.From}', Subject: '{messageDB.Subject}', Unread: {messageDB.IsNew})");
 
-                _log.Info("DoOptionalOperations->START");
 
-                DoOptionalOperations(messageDB, message, simpleImapClient.Account, folder, _log, _mailEnginesFactory);
-
-                _log.Info("DoOptionalOperations->END");
             }
             catch (Exception ex)
             {

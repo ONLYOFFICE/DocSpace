@@ -1632,19 +1632,28 @@ namespace ASC.Mail.Core.Engine
 
                 if ((!fromThisMailBox || !toThisMailBox) && messagesInfo.Exists(m => m.FolderRestore == folder))
                 {
-                    var existMessage = messagesInfo.First();
-
-                    if (!existMessage.IsRemoved)
+                    var clone = messagesInfo.FirstOrDefault(m => m.FolderRestore == folder && m.Uidl == uidl);
+                    if (clone != null)
+                        log.InfoFormat("Message already exists: mailId={0}. Clone", clone.Id);
+                    else
                     {
-                        MailDaoFactory.GetMailInfoDao().SetFieldValue(
-                            SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
-                            .SetMessageId(existMessage.Id)
-                            .Build(),
-                            "Uidl",
-                            uidl);
-                    }
+                        var existMessage = messagesInfo.First();
 
-                    log.Info($"Message already exists by (md5={md5})|{mimeMessageId}|Subject|DateSent ");
+                        if (!existMessage.IsRemoved)
+                        {
+                            if (string.IsNullOrEmpty(existMessage.Uidl))
+                            {
+                                MailDaoFactory.GetMailInfoDao().SetFieldValue(
+                                    SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
+                                    .SetMessageId(existMessage.Id)
+                                    .Build(),
+                                    "Uidl",
+                                    uidl);
+                            }
+                        }
+
+                        log.Info("Message already exists by MD5|MimeMessageId|Subject|DateSent");
+                    }
 
                     return true;
                 }

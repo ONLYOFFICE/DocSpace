@@ -14,6 +14,7 @@ namespace ASC.Mail.ImapSync
     {
 
         private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
         private StorageFactory StorageFactory { get; }
         private MailEnginesFactory MailEnginesFactory { get; }
         private SecurityContext SecurityContext { get; }
@@ -27,6 +28,7 @@ namespace ASC.Mail.ImapSync
         public MailClientScope(
             ServiceProvider serviceProvider,
             TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
             StorageFactory storageFactory,
             MailEnginesFactory mailEnginesFactory,
             SecurityContext securityContext,
@@ -36,7 +38,7 @@ namespace ASC.Mail.ImapSync
             FolderEngine folderEngine)
         {
             ServiceProvider = serviceProvider;
-
+            CoreBaseSettings = coreBaseSettings;
             TenantManager = tenantManager;
             StorageFactory = storageFactory;
             MailEnginesFactory = mailEnginesFactory;
