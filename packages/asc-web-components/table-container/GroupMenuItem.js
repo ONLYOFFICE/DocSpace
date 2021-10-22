@@ -14,6 +14,7 @@ const StyledButton = styled(Button)`
   :hover,
   :active {
     border: none;
+    background-color: unset;
   }
 
   .btnIcon {
