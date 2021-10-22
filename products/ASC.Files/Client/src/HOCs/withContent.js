@@ -15,6 +15,7 @@ import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 import { getDefaultFileName } from "../helpers/utils";
+import ItemIcon from "../components/ItemIcon";
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
@@ -108,18 +109,19 @@ export default function withContent(WrappedContent) {
       return this.completeAction(e);
     };
 
-    onClickUpdateItem = (e) => {
+    onClickUpdateItem = (e, open = true) => {
       const { fileActionType } = this.props;
       fileActionType === FileAction.Create
-        ? this.createItem(e)
+        ? this.createItem(e, open)
         : this.updateItem(e);
     };
 
-    createItem = (e) => {
+    createItem = (e, open) => {
       const {
         createFile,
         item,
         setIsLoading,
+        isLoading,
         openDocEditor,
         isPrivacy,
         isDesktop,
@@ -129,6 +131,8 @@ export default function withContent(WrappedContent) {
         createFolder,
       } = this.props;
       const { itemTitle } = this.state;
+
+      if (isLoading) return;
 
       setIsLoading(true);
 
@@ -140,7 +144,7 @@ export default function withContent(WrappedContent) {
       }
 
       let tab =
-        !isDesktop && item.fileExst
+        !isDesktop && item.fileExst && open
           ? window.open(
               combineUrl(
                 AppServerConfig.proxyURL,
@@ -154,13 +158,6 @@ export default function withContent(WrappedContent) {
       !item.fileExst && !item.contentLength
         ? createFolder(item.parentId, itemTitle)
             .then(() => this.completeAction(itemId))
-            .then(() =>
-              toastr.success(
-                <Trans t={t} i18nKey="FolderCreated" ns="Home">
-                  New folder {{ itemTitle }} is created
-                </Trans>
-              )
-            )
             .catch((e) => toastr.error(e))
             .finally(() => {
               return setIsLoading(false);
@@ -176,22 +173,14 @@ export default function withContent(WrappedContent) {
                     encryptedFile,
                     true,
                     false
-                  ).then(() =>
-                    openDocEditor(file.id, file.providerKey, tab, file.webUrl)
+                  ).then(
+                    () => open && openDocEditor(file.id, file.providerKey, tab)
                   );
                 });
               }
-              return openDocEditor(file.id, file.providerKey, tab, file.webUrl);
+              return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
-            .then(() => {
-              const exst = item.fileExst;
-              return toastr.success(
-                <Trans t={t} i18nKey="FileCreated" ns="Home">
-                  New file {{ itemTitle }}.{{ exst }} is created
-                </Trans>
-              );
-            })
             .catch((e) => toastr.error(e))
             .finally(() => {
               return setIsLoading(false);
@@ -199,15 +188,15 @@ export default function withContent(WrappedContent) {
     };
 
     renameTitle = (e) => {
-      const { t } = this.props;
+      const { t, folderFormValidation } = this.props;
 
       let title = e.target.value;
       //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
-      const regexp = new RegExp('[*+:"<>?|\\\\/]', "gim");
-      if (title.match(regexp)) {
+
+      if (title.match(folderFormValidation)) {
         toastr.warning(t("ContainsSpecCharacter"));
       }
-      title = title.replace(regexp, "_");
+      title = title.replace(folderFormValidation, "_");
       return this.setState({ itemTitle: title });
     };
 
@@ -231,9 +220,9 @@ export default function withContent(WrappedContent) {
     };
 
     getTableStatusByDate = (create) => {
-      const { created, updated, fileExst } = this.props.item;
+      const { created, updated } = this.props.item;
 
-      const date = fileExst ? updated : created;
+      const date = create ? created : updated;
       const dateLabel = new Date(date).toLocaleString(this.props.culture);
       return dateLabel;
     };
@@ -250,8 +239,17 @@ export default function withContent(WrappedContent) {
         onFilesClick,
         viewAs,
         element,
+        isDesktop,
       } = this.props;
-      const { id, fileExst, updated, createdBy, access, fileStatus } = item;
+      const {
+        id,
+        fileExst,
+        updated,
+        createdBy,
+        access,
+        fileStatus,
+        href,
+      } = item;
 
       const titleWithoutExt = getTitleWithoutExst(item);
 
@@ -276,13 +274,22 @@ export default function withContent(WrappedContent) {
         ? { noHover: true }
         : { onClick: onFilesClick };
 
+      if (!isDesktop && !isTrashFolder) {
+        linkStyles.href = item.href;
+      }
+
       const newItems = item.new || fileStatus === 2;
       const showNew = !!newItems;
+      const elementIcon = element ? (
+        element
+      ) : (
+        <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+      );
 
       return isEdit ? (
         <EditingWrapperComponent
           className={"editing-wrapper-component"}
-          elementIcon={element}
+          elementIcon={elementIcon}
           itemTitle={itemTitle}
           itemId={id}
           viewAs={viewAs}
@@ -313,6 +320,7 @@ export default function withContent(WrappedContent) {
       const { editCompleteAction } = filesActionsStore;
       const {
         setIsLoading,
+        isLoading,
         openDocEditor,
         updateFile,
         renameFolder,
@@ -328,10 +336,15 @@ export default function withContent(WrappedContent) {
         id: fileActionId,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
-      const { culture, isDesktopClient } = auth.settingsStore;
+      const {
+        culture,
+        isDesktopClient,
+        folderFormValidation,
+      } = auth.settingsStore;
 
       return {
         setIsLoading,
+        isLoading,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
         updateFile,
@@ -350,6 +363,7 @@ export default function withContent(WrappedContent) {
         homepage: config.homepage,
         viewer: auth.userStore.user,
         viewAs,
+        folderFormValidation,
       };
     }
   )(observer(WithContent));

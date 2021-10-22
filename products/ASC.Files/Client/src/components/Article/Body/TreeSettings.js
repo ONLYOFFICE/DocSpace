@@ -88,6 +88,7 @@ const PureTreeSettings = ({
   setIsLoading,
   t,
   isVisitor,
+  isDesktop,
 }) => {
   const { setting } = match.params;
 
@@ -173,7 +174,7 @@ const PureTreeSettings = ({
             title={t("Common:AdminSettings")}
           />
         ) : null}
-        {enableThirdParty && !isVisitor ? (
+        {enableThirdParty && !isVisitor && !isDesktop ? (
           <TreeNode
             selectable={true}
             className="settings-node"
@@ -210,7 +211,7 @@ const PureTreeSettings = ({
 };
 
 const TreeSettings = withTranslation(["Settings", "Common"])(
-  withRouter(withLoader(PureTreeSettings)(<Loaders.TreeSettingsLoader />))
+  withRouter(withLoader(PureTreeSettings)(<></>))
 );
 
 export default inject(
@@ -242,6 +243,7 @@ export default inject(
       setSelectedFolder,
       setSelectedNode,
       setExpandSettingsTree,
+      isDesktop: auth.settingsStore.isDesktopClient,
     };
   }
 )(observer(TreeSettings));

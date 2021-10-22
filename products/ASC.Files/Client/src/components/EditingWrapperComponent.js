@@ -46,6 +46,8 @@ const EditingWrapper = styled.div`
       border-bottom: 1px solid #eceef1;
       padding-bottom: 4px;
       margin-top: 4px;
+
+      margin-left: -4px;
     `}
 
   ${(props) =>
@@ -57,7 +59,12 @@ const EditingWrapper = styled.div`
   }
   .edit-text {
     height: 32px;
-    font-size: 15px;
+    font-size: ${(props) =>
+      props.viewAs === "table"
+        ? "13px"
+        : props.viewAs === "tile"
+        ? "14px"
+        : "15px"};
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
@@ -144,6 +151,7 @@ const EditingWrapperComponent = (props) => {
   };
 
   const onFocus = (e) => e.target.select();
+  const onBlur = (e) => onClickUpdateItem(e, false);
 
   return (
     <EditingWrapper viewAs={viewAs}>
@@ -156,9 +164,10 @@ const EditingWrapperComponent = (props) => {
         tabIndex={1}
         isAutoFocussed={true}
         onChange={renameTitle}
-        onKeyPress={onKeyUpUpdateItem}
+        onKeyUp={onKeyUpUpdateItem}
         onKeyDown={onEscapeKeyPress}
         onFocus={onFocus}
+        onBlur={onBlur}
         isDisabled={isLoading}
         data-itemid={itemId}
         withBorder={!isTable}

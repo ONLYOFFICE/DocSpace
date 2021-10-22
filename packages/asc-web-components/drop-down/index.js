@@ -80,7 +80,7 @@ class DropDown extends React.PureComponent {
     const left = rects.left < 0 && rects.width < container.width;
     const right =
       rects.width &&
-      rects.left < 250 &&
+      rects.left < (rects.width || 250) &&
       rects.left > rects.width &&
       rects.width < container.width;
     const top = rects.bottom > container.height && rects.top > rects.height;

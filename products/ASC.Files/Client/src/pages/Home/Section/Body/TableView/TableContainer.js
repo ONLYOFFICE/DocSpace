@@ -4,14 +4,15 @@ import { inject, observer } from "mobx-react";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
+import { isMobile } from "react-device-detect";
 
 const Table = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    if (viewAs !== "table" && viewAs !== "row") return;
+    if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
 
-    if (sectionWidth < 1025) {
+    if (sectionWidth < 1025 || isMobile) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");

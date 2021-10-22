@@ -33,7 +33,6 @@ class My extends React.Component {
     setDocumentTitle(t("Common:Profile"));
     setFirstLoad(false);
 
-    this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
     const arrayOfQueryParams = queryParams.map((queryParam) =>
@@ -51,12 +50,6 @@ class My extends React.Component {
         setIsLoading(false);
         setLoadedProfile(true);
       });
-    }
-
-    if (!profile && this.documentElement) {
-      for (var i = 0; i < this.documentElement.length; i++) {
-        this.documentElement[i].style.transition = "none";
-      }
     }
   }
 

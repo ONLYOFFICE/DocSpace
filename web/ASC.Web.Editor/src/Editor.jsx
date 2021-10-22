@@ -6,12 +6,13 @@ import { toast } from "react-toastify";
 import { Trans } from "react-i18next";
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
-import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
-  //showLoader,
-  //hideLoader,
+  loadScript,
+  isRetina,
+  getCookie,
+  setCookie,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -43,7 +44,7 @@ import i18n from "./i18n";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
-
+import { isMobile } from "react-device-detect";
 import store from "studio/store";
 
 const { auth: authStore } = store;
@@ -65,6 +66,7 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
+let personal;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -78,6 +80,7 @@ const Editor = () => {
   const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
+  const view = url.indexOf("action=view") !== -1;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -85,10 +88,14 @@ const Editor = () => {
   const [extension, setExtension] = useState();
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
   const [openNewTab, setNewOpenTab] = useState(false);
-
+  const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
+    if (isRetina() && getCookie("is_retina") == null) {
+      setCookie("is_retina", true, { path: "/" });
+    }
+
     init();
   }, []);
 
@@ -101,23 +108,32 @@ const Editor = () => {
   };
 
   const insertImage = (link) => {
+    const token = link.token;
+
     docEditor.insertImage({
-      c: "add",
+      ...typeInsertImageAction,
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
 
   const mailMerge = (link) => {
+    const token = link.token;
+
     docEditor.setMailMergeRecipients({
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
 
   const compareFiles = (link) => {
+    const token = link.token;
+
     docEditor.setRevisedFile({
       fileType: link.filetype,
+      ...(token && { token }),
       url: link.url,
     });
   };
@@ -176,12 +192,12 @@ const Editor = () => {
   };
 
   const initDesktop = (config) => {
-    const isEncryption = config.editorConfig["encryptionKeys"] !== undefined;
+    const isEncryption = config?.editorConfig["encryptionKeys"] !== undefined;
 
     regDesktop(
       user,
       isEncryption,
-      config.editorConfig.encryptionKeys,
+      config?.editorConfig.encryptionKeys,
       (keys) => {
         setEncryptionKeys(keys);
       },
@@ -209,6 +225,11 @@ const Editor = () => {
     );
   };
 
+  const convertDocumentUrl = async () => {
+    const convert = await convertFile(fileId, true);
+    return convert[0].result.webUrl;
+  };
+
   const init = async () => {
     try {
       if (!fileId) return;
@@ -228,31 +249,32 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
-        successAuth = user !== null;
+        personal = authStore.settingsStore.personal;
+        successAuth = !!user;
       } catch (e) {
         successAuth = false;
       }
 
       if (!doc && !successAuth) {
         window.open(
-          combineUrl(AppServerConfig.proxyURL, "/login"),
+          combineUrl(
+            AppServerConfig.proxyURL,
+            personal ? "/sign-in" : "/login"
+          ),
           "_self",
           "",
           true
         );
         return;
       }
-
       if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
 
-          if (url.indexOf("#message/")) {
-            const needConvert = canConvert(fileInfo.fileExst);
-
-            if (needConvert) {
-              const convert = await convertFile(fileId, true);
-              location.href = convert[0].result.webUrl;
+          if (url.indexOf("#message/") > -1) {
+            if (canConvert(fileInfo.fileExst)) {
+              const url = await convertDocumentUrl();
+              history.pushState({}, null, url);
             }
           }
         } catch (err) {
@@ -262,7 +284,7 @@ const Editor = () => {
         setIsAuthenticated(successAuth);
       }
 
-      const config = await openEdit(fileId, version, doc);
+      const config = await openEdit(fileId, version, doc, view);
 
       actionLink = config?.editorConfig?.actionLink;
 
@@ -283,13 +305,13 @@ const Editor = () => {
 
       isSharingAccess = fileInfo && fileInfo.canShare;
 
-      if (url.indexOf("action=view") !== -1) {
+      if (view) {
         config.editorConfig.mode = "view";
       }
 
       setIsLoading(false);
 
-      loadDocApi(docApiUrl, () => onLoad(config));
+      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad(config));
     } catch (error) {
       console.log(error);
       toastr.error(
@@ -366,20 +388,6 @@ const Editor = () => {
     document.title = title;
   };
 
-  const loadDocApi = (docApiUrl, onLoadCallback) => {
-    const script = document.createElement("script");
-    script.setAttribute("type", "text/javascript");
-    script.setAttribute("id", "scripDocServiceAddress");
-
-    script.onload = onLoadCallback;
-
-    script.src = docApiUrl;
-    script.async = true;
-
-    console.log("PureEditor componentDidMount: added script");
-    document.body.appendChild(script);
-  };
-
   const onLoad = (config) => {
     try {
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
@@ -391,7 +399,7 @@ const Editor = () => {
       setFavicon(config.documentType);
       setDocumentTitle(docTitle);
 
-      if (window.innerWidth < 720) {
+      if (isMobile) {
         config.type = "mobile";
       }
 
@@ -414,6 +422,11 @@ const Editor = () => {
         ...config.editorConfig.customization,
         goback: goBack,
       };
+
+      if (personal && !fileInfo) {
+        //TODO: add conditions for SaaS
+        config.document.info.favorite = null;
+      }
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
@@ -484,6 +497,7 @@ const Editor = () => {
           onRequestSaveAs,
           onRequestMailMergeRecipients,
           onRequestCompareFile,
+          onRequestEditRights: onSDKRequestEditRights,
         },
       };
 
@@ -506,12 +520,33 @@ const Editor = () => {
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
     }
+
+    const tempElm = document.getElementById("loader");
+    if (tempElm) {
+      tempElm.outerHTML = "";
+    }
   };
 
   const onSDKInfo = (event) => {
     console.log(
       "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
     );
+  };
+
+  const onSDKRequestEditRights = async () => {
+    console.log("ONLYOFFICE Document Editor requests editing rights");
+    const index = url.indexOf("&action=view");
+
+    if (index) {
+      let convertUrl = url.substring(0, index);
+
+      if (canConvert(fileInfo.fileExst)) {
+        convertUrl = await convertDocumentUrl();
+      }
+
+      history.pushState({}, null, convertUrl);
+      document.location.reload();
+    }
   };
 
   const [isVisible, setIsVisible] = useState(false);
@@ -590,17 +625,24 @@ const Editor = () => {
       docTitle = newTitle;
     }
 
-    if (!newTitle)
+    if (!newTitle) {
+      const onlyNumbers = new RegExp("^[0-9]+$");
+      const isFileWithoutProvider = onlyNumbers.test(fileId);
+
+      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+
       favorite
-        ? markAsFavorite([+fileId])
+        ? markAsFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error))
-        : removeFromFavorite([+fileId])
+        : removeFromFavorite([convertFileId])
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error));
+    }
   };
 
-  const onSDKRequestInsertImage = () => {
+  const onSDKRequestInsertImage = (event) => {
+    setTypeInsertImageAction(event.data);
     setFilesType(insertImageAction);
     setIsFileDialogVisible(true);
   };
@@ -643,6 +685,19 @@ const Editor = () => {
     setNewOpenTab(false);
   };
 
+  const getSavingInfo = async (title, folderId) => {
+    const savingInfo = await SaveAs(
+      title,
+      urlSelectorFolder,
+      folderId,
+      openNewTab
+    );
+
+    if (savingInfo) {
+      const convertedInfo = savingInfo.split(": ").pop();
+      docEditor.showMessage(convertedInfo);
+    }
+  };
   const onClickSaveSelectFolder = (e, folderId) => {
     const currentExst = titleSelectorFolder.split(".").pop();
 
@@ -651,7 +706,11 @@ const Editor = () => {
         ? titleSelectorFolder.concat(`.${extension}`)
         : titleSelectorFolder;
 
-    SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    if (openNewTab) {
+      SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+    } else {
+      getSavingInfo(title, folderId);
+    }
   };
 
   const onChangeInput = (e) => {
@@ -784,9 +843,7 @@ const Editor = () => {
           )}
         </>
       ) : (
-        <Box paddingProp="16px">
-          <Loaders.Rectangle height="96vh" />
-        </Box>
+        <></>
       )}
     </Box>
   );

@@ -273,26 +273,20 @@ class FilterBlock extends React.Component {
   constructor(props) {
     super(props);
 
-    const { hiddenFilterItems, openFilterItems } = props;
-
-    this.state = {
-      hiddenFilterItems: hiddenFilterItems || [],
-      openFilterItems: openFilterItems || [],
-      needUpdate: false,
-    };
+    this.state = { needUpdate: false };
   }
 
   componentDidMount() {
     this.setNeedUpdate(true);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { needUpdate } = this.state;
-    const { needUpdateFilter } = this.props;
+    const { needUpdateFilter, openFilterItems, hiddenFilterItems } = this.props;
     if (
       (needUpdate || needUpdateFilter) &&
-      (!equal(prevState.openFilterItems, this.state.openFilterItems) ||
-        !equal(prevState.hiddenFilterItems, this.state.hiddenFilterItems))
+      (!equal(prevProps.openFilterItems, openFilterItems) ||
+        !equal(prevProps.hiddenFilterItems, hiddenFilterItems))
     ) {
       this.props.onFilterRender();
       this.setNeedUpdate(false);
@@ -302,17 +296,10 @@ class FilterBlock extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { hiddenFilterItems, openFilterItems } = nextProps;
 
-    if (!equal(this.props, nextProps)) {
-      if (
-        !equal(this.props.hiddenFilterItems, hiddenFilterItems) ||
-        !equal(this.props.openFilterItems, openFilterItems)
-      ) {
-        this.setState({
-          hiddenFilterItems,
-          openFilterItems,
-        });
-        return false;
-      }
+    if (
+      !equal(this.props.hiddenFilterItems, hiddenFilterItems) ||
+      !equal(this.props.openFilterItems, openFilterItems)
+    ) {
       return true;
     }
 
@@ -330,7 +317,7 @@ class FilterBlock extends React.Component {
     });
   };
   getFilterItems = () => {
-    const { openFilterItems, hiddenFilterItems } = this.state;
+    const { openFilterItems, hiddenFilterItems } = this.props;
     const { asideView } = this.props;
     const _this = this;
     let result = [];

@@ -19,5 +19,7 @@
   "TemporaryPassword": "Vorübergehendes Kennwort",
   "TermsOfUsePopupHelperLink": "Erfahren Sie mehr über die Nutzungsbedingungen",
   "UpdatingProcess": "Wird aktualisiert...",
-  "WriteComment": "Kommentar hinzufügen"
+  "WriteComment": "Kommentar hinzufügen",
+  "ErrorInvalidUserLastName": "Ungültiger Nachname",
+  "ErrorInvalidUserFirstName": "Ungültiger Vorname"
 }

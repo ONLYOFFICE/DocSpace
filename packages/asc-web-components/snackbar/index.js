@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import PropType from "prop-types";
+import PropTypes from "prop-types";
+import Countdown, { zeroPad } from "react-countdown";
 import StyledSnackBar from "./styled-snackbar";
 import StyledCrossIcon from "./styled-snackbar-action";
 import StyledLogoIcon from "./styled-snackbar-logo";
@@ -39,6 +41,24 @@ class SnackBar extends React.Component {
     this.props.onAction && this.props.onAction(e);
   };
 
+  // Renderer callback with condition
+  countDownRenderer = ({ minutes, seconds, completed }) => {
+    if (completed) return <></>;
+    const { textColor, fontSize, fontWeight } = this.props;
+
+    // Render a countdown
+    return (
+      <Text
+        as="p"
+        color={textColor}
+        fontSize={fontSize}
+        fontWeight={fontWeight}
+      >
+        {zeroPad(minutes)}:{zeroPad(seconds)}
+      </Text>
+    );
+  };
+
   render() {
     const {
       text,
@@ -50,13 +70,15 @@ class SnackBar extends React.Component {
       fontWeight,
       textAlign,
       htmlContent,
+      style,
+      countDownTime,
       ...rest
     } = this.props;
 
     const headerStyles = headerText ? {} : { display: "none" };
 
     return (
-      <StyledSnackBar {...rest}>
+      <StyledSnackBar style={style} {...rest}>
         {htmlContent ? (
           <div
             dangerouslySetInnerHTML={{
@@ -91,9 +113,21 @@ class SnackBar extends React.Component {
                 </Text>
 
                 {btnText && (
-                  <button className="button" onClick={this.onActionClick}>
-                    <Text color={textColor}>{btnText}</Text>
-                  </button>
+                  <Text
+                    color={textColor}
+                    className="button"
+                    onClick={this.onActionClick}
+                  >
+                    {btnText}
+                  </Text>
+                )}
+
+                {countDownTime > -1 && (
+                  <Countdown
+                    date={Date.now() + countDownTime}
+                    renderer={this.countDownRenderer}
+                    onComplete={this.onActionClick}
+                  />
                 )}
               </div>
             </Box>
@@ -104,7 +138,6 @@ class SnackBar extends React.Component {
             <StyledCrossIcon size="medium" />
           </button>
         )}
-        )
       </StyledSnackBar>
     );
   }
@@ -123,6 +156,8 @@ SnackBar.propTypes = {
   fontWeight: PropType.string,
   textAlign: PropType.string,
   htmlContent: PropType.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  countDownTime: PropType.number,
 };
 
 SnackBar.defaultProps = {
@@ -133,6 +168,7 @@ SnackBar.defaultProps = {
   fontWeight: "400",
   textAlign: "left",
   htmlContent: "",
+  countDownTime: -1,
 };
 
 export default SnackBar;

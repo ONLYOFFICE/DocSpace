@@ -6,18 +6,18 @@ using ASC.Web.Files.Services.WCFService.FileOperations;
 
 namespace ASC.Files.Model
 {
-    public class BaseBatchModel<T>
+    public class BaseBatchModel
     {
-        public IEnumerable<T> FolderIds { get; set; }
-        public IEnumerable<T> FileIds { get; set; }
+        public IEnumerable<JsonElement> FolderIds { get; set; }
+        public IEnumerable<JsonElement> FileIds { get; set; }
         public BaseBatchModel()
         {
-            FolderIds = new List<T>();
-            FileIds = new List<T>();
+            FolderIds = new List<JsonElement>();
+            FileIds = new List<JsonElement>();
         }
     }
 
-    public class DownloadModel : BaseBatchModel<JsonElement>
+    public class DownloadModel : BaseBatchModel
     {
         public IEnumerable<ItemKeyValuePair<JsonElement, string>> FileConvertIds { get; set; }
         public DownloadModel() : base()
@@ -26,7 +26,7 @@ namespace ASC.Files.Model
         }
     }
 
-    public class DeleteBatchModel : BaseBatchModel<JsonElement>
+    public class DeleteBatchModel : BaseBatchModel
     {
         public bool DeleteAfter { get; set; }
         public bool Immediately { get; set; }
@@ -38,7 +38,7 @@ namespace ASC.Files.Model
         public bool Immediately { get; set; }
     }
 
-    public class BatchModel : BaseBatchModel<JsonElement>
+    public class BatchModel : BaseBatchModel
     {
         public JsonElement DestFolderId { get; set; }
         public FileConflictResolveType ConflictResolveType { get; set; }

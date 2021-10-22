@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Base from "../themes/base";
 
 const IconWrapper = styled.div`
-  align-self: end;
+  align-self: start;
   display: flex;
   svg {
     width: ${(props) => props.theme.toastr.svg.width};
@@ -33,6 +33,7 @@ const StyledDiv = styled.div`
     align-self: center;
     font-size: ${(props) => props.theme.toastr.text.fontSize};
     color: ${(props) => props.theme.toastr.text.color};
+    word-break: break-word;
   }
 `;
 StyledDiv.defaultProps = { theme: Base };

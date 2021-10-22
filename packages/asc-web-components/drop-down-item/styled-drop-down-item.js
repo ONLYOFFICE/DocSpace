@@ -1,4 +1,3 @@
-import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { tablet } from "../utils/device";
@@ -42,7 +41,6 @@ const StyledDropdownItem = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .drop-down-item_icon {
-    ${isMobile && `margin: auto;  text-align: center;`}
     path {
       fill: ${(props) =>
         props.disabled
@@ -103,6 +101,7 @@ StyledDropdownItem.defaultProps = { theme: Base };
 
 const IconWrapper = styled.div`
   display: flex;
+  align-items: center;
   width: ${(props) => props.theme.dropDownItem.icon.width};
   margin-right: ${(props) => props.theme.dropDownItem.icon.marginRight};
   line-height: ${(props) => props.theme.dropDownItem.icon.lineHeight};

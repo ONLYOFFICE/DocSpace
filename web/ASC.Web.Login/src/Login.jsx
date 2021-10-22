@@ -145,7 +145,7 @@ const LoginFormWrapper = styled.div`
         : css`1fr 66px`
       : css`1fr`};
   width: 100%;
-  height: calc(100vh-56px);
+  height: calc(100vh-48px);
 `;
 
 const settings = {
@@ -370,6 +370,7 @@ const Form = (props) => {
 
   const providerButtons = () => {
     let facebookIndex = null;
+
     const providerButtons =
       providers &&
       providers.map((item, index) => {
@@ -379,7 +380,7 @@ const Form = (props) => {
           item.provider
         ];
 
-        if (item.provider === "Facebook") {
+        if (item.provider === "facebook") {
           facebookIndex = index;
           return;
         }

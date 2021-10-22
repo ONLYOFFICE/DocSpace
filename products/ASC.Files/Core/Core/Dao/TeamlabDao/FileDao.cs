@@ -170,7 +170,7 @@ namespace ASC.Files.Core.Data
 
             query = query.OrderByDescending(r => r.Version);
 
-            return ToFile(FromQueryWithShared(query).SingleOrDefault());
+            return ToFile(FromQueryWithShared(query).FirstOrDefault());
         }
 
         public List<File<int>> GetFileHistory(int fileId)
@@ -190,7 +190,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
-        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
         {
             if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
@@ -241,7 +241,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return FromQuery(query).Select(ToFile).ToList();
+            return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).Select(ToFile).ToList();
         }
 
 
@@ -377,7 +377,7 @@ namespace ASC.Files.Core.Data
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
 
-            if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+            if (checkQuota && CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
                 if (personalMaxSpace - GlobalSpace.GetUserUsedSpace(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
@@ -442,7 +442,7 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                FilesDbContext.Files.Add(toInsert);
+                FilesDbContext.AddOrUpdate(r => r.Files, toInsert);
                 FilesDbContext.SaveChanges();
 
                 tx.Commit();
@@ -716,8 +716,8 @@ namespace ASC.Files.Core.Data
         {
             return Query(FilesDbContext.Files)
                 .AsNoTracking()
-                .Any(r => r.Title == title && 
-                          r.FolderId == folderId && 
+                .Any(r => r.Title == title &&
+                          r.FolderId == folderId &&
                           r.CurrentVersion);
         }
 
@@ -1228,8 +1228,8 @@ namespace ASC.Files.Core.Data
         public bool ContainChanges(int fileId, int fileVersion)
         {
             return Query(FilesDbContext.Files)
-                .Any(r => r.Id == fileId && 
-                          r.Version == fileVersion && 
+                .Any(r => r.Id == fileId &&
+                          r.Version == fileVersion &&
                           r.Changes != null);
         }
 
@@ -1285,7 +1285,7 @@ namespace ASC.Files.Core.Data
             var toUpdate = FilesDbContext.Files
                 .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
 
-            if (toUpdate != null) 
+            if (toUpdate != null)
             {
                 toUpdate.Thumb = thumbnail != null ? Thumbnail.Created : file.ThumbnailStatus;
                 FilesDbContext.SaveChanges();
@@ -1465,7 +1465,7 @@ namespace ASC.Files.Core.Data
 
         internal protected DbFile InitDocument(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {
@@ -1499,7 +1499,7 @@ namespace ASC.Files.Core.Data
 
         internal protected async Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {

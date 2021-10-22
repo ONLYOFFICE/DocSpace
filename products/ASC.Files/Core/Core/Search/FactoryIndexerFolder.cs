@@ -101,7 +101,7 @@ namespace ASC.Web.Files.Core.Search
 
             List<int> getIds(DateTime lastIndexed)
             {
-                long start = 0;
+                var start = 0;
                 var result = new List<int>();
                 while (true)
                 {

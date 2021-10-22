@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 import Base from "../themes/base";
 import DropDown from "../drop-down";
 
@@ -65,6 +66,8 @@ const StyledDropDown = styled(DropDown)`
 StyledDropDown.defaultProps = { theme: Base };
 
 const StyledMainButton = styled.div`
+  ${NoUserSelect}
+
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   position: relative;
   display: block;
@@ -93,6 +96,12 @@ const StyledMainButton = styled.div`
     display: block;
     margin: ${(props) => props.theme.mainButton.margin};
     height: ${(props) => props.theme.mainButton.height};
+  }
+
+  .main-button_text {
+    font-size: ${(props) => props.theme.mainButton.fontSize};
+    font-weight: ${(props) => props.theme.mainButton.fontWeight};
+    color: ${(props) => props.theme.mainButton.textColor};
   }
 `;
 StyledMainButton.defaultProps = { theme: Base };

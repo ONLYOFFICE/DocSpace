@@ -48,13 +48,17 @@ class GroupButtonsMenu extends React.Component {
     item.onClick && item.onClick(e);
   };
 
-  componentDidMount() {
+  updateItemsWidth = () => {
     const groupMenuElement = document.getElementById("groupMenu");
 
     const groupMenuItems = groupMenuElement ? groupMenuElement.children : [0];
     const groupMenuItemsArray = [...groupMenuItems];
 
     this.widthsArray = groupMenuItemsArray.map((item) => item.offsetWidth);
+  };
+
+  componentDidMount() {
+    this.updateItemsWidth();
 
     window.addEventListener("resize", this.throttledResize);
     window.addEventListener("orientationchange", this.throttledResize);
@@ -73,6 +77,14 @@ class GroupButtonsMenu extends React.Component {
       this.state.moreItems.length !== prevState.moreItems.length ||
       this.props.menuItems !== prevProps.menuItems
     ) {
+      if (
+        this.state.priorityItems.length !== prevState.priorityItems.length &&
+        this.props.sectionWidth === prevProps.sectionWidth &&
+        this.state.moreItems.length === prevState.moreItems.length
+      ) {
+        this.updateItemsWidth();
+      }
+
       this.updateMenu();
     }
   }
@@ -172,6 +184,7 @@ class GroupButtonsMenu extends React.Component {
                   isIndeterminate={isIndeterminate}
                   onChange={onChange}
                   opened={item.opened}
+                  alt={item.alt}
                 >
                   {item.children}
                 </GroupButton>

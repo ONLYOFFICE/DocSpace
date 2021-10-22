@@ -7,6 +7,7 @@ class VersionHistoryStore {
   versions = null;
   filesStore = null;
   showProgressBar = false;
+  timerId = null;
 
   constructor(filesStore) {
     makeObservable(this, {
@@ -42,10 +43,12 @@ class VersionHistoryStore {
       null,
       versions.map((ver) => ver.versionGroup)
     );
+    const isVerHistoryPanel = this.isVisible;
 
     if (
-      versions.length !== file.version ||
-      currentVersionGroup !== file.versionGroup
+      isVerHistoryPanel &&
+      (versions.length !== file.version ||
+        currentVersionGroup !== file.versionGroup)
     ) {
       const newFile = {
         ...file,
@@ -77,7 +80,7 @@ class VersionHistoryStore {
   };
 
   restoreVersion = (id, version) => {
-    this.setShowProgressBar(true);
+    this.timerId = setTimeout(() => this.setShowProgressBar(true), 100);
 
     return api.files
       .versionRestore(id, version)
@@ -85,9 +88,13 @@ class VersionHistoryStore {
         const updatedVersions = this.versions.slice();
         updatedVersions.splice(1, 0, newVersion);
         this.setVerHistoryFileVersions(updatedVersions);
-        this.setShowProgressBar(false);
       })
-      .catch(() => this.setShowProgressBar(false));
+      .catch((e) => console.error(e))
+      .finally(() => {
+        clearTimeout(this.timerId);
+        this.timerId = null;
+        this.setShowProgressBar(false);
+      });
   };
 
   updateCommentVersion = (id, comment, version) => {

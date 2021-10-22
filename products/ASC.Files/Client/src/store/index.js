@@ -39,7 +39,7 @@ const filesStore = new FilesStore(
   settingsStore,
   selectedFilesStore
 );
-const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
+const mediaViewerDataStore = new MediaViewerDataStore(filesStore, formatsStore);
 
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();

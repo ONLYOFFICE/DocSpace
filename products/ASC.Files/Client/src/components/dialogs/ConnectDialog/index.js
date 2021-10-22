@@ -23,13 +23,13 @@ const PureConnectDialogContainer = (props) => {
     providers,
     selectedFolderId,
     selectedFolderFolders,
-    fetchFiles,
     getOAuthToken,
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
     personal,
     getSubfolders,
+    folderFormValidation,
   } = props;
   const {
     corporate,
@@ -59,7 +59,11 @@ const PureConnectDialogContainer = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const isAccount = !!link;
-  const showUrlField = title === "WebDav" || title === "SharePoint";
+  const showUrlField =
+    provider_key === "WebDav" ||
+    provider_key === "SharePoint" ||
+    key === "WebDav" ||
+    key === "SharePoint";
 
   const onChangeUrl = (e) => {
     setIsUrlValid(true);
@@ -75,7 +79,15 @@ const PureConnectDialogContainer = (props) => {
   };
   const onChangeFolderName = (e) => {
     setIsTitleValid(true);
-    setCustomerTitleValue(e.target.value);
+    let title = e.target.value;
+    //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
+
+    if (title.match(folderFormValidation)) {
+      toastr.warning(t("Home:ContainsSpecCharacter"));
+    }
+    title = title.replace(folderFormValidation, "_");
+
+    setCustomerTitleValue(title);
   };
   const onChangeMakeShared = () => setMakeShared(!isCorporate);
 
@@ -141,7 +153,6 @@ const PureConnectDialogContainer = (props) => {
   }, [
     commonFolderId,
     customerTitle,
-    fetchFiles,
     fetchThirdPartyProviders,
     isCorporate,
     link,
@@ -162,7 +173,7 @@ const PureConnectDialogContainer = (props) => {
 
   const onReconnect = () => {
     let authModal = window.open("", "Authorization", "height=600, width=1020");
-    openConnectWindow(title, authModal).then((modal) =>
+    openConnectWindow(provider_key, authModal).then((modal) =>
       getOAuthToken(modal).then((token) => {
         authModal.close();
         setToken(token);
@@ -238,6 +249,7 @@ const PureConnectDialogContainer = (props) => {
               errorMessage={t("Common:RequiredField")}
             >
               <TextInput
+                isAutoFocussed={!showUrlField}
                 hasError={!isLoginValid}
                 isDisabled={isLoading}
                 tabIndex={2}
@@ -310,6 +322,7 @@ const ConnectDialog = withTranslation([
   "ConnectDialog",
   "Common",
   "Translations",
+  "Home",
 ])(PureConnectDialogContainer);
 
 export default inject(
@@ -327,8 +340,11 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const { fetchFiles } = filesStore;
-    const { getOAuthToken, personal } = auth.settingsStore;
+    const {
+      getOAuthToken,
+      personal,
+      folderFormValidation,
+    } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -352,8 +368,8 @@ export default inject(
       providers,
       visible,
       item,
+      folderFormValidation,
 
-      fetchFiles,
       getOAuthToken,
       getSubfolders,
       saveThirdParty,
