@@ -64,7 +64,12 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_element {
-    margin-left: ${(props) => (props.isFolder ? "-3px" : "-4px")};
+    /* margin-left: ${(props) => (props.isFolder ? "-3px" : "-4px")}; */
+  }
+
+  .table-container_row-checkbox {
+    padding-left: 4px;
+    width: 26px;
   }
 
   &:hover {

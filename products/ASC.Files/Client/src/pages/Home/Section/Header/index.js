@@ -18,8 +18,16 @@ import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu
 
 const StyledContainer = styled.div`
   .table-container_group-menu {
-    margin: 0px -24px;
-    width: calc(100% + 48px);
+    ${(props) =>
+      props.viewAs === "table"
+        ? css`
+            margin: 0px -20px;
+            width: calc(100% + 44px);
+          `
+        : css`
+            margin: 0px -24px;
+            width: calc(100% + 48px);
+          `}
 
     @media ${tablet} {
       margin: 0 -16px;
@@ -386,6 +394,7 @@ class SectionHeaderContent extends React.Component {
       isTabletView,
       personal,
       getHeaderMenu,
+      viewAs,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -401,6 +410,7 @@ class SectionHeaderContent extends React.Component {
             title={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
+            viewAs={viewAs}
           >
             {isHeaderVisible ? (
               <TableGroupMenu
@@ -511,6 +521,7 @@ export default inject(
       getCheckboxItemLabel,
       getFolderInfo,
       setBufferSelection,
+      viewAs,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -556,6 +567,7 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       getCheckboxItemLabel,
+      viewAs,
     };
   }
 )(

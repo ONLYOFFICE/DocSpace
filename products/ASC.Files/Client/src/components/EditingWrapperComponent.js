@@ -47,7 +47,7 @@ const EditingWrapper = styled.div`
       padding-bottom: 4px;
       margin-top: 4px;
 
-      margin-left: -4px;
+      /* margin-left: -4px; */
     `}
 
   ${(props) =>
