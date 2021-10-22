@@ -151,7 +151,10 @@ const EditingWrapperComponent = (props) => {
   };
 
   const onFocus = (e) => e.target.select();
-  const onBlur = (e) => onClickUpdateItem(e, false);
+  const onBlur = (e) => {
+    if (e.relatedTarget.classList.contains("edit-button")) return false;
+    onClickUpdateItem(e, false);
+  };
 
   return (
     <EditingWrapper viewAs={viewAs}>
