@@ -5,22 +5,23 @@ using System.Reflection;
 
 using ASC.Core.Common.EF;
 
+using AutoMigrationCreator.Core;
+
 namespace AutoMigrationCreator
 {
     public class ContextFinder
     {
-        public Settings Settings { get; }
         private readonly Type _baseType = typeof(BaseDbContext);
-        private readonly string _assemblyName = "ASC.Core.Common";
+        private ProjectInfo _projectInfo;
 
-        public ContextFinder(Settings settings)
+        public ContextFinder(ProjectInfo projectInfo)
         {
-            Settings = settings;
+            _projectInfo = projectInfo;
         }
 
         public IEnumerable<Type> GetContextsTypes()
         {
-            var coreContextAssembly = Assembly.Load(_assemblyName);
+            var coreContextAssembly = Assembly.Load(_projectInfo.AssemblyName);
             var assemblyTypes = coreContextAssembly.GetTypes();
 
             var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
@@ -47,14 +48,6 @@ namespace AutoMigrationCreator
                     if (assemblyType.BaseType == independtType) yield return assemblyType;
                 }
             }
-        }
-
-        private string GetProviderName()
-        {
-            using var templateContext = new CoreDbContext();
-            templateContext.ConnectionStringSettings = Settings.ConnectionStringSettings;
-
-            return templateContext.GetProviderByConnectionString().ToString().ToLower();
         }
     }
 }
