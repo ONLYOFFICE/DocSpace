@@ -1,14 +1,16 @@
-﻿using System;
-
+using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 {
-    public partial class FilesDbContextMySql : Microsoft.EntityFrameworkCore.Migrations.Migration
+    public partial class FilesDbContextMySql : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "files_bunch_objects",
                 columns: table => new
@@ -22,7 +24,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.right_node });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_file",
@@ -58,7 +61,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.id, x.version });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_folder",
@@ -83,7 +87,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_folder", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_folder_tree",
@@ -96,7 +101,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.parent_id, x.folder_id });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_security",
@@ -116,7 +122,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.entry_id, x.entry_type, x.subject });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_tag",
@@ -134,7 +141,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_tag", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_tag_link",
@@ -153,7 +161,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.tag_id, x.entry_id, x.entry_type });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_account",
@@ -167,7 +176,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .Annotation("MySql:CharSet", "utf8"),
                     user_name = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    password = table.Column<string>(type: "varchar(512)", nullable: false, collation: "utf8_general_ci")
+                    password = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     token = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
@@ -182,7 +191,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_thirdparty_account", x => x.id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_app",
@@ -200,7 +210,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => new { x.user_id, x.app });
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_id_mapping",
@@ -215,7 +226,52 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.hash_id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "tenants_tenants",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    name = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    alias = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    mappeddomain = table.Column<string>(type: "varchar(100)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    version = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'2'"),
+                    version_changed = table.Column<DateTime>(type: "datetime", nullable: true),
+                    language = table.Column<string>(type: "char(10)", nullable: false, defaultValueSql: "'en-US'", collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    timezone = table.Column<string>(type: "varchar(50)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    trusteddomains = table.Column<string>(type: "varchar(1024)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    trusteddomainsenabled = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'1'"),
+                    status = table.Column<int>(type: "int", nullable: false),
+                    statuschanged = table.Column<DateTime>(type: "datetime", nullable: true),
+                    creationdatetime = table.Column<DateTime>(type: "datetime", nullable: false),
+                    owner_id = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    payment_id = table.Column<string>(type: "varchar(38)", nullable: true, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    industry = table.Column<int>(type: "int", nullable: true),
+                    last_modified = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    spam = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "true"),
+                    calls = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "true")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tenants_tenants", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "tenants_tenants",
+                columns: new[] { "id", "alias", "creationdatetime", "industry", "mappeddomain", "name", "owner_id", "payment_id", "status", "statuschanged", "timezone", "trusteddomains", "version_changed" },
+                values: new object[] { 1, "localhost", new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317), null, null, "Web Office", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", null, 0, null, null, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "left_node",
@@ -282,6 +338,20 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 table: "files_thirdparty_id_mapping",
                 columns: new[] { "tenant_id", "hash_id" });
 
+            migrationBuilder.CreateIndex(
+                name: "last_modified",
+                table: "tenants_tenants",
+                column: "last_modified");
+
+            migrationBuilder.CreateIndex(
+                name: "mappeddomain",
+                table: "tenants_tenants",
+                column: "mappeddomain");
+
+            migrationBuilder.CreateIndex(
+                name: "version",
+                table: "tenants_tenants",
+                column: "version");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -316,6 +386,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
             migrationBuilder.DropTable(
                 name: "files_thirdparty_id_mapping");
 
+            migrationBuilder.DropTable(
+                name: "tenants_tenants");
         }
     }
 }
