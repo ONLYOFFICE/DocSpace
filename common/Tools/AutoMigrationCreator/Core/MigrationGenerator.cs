@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 
 using ASC.Core.Common.EF;
 
+using AutoMigrationCreator.Core;
+
 using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +15,8 @@ namespace AutoMigrationCreator
     public class MigrationGenerator
     {
         private BaseDbContext _dbContext;
+        private ProjectInfo _projectInfo;
         private string _providerName;
-        private string _assemblyName;
         private string _typeName;
         private string _contextFolderName;
         private Regex _pattern = new Regex(@"\d+$", RegexOptions.Compiled);
@@ -28,11 +30,11 @@ namespace AutoMigrationCreator
             }
         }
 
-        public MigrationGenerator(BaseDbContext context)
+        public MigrationGenerator(BaseDbContext context, ProjectInfo projectInfo)
         {
             _dbContext = context;
+            _projectInfo = projectInfo;
             _typeName = _dbContext.GetType().Name;
-            _assemblyName = _dbContext.GetType().Assembly.GetName().Name;
             _providerName = GetProviderName();
         }
 
@@ -44,15 +46,14 @@ namespace AutoMigrationCreator
             var name = GenerateMigrationName();
 
             var migration = scaffolder.ScaffoldMigration(name,
-                $"{_assemblyName}", $"Migrations.{_providerName}.{ContextFolderName}");
+                $"{_projectInfo.AssemblyName}", $"Migrations.{_providerName}.{ContextFolderName}");
 
             SaveMigration(migration);
         }
 
         private void SaveMigration(ScaffoldedMigration migration)
         {
-            var path = Path.GetFullPath(Path.Combine("..", "..", _assemblyName,
-                "Migrations", _providerName, ContextFolderName));
+            var path = Path.Combine(_projectInfo.Path, "Migrations", _providerName, ContextFolderName);
 
             Directory.CreateDirectory(path);
 
