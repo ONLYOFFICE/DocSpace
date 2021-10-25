@@ -239,8 +239,8 @@ class TableHeader extends React.Component {
     const storageSize =
       !resetColumnsSize && localStorage.getItem(columnStorageName);
 
-    const defaultSize = this.props.columns.find((col) => col.defaultSize)
-      ?.defaultSize;
+    // const defaultSize = this.props.columns.find((col) => col.defaultSize)
+    //   ?.defaultSize;
 
     //TODO: Fixed columns size if something went wrong
     if (storageSize) {
@@ -248,11 +248,16 @@ class TableHeader extends React.Component {
 
       const isInvalid = splitStorage.some((s) => s === "NaNpx");
 
-      if (
-        (defaultSize &&
-          splitStorage[splitStorage.length - 2] !== `${defaultSize}px`) ||
-        isInvalid
-      ) {
+      // if (
+      //   (defaultSize &&
+      //     splitStorage[splitStorage.length - 2] !== `${defaultSize}px`) ||
+      //   isInvalid
+      // ) {
+      //   localStorage.removeItem(columnStorageName);
+      //   return this.onResize();
+      // }
+
+      if (isInvalid) {
         localStorage.removeItem(columnStorageName);
         return this.onResize();
       }
