@@ -47,7 +47,7 @@ const EditingWrapper = styled.div`
       padding-bottom: 4px;
       margin-top: 4px;
 
-      margin-left: -4px;
+      /* margin-left: -4px; */
     `}
 
   ${(props) =>
@@ -109,7 +109,7 @@ const EditingWrapper = styled.div`
   }
 
   .is-edit {
-    margin-top: 4px;
+    /* margin-top: 4px; */
   }
 `;
 
