@@ -21,10 +21,7 @@ const StyledDownloadAppList = styled.div`
 `;
 
 const DownloadAppListContainer = ({ t }) => {
-  const windowsLink =
-    "https://www.onlyoffice.com/download-desktop.aspx#windows";
-  const macLink = "https://www.onlyoffice.com/download-desktop.aspx#mac";
-  const linuxLink = "https://www.onlyoffice.com/download-desktop.aspx#linux";
+  const desktopLink = "https://www.onlyoffice.com/desktop.aspx";
   const androidLink = "https://www.onlyoffice.com/office-for-android.aspx";
   const iosLink = "https://www.onlyoffice.com/office-for-ios.aspx";
 
@@ -35,7 +32,7 @@ const DownloadAppListContainer = ({ t }) => {
       </Text>
       <div className="download-app-list">
         <IconButton
-          onClick={() => window.open(windowsLink)}
+          onClick={() => window.open(desktopLink)}
           className="icon-button"
           iconName="/static/images/windows.react.svg"
           size="25"
@@ -44,7 +41,7 @@ const DownloadAppListContainer = ({ t }) => {
           hoverColor="#3785D3"
         />
         <IconButton
-          onClick={() => window.open(macLink)}
+          onClick={() => window.open(desktopLink)}
           className="icon-button"
           iconName="/static/images/macOS.react.svg"
           size="25"
@@ -53,7 +50,7 @@ const DownloadAppListContainer = ({ t }) => {
           hoverColor="#000000"
         />
         <IconButton
-          onClick={() => window.open(linuxLink)}
+          onClick={() => window.open(desktopLink)}
           className="icon-button"
           iconName="/static/images/linux.react.svg"
           size="25"

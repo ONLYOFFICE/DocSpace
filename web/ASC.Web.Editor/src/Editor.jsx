@@ -6,13 +6,13 @@ import { toast } from "react-toastify";
 import { Trans } from "react-i18next";
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
-import Loaders from "@appserver/common/components/Loaders";
 import {
   combineUrl,
   getObjectByLocation,
   loadScript,
-  //showLoader,
-  //hideLoader,
+  isRetina,
+  getCookie,
+  setCookie,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -92,6 +92,10 @@ const Editor = () => {
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
   useEffect(() => {
+    if (isRetina() && getCookie("is_retina") == null) {
+      setCookie("is_retina", true, { path: "/" });
+    }
+
     init();
   }, []);
 
@@ -221,6 +225,11 @@ const Editor = () => {
     );
   };
 
+  const convertDocumentUrl = async () => {
+    const convert = await convertFile(fileId, true);
+    return convert[0].result.webUrl;
+  };
+
   const init = async () => {
     try {
       if (!fileId) return;
@@ -248,24 +257,24 @@ const Editor = () => {
 
       if (!doc && !successAuth) {
         window.open(
-          combineUrl(AppServerConfig.proxyURL, "/login"),
+          combineUrl(
+            AppServerConfig.proxyURL,
+            personal ? "/sign-in" : "/login"
+          ),
           "_self",
           "",
           true
         );
         return;
       }
-
       if (successAuth) {
         try {
           fileInfo = await getFileInfo(fileId);
 
           if (url.indexOf("#message/") > -1) {
-            const needConvert = canConvert(fileInfo.fileExst);
-
-            if (needConvert) {
-              const convert = await convertFile(fileId, true);
-              location.href = convert[0].result.webUrl;
+            if (canConvert(fileInfo.fileExst)) {
+              const url = await convertDocumentUrl();
+              history.pushState({}, null, url);
             }
           }
         } catch (err) {
@@ -296,7 +305,7 @@ const Editor = () => {
 
       isSharingAccess = fileInfo && fileInfo.canShare;
 
-      if (url.indexOf("action=view") !== -1) {
+      if (view) {
         config.editorConfig.mode = "view";
       }
 
@@ -488,6 +497,7 @@ const Editor = () => {
           onRequestSaveAs,
           onRequestMailMergeRecipients,
           onRequestCompareFile,
+          onRequestEditRights: onSDKRequestEditRights,
         },
       };
 
@@ -510,12 +520,33 @@ const Editor = () => {
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
     }
+
+    const tempElm = document.getElementById("loader");
+    if (tempElm) {
+      tempElm.outerHTML = "";
+    }
   };
 
   const onSDKInfo = (event) => {
     console.log(
       "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
     );
+  };
+
+  const onSDKRequestEditRights = async () => {
+    console.log("ONLYOFFICE Document Editor requests editing rights");
+    const index = url.indexOf("&action=view");
+
+    if (index) {
+      let convertUrl = url.substring(0, index);
+
+      if (canConvert(fileInfo.fileExst)) {
+        convertUrl = await convertDocumentUrl();
+      }
+
+      history.pushState({}, null, convertUrl);
+      document.location.reload();
+    }
   };
 
   const [isVisible, setIsVisible] = useState(false);
@@ -812,9 +843,7 @@ const Editor = () => {
           )}
         </>
       ) : (
-        <Box paddingProp="16px">
-          <Loaders.Rectangle height="96vh" />
-        </Box>
+        <></>
       )}
     </Box>
   );

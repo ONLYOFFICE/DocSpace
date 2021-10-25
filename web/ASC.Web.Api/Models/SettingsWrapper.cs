@@ -71,6 +71,8 @@ namespace ASC.Api.Settings
 
         public string RecaptchaPublicKey { get; set; }
 
+        public bool DebugInfo { get; set; }
+
         public TenantStatus TenantStatus { get; set; }
 
         public static SettingsWrapper GetSample()

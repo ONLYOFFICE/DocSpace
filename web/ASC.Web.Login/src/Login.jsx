@@ -145,7 +145,7 @@ const LoginFormWrapper = styled.div`
         : css`1fr 66px`
       : css`1fr`};
   width: 100%;
-  height: calc(100vh-56px);
+  height: calc(100vh-48px);
 `;
 
 const settings = {
@@ -416,7 +416,7 @@ const Form = (props) => {
   };
 
   //console.log("Login render");
-  
+
   return (
     <LoginContainer>
       <Text

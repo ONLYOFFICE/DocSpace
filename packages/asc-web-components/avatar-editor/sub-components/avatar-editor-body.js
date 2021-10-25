@@ -311,7 +311,13 @@ class AvatarEditorBody extends React.Component {
     const desktopMode = isDesktop();
     return (
       <Text as="span">
-        <Link type="action" isHovered color="#316DAA" onClick={this.openDialog}>
+        <Link
+          type="action"
+          fontWeight={600}
+          isHovered
+          color="#316DAA"
+          onClick={this.openDialog}
+        >
           {selectNewPhotoLabel}
         </Link>{" "}
         {desktopMode && orDropFileHereLabel}
@@ -383,6 +389,7 @@ class AvatarEditorBody extends React.Component {
                         onImageChange={this.throttledSetCroppedImage}
                         onPositionChange={this.onPositionChange}
                         onImageReady={this.onImageReady}
+                        crossOrigin="anonymous"
                       />
                       <Box className="editor-buttons">
                         <Box></Box>

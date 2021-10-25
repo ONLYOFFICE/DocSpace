@@ -26,6 +26,10 @@ export default function withFileActions(WrappedFileItem) {
       id !== -1 && onSelectItem({ id, isFolder });
     };
 
+    onHideContextMenu = () => {
+      //this.props.setBufferSelection(null);
+    };
+
     onDropZoneUpload = (files, uploadToFolder) => {
       const { t, dragging, setDragging, startUpload } = this.props;
 
@@ -52,22 +56,34 @@ export default function withFileActions(WrappedFileItem) {
         isTrashFolder,
         onSelectItem,
         item,
+        setBufferSelection,
+        isActive,
       } = this.props;
 
-      const { id, isFolder } = item;
+      const { id, isFolder, isThirdPartyFolder } = item;
 
       const notSelectable = e.target.classList.contains("not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
 
-      if (isPrivacy || isTrashFolder || (!draggable && !isFileName)) return e;
+      if (
+        isPrivacy ||
+        isTrashFolder ||
+        (!draggable && !isFileName && !isActive)
+      )
+        return e;
 
-      if (window.innerWidth < 1025 || notSelectable || isMobile) {
+      if (
+        window.innerWidth < 1025 ||
+        notSelectable ||
+        isMobile ||
+        isThirdPartyFolder
+      ) {
         return e;
       }
 
-      if (!draggable) {
-        id !== -1 && onSelectItem({ id, isFolder });
-      }
+      // if (!draggable) {
+      //   id !== -1 && onSelectItem({ id, isFolder });
+      // }
 
       const mouseButton = e.which
         ? e.which !== 1
@@ -80,7 +96,8 @@ export default function withFileActions(WrappedFileItem) {
       }
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
-      setStartDrag(true);
+      !isFileName && setStartDrag(true);
+      !isActive && setBufferSelection(null);
     };
 
     onMarkAsRead = (id) =>
@@ -256,6 +273,7 @@ export default function withFileActions(WrappedFileItem) {
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
           onMouseClick={this.onMouseClick}
+          onHideContextMenu={this.onHideContextMenu}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -318,6 +336,8 @@ export default function withFileActions(WrappedFileItem) {
         openDocEditor,
         getFolderInfo,
         viewAs,
+        bufferSelection,
+        setBufferSelection,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -340,6 +360,12 @@ export default function withFileActions(WrappedFileItem) {
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
       const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
+
+      const isActive =
+        bufferSelection &&
+        bufferSelection.id === item.id &&
+        bufferSelection.fileExst === item.fileExst &&
+        !selection.length; // need for select row item
 
       return {
         t,
@@ -383,6 +409,9 @@ export default function withFileActions(WrappedFileItem) {
         personal: auth.settingsStore.personal,
         isItemsSelected: selection.length > 0,
         setNewBadgeCount,
+        isActive,
+        setBufferSelection,
+        bufferSelection,
       };
     }
   )(observer(WithFileActions));
