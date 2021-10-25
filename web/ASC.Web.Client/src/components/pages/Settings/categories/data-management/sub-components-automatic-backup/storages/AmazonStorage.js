@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import AmazonSettings from "../../consumer-storage-settings/AmazonSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
-import { StyledAutoBackup } from "../../StyledBackup";
+import { StyledStoragesModule } from "../../StyledBackup";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -138,7 +138,7 @@ class AmazonStorage extends React.Component {
     } = this.props;
 
     return (
-      <StyledAutoBackup>
+      <StyledStoragesModule>
         <AmazonSettings
           formSettings={formSettings}
           onChange={this.onChange}
@@ -193,7 +193,7 @@ class AmazonStorage extends React.Component {
             />
           </div>
         )}
-      </StyledAutoBackup>
+      </StyledStoragesModule>
     );
   }
 }

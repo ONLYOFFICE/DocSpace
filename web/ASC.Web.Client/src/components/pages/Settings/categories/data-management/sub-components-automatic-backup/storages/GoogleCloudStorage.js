@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
-import { StyledAutoBackup } from "../../StyledBackup";
+import { StyledStoragesModule } from "../../StyledBackup";
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -104,7 +104,7 @@ class GoogleCloudStorage extends React.Component {
     } = this.props;
 
     return (
-      <StyledAutoBackup>
+      <StyledStoragesModule>
         <GoogleCloudSettings
           formSettings={formSettings}
           onChange={this.onChange}
@@ -155,7 +155,7 @@ class GoogleCloudStorage extends React.Component {
             />
           </div>
         )}
-      </StyledAutoBackup>
+      </StyledStoragesModule>
     );
   }
 }

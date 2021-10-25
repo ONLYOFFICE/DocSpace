@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import SelectelSettings from "../../consumer-storage-settings/SelectelSettings";
 import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
-import { StyledAutoBackup } from "../../StyledBackup";
+import { StyledStoragesModule } from "../../StyledBackup";
 class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);
@@ -111,7 +111,7 @@ class SelectelStorage extends React.Component {
     } = this.props;
 
     return (
-      <StyledAutoBackup>
+      <StyledStoragesModule>
         <SelectelSettings
           formSettings={formSettings}
           onChange={this.onChange}
@@ -167,7 +167,7 @@ class SelectelStorage extends React.Component {
             />
           </div>
         )}
-      </StyledAutoBackup>
+      </StyledStoragesModule>
     );
   }
 }

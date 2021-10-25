@@ -5,6 +5,8 @@ const INPUT_LENGTH = "350px";
 const TEXT_LENGTH = "476px";
 
 const commonStyles = css`
+  margin-right: 16px;
+
   .radio-button_text {
     margin-right: 7px;
     margin-left: 8px;
@@ -46,6 +48,7 @@ const StyledManualBackup = styled.div`
 
 const StyledAutoBackup = styled.div`
   ${commonStyles}
+
   .automatic-backup_main {
     margin-bottom: 30px;
     .radio-button_text {
@@ -76,12 +79,14 @@ const StyledAutoBackup = styled.div`
   .backup_modules {
     margin-left: 60px;
   }
+`;
+
+const StyledStoragesModule = styled.div`
   .backup_storages-buttons {
     margin-left: -63px;
     margin-top: 40px;
   }
 `;
-
 const StyledRestoreBackup = styled.div`
   ${commonStyles}
 
@@ -133,38 +138,48 @@ const StyledModules = styled.div`
 `;
 
 const StyledScheduleComponent = styled.div`
-  .time_options,
+  .additional_options {
+    max-width: ${INPUT_LENGTH};
+    display: grid;
+    grid-template-columns: ${(props) =>
+      props.weeklySchedule || props.monthlySchedule ? "1fr 1fr" : "1fr"};
+    grid-gap: 8px;
+  }
+
   .weekly_option,
   .month_options {
-    width: 171px;
+    max-width: 171px;
+    width: 100%;
     .drop-down_variable-size {
-      width: 171px !important;
+      max-width: 171px !important;
+      width: 100% !important;
     }
   }
   .schedule-backup_combobox {
     display: inline-block;
-    margin-right: 8px;
     margin-top: 8px;
   }
 
   .main_options {
     max-width: 363px;
   }
-  .days_option {
-    width: ${(props) =>
-      props.weeklySchedule || props.monthlySchedule
-        ? `${INPUT_LENGTH}`
-        : "171px"};
+  .days_option,
+  .time_options {
+    max-width: ${INPUT_LENGTH};
+    width: 100%;
     .drop-down_variable-size {
-      width: ${(props) =>
-        props.weeklySchedule || props.monthlySchedule
-          ? `${INPUT_LENGTH}`
-          : "171px"} !important;
+      max-width: ${INPUT_LENGTH} !important;
+      width: 100% !important;
     }
   }
+
   .max_copies {
     width: 100%;
     max-width: ${INPUT_LENGTH};
+    .drop-down_variable-size {
+      max-width: ${INPUT_LENGTH};
+      width: 100% !important;
+    }
   }
   .combo-button {
     width: 100% !important;
@@ -351,4 +366,5 @@ export {
   StyledBackupList,
   StyledManualBackup,
   StyledAutoBackup,
+  StyledStoragesModule,
 };
