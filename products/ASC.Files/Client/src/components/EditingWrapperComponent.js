@@ -133,10 +133,10 @@ const EditingWrapperComponent = (props) => {
 
   const onKeyUpUpdateItem = (e) => {
     if (isLoading) return;
-    else setIsLoading(true);
 
     var code = e.keyCode || e.which;
     if (code === 13) {
+      if (!isLoading) setIsLoading(true);
       return onClickUpdateItem(e);
     }
     //if (code === 27) return cancelUpdateItem(e);
