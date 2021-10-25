@@ -33,11 +33,10 @@ const StyledTableContainer = styled.div`
     border-right: 2px solid #d0d5da;
   }
 
-  .table-container_group-menu {
-    padding-left: 24px;
-    margin-left: -24px;
-    padding-right: 24px;
-    margin-right: -24px;
+  .table-container_group-menu,
+  .table-container_header {
+    padding: 0 24px;
+    margin: 0 -24px;
 
     border-bottom: 1px solid;
     border-image-slice: 1;
