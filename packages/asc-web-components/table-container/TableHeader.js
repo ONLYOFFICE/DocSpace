@@ -144,8 +144,7 @@ class TableHeader extends React.Component {
       : containerWidth / filterColumns.length;
     const indexOfMaxSize = clearSize.findIndex((s) => s === maxSize);
 
-    const size = defaultSize ? defaultSize : newSize;
-    const newSize = maxSize - size;
+    const newSize = maxSize - defaultColSize;
 
     const AddColumn = () => {
       gridTemplateColumns[indexOfMaxSize] = newSize + "px";
