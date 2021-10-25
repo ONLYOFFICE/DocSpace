@@ -524,6 +524,7 @@ const StyledFooter = styled.div`
   .sharing_panel-checkbox {
     span {
       font-weight: 600;
+      font-size: 14px;
     }
 
     .checkbox {
@@ -536,6 +537,21 @@ const StyledFooter = styled.div`
   }
   .new_files_panel-button {
     margin-right: 8px;
+  }
+
+  @media ${desktop} {
+    padding: 10px 0;
+    min-height: 57px;
+
+    .sharing_panel-checkbox {
+      span {
+        font-size: 13px;
+      }
+    }
+
+    .sharing_panel-button {
+      margin-top: 2px;
+    }
   }
 `;
 
