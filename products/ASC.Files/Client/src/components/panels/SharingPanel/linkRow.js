@@ -88,6 +88,7 @@ class LinkRow extends React.Component {
                   isChecked={isChecked}
                   onChange={this.onToggleButtonChange}
                   isDisabled={isLoading}
+                  className="sharing-row__toggle-button"
                 />
               </div>
             )}
