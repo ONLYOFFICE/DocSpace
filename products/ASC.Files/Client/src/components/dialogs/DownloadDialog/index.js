@@ -9,8 +9,6 @@ import RowContent from "@appserver/components/row-content";
 import RowContainer from "@appserver/components/row-container";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { downloadFormatFiles } from "@appserver/common/api/files";
-import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { inject, observer } from "mobx-react";
 
@@ -47,6 +45,7 @@ class DownloadDialogComponent extends React.Component {
     const { documents, spreadsheets, presentations, other } = this.state;
     const files = [];
     const folders = [];
+    let singleFileUrl = null;
 
     const collectItems = (itemList) => {
       for (let item of itemList) {
@@ -56,8 +55,10 @@ class DownloadDialogComponent extends React.Component {
               item.format === this.props.t("OriginalFormat")
                 ? item.fileExst
                 : item.format;
-            const viewUrl = item.viewUrl;
-            files.push({ key: item.id, value: format, viewUrl });
+            if (!singleFileUrl) {
+              singleFileUrl = item.viewUrl;
+            }
+            files.push({ key: item.id, value: format });
           } else {
             folders.push(item.id);
           }
@@ -70,54 +71,25 @@ class DownloadDialogComponent extends React.Component {
     collectItems(presentations);
     collectItems(other);
 
-    return [files, folders];
+    return [files, folders, singleFileUrl];
   };
 
-  //TODO: move to actions?
   onDownload = () => {
-    const {
-      //onDownloadProgress,
-      t,
-      getDownloadProgress,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.props;
+    const { t, downloadFiles } = this.props;
 
-    const [fileConvertIds, folderIds] = this.getDownloadItems();
+    const [fileConvertIds, folderIds, singleFileUrl] = this.getDownloadItems();
 
     if (fileConvertIds.length === 1 && folderIds.length === 0) {
       // Single file download as
       const file = fileConvertIds[0];
-      let viewUrl = file.viewUrl;
-      if (file.value) {
-        viewUrl = `${viewUrl}&outputtype=${file.value}`;
+      if (file.value && singleFileUrl) {
+        const viewUrl = `${singleFileUrl}&outputtype=${file.value}`;
+        window.open(viewUrl, "_self");
       }
-      window.open(viewUrl, "_self");
       this.onClose();
     } else if (fileConvertIds.length || folderIds.length) {
-      setSecondaryProgressBarData({
-        icon: "file",
-        visible: true,
-        percent: 0,
-        label: t("Translations:ArchivingData"),
-        alert: false,
-      });
-      downloadFormatFiles(fileConvertIds, folderIds)
-        .then((res) => {
-          this.onClose();
-          getDownloadProgress(
-            res[0],
-            t("Translations:ArchivingData")
-          ).catch((err) => toastr.error(err));
-        })
-        .catch((err) => {
-          setSecondaryProgressBarData({
-            visible: true,
-            alert: true,
-          });
-          //toastr.error(err);
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        });
+      this.onClose();
+      downloadFiles(fileConvertIds, folderIds, t("Translations:ArchivingData"));
     }
   };
 
@@ -522,40 +494,27 @@ const DownloadDialog = withTranslation([
 ])(DownloadDialogComponent);
 
 export default inject(
-  ({
-    filesStore,
-    uploadDataStore,
-    formatsStore,
-    dialogsStore,
-    filesActionsStore,
-  }) => {
-    const { secondaryProgressDataStore } = uploadDataStore;
+  ({ filesStore, formatsStore, dialogsStore, filesActionsStore }) => {
     const { sortedFiles } = filesStore;
     const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
     const { filesConverts } = formatsStore.docserviceStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
 
     const {
       downloadDialogVisible: visible,
       setDownloadDialogVisible,
     } = dialogsStore;
 
-    const { getDownloadProgress } = filesActionsStore;
+    const { downloadFiles } = filesActionsStore;
 
     return {
       sortedFiles,
       visible,
       filesConverts,
 
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
       getIcon,
       getFolderIcon,
       setDownloadDialogVisible,
-      getDownloadProgress,
+      downloadFiles,
     };
   }
 )(withRouter(observer(DownloadDialog)));

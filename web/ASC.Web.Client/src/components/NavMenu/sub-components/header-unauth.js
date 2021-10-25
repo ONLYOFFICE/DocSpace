@@ -15,7 +15,7 @@ const Header = styled.header`
   background-color: ${backgroundColor};
   display: flex;
   width: calc(100vw - 64px);
-  height: 56px;
+  height: 48px;
   justify-content: left;
   padding: 0 32px;
 
@@ -45,7 +45,7 @@ const Header = styled.header`
     width: 146px;
     height: 24px;
     position: relative;
-    padding: 4px 20px 0 6px;
+    padding: 3px 20px 0 6px;
     cursor: pointer;
   }
 `;

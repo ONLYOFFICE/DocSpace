@@ -5,6 +5,7 @@ import { checkProtocol } from "../helpers/files-helpers";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
+import { isMobile } from "react-device-detect";
 
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
@@ -23,6 +24,10 @@ export default function withFileActions(WrappedFileItem) {
       const { id, isFolder } = item;
 
       id !== -1 && onSelectItem({ id, isFolder });
+    };
+
+    onHideContextMenu = () => {
+      //this.props.setBufferSelection(null);
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
@@ -48,25 +53,37 @@ export default function withFileActions(WrappedFileItem) {
         setTooltipPosition,
         setStartDrag,
         isPrivacy,
+        isTrashFolder,
         onSelectItem,
         item,
+        setBufferSelection,
+        isActive,
       } = this.props;
 
-      const { id, isFolder } = item;
-      e.preventDefault();
+      const { id, isFolder, isThirdPartyFolder } = item;
 
       const notSelectable = e.target.classList.contains("not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
 
-      if (isPrivacy || (!draggable && !isFileName)) return;
+      if (
+        isPrivacy ||
+        isTrashFolder ||
+        (!draggable && !isFileName && !isActive)
+      )
+        return e;
 
-      if (window.innerWidth < 1025 || notSelectable) {
-        return;
+      if (
+        window.innerWidth < 1025 ||
+        notSelectable ||
+        isMobile ||
+        isThirdPartyFolder
+      ) {
+        return e;
       }
 
-      if (!draggable) {
-        id !== -1 && onSelectItem({ id, isFolder });
-      }
+      // if (!draggable) {
+      //   id !== -1 && onSelectItem({ id, isFolder });
+      // }
 
       const mouseButton = e.which
         ? e.which !== 1
@@ -75,10 +92,12 @@ export default function withFileActions(WrappedFileItem) {
         : false;
       const label = e.currentTarget.getAttribute("label");
       if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
-        return;
+        return e;
       }
+      e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
-      setStartDrag(true);
+      !isFileName && setStartDrag(true);
+      !isActive && setBufferSelection(null);
     };
 
     onMarkAsRead = (id) =>
@@ -103,7 +122,7 @@ export default function withFileActions(WrappedFileItem) {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
 
-        if (e.detail === 1) this.onFilesClick(e);
+        if (e.detail === 1) this.fileContextClick();
       } else {
         this.fileContextClick();
       }
@@ -229,8 +248,8 @@ export default function withFileActions(WrappedFileItem) {
 
       const isShareable = allowShareIn && item.canShare;
 
-      const isMobile = sectionWidth < 500;
-      const displayShareButton = isMobile
+      const isMobileView = sectionWidth < 500;
+      const displayShareButton = isMobileView
         ? "26px"
         : !isShareable
         ? "38px"
@@ -254,6 +273,7 @@ export default function withFileActions(WrappedFileItem) {
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
           onMouseClick={this.onMouseClick}
+          onHideContextMenu={this.onHideContextMenu}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -316,6 +336,8 @@ export default function withFileActions(WrappedFileItem) {
         openDocEditor,
         getFolderInfo,
         viewAs,
+        bufferSelection,
+        setBufferSelection,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -338,6 +360,12 @@ export default function withFileActions(WrappedFileItem) {
       const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       const canConvert = docserviceStore.canConvert(item.fileExst);
       const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
+
+      const isActive =
+        bufferSelection &&
+        bufferSelection.id === item.id &&
+        bufferSelection.fileExst === item.fileExst &&
+        !selection.length; // need for select row item
 
       return {
         t,
@@ -381,6 +409,9 @@ export default function withFileActions(WrappedFileItem) {
         personal: auth.settingsStore.personal,
         isItemsSelected: selection.length > 0,
         setNewBadgeCount,
+        isActive,
+        setBufferSelection,
+        bufferSelection,
       };
     }
   )(observer(WithFileActions));

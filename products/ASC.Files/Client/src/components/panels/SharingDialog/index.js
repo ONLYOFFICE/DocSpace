@@ -39,13 +39,12 @@ const SharingDialog = ({
 };
 
 const SharingDialogWrapper = inject(({ dialogsStore, filesStore }) => {
-  const { getShareUsers, setSelection, selection } = filesStore;
+  const { getShareUsers, setSelection } = filesStore;
   const { setSharingPanelVisible } = dialogsStore;
   return {
     setSharingPanelVisible,
     getShareUsers,
     setSelection,
-    selection,
   };
 })(observer(SharingDialog));
 

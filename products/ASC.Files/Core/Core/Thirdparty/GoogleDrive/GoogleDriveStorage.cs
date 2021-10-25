@@ -65,11 +65,13 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public GoogleDriveStorage(
             ConsumerFactory consumerFactory,
             FileUtility fileUtility,
-            IOptionsMonitor<ILog> monitor)
+            IOptionsMonitor<ILog> monitor,
+            TempStream tempStream)
         {
             ConsumerFactory = consumerFactory;
             FileUtility = fileUtility;
             Log = monitor.Get("ASC.Files");
+            TempStream = tempStream;
         }
 
         private OAuth20Token _token;
@@ -93,11 +95,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         private TempStream TempStream { get; }
 
         public const long MaxChunkedUploadFileSize = 2L * 1024L * 1024L * 1024L;
-
-        public GoogleDriveStorage(TempStream tempStream)
-        {
-            TempStream = tempStream;
-        }
 
         public void Open(OAuth20Token token)
         {

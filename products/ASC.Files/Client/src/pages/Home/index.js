@@ -3,7 +3,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
-import toastr from "studio/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";
@@ -42,7 +42,7 @@ class PureHome extends React.Component {
       getFileInfo,
     } = this.props;
 
-    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
+    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 

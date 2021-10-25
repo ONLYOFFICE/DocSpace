@@ -8,10 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    public class MySqlUserDbContext : UserDbContext
-    {
+    public class MySqlUserDbContext : UserDbContext { }
 
-    }
 
     public class PostgreSqlUserDbContext : UserDbContext
     {

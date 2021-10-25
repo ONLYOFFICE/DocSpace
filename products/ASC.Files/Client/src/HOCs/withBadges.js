@@ -5,7 +5,7 @@ import {
   ShareAccessRights,
   AppServerConfig,
 } from "@appserver/common/constants";
-import toastr from "studio/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import { combineUrl } from "@appserver/common/utils";
 import { getFileConversationProgress } from "@appserver/common/api/files";
 

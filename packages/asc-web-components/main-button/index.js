@@ -78,9 +78,7 @@ class MainButton extends React.PureComponent {
     return (
       <GroupMainButton {...this.props} ref={this.ref}>
         <StyledMainButton {...this.props} onClick={this.onMainButtonClick}>
-          <Text fontSize="16px" fontWeight="bold" color="#fff">
-            {this.props.text}
-          </Text>
+          <Text className="main-button_text">{this.props.text}</Text>
         </StyledMainButton>
         {this.props.isDropdown ? (
           <StyledDropDown

@@ -62,6 +62,9 @@ const MainContainer = styled.div`
 const MainIcons = styled.div`
   align-self: center;
   white-space: nowrap;
+  .badges {
+    margin-right: 4px;
+  }
 
   .additional-badges {
     position: absolute;
@@ -72,7 +75,7 @@ const MainIcons = styled.div`
 
     .icons-group {
       margin-top: 10px;
-      margin-right: 8px;
+      margin-right: 3px;
     }
   }
 `;

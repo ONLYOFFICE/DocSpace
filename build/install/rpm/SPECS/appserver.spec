@@ -32,6 +32,7 @@ Requires:       %name-notify
 Requires:       %name-people-server
 Requires:       %name-projects-server
 Requires:       %name-socket
+Requires:       %name-ssoauth
 Requires:       %name-studio-notify
 Requires:       %name-telegram-service
 Requires:       %name-thumbnails

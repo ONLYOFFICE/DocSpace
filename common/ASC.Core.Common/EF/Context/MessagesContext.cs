@@ -12,10 +12,7 @@ namespace ASC.Core.Common.EF.Context
     public class PostgreSqlMessagesContext : MessagesContext { }
     public class MessagesContext : BaseDbContext
     {
-        public DbSet<AuditEvent> AuditEvents { get; set; }
         public DbSet<LoginEvents> LoginEvents { get; set; }
-        public DbSet<DbTenant> Tenants { get; set; }
-        public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
 
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
@@ -33,9 +30,6 @@ namespace ASC.Core.Common.EF.Context
         {
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
-                .AddDbTenant()
-                .AddWebstudioSettings()
-                .AddAuditEvent()
                 .AddLoginEvents()
                 .AddDbFunction();
         }

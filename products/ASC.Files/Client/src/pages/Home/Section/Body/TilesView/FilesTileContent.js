@@ -9,6 +9,7 @@ import Text from "@appserver/components/text";
 import TileContent from "./sub-components/TileContent";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
+import { isMobile } from "react-device-detect";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .row-main-container {
@@ -54,7 +55,8 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 
   .title-link {
-    font-size: 14px;
+    font-size: ${isMobile ? "15px" : "13px"};
+    margin-top: 2px;
   }
 
   .favorite,
@@ -77,27 +79,21 @@ const FilesTileContent = ({
   item,
   titleWithoutExt,
   linkStyles,
-  onFilesClick,
   badgesComponent,
 }) => {
-  const { fileExst } = item;
+  const { fileExst, title } = item;
 
   return (
     <>
-      <SimpleFilesTileContent
-        sideColor="#333"
-        isFile={fileExst}
-        //disableSideInfo
-      >
+      <SimpleFilesTileContent sideColor="#333" isFile={fileExst}>
         <Link
           className="title-link item-file-name"
           containerWidth="100%"
           type="page"
-          title={titleWithoutExt}
+          title={title}
           fontWeight="600"
-          fontSize="14px"
+          fontSize={isMobile ? "15px" : "13px"}
           target="_blank"
-          href={item.href}
           {...linkStyles}
           color="#333"
           isTextOverflow
@@ -108,9 +104,8 @@ const FilesTileContent = ({
               className="badge-ext"
               as="span"
               color="#A3A9AE"
-              fontSize="14px"
+              fontSize={isMobile ? "15px" : "13px"}
               fontWeight={600}
-              title={fileExst}
               truncate={true}
             >
               {fileExst}
