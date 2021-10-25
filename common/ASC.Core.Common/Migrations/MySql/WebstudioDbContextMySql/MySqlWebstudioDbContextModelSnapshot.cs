@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioIndex", b =>
                 {
@@ -75,7 +75,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                             TenantId = 1,
                             Id = "9a925891-1f92-4ed7-b277-d6f649739f06",
                             UserId = "00000000-0000-0000-0000-000000000000",
-                            Data = "{'Completed':false}"
+                            Data = "{\"Completed\":false}"
                         });
                 });
 
@@ -120,6 +120,8 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                         .HasDatabaseName("visitdate");
 
                     b.ToTable("webstudio_uservisit");
+
+                  
                 });
 #pragma warning restore 612, 618
         }

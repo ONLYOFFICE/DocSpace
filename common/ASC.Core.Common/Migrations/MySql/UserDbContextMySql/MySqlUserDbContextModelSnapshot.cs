@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
                 {
@@ -1318,14 +1318,14 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             CreateOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "",
                             FirstName = "Administrator",
-                            LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 765, DateTimeKind.Utc).AddTicks(1420),
+                            LastModified = new DateTime(2021, 8, 3, 21, 35, 0, 522, DateTimeKind.Utc).AddTicks(6893),
                             LastName = "",
                             PhoneActivation = 0,
                             Removed = false,
                             Status = 1,
                             Tenant = 1,
                             UserName = "administrator",
-                            WorkFromDate = new DateTime(2021, 3, 9, 9, 52, 55, 764, DateTimeKind.Utc).AddTicks(9157)
+                            WorkFromDate = new DateTime(2021, 8, 3, 21, 35, 0, 522, DateTimeKind.Utc).AddTicks(5587)
                         });
                 });
 
@@ -1454,9 +1454,8 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                         new
                         {
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 781, DateTimeKind.Utc).AddTicks(9061),
-                            PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                            PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
+                            LastModified = new DateTime(2021, 8, 3, 21, 35, 0, 555, DateTimeKind.Utc).AddTicks(4764),
+                            PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                             Tenant = 1
                         });
                 });

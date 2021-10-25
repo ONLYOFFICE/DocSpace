@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyInfo", b =>
                 {
