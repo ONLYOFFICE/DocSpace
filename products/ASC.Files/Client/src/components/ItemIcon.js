@@ -4,9 +4,9 @@ import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 
 const StyledIcon = styled.img`
-  width: 24px;
+  /* width: 24px;
   height: 24px;
-  margin-top: 4px;
+  margin-top: 4px; */
 `;
 
 const ItemIcon = ({
