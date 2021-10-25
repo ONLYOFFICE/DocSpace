@@ -3,7 +3,7 @@ setlocal EnableDelayedExpansion
 
 if %errorlevel% == 0 (
 	for /R "build\run\" %%f in (*.bat) do (
-		call build\run\%%~nxf service
+		call build\run\%%~nxf
 		echo !servicepath!
 		call sc create "Onlyoffice %%~nf"  binPath="!servicepath!"
 	)

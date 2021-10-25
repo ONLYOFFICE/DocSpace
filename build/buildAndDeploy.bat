@@ -14,9 +14,9 @@ echo "FRONT-END static"
 call build\build.static.bat
 
 echo "BACK-END"
-call build\buildAndDeploy.backend.bat
+call build\build.backend.bat
 
-start /b call build\start\start.bat
+call build\start\start.bat
 
 pause
 )

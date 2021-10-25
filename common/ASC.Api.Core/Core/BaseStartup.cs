@@ -43,7 +43,7 @@ namespace ASC.Api.Core
         public virtual bool ConfirmAddScheme { get; } = false;
         public virtual bool AddAndUseSession { get; } = false;
         protected DIHelper DIHelper { get; }
-        protected bool LoadProducts { get; } = true;
+        protected bool LoadProducts { get; set; } = true;
         protected bool LoadConsumers { get; } = true;
 
         public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
