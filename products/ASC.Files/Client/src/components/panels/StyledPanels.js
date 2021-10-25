@@ -570,6 +570,11 @@ const StyledLinkRow = styled.div`
   .link-row {
     ${(props) => !props.withToggle && "border-bottom:none;"}
   }
+
+  .sharing-row__toggle-button {
+    margin-top: 1px;
+  }
+
   .row_content {
     display: grid;
     grid-template-columns: 1fr 28px;
@@ -578,6 +583,12 @@ const StyledLinkRow = styled.div`
 
   .combo-button {
     background: transparent;
+  }
+
+  @media ${desktop} {
+    .sharing-row__toggle-button {
+      margin-top: 0;
+    }
   }
 `;
 
