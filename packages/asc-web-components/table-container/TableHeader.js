@@ -136,10 +136,16 @@ class TableHeader extends React.Component {
 
     const clearSize = gridTemplateColumns.map((c) => this.getSubstring(c));
     const maxSize = Math.max.apply(Math, clearSize);
-    const defaultColSize = containerWidth / filterColumns.length;
+
+    const defaultSize = columns[activeColumnIndex - 1].defaultSize;
+
+    const defaultColSize = defaultSize
+      ? defaultSize
+      : containerWidth / filterColumns.length;
     const indexOfMaxSize = clearSize.findIndex((s) => s === maxSize);
 
-    const newSize = maxSize - defaultColSize;
+    const size = defaultSize ? defaultSize : newSize;
+    const newSize = maxSize - size;
 
     const AddColumn = () => {
       gridTemplateColumns[indexOfMaxSize] = newSize + "px";
