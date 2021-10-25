@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
-import { tablet } from "@appserver/components/utils/device";
+import { desktop, tablet } from "@appserver/components/utils/device";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -251,7 +251,16 @@ const StyledHeaderContent = styled.div`
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
-    margin-left: 16px;
+  }
+
+  padding-right: 0;
+
+  @media ${desktop} {
+    .files-operations-header,
+    .sharing_panel-header {
+      margin: 12px 0;
+      font-size: 18px;
+    }
   }
 `;
 
@@ -363,8 +372,18 @@ const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
 
+  width: calc(100% + 16px) !important;
+
   .link-row__container {
     height: 47px;
+  }
+
+  .link-row__container,
+  .sharing-row {
+    .styled-element {
+      margin-right: 0;
+      margin-left: 0;
+    }
   }
 
   .row_content {
@@ -374,8 +393,11 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing-row {
     margin: 0 16px;
-    width: calc(100% - 16px);
+    //width: calc(100% - 16px);
     box-sizing: border-box;
+
+    padding-right: 15px;
+    border-bottom: none;
   }
 
   .nav-thumb-vertical {
@@ -459,6 +481,30 @@ const StyledSharingBody = styled(Scrollbar)`
     left: 0;
     right: 0;
     margin: auto;
+  }
+
+  @media ${desktop} {
+    .link-row__container {
+      height: 41px;
+
+      .link-row {
+        min-height: 41px;
+      }
+    }
+
+    .sharing-row {
+      min-height: 41px;
+      //padding-right: 15px;
+
+      .sharing_panel-remove-icon {
+        font-size: 12px;
+      }
+    }
+
+    .sharing_panel-text,
+    .sharing_panel-link span {
+      font-size: 13px;
+    }
   }
 `;
 
