@@ -120,7 +120,7 @@ const EditingWrapperComponent = (props) => {
     renameTitle,
     onClickUpdateItem,
     cancelUpdateItem,
-    isLoading,
+    //isLoading,
     viewAs,
     elementIcon,
   } = props;
@@ -129,8 +129,12 @@ const EditingWrapperComponent = (props) => {
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onKeyUpUpdateItem = (e) => {
+    if (isLoading) return;
+    else setIsLoading(true);
+
     var code = e.keyCode || e.which;
     if (code === 13) {
       return onClickUpdateItem(e);
