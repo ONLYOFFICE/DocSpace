@@ -1,13 +1,8 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
-
-const HeaderStyles = css`
-  height: 39px;
-  position: fixed;
-  background: #fff;
-  z-index: 1;
-  border-bottom: 1px solid #eceef1;
-`;
+import { mobile, tablet } from "../utils/device";
+import Scrollbar from "../scrollbar";
+import { isMobile } from "react-device-detect";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
@@ -69,61 +64,69 @@ const StyledTableContainer = styled.div`
     .table-container_group-menu-checkbox {
       width: 22px;
     }
-
-    .table-container_group-menu-combobox {
-      height: 24px;
-      width: 16px;
-      margin-bottom: 16px;
-
-      .combo-button {
-        height: 24px;
-        margin-top: 8px;
-        width: 16px;
-
-        .combo-buttons_arrow-icon {
-          margin: 8px 16px 0 0;
-
-          /* svg {
-            path {
-              fill: #333;
-            }
-          } */
-        }
-      }
-    }
-
-    .table-container_group-menu-separator {
-      border-right: 1px solid #eceef1;
-      width: 2px;
-      height: 10px;
-      margin: 0 8px;
-    }
   }
 `;
 
 const StyledTableGroupMenu = styled.div`
+  position: relative;
+  background: #fff;
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: ${(props) => props.width};
+  width: 100%;
+  z-index: 199;
+  height: 52px;
+  box-shadow: 0px 5px 20px rgba(4, 15, 27, 7%);
+  border-radius: 0px 0px 6px 6px;
+  margin: 0;
+  width: 100%;
 
-  ${HeaderStyles}
+  @media ${tablet} {
+    height: 60px;
+  }
+
+  @media ${mobile} {
+    height: 52px;
+  }
 
   .table-container_group-menu-checkbox {
+    margin-left: 24px;
     ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
+  }
+
+  .table-container_group-menu-separator {
+    border-right: 1px solid #d0d5da;
+    width: 2px;
+    height: 20px;
+    margin: 0 8px;
   }
 
   .table-container_group-menu_button {
     margin-right: 8px;
   }
+
+  .table-container_group-menu-combobox {
+    height: 24px;
+    width: 16px;
+    margin: 3px 0px 0px 3px;
+
+    .combo-button {
+      .combo-buttons_arrow-icon {
+        margin: 1px 16px 0 0;
+      }
+    }
+  }
 `;
 
 const StyledTableHeader = styled.div`
+  position: fixed;
+  background: #fff;
   display: grid;
-  margin: 0 -24px;
-  padding: 0 24px;
-
-  ${HeaderStyles}
+  z-index: 1;
+  height: 39px;
+  border-bottom: 1px solid #eceef1;
+  margin: 0 -20px;
+  padding: 0 20px;
 
   .table-container_header-checkbox {
     ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
@@ -138,7 +141,7 @@ const StyledTableHeaderCell = styled.div`
   cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
 
   .header-container-text-icon {
-    padding: 16px 0 0 4px;
+    padding: 13px 0 0 4px;
 
     display: ${(props) =>
       props.isActive && props.showIcon ? "block" : "none"};
@@ -146,7 +149,7 @@ const StyledTableHeaderCell = styled.div`
       props.sorted &&
       css`
         transform: scale(1, -1);
-        padding: 14px 0 0 4px;
+        padding: 12px 0 0 4px;
       `}
   }
 
@@ -250,6 +253,15 @@ const StyledEmptyTableContainer = styled.div`
   height: 40px;
 `;
 
+const StyledScrollbar = styled(Scrollbar)`
+  .scroll-body {
+    display: flex;
+  }
+  .nav-thumb-horizontal {
+    ${isMobile && "display: none !important"};
+  }
+`;
+
 StyledTableRow.defaultProps = { theme: Base };
 
 export {
@@ -262,4 +274,5 @@ export {
   StyledTableSettings,
   StyledTableGroupMenu,
   StyledEmptyTableContainer,
+  StyledScrollbar,
 };

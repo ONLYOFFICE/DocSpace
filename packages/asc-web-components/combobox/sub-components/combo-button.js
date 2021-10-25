@@ -32,6 +32,7 @@ class ComboButton extends React.Component {
       isOpen,
       scaled,
       size,
+      comboIcon,
     } = this.props;
 
     const defaultOption = selectedOption.default;
@@ -85,12 +86,18 @@ class ComboButton extends React.Component {
           isOpen={isOpen}
           className="combo-buttons_arrow-icon"
         >
-          {(withOptions || withAdvancedOptions) && (
-            <StyledExpanderDownIcon
-              size="scale"
-              className="combo-buttons_expander-icon"
-            />
-          )}
+          {(withOptions || withAdvancedOptions) &&
+            (comboIcon ? (
+              <ReactSVG
+                src={comboIcon}
+                className="custom-combo-buttons_expander-icon"
+              />
+            ) : (
+              <StyledExpanderDownIcon
+                size="scale"
+                className="combo-buttons_expander-icon"
+              />
+            ))}
         </StyledArrowIcon>
       </StyledComboButton>
     );
@@ -116,6 +123,7 @@ ComboButton.propTypes = {
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "content"]),
   scaled: PropTypes.bool,
   onClick: PropTypes.func,
+  comboIcon: PropTypes.string,
 };
 
 ComboButton.defaultProps = {
