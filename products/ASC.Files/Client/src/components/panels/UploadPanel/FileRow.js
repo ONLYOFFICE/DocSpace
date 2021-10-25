@@ -84,6 +84,7 @@ const FileRow = (props) => {
     isPersonal,
     setMediaViewerData,
     setUploadPanelVisible,
+    isArchive,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -106,6 +107,7 @@ const FileRow = (props) => {
     ? { onClick: onCancelCurrentUpload }
     : {};
 
+  const downloadInCurrentTab = isArchive(ext);
   return (
     <>
       <StyledFileRow
@@ -133,7 +135,7 @@ const FileRow = (props) => {
                 color={item.error && "#A3A9AE"}
                 truncate
                 href={item.fileInfo ? item.fileInfo.webUrl : ""}
-                target="_blank"
+                target={downloadInCurrentTab ? "_self" : "_blank"}
               >
                 {name}
               </Link>
@@ -249,7 +251,7 @@ export default inject(
         : null;
 
     const { setMediaViewerData } = mediaViewerDataStore;
-
+    const { isArchive } = iconFormatsStore;
     return {
       isPersonal: personal,
       currentFileUploadProgress,
@@ -264,6 +266,7 @@ export default inject(
       cancelCurrentFileConversion,
       setMediaViewerData,
       setUploadPanelVisible,
+      isArchive,
     };
   }
 )(withTranslation("UploadPanel")(observer(FileRow)));
