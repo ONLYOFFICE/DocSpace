@@ -29,7 +29,7 @@ namespace ASC.Files.Core.EF
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlFilesDbContext() } ,
-                    { Provider.Postgre, () => new PostgreSqlFilesDbContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlFilesDbContext() } ,
                 };
             }
         }

@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.8");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
                 {
@@ -27,14 +27,14 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("partner_id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("ButtonUrl")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("button_url")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("TariffId", "PartnerId")
                         .HasName("PRIMARY");
@@ -57,19 +57,19 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnType("varchar(128)")
                         .HasColumnName("avangate_id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(128)")
                         .HasColumnName("description")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Features")
                         .HasColumnType("text")
                         .HasColumnName("features")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("MaxFileSize")
                         .HasColumnType("bigint")
@@ -83,7 +83,7 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnType("varchar(128)")
                         .HasColumnName("name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)")
@@ -123,7 +123,7 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("path")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("Counter")
                         .HasColumnType("bigint")
@@ -139,7 +139,7 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnType("varchar(1024)")
                         .HasColumnName("tag")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Tenant", "Path")
                         .HasName("PRIMARY");
@@ -161,7 +161,7 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("comment")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreateOn")
                         .ValueGeneratedOnAddOrUpdate()

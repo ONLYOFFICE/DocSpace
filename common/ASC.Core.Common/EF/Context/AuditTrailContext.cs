@@ -29,8 +29,8 @@ namespace ASC.Core.Common.EF.Context
             {
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
-                    { Provider.MySql, () => new MySqlCoreDbContext() } ,
-                    { Provider.Postgre, () => new PostgreSqlCoreDbContext() } ,
+                    { Provider.MySql, () => new MySqlAuditTrailContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlAuditTrailContext() } ,
                 };
             }
         }

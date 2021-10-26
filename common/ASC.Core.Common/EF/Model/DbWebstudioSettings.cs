@@ -21,7 +21,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddWebstudioSettings, Provider.MySql)
-                .Add(PgSqlAddWebstudioSettings, Provider.Postgre)
+                .Add(PgSqlAddWebstudioSettings, Provider.PostgreSql)
                 .HasData(
                 new DbWebstudioSettings
                 { 

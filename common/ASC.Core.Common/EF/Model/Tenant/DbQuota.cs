@@ -27,7 +27,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddDbQuota, Provider.MySql)
-                .Add(PgSqlAddDbQuota, Provider.Postgre)
+                .Add(PgSqlAddDbQuota, Provider.PostgreSql)
                 .HasData(
                     new DbQuota 
                     { 
