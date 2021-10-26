@@ -15,4 +15,6 @@ if %errorlevel% == 0 (
 
 echo.
 
+if "%1"=="nopause" goto start
 pause
+:start

@@ -1,5 +1,8 @@
+@echo off
+
 PUSHD %~dp0
 call runasadmin.bat "%~dpnx0"
+
 if %errorlevel% == 0 (
 PUSHD %~dp0..
 
@@ -40,10 +43,16 @@ powershell -Command "(gc build\deploy\nginx\sites-enabled\onlyoffice-projects.co
 powershell -Command "(gc build\deploy\nginx\sites-enabled\onlyoffice-studio.conf) -replace 'ROOTPATH', '%~dp0deploy\studio\client' -replace '\\', '/' | Out-File -encoding ASCII build\deploy\nginx\sites-enabled\onlyoffice-studio.conf"
 
 REM restart nginx
+echo service nginx stop
 call sc stop nginx
 
 REM sleep 5 seconds
 call ping 127.0.0.1 -n 6 > nul
 
+echo service nginx start
 call sc start nginx
 )
+
+if "%1"=="nopause" goto start
+pause
+:start
