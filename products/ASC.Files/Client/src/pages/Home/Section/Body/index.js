@@ -28,6 +28,7 @@ const SectionBodyContent = (props) => {
     moveDragItems,
     viewAs,
     setSelection,
+    setBufferSelection,
     tooltipPageX,
     tooltipPageY,
   } = props;
@@ -64,9 +65,12 @@ const SectionBodyContent = (props) => {
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable")
-    )
+      !e.target.closest(".not-selectable") &&
+      !e.target.closest(".table-container_group-menu")
+    ) {
       setSelection([]);
+      setBufferSelection(null);
+    }
   };
 
   const onMouseMove = (e) => {
@@ -223,6 +227,7 @@ export default inject(
       setSelection,
       tooltipPageX,
       tooltipPageY,
+      setBufferSelection,
     } = filesStore;
 
     return {
@@ -240,6 +245,7 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
       setSelection,
+      setBufferSelection,
       tooltipPageX,
       tooltipPageY,
     };

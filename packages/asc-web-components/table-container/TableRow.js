@@ -4,21 +4,16 @@ import { StyledTableRow } from "./StyledTableContainer";
 import TableCell from "./TableCell";
 import ContextMenu from "../context-menu";
 import ContextMenuButton from "../context-menu-button";
-import Checkbox from "../checkbox";
 
 const TableRow = (props) => {
   const {
     fileContextClick,
+    onHideContextMenu,
     children,
     contextOptions,
-    checked,
-    element,
-    onContentSelect,
-    item,
     className,
     style,
     selectionProp,
-    hasAccess,
     ...rest
   } = props;
 
@@ -42,34 +37,25 @@ const TableRow = (props) => {
     return contextOptions;
   };
 
-  const onChange = (e) => {
-    onContentSelect && onContentSelect(e.target.checked, item);
-  };
-
   return (
     <StyledTableRow
       onContextMenu={onContextMenu}
       className={`${className} table-container_row`}
       {...rest}
     >
-      <TableCell
-        hasAccess={hasAccess}
-        checked={checked}
-        {...selectionProp}
-        style={style}
-        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
-      >
-        <div className="table-container_element">{element}</div>
-        <Checkbox
-          className="table-container_row-checkbox"
-          onChange={onChange}
-          isChecked={checked}
-        />
-      </TableCell>
       {children}
       <div>
-        <TableCell {...selectionProp} style={style} forwardedRef={row}>
-          <ContextMenu ref={cm} model={contextOptions}></ContextMenu>
+        <TableCell
+          {...selectionProp}
+          style={style}
+          forwardedRef={row}
+          className={`${selectionProp?.className} table-container_row-context-menu-wrapper`}
+        >
+          <ContextMenu
+            onHide={onHideContextMenu}
+            ref={cm}
+            model={contextOptions}
+          ></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
               color="#A3A9AE"
@@ -100,6 +86,7 @@ TableRow.propTypes = {
   checked: PropTypes.bool,
   element: PropTypes.any,
   onContentSelect: PropTypes.func,
+  onHideContextMenu: PropTypes.func,
   item: PropTypes.object,
   selectionProp: PropTypes.object,
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),

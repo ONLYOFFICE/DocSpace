@@ -8,12 +8,18 @@ const StyledScrollbar = styled(Scrollbars)`
       props.color
         ? props.color
         : props.theme.scrollbar.backgroundColorVertical};
+    z-index: 1;
   }
   .nav-thumb-horizontal {
     background-color: ${(props) =>
       props.color
         ? props.color
         : props.theme.scrollbar.backgroundColorHorizontal};
+  }
+
+  .nav-thumb-vertical:hover {
+    background-color: ${(props) =>
+      props.theme.scrollbar.hoverBackgroundColorVertical};
   }
 `;
 

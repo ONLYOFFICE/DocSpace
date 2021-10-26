@@ -1,3 +1,4 @@
+call build/createMigrations.bat
 PUSHD %~dp0..
 dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
 
@@ -9,3 +10,5 @@ if %errorlevel% == 0 (
 		call build\scripts\%%~nxf
 	)
 )
+
+pause

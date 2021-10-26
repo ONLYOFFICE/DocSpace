@@ -15,9 +15,9 @@ user-select: none;*/
       ? props.theme.dragAndDrop.border
       : props.theme.dragAndDrop.transparentBorder};
   margin-left: -2px;
+  position: relative;
 
   @media ${tablet} {
-    border: none;
     margin-left: 0;
   }
   outline: none;

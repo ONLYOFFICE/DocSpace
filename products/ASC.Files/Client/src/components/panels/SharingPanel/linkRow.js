@@ -41,7 +41,11 @@ class LinkRow extends React.Component {
     const isDisabled = isLoading || disableLink;
 
     return (
-      <StyledLinkRow withToggle={withToggle} isDisabled={isDisabled}>
+      <StyledLinkRow
+        withToggle={withToggle}
+        isDisabled={isDisabled}
+        className="link-row__container"
+      >
         <Row
           className="link-row"
           key={`${linkText.replace(" ", "-")}-key_${index}`}

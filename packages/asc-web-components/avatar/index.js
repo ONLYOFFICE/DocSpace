@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import { GuestIcon, AdministratorIcon, OwnerIcon } from "./svg";
 import {
-  EditLink,
   EmptyIcon,
   EditContainer,
   AvatarWrapper,
@@ -13,7 +12,7 @@ import {
   StyledImage,
   StyledAvatar,
 } from "./styled-avatar";
-import Link from "../link";
+import IconButton from "../icon-button";
 import commonIconsStyles from "../utils/common-icons-style";
 
 const whiteColor = "#FFFFFF";
@@ -57,15 +56,7 @@ Initials.propTypes = {
 // eslint-disable-next-line react/display-name
 const Avatar = (props) => {
   //console.log("Avatar render");
-  const {
-    size,
-    source,
-    userName,
-    role,
-    editing,
-    editLabel,
-    editAction,
-  } = props;
+  const { size, source, userName, role, editing, editAction } = props;
 
   const avatarContent = source ? (
     <StyledImage src={source} />
@@ -83,21 +74,13 @@ const Avatar = (props) => {
         {avatarContent}
       </AvatarWrapper>
       {editing && size === "max" && (
-        <EditContainer gradient={!!source}>
-          <EditLink>
-            <Link
-              type="action"
-              title={editLabel}
-              isTextOverflow={true}
-              isHovered={true}
-              fontSize="14px"
-              fontWeight={600}
-              color={whiteColor}
-              onClick={editAction}
-            >
-              {editLabel}
-            </Link>
-          </EditLink>
+        <EditContainer>
+          <IconButton
+            color={whiteColor}
+            iconName="/static/images/pencil.react.svg"
+            onClick={editAction}
+            size={16}
+          />
         </EditContainer>
       )}
       <RoleWrapper size={size}>{roleIcon}</RoleWrapper>
@@ -112,8 +95,6 @@ Avatar.propTypes = {
   role: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
   /** The address of the image for an image avatar */
   source: PropTypes.string,
-  /** Displays avatar edit layer */
-  editLabel: PropTypes.string,
   userName: PropTypes.string,
   editing: PropTypes.bool,
   /** Function called when the avatar change button is pressed */
@@ -130,7 +111,6 @@ Avatar.defaultProps = {
   size: "medium",
   role: "",
   source: "",
-  editLabel: "Edit photo",
   userName: "",
   editing: false,
 };

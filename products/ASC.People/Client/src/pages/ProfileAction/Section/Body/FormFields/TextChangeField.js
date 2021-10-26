@@ -18,8 +18,6 @@ class TextChangeField extends React.Component {
   }
 
   render() {
-    console.log("TextChangeField render");
-
     const {
       isRequired,
       hasError,

@@ -53,8 +53,8 @@ class FirebaseHelper {
       this.config["projectId"] &&
       this.config["storageBucket"] &&
       this.config["messagingSenderId"] &&
-      this.config["appId"] &&
-      this.config["measurementId"]
+      this.config["appId"] /*&&
+      this.config["measurementId"]*/
     );
   }
 

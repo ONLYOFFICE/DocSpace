@@ -137,8 +137,6 @@ const MyProfileRoute = (props) => (
   </React.Suspense>
 );
 
-let index = 0;
-
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
     isLoaded,
@@ -351,7 +349,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     const remoteEntryURL = combineUrl(
       window.location.origin,
       appURL,
-      `remoteEntry.js?__index=${++index}`
+      `remoteEntry.js`
     );
 
     const system = {
@@ -368,7 +366,16 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     return (
       <PrivateRoute
         key={m.id}
-        path={appURL}
+        path={
+          m.appName === "files"
+            ? [
+                "/Products/Files",
+                "/Products/Files/",
+                "/Products/Files/?desktop=true",
+                appURL,
+              ]
+            : appURL
+        }
         component={System}
         system={system}
       />

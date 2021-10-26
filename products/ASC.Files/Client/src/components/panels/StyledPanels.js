@@ -92,11 +92,11 @@ const StyledVersionHistoryPanel = styled.div`
   ${PanelStyles}
   .version-history-modal-dialog {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
-    width: 720px;
+    width: 500px;
   }
   .version-history-aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
-    width: 720px;
+    width: 500px;
   }
   .version-history-panel-header {
     height: 53px;
@@ -108,9 +108,13 @@ const StyledVersionHistoryPanel = styled.div`
     }
   }
   .version-history-panel-body {
-    padding: ${(props) => (props.isLoading ? "16px 0" : null)};
-    margin: 0 16px;
+    padding-top: ${(props) => (props.isLoading ? "16px" : null)};
+    padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
+    margin-left: 16px;
     border-top: 1px solid #eceef1;
+
+    height: calc(100% - 53px);
+    box-sizing: border-box;
 
     .version-comment-wrapper {
       margin-left: 79px;
@@ -170,6 +174,7 @@ const StyledContent = styled.div`
   box-sizing: border-box;
   position: relative;
   width: 100%;
+  height: 100%;
   background-color: #fff;
 
   .header_aside-panel-header {
@@ -574,6 +579,11 @@ const StyledSelectFolderPanel = styled.div`
             height: ${props.heightContent};
           `}
   }
+
+  span.rc-tree-title {
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "243px" : "466px"};
+  }
 `;
 const StyledSelectFilePanel = styled.div`
   .select-file-dialog_empty-container {
@@ -668,6 +678,10 @@ const StyledSelectFilePanel = styled.div`
       ${(props) =>
         props.isHeaderChildren ? `padding-top: 0;` : `padding-top: 16px;`}
       border-right: 1px solid #dee2e6;
+      span.rc-tree-title {
+        max-width: ${(props) =>
+          props.displayType === "aside" ? "243px" : "181px"};
+      }
     }
   }
   .select-file-dialog-aside_buttons {
@@ -766,6 +780,125 @@ const StyledFilesList = styled.div`
     grid-template-columns: 22px 32px 1fr;
   }
 `;
+
+const StyledModalRowContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 47px;
+
+  .link-row__container {
+    width: 100%;
+
+    .link-row {
+      border-bottom: none;
+    }
+
+    .link-row::after {
+      height: 0;
+    }
+  }
+
+  .panel_combo-box {
+    margin-left: 0px;
+
+    .combo-button {
+      height: 30px;
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+
+    .optionalBlock {
+      margin-right: 4px;
+      display: flex;
+    }
+
+    .combo-button-label {
+      margin: 0;
+    }
+
+    .sharing-access-combo-box-icon {
+      height: 16px;
+      path {
+        fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+      }
+
+      svg {
+        width: 16px;
+        min-width: 16px;
+        height: 16px;
+        min-height: 16px;
+      }
+    }
+  }
+
+  .embedding-panel_code-container {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .embedding-panel_text {
+    padding: 8px 0 4px 0;
+  }
+
+  .embedding-panel_copy-icon {
+    position: absolute;
+    z-index: 1;
+    margin: 8px;
+    right: 0px;
+  }
+
+  .embedding-panel_links-container {
+    display: flex;
+    .embedding-panel_link {
+      margin-right: 8px;
+      height: 32px;
+      background-color: #eceef1;
+      line-height: 30px;
+      padding: 0px 8px;
+    }
+  }
+
+  .embedding-panel_inputs-container {
+    display: flex;
+
+    .embedding-panel_input {
+      margin-right: 8px;
+      width: 94px;
+    }
+  }
+
+  .embedding-panel_code-container {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .embedding-panel_text {
+    padding: 8px 0 4px 0;
+  }
+
+  .embedding-panel_copy-icon {
+    position: absolute;
+    z-index: 1;
+    margin: 8px;
+    right: 0;
+  }
+
+  .panel-loader-wrapper {
+    margin-top: 8px;
+    padding-left: 32px;
+  }
+  .panel-loader {
+    display: inline;
+    margin-right: 10px;
+  }
+
+  @media (max-width: 1024px) {
+    .row_content {
+      height: 19px;
+      overflow: initial;
+    }
+  }
+`;
+
 export {
   StyledAsidePanel,
   StyledAddGroupsPanel,
@@ -781,4 +914,5 @@ export {
   StyledSelectFolderPanel,
   StyledSelectFilePanel,
   StyledFilesList,
+  StyledModalRowContainer,
 };

@@ -36,6 +36,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
@@ -77,7 +78,8 @@ namespace ASC.Files.Core.Data
         public FileDao(
             FactoryIndexerFile factoryIndexer,
             UserManager userManager,
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<EF.FilesDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -100,6 +102,7 @@ namespace ASC.Files.Core.Data
             Settings settings)
             : base(
                   dbContextManager,
+                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,
@@ -187,7 +190,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
-        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
         {
             if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
@@ -238,7 +241,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return FromQuery(query).Select(ToFile).ToList();
+            return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).Select(ToFile).ToList();
         }
 
 
@@ -439,7 +442,7 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                FilesDbContext.Files.Add(toInsert);
+                FilesDbContext.AddOrUpdate(r => r.Files, toInsert);
                 FilesDbContext.SaveChanges();
 
                 tx.Commit();

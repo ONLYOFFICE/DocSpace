@@ -13,6 +13,7 @@ const Aside = React.memo((props) => {
     zIndex,
     className,
     contentPaddingBottom,
+    withoutBodyScroll,
   } = props;
 
   return (
@@ -23,7 +24,11 @@ const Aside = React.memo((props) => {
       contentPaddingBottom={contentPaddingBottom}
       className={`${className} not-selectable aside`}
     >
-      <Scrollbar>{children}</Scrollbar>
+      {withoutBodyScroll ? (
+        children
+      ) : (
+        <Scrollbar stype="mediumBlack">{children}</Scrollbar>
+      )}
     </StyledAside>
   );
 });
@@ -40,10 +45,12 @@ Aside.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  withoutBodyScroll: PropTypes.bool,
 };
 Aside.defaultProps = {
   scale: false,
   zIndex: 400,
+  withoutBodyScroll: false,
 };
 
 export default Aside;
