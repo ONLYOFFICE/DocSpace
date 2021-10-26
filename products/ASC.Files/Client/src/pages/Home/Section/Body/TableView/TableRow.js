@@ -129,7 +129,8 @@ const StyledShare = styled.div`
     }
 
     .share-button-icon {
-      margin-right: 7px;
+      margin-right: 4px;
+      padding-top: 3px;
     }
   }
 `;
@@ -185,6 +186,7 @@ const FilesTableRow = (props) => {
         id={item.id}
         shared={item.shared}
         isFolder={item.isFolder}
+        isSmallIcon={true}
       />
     ) : null;
 
