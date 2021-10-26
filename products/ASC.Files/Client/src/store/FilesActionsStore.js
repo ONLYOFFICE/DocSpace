@@ -601,7 +601,7 @@ class FilesActionStore {
     } = this.treeFoldersStore;
     const {
       isAccessedSelected,
-      isWebEditSelected,
+      canConvertSelected,
       isThirdPartyRootSelection,
       hasSelection,
     } = this.filesStore;
@@ -615,7 +615,7 @@ class FilesActionStore {
       case "download":
         return hasSelection;
       case "downloadAs":
-        return isWebEditSelected && hasSelection;
+        return canConvertSelected;
       case "moveTo":
         return (
           !isThirdPartyRootSelection &&
