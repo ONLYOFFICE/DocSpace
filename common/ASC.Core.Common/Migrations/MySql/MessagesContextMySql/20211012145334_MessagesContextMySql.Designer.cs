@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace ASC.Core.Common.Migrations.PostgreSql.MessagesContextPostgreSql
+namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
 {
-    [DbContext(typeof(PostgreSqlMessagesContext))]
-    [Migration("20211012145335_MessagesContextPostgreSql")]
-    partial class MessagesContextPostgreSql
+    [DbContext(typeof(MySqlMessagesContext))]
+    [Migration("20211012145334_MessagesContextMySql")]
+    partial class MessagesContextMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -1454,9 +1454,8 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         new
                         {
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            LastModified = new DateTime(2021, 10, 12, 14, 53, 21, 367, DateTimeKind.Utc).AddTicks(6524),
-                            PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                            PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
+                            LastModified = new DateTime(2021, 10, 26, 12, 3, 16, 815, DateTimeKind.Utc).AddTicks(4486),
+                            PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                             Tenant = 1
                         });
                 });

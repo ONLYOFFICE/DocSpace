@@ -1,4 +1,5 @@
 using System;
+
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -9,25 +10,6 @@ namespace ASC.Core.Common.Migrations.PostgreSql.CoreDbContextPostgreSql
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "core_acl",
-                columns: table => new
-                {
-                    tenant = table.Column<int>(type: "int", nullable: false),
-                    subject = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    action = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    @object = table.Column<string>(name: "object", type: "varchar(255)", nullable: false, defaultValueSql: "''", collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    acetype = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.subject, x.action, x.@object });
-                })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
