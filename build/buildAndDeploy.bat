@@ -11,7 +11,7 @@ call start\stop.bat nopause
 PUSHD %~dp0..
 
 echo "FRONT-END static"
-call build\build.static.bat
+call build\build.static.bat nopause
 
 echo "BACK-END"
 call build\build.backend.bat nopause
