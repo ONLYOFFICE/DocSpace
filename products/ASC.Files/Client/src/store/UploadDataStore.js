@@ -866,6 +866,7 @@ class UploadDataStore {
       clearSecondaryProgressData,
       setSecondaryProgressBarData,
     } = this.secondaryProgressDataStore;
+    const { setBufferSelection } = this.filesStore;
 
     let progress = data.progress;
 
@@ -892,6 +893,7 @@ class UploadDataStore {
       });
     }
 
+    setBufferSelection(null);
     return operationItem;
   };
 
