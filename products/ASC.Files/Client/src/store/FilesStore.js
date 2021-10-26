@@ -357,6 +357,7 @@ class FilesStore {
           }
         });
 
+    this.setBufferSelection(null);
     return request();
   };
 
