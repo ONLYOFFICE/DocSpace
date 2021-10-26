@@ -27,16 +27,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Mail.Core.Entities;
+
+using ASC.Data.Storage;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Models;
 using ASC.Mail.Enums;
-//using ASC.Web.Studio.Utility;
-using ContactInfo = ASC.Mail.Models.ContactInfo;
-using ASC.Web.Studio.Utility;
+using ASC.Mail.Models;
 using ASC.Mail.Storage;
-using ASC.Data.Storage;
+using ASC.Web.Studio.Utility;
+
+using ContactInfo = ASC.Mail.Models.ContactInfo;
 
 namespace ASC.Mail.Extensions
 {
@@ -104,7 +104,7 @@ namespace ASC.Mail.Extensions
                     QuotaError = false,
                     Signature = new MailSignatureData(-1, account.Signature.Tenant, "", false),
                     Autoreply = new MailAutoreplyData(-1, account.Signature.Tenant, false, false,
-                        false, DateTime.MinValue, DateTime.MinValue, String.Empty, String.Empty), 
+                        false, DateTime.MinValue, DateTime.MinValue, String.Empty, String.Empty),
                     EMailInFolder = "",
                     IsAlias = false,
                     IsGroup = true,
@@ -253,13 +253,13 @@ namespace ASC.Mail.Extensions
         public static MailTagData ToTagData(this Tag tag)
         {
             return new MailTagData
-                {
-                    Id = tag.Id,
-                    Name = tag.TagName,
-                    Style = tag.Style,
-                    Addresses = new MailTagData.AddressesList<string>(tag.Addresses.Split(';')),
-                    LettersCount = tag.Count
-                };
+            {
+                Id = tag.Id,
+                Name = tag.TagName,
+                Style = tag.Style,
+                Addresses = new MailTagData.AddressesList<string>(tag.Addresses.Split(';')),
+                LettersCount = tag.Count
+            };
         }
 
         public static List<MailTagData> ToTagData(this List<Tag> tags)
@@ -267,7 +267,7 @@ namespace ASC.Mail.Extensions
             return tags
                 .Select(t => new MailTagData
                 {
-                      Id = t.Id,
+                    Id = t.Id,
                     Name = t.TagName,
                     Style = t.Style,
                     Addresses = new MailTagData.AddressesList<string>(t.Addresses.Split(';')),

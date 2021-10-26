@@ -37,7 +37,6 @@ namespace ASC.Mail.ImapSync
 
         public event EventHandler<ImapAction> NewActionFromImap;
         public event EventHandler<(MimeMessage, MessageDescriptor)> NewMessage;
-        public event EventHandler<string> DeleteMessage;
         public event EventHandler MessagesListUpdated;
         public event EventHandler<bool> OnCriticalError;
         public event EventHandler<UniqueIdMap> OnUidlsChange;
@@ -188,7 +187,7 @@ namespace ASC.Mail.ImapSync
             if (imap.IsAuthenticated) return true;
 
             var secureSocketOptions = SecureSocketOptions.Auto;
-            var sslProtocols = SslProtocols.Default;
+            var sslProtocols = SslProtocols.None;
 
             switch (Account.Encryption)
             {

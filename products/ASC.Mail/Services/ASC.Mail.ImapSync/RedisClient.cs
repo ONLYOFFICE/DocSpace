@@ -164,9 +164,8 @@ namespace ASC.Mail.ImapSync
                     var s = JsonConvert.SerializeObject(item);
                     return enc.GetBytes(s);
                 }
-                catch (Exception e)
+                catch
                 {
-                    //LogManager.GetLogger("ASC").Error("RedisClient Serialize", e);
                     throw;
                 }
             }
@@ -180,9 +179,8 @@ namespace ASC.Mail.ImapSync
                     var s = enc.GetString(obj);
                     return JsonConvert.DeserializeObject(s, typeof(object), settings);
                 }
-                catch (Exception e)
+                catch
                 {
-                    //LogManager.GetLogger("ASC").Error("RedisClient Deserialize", e);
                     throw;
                 }
             }
@@ -196,9 +194,8 @@ namespace ASC.Mail.ImapSync
                     var s = enc.GetString(obj);
                     return JsonConvert.DeserializeObject<T>(s, settings);
                 }
-                catch (Exception e)
+                catch
                 {
-                    //LogManager.GetLogger("ASC").Error("RedisClient Deserialize<T>", e);
                     throw;
                 }
             }

@@ -26,8 +26,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Files.Core.Security;
-//using ASC.Files.Core.Security;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Utils;
@@ -36,8 +36,10 @@ namespace ASC.Mail.Models.Base
 {
     public class MailComposeBase
     {
-        private readonly string _calendarEventUid;
-        private readonly string _calendarMethod;
+        public string CalendarEventUid { get; private set; }
+
+        public string CalendarMethod { get; private set; }
+
         private readonly string _calendarIcs;
 
         public MailComposeBase(int id, MailBoxData mailBoxData, FolderType folder, string from, List<string> to, List<string> cc, List<string> bcc,
@@ -68,18 +70,18 @@ namespace ASC.Mail.Models.Base
             Attachments = distinct;
             AttachmentsEmbedded = new List<MailAttachmentData>();
 
-            if (string.IsNullOrEmpty(calendarIcs)) 
+            if (string.IsNullOrEmpty(calendarIcs))
                 return;
 
             _calendarIcs = calendarIcs;
 
             //TODO: Fix 
-            //var calendar = MailUtil.ParseValidCalendar(_calendarIcs);
-            //if (calendar != null)
-            //{
-            //    _calendarMethod = calendar.Method;
-            //    _calendarEventUid = calendar.Events[0].Uid;
-            //}
+            var calendar = MailUtil.ParseValidCalendar(_calendarIcs);
+            if (calendar != null)
+            {
+                CalendarMethod = calendar.Method;
+                CalendarEventUid = calendar.Events[0].Uid;
+            }
         }
 
         public int Id { get; set; }
@@ -118,22 +120,18 @@ namespace ASC.Mail.Models.Base
 
         public FileShare FileLinksShareMode { get; set; }
 
-        public bool AccountChanged {
+        public bool AccountChanged
+        {
             get { return Mailbox.MailBoxId != PreviousMailboxId; }
         }
 
         public int PreviousMailboxId { get; set; }
 
-        public string CalendarIcs {
+        public string CalendarIcs
+        {
             get { return _calendarIcs; }
         }
 
-        public string CalendarEventUid {
-            get { return _calendarEventUid; }
-        }
 
-        public string CalendarMethod {
-            get { return _calendarMethod; }
-        }
     }
 }
