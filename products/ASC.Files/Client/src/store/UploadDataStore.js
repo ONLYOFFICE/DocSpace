@@ -466,23 +466,26 @@ class UploadDataStore {
         setFilter,
       } = this.filesStore;
 
+      const newFiles = files;
+      const newFolders = folders;
+
       const addNewFile = () => {
         if (folderInfo) {
           folderInfo && newFolders.unshift(folderInfo);
           setFolders(newFolders);
+          const newFilter = filter;
+          newFilter.total = newFilter.total += 1;
+          setFilter(newFilter);
         } else {
           currentFile &&
             currentFile.fileInfo &&
             newFiles.unshift(currentFile.fileInfo);
           setFiles(newFiles);
+          const newFilter = filter;
+          newFilter.total = newFilter.total += 1;
+          setFilter(newFilter);
         }
-
-        const newFilter = filter;
-        newFilter.total = newFilter.total += 1;
       };
-
-      const newFiles = files;
-      const newFolders = folders;
 
       if (!currentFile && !folderInfo) return;
 
@@ -586,7 +589,11 @@ class UploadDataStore {
       }
       return Promise.resolve();
     } else {
-      return this.throttleRefreshFiles(toFolderId, currentFile, folderInfo);
+      //TODO:
+      if (currentFile.action === "uploaded") {
+        return this.throttleRefreshFiles(toFolderId, currentFile, folderInfo);
+      }
+      return Promise.resolve();
     }
   };
 
