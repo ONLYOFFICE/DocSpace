@@ -24,8 +24,10 @@
 */
 
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 using ASC.Api.Core;
@@ -53,7 +55,29 @@ namespace ASC.ApiSystem
                 .UseSystemd()
                 .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    var builder = webBuilder.UseStartup<Startup>();
+
+                    builder.ConfigureKestrel((hostingContext, serverOptions) =>
+                    {
+                        var kestrelConfig = hostingContext.Configuration.GetSection("Kestrel");
+
+                        if (!kestrelConfig.Exists()) return;
+
+                        var unixSocket = kestrelConfig.GetValue<string>("ListenUnixSocket");
+
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        {
+                            if (!String.IsNullOrWhiteSpace(unixSocket))
+                            {
+                                unixSocket = String.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
+
+                                serverOptions.ListenUnixSocket(unixSocket);
+                            }
+                        }
+                    });
+                })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var buided = config.Build();
