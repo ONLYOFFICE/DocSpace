@@ -15,16 +15,15 @@ import {
   deleteBackup,
   deleteBackupHistory,
   getBackupHistory,
-  getRestoreProgress,
   startRestore,
 } from "../../../../../../../../../packages/asc-web-common/api/portal";
 import BackupListBody from "./backupListBody";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../package.json";
-import history from "@appserver/common/history";
+import { getSettings } from "@appserver/common/api/settings";
 const { desktop } = utils.device;
-const homepage = config.homepage;
+
 class BackupListModalDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -109,7 +108,7 @@ class BackupListModalDialog extends React.Component {
   };
   onRestoreClick = (e) => {
     const { filesList } = this.state;
-    const { isNotify, isCopyingToLocal } = this.props;
+    const { isNotify, isCopyingToLocal, history } = this.props;
     const index =
       e.target.dataset.index ||
       e.target.farthestViewportElement?.dataset?.index;
@@ -125,17 +124,23 @@ class BackupListModalDialog extends React.Component {
           value: filesList[+index].id,
         },
       ];
-      // startRestore(backupId, storageType, storageParams, isNotify)
-      //   .then(() =>
-      //     history.push(
-      //       combineUrl(
-      //         AppServerConfig.proxyURL,
-      //         homepage,
-      //         "/preparation-portal"
-      //       )
-      //     )
-      //   )
-      //   .catch((error) => console.log("backup list error", error));
+      startRestore(backupId, storageType, storageParams, isNotify)
+        .then(() => getSettings())
+        .then(() =>
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              "/preparation-portal"
+            )
+          )
+        )
+        .catch((error) => console.log("backup list error", error))
+        .finally(() =>
+          this.setState({
+            isLoading: false,
+          })
+        );
     });
   };
   render() {

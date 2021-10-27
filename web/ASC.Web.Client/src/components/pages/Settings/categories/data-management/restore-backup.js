@@ -448,7 +448,7 @@ class RestoreBackup extends React.Component {
     );
   };
   render() {
-    const { t } = this.props;
+    const { t, history } = this.props;
     const {
       isChecked,
       isLoading,
@@ -568,6 +568,7 @@ class RestoreBackup extends React.Component {
             onModalClose={this.onModalClose}
             isNotify={isNotify}
             isCopyingToLocal={isCopyingToLocal}
+            history={history}
           />
         )}
         <Checkbox
