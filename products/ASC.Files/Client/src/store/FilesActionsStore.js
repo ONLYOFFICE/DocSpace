@@ -453,9 +453,17 @@ class FilesActionStore {
   };
 
   openLocationAction = (locationId, isFolder) => {
+    const { createNewExpandedKeys, setExpandedKeys } = this.treeFoldersStore;
+
     const locationFilter = isFolder ? this.filesStore.filter : null;
     this.filesStore.setBufferSelection(null);
-    return this.filesStore.fetchFiles(locationId, locationFilter);
+    return this.filesStore
+      .fetchFiles(locationId, locationFilter)
+      .then((data) => {
+        const pathParts = data.selectedFolder.pathParts;
+        const newExpandedKeys = createNewExpandedKeys(pathParts);
+        setExpandedKeys(newExpandedKeys);
+      });
     /*.then(() =>
       //isFolder ? null : this.selectRowAction(!checked, item)
     );*/
@@ -601,7 +609,7 @@ class FilesActionStore {
     } = this.treeFoldersStore;
     const {
       isAccessedSelected,
-      isWebEditSelected,
+      canConvertSelected,
       isThirdPartyRootSelection,
       hasSelection,
     } = this.filesStore;
@@ -615,7 +623,7 @@ class FilesActionStore {
       case "download":
         return hasSelection;
       case "downloadAs":
-        return isWebEditSelected && hasSelection;
+        return canConvertSelected;
       case "moveTo":
         return (
           !isThirdPartyRootSelection &&

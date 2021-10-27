@@ -51,6 +51,7 @@ const TableGroupMenu = (props) => {
           className="table-container_group-menu-combobox not-selectable"
           options={[]}
           selectedOption={{}}
+          offsetDropDownY="44px"
         />
         <div className="table-container_group-menu-separator" />
         {headerMenu.map((item, index) => {
