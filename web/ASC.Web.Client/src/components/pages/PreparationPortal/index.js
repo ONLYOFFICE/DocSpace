@@ -11,12 +11,36 @@ class PreparationPortal extends React.Component {
     super(props);
     this.state = {
       percent: 0,
-      isError: false,
+      errorMessage: "",
     };
     this.timerId = null;
   }
   componentDidMount() {
-    this.timerId = setInterval(() => this.getProgress(), 1000);
+    this.setState({ isLoadingData: true }, function () {
+      getRestoreProgress()
+        .then((response) => {
+          if (response) {
+            if (!response.error) {
+              if (response.progress === 100)
+                this.setState({
+                  percent: 100,
+                });
+              if (response.progress !== 100)
+                this.timerId = setInterval(() => this.getProgress(), 1000);
+            } else {
+              this.setState({
+                errorMessage: response.error,
+              });
+            }
+          }
+        })
+        .catch((err) =>
+          this.setState({
+            errorMessage: err,
+          })
+        )
+        .finally(() => this.setState({ isLoadingData: false }));
+    });
   }
   componentWillUnmount() {
     clearInterval(this.timerId);
@@ -37,7 +61,7 @@ class PreparationPortal extends React.Component {
         } else {
           clearInterval(this.timerId);
           this.setState({
-            isError: true,
+            errorMessage: response.error,
           });
         }
       }
@@ -45,22 +69,38 @@ class PreparationPortal extends React.Component {
   };
   render() {
     const { t } = this.props;
-    const { percent } = this.state;
-    console.log("percent", percent);
+    const { percent, errorMessage, isLoadingData } = this.state;
+    console.log("percent", errorMessage);
     return (
       <ErrorContainer
         headerText={t("PreparationPortalTitle")}
         bodyText={t("PreparationPortalDescription")}
       >
-        <StyledPreparationPortal percent={percent}>
-          <div className="preparation-portal_progress-bar">
-            <div className="preparation-portal_progress-line"></div>
-          </div>
-          <Text
-            className="preparation-portal_percent"
-            color="#a3a9ae"
-          >{`${percent}%`}</Text>
-        </StyledPreparationPortal>
+        {!isLoadingData ? (
+          <StyledPreparationPortal
+            percent={percent}
+            errorMessage={errorMessage}
+          >
+            {errorMessage ? (
+              <Text
+                className="preparation-portal_error"
+                color="#F21C0E"
+              >{`${errorMessage}`}</Text>
+            ) : (
+              <>
+                <div className="preparation-portal_progress-bar">
+                  <div className="preparation-portal_progress-line"></div>
+                </div>
+                <Text
+                  className="preparation-portal_percent"
+                  color="#a3a9ae"
+                >{`${percent}%`}</Text>
+              </>
+            )}
+          </StyledPreparationPortal>
+        ) : (
+          <></>
+        )}
       </ErrorContainer>
     );
   }

@@ -4,7 +4,7 @@ const StyledPreparationPortal = styled.div`
   margin-bottom: 24px;
   display: flex;
   width: 100%;
-  max-width: 360px;
+  max-width: ${(props) => (props.errorMessage ? "560px" : "360px")};
   padding: 0 24px;
   box-sizing: border-box;
   align-items: center;
