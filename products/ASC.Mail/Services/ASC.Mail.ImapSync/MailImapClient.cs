@@ -406,10 +406,18 @@ namespace ASC.Mail.ImapSync
         {
             _log.Info("Dispose.");
 
-            CancelToken?.Cancel();
-
             try
             {
+                aliveTimer.Stop();
+                aliveTimer.Elapsed -= AliveTimer_Elapsed;
+                aliveTimer.Dispose();
+
+                processActionFromImapTimer.Stop();
+                processActionFromImapTimer.Elapsed += ProcessActionFromImapTimer_Elapsed;
+                processActionFromImapTimer.Dispose();
+
+                CancelToken?.Cancel();
+
                 simpleImapClients.Values.ToList().ForEach(x => x?.Dispose());
 
                 CancelToken?.Dispose();
