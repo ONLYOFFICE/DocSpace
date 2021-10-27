@@ -36,13 +36,22 @@ DOCKER="";
 LOCAL_SCRIPTS="false"
 HELP="false";
 product="appserver"
+GIT_BRANCH="develop"
 
 while [ "$1" != "" ]; do
 	case $1 in
-		-ls | --local_scripts )
+		-ls | --localscripts )
 			if [ "$2" == "true" ] || [ "$2" == "false" ]; then
 				PARAMETERS="$PARAMETERS ${1}";
 				LOCAL_SCRIPTS=$2
+				shift
+			fi
+		;;
+		
+		-gb | --gitbranch )
+			if [ "$2" != "" ]; then
+				PARAMETERS="$PARAMETERS ${1}";
+				GIT_BRANCH=$2
 				shift
 			fi
 		;;
@@ -119,7 +128,7 @@ if [ "$HELP" == "false" ]; then
 fi
 
 #DOWNLOAD_URL_PREFIX="http://download.onlyoffice.com/install-appserver/"
-DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/develop/build/install/OneClickInstall"
+DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall"
 
 if [ "$DOCKER" == "true" ]; then
 	if [ "$LOCAL_SCRIPTS" == "true" ]; then

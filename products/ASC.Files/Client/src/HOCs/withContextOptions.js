@@ -3,11 +3,19 @@ import { inject, observer } from "mobx-react";
 import copy from "copy-to-clipboard";
 import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
-import toastr from "studio/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import config from "../../package.json";
+import saveAs from "file-saver";
 
 export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
+    onOpenFolder = () => {
+      const { item, openLocationAction } = this.props;
+      const { id, folderId, fileExst } = item;
+      const locationId = !fileExst ? id : folderId;
+      openLocationAction(locationId, !fileExst);
+    };
+
     onOpenLocation = () => {
       const { item, openLocationAction } = this.props;
       const { parentId, folderId, fileExst } = item;
@@ -106,15 +114,15 @@ export default function withContextOptions(WrappedComponent) {
         setConvertItem(item);
         setConvertDialogVisible(true);
       } else {
-        this.openDocEditor(false);
+        this.gotoDocEditor(false);
       }
     };
 
     onPreviewClick = () => {
-      this.openDocEditor(true);
+      this.gotoDocEditor(true);
     };
 
-    openDocEditor = (preview = false) => {
+    gotoDocEditor = (preview = false) => {
       const { item, openDocEditor, isDesktop } = this.props;
       const { id, providerKey, fileExst } = item;
 
@@ -140,10 +148,36 @@ export default function withContextOptions(WrappedComponent) {
 
       openDocEditor(id, providerKey, tab, urlFormation);
     };
+
+    isPwa = () => {
+      return ["fullscreen", "standalone", "minimal-ui"].some(
+        (displayMode) =>
+          window.matchMedia("(display-mode: " + displayMode + ")").matches
+      );
+    };
+
     onClickDownload = () => {
       const { item, downloadAction, t } = this.props;
       const { fileExst, contentLength, viewUrl } = item;
       const isFile = !!fileExst && contentLength;
+
+      if (this.isPwa()) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", viewUrl);
+        xhr.responseType = "blob";
+
+        xhr.onload = () => {
+          saveAs(xhr.response, item.title);
+        };
+
+        xhr.onerror = () => {
+          console.error("download failed", viewUrl);
+        };
+
+        xhr.send();
+        return;
+      }
+
       isFile
         ? window.open(viewUrl, "_self")
         : downloadAction(t("Translations:ArchivingData")).catch((err) =>
@@ -193,15 +227,8 @@ export default function withContextOptions(WrappedComponent) {
         t,
         deleteItemAction,
       } = this.props;
-      const {
-        id,
-        title,
-        fileExst,
-        contentLength,
-        folderId,
-        providerKey,
-        rootFolderId,
-      } = item;
+      const { id, title, providerKey, rootFolderId, isFolder } = item;
+
       const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
       if (isRootThirdPartyFolder) {
@@ -217,19 +244,14 @@ export default function withContextOptions(WrappedComponent) {
         successRemoveFolder: t("FolderRemoved"),
       };
 
-      deleteItemAction(
-        id,
-        folderId,
-        translations,
-        fileExst || contentLength,
-        providerKey
-      );
+      deleteItemAction(id, translations, !isFolder, providerKey);
     };
 
     onClickShare = () => {
-      const { onSelectItem, setSharingPanelVisible, id, isFolder } = this.props;
-      onSelectItem({ id, isFolder });
-      setSharingPanelVisible(true);
+      const { setSharingPanelVisible } = this.props;
+      setTimeout(() => {
+        setSharingPanelVisible(true);
+      }, 10); //TODO: remove delay after fix context menu callback
     };
 
     onClickMarkRead = () => {
@@ -261,7 +283,7 @@ export default function withContextOptions(WrappedComponent) {
               key: option,
               label: t("Open"),
               icon: "images/catalog.folder.react.svg",
-              onClick: this.onOpenLocation,
+              onClick: this.onOpenFolder,
               disabled: false,
             };
           case "show-version-history":

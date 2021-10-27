@@ -173,6 +173,15 @@ If you can't open the link, please copy the following "$InviteLink":"$InviteLink
 Sincerely,
 ONLYOFFICE team</value>
   </data>
+  <data name="pattern_personal_custom_mode_already_exist" xml:space="preserve">
+    <value>Hi there!
+There was an attempt to register a new ONLYOFFICE Personal account using this email. If it was you, we want to inform you that the account already exists — proceed to ONLYOFFICE Personal and log in.
+If you lost your password, you can recover it on password recovery page.
+If you didn’t attempt to register a new account, probably someone else did it by mistake. In this case, please ignore this email.
+
+Have a nice day!
+ONLYOFFICE team</value>
+  </data>
   <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
     <value>You have requested a termination of your account at personal.onlyoffice.com. Follow the link to complete the request (the link is active for a 7-day period): 
 
@@ -227,6 +236,9 @@ The deletion of personal data allowed to free:
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Please activate your email address</value>
+  </data>
+  <data name="subject_personal_custom_mode_already_exist" xml:space="preserve">
+    <value>Log in to your ONLYOFFICE Personal account</value>
   </data>
   <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
     <value>ONLYOFFICE Personal account termination</value>

@@ -36,7 +36,7 @@ RectangleLoader.propTypes = {
   backgroundOpacity: PropTypes.number,
   foregroundOpacity: PropTypes.number,
   speed: PropTypes.number,
-  animate: PropTypes.bool,
+  animate: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
 };
 
 RectangleLoader.defaultProps = {

@@ -475,18 +475,20 @@ export function downloadFiles(fileIds, folderIds) {
   return request({ method: "put", url: "/files/fileops/bulkdownload", data });
 }
 
-export function downloadFormatFiles(fileConvertIds, folderIds) {
-  const data = { folderIds, fileConvertIds };
-  return request({ method: "put", url: "/files/fileops/bulkdownload", data });
-}
-
 export function getProgress() {
   return request({ method: "get", url: "/files/fileops" });
 }
 
 export function checkFileConflicts(destFolderId, folderIds, fileIds) {
-  const data = { destFolderId, folderIds, fileIds };
-  return request({ method: "post", url: "/files/fileops/move", data });
+  let paramsString =
+    folderIds.length > 0 ? `&folderIds=${folderIds.join("&folderIds=")}` : "";
+  paramsString +=
+    fileIds.length > 0 ? `&fileIds=${fileIds.join("&fileIds=")}` : "";
+
+  return request({
+    method: "get",
+    url: `/files/fileops/move.json?destFolderId=${destFolderId}${paramsString}`,
+  });
 }
 
 export function copyToFolder(

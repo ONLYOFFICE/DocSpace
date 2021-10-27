@@ -101,7 +101,7 @@ namespace ASC.Web.Files.Core.Search
 
             List<int> getIds(DateTime lastIndexed)
             {
-                long start = 0;
+                var start = 0;
                 var result = new List<int>();
                 while (true)
                 {
@@ -128,7 +128,7 @@ namespace ASC.Web.Files.Core.Search
 
             IQueryable<FolderTenant> GetBaseQuery(DateTime lastIndexed) => folderDao.FilesDbContext.Folders
                     .Where(r => r.ModifiedOn >= lastIndexed)
-                    .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Join(folderDao.TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
                     .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
 
             try

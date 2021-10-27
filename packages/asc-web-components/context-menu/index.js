@@ -32,7 +32,7 @@ class ContextMenuSub extends Component {
     });
   }
 
-  onItemClick(e, item) {
+  onItemClick(item, e) {
     if (item.disabled) {
       e.preventDefault();
       return;
@@ -157,13 +157,16 @@ class ContextMenuSub extends Component {
     const dataKeys = Object.fromEntries(
       Object.entries(item).filter((el) => el[0].indexOf("data-") === 0)
     );
+    const onClick = (e) => {
+      this.onItemClick(item, e);
+    };
     let content = (
       <a
         href={item.url || "#"}
         className={linkClassName}
         target={item.target}
         {...dataKeys}
-        onClick={(event) => this.onItemClick(event, item, index)}
+        onClick={onClick}
         role="menuitem"
       >
         {icon}
@@ -174,7 +177,7 @@ class ContextMenuSub extends Component {
 
     if (item.template) {
       const defaultContentOptions = {
-        onClick: (event) => this.onItemClick(event, item, index),
+        onClick,
         className: linkClassName,
         labelClassName: "p-menuitem-text",
         iconClassName,
@@ -435,7 +438,8 @@ class ContextMenu extends Component {
   bindDocumentClickListener() {
     if (!this.documentClickListener) {
       this.documentClickListener = (e) => {
-        if (this.isOutsideClicked(e) && e.button !== 2) {
+        if (this.isOutsideClicked(e)) {
+          //TODO: (&& e.button !== 2) restore after global usage
           this.hide(e);
 
           this.setState({
@@ -445,6 +449,7 @@ class ContextMenu extends Component {
       };
 
       document.addEventListener("click", this.documentClickListener);
+      document.addEventListener("mousedown", this.documentClickListener);
     }
   }
 
@@ -476,6 +481,7 @@ class ContextMenu extends Component {
   unbindDocumentClickListener() {
     if (this.documentClickListener) {
       document.removeEventListener("click", this.documentClickListener);
+      document.removeEventListener("mousedown", this.documentClickListener);
       this.documentClickListener = null;
     }
   }

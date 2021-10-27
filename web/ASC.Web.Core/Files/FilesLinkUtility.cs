@@ -74,7 +74,7 @@ namespace ASC.Web.Core.Files
             get { return BaseCommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
         }
 
-        public const string FileId = "fileId";
+        public const string FileId = "fileid";
         public const string FolderId = "folderid";
         public const string Version = "version";
         public const string FileUri = "fileuri";

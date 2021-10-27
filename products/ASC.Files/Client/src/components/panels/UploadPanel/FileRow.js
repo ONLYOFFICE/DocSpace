@@ -20,6 +20,7 @@ const StyledFileRow = styled(Row)`
   .row_content > a,
   .row_content > p {
     margin: auto 0;
+    line-height: 16px;
   }
 
   .upload_panel-icon {
@@ -116,9 +117,7 @@ const FileRow = (props) => {
         }
       >
         <>
-          {item.fileId &&
-          item.action !== "convert" &&
-          item.action !== "converted" ? (
+          {item.fileId ? (
             isMedia ? (
               <Link
                 fontWeight="600"

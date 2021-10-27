@@ -64,20 +64,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         private Uri _cnameSSL;
 
         private readonly ILog _logger;
-
-        public RackspaceCloudStorage(
-            TempPath tempPath,
-            TempStream tempStream,
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
-        {
-            _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
-            TempPath = tempPath;
-        }
-
+            
         public RackspaceCloudStorage(
             TempPath tempPath,
             TempStream tempStream,

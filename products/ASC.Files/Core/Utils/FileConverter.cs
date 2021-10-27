@@ -731,7 +731,7 @@ namespace ASC.Web.Files.Utils
 
             var operationResultError = string.Empty;
 
-            var newFile = SaveConvertedFile(file, fileUri);
+            var newFile = SaveConvertedFile(file, convertUri);
             if (newFile != null)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();

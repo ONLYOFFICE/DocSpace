@@ -4,7 +4,13 @@ import StyledHeading from "./StyledHeadline";
 
 const Headline = ({ type, ...props }) => {
   //console.log("Headline render");
-  return <StyledHeading headlineType={type} {...props} />;
+  return (
+    <StyledHeading
+      headlineType={type}
+      {...props}
+      className={`headline-heading ${props?.className}`}
+    />
+  );
 };
 
 Headline.propTypes = {

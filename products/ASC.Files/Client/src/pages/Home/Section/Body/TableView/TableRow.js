@@ -16,16 +16,99 @@ import AuthorCell from "./sub-components/AuthorCell";
 import DateCell from "./sub-components/DateCell";
 import TypeCell from "./sub-components/TypeCell";
 import globalColors from "@appserver/components/utils/globalColors";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
-
+import { isSafari } from "react-device-detect";
 const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
+const rowCheckboxCheckedStyle = css`
+  border-image-source: linear-gradient(to right, #f3f4f4 24px, #eceef1 24px);
+`;
+const contextMenuWrapperCheckedStyle = css`
+  border-image-source: linear-gradient(to left, #f3f4f4 24px, #eceef1 24px);
+`;
+
+const rowCheckboxDraggingStyle = css`
+  border-image-source: linear-gradient(to right, #f8f7bf 24px, #eceef1 24px);
+`;
+
+const contextMenuWrapperDraggingStyle = css`
+  border-image-source: linear-gradient(to left, #f8f7bf 24px, #eceef1 24px);
+`;
+
+const rowCheckboxDraggingHoverStyle = css`
+  border-image-source: linear-gradient(
+    to right,
+    rgb(239, 239, 178) 24px,
+    #eceef1 24px
+  );
+`;
+const contextMenuWrapperDraggingHoverStyle = css`
+  border-image-source: linear-gradient(
+    to left,
+    rgb(239, 239, 178) 24px,
+    #eceef1 24px
+  );
+`;
+
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
-    background: ${(props) => props.checked && "#f8f9f9 !important"};
-    cursor: ${(props) => props.checked && "url(images/cursor.palm.svg), auto"};
+    ${isSafari && `border-image-slice: 0 !important`};
+    background: ${(props) =>
+      (props.checked || props.isActive) && "#F3F4F4 !important"};
+    cursor: ${(props) =>
+      !props.isThirdPartyFolder &&
+      (props.checked || props.isActive) &&
+      "url(images/cursor.palm.svg), auto"};
+  }
+
+  .table-container_element {
+    /* margin-left: ${(props) => (props.isFolder ? "-3px" : "-4px")}; */
+  }
+
+  .table-container_row-checkbox {
+    padding-left: 4px;
+    width: 26px;
+  }
+
+  &:hover {
+    .table-container_row-checkbox-wrapper {
+      ${(props) => props.dragging && rowCheckboxDraggingHoverStyle}
+    }
+    .table-container_row-context-menu-wrapper {
+      ${(props) => props.dragging && contextMenuWrapperDraggingHoverStyle}
+    }
+  }
+
+  .table-container_row-checkbox-wrapper {
+    min-width: 30px;
+    margin-left: -24px;
+    padding-left: 24px;
+    border-bottom: 1px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #ffffff 24px, #eceef1 24px);
+
+    border-top: 0;
+    border-right: 0;
+
+    ${(props) => props.checked && rowCheckboxCheckedStyle};
+    ${(props) => props.dragging && rowCheckboxDraggingStyle};
+  }
+
+  .table-container_row-context-menu-wrapper {
+    margin-right: -20x;
+    width: 28px;
+    padding-right: 20px;
+    border-bottom: 1px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
+
+    border-top: 0;
+    border-left: 0;
+
+    ${(props) => props.checked && contextMenuWrapperCheckedStyle};
+    ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
   }
 `;
 
@@ -35,6 +118,7 @@ const StyledDragAndDrop = styled(DragAndDrop)`
 
 const StyledShare = styled.div`
   cursor: pointer;
+  margin: 0 auto;
 
   .share-button {
     padding: 4px;
@@ -94,6 +178,9 @@ const FilesTableRow = (props) => {
     onMouseDown,
     showShare,
     personal,
+    isActive,
+    onHideContextMenu,
+    onFilesClick,
   } = props;
 
   const sharedButton =
@@ -154,16 +241,24 @@ const FilesTableRow = (props) => {
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
         key={item.id}
-        item={item}
-        element={element}
         fileContextClick={fileContextClick}
-        onContentSelect={onContentFileSelect}
         onClick={onMouseClick}
         {...contextOptionsProps}
+        isActive={isActive}
+        isFolder={item.isFolder}
+        onHideContextMenu={onHideContextMenu}
+        isThirdPartyFolder={item.isThirdPartyFolder}
+        onDoubleClick={onFilesClick}
         checked={checkedProps}
       >
         <TableCell {...dragStyles} {...selectionProp}>
-          <FileNameCell {...props} />
+          <FileNameCell
+            onContentSelect={onContentFileSelect}
+            checked={checkedProps}
+            element={element}
+            {...selectionProp}
+            {...props}
+          />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (

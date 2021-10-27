@@ -12,7 +12,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenantForbiden, Provider.MySql)
-                .Add(PgSqlAddDbTenantForbiden, Provider.Postgre)
+                .Add(PgSqlAddDbTenantForbiden, Provider.PostgreSql)
                 .HasData(
                 new DbTenantForbiden { Address = "controlpanel" },
                 new DbTenantForbiden { Address = "localhost" }

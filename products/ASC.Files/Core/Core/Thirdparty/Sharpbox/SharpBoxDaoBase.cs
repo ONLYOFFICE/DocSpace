@@ -286,7 +286,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             folder.FolderID = isRoot ? null : MakeId(fsEntry.Parent);
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
-            folder.RootFolderId = MakeId(RootFolder());
+            folder.RootFolderId = RootFolderMakeId();
 
             folder.Title = MakeTitle(fsEntry);
             folder.TotalFiles = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
@@ -356,7 +356,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
             file.NativeAccessor = fsEntry;
             file.Title = MakeTitle(fsEntry);
-            file.RootFolderId = MakeId(RootFolder());
+            file.RootFolderId = RootFolderMakeId();
 
             return file;
         }
@@ -365,6 +365,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
         protected ICloudDirectoryEntry RootFolder()
         {
             return _rootFolder ??= ProviderInfo.Storage.GetRoot();
+        }
+
+        private string _rootFolderId;
+        protected string RootFolderMakeId()
+        {
+            return _rootFolderId ??= MakeId(RootFolder());
         }
 
         protected ICloudDirectoryEntry GetFolderById(object folderId)

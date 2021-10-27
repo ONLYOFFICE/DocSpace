@@ -15,7 +15,7 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbipLocation", b =>
                 {
@@ -29,27 +29,27 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                         .HasColumnType("enum('ipv4','ipv6')")
                         .HasColumnName("addr_type")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
                         .HasColumnName("city")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("varchar(2)")
                         .HasColumnName("country")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("District")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("district")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("GeonameId")
                         .HasColumnType("int")
@@ -60,14 +60,14 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                         .HasColumnType("varchar(39)")
                         .HasColumnName("ip_end")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("IPStart")
                         .IsRequired()
                         .HasColumnType("varchar(39)")
                         .HasColumnName("ip_start")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("Latitude")
                         .HasColumnType("bigint")
@@ -88,13 +88,13 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("stateprov")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("TimezoneName")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("timezone_name")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<double>("TimezoneOffset")
                         .HasColumnType("double")
@@ -104,7 +104,7 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("zipcode")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
@@ -120,7 +120,7 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                         .HasColumnType("varchar(255)")
                         .HasColumnName("user_email")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("AppType")
                         .HasColumnType("int")
@@ -141,21 +141,20 @@ namespace ASC.Core.Common.Migrations.MySql.DbContextMySql
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.Regions", b =>
-                {
-                    b.Property<string>("Region")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+            {
+                b.Property<string>("Region")
+                    .HasColumnType("varchar(255)");
 
-                    b.Property<string>("ConnectionString")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasColumnName("connection_string");
+                b.Property<string>("ConnectionString")
+                    .HasColumnType("longtext");
 
-                    b.Property<string>("Provider")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                b.Property<string>("Provider")
+                    .HasColumnType("longtext");
 
-                    b.HasKey("Region");
+                b.HasKey("Region");
 
-                    b.ToTable("regions");
-                });
+                b.ToTable("Regions");
+            });
 #pragma warning restore 612, 618
         }
     }
