@@ -8,6 +8,7 @@ import { ConflictResolveType } from "@appserver/common/constants";
 import {
   getFolder,
   getFileInfo,
+  getFolderInfo,
   getProgress,
   uploadFile,
   convertFile,
@@ -450,37 +451,46 @@ class UploadDataStore {
     }
   };
 
-  refreshFiles = (folderId, needUpdateTree = true) => {
-    const { setTreeFolders } = this.treeFoldersStore;
+  refreshFiles = (folderId, needUpdateTree = true, currentFile, folderInfo) => {
     if (
       this.selectedFolderStore.id === folderId &&
       window.location.pathname.indexOf("/history") === -1
     ) {
-      return this.filesStore.fetchFiles(
-        this.selectedFolderStore.id,
-        this.filesStore.filter.clone(),
-        false,
-        true
-      );
-    } else if (needUpdateTree) {
-      return getFolder(folderId, this.filesStore.filter.clone()).then(
-        (data) => {
-          const path = data.pathParts;
-          const newTreeFolders = this.treeFoldersStore.treeFolders;
-          const folders = data.folders;
-          const foldersCount = data.count;
-          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-          setTreeFolders(newTreeFolders);
+      const { files, setFiles, folders, setFolders, filter } = this.filesStore;
+
+      const addNewFile = () => {
+        if (folderInfo) {
+          newFolders.push(folderInfo);
+          setFolders(newFolders);
+        } else {
+          newFiles.push(currentFile.fileInfo);
+          setFiles(newFiles);
         }
-      );
+      };
+
+      const newFiles = files;
+      const newFolders = folders;
+
+      if (filter.total >= filter.pageCount) {
+        if (files.length) {
+          newFiles.pop();
+          addNewFile();
+        } else {
+          newFolders.pop();
+          addNewFile();
+        }
+      } else {
+        addNewFile();
+      }
+    } else if (needUpdateTree) {
+      const { expandedKeys, setExpandedKeys } = this.treeFoldersStore;
+      const newExpandedKeys = expandedKeys.filter((x) => x !== folderId + "");
+      setExpandedKeys(newExpandedKeys);
     }
   };
 
-  throttleRefreshFiles = throttle((toFolderId) => {
-    return this.refreshFiles(toFolderId).catch((err) => {
-      console.log("RefreshFiles failed", err);
-      return Promise.resolve();
-    });
+  throttleRefreshFiles = throttle((toFolderId, currentFile, folderInfo) => {
+    return this.refreshFiles(toFolderId, true, currentFile, folderInfo);
   }, 1000);
 
   uploadFileChunks = async (
@@ -489,7 +499,7 @@ class UploadDataStore {
     fileSize,
     indexOfFile,
     file,
-    t
+    path
   ) => {
     const length = requestsDataArray.length;
     for (let index = 0; index < length; index++) {
@@ -546,6 +556,11 @@ class UploadDataStore {
     if (!currentFile) return Promise.resolve();
     const { toFolderId, needConvert } = currentFile;
 
+    let folderInfo = null;
+    if (path[path.length - 2] === this.selectedFolderStore.id) {
+      folderInfo = await getFolderInfo(path[path.length - 1]);
+    }
+
     if (needConvert) {
       runInAction(() => (currentFile.action = "convert"));
       if (!this.filesToConversion.length || this.converted) {
@@ -556,7 +571,7 @@ class UploadDataStore {
       }
       return Promise.resolve();
     } else {
-      return this.throttleRefreshFiles(toFolderId);
+      return this.throttleRefreshFiles(toFolderId, currentFile, folderInfo);
     }
   };
 
@@ -646,6 +661,7 @@ class UploadDataStore {
     )
       .then((res) => {
         const location = res.data.location;
+        const path = res.data.path;
 
         const requestsDataArray = [];
 
@@ -659,9 +675,9 @@ class UploadDataStore {
           chunk++;
         }
 
-        return { location, requestsDataArray, fileSize };
+        return { location, requestsDataArray, fileSize, path };
       })
-      .then(({ location, requestsDataArray, fileSize }) => {
+      .then(({ location, requestsDataArray, fileSize, path }) => {
         this.primaryProgressDataStore.setPrimaryProgressBarData({
           icon: "upload",
           visible: true,
@@ -678,7 +694,7 @@ class UploadDataStore {
           fileSize,
           indexOfFile,
           file,
-          t
+          path
         );
       })
       .catch((err) => {

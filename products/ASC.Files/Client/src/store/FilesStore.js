@@ -340,7 +340,7 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
-          this.createThumbnails();
+          this.viewAs === "tile" && this.createThumbnails();
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
