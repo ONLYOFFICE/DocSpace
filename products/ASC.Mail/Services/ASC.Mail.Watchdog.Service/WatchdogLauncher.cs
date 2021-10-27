@@ -50,7 +50,7 @@ namespace ASC.Mail.Watchdog.Service
                 WatchdogTask = WatchdogService.StarService(Cts.Token);
 
                 MreStop = new ManualResetEvent(false);
-                Console.CancelKeyPress += (sender, e) => StopAsync(cancellationToken);
+                Console.CancelKeyPress += async (sender, e) => await StopAsync(cancellationToken);
                 MreStop.WaitOne();
             }
             else

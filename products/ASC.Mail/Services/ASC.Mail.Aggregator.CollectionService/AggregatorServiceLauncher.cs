@@ -52,7 +52,7 @@ namespace ASC.Mail.Aggregator.CollectionService
 
                 AggregatorServiceTask = AggregatorService.StartTimer(Cts.Token, true);
                 ResetEvent = new ManualResetEvent(false);
-                System.Console.CancelKeyPress += (sender, e) => StopAsync(cancellationToken);
+                System.Console.CancelKeyPress += async (sender, e) => await StopAsync(cancellationToken);
                 ResetEvent.WaitOne();
             }
             else

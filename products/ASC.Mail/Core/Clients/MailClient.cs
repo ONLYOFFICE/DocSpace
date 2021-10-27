@@ -456,7 +456,7 @@ namespace ASC.Mail.Clients
         private void LoginImap(bool enableUtf8 = true)
         {
             var secureSocketOptions = SecureSocketOptions.Auto;
-            var sslProtocols = SslProtocols.Default;
+            var sslProtocols = SslProtocols.None;
 
             switch (Account.Encryption)
             {
@@ -822,7 +822,7 @@ namespace ASC.Mail.Clients
                         }
 
                         var unread = info != null &&
-                                     (info.UserFlags.Contains("\\Unseen") ||
+                                     (info.Keywords.Contains("\\Unseen") ||
                                       info.Flags.HasValue && !info.Flags.Value.HasFlag(MessageFlags.Seen));
 
                         message.FixEncodingIssues(Log);
@@ -1105,7 +1105,7 @@ namespace ASC.Mail.Clients
         private void LoginPop3(bool enableUtf8 = true)
         {
             var secureSocketOptions = SecureSocketOptions.Auto;
-            var sslProtocols = SslProtocols.Default;
+            var sslProtocols = SslProtocols.None;
 
             switch (Account.Encryption)
             {
@@ -1372,7 +1372,7 @@ namespace ASC.Mail.Clients
         private void LoginSmtp()
         {
             var secureSocketOptions = SecureSocketOptions.Auto;
-            var sslProtocols = SslProtocols.Default;
+            var sslProtocols = SslProtocols.None;
 
             switch (Account.SmtpEncryption)
             {

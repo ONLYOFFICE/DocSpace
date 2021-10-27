@@ -51,7 +51,7 @@ namespace ASC.Mail.StorageCleaner.Service
                     CleanerTask = StorageCleanerService.StartTimer(Cts.Token, true);
 
                     MreStop = new ManualResetEvent(false);
-                    Console.CancelKeyPress += (sender, e) => StopAsync(cancellationToken);
+                    Console.CancelKeyPress += async (sender, e) => await StopAsync(cancellationToken);
                     MreStop.WaitOne();
                 }
                 else
@@ -63,8 +63,7 @@ namespace ASC.Mail.StorageCleaner.Service
             }
             catch (Exception)
             {
-                StopAsync(cancellationToken);
-                return Task.CompletedTask;
+                return StopAsync(cancellationToken);
             }
         }
 
@@ -72,6 +71,7 @@ namespace ASC.Mail.StorageCleaner.Service
         {
             try
             {
+                Log.Info("Stop service\r\n");
                 StorageCleanerService.StopService(Cts, MreStop);
                 await Task.WhenAny(CleanerTask, Task.Delay(TimeSpan.FromSeconds(5), cancellationToken));
             }
@@ -79,8 +79,6 @@ namespace ASC.Mail.StorageCleaner.Service
             {
                 Log.ErrorFormat($"Failed to terminate the service correctly. The details:\r\n{ex}\r\n");
             }
-
-            Log.Info("Stop service\r\n");
         }
     }
 }

@@ -720,8 +720,6 @@ namespace ASC.Mail.Aggregator.CollectionService.Service
             {
                 Log.ErrorFormat($"ClientOnGetMessage() -> \r\nException:{ex}\r\n");
                 failed = true;
-
-                throw ex;
             }
             finally
             {
