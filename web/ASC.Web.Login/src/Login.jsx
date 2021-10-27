@@ -209,11 +209,12 @@ const Form = (props) => {
     thirdPartyLogin(profile.Serialized)
       .then(() => {
         setIsLoading(true);
-        const redirectPath = sessionStorage.getItem("redirectPath") || "/";
-        sessionStorage.removeItem("redirectPath");
+        const redirectPath = sessionStorage.getItem("redirectPath");
 
-        if ( redirectPath) window.location.href = redirectPath;
-        else history.push( defaultPage);
+        if (redirectPath) {
+          sessionStorage.removeItem("redirectPath");
+          window.location.href = redirectPath;
+        } else history.push(defaultPage);
       })
       .catch(() => {
         toastr.error(
@@ -313,10 +314,10 @@ const Form = (props) => {
         const { url, user, hash } = res;
         const redirectPath = sessionStorage.getItem("redirectPath");
 
-        sessionStorage.removeItem("redirectPath");
-        
-        if ( redirectPath) window.location.href = redirectPath;
-        else history.push(url, { user, hash });
+        if (redirectPath) {
+          sessionStorage.removeItem("redirectPath");
+          window.location.href = redirectPath;
+        } else history.push(url, { user, hash });
       })
       .catch((error) => {
         setErrorText(error);
