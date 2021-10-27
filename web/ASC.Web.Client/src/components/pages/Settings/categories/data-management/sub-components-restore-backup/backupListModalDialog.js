@@ -109,13 +109,13 @@ class BackupListModalDialog extends React.Component {
   };
   onRestoreClick = (e) => {
     const { filesList } = this.state;
-    const { isNotify } = this.props;
+    const { isNotify, isCopyingToLocal } = this.props;
     const index =
       e.target.dataset.index ||
       e.target.farthestViewportElement?.dataset?.index;
-    console.log("index", index);
+
     if (!index) return;
-    return;
+    if (isCopyingToLocal) return;
     this.setState({ isLoading: true }, function () {
       const backupId = filesList[+index].id;
       const storageType = "0";
@@ -125,28 +125,38 @@ class BackupListModalDialog extends React.Component {
           value: filesList[+index].id,
         },
       ];
-      startRestore(backupId, storageType, storageParams, isNotify)
-        .then(() =>
-          history.push(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              "/preparation-portal"
-            )
-          )
-        )
-        .catch((error) => console.log("backup list error", error));
+      // startRestore(backupId, storageType, storageParams, isNotify)
+      //   .then(() =>
+      //     history.push(
+      //       combineUrl(
+      //         AppServerConfig.proxyURL,
+      //         homepage,
+      //         "/preparation-portal"
+      //       )
+      //     )
+      //   )
+      //   .catch((error) => console.log("backup list error", error));
     });
   };
   render() {
-    const { onModalClose, isVisibleDialog, t, iconUrl } = this.props;
+    const {
+      onModalClose,
+      isVisibleDialog,
+      t,
+      iconUrl,
+      isCopyingToLocal,
+    } = this.props;
     const { filesList, displayType, isLoading, backupListHeight } = this.state;
     // console.log("filesList", filesList);
     return (
       <ModalDialog visible={isVisibleDialog} onClose={onModalClose}>
         <ModalDialog.Header>{t("BackupList")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <StyledBackupList displayType={displayType} height={backupListHeight}>
+          <StyledBackupList
+            displayType={displayType}
+            height={backupListHeight}
+            isCopyingToLocal={isCopyingToLocal}
+          >
             <div className="backup-list_modal-dialog_body">
               {filesList.length > 0 && (
                 <div className="backup-list_modal-header_wrapper_description">

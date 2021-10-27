@@ -284,6 +284,9 @@ const StyledBackupList = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    ${(props) =>
+      props.isCopyingToLocal &&
+      "pointer-events: none; touch-action: none; color: #d0d5da"}
   }
 
   .backup-list_restore-link:hover {
@@ -306,6 +309,20 @@ const StyledBackupList = styled.div`
   }
   .restore_context-options {
     margin-top: 16px;
+    ${(props) =>
+      props.isCopyingToLocal && "pointer-events: none; touch-action: none; "}
+
+    .icon-button_svg {
+      svg {
+        path {
+          ${(props) =>
+            props.isCopyingToLocal &&
+            `
+              fill: #d0d5da;
+            `};
+        }
+      }
+    }
   }
 
   .backup-list_icon {

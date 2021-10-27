@@ -15,12 +15,13 @@ import ThirdPartyResources from "./sub-components-restore-backup/thirdPartyResou
 import ThirdPartyStorages from "./sub-components-restore-backup/thirdPartyStorages";
 import LocalFile from "./sub-components-restore-backup/localFile";
 import toastr from "@appserver/components/toast/toastr";
-import { startRestore } from "../../../../../../../../packages/asc-web-common/api/portal";
+import { getBackupProgress, startRestore } from "@appserver/common/api/portal";
 import { getSettings } from "@appserver/common/api/settings";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../package.json";
-const { proxyURL } = AppServerConfig;
+import FloatingButton from "@appserver/common/components/FloatingButton";
+
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -38,15 +39,41 @@ class RestoreBackup extends React.Component {
       selectedFile: "",
       formSettings: {},
       isErrors: {},
+      isCopyingToLocal: true,
+      downloadingProgress: 100,
     };
+    this._isMounted = false;
+    this.timerId = null;
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.setState(
       {
         isLoading: true,
       },
       function () {
+        getBackupProgress().then((response) => {
+          if (response) {
+            if (!response.error) {
+              if (response.progress === 100)
+                this.setState({
+                  isCopyingToLocal: false,
+                });
+              if (response.progress !== 100)
+                this.timerId = setInterval(() => this.getProgress(), 1000);
+            } else {
+              this.setState({
+                isCopyingToLocal: false,
+              });
+            }
+          } else {
+            this.setState({
+              isCopyingToLocal: false,
+            });
+          }
+        });
+
         SelectFolderDialog.getCommonThirdPartyList()
           .then(
             (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
@@ -59,6 +86,59 @@ class RestoreBackup extends React.Component {
       }
     );
   }
+  componentWillUnmount() {
+    this._isMounted = false;
+    clearInterval(this.timerId);
+  }
+  getProgress = () => {
+    const { t } = this.props;
+
+    getBackupProgress()
+      .then((res) => {
+        if (res) {
+          if (res.error) {
+            clearInterval(this.timerId);
+            this.timerId && toastr.error(`${res.error}`);
+            console.log("error", res.error);
+            this.timerId = null;
+            this.setState({
+              isCopyingToLocal: false,
+              downloadingProgress: 100,
+            });
+            return;
+          }
+          if (this._isMounted) {
+            this.setState({
+              downloadingProgress: res.progress,
+            });
+          }
+          if (res.progress === 100) {
+            clearInterval(this.timerId);
+
+            this.timerId && toastr.success(`${t("SuccessCopied")}`);
+            this.timerId = null;
+            if (this._isMounted) {
+              this.setState({
+                isCopyingToLocal: false,
+              });
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        clearInterval(timerId);
+        timerId && toastr.error(err);
+        console.log("err", err);
+        timerId = null;
+        if (this._isMounted) {
+          this.setState({
+            downloadingProgress: 100,
+            isCopyingToLocal: false,
+          });
+        }
+      });
+  };
+
   onChangeCheckbox = () => {
     this.setState({
       isChecked: !this.state.isChecked,
@@ -357,6 +437,16 @@ class RestoreBackup extends React.Component {
       isErrors: {},
     });
   };
+
+  onClickFloatingButton = () => {
+    const { history } = this.props;
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        "/settings/datamanagement/backup/manual-backup"
+      )
+    );
+  };
   render() {
     const { t } = this.props;
     const {
@@ -371,6 +461,8 @@ class RestoreBackup extends React.Component {
       isCheckedLocalFile,
       formSettings,
       isErrors,
+      isCopyingToLocal,
+      downloadingProgress,
     } = this.state;
     console.log(" this.setState", this.state);
     return isLoading ? (
@@ -475,6 +567,7 @@ class RestoreBackup extends React.Component {
             isLoading={isLoading}
             onModalClose={this.onModalClose}
             isNotify={isNotify}
+            isCopyingToLocal={isCopyingToLocal}
           />
         )}
         <Checkbox
@@ -508,10 +601,20 @@ class RestoreBackup extends React.Component {
           label={t("RestoreButton")}
           onClick={this.onRestoreClick}
           primary
-          isDisabled={!isChecked}
+          isDisabled={isCopyingToLocal || !isChecked}
           size="medium"
           tabIndex={10}
         />
+
+        {downloadingProgress > 0 && downloadingProgress !== 100 && (
+          <FloatingButton
+            className="layout-progress-bar"
+            icon="file"
+            alert={false}
+            percent={downloadingProgress}
+            onClick={this.onClickFloatingButton}
+          />
+        )}
       </StyledRestoreBackup>
     );
   }
