@@ -209,7 +209,11 @@ const Form = (props) => {
     thirdPartyLogin(profile.Serialized)
       .then(() => {
         setIsLoading(true);
-        history.push(defaultPage);
+        const redirectPath = sessionStorage.getItem("redirectPath") || "/";
+        sessionStorage.removeItem("redirectPath");
+
+        if ( redirectPath) window.location.href = redirectPath;
+        else history.push( defaultPage);
       })
       .catch(() => {
         toastr.error(
@@ -307,7 +311,12 @@ const Form = (props) => {
     login(userName, hash)
       .then((res) => {
         const { url, user, hash } = res;
-        history.push(url, { user, hash });
+        const redirectPath = sessionStorage.getItem("redirectPath");
+
+        sessionStorage.removeItem("redirectPath");
+        
+        if ( redirectPath) window.location.href = redirectPath;
+        else history.push(url, { user, hash });
       })
       .catch((error) => {
         setErrorText(error);
