@@ -227,6 +227,9 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
+    if (selected === "close" || selected === "none")
+      this.setBufferSelection(null);
+
     this.selected = selected;
     const files = this.files.concat(this.folders);
     this.selection = this.getFilesBySelected(files, selected);
