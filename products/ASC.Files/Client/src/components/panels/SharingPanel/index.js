@@ -638,7 +638,7 @@ class SharingPanelComponent extends React.Component {
                 minwidth="100px"
                 primary
                 onClick={this.onSaveClick}
-                isDisabled={isLoading}
+                isDisabled={isLoading || !isUpdated}
               />
             </StyledFooter>
           </StyledContent>
