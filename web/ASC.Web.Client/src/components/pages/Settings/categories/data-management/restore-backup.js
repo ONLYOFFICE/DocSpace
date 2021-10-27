@@ -16,7 +16,11 @@ import ThirdPartyStorages from "./sub-components-restore-backup/thirdPartyStorag
 import LocalFile from "./sub-components-restore-backup/localFile";
 import toastr from "@appserver/components/toast/toastr";
 import { startRestore } from "../../../../../../../../packages/asc-web-common/api/portal";
-
+import { getSettings } from "@appserver/common/api/settings";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../../../package.json";
+const { proxyURL } = AppServerConfig;
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -234,13 +238,14 @@ class RestoreBackup extends React.Component {
     }
   };
 
-  onSelectFile = (id) => {
+  onSelectFile = (file) => {
     this.setState({
-      selectedFileId: id,
+      selectedFileId: file.id,
     });
   };
 
   onSelectLocalFile = (data) => {
+    console.log("data", data);
     this.setState({
       selectedFile: data,
     });
@@ -257,9 +262,12 @@ class RestoreBackup extends React.Component {
       selectedFileId,
       selectedFile,
       isCheckedThirdPartyStorage,
+      isCheckedThirdParty,
     } = this.state;
+    const { history } = this.props;
 
-    //if (!selectedFileId || !selectedFile) return;
+    if ((!selectedFileId || !selectedFile) && !isCheckedThirdPartyStorage)
+      return;
 
     let backupId, storageType, storageParams;
 
@@ -272,40 +280,59 @@ class RestoreBackup extends React.Component {
           value: selectedFileId,
         },
       ];
-    }
-    if (isCheckedLocalFile) {
-      backupId = "";
-      storageType = "3";
-      storageParams = [
-        {
-          key: "filePath",
-          value: selectedFile,
-        },
-      ];
-    }
-
-    if (isCheckedThirdPartyStorage) {
-      let errorObject = {};
-
-      for (let key of this.formNames) {
-        errorObject = {
-          ...errorObject,
-          [key]: this.state.formSettings[key]
-            ? !this.state.formSettings[key].trim()
-            : true,
-        };
+    } else {
+      if (isCheckedThirdParty) {
+        backupId = "";
+        storageType = "1";
+        storageParams = [
+          {
+            key: "filePath",
+            value: selectedFileId,
+          },
+        ];
+      } else {
+        if (isCheckedLocalFile) {
+          backupId = "";
+          storageType = "3";
+          storageParams = [
+            {
+              key: "filePath",
+              value: selectedFile,
+            },
+          ];
+        } else {
+          let errorObject = {};
+          //TODO: add to add storageParams
+          for (let key of this.formNames) {
+            errorObject = {
+              ...errorObject,
+              [key]: this.state.formSettings[key]
+                ? !this.state.formSettings[key].trim()
+                : true,
+            };
+          }
+          if (Object.keys(errorObject).length !== 0) {
+            this.setState({
+              isErrors: errorObject,
+            });
+            return;
+          }
+        }
       }
-      this.setState({
-        isErrors: errorObject,
-      });
     }
 
-    // startRestore(
-    //   backupId,
-    //   storageType,
-    //   storageParams,
-    //   isNotify
-    // ).catch((error) => toastr.error(error));
+    startRestore(backupId, storageType, storageParams, isNotify)
+      .then(() => getSettings())
+      .then(() =>
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            "/preparation-portal"
+          )
+        )
+      )
+      .catch((error) => toastr.error(error));
 
     //errorObject = {}
   };
@@ -342,7 +369,6 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
       isCheckedLocalFile,
-      isMountThirdPartyStorage,
       formSettings,
       isErrors,
     } = this.state;

@@ -11,6 +11,8 @@ class ThirdPartyResources extends React.Component {
         onClose={onClose}
         isPanelVisible={isPanelVisible}
         foldersType="third-party"
+        searchParam=".gz"
+        isArchiveOnly
       />
     );
   }

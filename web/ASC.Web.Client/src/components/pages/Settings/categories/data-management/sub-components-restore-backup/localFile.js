@@ -4,7 +4,7 @@ import FileInput from "@appserver/components/file-input";
 const LocalFile = ({ onSelectLocalFile }) => {
   const onClickInput = (file) => {
     let data = new FormData();
-    data.append("files", file);
+    data.append("file", file);
 
     onSelectLocalFile(data);
   };
