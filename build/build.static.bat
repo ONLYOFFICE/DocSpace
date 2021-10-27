@@ -6,23 +6,27 @@ call runasadmin.bat "%~dpnx0"
 if %errorlevel% == 0 (
 PUSHD %~dp0..
 
-echo "mode=%1"
+IF "%2"=="personal" (
+   echo "mode=%2"
+) ELSE (
+   echo "mode="
+)
 
 REM call yarn wipe
 call yarn install
 
 REM call yarn build
-IF "%1"=="" (
-    call yarn build
-) ELSE (
+IF "%2"=="personal" (
     call yarn build:personal
+) ELSE (
+    call yarn build
 )
 
 REM call yarn wipe
-IF "%1"=="" (
-    call yarn deploy
-) ELSE (
+IF "%2"=="personal" (
     call yarn deploy:personal
+) ELSE (
+    call yarn deploy
 )
 
 REM copy nginx configurations to deploy folder
