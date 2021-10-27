@@ -245,7 +245,8 @@ class AutomaticBackup extends React.PureComponent {
             console.log("error", res.error);
             this.timerId = null;
             this.setState({
-              isCopyingToLocal: true,
+              isCopyingToLocal: false,
+              downloadingProgress: 100,
             });
             return;
           }
@@ -829,6 +830,7 @@ class AutomaticBackup extends React.PureComponent {
       }
 
       let storageParams = [];
+
       if (isCheckedDocuments || isCheckedThirdParty) {
         storageParams.push({
           key: "folderId",
