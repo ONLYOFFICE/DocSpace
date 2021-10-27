@@ -25,6 +25,8 @@ namespace ASC.Mail.ImapSync
     {
         public bool IsReady { get; private set; } = false;
 
+        public bool IsBroken { get; private set; } = false;
+
         public Task curentTask { get; private set; }
 
         public List<MessageDescriptor> ImapMessagesList { get; set; }
@@ -172,6 +174,8 @@ namespace ASC.Mail.ImapSync
 
                 StopTokenSource?.Cancel();
 
+                IsBroken = true;
+
                 OnCriticalError?.Invoke(this, false);
             }
         }
@@ -238,6 +242,8 @@ namespace ASC.Mail.ImapSync
             catch (Exception ex)
             {
                 _log.Error($"Imap.Authentication Error: {ex.Message}");
+
+                IsBroken = true;
 
                 OnCriticalError?.Invoke(this, true);
 
@@ -470,6 +476,8 @@ namespace ASC.Mail.ImapSync
             catch (Exception ex)
             {
                 _log.Error($"SetIdle, Error:{ex.Message}");
+
+                IsBroken = true;
 
                 OnCriticalError?.Invoke(this, false);
             }

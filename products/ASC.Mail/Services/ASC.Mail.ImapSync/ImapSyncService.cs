@@ -48,8 +48,6 @@ namespace ASC.Mail.ImapSync
 
         private readonly IServiceProvider _serviceProvider;
 
-        private readonly SemaphoreSlim CreateClientSemaphore;
-
         public ImapSyncService(IOptionsMonitor<ILog> options,
             RedisClient redisClient,
             MailSettings mailSettings,
@@ -60,7 +58,6 @@ namespace ASC.Mail.ImapSync
             _mailSettings = mailSettings;
             _serviceProvider = serviceProvider;
 
-            CreateClientSemaphore = new SemaphoreSlim(1, 1);
             clients = new ConcurrentDictionary<string, MailImapClient>();
 
             _cancelTokenSource = new CancellationTokenSource();
@@ -114,57 +111,49 @@ namespace ASC.Mail.ImapSync
 
                 return;
             }
-
-            CreateClientSemaphore.Wait();
-
-            try
+            else
             {
-                CreateMailClient(cashedTenantUserMailBox.UserName, cashedTenantUserMailBox.Tenant);
-            }
-            finally
-            {
-                CreateClientSemaphore.Release();
-            }
-        }
-
-        private void CreateMailClient(string userName, int tenant)
-        {
-            MailImapClient client;
-
-            try
-            {
-                client = new MailImapClient(userName, tenant, _cancelTokenSource.Token, _mailSettings, _serviceProvider);
-
-                if (client == null)
+                if (clients.TryAdd(cashedTenantUserMailBox.UserName, null))
                 {
-                    _log.Info($"Can`t create Mail client for user {userName}.");
-                }
-                else
-                {
-                    clients.TryAdd(userName, client);
+                    MailImapClient client;
 
-                    client.OnCriticalError += Client_DeleteClient;
+                    try
+                    {
+                        client = new MailImapClient(cashedTenantUserMailBox.UserName, cashedTenantUserMailBox.Tenant, _cancelTokenSource.Token, _mailSettings, _serviceProvider);
+
+                        if (client == null)
+                        {
+                            _log.Info($"Can`t create Mail client for user {cashedTenantUserMailBox.UserName}.");
+                        }
+                        else
+                        {
+                            clients.TryUpdate(cashedTenantUserMailBox.UserName, client, null);
+
+                            client.OnCriticalError += Client_DeleteClient;
+                        }
+                    }
+                    catch (TimeoutException exTimeout)
+                    {
+                        _log.Warn($"[TIMEOUT] Create mail client for user {cashedTenantUserMailBox.UserName}. {exTimeout}");
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        _log.Info("[CANCEL] Create mail client for user {userName}.");
+                    }
+                    catch (AuthenticationException authEx)
+                    {
+                        _log.Error($"[AuthenticationException] Create mail client for user {cashedTenantUserMailBox.UserName}. {authEx}");
+                    }
+                    catch (WebException webEx)
+                    {
+                        _log.Error($"[WebException] Create mail client for user {cashedTenantUserMailBox.UserName}. {webEx}");
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error($"Create mail client for user {cashedTenantUserMailBox.UserName}. {ex}");
+                    }
+
                 }
-            }
-            catch (TimeoutException exTimeout)
-            {
-                _log.Warn($"[TIMEOUT] Create mail client for user {userName}. {exTimeout}");
-            }
-            catch (OperationCanceledException)
-            {
-                _log.Info("[CANCEL] Create mail client for user {userName}.");
-            }
-            catch (AuthenticationException authEx)
-            {
-                _log.Error($"[AuthenticationException] Create mail client for user {userName}. {authEx}");
-            }
-            catch (WebException webEx)
-            {
-                _log.Error($"[WebException] Create mail client for user {userName}. {webEx}");
-            }
-            catch (Exception ex)
-            {
-                _log.Error($"Create mail client for user {userName}. {ex}");
             }
         }
 
@@ -183,7 +172,7 @@ namespace ASC.Mail.ImapSync
                 }
                 else
                 {
-                    _log.Info($"ImapSyncService. MailImapClient {clientKey} died, bud wasn`t remove");
+                    _log.Info($"ImapSyncService. MailImapClient {clientKey} died, bud wasn`t remove.");
                 }
             }
         }

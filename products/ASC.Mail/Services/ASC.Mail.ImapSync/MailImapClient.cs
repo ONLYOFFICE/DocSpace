@@ -57,6 +57,8 @@ namespace ASC.Mail.ImapSync
         public readonly string UserName;
         public readonly int Tenant;
 
+        public bool IsReady { get; private set; } = false;
+
         public bool WillDieInNextTurn
         {
             get
@@ -109,9 +111,9 @@ namespace ASC.Mail.ImapSync
 
             if (simpleImapClient == null)
             {
-                simpleImapClients.Remove(mailBox);
+                CreateSimpleImapClient(mailBox);
 
-                _log.Debug($"Client for mailboxid={mailBoxId} removed.");
+                _log.Debug($"Client for mailboxid={mailBoxId} will cteated.");
 
                 return;
             }
@@ -225,6 +227,8 @@ namespace ASC.Mail.ImapSync
             }
 
             aliveTimer.Enabled = true;
+
+            IsReady = true;
         }
 
         private void CreateSimpleImapClient(MailBoxData mailbox)
