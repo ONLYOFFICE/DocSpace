@@ -12,7 +12,7 @@ import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
-import { getOptions } from "../utils/getOptions";
+import { getOptions } from "../GetOptions";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import { getFromSessionStorage } from "../../../utils";
 import { StyledManualBackup } from "../StyledBackup";

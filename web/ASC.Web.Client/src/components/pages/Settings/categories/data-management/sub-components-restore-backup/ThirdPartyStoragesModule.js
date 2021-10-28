@@ -1,5 +1,5 @@
 import React from "react";
-import { getOptions } from "../utils/getOptions";
+import { getOptions } from "../GetOptions";
 import { getBackupStorage } from "../../../../../../../../../packages/asc-web-common/api/settings";
 import ComboBox from "@appserver/components/combobox";
 import { ThirdPartyStorages } from "@appserver/common/constants";
