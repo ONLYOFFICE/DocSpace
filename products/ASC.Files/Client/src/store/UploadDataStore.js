@@ -495,6 +495,14 @@ class UploadDataStore {
 
       if ((!currentFile && !folderInfo) || isFiltered) return;
 
+      if (folderInfo) {
+        const folderIndex = folders.findIndex((f) => f.id === folderInfo.id);
+        if (folderIndex !== -1) {
+          folders[folderIndex] = folderInfo;
+          return;
+        }
+      }
+
       if (filter.total >= filter.pageCount) {
         if (files.length) {
           newFiles.pop();
