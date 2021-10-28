@@ -51,6 +51,10 @@ namespace ASC.Api.Core
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
             DIHelper = new DIHelper();
+            if (bool.TryParse(Configuration["core:products"], out var loadProducts))
+            {
+                LoadProducts = loadProducts;
+            }
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
