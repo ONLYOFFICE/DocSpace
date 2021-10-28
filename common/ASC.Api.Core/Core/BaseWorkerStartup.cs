@@ -11,7 +11,7 @@ namespace ASC.Api.Core
 {
     public class BaseWorkerStartup
     {
-        public IConfiguration Configuration { get; }     
+        public IConfiguration Configuration { get; }
 
         public BaseWorkerStartup(IConfiguration configuration)
         {
@@ -20,6 +20,7 @@ namespace ASC.Api.Core
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddCustomHealthCheck(Configuration);
         }
 
