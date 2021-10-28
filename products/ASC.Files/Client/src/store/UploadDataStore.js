@@ -487,7 +487,13 @@ class UploadDataStore {
         }
       };
 
-      if (!currentFile && !folderInfo) return;
+      const isFiltered =
+        filter.filterType ||
+        filter.authorType ||
+        filter.search ||
+        filter.page !== 0;
+
+      if ((!currentFile && !folderInfo) || isFiltered) return;
 
       if (filter.total >= filter.pageCount) {
         if (files.length) {
