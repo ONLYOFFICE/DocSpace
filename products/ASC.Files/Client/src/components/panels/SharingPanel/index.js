@@ -232,8 +232,7 @@ class SharingPanelComponent extends React.Component {
 
     if (elem.access !== +access) {
       elem.access = +access;
-      this.setState({ shareDataItems });
-      this.setState({ isUpdated: true });
+      this.setState({ shareDataItems: shareDataItems, isUpdated: true });
     }
   };
 
