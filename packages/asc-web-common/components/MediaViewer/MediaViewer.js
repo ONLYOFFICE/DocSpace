@@ -518,6 +518,7 @@ class MediaViewer extends React.Component {
                 color="#fff"
                 iconName="/static/images/cross.react.svg"
                 size={25}
+                isClickable
               />
             </ControlBtn>
           </div>
