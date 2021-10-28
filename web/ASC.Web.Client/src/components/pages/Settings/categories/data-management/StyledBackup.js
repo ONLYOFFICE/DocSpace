@@ -331,13 +331,24 @@ const StyledBackupList = styled.div`
 
   .backup-list_entry-title {
     font-weight: 600;
+
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        max-width: 206px;
+      `}
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .backup-list_file-exst {
     color: #a3a9ae;
+    grid-area: ext;
   }
 
   .backup-list_full-name {
     grid-area: full-name;
+
     display: flex;
     ${(props) =>
       props.displayType === "aside" &&
@@ -366,7 +377,7 @@ const StyledBackupList = styled.div`
       props.displayType === "aside"
         ? css`
             height: 40px;
-            grid-template-areas: "icon-name full-name children";
+            grid-template-areas: "icon-name full-name ext children";
           `
         : css`
             height: 40px;
