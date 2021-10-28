@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
+import ReactDOM from "react-dom";
 
 import StyledTooltip from "./styled-tooltip";
 
@@ -40,10 +41,16 @@ class Tooltip extends Component {
       className,
       style,
       color,
+      maxWidth,
     } = this.props;
 
-    return (
-      <StyledTooltip className={className} style={style} color={color}>
+    return ReactDOM.createPortal(
+      <StyledTooltip
+        className={className}
+        style={style}
+        color={color}
+        maxWidth={maxWidth}
+      >
         <ReactTooltip
           id={id}
           ref={reference}
@@ -61,11 +68,12 @@ class Tooltip extends Component {
           afterShow={afterShow}
           afterHide={afterHide}
           isCapture={true}
-          overridePosition={this.overridePosition}
+          //overridePosition={this.overridePosition}
         >
           {children}
         </ReactTooltip>
-      </StyledTooltip>
+      </StyledTooltip>,
+      document.body
     );
   }
 }
@@ -100,6 +108,7 @@ Tooltip.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   color: PropTypes.string,
+  maxWidth: PropTypes.string,
 };
 
 Tooltip.defaultProps = {
