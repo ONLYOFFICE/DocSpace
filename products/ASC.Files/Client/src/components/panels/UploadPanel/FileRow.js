@@ -93,7 +93,7 @@ const FileRow = (props) => {
     setMediaViewerData,
     setUploadPanelVisible,
     isMediaActive,
-    isArchive,
+    downloadInCurrentTab,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -116,7 +116,6 @@ const FileRow = (props) => {
     ? { onClick: onCancelCurrentUpload }
     : {};
 
-  const downloadInCurrentTab = isArchive(ext);
   return (
     <>
       <StyledFileRow
@@ -239,7 +238,12 @@ export default inject(
     }
 
     const { personal } = auth.settingsStore;
-    const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
+    const {
+      iconFormatsStore,
+      mediaViewersFormatsStore,
+      docserviceStore,
+    } = formatsStore;
+    const { canViewedDocs } = docserviceStore;
     const {
       uploaded,
       primaryProgressDataStore,
@@ -263,6 +267,9 @@ export default inject(
         : null;
 
     const { isArchive } = iconFormatsStore;
+
+    const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
+
     return {
       isPersonal: personal,
       currentFileUploadProgress,
@@ -273,12 +280,12 @@ export default inject(
       name,
       loadingFile,
       isMediaActive,
+      downloadInCurrentTab,
 
       cancelCurrentUpload,
       cancelCurrentFileConversion,
       setMediaViewerData,
       setUploadPanelVisible,
-      isArchive,
     };
   }
 )(withTranslation("UploadPanel")(observer(FileRow)));
