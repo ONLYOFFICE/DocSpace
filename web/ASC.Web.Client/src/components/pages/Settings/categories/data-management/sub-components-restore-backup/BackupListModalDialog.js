@@ -17,7 +17,7 @@ import {
   getBackupHistory,
   startRestore,
 } from "../../../../../../../../../packages/asc-web-common/api/portal";
-import BackupListBody from "./backupListBody";
+import BackupListBody from "./BackupListBody";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../package.json";
