@@ -159,7 +159,7 @@ class Backup extends React.Component {
           if (response.error.length > 0 && response.progress !== 100) {
             clearInterval(this.timerId);
             this.timerId && toastr.error(`${t("CopyingError")}`);
-            //console.log("error", response.error);
+            console.log("error", response.error);
             this.timerId = null;
             this.setState({
               downloadingProgress: 100,
@@ -183,8 +183,7 @@ class Backup extends React.Component {
       .catch((err) => {
         clearInterval(this.timerId);
         this.timerId && toastr.error(`${t("CopyingError")}`);
-        //console.log("err", err);
-
+        console.log("err", err);
         this.timerId = null;
         if (this._isMounted) {
           this.setState({
@@ -203,7 +202,7 @@ class Backup extends React.Component {
   render() {
     const { t, helpUrlCreatingBackup } = this.props;
     const { downloadingProgress, isLoading, enableRestore } = this.state;
-    console.log("render", downloadingProgress);
+
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
