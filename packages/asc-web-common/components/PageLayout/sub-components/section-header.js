@@ -51,6 +51,7 @@ const StyledSectionHeader = styled.div`
   }
 
   .section-header {
+    max-width: calc(100% - 32px);
     ${isMobile &&
     css`
       max-width: calc(100vw - 32px);
