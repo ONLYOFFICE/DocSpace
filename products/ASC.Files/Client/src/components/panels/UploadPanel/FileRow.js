@@ -191,7 +191,7 @@ const FileRow = (props) => {
                 getContent={(dataTip) => <Text fontSize="13px">{dataTip}</Text>}
                 effect="float"
                 place="left"
-                maxWidth={320}
+                maxWidth="250px"
                 color="#f8f7bf"
               />
             </div>
