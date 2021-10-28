@@ -605,7 +605,11 @@ class UploadDataStore {
     } else {
       //TODO:
       if (currentFile.action === "uploaded") {
-        return this.throttleRefreshFiles(toFolderId, currentFile, folderInfo);
+        const file =
+          path[path.length - 2] === this.selectedFolderStore.id
+            ? currentFile
+            : null;
+        return this.throttleRefreshFiles(toFolderId, file, folderInfo);
       }
       return Promise.resolve();
     }
