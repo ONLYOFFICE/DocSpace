@@ -149,3 +149,7 @@ export function startRestore(backupId, storageType, storageParams, notify) {
 export function getRestoreProgress() {
   return request({ method: "get", url: "/portal/getrestoreprogress" });
 }
+
+export function enableRestore() {
+  return request({ method: "get", url: "/portal/enablerestore" });
+}
