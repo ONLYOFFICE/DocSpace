@@ -56,7 +56,7 @@ class SharingRow extends React.Component {
         body,
       });
 
-    window.open(mailtoLink);
+    window.open(mailtoLink, "_self");
   };
 
   onShareTwitter = () => {
