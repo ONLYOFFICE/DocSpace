@@ -1,2 +1,0 @@
-echo "RUN ASC.Data.Storage.Encryption"
-call dotnet run --project ..\..\common\services\ASC.Data.Storage.Encryption\ASC.Data.Storage.Encryption.csproj --no-build --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=encryption
