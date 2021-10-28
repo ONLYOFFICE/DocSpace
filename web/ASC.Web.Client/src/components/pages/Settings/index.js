@@ -36,7 +36,7 @@ const ManualBackup = lazy(() =>
   import("./categories/data-management/ManualBackup.js")
 );
 const RestoreBackup = lazy(() =>
-  import("./categories/data-management/restore-backup.js")
+  import("./categories/data-management/RestoreBackup.js")
 );
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");

@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
-import ListRow from "./listRow";
+import ListRow from "./ListRow";
 import Link from "@appserver/components/link";
 
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
