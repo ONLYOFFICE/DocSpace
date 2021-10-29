@@ -243,6 +243,7 @@ class TableHeader extends React.Component {
       if (
         (defaultSize &&
           splitStorage[splitStorage.length - 2] !== `${defaultSize}px`) ||
+        this.getSubstring(splitStorage[0]) <= defaultMinColumnSize ||
         isInvalid
       ) {
         localStorage.removeItem(columnStorageName);

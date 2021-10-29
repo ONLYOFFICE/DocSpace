@@ -43,6 +43,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 <!-- <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.4">
