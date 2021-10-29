@@ -109,7 +109,7 @@ Tooltip.defaultProps = {
   offsetRight: 0,
   offsetBottom: 0,
   offsetLeft: 0,
-  color: "#fff",
+  color: "#f8f7bf",
 };
 
 export default Tooltip;
