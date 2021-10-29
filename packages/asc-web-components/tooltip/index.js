@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
-import ReactDOM from "react-dom";
-
+import Portal from "../portal";
 import StyledTooltip from "./styled-tooltip";
 
 class Tooltip extends Component {
@@ -34,7 +33,7 @@ class Tooltip extends Component {
       maxWidth,
     } = this.props;
 
-    return ReactDOM.createPortal(
+    const renderTooltip = () => (
       <StyledTooltip
         className={className}
         style={style}
@@ -61,9 +60,12 @@ class Tooltip extends Component {
         >
           {children}
         </ReactTooltip>
-      </StyledTooltip>,
-      document.body
+      </StyledTooltip>
     );
+
+    const tooltip = renderTooltip();
+
+    return <Portal element={tooltip} />;
   }
 }
 
