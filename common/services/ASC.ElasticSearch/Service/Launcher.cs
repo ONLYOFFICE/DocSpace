@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.ElasticSearch.Service;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -57,13 +58,14 @@ namespace ASC.ElasticSearch
             ICacheNotify<AscCacheItem> notify,
             ICacheNotify<IndexAction> indexNotify,
             IServiceProvider serviceProvider,
-            Settings settings)
+            ConfigurationExtension configurationExtension)
         {
             Log = options.Get("ASC.Indexer");
             Notify = notify;
             IndexNotify = indexNotify;
             ServiceProvider = serviceProvider;
             CancellationTokenSource = new CancellationTokenSource();
+            var settings = Settings.GetInstance(configurationExtension);
             Period = TimeSpan.FromMinutes(settings.Period.Value);
         }
 

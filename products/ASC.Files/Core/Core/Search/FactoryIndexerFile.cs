@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
@@ -48,7 +49,7 @@ namespace ASC.Web.Files.Core.Search
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
         private IDaoFactory DaoFactory { get; }
-        public Settings Settings { get; }
+        private Settings Settings { get; }
 
         public FactoryIndexerFile(
             IOptionsMonitor<ILog> options,
@@ -59,11 +60,11 @@ namespace ASC.Web.Files.Core.Search
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
             ICache cache,
-            Settings settings)
+            ConfigurationExtension configurationExtension)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
-            Settings = settings;
+            Settings = Settings.GetInstance(configurationExtension);
         }
 
         public override void IndexAll()
