@@ -233,7 +233,7 @@ class AutomaticBackup extends React.PureComponent {
 
   getProgress = () => {
     const { t } = this.props;
-
+    const { downloadingProgress } = this.state;
     getBackupProgress()
       .then((res) => {
         if (res) {
@@ -249,9 +249,10 @@ class AutomaticBackup extends React.PureComponent {
             return;
           }
           if (this._isMounted) {
-            this.setState({
-              downloadingProgress: res.progress,
-            });
+            downloadingProgress !== res.progress &&
+              this.setState({
+                downloadingProgress: res.progress,
+              });
           }
           if (res.progress === 100) {
             clearInterval(this.timerId);
@@ -267,11 +268,11 @@ class AutomaticBackup extends React.PureComponent {
         }
       })
       .catch((err) => {
-        clearInterval(timerId);
-        timerId && toastr.error(err);
+        clearInterval(this.timerId);
+        this.timerId && toastr.error(err);
         console.log("err", err);
 
-        timerId = null;
+        this.timerId = null;
         if (this._isMounted) {
           this.setState({
             downloadingProgress: 100,
@@ -433,14 +434,10 @@ class AutomaticBackup extends React.PureComponent {
 
   onSelectMaxCopies = (options) => {
     const key = options.key;
-    const label = options.label;
-
-    //saveToSessionStorage("maxCopies", label);
 
     this.setState(
       {
         selectedMaxCopiesNumber: key,
-        // selectedMaxCopies: label,
       },
       function () {
         this.checkChanges();
@@ -449,8 +446,6 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   onSelectWeekDay = (options) => {
-    console.log("options", options);
-
     const key = options.key;
     const label = options.label;
 
@@ -489,12 +484,8 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   onSelectPeriod = (options) => {
-    console.log("options", options);
-
     const key = options.key;
     const label = options.label;
-
-    // debugger;
 
     this.setState({ selectedPeriodLabel: label });
 
@@ -654,8 +645,6 @@ class AutomaticBackup extends React.PureComponent {
   };
   onClickShowStorage = (e) => {
     const name = +e.target.name;
-
-    //debugger;
     let options = {};
     if (name === DOCUMENT_TYPE) {
       options = this.setDocumentsModule();

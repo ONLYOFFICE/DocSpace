@@ -148,9 +148,8 @@ class ManualBackup extends React.Component {
   };
 
   getProgress = () => {
-    //const { downloadingProgress, } = this.state;
+    const { downloadingProgress } = this.state;
     const { t } = this.props;
-    //console.log("downloadingProgress", downloadingProgress);
 
     getBackupProgress()
       .then((response) => {
@@ -159,7 +158,7 @@ class ManualBackup extends React.Component {
 
           clearInterval(this.timerId);
           this.timerId && toastr.error(`${t("CopyingError")}`);
-          //console.log("error", response.error);
+          console.log("error", response.error);
           this.timerId = null;
           this.setState({
             downloadingProgress: 100,
@@ -169,7 +168,6 @@ class ManualBackup extends React.Component {
         }
 
         if (response.progress === 100) {
-          //debugger;
           this.clearSessionStorage();
 
           clearInterval(this.timerId);
@@ -189,13 +187,14 @@ class ManualBackup extends React.Component {
           this.timerId = null;
         }
         if (this._isMounted) {
-          this.setState({
-            downloadingProgress: response.progress,
-          });
+          downloadingProgress !== response.progress &&
+            this.setState({
+              downloadingProgress: response.progress,
+            });
         }
       })
       .catch((err) => {
-        //console.log("error!", err);
+        console.log("error", err);
         this.clearSessionStorage();
 
         clearInterval(this.timerId);
@@ -337,7 +336,6 @@ class ManualBackup extends React.Component {
     selectedStorageId,
     selectedStorage
   ) => {
-    console.log("selectedFolder", selectedFolder);
     const storageParams = [
       {
         key: `${key}`,
