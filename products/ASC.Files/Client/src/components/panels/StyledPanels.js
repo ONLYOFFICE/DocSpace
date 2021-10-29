@@ -712,6 +712,11 @@ const StyledFilesList = styled.div`
   .select-file-dialog_icon {
     margin-right: 8px;
   }
+
+  .radio-button_text{
+    ${(props) => props.displayType === "aside" && "margin: 0 !important;"};
+  }
+
   .entry-title {
     white-space: nowrap;
     text-overflow: ellipsis;
