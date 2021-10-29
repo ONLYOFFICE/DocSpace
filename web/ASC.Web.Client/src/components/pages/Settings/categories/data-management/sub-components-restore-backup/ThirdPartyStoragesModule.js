@@ -72,7 +72,7 @@ class ThirdPartyStoragesModule extends React.Component {
       onResetFormSettings,
       isErrors,
     } = this.props;
-    console.log("selectedId", selectedId);
+
     return (
       <>
         <ComboBox

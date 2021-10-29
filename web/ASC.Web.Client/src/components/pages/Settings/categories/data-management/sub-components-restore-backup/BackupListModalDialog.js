@@ -22,6 +22,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../package.json";
 import { getSettings } from "@appserver/common/api/settings";
+
 const { desktop } = utils.device;
 
 class BackupListModalDialog extends React.Component {
@@ -152,7 +153,7 @@ class BackupListModalDialog extends React.Component {
       isCopyingToLocal,
     } = this.props;
     const { filesList, displayType, isLoading, backupListHeight } = this.state;
-    // console.log("filesList", filesList);
+
     return (
       <ModalDialog visible={isVisibleDialog} onClose={onModalClose}>
         <ModalDialog.Header>{t("BackupList")}</ModalDialog.Header>

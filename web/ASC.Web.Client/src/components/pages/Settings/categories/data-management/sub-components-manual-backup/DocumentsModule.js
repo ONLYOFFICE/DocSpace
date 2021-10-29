@@ -39,7 +39,6 @@ class DocumentsModule extends React.Component {
   };
 
   onSelectFolder = (folderId) => {
-    console.log("folderId", folderId);
     this._isMounted &&
       this.setState({
         selectedFolder: folderId,

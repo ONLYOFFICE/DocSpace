@@ -43,7 +43,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
       function () {
         getBackupStorage()
           .then((storageBackup) => this.getOptions(storageBackup))
-          //.then(() => checkChanges())
           .finally(() => {
             onSetLoadingData && onSetLoadingData(false);
             this.setState({ isLoading: false });
@@ -115,7 +114,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
         defaultSelectedId: availableStorage[this.firstSetId].id,
       });
     }
-    //debugger;
+
     this.setState({
       availableOptions: options,
       availableStorage: availableStorage,

@@ -25,7 +25,7 @@ class DocumentsModule extends React.Component {
   };
 
   render() {
-    const { isPanelVisible, isLoading } = this.state;
+    const { isPanelVisible } = this.state;
     const {
       isLoadingData,
       onSetLoadingData,
@@ -57,7 +57,7 @@ class DocumentsModule extends React.Component {
       resourcesModule,
       isError,
     } = this.props;
-    console.log("defaultSelectedFolder", defaultSelectedFolder);
+
     return (
       <>
         <SelectFolderInput

@@ -34,7 +34,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
     };
 
     this.isFirstSet = false;
-    this.firstSetId = "";
     this._isMounted = false;
   }
   componentDidMount() {

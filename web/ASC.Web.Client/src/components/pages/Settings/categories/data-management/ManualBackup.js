@@ -384,7 +384,7 @@ class ManualBackup extends React.Component {
       isLoadingData,
     } = this.state;
     const maxProgress = downloadingProgress === 100;
-    console.log("link", link);
+
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (

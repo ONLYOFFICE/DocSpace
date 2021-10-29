@@ -171,8 +171,6 @@ class AutomaticBackup extends React.PureComponent {
   }
 
   onSetDefaultOptions = (selectedSchedule) => {
-    //debugger;
-
     let checkedStorage = {};
 
     const defaultOptions = {
@@ -374,7 +372,6 @@ class AutomaticBackup extends React.PureComponent {
       };
       this.monthNumbersArray.push(obj);
     }
-    console.log("this.monthNumbersArray", this.monthNumbersArray);
   };
 
   getMaxNumberCopies = () => {
@@ -467,14 +464,6 @@ class AutomaticBackup extends React.PureComponent {
       }
     );
   };
-  // onSelectTime = (options) => {
-  //   const label = options.label;
-
-  //   this.setState({ selectedTimeOption: label }),
-  //     function () {
-  //       this.checkChanges();
-  //     };
-  // };
 
   onSelectMonthNumber = (options) => {
     const key = options.key;
@@ -735,16 +724,9 @@ class AutomaticBackup extends React.PureComponent {
         storageObj = this.setStorageModule();
       }
     }
-    console.log(
-      "defaultMonthlySchedule",
-      defaultMonthlySchedule,
-      "defaultWeeklySchedule",
-      defaultWeeklySchedule,
-      "defaultDailySchedule",
-      defaultDailySchedule
-    );
 
     let dayOption = {};
+
     if (+defaultStorageTypeNumber === STORAGE_TYPE) {
       dayOption = {
         selectedWeekday: defaultDay,
@@ -792,7 +774,7 @@ class AutomaticBackup extends React.PureComponent {
       this.deleteSchedule();
       return;
     }
-    //debugger;
+
     if (
       (isCheckedDocuments && !selectedFolderDocument) ||
       (isCheckedThirdParty && !selectedFolderResources)
@@ -1018,7 +1000,7 @@ class AutomaticBackup extends React.PureComponent {
     } = this.state;
 
     const resourcesModule = +defaultStorageTypeNumber === RESOURCES_TYPE;
-    console.log("auto backup render");
+
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (

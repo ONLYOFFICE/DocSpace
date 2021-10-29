@@ -325,16 +325,12 @@ class RestoreBackup extends React.Component {
   };
 
   onSelectLocalFile = (data) => {
-    console.log("data", data);
     this.setState({
       selectedFile: data,
     });
   };
 
   onRestoreClick = () => {
-    console.log("restore button");
-    console.log("formSettings", this.state.formSettings);
-
     const {
       isNotify,
       isCheckedDocuments,
@@ -413,13 +409,10 @@ class RestoreBackup extends React.Component {
         )
       )
       .catch((error) => toastr.error(error));
-
-    //errorObject = {}
   };
 
   onSetFormNames = (namesArray) => {
     this.formNames = namesArray;
-    console.log(" this.formNames", this.formNames);
   };
 
   onChange = (event) => {
@@ -464,7 +457,7 @@ class RestoreBackup extends React.Component {
       isCopyingToLocal,
       downloadingProgress,
     } = this.state;
-    console.log(" this.setState", this.state);
+
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (

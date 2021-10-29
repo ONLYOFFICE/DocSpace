@@ -1,16 +1,13 @@
 import React, { useCallback } from "react";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-
 import ListRow from "./ListRow";
 import Link from "@appserver/components/link";
-
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 import TrashIcon from "../../../../../../../../../public/images/button.trash.react.svg";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 const BackupListBody = ({
   displayType,
-  needRowSelection,
   filesList,
   onDeleteClick,
   onRestoreClick,
