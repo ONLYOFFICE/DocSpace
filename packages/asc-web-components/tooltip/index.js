@@ -14,16 +14,6 @@ class Tooltip extends Component {
     ReactTooltip.rebuild();
   }
 
-  overridePosition = ({ left, top }) => {
-    const d = document.documentElement;
-    left = Math.min(d.clientWidth - 340, left);
-    top = Math.min(d.clientHeight - 0, top);
-    left = Math.max(0, left);
-    top = Math.max(0, top);
-    //console.log("left:", left, "top:", top);
-    return { top, left };
-  };
-
   render() {
     const {
       effect,
@@ -68,7 +58,6 @@ class Tooltip extends Component {
           afterShow={afterShow}
           afterHide={afterHide}
           isCapture={true}
-          //overridePosition={this.overridePosition}
         >
           {children}
         </ReactTooltip>
