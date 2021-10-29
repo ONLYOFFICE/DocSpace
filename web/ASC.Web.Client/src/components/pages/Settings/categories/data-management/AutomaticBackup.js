@@ -324,6 +324,7 @@ class AutomaticBackup extends React.PureComponent {
             selectedWeekdayLabel: this.weekdaysLabelArray[0].label,
             selectedMonthDay: defaultOptions.defaultDay,
             selectedWeekday: "1",
+            selectedMonthDay: "1",
             defaultMonthlySchedule: true,
             selectedMonthlySchedule: true,
             isLoading: false,
@@ -368,6 +369,7 @@ class AutomaticBackup extends React.PureComponent {
       };
       this.monthNumbersArray.push(obj);
     }
+    console.log("this.monthNumbersArray", this.monthNumbersArray);
   };
 
   getMaxNumberCopies = () => {
