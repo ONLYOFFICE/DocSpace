@@ -288,7 +288,13 @@ class AutomaticBackup extends React.PureComponent {
   ) => {
     if (+defaultOptions.defaultPeriodNumber === EVERY_WEEK) {
       //Every Week option
-      //debugger;
+
+      let weekday;
+      for (let i = 0; i < this.weekdaysLabelArray.length; i++) {
+        if (+this.weekdaysLabelArray[i]["key"] === +defaultOptions.defaultDay) {
+          weekday = i;
+        }
+      }
 
       this._isMounted &&
         this.setState({
@@ -296,11 +302,11 @@ class AutomaticBackup extends React.PureComponent {
           defaultPeriodLabel: this.periodsObject[EVERY_WEEK].label,
           selectedPeriodLabel: this.periodsObject[EVERY_WEEK].label,
           defaultWeekdayLabel: this.weekdaysLabelArray[
-            defaultOptions.defaultDay ? defaultOptions.defaultDay - 1 : 0
+            defaultOptions.defaultDay ? weekday : 0
           ].label,
 
           selectedWeekdayLabel: this.weekdaysLabelArray[
-            defaultOptions.defaultDay ? defaultOptions.defaultDay - 1 : 0
+            defaultOptions.defaultDay ? weekday : 0
           ].label,
 
           selectedWeekday: defaultOptions.defaultDay,
@@ -324,7 +330,6 @@ class AutomaticBackup extends React.PureComponent {
             selectedWeekdayLabel: this.weekdaysLabelArray[0].label,
             selectedMonthDay: defaultOptions.defaultDay,
             selectedWeekday: "1",
-            selectedMonthDay: "1",
             defaultMonthlySchedule: true,
             selectedMonthlySchedule: true,
             isLoading: false,
@@ -451,7 +456,6 @@ class AutomaticBackup extends React.PureComponent {
 
     const key = options.key;
     const label = options.label;
-    //debugger;
 
     this.setState(
       {
@@ -463,14 +467,14 @@ class AutomaticBackup extends React.PureComponent {
       }
     );
   };
-  onSelectTime = (options) => {
-    const label = options.label;
+  // onSelectTime = (options) => {
+  //   const label = options.label;
 
-    this.setState({ selectedTimeOption: label }),
-      function () {
-        this.checkChanges();
-      };
-  };
+  //   this.setState({ selectedTimeOption: label }),
+  //     function () {
+  //       this.checkChanges();
+  //     };
+  // };
 
   onSelectMonthNumber = (options) => {
     const key = options.key;
@@ -550,7 +554,7 @@ class AutomaticBackup extends React.PureComponent {
       selectedStorageTypeNumber,
       isEnable,
     } = this.state;
-    //debugger;
+
     if (
       defaultStorageTypeNumber !== selectedStorageTypeNumber ||
       (this.selectedSchedule && !isEnable) ||
