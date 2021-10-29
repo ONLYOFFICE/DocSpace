@@ -389,7 +389,7 @@ class UploadDataStore {
       this.uploadToFolder = null;
       this.percent = 0;
     }
-    if (this.converted) {
+    if (this.uploaded && this.converted) {
       this.files = [];
       this.filesToConversion = [];
     }
@@ -874,25 +874,25 @@ class UploadDataStore {
       return;
     }
 
-    let operationItem = null;
+    let operationItem = data;
+    let finished = data.finished;
 
-    while (progress !== 100) {
-      await this.getOperationProgress(data.id)
-        .then((item) => {
-          operationItem = item;
-          progress = item ? item.progress : 100;
+    while (!finished) {
+      const item = await this.getOperationProgress(data.id);
+      operationItem = item;
+      progress = item ? item.progress : 100;
+      finished = item.finished;
 
-          setSecondaryProgressBarData({
-            icon: pbData.icon,
-            label: pbData.label || label,
-            percent: progress,
-            visible: true,
-            alert: false,
-          });
-        })
-        .catch((err) => Promise.reject(err));
+      setSecondaryProgressBarData({
+        icon: pbData.icon,
+        label: pbData.label || label,
+        percent: progress,
+        visible: true,
+        alert: false,
+      });
     }
-    return Promise.resolve(operationItem);
+
+    return operationItem;
   };
 
   moveToCopyTo = (destFolderId, pbData, isCopy) => {
@@ -904,7 +904,15 @@ class UploadDataStore {
       label,
     } = this.secondaryProgressDataStore;
 
-    getFolder(destFolderId).then((data) => {
+    let receivedFolder = destFolderId;
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      receivedFolder = this.selectedFolderStore.parentId;
+      updatedFolder = destFolderId;
+    }
+
+    getFolder(receivedFolder).then((data) => {
       let newTreeFolders = treeFolders;
       let path = data.pathParts.slice(0);
       let folders = data.folders;
@@ -912,11 +920,12 @@ class UploadDataStore {
       loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
       if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-        fetchFiles(this.selectedFolderStore.id, filter, true, true).finally(
-          () => {
+        this.filesStore
+          .fetchFiles(updatedFolder, this.filesStore.filter, true, true)
+          .finally(() => {
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          }
-        );
+            this.dialogsStore.setIsFolderActions(false);
+          });
       } else {
         setSecondaryProgressBarData({
           icon: pbData.icon,

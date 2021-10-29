@@ -45,7 +45,7 @@ namespace ASC.Api.Core
         public virtual bool ConfirmAddScheme { get; } = false;
         public virtual bool AddAndUseSession { get; } = false;
         protected DIHelper DIHelper { get; }
-        protected bool LoadProducts { get; } = true;
+        protected bool LoadProducts { get; set; } = true;
         protected bool LoadConsumers { get; } = true;
 
         public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
@@ -53,6 +53,10 @@ namespace ASC.Api.Core
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
             DIHelper = new DIHelper();
+            if (bool.TryParse(Configuration["core:products"], out var loadProducts))
+            {
+                LoadProducts = loadProducts;
+            }
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
@@ -186,7 +190,7 @@ namespace ASC.Api.Core
         {
             return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
             {
-                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration));
+                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
                 r.AddNLog(LogManager.Configuration);
             });
         }

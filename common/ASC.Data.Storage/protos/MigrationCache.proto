@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package ASC.Migration;
+package ASC.Protos.Migration;
 
 message MigrationCache {
 	int32 TenantId = 1;
