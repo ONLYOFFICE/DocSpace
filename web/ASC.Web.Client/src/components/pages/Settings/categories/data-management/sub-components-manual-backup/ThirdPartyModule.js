@@ -2,9 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
-import { inject, observer } from "mobx-react";
-import Box from "@appserver/components/box";
-import Link from "@appserver/components/link";
+
 import { getFromSessionStorage } from "../../../utils";
 
 let selectedFolderPathFromSessionStorage = "";
@@ -84,27 +82,10 @@ class ThirdPartyModule extends React.Component {
     onMakeCopy(selectedFolder, "thirdPartyResource", "1", "folderId");
   };
   render() {
-    const {
-      maxProgress,
-      t,
-      helpUrlCreatingBackup,
-      isCopyingLocal,
-    } = this.props;
+    const { maxProgress, t, isCopyingLocal } = this.props;
     const { isPanelVisible, isLoadingData, isError, folderPath } = this.state;
     return (
       <>
-        <Box marginProp="16px 0 16px 0">
-          <Link
-            color="#316DAA"
-            target="_blank"
-            isHovered={true}
-            href={helpUrlCreatingBackup}
-            fontSize="12px"
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </Box>
-
         <SelectFolderInput
           onSelectFolder={this.onSelectFolder}
           name={"thirdParty"}
@@ -143,9 +124,4 @@ class ThirdPartyModule extends React.Component {
     );
   }
 }
-export default inject(({ auth }) => {
-  const { helpUrlCreatingBackup } = auth.settingsStore;
-  return {
-    helpUrlCreatingBackup,
-  };
-})(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));
+export default withTranslation("Settings")(ThirdPartyModule);

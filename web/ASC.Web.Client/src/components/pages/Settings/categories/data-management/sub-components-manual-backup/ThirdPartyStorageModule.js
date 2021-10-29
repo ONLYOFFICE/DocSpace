@@ -1,10 +1,5 @@
 import React from "react";
-import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
-
-import Box from "@appserver/components/box";
-import Link from "@appserver/components/link";
 import ComboBox from "@appserver/components/combobox";
 import { getBackupStorage } from "@appserver/common/api/settings";
 
@@ -146,7 +141,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     return [firstError, errors];
   };
   render() {
-    const { t, helpUrlCreatingBackup, isLoadingData, maxProgress } = this.props;
+    const { t, isLoadingData, maxProgress } = this.props;
     const {
       availableOptions,
       availableStorage,
@@ -157,17 +152,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     return (
       <StyledManualBackup>
-        <Box marginProp="16px 0 16px 0">
-          <Link
-            color="#316DAA"
-            target="_blank"
-            isHovered={true}
-            href={helpUrlCreatingBackup}
-            fontSize="12px"
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </Box>
         <ComboBox
           options={availableOptions}
           selectedOption={{ key: 0, label: selectedStorage }}
@@ -228,10 +212,4 @@ class ThirdPartyStorageModule extends React.PureComponent {
   }
 }
 
-export default inject(({ auth }) => {
-  const { helpUrlCreatingBackup } = auth.settingsStore;
-
-  return {
-    helpUrlCreatingBackup,
-  };
-})(withTranslation(["Settings", "Common"])(observer(ThirdPartyStorageModule)));
+export default withTranslation("Settings")(ThirdPartyStorageModule);

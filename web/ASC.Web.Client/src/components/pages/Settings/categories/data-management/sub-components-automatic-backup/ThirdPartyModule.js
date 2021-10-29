@@ -1,6 +1,5 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 
@@ -58,23 +57,10 @@ class ThirdPartyModule extends React.Component {
       isReset,
       resourcesModule,
       isError,
-      //helpUrlCreatingBackup,
-      // t,
     } = this.props;
 
     return (
       <>
-        {/* <Box marginProp="16px 0 16px 0">
-          <Link
-            color="#316DAA"
-            target="_blank"
-            isHovered={true}
-            href={helpUrlCreatingBackup}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </Box> */}
-
         <SelectFolderInput
           onSelectFolder={onSelectFolder}
           onClose={this.onClose}
@@ -113,9 +99,4 @@ class ThirdPartyModule extends React.Component {
     );
   }
 }
-export default inject(({ auth }) => {
-  const { helpUrlCreatingBackup } = auth.settingsStore;
-  return {
-    helpUrlCreatingBackup,
-  };
-})(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));
+export default withTranslation("Settings")(ThirdPartyModule);
