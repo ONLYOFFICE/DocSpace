@@ -137,7 +137,7 @@ class GoogleCloudStorage extends React.Component {
           //isChangedInput - monitors inputs changes
           <div className="backup_storages-buttons">
             <Button
-              label={t("Common:Save")}
+              label={t("Common:SaveButton")}
               onClick={this.onSaveSettings}
               primary
               isDisabled={isCopyingToLocal || this.isDisabled}
@@ -147,7 +147,7 @@ class GoogleCloudStorage extends React.Component {
             />
 
             <Button
-              label={t("Common: Cancel")}
+              label={t("Common: CancelButton")}
               onClick={this.onCancelSettings}
               isDisabled={isCopyingToLocal}
               size="medium"

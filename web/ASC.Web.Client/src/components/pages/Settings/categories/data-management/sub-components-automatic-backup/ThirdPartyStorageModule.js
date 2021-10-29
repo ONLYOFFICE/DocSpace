@@ -265,7 +265,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedId,
       isChangedThirdParty,
     } = this.state;
-    console.log("availableStorage", availableStorage);
+
     return (
       <StyledAutoBackup>
         <ComboBox

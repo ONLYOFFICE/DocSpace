@@ -1160,7 +1160,7 @@ class AutomaticBackup extends React.PureComponent {
         {isChanged && !isCheckedThirdPartyStorage && (
           <>
             <Button
-              label={t("Common:Save")}
+              label={t("Common:SaveButton")}
               onClick={this.onSaveModuleSettings}
               primary
               isDisabled={isCopyingToLocal}
@@ -1170,7 +1170,7 @@ class AutomaticBackup extends React.PureComponent {
             />
 
             <Button
-              label={t("Common: Cancel")}
+              label={t("Common:CancelButton")}
               onClick={this.onCancelModuleSettings}
               isDisabled={isCopyingToLocal}
               size="medium"

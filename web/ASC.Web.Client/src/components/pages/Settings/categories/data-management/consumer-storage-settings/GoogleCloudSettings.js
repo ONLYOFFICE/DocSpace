@@ -20,7 +20,7 @@ class GoogleCloudSettings extends React.Component {
       isLoading,
       onChange,
     } = this.props;
-    console.log("isError settings", isError);
+
     return (
       <>
         <TextInput
