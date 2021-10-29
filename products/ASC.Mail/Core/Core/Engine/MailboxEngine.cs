@@ -585,99 +585,15 @@ namespace ASC.Mail.Core.Engine
                 }
             }
 
-            bool? enabled = null;
-            bool? quotaError = null;
-            string oAuthToken = null;
-            bool? resetImapIntervals = null;
-            string imapIntervalsJson = null;
+            var boxes = GetMailboxList(new ConcreteMailboxesExp(mailBox.EMail.Address));
 
-            int? messageCount = null;
-            long? size = null;
+            if (boxes == null) throw new NullReferenceException("Box collection for release was null.");
 
-            if (mailBox.NotOnlyOne)
-            {
-                var sameMboxes = GetMailboxList(new ConcreteMailboxesExp(mailBox.EMail.Address));
+            if (!boxes.Any()) throw new Exception("Box collection for release was empty.");
 
-                if (sameMboxes == null) throw new NullReferenceException("Box collection for release was null.");
+            Log.Info($"{boxes.Count} {boxes.FirstOrDefault().Address} mailboxes will be released.");
 
-                if (!sameMboxes.Any()) throw new Exception("Box collection for release was empty.");
-
-                Log.Info($"{sameMboxes.Count} {sameMboxes.FirstOrDefault().Address} mailboxes will be released.");
-
-                foreach (var box in sameMboxes)
-                {
-                    if (mailBox.AuthErrorDate.HasValue)
-                    {
-                        if (disableMailbox && mailBox.MailBoxId == box.Id)
-                            enabled = false;
-                    }
-
-                    if (mailBox.QuotaErrorChanged && mailBox.MailBoxId == box.Id)
-                        quotaError = mailBox.QuotaError;
-
-                    if (mailBox.AccessTokenRefreshed && mailBox.MailBoxId == box.Id)
-                        oAuthToken = mailBox.OAuthToken;
-
-                    if (mailBox.Imap && mailBox.ImapFolderChanged)
-                    {
-                        if (mailBox.BeginDateChanged)
-                        {
-                            resetImapIntervals = true;
-                        }
-                        else
-                        {
-                            imapIntervalsJson = mailBox.ImapIntervalsJson;
-                        }
-                    }
-
-                    if (box.MsgCountLast != mailBox.MessagesCount)
-                        messageCount = mailBox.MessagesCount;
-
-                    if (box.SizeLast != mailBox.Size)
-                        size = mailBox.Size;
-
-                    MailDaoFactory.GetMailboxDao().ReleaseMailbox(box, mailBox.ServerLoginDelay, Log, enabled, messageCount, size,
-                        quotaError, oAuthToken, imapIntervalsJson, resetImapIntervals);
-                }
-            }
-            else
-            {
-                var box = MailDaoFactory.GetMailboxDao().GetMailBox(new СoncreteUserMailboxExp(mailBox.MailBoxId, mailBox.TenantId, mailBox.UserId));
-
-                Log.Info($"Mailbox {box.Address} width id {box.Id} will be released");
-
-                if (mailBox.AuthErrorDate.HasValue)
-                {
-                    if (disableMailbox)
-                        enabled = false;
-                }
-
-                if (mailBox.QuotaErrorChanged)
-                    quotaError = mailBox.QuotaError;
-
-                if (mailBox.AccessTokenRefreshed)
-                    oAuthToken = mailBox.OAuthToken;
-
-                if (mailBox.Imap && mailBox.ImapFolderChanged)
-                {
-                    if (mailBox.BeginDateChanged)
-                    {
-                        resetImapIntervals = true;
-                    }
-                    else
-                    {
-                        imapIntervalsJson = mailBox.ImapIntervalsJson;
-                    }
-                }
-                if (box.MsgCountLast != mailBox.MessagesCount)
-                    messageCount = mailBox.MessagesCount;
-
-                if (box.SizeLast != mailBox.Size)
-                    size = mailBox.Size;
-
-                MailDaoFactory.GetMailboxDao().ReleaseMailbox(box, mailBox.ServerLoginDelay, Log, enabled, messageCount, size,
-                    quotaError, oAuthToken, imapIntervalsJson, resetImapIntervals);
-            }
+            MailDaoFactory.GetMailboxDao().ReleaseMailboxes(boxes, mailBox, disableMailbox);
         }
 
         public bool SetMaiboxAuthError(int id, DateTime? authErroDate)
@@ -698,11 +614,6 @@ namespace ASC.Mail.Core.Engine
         public bool DisableMailboxes(IMailboxExp exp)
         {
             return MailDaoFactory.GetMailboxDao().Enable(exp, false);
-        }
-
-        public bool LoggedDisableMailboxes(IMailboxExp exp, ILog log)
-        {
-            return MailDaoFactory.GetMailboxDao().LoggedEnable(exp, false, log);
         }
 
         public bool SetNextLoginDelay(IMailboxExp exp, TimeSpan delay)

@@ -38,9 +38,11 @@ using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Extensions;
+using ASC.Mail.Models;
 using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -49,9 +51,11 @@ namespace ASC.Mail.Core.Dao
     {
         private InstanceCrypto InstanceCrypto { get; }
         private MailSettings MailSettings { get; }
+        private readonly ILog Log;
         public MailboxDao(
              TenantManager tenantManager,
              SecurityContext securityContext,
+             IOptionsMonitor<ILog> optionsMonitor,
              DbContextManager<MailDbContext> dbContext,
              InstanceCrypto instanceCrypto,
              MailSettings mailSettings)
@@ -59,6 +63,8 @@ namespace ASC.Mail.Core.Dao
         {
             InstanceCrypto = instanceCrypto;
             MailSettings = mailSettings;
+
+            Log = optionsMonitor.Get("ASC.Mail.MailboxDao");
         }
 
         public Mailbox GetMailBox(IMailboxExp exp)
@@ -271,34 +277,13 @@ namespace ASC.Mail.Core.Dao
 
             var result = MailDbContext.SaveChanges();
 
-            return result > 0;
-        }
-
-        public bool LoggedEnable(IMailboxExp exp, bool enabled, ILog log)
-        {
-            var mailboxes = MailDbContext.MailMailbox.Where(exp.GetExpression()).ToList();
-
-            if (!mailboxes.Any())
-                return false;
-
-            foreach (var mb in mailboxes)
-            {
-                mb.Enabled = enabled;
-                if (enabled)
-                {
-                    mb.DateAuthError = null;
-                }
-            }
-
-            var result = MailDbContext.SaveChanges();
-
             if (result > 0)
             {
-                log.Debug($"Successfuly disabled mailbox(es)");
+                Log.Debug($"Successfuly disabled mailbox(es)");
             }
             else if (result == 0)
             {
-                log.Debug($"Failed to disable mailbox(es)");
+                Log.Debug($"Failed to disable mailbox(es)");
             }
 
             return result > 0;
@@ -370,70 +355,197 @@ namespace ASC.Mail.Core.Dao
                 DateTime.UtcNow, address);
         }
 
-        public bool ReleaseMailbox(Mailbox mailbox, int nextLoginDelay, ILog log, bool? enabled = null,
-            int? messageCount = null, long? size = null, bool? quotaError = null, string oAuthToken = null,
-            string imapIntervalsJson = null, bool? resetImapIntervals = false)
+        public class MailboxReleasedOptions
         {
-            if (nextLoginDelay < MailSettings.Defines.DefaultServerLoginDelay)
-                nextLoginDelay = MailSettings.Defines.DefaultServerLoginDelay;
+            public bool? Enabled = null;
+            public bool? QuotaError = null;
+            public string OAuthToken = null;
+            public bool? ResetImapIntervals = null;
+            public string ImapIntervalsJson = null;
+            public int? MessageCount = null;
+            public long? Size = null;
 
-            var mailMailbox = MailDbContext.MailMailbox.FirstOrDefault(mb => mb.Id == mailbox.Id);
+            public bool DisableBox;
+            public int ServerLoginDelay;
 
-            if (mailMailbox == null)
-                return false;
-
-            mailMailbox.IsProcessed = false;
-            mailMailbox.DateChecked = DateTime.UtcNow;
-            mailMailbox.DateLoginDelayExpires =
-                nextLoginDelay > MailSettings.Defines.DefaultServerLoginDelay
-                ? DateTime.UtcNow.AddSeconds(nextLoginDelay)
-                : DateTime.UtcNow.AddSeconds(MailSettings.Defines.DefaultServerLoginDelay);
-
-            if (enabled.HasValue)
+            public MailboxReleasedOptions(bool disable, int loginDelay)
             {
-                mailMailbox.Enabled = enabled.Value;
+                DisableBox = disable;
+                ServerLoginDelay = loginDelay;
             }
 
-            if (messageCount.HasValue)
+            public void CleanOptions()
             {
-                mailMailbox.MsgCountLast = messageCount.Value;
+                Enabled = null;
+                QuotaError = null;
+                OAuthToken = null;
+                ResetImapIntervals = null;
+                ImapIntervalsJson = null;
+                MessageCount = null;
+                Size = null;
+            }
+        }
+
+        public bool ReleaseMailboxes(List<Mailbox> mailboxes, MailBoxData account, bool disable)
+        {
+            MailboxReleasedOptions rOptions = new MailboxReleasedOptions(disable, account.ServerLoginDelay);
+
+            var boxStr = " WHERE id IN (";
+            mailboxes.ForEach(b => boxStr += $"{b.Id}, ");
+            boxStr = boxStr.Substring(0, boxStr.Length - 2);
+            boxStr += ");";
+
+            var delay = rOptions.ServerLoginDelay > MailSettings.Defines.DefaultServerLoginDelay
+                ? DateTime.UtcNow.AddSeconds(rOptions.ServerLoginDelay).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss")
+                : DateTime.UtcNow.AddSeconds(MailSettings.Defines.DefaultServerLoginDelay).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
+
+            var query = $"UPDATE mail_mailbox SET is_processed = 0, date_checked = '{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}', " +
+                $"date_login_delay_expires = '{delay}' ";
+
+            if (rOptions.ServerLoginDelay < MailSettings.Defines.DefaultServerLoginDelay)
+                rOptions.ServerLoginDelay = MailSettings.Defines.DefaultServerLoginDelay;
+
+            (string, string) enableCase = (", enabled = CASE id", " ELSE enabled END");
+            (string, string) msgCountLastCase = (", msg_count_last = CASE id", " ELSE msg_count_last END");
+            (string, string) sizeLastCase = (", size_last = CASE id", " ELSE size_last END");
+            (string, string) quotaErrorCase = (", quota_error = CASE id", " ELSE quota_error END");
+            (string, string) tokenCase = (", token = CASE id ", " ELSE token END");
+            (string, string) imapIntervalsCase = (", imap_intervals = CASE id", " ELSE imap_intervals END");
+
+            foreach (var box in mailboxes)
+            {
+                if (box.Id == account.MailBoxId)
+                {
+
+                    if (box.MsgCountLast != account.MessagesCount) rOptions.MessageCount = account.MessagesCount;
+
+                    if (box.SizeLast != account.Size) rOptions.Size = account.Size;
+
+                    if (account.AccessTokenRefreshed)
+                        rOptions.OAuthToken = account.OAuthToken;
+                }
+
+                if (account.Imap && account.ImapFolderChanged)
+                {
+                    if (account.BeginDateChanged) { rOptions.ResetImapIntervals = true; }
+                    else { rOptions.ImapIntervalsJson = account.ImapIntervalsJson; }
+                }
+                if (account.AuthErrorDate.HasValue)
+                    if (rOptions.DisableBox)
+                        rOptions.Enabled = false;
+
+                if (account.QuotaErrorChanged) rOptions.QuotaError = account.QuotaError;
+
+                if (mailboxes.Count == 1)
+                {
+                    if (rOptions.Enabled.HasValue)
+                    {
+                        query += $", enabled = {rOptions.Enabled.Value}";
+                    }
+
+                    if (rOptions.MessageCount.HasValue)
+                    {
+                        query += $", msg_count_last = {rOptions.MessageCount.Value}";
+                    }
+
+                    if (rOptions.Size.HasValue)
+                    {
+                        query += $", size_last = {rOptions.Size.Value}";
+                    }
+
+                    if (rOptions.QuotaError.HasValue)
+                    {
+                        query += $", quota_error = {rOptions.QuotaError.Value}";
+                    }
+
+                    if (!string.IsNullOrEmpty(rOptions.OAuthToken))
+                    {
+                        query += $", token = '{InstanceCrypto.Encrypt(rOptions.OAuthToken)}'";
+                    }
+
+                    if (rOptions.ResetImapIntervals.HasValue)
+                    {
+                        query += $", imap_intervals = NULL";
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(rOptions.ImapIntervalsJson))
+                        {
+                            var newInterval = "";
+                            foreach (var ch in rOptions.ImapIntervalsJson)
+                            {
+                                if (ch == '{') newInterval += "{{";
+                                else if (ch == '}') newInterval += "}}";
+                                else newInterval += ch;
+                            }
+
+                            query += $", imap_intervals = '{newInterval}'";
+                        }
+                    }
+
+                    query += $" WHERE id = {box.Id};";
+
+                    break;
+                }
+
+                if (rOptions.Enabled.HasValue)
+                    enableCase.Item1 += $" WHEN {box.Id} THEN {Convert.ToInt32(rOptions.Enabled.Value)}";
+
+                if (rOptions.QuotaError.HasValue)
+                    quotaErrorCase.Item1 += $" WHEN {box.Id} THEN {Convert.ToInt32(rOptions.QuotaError.Value)}";
+
+                if (rOptions.ResetImapIntervals.HasValue)
+                {
+                    imapIntervalsCase.Item1 += $" WHEN {box.Id} THEN NULL";
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(rOptions.ImapIntervalsJson))
+                    {
+                        var newInterval = "";
+                        foreach (var ch in rOptions.ImapIntervalsJson)
+                        {
+                            if (ch == '{') newInterval += "{{";
+                            else if (ch == '}') newInterval += "}}";
+                            else newInterval += ch;
+                        }
+
+                        imapIntervalsCase.Item1 += $" WHEN {box.Id} THEN '{newInterval}'";
+                    }
+                }
+
+                if (rOptions.MessageCount.HasValue)
+                    msgCountLastCase.Item1 += $" WHEN {box.Id} THEN {rOptions.MessageCount.Value}";
+
+                if (rOptions.Size.HasValue)
+                    sizeLastCase.Item1 += $" WHEN {box.Id} THEN {rOptions.Size.Value}";
+
+                if (!string.IsNullOrEmpty(rOptions.OAuthToken))
+                    tokenCase.Item1 += $" WHEN {box.Id} THEN '{InstanceCrypto.Encrypt(rOptions.OAuthToken)}'";
+
+                rOptions.CleanOptions();
             }
 
-            if (size.HasValue)
+            if (mailboxes.Count == 1)
             {
-                mailMailbox.SizeLast = size.Value;
-            }
-
-            if (quotaError.HasValue)
-            {
-                mailMailbox.QuotaError = quotaError.Value;
-            }
-
-            if (!string.IsNullOrEmpty(oAuthToken))
-            {
-                mailMailbox.Token = InstanceCrypto.Encrypt(oAuthToken);
-            }
-
-            if (resetImapIntervals.HasValue)
-            {
-                mailMailbox.ImapIntervals = null;
+                return MailDbContext.Database.ExecuteSqlRaw(query) > 0;
             }
             else
             {
-                if (!string.IsNullOrEmpty(imapIntervalsJson))
+                var cases = new List<(string, string)> { enableCase, msgCountLastCase, sizeLastCase, quotaErrorCase, tokenCase, imapIntervalsCase };
+
+                foreach (var c in cases)
                 {
-                    mailMailbox.ImapIntervals = imapIntervalsJson;
+                    if (c.Item1.Contains("WHEN"))
+                    {
+                        query += c.Item1; query += c.Item2;
+                    }
                 }
+
+                query += boxStr;
+
+                return MailDbContext.Database.ExecuteSqlRaw(query) > 0;
             }
-
-            var result = MailDbContext.SaveChanges();
-
-            if (result <= 0)
-            {
-                log.Warn($"Problem when trying release mailbox {mailbox.Address} | Id:{mailbox.Id}.");
-            }
-
-            return result > 0;
         }
 
         public bool SetMailboxAuthError(int id, DateTime? authErrorDate)
