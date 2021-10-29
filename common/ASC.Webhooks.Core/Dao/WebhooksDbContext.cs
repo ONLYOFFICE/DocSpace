@@ -33,7 +33,7 @@ namespace ASC.Webhooks.Core.Dao
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlWebhooksDbContext() } ,
-                     { Provider.Postgre, () => new PostgreSqlWebhooksDbContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlWebhooksDbContext() } ,
                 };
             }
         }
