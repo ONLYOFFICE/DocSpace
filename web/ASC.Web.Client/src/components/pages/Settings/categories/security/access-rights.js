@@ -17,6 +17,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
 import Loader from "@appserver/components/loader";
+import commonSettingsStyles from "../../utils/commonSettingsStyles";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -39,37 +40,7 @@ const MainContainer = styled.div`
     padding-bottom: 16px;
   }
 
-  .category-item-wrapper {
-    margin-bottom: 40px;
-
-    .category-item-heading {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    .category-item-subheader {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .category-item-description {
-      color: #555f65;
-      font-size: 12px;
-      max-width: 1024px;
-    }
-
-    .inherit-title-link {
-      margin-right: 7px;
-      font-size: 19px;
-      font-weight: 600;
-    }
-
-    .link-text {
-      margin: 0;
-    }
-  }
+  ${commonSettingsStyles}
 `;
 
 class AccessRights extends PureComponent {
