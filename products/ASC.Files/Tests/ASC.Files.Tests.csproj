@@ -20,9 +20,9 @@
     <PackageReference Include="Dropbox.Api" Version="4.10.0" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.49.0.2111" />
-    <PackageReference Include="Google.Protobuf" Version="3.13.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
+    <PackageReference Include="Google.Protobuf" Version="3.14.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Graph.Core" Version="1.5.0.2" />
