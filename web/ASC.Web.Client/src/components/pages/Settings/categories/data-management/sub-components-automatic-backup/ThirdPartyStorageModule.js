@@ -60,7 +60,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     //debugger;
     for (let item = 0; item < storageBackup.length; item++) {
-      // debugger;
       let obj = {
         [storageBackup[item].id]: {
           isSet: storageBackup[item].isSet,
@@ -77,8 +76,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
       options.push(titleObj);
 
       availableStorage = { ...availableStorage, ...obj };
-      //debugger;
-      console.log("availableStorage", availableStorage);
 
       if (storageBackup[item].current) {
         this.isSetDefaultIdStorage = true;
@@ -178,18 +175,12 @@ class ThirdPartyStorageModule extends React.PureComponent {
     await setBackupScheduleOptions();
     this.isSetDefaultIdStorage = true;
 
-    getBackupStorage()
-      .then((storageBackup) => this.getOptions(storageBackup))
-
-      .catch((error) => console.log("error", error))
-      .finally(() => {
-        this._isMounted && onSetLoadingData && onSetLoadingData(false);
-        this._isMounted &&
-          this.setState({
-            isLoadingData: false,
-            defaultSelectedId: selectedId,
-            defaultSelectedStorage: availableStorage[selectedId].title,
-          });
+    this._isMounted && onSetLoadingData && onSetLoadingData(false);
+    this._isMounted &&
+      this.setState({
+        isLoadingData: false,
+        defaultSelectedId: selectedId,
+        defaultSelectedStorage: availableStorage[selectedId].title,
       });
   };
 
