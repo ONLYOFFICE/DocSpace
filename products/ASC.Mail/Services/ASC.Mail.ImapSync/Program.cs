@@ -75,7 +75,7 @@ namespace ASC.Mail.ImapSync
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("storage.json")
-                        //.AddJsonFile($"storage.{env}.json")
+                        .AddJsonFile($"storage.{env}.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("backup.json")
                         .AddJsonFile("kafka.json")
