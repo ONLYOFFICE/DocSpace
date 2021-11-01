@@ -9,8 +9,6 @@ class DateField extends React.Component {
   }
 
   render() {
-    console.log("DateField render");
-
     const {
       isRequired,
       hasError,

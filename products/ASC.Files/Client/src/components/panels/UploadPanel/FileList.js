@@ -1,9 +1,13 @@
 import React from "react";
-import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+import CustomScrollbars from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import RowWrapper from "./RowWrapper";
 import { inject, observer } from "mobx-react";
+
+const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
+  <CustomScrollbars stype="mediumBlack" {...props} forwardedRef={ref} />
+));
 
 const FileList = ({ uploadDataFiles }) => {
   //console.log("FileList render");

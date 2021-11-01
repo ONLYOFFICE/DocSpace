@@ -48,11 +48,6 @@ namespace ASC.Files.Service
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
-                        .AddInMemoryCollection(new Dictionary<string, string>
-                            {
-                                {"pathToConf", path }
-                            }
-                        )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"appsettings.services.json", true)
@@ -63,7 +58,12 @@ namespace ASC.Files.Service
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddJsonFile("elastic.json", true)
                         .AddEnvironmentVariables()
-                        .AddCommandLine(args);
+                        .AddCommandLine(args)
+                        .AddInMemoryCollection(new Dictionary<string, string>
+                            {
+                                {"pathToConf", path }
+                            }
+                        );
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

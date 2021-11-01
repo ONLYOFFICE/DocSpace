@@ -146,9 +146,9 @@ namespace ASC.Common
         {
             var types = AutofacExtension.FindAndLoad(configuration, path);
 
-            foreach (var t in types)
+            foreach (var t in types.Select(Type.GetType).Where(r => r != null))
             {
-                TryAdd(Type.GetType(t));
+                TryAdd(t);
             }
         }
 

@@ -24,7 +24,11 @@ const Aside = React.memo((props) => {
       contentPaddingBottom={contentPaddingBottom}
       className={`${className} not-selectable aside`}
     >
-      {withoutBodyScroll ? children : <Scrollbar>{children}</Scrollbar>}
+      {withoutBodyScroll ? (
+        children
+      ) : (
+        <Scrollbar stype="mediumBlack">{children}</Scrollbar>
+      )}
     </StyledAside>
   );
 });

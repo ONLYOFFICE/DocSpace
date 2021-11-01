@@ -32,7 +32,7 @@ class ContextMenuSub extends Component {
     });
   }
 
-  onItemClick(e, item) {
+  onItemClick(item, e) {
     if (item.disabled) {
       e.preventDefault();
       return;
@@ -157,13 +157,16 @@ class ContextMenuSub extends Component {
     const dataKeys = Object.fromEntries(
       Object.entries(item).filter((el) => el[0].indexOf("data-") === 0)
     );
+    const onClick = (e) => {
+      this.onItemClick(item, e);
+    };
     let content = (
       <a
         href={item.url || "#"}
         className={linkClassName}
         target={item.target}
         {...dataKeys}
-        onClick={(event) => this.onItemClick(event, item, index)}
+        onClick={onClick}
         role="menuitem"
       >
         {icon}
@@ -174,7 +177,7 @@ class ContextMenuSub extends Component {
 
     if (item.template) {
       const defaultContentOptions = {
-        onClick: (event) => this.onItemClick(event, item, index),
+        onClick,
         className: linkClassName,
         labelClassName: "p-menuitem-text",
         iconClassName,

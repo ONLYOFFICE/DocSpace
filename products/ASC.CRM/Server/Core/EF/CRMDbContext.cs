@@ -35,7 +35,6 @@ namespace ASC.CRM.Core.EF
         public virtual DbSet<DbTaskTemplateTask> TaskTemplateTask { get; set; }
         public virtual DbSet<DbVoipCalls> VoipCalls { get; set; }
         public virtual DbSet<DbVoipNumber> VoipNumber { get; set; }
-        public virtual DbSet<DbTenant> Tenants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,8 +45,7 @@ namespace ASC.CRM.Core.EF
                                .AddDbCase()
                                .AddDbRelationshipEvent()
                                .AddDbDeal()
-                               .AddDbTask()
-                               .AddDbTenant();
+                               .AddDbTask();
 
             modelBuilder.Entity<DbCurrencyInfo>(entity =>
             {

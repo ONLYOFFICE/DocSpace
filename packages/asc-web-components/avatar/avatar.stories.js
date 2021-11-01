@@ -27,5 +27,4 @@ Default.args = {
   source: "",
   userName: "",
   editing: false,
-  editLabel: "Edit photo",
 };

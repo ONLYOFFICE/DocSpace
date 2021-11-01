@@ -499,7 +499,6 @@ class UpdateUserForm extends React.Component {
     this.setState({ isLoading: true });
     const { profile, setAvatarMax, personal } = this.props;
 
-    console.log("profile", profile);
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
@@ -727,7 +726,6 @@ class UpdateUserForm extends React.Component {
               source={this.props.avatarMax || profile.avatarMax}
               userName={profile.displayName}
               editing={true}
-              editLabel={t("Common:EditAvatar")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
