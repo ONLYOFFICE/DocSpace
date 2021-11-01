@@ -8,7 +8,7 @@ export const getOptions = (storageBackup) => {
   let firstSetId = "";
   let selectedStorage = "";
   let selectedId = "";
-  //debugger;
+
   for (let item = 0; item < storageBackup.length; item++) {
     let obj = {
       [storageBackup[item].id]: {
