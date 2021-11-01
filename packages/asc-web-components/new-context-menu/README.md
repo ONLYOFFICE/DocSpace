@@ -27,7 +27,7 @@ and header(show only tablet or mobile, when view changed).
 | -------------- | :------------: | :------: | :----: | :-----------: | ------------------------ |
 | `className`    |    `string`    |    -     |   -    |       -       | Accepts class            |
 | `id`           |    `string`    |    -     |   -    | `contextMenu` | Accepts id               |
-| `model`        |    `array`     |    -     |   -    |     `[ ]`     | Items collection         |
+| `model`        |    `array`     |    -     |   -    |     `[]`      | Items collection         |
 | `header`       |    `object`    |    -     |   -    |     `{}`      | ContextMenu header       |
 | `style`        | `obj`, `array` |    -     |   -    |       -       | Accepts css style        |
 | `targetAreaId` |    `string`    |    -     |   -    |       -       | Id of container apply to |

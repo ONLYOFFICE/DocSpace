@@ -71,6 +71,14 @@ class Row extends React.Component {
       this.cm.current.show(e);
     };
 
+    let contextMenuHeader = {};
+    if (children.props.item) {
+      contextMenuHeader = {
+        icon: children.props.item.icon,
+        title: children.props.item.title,
+      };
+    }
+
     const { onRowClick, ...rest } = this.props;
 
     return (
@@ -113,7 +121,11 @@ class Row extends React.Component {
           ) : (
             <div className="expandButton"> </div>
           )}
-          <NewContextMenu model={contextOptions} ref={this.cm}></NewContextMenu>
+          <NewContextMenu
+            model={contextOptions}
+            ref={this.cm}
+            header={contextMenuHeader}
+          ></NewContextMenu>
         </StyledOptionButton>
       </StyledRow>
     );

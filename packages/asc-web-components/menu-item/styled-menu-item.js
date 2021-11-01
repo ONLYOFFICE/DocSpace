@@ -103,13 +103,13 @@ const StyledMenuItem = styled.div`
 
   .drop-down-item_icon {
     path {
-      fill: ${(props) => props.theme.menuItem.svgFill};
+      fill: ${(props) => !props.isHeader && props.theme.menuItem.svgFill};
     }
   }
 
   &:hover {
     background-color: ${(props) =>
-      props.noHover
+      props.noHover || props.isHeader
         ? props.theme.menuItem.background
         : props.theme.menuItem.hover};
   }

@@ -15,9 +15,9 @@ import {
 
 import Portal from "../portal";
 import MenuItem from "../menu-item";
+import Backdrop from "../backdrop";
 
 import StyledContextMenu from "./styled-new-context-menu";
-import Backdrop from "../backdrop";
 
 // eslint-disable-next-line react/display-name, react/prop-types
 const Row = React.memo(({ data, index, style }) => {
@@ -358,31 +358,41 @@ class NewContextMenu extends React.Component {
     const items = this.renderContextMenuItems();
 
     return (
-      <StyledContextMenu changeView={this.state.changeView}>
-        <Backdrop visible={this.state.visible} />
-        <CSSTransition
-          nodeRef={this.menuRef}
-          classNames="p-contextmenu"
-          in={this.state.visible}
-          timeout={{ enter: 250, exit: 0 }}
-          unmountOnExit
-          onEnter={this.onEnter}
-          onEntered={this.onEntered}
-          onExit={this.onExit}
-          onExited={this.onExited}
-        >
-          <div
-            ref={this.menuRef}
-            id={this.props.id}
-            className={className}
-            style={this.props.style}
-            onClick={this.onMenuClick}
-            onMouseEnter={this.onMenuMouseEnter}
+      <>
+        <Backdrop visible={this.state.visible} withBackground={true} />
+        <StyledContextMenu changeView={this.state.changeView}>
+          <CSSTransition
+            nodeRef={this.menuRef}
+            classNames="p-contextmenu"
+            in={this.state.visible}
+            timeout={{ enter: 250, exit: 0 }}
+            unmountOnExit
+            onEnter={this.onEnter}
+            onEntered={this.onEntered}
+            onExit={this.onExit}
+            onExited={this.onExited}
           >
-            {items}
-          </div>
-        </CSSTransition>
-      </StyledContextMenu>
+            <div
+              ref={this.menuRef}
+              id={this.props.id}
+              className={className}
+              style={this.props.style}
+              onClick={this.onMenuClick}
+              onMouseEnter={this.onMenuMouseEnter}
+            >
+              {this.state.changeView && (
+                <MenuItem
+                  key={"header"}
+                  isHeader={true}
+                  icon={this.props.header.icon}
+                  label={this.props.header.title}
+                />
+              )}
+              {items}
+            </div>
+          </CSSTransition>
+        </StyledContextMenu>
+      </>
     );
   }
 
@@ -398,6 +408,8 @@ NewContextMenu.propTypes = {
   id: PropTypes.string,
   /** An array of menuitems */
   model: PropTypes.array,
+  /** An object of header */
+  header: PropTypes.object,
   /** Inline style of the component */
   style: PropTypes.object,
   /** Style class of the component */

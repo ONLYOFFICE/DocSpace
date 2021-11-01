@@ -4,34 +4,35 @@ import { tablet, mobile } from "../utils/device";
 import Base from "../themes/base";
 
 const styledTabletView = css`
-  width: 375px;
-  max-width: 375px;
-  max-height: calc(100vh - 64px);
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0 auto;
+  width: ${(props) => props.theme.newContextMenu.devices.tabletWidth};
+  max-width: ${(props) => props.theme.newContextMenu.devices.tabletWidth};
+  max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
+  left: ${(props) => props.theme.newContextMenu.devices.left};
+  right: ${(props) => props.theme.newContextMenu.devices.right};
+  bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
+  margin: ${(props) => props.theme.newContextMenu.devices.margin};
 `;
 
 const styledMobileView = css`
-  width: 100vw;
-  max-width: 100vw;
-  max-height: calc(100vh - 64px);
-  left: 0;
-  bottom: 0;
+  width: ${(props) => props.theme.newContextMenu.devices.mobileWidth};
+  max-width: ${(props) => props.theme.newContextMenu.devices.mobileWidth};
+  max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
+  left: ${(props) => props.theme.newContextMenu.devices.left};
+  bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
 `;
 
 const StyledContextMenu = styled.div`
   .p-contextmenu {
     position: absolute;
-    background: #ffffff;
-    border-radius: 6px;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-    -moz-box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-    -webkit-box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
-    padding: 6px 0px;
+    background: ${(props) => props.theme.newContextMenu.background};
+    border-radius: ${(props) => props.theme.newContextMenu.borderRadius};
+    -moz-border-radius: ${(props) => props.theme.newContextMenu.borderRadius};
+    -webkit-border-radius: ${(props) =>
+      props.theme.newContextMenu.borderRadius};
+    box-shadow: ${(props) => props.theme.newContextMenu.boxShadow};
+    -moz-box-shadow: ${(props) => props.theme.newContextMenu.boxShadow};
+    -webkit-box-shadow: ${(props) => props.theme.newContextMenu.boxShadow};
+    padding: ${(props) => props.theme.newContextMenu.padding};
 
     @media ${tablet} {
       ${(props) => props.changeView && !isMobile && styledTabletView}

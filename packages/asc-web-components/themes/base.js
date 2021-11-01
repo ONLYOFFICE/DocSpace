@@ -1661,6 +1661,21 @@ const Base = {
       padding: "0 16px",
     },
   },
+  newContextMenu: {
+    background: white,
+    borderRadius: "6px",
+    boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
+    padding: "6px 0px",
+    devices: {
+      maxHeight: "calc(100vh - 64px)",
+      tabletWidth: "375px",
+      mobileWidth: "100vw",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      margin: "0 auto",
+    },
+  },
 };
 
 export default Base;
