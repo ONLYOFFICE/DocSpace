@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Tooltip from "@appserver/components/tooltip";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
@@ -66,6 +66,14 @@ const StyledFileRow = styled(Row)`
   .__react_component_tooltip.place-bottom::after {
     border-bottom: 6px solid #f8f7bf !important;
   }
+
+  .upload-panel_file-row-link {
+    ${(props) =>
+      !props.isMediaActive &&
+      css`
+        cursor: default;
+      `}
+  }
 `;
 
 const FileRow = (props) => {
@@ -84,6 +92,8 @@ const FileRow = (props) => {
     isPersonal,
     setMediaViewerData,
     setUploadPanelVisible,
+    isMediaActive,
+    downloadInCurrentTab,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -96,7 +106,7 @@ const FileRow = (props) => {
   };
 
   const onMediaClick = (id) => {
-    console.log("id", id);
+    if (!isMediaActive) return;
     const item = { visible: true, id: id };
     setMediaViewerData(item);
     setUploadPanelVisible(false);
@@ -115,13 +125,15 @@ const FileRow = (props) => {
         element={
           <img className={item.error && "img_error"} src={fileIcon} alt="" />
         }
+        isMediaActive={isMediaActive}
       >
         <>
           {item.fileId ? (
             isMedia ? (
               <Link
+                className="upload-panel_file-row-link"
                 fontWeight="600"
-                color={item.error && "#A3A9AE"}
+                color={item.error || !isMediaActive ? "#A3A9AE" : ""}
                 truncate
                 onClick={() => onMediaClick(item.fileId)}
               >
@@ -133,7 +145,7 @@ const FileRow = (props) => {
                 color={item.error && "#A3A9AE"}
                 truncate
                 href={item.fileInfo ? item.fileInfo.webUrl : ""}
-                target="_blank"
+                target={downloadInCurrentTab ? "_self" : "_blank"}
               >
                 {name}
               </Link>
@@ -211,10 +223,7 @@ const FileRow = (props) => {
 };
 
 export default inject(
-  (
-    { auth, filesStore, formatsStore, uploadDataStore, mediaViewerDataStore },
-    { item }
-  ) => {
+  ({ auth, formatsStore, uploadDataStore, mediaViewerDataStore }, { item }) => {
     let ext;
     let name;
     let splitted;
@@ -229,7 +238,12 @@ export default inject(
     }
 
     const { personal } = auth.settingsStore;
-    const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
+    const {
+      iconFormatsStore,
+      mediaViewersFormatsStore,
+      docserviceStore,
+    } = formatsStore;
+    const { canViewedDocs } = docserviceStore;
     const {
       uploaded,
       primaryProgressDataStore,
@@ -237,8 +251,12 @@ export default inject(
       cancelCurrentFileConversion,
       setUploadPanelVisible,
     } = uploadDataStore;
+    const { playlist, setMediaViewerData } = mediaViewerDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
     const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
+    const isMediaActive =
+      playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
+
     const fileIcon = iconFormatsStore.getIconSrc(ext, 24);
 
     const loadingFile = !file || !file.uniqueId ? null : file;
@@ -248,7 +266,9 @@ export default inject(
         ? loadingFile.percent
         : null;
 
-    const { setMediaViewerData } = mediaViewerDataStore;
+    const { isArchive } = iconFormatsStore;
+
+    const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
 
     return {
       isPersonal: personal,
@@ -259,6 +279,8 @@ export default inject(
       ext,
       name,
       loadingFile,
+      isMediaActive,
+      downloadInCurrentTab,
 
       cancelCurrentUpload,
       cancelCurrentFileConversion,

@@ -695,7 +695,7 @@ namespace ASC.Web.Files.Utils
 
                 if (filter != FilterType.FoldersOnly)
                 {
-                    files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
+                    files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true);
                     files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
                     files = fileSecurity.FilterRead(files).ToList();

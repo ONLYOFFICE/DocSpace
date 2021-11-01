@@ -45,14 +45,14 @@ namespace ASC.Files.ThumbnailBuilder
         private readonly string cacheKey;
 
         public FileDataProvider(
-            ThumbnailSettings thumbnailSettings,
+            Common.Utils.ConfigurationExtension configurationExtension,
             ICache ascCache,
             DbContextManager<Core.EF.FilesDbContext> dbContextManager,
             DbContextManager<TenantDbContext> tenantdbContextManager,
             DbContextManager<CoreDbContext> coredbContextManager
             )
         {
-            this.thumbnailSettings = thumbnailSettings;
+            thumbnailSettings = ThumbnailSettings.GetInstance(configurationExtension);
             cache = ascCache;
             LazyFilesDbContext = new Lazy<Core.EF.FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
             LazyTenantDbContext = new Lazy<TenantDbContext>(() => tenantdbContextManager.Get(thumbnailSettings.ConnectionStringName));
@@ -117,13 +117,13 @@ namespace ASC.Files.ThumbnailBuilder
                 )
                 .GroupBy(r => r.tariff.Tenant)
                 .Select(r => new { tenant = r.Key, stamp = r.Max(b => b.tariff.Stamp) })
-                .Where(r=> r.stamp > DateTime.UtcNow);
+                .Where(r => r.stamp > DateTime.UtcNow);
 
-                result = search.Select(r=> r.tenant).ToArray();
+            result = search.Select(r => r.tenant).ToArray();
 
-                cache.Insert(cacheKey, result, DateTime.UtcNow.AddHours(1));
+            cache.Insert(cacheKey, result, DateTime.UtcNow.AddHours(1));
 
-                return result;
+            return result;
         }
 
         private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)

@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import Heading from "@appserver/components/heading";
-
+import PropTypes from "prop-types";
 const Container = styled.div`
-  margin: 0 0 40px 0;
+  margin: ${(props) => `0 0 ${props.marginBottom} 0`};
   max-width: 1024px;
 `;
 
@@ -13,10 +13,10 @@ const StyledHeader = styled(Heading)`
 `;
 
 const InfoFieldContainer = React.memo((props) => {
-  const { headerText, children } = props;
+  const { headerText, children, marginBottom } = props;
 
   return (
-    <Container>
+    <Container marginBottom={marginBottom}>
       <StyledHeader level={2} size="small">
         {headerText}
       </StyledHeader>
@@ -25,4 +25,11 @@ const InfoFieldContainer = React.memo((props) => {
   );
 });
 
+InfoFieldContainer.propTypes = {
+  marginBottom: PropTypes.string,
+};
+
+InfoFieldContainer.defaultProps = {
+  marginBottom: "40px",
+};
 export default InfoFieldContainer;
