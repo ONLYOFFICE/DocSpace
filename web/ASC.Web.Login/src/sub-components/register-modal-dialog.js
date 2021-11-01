@@ -44,63 +44,59 @@ const RegisterModalDialog = ({
   };
 
   return (
-    <ModalDialogContainer>
-      <ModalDialog
-        visible={visible}
-        bodyPadding="16px 0 0 0"
-        onClose={onRegisterModalClose}
-      >
-        <ModalDialog.Header>
-          <Text isBold={true} fontSize="21px">
-            {t("RegisterTitle")}
-          </Text>
-        </ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text key="text-body" isBold={false} fontSize="13px">
-            {getDomainsBlock()}
-            {t("RegisterTextBodyAfterDomainsList")}
-          </Text>
+    <ModalDialogContainer
+      visible={visible}
+      bodyPadding="16px 0 0 0"
+      onClose={onRegisterModalClose}
+    >
+      <ModalDialog.Header>
+        <Text isBold={true} fontSize="21px">
+          {t("RegisterTitle")}
+        </Text>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text key="text-body" isBold={false} fontSize="13px">
+          {getDomainsBlock()}
+          {t("RegisterTextBodyAfterDomainsList")}
+        </Text>
 
-          <FieldContainer
-            key="e-mail"
-            isVertical={true}
+        <FieldContainer
+          key="e-mail"
+          isVertical={true}
+          hasError={emailErr}
+          labelVisible={false}
+          errorMessage={t("Common:RequiredField")}
+        >
+          <TextInput
             hasError={emailErr}
-            labelVisible={false}
-            errorMessage={t("RequiredFieldMessage")}
-          >
-            <TextInput
-              hasError={emailErr}
-              placeholder={t("RegisterPlaceholder")}
-              isAutoFocussed={true}
-              id="e-mail"
-              name="e-mail"
-              type="text"
-              size="base"
-              scale={true}
-              tabIndex={3}
-              isDisabled={loading}
-              value={email}
-              onChange={onChangeEmail}
-            />
-          </FieldContainer>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            className="modal-dialog-button"
-            key="SendBtn"
-            label={
-              loading ? t("RegisterProcessSending") : t("RegisterSendButton")
-            }
-            size="big"
-            scale={false}
-            primary={true}
-            onClick={onSendRegisterRequest}
-            isLoading={loading}
-            isDisabled={loading}
+            placeholder={t("RegistrationEmail")}
+            isAutoFocussed={true}
+            id="e-mail"
+            name="e-mail"
+            type="text"
+            size="base"
+            scale={true}
             tabIndex={3}
+            isDisabled={loading}
+            value={email}
+            onChange={onChangeEmail}
           />
-        </ModalDialog.Footer>
-      </ModalDialog>
+        </FieldContainer>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          className="modal-dialog-button"
+          key="SendBtn"
+          label={loading ? t("Common:Sending") : t("RegisterSendButton")}
+          size="big"
+          scale={false}
+          primary={true}
+          onClick={onSendRegisterRequest}
+          isLoading={loading}
+          isDisabled={loading}
+          tabIndex={3}
+        />
+      </ModalDialog.Footer>
     </ModalDialogContainer>
   );
 };

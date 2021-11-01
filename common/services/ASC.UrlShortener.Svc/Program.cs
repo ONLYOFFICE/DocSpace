@@ -28,14 +28,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,58 +46,60 @@ namespace ASC.UrlShortener.Svc
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureAppConfiguration((hostContext, config) =>
-                {
-                    var buided = config.Build();
-                    var path = buided["pathToConf"];
-                    if (!Path.IsPathRooted(path))
-                    {
-                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-                    }
-                    config.SetBasePath(path);
-                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    config
-                        .AddJsonFile("appsettings.json")
-                        .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile($"urlshortener.{env}.json", true)
-                        .AddJsonFile("storage.json")
-                        .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{env}.json", true)
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args)
-                        .AddInMemoryCollection(new Dictionary<string, string>
-                            {
-                                {"pathToConf", path }
-                            }
-                        );
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddMemoryCache();
-                    var diHelper = new DIHelper(services);
-                    LogNLogExtension.ConfigureLog(diHelper, "ASC.UrlShortener.Svc");
-                    services.AddHostedService<UrlShortenerServiceLauncher>();
-                    diHelper.TryAdd<UrlShortenerServiceLauncher>();
-                })
-                .ConfigureContainer<ContainerBuilder>((context, builder) =>
-                {
-                    builder.Register(context.Configuration,  false, false);
-                })
-                .UseConsoleLifetime()
-                .Build();
+            var host = CreateHostBuilder(args).Build();
 
-            using (host)
-            {
-                // Start the host
-                await host.StartAsync();
-
-                // Wait for the host to shutdown
-                await host.WaitForShutdownAsync();
-            }
+            await host.RunAsync();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+                    Host.CreateDefaultBuilder(args)
+                        .UseSystemd()
+                        .UseWindowsService()
+                        .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                        .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
+                        .ConfigureAppConfiguration((hostContext, config) =>
+                        {
+                            var buided = config.Build();
+                            var path = buided["pathToConf"];
+
+                            if (!Path.IsPathRooted(path))
+                            {
+                                path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+                            }
+
+                            config.SetBasePath(path);
+
+                            var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
+
+                            config.AddJsonFile("appsettings.json")
+                                .AddJsonFile($"appsettings.{env}.json", true)
+                                .AddJsonFile($"urlshortener.{env}.json", true)
+                                .AddJsonFile("storage.json")
+                                .AddJsonFile("kafka.json")
+                                .AddJsonFile($"kafka.{env}.json", true)
+                                .AddEnvironmentVariables()
+                                .AddCommandLine(args)
+                                .AddInMemoryCollection(new Dictionary<string, string>
+                                    {
+                                        {"pathToConf", path }
+                                    }
+                                );
+                        })
+                        .ConfigureServices((hostContext, services) =>
+                        {
+                            services.AddMemoryCache();
+
+                            var diHelper = new DIHelper(services);
+
+                            services.AddHostedService<UrlShortenerServiceLauncher>();
+                            diHelper.TryAdd<UrlShortenerServiceLauncher>();
+                        })
+                        .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                        {
+                            builder.Register(context.Configuration, false, false);
+                        })
+                        .ConfigureNLogLogging();
     }
 }

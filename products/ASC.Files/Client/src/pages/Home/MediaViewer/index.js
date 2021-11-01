@@ -5,6 +5,7 @@ import { withRouter } from "react-router";
 import queryString from "query-string";
 import history from "@appserver/common/history";
 import MediaViewer from "@appserver/common/components/MediaViewer";
+import { createTreeFolders } from "../../../helpers/files-helpers";
 
 const FilesMediaViewer = (props) => {
   const {
@@ -13,11 +14,20 @@ const FilesMediaViewer = (props) => {
     playlist,
     visible,
     currentMediaFileId,
-    deleteFileAction,
+    deleteItemAction,
     setMediaViewerData,
     mediaViewerMediaFormats,
     mediaViewerImageFormats,
     location,
+    setRemoveMediaItem,
+    userAccess,
+    deleteDialogVisible,
+    previewFile,
+    fetchFiles,
+    setIsLoading,
+    setFirstLoad,
+    setExpandedKeys,
+    expandedKeys,
   } = props;
 
   useEffect(() => {
@@ -53,30 +63,50 @@ const FilesMediaViewer = (props) => {
 
   const onDeleteMediaFile = (id) => {
     const translations = {
-      deleteOperation: t("DeleteOperation"),
+      deleteOperation: t("Translations:DeleteOperation"),
       folderRemoved: t("FolderRemoved"),
       fileRemoved: t("FileRemoved"),
     };
 
     if (files.length > 0) {
       let file = files.find((file) => file.id === id);
-      if (file) deleteFileAction(file.id, file.folderId, translations);
+      if (file) {
+        setRemoveMediaItem(file);
+        deleteItemAction(file.id, translations, true, file.providerKey);
+      }
     }
   };
 
   const onDownloadMediaFile = (id) => {
-    if (files.length > 0) {
-      let viewUrlFile = files.find((file) => file.id === id).viewUrl;
-      return window.open(viewUrlFile, "_blank");
+    if (playlist.length > 0) {
+      let viewUrlFile = playlist.find((file) => file.fileId === id).src;
+      return window.open(viewUrlFile, "_self");
     }
   };
 
-  const onMediaViewerClose = () =>
+  const onMediaViewerClose = () => {
+    if (previewFile) {
+      setIsLoading(true);
+      setFirstLoad(true);
+
+      fetchFiles(previewFile.folderId)
+        .then((data) => {
+          const pathParts = data.selectedFolder.pathParts;
+          const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+          setExpandedKeys(newExpandedKeys);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setFirstLoad(false);
+        });
+    }
     setMediaViewerData({ visible: false, id: null });
+  };
 
   return (
     visible && (
       <MediaViewer
+        userAccess={userAccess}
         currentFileId={currentMediaFileId}
         allowConvert={true} //TODO:
         canDelete={canDelete} //TODO:
@@ -87,34 +117,65 @@ const FilesMediaViewer = (props) => {
         onDownload={onDownloadMediaFile}
         onClose={onMediaViewerClose}
         onEmptyPlaylistError={onMediaViewerClose}
+        deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
+        errorLabel={t("Translations:MediaLoadError")}
+        previewFile={previewFile}
       />
     )
   );
 };
 
 export default inject(
-  ({ filesStore, mediaViewerDataStore, filesActionsStore, formatsStore }) => {
-    const { files } = filesStore;
+  ({
+    filesStore,
+    mediaViewerDataStore,
+    filesActionsStore,
+    formatsStore,
+    dialogsStore,
+    treeFoldersStore,
+  }) => {
+    const {
+      files,
+      userAccess,
+      fetchFiles,
+      setIsLoading,
+      setFirstLoad,
+    } = filesStore;
     const {
       visible,
       id: currentMediaFileId,
       setMediaViewerData,
       playlist,
+      previewFile,
     } = mediaViewerDataStore;
-    const { deleteFileAction } = filesActionsStore;
+    const { deleteItemAction } = filesActionsStore;
     const { media, images } = formatsStore.mediaViewersFormatsStore;
+    const { expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     return {
       files,
       playlist,
+      userAccess,
       visible: playlist.length > 0 && visible,
       currentMediaFileId,
-      deleteFileAction,
+      deleteItemAction,
       setMediaViewerData,
       mediaViewerImageFormats: images,
       mediaViewerMediaFormats: media,
+      setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
+      deleteDialogVisible: dialogsStore.deleteDialogVisible,
+      fetchFiles,
+      previewFile,
+      setIsLoading,
+      setFirstLoad,
+      setExpandedKeys,
+      expandedKeys,
     };
   }
-)(withRouter(withTranslation("Home")(observer(FilesMediaViewer))));
+)(
+  withRouter(
+    withTranslation(["Home", "Translations"])(observer(FilesMediaViewer))
+  )
+);

@@ -6,12 +6,13 @@ import styled from "styled-components";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
-import TileContent from "./TileContent";
-import withContent from "../hoc/withContent";
-import Badges from "../sub-components/Badges";
+import TileContent from "./sub-components/TileContent";
+import withContent from "../../../../../HOCs/withContent";
+import withBadges from "../../../../../HOCs/withBadges";
+import { isMobile } from "react-device-detect";
 
 const SimpleFilesTileContent = styled(TileContent)`
-  .rowMainContainer {
+  .row-main-container {
     height: auto;
     max-width: 100%;
     align-self: flex-end;
@@ -21,7 +22,7 @@ const SimpleFilesTileContent = styled(TileContent)`
     }
   }
 
-  .mainIcons {
+  .main-icons {
     align-self: flex-end;
   }
 
@@ -32,6 +33,15 @@ const SimpleFilesTileContent = styled(TileContent)`
 
   .badge {
     margin-right: 8px;
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+  }
+
+  .new-items {
+    position: absolute;
+    right: 29px;
+    top: 19px;
   }
 
   .badges {
@@ -42,6 +52,17 @@ const SimpleFilesTileContent = styled(TileContent)`
   .share-icon {
     margin-top: -4px;
     padding-right: 8px;
+  }
+
+  .title-link {
+    font-size: ${isMobile ? "15px" : "13px"};
+    margin-top: 2px;
+  }
+
+  .favorite,
+  .can-convert {
+    height: 14px;
+    width: 14px;
   }
 
   @media (max-width: 1024px) {
@@ -55,57 +76,24 @@ const SimpleFilesTileContent = styled(TileContent)`
 `;
 
 const FilesTileContent = ({
-  t,
   item,
-  sectionWidth,
   titleWithoutExt,
-  updatedDate,
-  fileOwner,
-  accessToEdit,
   linkStyles,
-  newItems,
-  showNew,
-  canWebEdit,
-  canConvert,
-  isTrashFolder,
-  onFilesClick,
-  onShowVersionHistory,
-  onBadgeClick,
-  onClickLock,
-  onClickFavorite,
-  setConvertDialogVisible,
+  badgesComponent,
 }) => {
-  const {
-    contentLength,
-    fileExst,
-    filesCount,
-    foldersCount,
-    fileStatus,
-    id,
-    versionGroup,
-    locked,
-    providerKey,
-  } = item;
-
-  const onMobileRowClick = () => {
-    if (isTrashFolder || window.innerWidth > 1024) return;
-    onFilesClick();
-  };
+  const { fileExst, title } = item;
 
   return (
     <>
-      <SimpleFilesTileContent
-        sideColor="#333"
-        isFile={fileExst}
-        //onClick={onMobileRowClick}
-        //disableSideInfo
-      >
+      <SimpleFilesTileContent sideColor="#333" isFile={fileExst}>
         <Link
+          className="title-link item-file-name"
           containerWidth="100%"
           type="page"
-          title={titleWithoutExt}
-          fontWeight="bold"
-          fontSize="15px"
+          title={title}
+          fontWeight="600"
+          fontSize={isMobile ? "15px" : "13px"}
+          target="_blank"
           {...linkStyles}
           color="#333"
           isTextOverflow
@@ -116,9 +104,8 @@ const FilesTileContent = ({
               className="badge-ext"
               as="span"
               color="#A3A9AE"
-              fontSize="15px"
+              fontSize={isMobile ? "15px" : "13px"}
               fontWeight={600}
-              title={fileExst}
               truncate={true}
             >
               {fileExst}
@@ -126,28 +113,14 @@ const FilesTileContent = ({
           ) : null}
         </Link>
 
-        <div className="badges">
-          <Badges
-            newItems={newItems}
-            item={item}
-            canWebEdit={canWebEdit}
-            isTrashFolder={isTrashFolder}
-            canConvert={canConvert}
-            accessToEdit={accessToEdit}
-            showNew={showNew}
-            onFilesClick={onFilesClick}
-            onClickLock={onClickLock}
-            onClickFavorite={onClickFavorite}
-            onShowVersionHistory={onShowVersionHistory}
-            onBadgeClick={onBadgeClick}
-            setConvertDialogVisible={setConvertDialogVisible}
-          />
-        </div>
+        <div className="badges">{badgesComponent}</div>
       </SimpleFilesTileContent>
     </>
   );
 };
 
 export default withRouter(
-  withTranslation("Home")(withContent(FilesTileContent))
+  withTranslation(["Home", "Translations"])(
+    withContent(withBadges(FilesTileContent))
+  )
 );

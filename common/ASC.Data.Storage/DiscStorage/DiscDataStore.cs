@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -75,21 +76,9 @@ namespace ASC.Data.Storage.DiscStorage
 
             return this;
         }
-
+              
         public DiscDataStore(
-    TenantManager tenantManager,
-    PathUtils pathUtils,
-    EmailValidationKeyProvider emailValidationKeyProvider,
-    IOptionsMonitor<ILog> options,
-    EncryptionSettingsHelper encryptionSettingsHelper,
-    EncryptionFactory encryptionFactory)
-    : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
-        {
-            EncryptionSettingsHelper = encryptionSettingsHelper;
-            EncryptionFactory = encryptionFactory;
-        }
-
-        public DiscDataStore(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
@@ -97,7 +86,7 @@ namespace ASC.Data.Storage.DiscStorage
             IOptionsMonitor<ILog> options,
             EncryptionSettingsHelper encryptionSettingsHelper,
             EncryptionFactory encryptionFactory)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
             EncryptionSettingsHelper = encryptionSettingsHelper;
             EncryptionFactory = encryptionFactory;
@@ -137,6 +126,10 @@ namespace ASC.Data.Storage.DiscStorage
             throw new FileNotFoundException("File not found", Path.GetFullPath(target));
         }
 
+        public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+        {
+            return Task.FromResult(GetReadStream(domain, path, offset));
+        }
 
         public override Stream GetReadStream(string domain, string path, int offset)
         {
@@ -171,7 +164,7 @@ namespace ASC.Data.Storage.DiscStorage
         public override Uri Save(string domain, string path, Stream stream)
         {
             Log.Debug("Save " + path);
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
             if (QuotaController != null)
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);
@@ -377,7 +370,7 @@ namespace ASC.Data.Storage.DiscStorage
             Directory.Move(target, newtarget);
         }
 
-        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath)
+        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
         {
             if (srcpath == null) throw new ArgumentNullException("srcpath");
             if (newpath == null) throw new ArgumentNullException("srcpath");
@@ -401,7 +394,7 @@ namespace ASC.Data.Storage.DiscStorage
                 File.Move(target, newtarget);
 
                 QuotaUsedDelete(srcdomain, flength);
-                QuotaUsedAdd(newdomain, flength);
+                QuotaUsedAdd(newdomain, flength, quotaCheckFileSize);
             }
             else
             {
@@ -576,6 +569,11 @@ namespace ASC.Data.Storage.DiscStorage
             var target = GetTarget(domain, path);
             var result = File.Exists(target);
             return result;
+        }
+
+        public override Task<bool> IsFileAsync(string domain, string path)
+        {
+            return Task.FromResult(IsFile(domain, path));
         }
 
         public override long ResetQuota(string domain)

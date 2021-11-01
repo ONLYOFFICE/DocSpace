@@ -35,6 +35,8 @@ const VersionRow = (props) => {
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
 
+  const [isRestoring, setIsRestoring] = useState(false);
+
   const canEdit = info.access === 1 || info.access === 0;
 
   const title = `${new Date(info.updated).toLocaleString(culture)} ${
@@ -44,7 +46,7 @@ const VersionRow = (props) => {
   const linkStyles = { isHovered: true, type: "action" };
 
   const onDownloadAction = () =>
-    window.open(`${info.viewUrl}&version=${info.version}`);
+    window.open(`${info.viewUrl}&version=${info.version}`, "_self");
   const onEditComment = () => setShowEditPanel(!showEditPanel);
 
   const onChange = (e) => setCommentValue(e.target.value);
@@ -64,7 +66,11 @@ const VersionRow = (props) => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    restoreVersion(info.id, info.version).catch((err) => toastr.error(err));
+    setIsRestoring(true);
+
+    restoreVersion(info.id, info.version)
+      .catch((err) => toastr.error(err))
+      .finally(() => setIsRestoring(false));
   };
 
   const onVersionClick = () => {
@@ -75,10 +81,14 @@ const VersionRow = (props) => {
 
   const contextOptions = [
     canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
-    canEdit && { key: "restore", label: t("Restore"), onClick: onRestoreClick },
+    canEdit && {
+      key: "restore",
+      label: t("Translations:Restore"),
+      onClick: onRestoreClick,
+    },
     {
       key: "download",
-      label: `${t("Download")} (${info.contentLength})`,
+      label: `${t("Common:Download")} (${info.contentLength})`,
       onClick: onDownloadAction,
     },
   ];
@@ -89,6 +99,7 @@ const VersionRow = (props) => {
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
       canEdit={canEdit}
+      isRestoring={isRestoring}
     >
       <>
         <Box displayProp="flex">
@@ -159,7 +170,7 @@ const VersionRow = (props) => {
                     <ModalDialog.Footer>
                       <Button
                         className="version_save-button"
-                        label={t("AddButton")}
+                        label={t("Common:SaveButton")}
                         size="big"
                         primary
                         onClick={onSaveClick}
@@ -184,11 +195,11 @@ const VersionRow = (props) => {
           <div className="version_links-container">
             {canEdit && (
               <Link
-                onClick={onRestoreClick}
+                {...(!isRestoring && { onClick: onRestoreClick })}
                 {...linkStyles}
                 className="version_link-action"
               >
-                {t("Restore")}
+                {t("Translations:Restore")}
               </Link>
             )}
             <Link
@@ -196,7 +207,7 @@ const VersionRow = (props) => {
               {...linkStyles}
               className="version_link-action"
             >
-              {t("Download")}
+              {t("Common:Download")}
             </Link>
           </div>
         </Box>
@@ -211,7 +222,7 @@ const VersionRow = (props) => {
                 scale={true}
                 primary
                 onClick={onSaveClick}
-                label={t("AddButton")}
+                label={t("Common:SaveButton")}
               />
             </Box>
             <Box
@@ -222,7 +233,7 @@ const VersionRow = (props) => {
                 size="base"
                 scale={true}
                 onClick={onCancelClick}
-                label={t("CancelButton")}
+                label={t("Common:CancelButton")}
               />
             </Box>
           </Box>
@@ -250,4 +261,10 @@ export default inject(({ auth, versionHistoryStore }) => {
     restoreVersion,
     updateCommentVersion,
   };
-})(withRouter(withTranslation("VersionHistory")(observer(VersionRow))));
+})(
+  withRouter(
+    withTranslation(["VersionHistory", "Common", "Translations"])(
+      observer(VersionRow)
+    )
+  )
+);

@@ -1,4 +1,5 @@
 ﻿using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -39,14 +40,14 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("partner_id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ButtonUrl)
                     .IsRequired()
                     .HasColumnName("button_url")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddDbButton(this ModelBuilder modelBuilder)

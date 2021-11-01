@@ -164,7 +164,7 @@ class IconButton extends React.PureComponent {
         })} */}
 
         <ReactSVG
-          className="icon-button_svg"
+          className="icon-button_svg not-selectable"
           src={this.state.currentIconName}
         />
       </StyledOuter>

@@ -41,10 +41,14 @@ class LinkRow extends React.Component {
     const isDisabled = isLoading || disableLink;
 
     return (
-      <StyledLinkRow withToggle={withToggle} isDisabled={isDisabled}>
+      <StyledLinkRow
+        withToggle={withToggle}
+        isDisabled={isDisabled}
+        className="link-row__container"
+      >
         <Row
           className="link-row"
-          key={`${linkText}-key_${index}`}
+          key={`${linkText.replace(" ", "-")}-key_${index}`}
           element={
             withToggle ? (
               <AccessComboBox
@@ -55,6 +59,7 @@ class LinkRow extends React.Component {
                 onAccessChange={onChangeItemAccess}
                 itemId={item.sharedTo.id}
                 isDisabled={isDisabled}
+                disableLink={disableLink}
               />
             ) : (
               <StyledAccessEditIcon
@@ -75,7 +80,7 @@ class LinkRow extends React.Component {
               fontWeight={600}
               isDisabled={isDisabled}
             >
-              {t(linkText)}
+              {linkText}
             </LinkWithDropdown>
             {withToggle && (
               <div>
@@ -83,6 +88,7 @@ class LinkRow extends React.Component {
                   isChecked={isChecked}
                   onChange={this.onToggleButtonChange}
                   isDisabled={isLoading}
+                  className="sharing-row__toggle-button"
                 />
               </div>
             )}

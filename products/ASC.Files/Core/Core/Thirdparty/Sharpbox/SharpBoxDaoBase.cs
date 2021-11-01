@@ -28,6 +28,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -52,7 +53,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         protected override string Id { get => "sbox"; }
 
-        public SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+        public SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
 
@@ -284,7 +286,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             folder.FolderID = isRoot ? null : MakeId(fsEntry.Parent);
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
-            folder.RootFolderId = MakeId(RootFolder());
+            folder.RootFolderId = RootFolderMakeId();
 
             folder.Title = MakeTitle(fsEntry);
             folder.TotalFiles = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
@@ -354,14 +356,21 @@ namespace ASC.Files.Thirdparty.Sharpbox
             file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
             file.NativeAccessor = fsEntry;
             file.Title = MakeTitle(fsEntry);
-            file.RootFolderId = MakeId(RootFolder());
+            file.RootFolderId = RootFolderMakeId();
 
             return file;
         }
 
+        private ICloudDirectoryEntry _rootFolder;
         protected ICloudDirectoryEntry RootFolder()
         {
-            return ProviderInfo.Storage.GetRoot();
+            return _rootFolder ??= ProviderInfo.Storage.GetRoot();
+        }
+
+        private string _rootFolderId;
+        protected string RootFolderMakeId()
+        {
+            return _rootFolderId ??= MakeId(RootFolder());
         }
 
         protected ICloudDirectoryEntry GetFolderById(object folderId)

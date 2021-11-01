@@ -53,57 +53,61 @@ class DeleteProfileEverDialogComponent extends React.Component {
 
   render() {
     console.log("DeleteProfileEverDialog render");
-    const { t, visible, user, onClose, userCaption } = this.props;
+    const { t, tReady, visible, user, onClose, userCaption } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>{t("Confirmation")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text>
-              <Trans
-                i18nKey="DeleteUserConfirmation"
-                ns="DeleteProfileEverDialog"
-                t={t}
-              >
-                {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
-                will be deleted.
-              </Trans>
-            </Text>
-            <Text>{t("NotBeUndone")}</Text>
-            {/* <Text color="#c30" fontSize="18px" className="warning-text">
-              {t("Warning")}
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
+        <ModalDialog.Header>{t("Confirmation")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>
+            <Trans
+              i18nKey="DeleteUserConfirmation"
+              ns="DeleteProfileEverDialog"
+              t={t}
+            >
+              {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
+              will be deleted.
+            </Trans>
+          </Text>
+          <Text>{t("Translations:NotBeUndone")}</Text>
+          {/* <Text color="#c30" fontSize="18px" className="warning-text">
+              {t("Common:Warning")}!
             </Text>
             <Text>{t("DeleteUserDataConfirmation")}</Text> */}
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              key="OKBtn"
-              label={t("OKButton")}
-              size="medium"
-              primary={true}
-              onClick={this.onDeleteProfileEver}
-              isLoading={isRequestRunning}
-            />
-            {/* <Button
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="OKBtn"
+            label={t("Common:OKButton")}
+            size="medium"
+            primary={true}
+            onClick={this.onDeleteProfileEver}
+            isLoading={isRequestRunning}
+          />
+          {/* <Button
               className="button-dialog"
               key="ReassignBtn"
-              label={t("ReassignData")}
+              label={t("Translations:ReassignData")}
               size="medium"
               onClick={this.onReassignDataClick}
               isDisabled={isRequestRunning}
             /> */}
-          </ModalDialog.Footer>
-        </ModalDialog>
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
 }
 
-const DeleteProfileEverDialog = withTranslation("DeleteProfileEverDialog")(
-  DeleteProfileEverDialogComponent
-);
+const DeleteProfileEverDialog = withTranslation([
+  "DeleteProfileEverDialog",
+  "Common",
+  "Translations",
+])(DeleteProfileEverDialogComponent);
 
 DeleteProfileEverDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

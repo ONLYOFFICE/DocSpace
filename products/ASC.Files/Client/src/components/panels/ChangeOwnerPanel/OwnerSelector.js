@@ -3,6 +3,7 @@ import PeopleSelector from "people/PeopleSelector";
 import Aside from "@appserver/components/aside";
 import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";
+import IconButton from "@appserver/components/icon-button";
 import {
   StyledAddUsersPanelPanel,
   StyledContent,
@@ -11,7 +12,14 @@ import {
 } from "../StyledPanels";
 
 const OwnerSelector = (props) => {
-  const { ownerLabel, isOpen, groupsCaption, onOwnerSelect, onClose } = props;
+  const {
+    ownerLabel,
+    isOpen,
+    groupsCaption,
+    onOwnerSelect,
+    onClose,
+    onClosePanel,
+  } = props;
 
   const zIndex = 310;
 
@@ -26,6 +34,12 @@ const OwnerSelector = (props) => {
       <Aside className="header_aside-panel">
         <StyledContent>
           <StyledHeaderContent>
+            <IconButton
+              size="16"
+              iconName="/static/images/arrow.path.react.svg"
+              onClick={onClosePanel}
+              color="#A3A9AE"
+            />
             <Heading
               className="header_aside-panel-header"
               size="medium"

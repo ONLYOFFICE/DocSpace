@@ -4,8 +4,8 @@ import omit from "lodash/omit";
 
 export const desktopConstants = Object.freeze({
   domain: window.location.origin,
-  provider: "AppServer",
-  guid: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
+  provider: "onlyoffice",
+  cryptoEngineId: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
 });
 
 export function regDesktop(
@@ -14,7 +14,8 @@ export function regDesktop(
   keys,
   setEncryptionKeys,
   isEditor,
-  getEncryptionAccess
+  getEncryptionAccess,
+  t
 ) {
   const data = {
     displayName: user.displayName,
@@ -24,13 +25,15 @@ export function regDesktop(
     userId: user.id,
   };
 
+  console.log("regDesktop", data);
+
   let extendedData;
 
   if (isEncryption) {
     extendedData = {
       ...data,
       encryptionKeys: {
-        cryptoEngineId: desktopConstants.guid,
+        cryptoEngineId: desktopConstants.cryptoEngineId,
       },
     };
 
@@ -58,7 +61,7 @@ export function regDesktop(
           break;
         }
         case "relogin": {
-          toastr.info("Encryption keys must be re-entered");
+          toastr.info(t("Common:EncryptionKeysReload"));
           //relogin();
           break;
         }
@@ -82,13 +85,13 @@ export function regDesktop(
         if (!message) {
           switch (e.opType) {
             case 0:
-              message = "Preparing file for encryption";
+              message = t("Common:EncryptionFilePreparing");
               break;
             case 1:
-              message = "Encrypting file";
+              message = t("Common:EncryptingFile");
               break;
             default:
-              message = "Loading...";
+              message = t("Common:LoadingProcessing");
           }
         }
         toastr.info(message);

@@ -11,8 +11,9 @@ import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
+import withLoader from "../../../HOCs/withLoader";
 
-class PureArticleMainButtonContent extends React.Component {
+class ArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
     // this.goToHomePage();
     const format = e.currentTarget.dataset.format || null;
@@ -26,10 +27,10 @@ class PureArticleMainButtonContent extends React.Component {
   onUploadFileClick = () => {
     if (this.props.isPrivacy) {
       encryptionUploadDialog((encryptedFile, encrypted) => {
-        const { selectedFolderId, startUpload, t } = this.props;
+        const { startUpload, t } = this.props;
         encryptedFile.encrypted = encrypted;
         this.goToHomePage();
-        startUpload([encryptedFile], selectedFolderId, t);
+        startUpload([encryptedFile], null, t);
       });
     } else {
       this.inputFilesElement.click();
@@ -47,9 +48,9 @@ class PureArticleMainButtonContent extends React.Component {
   };
 
   onFileChange = (e) => {
-    const { selectedFolderId, startUpload, t } = this.props;
-    this.goToHomePage();
-    startUpload(e.target.files, selectedFolderId, t);
+    const { startUpload, t } = this.props;
+    //this.goToHomePage();
+    startUpload(e.target.files, null, t);
   };
 
   onInputClick = (e) => (e.target.value = null);
@@ -64,15 +65,20 @@ class PureArticleMainButtonContent extends React.Component {
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, canCreate, isDisabled, firstLoad, isPrivacy } = this.props;
+    const {
+      t,
+      tReady,
+      canCreate,
+      isDisabled,
+      firstLoad,
+      isPrivacy,
+    } = this.props;
 
-    return firstLoad ? (
-      <Loaders.Rectangle />
-    ) : (
+    return (
       <MainButton
         isDisabled={isDisabled ? isDisabled : !canCreate}
         isDropdown={true}
-        text={t("Actions")}
+        text={t("Common:Actions")}
       >
         <DropDownItem
           className="main-button_drop-down"
@@ -143,37 +149,29 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContent = withTranslation("Article")(
-  PureArticleMainButtonContent
-);
-
 ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default inject(
-  ({
-    auth,
-    filesStore,
-    uploadDataStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
-    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
-    const { isPrivacyFolder } = treeFoldersStore;
-    const { id } = selectedFolderStore;
-    const { startUpload } = uploadDataStore;
+export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
+  const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
+  const { isPrivacyFolder } = treeFoldersStore;
+  const { startUpload } = uploadDataStore;
 
-    return {
-      homepage: config.homepage,
-      firstLoad,
-      selectedFolderId: id,
-      isPrivacy: isPrivacyFolder,
-      filter,
-      canCreate,
+  return {
+    homepage: config.homepage,
+    firstLoad,
+    isPrivacy: isPrivacyFolder,
+    filter,
+    canCreate,
 
-      setAction: fileActionStore.setAction,
-      startUpload,
-    };
-  }
-)(withRouter(observer(ArticleMainButtonContent)));
+    setAction: fileActionStore.setAction,
+    startUpload,
+  };
+})(
+  withRouter(
+    withTranslation(["Article", "Common"])(
+      withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
+    )
+  )
+);

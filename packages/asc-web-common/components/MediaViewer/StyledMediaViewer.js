@@ -6,7 +6,7 @@ const StyledMediaViewer = styled.div`
   overflow: hidden;
   .videoViewerOverlay {
     position: fixed;
-    z-index: 4000;
+    z-index: 300;
     top: 0;
     left: 0;
     width: 100%;
@@ -15,7 +15,7 @@ const StyledMediaViewer = styled.div`
     opacity: 0.5;
   }
   .mediaViewerToolbox {
-    z-index: 4001;
+    z-index: 301;
     padding-top: 14px;
     padding-bottom: 14px;
     height: 20px;
@@ -31,7 +31,7 @@ const StyledMediaViewer = styled.div`
     right: 0;
     bottom: 5px;
     margin-right: 10px;
-    z-index: 4005;
+    z-index: 305;
   }
   .deleteBtnContainer,
   .downloadBtnContainer {
@@ -41,7 +41,7 @@ const StyledMediaViewer = styled.div`
     line-height: 19px;
   }
   .details {
-    z-index: 4002;
+    z-index: 302;
     padding-top: 14px;
     padding-bottom: 14px;
     height: 20px;
@@ -66,7 +66,8 @@ const StyledMediaViewer = styled.div`
     position: fixed;
     top: 4px;
     right: 10px;
-    height: 30px;
+    height: 25px;
+    width: 25px;
   }
 `;
 

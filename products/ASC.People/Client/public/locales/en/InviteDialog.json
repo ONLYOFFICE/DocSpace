@@ -1,11 +1,8 @@
 {
-  "InviteLinkTitle": "Invitation link",
-  "HelpAnswerLinkInviteSettings": "Share the link to invite your colleagues to your portal.",
-  "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",
   "CopyToClipboard": "Copy the link",
-  "CloseButton": "Close",
-  "LinkCopySuccess": "Link has been copied",
   "GetShortenLink": "Get shortened link",
+  "HelpAnswerLinkInviteSettings": "Share the link to invite colleagues to your portal.",
+  "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",
   "InviteUsersAsCollaborators": "Add users as {{guestsCaption, lowercase}}",
-  "LoadingProcessing": "Loading..."
+  "LinkCopySuccess": "Link has been copied"
 }

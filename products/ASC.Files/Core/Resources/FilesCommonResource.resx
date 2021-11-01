@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
     <value>Outside portal</value>
@@ -293,7 +293,7 @@
     <value>User could not be found</value>
   </data>
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
-    <value>You are not allowed to preview the elements in the Recycle Bin</value>
+    <value>You are not allowed to preview the elements in the Trash</value>
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Everyone</value>
@@ -302,19 +302,20 @@
     <value>Anonymous</value>
   </data>
   <data name="IndexTitle" xml:space="preserve">
-    <value>Search by contents of documents</value>
+    <value>Search in documents content</value>
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
     <value>File created in folder "{0}"</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common Documents' section|Set up access rights to the documents and folders in the 'Common Documents' section</value>
+    <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common' section|Set up access rights to the documents and folders in the 'Common' section</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.</value>
+    <value>Create, edit, and share office documents. Collaborate on them in real-time. 100% compatibility with docx, xlsx, pptx guaranteed. </value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.</value>
+    <value>Edit, share and collaborate on office documents in real-time. Create and manage common docs for the whole team to access. 
+100% compatibility with docx, xlsx, pptx. </value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>View and download shared documents. Upload files to shared folders. 100% compatibility with docx, xlsx, pptx guaranteed.</value>

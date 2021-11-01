@@ -1,9 +1,6 @@
 {
-  "SearchUsersPlaceholder": "Поиск пользователей",
-  "AddMembersButtonLabel": "Добавить участников",
-  "SelectAllLabel": "Выбрать все",
+  "CustomAllGroups": "Все {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "Нет такого пользователя",
   "EmptyUsers": "Нет пользователей",
-  "LoadingLabel": "Загрузка... Пожалуйста подождите...",
-  "CustomAllGroups": "Все {{ groupsCaption, lowercase }}"
+  "SearchUsersPlaceholder": "Поиск пользователей"
 }

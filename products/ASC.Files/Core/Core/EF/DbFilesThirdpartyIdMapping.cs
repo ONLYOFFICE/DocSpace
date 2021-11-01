@@ -1,5 +1,6 @@
 ﻿using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -41,14 +42,14 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("hash_id")
                     .HasColumnType("char(32)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Id)
                     .IsRequired()
                     .HasColumnName("id")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });

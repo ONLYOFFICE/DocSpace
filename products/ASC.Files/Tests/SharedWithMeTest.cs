@@ -277,7 +277,7 @@ namespace ASC.Files.Tests
                 return;
             }
 
-            ItemList<FileOperationResult> statuses;
+            List<FileOperationResult> statuses;
             while (true)
             {
                 statuses = FileStorageService.GetTasksStatuses();

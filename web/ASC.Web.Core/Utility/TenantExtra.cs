@@ -78,7 +78,7 @@ namespace ASC.Web.Studio.Utility
             SettingsManager = settingsManager;
         }
 
-        public bool EnableTarrifSettings
+        public bool EnableTariffSettings
         {
             get
             {
@@ -225,7 +225,7 @@ namespace ASC.Web.Studio.Utility
         public bool IsNotPaid()
         {
             Tariff tariff;
-            return EnableTarrifSettings
+            return EnableTariffSettings
                    && ((tariff = GetCurrentTariff()).State >= TariffState.NotPaid
                        || Enterprise && !EnterprisePaid && tariff.LicenseDate == DateTime.MaxValue);
         }

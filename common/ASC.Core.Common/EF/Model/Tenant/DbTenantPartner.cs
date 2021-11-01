@@ -35,19 +35,19 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("affiliate_id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Campaign)
                     .HasColumnName("campaign")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PartnerId)
                     .HasColumnName("partner_id")
                     .HasColumnType("varchar(36)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
         }

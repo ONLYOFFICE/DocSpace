@@ -179,9 +179,11 @@ const ProfileViewLoader = ({ id, className, style, isEdit, ...rest }) => {
         />
       </StyledBox1>
       <RectangleLoader
+        className="rectangle-loader"
         title={title}
         width="100%"
         height="80"
+        style={{ maxWidth: "420px" }}
         borderRadius={borderRadius}
         backgroundColor={backgroundColor}
         foregroundColor={foregroundColor}

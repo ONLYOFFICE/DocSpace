@@ -9,6 +9,7 @@ import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { deleteSelf } from "@appserver/common/api/people"; //TODO: Move inside UserStore
+import withLoader from "../withLoader";
 
 const ProfileRemoveContainer = styled.div`
   display: flex;
@@ -121,4 +122,8 @@ const ProfileRemoveForm = (props) => (
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   logout: auth.logout,
-}))(withRouter(withTranslation("Confirm")(observer(ProfileRemoveForm))));
+}))(
+  withRouter(
+    withTranslation("Confirm")(withLoader(observer(ProfileRemoveForm)))
+  )
+);

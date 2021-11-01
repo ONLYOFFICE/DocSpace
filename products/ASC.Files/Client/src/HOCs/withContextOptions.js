@@ -1,20 +1,25 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import copy from "copy-to-clipboard";
-
 import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
-import toastr from "studio/toastr";
-
+import toastr from "@appserver/components/toast/toastr";
 import config from "../../package.json";
+import saveAs from "file-saver";
 
 export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
-    onOpenLocation = () => {
+    onOpenFolder = () => {
       const { item, openLocationAction } = this.props;
       const { id, folderId, fileExst } = item;
-
       const locationId = !fileExst ? id : folderId;
+      openLocationAction(locationId, !fileExst);
+    };
+
+    onOpenLocation = () => {
+      const { item, openLocationAction } = this.props;
+      const { parentId, folderId, fileExst } = item;
+      const locationId = !fileExst ? parentId : folderId;
       openLocationAction(locationId, !fileExst);
     };
 
@@ -94,22 +99,90 @@ export default function withContextOptions(WrappedComponent) {
           : `${window.location.origin + homepage}/filter?folder=${id}`
       );
 
-      toastr.success(t("LinkCopySuccess"));
+      toastr.success(t("Translations:LinkCopySuccess"));
     };
 
     onClickLinkEdit = () => {
-      const { item, openDocEditor } = this.props;
-      const { id, providerKey } = item;
-      openDocEditor(id, providerKey);
+      const {
+        item,
+        canConvert,
+        setConvertItem,
+        setConvertDialogVisible,
+      } = this.props;
+
+      if (canConvert) {
+        setConvertItem(item);
+        setConvertDialogVisible(true);
+      } else {
+        this.gotoDocEditor(false);
+      }
+    };
+
+    onPreviewClick = () => {
+      this.gotoDocEditor(true);
+    };
+
+    gotoDocEditor = (preview = false) => {
+      const { item, openDocEditor, isDesktop } = this.props;
+      const { id, providerKey, fileExst } = item;
+
+      const urlFormation = preview
+        ? combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            `/doceditor?fileId=${id}&action=view`
+          )
+        : null;
+
+      let tab =
+        !isDesktop && fileExst
+          ? window.open(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                config.homepage,
+                "/doceditor"
+              ),
+              "_blank"
+            )
+          : null;
+
+      openDocEditor(id, providerKey, tab, urlFormation);
+    };
+
+    isPwa = () => {
+      return ["fullscreen", "standalone", "minimal-ui"].some(
+        (displayMode) =>
+          window.matchMedia("(display-mode: " + displayMode + ")").matches
+      );
     };
 
     onClickDownload = () => {
       const { item, downloadAction, t } = this.props;
       const { fileExst, contentLength, viewUrl } = item;
       const isFile = !!fileExst && contentLength;
+
+      if (this.isPwa()) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", viewUrl);
+        xhr.responseType = "blob";
+
+        xhr.onload = () => {
+          saveAs(xhr.response, item.title);
+        };
+
+        xhr.onerror = () => {
+          console.error("download failed", viewUrl);
+        };
+
+        xhr.send();
+        return;
+      }
+
       isFile
-        ? window.open(viewUrl, "_blank")
-        : downloadAction(t("ArchivingData")).catch((err) => toastr.error(err));
+        ? window.open(viewUrl, "_self")
+        : downloadAction(t("Translations:ArchivingData")).catch((err) =>
+            toastr.error(err)
+          );
     };
 
     onClickDownloadAs = () => {
@@ -119,7 +192,7 @@ export default function withContextOptions(WrappedComponent) {
 
     onDuplicate = () => {
       const { duplicateAction, t, item } = this.props;
-      duplicateAction(item, t("CopyOperation")).catch((err) =>
+      duplicateAction(item, t("Translations:CopyOperation")).catch((err) =>
         toastr.error(err)
       );
     };
@@ -151,49 +224,58 @@ export default function withContextOptions(WrappedComponent) {
         item,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        confirmDelete,
-        setDeleteDialogVisible,
         t,
-        deleteFileAction,
-        deleteFolderAction,
-        isThirdPartyFolder,
+        deleteItemAction,
       } = this.props;
-      const { id, title, fileExst, contentLength, folderId, parentId } = item;
+      const { id, title, providerKey, rootFolderId, isFolder } = item;
 
-      if (isThirdPartyFolder) {
+      const isRootThirdPartyFolder = providerKey && id === rootFolderId;
+
+      if (isRootThirdPartyFolder) {
         const splitItem = id.split("-");
         setRemoveItem({ id: splitItem[splitItem.length - 1], title });
         setDeleteThirdPartyDialogVisible(true);
         return;
       }
 
-      if (confirmDelete) {
-        setDeleteDialogVisible(true);
-      } else {
-        const translations = {
-          deleteOperation: t("DeleteOperation"),
-        };
+      const translations = {
+        deleteOperation: t("Translations:DeleteOperation"),
+        successRemoveFile: t("FileRemoved"),
+        successRemoveFolder: t("FolderRemoved"),
+      };
 
-        fileExst || contentLength
-          ? deleteFileAction(id, folderId, translations)
-              .then(() => toastr.success(t("FileRemoved")))
-              .catch((err) => toastr.error(err))
-          : deleteFolderAction(id, parentId, translations)
-              .then(() => toastr.success(t("FolderRemoved")))
-              .catch((err) => toastr.error(err));
-      }
+      deleteItemAction(id, translations, !isFolder, providerKey);
     };
 
     onClickShare = () => {
-      const { onSelectItem, setSharingPanelVisible, item } = this.props;
-      onSelectItem(item);
-      setSharingPanelVisible(true);
+      const { setSharingPanelVisible } = this.props;
+      setTimeout(() => {
+        setSharingPanelVisible(true);
+      }, 10); //TODO: remove delay after fix context menu callback
+    };
+
+    onClickMarkRead = () => {
+      const { markAsRead, item } = this.props;
+      item.fileExst
+        ? markAsRead([], [item.id], item)
+        : markAsRead([item.id], [], item);
+    };
+
+    onClickUnsubscribe = () => {
+      const { setDeleteDialogVisible, setUnsubscribe } = this.props;
+
+      setUnsubscribe(true);
+      setDeleteDialogVisible(true);
     };
 
     getFilesContextOptions = () => {
-      const { item, t, isThirdPartyFolder } = this.props;
-      const { access, contextOptions } = item;
-      const isSharable = access !== 1 && access !== 0;
+      const { item, t } = this.props;
+      const { contextOptions } = item;
+      const isRootThirdPartyFolder =
+        item.providerKey && item.id === item.rootFolderId;
+
+      const isShareable = item.canShare;
+
       return contextOptions.map((option) => {
         switch (option) {
           case "open":
@@ -201,7 +283,7 @@ export default function withContextOptions(WrappedComponent) {
               key: option,
               label: t("Open"),
               icon: "images/catalog.folder.react.svg",
-              onClick: this.onOpenLocation,
+              onClick: this.onOpenFolder,
               disabled: false,
             };
           case "show-version-history":
@@ -255,9 +337,9 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("SharingSettings"),
-              icon: "images/catalog.shared.react.svg",
+              icon: "/static/images/catalog.share.react.svg",
               onClick: this.onClickShare,
-              disabled: isSharable,
+              disabled: !isShareable,
             };
           case "send-by-email":
             return {
@@ -269,8 +351,8 @@ export default function withContextOptions(WrappedComponent) {
           case "owner-change":
             return {
               key: option,
-              label: t("ChangeOwner"),
-              icon: "images/catalog.user.react.svg",
+              label: t("Translations:OwnerChange"),
+              icon: "/static/images/catalog.user.react.svg",
               onClick: this.onOwnerChange,
               disabled: false,
             };
@@ -285,7 +367,7 @@ export default function withContextOptions(WrappedComponent) {
           case "edit":
             return {
               key: option,
-              label: t("Edit"),
+              label: t("Common:EditButton"),
               icon: "/static/images/access.edit.react.svg",
               onClick: this.onClickLinkEdit,
               disabled: false,
@@ -294,14 +376,14 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("Preview"),
-              icon: "EyeIcon",
-              onClick: this.onClickLinkEdit,
-              disabled: true,
+              icon: "/static/images/eye.react.svg",
+              onClick: this.onPreviewClick,
+              disabled: false,
             };
           case "view":
             return {
               key: option,
-              label: t("View"),
+              label: t("Common:View"),
               icon: "/static/images/eye.react.svg",
               onClick: this.onMediaFileClick,
               disabled: false,
@@ -309,7 +391,7 @@ export default function withContextOptions(WrappedComponent) {
           case "download":
             return {
               key: option,
-              label: t("Download"),
+              label: t("Common:Download"),
               icon: "images/download.react.svg",
               onClick: this.onClickDownload,
               disabled: false,
@@ -317,7 +399,7 @@ export default function withContextOptions(WrappedComponent) {
           case "download-as":
             return {
               key: option,
-              label: t("DownloadAs"),
+              label: t("Translations:DownloadAs"),
               icon: "images/download-as.react.svg",
               onClick: this.onClickDownloadAs,
               disabled: false,
@@ -333,7 +415,7 @@ export default function withContextOptions(WrappedComponent) {
           case "restore":
             return {
               key: option,
-              label: t("Restore"),
+              label: t("Translations:Restore"),
               icon: "images/move.react.svg",
               onClick: this.onMoveAction,
               disabled: false,
@@ -341,7 +423,7 @@ export default function withContextOptions(WrappedComponent) {
           case "copy-to":
             return {
               key: option,
-              label: t("Copy"),
+              label: t("Translations:Copy"),
               icon: "/static/images/copy.react.svg",
               onClick: this.onCopyAction,
               disabled: false,
@@ -365,7 +447,7 @@ export default function withContextOptions(WrappedComponent) {
           case "change-thirdparty-info":
             return {
               key: option,
-              label: t("ThirdPartyInfo"),
+              label: t("Translations:ThirdPartyInfo"),
               icon: "/static/images/access.edit.react.svg",
               onClick: this.onChangeThirdPartyInfo,
               disabled: false,
@@ -373,7 +455,9 @@ export default function withContextOptions(WrappedComponent) {
           case "delete":
             return {
               key: option,
-              label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
+              label: isRootThirdPartyFolder
+                ? t("Translations:DeleteThirdParty")
+                : t("Common:Delete"),
               icon: "/static/images/catalog.trash.react.svg",
               onClick: this.onClickDelete,
               disabled: false,
@@ -387,6 +471,22 @@ export default function withContextOptions(WrappedComponent) {
               disabled: false,
               "data-action": "remove",
               action: "remove",
+            };
+          case "unsubscribe":
+            return {
+              key: option,
+              label: t("RemoveFromList"),
+              icon: "images/remove.svg",
+              onClick: this.onClickUnsubscribe,
+              disabled: false,
+            };
+          case "mark-read":
+            return {
+              key: option,
+              label: t("MarkRead"),
+              icon: "images/tick.rounded.svg",
+              onClick: this.onClickMarkRead,
+              disabled: false,
             };
           default:
             break;
@@ -426,8 +526,6 @@ export default function withContextOptions(WrappedComponent) {
         auth,
         versionHistoryStore,
         mediaViewerDataStore,
-        settingsStore,
-        selectedFolderStore,
         dialogsStore,
         treeFoldersStore,
       },
@@ -442,9 +540,10 @@ export default function withContextOptions(WrappedComponent) {
         downloadAction,
         duplicateAction,
         setThirdpartyInfo,
-        deleteFileAction,
-        deleteFolderAction,
         onSelectItem,
+        deleteItemAction,
+        markAsRead,
+        unsubscribeAction,
       } = filesActionsStore;
       const {
         setChangeOwnerPanelVisible,
@@ -453,17 +552,17 @@ export default function withContextOptions(WrappedComponent) {
         setDownloadDialogVisible,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        setDeleteDialogVisible,
         setSharingPanelVisible,
+        setDeleteDialogVisible,
+        setUnsubscribe,
       } = dialogsStore;
-      const { isTabletView } = auth.settingsStore;
+      const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
-      const { isRootFolder } = selectedFolderStore;
-      const { isRecycleBinFolder } = treeFoldersStore;
 
-      const isThirdPartyFolder = item.providerKey && isRootFolder;
+      const { isRecycleBinFolder, isShare } = treeFoldersStore;
+      const isShareFolder = isShare(item.rootFolderType);
 
       return {
         openLocationAction,
@@ -486,17 +585,19 @@ export default function withContextOptions(WrappedComponent) {
         setMediaViewerData,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        confirmDelete: settingsStore.confirmDelete,
-        setDeleteDialogVisible,
-        deleteFileAction,
-        deleteFolderAction,
-        isThirdPartyFolder,
+        deleteItemAction,
         onSelectItem,
         setSharingPanelVisible,
         actionType: type,
         actionId: id,
         actionExtension: extension,
         isTrashFolder: isRecycleBinFolder,
+        isShareFolder,
+        markAsRead,
+        unsubscribeAction,
+        setDeleteDialogVisible,
+        setUnsubscribe,
+        isDesktop: isDesktopClient,
       };
     }
   )(observer(WithContextOptions));

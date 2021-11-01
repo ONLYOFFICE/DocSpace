@@ -5,6 +5,7 @@ using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -36,13 +37,9 @@ namespace ASC.Files.Core.EF
             get => Tables.Folder;
         }
 
-        [Ignore]
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            get
-            {
-                return (a) => new[] { Title };
-            }
+            return (a) => new[] { Title };
         }
     }
     public static class DbFolderExtension
@@ -75,7 +72,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("create_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
@@ -92,7 +89,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("modified_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ModifiedOn)
                     .HasColumnName("modified_on")
@@ -107,7 +104,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("title")
                     .HasColumnType("varchar(400)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddDbFolder(this ModelBuilder modelBuilder)

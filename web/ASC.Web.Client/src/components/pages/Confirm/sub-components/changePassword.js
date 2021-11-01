@@ -7,12 +7,13 @@ import styled from "styled-components";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import PasswordInput from "@appserver/components/password-input";
-import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import Heading from "@appserver/components/heading";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
+import { PasswordLimitSpecialCharacters } from "@appserver/common/constants";
 import { inject, observer } from "mobx-react";
+import withLoader from "../withLoader";
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
@@ -109,15 +110,6 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { defaultPage, getSettings, getPortalPasswordSettings } = this.props;
-
-    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
-
-    axios.all(requests).catch((error) => {
-      toastr.error(this.props.t(`${error}`));
-      tryRedirectTo(defaultPage);
-    });
-
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
   }
@@ -133,9 +125,7 @@ class Form extends React.PureComponent {
     const { settings, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
-    return !settings ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
+    return (
       <BodyStyle>
         <div className="password-header">
           <img
@@ -162,18 +152,18 @@ class Form extends React.PureComponent {
           isDisabled={isLoading}
           hasError={passwordEmpty}
           onValidateInput={this.validatePassword}
-          generatorSpecial="!@#$%^&*"
+          generatorSpecial={PasswordLimitSpecialCharacters}
           tabIndex={1}
           value={password}
           onChange={this.onChange}
           emailInputName="E-mail"
           passwordSettings={settings}
           tooltipPasswordTitle="Password must contain:"
-          tooltipPasswordLength={`${t("ErrorPasswordLength", {
-            fromNumber: settings.minLength,
+          tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+            fromNumber: settings ? settings.minLength : 8,
             toNumber: 30,
           })}:`}
-          placeholder={t("PasswordCustomMode")}
+          placeholder={t("Common:Password")}
           maxLength={30}
           onKeyDown={this.onKeyPress}
           isAutoFocussed={true}
@@ -186,7 +176,7 @@ class Form extends React.PureComponent {
           size="big"
           tabIndex={2}
           label={
-            isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
+            isLoading ? t("Common:LoadingProcessing") : t("Common:OKButton")
           }
           isDisabled={isLoading}
           isLoading={isLoading}
@@ -238,4 +228,10 @@ export default inject(({ auth, setup }) => {
     getPortalPasswordSettings,
     changePassword,
   };
-})(withRouter(withTranslation("Confirm")(observer(ChangePasswordForm))));
+})(
+  withRouter(
+    withTranslation(["Confirm", "Common"])(
+      withLoader(observer(ChangePasswordForm))
+    )
+  )
+);

@@ -70,7 +70,7 @@ namespace ASC.Security.Cryptography
             }
             if (!TimeSpan.TryParse(configuration["auth:validinterval"], out var authValidInterval))
             {
-                validInterval = TimeSpan.FromDays(7);
+                authValidInterval = TimeSpan.FromHours(1);
             }
 
             ValidEmailKeyInterval = validInterval;

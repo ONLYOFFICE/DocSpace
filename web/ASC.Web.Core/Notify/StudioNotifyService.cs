@@ -205,8 +205,8 @@ namespace ASC.Web.Studio.Core.Notify
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
 
             var action = CoreBaseSettings.Personal
-                             ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeEmailChange : Actions.PersonalEmailChange)
-                             : Actions.EmailChange;
+                             ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeEmailChangeV115 : Actions.PersonalEmailChangeV115)
+                             : Actions.EmailChangeV115;
 
             client.SendNoticeToAsync(
                         action,
@@ -373,7 +373,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
             else
             {
-                notifyAction = Actions.SaasUserWelcomeV10;
+                notifyAction = Actions.SaasUserWelcomeV115;
             }
 
             string greenButtonText() => TenantExtra.Enterprise
@@ -411,7 +411,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
             else
             {
-                notifyAction = Actions.SaasGuestWelcomeV10;
+                notifyAction = Actions.SaasGuestWelcomeV115;
             }
 
             string greenButtonText() => TenantExtra.Enterprise
@@ -449,7 +449,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
             else
             {
-                notifyAction = Actions.SaasUserActivationV10;
+                notifyAction = Actions.SaasUserActivationV115;
             }
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -487,7 +487,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
             else
             {
-                notifyAction = Actions.SaasGuestActivationV10;
+                notifyAction = Actions.SaasGuestActivationV115;
             }
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -636,19 +636,8 @@ namespace ASC.Web.Studio.Core.Notify
             }
             else
             {
-                notifyAction = Actions.SaasAdminWelcomeV10;
-
-                tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
-
-                tagValues.Add(TagValues.TableTop());
-                tagValues.Add(TagValues.TableItem(1, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-regional-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_regional, null, null));
-                tagValues.Add(TagValues.TableItem(2, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-brand-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_brand, null, null));
-                tagValues.Add(TagValues.TableItem(3, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-customize-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_customize, null, null));
-                tagValues.Add(TagValues.TableItem(4, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-security-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_security, null, null));
-                tagValues.Add(TagValues.TableItem(5, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-usertrack-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_usertrack, null, null));
-                tagValues.Add(TagValues.TableItem(6, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-backup-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_backup, null, null));
-                tagValues.Add(TagValues.TableItem(7, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-telephony-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_telephony, null, null));
-                tagValues.Add(TagValues.TableBottom());
+                notifyAction = Actions.SaasAdminWelcomeV115;
+                //tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
 
                 tagValues.Add(new TagValue(CommonTags.Footer, "common"));
             }
@@ -699,7 +688,7 @@ namespace ASC.Web.Studio.Core.Notify
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
             client.SendNoticeToAsync(
-                        Actions.PortalDeleteSuccessV10,
+                        Actions.PortalDeleteSuccessV115,
                         new IRecipient[] { owner },
                         new[] { EMailSenderName },
                         TagValues.GreenButton(greenButtonText, url),
@@ -759,7 +748,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 else
                 {
-                    notifyAction = Actions.SaasAdminActivationV10;
+                    notifyAction = Actions.SaasAdminActivationV115;
                 }
 
                 var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(u.Email, ConfirmType.EmailActivation);
@@ -804,6 +793,19 @@ namespace ASC.Web.Studio.Core.Notify
                 StudioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmUrl),
+                new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
+                new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
+        }
+
+        public void SendAlreadyExist(string email)
+        {
+            var userInfo = UserManager.GetUserByEmail(email);
+            if (!UserManager.UserExists(userInfo)) return;
+
+            client.SendNoticeToAsync(
+                CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
+                StudioNotifyHelper.RecipientFromEmail(email, false),
+                new[] { EMailSenderName },
                 new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
         }

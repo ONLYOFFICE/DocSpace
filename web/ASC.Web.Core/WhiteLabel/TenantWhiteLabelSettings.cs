@@ -207,7 +207,7 @@ namespace ASC.Web.Core.WhiteLabel
         private WhiteLabelHelper WhiteLabelHelper { get; }
         private TenantManager TenantManager { get; }
         private SettingsManager SettingsManager { get; }
-
+        public IServiceProvider ServiceProvider { get; }
         private ILog Log { get; set; }
 
         public TenantWhiteLabelSettingsHelper(
@@ -217,6 +217,7 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper whiteLabelHelper,
             TenantManager tenantManager,
             SettingsManager settingsManager,
+            IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             WebImageSupplier = webImageSupplier;
@@ -225,10 +226,30 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper = whiteLabelHelper;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
+            ServiceProvider = serviceProvider;
             Log = option.CurrentValue;
         }
 
         #region Restore default
+
+        public bool IsDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings)
+        {
+            var defaultSettings = tenantWhiteLabelSettings.GetDefault(ServiceProvider) as TenantWhiteLabelSettings;
+
+            if (defaultSettings == null) return false;
+
+            return tenantWhiteLabelSettings.LogoLightSmallExt == defaultSettings.LogoLightSmallExt &&
+                    tenantWhiteLabelSettings.LogoDarkExt == defaultSettings.LogoDarkExt &&
+                    tenantWhiteLabelSettings.LogoFaviconExt == defaultSettings.LogoFaviconExt &&
+                    tenantWhiteLabelSettings.LogoDocsEditorExt == defaultSettings.LogoDocsEditorExt &&
+
+                    tenantWhiteLabelSettings.IsDefaultLogoLightSmall == defaultSettings.IsDefaultLogoLightSmall &&
+                    tenantWhiteLabelSettings.IsDefaultLogoDark == defaultSettings.IsDefaultLogoDark &&
+                    tenantWhiteLabelSettings.IsDefaultLogoFavicon == defaultSettings.IsDefaultLogoFavicon &&
+                    tenantWhiteLabelSettings.IsDefaultLogoDocsEditor == defaultSettings.IsDefaultLogoDocsEditor &&
+
+                    tenantWhiteLabelSettings.LogoText == defaultSettings.LogoText;
+        }
 
         public void RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantLogoManager tenantLogoManager, int tenantId, IDataStore storage = null)
         {
@@ -408,10 +429,10 @@ namespace ASC.Web.Core.WhiteLabel
 
             return type switch
             {
-                WhiteLabelLogoTypeEnum.LightSmall => general ? WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/light_small_general.svg") : WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/light_small.svg"),
-                WhiteLabelLogoTypeEnum.Dark => general ? WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/dark_general.png") : WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/dark.png"),
-                WhiteLabelLogoTypeEnum.DocsEditor => general ? WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/editor_logo_general.png") : WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/editor_logo.png"),
-                WhiteLabelLogoTypeEnum.Favicon => general ? WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/favicon_general.ico") : WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/favicon.ico"),
+                WhiteLabelLogoTypeEnum.LightSmall => general ? WebImageSupplier.GetAbsoluteWebPath("logo/light_small_general.svg") : WebImageSupplier.GetAbsoluteWebPath("logo/light_small.svg"),
+                WhiteLabelLogoTypeEnum.Dark => general ? WebImageSupplier.GetAbsoluteWebPath("logo/dark_general.png") : WebImageSupplier.GetAbsoluteWebPath("logo/dark.png"),
+                WhiteLabelLogoTypeEnum.DocsEditor => general ? WebImageSupplier.GetAbsoluteWebPath("logo/editor_logo_general.png") : WebImageSupplier.GetAbsoluteWebPath("logo/editor_logo.png"),
+                WhiteLabelLogoTypeEnum.Favicon => general ? WebImageSupplier.GetAbsoluteWebPath("logo/favicon_general.ico") : WebImageSupplier.GetAbsoluteWebPath("logo/favicon.ico"),
                 _ => "",
             };
         }

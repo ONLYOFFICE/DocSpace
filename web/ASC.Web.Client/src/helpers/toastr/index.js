@@ -1,14 +1,10 @@
 import toastr from "@appserver/components/toast/toastr";
 import i18n from "./i18n";
 
-const getTitleTranslation = (title) => {
-  return i18n.t(title);
-};
-
 function success(data, title, timeout, withCross, centerPosition) {
   return toastr.success(
     data,
-    title ? title : getTitleTranslation("Done"),
+    title ? title : i18n.t("Done"),
     timeout,
     withCross,
     centerPosition
@@ -18,7 +14,7 @@ function success(data, title, timeout, withCross, centerPosition) {
 function error(data, title, timeout, withCross, centerPosition) {
   return toastr.error(
     data,
-    title ? title : getTitleTranslation("Warning"),
+    title ? title : i18n.t("Common:Warning"),
     timeout,
     withCross,
     centerPosition
@@ -28,7 +24,7 @@ function error(data, title, timeout, withCross, centerPosition) {
 function warning(data, title, timeout, withCross, centerPosition) {
   return toastr.warning(
     data,
-    title ? title : getTitleTranslation("Alert"),
+    title ? title : i18n.t("Alert"),
     timeout,
     withCross,
     centerPosition
@@ -38,7 +34,7 @@ function warning(data, title, timeout, withCross, centerPosition) {
 function info(data, title, timeout, withCross, centerPosition) {
   return toastr.info(
     data,
-    title ? title : getTitleTranslation("Info"),
+    title ? title : i18n.t("Info"),
     timeout,
     withCross,
     centerPosition

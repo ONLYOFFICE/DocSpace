@@ -36,14 +36,14 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("url")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Version)
                     .IsRequired()
                     .HasColumnName("version")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Visible).HasColumnName("visible");
             });

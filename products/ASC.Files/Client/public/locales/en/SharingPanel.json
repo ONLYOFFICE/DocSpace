@@ -1,35 +1,23 @@
 {
-  "Owner": "Owner",
-  "SharingSettingsTitle": "Sharing settings",
-  "LinkText": "Add users",
   "AddGroupsForSharingButton": "Add groups",
-  "AddButton": "Save",
-  "AccessRightsFullAccess": "Full access",
   "AddShareMessage": "Add message",
-  "LinkCopySuccess": "Link has been copied to the clipboard",
-
-  "Notify users": "Notify users",
+  "Comment": "Comment",
   "CopyExternalLink": "Copy external link",
   "CopyInternalLink": "Copy internal link",
-  "ShareVia": "Share via",
-  "Embedding": "Embedding",
-  "ExternalLink": "External link",
-  "InternalLink": "Internal link",
-
-  "EncryptedFileSaving": "Saving encrypted file",
-  "EncryptedFileSharing": "File <strong>{{title}}</strong> successfully shared",
-
-  "FullAccess": "Full access",
-  "ReadOnly": "Read only",
-  "Review": "Review",
-  "Comment": "Comment",
-  "FormFilling": "Form filling",
-  "DenyAccess": "Deny access",
   "CustomFilter": "Custom filter",
-
-  "ShareEveryone": "Everyone",
-  "ShareEmailSubject": "You have been granted access to the {{itemName}} document",
+  "DenyAccess": "Deny access",
+  "Embedding": "Embedding",
+  "EncryptedFileSharing": "File <strong>{{title}}</strong> successfully shared",
+  "ExternalLink": "External link",
+  "FormFilling": "Form filling",
+  "InternalLink": "Internal link",
+  "LinkText": "Add users",
+  "Notify users": "Notify users",
+  "Owner": "Owner",
+  "ReadOnly": "Read only",
   "ShareEmailBody": "You have been granted access to the {{itemName}} document. Click the link below to open the document right now: {{shareLink}}",
-
-  "LoadingLabel": "Loading... Please wait..."
+  "ShareEmailSubject": "You have been granted access to the {{itemName}} document",
+  "ShareEveryone": "Everyone",
+  "ShareVia": "Share via",
+  "SharingSettingsTitle": "Sharing settings"
 }

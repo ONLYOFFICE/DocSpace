@@ -28,10 +28,11 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
-using ASC.Common.Threading.Progress;
+using ASC.Common.Threading;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
@@ -43,24 +44,27 @@ namespace ASC.Data.Reassigns
             return httpRequest?.Headers;
         }
     }
-    public class QueueWorker<T> where T : class, IProgressItem
+
+    public class QueueWorker<T> where T : DistributedTaskProgress
     {
-        protected readonly ProgressQueue<T> Queue;
+        protected readonly DistributedTaskQueue Queue;
 
         protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IServiceProvider ServiceProvider { get; }
 
+        public object SynchRoot = new object();
+
         public QueueWorker(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
-            ProgressQueueOptionsManager<T> optionsQueue)
+            DistributedTaskQueueOptionsManager options)
         {
             HttpContextAccessor = httpContextAccessor;
             ServiceProvider = serviceProvider;
-            Queue = optionsQueue.Value;
+            Queue = options.Get<T>();
         }
 
-        public string GetProgressItemId(int tenantId, Guid userId)
+        public static string GetProgressItemId(int tenantId, Guid userId)
         {
             return string.Format("{0}_{1}_{2}", tenantId, userId, typeof(T).Name);
         }
@@ -68,7 +72,7 @@ namespace ASC.Data.Reassigns
         public T GetProgressItemStatus(int tenantId, Guid userId)
         {
             var id = GetProgressItemId(tenantId, userId);
-            return Queue.GetStatus(id);
+            return Queue.GetTask<T>(id);
         }
 
         public void Terminate(int tenantId, Guid userId)
@@ -76,29 +80,28 @@ namespace ASC.Data.Reassigns
             var item = GetProgressItemStatus(tenantId, userId);
 
             if (item != null)
-                Queue.Remove(item);
+            {
+                Queue.CancelTask(item.Id);
+            }
         }
 
-        protected IProgressItem Start(int tenantId, Guid userId, Func<T> constructor)
+        protected DistributedTaskProgress Start(int tenantId, Guid userId, Func<T> constructor)
         {
-            lock (Queue.SynchRoot)
+            lock (SynchRoot)
             {
                 var task = GetProgressItemStatus(tenantId, userId);
 
                 if (task != null && task.IsCompleted)
                 {
-                    Queue.Remove(task);
+                    Queue.RemoveTask(task.Id);
                     task = null;
                 }
 
                 if (task == null)
                 {
                     task = constructor();
-                    Queue.Add(task);
+                    Queue.QueueTask(task);
                 }
-
-                if (!Queue.IsStarted)
-                    Queue.Start(x => x.RunJob());
 
                 return task;
             }
@@ -108,20 +111,22 @@ namespace ASC.Data.Reassigns
     [Scope(Additional = typeof(ReassignProgressItemExtension))]
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
-        private QueueWorkerRemove QueueWorkerRemove { get; }
         public QueueWorkerReassign(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
-            QueueWorkerRemove queueWorkerRemove,
-            ProgressQueueOptionsManager<ReassignProgressItem> optionsQueue) :
-            base(httpContextAccessor, serviceProvider, optionsQueue)
+            DistributedTaskQueueOptionsManager options) :
+            base(httpContextAccessor, serviceProvider, options)
         {
-            QueueWorkerRemove = queueWorkerRemove;
         }
 
         public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
-            return Start(tenantId, fromUserId, () => new ReassignProgressItem(ServiceProvider, HttpContextAccessor.HttpContext, this, QueueWorkerRemove, tenantId, fromUserId, toUserId, currentUserId, deleteProfile)) as ReassignProgressItem;
+            return Start(tenantId, fromUserId, () =>
+            {
+                var result = ServiceProvider.GetService<ReassignProgressItem>();
+                result.Init(tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
+                return result;
+            }) as ReassignProgressItem;
         }
     }
 
@@ -131,14 +136,19 @@ namespace ASC.Data.Reassigns
         public QueueWorkerRemove(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
-            ProgressQueueOptionsManager<RemoveProgressItem> optionsQueue) :
-            base(httpContextAccessor, serviceProvider, optionsQueue)
+            DistributedTaskQueueOptionsManager options) :
+            base(httpContextAccessor, serviceProvider, options)
         {
         }
 
         public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
-            return Start(tenantId, user.ID, () => new RemoveProgressItem(ServiceProvider, HttpContextAccessor.HttpContext, this, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
+            return Start(tenantId, user.ID, () =>
+            {
+                var result = ServiceProvider.GetService<RemoveProgressItem>();
+                result.Init(tenantId, user, currentUserId, notify);
+                return result;
+            }) as RemoveProgressItem;
         }
     }
 }

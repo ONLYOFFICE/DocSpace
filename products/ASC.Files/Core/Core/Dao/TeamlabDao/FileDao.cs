@@ -30,14 +30,17 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Service;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
@@ -60,17 +63,17 @@ namespace ASC.Files.Core.Data
     [Scope]
     internal class FileDao : AbstractDao, IFileDao<int>
     {
-        public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
-
         private static readonly object syncRoot = new object();
         private FactoryIndexerFile FactoryIndexer { get; }
         private GlobalStore GlobalStore { get; }
         private GlobalSpace GlobalSpace { get; }
         private GlobalFolder GlobalFolder { get; }
+        private Global Global { get; }
         private IDaoFactory DaoFactory { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ProviderFolderDao ProviderFolderDao { get; }
         private CrossDao CrossDao { get; }
+        private Settings Settings { get; }
 
         public FileDao(
             FactoryIndexerFile factoryIndexer,
@@ -90,10 +93,12 @@ namespace ASC.Files.Core.Data
             GlobalStore globalStore,
             GlobalSpace globalSpace,
             GlobalFolder globalFolder,
+            Global global,
             IDaoFactory daoFactory,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ProviderFolderDao providerFolderDao,
-            CrossDao crossDao)
+            CrossDao crossDao,
+            ConfigurationExtension configurationExtension)
             : base(
                   dbContextManager,
                   userManager,
@@ -113,10 +118,12 @@ namespace ASC.Files.Core.Data
             GlobalStore = globalStore;
             GlobalSpace = globalSpace;
             GlobalFolder = globalFolder;
+            Global = global;
             DaoFactory = daoFactory;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ProviderFolderDao = providerFolderDao;
             CrossDao = crossDao;
+            Settings = Settings.GetInstance(configurationExtension);
         }
 
         public void InvalidateCache(int fileId)
@@ -128,7 +135,6 @@ namespace ASC.Files.Core.Data
             var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
             return ToFile(
                     FromQueryWithShared(query)
-                    .Take(1)
                     .SingleOrDefault());
         }
 
@@ -136,7 +142,6 @@ namespace ASC.Files.Core.Data
         {
             var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
             return ToFile(FromQueryWithShared(query)
-                        .Take(1)
                         .SingleOrDefault());
         }
 
@@ -163,7 +168,7 @@ namespace ASC.Files.Core.Data
 
             query = query.OrderByDescending(r => r.Version);
 
-            return ToFile(FromQueryWithShared(query).Take(1).SingleOrDefault());
+            return ToFile(FromQueryWithShared(query).FirstOrDefault());
         }
 
         public List<File<int>> GetFileHistory(int fileId)
@@ -183,7 +188,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
-        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
         {
             if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
@@ -234,7 +239,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return FromQuery(query).Select(ToFile).ToList();
+            return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).Select(ToFile).ToList();
         }
 
 
@@ -347,8 +352,17 @@ namespace ASC.Files.Core.Data
         {
             return GetFileStream(file, 0);
         }
+        public async Task<Stream> GetFileStreamAsync(File<int> file)
+        {
+            return await GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
+        }
 
         public File<int> SaveFile(File<int> file, Stream fileStream)
+        {
+            return SaveFile(file, fileStream, true);
+        }
+
+        public File<int> SaveFile(File<int> file, Stream fileStream, bool checkQuota = true)
         {
             if (file == null)
             {
@@ -356,12 +370,12 @@ namespace ASC.Files.Core.Data
             }
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
-            if (maxChunkedUploadSize < file.ContentLength)
+            if (checkQuota && maxChunkedUploadSize < file.ContentLength)
             {
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
 
-            if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+            if (checkQuota && CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
                 if (personalMaxSpace - GlobalSpace.GetUserUsedSpace(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
@@ -422,10 +436,11 @@ namespace ASC.Files.Core.Data
                     Comment = file.Comment,
                     Encrypted = file.Encrypted,
                     Forcesave = file.Forcesave,
+                    Thumb = file.ThumbnailStatus,
                     TenantId = TenantID
                 };
 
-                FilesDbContext.Files.Add(toInsert);
+                FilesDbContext.AddOrUpdate(r => r.Files, toInsert);
                 FilesDbContext.SaveChanges();
 
                 tx.Commit();
@@ -533,7 +548,6 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 toUpdate = FilesDbContext.Files
-                    .Take(1)
                     .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
 
                 toUpdate.Version = file.Version;
@@ -550,6 +564,7 @@ namespace ASC.Files.Core.Data
                 toUpdate.Comment = file.Comment;
                 toUpdate.Encrypted = file.Encrypted;
                 toUpdate.Forcesave = file.Forcesave;
+                toUpdate.Thumb = file.ThumbnailStatus;
 
                 FilesDbContext.SaveChanges();
 
@@ -610,7 +625,6 @@ namespace ASC.Files.Core.Data
                 || file.Version <= 1) return;
 
             var toDelete = Query(FilesDbContext.Files)
-                .Take(1)
                 .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version);
 
             if (toDelete != null)
@@ -620,7 +634,6 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
 
             var toUpdate = Query(FilesDbContext.Files)
-                .Take(1)
                 .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version - 1);
 
             toUpdate.CurrentVersion = true;
@@ -701,8 +714,8 @@ namespace ASC.Files.Core.Data
         {
             return Query(FilesDbContext.Files)
                 .AsNoTracking()
-                .Any(r => r.Title == title && 
-                          r.FolderId == folderId && 
+                .Any(r => r.Title == title &&
+                          r.FolderId == folderId &&
                           r.CurrentVersion);
         }
 
@@ -727,6 +740,8 @@ namespace ASC.Files.Core.Data
 
             List<DbFile> toUpdate;
 
+            var trashId = GlobalFolder.GetFolderTrash<int>(DaoFactory);
+
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
                 var fromFolders = Query(FilesDbContext.Files)
@@ -743,7 +758,7 @@ namespace ASC.Files.Core.Data
                 {
                     f.FolderId = toFolderId;
 
-                    if (GlobalFolder.GetFolderTrash<int>(DaoFactory).Equals(toFolderId))
+                    if (trashId.Equals(toFolderId))
                     {
                         f.ModifiedBy = AuthContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;
@@ -820,6 +835,15 @@ namespace ASC.Files.Core.Data
                     copy = SaveFile(copy, stream);
                 }
 
+                if (file.ThumbnailStatus == Thumbnail.Created)
+                {
+                    using (var thumbnail = GetThumbnail(file))
+                    {
+                        SaveThumbnail(copy, thumbnail);
+                    }
+                    copy.ThumbnailStatus = Thumbnail.Created;
+                }
+
                 return copy;
             }
             return null;
@@ -843,7 +867,6 @@ namespace ASC.Files.Core.Data
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
                 .Where(r => r.CurrentVersion)
-                .Take(1)
                 .FirstOrDefault();
 
             toUpdate.Title = newTitle;
@@ -865,7 +888,6 @@ namespace ASC.Files.Core.Data
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version == fileVersion)
-                .Take(1)
                 .FirstOrDefault();
 
             toUpdate.Comment = comment;
@@ -898,7 +920,6 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version == fileVersion)
                 .Select(r => r.VersionGroup)
-                .Take(1)
                 .FirstOrDefault();
 
             var toUpdate = Query(FilesDbContext.Files)
@@ -960,7 +981,7 @@ namespace ASC.Files.Core.Data
             return ChunkedUploadSessionHolder.CreateUploadSession(file, contentLength);
         }
 
-        public void UploadChunk(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
+        public File<int> UploadChunk(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {
@@ -970,7 +991,7 @@ namespace ASC.Files.Core.Data
                     uploadSession.File = SaveFile(GetFileForCommit(uploadSession), streamToSave);
                 }
 
-                return;
+                return uploadSession.File;
             }
 
             ChunkedUploadSessionHolder.UploadChunk(uploadSession, stream, chunkLength);
@@ -979,6 +1000,8 @@ namespace ASC.Files.Core.Data
             {
                 uploadSession.File = FinalizeUploadSession(uploadSession);
             }
+
+            return uploadSession.File;
         }
 
         private File<int> FinalizeUploadSession(ChunkedUploadSession<int> uploadSession)
@@ -986,7 +1009,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder.FinalizeUploadSession(uploadSession);
 
             var file = GetFileForCommit(uploadSession);
-            SaveFile(file, null);
+            SaveFile(file, null, uploadSession.CheckQuota);
             ChunkedUploadSessionHolder.Move(uploadSession, GetUniqFilePath(file));
 
             return file;
@@ -1007,6 +1030,8 @@ namespace ASC.Files.Core.Data
                 file.ConvertedType = null;
                 file.Comment = FilesCommonResource.CommentUpload;
                 file.Encrypted = uploadSession.Encrypted;
+                file.ThumbnailStatus = Thumbnail.Waiting;
+
                 return file;
             }
             var result = ServiceProvider.GetService<File<int>>();
@@ -1130,6 +1155,11 @@ namespace ASC.Files.Core.Data
             return GlobalStore.GetStore().IsFile(GetUniqFilePath(file));
         }
 
+        public async Task<bool> IsExistOnStorageAsync(File<int> file)
+        {
+            return await GlobalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
+        }
+
         private const string DiffTitle = "diff.zip";
 
         public void SaveEditHistory(File<int> file, string changes, Stream differenceStream)
@@ -1196,8 +1226,8 @@ namespace ASC.Files.Core.Data
         public bool ContainChanges(int fileId, int fileVersion)
         {
             return Query(FilesDbContext.Files)
-                .Any(r => r.Id == fileId && 
-                          r.Version == fileVersion && 
+                .Any(r => r.Id == fileId &&
+                          r.Version == fileVersion &&
                           r.Changes != null);
         }
 
@@ -1229,21 +1259,49 @@ namespace ASC.Files.Core.Data
         {
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
-                .Select(r => r.TenantId)
-                .GroupBy(r => r)
-                .Where(r => r.Any())
+                .GroupBy(r => r.TenantId)
+                .Where(r => r.Count() > 0)
                 .Select(r => r.Key)
                 .ToList();
 
             var q2 = FilesDbContext.Security
                 .Where(r => r.TimeStamp > fromTime)
-                .Select(r => r.TenantId)
-                .GroupBy(r => r)
-                .Where(r => r.Any())
+                .GroupBy(r => r.TenantId)
+                .Where(r => r.Count() > 0)
                 .Select(r => r.Key)
                 .ToList();
 
             return q1.Union(q2);
+        }
+
+        private const string ThumbnailTitle = "thumb";
+
+        public void SaveThumbnail(File<int> file, Stream thumbnail)
+        {
+            if (file == null) throw new ArgumentNullException("file");
+
+            var toUpdate = FilesDbContext.Files
+                .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
+
+            if (toUpdate != null)
+            {
+                toUpdate.Thumb = thumbnail != null ? Thumbnail.Created : file.ThumbnailStatus;
+                FilesDbContext.SaveChanges();
+            }
+
+            if (thumbnail == null) return;
+
+            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
+        }
+
+        public Stream GetThumbnail(File<int> file)
+        {
+            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            var path = GetUniqFilePath(file, thumnailName);
+            var storage = GlobalStore.GetStore();
+            if (!storage.IsFile(string.Empty, path)) throw new FileNotFoundException();
+            return storage.GetReadStream(string.Empty, path);
         }
 
         #endregion
@@ -1384,6 +1442,7 @@ namespace ASC.Files.Core.Data
             file.Comment = r.File.Comment;
             file.Encrypted = r.File.Encrypted;
             file.Forcesave = r.File.Forcesave;
+            file.ThumbnailStatus = r.File.Thumb;
             return file;
         }
 
@@ -1404,7 +1463,7 @@ namespace ASC.Files.Core.Data
 
         internal protected DbFile InitDocument(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanSearchByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {
@@ -1419,15 +1478,53 @@ namespace ASC.Files.Core.Data
             file.Version = dbFile.Version;
             file.ContentLength = dbFile.ContentLength;
 
-            if (!IsExistOnStorage(file) || file.ContentLength > MaxContentLength) return dbFile;
+            if (!IsExistOnStorage(file) || file.ContentLength > Settings.MaxContentLength) return dbFile;
 
             using var stream = GetFileStream(file);
             if (stream == null) return dbFile;
 
-            dbFile.Document = new Document
+            using (var ms = new MemoryStream())
             {
-                Data = Convert.ToBase64String(stream.GetCorrectBuffer())
-            };
+                stream.CopyTo(ms);
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(ms.GetBuffer())
+                };
+            }
+
+            return dbFile;
+        }
+
+        internal protected async Task<DbFile> InitDocumentAsync(DbFile dbFile)
+        {
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
+            {
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
+                };
+                return dbFile;
+            }
+
+            var file = ServiceProvider.GetService<File<int>>();
+            file.ID = dbFile.Id;
+            file.Title = dbFile.Title;
+            file.Version = dbFile.Version;
+            file.ContentLength = dbFile.ContentLength;
+
+            if (!await IsExistOnStorageAsync(file) || file.ContentLength > Settings.MaxContentLength) return dbFile;
+
+            using var stream = await GetFileStreamAsync(file);
+            if (stream == null) return dbFile;
+
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(ms.GetBuffer())
+                };
+            }
 
             return dbFile;
         }

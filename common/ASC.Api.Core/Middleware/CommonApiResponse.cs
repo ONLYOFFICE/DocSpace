@@ -31,10 +31,10 @@ namespace ASC.Api.Core.Middleware
     {
         public CommonApiError Error { get; set; }
 
-        protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error) : base(statusCode)
+        protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message = null) : base(statusCode)
         {
             Status = 1;
-            Error = CommonApiError.FromException(error);
+            Error = CommonApiError.FromException(error, message);
         }
     }
 
@@ -88,11 +88,11 @@ namespace ASC.Api.Core.Middleware
 
         public int Hresult { get; set; }
 
-        public static CommonApiError FromException(Exception exception)
+        public static CommonApiError FromException(Exception exception, string message = null)
         {
             return new CommonApiError()
             {
-                Message = exception.Message,
+                Message = message ?? exception.Message,
                 Type = exception.GetType().ToString(),
                 Stack = exception.StackTrace,
                 Hresult = exception.HResult

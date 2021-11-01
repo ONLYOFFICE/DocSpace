@@ -49,7 +49,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    public abstract class FileOperation
+    public abstract class FileOperation : DistributedTask
     {
         public const string SPLIT_CHAR = ":";
         public const string OWNER = "Owner";
@@ -73,7 +73,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public virtual FileOperationType OperationType { get; }
         public bool HoldResult { get; set; }
 
-        public string Status { get; set; }
+        public string Result { get; set; }
 
         public string Error { get; set; }
 
@@ -101,7 +101,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             TaskInfo.SetProperty(OPERATION_TYPE, OperationType);
             TaskInfo.SetProperty(OWNER, ((IAccount)(principal ?? Thread.CurrentPrincipal).Identity).ID);
             TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : 100);
-            TaskInfo.SetProperty(RESULT, Status);
+            TaskInfo.SetProperty(RESULT, Result);
             TaskInfo.SetProperty(ERROR, Error);
             TaskInfo.SetProperty(PROCESSED, successProcessed);
             TaskInfo.SetProperty(HOLD, HoldResult);
@@ -149,7 +149,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             base.FillDistributedTask();
         }
 
-        public void PublishChanges(DistributedTask task)
+        public virtual void PublishChanges(DistributedTask task)
         {
             var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
             var daoTask = DaoOperation.GetDistributedTask();
@@ -171,11 +171,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (!string.IsNullOrEmpty(status1))
             {
-                Status = status1;
+                Result = status1;
             }
             else if (!string.IsNullOrEmpty(status2))
             {
-                Status = status2;
+                Result = status2;
             }
 
             var finished1 = thirdpartyTask.GetProperty<bool?>(FINISHED);
@@ -372,7 +372,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             successProcessed++;
             if (Folders.Contains(folderId))
             {
-                Status += string.Format("folder_{0}{1}", folderId, SPLIT_CHAR);
+                Result += string.Format("folder_{0}{1}", folderId, SPLIT_CHAR);
                 return true;
             }
             return false;
@@ -383,7 +383,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             successProcessed++;
             if (Files.Contains(fileId))
             {
-                Status += string.Format("file_{0}{1}", fileId, SPLIT_CHAR);
+                Result += string.Format("file_{0}{1}", fileId, SPLIT_CHAR);
                 return true;
             }
             return false;

@@ -59,5 +59,7 @@ export { default as utils } from "./utils";
 export { Icons } from "./icons";
 export { default as SaveCancelButtons } from "./save-cancel-buttons";
 export { default as DragAndDrop } from "./drag-and-drop";
+export { default as ViewSelector } from "./view-selector";
 export * as Themes from "./themes";
 export { default as Portal } from "./portal";
+export { default as TableContainer } from "./TableContainer";

@@ -61,7 +61,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("company_name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ContactTypeId).HasColumnName("contact_type_id");
 
@@ -70,7 +70,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("create_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
@@ -80,25 +80,25 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("currency")
                     .HasColumnType("varchar(3)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.DisplayName)
                     .HasColumnName("display_name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.FirstName)
                     .HasColumnName("first_name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Industry)
                     .HasColumnName("industry")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IsCompany).HasColumnName("is_company");
 
@@ -108,7 +108,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("last_modifed_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModifedOn)
                     .HasColumnName("last_modifed_on")
@@ -118,13 +118,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("last_name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Notes)
                     .HasColumnName("notes")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
@@ -134,7 +134,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("title")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddCrmContact(this ModelBuilder modelBuilder)

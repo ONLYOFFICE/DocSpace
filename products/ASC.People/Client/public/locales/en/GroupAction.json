@@ -1,17 +1,8 @@
 {
-  "SaveButton": "Save",
-  "CancelButton": "Cancel",
-  "Members": "Members",
-  "AddMembers": "Add members",
-  "LblSelect": "Select",
-  "Name": "Name",
-  "AddButton": "Add",
-
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully",
-
   "CustomNewDepartment": "{{groupCaption}} (creation)",
+  "GroupAction": "Group action",
+  "Members": "Members",
   "SearchAddedMembers": "Search added members",
-  "MeLabel": "Me",
-  "EmptyFieldError": "Empty field",
-  "GroupAction": "Group action"
+  "SelectAction": "Select",
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully"
 }

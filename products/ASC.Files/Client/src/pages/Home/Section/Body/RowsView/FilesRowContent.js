@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -14,8 +14,10 @@ import withBadges from "../../../../../HOCs/withBadges";
 const sideColor = "#A3A9AE";
 
 const SimpleFilesRowContent = styled(RowContent)`
+  .row-main-container-wrapper {
+    width: 100%;
+  }
   .badge-ext {
-    margin-left: -8px;
     margin-right: 8px;
   }
 
@@ -25,11 +27,12 @@ const SimpleFilesRowContent = styled(RowContent)`
     margin-right: 6px;
   }
   .lock-file {
-    cursor: pointer;
+    cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
   }
   .badges {
     display: flex;
     align-items: center;
+    height: 19px;
   }
 
   .favorite {
@@ -56,9 +59,8 @@ const FilesRowContent = ({
   updatedDate,
   fileOwner,
   linkStyles,
-  isTrashFolder,
-  onFilesClick,
   badgesComponent,
+  isAdmin,
 }) => {
   const {
     contentLength,
@@ -66,12 +68,11 @@ const FilesRowContent = ({
     filesCount,
     foldersCount,
     providerKey,
+    access,
+    title,
   } = item;
 
-  const onMobileRowClick = () => {
-    if (isTrashFolder || window.innerWidth > 1024) return;
-    onFilesClick();
-  };
+  const withAccess = isAdmin || access === 0;
 
   return (
     <>
@@ -80,37 +81,34 @@ const FilesRowContent = ({
         isMobile={isMobile}
         sideColor={sideColor}
         isFile={fileExst || contentLength}
-        //onClick={onMobileRowClick}
+        withAccess={withAccess}
       >
         <Link
           containerWidth="55%"
           type="page"
-          title={titleWithoutExt}
+          title={title}
           fontWeight="600"
           fontSize="15px"
+          target="_blank"
           {...linkStyles}
           color="#333"
-          isTextOverflow
+          isTextOverflow={true}
         >
           {titleWithoutExt}
-        </Link>
-
-        <div className="badges">
-          {fileExst ? (
+          {fileExst && (
             <Text
               className="badge-ext"
               as="span"
               color="#A3A9AE"
               fontSize="15px"
               fontWeight={600}
-              title={fileExst}
               truncate={true}
             >
               {fileExst}
             </Text>
-          ) : null}
-          {badgesComponent}
-        </div>
+          )}
+        </Link>
+        <div className="badges">{badgesComponent}</div>
         <Text
           containerMinWidth="120px"
           containerWidth="15%"
@@ -132,9 +130,7 @@ const FilesRowContent = ({
           color={sideColor}
           className="row_update-text"
         >
-          {(fileExst || contentLength || !providerKey) &&
-            updatedDate &&
-            updatedDate}
+          {updatedDate && updatedDate}
         </Text>
         <Text
           containerMinWidth="90px"
@@ -160,5 +156,7 @@ const FilesRowContent = ({
 };
 
 export default withRouter(
-  withTranslation("Home")(withContent(withBadges(FilesRowContent)))
+  withTranslation(["Home", "Translations"])(
+    withContent(withBadges(FilesRowContent))
+  )
 );

@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActionCol" xml:space="preserve">
     <value>Acción</value>
@@ -97,9 +97,6 @@
   <data name="BrowserCol" xml:space="preserve">
     <value>Navegador</value>
   </data>
-  <data name="CaseAddedMember" xml:space="preserve">
-    <value>Casos [{0}]. Miembro añadido: {1}</value>
-  </data>
   <data name="CaseAttachedFiles" xml:space="preserve">
     <value>Casos [{0}]. Archivos adjuntos: {1}</value>
   </data>
@@ -126,9 +123,6 @@
   </data>
   <data name="CaseDetachedFile" xml:space="preserve">
     <value>Casos [{0}]. Archivo separado: {1}</value>
-  </data>
-  <data name="CaseExcludedMember" xml:space="preserve">
-    <value>Casos [{0}]. Miembro excluido: {1}</value>
   </data>
   <data name="CaseLinkedCompany" xml:space="preserve">
     <value>Casos [{0}]. Empresa enlazada: {1}</value>
@@ -232,9 +226,6 @@
   <data name="CompanyLinkedProject" xml:space="preserve">
     <value>Empresas [{0}]. Proyecto enlazado: {1}</value>
   </data>
-  <data name="CompanyUnlinkedOpportunity" xml:space="preserve">
-    <value>Empresas [{0}]. Oportunidad desenlazada: {1}</value>
-  </data>
   <data name="CompanyUnlinkedPerson" xml:space="preserve">
     <value>Empresas [{0}]. Persona desenlazada: {1}</value>
   </data>
@@ -256,9 +247,6 @@
   <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
     <value>Empresas [{0}]. Nivel de temperatura actualizado</value>
   </data>
-  <data name="CompanyUploadedFiles" xml:space="preserve">
-    <value>Empresas [{0}]. Archivos subidos: {1}</value>
-  </data>
   <data name="CompanyUserFieldCreated" xml:space="preserve">
     <value>Campo de usuario de empresa creado: {0}</value>
   </data>
@@ -273,9 +261,6 @@
   </data>
   <data name="ContactAdminMailSent" xml:space="preserve">
     <value>Mensaje a administrador enviado</value>
-  </data>
-  <data name="ContactLinkedProject" xml:space="preserve">
-    <value>Contactos [{0}]. Proyecto enlazado: {1}</value>
   </data>
   <data name="ContactsCreatedCrmTasks" xml:space="preserve">
     <value>Contactos [{0}]. Tarea creada: {1}</value>
@@ -303,9 +288,6 @@
   </data>
   <data name="ContactsTagSettingsUpdated" xml:space="preserve">
     <value>Ajustes de etiqueta de contactos actualizados</value>
-  </data>
-  <data name="ContactStatusesModule" xml:space="preserve">
-    <value>Estados de contacto</value>
   </data>
   <data name="ContactTemperatureLevelCreated" xml:space="preserve">
     <value>Nivel de temperatura de contacto creado:[{0}].</value>
@@ -340,9 +322,6 @@
   <data name="ContactTypeUpdated" xml:space="preserve">
     <value>Tipo de contacto actualizado:{0}</value>
   </data>
-  <data name="ContactUnlinkedProject" xml:space="preserve">
-    <value>Contactos [{0}]. Proyecto desenlazado: {1}</value>
-  </data>
   <data name="ContactUserFieldCreated" xml:space="preserve">
     <value>Campo de usuario de contacto creado: {0}</value>
   </data>
@@ -370,15 +349,6 @@
   <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
     <value>Moneda predeterminada actualizada</value>
   </data>
-  <data name="CrmEntityDetachedFile" xml:space="preserve">
-    <value>Elemento CRM. Archivo separado: {0}</value>
-  </data>
-  <data name="CrmFilesModule" xml:space="preserve">
-    <value>Archivos CRM</value>
-  </data>
-  <data name="CrmHistoryModule" xml:space="preserve">
-    <value>Historial CRM</value>
-  </data>
   <data name="CrmProduct" xml:space="preserve">
     <value>CRM</value>
   </data>
@@ -387,12 +357,6 @@
   </data>
   <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
     <value>Ajustes de SMPT actualizados</value>
-  </data>
-  <data name="CrmTagsModule" xml:space="preserve">
-    <value>Etiquetas CRM</value>
-  </data>
-  <data name="CrmTaskCategories" xml:space="preserve">
-    <value>Categorías de tareas CRM</value>
   </data>
   <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
     <value>Orden de categorías de tareas CRM actualizado: {0}</value>
@@ -439,14 +403,8 @@
   <data name="CurrencyRateUpdated" xml:space="preserve">
     <value>Tasa de cambio actualizada: {0} - {1}</value>
   </data>
-  <data name="CustomFieldsModule" xml:space="preserve">
-    <value>Campos parsonalizados</value>
-  </data>
   <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
     <value>Ajustes de Navegación Personalizada actualizados</value>
-  </data>
-  <data name="CustomTeamTemplateUpdated" xml:space="preserve">
-    <value>Plantilla de equipo personalizada actualizada</value>
   </data>
   <data name="DateCol" xml:space="preserve">
     <value>Fecha</value>
@@ -499,11 +457,8 @@
   <data name="DocumentsForcesave" xml:space="preserve">
     <value>Ajustes de forzar guardado actualizados</value>
   </data>
-  <data name="DocumentsModule" xml:space="preserve">
-    <value>Documentos</value>
-  </data>
   <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
-    <value>Ajustes de sustitución actualizados</value>
+    <value>Ajustes de sobrescritura actualizados</value>
   </data>
   <data name="DocumentsProduct" xml:space="preserve">
     <value>Documentos</value>
@@ -522,12 +477,6 @@
   </data>
   <data name="DownloadActionType" xml:space="preserve">
     <value>Descargar</value>
-  </data>
-  <data name="EncryptionDisable" xml:space="preserve">
-    <value>El cifrado está deshabilitado</value>
-  </data>
-  <data name="EncryptionEnable" xml:space="preserve">
-    <value>El cifrado está habilitado</value>
   </data>
   <data name="ExportActionType" xml:space="preserve">
     <value>Exportación</value>
@@ -678,9 +627,6 @@
   </data>
   <data name="GuestImported" xml:space="preserve">
     <value>Visitante importado: {0}</value>
-  </data>
-  <data name="HistoryCategoriesModule" xml:space="preserve">
-    <value>Categorías de historia</value>
   </data>
   <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
     <value>Categorías de evento de historial. Orden actualizado:{0}</value>
@@ -862,9 +808,6 @@
   <data name="MilestoneUpdatedStatus" xml:space="preserve">
     <value>Proyectos [{0}]. Hitos [{1}]. Estado actualizado: {2}</value>
   </data>
-  <data name="MobileCol" xml:space="preserve">
-    <value>Móvil</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Módulo</value>
   </data>
@@ -930,9 +873,6 @@
   </data>
   <data name="OpportunityStageDeleted" xml:space="preserve">
     <value>Etapa de oportunidad borrada: {0}</value>
-  </data>
-  <data name="OpportunityStagesModule" xml:space="preserve">
-    <value>Etapas de oportunidad</value>
   </data>
   <data name="OpportunityStagesUpdatedOrder" xml:space="preserve">
     <value>Orden de etapas de oportunidad actualizado: {0}</value>
@@ -1062,9 +1002,6 @@
   </data>
   <data name="PersonUpdatedTemperatureLevel" xml:space="preserve">
     <value>Personas [{0}]. Nivel de temperatura actualizado</value>
-  </data>
-  <data name="PersonUploadedFiles" xml:space="preserve">
-    <value>Personas[{0}]. Archivos subidos: {1}</value>
   </data>
   <data name="PersonUserFieldCreated" xml:space="preserve">
     <value>Campo de usuario de persona creado: {0}</value>
@@ -1392,9 +1329,6 @@
   </data>
   <data name="UserDeletedAvatar" xml:space="preserve">
     <value>Usuarios [{0}]. Avatar borrado</value>
-  </data>
-  <data name="UserDeletedWithDataReassigns" xml:space="preserve">
-    <value>Usuario elilminado: {0}. Datos reasignados al usuario: {1}</value>
   </data>
   <data name="UserFileUpdated" xml:space="preserve">
     <value>Usuarios [{0}]. Archivo actualizado: {1}</value>

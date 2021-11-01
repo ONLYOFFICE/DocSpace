@@ -1,12 +1,7 @@
 {
-  "GuestCaption": "Guest",
-  "UserCol": "User",
-  "CancelButton": "Cancel",
-  "SuccessChangeUserType": "The user type was successfully changed",
-
+  "ChangeUserTypeButton": "Change type",
   "ChangeUserTypeHeader": "Change user type",
   "ChangeUserTypeMessage": "Users with the '{{ firstType }}' type will be moved to '{{ secondType }}' type.",
-  "ChangeUserTypeMessageWarning": "You cannot change the type for portal administrators and for yourself",
-  "ChangeUserTypeButton": "Change type",
-  "ShowUsersList": "View users list"
+  "ChangeUserTypeMessageWarning": "You can't change the type for the portal administrators and for yourself",
+  "SuccessChangeUserType": "The user type was successfully changed"
 }

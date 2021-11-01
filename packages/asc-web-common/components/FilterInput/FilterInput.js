@@ -4,10 +4,11 @@ import SearchInput from "@appserver/components/search-input";
 import equal from "fast-deep-equal/react";
 import FilterBlock from "./sub-components/FilterBlock";
 import SortComboBox from "./sub-components/SortComboBox";
-import ViewSelector from "./sub-components/ViewSelector";
+import ViewSelector from "@appserver/components/view-selector";
 import map from "lodash/map";
 import clone from "lodash/clone";
 import StyledFilterInput from "./StyledFilterInput";
+import { isMobileOnly } from "react-device-detect";
 
 const cloneObjectsArray = function (props) {
   return map(props, clone);
@@ -90,9 +91,16 @@ class FilterInput extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedFilterData, getSortData, value } = props;
+    const {
+      selectedFilterData,
+      getSortData,
+      value,
+      getViewSettingsData,
+    } = props;
     const { sortDirection, sortId, inputValue } = selectedFilterData;
     const sortData = getSortData();
+    let viewSettings = null;
+    viewSettings = getViewSettingsData && getViewSettingsData();
 
     const filterValues = selectedFilterData ? this.getDefaultFilterData() : [];
 
@@ -111,6 +119,7 @@ class FilterInput extends React.Component {
       hiddenFilterItems: [],
       needUpdateFilter: false,
       asideView: false,
+      viewSettings,
     };
 
     this.searchWrapper = React.createRef();
@@ -153,12 +162,12 @@ class FilterInput extends React.Component {
     }
 
     if (
-      (!equal(
+      !equal(
         selectedFilterData.filterValues,
         prevProps.selectedFilterData.filterValues
-      ) &&
-        selectedFilterData.filterValues.length !==
-          this.state.filterValues.length) ||
+      ) ||
+      selectedFilterData.filterValues.length !==
+        this.state.filterValues.length ||
       inputValue !== searchText ||
       sectionWidth !== prevProps.sectionWidth ||
       isGroupChanged
@@ -172,25 +181,12 @@ class FilterInput extends React.Component {
             : sortData.length > 0
             ? sortData[0].key
             : "",
-        searchText: selectedFilterData.inputValue || "",
+        searchText: inputValue || "",
         needUpdateFilter: true,
       });
       this.updateFilter();
     }
 
-    if (
-      !equal(
-        prevProps.selectedFilterData.filterValues,
-        selectedFilterData.filterValues
-      ) &&
-      selectedFilterData.filterValues &&
-      (selectedFilterData.filterValues.length === 0 ||
-        (selectedFilterData.filterValues.length === 1 &&
-          selectedFilterData.filterValues[0].key === "null")) &&
-      !selectedFilterData.inputValue
-    ) {
-      this.clearFilter();
-    }
     if (
       !equal(
         prevProps.selectedFilterData.filterValues,
@@ -234,8 +230,10 @@ class FilterInput extends React.Component {
   }
 
   checkingOrderItems = () => {
-    const { filterValues: itemsState } = this.state;
     const filterValues = this.getDefaultFilterData();
+    const itemsState = this.state.filterValues.length
+      ? this.state.filterValues
+      : filterValues;
     let updatedValues = itemsState.slice();
 
     if (itemsState.length === filterValues.length) {
@@ -279,11 +277,6 @@ class FilterInput extends React.Component {
     );
     this.setState({ sortDirection: !!key });
   };
-  onClickViewSelector = (item) => {
-    const itemId = (item.target && item.target.dataset.for) || item;
-    const viewAs = itemId.indexOf("row") === -1 ? "tile" : "row";
-    this.props.onChangeViewAs(viewAs);
-  };
 
   onClickSortItem = (key) => {
     this.setState({ sortId: key });
@@ -293,6 +286,7 @@ class FilterInput extends React.Component {
       this.state.sortDirection ? "desc" : "asc"
     );
   };
+
   onSortDirectionClick = () => {
     this.onFilter(
       this.state.filterValues,
@@ -408,6 +402,7 @@ class FilterInput extends React.Component {
 
     return filterItems;
   };
+
   getFilterData = () => {
     const d = this.props.getFilterData();
     const result = [];
@@ -430,6 +425,7 @@ class FilterInput extends React.Component {
     });
     return result;
   };
+
   clearFilter = () => {
     this.setState({
       searchText: "",
@@ -553,7 +549,7 @@ class FilterInput extends React.Component {
     );
 
     const numberOfHiddenItems = this.calcHiddenItems(searchWidth, filterArr);
-    if (searchWidth !== 0 && currentFilterItems.length > 0) {
+    if (searchWidth !== 0) {
       this.setState({
         openFilterItems: numberOfHiddenItems
           ? currentFilterItems.slice(
@@ -603,6 +599,7 @@ class FilterInput extends React.Component {
       this.state.sortDirection ? "desc" : "asc"
     );
   };
+
   onFilter = (filterValues, sortId, sortDirection, searchText) => {
     let cloneFilterValues = cloneObjectsArray(filterValues);
     cloneFilterValues = cloneFilterValues.map(function (item) {
@@ -616,6 +613,7 @@ class FilterInput extends React.Component {
       sortDirection: sortDirection,
     });
   };
+
   onChangeFilter = (result) => {
     this.setState({
       searchText: result.inputValue,
@@ -628,6 +626,7 @@ class FilterInput extends React.Component {
       result.inputValue
     );
   };
+
   onFilterRender = () => {
     this.setState({
       needUpdateFilter: false,
@@ -635,6 +634,7 @@ class FilterInput extends React.Component {
 
     this.updateFilter();
   };
+
   onClickFilterItem = (event, filterItem) => {
     const currentFilterItems = cloneObjectsArray(this.state.filterValues);
 
@@ -827,6 +827,8 @@ class FilterInput extends React.Component {
       contextMenuHeader,
       isMobile,
       sectionWidth,
+      getViewSettingsData,
+      viewSelectorVisible,
     } = this.props;
     /* eslint-enable react/prop-types */
 
@@ -906,29 +908,34 @@ class FilterInput extends React.Component {
           </SearchInput>
         </div>
         <div ref={this.rectComboBoxRef}>
-          <SortComboBox
-            options={getSortData()}
-            isDisabled={isDisabled}
-            onChangeSortId={this.onClickSortItem}
-            onChangeView={this.onClickViewSelector}
-            onChangeSortDirection={this.onChangeSortDirection}
-            selectedOption={
-              getSortData().length > 0
-                ? getSortData().find((x) => x.key === sortId)
-                : {}
-            }
-            onButtonClick={this.onSortDirectionClick}
-            viewAs={viewAs}
-            sortDirection={+sortDirection}
-            directionAscLabel={directionAscLabel}
-            directionDescLabel={directionDescLabel}
-          />
+          {viewAs !== "table" && (
+            <SortComboBox
+              options={getSortData()}
+              viewSettings={this.state.viewSettings}
+              isDisabled={isDisabled}
+              onChangeSortId={this.onClickSortItem}
+              onChangeView={this.props.onChangeViewAs}
+              onChangeSortDirection={this.onChangeSortDirection}
+              selectedOption={
+                getSortData().length > 0
+                  ? getSortData().find((x) => x.key === sortId)
+                  : {}
+              }
+              onButtonClick={this.onSortDirectionClick}
+              viewAs={viewAs}
+              sortDirection={+sortDirection}
+              directionAscLabel={directionAscLabel}
+              directionDescLabel={directionDescLabel}
+            />
+          )}
         </div>
-        {viewAs && (
+        {viewAs && !isMobileOnly && viewSelectorVisible && (
           <ViewSelector
+            className="view-selector-button not-selectable"
             isDisabled={isDisabled}
-            onClickViewSelector={this.onClickViewSelector}
-            viewAs={viewAs}
+            onChangeView={this.props.onChangeViewAs}
+            viewAs={viewAs === "table" ? "row" : viewAs}
+            viewSettings={this.state.viewSettings}
           />
         )}
       </StyledFilterInput>
@@ -942,7 +949,7 @@ FilterInput.propTypes = {
   selectedFilterData: PropTypes.object,
   directionAscLabel: PropTypes.string,
   directionDescLabel: PropTypes.string,
-  viewAs: PropTypes.bool, // TODO: include viewSelector after adding method getThumbnail - PropTypes.string
+  viewAs: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -953,6 +960,7 @@ FilterInput.propTypes = {
   sectionWidth: PropTypes.number,
   getSortData: PropTypes.func,
   value: PropTypes.string,
+  getViewSettingsData: PropTypes.func,
 };
 
 FilterInput.defaultProps = {
@@ -967,6 +975,7 @@ FilterInput.defaultProps = {
   needForUpdate: false,
   directionAscLabel: "A-Z",
   directionDescLabel: "Z-A",
+  viewSelectorVisible: true,
 };
 
 export default FilterInput;

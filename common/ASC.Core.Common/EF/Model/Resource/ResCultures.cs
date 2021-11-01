@@ -33,7 +33,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("title")
                     .HasColumnType("varchar(120)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Available).HasColumnName("available");
 
@@ -47,7 +47,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("value")
                     .HasColumnType("varchar(120)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddResCultures(this ModelBuilder modelBuilder)

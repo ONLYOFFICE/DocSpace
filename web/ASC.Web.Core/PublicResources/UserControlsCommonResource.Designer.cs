@@ -19,7 +19,7 @@ namespace ASC.Web.Core.PublicResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UserControlsCommonResource {
@@ -57,15 +57,6 @@ namespace ASC.Web.Core.PublicResources {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The Backup function is not available as the storage space exceeds {0}. Go to the {1}Statistics section{2} to check the storage space used..
-        /// </summary>
-        public static string BackupSpaceExceed {
-            get {
-                return ResourceManager.GetString("BackupSpaceExceed", resourceCulture);
             }
         }
         

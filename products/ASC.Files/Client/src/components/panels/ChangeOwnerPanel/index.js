@@ -17,6 +17,8 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 class ChangeOwnerComponent extends React.Component {
   constructor(props) {
@@ -68,6 +70,7 @@ class ChangeOwnerComponent extends React.Component {
   };
 
   onClose = () => {
+    this.props.setBufferSelection(null);
     this.props.setChangeOwnerPanelVisible(false);
   };
 
@@ -76,9 +79,9 @@ class ChangeOwnerComponent extends React.Component {
     const { showPeopleSelector, owner } = this.state;
 
     const ownerName = owner.displayName ? owner.displayName : owner.label;
-    const fileName = selection[0].title;
+    const fileName = selection[0]?.title;
     const id = owner.id ? owner.id : owner.key;
-    const disableSaveButton = owner && selection[0].createdBy.id === id;
+    const disableSaveButton = owner && selection[0]?.createdBy.id === id;
     const zIndex = 310;
 
     return (
@@ -109,17 +112,17 @@ class ChangeOwnerComponent extends React.Component {
                 <Text>{t("ChangeOwnerDescription")}</Text>
               </div>
             </StyledBody>
+            <StyledFooter>
+              <Button
+                label={t("Common:SaveButton")}
+                size="medium"
+                scale
+                primary
+                onClick={this.onOwnerChange}
+                isDisabled={disableSaveButton || isLoading}
+              />
+            </StyledFooter>
           </StyledContent>
-          <StyledFooter>
-            <Button
-              label={t("AddButton")}
-              size="medium"
-              scale
-              primary
-              onClick={this.onOwnerChange}
-              isDisabled={disableSaveButton || isLoading}
-            />
-          </StyledFooter>
         </Aside>
         {showPeopleSelector && (
           <OwnerSelector
@@ -128,7 +131,7 @@ class ChangeOwnerComponent extends React.Component {
             groupsCaption={groupsCaption}
             onOwnerSelect={this.onOwnerSelect}
             onClose={this.onClose}
-            onClosePanels={this.onClosePanels}
+            onClosePanel={this.onShowPeopleSelector}
           />
         )}
       </StyledAsidePanel>
@@ -136,24 +139,26 @@ class ChangeOwnerComponent extends React.Component {
   }
 }
 
-const ChangeOwnerPanel = withTranslation("ChangeOwnerPanel")(
-  ChangeOwnerComponent
+const ChangeOwnerPanel = withTranslation(["ChangeOwnerPanel", "Common"])(
+  withLoader(ChangeOwnerComponent)(<Loaders.DialogAsideLoader isPanel />)
 );
 
 export default inject(({ auth, filesStore, dialogsStore }) => {
   const {
     selection,
+    bufferSelection,
     setFile,
     setFolder,
     setFilesOwner,
     setIsLoading,
     isLoading,
+    setBufferSelection,
   } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
-    selection,
+    selection: selection.length ? selection : [bufferSelection],
     isLoading,
     visible: ownerPanelVisible,
 
@@ -162,5 +167,6 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
     setIsLoading,
     setChangeOwnerPanelVisible,
     setFilesOwner,
+    setBufferSelection,
   };
 })(withRouter(observer(ChangeOwnerPanel)));

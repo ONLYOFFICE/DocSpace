@@ -44,7 +44,7 @@ namespace ASC.Web.Files.Services.WCFService
         static FileEntrySerializer()
         {
             serializers[typeof(File<>)] = new DataContractSerializer(typeof(File<>));
-            //serializers[typeof(ItemList<FileEntry<>>)] = new DataContractSerializer(typeof(ItemList<FileEntry<>>));
+            //serializers[typeof(List<FileEntry<>>)] = new DataContractSerializer(typeof(List<FileEntry<>>));
             serializers[typeof(DataWrapper<>)] = new DataContractSerializer(typeof(DataWrapper<>));
 
             //if (WorkContext.IsMono && !string.IsNullOrEmpty(WorkContext.MonoVersion))
@@ -54,7 +54,7 @@ namespace ASC.Web.Files.Services.WCFService
             //    if (2 <= version.Length && (Convert.ToInt32(version[0]) * 1000 + Convert.ToInt32(version[1])) < 4002)
             //    {
             //        oldMonoSerializer = true;
-            //        serializers[typeof(ItemList<FileEntry>)] = new DataContractSerializer(typeof(ItemList<FileEntry>), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
+            //        serializers[typeof(List<FileEntry>)] = new DataContractSerializer(typeof(List<FileEntry>), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
             //        serializers[typeof(DataWrapper)] = new DataContractSerializer(typeof(DataWrapper), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
             //    }
             //}

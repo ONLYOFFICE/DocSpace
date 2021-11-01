@@ -76,7 +76,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, onClose, t, userType } = this.props;
+    const { visible, onClose, t, tReady, userType } = this.props;
     const { isRequestRunning, listUsers, userIds } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -111,56 +111,59 @@ class ChangeUserTypeDialogComponent extends React.Component {
       </List>
     );
 
-    const firstType = userType === 1 ? t("GuestCaption") : t("UserCol");
-    const secondType = userType === 1 ? t("UserCol") : t("GuestCaption");
+    const firstType = userType === 1 ? t("Common:Guest") : t("Common:User");
+    const secondType = userType === 1 ? t("Common:User") : t("Common:Guest");
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text>
-              {t("ChangeUserTypeMessage", {
-                firstType: firstType,
-                secondType: secondType,
-              })}
-            </Text>
-            <Text>{t("ChangeUserTypeMessageWarning")}</Text>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
+        <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>
+            {t("ChangeUserTypeMessage", {
+              firstType: firstType,
+              secondType: secondType,
+            })}
+          </Text>
+          <Text>{t("ChangeUserTypeMessageWarning")}</Text>
 
-            <ToggleContent
-              className="toggle-content-dialog"
-              label={t("ShowUsersList")}
-            >
-              <div style={containerStyles} className="modal-dialog-content">
-                <AutoSizer>{renderList}</AutoSizer>
-              </div>
-            </ToggleContent>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              label={t("ChangeUserTypeButton")}
-              size="medium"
-              primary
-              onClick={this.onChangeUserType}
-              isLoading={isRequestRunning}
-              isDisabled={!userIds.length}
-            />
-            <Button
-              className="button-dialog"
-              label={t("CancelButton")}
-              size="medium"
-              onClick={onClose}
-              isDisabled={isRequestRunning}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+          <ToggleContent
+            className="toggle-content-dialog"
+            label={t("Common:ShowUsersList")}
+          >
+            <div style={containerStyles} className="modal-dialog-content">
+              <AutoSizer>{renderList}</AutoSizer>
+            </div>
+          </ToggleContent>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            label={t("ChangeUserTypeButton")}
+            size="medium"
+            primary
+            onClick={this.onChangeUserType}
+            isLoading={isRequestRunning}
+            isDisabled={!userIds.length}
+          />
+          <Button
+            className="button-dialog"
+            label={t("Common:CancelButton")}
+            size="medium"
+            onClick={onClose}
+            isDisabled={isRequestRunning}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
 }
 
-const ChangeUserTypeDialog = withTranslation("ChangeUserTypeDialog")(
-  ChangeUserTypeDialogComponent
-);
+const ChangeUserTypeDialog = withTranslation([
+  "ChangeUserTypeDialog",
+  "Common",
+])(ChangeUserTypeDialogComponent);
 
 ChangeUserTypeDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

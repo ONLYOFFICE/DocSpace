@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Common;
 using ASC.FederatedLogin;
 
 using Dropbox.Api;
@@ -42,8 +43,14 @@ namespace ASC.Files.Thirdparty.Dropbox
         private DropboxClient dropboxClient;
 
         public bool IsOpened { get; private set; }
+        private TempStream TempStream { get; }
 
         public long MaxChunkedUploadFileSize = 20L * 1024L * 1024L * 1024L;
+
+        public DropboxStorage(TempStream tempStream)
+        {
+            TempStream = tempStream;
+        }
 
         public void Open(OAuth20Token token)
         {
@@ -128,7 +135,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException("file");
 
             using var response = dropboxClient.Files.DownloadAsync(filePath).Result;
-            var tempBuffer = new FileStream(Path.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 8096, FileOptions.DeleteOnClose);
+            var tempBuffer = TempStream.Create();
             using (var str = response.GetContentAsStreamAsync().Result)
             {
                 if (str != null)

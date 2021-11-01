@@ -123,6 +123,7 @@ class HelpButton extends React.Component {
       className,
       dataTip,
       style,
+      tooltipColor,
     } = this.props;
 
     return (
@@ -151,6 +152,7 @@ class HelpButton extends React.Component {
             afterShow={this.afterShow}
             afterHide={this.afterHide}
             getContent={getContent}
+            color={tooltipColor}
           />
         ) : (
           <Tooltip
@@ -162,6 +164,7 @@ class HelpButton extends React.Component {
             offsetLeft={offsetLeft}
             afterShow={this.afterShow}
             afterHide={this.afterHide}
+            color={tooltipColor}
           >
             {tooltipContent}
           </Tooltip>
@@ -220,10 +223,11 @@ HelpButton.propTypes = {
   /** Accepts id */
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  tooltipColor: PropTypes.string,
 };
 
 HelpButton.defaultProps = {
-  iconName: "./static/images/question.react.svg",
+  iconName: "/static/images/question.react.svg",
   place: "top",
   offsetRight: 120,
   offsetLeft: 0,
@@ -233,6 +237,7 @@ HelpButton.defaultProps = {
   displayType: "auto",
   className: "icon-button",
   color: "#A3A9AE",
+  tooltipColor: "#fff",
 };
 
 export default HelpButton;

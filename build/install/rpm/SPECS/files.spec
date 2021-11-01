@@ -3,142 +3,315 @@
 
 %files api
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/studio/api/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_sysconfdir}/systemd/system/appserver-api.service
-%dir %{_var}/www/appserver/studio
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
+%{buildpath}/studio/api/
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-api.service
+%dir %{buildpath}/studio/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
 
 %files backup
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/backup/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_sysconfdir}/systemd/system/appserver-backup.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
+%{buildpath}/services/ASC.Data.Backup/
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-backup.service
+%dir %{buildpath}/services/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
 
 %files common
 %defattr(-, onlyoffice, onlyoffice, -)
-%config %{_sysconfdir}/onlyoffice/appserver/
-%{_var}/log/onlyoffice/appserver/
-%{_var}/www/appserver/sql/
+%config %{_sysconfdir}/onlyoffice/%{product}/
+%{_var}/log/onlyoffice/%{product}/
+%{buildpath}/sql/
 %dir %{_sysconfdir}/onlyoffice/
 %dir %{_var}/log/onlyoffice/
 
-%files files_services
+%files files-services
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.Files/service/
-%{_sysconfdir}/systemd/system/appserver-files_service.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Files/
+%{buildpath}/products/ASC.Files/service/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.People/server/ASC.People*.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-files-services.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
 
 %files notify
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/notify/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_sysconfdir}/systemd/system/appserver-notify.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
+%{buildpath}/services/ASC.Notify/
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-notify.service
+%dir %{buildpath}/services/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
 
 %files files
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.Files/server/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_sysconfdir}/systemd/system/appserver-files.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
+%{buildpath}/products/ASC.Files/server/
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-files.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
 
-%files api_system
+%files api-system
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/apisystem/
-%{_sysconfdir}/systemd/system/appserver-api_system.service
-%dir %{_var}/www/appserver/services/
+%{buildpath}/services/ASC.ApiSystem/
+/lib/systemd/system/%{product}-api-system.service
+%dir %{buildpath}/services/
 
 %files proxy
 %defattr(-, onlyoffice, onlyoffice, -)
 %{_sysconfdir}/nginx/includes/*
 %{_sysconfdir}/nginx/conf.d/*
-%{_var}/www/appserver/story/
-%{_var}/www/appserver/products/ASC.People/client/
-%{_var}/www/appserver/products/ASC.Files/client/
-%{_var}/www/appserver/public/
-%{_var}/www/appserver/studio/client/
-%dir %{_var}/www/appserver/studio/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.Files/
+%{buildpath}/public/
+%{buildpath}/studio/client/
+%{buildpath}/studio/login/
+%{buildpath}/products/ASC.People/client/
+%{buildpath}/products/ASC.Files/client/
+%{buildpath}/products/ASC.Files/editor/
+%{buildpath}/products/ASC.CRM/client/
+%{buildpath}/products/ASC.Projects/client/
+%{buildpath}/products/ASC.Calendar/client/
+%{buildpath}/products/ASC.Mail/client/
+%dir %{buildpath}/studio/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Calendar/
+%dir %{buildpath}/products/ASC.Mail/
 
-%files studio.notify
+%files studio-notify
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/studio.notify/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_sysconfdir}/systemd/system/appserver-studio_notify.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/services/
+%{buildpath}/services/ASC.Studio.Notify/
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-studio-notify.service
+%dir %{buildpath}/services/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
 
-%files people.server
+%files people-server
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.People/server/
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_sysconfdir}/systemd/system/appserver-people.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
+%{buildpath}/products/ASC.People/server/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-people-server.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
 
 %files urlshortener
 %defattr(-, onlyoffice, onlyoffice, -)
-/services/ASC.UrlShortener/
-%{_sysconfdir}/systemd/system/appserver-urlshortener.service
-%dir /services/
-%dir /services/ASC.UrlShortener/
-%dir /services/ASC.UrlShortener/service
+%{buildpath}/services/ASC.UrlShortener/
+%{buildpath}/services/ASC.UrlShortener.Svc/
+/lib/systemd/system/%{product}-urlshortener.service
+%dir %{buildpath}/services/
 
 %files thumbnails
 %defattr(-, onlyoffice, onlyoffice, -)
-/services/ASC.Thumbnails/
-%{_sysconfdir}/systemd/system/appserver-thumbnails.service
-%dir /services/
-%dir /services/ASC.Thumbnails/
-%dir /services/ASC.Thumbnails/service
+%{buildpath}/services/ASC.Thumbnails/
+%{buildpath}/services/ASC.Thumbnails.Svc/
+/lib/systemd/system/%{product}-thumbnails.service
+%dir %{buildpath}/services/
 
 %files socket
 %defattr(-, onlyoffice, onlyoffice, -)
-/services/ASC.Socket.IO/
-%{_sysconfdir}/systemd/system/appserver-socket.service
-%dir /services/
-%dir /services/ASC.Socket.IO/
-%dir /services/ASC.Socket.IO/service
+%{buildpath}/services/ASC.Socket.IO/
+%{buildpath}/services/ASC.Socket.IO.Svc/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-socket.service
+%dir %{buildpath}/services/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.Projects/
 
 %files studio
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/studio/server/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_sysconfdir}/systemd/system/appserver-studio.service
-%dir %{_var}/www/appserver/studio/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
+%{buildpath}/studio/server/
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-studio.service
+%dir %{buildpath}/studio/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
+
+%files storage-encryption
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.Data.Storage.Encryption/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-storage-encryption.service
+%dir %{buildpath}/services/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server
+
+%files storage-migration
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.Data.Storage.Migration/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-storage-migration.service
+%dir %{buildpath}/services/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.Projects/
+
+%files projects-server
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/products/ASC.Projects/server/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll 
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+/lib/systemd/system/%{product}-projects-server.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+
+%files telegram-service
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.TelegramService/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.CRM/server/ASC.CRM*.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-telegram-service.service
+%dir %{buildpath}/services/
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.People/
+%dir %{buildpath}/products/ASC.People/server/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.CRM/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
+
+%files crm
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/products/ASC.CRM/server/
+%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
+%{buildpath}/products/ASC.People/server/ASC.People.dll
+%{buildpath}/products/ASC.Projects/server/ASC.Projects*.dll
+/lib/systemd/system/%{product}-crm.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.CRM/
+%dir %{buildpath}/products/ASC.Files/
+%dir %{buildpath}/products/ASC.Files/server/
+%dir %{buildpath}/products/ASC.Projects/
+%dir %{buildpath}/products/ASC.Projects/server/
+
+%files calendar
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/products/ASC.Calendar/server/
+/lib/systemd/system/%{product}-calendar.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Calendar/
+
+%files mail
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/products/ASC.Mail/server/
+/lib/systemd/system/%{product}-mail.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/products/ASC.Mail/
+
+%files ssoauth
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.SsoAuth/
+%{buildpath}/services/ASC.SsoAuth.Svc/
+/lib/systemd/system/%{product}-ssoauth.service
+%dir %{buildpath}/services/

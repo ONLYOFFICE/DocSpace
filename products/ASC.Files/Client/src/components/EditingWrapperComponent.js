@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
@@ -37,12 +37,34 @@ const EditingWrapper = styled.div`
   display: inline-flex;
   align-items: center;
 
+  ${(props) =>
+    props.viewAs === "table" &&
+    css`
+      grid-column-start: 1;
+      grid-column-end: -1;
+
+      border-bottom: 1px solid #eceef1;
+      padding-bottom: 4px;
+      margin-top: 4px;
+
+      margin-left: -4px;
+    `}
+
+  ${(props) =>
+    props.viewAs === "tile" &&
+    `margin-right: 12px !important; margin-left: -4px;`}
+
   @media (max-width: 1024px) {
     height: 56px;
   }
   .edit-text {
     height: 32px;
-    font-size: 15px;
+    font-size: ${(props) =>
+      props.viewAs === "table"
+        ? "13px"
+        : props.viewAs === "tile"
+        ? "14px"
+        : "15px"};
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
@@ -55,6 +77,19 @@ const EditingWrapper = styled.div`
     margin-left: 8px;
     height: 32px;
     padding: 8px 7px 7px 7px;
+
+    ${(props) =>
+      props.viewAs === "table" &&
+      css`
+        width: 24px;
+        height: 24px;
+        border: 1px transparent;
+        padding: 4px 0 0 0;
+
+        :hover {
+          border: 1px solid #d0d5da;
+        }
+      `}
 
     &:last-child {
       margin-left: 4px;
@@ -72,6 +107,10 @@ const EditingWrapper = styled.div`
     width: 14px;
     height: 14px;
   }
+
+  .is-edit {
+    margin-top: 4px;
+  }
 `;
 
 const EditingWrapperComponent = (props) => {
@@ -81,15 +120,23 @@ const EditingWrapperComponent = (props) => {
     renameTitle,
     onClickUpdateItem,
     cancelUpdateItem,
-    isLoading,
+    //isLoading,
+    viewAs,
+    elementIcon,
   } = props;
+
+  const isTable = viewAs === "table";
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onKeyUpUpdateItem = (e) => {
+    if (isLoading) return;
+
     var code = e.keyCode || e.which;
     if (code === 13) {
+      if (!isLoading) setIsLoading(true);
       return onClickUpdateItem(e);
     }
     //if (code === 27) return cancelUpdateItem(e);
@@ -108,9 +155,15 @@ const EditingWrapperComponent = (props) => {
   };
 
   const onFocus = (e) => e.target.select();
+  const onBlur = (e) => {
+    if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
+      return false;
+    onClickUpdateItem(e, false);
+  };
 
   return (
-    <EditingWrapper>
+    <EditingWrapper viewAs={viewAs}>
+      {isTable && elementIcon}
       <TextInput
         className="edit-text"
         name="title"
@@ -122,11 +175,13 @@ const EditingWrapperComponent = (props) => {
         onKeyPress={onKeyUpUpdateItem}
         onKeyDown={onEscapeKeyPress}
         onFocus={onFocus}
+        onBlur={onBlur}
         isDisabled={isLoading}
         data-itemid={itemId}
+        withBorder={!isTable}
       />
       <Button
-        className="edit-button"
+        className="edit-button not-selectable"
         size="medium"
         isDisabled={isLoading}
         onClick={onClickUpdateItem}
@@ -137,7 +192,7 @@ const EditingWrapperComponent = (props) => {
         isHovered={OkIconIsHovered}
       />
       <Button
-        className="edit-button"
+        className="edit-button not-selectable"
         size="medium"
         isDisabled={isLoading}
         onClick={cancelUpdateItem}

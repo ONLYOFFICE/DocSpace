@@ -2,7 +2,9 @@ import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 import { combineUrl } from "../utils";
+import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
+import { version } from "../package.json";
 const { proxyURL } = AppServerConfig;
 
 class SettingsStore {
@@ -19,10 +21,7 @@ class SettingsStore {
   timezones = [];
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = combineUrl(
-    proxyURL,
-    window["AscDesktopEditor"] !== undefined ? "/products/files/" : "/"
-  );
+  defaultPage = "/";
   homepage = "";
   datePattern = "M/d/yyyy";
   datePatternJQ = "00/00/0000";
@@ -56,10 +55,14 @@ class SettingsStore {
   isEncryptionSupport = false;
   encryptionKeys = null;
 
+  personal = false;
+
   isHeaderVisible = false;
   isTabletView = false;
   isArticlePinned =
     localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
+  isArticleVisible = false;
+  isBackdropVisible = false;
 
   isArticleVisibleOnUnpin = false;
 
@@ -73,6 +76,24 @@ class SettingsStore {
   hasShortenService = false;
 
   customSchemaList = [];
+  firebase = {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: "",
+  };
+  version = "";
+  buildVersionInfo = {
+    appServer: version,
+    documentServer: "6.4.1",
+  };
+  debugInfo = false;
+
+  userFormValidation = /^[\p{L}\p{M}'\-]+$/gu;
+  folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
   constructor() {
     makeAutoObservable(this);
@@ -95,12 +116,34 @@ class SettingsStore {
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
 
+  setIsArticleVisible = (visible) => {
+    this.isArticleVisible = this.isArticlePinned ? true : visible;
+  };
+
+  setIsBackdropVisible = (visible) => {
+    this.isBackdropVisible = visible;
+  };
+
+  hideArticle = () => {
+    this.setIsArticleVisible(false);
+    this.setIsBackdropVisible(false);
+  };
+
   setValue = (key, value) => {
     this[key] = value;
   };
 
+  setDefaultPage = (defaultPage) => {
+    this.defaultPage = defaultPage;
+  };
+
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
+
+    if (window["AscDesktopEditor"] !== undefined || this.personal) {
+      const dp = combineUrl(proxyURL, "/products/files/");
+      this.setDefaultPage(dp);
+    }
 
     Object.keys(newSettings).map((key) => {
       if (key in this) {
@@ -115,6 +158,12 @@ class SettingsStore {
           if (!language || language == "undefined") {
             localStorage.setItem(LANGUAGE, newSettings[key]);
           }
+        }
+        if (key === "personal") {
+          window.AppServer = {
+            ...window.AppServer,
+            personal: newSettings[key],
+          };
         }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
@@ -143,7 +192,7 @@ class SettingsStore {
   init = async () => {
     this.setIsLoading(true);
 
-    await this.getPortalSettings();
+    await Promise.all([this.getPortalSettings(), this.getBuildVersionInfo()]);
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
@@ -212,7 +261,11 @@ class SettingsStore {
   };
 
   setModuleInfo = (homepage, productId) => {
-    if (this.homepage == homepage) return;
+    if (this.homepage === homepage || this.currentProductId === productId)
+      return;
+
+    console.log(`setModuleInfo('${homepage}', '${productId}')`);
+
     this.homepage = homepage;
     this.setCurrentProductId(productId);
 
@@ -223,7 +276,9 @@ class SettingsStore {
           ? homepage
           : `${homepage}/`
         : "/";
+
       console.log("SET base URL", baseUrl);
+
       baseElm[0].setAttribute("href", baseUrl);
     }
   };
@@ -277,6 +332,27 @@ class SettingsStore {
 
   setArticleVisibleOnUnpin = (visible) => {
     this.isArticleVisibleOnUnpin = visible;
+  };
+
+  get firebaseHelper() {
+    window.firebaseHelper = new FirebaseHelper(this.firebase);
+    return window.firebaseHelper;
+  }
+
+  getBuildVersionInfo = async () => {
+    const versionInfo = await api.settings.getBuildVersion();
+    this.setBuildVersionInfo(versionInfo);
+  };
+
+  setBuildVersionInfo = (versionInfo) => {
+    this.buildVersionInfo = {
+      ...this.buildVersionInfo,
+      appServer: version,
+      ...versionInfo,
+    };
+
+    if (!this.buildVersionInfo.documentServer)
+      this.buildVersionInfo.documentServer = "6.4.1";
   };
 }
 

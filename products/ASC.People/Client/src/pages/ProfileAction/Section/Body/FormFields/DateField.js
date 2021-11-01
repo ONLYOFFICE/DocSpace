@@ -9,8 +9,6 @@ class DateField extends React.Component {
   }
 
   render() {
-    console.log("DateField render");
-
     const {
       isRequired,
       hasError,
@@ -22,6 +20,8 @@ class DateField extends React.Component {
       inputOnChange,
       inputTabIndex,
       calendarMinDate,
+      locale,
+      maxLabelWidth,
     } = this.props;
 
     return (
@@ -29,6 +29,7 @@ class DateField extends React.Component {
         isRequired={isRequired}
         hasError={hasError}
         labelText={labelText}
+        maxLabelWidth={maxLabelWidth}
       >
         <DatePicker
           name={inputName}
@@ -41,6 +42,7 @@ class DateField extends React.Component {
           calendarHeaderContent={calendarHeaderContent}
           minDate={calendarMinDate ? calendarMinDate : new Date("1900/01/01")}
           maxDate={new Date()}
+          locale={locale}
         />
       </FieldContainer>
     );

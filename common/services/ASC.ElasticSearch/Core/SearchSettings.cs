@@ -86,7 +86,6 @@ namespace ASC.ElasticSearch.Core
         private TenantManager TenantManager { get; }
         private SettingsManager SettingsManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
-        private FactoryIndexer FactoryIndexer { get; }
         private ICacheNotify<ReIndexAction> CacheNotify { get; }
         private IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
@@ -95,7 +94,6 @@ namespace ASC.ElasticSearch.Core
             TenantManager tenantManager,
             SettingsManager settingsManager,
             CoreBaseSettings coreBaseSettings,
-            FactoryIndexer factoryIndexer,
             ICacheNotify<ReIndexAction> cacheNotify,
             IServiceProvider serviceProvider,
             IConfiguration configuration)
@@ -103,7 +101,6 @@ namespace ASC.ElasticSearch.Core
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
-            FactoryIndexer = factoryIndexer;
             CacheNotify = cacheNotify;
             ServiceProvider = serviceProvider;
             Configuration = configuration;
@@ -111,7 +108,7 @@ namespace ASC.ElasticSearch.Core
 
         public List<SearchSettingsItem> GetAllItems()
         {
-            if (!SearchByContentEnabled) return new List<SearchSettingsItem>();
+            if (!CoreBaseSettings.Standalone) return new List<SearchSettingsItem>();
 
             var settings = SettingsManager.Load<SearchSettings>();
 
@@ -128,13 +125,13 @@ namespace ASC.ElasticSearch.Core
         {
             get
             {
-                return allItems ??= FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
+                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
             }
         }
 
         public void Set(List<SearchSettingsItem> items)
         {
-            if (!SearchByContentEnabled) return;
+            if (!CoreBaseSettings.Standalone) return;
 
             var settings = SettingsManager.Load<SearchSettings>();
 
@@ -151,28 +148,43 @@ namespace ASC.ElasticSearch.Core
             CacheNotify.Publish(action, CacheNotifyAction.Any);
         }
 
-        public bool CanSearchByContent<T>(int tenantId) where T : class, ISearchItem
+        public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem
         {
-            if (typeof(ISearchItemDocument).IsAssignableFrom(typeof(T)))
+            return CanIndexByContent(typeof(T), tenantId);
+        }
+
+        public bool CanIndexByContent(Type t, int tenantId)
+        {
+            if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
             {
                 return false;
             }
 
             if (Convert.ToBoolean(Configuration["core:search-by-content"] ?? "false")) return true;
 
-            if (!SearchByContentEnabled) return false;
+            if (!CoreBaseSettings.Standalone) return true;
 
             var settings = SettingsManager.LoadForTenant<SearchSettings>(tenantId);
 
-            return settings.IsEnabled(ServiceProvider.GetService<T>().IndexName);
+            return settings.IsEnabled(((ISearchItemDocument)ServiceProvider.GetService(t)).IndexName);
         }
 
-        private bool SearchByContentEnabled
+        public bool CanSearchByContent<T>() where T : class, ISearchItem
         {
-            get
+            return CanSearchByContent(typeof(T));
+        }
+
+        public bool CanSearchByContent(Type t)
+        {
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            if (!CanIndexByContent(t, tenantId)) return false;
+
+            if (CoreBaseSettings.Standalone)
             {
-                return CoreBaseSettings.Standalone;
+                return true;
             }
+
+            return TenantManager.GetTenantQuota(tenantId).ContentSearch;
         }
     }
 

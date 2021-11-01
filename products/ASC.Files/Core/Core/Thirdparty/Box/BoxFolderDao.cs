@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -66,9 +67,10 @@ namespace ASC.Files.Thirdparty.Box
             CrossDao crossDao,
             BoxDaoSelector boxDaoSelector,
             IFileDao<int> fileDao,
-            IFolderDao<int> folderDao
+            IFolderDao<int> folderDao,
+            TempPath tempPath
             )
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             BoxDaoSelector = boxDaoSelector;

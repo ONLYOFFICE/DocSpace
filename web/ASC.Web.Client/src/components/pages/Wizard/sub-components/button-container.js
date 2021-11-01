@@ -25,7 +25,7 @@ const ButtonContainer = ({ t, sending, onContinueHandler }) => {
         primary
         isDisabled={sending}
         isLoading={sending ? true : false}
-        label={t("ButtonContinue")}
+        label={t("Common:ContinueButton")}
         onClick={onContinueHandler}
       />
     </StyledContainer>

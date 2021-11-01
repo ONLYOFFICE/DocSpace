@@ -242,8 +242,19 @@ class CreateUserForm extends React.Component {
   }
 
   onInputChange = (event) => {
+    const { userFormValidation } = this.props;
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile[event.target.name] = event.target.value;
+    const value = event.target.value;
+    const title = event.target.name;
+
+    if (!value.match(userFormValidation)) {
+      stateCopy.errors[title] = true;
+    } else {
+      if (this.state.errors[title]) stateCopy.errors[title] = false;
+    }
+
+    stateCopy.profile[title] = value;
+
     this.setState(stateCopy);
     this.setIsEdit();
   };
@@ -262,8 +273,20 @@ class CreateUserForm extends React.Component {
     this.setIsEdit();
   };
 
+  scrollToErrorForm = () => {
+    const element = this.mainFieldsContainerRef.current;
+    const parent = element.closest(".scroll-body");
+    (parent || window).scrollTo(0, element.offsetTop);
+  };
+
   validate = () => {
     const { profile, errors: stateErrors } = this.state;
+
+    if (stateErrors.firstName || stateErrors.lastName) {
+      this.scrollToErrorForm();
+      return;
+    }
+
     const errors = {
       firstName: !profile.firstName.trim(),
       lastName: !profile.lastName.trim(),
@@ -274,9 +297,7 @@ class CreateUserForm extends React.Component {
       errors.firstName || errors.lastName || errors.email || errors.password;
 
     if (hasError) {
-      const element = this.mainFieldsContainerRef.current;
-      const parent = element.closest(".scroll-body");
-      (parent || window).scrollTo(0, element.offsetTop);
+      this.scrollToErrorForm();
     }
 
     this.setState({ errors: errors });
@@ -285,17 +306,25 @@ class CreateUserForm extends React.Component {
 
   handleSubmit = () => {
     if (!this.validate()) return false;
-    const { setIsEditingForm, homepage } = this.props;
+    const {
+      setIsEditingForm,
+      homepage,
+      createProfile,
+      createdAvatar,
+      t,
+      history,
+    } = this.props;
+    const profile = this.state.profile;
+    if (!profile.birthday) profile.birthday = new Date();
 
     this.setState({ isLoading: true });
-    this.props
-      .createProfile(this.state.profile)
+    createProfile(profile)
       .then((profile) => {
-        if (this.props.createdAvatar.tmpFile !== "") {
+        if (createdAvatar.tmpFile !== "") {
           this.createAvatar(profile.id, profile.userName);
         } else {
-          toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.props.history.push(
+          toastr.success(t("ChangesSavedSuccessfully"));
+          history.push(
             combineUrl(
               AppServerConfig.proxyURL,
               homepage,
@@ -421,11 +450,16 @@ class CreateUserForm extends React.Component {
       createdAvatar,
       croppedAvatar,
       passwordSettings,
+      language,
+      isTabletView,
     } = this.props;
     const { regDateCaption, userPostCaption, groupCaption } = customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+
+    const notEmptyFirstName = Boolean(profile.firstName.trim());
+    const notEmptyLastName = Boolean(profile.lastName.trim());
 
     return (
       <>
@@ -437,7 +471,7 @@ class CreateUserForm extends React.Component {
               role={getUserRole(profile)}
               editing={true}
               source={croppedAvatar}
-              editLabel={t("AddButton")}
+              editLabel={t("Common:AddButton")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
@@ -449,18 +483,24 @@ class CreateUserForm extends React.Component {
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("AddPhoto")}
-              selectNewPhotoLabel={t("selectNewPhotoLabel")}
-              orDropFileHereLabel={t("orDropFileHereLabel")}
-              unknownTypeError={t("ErrorUnknownFileImageType")}
-              maxSizeFileError={t("maxSizeFileError")}
-              unknownError={t("Error")}
-              saveButtonLabel={t("SaveButton")}
+              selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+              orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+              unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+              maxSizeFileError={t("Translations:maxSizeFileError")}
+              unknownError={t("Common:Error")}
+              saveButtonLabel={t("Common:SaveButton")}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
+          <MainFieldsContainer
+            ref={this.mainFieldsContainerRef}
+            {...(!isTabletView && { marginBottom: "32px" })}
+          >
             <TextField
               isRequired={true}
               hasError={errors.firstName}
+              {...(notEmptyFirstName && {
+                errorMessage: t("ErrorInvalidUserFirstName"),
+              })}
               labelText={`${t("FirstName")}:`}
               inputName="firstName"
               inputValue={profile.firstName}
@@ -472,7 +512,10 @@ class CreateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
-              labelText={`${t("LastName")}:`}
+              {...(notEmptyLastName && {
+                errorMessage: t("ErrorInvalidUserLastName"),
+              })}
+              labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
               inputIsDisabled={isLoading}
@@ -482,13 +525,13 @@ class CreateUserForm extends React.Component {
             <EmailField
               isRequired={true}
               hasError={errors.email}
-              labelText={`${t("Email")}:`}
+              labelText={`${t("Common:Email")}:`}
               inputName="email"
               inputValue={profile.email}
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
               inputTabIndex={3}
-              helpButtonHeaderContent={t("Mail")}
+              helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
                   <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
@@ -509,7 +552,7 @@ class CreateUserForm extends React.Component {
             <PasswordField
               isRequired={true}
               hasError={errors.password}
-              labelText={`${t("Password")}:`}
+              labelText={`${t("Common:Password")}:`}
               radioName="passwordType"
               radioValue={profile.passwordType}
               radioOptions={[
@@ -523,7 +566,7 @@ class CreateUserForm extends React.Component {
               inputValue={profile.password}
               inputIsDisabled={isLoading || profile.passwordType === "link"}
               inputOnChange={this.onInputChange}
-              copyLinkText={t("CopyEmailAndPassword")}
+              copyLinkText={t("Common:CopyEmailAndPassword")}
               copiedResourceText={t("CopiedResourceText")}
               inputTabIndex={4}
               passwordSettings={passwordSettings}
@@ -531,7 +574,7 @@ class CreateUserForm extends React.Component {
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-              labelText={`${t("Birthdate")}:`}
+              labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
@@ -539,14 +582,15 @@ class CreateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={5}
+              locale={language}
             />
             <RadioField
-              labelText={`${t("Sex")}:`}
+              labelText={`${t("Translations:Sex")}:`}
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: "male", label: t("MaleSexStatus") },
-                { value: "female", label: t("FemaleSexStatus") },
+                { value: "male", label: t("Translations:MaleSexStatus") },
+                { value: "female", label: t("Translations:FemaleSexStatus") },
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
@@ -564,9 +608,10 @@ class CreateUserForm extends React.Component {
               calendarMinDate={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
+              locale={language}
             />
             <TextField
-              labelText={`${t("Location")}:`}
+              labelText={`${t("Translations:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
@@ -584,20 +629,23 @@ class CreateUserForm extends React.Component {
             <DepartmentField
               labelText={`${groupCaption}:`}
               isDisabled={isLoading}
-              showGroupSelectorButtonTitle={t("AddButton")}
+              showGroupSelectorButtonTitle={t("Common:AddButton")}
               onShowGroupSelector={this.onShowGroupSelector}
               onCloseGroupSelector={this.onCloseGroupSelector}
               onRemoveGroup={this.onRemoveGroup}
               selectorIsVisible={selector.visible}
               selectorOptions={selector.options}
               selectorSelectedOptions={selector.selected}
-              selectorSelectAllText={t("SelectAll")}
+              selectorSelectAllText={t("Common:SelectAll")}
               selectorOnSearchGroups={this.onSearchGroups}
               selectorOnSelectGroups={this.onSelectGroups}
             />
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("Comments")}>
+        <InfoFieldContainer
+          headerText={t("Translations:Comments")}
+          marginBottom={"42px"}
+        >
           <Textarea
             placeholder={t("WriteComment")}
             name="notes"
@@ -607,7 +655,10 @@ class CreateUserForm extends React.Component {
             tabIndex={9}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("ContactInformation")}>
+        <InfoFieldContainer
+          headerText={t("ContactInformation")}
+          marginBottom={"42px"}
+        >
           <ContactsField
             pattern={pattern.contact}
             contacts={contacts.contact}
@@ -619,7 +670,10 @@ class CreateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("SocialProfiles")}>
+        <InfoFieldContainer
+          headerText={t("Translations:SocialProfiles")}
+          {...(isTabletView && { marginBottom: "36px" })}
+        >
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -633,7 +687,7 @@ class CreateUserForm extends React.Component {
         </InfoFieldContainer>
         <div>
           <Button
-            label={t("SaveButton")}
+            label={t("Common:SaveButton")}
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
@@ -641,7 +695,7 @@ class CreateUserForm extends React.Component {
             tabIndex={10}
           />
           <Button
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
             size="big"
@@ -658,6 +712,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => ({
     passwordSettings: auth.settingsStore.passwordSettings,
     customNames: auth.settingsStore.customNames,
+    language: auth.language,
     homepage: config.homepage,
     isEdit: peopleStore.editingFormStore.isEdit,
     groups: peopleStore.groupsStore.groups,
@@ -675,5 +730,13 @@ export default withRouter(
     setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
-  }))(observer(withTranslation("ProfileAction")(CreateUserForm)))
+    userFormValidation: auth.settingsStore.userFormValidation,
+    isTabletView: auth.settingsStore.isTabletView,
+  }))(
+    observer(
+      withTranslation(["ProfileAction", "Common", "Translations"])(
+        CreateUserForm
+      )
+    )
+  )
 );

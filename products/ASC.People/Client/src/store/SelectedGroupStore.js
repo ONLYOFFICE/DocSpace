@@ -23,7 +23,7 @@ class SelectedGroupStore {
     const { filter } = this.peopleStore.filterStore;
     const { clearSelection } = this.peopleStore.selectionStore;
     const { getUsersList } = this.peopleStore.usersStore;
-    const { setIsLoading } = this.peopleStore;
+    const { setIsLoading } = this.peopleStore.loadingStore;
 
     setIsLoading(true);
 

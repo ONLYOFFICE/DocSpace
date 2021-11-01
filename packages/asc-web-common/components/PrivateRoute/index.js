@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { Redirect, Route } from "react-router-dom";
 //import Loader from "@appserver/components/loader";
-import PageLayout from "../PageLayout";
+//import PageLayout from "../PageLayout";
 // import Error401 from "studio/Error401";
 // import Error404 from "studio/Error404";
 import AppLoader from "../AppLoader";
@@ -22,14 +22,22 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     computedMatch,
     setModuleInfo,
     modules,
-    homepage,
+    currentProductId,
     wizardCompleted,
+    personal,
+    location,
   } = rest;
 
-  const { userId } = computedMatch.params;
+  const { params, path } = computedMatch;
+  const { userId } = params;
 
   const renderComponent = (props) => {
     if (isLoaded && !isAuthenticated) {
+      if (personal) {
+        window.location.replace("/");
+        return <></>;
+      }
+
       console.log("PrivateRoute render Redirect to login", rest);
       return (
         <Redirect
@@ -38,6 +46,17 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
               AppServerConfig.proxyURL,
               wizardCompleted ? "/login" : "/wizard"
             ),
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (location.pathname === "/" && personal) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/products/files",
             state: { from: props.location },
           }}
         />
@@ -101,21 +120,30 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   };
 
   useEffect(() => {
-    const currentModule = modules.find((m) => {
-      if (
-        computedMatch.path !== "/" &&
-        m.link.indexOf(computedMatch.path) !== -1
-      ) {
-        return true;
-      }
-    });
+    if (!isLoaded) return;
 
-    if (currentModule && homepage !== computedMatch.path) {
-      const { id } = currentModule;
+    let currentModule;
 
-      setModuleInfo(currentModule.origLink || currentModule.link, id);
+    if (path === "" || path === "/") {
+      currentModule = {
+        id: "home",
+        origLink: "/",
+      };
+    } else if (path.startsWith("/my")) {
+      currentModule = {
+        id: "f4d98afd-d336-4332-8778-3c6945c81ea0",
+        origLink: "/products/people",
+      };
+    } else {
+      currentModule = modules.find((m) => m.link.startsWith(path));
     }
-  }, [computedMatch.path]);
+
+    if (!currentModule) return;
+
+    const { id, origLink, link } = currentModule;
+
+    setModuleInfo(origLink || link, id);
+  }, [path, modules, isLoaded]);
 
   //console.log("PrivateRoute render", rest);
   return <Route {...rest} render={renderComponent} />;
@@ -131,9 +159,8 @@ export default inject(({ auth }) => {
     moduleStore,
   } = auth;
   const { user } = userStore;
-  const { setModuleInfo, homepage } = settingsStore;
   const { modules } = moduleStore;
-  const { wizardCompleted } = settingsStore;
+  const { setModuleInfo, wizardCompleted, personal } = settingsStore;
 
   return {
     modules,
@@ -142,8 +169,8 @@ export default inject(({ auth }) => {
     isAdmin,
     isLoaded,
     setModuleInfo,
-    homepage,
     wizardCompleted,
-    //getUser: store.userStore.getCurrentUser,
+
+    personal,
   };
 })(observer(PrivateRoute));

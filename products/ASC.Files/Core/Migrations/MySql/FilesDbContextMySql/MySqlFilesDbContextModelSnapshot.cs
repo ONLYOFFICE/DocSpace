@@ -86,16 +86,6 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");
 
-                    b.Property<bool>("Public")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("public");
-
-                    b.Property<string>("PublicVisibleProducts")
-                        .HasColumnType("varchar(1024)")
-                        .HasColumnName("publicvisibleproducts")
-                        .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
-
                     b.Property<bool>("Spam")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
@@ -263,6 +253,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .HasColumnType("int")
                         .HasColumnName("version_group")
                         .HasDefaultValueSql("'1'");
+
+                    b.Property<bool>("Thumb")
+                        .HasColumnType("int")
+                        .HasColumnName("thumb");
 
                     b.HasKey("TenantId", "Id", "Version")
                         .HasName("PRIMARY");
@@ -458,7 +452,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar(512)")
                         .HasColumnName("password")
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");

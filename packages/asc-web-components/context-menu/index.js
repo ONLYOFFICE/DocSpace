@@ -32,7 +32,7 @@ class ContextMenuSub extends Component {
     });
   }
 
-  onItemClick(e, item) {
+  onItemClick(item, e) {
     if (item.disabled) {
       e.preventDefault();
       return;
@@ -105,7 +105,7 @@ class ContextMenuSub extends Component {
     return (
       <li
         key={"separator_" + index}
-        className="p-menu-separator"
+        className="p-menu-separator not-selectable"
         role="separator"
       ></li>
     );
@@ -133,7 +133,7 @@ class ContextMenuSub extends Component {
       { "p-menuitem-active": active },
       item.className
     );
-    const linkClassName = classNames("p-menuitem-link", {
+    const linkClassName = classNames("p-menuitem-link", "not-selectable", {
       "p-disabled": item.disabled,
     });
     const iconClassName = classNames("p-menuitem-icon", {
@@ -148,7 +148,7 @@ class ContextMenuSub extends Component {
       ></ReactSVG>
     );
     const label = item.label && (
-      <span className="p-menuitem-text">{item.label}</span>
+      <span className="p-menuitem-text not-selectable">{item.label}</span>
     );
     const submenuIcon = item.items && (
       <ArrowIcon className={submenuIconClassName} />
@@ -157,13 +157,16 @@ class ContextMenuSub extends Component {
     const dataKeys = Object.fromEntries(
       Object.entries(item).filter((el) => el[0].indexOf("data-") === 0)
     );
+    const onClick = (e) => {
+      this.onItemClick(item, e);
+    };
     let content = (
       <a
         href={item.url || "#"}
         className={linkClassName}
         target={item.target}
         {...dataKeys}
-        onClick={(event) => this.onItemClick(event, item, index)}
+        onClick={onClick}
         role="menuitem"
       >
         {icon}
@@ -174,7 +177,7 @@ class ContextMenuSub extends Component {
 
     if (item.template) {
       const defaultContentOptions = {
-        onClick: (event) => this.onItemClick(event, item, index),
+        onClick,
         className: linkClassName,
         labelClassName: "p-menuitem-text",
         iconClassName,
@@ -235,7 +238,7 @@ class ContextMenuSub extends Component {
         unmountOnExit={true}
         onEnter={this.onEnter}
       >
-        <ul ref={this.submenuRef} className={className}>
+        <ul ref={this.submenuRef} className={`${className} not-selectable`}>
           {submenu}
         </ul>
       </CSSTransition>
@@ -435,7 +438,8 @@ class ContextMenu extends Component {
   bindDocumentClickListener() {
     if (!this.documentClickListener) {
       this.documentClickListener = (e) => {
-        if (this.isOutsideClicked(e) && e.button !== 2) {
+        if (this.isOutsideClicked(e)) {
+          //TODO: (&& e.button !== 2) restore after global usage
           this.hide(e);
 
           this.setState({
@@ -445,6 +449,7 @@ class ContextMenu extends Component {
       };
 
       document.addEventListener("click", this.documentClickListener);
+      document.addEventListener("mousedown", this.documentClickListener);
     }
   }
 
@@ -476,6 +481,7 @@ class ContextMenu extends Component {
   unbindDocumentClickListener() {
     if (this.documentClickListener) {
       document.removeEventListener("click", this.documentClickListener);
+      document.removeEventListener("mousedown", this.documentClickListener);
       this.documentClickListener = null;
     }
   }

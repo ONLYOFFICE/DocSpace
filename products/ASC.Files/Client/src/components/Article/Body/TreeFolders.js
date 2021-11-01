@@ -2,8 +2,6 @@ import React from "react";
 import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-//import equal from "fast-deep-equal/react";
-import { getFolder } from "@appserver/common/api/files";
 import { FolderType, ShareAccessRights } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
@@ -12,8 +10,12 @@ import { ReactSVG } from "react-svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import withLoader from "../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
 
 import { observer, inject } from "mobx-react";
+import { runInAction } from "mobx";
+import { withTranslation } from "react-i18next";
 
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
@@ -66,6 +68,7 @@ class TreeFolders extends React.Component {
   }
 
   onBadgeClick = (e) => {
+    e.stopPropagation();
     const id = e.currentTarget.dataset.id;
     this.props.onBadgeClick && this.props.onBadgeClick(id);
   };
@@ -75,22 +78,22 @@ class TreeFolders extends React.Component {
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        iconUrl = "images/catalog.user.react.svg";
+        iconUrl = "/static/images/catalog.user.react.svg";
         break;
       case FolderType.SHARE:
-        iconUrl = "images/catalog.shared.react.svg";
+        iconUrl = "/static/images/catalog.share.react.svg";
         break;
       case FolderType.COMMON:
-        iconUrl = "images/catalog.portfolio.react.svg";
+        iconUrl = "/static/images/catalog.portfolio.react.svg";
         break;
       case FolderType.Favorites:
-        iconUrl = "images/catalog.favorites.react.svg";
+        iconUrl = "/static/images/catalog.favorites.react.svg";
         break;
       case FolderType.Recent:
-        iconUrl = "images/catalog.recent.react.svg";
+        iconUrl = "/static/images/catalog.recent.react.svg";
         break;
       case FolderType.Privacy:
-        iconUrl = "images/catalog.private.react.svg";
+        iconUrl = "/static/images/catalog.private.react.svg";
         break;
       case FolderType.TRASH:
         iconUrl = "/static/images/catalog.trash.react.svg";
@@ -99,38 +102,39 @@ class TreeFolders extends React.Component {
         break;
     }
 
-    if (item.parentId !== 0) iconUrl = "images/catalog.folder.react.svg";
+    if (item.parentId !== 0)
+      iconUrl = "/static/images/catalog.folder.react.svg";
 
     switch (item.providerKey) {
       case "GoogleDrive":
-        iconUrl = "images/cloud.services.google.drive.react.svg";
+        iconUrl = "/static/images/cloud.services.google.drive.react.svg";
         break;
       case "Box":
-        iconUrl = "images/cloud.services.box.react.svg";
+        iconUrl = "/static/images/cloud.services.box.react.svg";
         break;
       case "DropboxV2":
-        iconUrl = "images/cloud.services.dropbox.react.svg";
+        iconUrl = "/static/images/cloud.services.dropbox.react.svg";
         break;
       case "OneDrive":
-        iconUrl = "images/cloud.services.onedrive.react.svg";
+        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "SharePoint":
-        iconUrl = "images/cloud.services.onedrive.react.svg";
+        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "kDrive":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/cloud.services.kdrive.react.svg";
         break;
       case "Yandex":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/cloud.services.yandex.react.svg";
         break;
       case "NextCloud":
-        iconUrl = "images/cloud.services.nextcloud.react.svg";
+        iconUrl = "/static/images/cloud.services.nextcloud.react.svg";
         break;
       case "OwnCloud":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "WebDav":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/cloud.services.webdav.react.svg";
         break;
       default:
         break;
@@ -156,7 +160,8 @@ class TreeFolders extends React.Component {
       return false;
     }
 
-    if (draggableItems.find((x) => x.id === item.id)) return false;
+    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      return false;
 
     // const isMy = rootFolderType === FolderType.USER;
     // const isCommon = rootFolderType === FolderType.COMMON;
@@ -195,6 +200,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
+    const { withoutProvider } = this.props;
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -202,8 +208,13 @@ class TreeFolders extends React.Component {
         ? item.newItems > 0 && this.props.needUpdate
         : false;
 
+      const provider = item.providerKey;
+
       const serviceFolder = !!item.providerKey;
       let className = `tree-drag tree-id_${item.id}`;
+
+      if (withoutProvider && provider) return;
+
       if (dragging) className += " dragging";
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
@@ -212,7 +223,6 @@ class TreeFolders extends React.Component {
             key={item.id}
             className={className}
             title={item.title}
-            needTopMargin={item.rootFolderType === FolderType.Privacy}
             icon={this.getFolderIcon(item)}
             dragging={dragging}
             isLeaf={
@@ -245,7 +255,13 @@ class TreeFolders extends React.Component {
           title={item.title}
           needTopMargin={item.rootFolderType === FolderType.TRASH}
           dragging={dragging}
-          isLeaf={item.foldersCount ? false : true}
+          isLeaf={
+            (item.rootFolderType === FolderType.Privacy &&
+              !this.props.isDesktop) ||
+            !item.foldersCount
+              ? true
+              : false
+          }
           icon={this.getFolderIcon(item)}
           newItems={
             !this.props.isDesktop && item.rootFolderType === FolderType.Privacy
@@ -271,28 +287,25 @@ class TreeFolders extends React.Component {
     }
   };
 
-  loop = (data, curId, child, level) => {
-    //if (level < 1 || curId.length - 3 > level * 2) return;
-    data.forEach((item) => {
-      const itemId = item.id.toString();
-      if (curId.indexOf(itemId) >= 0) {
-        const listIds = curId;
-        const treeItem = listIds.find((x) => x.toString() === itemId);
-        if (treeItem === undefined) {
-          listIds.push(itemId);
-        }
-        if (item.folders) {
-          this.loop(item.folders, listIds, child);
-        } else {
-          item.folders = child;
-        }
-      }
+  loop = (data, child, pos) => {
+    let newPos = pos.split("-");
+    let newData = data;
+
+    newPos.shift();
+    while (newPos.length !== 1) {
+      const index = +newPos[0];
+      newData = newData[index].folders;
+      newPos.shift();
+    }
+
+    runInAction(() => {
+      newData[newPos].folders = child;
     });
   };
 
-  getNewTreeData(treeData, curId, child, level) {
-    this.loop(treeData, curId, child, level);
-    this.setLeaf(treeData, curId, level);
+  getNewTreeData(treeData, curId, child, pos) {
+    this.loop(treeData, child, pos);
+    this.setLeaf(treeData, curId, 10);
   }
 
   setLeaf(treeData, curKey, level) {
@@ -318,35 +331,25 @@ class TreeFolders extends React.Component {
 
   generateTreeNodes = (treeNode) => {
     const folderId = treeNode.props.id;
+    const level = treeNode.props.pos;
+
     let arrayFolders;
+    return this.props.getSubfolders(folderId).then((data) => {
+      arrayFolders = data;
 
-    const newFilter = this.props.filter.clone();
-    newFilter.filterType = 2;
-    newFilter.withSubfolders = null;
-    newFilter.authorType = null;
+      const folderIndex = treeNode.props.pos;
+      let i = 0;
+      for (let item of arrayFolders) {
+        item["key"] = `${folderIndex}-${i}`;
+        i++;
+      }
 
-    return getFolder(folderId, newFilter)
-      .then((data) => {
-        arrayFolders = data.folders;
-
-        let listIds = [];
-        for (let item of data.pathParts) {
-          listIds.push(item.toString());
-        }
-
-        const folderIndex = treeNode.props.pos;
-        let i = 0;
-        for (let item of arrayFolders) {
-          item["key"] = `${folderIndex}-${i}`;
-          i++;
-        }
-
-        return { folders: arrayFolders, listIds };
-      })
-      .catch((err) => toastr.error("Something went wrong", err));
+      return { folders: arrayFolders, listIds: [], level };
+    });
   };
 
   onLoadData = (treeNode, isExpand) => {
+    const { data: incomingDate, certainFolders } = this.props;
     isExpand && this.setState({ isExpand: true });
     this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
@@ -361,12 +364,14 @@ class TreeFolders extends React.Component {
         const listIds = data.listIds;
         listIds.push(itemId);
 
-        const treeData = [...this.props.treeFolders];
+        const treeData = certainFolders
+          ? incomingDate
+          : [...this.props.treeFolders];
 
-        this.getNewTreeData(treeData, listIds, data.folders, 10);
-        /* this.props.needUpdate &&  */ this.props.setTreeFolders(treeData);
+        this.getNewTreeData(treeData, listIds, data.folders, data.level);
+        this.props.setTreeFolders(treeData);
       })
-      .catch((err) => toastr.error(err))
+      .catch((err) => console.log("err", err))
       .finally(() => {
         this.setState({ isExpand: false });
         this.props.setIsLoading && this.props.setIsLoading(false);
@@ -428,6 +433,7 @@ class TreeFolders extends React.Component {
     const {
       selectedKeys,
       isLoading,
+      setIsLoading,
       onSelect,
       dragging,
       expandedKeys,
@@ -440,7 +446,7 @@ class TreeFolders extends React.Component {
       <StyledTreeMenu
         className="files-tree-menu"
         checkable={false}
-        draggable
+        draggable={dragging}
         disabled={isLoading}
         multiple={false}
         showIcon
@@ -470,12 +476,14 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  (
+    { auth, filesStore, treeFoldersStore, selectedFolderStore },
+    { useDefaultSelectedKeys, selectedKeys }
+  ) => {
     const {
-      filter,
-      setFilter,
       selection,
       setIsLoading,
+      isLoading,
       dragging,
       setDragging,
     } = filesStore;
@@ -489,6 +497,7 @@ export default inject(
       expandedKeys,
       setExpandedKeys,
       setExpandedPanelKeys,
+      getSubfolders,
     } = treeFoldersStore;
     const { id /* rootFolderType */ } = selectedFolderStore;
 
@@ -501,17 +510,24 @@ export default inject(
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
-      filter,
-      draggableItems: dragging ? selection : [],
+      draggableItems: dragging ? selection : null,
       expandedKeys,
       treeFolders,
+      isLoading,
+      selectedKeys: useDefaultSelectedKeys
+        ? treeFoldersStore.selectedKeys
+        : selectedKeys,
 
       setDragging,
       setIsLoading,
       setTreeFolders,
-      setFilter,
       setExpandedKeys,
       setExpandedPanelKeys,
+      getSubfolders,
     };
   }
-)(observer(TreeFolders));
+)(
+  withTranslation(["Home", "Common"])(
+    withLoader(observer(TreeFolders))(<Loaders.TreeFolders />)
+  )
+);

@@ -36,7 +36,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("last_key")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastDate)
                     .HasColumnName("last_date")

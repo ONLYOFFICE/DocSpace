@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 namespace ASC.Files.Core.EF
 {
@@ -41,14 +41,14 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Owner)
                     .IsRequired()
                     .HasColumnName("owner")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });

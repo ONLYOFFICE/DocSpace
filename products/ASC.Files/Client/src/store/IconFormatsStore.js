@@ -3,8 +3,6 @@ import { presentInArray } from "../helpers/files-helpers";
 
 class IconFormatsStore {
   archive = [
-    ".zip",
-    ".rar",
     ".ace",
     ".arc",
     ".arj",
@@ -12,42 +10,46 @@ class IconFormatsStore {
     ".cab",
     ".enc",
     ".gz",
+    ".gz",
     ".ha",
     ".jar",
     ".lha",
     ".lzh",
     ".pak",
     ".pk3",
+    ".rar",
     ".tar",
     ".tgz",
-    ".gz",
     ".uu",
     ".uue",
     ".xxe",
     ".z",
+    ".zip",
     ".zoo",
   ];
   image = [
+    ".ai",
     ".bmp",
+    ".cmx",
     ".cod",
     ".gif",
+    ".ico",
     ".ief",
     ".jpe",
+    ".jpeg",
     ".jpg",
-    ".tif",
-    ".cmx",
-    ".ico",
-    ".pnm",
     ".pbm",
+    ".png",
+    ".pnm",
     ".ppm",
     ".psd",
     ".rgb",
+    ".tif",
+    ".tiff",
+    ".webp",
     ".xbm",
     ".xpm",
     ".xwd",
-    ".png",
-    ".ai",
-    ".jpeg",
   ];
   sound = [
     ".aac",
@@ -192,7 +194,6 @@ class IconFormatsStore {
         isSoundItem,
         isHtmlItem
       );
-
       return icon;
     } else {
       return this.getFolderIcon(providerKey, size);
@@ -227,24 +228,7 @@ class IconFormatsStore {
     }
   };
 
-  getFileIcon = (
-    extension,
-    size = 32,
-    archive = false,
-    image = false,
-    sound = false,
-    html = false
-  ) => {
-    const folderPath = `images/icons/${size}`;
-
-    if (archive) return `${folderPath}/file_archive.svg`;
-
-    if (image) return `${folderPath}/image.svg`;
-
-    if (sound) return `${folderPath}/sound.svg`;
-
-    if (html) return `${folderPath}/html.svg`;
-
+  getIconUrl = (extension, folderPath) => {
     switch (extension) {
       case ".avi":
         return `${folderPath}/avi.svg`;
@@ -254,18 +238,27 @@ class IconFormatsStore {
         return `${folderPath}/djvu.svg`;
       case ".doc":
         return `${folderPath}/doc.svg`;
+      case ".docm":
+        return `${folderPath}/docm.svg`;
       case ".docx":
         return `${folderPath}/docx.svg`;
+      case ".dotx":
+        return `${folderPath}/dotx.svg`;
       case ".dvd":
         return `${folderPath}/dvd.svg`;
       case ".epub":
         return `${folderPath}/epub.svg`;
       case ".pb2":
+      case ".fb2":
         return `${folderPath}/fb2.svg`;
       case ".flv":
         return `${folderPath}/flv.svg`;
+      case ".fodt":
+        return `${folderPath}/fodt.svg`;
       case ".iaf":
         return `${folderPath}/iaf.svg`;
+      case ".ics":
+        return `${folderPath}/ics.svg`;
       case ".m2ts":
         return `${folderPath}/m2ts.svg`;
       case ".mht":
@@ -284,14 +277,24 @@ class IconFormatsStore {
         return `${folderPath}/ods.svg`;
       case ".odt":
         return `${folderPath}/odt.svg`;
+      case ".otp":
+        return `${folderPath}/otp.svg`;
+      case ".ots":
+        return `${folderPath}/ots.svg`;
+      case ".ott":
+        return `${folderPath}/ott.svg`;
       case ".pdf":
         return `${folderPath}/pdf.svg`;
+      case ".pot":
+        return `${folderPath}/pot.svg`;
       case ".pps":
         return `${folderPath}/pps.svg`;
       case ".ppsx":
         return `${folderPath}/ppsx.svg`;
       case ".ppt":
         return `${folderPath}/ppt.svg`;
+      case ".pptm":
+        return `${folderPath}/pptm.svg`;
       case ".pptx":
         return `${folderPath}/pptx.svg`;
       case ".rtf":
@@ -304,19 +307,46 @@ class IconFormatsStore {
         return `${folderPath}/webm.svg`;
       case ".xls":
         return `${folderPath}/xls.svg`;
+      case ".xlsm":
+        return `${folderPath}/xlsm.svg`;
       case ".xlsx":
         return `${folderPath}/xlsx.svg`;
       case ".xps":
         return `${folderPath}/xps.svg`;
       case ".xml":
         return `${folderPath}/xml.svg`;
+      case ".oform":
+        return `${folderPath}/oform.svg`;
+      case ".docxf":
+        return `${folderPath}/docxf.svg`;
       default:
         return `${folderPath}/file.svg`;
     }
   };
 
+  getFileIcon = (
+    extension,
+    size = 32,
+    archive = false,
+    image = false,
+    sound = false,
+    html = false
+  ) => {
+    const folderPath = `/static/images/icons/${size}`;
+
+    if (archive) return `${folderPath}/file_archive.svg`;
+
+    if (image) return `${folderPath}/image.svg`;
+
+    if (sound) return `${folderPath}/sound.svg`;
+
+    if (html) return `${folderPath}/html.svg`;
+
+    return this.getIconUrl(extension, folderPath);
+  };
+
   getIconSrc = (ext, size = 24) => {
-    const folderPath = `images/icons/${size}`;
+    const folderPath = `/static/images/icons/${size}`;
 
     if (presentInArray(this.archive, ext, true))
       return `${folderPath}/file_archive.svg`;
@@ -329,74 +359,7 @@ class IconFormatsStore {
 
     const extension = ext.toLowerCase();
 
-    switch (extension) {
-      case ".avi":
-        return `${folderPath}/avi.svg`;
-      case ".csv":
-        return `${folderPath}/csv.svg`;
-      case ".djvu":
-        return `${folderPath}/djvu.svg`;
-      case ".doc":
-        return `${folderPath}/doc.svg`;
-      case ".docx":
-        return `${folderPath}/docx.svg`;
-      case ".dvd":
-        return `${folderPath}/dvd.svg`;
-      case ".epub":
-        return `${folderPath}/epub.svg`;
-      case ".pb2":
-        return `${folderPath}/fb2.svg`;
-      case ".flv":
-        return `${folderPath}/flv.svg`;
-      case ".iaf":
-        return `${folderPath}/iaf.svg`;
-      case ".m2ts":
-        return `${folderPath}/m2ts.svg`;
-      case ".mht":
-        return `${folderPath}/mht.svg`;
-      case ".mkv":
-        return `${folderPath}/mkv.svg`;
-      case ".mov":
-        return `${folderPath}/mov.svg`;
-      case ".mp4":
-        return `${folderPath}/mp4.svg`;
-      case ".mpg":
-        return `${folderPath}/mpg.svg`;
-      case ".odp":
-        return `${folderPath}/odp.svg`;
-      case ".ods":
-        return `${folderPath}/ods.svg`;
-      case ".odt":
-        return `${folderPath}/odt.svg`;
-      case ".pdf":
-        return `${folderPath}/pdf.svg`;
-      case ".pps":
-        return `${folderPath}/pps.svg`;
-      case ".ppsx":
-        return `${folderPath}/ppsx.svg`;
-      case ".ppt":
-        return `${folderPath}/ppt.svg`;
-      case ".pptx":
-        return `${folderPath}/pptx.svg`;
-      case ".rtf":
-        return `${folderPath}/rtf.svg`;
-      case ".svg":
-        return `${folderPath}/svg.svg`;
-      case ".txt":
-        return `${folderPath}/txt.svg`;
-      case ".webm":
-        return `${folderPath}/webm.svg`;
-      case ".xls":
-        return `${folderPath}/xls.svg`;
-      case ".xlsx":
-        return `${folderPath}/xlsx.svg`;
-      case ".xps":
-        return `${folderPath}/xps.svg`;
-      case ".xml":
-        return `${folderPath}/xml.svg`;
-      default:
-        return `${folderPath}/file.svg`;
-    }
+    return this.getIconUrl(extension, folderPath);
   };
 }
 

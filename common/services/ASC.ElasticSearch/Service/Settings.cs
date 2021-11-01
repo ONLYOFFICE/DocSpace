@@ -32,20 +32,19 @@ namespace ASC.ElasticSearch.Service
     [Singletone]
     public class Settings
     {
-        public Settings()
+        public static Settings GetInstance(ConfigurationExtension configuration)
         {
-
-        }
-
-        public Settings(ConfigurationExtension configuration)
-        {
+            var result = new Settings();
             var cfg = configuration.GetSetting<Settings>("elastic");
-            Scheme = cfg.Scheme ?? "http";
-            Host = cfg.Host ?? "localhost";
-            Port = cfg.Port ?? 9200;
-            Period = cfg.Period ?? 1;
-            MemoryLimit = cfg.MemoryLimit ?? 1 * 1024 * 1024L;
-            MaxContentLength = cfg.MaxContentLength ?? 10 * 1024 * 1024L;
+            result.Scheme = cfg.Scheme ?? "http";
+            result.Host = cfg.Host ?? "localhost";
+            result.Port = cfg.Port ?? 9200;
+            result.Period = cfg.Period ?? 1;
+            result.MaxContentLength = cfg.MaxContentLength ?? 100 * 1024 * 1024L;
+            result.MaxFileSize = cfg.MaxFileSize ?? 10 * 1024 * 1024L;
+            result.Threads = cfg.Threads ?? 1;
+            result.HttpCompression = cfg.HttpCompression ?? true;
+            return result;
         }
 
         public string Host { get; set; }
@@ -56,8 +55,12 @@ namespace ASC.ElasticSearch.Service
 
         public int? Period { get; set; }
 
-        public long? MemoryLimit { get; set; }
-
         public long? MaxContentLength { get; set; }
+
+        public long? MaxFileSize { get; set; }
+
+        public int? Threads { get; set; }
+
+        public bool? HttpCompression { get; set; }
     }
 }

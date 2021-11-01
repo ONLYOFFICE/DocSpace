@@ -9,6 +9,10 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../../HOCs/withLoader";
+
 const homepage = config.homepage;
 
 const Wrapper = styled.div`
@@ -40,6 +44,8 @@ const SectionHeaderContent = (props) => {
     setIsVisibleDataLossDialog,
     toggleAvatarEditor,
     avatarEditorIsOpen,
+    isMy,
+    isEditTargetUser,
   } = props;
   const { userCaption, guestCaption } = customNames;
   const { type } = match.params;
@@ -72,7 +78,11 @@ const SectionHeaderContent = (props) => {
   );
 
   const goBackAndReset = useCallback(() => {
-    if (!profile || !document.referrer) {
+    if (isMy) {
+      return history.goBack();
+    }
+
+    if (!isEditTargetUser && (!profile || !document.referrer)) {
       setFilterAndReset(filter);
       const urlFilter = filter.toUrlParams();
       return history.push(
@@ -124,5 +134,6 @@ export default withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
     avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
-  }))(observer(SectionHeaderContent))
+    isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
+  }))(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
 );

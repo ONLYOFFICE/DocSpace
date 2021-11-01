@@ -1,8 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
+import globalColors from "@appserver/components/utils/globalColors";
 
 const backgroundColor = "none";
-const color = "#2DA7DB";
+const color = globalColors.blueMain;
 
 const StyledCircleWrap = styled.div`
   width: 16px;
@@ -10,6 +11,15 @@ const StyledCircleWrap = styled.div`
   background: ${backgroundColor};
   border-radius: 50%;
   cursor: pointer;
+`;
+
+const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 `;
 
 const StyledCircle = styled.div`
@@ -21,14 +31,24 @@ const StyledCircle = styled.div`
     border-radius: 50%;
   }
 
-  .circle__mask {
-    clip: rect(0px, 16px, 16px, 8px);
-  }
+  ${(props) =>
+    props.percent === 0
+      ? css`
+          .circle__fill {
+            animation: ${rotate360} 2s linear infinite;
+            transform: translate(0);
+          }
+        `
+      : css`
+          .circle__mask {
+            clip: rect(0px, 16px, 16px, 8px);
+          }
 
-  .circle__fill {
-    animation: fill-rotate ease-in-out none;
-    transform: rotate(${(props) => props.percent * 1.8}deg);
-  }
+          .circle__fill {
+            animation: fill-rotate ease-in-out none;
+            transform: rotate(${(props) => props.percent * 1.8}deg);
+          }
+        `}
 
   .circle__mask .circle__fill {
     clip: rect(0px, 8px, 16px, 0px);
@@ -59,13 +79,13 @@ const StyledLoadingButton = styled.div`
   background: #fff;
   position: absolute;
   margin: 2px;
-  color: #2da7db;
+  color: ${color};
   font-size: 16px;
   font-weight: bold;
 `;
 
 const LoadingButton = ({ id, className, style, ...rest }) => {
-  const { percent, onClick } = rest;
+  const { percent, onClick, isConversion, inConversion } = rest;
 
   return (
     <StyledCircleWrap
@@ -74,7 +94,7 @@ const LoadingButton = ({ id, className, style, ...rest }) => {
       style={style}
       onClick={onClick}
     >
-      <StyledCircle percent={percent}>
+      <StyledCircle percent={percent} isConversion={isConversion}>
         <div className="circle__mask circle__full">
           <div className="circle__fill"></div>
         </div>
@@ -82,7 +102,9 @@ const LoadingButton = ({ id, className, style, ...rest }) => {
           <div className="circle__fill"></div>
         </div>
 
-        <StyledLoadingButton>&times;</StyledLoadingButton>
+        <StyledLoadingButton isConversion={isConversion}>
+          {!inConversion && <>&times;</>}
+        </StyledLoadingButton>
       </StyledCircle>
     </StyledCircleWrap>
   );

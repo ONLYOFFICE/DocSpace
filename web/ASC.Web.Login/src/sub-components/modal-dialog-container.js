@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import ModalDialog from "@appserver/components/modal-dialog";
 
-const ModalDialogContainer = styled.div`
+const ModalDialogContainer = styled(ModalDialog)`
   .modal-dialog-aside-footer {
     @media (max-width: 1024px) {
       width: 90%;

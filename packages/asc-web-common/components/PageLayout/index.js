@@ -1,10 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
-//import ProgressBar from "@appserver/components/progress-bar";
 import { size } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
-import { isMobile } from "react-device-detect";
+import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 import Article from "./sub-components/article";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
@@ -20,12 +19,13 @@ import SectionToggler from "./sub-components/section-toggler";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
-import { SelectableGroup } from "react-selectable-fast";
-import SelectedFrame from "./sub-components/SelectedFrame";
+import Selecto from "react-selecto";
 import styled from "styled-components";
 
-const StyledSelectableGroup = styled(SelectableGroup)`
-  display: contents;
+const StyledSelectoWrapper = styled.div`
+  .selecto-selection {
+    z-index: 200;
+  }
 `;
 
 function ArticleHeader() {
@@ -75,27 +75,21 @@ class PageLayout extends React.Component {
   constructor(props) {
     super(props);
 
-    const isArticleVisibleAndPinned = !!this.props.isArticlePinned;
-
-    this.state = {
-      isBackdropVisible: false,
-      isArticleVisible: isArticleVisibleAndPinned,
-      isArticlePinned: isArticleVisibleAndPinned,
-    };
-
     this.timeoutHandler = null;
     this.intervalHandler = null;
+
+    this.scroll = null;
   }
 
   componentDidUpdate(prevProps) {
+    if (!this.scroll) {
+      this.scroll = document.getElementsByClassName("section-scroll")[0];
+    }
+
     if (
-      (this.props.hideAside &&
-        !this.state.isArticlePinned &&
-        this.props.hideAside !== prevProps.hideAside) ||
-      (this.props.isLoading !== prevProps.isLoading &&
-        this.props.isLoaded &&
-        this.state.isArticleVisible &&
-        !this.state.isArticlePinned)
+      this.props.hideAside &&
+      !this.props.isArticlePinned &&
+      this.props.hideAside !== prevProps.hideAside
     ) {
       this.backdropClick();
     }
@@ -120,9 +114,14 @@ class PageLayout extends React.Component {
   orientationChangeHandler = () => {
     const isValueExist = !!this.props.isArticlePinned;
     const isEnoughWidth = screen.availWidth > size.smallTablet;
+    const isPortrait =
+      isFirefox &&
+      isMobileOnly &&
+      screen.orientation.type === "portrait-primary";
 
-    if (!isEnoughWidth && isValueExist) {
+    if ((!isEnoughWidth && isValueExist) || isPortrait) {
       this.backdropClick();
+      return;
     }
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
@@ -130,52 +129,59 @@ class PageLayout extends React.Component {
   };
 
   backdropClick = () => {
-    this.setState({
-      isBackdropVisible: false,
-      isArticleVisible: false,
-      isArticlePinned: false,
-    });
+    this.props.setArticlePinned(false);
+    this.props.setIsBackdropVisible(false);
+    this.props.setIsArticleVisible(false);
     isMobile && this.props.setArticleVisibleOnUnpin(false);
   };
 
   pinArticle = () => {
-    this.setState({
-      isBackdropVisible: false,
-      isArticlePinned: true,
-      isArticleVisible: true,
-    });
-
+    this.props.setIsBackdropVisible(false);
+    this.props.setIsArticleVisible(true);
     this.props.setArticlePinned(true);
     isMobile && this.props.setArticleVisibleOnUnpin(false);
   };
 
   unpinArticle = () => {
-    this.setState({
-      isBackdropVisible: true,
-      isArticlePinned: false,
-      isArticleVisible: true,
-    });
-
+    this.props.setIsBackdropVisible(true);
+    this.props.setIsArticleVisible(true);
     this.props.setArticlePinned(false);
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
   showArticle = () => {
-    this.setState({
-      isBackdropVisible: true,
-      isArticleVisible: true,
-      isArticlePinned: false,
-    });
+    this.props.setArticlePinned(false);
+    this.props.setIsBackdropVisible(true);
+    this.props.setIsArticleVisible(true);
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
-  duringSelection = (duringItems) => {
-    if (!this.props.uploadFiles || isMobile) return;
-    const items = [];
-    for (let item of duringItems) {
-      items.push(item.props.item);
-    }
+  onSelect = (e) => {
+    if (this.props.dragging) return;
+    const items = e.selected;
     this.props.setSelections(items);
+  };
+
+  dragCondition = (e) => {
+    const path = e.inputEvent.composedPath();
+    const isBackdrop = path.some(
+      (x) => x.classList && x.classList.contains("backdrop-active")
+    );
+    const notSelectablePath = path.some(
+      (x) => x.classList && x.classList.contains("not-selectable")
+    );
+
+    const isDraggable = path.some(
+      (x) => x.classList && x.classList.contains("draggable")
+    );
+
+    if (notSelectablePath || isBackdrop || isDraggable) {
+      return false;
+    } else return true;
+  };
+
+  onScroll = (e) => {
+    this.scroll.scrollBy(e.direction[0] * 10, e.direction[1] * 10);
   };
 
   render() {
@@ -194,15 +200,17 @@ class PageLayout extends React.Component {
       //withBodyAutoFocus,
       withBodyScroll,
       children,
-      isLoaded,
       isHeaderVisible,
       //headerBorderBottom,
       onOpenUploadPanel,
       isTabletView,
       firstLoad,
-      isLoading,
+      dragging,
+      isArticleVisible,
+      isBackdropVisible,
+      isArticlePinned,
+      isDesktop,
     } = this.props;
-
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
     let articleBodyContent = null;
@@ -264,29 +272,21 @@ class PageLayout extends React.Component {
         isArticleAvailable,
       isBackdropAvailable = isArticleAvailable;
 
-    return (
-      <>
-        <StyledSelectableGroup
-          enableDeselect
-          resetOnStart
-          allowClickWithoutSelected={false}
-          duringSelection={this.duringSelection}
-          ignoreList={[".not-selectable", "draggable"]}
-        >
+    const renderPageLayout = () => {
+      return (
+        <>
           {isBackdropAvailable && (
             <Backdrop
               zIndex={400}
-              visible={this.state.isBackdropVisible}
+              visible={isBackdropVisible}
               onClick={this.backdropClick}
             />
           )}
           {isArticleAvailable && (
             <Article
-              visible={this.state.isArticleVisible}
-              pinned={this.state.isArticlePinned}
-              isLoaded={isLoaded}
+              visible={isArticleVisible}
+              pinned={isArticlePinned}
               firstLoad={firstLoad}
-              isLoading={!isLoading}
             >
               {isArticleHeaderAvailable && (
                 <SubArticleHeader>
@@ -303,7 +303,7 @@ class PageLayout extends React.Component {
                 </SubArticleMainButton>
               )}
               {isArticleBodyAvailable && (
-                <SubArticleBody pinned={this.state.isArticlePinned}>
+                <SubArticleBody pinned={isArticlePinned} isDesktop={isDesktop}>
                   {articleBodyContent
                     ? articleBodyContent.props.children
                     : null}
@@ -311,7 +311,7 @@ class PageLayout extends React.Component {
               )}
               {isArticleBodyAvailable && (
                 <ArticlePinPanel
-                  pinned={this.state.isArticlePinned}
+                  pinned={isArticlePinned}
                   onPin={this.pinArticle}
                   onUnpin={this.unpinArticle}
                 />
@@ -334,24 +334,39 @@ class PageLayout extends React.Component {
                   <Section
                     widthProp={width}
                     unpinArticle={this.unpinArticle}
-                    pinned={this.state.isArticlePinned}
+                    pinned={isArticlePinned}
+                    visible={isArticleVisible}
                   >
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
-                        isArticlePinned={this.state.isArticlePinned}
+                        isArticlePinned={isArticlePinned}
+                        viewAs={viewAs}
                       >
                         {sectionHeaderContent
                           ? sectionHeaderContent.props.children
                           : null}
                       </SubSectionHeader>
                     )}
+
                     {isSectionFilterAvailable && (
-                      <SubSectionFilter className="section-header_filter">
-                        {sectionFilterContent
-                          ? sectionFilterContent.props.children
-                          : null}
-                      </SubSectionFilter>
+                      <>
+                        <div
+                          id="main-bar"
+                          style={{
+                            display: "grid",
+                            paddingRight: "20px",
+                          }}
+                        ></div>
+                        <SubSectionFilter
+                          className="section-header_filter"
+                          viewAs={viewAs}
+                        >
+                          {sectionFilterContent
+                            ? sectionFilterContent.props.children
+                            : null}
+                        </SubSectionFilter>
+                      </>
                     )}
                     {isSectionBodyAvailable && (
                       <>
@@ -360,7 +375,7 @@ class PageLayout extends React.Component {
                           uploadFiles={uploadFiles}
                           withScroll={withBodyScroll}
                           autoFocus={isMobile || isTabletView ? false : true}
-                          pinned={this.state.isArticlePinned}
+                          pinned={isArticlePinned}
                           viewAs={viewAs}
                         >
                           {isSectionFilterAvailable && (
@@ -423,7 +438,7 @@ class PageLayout extends React.Component {
 
                     {isArticleAvailable && (
                       <SectionToggler
-                        visible={!this.state.isArticleVisible}
+                        visible={!isArticleVisible}
                         onClick={this.showArticle}
                       />
                     )}
@@ -432,8 +447,39 @@ class PageLayout extends React.Component {
               )}
             </ReactResizeDetector>
           )}
-        </StyledSelectableGroup>
-        {uploadFiles && <SelectedFrame />}
+        </>
+      );
+    };
+
+    const scrollOptions = this.scroll
+      ? {
+          container: this.scroll,
+          throttleTime: 0,
+          threshold: 100,
+        }
+      : {};
+
+    return (
+      <>
+        {renderPageLayout()}
+        {!isMobile && uploadFiles && !dragging && (
+          <StyledSelectoWrapper>
+            <Selecto
+              boundContainer={".section-wrapper"}
+              dragContainer={".section-body"}
+              selectableTargets={[".files-item"]}
+              hitRate={0}
+              selectByClick={false}
+              selectFromInside={true}
+              ratio={0}
+              continueSelect={false}
+              onSelect={this.onSelect}
+              dragCondition={this.dragCondition}
+              scrollOptions={scrollOptions}
+              onScroll={this.onScroll}
+            />
+          </StyledSelectoWrapper>
+        )}
       </>
     );
   }
@@ -456,14 +502,12 @@ PageLayout.propTypes = {
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   hideAside: PropTypes.bool,
-  isLoaded: PropTypes.bool,
   viewAs: PropTypes.string,
   uploadPanelVisible: PropTypes.bool,
   onOpenUploadPanel: PropTypes.func,
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
-  isLoading: PropTypes.bool,
 };
 
 PageLayout.defaultProps = {
@@ -485,15 +529,26 @@ export default inject(({ auth }) => {
     isHeaderVisible,
     isTabletView,
     isArticlePinned,
+    isArticleVisible,
+    isBackdropVisible,
     setArticlePinned,
     setArticleVisibleOnUnpin,
+    setIsArticleVisible,
+    setIsBackdropVisible,
+    isDesktopClient,
   } = settingsStore;
+
   return {
     isLoaded,
     isTabletView,
     isHeaderVisible,
     isArticlePinned,
+    isArticleVisible,
     setArticlePinned,
     setArticleVisibleOnUnpin,
+    setIsArticleVisible,
+    isBackdropVisible,
+    setIsBackdropVisible,
+    isDesktop: isDesktopClient,
   };
 })(observer(PageLayout));

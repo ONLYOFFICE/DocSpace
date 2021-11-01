@@ -58,19 +58,22 @@ namespace ASC.Web.Core
         private SecurityContext SecurityContext { get; }
         private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
         private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
 
         public CookiesManager(
             IHttpContextAccessor httpContextAccessor,
             UserManager userManager,
             SecurityContext securityContext,
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings)
         {
             HttpContextAccessor = httpContextAccessor;
             UserManager = userManager;
             SecurityContext = securityContext;
             TenantCookieSettingsHelper = tenantCookieSettingsHelper;
             TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         private static string GetCookiesName(CookiesType type)
@@ -109,6 +112,11 @@ namespace ASC.Web.Core
                 if (HttpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
                 {
                     options.Secure = true;
+
+                    if (CoreBaseSettings.Personal)
+                    {
+                        options.SameSite = SameSiteMode.None;
+                    }
                 }
             }
 
@@ -132,6 +140,11 @@ namespace ASC.Web.Core
                 if (HttpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
                 {
                     options.Secure = true;
+
+                    if (CoreBaseSettings.Personal)
+                    {
+                        options.SameSite = SameSiteMode.None;
+                    }
                 }
             }
 

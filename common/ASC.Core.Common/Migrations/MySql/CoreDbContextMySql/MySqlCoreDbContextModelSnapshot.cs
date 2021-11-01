@@ -655,10 +655,6 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnType("decimal(10,2)")
                         .HasColumnName("price");
 
-                    b.Property<decimal>("Price2")
-                        .HasColumnType("decimal(10,2)")
-                        .HasColumnName("price2");
-
                     b.Property<bool>("Visible")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("visible");
@@ -674,12 +670,11 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                             Tenant = -1,
                             ActiveUsers = 10000,
                             AvangateId = "0",
-                            Features = "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption",
+                            Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore",
                             MaxFileSize = 102400L,
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
                             Price = 0.00m,
-                            Price2 = 0.00m,
                             Visible = false
                         });
                 });
@@ -743,6 +738,10 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                     b.Property<DateTime>("Stamp")
                         .HasColumnType("datetime")
                         .HasColumnName("stamp");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
 
                     b.Property<int>("Tariff")
                         .HasColumnType("int")

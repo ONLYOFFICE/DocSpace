@@ -4,10 +4,13 @@ import { isMobile } from "react-device-detect";
 
 import Loaders from "@appserver/common/components/Loaders";
 
+const pathname = window.location.pathname.toLowerCase();
+const isEditor = pathname.indexOf("doceditor") !== -1;
+
 let loadTimeout = null;
-export default function withLoader(WrappedComponent, type) {
+const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
-    const { tReady, firstLoad, isLoaded, isLoading } = props;
+    const { tReady, firstLoad, isLoaded, isLoading, viewAs } = props;
     const [inLoad, setInLoad] = useState(false);
 
     const cleanTimer = () => {
@@ -19,12 +22,12 @@ export default function withLoader(WrappedComponent, type) {
       if (isLoading) {
         cleanTimer();
         loadTimeout = setTimeout(() => {
-          console.log("inLoad", true);
+          //console.log("inLoad", true);
           setInLoad(true);
         }, 500);
       } else {
         cleanTimer();
-        console.log("inLoad", false);
+        //console.log("inLoad", false);
         setInLoad(false);
       }
 
@@ -33,19 +36,30 @@ export default function withLoader(WrappedComponent, type) {
       };
     }, [isLoading]);
 
-    return firstLoad || !isLoaded || (isMobile && inLoad) || !tReady ? (
-      <Loaders.Rows />
+    return (!isEditor && firstLoad) ||
+      !isLoaded ||
+      (isMobile && inLoad) ||
+      !tReady ? (
+      Loader ? (
+        Loader
+      ) : viewAs === "tile" ? (
+        <Loaders.Tiles />
+      ) : (
+        <Loaders.Rows />
+      )
     ) : (
       <WrappedComponent {...props} />
     );
   };
 
   return inject(({ auth, filesStore }) => {
-    const { firstLoad, isLoading } = filesStore;
+    const { firstLoad, isLoading, viewAs } = filesStore;
     return {
       firstLoad,
       isLoaded: auth.isLoaded,
       isLoading,
+      viewAs,
     };
   })(observer(withLoader));
-}
+};
+export default withLoader;

@@ -99,7 +99,7 @@ const getGroupLink = (department) => {
   );
 };
 
-class PureOwnerSettings extends Component {
+class OwnerSettings extends Component {
   constructor(props) {
     super(props);
 
@@ -206,6 +206,7 @@ class PureOwnerSettings extends Component {
                   className="option-info"
                   offsetRight={0}
                   tooltipContent={this.ownerInfo()}
+                  tooltipColor="#F8F7BF"
                 />
               </div>
               <div className="chooseOwnerWrap">
@@ -232,7 +233,7 @@ class PureOwnerSettings extends Component {
                 onSelect={this.onSelect}
                 onCancel={this.onCancelSelector}
                 defaultOption={me}
-                defaultOptionLabel={t("MeLabel")}
+                defaultOptionLabel={t("Common:MeLabel")}
                 groupsCaption={groupsCaption}
               />
             </div>
@@ -243,11 +244,11 @@ class PureOwnerSettings extends Component {
   }
 }
 
-PureOwnerSettings.defaultProps = {
+OwnerSettings.defaultProps = {
   owner: {},
 };
 
-PureOwnerSettings.propTypes = {
+OwnerSettings.propTypes = {
   owner: PropTypes.object,
 };
 
@@ -261,4 +262,4 @@ export default inject(({ auth, setup }) => {
     me: auth.userStore.user,
     sendOwnerChange,
   };
-})(withTranslation("Settings")(withRouter(PureOwnerSettings)));
+})(withTranslation("Settings")(withRouter(OwnerSettings)));

@@ -1,6 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common.Utils;
 
 using Autofac.Extensions.DependencyInjection;
@@ -13,18 +17,41 @@ namespace ASC.Web.Studio
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunAsync();
         }
 
-        public static IHostBuilder CreateWebHostBuilder(string[] args)
-        {
-            return Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseSystemd()
+                .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureWebHostDefaults(w =>
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    w.UseStartup<Startup>();
+                    var builder = webBuilder.UseStartup<Startup>();
+
+                    builder.ConfigureKestrel((hostingContext, serverOptions) =>
+                    {
+                        var kestrelConfig = hostingContext.Configuration.GetSection("Kestrel");
+
+                        if (!kestrelConfig.Exists()) return;
+
+                        var unixSocket = kestrelConfig.GetValue<string>("ListenUnixSocket");
+
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        {
+                            if (!String.IsNullOrWhiteSpace(unixSocket))
+                            {
+                                unixSocket = String.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
+
+                                serverOptions.ListenUnixSocket(unixSocket);
+                            }
+                        }
+                    });
+
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -48,7 +75,8 @@ namespace ASC.Web.Studio
                                 {"pathToConf", path }
                             }
                         );
-                });
-        }
+
+                })
+            .ConfigureNLogLogging();
     }
 }

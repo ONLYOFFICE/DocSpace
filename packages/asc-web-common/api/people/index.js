@@ -25,6 +25,7 @@ export function getUser(userName = null) {
   return request({
     method: "get",
     url: `/people/${userName || "@self"}.json`,
+    skipUnauthorized: true,
   });
 }
 export function getUserPhoto(userId) {
@@ -107,7 +108,7 @@ export function getListAdmins(filter = Filter.getDefault()) {
 
   return request({
     method: "get",
-    url: `/people/filter.json?${filterParams}`,
+    url: `/people/filter.json?isadministrator=true&${filterParams}`,
   });
 }
 

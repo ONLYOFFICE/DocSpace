@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
 
+using ASC.ElasticSearch.Core;
+
 namespace ASC.ElasticSearch
 {
     public interface ISearchItem
@@ -9,7 +11,7 @@ namespace ASC.ElasticSearch
         public int TenantId { get; set; }
         public string IndexName { get; }
 
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields { get; }
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings);
     }
 
     public interface ISearchItemDocument : ISearchItem

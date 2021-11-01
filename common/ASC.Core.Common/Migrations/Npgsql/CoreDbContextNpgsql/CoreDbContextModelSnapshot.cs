@@ -650,12 +650,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                     .HasColumnType("numeric(10,2)")
                     .HasDefaultValueSql("0.00");
 
-                b.Property<decimal>("Price2")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("price2")
-                    .HasColumnType("numeric(10,2)")
-                    .HasDefaultValueSql("0.00");
-
                 b.Property<bool>("Visible")
                     .HasColumnName("visible")
                     .HasColumnType("boolean");
@@ -671,12 +665,11 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                         Tenant = -1,
                         ActiveUsers = 10000,
                         AvangateId = "0",
-                        Features = "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption",
+                        Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore",
                         MaxFileSize = 102400L,
                         MaxTotalSize = 10995116277760L,
                         Name = "default",
                         Price = 0.00m,
-                        Price2 = 0.00m,
                         Visible = false
                     });
             });
@@ -744,6 +737,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                     b.Property<DateTime>("Stamp")
                         .HasColumnName("stamp")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
 
                     b.Property<int>("Tariff")
                         .HasColumnName("tariff")

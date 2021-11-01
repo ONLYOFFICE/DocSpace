@@ -1,16 +1,9 @@
 {
-  "DownloadAs": "Скачать как",
-  "OriginalFormat": "Исходный формат",
-  "CustomFormat": "Пользовательский формат",
   "ChooseFormatText": "Выберите формат для каждого из файлов, которые нужно скачать",
-  "Documents": "Документы",
-  "Spreadsheets": "Таблицы",
-  "Presentations": "Презентации",
   "ConvertInto": "Сконвертировать в",
-  "Other": "Другой",
-  "ConvertToZip": "Файлы будут упакованы в .zip файл",
   "ConvertMessage": "Если вы решите сконвертировать файл в формат, отличный от исходного, некоторые данные могут быть потеряны.",
-  "DownloadButton": "Скачать",
-  "CancelButton": "Отмена",
-  "ArchivingData": "Архивирование данных"
+  "ConvertToZip": "Файлы будут упакованы в .zip файл",
+  "CustomFormat": "Пользовательский формат",
+  "OriginalFormat": "Исходный формат",
+  "Other": "Другой"
 }

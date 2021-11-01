@@ -74,7 +74,7 @@ namespace ASC.Web.Core.Files
             get { return BaseCommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
         }
 
-        public const string FileId = "fileId";
+        public const string FileId = "fileid";
         public const string FolderId = "folderid";
         public const string Version = "version";
         public const string FileUri = "fileuri";
@@ -364,6 +364,18 @@ namespace ASC.Web.Core.Files
         {
             return FileRedirectPreviewUrlString + "&" + (isFile ? FileId : FolderId) + "=" + HttpUtility.UrlEncode(enrtyId.ToString());
         }
+
+        public string FileThumbnailUrlString
+        {
+            get { return FileHandlerPath + "?" + Action + "=thumb&" + FileId + "={0}"; }
+        }
+
+        public string GetFileThumbnailUrl(object fileId, int fileVersion)
+        {
+            return string.Format(FileThumbnailUrlString, HttpUtility.UrlEncode(fileId.ToString()))
+                   + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
+        }
+
 
         public string GetInitiateUploadSessionUrl(int tenantId, object folderId, object fileId, string fileName, long contentLength, bool encrypted, SecurityContext securityContext)
         {

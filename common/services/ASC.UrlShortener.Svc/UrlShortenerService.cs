@@ -146,7 +146,7 @@ namespace ASC.UrlShortener.Svc
                 }
             }
 
-            startInfo.EnvironmentVariables.Add("logPath", Path.GetFullPath(CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, log.LogDirectory, "web.urlshortener.log")));
+            startInfo.EnvironmentVariables.Add("logPath", CrossPlatform.PathCombine(log.LogDirectory, "web.urlshortener.log"));
 
             return startInfo;
         }

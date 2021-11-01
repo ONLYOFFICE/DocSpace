@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { desktop } from "@appserver/components/utils/device";
 
 const StyledTreeFolder = styled.div`
   width: 100%;
@@ -11,6 +12,13 @@ const StyledTreeFolder = styled.div`
 
 const StyledContainer = styled.div`
   margin-top: 48px;
+  width: 100%;
 `;
 
-export { StyledTreeFolder, StyledContainer };
+const StyledBox = styled.div`
+  @media ${desktop} {
+    margin-right: 8px;
+  }
+`;
+
+export { StyledTreeFolder, StyledContainer, StyledBox };

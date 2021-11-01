@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
 import config from "../../package.json";
@@ -12,6 +12,8 @@ import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
 import store from "studio/store";
 import DialogStore from "./DialogStore";
+import LoadingStore from "./LoadingStore";
+import { isMobile } from "react-device-detect";
 const { auth: authStore } = store;
 
 class PeopleStore {
@@ -26,12 +28,9 @@ class PeopleStore {
   avatarEditorStore = null;
   inviteLinksStore = null;
   dialogStore = null;
-
-  isLoading = false;
-  isLoaded = false;
-  isRefresh = false;
+  loadingStore = null;
   isInit = false;
-  loadTimeout = null;
+  viewAs = isMobile ? "row" : "table";
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
@@ -45,18 +44,9 @@ class PeopleStore {
     this.avatarEditorStore = new AvatarEditorStore(this);
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
+    this.loadingStore = new LoadingStore();
 
-    makeObservable(this, {
-      isLoading: observable,
-      isLoaded: observable,
-      isRefresh: observable,
-      setIsRefresh: action,
-      setIsLoading: action,
-      setIsLoaded: action,
-      init: action,
-      isPeoplesAdmin: computed,
-      resetFilter: action,
-    });
+    makeAutoObservable(this);
   }
 
   get isPeoplesAdmin() {
@@ -75,19 +65,7 @@ class PeopleStore {
     await this.groupsStore.getGroupList();
     await authStore.settingsStore.getPortalPasswordSettings();
 
-    this.setIsLoaded(true);
-  };
-
-  setIsLoading = (isLoading) => {
-    this.isLoading = isLoading;
-  };
-
-  setIsLoaded = (isLoaded) => {
-    this.isLoaded = isLoaded;
-  };
-
-  setIsRefresh = (isRefresh) => {
-    this.isRefresh = isRefresh;
+    this.loadingStore.setIsLoaded(true);
   };
 
   resetFilter = (withoutGroup = false) => {
@@ -103,6 +81,82 @@ class PeopleStore {
     }
 
     return getUsersList(newFilter);
+  };
+
+  getHeaderMenu = (t) => {
+    const { userCaption, guestCaption } = authStore.settingsStore.customNames;
+    const {
+      hasUsersToMakeEmployees,
+      hasUsersToMakeGuests,
+      hasUsersToActivate,
+      hasUsersToDisable,
+      hasUsersToInvite,
+      hasAnybodySelected,
+      hasUsersToRemove,
+      selection,
+    } = this.selectionStore;
+    const {
+      setEmployeeDialogVisible,
+      setGuestDialogVisible,
+      setActiveDialogVisible,
+      setDisableDialogVisible,
+      setSendInviteDialogVisible,
+      setDeleteDialogVisible,
+    } = this.dialogStore;
+
+    const headerMenu = [
+      {
+        label: t("ChangeToUser", {
+          userCaption,
+        }),
+        disabled: !hasUsersToMakeEmployees,
+        onClick: () => setEmployeeDialogVisible(true),
+      },
+      {
+        label: t("ChangeToGuest", {
+          guestCaption,
+        }),
+        disabled: !hasUsersToMakeGuests,
+        onClick: () => setGuestDialogVisible(true),
+      },
+      {
+        label: t("LblSetActive"),
+        disabled: !hasUsersToActivate,
+        onClick: () => setActiveDialogVisible(true),
+      },
+      {
+        label: t("LblSetDisabled"),
+        disabled: !hasUsersToDisable,
+        onClick: () => setDisableDialogVisible(true),
+      },
+      {
+        label: t("LblInviteAgain"),
+        disabled: !hasUsersToInvite,
+        onClick: () => setSendInviteDialogVisible(true),
+      },
+      {
+        label: t("LblSendEmail"),
+        disabled: !hasAnybodySelected,
+        onClick: () => {
+          let str = "";
+          for (let item of selection) {
+            str += `${item.email},`;
+          }
+          window.open(`mailto: ${str}`, "_self");
+        },
+      },
+      {
+        label: t("Common:Delete"),
+        disabled: !hasUsersToRemove,
+        onClick: () => setDeleteDialogVisible(true),
+      },
+    ];
+
+    return headerMenu;
+  };
+
+  setViewAs = (viewAs) => {
+    this.viewAs = viewAs;
   };
 }
 

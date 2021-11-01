@@ -52,7 +52,7 @@ const RootFolderContainer = (props) => {
       case FolderType.USER:
         return {
           descriptionText: myDescription,
-          imageSrc: "images/empty_screen.png",
+          imageSrc: "/static/images/empty_screen.png",
           buttons: commonButtons,
         };
       case FolderType.SHARE:
@@ -112,7 +112,7 @@ const RootFolderContainer = (props) => {
         <Text fontSize="12px">
           <Trans t={t} i18nKey="PrivateRoomSupport" ns="Home">
             Work in Private Room is available via {{ organizationName }} desktop
-            app.{" "}
+            app.
             <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
               Instructions
             </Link>

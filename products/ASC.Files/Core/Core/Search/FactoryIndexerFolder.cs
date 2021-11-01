@@ -27,13 +27,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
+using ASC.ElasticSearch.Service;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.EF;
@@ -46,6 +50,7 @@ namespace ASC.Web.Files.Core.Search
     public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
     {
         private IDaoFactory DaoFactory { get; }
+        private Settings Settings { get; }
 
         public FactoryIndexerFolder(
             IOptionsMonitor<ILog> options,
@@ -55,10 +60,12 @@ namespace ASC.Web.Files.Core.Search
             BaseIndexer<DbFolder> baseIndexer,
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
-            ICache cache)
+            ICache cache,
+            ConfigurationExtension configurationExtension)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
+            Settings = Settings.GetInstance(configurationExtension);
         }
 
         public override void IndexAll()
@@ -67,33 +74,91 @@ namespace ASC.Web.Files.Core.Search
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q =
-                    folderDao.FilesDbContext.Folders
-                    .Where(r => r.ModifiedOn >= lastIndexed)
-                    .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
-                    .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active);
+                var dataQuery = GetBaseQuery(lastIndexed)
+                    .OrderBy(r => r.DbFolder.Id)
+                    .Select(r => r.DbFolder.Id);
 
-                var count = q.GroupBy(a => a.f.Id).Count();
-                var min = count > 0 ? q.Min(r => r.f.Id) : 0;
-                var max = count > 0 ? q.Max(r => r.f.Id) : 0;
+                var minid = dataQuery.FirstOrDefault();
 
-                return (count, max, min);
+                dataQuery = GetBaseQuery(lastIndexed)
+                    .OrderByDescending(r => r.DbFolder.Id)
+                    .Select(r => r.DbFolder.Id);
+
+                var maxid = dataQuery.FirstOrDefault();
+
+                var count = GetBaseQuery(lastIndexed).Count();
+
+                return new(count, maxid, minid);
             }
 
-            List<DbFolder> getData(long i, long step, DateTime lastIndexed) =>
-                    folderDao.FilesDbContext.Folders
-                    .Where(r => r.ModifiedOn >= lastIndexed)
-                    .Where(r => r.Id >= i && r.Id <= i + step)
-                    .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
-                    .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active)
-                    .Select(r => r.f)
+            List<DbFolder> getData(long start, long stop, DateTime lastIndexed)
+            {
+                return GetBaseQuery(lastIndexed)
+                    .Where(r => r.DbFolder.Id >= start && r.DbFolder.Id <= stop)
+                    .Select(r => r.DbFolder)
                     .ToList();
+
+            }
+
+            List<int> getIds(DateTime lastIndexed)
+            {
+                var start = 0;
+                var result = new List<int>();
+                while (true)
+                {
+                    var dataQuery = GetBaseQuery(lastIndexed)
+                        .Where(r => r.DbFolder.Id >= start)
+                        .OrderBy(r => r.DbFolder.Id)
+                        .Select(r => r.DbFolder.Id)
+                        .Skip(BaseIndexer<DbFolder>.QueryLimit);
+
+                    var id = dataQuery.FirstOrDefault();
+                    if (id != 0)
+                    {
+                        start = id;
+                        result.Add(id);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                return result;
+            }
+
+            IQueryable<FolderTenant> GetBaseQuery(DateTime lastIndexed) => folderDao.FilesDbContext.Folders
+                    .Where(r => r.ModifiedOn >= lastIndexed)
+                    .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
 
             try
             {
-                foreach (var data in Indexer.IndexAll(getCount, getData))
+                var j = 0;
+                var tasks = new List<Task>();
+
+                foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
                 {
-                    Index(data);
+                    if (Settings.Threads == 1)
+                    {
+                        Index(data);
+                    }
+                    else
+                    {
+                        tasks.Add(IndexAsync(data));
+                        j++;
+                        if (j >= Settings.Threads)
+                        {
+                            Task.WaitAll(tasks.ToArray());
+                            tasks = new List<Task>();
+                            j = 0;
+                        }
+                    }
+                }
+
+                if (tasks.Any())
+                {
+                    Task.WaitAll(tasks.ToArray());
                 }
             }
             catch (Exception e)
@@ -102,6 +167,12 @@ namespace ASC.Web.Files.Core.Search
                 throw;
             }
         }
+    }
+
+    class FolderTenant
+    {
+        public DbTenant DbTenant { get; set; }
+        public DbFolder DbFolder { get; set; }
     }
 
     public class FactoryIndexerFolderExtension

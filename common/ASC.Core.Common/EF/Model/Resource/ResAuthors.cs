@@ -34,7 +34,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("login")
                     .HasColumnType("varchar(150)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IsAdmin).HasColumnName("isAdmin");
 
@@ -49,7 +49,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("password")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddResAuthors(this ModelBuilder modelBuilder)

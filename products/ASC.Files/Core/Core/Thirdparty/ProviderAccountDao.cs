@@ -81,7 +81,8 @@ namespace ASC.Files.Thirdparty
     {
         private int tenantID;
         protected int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
-        private FilesDbContext FilesDbContext { get; }
+        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+        private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         public ILog Logger { get; }
         private IServiceProvider ServiceProvider { get; }
         private TenantUtil TenantUtil { get; }
@@ -102,7 +103,7 @@ namespace ASC.Files.Thirdparty
             DbContextManager<FilesDbContext> dbContextManager,
             IOptionsMonitor<ILog> options)
         {
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             Logger = options.Get("ASC.Files");
             ServiceProvider = serviceProvider;
             TenantUtil = tenantUtil;

@@ -11,19 +11,9 @@ import { Consumer } from "@appserver/components/utils/context";
 import Headline from "@appserver/common/components/Headline";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import {
-  EmployeeType,
-  EmployeeStatus,
-  AppServerConfig,
-} from "@appserver/common/constants";
+import withLoader from "../../../../HOCs/withLoader";
+import { AppServerConfig } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
-import {
-  InviteDialog,
-  DeleteUsersDialog,
-  SendInviteDialog,
-  ChangeUserStatusDialog,
-  ChangeUserTypeDialog,
-} from "../../../../components/dialogs";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
@@ -33,13 +23,10 @@ const StyledContainer = styled.div`
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    padding-bottom: 56px;
-    ${
-      isMobile &&
-      css`
-        position: sticky;
-      `
-    }
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
     ${(props) =>
       !props.isTabletView
         ? props.width &&
@@ -55,12 +42,10 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
-      ${
-        !isMobile &&
-        css`
-          height: 56px;
-        `
-      }
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
           !isMobile &&
@@ -70,7 +55,7 @@ const StyledContainer = styled.div`
           `}
 
         position: absolute;
-        top: 56px;
+        top: 48px;
         z-index: 180;
       }
     }
@@ -112,21 +97,10 @@ const StyledContainer = styled.div`
 `;
 
 const SectionHeaderContent = (props) => {
-  const [invitationDialogVisible, setInvitationDialogVisible] = useState(false);
-  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-  const [sendInviteDialogVisible, setSendInviteDialogVisible] = useState(false);
-  const [disableDialogVisible, setDisableDialogVisible] = useState(false);
-  const [activeDialogVisible, setActiveDialogVisible] = useState(false);
-  const [guestDialogVisible, setGuestDialogVisible] = useState(false);
-  const [employeeDialogVisible, setEmployeeDialogVisible] = useState(false);
-
   const {
     isHeaderVisible,
     isHeaderIndeterminate,
     isHeaderChecked,
-    //onCheck,
-    //onSelect,
-    //clearSelection,
     group,
     isAdmin,
     t,
@@ -134,20 +108,13 @@ const SectionHeaderContent = (props) => {
     customNames,
     homepage,
     deleteGroup,
-    selection,
-    hasAnybodySelected,
-    hasUsersToMakeEmployees,
-    hasUsersToMakeGuests,
-    hasUsersToActivate,
-    hasUsersToDisable,
-    hasUsersToInvite,
-    hasUsersToRemove,
     isLoaded,
     isTabletView,
-    //selectAll,
     setSelected,
     resetFilter,
-    //selectByStatus,
+    getHeaderMenu,
+    setInvitationDialogVisible,
+    viewAs,
   } = props;
 
   const {
@@ -166,47 +133,7 @@ const SectionHeaderContent = (props) => {
     setSelected,
   ]);
 
-  const onClose = () => {
-    setSelected("none");
-  };
-
-  const toggleEmployeeDialog = useCallback(
-    () => setEmployeeDialogVisible(!employeeDialogVisible),
-    [employeeDialogVisible]
-  );
-
-  const toggleGuestDialog = useCallback(
-    () => setGuestDialogVisible(!guestDialogVisible),
-    [guestDialogVisible]
-  );
-
-  const toggleActiveDialog = useCallback(
-    () => setActiveDialogVisible(!activeDialogVisible),
-    [activeDialogVisible]
-  );
-
-  const toggleDisableDialog = useCallback(
-    () => setDisableDialogVisible(!disableDialogVisible),
-    [disableDialogVisible]
-  );
-
-  const toggleSendInviteDialog = useCallback(
-    () => setSendInviteDialogVisible(!sendInviteDialogVisible),
-    [sendInviteDialogVisible]
-  );
-
-  const toggleDeleteDialog = useCallback(
-    () => setDeleteDialogVisible(!deleteDialogVisible),
-    [deleteDialogVisible]
-  );
-
-  const onSendEmail = useCallback(() => {
-    let str = "";
-    for (let item of selection) {
-      str += `${item.email},`;
-    }
-    window.open(`mailto: ${str}`, "_self");
-  }, [selection]);
+  const onClose = () => setSelected("none");
 
   const onSelectorSelect = useCallback(
     (item) => {
@@ -215,86 +142,41 @@ const SectionHeaderContent = (props) => {
     [onSelect]
   );
 
-  const menuItems = useMemo(
+  let menuItems = useMemo(
     () => [
-      {
-        label: t("LblSelect"),
-        isDropdown: true,
-        isSeparator: true,
-        isSelect: true,
-        fontWeight: "bold",
-        children: [
-          <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
-          <DropDownItem
-            key="disabled"
-            label={t("LblTerminated")}
-            data-index={1}
-          />,
-          <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
-        ],
-        onSelect: onSelectorSelect,
-      },
-      {
-        label: t("ChangeToUser", {
-          userCaption,
-        }),
-        disabled: !hasUsersToMakeEmployees,
-        onClick: toggleEmployeeDialog,
-      },
-      {
-        label: t("ChangeToGuest", {
-          guestCaption,
-        }),
-        disabled: !hasUsersToMakeGuests,
-        onClick: toggleGuestDialog,
-      },
-      {
-        label: t("LblSetActive"),
-        disabled: !hasUsersToActivate,
-        onClick: toggleActiveDialog,
-      },
-      {
-        label: t("LblSetDisabled"),
-        disabled: !hasUsersToDisable,
-        onClick: toggleDisableDialog,
-      },
-      {
-        label: t("LblInviteAgain"),
-        disabled: !hasUsersToInvite,
-        onClick: toggleSendInviteDialog,
-      },
-      {
-        label: t("LblSendEmail"),
-        disabled: !hasAnybodySelected,
-        onClick: onSendEmail,
-      },
-      {
-        label: t("DeleteButton"),
-        disabled: !hasUsersToRemove,
-        onClick: toggleDeleteDialog,
-      },
+      ...[
+        {
+          label: t("Common:Select"),
+          isDropdown: true,
+          isSeparator: true,
+          isSelect: true,
+          fontWeight: "bold",
+          children: [
+            <DropDownItem
+              key="active"
+              label={t("Common:Active")}
+              data-index={0}
+            />,
+            <DropDownItem
+              key="disabled"
+              label={t("Translations:DisabledEmployeeStatus")}
+              data-index={1}
+            />,
+            <DropDownItem
+              key="invited"
+              label={t("LblInvited")}
+              data-index={2}
+            />,
+          ],
+          onSelect: onSelectorSelect,
+        },
+      ],
     ],
-    [
-      t,
-      userCaption,
-      guestCaption,
-      onSelectorSelect,
-      toggleEmployeeDialog,
-      toggleGuestDialog,
-      toggleActiveDialog,
-      toggleDisableDialog,
-      toggleSendInviteDialog,
-      onSendEmail,
-      toggleDeleteDialog,
-      hasAnybodySelected,
-      hasUsersToMakeEmployees,
-      hasUsersToMakeGuests,
-      hasUsersToActivate,
-      hasUsersToDisable,
-      hasUsersToInvite,
-      hasUsersToRemove,
-    ]
+    [t, onSelectorSelect]
   );
+
+  const headerMenu = getHeaderMenu(t);
+  menuItems = [...menuItems, ...headerMenu];
 
   const onEditGroup = useCallback(
     () =>
@@ -318,12 +200,12 @@ const SectionHeaderContent = (props) => {
     return [
       {
         key: "edit-group",
-        label: t("EditButton"),
+        label: t("Common:EditButton"),
         onClick: onEditGroup,
       },
       {
         key: "delete-group",
-        label: t("DeleteButton"),
+        label: t("Common:Delete"),
         onClick: onDeleteGroup,
       },
     ];
@@ -347,10 +229,7 @@ const SectionHeaderContent = (props) => {
     );
   }, [history, homepage]);
 
-  const onInvitationDialogClick = useCallback(
-    () => setInvitationDialogVisible(!invitationDialogVisible),
-    [invitationDialogVisible]
-  );
+  const onInvitationDialogClick = () => setInvitationDialogVisible(true);
 
   const getContextOptionsPlus = useCallback(() => {
     return [
@@ -377,7 +256,7 @@ const SectionHeaderContent = (props) => {
       } /* ,
       {
         key: "send-invitation",
-        label: t("SendInviteAgain"),
+        label: t("Translations:SendInviteAgain"),
         onClick: onSentInviteAgain
       } */,
     ];
@@ -389,7 +268,8 @@ const SectionHeaderContent = (props) => {
     goToEmployeeCreate,
     goToGuestCreate,
     goToGroupCreate,
-    onInvitationDialogClick /* , onSentInviteAgain */,
+    /* , onSentInviteAgain */
+    ,
   ]);
 
   return (
@@ -401,51 +281,7 @@ const SectionHeaderContent = (props) => {
           width={context.sectionWidth}
           isTabletView={isTabletView}
         >
-          {employeeDialogVisible && (
-            <ChangeUserTypeDialog
-              visible={employeeDialogVisible}
-              onClose={toggleEmployeeDialog}
-              userType={EmployeeType.User}
-            />
-          )}
-
-          {guestDialogVisible && (
-            <ChangeUserTypeDialog
-              visible={guestDialogVisible}
-              onClose={toggleGuestDialog}
-              userType={EmployeeType.Guest}
-            />
-          )}
-          {activeDialogVisible && (
-            <ChangeUserStatusDialog
-              visible={activeDialogVisible}
-              onClose={toggleActiveDialog}
-              userStatus={EmployeeStatus.Active}
-            />
-          )}
-          {disableDialogVisible && (
-            <ChangeUserStatusDialog
-              visible={disableDialogVisible}
-              onClose={toggleDisableDialog}
-              userStatus={EmployeeStatus.Disabled}
-            />
-          )}
-
-          {sendInviteDialogVisible && (
-            <SendInviteDialog
-              visible={sendInviteDialogVisible}
-              onClose={toggleSendInviteDialog}
-            />
-          )}
-
-          {deleteDialogVisible && (
-            <DeleteUsersDialog
-              visible={deleteDialogVisible}
-              onClose={toggleDeleteDialog}
-            />
-          )}
-
-          {isHeaderVisible ? (
+          {isHeaderVisible && viewAs !== "table" ? (
             <div className="group-button-menu-container">
               <GroupButtonsMenu
                 checked={isHeaderChecked}
@@ -453,8 +289,8 @@ const SectionHeaderContent = (props) => {
                 onChange={onCheck}
                 menuItems={menuItems}
                 visible={isHeaderVisible}
-                moreLabel={t("More")}
-                closeTitle={t("CloseButton")}
+                moreLabel={t("Common:More")}
+                closeTitle={t("Common:CloseButton")}
                 onClose={onClose}
                 selected={menuItems[0].label}
                 sectionWidth={context.sectionWidth}
@@ -462,9 +298,7 @@ const SectionHeaderContent = (props) => {
             </div>
           ) : (
             <div className="header-container">
-              {!isLoaded ? (
-                <Loaders.SectionHeader />
-              ) : group ? (
+              {group ? (
                 <>
                   <Headline
                     className="headline-header"
@@ -477,7 +311,7 @@ const SectionHeaderContent = (props) => {
                     <ContextMenuButton
                       className="action-button"
                       directionX="right"
-                      title={t("Actions")}
+                      title={t("Common:Actions")}
                       iconName="/static/images/vertical-dots.react.svg"
                       size={17}
                       color="#A3A9AE"
@@ -500,7 +334,7 @@ const SectionHeaderContent = (props) => {
                       <ContextMenuButton
                         className="action-button"
                         directionX="right"
-                        title={t("Actions")}
+                        title={t("Common:Actions")}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
                         color="#A3A9AE"
@@ -508,13 +342,6 @@ const SectionHeaderContent = (props) => {
                         getData={getContextOptionsPlus}
                         isDisabled={false}
                       />
-                      {invitationDialogVisible && (
-                        <InviteDialog
-                          visible={invitationDialogVisible}
-                          onClose={onInvitationDialogClick}
-                          onCloseButton={onInvitationDialogClick}
-                        />
-                      )}
                     </>
                   )}
                 </>
@@ -528,32 +355,64 @@ const SectionHeaderContent = (props) => {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    resetFilter: peopleStore.resetFilter,
-    customNames: auth.settingsStore.customNames,
-    homepage: config.homepage,
-    isLoaded: auth.isLoaded,
-    isAdmin: auth.isAdmin,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    selection: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    selectByStatus: peopleStore.selectionStore.selectByStatus,
-    isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
-    isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
-    isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
-    clearSelection: peopleStore.selectionStore.clearSelection,
-    selectAll: peopleStore.selectionStore.selectAll,
-    hasAnybodySelected: peopleStore.selectionStore.hasAnybodySelected,
-    hasUsersToMakeEmployees: peopleStore.selectionStore.hasUsersToMakeEmployees,
-    hasUsersToMakeGuests: peopleStore.selectionStore.hasUsersToMakeGuests,
-    hasUsersToActivate: peopleStore.selectionStore.hasUsersToActivate,
-    hasUsersToDisable: peopleStore.selectionStore.hasUsersToDisable,
-    hasUsersToInvite: peopleStore.selectionStore.hasUsersToInvite,
-    hasUsersToRemove: peopleStore.selectionStore.hasUsersToRemove,
-    deleteGroup: peopleStore.groupsStore.deleteGroup,
-    removeUser: peopleStore.usersStore.removeUser,
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-    group: peopleStore.selectedGroupStore.group,
-    isTabletView: auth.settingsStore.isTabletView,
-  }))(observer(withTranslation("Home")(SectionHeaderContent)))
+  inject(({ auth, peopleStore }) => {
+    const { settingsStore, isLoaded, isAdmin } = auth;
+    const { customNames, isTabletView } = settingsStore;
+
+    const {
+      resetFilter,
+      usersStore,
+      selectionStore,
+      headerMenuStore,
+      groupsStore,
+      selectedGroupStore,
+      getHeaderMenu,
+      dialogStore,
+      viewAs,
+    } = peopleStore;
+    const { getUsersList, removeUser, updateUserStatus } = usersStore;
+    const {
+      setSelected,
+      selectByStatus,
+      clearSelection,
+      selectAll,
+    } = selectionStore;
+
+    const {
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+    } = headerMenuStore;
+    const { deleteGroup } = groupsStore;
+    const { group } = selectedGroupStore;
+    const { setInvitationDialogVisible } = dialogStore;
+
+    return {
+      resetFilter,
+      customNames,
+      homepage: config.homepage,
+      isLoaded,
+      isAdmin,
+      fetchPeople: getUsersList,
+      setSelected,
+      selectByStatus,
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      clearSelection,
+      selectAll,
+      deleteGroup,
+      removeUser,
+      updateUserStatus,
+      group,
+      isTabletView,
+      getHeaderMenu,
+      setInvitationDialogVisible,
+      viewAs,
+    };
+  })(
+    withTranslation(["Home", "Common", "Translations"])(
+      withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
+    )
+  )
 );

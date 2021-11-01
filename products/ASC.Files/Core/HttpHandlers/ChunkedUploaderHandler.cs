@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -56,12 +57,10 @@ namespace ASC.Web.Files.HttpHandlers
 {
     public class ChunkedUploaderHandler
     {
-        private RequestDelegate Next { get; }
         private IServiceProvider ServiceProvider { get; }
 
         public ChunkedUploaderHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {
-            Next = next;
             ServiceProvider = serviceProvider;
         }
 
@@ -69,8 +68,7 @@ namespace ASC.Web.Files.HttpHandlers
         {
             using var scope = ServiceProvider.CreateScope();
             var chunkedUploaderHandlerService = scope.ServiceProvider.GetService<ChunkedUploaderHandlerService>();
-            await chunkedUploaderHandlerService.Invoke(context);
-            await Next.Invoke(context);
+            await chunkedUploaderHandlerService.Invoke(context).ConfigureAwait(false);
         }
     }
 
@@ -114,15 +112,18 @@ namespace ASC.Web.Files.HttpHandlers
 
         public async Task Invoke(HttpContext context)
         {
-            var uploadSession = ChunkedUploadSessionHolder.GetSession(context.Request.Query["uid"]);
-
-            if (uploadSession as ChunkedUploadSession<int> != null)
+            try
             {
-                await Invoke<int>(context);
-                return;
+                var uploadSession = ChunkedUploadSessionHolder.GetSession<int>(context.Request.Query["uid"]);
+                if (uploadSession != null)
+                {
+                    await Invoke<int>(context);
+                }
             }
-
-            await Invoke<string>(context);
+            catch (Exception)
+            {
+                await Invoke<string>(context);
+            }
         }
 
         public async Task Invoke<T>(HttpContext context)
@@ -197,7 +198,7 @@ namespace ASC.Web.Files.HttpHandlers
             if (request.Type(InstanceCrypto) == ChunkedRequestType.Initiate)
             {
                 TenantManager.SetCurrentTenant(request.TenantId);
-                SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, request.AuthKey(InstanceCrypto)));
+                SecurityContext.AuthenticateMeWithoutCookie(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, request.AuthKey(InstanceCrypto)));
                 var cultureInfo = request.CultureInfo(SetupInfo);
                 if (cultureInfo != null)
                     Thread.CurrentThread.CurrentUICulture = cultureInfo;
@@ -206,11 +207,11 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (!string.IsNullOrEmpty(request.UploadId))
             {
-                var uploadSession = ChunkedUploadSessionHolder.GetSession(request.UploadId);
+                var uploadSession = ChunkedUploadSessionHolder.GetSession<T>(request.UploadId);
                 if (uploadSession != null)
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);
-                    SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, uploadSession.UserId));
+                    SecurityContext.AuthenticateMeWithoutCookie(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, uploadSession.UserId));
                     var culture = SetupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, uploadSession.CultureName, StringComparison.InvariantCultureIgnoreCase));
                     if (culture != null)
                         Thread.CurrentThread.CurrentUICulture = culture;
@@ -394,7 +395,7 @@ namespace ASC.Web.Files.HttpHandlers
 
         private bool IsFileDataSet()
         {
-            return !string.IsNullOrEmpty(FileName) && !FolderId.Equals(default(T));
+            return !string.IsNullOrEmpty(FileName) && !EqualityComparer<T>.Default.Equals(FolderId, default(T));
         }
     }
 

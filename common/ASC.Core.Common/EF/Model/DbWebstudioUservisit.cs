@@ -52,13 +52,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("productid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.FirstVisitTime)
                     .HasColumnName("firstvisittime")

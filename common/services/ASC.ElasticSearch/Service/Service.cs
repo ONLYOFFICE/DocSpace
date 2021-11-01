@@ -35,8 +35,6 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.ElasticSearch.Core;
 
-using Autofac;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.ElasticSearch.Service
@@ -44,13 +42,11 @@ namespace ASC.ElasticSearch.Service
     [Singletone(Additional = typeof(ServiceExtension))]
     public class Service
     {
-        private ILifetimeScope Container { get; }
         private IServiceProvider ServiceProvider { get; }
         private ICacheNotify<ReIndexAction> CacheNotify { get; }
 
-        public Service(ILifetimeScope container, IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
+        public Service(IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
         {
-            Container = container;
             ServiceProvider = serviceProvider;
             CacheNotify = cacheNotify;
         }
@@ -65,12 +61,12 @@ namespace ASC.ElasticSearch.Service
 
         public bool Support(string table)
         {
-            return Container.Resolve<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
+            return ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
         }
 
         public void ReIndex(List<string> toReIndex, int tenant)
         {
-            var allItems = Container.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
+            var allItems = ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
             var tasks = new List<Task>(toReIndex.Count);
 
             foreach (var item in toReIndex)

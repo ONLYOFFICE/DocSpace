@@ -31,8 +31,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -52,6 +54,7 @@ namespace ASC.Web.Core.Files
         /// Timeout to request conversion
         /// </summary>
         public static int Timeout = 120000;
+        //public static int Timeout = Convert.ToInt32(ConfigurationManagerExtension.AppSettings["files.docservice.timeout"] ?? "120000");
 
         /// <summary>
         /// Number of tries request conversion
@@ -82,6 +85,7 @@ namespace ASC.Web.Core.Files
         /// <param name="toExtension">Extension to which to convert</param>
         /// <param name="documentRevisionId">Key for caching on service</param>
         /// <param name="password">Password</param>
+        /// <param name="thumbnail">Thumbnail settings</param>
         /// <param name="isAsync">Perform conversions asynchronously</param>
         /// <param name="signatureSecret">Secret key to generate the token</param>
         /// <param name="convertedDocumentUri">Uri to the converted document</param>
@@ -100,6 +104,8 @@ namespace ASC.Web.Core.Files
             string toExtension,
             string documentRevisionId,
             string password,
+            ThumbnailData thumbnail,
+            SpreadsheetLayout spreadsheetLayout,
             bool isAsync,
             string signatureSecret,
             out string convertedDocumentUri)
@@ -129,6 +135,8 @@ namespace ASC.Web.Core.Files
                 Key = documentRevisionId,
                 OutputType = toExtension.Trim('.'),
                 Title = title,
+                Thumbnail = thumbnail,
+                SpreadsheetLayout = spreadsheetLayout,
                 Url = documentUri,
             };
 
@@ -151,7 +159,11 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
+            {
+                IgnoreNullValues = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -261,7 +273,11 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
+            {
+                IgnoreNullValues = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -342,7 +358,11 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
+            {
+                IgnoreNullValues = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -475,6 +495,81 @@ namespace ASC.Web.Core.Files
         }
 
         [Serializable]
+        [DebuggerDisplay("{Height}x{Width}")]
+        public class ThumbnailData
+        {
+            [JsonPropertyName("aspect")]
+            public int Aspect { get; set; }
+
+            [JsonPropertyName("first")]
+            public bool First { get; set; }
+
+            [JsonPropertyName("height")]
+            public int Height { get; set; }
+
+            [JsonPropertyName("width")]
+            public int Width { get; set; }
+        }
+
+        [Serializable]
+        [DataContract(Name = "spreadsheetLayout", Namespace = "")]
+        [DebuggerDisplay("SpreadsheetLayout {IgnorePrintArea} {Orientation} {FitToHeight} {FitToWidth} {Headings} {GridLines}")]
+        public class SpreadsheetLayout
+        {
+            [JsonPropertyName("ignorePrintArea")]
+            public bool IgnorePrintArea { get; set; }
+
+            [JsonPropertyName("orientation")]
+            public string Orientation { get; set; }
+
+            [JsonPropertyName("fitToHeight")]
+            public int FitToHeight { get; set; }
+
+            [JsonPropertyName("fitToWidth")]
+            public int FitToWidth { get; set; }
+
+            [JsonPropertyName("headings")]
+            public bool Headings { get; set; }
+
+            [JsonPropertyName("gridLines")]
+            public bool GridLines { get; set; }
+
+            [JsonPropertyName("margins")]
+            public Margins Margins { get; set; }
+
+            [JsonPropertyName("pageSize")]
+            public PageSize PageSize { get; set; }
+        }
+
+        [Serializable]
+        [DebuggerDisplay("Margins {Top} {Right} {Bottom} {Left}")]
+        public class Margins
+        {
+            [JsonPropertyName("left")]
+            public string Left { get; set; }
+
+            [JsonPropertyName("right")]
+            public string Right { get; set; }
+
+            [JsonPropertyName("top")]
+            public string Top { get; set; }
+
+            [JsonPropertyName("bottom")]
+            public string Bottom { get; set; }
+        }
+
+        [Serializable]
+        [DebuggerDisplay("PageSize {Width} {Height}")]
+        public class PageSize
+        {
+            [JsonPropertyName("height")]
+            public string Height { get; set; }
+
+            [JsonPropertyName("width")]
+            public string Width { get; set; }
+        }
+
+        [Serializable]
         [DebuggerDisplay("{Title} from {FileType} to {OutputType} ({Key})")]
         private class ConvertionBody
         {
@@ -495,6 +590,12 @@ namespace ASC.Web.Core.Files
 
             [JsonPropertyName("title")]
             public string Title { get; set; }
+
+            [JsonPropertyName("thumbnail")]
+            public ThumbnailData Thumbnail { get; set; }
+
+            [JsonPropertyName("spreadsheetLayout")]
+            public SpreadsheetLayout SpreadsheetLayout { get; set; }
 
             [JsonPropertyName("url")]
             public string Url { get; set; }
@@ -533,6 +634,7 @@ namespace ASC.Web.Core.Files
             public string Url { get; set; }
         }
 
+        [Serializable]
         public class DocumentServiceException : Exception
         {
             public ErrorCode Code;
@@ -543,6 +645,23 @@ namespace ASC.Web.Core.Files
                 Code = errorCode;
             }
 
+            protected DocumentServiceException(SerializationInfo info, StreamingContext context) : base(info, context)
+            {
+                if (info != null)
+                {
+                    Code = (ErrorCode)info.GetValue("Code", typeof(ErrorCode));
+                }
+            }
+
+            public override void GetObjectData(SerializationInfo info, StreamingContext context)
+            {
+                base.GetObjectData(info, context);
+
+                if (info != null)
+                {
+                    info.AddValue("Code", Code);
+                }
+            }
 
             public static void ProcessResponseError(string errorCode)
             {

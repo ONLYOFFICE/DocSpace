@@ -29,15 +29,18 @@ namespace ASC.Api.Core.Auth
             UrlEncoder encoder,
             ISystemClock clock,
             SecurityContext securityContext,
+            UserManager userManager,
             IServiceProvider serviceProvider) :
             base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
+            UserManager = userManager;
             ServiceProvider = serviceProvider;
         }
 
         private SecurityContext SecurityContext { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private UserManager UserManager { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -70,21 +73,33 @@ namespace ASC.Api.Core.Auth
 
             if (checkKeyResult == EmailValidationKeyProvider.ValidationResult.Ok)
             {
+                Guid userId;
                 if (!SecurityContext.IsAuthenticated)
                 {
                     if (emailValidationKeyModel.UiD.HasValue && !emailValidationKeyModel.UiD.Equals(Guid.Empty))
                     {
-                        SecurityContext.AuthenticateMe(emailValidationKeyModel.UiD.Value, claims);
+                        userId = emailValidationKeyModel.UiD.Value;
                     }
                     else
                     {
-                        SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                        if(emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmailActivation ||
+                            emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.EmpInvite ||
+                            emailValidationKeyModel.Type == Web.Studio.Utility.ConfirmType.LinkInvite)
+                        {
+                            userId = ASC.Core.Configuration.Constants.CoreSystem.ID;
+                        }
+                        else
+                        {
+                            userId = UserManager.GetUserByEmail(emailValidationKeyModel.Email).ID;
+                        }
                     }
                 }
                 else
                 {
-                    SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount, claims);
+                    userId = SecurityContext.CurrentAccount.ID;
                 }
+
+                SecurityContext.AuthenticateMeWithoutCookie(userId, claims);
             }
 
             var result = checkKeyResult switch

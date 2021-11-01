@@ -66,7 +66,7 @@ namespace ASC.Core
         private TenantManager TenantManager { get; }
         private PermissionContext PermissionContext { get; }
         private UserManagerConstants UserManagerConstants { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
         private Constants Constants { get; }
 
         private Tenant tenant;
@@ -177,6 +177,12 @@ namespace ASC.Core
 
         public UserInfo GetUserByUserName(string username)
         {
+            if (CoreBaseSettings.Personal)
+            {
+                var u = UserService.GetUserByUserName(TenantManager.GetCurrentTenant().TenantId, username);
+                return u ?? Constants.LostUser;
+            }
+
             return GetUsersInternal()
                 .FirstOrDefault(u => string.Compare(u.UserName, username, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
         }
@@ -282,32 +288,47 @@ namespace ASC.Core
             return findUsers.ToArray();
         }
 
-        public UserInfo SaveUserInfo(UserInfo u)
+        public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
         {
             if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
             if (u.ID == Guid.Empty) PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
             else PermissionContext.DemandPermissions(new UserSecurityProvider(u.ID), Constants.Action_EditUser);
 
-            if (Constants.MaxEveryoneCount <= GetUsersByGroup(Constants.GroupEveryone.ID).Length)
+            if (!CoreBaseSettings.Personal)
             {
-                throw new TenantQuotaException("Maximum number of users exceeded");
-            }
-
-            if (u.Status == EmployeeStatus.Active)
-            {
-                var q = TenantManager.GetTenantQuota(Tenant.TenantId);
-                if (q.ActiveUsers < GetUsersByGroup(Constants.GroupUser.ID).Length)
+                if (Constants.MaxEveryoneCount <= GetUsersByGroup(Constants.GroupEveryone.ID).Length)
                 {
-                    throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
+                    throw new TenantQuotaException("Maximum number of users exceeded");
+                }
+
+                if (u.Status == EmployeeStatus.Active)
+                {
+                    if (isVisitor)
+                    {
+                        var maxUsers = TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).ActiveUsers;
+                        var visitors = TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Free ? 0 : Constants.CoefficientOfVisitors;
+                        if (!CoreBaseSettings.Standalone && GetUsersByGroup(Constants.GroupVisitor.ID).Length > visitors * maxUsers)
+                        {
+                            throw new TenantQuotaException("Maximum number of visitors exceeded");
+                        }
+                    }
+                    else
+                    {
+                        var q = TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId);
+                        if (q.ActiveUsers < GetUsersByGroup(Constants.GroupUser.ID).Length)
+                        {
+                            throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
+                        }
+                    }
                 }
             }
 
             if (u.Status == EmployeeStatus.Terminated && u.ID == TenantManager.GetCurrentTenant().OwnerId)
             {
                 throw new InvalidOperationException("Can not disable tenant owner.");
-            }
+}
 
-            var newUser = UserService.SaveUser(Tenant.TenantId, u);
+            var newUser = UserService.SaveUser(TenantManager.GetCurrentTenant().TenantId, u);
 
             return newUser;
         }
@@ -360,14 +381,24 @@ namespace ASC.Core
 
         internal List<GroupInfo> GetUserGroups(Guid userID, IncludeType includeType, Guid? categoryId)
         {
-            var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(Accessor?.HttpContext, "GroupInfo");
-            var fromCache = httpRequestDictionary.Get(userID.ToString());
-            if (fromCache != null)
+            if (CoreBaseSettings.Personal)
             {
-                return fromCache;
+                return new List<GroupInfo> { Constants.GroupUser, Constants.GroupEveryone };
             }
 
-            var result = new List<GroupInfo>();
+            var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(Accessor?.HttpContext, "GroupInfo");
+            var result = httpRequestDictionary.Get(userID.ToString());
+            if (result != null)
+            {
+                if (categoryId.HasValue)
+                {
+                    result = result.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
+                }
+
+                return result;
+            }
+
+            result = new List<GroupInfo>();
             var distinctUserGroups = new List<GroupInfo>();
 
             var refs = GetRefsInternal();
@@ -393,14 +424,14 @@ namespace ASC.Core
                 result.AddRange(distinctUserGroups);
             }
 
+            result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
+
+            httpRequestDictionary.Add(userID.ToString(), result);
+
             if (categoryId.HasValue)
             {
                 result = result.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
             }
-
-            result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
-
-            httpRequestDictionary.Add(userID.ToString(), result);
 
             return result;
         }

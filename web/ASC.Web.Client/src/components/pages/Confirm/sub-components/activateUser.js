@@ -20,6 +20,7 @@ import PageLayout from "@appserver/common/components/PageLayout";
 import {
   AppServerConfig,
   EmployeeActivationStatus,
+  PasswordLimitSpecialCharacters,
 } from "@appserver/common/constants";
 import { combineUrl, createPasswordHash } from "@appserver/common/utils";
 
@@ -275,7 +276,7 @@ class Confirm extends React.PureComponent {
                 id="surname"
                 name="surname"
                 value={this.state.lastName}
-                placeholder={t("LastName")}
+                placeholder={t("Common:LastName")}
                 size="huge"
                 scale={true}
                 tabIndex={2}
@@ -303,7 +304,7 @@ class Confirm extends React.PureComponent {
               inputName="password"
               emailInputName={emailInputName}
               inputValue={this.state.password}
-              placeholder={t("InvitePassword")}
+              placeholder={t("Common:Password")}
               size="huge"
               scale={true}
               tabIndex={4}
@@ -313,20 +314,20 @@ class Confirm extends React.PureComponent {
               onChange={this.onChangePassword}
               onCopyToClipboard={this.onCopyToClipboard}
               onValidateInput={this.validatePassword}
-              clipActionResource={t("CopyEmailAndPassword")}
-              clipEmailResource={`${t("Email")}: `}
-              clipPasswordResource={`${t("InvitePassword")}: `}
-              tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
-              tooltipPasswordLength={`${t("ErrorPasswordLength", {
-                fromNumber: settings.minLength,
+              clipActionResource={t("Common:CopyEmailAndPassword")}
+              clipEmailResource={`${t("Common:Email")}: `}
+              clipPasswordResource={`${t("Common:Password")}: `}
+              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+              tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+                fromNumber: settings ? settings.minLength : 8,
                 toNumber: 30,
               })}:`}
-              tooltipPasswordDigits={t("ErrorPasswordNoDigits")}
-              tooltipPasswordCapital={t("ErrorPasswordNoUpperCase")}
+              tooltipPasswordDigits={t("Common:PasswordLimitDigits")}
+              tooltipPasswordCapital={t("Common:PasswordLimitUpperCase")}
               tooltipPasswordSpecial={`${t(
-                "ErrorPasswordNoSpecialSymbols"
-              )} (!@#$%^&*)`}
-              generatorSpecial="!@#$%^&*"
+                "Common:PasswordLimitSpecialSymbols"
+              )} (${PasswordLimitSpecialCharacters})`}
+              generatorSpecial={PasswordLimitSpecialCharacters}
               passwordSettings={settings}
               isDisabled={this.state.isLoading}
               onKeyDown={this.onKeyPress}
@@ -389,4 +390,6 @@ export default inject(({ auth }) => {
     getPortalPasswordSettings,
     login: auth.login,
   };
-})(withRouter(withTranslation("Confirm")(observer(ActivateUserForm))));
+})(
+  withRouter(withTranslation(["Confirm", "Common"])(observer(ActivateUserForm)))
+);

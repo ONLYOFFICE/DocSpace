@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 using ASC.Api.Documents;
@@ -53,8 +54,8 @@ namespace ASC.Files.Tests
         public void DeleteFileFromTrash()
         {
             var Empty = FilesControllerHelper.EmptyTrash();
-            
-            ItemList<FileOperationResult> statuses;
+
+            List<FileOperationResult> statuses;
 
             while (true)
             {

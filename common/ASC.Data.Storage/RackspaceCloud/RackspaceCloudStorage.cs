@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -63,26 +64,19 @@ namespace ASC.Data.Storage.RackspaceCloud
         private Uri _cnameSSL;
 
         private readonly ILog _logger;
-
+            
         public RackspaceCloudStorage(
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
-        {
-            _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
-        }
-
-        public RackspaceCloudStorage(
+            TempPath tempPath,
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
+            TempPath = tempPath;
         }
 
         private string MakePath(string domain, string path)
@@ -246,6 +240,11 @@ namespace ASC.Data.Storage.RackspaceCloud
             return outputStream;
         }
 
+        public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+        {
+            return Task.FromResult(GetReadStream(domain, path, offset));
+        }
+
         public override Uri Save(string domain, string path, Stream stream)
         {
             return Save(domain, path, stream, string.Empty, string.Empty);
@@ -283,7 +282,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                               string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
             DateTime? deleteAt = null, long? deleteAfter = null)
         {
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
 
             if (QuotaController != null)
             {
@@ -493,7 +492,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             }
         }
 
-        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath)
+        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
         {
             var srcKey = MakePath(srcdomain, srcpath);
             var dstKey = MakePath(newdomain, newpath);
@@ -506,7 +505,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             Delete(srcdomain, srcpath);
 
             QuotaUsedDelete(srcdomain, size);
-            QuotaUsedAdd(newdomain, size);
+            QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
 
             return GetUri(newdomain, newpath);
         }
@@ -546,6 +545,12 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             return objects.Count() > 0;
         }
+
+        public override Task<bool> IsFileAsync(string domain, string path)
+        {
+            return Task.FromResult(IsFile(domain, path));
+        }
+
 
         public override bool IsDirectory(string domain, string path)
         {
@@ -702,7 +707,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string InitiateChunkedUpload(string domain, string path)
         {
-            return Path.GetTempFileName();
+            return TempPath.GetTempFileName();
         }
 
         public override string UploadChunk(string domain, string path, string filePath, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
@@ -754,6 +759,8 @@ namespace ASC.Data.Storage.RackspaceCloud
         }
 
         public override bool IsSupportChunking { get { return true; } }
+
+        public TempPath TempPath { get; }
 
         #endregion
     }

@@ -40,8 +40,8 @@ namespace ASC.Files.Core
 
         public static readonly Guid ShareLinkId = new Guid("{D77BD6AF-828B-41f5-84ED-7FFE2565B13A}");
 
-        public const string StartDocPath = "startdocuments/";
-        public const string NewDocPath = "newdocuments/";
+        public const string StartDocPath = "sample/";
+        public const string NewDocPath = "new/";
 
         public const string DownloadTitle = "download";
     }

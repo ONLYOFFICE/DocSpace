@@ -39,7 +39,7 @@ namespace ASC.Web.Files.Services.WCFService
         public IEnumerable<T> Files { get; set; }
         public IEnumerable<T> Folders { get; set; }
 
-        public ItemList<AceWrapper> Aces { get; set; }
+        public List<AceWrapper> Aces { get; set; }
 
         public string Message { get; set; }
     }

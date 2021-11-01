@@ -13,6 +13,8 @@ import {
 } from "../StyledPanels";
 import FileList from "./FileList";
 import { inject, observer } from "mobx-react";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 class UploadPanelComponent extends React.Component {
   constructor(props) {
@@ -24,14 +26,24 @@ class UploadPanelComponent extends React.Component {
 
   onClose = () => {
     const {
-      setUploadPanelVisible,
-      uploadPanelVisible,
       uploaded,
+      converted,
       clearUploadData,
+      uploadPanelVisible,
+      clearUploadedFiles,
+      setUploadPanelVisible,
+      clearPrimaryProgressData,
     } = this.props;
+
     setUploadPanelVisible(!uploadPanelVisible);
+
     if (uploaded) {
-      clearUploadData();
+      if (converted) {
+        clearUploadData();
+        clearPrimaryProgressData();
+      } else {
+        clearUploadedFiles();
+      }
     }
   };
   componentDidMount() {
@@ -58,7 +70,10 @@ class UploadPanelComponent extends React.Component {
       t,
       uploadPanelVisible,
       /* sharingPanelVisible, */ uploaded,
+      converted,
       uploadDataFiles,
+      cancelUpload,
+      cancelConversion,
     } = this.props;
 
     const visible = uploadPanelVisible;
@@ -72,7 +87,11 @@ class UploadPanelComponent extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel" visible={visible}>
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          withoutBodyScroll
+        >
           <StyledContent>
             <StyledHeaderContent className="upload-panel_header-content">
               <Heading className="upload_panel-header" size="medium" truncate>
@@ -80,21 +99,21 @@ class UploadPanelComponent extends React.Component {
               </Heading>
               <div className="upload_panel-icons-container">
                 <div className="upload_panel-remove-icon">
-                  {uploaded ? (
+                  {uploaded && converted ? (
                     <IconButton
                       size="20"
                       iconName="images/clear.active.react.svg"
                       color="#A3A9AE"
-                      isClickable={true}
+                      isClickable
                       onClick={this.clearUploadPanel}
                     />
                   ) : (
                     <IconButton
                       size="20"
                       iconName="images/button.cancel.react.svg"
-                      color="#A3A9AE"
-                      isClickable={true}
-                      onClick={this.props.cancelUpload}
+                      color={"#A3A9AE"}
+                      isClickable
+                      onClick={uploaded ? cancelConversion : cancelUpload}
                     />
                   )}
                 </div>
@@ -110,11 +129,7 @@ class UploadPanelComponent extends React.Component {
             <StyledBody
               stype="mediumBlack"
               className="upload-panel_body"
-              style={
-                uploadDataFiles.length > 15
-                  ? { height: `100vh` }
-                  : { height: `calc(100vh - 130px)` }
-              }
+              style={{ height: `calc(100vh - 64px)` }}
             >
               <FileList />
             </StyledBody>
@@ -126,28 +141,40 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-const UploadPanel = withTranslation("UploadPanel")(UploadPanelComponent);
+const UploadPanel = withTranslation("UploadPanel")(
+  withLoader(UploadPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+);
 
-export default inject(({ dialogsStore, uploadDataStore }) => {
+export default inject(({ /* dialogsStore, */ uploadDataStore }) => {
   //const { sharingPanelVisible } = dialogsStore;
 
   const {
     uploaded,
+    converted,
     clearUploadData,
     cancelUpload,
+    cancelConversion,
+    clearUploadedFiles,
     uploadPanelVisible,
     setUploadPanelVisible,
     files,
+    primaryProgressDataStore,
   } = uploadDataStore;
+
+  const { clearPrimaryProgressData } = primaryProgressDataStore;
 
   return {
     //sharingPanelVisible,
     uploadPanelVisible,
     uploaded,
+    converted,
 
     setUploadPanelVisible,
     clearUploadData,
     cancelUpload,
+    cancelConversion,
+    clearUploadedFiles,
     uploadDataFiles: files,
+    clearPrimaryProgressData,
   };
 })(observer(UploadPanel));

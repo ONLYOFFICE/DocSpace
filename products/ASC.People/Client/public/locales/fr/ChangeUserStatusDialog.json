@@ -1,0 +1,8 @@
+{
+  "ChangeUsersActiveStatus": "Désactivé",
+  "ChangeUsersDisableStatus": "Activé",
+  "ChangeUsersStatusButton": "Modifier le statut de l'utilisateur",
+  "ChangeUserStatusDialog": "Les utilisateurs avec le statut '{{ status }}' seront désactivés",
+  "ChangeUserStatusDialogHeader": "Modifier le statut de l'utilisateur",
+  "ChangeUserStatusDialogMessage": "Vous ne pouvez pas changer le statut du propriétaire du portail ainsi que votre statut"
+}

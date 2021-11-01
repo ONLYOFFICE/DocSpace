@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF.Model;
 
@@ -13,6 +12,7 @@ namespace ASC.Core.Common.EF
         public int Tenant { get; set; }
         public int Tariff { get; set; }
         public DateTime Stamp { get; set; }
+        public int Quantity { get; set; }
         public string Comment { get; set; }
         public DateTime CreateOn { get; set; }
     }
@@ -40,13 +40,17 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("comment")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.Quantity)
+                    .HasColumnName("quantity")
+                    .HasColumnType("int");
 
                 entity.Property(e => e.Stamp)
                     .HasColumnName("stamp")
@@ -78,6 +82,8 @@ namespace ASC.Core.Common.EF
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Stamp).HasColumnName("stamp");
+
+                entity.Property(e => e.Quantity).HasColumnName("quantity");
 
                 entity.Property(e => e.Tariff).HasColumnName("tariff");
 

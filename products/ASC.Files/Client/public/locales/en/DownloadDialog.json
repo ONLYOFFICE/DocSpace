@@ -1,16 +1,9 @@
 {
-  "DownloadAs": "Download as",
-  "OriginalFormat": "Original format",
-  "CustomFormat": "Custom format",
-  "ChooseFormatText": "Choose format for each file to be downloaded",
-  "Documents": "Documents",
-  "Spreadsheets": "Spreadsheets",
-  "Presentations": "Presentations",
+  "ChooseFormatText": "Choose the format for each file to be downloaded",
   "ConvertInto": "Convert into",
-  "Other": "Other",
+  "ConvertMessage": "If you choose to convert the file to a format different from the original, some data might be lost.",
   "ConvertToZip": "Files will be compressed into the .zip file",
-  "ConvertMessage": "If you choose to convert the file to the format different from the original, some data might be lost.",
-  "DownloadButton": "Download",
-  "CancelButton": "Cancel",
-  "ArchivingData": "Archiving data"
+  "CustomFormat": "Custom format",
+  "OriginalFormat": "Original format",
+  "Other": "Other"
 }

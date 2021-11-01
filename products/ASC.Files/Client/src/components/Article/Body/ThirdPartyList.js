@@ -1,54 +1,49 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
 
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
+import withLoader from "../../../HOCs/withLoader";
+import { useCallback } from "react";
+import IconButton from "@appserver/components/icon-button";
+import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
-  ${isMobile &&
-  css`
-    margin-bottom: 64px;
-  `}
+
   .tree-thirdparty-list {
     padding-top: 3px;
     display: flex;
-    max-width: 200px;
+    max-width: inherit;
+
+    .icon {
+      padding: 5px;
+    }
 
     div {
-      height: 26px;
-      width: 100%;
-      background: #eceef1;
-      text-align: center;
-      margin-right: 1px;
+      height: 25px;
+      width: 25px;
+      //background: #eceef1;
+      //text-align: center;
+      margin-right: 10px;
       color: #818b91;
       :first-of-type {
         border-radius: 3px 0 0 3px;
       }
       :last-of-type {
         border-radius: 0 3px 3px 0;
-
-        img {
-          margin-top: 4px;
-        }
-      }
-
-      img {
-        padding: 4px 6px 0 4px;
       }
 
       @media (max-width: 1024px) {
         height: 32px;
-        margin-right: 0px;
+
         :first-of-type {
           border-radius: 3px 0 0 3px;
-          padding-left: 5px;
         }
         :last-of-type {
           border-radius: 0 3px 3px 0;
@@ -71,11 +66,18 @@ const StyledThirdParty = styled.div`
   }
 `;
 
+const iconButtonProps = {
+  color: "#A3A9AE",
+  hoverColor: "#818b91",
+  size: 25,
+  className: "icon",
+};
+
 const ServiceItem = (props) => {
   const { capability, src, ...rest } = props;
 
   const capabilityName = capability[0];
-  const capabilityLink = capability[1] ? capability[1] : "";
+  const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
@@ -85,7 +87,7 @@ const ServiceItem = (props) => {
 
   return (
     <div {...dataProps} {...rest}>
-      <img src={src} alt="" />
+      <IconButton iconName={src} {...iconButtonProps} />
     </div>
   );
 };
@@ -97,7 +99,7 @@ const PureThirdPartyListContainer = ({
   dropboxConnectItem,
   oneDriveConnectItem,
   nextCloudConnectItem,
-  webDavConnectItem,
+  //webDavConnectItem,
   setConnectItem,
   setConnectDialogVisible,
   setSelectedNode,
@@ -127,31 +129,34 @@ const PureThirdPartyListContainer = ({
         "Authorization",
         "height=600, width=1020"
       );
-      openConnectWindow(data.title, authModal).then((modal) => {
-        redirectAction();
-        getOAuthToken(modal).then((token) => {
-          authModal.close();
-          const serviceData = {
-            title: data.title,
-            provider_key: data.title,
-            link: data.link,
-            token,
-          };
-          setConnectItem(serviceData);
-          setConnectDialogVisible(true);
-        });
-      });
+      openConnectWindow(data.title, authModal)
+        .then(() => redirectAction())
+        .then((modal) =>
+          getOAuthToken(modal).then((token) => {
+            authModal.close();
+            const serviceData = {
+              title: connectedCloudsTitleTranslation(data.title, t),
+              provider_key: data.title,
+              link: data.link,
+              token,
+            };
+            setConnectItem(serviceData);
+            setConnectDialogVisible(true);
+          })
+        )
+        .catch((e) => console.error(e));
     } else {
+      data.title = connectedCloudsTitleTranslation(data.title, t);
       setConnectItem(data);
       setConnectDialogVisible(true);
       redirectAction();
     }
   };
 
-  const onShowConnectPanel = () => {
+  const onShowConnectPanel = useCallback(() => {
     setThirdPartyDialogVisible(true);
     redirectAction();
-  };
+  }, []);
 
   return (
     <StyledThirdParty>
@@ -161,7 +166,7 @@ const PureThirdPartyListContainer = ({
         fontWeight={600}
         onClick={onShowConnectPanel}
       >
-        {t("AddAccount")}
+        {t("Translations:AddAccount")}
       </Link>
       <div className="tree-thirdparty-list">
         {googleConnectItem && (
@@ -199,20 +204,26 @@ const PureThirdPartyListContainer = ({
             onClick={onConnect}
           />
         )}
-        {webDavConnectItem && (
+        {/* {webDavConnectItem && (
           <ServiceItem
             capability={webDavConnectItem}
             src="images/services/more.svg"
             onClick={onConnect}
           />
-        )}
+        )} */}
+
+        <IconButton
+          iconName="images/services/more.svg"
+          onClick={onShowConnectPanel}
+          {...iconButtonProps}
+        />
       </div>
     </StyledThirdParty>
   );
 };
 
-const ThirdPartyList = withTranslation("Article")(
-  withRouter(PureThirdPartyListContainer)
+const ThirdPartyList = withTranslation(["Article", "Translations"])(
+  withRouter(withLoader(PureThirdPartyListContainer)(<></>))
 );
 
 export default inject(

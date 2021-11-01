@@ -38,7 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common
 {
-    [Singletone]
+    [Scope]
     public class CommonLinkUtilitySettings
     {
         public string ServerUri { get; set; }
@@ -112,7 +112,7 @@ namespace ASC.Core.Common
 
         protected CoreBaseSettings CoreBaseSettings { get; }
         private CoreSettings CoreSettings { get; }
-        private TenantManager TenantManager { get; }
+        protected TenantManager TenantManager { get; }
 
         private string serverRootPath;
         public string ServerRootPath
@@ -238,10 +238,10 @@ namespace ASC.Core.Common
             return baseUri.ToString().TrimEnd('/');
         }
 
-        public void Initialize(string serverUri)
+        public void Initialize(string serverUri, bool localhost = true)
         {
             var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-            _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
+            _serverRoot = new UriBuilder(uri.Scheme, localhost ? LOCALHOST : uri.Host, uri.Port);
             _vpath = "/" + uri.AbsolutePath.Trim('/');
         }
     }

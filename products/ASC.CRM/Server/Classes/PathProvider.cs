@@ -15,57 +15,73 @@
  * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 ง 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * Pursuant to Section 7 ยง 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
  * relevant author attributions when distributing the software. If the display of the logo in its graphic 
  * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
  * in every copy of the program you distribute. 
- * Pursuant to Section 7 ง 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ * Pursuant to Section 7 ยง 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
 
 
-using ASC.Common;
-using ASC.Core.Common;
+#region Import
 
-namespace ASC.CRM
+using System;
+
+using ASC.Common;
+using ASC.Data.Storage;
+using ASC.Web.Studio.Utility;
+
+using Microsoft.AspNetCore.Http;
+
+#endregion
+
+namespace ASC.Web.CRM
 {
     [Scope]
-    public  class PathProvider
+    public class PathProvider
     {
+//        private HttpContext _httpContext;
+        private CommonLinkUtility _commonLinkUtility;
+//        private WebPath _webPath;
 
-        public static readonly string BaseVirtualPath = "~/Products/CRM/";
-        public static string BaseAbsolutePath { get; private set; }
-
-        public PathProvider(BaseCommonLinkUtility commonLinkUtility)
+        public PathProvider(CommonLinkUtility commonLinkUtility)
         {
-            BaseAbsolutePath = commonLinkUtility.ToAbsolute(BaseVirtualPath);
+            _commonLinkUtility = commonLinkUtility;
+//            _httpContext = httpContextAccessor.HttpContext;
+
+            BaseAbsolutePath = _commonLinkUtility.ToAbsolute(BaseVirtualPath);
         }
 
-        public string StartURL()
+
+        public readonly String BaseVirtualPath = "/products/crm/";
+        public readonly String BaseAbsolutePath;
+
+        public String StartURL()
         {
-            return BaseAbsolutePath;
+            return BaseVirtualPath;
         }
 
         //public string BaseSiteUrl
         //{
         //    get
-        //    {
-        //        HttpContext context = HttpContext.Current;
-        //        string baseUrl = context.Request.GetUrlRewriter().Scheme + "://" + context.Request.GetUrlRewriter().Authority + context.Request.ApplicationPath.TrimEnd('/') + '/';
+        //    {               
+        //        string baseUrl = HttpContext.Request.GetUrlRewriter().Scheme + "://" + HttpContext.Request.GetUrlRewriter().Authority + HttpContext.Request.ApplicationPath.TrimEnd('/') + '/';
         //        return baseUrl;
         //    }
         //}
 
-        //public string GetVirtualPath(string physicalPath)
+        //public  string GetVirtualPath(string physicalPath)
         //{
-        //    string rootpath = HttpContext.Current.Server.MapPath("~/");
+        //    string rootpath = HttpContext.Server.MapPath("~/");
         //    physicalPath = physicalPath.Replace(rootpath, "");
         //    physicalPath = physicalPath.Replace("\\", "/");
 
         //    return "~/" + physicalPath;
         //}
 
-        //public string GetFileStaticRelativePath(string fileName)
+        // TODO: Remove GetFileStaticRelativePath method
+        //public  String GetFileStaticRelativePath(String fileName)
         //{
         //    if (fileName.EndsWith(".js"))
         //    {
@@ -90,4 +106,5 @@ namespace ASC.CRM
         //}
 
     }
+
 }

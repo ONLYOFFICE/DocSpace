@@ -66,9 +66,9 @@ const RecoverAccess = ({ t }) => {
     } else {
       setLoading(true);
       sendRecoverRequest(email, description)
-        .then(() => {
+        .then((res) => {
           setLoading(false);
-          toastr.success("Successfully sent");
+          toastr.success(res);
         })
         .catch((error) => {
           setLoading(false);

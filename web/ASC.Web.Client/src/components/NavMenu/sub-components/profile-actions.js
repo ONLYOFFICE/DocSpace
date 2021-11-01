@@ -4,7 +4,7 @@ import Avatar from "@appserver/components/avatar";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Link from "@appserver/components/link";
 import ProfileMenu from "./profile-menu";
-
+import api from "@appserver/common/api";
 class ProfileActions extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -14,12 +14,21 @@ class ProfileActions extends React.PureComponent {
     this.state = {
       opened: props.opened,
       user: props.user,
+      avatar: "",
     };
   }
 
   setOpened = (opened) => {
     this.setState({ opened: opened });
   };
+
+  componentDidMount() {
+    if (this.props.userIsUpdate) {
+      this.getAvatar();
+    } else {
+      this.setState({ avatar: this.state.user.avatar });
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.user !== prevProps.user) {
@@ -28,6 +37,11 @@ class ProfileActions extends React.PureComponent {
 
     if (this.props.opened !== prevProps.opened) {
       this.setOpened(this.props.opened);
+    }
+
+    if (this.props.userIsUpdate !== prevProps.userIsUpdate) {
+      this.getAvatar();
+      this.props.setUserIsUpdate(false);
     }
   }
 
@@ -60,9 +74,15 @@ class ProfileActions extends React.PureComponent {
     e.preventDefault();
   };
 
+  getAvatar = async () => {
+    const user = await api.people.getUser();
+    const avatar = user.avatar;
+    this.setState({ avatar: avatar });
+  };
+
   render() {
     //console.log("Layout sub-component ProfileActions render");
-    const { user, opened } = this.state;
+    const { user, opened, avatar } = this.state;
     const userRole = this.getUserRole(user);
 
     return (
@@ -70,14 +90,15 @@ class ProfileActions extends React.PureComponent {
         <Avatar
           onClick={this.onClick}
           role={userRole}
-          size="small"
-          source={user.avatar}
+          size="min"
+          source={avatar}
           userName={user.displayName}
+          className="icon-profile-menu"
         />
         <ProfileMenu
           className="profile-menu"
           avatarRole={userRole}
-          avatarSource={user.avatarMedium}
+          avatarSource={avatar}
           displayName={user.displayName}
           email={user.email}
           open={opened}
@@ -105,12 +126,15 @@ ProfileActions.propTypes = {
   opened: PropTypes.bool,
   user: PropTypes.object,
   userActions: PropTypes.array,
+  userIsUpdate: PropTypes.bool,
+  setUserIsUpdate: PropTypes.func,
 };
 
 ProfileActions.defaultProps = {
   opened: false,
   user: {},
   userActions: [],
+  userIsUpdate: false,
 };
 
 export default ProfileActions;

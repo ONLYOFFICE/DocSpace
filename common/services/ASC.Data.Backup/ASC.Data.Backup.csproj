@@ -4,39 +4,14 @@
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Remove="protos\BackupProgress.proto" />
-	  <None Remove="protos\DeleteSchedule.proto" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="Google.Protobuf" Version="3.13.0" />
-	  <PackageReference Include="Grpc" Version="2.32.0" />
-	  <PackageReference Include="Grpc.Tools" Version="2.32.0">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="SharpCompress" Version="0.26.0" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
-	  <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
-	  <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
-	  <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
-	  <ProjectReference Include="..\..\ASC.Data.Encryption\ASC.Data.Encryption.csproj" />
-	  <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Protobuf Include="protos\DeleteSchedule.proto" />
-	  <Protobuf Include="protos\BackupProgress.proto" />
-	</ItemGroup>
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
 		<ItemGroup>
 			<ReferencePath Condition="'%(FileName)' == 'MySqlConnector'">
@@ -45,5 +20,8 @@
 		</ItemGroup>
 
 	</Target>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
+	</ItemGroup>
 
 </Project>

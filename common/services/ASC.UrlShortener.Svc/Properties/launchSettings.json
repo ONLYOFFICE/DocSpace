@@ -8,7 +8,7 @@
         "log__name": "urlshortener",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
-        "ASPNETCORE_URLS": "http://localhost:5017",
+        "ASPNETCORE_URLS": "http://localhost:5029",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -20,7 +20,7 @@
         "log__name": "urlshortener",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
-        "ASPNETCORE_URLS": "http://localhost:5017",
+        "ASPNETCORE_URLS": "http://localhost:5029",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "distributionName": "Ubuntu-20.04"

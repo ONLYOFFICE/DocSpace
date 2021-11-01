@@ -1,0 +1,4 @@
+{
+  "ChangeOwner": "Besitzer ({{fileName}}) ändern",
+  "ChangeOwnerDescription": "Wenn die Änderungen in Kraft treten, bekommt der aktuelle Besitzer dieselbe Rechte wie alle Mitglieder seiner Gruppe"
+}

@@ -71,7 +71,11 @@ namespace ASC.Core
 
         public static implicit operator AzRecord(AzRecordCache cache)
         {
-            var result = new AzRecord();
+            var result = new AzRecord()
+            {
+                Tenant = cache.Tenant
+            };
+
 
             if (Guid.TryParse(cache.SubjectId, out var subjectId))
             {

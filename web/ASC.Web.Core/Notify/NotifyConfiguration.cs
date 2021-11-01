@@ -362,7 +362,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public static byte[] GetDefaultMailLogo()
         {
-            var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "onlyoffice_logo", "dark_general.png");
+            var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "logo", "dark_general.png");
 
             return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
         }

@@ -4,6 +4,7 @@ import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";
 import Aside from "@appserver/components/aside";
 import Loaders from "@appserver/common/components/Loaders";
+import FloatingButton from "@appserver/common/components/FloatingButton";
 import { withTranslation } from "react-i18next";
 import history from "@appserver/common/history";
 import {
@@ -35,7 +36,7 @@ class PureVersionHistoryPanel extends React.Component {
 
   render() {
     //console.log("render versionHistoryPanel");
-    const { visible, isLoading, versions } = this.props;
+    const { visible, isLoading, versions, showProgressBar } = this.props;
     const zIndex = 310;
 
     return (
@@ -74,6 +75,13 @@ class PureVersionHistoryPanel extends React.Component {
             <StyledBody className="version-history-panel-body">
               <SectionBodyContent />
             </StyledBody>
+            {showProgressBar && (
+              <FloatingButton
+                className="layout-progress-bar"
+                icon="file"
+                alert={false}
+              />
+            )}
           </StyledContent>
         </Aside>
       </StyledVersionHistoryPanel>
@@ -97,6 +105,7 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
     versions,
     setIsVerHistoryPanel,
     isVisible: visible,
+    showProgressBar,
   } = versionHistoryStore;
 
   return {
@@ -106,6 +115,7 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
     fileId,
     versions,
     visible,
+    showProgressBar,
 
     setIsVerHistoryPanel,
   };

@@ -8,6 +8,7 @@ const ToggleButtonContainer = styled.label`
   -webkit-appearance: none;
   align-items: start;
   outline: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${NoUserSelect};
 

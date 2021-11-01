@@ -26,26 +26,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
+using ASC.ElasticSearch.Service;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
 
 using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Core.Search
 {
     [Scope(Additional = typeof(FactoryIndexerFileExtension))]
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
         private IDaoFactory DaoFactory { get; }
+        private Settings Settings { get; }
 
         public FactoryIndexerFile(
             IOptionsMonitor<ILog> options,
@@ -55,10 +59,12 @@ namespace ASC.Web.Files.Core.Search
             BaseIndexer<DbFile> baseIndexer,
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
-            ICache cache)
+            ICache cache,
+            ConfigurationExtension configurationExtension)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
+            Settings = Settings.GetInstance(configurationExtension);
         }
 
         public override void IndexAll()
@@ -67,39 +73,108 @@ namespace ASC.Web.Files.Core.Search
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q = fileDao.FilesDbContext.Files
-                    .Where(r => r.ModifiedOn >= lastIndexed)
-                    .Where(r => r.CurrentVersion)
-                    .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
-                    .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active);
+                var dataQuery = GetBaseQuery(lastIndexed)
+                    .Where(r => r.DbFile.Version == 1)
+                    .OrderBy(r => r.DbFile.Id)
+                    .Select(r => r.DbFile.Id);
 
-                var count = q.GroupBy(a => a.f.Id).Count();
-                var min = count > 0 ? q.Min(r => r.f.Id) : 0;
-                var max = count > 0 ? q.Max(r => r.f.Id) : 0;
+                var minid = dataQuery.FirstOrDefault();
 
-                return (count, max, min);
+                dataQuery = GetBaseQuery(lastIndexed)
+                    .Where(r => r.DbFile.Version == 1)
+                    .OrderByDescending(r => r.DbFile.Id)
+                    .Select(r => r.DbFile.Id);
+
+                var maxid = dataQuery.FirstOrDefault();
+
+                var count = GetBaseQuery(lastIndexed)
+                    .Where(r => r.DbFile.Version == 1)
+                    .Count();
+
+                return new(count, maxid, minid);
             }
 
-            List<DbFile> getData(long i, long step, DateTime lastIndexed) =>
-                fileDao.FilesDbContext.Files
-                    .Where(r => r.ModifiedOn >= lastIndexed)
-                    .Where(r => r.CurrentVersion)
-                    .Where(r => r.Id >= i && r.Id <= i + step)
-                    .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new { f, t })
-                    .Where(r => r.t.Status == ASC.Core.Tenants.TenantStatus.Active)
-                    .Select(r => r.f)
+            List<DbFile> getData(long start, long stop, DateTime lastIndexed)
+            {
+                return GetBaseQuery(lastIndexed)
+                    .Where(r => r.DbFile.Id >= start && r.DbFile.Id <= stop && r.DbFile.CurrentVersion)
+                    .Select(r => r.DbFile)
                     .ToList();
+
+            }
+
+            List<int> getIds(DateTime lastIndexed)
+            {
+                var start = 0;
+                var result = new List<int>();
+                while (true)
+                {
+                    var dataQuery = GetBaseQuery(lastIndexed)
+                        .Where(r => r.DbFile.Id >= start)
+                        .Where(r => r.DbFile.Version == 1)
+                        .OrderBy(r => r.DbFile.Id)
+                        .Select(r => r.DbFile.Id)
+                        .Skip(BaseIndexer<DbFile>.QueryLimit);
+
+                    var id = dataQuery.FirstOrDefault();
+                    if (id != 0)
+                    {
+                        start = id;
+                        result.Add(id);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                return result;
+            }
+
+            IQueryable<FileTenant> GetBaseQuery(DateTime lastIndexed) => fileDao.FilesDbContext.Files
+                .Where(r => r.ModifiedOn >= lastIndexed)
+                .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+                .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
 
             try
             {
-                foreach (var data in Indexer.IndexAll(getCount, getData))
+                var j = 0;
+                var tasks = new List<Task>();
+
+                foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
                 {
-                    data.ForEach(r =>
+                    if (Settings.Threads == 1)
                     {
-                        TenantManager.SetCurrentTenant(r.TenantId);
-                        fileDao.InitDocument(r);
-                    });
-                    Index(data);
+                        data.ForEach(r =>
+                        {
+                            TenantManager.SetCurrentTenant(r.TenantId);
+                            fileDao.InitDocument(r);
+                        });
+                        Index(data);
+                    }
+                    else
+                    {
+                        //TODO: refactoring
+                        data.ForEach(r =>
+                        {
+                            TenantManager.SetCurrentTenant(r.TenantId);
+                            fileDao.InitDocument(r);
+                        });
+
+                        tasks.Add(IndexAsync(data));
+                        j++;
+                        if (j >= Settings.Threads)
+                        {
+                            Task.WaitAll(tasks.ToArray());
+                            tasks = new List<Task>();
+                            j = 0;
+                        }
+                    }
+                }
+
+                if (tasks.Any())
+                {
+                    Task.WaitAll(tasks.ToArray());
                 }
             }
             catch (Exception e)
@@ -114,6 +189,12 @@ namespace ASC.Web.Files.Core.Search
         {
             get { return FilesCommonResource.IndexTitle; }
         }
+    }
+
+    public class FileTenant
+    {
+        public DbTenant DbTenant { get; set; }
+        public DbFile DbFile { get; set; }
     }
 
     public class FactoryIndexerFileExtension

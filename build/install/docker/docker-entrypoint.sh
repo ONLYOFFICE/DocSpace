@@ -1,8 +1,24 @@
 #!/bin/bash
 
-echo "##########################################################"
-echo "##############    Run App Service     ####################"
-echo "##########################################################"
+# read parameters
+if [ -n "$1" ]; then
+	DOTNET_RUN="${1}";
+	shift
+fi
+
+if [ -n "$1" ]; then
+	DOTNET_LOG_NAME="${1}";
+	shift
+fi
+
+while [ "$1" != "" ]; do
+	PARAMETERS="$PARAMETERS --${1}";
+	shift
+done
+
+echo "#-------------------------------------#"
+echo "Run ${DOTNET_RUN}"
+echo "#-------------------------------------#"
     
 PRODUCT=${PRODUCT:-"onlyoffice"}
 BASE_DIR="/app/${PRODUCT}"
@@ -29,33 +45,15 @@ DOCUMENT_SERVER_JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET:-"your_jwt_secret"}
 DOCUMENT_SERVER_JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}
 DOCUMENT_SERVER_URL_PUBLIC=${DOCUMENT_SERVER_URL_PUBLIC:-"/ds-vpath/"}
 DOCUMENT_SERVER_URL_INTERNAL=${DOCUMENT_SERVER_URL_INTERNAL:-"${SHEME}://${PRODUCT}-document-server/"}
-DOCUMENT_SERVER_URL_CONVERTER=${DOCUMENT_SERVER_URL_CONVERTER:-"/ds-vpath/ConvertService.ashx"}
-VIEWED_MEDIA=${VIEWED_MEDIA:-'".aac",".flac",".m4a",".mp3",".oga",".ogg",".wav",".f4v",".m4v",".mov",".mp4",".ogv",".webm",".avi"'}
-FFMPEG_EXTS=${FFMPEG_EXTS:-'"avi", "mpeg", "mpg", "wmv"'}
 
 ELK_SHEME=${ELK_SHEME:-"http"}
-ELK_HOST=${ELK_HOST:-"elasticsearch"}
+ELK_HOST=${ELK_HOST:-"${PRODUCT}-elasticsearch"}
 ELK_PORT=${ELK_PORT:-"9200"}
-ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Port": "'${ELK_PORT}'" },'
+ELK_THREADS=${ELK_THREADS:-"1"}
 
 KAFKA_HOST=${KAFKA_HOST:-"kafka"}":9092"
 
 APP_STORAGE_ROOT=${APP_STORAGE_ROOT:-"${BASE_DIR}/data/"}
-
-if [ -n "$1" ]; then
-	DOTNET_RUN="${1}";
-	shift
-fi
-
-if [ -n "$1" ]; then
-	DOTNET_LOG_NAME="${1}";
-	shift
-fi
-
-while [ "$1" != "" ]; do
-	PARAMETERS="$PARAMETERS --${1}";
-	shift
-done
 
 sed -i "s!Server=.*;Pooling=!Server=${MYSQL_HOST};Port=3306;Database=${MYSQL_DATABASE};User ID=${MYSQL_USER};Password=${MYSQL_PASSWORD};Pooling=!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"base-domain\".*,!\"base-domain\": \"${APP_CORE_BASE_DOMAIN}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
@@ -63,12 +61,13 @@ sed -i "s!\"machinekey\".*,!\"machinekey\": \"${APP_CORE_MACHINEKEY}\",!g" ${PAT
 sed -i "s!\"public\".*,!\"public\": \"${DOCUMENT_SERVER_URL_PUBLIC}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"internal\".*,!\"internal\": \"${DOCUMENT_SERVER_URL_INTERNAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"portal\".*!\"portal\": \"${APP_URL_PORTAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"viewed-media\".*!\"viewed-media\": \[${VIEWED_MEDIA}\]!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"exts\".*!\"exts\": \[ ${FFMPEG_EXTS} \]!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"header\".*!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 
-grep -q "${ELK_VALUE}" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+sed -i "s!\"Scheme\".*!\"Scheme\": \"${ELK_SHEME}\",!g" ${PATH_TO_CONF}/elastic.json
+sed -i "s!\"Host\".*!\"Host\": \"${ELK_HOST}\",!g" ${PATH_TO_CONF}/elastic.json
+sed -i "s!\"Port\".*!\"Port\": \"${ELK_PORT}\",!g" ${PATH_TO_CONF}/elastic.json
+sed -i "s!\"Threads\".*!\"Threads\": \"${ELK_THREADS}\"!g" ${PATH_TO_CONF}/elastic.json
 
 sed -i "s!\"subfolder\".*!\"subfolder\": \"server\",!g" ${PATH_TO_CONF}/appsettings.services.json
 sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}\"!g" ${PATH_TO_CONF}/kafka.${APP_DOTNET_ENV}.json

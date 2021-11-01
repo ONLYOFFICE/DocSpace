@@ -66,7 +66,8 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                     comment = table.Column<string>(maxLength: 255, nullable: true, defaultValueSql: "NULL::character varying"),
                     changes = table.Column<string>(nullable: true),
                     encrypted = table.Column<bool>(nullable: false),
-                    forcesave = table.Column<int>(nullable: false)
+                    forcesave = table.Column<int>(nullable: false),
+                    thumb = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -173,7 +174,7 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                     provider = table.Column<string>(maxLength: 50, nullable: false, defaultValueSql: "'0'::character varying"),
                     customer_title = table.Column<string>(maxLength: 400, nullable: false),
                     user_name = table.Column<string>(maxLength: 100, nullable: false),
-                    password = table.Column<string>(maxLength: 100, nullable: false),
+                    password = table.Column<string>(maxLength: 512, nullable: false),
                     token = table.Column<string>(nullable: true),
                     user_id = table.Column<Guid>(maxLength: 38, nullable: false),
                     folder_type = table.Column<int>(nullable: false),

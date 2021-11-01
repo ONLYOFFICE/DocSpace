@@ -37,7 +37,7 @@ using System.Text.RegularExpressions;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Workers;
+using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -48,9 +48,15 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Users
 {
-    public class ResizeWorkerItem
+    [Transient]
+    public class ResizeWorkerItem : DistributedTask
     {
-        public ResizeWorkerItem(Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings)
+        public ResizeWorkerItem()
+        {
+
+        }
+
+        public ResizeWorkerItem(Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings) : base()
         {
             UserId = userId;
             Data = data;
@@ -90,8 +96,8 @@ namespace ASC.Web.Core.Users
         public override int GetHashCode()
         {
             return HashCode.Combine(UserId, MaxFileSize, Size);
+            }
         }
-    }
 
     [Singletone]
     public class UserPhotoManagerCache
@@ -189,8 +195,6 @@ namespace ASC.Web.Core.Users
                     @"(?'user'\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1}){1}" +
                     @"_(?'kind'orig|size){1}_(?'size'(?'width'[0-9]{1,5})-{1}(?'height'[0-9]{1,5})){0,1}\..*", RegexOptions.Compiled);
 
-        private static readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles = new ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>>();
-
         private UserManager UserManager { get; }
         private WebImageSupplier WebImageSupplier { get; }
         private TenantManager TenantManager { get; }
@@ -204,7 +208,7 @@ namespace ASC.Web.Core.Users
         public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
 
         //note: using auto stop queue
-        private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue;//TODO: configure
+        private readonly DistributedTaskQueue ResizeQueue;//TODO: configure
 
         public UserPhotoManager(
             UserManager userManager,
@@ -213,11 +217,11 @@ namespace ASC.Web.Core.Users
             StorageFactory storageFactory,
             UserPhotoManagerCache userPhotoManagerCache,
             IOptionsMonitor<ILog> options,
-            WorkerQueueOptionsManager<ResizeWorkerItem> optionsQueue,
+            DistributedTaskQueueOptionsManager optionsQueue,
             SettingsManager settingsManager,
             IServiceProvider serviceProvider)
         {
-            ResizeQueue = optionsQueue.Value;
+            ResizeQueue = optionsQueue.Get<ResizeWorkerItem>();
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             TenantManager = tenantManager;
@@ -432,7 +436,7 @@ namespace ASC.Web.Core.Users
         }
 
         private string GetDefaultPhotoAbsoluteWebPath(Size size)
-        {
+            {
             return size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultRetinaAvatar),
@@ -523,12 +527,28 @@ namespace ASC.Web.Core.Users
         public void RemovePhoto(Guid idUser)
         {
             UserManager.SaveUserPhoto(idUser, null);
-            var storage = GetDataStore();
-            storage.DeleteFiles("", idUser + "*.*", false);
+            try
+            {
+                var storage = GetDataStore();
+                storage.DeleteFiles("", idUser + "*.*", false);
+            } 
+            catch(DirectoryNotFoundException e)
+            {
+                Log.Error(e);
+            }
 
             UserManager.SaveUserPhoto(idUser, null);
             UserPhotoManagerCache.ClearCache(idUser);
         }
+
+        public void SyncPhoto(Guid userID, byte[] data)
+        {
+            data = TryParseImage(data, -1, OriginalFotoSize, out _, out int width, out int height);
+            UserManager.SaveUserPhoto(userID, data);
+            SetUserPhotoThumbnailSettings(userID, width, height);
+            UserPhotoManagerCache.ClearCache(userID);
+        }
+
 
         private string SaveOrUpdatePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
         {
@@ -664,6 +684,8 @@ namespace ASC.Web.Core.Users
             if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageWeightLimitException();
 
             var resizeTask = new ResizeWorkerItem(userID, data, maxFileSize, size, GetDataStore(), SettingsManager.LoadForUser<UserPhotoThumbnailSettings>(userID));
+            var key = $"{userID}{size}";
+            resizeTask.SetProperty("key", key);
 
             if (now)
             {
@@ -673,14 +695,10 @@ namespace ASC.Web.Core.Users
             }
             else
             {
-                if (!ResizeQueue.GetItems().Contains(resizeTask))
+                if (!ResizeQueue.GetTasks<ResizeWorkerItem>().Any(r => r.GetProperty<string>("key") == key))
                 {
                     //Add
-                    ResizeQueue.Add(resizeTask);
-                    if (!ResizeQueue.IsStarted)
-                    {
-                        ResizeQueue.Start(ResizeImage);
-                    }
+                    ResizeQueue.QueueTask((a, b) => ResizeImage(resizeTask), resizeTask);
                 }
                 return GetDefaultPhotoAbsoluteWebPath(size);
                 //NOTE: return default photo here. Since task will update cache
@@ -863,7 +881,7 @@ namespace ASC.Web.Core.Users
         }
 
         public static CacheSize ToCache(Size size)
-        {
+            {
             return size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => CacheSize.Retina,
@@ -873,7 +891,7 @@ namespace ASC.Web.Core.Users
                 Size(var w, var h) when w == MediumFotoSize.Width && h == MediumFotoSize.Height => CacheSize.Medium,
                 _ => CacheSize.Original
             };
-        }
+    }
     }
 
     #region Exception Classes
@@ -1001,14 +1019,14 @@ namespace ASC.Web.Core.Users
         public static void Deconstruct(this Size size, out int w, out int h)
         {
             (w, h) = (size.Width, size.Height);
-        }
+    }
     }
 
     public class ResizeWorkerItemExtension
     {
         public static void Register(DIHelper services)
         {
-            services.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, true, 1);
+            services.AddDistributedTaskQueueService<ResizeWorkerItem>(2);
         }
     }
 }

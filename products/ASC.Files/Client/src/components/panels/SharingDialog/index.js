@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Provider as MobxProvider } from "mobx-react";
-import { inject, observer } from "mobx-react";
+import { Provider as MobxProvider, inject, observer } from "mobx-react";
 import { getShareFiles } from "@appserver/common/api/files";
 import SharingPanel from "../SharingPanel";
 
@@ -40,13 +39,12 @@ const SharingDialog = ({
 };
 
 const SharingDialogWrapper = inject(({ dialogsStore, filesStore }) => {
-  const { getShareUsers, setSelection, selection } = filesStore;
+  const { getShareUsers, setSelection } = filesStore;
   const { setSharingPanelVisible } = dialogsStore;
   return {
     setSharingPanelVisible,
     getShareUsers,
     setSelection,
-    selection,
   };
 })(observer(SharingDialog));
 
@@ -56,6 +54,10 @@ class SharingModal extends React.Component {
       SharingPanel.convertSharingUsers(users)
     );
   };
+
+  componentDidMount() {
+    authStore.init(true);
+  }
 
   render() {
     return (

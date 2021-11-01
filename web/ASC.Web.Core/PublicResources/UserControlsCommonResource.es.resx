@@ -53,14 +53,11 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BackupSpaceExceed" xml:space="preserve">
-    <value>La función de Backup no está disponible porque el espacio de almacenamiento excede {0}. Pase a la sección {1}Estadística{2} para obtener información sobre espacio usado.</value>
-  </data>
   <data name="LicenseException" xml:space="preserve">
     <value>Licencia ha caducado o cuota de los usuarios no coincide con la licencia</value>
   </data>

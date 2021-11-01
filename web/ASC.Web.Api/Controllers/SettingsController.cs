@@ -53,7 +53,6 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Backup;
 using ASC.Data.Backup.Contracts;
-using ASC.Data.Backup.Service;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Encryption;
@@ -84,10 +83,13 @@ using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Google.Authenticator;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -157,14 +159,14 @@ namespace ASC.Api.Settings
         private UrlShortener UrlShortener { get; }
         private EncryptionServiceClient EncryptionServiceClient { get; }
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
-        private BackupServiceNotifier BackupServiceNotifier { get; }
+        private BackupAjaxHandler BackupAjaxHandler { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
-        private EncryptionServiceNotifier EncryptionServiceNotifier { get; }
+        private EncryptionWorker EncryptionWorker { get; }
         private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
-        private BackupAjaxHandler BackupAjaxHandler { get; }
         private PaymentManager PaymentManager { get; }
+        public Constants Constants { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -221,12 +223,12 @@ namespace ASC.Api.Settings
             UrlShortener urlShortener,
             EncryptionServiceClient encryptionServiceClient,
             EncryptionSettingsHelper encryptionSettingsHelper,
-            BackupServiceNotifier backupServiceNotifier,
-            ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-            EncryptionServiceNotifier encryptionServiceNotifier,
-            PasswordHasher passwordHasher,
             BackupAjaxHandler backupAjaxHandler,
-            PaymentManager paymentManager)
+            ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
+            EncryptionWorker encryptionWorker,
+            PasswordHasher passwordHasher,
+            PaymentManager paymentManager,
+            Constants constants)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -279,25 +281,27 @@ namespace ASC.Api.Settings
             ServiceClient = serviceClient;
             EncryptionServiceClient = encryptionServiceClient;
             EncryptionSettingsHelper = encryptionSettingsHelper;
-            BackupServiceNotifier = backupServiceNotifier;
+            BackupAjaxHandler = backupAjaxHandler;
             CacheDeleteSchedule = cacheDeleteSchedule;
-            EncryptionServiceNotifier = encryptionServiceNotifier;
+            EncryptionWorker = encryptionWorker;
             PasswordHasher = passwordHasher;
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
-            BackupAjaxHandler = backupAjaxHandler;
             PaymentManager = paymentManager;
+            Constants = constants;
         }
 
         [Read("", Check = false)]
         [AllowAnonymous]
-        public SettingsWrapper GetSettings()
+        public SettingsWrapper GetSettings(bool? withpassword)
         {
             var settings = new SettingsWrapper
             {
                 Culture = Tenant.GetCulture().ToString(),
-                GreetingSettings = Tenant.Name
+                GreetingSettings = Tenant.Name,
+                Personal = CoreBaseSettings.Personal,
+                Version = Configuration["version:number"] ?? ""
             };
 
             if (AuthContext.IsAuthenticated)
@@ -310,12 +314,29 @@ namespace ASC.Api.Settings
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
                 settings.OwnerId = Tenant.OwnerId;
                 settings.NameSchemaId = CustomNamingPeople.Current.Id;
+
+                settings.Firebase = new FirebaseWrapper
+                {
+                    ApiKey = Configuration["firebase:apiKey"] ?? "",
+                    AuthDomain = Configuration["firebase:authDomain"] ?? "",
+                    ProjectId = Configuration["firebase:projectId"] ?? "",
+                    StorageBucket = Configuration["firebase:storageBucket"] ?? "",
+                    MessagingSenderId = Configuration["firebase:messagingSenderId"] ?? "",
+                    AppId = Configuration["firebase:appId"] ?? "",
+                    MeasurementId = Configuration["firebase:measurementId"] ?? ""
+                };
+
+                bool debugInfo;
+                if (bool.TryParse(Configuration["debug-info:enabled"], out debugInfo))
+                {
+                    settings.DebugInfo = debugInfo;
+                }
             }
             else
             {
                 if (!SettingsManager.Load<WizardSettings>().Completed)
                 {
-                    settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
+                    settings.WizardToken = CommonLinkUtility.GetToken(Tenant.TenantId, "", ConfirmType.Wizard, userId: Tenant.OwnerId);
                 }
 
                 settings.EnabledJoin =
@@ -335,6 +356,11 @@ namespace ASC.Api.Settings
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
 
+                settings.RecaptchaPublicKey = SetupInfo.RecaptchaPublicKey;
+            }
+
+            if (!AuthContext.IsAuthenticated || (withpassword.HasValue && withpassword.Value))
+            {
                 settings.PasswordHash = PasswordHasher;
             }
 
@@ -342,7 +368,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("messagesettings")]
-        public object EnableAdminMessageSettingsFromBody([FromBody]AdminMessageSettingsModel model)
+        public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsModel model)
         {
             return EnableAdminMessageSettings(model);
         }
@@ -367,7 +393,7 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Create("sendadmmail")]
-        public object SendAdmMailFromBody([FromBody]AdminMessageSettingsModel model)
+        public object SendAdmMailFromBody([FromBody] AdminMessageSettingsModel model)
         {
             return SendAdmMail(model);
         }
@@ -447,7 +473,7 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Create("sendjoininvite")]
-        public object SendJoinInviteMailFromBody([FromBody]AdminMessageSettingsModel model)
+        public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsModel model)
         {
             return SendJoinInviteMail(model);
         }
@@ -487,17 +513,20 @@ namespace ASC.Api.Settings
 
                 var trustedDomainSettings = SettingsManager.Load<StudioTrustedDomainSettings>();
                 var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
-                var enableInviteUsers = TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers;
+                if (!CoreBaseSettings.Personal)
+                {
+                    var enableInviteUsers = TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers;
 
-                if (!enableInviteUsers)
-                    emplType = EmployeeType.Visitor;
+                    if (!enableInviteUsers)
+                        emplType = EmployeeType.Visitor;
+                }
 
                 switch (Tenant.TrustedDomainsType)
                 {
                     case TenantTrustedDomainsType.Custom:
                     {
                         var address = new MailAddress(email);
-                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
@@ -572,9 +601,9 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var usrCaption =  (model.UserCaption ?? "").Trim();
+            var usrCaption = (model.UserCaption ?? "").Trim();
             var usrsCaption = (model.UsersCaption ?? "").Trim();
-            var grpCaption =  (model.GroupCaption ?? "").Trim();
+            var grpCaption = (model.GroupCaption ?? "").Trim();
             var grpsCaption = (model.GroupsCaption ?? "").Trim();
             var usrStatusCaption = (model.UserPostCaption ?? "").Trim();
             var regDateCaption = (model.RegDateCaption ?? "").Trim();
@@ -642,7 +671,7 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager);
+            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager, Constants);
         }
 
         [AllowAnonymous]
@@ -692,14 +721,14 @@ namespace ASC.Api.Settings
         }
 
         [Create("greetingsettings")]
-        public ContentResult SaveGreetingSettingsFromBody([FromBody]GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsModel model)
         {
             return SaveGreetingSettings(model);
         }
 
         [Create("greetingsettings")]
         [Consumes("application/x-www-form-urlencoded")]
-        public ContentResult SaveGreetingSettingsFromForm([FromForm]GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsModel model)
         {
             return SaveGreetingSettings(model);
         }
@@ -777,7 +806,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("version")]
-        public TenantVersionWrapper SetVersionFromBody([FromBody]SettingsModel model)
+        public TenantVersionWrapper SetVersionFromBody([FromBody] SettingsModel model)
         {
             return SetVersion(model);
         }
@@ -800,7 +829,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security")]
-        public IEnumerable<SecurityWrapper> GetWebItemSecurityInfo(IEnumerable<string> ids)
+        public IEnumerable<SecurityWrapper> GetWebItemSecurityInfo([FromQuery] IEnumerable<string> ids)
         {
             if (ids == null || !ids.Any())
             {
@@ -853,7 +882,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("security")]
-        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromBody([FromBody]WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromBody([FromBody] WebItemSecurityModel model)
         {
             return SetWebItemSecurity(model);
         }
@@ -899,7 +928,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("security/access")]
-        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromBody([FromBody]WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityModel model)
         {
             return SetAccessToWebItems(model);
         }
@@ -973,7 +1002,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("security/administrator")]
-        public object SetProductAdministratorFromBody([FromBody]SecurityModel model)
+        public object SetProductAdministratorFromBody([FromBody] SecurityModel model)
         {
             return SetProductAdministrator(model);
         }
@@ -1267,7 +1296,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("iprestrictions")]
-        public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody]IpRestrictionsModel model)
+        public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsModel model)
         {
             return SaveIpRestrictions(model);
         }
@@ -1286,7 +1315,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("iprestrictions/settings")]
-        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody]IpRestrictionsModel model)
+        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsModel model)
         {
             return UpdateIpRestrictionsSettings(model);
         }
@@ -1309,7 +1338,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("tips")]
-        public TipsSettings UpdateTipsSettingsFromBody([FromBody]SettingsModel model)
+        public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsModel model)
         {
             return UpdateTipsSettings(model);
         }
@@ -1320,7 +1349,7 @@ namespace ASC.Api.Settings
         {
             return UpdateTipsSettings(model);
         }
-        
+
         private TipsSettings UpdateTipsSettings(SettingsModel model)
         {
             var settings = new TipsSettings { Show = model.Show };
@@ -1356,7 +1385,7 @@ namespace ASC.Api.Settings
 
         [Update("wizard/complete", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-        public WizardSettings CompleteWizardFromBody([FromBody]WizardModel wizardModel)
+        public WizardSettings CompleteWizardFromBody([FromBody] WizardModel wizardModel)
         {
             return CompleteWizard(wizardModel);
         }
@@ -1412,8 +1441,43 @@ namespace ASC.Api.Settings
             return result;
         }
 
+        [Create("tfaapp/validate")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
+        public bool TfaValidateAuthCode(TfaValidateModel model)
+        {
+            ApiContext.AuthByClaim();
+            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+            return TfaManager.ValidateAuthCode(user, model.Code);
+        }
+
+        [Read("tfaapp/confirm")]
+        public object TfaConfirmUrl()
+        {
+            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+            if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)// && smsConfirm.ToLower() != "true")
+            {
+                var confirmType = string.IsNullOrEmpty(user.MobilePhone) ||
+                               user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated
+                                   ? ConfirmType.PhoneActivation
+                                   : ConfirmType.PhoneAuth;
+
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            }
+
+            if (TfaAppAuthSettings.IsVisibleSettings && SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            {
+                var confirmType = TfaAppUserSettings.EnableForUser(SettingsManager, AuthContext.CurrentAccount.ID)
+                    ? ConfirmType.TfaAuth
+                    : ConfirmType.TfaActivation;
+
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            }
+
+            return string.Empty;
+        }
+
         [Update("tfaapp")]
-        public bool TfaSettingsFromBody([FromBody]TfaModel model)
+        public bool TfaSettingsFromBody([FromBody] TfaModel model)
         {
             return TfaSettingsUpdate(model);
         }
@@ -1424,7 +1488,7 @@ namespace ASC.Api.Settings
         {
             return TfaSettingsUpdate(model);
         }
-        
+
         private bool TfaSettingsUpdate(TfaModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -1502,7 +1566,24 @@ namespace ASC.Api.Settings
             return result;
         }
 
-        ///<visible>false</visible>
+        [Read("tfaapp/setup")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
+        public SetupCode TfaAppGenerateSetupCode()
+        {
+            ApiContext.AuthByClaim();
+            var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+
+            if (!TfaAppAuthSettings.IsVisibleSettings ||
+                !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
+                TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
+                throw new Exception(Resource.TfaAppNotAvailable);
+
+            if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
+                throw new NotSupportedException("Not available.");
+
+            return TfaManager.GenerateSetupCode(currentUser);
+        }
+
         [Read("tfaappcodes")]
         public IEnumerable<object> TfaAppGetCodes()
         {
@@ -1534,7 +1615,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("tfaappnewapp")]
-        public object TfaAppNewAppFromBody([FromBody]TfaModel model)
+        public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaModel model)
         {
             return TfaAppNewApp(model);
         }
@@ -1548,8 +1629,9 @@ namespace ASC.Api.Settings
 
         private object TfaAppNewApp(TfaModel model)
         {
-            var isMe = model.Id.Equals(Guid.Empty);
-            var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : model.Id);
+            var id = model?.Id ?? Guid.Empty;
+            var isMe = id.Equals(Guid.Empty);
+            var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : id);
 
             if (!isMe && !PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser))
                 throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
@@ -1590,7 +1672,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("colortheme")]
-        public void SaveColorThemeFromBody([FromBody]SettingsModel model)
+        public void SaveColorThemeFromBody([FromBody] SettingsModel model)
         {
             SaveColorTheme(model);
         }
@@ -1611,7 +1693,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("timeandlanguage")]
-        public object TimaAndLanguageFromBody([FromBody]SettingsModel model)
+        public object TimaAndLanguageFromBody([FromBody] SettingsModel model)
         {
             return TimaAndLanguage(model);
         }
@@ -1665,7 +1747,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("owner")]
-        public object SendOwnerChangeInstructionsFromBody([FromBody]SettingsModel model)
+        public object SendOwnerChangeInstructionsFromBody([FromBody] SettingsModel model)
         {
             return SendOwnerChangeInstructions(model);
         }
@@ -1703,7 +1785,7 @@ namespace ASC.Api.Settings
 
         [Update("owner")]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-        public void OwnerFromBody([FromBody]SettingsModel model)
+        public void OwnerFromBody([FromBody] SettingsModel model)
         {
             Owner(model);
         }
@@ -1745,7 +1827,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("defaultpage")]
-        public object SaveDefaultPageSettingsFromBody([FromBody]SettingsModel model)
+        public object SaveDefaultPageSettingsFromBody([FromBody] SettingsModel model)
         {
             return SaveDefaultPageSettings(model);
         }
@@ -1931,7 +2013,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("customnavigation/create")]
-        public CustomNavigationItem CreateCustomNavigationItemFromBody([FromBody]CustomNavigationItem item)
+        public CustomNavigationItem CreateCustomNavigationItemFromBody([FromBody] CustomNavigationItem item)
         {
             return CreateCustomNavigationItem(item);
         }
@@ -2013,7 +2095,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("emailactivation")]
-        public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody]EmailActivationSettings settings)
+        public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody] EmailActivationSettings settings)
         {
             SettingsManager.SaveForCurrentUser(settings);
             return settings;
@@ -2021,7 +2103,7 @@ namespace ASC.Api.Settings
 
         [Update("emailactivation")]
         [Consumes("application/x-www-form-urlencoded")]
-        public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm]EmailActivationSettings settings)
+        public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm] EmailActivationSettings settings)
         {
             SettingsManager.SaveForCurrentUser(settings);
             return settings;
@@ -2143,7 +2225,7 @@ namespace ASC.Api.Settings
         public readonly object Locker = new object();
 
         [Create("encryption/start")]
-        public bool StartStorageEncryptionFromBody([FromBody]StorageEncryptionModel storageEncryption)
+        public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionModel storageEncryption)
         {
             return StartStorageEncryption(storageEncryption);
         }
@@ -2213,7 +2295,7 @@ namespace ASC.Api.Settings
 
             foreach (var tenant in tenants)
             {
-                var progress = BackupServiceNotifier.GetBackupProgress(tenant.TenantId);
+                var progress = BackupAjaxHandler.GetBackupProgress(tenant.TenantId);
                 if (progress != null && progress.IsCompleted == false)
                 {
                     throw new Exception();
@@ -2345,11 +2427,11 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
             }
 
-            return EncryptionServiceNotifier.GetEncryptionProgress(Tenant.TenantId)?.Progress;
+            return EncryptionWorker.GetEncryptionProgress();
         }
 
         [Update("storage")]
-        public StorageSettings UpdateStorageFromBody([FromBody]StorageModel model)
+        public StorageSettings UpdateStorageFromBody([FromBody] StorageModel model)
         {
             return UpdateStorage(model);
         }
@@ -2429,7 +2511,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("storage/cdn")]
-        public CdnStorageSettings UpdateCdnFromBody([FromBody]StorageModel model)
+        public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageModel model)
         {
             return UpdateCdn(model);
         }
@@ -2547,7 +2629,7 @@ namespace ASC.Api.Settings
         [Consumes("application/x-www-form-urlencoded")]
         public bool SaveCompanyWhiteLabelSettingsFromForm([FromForm] CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
         {
-           return SaveCompanyWhiteLabelSettings(companyWhiteLabelSettingsWrapper);
+            return SaveCompanyWhiteLabelSettings(companyWhiteLabelSettingsWrapper);
         }
 
         private bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
@@ -2584,7 +2666,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/additional")]
-        public bool SaveAdditionalWhiteLabelSettingsFromBody([FromBody]AdditionalWhiteLabelSettingsWrapper wrapper)
+        public bool SaveAdditionalWhiteLabelSettingsFromBody([FromBody] AdditionalWhiteLabelSettingsWrapper wrapper)
         {
             return SaveAdditionalWhiteLabelSettings(wrapper);
         }
@@ -2593,7 +2675,7 @@ namespace ASC.Api.Settings
         [Consumes("application/x-www-form-urlencoded")]
         public bool SaveAdditionalWhiteLabelSettingsFromForm([FromForm] AdditionalWhiteLabelSettingsWrapper wrapper)
         {
-           return SaveAdditionalWhiteLabelSettings(wrapper);
+            return SaveAdditionalWhiteLabelSettings(wrapper);
         }
 
         private bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
@@ -2652,14 +2734,14 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("rebranding/mail")]
-        public bool UpdateMailWhiteLabelSettingsFromBody([FromBody]MailWhiteLabelSettingsModel model)
+        public bool UpdateMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettingsModel model)
         {
             return UpdateMailWhiteLabelSettings(model);
         }
 
         [Update("rebranding/mail")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool UpdateMailWhiteLabelSettingsFromForm([FromForm]MailWhiteLabelSettingsModel model)
+        public bool UpdateMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettingsModel model)
         {
             return UpdateMailWhiteLabelSettings(model);
         }
@@ -2723,7 +2805,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("authservice")]
-        public bool SaveAuthKeysFromBody([FromBody]AuthServiceModel model)
+        public bool SaveAuthKeysFromBody([FromBody] AuthServiceModel model)
         {
             return SaveAuthKeys(model);
         }
@@ -2738,7 +2820,10 @@ namespace ASC.Api.Settings
         private bool SaveAuthKeys(AuthServiceModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString()))
+
+            var saveAvailable = CoreBaseSettings.Standalone || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).ThirdParty;
+            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString())
+                || !saveAvailable)
                 throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
 
             var changed = false;

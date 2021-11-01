@@ -50,7 +50,6 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.Utility;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.UserControls.FirstTime
@@ -59,9 +58,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
     public class FirstTimeTenantSettings
     {
         private ILog Log { get; }
-        private IConfiguration Configuration { get; }
         private TenantManager TenantManager { get; }
-        private CoreSettings CoreSettings { get; }
         private TenantExtra TenantExtra { get; }
         private SettingsManager SettingsManager { get; }
         private UserManager UserManager { get; }
@@ -76,9 +73,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
 
         public FirstTimeTenantSettings(
             IOptionsMonitor<ILog> options,
-            IConfiguration configuration,
             TenantManager tenantManager,
-            CoreSettings coreSettings,
             TenantExtra tenantExtra,
             SettingsManager settingsManager,
             UserManager userManager,
@@ -92,9 +87,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             CoreBaseSettings coreBaseSettings)
         {
             Log = options.CurrentValue;
-            Configuration = configuration;
             TenantManager = tenantManager;
-            CoreSettings = coreSettings;
             TenantExtra = tenantExtra;
             SettingsManager = settingsManager;
             UserManager = userManager;
@@ -219,7 +212,8 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         {
             get
             {
-                return TenantExtra.EnableTarrifSettings && TenantExtra.Enterprise;
+                return TenantExtra.EnableTariffSettings && TenantExtra.Enterprise
+                    && !File.Exists(LicenseReader.LicensePath);
             }
         }
 

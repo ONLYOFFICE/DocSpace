@@ -1,4 +1,5 @@
 ﻿using System;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 
@@ -52,7 +53,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("customer_title")
                     .HasColumnType("varchar(400)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.FolderType).HasColumnName("folder_type");
 
@@ -61,7 +62,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("password")
                     .HasColumnType("varchar(100)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Provider)
                     .IsRequired()
@@ -69,7 +70,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnType("varchar(50)")
                     .HasDefaultValueSql("'0'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -77,27 +78,27 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("token")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Url)
                     .HasColumnName("url")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UserId)
                     .IsRequired()
                     .HasColumnName("user_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasColumnName("user_name")
                     .HasColumnType("varchar(100)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddDbFilesThirdpartyAccount(this ModelBuilder modelBuilder)

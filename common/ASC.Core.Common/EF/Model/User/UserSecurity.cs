@@ -55,7 +55,7 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("userid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModified)
                     .HasColumnType("timestamp")
@@ -66,13 +66,13 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("pwdhash")
                     .HasColumnType("varchar(512)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PwdHashSha512)
                     .HasColumnName("pwdhashsha512")
                     .HasColumnType("varchar(512)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });

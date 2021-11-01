@@ -3,6 +3,7 @@ import equal from "fast-deep-equal/react";
 import FieldContainer from "@appserver/components/field-container";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import PasswordInput from "@appserver/components/password-input";
+import { PasswordLimitSpecialCharacters } from "@appserver/common/constants";
 
 class PasswordField extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -10,8 +11,6 @@ class PasswordField extends React.Component {
   }
 
   render() {
-    console.log("PasswordField render");
-
     const {
       isRequired,
       hasError,
@@ -35,9 +34,6 @@ class PasswordField extends React.Component {
       copiedResourceText,
       t,
     } = this.props;
-
-    const specialCharacters = "!@#$%^&*";
-
     return (
       <FieldContainer
         isRequired={isRequired}
@@ -62,19 +58,19 @@ class PasswordField extends React.Component {
           onChange={inputOnChange}
           clipActionResource={copyLinkText}
           clipCopiedResource={copiedResourceText}
-          clipEmailResource={`${t("Email")}: `}
-          clipPasswordResource={`${t("Password")}: `}
-          tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
-          tooltipPasswordLength={t("ErrorPasswordLength", {
-            from: passwordSettings ? passwordSettings.minLength : 8,
-            to: "30",
-          })}
-          tooltipPasswordDigits={t("ErrorPasswordNoDigits")}
-          tooltipPasswordCapital={t("ErrorPasswordNoUpperCase")}
+          clipEmailResource={`${t("Common:Email")}: `}
+          clipPasswordResource={`${t("Common:Password")}: `}
+          tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+          tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+            fromNumber: passwordSettings ? passwordSettings.minLength : 8,
+            toNumber: 30,
+          })}`}
+          tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
+          tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
           tooltipPasswordSpecial={`${t(
-            "ErrorPasswordNoSpecialSymbols"
-          )} (${specialCharacters})`}
-          generatorSpecial={specialCharacters}
+            "Common:PasswordLimitSpecialSymbols"
+          )} (${PasswordLimitSpecialCharacters})`}
+          generatorSpecial={PasswordLimitSpecialCharacters}
           passwordSettings={passwordSettings}
           isDisabled={inputIsDisabled}
         />

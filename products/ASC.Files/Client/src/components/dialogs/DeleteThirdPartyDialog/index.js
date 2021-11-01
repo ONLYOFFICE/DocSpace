@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
@@ -8,81 +8,86 @@ import toastr from "studio/toastr";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
 
-class DeleteThirdPartyDialogComponent extends React.Component {
-  updateTree = (path, folders) => {
-    const { t, treeFolders, removeItem, setTreeFolders } = this.props;
+const DeleteThirdPartyDialog = (props) => {
+  const {
+    t,
+    myId,
+    tReady,
+    visible,
+    commonId,
+    providers,
+    removeItem,
+    fetchFiles,
+    treeFolders,
+    setTreeFolders,
+    currentFolderId,
+    deleteThirdParty,
+    setThirdPartyProviders,
+    setDeleteThirdPartyDialogVisible,
+  } = props;
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const updateTree = (path, folders) => {
     const newTreeFolders = treeFolders;
     loopTreeFolders(path, newTreeFolders, folders, null);
     setTreeFolders(newTreeFolders);
     toastr.success(t("SuccessDeleteThirdParty", { service: removeItem.title }));
   };
 
-  onClose = () => this.props.setDeleteThirdPartyDialogVisible(false);
+  const onClose = () => setDeleteThirdPartyDialogVisible(false);
 
-  onDeleteThirdParty = () => {
-    const {
-      setThirdPartyProviders,
-      removeItem,
-      providers,
-      fetchFiles,
-      currentFolderId,
-      commonId,
-      myId,
-      deleteThirdParty,
-    } = this.props;
-
+  const onDeleteThirdParty = () => {
     const providerItem = providers.find((x) => x.provider_id === removeItem.id);
     const newProviders = providers.filter(
       (x) => x.provider_id !== removeItem.id
     );
 
+    setIsLoading(true);
     deleteThirdParty(+removeItem.id)
       .then(() => {
         setThirdPartyProviders(newProviders);
-        if (currentFolderId) {
-          fetchFiles(currentFolderId).then((data) => {
-            const path = data.selectedFolder.pathParts;
-            const folders = data.selectedFolder.folders;
-            this.updateTree(path, folders);
-          });
-        } else {
+        if (currentFolderId) fetchFiles(currentFolderId, null, true, true);
+        else {
           const folderId = providerItem.corporate ? commonId : myId;
           getFolder(folderId).then((data) => {
             const path = [folderId];
-            this.updateTree(path, data.folders);
+            updateTree(path, data.folders);
           });
         }
       })
       .catch((err) => toastr.error(err))
-      .finally(() => this.onClose());
+      .finally(() => {
+        onClose();
+        setIsLoading(false);
+      });
   };
 
-  render() {
-    const { visible, t, removeItem } = this.props;
-
-    return (
-      <ModalDialog visible={visible} zIndex={310} onClose={this.onClose}>
-        <ModalDialog.Header>{t("DeleteThirdParty")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          {t("DeleteThirdPartyAlert", { service: removeItem.title })}
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            label={t("OKButton")}
-            size="big"
-            primary
-            onClick={this.onDeleteThirdParty}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
-    );
-  }
-}
-
-const DeleteThirdPartyDialog = withTranslation("DeleteThirdPartyDialog")(
-  DeleteThirdPartyDialogComponent
-);
+  return (
+    <ModalDialog
+      isLoading={!tReady}
+      visible={visible}
+      zIndex={310}
+      onClose={onClose}
+    >
+      <ModalDialog.Header>
+        {t("Translations:DeleteThirdParty")}
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        {t("DeleteThirdPartyAlert", { service: removeItem.title })}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          isLoading={isLoading}
+          label={t("Common:OKButton")}
+          size="big"
+          primary
+          onClick={onDeleteThirdParty}
+        />
+      </ModalDialog.Footer>
+    </ModalDialog>
+  );
+};
 
 export default inject(
   ({
@@ -128,4 +133,10 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
     };
   }
-)(withRouter(observer(DeleteThirdPartyDialog)));
+)(
+  withRouter(
+    withTranslation(["DeleteThirdPartyDialog", "Common", "Translations"])(
+      observer(DeleteThirdPartyDialog)
+    )
+  )
+);

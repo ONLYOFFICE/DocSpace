@@ -19,7 +19,7 @@ namespace ASC.Files.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FilesUCResource {
@@ -61,7 +61,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Common Documents.
+        ///   Looks up a localized string similar to Common.
         /// </summary>
         public static string CorporateFiles {
             get {
@@ -79,7 +79,25 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Documents.
+        ///   Looks up a localized string similar to Files will be compressed into the {0}.tar.gz file{1}.
+        /// </summary>
+        public static string FilesWillBeCompressedTarGz {
+            get {
+                return ResourceManager.GetString("FilesWillBeCompressedTarGz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files will be compressed into the {0}.zip file{1}.
+        /// </summary>
+        public static string FilesWillBeCompressedZip {
+            get {
+                return ResourceManager.GetString("FilesWillBeCompressedZip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My documents.
         /// </summary>
         public static string MyFiles {
             get {
@@ -97,7 +115,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project Documents.
+        ///   Looks up a localized string similar to In projects.
         /// </summary>
         public static string ProjectFiles {
             get {
@@ -115,7 +133,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shared with Me.
+        ///   Looks up a localized string similar to Shared with me.
         /// </summary>
         public static string SharedForMe {
             get {
@@ -124,7 +142,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recycle Bin.
+        ///   Looks up a localized string similar to Trash.
         /// </summary>
         public static string Trash {
             get {

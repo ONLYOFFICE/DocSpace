@@ -10,6 +10,7 @@ import toastr from "studio/toastr";
 const OperationsPanelComponent = (props) => {
   const {
     t,
+    tReady,
     filter,
     isCopy,
     visible,
@@ -27,7 +28,7 @@ const OperationsPanelComponent = (props) => {
   } = props;
 
   const zIndex = 310;
-  const deleteAfter = true; // TODO: get from settings
+  const deleteAfter = false; // TODO: get from settings
 
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
@@ -89,7 +90,10 @@ const OperationsPanelComponent = (props) => {
       deleteAfter,
       isCopy,
       folderTitle,
-      translations: { copy: t("CopyOperation"), move: t("MoveToOperation") },
+      translations: {
+        copy: t("Translations:CopyOperation"),
+        move: t("Translations:MoveToOperation"),
+      },
     });
   };
 
@@ -101,9 +105,14 @@ const OperationsPanelComponent = (props) => {
         displayType="aside"
         zIndex={zIndex}
         onClose={onClose}
+        isLoading={!tReady}
       >
         <ModalDialog.Header>
-          {isRecycleBin ? t("Restore") : isCopy ? t("Copy") : t("Move")}
+          {isRecycleBin
+            ? t("Translations:Restore")
+            : isCopy
+            ? t("Translations:Copy")
+            : t("Translations:Move")}
         </ModalDialog.Header>
         <ModalDialog.Body>
           <TreeFolders
@@ -119,7 +128,7 @@ const OperationsPanelComponent = (props) => {
   );
 };
 
-const OperationsPanel = withTranslation("OperationsPanel")(
+const OperationsPanel = withTranslation(["OperationsPanel", "Translations"])(
   OperationsPanelComponent
 );
 
@@ -131,7 +140,7 @@ export default inject(
     dialogsStore,
     filesActionsStore,
   }) => {
-    const { filter, selection } = filesStore;
+    const { filter, selection, bufferSelection } = filesStore;
     const {
       isRecycleBinFolder,
       operationsFolders,
@@ -149,7 +158,9 @@ export default inject(
       setThirdPartyMoveDialogVisible,
     } = dialogsStore;
 
-    const provider = selection.find((x) => x.providerKey);
+    const selections = selection.length ? selection : [bufferSelection];
+
+    const provider = selections.find((x) => x.providerKey);
 
     return {
       expandedKeys: expandedPanelKeys
@@ -161,7 +172,7 @@ export default inject(
       operationsFolders,
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
-      selection,
+      selection: selections,
 
       setCopyPanelVisible,
       setMoveToPanelVisible,

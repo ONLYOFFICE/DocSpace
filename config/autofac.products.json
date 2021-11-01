@@ -28,7 +28,7 @@
 	  "instanceScope": "InstancePerLifetimeScope"
     },
     {
-      "type": "ASC.CRM.Configuration.ProductEntryPoint, ASC.CRM",
+      "type": "ASC.Web.CRM.Configuration.ProductEntryPoint, ASC.CRM",
       "services": [
         {
           "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
@@ -52,7 +52,7 @@
           "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
         }
       ],
-	  "instanceScope": "InstancePerLifetimeScope"
+      "instanceScope": "InstancePerLifetimeScope"
     }
   ]
 }

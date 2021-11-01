@@ -93,5 +93,6 @@ namespace ASC.Web.Core.Calendars
         EventContext Context { get; }
         SharingOptions SharingOptions { get; }
         EventStatus Status { get; }
+        TimeZoneInfo TimeZone { get; }
     }
 }

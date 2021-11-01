@@ -1,3 +1,11 @@
 {
-  "FileLocation": "Open file location"
+  "FileLocation": "Open file location",
+  "FileName": "File name",
+  "FolderForSave": "Folder for save",
+  "OpenSavedDocument": "Open saved document in new tab",
+  "SelectFilesType": "Select files of type: {{fileType}}",
+  "ImageFileType": "images",
+  "DocumentsFileType": "documents",
+  "MailMergeFileType": "Select the file in XLSX format",
+  "SelectFileTitle": "Select Data Source"
 }

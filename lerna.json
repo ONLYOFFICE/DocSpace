@@ -1,9 +1,11 @@
 {
-  "version": "0.1.10",
+  "version": "1.0.0",
   "npmClient": "yarn",
   "packages": [
     "packages/asc-web-components",
     "packages/asc-web-common",
+    "packages/browserslist-config-asc",
+    "packages/debug-info",
     "web/ASC.Web.Login",
     "web/ASC.Web.Client",
     "web/ASC.Web.Editor",

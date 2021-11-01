@@ -16,10 +16,6 @@ namespace ASC.Web.Studio
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.Web" }; }
-
-        public override bool AddControllers { get => false; }
-
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
         }
@@ -41,6 +37,8 @@ namespace ASC.Web.Studio
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            base.Configure(app, env);
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

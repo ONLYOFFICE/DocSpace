@@ -44,13 +44,13 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("title")
                     .HasColumnType("varchar(120)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CultureTitle)
                     .HasColumnName("cultureTitle")
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Flag).HasColumnName("flag");
 
@@ -62,7 +62,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("textValue")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddResReserve(this ModelBuilder modelBuilder)

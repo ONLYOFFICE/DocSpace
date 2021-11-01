@@ -6,6 +6,8 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
+import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const StyledServicesBlock = styled.div`
   display: grid;
@@ -27,6 +29,7 @@ const StyledServicesBlock = styled.div`
   }
 
   img {
+    ${NoUserSelect}
     border: 1px solid #d1d1d1;
     width: 158px;
     height: 40px;
@@ -47,7 +50,7 @@ const ServiceItem = (props) => {
   const { capability, t, ...rest } = props;
 
   const capabilityName = capability[0];
-  const capabilityLink = capability[1] ? capability[1] : "";
+  const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
@@ -61,6 +64,8 @@ const ServiceItem = (props) => {
 const ThirdPartyDialog = (props) => {
   const {
     t,
+    i18n,
+    tReady,
     isAdmin,
     googleConnectItem,
     boxConnectItem,
@@ -86,7 +91,7 @@ const ThirdPartyDialog = (props) => {
 
   const showOAuthModal = (token, serviceData) => {
     setConnectItem({
-      title: serviceData.title,
+      title: connectedCloudsTitleTranslation(serviceData.title, t),
       provider_key: serviceData.title,
       link: serviceData.link,
       token,
@@ -111,6 +116,7 @@ const ThirdPartyDialog = (props) => {
         })
       );
     } else {
+      item.title = connectedCloudsTitleTranslation(item.title, t);
       setConnectItem(item);
       setConnectDialogVisible(true);
     }
@@ -118,17 +124,25 @@ const ThirdPartyDialog = (props) => {
     setThirdPartyDialogVisible(false);
   };
 
+  const yandexLogoUrl =
+    i18n && i18n.language === "ru-RU"
+      ? "images/services/logo_yandex_ru.svg"
+      : "images/services/logo_yandex_en.svg";
+
   return (
     <ModalDialog
+      isLoading={!tReady}
       visible={visible}
       scale={false}
       displayType="auto"
       zIndex={310}
       onClose={onClose}
     >
-      <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("Translations:ConnectingAccount")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
-        <Text as="div">
+        <Text as="div" noSelect>
           {t("ConnectDescription")}
           {isAdmin && (
             <Trans t={t} i18nKey="ConnectAdminDescription" ns="Settings">
@@ -215,7 +229,7 @@ const ThirdPartyDialog = (props) => {
             <ServiceItem
               capability={yandexConnectItem}
               onClick={onShowService}
-              src="images/services/logo_yandex_ru.svg"
+              src={yandexLogoUrl}
             />
           )}
           {webDavConnectItem && (
@@ -224,6 +238,7 @@ const ThirdPartyDialog = (props) => {
               className="service-item service-text"
               data-title={webDavConnectItem[0]}
               data-key={webDavConnectItem[0]}
+              noSelect
             >
               {t("ConnextOtherAccount")}
             </Text>
@@ -276,4 +291,4 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     getOAuthToken,
     openConnectWindow,
   };
-})(withTranslation("Settings")(observer(ThirdPartyDialog)));
+})(withTranslation(["Settings", "Translations"])(observer(ThirdPartyDialog)));

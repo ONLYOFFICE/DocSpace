@@ -4,7 +4,7 @@ import styled from "styled-components";
 const ScrollButton = styled.div`
   cursor: ${(props) => (props.inactive ? "default" : "pointer")};
   opacity: ${(props) => (props.inactive ? "0.2" : "1")};
-  z-index: 4005;
+  z-index: 305;
   position: fixed;
   top: calc(50% - 20px);
 

@@ -3,7 +3,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
-import toastr from "studio/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";
@@ -22,7 +22,7 @@ import {
   SectionPagingContent,
 } from "./Section";
 
-import { ConvertDialog } from "../../components/dialogs";
+import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
@@ -35,25 +35,43 @@ class PureHome extends React.Component {
       homepage,
       setIsLoading,
       setFirstLoad,
-      isVisitor,
+      expandedKeys,
+      setExpandedKeys,
+      setToPreviewFile,
+      mediaViewersFormatsStore,
+      getFileInfo,
     } = this.props;
 
-    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
+    const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
+
+    if (window.location.href.indexOf("/files/#preview") > 1) {
+      const pathname = window.location.href;
+      const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
+
+      getFileInfo(fileId)
+        .then((data) => {
+          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
+            data.fileExst
+          );
+          const file = { ...data, canOpenPlayer };
+          setToPreviewFile(file, true);
+        })
+        .catch((err) => {
+          toastr.error(err);
+          this.fetchDefaultFiles();
+        });
+
+      return;
+    }
 
     if (match && match.length > 0) {
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
-        filterObj = FilesFilter.getDefault();
-        if (isVisitor) filterObj.folder = "@common";
-        const folderId = filterObj.folder;
         setIsLoading(true);
-        fetchFiles(folderId, filterObj).finally(() => {
-          setIsLoading(false);
-          setFirstLoad(false);
-        });
+        this.fetchDefaultFiles();
 
         return;
       }
@@ -117,7 +135,12 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           //console.log("filter", filter);
-          return fetchFiles(folderId, filter);
+
+          return fetchFiles(folderId, filter).then((data) => {
+            const pathParts = data.selectedFolder.pathParts;
+            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            setExpandedKeys(newExpandedKeys);
+          });
         }
 
         return Promise.resolve();
@@ -128,18 +151,21 @@ class PureHome extends React.Component {
       });
   }
 
-  onDrop = (files, uploadToFolder) => {
-    const {
-      t,
-      currentFolderId,
-      startUpload,
-      setDragging,
-      dragging,
-    } = this.props;
-    const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
+  fetchDefaultFiles = () => {
+    const { isVisitor, fetchFiles, setIsLoading, setFirstLoad } = this.props;
+    const filterObj = FilesFilter.getDefault();
+    const folderId = isVisitor ? "@common" : filterObj.folder;
 
+    fetchFiles(folderId).finally(() => {
+      setIsLoading(false);
+      setFirstLoad(false);
+    });
+  };
+
+  onDrop = (files, uploadToFolder) => {
+    const { t, startUpload, setDragging, dragging } = this.props;
     dragging && setDragging(false);
-    startUpload(files, folderId, t);
+    startUpload(files, uploadToFolder, t);
   };
 
   showOperationToast = (type, qty, title) => {
@@ -177,27 +203,27 @@ class PureHome extends React.Component {
   };
 
   showUploadPanel = () => {
-    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+    const {
+      uploaded,
+      converted,
+      uploadPanelVisible,
+      setUploadPanelVisible,
+      clearPrimaryProgressData,
+      primaryProgressDataVisible,
+    } = this.props;
+    setUploadPanelVisible(!uploadPanelVisible);
 
-    this.props.primaryProgressDataVisible &&
-      this.props.uploaded &&
-      this.props.clearPrimaryProgressData();
+    if (primaryProgressDataVisible && uploaded && converted)
+      clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {
-      isLoading,
       isProgressFinished,
       secondaryProgressDataStoreIcon,
       selectionLength,
       selectionTitle,
     } = this.props;
-    if (isLoading !== prevProps.isLoading) {
-      if (isLoading) {
-        showLoader();
-      } else {
-        hideLoader();
-      }
-    }
+
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
@@ -217,10 +243,10 @@ class PureHome extends React.Component {
     //console.log("Home render");
     const {
       viewAs,
-      convertDialogVisible,
       fileActionId,
       firstLoad,
       isHeaderVisible,
+      isPrivacyFolder,
       isRecycleBinFolder,
 
       primaryProgressDataVisible,
@@ -233,24 +259,20 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
 
-      isLoading,
+      dragging,
+      tReady,
     } = this.props;
-
     return (
       <>
-        {convertDialogVisible && (
-          <ConvertDialog visible={convertDialogVisible} />
-        )}
-
         <MediaViewer />
         <DragTooltip />
         <PageLayout
+          dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
-          onDrop={isRecycleBinFolder ? null : this.onDrop}
+          onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
           setSelections={this.props.setSelections}
-          onMouseMove={this.onMouseMove}
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}
@@ -268,7 +290,8 @@ class PureHome extends React.Component {
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
-          isLoading={isLoading}
+          firstLoad={firstLoad}
+          dragging={dragging}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -294,7 +317,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
-            <SectionPagingContent />
+            <SectionPagingContent tReady={tReady} />
           </PageLayout.SectionPaging>
         </PageLayout>
       </>
@@ -309,9 +332,9 @@ export default inject(
     auth,
     filesStore,
     uploadDataStore,
-    dialogsStore,
-    selectedFolderStore,
     treeFoldersStore,
+    mediaViewerDataStore,
+    formatsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -321,7 +344,6 @@ export default inject(
       firstLoad,
       setFirstLoad,
       fetchFiles,
-      filter,
       fileActionStore,
       selection,
       setSelections,
@@ -330,10 +352,18 @@ export default inject(
       setIsLoading,
       isLoading,
       viewAs,
+      getFileInfo,
     } = filesStore;
 
+    const { mediaViewersFormatsStore } = formatsStore;
+
     const { id } = fileActionStore;
-    const { isRecycleBinFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      expandedKeys,
+      setExpandedKeys,
+    } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -351,27 +381,39 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
     } = secondaryProgressDataStore;
 
-    const { convertDialogVisible } = dialogsStore;
-
-    const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
+    const {
+      setUploadPanelVisible,
+      startUpload,
+      uploaded,
+      converted,
+    } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
       ? filesStore.selectionTitle
       : null;
 
+    const { setToPreviewFile } = mediaViewerDataStore;
+    if (!firstLoad) {
+      if (isLoading) {
+        showLoader();
+      } else {
+        hideLoader();
+      }
+    }
+
     return {
       homepage: config.homepage,
       firstLoad,
       dragging,
       fileActionId: id,
-      currentFolderId: selectedFolderStore.id,
-      isLoading,
-      filter,
       viewAs,
       uploaded,
+      converted,
       isRecycleBinFolder,
+      isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
+      expandedKeys,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -384,11 +426,11 @@ export default inject(
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
 
-      convertDialogVisible,
       selectionLength,
       isProgressFinished,
       selectionTitle,
 
+      setExpandedKeys,
       setFirstLoad,
       setDragging,
       setIsLoading,
@@ -398,6 +440,9 @@ export default inject(
       startUpload,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
+      setToPreviewFile,
+      mediaViewersFormatsStore,
+      getFileInfo,
     };
   }
 )(withRouter(observer(Home)));

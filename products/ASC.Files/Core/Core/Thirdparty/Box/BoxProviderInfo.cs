@@ -172,11 +172,13 @@ namespace ASC.Files.Thirdparty.Box
     {
         public BoxStorage Storage { get; private set; }
         private ConsumerFactory ConsumerFactory { get; }
+        private TempStream TempStream { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider)
+        public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, TempStream tempStream, IServiceProvider serviceProvider)
         {
             ConsumerFactory = consumerFactory;
+            TempStream = tempStream;
             ServiceProvider = serviceProvider;
         }
 
@@ -184,11 +186,11 @@ namespace ASC.Files.Thirdparty.Box
         {
             if (Storage != null && Storage.IsOpened) return Storage;
 
-            var boxStorage = new BoxStorage();
+            var boxStorage = new BoxStorage(TempStream);
             CheckToken(token, id);
 
             boxStorage.Open(token);
-            return boxStorage;
+            return Storage = boxStorage;
         }
 
         private void CheckToken(OAuth20Token token, int id)

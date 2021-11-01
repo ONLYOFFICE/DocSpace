@@ -1,10 +1,8 @@
 {
-  "ConversionTitle": "Загрузка документа",
   "ConversionMessage": "Все документы, которые Вы загружаете, будут сконвертированы в соответствующий формат Office Open XML (docx, xlsx или pptx) для быстрого редактирования.",
-  "SaveOriginalFormatMessage": "Сохранить также копию файла в исходном формате",
+  "ConversionFileMessage": "Файл документа, который Вы открываете, будет сконвертирован в формат Office Open XML для быстрого просмотра и редактирования.",
+  "ConversionTitle": "Загрузка документа",
+  "ConvertAndOpenTitle": "Конвертация и открытие документа",
   "HideMessage": "Больше не показывать это сообщение",
-  "ContinueButton": "Продолжить",
-  "CloseButton": "Закрыть",
-  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}",
-  "ConvertingLabel": "Сконвертировано файлов: {{file}} из {{totalFiles}}"
+  "SaveOriginalFormatMessage": "Сохранить также копию файла в исходном формате"
 }

@@ -11,12 +11,12 @@ import { AppServerConfig } from "@appserver/common/constants";
 const backgroundColor = "#0F4071";
 
 const Header = styled.header`
-  align-items: center;
+  align-items: left;
   background-color: ${backgroundColor};
   display: flex;
   width: calc(100vw - 64px);
-  height: 56px;
-  justify-content: center;
+  height: 48px;
+  justify-content: left;
   padding: 0 32px;
 
   .header-items-wrapper {
@@ -45,7 +45,7 @@ const Header = styled.header`
     width: 146px;
     height: 24px;
     position: relative;
-    padding: 4px 20px 0 6px;
+    padding: 3px 20px 0 6px;
     cursor: pointer;
   }
 `;

@@ -67,12 +67,12 @@ namespace ASC.Data.Storage
 
         #region IQuotaController Members
 
-        public void QuotaUsedAdd(string module, string domain, string dataTag, long size)
+        public void QuotaUsedAdd(string module, string domain, string dataTag, long size, bool quotaCheckFileSize = true)
         {
             size = Math.Abs(size);
             if (UsedInQuota(dataTag))
             {
-                QuotaUsedCheck(size);
+                QuotaUsedCheck(size, quotaCheckFileSize);
                 CurrentSize += size;
             }
             SetTenantQuotaRow(module, domain, size, dataTag, true);
@@ -100,10 +100,15 @@ namespace ASC.Data.Storage
 
         public void QuotaUsedCheck(long size)
         {
+            QuotaUsedCheck(size, true);
+        }
+
+        public void QuotaUsedCheck(long size, bool quotaCheckFileSize)
+        {
             var quota = TenantManager.GetTenantQuota(tenant);
             if (quota != null)
             {
-                if (quota.MaxFileSize != 0 && quota.MaxFileSize < size)
+                if (quotaCheckFileSize && quota.MaxFileSize != 0 && quota.MaxFileSize < size)
                 {
                     throw new TenantQuotaException(string.Format("Exceeds the maximum file size ({0}MB)", BytesToMegabytes(quota.MaxFileSize)));
                 }

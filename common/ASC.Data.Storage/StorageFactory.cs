@@ -205,7 +205,7 @@ namespace ASC.Data.Storage
             }
 
             var settings = SettingsManager.LoadForTenant<StorageSettings>(tenantId);
-
+            //TODO:GetStoreAndCache
             return GetDataStore(tenant, module, StorageSettingsHelper.DataStoreConsumer(settings), controller);
         }
 

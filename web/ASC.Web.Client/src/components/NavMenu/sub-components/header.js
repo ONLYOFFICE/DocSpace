@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { Link as LinkWithoutRedirect } from "react-router-dom";
+import { isMobileOnly } from "react-device-detect";
 import NavItem from "./nav-item";
 import Headline from "@appserver/common/components/Headline";
 import Nav from "./nav";
@@ -17,6 +18,8 @@ import { desktop, tablet } from "@appserver/components/utils/device";
 import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
+
 const { proxyURL } = AppServerConfig;
 
 const backgroundColor = "#0F4071";
@@ -26,13 +29,15 @@ const Header = styled.header`
   background-color: ${backgroundColor};
   display: flex;
   width: 100vw;
-  height: 56px;
+  height: 48px;
 
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+    ${NoUserSelect}
     ${(props) =>
       props.module &&
+      !props.isPersonal &&
       css`
         @media ${tablet} {
           display: none;
@@ -74,16 +79,28 @@ const Header = styled.header`
   }
 
   .header-logo-icon {
-    width: 146px;
+    width: ${(props) => (props.isPersonal ? "220px" : "146px")};
+    ${(props) => props.isPersonal && `margin-left: 20px;`}
     height: 24px;
     position: relative;
-    padding: 0 20px 0 6px;
+    padding: ${(props) => (!props.isPersonal ? "0 20px 0 6px" : "0")};
     cursor: pointer;
 
-    @media (max-width: 620px) {
-      display: ${(props) => (props.module ? "none" : "block")};
-      padding: 0px 20px 0 6px;
+    @media ${tablet} {
+      ${(props) => props.isPersonal && `margin-left: 16px;`}
     }
+
+    @media (max-width: 620px) {
+      ${(props) =>
+        !props.isPersonal &&
+        css`
+          display: ${(props) => (props.module ? "none" : "block")};
+          padding: 3px 20px 0 6px;
+        `}
+    }
+  }
+  .mobile-short-logo {
+    width: 146px;
   }
 `;
 
@@ -126,9 +143,10 @@ const HeaderComponent = ({
   isAuthenticated,
   isAdmin,
   backdropClick,
+  isPersonal,
   ...props
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Common");
 
   const isNavAvailable = mainModules.length > 0;
 
@@ -154,61 +172,58 @@ const HeaderComponent = ({
     e.preventDefault();
   };
 
-  //TODO: getCustomModules
-  // const getCustomModules = () => {
-  //   if (!isAdmin) {
-  //     return [];
-  //   } // Temporarily hiding the settings module
-
-  //   return (
-  //     <>
-  //       <NavItem
-  //         separator={true}
-  //         key={"nav-modules-separator"}
-  //         data-id={"nav-modules-separator"}
-  //       />
-  //       <NavItem
-  //         separator={false}
-  //         key={"settings"}
-  //         data-id={"settings"}
-  //         data-link="/settings"
-  //         opened={isNavOpened}
-  //         active={"settings" == currentProductId}
-  //         iconName={"SettingsIcon"}
-  //         onClick={onItemClick}
-  //         url="/settings"
-  //       >
-  //         {t("Settings")}
-  //       </NavItem>
-  //     </>
-  //   );
-  // };
+  const numberOfModules = mainModules.filter((item) => !item.separator).length;
 
   return (
     <>
       <Header
         module={currentProductName}
         isLoaded={isLoaded}
+        isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
       >
-        <NavItem
-          badgeNumber={totalNotifications}
-          onClick={onClick}
-          noHover={true}
-        />
+        {!isPersonal && (
+          <NavItem
+            badgeNumber={totalNotifications}
+            onClick={onClick}
+            noHover={true}
+          />
+        )}
 
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
-          <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
+          {!isPersonal ? (
+            <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
+          ) : !isMobileOnly ? (
+            <img
+              alt="logo"
+              className="header-logo-icon"
+              src={combineUrl(
+                AppServerConfig.proxyURL,
+                "/static/images/personal.logo.react.svg"
+              )}
+            />
+          ) : (
+            <img
+              className="header-logo-icon mobile-short-logo"
+              src={combineUrl(
+                AppServerConfig.proxyURL,
+                "/static/images/nav.logo.opened.react.svg"
+              )}
+            />
+          )}
         </LinkWithoutRedirect>
-        <Headline
-          className="header-module-title"
-          type="header"
-          color="#FFF"
-          onClick={onClick}
-        >
-          {currentProductName}
-        </Headline>
+
+        {!isPersonal && (
+          <Headline
+            className="header-module-title"
+            type="header"
+            color="#FFF"
+            onClick={onClick}
+          >
+            {currentProductName}
+          </Headline>
+        )}
       </Header>
 
       {isNavAvailable && (
@@ -216,6 +231,7 @@ const HeaderComponent = ({
           opened={isNavOpened}
           onMouseEnter={onNavMouseEnter}
           onMouseLeave={onNavMouseLeave}
+          numberOfModules={numberOfModules}
         >
           <NavLogoItem opened={isNavOpened} onClick={onLogoClick} />
           <NavItem
@@ -248,11 +264,10 @@ const HeaderComponent = ({
                 url={link}
                 dashed={dashed}
               >
-                {id === "settings" ? i18n.t(title) : title}
+                {id === "settings" ? i18n.t("Common:Settings") : title}
               </NavItem>
             )
           )}
-          {/*getCustomModules()*/}
           <Box className="version-box">
             <Link
               as="a"
@@ -260,7 +275,7 @@ const HeaderComponent = ({
               target="_blank"
               {...versionBadgeProps}
             >
-              {t("Version")} {version}
+              {t("Common:Version")} {version}
             </Link>
             <Text as="span" {...versionBadgeProps}>
               {" "}
@@ -271,7 +286,7 @@ const HeaderComponent = ({
                 to={combineUrl(proxyURL, "/about")}
                 className="nav-menu-header_link"
               >
-                {t("AboutShort")}
+                {t("Common:About")}
               </LinkWithoutRedirect>
             </StyledLink>
           </Box>
@@ -312,12 +327,18 @@ export default inject(({ auth }) => {
     availableModules,
     version,
   } = auth;
-  const { logoUrl, defaultPage, currentProductId } = settingsStore;
+  const {
+    logoUrl,
+    defaultPage,
+    currentProductId,
+    personal: isPersonal,
+  } = settingsStore;
   const { totalNotifications } = moduleStore;
 
   //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
 
   return {
+    isPersonal,
     isAdmin,
     defaultPage,
     logoUrl,

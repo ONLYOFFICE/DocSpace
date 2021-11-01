@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -64,8 +65,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             CrossDao crossDao,
             DropboxDaoSelector dropboxDaoSelector,
             IFileDao<int> fileDao,
-            IFolderDao<int> folderDao)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFolderDao<int> folderDao,
+            TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             DropboxDaoSelector = dropboxDaoSelector;

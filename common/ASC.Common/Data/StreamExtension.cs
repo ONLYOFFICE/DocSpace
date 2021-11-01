@@ -27,37 +27,22 @@
 using System;
 using System.IO;
 
-using ASC.Data.Storage;
-
 public static class StreamExtension
 {
-    //    public const int BufferSize = 2048; //NOTE: set to 2048 to fit in minimum tcp window
+    public const int BufferSize = 2048; //NOTE: set to 2048 to fit in minimum tcp window
 
-    public static Stream GetBuffered(this Stream srcStream)
+    public static void StreamCopyTo(this Stream srcStream, Stream dstStream, int length)
     {
-        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
-        if (!srcStream.CanSeek || srcStream.CanTimeout)
-        {
-            //Buffer it
-            var memStream = TempStream.Create();
-            srcStream.CopyTo(memStream);
-            memStream.Position = 0;
-            return memStream;
-        }
-        return srcStream;
-    }
+        if (srcStream == null) throw new ArgumentNullException("srcStream");
+        if (dstStream == null) throw new ArgumentNullException("dstStream");
 
-    public static byte[] GetCorrectBuffer(this Stream stream)
-    {
-        if (stream == null)
+        var buffer = new byte[BufferSize];
+        int totalRead = 0;
+        int readed;
+        while ((readed = srcStream.Read(buffer, 0, length - totalRead > BufferSize ? BufferSize : length - totalRead)) > 0 && totalRead < length)
         {
-            throw new ArgumentNullException(nameof(stream));
+            dstStream.Write(buffer, 0, readed);
+            totalRead += readed;
         }
-
-        using var mem = stream.GetBuffered();
-        var buffer = new byte[mem.Length];
-        mem.Position = 0;
-        mem.Read(buffer, 0, buffer.Length);
-        return buffer;
     }
 }

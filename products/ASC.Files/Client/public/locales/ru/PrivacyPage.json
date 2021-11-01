@@ -1,0 +1,10 @@
+{
+  "PrivacyHeader": "Этот документ зашифрован",
+  "PrivacyClick": "Нажмите открыть <1>ONLYOFFICE Desktop</1> в диалоговом окне браузера, чтобы работать с зашифрованными документами",
+  "PrivacyDialog": "Если вы не видите диалоговое окно, нажмите кнопку ниже",
+  "PrivacyButton": "Откройте ONLYOFFICE Desktop Editors",
+  "PrivacyEditors": "Не установлены ONLYOFFICE Desktop Editors",
+  "PrivacyInstall": "Установить сейчас",
+  "PrivacyDescriptionEditors": "Если у вас установлен ONLYOFFICE Desktop Editors, но вы не можете открыть его с этой страницы, возможно, ваш браузер блокирует его",
+  "PrivacyDescriptionConnect": "Вы можете открыть этот файл из интерфейса настольного приложения после подключения вашего облака"
+}

@@ -1,0 +1,12 @@
+{
+  "ChangeEmailSuccess": "E-Mail wurde erfolgreich geändert",
+  "ChangesApplied": "Die Änderungen wurden übernommen",
+  "ContactInformation": "Kontaktdaten",
+  "EditPhoto": "Bild bearbeiten",
+  "EditSubscriptionsBtn": "Abonnements bearbeiten",
+  "EditUser": "Profil bearbeiten",
+  "InviteAgainLbl": "Erneut einladen",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",
+  "PhoneLbl": "Telefon",
+  "Subscriptions": "Abonnements"
+}

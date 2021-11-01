@@ -117,9 +117,9 @@ namespace ASC.Web.Studio.Core.TFA
             MachinePseudoKeys = machinePseudoKeys;
         }
 
-        public SetupCode GenerateSetupCode(UserInfo user, int size)
+        public SetupCode GenerateSetupCode(UserInfo user)
         {
-            return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, Encoding.UTF8.GetBytes(GenerateAccessToken(user)), size, true);
+            return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), false, 4);
         }
 
         public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true)

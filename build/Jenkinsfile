@@ -6,14 +6,14 @@ pipeline {
 				stage('Unix') {
 					agent { label 'net-core' }
 					stages {
-						stage('Backend') {
-							steps {
-								sh 'yarn install && yarn build'
-							}
-						}
 						stage('Frontend') {
 							steps {
-								sh 'dotnet build ASC.Web.sln  --configfile .nuget/NuGet.Config'
+								sh 'yarn install --frozen-lockfile && yarn build'
+							}
+						}
+						stage('Backend') {
+							steps {
+								sh 'dotnet build -c Release ASC.Web.sln'
 							}
 						}
 					}
@@ -21,14 +21,14 @@ pipeline {
 				stage('Windows') {
 					agent { label 'win-core' }
 					stages {
-						stage('Backend') {
-							steps {
-								bat 'yarn install && yarn build'
-							}
-						}
 						stage('Frontend') {
 							steps {
-								bat 'dotnet build ASC.Web.sln  --configfile .nuget\\NuGet.Config'
+								bat "yarn install --frozen-lockfile && yarn build"
+							}
+						}
+						stage('Backend') {
+							steps {
+								bat 'dotnet build -c Release ASC.Web.sln'
 							}
 						}
 					}
@@ -36,14 +36,14 @@ pipeline {
 			}
 		}
 		stage('Test') {
-			when { expression { return env.CHANGE_ID; } }
+			when { expression { return env.CHANGE_ID != null } }
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
 					stages {
 						stage('Components') {
 							steps {
-								sh "yarn install && yarn build && cd ${env.WORKSPACE}/packages/asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+								sh "yarn install --frozen-lockfile && yarn build && cd ${env.WORKSPACE}/packages/asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 							}
 							post {
 								success {
@@ -62,7 +62,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								sh "dotnet build ASC.Web.sln --configfile .nuget/NuGet.Config && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
+								sh "git submodule update --progress --init -- products/ASC.Files/Server/DocStore && dotnet build ASC.Web.sln && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
 							}
 						}
 					}
@@ -72,7 +72,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								bat "yarn install && yarn build && cd ${env.WORKSPACE}\\packages\\asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+								bat "yarn install --frozen-lockfile && yarn build && cd ${env.WORKSPACE}\\packages\\asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 							}
 							post {
 								success {
@@ -90,7 +90,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								bat "dotnet build ASC.Web.sln --configfile .nuget\\NuGet.Config && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
+								bat "git submodule update --progress --init -- products\\ASC.Files\\Server\\DocStore && dotnet build ASC.Web.sln && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
 							}
 						}
 					}
@@ -98,7 +98,7 @@ pipeline {
 			}
 		}
 		stage('Notify') {
-			when { expression { return env.CHANGE_ID != '' && env.BUILD_NUMBER == '1' } }
+			when { expression { return env.CHANGE_ID != null && env.BUILD_NUMBER == '1' } }
 			agent { label 'net-core' }
 			options { skipDefaultCheckout() }
 			environment {

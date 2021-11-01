@@ -101,8 +101,37 @@ class UpdateUserForm extends React.Component {
     this.onSelectGroups = this.onSelectGroups.bind(this);
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
 
+    this.handleWindowBeforeUnload = this.handleWindowBeforeUnload.bind(this);
+
     this.mainFieldsContainerRef = React.createRef();
   }
+
+  componentDidMount() {
+    this.props.setIsEditTargetUser(true);
+
+    this.unblock = this.props.history.block((targetLocation) => {
+      if (this.props.isEdit) {
+        this.props.setIsVisibleDataLossDialog(true);
+        return false;
+      }
+
+      return true;
+    });
+
+    window.addEventListener("beforeunload", this.handleWindowBeforeUnload);
+  }
+
+  componentWillUnmount() {
+    this.unblock();
+    window.removeEventListener("beforeunload", this.handleWindowBeforeUnload);
+  }
+
+  handleWindowBeforeUnload = (e) => {
+    if (this.props.isEdit) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.match.params.userId !== prevProps.match.params.userId) {
@@ -209,8 +238,19 @@ class UpdateUserForm extends React.Component {
   }
 
   onInputChange(event) {
+    const { userFormValidation } = this.props;
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile[event.target.name] = event.target.value;
+    const value = event.target.value;
+    const title = event.target.name;
+
+    if (!value.match(userFormValidation)) {
+      stateCopy.errors[title] = true;
+    } else {
+      if (this.state.errors[title]) stateCopy.errors[title] = false;
+    }
+
+    stateCopy.profile[title] = value;
+
     this.setState(stateCopy);
     this.setIsEdit();
   }
@@ -249,21 +289,30 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
+  scrollToErrorForm = () => {
+    const element = this.mainFieldsContainerRef.current;
+    const parent = element.closest(".scroll-body");
+    (parent || window).scrollTo(0, element.offsetTop);
+  };
   validate() {
-    const { profile } = this.state;
-    const errors = {
+    const { profile, errors } = this.state;
+
+    if (errors.firstName || errors.lastName) {
+      this.scrollToErrorForm();
+      return;
+    }
+
+    const errorsObj = {
       firstName: !profile.firstName.trim(),
       lastName: !profile.lastName.trim(),
     };
-    const hasError = errors.firstName || errors.lastName;
+    const hasError = errorsObj.firstName || errorsObj.lastName;
 
     if (hasError) {
-      const element = this.mainFieldsContainerRef.current;
-      const parent = element.closest(".scroll-body");
-      (parent || window).scrollTo(0, element.offsetTop);
+      this.scrollToErrorForm();
     }
 
-    this.setState({ errors: errors });
+    this.setState({ errors: errorsObj });
     return !hasError;
   }
 
@@ -276,6 +325,7 @@ class UpdateUserForm extends React.Component {
       updateProfileInUsers,
       history,
       t,
+      setUserIsUpdate,
     } = this.props;
 
     this.setState({ isLoading: true });
@@ -285,6 +335,7 @@ class UpdateUserForm extends React.Component {
         updateProfileInUsers(profile);
         toastr.success(t("ChangesSavedSuccessfully"));
         setIsEditingForm(false);
+        setUserIsUpdate(true);
         history.goBack();
       })
       .catch((error) => {
@@ -303,10 +354,27 @@ class UpdateUserForm extends React.Component {
   }
 
   onCancel() {
-    const { filter, setFilter, history } = this.props;
+    const {
+      filter,
+      setFilter,
+      history,
+      isEditTargetUser,
+      profile,
+      personal,
+    } = this.props;
 
-    if (document.referrer) {
-      history.goBack();
+    this.unblock();
+
+    if (personal) {
+      history.push(combineUrl(AppServerConfig.proxyURL, "/my"));
+    } else if (isEditTargetUser || document.referrer) {
+      history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/view/${profile.userName}`
+        )
+      );
     } else {
       history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
       setFilter(filter);
@@ -429,7 +497,8 @@ class UpdateUserForm extends React.Component {
 
   onSaveAvatar = (isUpdate, result, avatar) => {
     this.setState({ isLoading: true });
-    const { profile, setAvatarMax } = this.props;
+    const { profile, setAvatarMax, personal } = this.props;
+
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
@@ -464,7 +533,7 @@ class UpdateUserForm extends React.Component {
         .then(() => {
           this.updateUserPhotoInState();
         })
-        .then(() => this.props.fetchProfile(profile.id));
+        .then(() => !personal && this.props.fetchProfile(profile.id));
     } else {
       deleteAvatar(profile.id)
         .then((response) => {
@@ -481,7 +550,7 @@ class UpdateUserForm extends React.Component {
         .then(() => {
           this.setState(this.mapPropsToState(this.props));
         })
-        .then(() => this.props.fetchProfile(profile.id));
+        .then(() => !personal && this.props.fetchProfile(profile.id));
     }
   };
 
@@ -548,6 +617,11 @@ class UpdateUserForm extends React.Component {
       //avatarMax,
       disableProfileType,
       isAdmin,
+      isMy,
+      isSelf,
+      language,
+      personal,
+      isTabletView,
     } = this.props;
     const {
       guestCaption,
@@ -557,8 +631,12 @@ class UpdateUserForm extends React.Component {
       groupCaption,
     } = customNames;
 
+    const maxLabelWidth = "140px";
+
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+    const notEmptyFirstName = Boolean(profile.firstName.trim());
+    const notEmptyLastName = Boolean(profile.lastName.trim());
     //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent = (
       <>
@@ -587,39 +665,39 @@ class UpdateUserForm extends React.Component {
                 </Th>
               </tr>
               <tr>
-                <Td>{t("Mail")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Mail")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
-                <Td>{t("DocumentsProduct")}</Td>
-                <Td>{t("AccessRightsFullAccess")}</Td>
-                <Td>{t("ViewAccess")}</Td>
+                <Td>{t("Common:Documents")}</Td>
+                <Td>{t("Common:FullAccess")}</Td>
+                <Td>{t("Common:View")}</Td>
               </tr>
               <tr>
-                <Td>{t("ProjectsProduct")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:ProjectsProduct")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
-                <Td>{t("CommunityProduct")}</Td>
-                <Td>{t("AccessRightsFullAccess")}</Td>
-                <Td>{t("ViewAccess")}</Td>
+                <Td>{t("Common:CommunityProduct")}</Td>
+                <Td>{t("Common:FullAccess")}</Td>
+                <Td>{t("Common:View")}</Td>
               </tr>
               <tr>
-                <Td>{t("People")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:People")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("Message")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
+                <Td>{t("Common:Review")}</Td>
               </tr>
               <tr>
                 <Td>{t("Calendar")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
+                <Td>{t("Common:Review")}</Td>
               </tr>
             </tbody>
           </Table>
@@ -635,6 +713,9 @@ class UpdateUserForm extends React.Component {
       </>
     );
 
+    const radioIsDisabled =
+      isSelf || (profile.listAdminModules && !!profile.listAdminModules.length);
+
     return (
       <>
         <MainContainer>
@@ -646,7 +727,6 @@ class UpdateUserForm extends React.Component {
               source={this.props.avatarMax || profile.avatarMax}
               userName={profile.displayName}
               editing={true}
-              editLabel={t("editAvatar")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
@@ -658,27 +738,33 @@ class UpdateUserForm extends React.Component {
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
-              selectNewPhotoLabel={t("selectNewPhotoLabel")}
-              orDropFileHereLabel={t("orDropFileHereLabel")}
-              unknownTypeError={t("ErrorUnknownFileImageType")}
-              maxSizeFileError={t("maxSizeFileError")}
-              unknownError={t("Error")}
+              selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+              orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+              unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+              maxSizeFileError={t("Translations:maxSizeFileError")}
+              unknownError={t("Common:Error")}
               saveButtonLabel={
-                this.state.isLoading ? t("UpdatingProcess") : t("SaveButton")
+                this.state.isLoading
+                  ? t("UpdatingProcess")
+                  : t("Common:SaveButton")
               }
               saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
+          <MainFieldsContainer
+            ref={this.mainFieldsContainerRef}
+            noSelect
+            {...(!isTabletView && { marginBottom: "32px" })}
+          >
             <TextChangeField
-              labelText={`${t("Email")}:`}
+              labelText={`${t("Common:Email")}:`}
               inputName="email"
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={1}
-              helpButtonHeaderContent={t("Mail")}
+              helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
                   <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
@@ -700,9 +786,10 @@ class UpdateUserForm extends React.Component {
                 </Text>
               }
               dataDialog={dialogsDataset.changeEmail}
+              maxLabelWidth={maxLabelWidth}
             />
             <TextChangeField
-              labelText={`${t("Password")}:`}
+              labelText={`${t("Common:Password")}:`}
               inputName="password"
               inputValue={"********"}
               buttonText={t("ChangeButton")}
@@ -710,10 +797,11 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={2}
               dataDialog={dialogsDataset.changePassword}
+              maxLabelWidth={maxLabelWidth}
             />
             {/*TODO: uncomment this after added phone form */}
             {/* <TextChangeField
-              labelText={`${t("Phone")}:`}
+              labelText={`${t("Common:Phone")}:`}
               inputName="phone"
               inputValue={profile.mobilePhone}
               buttonText={t("ChangeButton")}
@@ -721,11 +809,15 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={3}
               dataDialog={dialogsDataset.changePhone}
+              maxLabelWidth={maxLabelWidth}
             /> */}
             <TextField
               isRequired={true}
               hasError={errors.firstName}
               labelText={`${t("FirstName")}:`}
+              {...(notEmptyFirstName && {
+                errorMessage: t("ErrorInvalidUserFirstName"),
+              })}
               inputName="firstName"
               inputValue={profile.firstName}
               inputIsDisabled={isLoading}
@@ -733,21 +825,26 @@ class UpdateUserForm extends React.Component {
               inputAutoFocussed={!isMobile}
               inputTabIndex={4}
               maxLength={50}
+              maxLabelWidth={maxLabelWidth}
             />
             <TextField
               isRequired={true}
               hasError={errors.lastName}
-              labelText={`${t("LastName")}:`}
+              {...(notEmptyLastName && {
+                errorMessage: t("ErrorInvalidUserLastName"),
+              })}
+              labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
               inputTabIndex={5}
               maxLength={50}
+              maxLabelWidth={maxLabelWidth}
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-              labelText={`${t("Birthdate")}:`}
+              labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
@@ -755,88 +852,115 @@ class UpdateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={6}
+              locale={language}
+              maxLabelWidth={maxLabelWidth}
             />
             <RadioField
-              labelText={`${t("Sex")}:`}
+              labelText={`${t("Translations:Sex")}:`}
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: "male", label: t("MaleSexStatus") },
-                { value: "female", label: t("FemaleSexStatus") },
+                { value: "male", label: t("Translations:MaleSexStatus") },
+                { value: "female", label: t("Translations:FemaleSexStatus") },
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
+              maxLabelWidth={maxLabelWidth}
             />
-            <RadioField
-              labelText={`${t("UserType")}:`}
-              radioName="isVisitor"
-              radioValue={profile.isVisitor.toString()}
-              radioOptions={[
-                { value: "true", label: guestCaption },
-                { value: "false", label: userCaption },
-              ]}
-              radioIsDisabled={isLoading || disableProfileType}
-              radioOnChange={this.onUserTypeChange}
-              tooltipContent={tooltipTypeContent}
-              helpButtonHeaderContent={t("UserType")}
-            />
-            <DateField
-              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-              labelText={`${regDateCaption}:`}
-              inputName="workFrom"
-              inputValue={
-                profile.workFrom ? new Date(profile.workFrom) : undefined
-              }
-              inputIsDisabled={isLoading || !isAdmin}
-              inputOnChange={this.onWorkFromDateChange}
-              inputTabIndex={7}
-              calendarMinDate={
-                profile.birthday ? new Date(profile.birthday) : new Date()
-              }
-            />
+            {!personal && (
+              <RadioField
+                labelText={`${t("Common:Type")}:`}
+                radioName="isVisitor"
+                radioValue={profile.isVisitor.toString()}
+                radioOptions={[
+                  { value: "true", label: guestCaption },
+                  { value: "false", label: userCaption },
+                ]}
+                radioIsDisabled={
+                  isLoading || disableProfileType || radioIsDisabled || isMy
+                }
+                radioOnChange={this.onUserTypeChange}
+                tooltipContent={tooltipTypeContent}
+                helpButtonHeaderContent={t("Common:Type")}
+                maxLabelWidth={maxLabelWidth}
+              />
+            )}
+            {!personal && (
+              <DateField
+                calendarHeaderContent={`${t("CalendarSelectDate")}:`}
+                labelText={`${regDateCaption}:`}
+                inputName="workFrom"
+                inputValue={
+                  profile.workFrom ? new Date(profile.workFrom) : undefined
+                }
+                inputIsDisabled={isLoading || !isAdmin}
+                inputOnChange={this.onWorkFromDateChange}
+                inputTabIndex={7}
+                calendarMinDate={
+                  profile.birthday ? new Date(profile.birthday) : new Date()
+                }
+                locale={language}
+                maxLabelWidth={maxLabelWidth}
+              />
+            )}
             <TextField
-              labelText={`${t("Location")}:`}
+              labelText={`${t("Translations:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
               inputTabIndex={8}
+              maxLabelWidth={maxLabelWidth}
             />
-            <TextField
-              labelText={`${userPostCaption}:`}
-              inputName="title"
-              inputValue={profile.title}
-              inputIsDisabled={isLoading || !isAdmin}
-              inputOnChange={this.onInputChange}
-              inputTabIndex={9}
-            />
-            <DepartmentField
-              labelText={`${groupCaption}:`}
-              isDisabled={isLoading || !isAdmin}
-              showGroupSelectorButtonTitle={t("AddButton")}
-              onShowGroupSelector={this.onShowGroupSelector}
-              onCloseGroupSelector={this.onCloseGroupSelector}
-              onRemoveGroup={this.onRemoveGroup}
-              selectorIsVisible={selector.visible}
-              selectorOptions={selector.options}
-              selectorSelectedOptions={selector.selected}
-              selectorSelectAllText={t("SelectAll")}
-              selectorOnSearchGroups={this.onSearchGroups}
-              selectorOnSelectGroups={this.onSelectGroups}
-            />
+            {!personal && (
+              <TextField
+                labelText={`${userPostCaption}:`}
+                inputName="title"
+                inputValue={profile.title}
+                inputIsDisabled={isLoading || !isAdmin}
+                inputOnChange={this.onInputChange}
+                inputTabIndex={9}
+                maxLabelWidth={maxLabelWidth}
+              />
+            )}
+            {!isMy && !personal && (
+              <DepartmentField
+                labelText={`${groupCaption}:`}
+                isDisabled={isLoading || !isAdmin}
+                showGroupSelectorButtonTitle={t("Common:AddButton")}
+                onShowGroupSelector={this.onShowGroupSelector}
+                onCloseGroupSelector={this.onCloseGroupSelector}
+                onRemoveGroup={this.onRemoveGroup}
+                selectorIsVisible={selector.visible}
+                selectorOptions={selector.options}
+                selectorSelectedOptions={selector.selected}
+                selectorSelectAllText={t("Common:SelectAll")}
+                selectorOnSearchGroups={this.onSearchGroups}
+                selectorOnSelectGroups={this.onSelectGroups}
+                maxLabelWidth={maxLabelWidth}
+              />
+            )}
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("Comments")}>
-          <Textarea
-            placeholder={t("WriteComment")}
-            name="notes"
-            value={profile.notes}
-            isDisabled={isLoading}
-            onChange={this.onInputChange}
-            tabIndex={10}
-          />
-        </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("ContactInformation")}>
+        {!personal && (
+          <InfoFieldContainer
+            headerText={t("Translations:Comments")}
+            marginBottom={"42px"}
+          >
+            <Textarea
+              placeholder={t("WriteComment")}
+              name="notes"
+              value={profile.notes}
+              isDisabled={isLoading}
+              onChange={this.onInputChange}
+              tabIndex={10}
+            />
+          </InfoFieldContainer>
+        )}
+        <InfoFieldContainer
+          headerText={t("ContactInformation")}
+          marginBottom={"42px"}
+        >
           <ContactsField
             pattern={pattern.contact}
             contacts={contacts.contact}
@@ -848,7 +972,10 @@ class UpdateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("SocialProfiles")}>
+        <InfoFieldContainer
+          headerText={t("Translations:SocialProfiles")}
+          {...(isTabletView && { marginBottom: "36px" })}
+        >
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -862,7 +989,7 @@ class UpdateUserForm extends React.Component {
         </InfoFieldContainer>
         <div>
           <Button
-            label={t("SaveButton")}
+            label={t("Common:SaveButton")}
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
@@ -870,7 +997,7 @@ class UpdateUserForm extends React.Component {
             tabIndex={11}
           />
           <Button
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
             size="big"
@@ -911,6 +1038,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => ({
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
+    language: auth.language,
     groups: peopleStore.groupsStore.groups,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsVisibleDataLossDialog:
@@ -928,5 +1056,17 @@ export default withRouter(
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
     isSelf: peopleStore.targetUserStore.isMe,
-  }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
+    setIsEditTargetUser: peopleStore.targetUserStore.setIsEditTargetUser,
+    isEditTargetUser: peopleStore.targetUserStore.isEditTargetUser,
+    personal: auth.settingsStore.personal,
+    setUserIsUpdate: auth.userStore.setUserIsUpdate,
+    userFormValidation: auth.settingsStore.userFormValidation,
+    isTabletView: auth.settingsStore.isTabletView,
+  }))(
+    observer(
+      withTranslation(["ProfileAction", "Common", "Translations"])(
+        UpdateUserForm
+      )
+    )
+  )
 );

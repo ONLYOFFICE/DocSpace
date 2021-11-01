@@ -42,14 +42,17 @@ done
 echo "== BACK-END-BUILD =="
 
 cd ${SRC_PATH}
-dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config ${ARGS}
 dotnet build ASC.Web.sln ${ARGS} 
 
-echo "== Build ASC.Thumbnails =="
-yarn install --cwd common/ASC.Thumbnails --frozen-lockfile
 
-echo "== Build ASC.UrlShortener =="
-yarn install --cwd common/ASC.UrlShortener --frozen-lockfile
+# Array of names backend services in directory common (Nodejs)  
+services_name_backend_nodejs=(ASC.Thumbnails)
+services_name_backend_nodejs+=(ASC.UrlShortener)
+services_name_backend_nodejs+=(ASC.Socket.IO)
+services_name_backend_nodejs+=(ASC.SsoAuth)
 
-echo "== Build ASC.Socket.IO =="
-yarn install --cwd common/ASC.Socket.IO --frozen-lockfile
+# Build backend services (Nodejs) 
+for i in ${!services_name_backend_nodejs[@]}; do
+  echo "== Build ${services_name_backend_nodejs[$i]} project =="
+  yarn install --cwd common/${services_name_backend_nodejs[$i]} --frozen-lockfile
+done

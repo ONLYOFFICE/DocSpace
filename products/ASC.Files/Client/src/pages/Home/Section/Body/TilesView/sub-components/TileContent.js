@@ -9,7 +9,7 @@ const truncateCss = css`
 `;
 
 const commonCss = css`
-  margin: 0 8px;
+  margin: 0;
   font-family: "Open Sans";
   font-size: 12px;
   font-style: normal;
@@ -22,12 +22,12 @@ const StyledTileContent = styled.div`
 
   ${(props) =>
     !props.disableSideInfo &&
-    `
-    @media (max-width: 1024px) {
-      display: block;
-      height: 56px;
-    }
-  `};
+    css`
+      @media (max-width: 1024px) {
+        display: block;
+        height: 56px;
+      }
+    `};
 `;
 
 const MainContainerWrapper = styled.div`
@@ -39,17 +39,20 @@ const MainContainerWrapper = styled.div`
 
   ${(props) =>
     !props.disableSideInfo &&
-    `
-    @media (max-width: 1024px) {
-      margin-right: 8px;
-      margin-top: 8px;
-    }
-  `};
+    css`
+      @media (max-width: 1024px) {
+        margin-right: 8px;
+        margin-top: 8px;
+      }
+    `};
 `;
 
 const MainContainer = styled.div`
   height: 20px;
-  margin-right: 8px;
+
+  .badge-ext {
+    margin: 0px !important;
+  }
 
   @media (max-width: 1024px) {
     ${truncateCss};
@@ -59,6 +62,22 @@ const MainContainer = styled.div`
 const MainIcons = styled.div`
   align-self: center;
   white-space: nowrap;
+  .badges {
+    margin-right: 4px;
+  }
+
+  .additional-badges {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    display: flex;
+    flex-direction: row;
+
+    .icons-group {
+      margin-top: 10px;
+      margin-right: 3px;
+    }
+  }
 `;
 
 const SideContainerWrapper = styled.div`
@@ -79,11 +98,11 @@ const SideContainerWrapper = styled.div`
 
   ${(props) =>
     !props.disableSideInfo &&
-    `
-    @media (max-width: 1024px) {
-      display: none;
-    }
-  `};
+    css`
+      @media (max-width: 1024px) {
+        display: none;
+      }
+    `};
 `;
 
 const TabletSideInfo = styled.div`
@@ -103,12 +122,14 @@ const getSideInfo = (content) => {
   const lastIndex = content.length - 1;
 
   content.forEach((element, index) => {
-    const delimiter = index === lastIndex ? "" : " | ";
-    if (index > 1) {
-      info +=
-        element.props && element.props.children
-          ? element.props.children + delimiter
-          : "";
+    if (element) {
+      const delimiter = index === lastIndex ? "" : " | ";
+      if (index > 1) {
+        info +=
+          element.props && element.props.children
+            ? element.props.children + delimiter
+            : "";
+      }
     }
   });
 
@@ -125,6 +146,7 @@ const TileContent = (props) => {
     style,
     sideColor,
     onClick,
+    badges,
   } = props;
 
   const sideInfo = getSideInfo(children);
@@ -137,19 +159,20 @@ const TileContent = (props) => {
       style={style}
       onClick={onClick}
     >
+      {badges}
       <MainContainerWrapper
         disableSideInfo={disableSideInfo}
         mainContainerWidth={
           children[0].props && children[0].props.containerWidth
         }
       >
-        <MainContainer className="rowMainContainer">
+        <MainContainer className="row-main-container">
           {children[0]}
         </MainContainer>
-        <MainIcons className="mainIcons">{children[1]}</MainIcons>
+        <MainIcons className="main-icons">{children[1]}</MainIcons>
       </MainContainerWrapper>
       {children.map((element, index) => {
-        if (index > 1) {
+        if (index > 1 && element) {
           return (
             <SideContainerWrapper
               disableSideInfo={disableSideInfo}

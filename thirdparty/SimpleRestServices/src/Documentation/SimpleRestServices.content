@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Topics>
+  <Topic id="d4255232-eaee-4be0-baf5-c949278a0f90" visible="False" isMSHVRoot="true" isSelected="true" title="SimpleRESTServices">
+    <HelpKeywords>
+      <HelpKeyword index="K" term="SimpleRESTServices" />
+    </HelpKeywords>
+  </Topic>
+  <Topic id="c3df986e-20f6-4ba7-8825-11f5f7efcb58" visible="True" isDefault="true" title="Welcome">
+    <HelpKeywords>
+      <HelpKeyword index="K" term="Welcome" />
+    </HelpKeywords>
+  </Topic>
+</Topics>

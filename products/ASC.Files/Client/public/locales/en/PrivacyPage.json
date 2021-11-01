@@ -1,0 +1,10 @@
+{
+  "PrivacyHeader": "This document is encrypted",
+  "PrivacyClick": "Click Open <1>ONLYOFFICE Desktop</1> in the browser dialog to work with the encrypted documents",
+  "PrivacyDialog": "If you don’t see a dialog, click the button below",
+  "PrivacyButton": "Open ONLYOFFICE Desktop Editors",
+  "PrivacyEditors": "Don’t have ONLYOFFICE Desktop Editors",
+  "PrivacyInstall": "Install now",
+  "PrivacyDescriptionEditors": "If you have ONLYOFFICE Desktop Editors installed but can't open it from this page, your browser might be blocking it",
+  "PrivacyDescriptionConnect": "You can open this file from the desktop app's interface once your cloud is connected"
+}

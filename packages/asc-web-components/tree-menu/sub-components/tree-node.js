@@ -113,12 +113,16 @@ const TreeNodeMenu = styled(TreeNode)`
   font-family: Open Sans;
   font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 24px;
 
   position: relative;
 
   ${NoUserSelect}
+
+  .rc-tree-node-selected {
+    max-width: ${(props) => (props.newItems > 999 ? "71%" : "102%")} !important;
+  }
 
   ${(props) =>
     props.dragging &&
@@ -133,7 +137,8 @@ const TreeNodeMenu = styled(TreeNode)`
           `
             width: min-content !important; 
             padding-right: 4px;
-            max-width: 98%;
+            max-width: ${(props) =>
+              props.newItems > 999 ? "71%" : "98%"} !important;
           `}
 
         :hover {
@@ -309,7 +314,9 @@ const TreeNodeMenu = styled(TreeNode)`
     width: ${(props) =>
       !props.disableSwitch
         ? props.icon
-          ? "calc(100% - 44px)"
+          ? props.newItems > 999
+            ? "calc(100% - 104px)"
+            : "calc(100% - 44px)"
           : "calc(100% - 20px)"
         : "100%"};
     white-space: nowrap;
@@ -343,7 +350,7 @@ const TreeNodeMenu = styled(TreeNode)`
 
   .newItem {
     position: absolute;
-    right: -30px;
+    right: -10px;
     top: 2px;
     @media (max-width: 1024px) {
       right: -29px;

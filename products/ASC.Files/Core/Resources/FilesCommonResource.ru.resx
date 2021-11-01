@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
     <value>Вне портала</value>
@@ -308,13 +308,13 @@
     <value>Файл создан в папке "{0}"</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Делать то же самое, что и пользователь|Подключать аккаунты Dropbox, Box и другие в разделе 'Общие документы'|Настраивать права доступа к документам и папкам в разделе 'Общие документы'</value>
+    <value>Делать то же самое, что и пользователь|Подключать аккаунты Dropbox, Box и другие в разделе 'Общие'|Настраивать права доступа к документам и папкам в разделе 'Общие'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Создавайте, редактируйте документы и предоставляйте к ним доступ. Используйте совместное редактирование в режиме реального времени. Гарантируется 100% совместимость с форматами MS Office.</value>
+    <value>Создавайте и редактируйте офисные документы, предоставляйте к ним доступ. Работайте над ними совместно в режиме реального времени. Гарантируется 100% совместимость с форматами docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Создавайте, редактируйте документы и предоставляйте к ним доступ. Используйте совместное редактирование в режиме реального времени. Гарантируется 100% совместимость с форматами MS Office.</value>
+    <value>Редактируйте офисные документы, предоставляйте к ним доступ и работайте над ними совместно в режиме реального времени. Создавайте общие документы, доступные для всей команды, и управляйте ими. 100% совместимость с форматами docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Просматривайте и скачивайте документы, к которым предоставлен доступ. Загружайте файлы в общие папки. Гарантируется 100% совместимость с форматами docx, xlsx, pptx.</value>
@@ -341,7 +341,7 @@
     <value>Оповещать об изменении статуса документа в DocuSign</value>
   </data>
   <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Оповещать при предоставлении доступа</value>
+    <value>Оповещать при предоставлении доступа к документу</value>
   </data>
   <data name="SubscriptForMailMerge" xml:space="preserve">
     <value>Оповещать о завершении рассылки</value>

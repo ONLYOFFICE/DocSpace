@@ -29,6 +29,7 @@ namespace ASC.Core.Common.EF
         internal ConnectionStringSettings ConnectionStringSettings { get; set; }
         protected internal Provider Provider { get; set; }
 
+        public static ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
         protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get { return null; }
@@ -61,7 +62,7 @@ namespace ASC.Core.Common.EF
             switch (Provider)
             {
                 case Provider.MySql:
-                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion.AutoDetect(ConnectionStringSettings.ConnectionString), r=>
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r=>
                     {
                         if (!string.IsNullOrEmpty(MigrateAssembly))
                         {

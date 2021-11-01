@@ -29,6 +29,7 @@ using System.Collections.Generic;
 
 using ASC.Core.Tenants;
 using ASC.Security.Cryptography;
+using ASC.Web.Api.Models;
 
 namespace ASC.Api.Settings
 {
@@ -58,9 +59,19 @@ namespace ASC.Api.Settings
 
         public bool? ThirdpartyEnable { get; set; }
 
+        public bool Personal { get; set; }
+
         public string WizardToken { get; set; }
 
         public PasswordHasher PasswordHash { get; set; }
+
+        public FirebaseWrapper Firebase { get; set; }
+
+        public string Version { get; set; }
+
+        public string RecaptchaPublicKey { get; set; }
+
+        public bool DebugInfo { get; set; }
 
         public static SettingsWrapper GetSample()
         {

@@ -94,6 +94,8 @@ namespace ASC.Web.Files.Services.DocumentService
                                           string toExtension,
                                           string documentRevisionId,
                                           string password,
+                                          Web.Core.Files.DocumentService.ThumbnailData thumbnail,
+                                          Web.Core.Files.DocumentService.SpreadsheetLayout spreadsheetLayout,
                                           bool isAsync,
                                           out string convertedDocumentUri)
         {
@@ -108,6 +110,8 @@ namespace ASC.Web.Files.Services.DocumentService
                     toExtension,
                     GenerateRevisionId(documentRevisionId),
                     password,
+                    thumbnail,
+                    spreadsheetLayout,
                     isAsync,
                     FileUtility.SignatureSecret,
                     out convertedDocumentUri);
@@ -251,7 +255,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileUri = ReplaceCommunityAdress(url);
 
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    Web.Core.Files.DocumentService.GetConvertedUri(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, false, FileUtility.SignatureSecret, out convertedFileUri);
+                    Web.Core.Files.DocumentService.GetConvertedUri(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, out convertedFileUri);
                 }
                 catch (Exception ex)
                 {

@@ -1,11 +1,8 @@
 {
-  "Actions": "Действия",
   "NewDocument": "Новый документ",
-  "NewSpreadsheet": "Новая таблица",
-  "NewPresentation": "Новая презентация",
   "NewFolder": "Новая папка",
+  "NewPresentation": "Новая презентация",
+  "NewSpreadsheet": "Новая таблица",
   "UploadFiles": "Загрузить файлы",
-  "UploadFolder": "Загрузить папку",
-  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}",
-  "AddAccount": "Подключить"
+  "UploadFolder": "Загрузить папку"
 }

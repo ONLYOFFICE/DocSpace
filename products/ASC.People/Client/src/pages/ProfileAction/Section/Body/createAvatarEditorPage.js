@@ -257,15 +257,15 @@ class CreateAvatarEditorPage extends React.PureComponent {
           onCancel={this.onCancel}
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("EditPhoto")}
-          selectNewPhotoLabel={t("selectNewPhotoLabel")}
-          orDropFileHereLabel={t("orDropFileHereLabel")}
-          unknownTypeError={t("ErrorUnknownFileImageType")}
-          maxSizeFileError={t("maxSizeFileError")}
-          unknownError={t("Error")}
+          selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+          orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+          maxSizeFileError={t("Translations:maxSizeFileError")}
+          unknownError={t("Common:Error")}
           saveButtonLabel={
-            this.state.isLoading ? t("UpdatingProcess") : t("SaveButton")
+            this.state.isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
           }
-          cancelButtonLabel={t("CancelButton")}
+          cancelButtonLabel={t("Common:CancelButton")}
           saveButtonLoading={this.state.isLoading}
         />
       </AvatarEditorBody>
@@ -291,5 +291,11 @@ export default withRouter(
     createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
     avatarMax: peopleStore.avatarEditorStore.avatarMax,
     croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
-  }))(observer(withTranslation("ProfileAction")(CreateAvatarEditorPage)))
+  }))(
+    observer(
+      withTranslation(["ProfileAction", "Common", "Translations"])(
+        CreateAvatarEditorPage
+      )
+    )
+  )
 );

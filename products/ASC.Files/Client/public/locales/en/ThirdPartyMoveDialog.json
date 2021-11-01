@@ -1,8 +1,5 @@
 {
-  "Copy": "Copy",
-  "Move": "Move",
-  "CancelButton": "Cancel",
   "MoveConfirmation": "Move confirmation",
-  "MoveConfirmationMessage": "You are about to move elements from the {{provider}} directory. In such a case, they will be deleted from your {{provider}} account and will no longer be accessible to other users, in case these elements have previously been shared.",
-  "MoveConfirmationAlert": "Are you sure you want to move the elements?"
+  "MoveConfirmationAlert": "Are you sure you want to move the elements?",
+  "MoveConfirmationMessage": "You are about to move elements from the {{provider}} directory. They will be deleted from your {{provider}} account and will no longer be accessible to other users."
 }

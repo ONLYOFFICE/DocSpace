@@ -304,7 +304,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     if (!Guid.TryParse(user, out var userId))
                     {
-                        Logger.Error("DocService userId is not Guid: " + user);
+                        Logger.Info("DocService userId is not Guid: " + user);
                         continue;
                     }
                     users.Remove(userId);
@@ -348,7 +348,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (fileData.Users == null || fileData.Users.Count == 0 || !Guid.TryParse(fileData.Users[0], out var userId))
             {
-                userId = FileTracker.GetEditingBy(fileId).FirstOrDefault();
+                userId = Guid.Empty;
             }
 
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
@@ -370,7 +370,7 @@ namespace ASC.Web.Files.Services.DocumentService
             UserInfo user = null;
             try
             {
-                SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMeWithoutCookie(userId);
 
                 user = UserManager.GetUsers(userId);
                 var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
@@ -477,7 +477,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             try
             {
-                SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMeWithoutCookie(userId);
 
                 var user = UserManager.GetUsers(userId);
                 var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);

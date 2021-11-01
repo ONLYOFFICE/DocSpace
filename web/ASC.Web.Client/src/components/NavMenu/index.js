@@ -9,7 +9,7 @@ import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
 import { I18nextProvider, withTranslation } from "react-i18next";
-// import { withRouter } from "react-router";
+import { withRouter } from "react-router";
 
 import Loaders from "@appserver/common/components/Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
@@ -39,7 +39,7 @@ const StyledContainer = styled.header`
           .navMenuHeaderUnAuth {
             position: fixed;
             z-index: 160;
-            top: ${(props) => (props.isVisible ? "0" : "-56px")};
+            top: ${(props) => (props.isVisible ? "0" : "-48px")};
 
             transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
             -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
@@ -54,7 +54,7 @@ const StyledContainer = styled.header`
   #ipl-progress-indicator {
     position: fixed;
     z-index: 190;
-    top: ${(props) => (props.isDesktop ? "0" : "56px")};
+    top: ${(props) => (props.isDesktop ? "0" : "48px")};
     left: -6px;
     width: 0%;
     height: 3px;
@@ -75,7 +75,6 @@ class NavMenu extends React.Component {
       isNavHoverEnabled,
       isNavOpened,
       isAsideVisible,
-      isDesktop,
     } = props;
 
     this.state = {
@@ -83,7 +82,6 @@ class NavMenu extends React.Component {
       isNavOpened,
       isAsideVisible,
       isNavHoverEnabled,
-      isDesktop,
     };
   }
 
@@ -143,16 +141,19 @@ class NavMenu extends React.Component {
   };
 
   render() {
-    const {
-      isBackdropVisible,
-      isNavOpened,
-      isAsideVisible,
-      isDesktop,
-    } = this.state;
+    const { isBackdropVisible, isNavOpened, isAsideVisible } = this.state;
 
-    const { isAuthenticated, isLoaded, asideContent /*history*/ } = this.props;
+    const {
+      isAuthenticated,
+      isLoaded,
+      asideContent,
+      history,
+      isDesktop,
+    } = this.props;
 
     const isAsideAvailable = !!asideContent;
+    const hideHeader =
+      isDesktop || history.location.pathname === "/products/files/private";
 
     //console.log("NavMenu render", this.state, this.props);
 
@@ -162,7 +163,7 @@ class NavMenu extends React.Component {
           <StyledContainer
             isLoaded={isLoaded}
             isVisible={value.isVisible}
-            isDesktop={isDesktop}
+            isDesktop={hideHeader}
           >
             <Toast />
 
@@ -172,10 +173,10 @@ class NavMenu extends React.Component {
               withBackground={true}
             />
 
-            {!isDesktop &&
+            {!hideHeader &&
               (isLoaded && isAuthenticated ? (
                 <>
-                  <HeaderNav /*history={history}*/ />
+                  <HeaderNav />
                   <Header
                     isNavOpened={isNavOpened}
                     onClick={this.showNav}
@@ -219,8 +220,6 @@ NavMenu.propTypes = {
 
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
-
-  // history: PropTypes.object,
 };
 
 NavMenu.defaultProps = {
@@ -240,7 +239,7 @@ const NavMenuWrapper = inject(({ auth }) => {
     isDesktop,
     language,
   };
-})(observer(withTranslation("NavMenu")(NavMenu)));
+})(observer(withTranslation(["NavMenu", "Common"])(withRouter(NavMenu))));
 
 export default () => (
   <I18nextProvider i18n={i18n}>

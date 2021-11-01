@@ -6,15 +6,19 @@ import config from "../package.json";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import AppLoader from "@appserver/common/components/AppLoader";
 import toastr from "studio/toastr";
-import { combineUrl, updateTempContent } from "@appserver/common/utils";
+import {
+  combineUrl,
+  updateTempContent,
+  loadScript,
+} from "@appserver/common/utils";
 import stores from "./store/index";
-import "./custom.scss";
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 import { regDesktop } from "@appserver/common/desktop";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import VersionHistory from "./pages/VersionHistory";
+import PrivateRoomsPage from "./pages/PrivateRoomsPage";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -27,7 +31,9 @@ const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/");
 const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
 const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
+const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
+const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -37,7 +43,9 @@ window.AppServer.files = {
   HOME_URL,
   SETTINGS_URL,
   HISTORY_URL,
+  PRIVATE_ROOMS_URL,
   FILTER_URL,
+  MEDIA_VIEW_URL,
 };
 
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -60,6 +68,8 @@ class FilesContent extends React.Component {
   }
 
   componentDidMount() {
+    loadScript("/static/scripts/tiff.min.js", "img-tiff-script");
+
     this.props
       .loadFilesInfo()
       .catch((err) => toastr.error(err))
@@ -67,6 +77,11 @@ class FilesContent extends React.Component {
         this.props.setIsLoaded(true);
         updateTempContent();
       });
+  }
+
+  componentWillUnmount() {
+    const script = document.getElementById("img-tiff-script");
+    document.body.removeChild(script);
   }
 
   componentDidUpdate(prevProps) {
@@ -77,16 +92,19 @@ class FilesContent extends React.Component {
       encryptionKeys,
       setEncryptionKeys,
       isLoaded,
+      isDesktop,
     } = this.props;
     //console.log("componentDidUpdate: ", this.props);
-    if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
+    if (isAuthenticated && !this.isDesktopInit && isDesktop && isLoaded) {
       this.isDesktopInit = true;
       regDesktop(
         user,
         isEncryption,
         encryptionKeys,
         setEncryptionKeys,
-        this.isEditor
+        this.isEditor,
+        null,
+        this.props.t
       );
       console.log(
         "%c%s",
@@ -106,8 +124,10 @@ class FilesContent extends React.Component {
         <Switch>
           <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
           <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
+          <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
           <PrivateRoute exact path={HOME_URL} component={Home} />
           <PrivateRoute path={FILTER_URL} component={Home} />
+          <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
           <PrivateRoute component={Error404Route} />
         </Switch>
       </>
@@ -131,7 +151,7 @@ const Files = inject(({ auth, filesStore }) => {
       auth.setProductVersion(config.version);
     },
   };
-})(observer(FilesContent));
+})(withTranslation("Common")(observer(FilesContent)));
 
 export default () => (
   <FilesProvider {...stores}>

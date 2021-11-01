@@ -1,7 +1,9 @@
 ﻿using System;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.Files.Core.Security;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -52,7 +54,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("entry_id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.EntryType).HasColumnName("entry_type");
 
@@ -60,14 +62,14 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("subject")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Owner)
                     .IsRequired()
                     .HasColumnName("owner")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Security).HasColumnName("security");
 

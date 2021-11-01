@@ -138,16 +138,6 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                         .UseCollation("utf8_general_ci")
                         .HasCharSet("utf8");
 
-                    b.Property<bool>("Public")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("public");
-
-                    b.Property<string>("PublicVisibleProducts")
-                        .HasColumnType("varchar(1024)")
-                        .HasColumnName("publicvisibleproducts")
-                        .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
-
                     b.Property<bool>("Spam")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")

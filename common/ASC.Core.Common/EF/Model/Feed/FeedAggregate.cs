@@ -52,7 +52,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("id")
                     .HasColumnType("varchar(88)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.AggregateDate)
                     .HasColumnName("aggregated_date")
@@ -63,7 +63,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("author")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreatedDate)
                     .HasColumnName("created_date")
@@ -73,27 +73,27 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("group_id")
                     .HasColumnType("varchar(70)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Json)
                     .IsRequired()
                     .HasColumnName("json")
                     .HasColumnType("mediumtext")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Keywords)
                     .HasColumnName("keywords")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ModifiedBy)
                     .IsRequired()
                     .HasColumnName("modified_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ModifiedDate)
                     .HasColumnName("modified_date")
@@ -104,14 +104,14 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("module")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Product)
                     .IsRequired()
                     .HasColumnName("product")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });

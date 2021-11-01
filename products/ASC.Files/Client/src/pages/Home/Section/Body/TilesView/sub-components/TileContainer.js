@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { memo } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -8,59 +8,86 @@ import Heading from "@appserver/components/heading";
 import ContextMenu from "@appserver/components/context-menu";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
 
+import { tablet, desktop } from "@appserver/components/utils/device";
+
+const foldersStyle = css`
+  grid-gap: 19px 14px;
+
+  @media ${desktop} {
+    margin-left: -1px;
+    padding-right: 1px;
+  }
+
+  @media ${tablet} {
+    grid-gap: 17px 12px;
+    margin-left: -1px;
+  }
+`;
+
+const filesStyle = css`
+  grid-gap: 14px 18px;
+
+  @media ${desktop} {
+    padding-right: 5px;
+  }
+
+  @media ${tablet} {
+    grid-gap: 12px 14px;
+    margin-left: -1px;
+    padding-right: 2px;
+  }
+`;
+
 const StyledGridWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   width: 100%;
-  grid-gap: 22px 16px;
   padding-bottom: 24px;
-  padding-right: 2px;
   box-sizing: border-box;
+  ${(props) => (props.isFolders ? foldersStyle : filesStyle)};
 `;
 
 const StyledTileContainer = styled.div`
   position: relative;
 
-  .tileItemWrapper {
-    border: 1px solid #eceef1;
-    border-radius: 3px;
-    border-top-left-radius: 0;
+  .tile-item-wrapper {
     position: relative;
-    min-width: 220px;
-    box-sizing: border-box;
-
-    &.folder {
-      &:before {
-        content: "";
-        position: absolute;
-        top: -7px;
-        left: -1px;
-        border: 1px solid #eceef1;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 6px;
-        width: 50px;
-        height: 6px;
-        background-color: #fff;
-        border-bottom: transparent;
-      }
-    }
+    width: 100%;
 
     &.file {
       padding: 0;
+    }
+    &.folder {
+      padding: 0;
 
       .drag-and-drop {
-        margin: -1px;
+        margin: 0px;
       }
     }
   }
 
-  .tileItemsHeading {
+  .tile-items-heading {
     margin: 0;
     padding-bottom: 11px;
+    pointer-events: none;
 
     &.files {
       padding-top: 8px;
     }
+
+    margin-left: -1px;
+  }
+
+  @media (min-width: 1024px) {
+    .tile-item-wrapper {
+      &.file {
+        margin-left: 1px;
+      }
+    }
+  }
+
+  @media ${tablet} {
+    margin-right: -3px;
   }
 `;
 
@@ -98,7 +125,7 @@ class TileContainer extends React.PureComponent {
   };
 
   // eslint-disable-next-line react/prop-types
-  renderRow = memo(({ data, index, style }) => {
+  renderTile = memo(({ data, index, style }) => {
     // eslint-disable-next-line react/prop-types
     const options = data[index].props.contextOptions;
 
@@ -127,11 +154,12 @@ class TileContainer extends React.PureComponent {
     const Folders = [];
     const Files = [];
 
-    children.forEach((item, index) => {
-      if (item.props.isFolder) {
+    React.Children.map(children, (item, index) => {
+      const { isFolder, fileExst, id } = item.props.item;
+      if ((isFolder || id === -1) && !fileExst) {
         Folders.push(
           <div
-            className="tileItemWrapper folder"
+            className="tile-item-wrapper folder"
             key={index}
             onContextMenu={this.onRowContextClick.bind(
               this,
@@ -144,7 +172,7 @@ class TileContainer extends React.PureComponent {
       } else {
         Files.push(
           <div
-            className="tileItemWrapper file"
+            className="tile-item-wrapper file"
             key={index}
             onContextMenu={this.onRowContextClick.bind(
               this,
@@ -159,7 +187,7 @@ class TileContainer extends React.PureComponent {
 
     const renderList = ({ height, width }) => (
       <List
-        className="List"
+        className="list"
         height={height}
         width={width}
         itemSize={itemHeight}
@@ -167,7 +195,7 @@ class TileContainer extends React.PureComponent {
         itemData={children}
         outerElementType={CustomScrollbarsVirtualList}
       >
-        {this.renderRow}
+        {this.renderTile}
       </List>
     );
 
@@ -180,20 +208,20 @@ class TileContainer extends React.PureComponent {
       >
         {Folders.length > 0 && (
           <>
-            <Heading size="xsmall" className="tileItemsHeading">
+            <Heading size="xsmall" className="tile-items-heading">
               {headingFolders}
             </Heading>
             {useReactWindow ? (
               <AutoSizer>{renderList}</AutoSizer>
             ) : (
-              <StyledGridWrapper>{Folders}</StyledGridWrapper>
+              <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
             )}
           </>
         )}
 
         {Files.length > 0 && (
           <>
-            <Heading size="xsmall" className="tileItemsHeading">
+            <Heading size="xsmall" className="tile-items-heading">
               {headingFiles}
             </Heading>
             {useReactWindow ? (

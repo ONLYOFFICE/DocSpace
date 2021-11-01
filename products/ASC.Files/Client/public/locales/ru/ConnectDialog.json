@@ -1,13 +1,8 @@
 {
-  "ConnectingAccount": "Подключение аккаунта",
   "Account": "Аккаунт",
-  "Reconnect": "Подключить повторно",
-  "SaveButton": "Сохранить",
-  "ConnectMakeShared": "Сделать доступным и поместить в папку 'Общие'",
   "ConnectFolderTitle": "Название папки",
   "ConnectionUrl": "URL-адрес подключения",
+  "ConnectMakeShared": "Сделать доступным и поместить в папку 'Общие'",
   "Login": "Логин",
-  "Password": "Пароль",
-  "EmptyField": "Все поля обязательны для заполнения",
-  "RequiredFieldMessage": "Обязательное поле"
+  "Reconnect": "Подключить повторно"
 }

@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -43,6 +44,8 @@ using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch.Service;
 
 using Autofac;
+
+using Elasticsearch.Net;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -80,18 +83,19 @@ namespace ASC.ElasticSearch
 
         protected internal T Wrapper { get { return ServiceProvider.GetService<T>(); } }
 
-        public string IndexName { get { return Wrapper.IndexName; } }
+        internal string IndexName { get { return Wrapper.IndexName; } }
 
-        private const int QueryLimit = 1000;
+        public const int QueryLimit = 10000;
 
-        public bool IsExist { get; set; }
+        private bool IsExist { get; set; }
         private Client Client { get; }
-        public ILog Log { get; }
+        private ILog Log { get; }
         private TenantManager TenantManager { get; }
         private BaseIndexerHelper BaseIndexerHelper { get; }
         private Settings Settings { get; }
         private IServiceProvider ServiceProvider { get; }
-        private WebstudioDbContext WebstudioDbContext { get; }
+        private Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; }
+        private WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
 
         public BaseIndexer(
             Client client,
@@ -99,16 +103,16 @@ namespace ASC.ElasticSearch
             DbContextManager<WebstudioDbContext> dbContextManager,
             TenantManager tenantManager,
             BaseIndexerHelper baseIndexerHelper,
-            Settings settings,
+            ConfigurationExtension configurationExtension,
             IServiceProvider serviceProvider)
         {
             Client = client;
             Log = log.CurrentValue;
             TenantManager = tenantManager;
             BaseIndexerHelper = baseIndexerHelper;
-            Settings = settings;
+            Settings = Settings.GetInstance(configurationExtension);
             ServiceProvider = serviceProvider;
-            WebstudioDbContext = dbContextManager.Value;
+            LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }
 
         internal void Index(T data, bool immediately = true)
@@ -122,6 +126,7 @@ namespace ASC.ElasticSearch
             if (!data.Any()) return;
 
             CreateIfNotExist(data[0]);
+
             if (data[0] is ISearchItemDocument)
             {
                 var currentLength = 0L;
@@ -140,24 +145,36 @@ namespace ASC.ElasticSearch
                     else
                     {
                         var dLength = wwd.Document.Data.Length;
-                        if (dLength >= Settings.MemoryLimit)
+                        if (dLength >= Settings.MaxContentLength)
                         {
                             try
                             {
                                 Index(t, immediately);
                             }
+                            catch (ElasticsearchClientException e)
+                            {
+                                if (e.Response.HttpStatusCode == 429)
+                                {
+                                    throw;
+                                }
+                                Log.Error(e);
+                            }
                             catch (Exception e)
                             {
                                 Log.Error(e);
                             }
+                            finally
+                            {
+                                wwd.Document.Data = null;
+                                wwd.Document = null;
+                                wwd = null;
+                                GC.Collect();
+                            }
 
-                            wwd.Document.Data = null;
-                            wwd.Document = null;
-                            GC.Collect();
                             continue;
                         }
 
-                        if (currentLength + dLength < Settings.MemoryLimit)
+                        if (currentLength + dLength < Settings.MaxContentLength)
                         {
                             portion.Add(t);
                             currentLength += dLength;
@@ -172,7 +189,7 @@ namespace ASC.ElasticSearch
                     if (runBulk)
                     {
                         var portion1 = portion.ToList();
-                        Client.Instance.Bulk(r => r.IndexMany(portion1, GetMeta));
+                        Client.Instance.Bulk(r => r.IndexMany(portion1, GetMeta).SourceExcludes("attachments"));
                         for (var j = portionStart; j < i; j++)
                         {
                             if (data[j] is ISearchItemDocument doc && doc.Document != null)
@@ -180,6 +197,7 @@ namespace ASC.ElasticSearch
                                 doc.Document.Data = null;
                                 doc.Document = null;
                             }
+                            doc = null;
                         }
 
                         portionStart = i;
@@ -192,6 +210,98 @@ namespace ASC.ElasticSearch
             else
             {
                 Client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
+            }
+        }
+
+        internal async Task IndexAsync(List<T> data, bool immediately = true)
+        {
+            CreateIfNotExist(data[0]);
+
+            if (data is ISearchItemDocument)
+            {
+                var currentLength = 0L;
+                var portion = new List<T>();
+                var portionStart = 0;
+
+                for (var i = 0; i < data.Count; i++)
+                {
+                    var t = data[i];
+                    var runBulk = i == data.Count - 1;
+
+                    var wwd = t as ISearchItemDocument;
+
+                    if (wwd == null || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
+                    {
+                        portion.Add(t);
+                    }
+                    else
+                    {
+                        var dLength = wwd.Document.Data.Length;
+                        if (dLength >= Settings.MaxContentLength)
+                        {
+                            try
+                            {
+                                Index(t, immediately);
+                            }
+                            catch (ElasticsearchClientException e)
+                            {
+                                if (e.Response.HttpStatusCode == 429)
+                                {
+                                    throw;
+                                }
+                                Log.Error(e);
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Error(e);
+                            }
+                            finally
+                            {
+                                wwd.Document.Data = null;
+                                wwd.Document = null;
+                                wwd = null;
+                                GC.Collect();
+                            }
+                            continue;
+                        }
+
+                        if (currentLength + dLength < Settings.MaxContentLength)
+                        {
+                            portion.Add(t);
+                            currentLength += dLength;
+                        }
+                        else
+                        {
+                            runBulk = true;
+                            i--;
+                        }
+                    }
+
+                    if (runBulk)
+                    {
+                        var portion1 = portion.ToList();
+                        await Client.Instance.BulkAsync(r => r.IndexMany(portion1, GetMeta).SourceExcludes("attachments"));
+                        for (var j = portionStart; j < i; j++)
+                        {
+                            var doc = data[j] as ISearchItemDocument;
+                            if (doc != null && doc.Document != null)
+                            {
+                                doc.Document.Data = null;
+                                doc.Document = null;
+                            }
+                            doc = null;
+                        }
+
+                        portionStart = i;
+                        portion = new List<T>();
+                        currentLength = 0L;
+                        GC.Collect();
+                    }
+                }
+            }
+            else
+            {
+                await Client.Instance.BulkAsync(r => r.IndexMany(data, GetMeta));
             }
         }
 
@@ -264,10 +374,10 @@ namespace ASC.ElasticSearch
             return false;
         }
 
-        public async Task ReIndex()
+        public Task ReIndex()
         {
             Clear();
-            await Task.CompletedTask;
+            return Task.CompletedTask;
             //((IIndexer) this).IndexAll();
         }
 
@@ -565,7 +675,10 @@ namespace ASC.ElasticSearch
             return descriptor.GetDescriptorForUpdate(this, GetScriptForUpdate(data, action, fields), immediately);
         }
 
-        public IEnumerable<List<T>> IndexAll(Func<DateTime, (int, int, int)> getCount, Func<long, long, DateTime, List<T>> getData)
+        public IEnumerable<List<T>> IndexAll(
+            Func<DateTime, (int, int, int)> getCount,
+            Func<DateTime, List<int>> getIds,
+            Func<long, long, DateTime, List<T>> getData)
         {
             var now = DateTime.UtcNow;
             var lastIndexed = WebstudioDbContext.WebstudioIndex
@@ -573,28 +686,21 @@ namespace ASC.ElasticSearch
                 .Select(r => r.LastModified)
                 .FirstOrDefault();
 
+            if (lastIndexed.Equals(DateTime.MinValue))
+            {
+                CreateIfNotExist(ServiceProvider.GetService<T>());
+            }
+
             var (count, max, min) = getCount(lastIndexed);
             Log.Debug($"Index: {IndexName}, Count {count}, Max: {max}, Min: {min}");
 
-            if (count != 0)
+            var ids = new List<int>() { min };
+            ids.AddRange(getIds(lastIndexed));
+            ids.Add(max);
+
+            for (var i = 0; i < ids.Count - 1; i++)
             {
-                var step = (max - min + 1) / count;
-
-                if (step == 0)
-                {
-                    step = 1;
-                }
-
-                if (step < QueryLimit)
-                {
-                    step = QueryLimit;
-                }
-
-                for (var i = min; i <= max; i += step)
-                {
-                    yield return getData(i, step, lastIndexed);
-                    //FactoryIndexer<T>.Index(data.Cast<T>().ToList());
-                }
+                yield return getData(ids[i], ids[i + 1], lastIndexed);
             }
 
 

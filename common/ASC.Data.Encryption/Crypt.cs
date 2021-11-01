@@ -44,17 +44,19 @@ namespace ASC.Data.Encryption
         private string TempDir { get; set; }
 
         private IConfiguration Configuration { get; set; }
+        public TempPath TempPath { get; }
 
         public void Init(string storageName, EncryptionSettings encryptionSettings)
         {
             Storage = storageName;
             Settings = encryptionSettings;
-            TempDir = Configuration["storage:encryption:tempdir"] ?? Path.GetTempPath();
+            TempDir = TempPath.GetTempPath();
         }
 
-        public Crypt(IConfiguration configuration)
+        public Crypt(IConfiguration configuration, TempPath tempPath)
         {
             Configuration = configuration;
+            TempPath = tempPath;
         }
 
         public byte Version { get { return 1; } }

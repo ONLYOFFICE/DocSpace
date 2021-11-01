@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -143,9 +144,6 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                     creationdatetime = table.Column<DateTime>(type: "datetime", nullable: false),
                     owner_id = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    @public = table.Column<bool>(name: "public", type: "tinyint(1)", nullable: false),
-                    publicvisibleproducts = table.Column<string>(type: "varchar(1024)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
                     payment_id = table.Column<string>(type: "varchar(38)", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     industry = table.Column<int>(type: "int", nullable: true),
@@ -227,8 +225,8 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
 
             migrationBuilder.InsertData(
                 table: "tenants_tenants",
-                columns: new[] { "id", "alias", "creationdatetime", "industry", "mappeddomain", "name", "owner_id", "payment_id", "public", "publicvisibleproducts", "status", "statuschanged", "timezone", "trusteddomains", "version_changed" },
-                values: new object[] { 1, "localhost", new DateTime(2021, 3, 9, 9, 51, 15, 575, DateTimeKind.Utc).AddTicks(8295), null, null, "Web Office", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", null, false, null, 0, null, null, null, null });
+                columns: new[] { "id", "alias", "creationdatetime", "industry", "mappeddomain", "name", "owner_id", "payment_id", "status", "statuschanged", "timezone", "trusteddomains", "version_changed" },
+                values: new object[] { 1, "localhost", new DateTime(2021, 3, 9, 9, 51, 15, 575, DateTimeKind.Utc).AddTicks(8295), null, null, "Web Office", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", null, 0, null, null, null, null });
 
             migrationBuilder.InsertData(
                 table: "core_usersecurity",

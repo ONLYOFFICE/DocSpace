@@ -14,14 +14,20 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import AccessComboBox from "../SharingPanel/AccessComboBox";
+import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
 
 class AddUsersPanelComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    const accessRight = props.isEncrypted
+      ? ShareAccessRights.FullAccess
+      : ShareAccessRights.ReadOnly;
+
     this.state = {
       showActionPanel: false,
-      accessRight: ShareAccessRights.ReadOnly,
+      accessRight,
     };
 
     this.scrollRef = React.createRef();
@@ -89,25 +95,6 @@ class AddUsersPanelComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const { showActionPanel, accessRight } = this.state;
-  //   const { visible } = this.props;
-
-  //   if (accessRight !== nextState.accessRight) {
-  //     return true;
-  //   }
-
-  //   if (showActionPanel !== nextState.showActionPanel) {
-  //     return true;
-  //   }
-
-  //   if (visible !== nextProps.visible) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
-
   onAccessChange = (e) => {
     const accessRight = +e.currentTarget.dataset.access;
     this.setState({ accessRight });
@@ -163,7 +150,7 @@ class AddUsersPanelComponent extends React.Component {
                 size="medium"
                 truncate
               >
-                {isMultiSelect ? t("LinkText") : t("OwnerChange")}
+                {isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")}
               </Heading>
               {/*<IconButton
                 size="16"
@@ -204,4 +191,6 @@ AddUsersPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation("AddUsersPanel")(AddUsersPanelComponent);
+export default withTranslation(["SharingPanel", "Translations"])(
+  withLoader(AddUsersPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+);

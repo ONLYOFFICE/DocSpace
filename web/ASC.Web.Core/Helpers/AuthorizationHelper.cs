@@ -27,6 +27,7 @@
 using System;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
 
@@ -34,6 +35,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Helpers
 {
+    [Scope]
     public class AuthorizationHelper
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -59,7 +61,7 @@ namespace ASC.Web.Core.Helpers
             try
             {
                 //Try basic
-                var authorization = HttpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
+                var authorization = HttpContextAccessor.HttpContext.Request.Cookies["asc_auth_key"] ?? HttpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
                 if (string.IsNullOrEmpty(authorization))
                 {
                     return false;

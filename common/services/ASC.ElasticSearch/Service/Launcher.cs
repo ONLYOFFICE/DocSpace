@@ -32,9 +32,8 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.ElasticSearch.Service;
-
-using Autofac;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -49,7 +48,6 @@ namespace ASC.ElasticSearch
         private ICacheNotify<AscCacheItem> Notify { get; }
         private ICacheNotify<IndexAction> IndexNotify { get; }
         private IServiceProvider ServiceProvider { get; }
-        public ILifetimeScope Container { get; }
         private bool IsStarted { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private Timer Timer { get; set; }
@@ -60,15 +58,14 @@ namespace ASC.ElasticSearch
             ICacheNotify<AscCacheItem> notify,
             ICacheNotify<IndexAction> indexNotify,
             IServiceProvider serviceProvider,
-            ILifetimeScope container,
-            Settings settings)
+            ConfigurationExtension configurationExtension)
         {
             Log = options.Get("ASC.Indexer");
             Notify = notify;
             IndexNotify = indexNotify;
             ServiceProvider = serviceProvider;
-            Container = container;
             CancellationTokenSource = new CancellationTokenSource();
+            var settings = Settings.GetInstance(configurationExtension);
             Period = TimeSpan.FromMinutes(settings.Period.Value);
         }
 
@@ -137,12 +134,18 @@ namespace ASC.ElasticSearch
                 Timer.Change(Timeout.Infinite, Timeout.Infinite);
                 IsStarted = true;
 
-                using var scope = Container.BeginLifetimeScope();
-                var wrappers = scope.Resolve<IEnumerable<IFactoryIndexer>>();
-
-                foreach (var w in wrappers)
+                using (var scope = ServiceProvider.CreateScope())
                 {
-                    IndexProduct(w, reindex);
+                    var wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
+
+                    Parallel.ForEach(wrappers, wrapper =>
+                    {
+                        using (var scope = ServiceProvider.CreateScope())
+                        {
+                            var w = (IFactoryIndexer)scope.ServiceProvider.GetService(wrapper.GetType());
+                            IndexProduct(w, reindex);
+                        }
+                    });
                 }
 
                 Timer.Change(Period, Period);

@@ -1,8 +1,14 @@
 import api from "@appserver/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
+import SelectionStore from "./SelectionStore";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../package.json";
 
 class SettingsSetupStore {
+  selectionStore = null;
+
   common = {
     whiteLabel: {
       logoSizes: [],
@@ -15,9 +21,17 @@ class SettingsSetupStore {
       options: [],
       users: [],
       admins: [],
+      adminsTotal: 0,
       owner: {},
       filter: Filter.getDefault(),
+      selectorIsOpen: false,
+      isLoading: false,
     },
+  };
+
+  headerAction = {
+    addUsers: "",
+    removeAdmins: "",
   };
 
   integration = {
@@ -26,8 +40,13 @@ class SettingsSetupStore {
   };
 
   constructor() {
+    this.selectionStore = new SelectionStore(this);
     makeAutoObservable(this);
   }
+
+  setIsLoading = (isLoading) => {
+    this.security.accessRight.isLoading = isLoading;
+  };
 
   setOptions = (options) => {
     this.security.accessRight.options = options;
@@ -39,6 +58,10 @@ class SettingsSetupStore {
 
   setAdmins = (admins) => {
     this.security.accessRight.admins = admins;
+  };
+
+  setTotalAdmins = (total) => {
+    this.security.accessRight.adminsTotal = total;
   };
 
   setOwner = (owner) => {
@@ -65,36 +88,61 @@ class SettingsSetupStore {
     this.integration.consumers = consumers;
   };
 
+  setAddUsers = (func) => {
+    this.headerAction.addUsers = func;
+  };
+
+  setRemoveAdmins = (func) => {
+    this.headerAction.removeAdmins = func;
+  };
+
+  toggleSelector = (isOpen) => {
+    this.security.accessRight.selectorIsOpen = isOpen;
+  };
+
   setSelectedConsumer = (selectedConsumerName) => {
     this.integration.selectedConsumer =
       this.integration.consumers.find((c) => c.name === selectedConsumerName) ||
       {};
   };
 
-  changeAdmins = async (userIds, productId, isAdmin, filter) => {
-    let filterData = filter && filter.clone();
-    if (!filterData) {
-      filterData = Filter.getDefault();
-    }
+  setFilterUrl = (filter) => {
+    window.history.replaceState(
+      "",
+      "",
+      combineUrl(
+        AppServerConfig.proxyURL,
+        `${config.homepage}/settings/security/access-rights/admins`,
+        `/filter?page=${filter.page}`
+      )
+    );
+  };
 
+  setFilterParams = (data) => {
+    this.setFilterUrl(data);
+    this.setFilter(data);
+  };
+
+  changeAdmins = async (userIds, productId, isAdmin) => {
     const requests = userIds.map((userId) =>
       api.people.changeProductAdmin(userId, productId, isAdmin)
     );
 
     await Promise.all(requests);
-
-    const admins = await api.people.getListAdmins(filterData);
-
-    filterData.total = admins.total;
-
-    this.setAdmins(admins.items);
-    this.setFilter(filterData);
   };
 
   getPortalOwner = async (userId) => {
     const owner = await api.people.getUserById(userId);
 
     this.setOwner(owner);
+  };
+
+  getUsersByIds = async (Ids) => {
+    const users = Ids.map((id) => {
+      return api.people.getUserById(id);
+    });
+
+    return Promise.all(users);
   };
 
   fetchPeople = async (filter) => {
@@ -110,16 +158,27 @@ class SettingsSetupStore {
     this.setFilter(filterData);
   };
 
-  getUpdateListAdmin = async (filter) => {
+  updateListAdmins = async (filter, withoutOwner) => {
     let filterData = filter && filter.clone();
     if (!filterData) {
       filterData = Filter.getDefault();
     }
     const admins = await api.people.getListAdmins(filterData);
 
+    if (withoutOwner) {
+      admins.items = admins.items.filter((admin) => {
+        if (admin.isOwner) return false;
+        return true;
+      });
+    }
+
     filterData.total = admins.total;
+    if (filter) {
+      this.setFilterParams(filterData);
+    }
 
     this.setAdmins(admins.items);
+    this.setTotalAdmins(admins.total - 1);
     this.setFilter(filterData);
   };
 

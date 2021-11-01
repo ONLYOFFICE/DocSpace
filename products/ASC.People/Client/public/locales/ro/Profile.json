@@ -1,0 +1,11 @@
+{
+  "ChangeEmailSuccess": "Adresa e-mail a fost modificată cu succes",
+  "ChangesApplied": "Modificările au fost aplicate",
+  "ContactInformation": "Informații de contact",
+  "EditPhoto": "Editare foto",
+  "EditSubscriptionsBtn": "Modificare abonament",
+  "InviteAgainLbl": "Invită din nou",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <strong>{{ email }}</strong>",
+  "PhoneLbl": "Telefon",
+  "Subscriptions": "Subscripții"
+}

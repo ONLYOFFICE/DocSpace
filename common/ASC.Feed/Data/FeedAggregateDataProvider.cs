@@ -48,12 +48,13 @@ namespace ASC.Feed.Data
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
         private TenantUtil TenantUtil { get; }
-        private FeedDbContext FeedDbContext { get; }
+        private Lazy<FeedDbContext> LazyFeedDbContext { get; }
+        private FeedDbContext FeedDbContext { get => LazyFeedDbContext.Value; }
 
         public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FeedDbContext> dbContextManager)
             : this(authContext, tenantManager, tenantUtil)
         {
-            FeedDbContext = dbContextManager.Get(Constants.FeedDbId);
+            LazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(Constants.FeedDbId));
         }
 
         public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil)

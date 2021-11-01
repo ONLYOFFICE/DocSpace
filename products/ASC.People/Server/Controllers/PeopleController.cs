@@ -13,6 +13,7 @@ using System.Threading;
 using System.Web;
 
 using ASC.Api.Core;
+using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
@@ -94,6 +95,8 @@ namespace ASC.Employee.Core.Controllers
         private CommonLinkUtility CommonLinkUtility { get; }
         private MobileDetector MobileDetector { get; }
         private ProviderManager ProviderManager { get; }
+        private Constants Constants { get; }
+        private Recaptcha Recaptcha { get; }
         private ILog Log { get; }
 
         public PeopleController(
@@ -134,11 +137,12 @@ namespace ASC.Employee.Core.Controllers
             PersonalSettingsHelper personalSettingsHelper,
             CommonLinkUtility commonLinkUtility,
             MobileDetector mobileDetector,
-            ProviderManager providerManager
+            ProviderManager providerManager,
+            Constants constants,
+            Recaptcha recaptcha
             )
         {
             Log = option.Get("ASC.Api");
-            Log.Debug("Test");
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;
@@ -176,6 +180,8 @@ namespace ASC.Employee.Core.Controllers
             CommonLinkUtility = commonLinkUtility;
             MobileDetector = mobileDetector;
             ProviderManager = providerManager;
+            Constants = constants;
+            Recaptcha = recaptcha;
         }
 
         [Read("info")]
@@ -419,9 +425,92 @@ namespace ASC.Employee.Core.Controllers
             return users;
         }
 
+        [AllowAnonymous]
+        [Create(@"register")]
+        public string RegisterUserOnPersonal(RegisterPersonalUserModel model)
+        {
+            if (!CoreBaseSettings.Personal) throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
+
+            try
+            {
+                if (CoreBaseSettings.CustomMode) model.Lang = "ru-RU";
+
+                var cultureInfo = SetupInfo.GetPersonalCulture(model.Lang).Value;
+
+                if (cultureInfo != null)
+                {
+                    Thread.CurrentThread.CurrentUICulture = cultureInfo;
+                }
+
+                model.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
+
+                if (!model.Email.TestEmailRegex()) throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+
+                if (!SetupInfo.IsSecretEmail(model.Email)
+                    && !string.IsNullOrEmpty(SetupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(SetupInfo.RecaptchaPrivateKey))
+                {
+                    var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
+
+                    if (string.IsNullOrEmpty(model.RecaptchaResponse)
+                        || !Recaptcha.ValidateRecaptcha(model.RecaptchaResponse, ip))
+                    {
+                        throw new RecaptchaException(Resource.RecaptchaInvalid);
+                    }
+                }
+
+                var newUserInfo = UserManager.GetUserByEmail(model.Email);
+
+                if (UserManager.UserExists(newUserInfo.ID))
+                {
+                    if (!SetupInfo.IsSecretEmail(model.Email) || SecurityContext.IsAuthenticated)
+                    {
+                        StudioNotifyService.SendAlreadyExist(model.Email);
+                        return string.Empty;
+                    }
+
+                    try
+                    {
+                        SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                        UserManager.DeleteUser(newUserInfo.ID);
+                    }
+                    finally
+                    {
+                        SecurityContext.Logout();
+                    }
+                }
+                if (!model.Spam)
+                {
+                    try
+                    {
+                        //TODO
+                        //const string _databaseID = "com";
+                        //using (var db = DbManager.FromHttpContext(_databaseID))
+                        //{
+                        //    db.ExecuteNonQuery(new SqlInsert("template_unsubscribe", false)
+                        //                           .InColumnValue("email", email.ToLowerInvariant())
+                        //                           .InColumnValue("reason", "personal")
+                        //        );
+                        //    Log.Debug(String.Format("Write to template_unsubscribe {0}", email.ToLowerInvariant()));
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Debug(String.Format("ERROR write to template_unsubscribe {0}, email:{1}", ex.Message, model.Email.ToLowerInvariant()));
+                    }
+                }
+
+                StudioNotifyService.SendInvitePersonal(model.Email);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            return string.Empty;
+        }
+
         [Create]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-        public EmployeeWraperFull AddMemberFromBody([FromBody]MemberModel memberModel)
+        public EmployeeWraperFull AddMemberFromBody([FromBody] MemberModel memberModel)
         {
             return AddMember(memberModel);
         }
@@ -429,7 +518,7 @@ namespace ASC.Employee.Core.Controllers
         [Create]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
         [Consumes("application/x-www-form-urlencoded")]
-        public EmployeeWraperFull AddMemberFromForm([FromForm]MemberModel memberModel)
+        public EmployeeWraperFull AddMemberFromForm([FromForm] MemberModel memberModel)
         {
             return AddMember(memberModel);
         }
@@ -493,7 +582,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create("active")]
-        public EmployeeWraperFull AddMemberAsActivatedFromBody([FromBody]MemberModel memberModel)
+        public EmployeeWraperFull AddMemberAsActivatedFromBody([FromBody] MemberModel memberModel)
         {
             return AddMemberAsActivated(memberModel);
         }
@@ -561,7 +650,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/culture")]
-        public EmployeeWraperFull UpdateMemberCultureFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        public EmployeeWraperFull UpdateMemberCultureFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
             return UpdateMemberCulture(userid, memberModel);
         }
@@ -609,7 +698,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}")]
-        public EmployeeWraperFull UpdateMemberFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        public EmployeeWraperFull UpdateMemberFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
             return UpdateMember(userid, memberModel);
         }
@@ -772,7 +861,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+            SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
 
             user.Status = EmployeeStatus.Terminated;
 
@@ -800,7 +889,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/contacts")]
-        public EmployeeWraperFull UpdateMemberContactsFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        public EmployeeWraperFull UpdateMemberContactsFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
             return UpdateMemberContacts(userid, memberModel);
         }
@@ -825,7 +914,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create("{userid}/contacts")]
-        public EmployeeWraperFull SetMemberContactsFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        public EmployeeWraperFull SetMemberContactsFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
             return SetMemberContacts(userid, memberModel);
         }
@@ -837,7 +926,7 @@ namespace ASC.Employee.Core.Controllers
             return SetMemberContacts(userid, memberModel);
         }
 
-        private EmployeeWraperFull SetMemberContacts(string userid,UpdateMemberModel memberModel)
+        private EmployeeWraperFull SetMemberContacts(string userid, UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
 
@@ -850,14 +939,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Delete("{userid}/contacts")]
-        public EmployeeWraperFull DeleteMemberContactsFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        public EmployeeWraperFull DeleteMemberContactsFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
             return DeleteMemberContacts(userid, memberModel);
         }
 
         [Delete("{userid}/contacts")]
         [Consumes("application/x-www-form-urlencoded")]
-        public EmployeeWraperFull DeleteMemberContactsFromForm(string userid, [FromForm]UpdateMemberModel memberModel)
+        public EmployeeWraperFull DeleteMemberContactsFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
         {
             return DeleteMemberContacts(userid, memberModel);
         }
@@ -982,7 +1071,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/photo")]
-        public ThumbnailsDataWrapper UpdateMemberPhotoFromBody(string userid, [FromBody]UpdateMemberModel model)
+        public ThumbnailsDataWrapper UpdateMemberPhotoFromBody(string userid, [FromBody] UpdateMemberModel model)
         {
             return UpdateMemberPhoto(userid, model);
         }
@@ -1032,7 +1121,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Create("{userid}/photo/thumbnails")]
-        public ThumbnailsDataWrapper CreateMemberPhotoThumbnailsFromBody(string userid, [FromBody]ThumbnailsModel thumbnailsModel)
+        public ThumbnailsDataWrapper CreateMemberPhotoThumbnailsFromBody(string userid, [FromBody] ThumbnailsModel thumbnailsModel)
         {
             return CreateMemberPhotoThumbnails(userid, thumbnailsModel);
         }
@@ -1079,7 +1168,7 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create("password", false)]
-        public object SendUserPasswordFromBody([FromBody]MemberModel memberModel)
+        public object SendUserPasswordFromBody([FromBody] MemberModel memberModel)
         {
             return SendUserPassword(memberModel);
         }
@@ -1105,7 +1194,7 @@ namespace ASC.Employee.Core.Controllers
 
         [Update("{userid}/password")]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
-        public EmployeeWraperFull ChangeUserPasswordFromBody(Guid userid, [FromBody]MemberModel memberModel)
+        public EmployeeWraperFull ChangeUserPasswordFromBody(Guid userid, [FromBody] MemberModel memberModel)
         {
             return ChangeUserPassword(userid, memberModel);
         }
@@ -1166,7 +1255,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Create("email", false)]
-        public object SendEmailChangeInstructionsFromBody([FromBody]UpdateMemberModel model)
+        public object SendEmailChangeInstructionsFromBody([FromBody] UpdateMemberModel model)
         {
             return SendEmailChangeInstructions(model);
         }
@@ -1243,7 +1332,7 @@ namespace ASC.Employee.Core.Controllers
 
         [Update("activationstatus/{activationstatus}")]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
-        public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody]UpdateMembersModel model)
+        public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody] UpdateMembersModel model)
         {
             return UpdateEmployeeActivationStatus(activationstatus, model);
         }
@@ -1276,7 +1365,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("type/{type}")]
-        public IEnumerable<EmployeeWraperFull> UpdateUserTypeFromBody(EmployeeType type, [FromBody]UpdateMembersModel model)
+        public IEnumerable<EmployeeWraperFull> UpdateUserTypeFromBody(EmployeeType type, [FromBody] UpdateMembersModel model)
         {
             return UpdateUserType(type, model);
         }
@@ -1313,8 +1402,11 @@ namespace ASC.Employee.Core.Controllers
                         }
                         break;
                     case EmployeeType.Visitor:
-                        UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
-                        WebItemSecurityCache.ClearCache(Tenant.TenantId);
+                        if (CoreBaseSettings.Standalone || TenantStatisticsProvider.GetVisitorsCount() < TenantExtra.GetTenantQuota().ActiveUsers * Constants.CoefficientOfVisitors)
+                        {
+                            UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
+                            WebItemSecurityCache.ClearCache(Tenant.TenantId);
+                        }
                         break;
                 }
             }
@@ -1325,7 +1417,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("status/{status}")]
-        public IEnumerable<EmployeeWraperFull> UpdateUserStatusFromBody(EmployeeStatus status, [FromBody]UpdateMembersModel model)
+        public IEnumerable<EmployeeWraperFull> UpdateUserStatusFromBody(EmployeeStatus status, [FromBody] UpdateMembersModel model)
         {
             return UpdateUserStatus(status, model);
         }
@@ -1379,7 +1471,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Update("invite")]
-        public IEnumerable<EmployeeWraperFull> ResendUserInvitesFromBody([FromBody]UpdateMembersModel model)
+        public IEnumerable<EmployeeWraperFull> ResendUserInvitesFromBody([FromBody] UpdateMembersModel model)
         {
             return ResendUserInvites(model);
         }
@@ -1443,7 +1535,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("delete", Order = -1)]
-        public IEnumerable<EmployeeWraperFull> RemoveUsersFromBody([FromBody]UpdateMembersModel model)
+        public IEnumerable<EmployeeWraperFull> RemoveUsersFromBody([FromBody] UpdateMembersModel model)
         {
             return RemoveUsers(model);
         }
@@ -1542,14 +1634,14 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Update("thirdparty/linkaccount")]
-        public void LinkAccountFromBody([FromBody]LinkAccountModel model)
+        public void LinkAccountFromBody([FromBody] LinkAccountModel model)
         {
             LinkAccount(model);
         }
 
         [Update("thirdparty/linkaccount")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void LinkAccountFromForm([FromForm]LinkAccountModel model)
+        public void LinkAccountFromForm([FromForm] LinkAccountModel model)
         {
             LinkAccount(model);
         }
@@ -1557,6 +1649,11 @@ namespace ASC.Employee.Core.Controllers
         public void LinkAccount(LinkAccountModel model)
         {
             var profile = new LoginProfile(Signature, InstanceCrypto, model.SerializedProfile);
+
+            if (!(CoreBaseSettings.Standalone || TenantExtra.GetTenantQuota().Oauth))
+            {
+                throw new Exception("ErrorNotAllowedOption");
+            }
 
             if (string.IsNullOrEmpty(profile.AuthorizationError))
             {
@@ -1625,7 +1722,7 @@ namespace ASC.Employee.Core.Controllers
             var userID = Guid.Empty;
             try
             {
-                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
                 var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
 
                 var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
@@ -1817,7 +1914,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update(@"reassign/terminate")]
-        public void TerminateReassignFromBody([FromBody]TerminateModel model)
+        public void TerminateReassignFromBody([FromBody] TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -1826,7 +1923,7 @@ namespace ASC.Employee.Core.Controllers
 
         [Update(@"reassign/terminate")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void TerminateReassignFromForm([FromForm]TerminateModel model)
+        public void TerminateReassignFromForm([FromForm] TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -1834,14 +1931,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create(@"reassign/start")]
-        public ReassignProgressItem StartReassignFromBody([FromBody]StartReassignModel model)
+        public ReassignProgressItem StartReassignFromBody([FromBody] StartReassignModel model)
         {
             return StartReassign(model);
         }
 
         [Create(@"reassign/start")]
         [Consumes("application/x-www-form-urlencoded")]
-        public ReassignProgressItem StartReassignFromForm([FromForm]StartReassignModel model)
+        public ReassignProgressItem StartReassignFromForm([FromForm] StartReassignModel model)
         {
             return StartReassign(model);
         }
@@ -1896,7 +1993,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update(@"remove/terminate")]
-        public void TerminateRemoveFromBody([FromBody]TerminateModel model)
+        public void TerminateRemoveFromBody([FromBody] TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -1905,7 +2002,7 @@ namespace ASC.Employee.Core.Controllers
 
         [Update(@"remove/terminate")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void TerminateRemoveFromForm([FromForm]TerminateModel model)
+        public void TerminateRemoveFromForm([FromForm] TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -1913,14 +2010,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create(@"remove/start")]
-        public RemoveProgressItem StartRemoveFromBody([FromBody]TerminateModel model)
+        public RemoveProgressItem StartRemoveFromBody([FromBody] TerminateModel model)
         {
             return StartRemove(model);
         }
 
         [Create(@"remove/start")]
         [Consumes("application/x-www-form-urlencoded")]
-        public RemoveProgressItem StartRemoveFromForm([FromForm]TerminateModel model)
+        public RemoveProgressItem StartRemoveFromForm([FromForm] TerminateModel model)
         {
             return StartRemove(model);
         }

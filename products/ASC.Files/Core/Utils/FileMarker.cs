@@ -32,7 +32,7 @@ using System.Security;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Workers;
+using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
@@ -51,33 +51,21 @@ namespace ASC.Web.Files.Utils
     {
         private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
-
-        public object Locker { get; set; }
-        public WorkerQueue<AsyncTaskData<T>> Tasks { get; set; }
+        public DistributedTaskQueue Tasks { get; set; }
 
         public FileMarkerHelper(
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> optionsMonitor,
-            WorkerQueueOptionsManager<AsyncTaskData<T>> workerQueueOptionsManager)
+            DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
         {
             ServiceProvider = serviceProvider;
             Log = optionsMonitor.CurrentValue;
-            Locker = new object();
-            Tasks = workerQueueOptionsManager.Value;
+            Tasks = distributedTaskQueueOptionsManager.Get<AsyncTaskData<T>>();
         }
 
         internal void Add(AsyncTaskData<T> taskData)
         {
-
-            lock (Locker)
-            {
-                Tasks.Add(taskData);
-
-                if (!Tasks.IsStarted)
-                {
-                    Tasks.Start(ExecMarkFileAsNew);
-                }
-            }
+            Tasks.QueueTask((d, c) => ExecMarkFileAsNew(taskData), taskData);
         }
 
         private void ExecMarkFileAsNew(AsyncTaskData<T> obj)
@@ -313,12 +301,12 @@ namespace ASC.Web.Files.Utils
                 updateTags.AddRange(update);
 
                 entries.ForEach(entry =>
-                {
-                    if (entry != null && exist.All(tag => tag != null && !tag.EntryId.Equals(entry.ID)))
-                    {
-                        newTags.Add(Tag.New(userID, entry));
-                    }
-                });
+                                    {
+                                        if (entry != null && exist.All(tag => tag != null && !tag.EntryId.Equals(entry.ID)))
+                                        {
+                                            newTags.Add(Tag.New(userID, entry));
+                                        }
+                                    });
             }
         }
 
@@ -447,12 +435,12 @@ namespace ASC.Web.Files.Utils
 
             var updateTags = new List<Tag>();
 
-            if (!rootFolderId.Equals(default(T)))
+            if (!rootFolderId.Equals(default))
             {
                 UpdateRemoveTags(internalFolderDao.GetFolder(rootFolderId));
             }
 
-            if (!cacheFolderId.Equals(default(T)))
+            if (!cacheFolderId.Equals(default))
             {
                 RemoveFromCahce(cacheFolderId, userID);
             }
@@ -579,7 +567,7 @@ namespace ASC.Web.Files.Utils
             }
 
             foreach (var entryTag in entryTagsProvider)
-            {
+                {
                 if (int.TryParse(entryTag.Key.FolderID, out var fId))
                 {
                     var parentEntryInt = entryTagsInternal.Keys
@@ -588,10 +576,10 @@ namespace ASC.Web.Files.Utils
                     if (parentEntryInt != null)
                     {
                         entryTagsInternal[parentEntryInt].Count -= entryTag.Value.Count;
-                    }
+                }
 
                     continue;
-                }
+            }
 
                 var parentEntry = entryTagsProvider.Keys
                     .FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, entryTag.Key.FolderID));
@@ -599,7 +587,7 @@ namespace ASC.Web.Files.Utils
                 if (parentEntry != null)
                 {
                     entryTagsProvider[parentEntry].Count -= entryTag.Value.Count;
-                }
+            }
             }
 
             var result = new List<FileEntry>();
@@ -611,20 +599,20 @@ namespace ASC.Web.Files.Utils
 
             void GetResult<TEntry>(Dictionary<FileEntry<TEntry>, Tag> entryTags)
             {
-                foreach (var entryTag in entryTags)
+            foreach (var entryTag in entryTags)
+            {
+                if (!string.IsNullOrEmpty(entryTag.Key.Error))
                 {
-                    if (!string.IsNullOrEmpty(entryTag.Key.Error))
-                    {
-                        RemoveMarkAsNew(entryTag.Key);
-                        continue;
-                    }
+                    RemoveMarkAsNew(entryTag.Key);
+                    continue;
+                }
 
-                    if (entryTag.Value.Count > 0)
-                    {
-                        result.Add(entryTag.Key);
-                    }
+                if (entryTag.Value.Count > 0)
+                {
+                    result.Add(entryTag.Key);
                 }
             }
+        }
         }
 
         private Dictionary<FileEntry<T>, Tag> GetEntryTags<T>(IEnumerable<Tag> tags)
@@ -742,8 +730,13 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                entries.OfType<FileEntry<T>>()
-                    .ToList()
+                SetTagsNew(entries.OfType<FileEntry<int>>().ToList());
+                SetTagsNew(entries.OfType<FileEntry<string>>().ToList());
+            }
+
+            void SetTagsNew<T1>(List<FileEntry<T1>> fileEntries)
+            {
+                fileEntries
                     .ForEach(
                     entry =>
                     {
@@ -751,7 +744,7 @@ namespace ASC.Web.Files.Utils
 
                         if (entry.FileEntryType == FileEntryType.Folder)
                         {
-                            ((Folder<T>)entry).NewForMe = curTag != null ? curTag.Count : 0;
+                            ((IFolder)entry).NewForMe = curTag != null ? curTag.Count : 0;
                         }
                         else if (curTag != null)
                         {
@@ -759,7 +752,6 @@ namespace ASC.Web.Files.Utils
                         }
                     });
             }
-
 
             return entries;
         }
@@ -790,9 +782,9 @@ namespace ASC.Web.Files.Utils
     }
 
     [Transient]
-    public class AsyncTaskData<T>
+    public class AsyncTaskData<T> : DistributedTask
     {
-        public AsyncTaskData(TenantManager tenantManager, AuthContext authContext)
+        public AsyncTaskData(TenantManager tenantManager, AuthContext authContext) : base()
         {
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             CurrentAccountId = authContext.CurrentAccount.ID;
@@ -813,11 +805,11 @@ namespace ASC.Web.Files.Utils
         {
             services.TryAdd<AsyncTaskData<int>>();
             services.TryAdd<FileMarkerHelper<int>>();
-            services.AddWorkerQueue<AsyncTaskData<int>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
+            services.AddDistributedTaskQueueService<AsyncTaskData<int>>(1);
 
             services.TryAdd<AsyncTaskData<string>>();
             services.TryAdd<FileMarkerHelper<string>>();
-            services.AddWorkerQueue<AsyncTaskData<string>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
+            services.AddDistributedTaskQueueService<AsyncTaskData<string>>(1);
         }
     }
 }

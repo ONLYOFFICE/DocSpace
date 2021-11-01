@@ -2,6 +2,7 @@ import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import config from "../package.json";
 import { LANGUAGE } from "@appserver/common/constants";
+import { loadLanguagePath } from "@appserver/common/utils";
 
 const newInstance = i18n.createInstance();
 
@@ -10,7 +11,7 @@ const lng = localStorage.getItem(LANGUAGE) || "en";
 newInstance.use(Backend).init({
   lng: lng,
   fallbackLng: "en",
-  load: "languageOnly",
+  load: "all",
   //debug: true,
 
   interpolation: {
@@ -22,9 +23,9 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: `${config.homepage}/locales/{{lng}}/{{ns}}.json`,
+    loadPath: loadLanguagePath(config.homepage),
     allowMultiLoading: false,
-    crossDomain: false,
+    crossDomain: true,
   },
 
   react: {

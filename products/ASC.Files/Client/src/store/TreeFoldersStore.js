@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
-import { getFoldersTree } from "@appserver/common/api/files";
+import { getFoldersTree, getSubfolders } from "@appserver/common/api/files";
 import { FolderType } from "@appserver/common/constants";
+import { createTreeFolders } from "../helpers/files-helpers";
 
 class TreeFoldersStore {
   selectedFolderStore;
@@ -21,6 +22,8 @@ class TreeFoldersStore {
     return treeFolders;
   };
 
+  getFoldersTree = () => getFoldersTree();
+
   setTreeFolders = (treeFolders) => {
     this.treeFolders = treeFolders;
   };
@@ -40,7 +43,11 @@ class TreeFoldersStore {
   };
 
   addExpandedKeys = (item) => {
-    this.expandedKeys.push(item);
+    !this.expandedKeys.includes(item) && this.expandedKeys.push(item);
+  };
+
+  createNewExpandedKeys = (pathParts) => {
+    return createTreeFolders(pathParts, this.expandedKeys);
   };
 
   updateRootBadge = (id, count) => {
@@ -48,23 +55,32 @@ class TreeFoldersStore {
     if (rootItem) rootItem.newItems -= count;
   };
 
+  isMy = (myType) => myType === FolderType.USER;
   isCommon = (commonType) => commonType === FolderType.COMMON;
   isShare = (shareType) => shareType === FolderType.SHARE;
 
+  getRootFolder = (rootFolderType) => {
+    return this.treeFolders.find((x) => x.rootFolderType === rootFolderType);
+  };
+
+  getSubfolders = (folderId) => getSubfolders(folderId);
+
   get myFolder() {
-    return this.treeFolders.find((x) => x.rootFolderName === "@my");
+    return this.treeFolders.find((x) => x.rootFolderType === FolderType.USER);
   }
 
   get shareFolder() {
-    return this.treeFolders.find((x) => x.rootFolderName === "@share");
+    return this.treeFolders.find((x) => x.rootFolderType === FolderType.SHARE);
   }
 
   get favoritesFolder() {
-    return this.treeFolders.find((x) => x.rootFolderName === "@favorites");
+    return this.treeFolders.find(
+      (x) => x.rootFolderType === FolderType.Favorites
+    );
   }
 
   get recentFolder() {
-    return this.treeFolders.find((x) => x.rootFolderName === "@recent");
+    return this.treeFolders.find((x) => x.rootFolderType === FolderType.Recent);
   }
 
   get privacyFolder() {
@@ -74,11 +90,11 @@ class TreeFoldersStore {
   }
 
   get commonFolder() {
-    return this.treeFolders.find((x) => x.rootFolderName === "@common");
+    return this.treeFolders.find((x) => x.rootFolderType === FolderType.COMMON);
   }
 
   get recycleBinFolder() {
-    return this.treeFolders.find((x) => x.rootFolderName === "@trash");
+    return this.treeFolders.find((x) => x.rootFolderType === FolderType.TRASH);
   }
 
   get myFolderId() {
@@ -148,6 +164,16 @@ class TreeFoldersStore {
           folder
       );
     }
+  }
+
+  get selectedKeys() {
+    const selectedKeys =
+      this.selectedTreeNode.length > 0 &&
+      this.selectedTreeNode[0] !== "@my" &&
+      this.selectedTreeNode[0] !== "@common"
+        ? this.selectedTreeNode
+        : [this.selectedFolderStore.id + ""];
+    return selectedKeys;
   }
 }
 

@@ -45,7 +45,7 @@ class SendInviteDialogComponent extends React.Component {
 
     this.setState({ isRequestRunning: true }, () => {
       resendUserInvites(userIds)
-        .then(() => toastr.success(t("SuccessSendInvitation")))
+        .then(() => toastr.success(t("Translations:SuccessSentInvitation")))
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
@@ -75,7 +75,7 @@ class SendInviteDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, onClose, visible } = this.props;
+    const { t, tReady, onClose, visible } = this.props;
     const { listUsers, isRequestRunning, userIds } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -112,47 +112,53 @@ class SendInviteDialogComponent extends React.Component {
 
     //console.log("SendInviteDialog render");
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>{t("SendInviteAgain")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text>{t("SendInviteAgainDialog")}</Text>
-            <Text>{t("SendInviteAgainDialogMessage")}</Text>
-            <ToggleContent
-              className="toggle-content-dialog"
-              label={t("ShowUsersList")}
-            >
-              <div style={containerStyles} className="modal-dialog-content">
-                <AutoSizer>{renderList}</AutoSizer>
-              </div>
-            </ToggleContent>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              label={t("OKButton")}
-              size="medium"
-              primary
-              onClick={this.onSendInvite}
-              isLoading={isRequestRunning}
-              isDisabled={!userIds.length}
-            />
-            <Button
-              className="button-dialog"
-              label={t("CancelButton")}
-              size="medium"
-              onClick={onClose}
-              isDisabled={isRequestRunning}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+      <ModalDialogContainer
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+      >
+        <ModalDialog.Header>
+          {t("Translations:SendInviteAgain")}
+        </ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>{t("SendInviteAgainDialog")}</Text>
+          <Text>{t("SendInviteAgainDialogMessage")}</Text>
+          <ToggleContent
+            className="toggle-content-dialog"
+            label={t("Common:ShowUsersList")}
+          >
+            <div style={containerStyles} className="modal-dialog-content">
+              <AutoSizer>{renderList}</AutoSizer>
+            </div>
+          </ToggleContent>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            label={t("Common:OKButton")}
+            size="medium"
+            primary
+            onClick={this.onSendInvite}
+            isLoading={isRequestRunning}
+            isDisabled={!userIds.length}
+          />
+          <Button
+            className="button-dialog"
+            label={t("Common:CancelButton")}
+            size="medium"
+            onClick={onClose}
+            isDisabled={isRequestRunning}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
 }
 
-const SendInviteDialog = withTranslation("SendInviteDialog")(
-  SendInviteDialogComponent
-);
+const SendInviteDialog = withTranslation([
+  "SendInviteDialog",
+  "Common",
+  "Translations",
+])(SendInviteDialogComponent);
 
 SendInviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

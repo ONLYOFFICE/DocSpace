@@ -224,7 +224,8 @@ namespace ASC.Files.Core.Data
 
         public List<Folder<int>> GetFolders(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
-            if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
+            if (!folderIds.Any()
+                || filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
@@ -271,7 +272,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).Select(ToFolder).ToList();
+            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).Select(ToFolder).Distinct().ToList();
         }
 
         public List<Folder<int>> GetParentFolders(int folderId)
@@ -322,8 +323,8 @@ namespace ASC.Files.Core.Data
 
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                FactoryIndexer.IndexAsync(toUpdate);
-            }
+                    FactoryIndexer.IndexAsync(toUpdate);
+                }
             }
             else
             {
@@ -345,7 +346,7 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.SaveChanges();
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                FactoryIndexer.IndexAsync(newFolder);
+                    FactoryIndexer.IndexAsync(newFolder);
                 }
                 folder.ID = newFolder.Id;
 
@@ -514,6 +515,7 @@ namespace ASC.Files.Core.Data
 
                 var toInsert = FilesDbContext.Tree
                     .Where(r => r.FolderId == toFolderId)
+                    .OrderBy(r => r.Level)
                     .ToList();
 
                 foreach (var subfolder in subfolders)
@@ -524,7 +526,7 @@ namespace ASC.Files.Core.Data
                         {
                             FolderId = subfolder.Key,
                             ParentId = f.ParentId,
-                            Level = f.Level + 1
+                            Level = subfolder.Value + 1 + f.Level
                         };
                         FilesDbContext.AddOrUpdate(r => r.Tree, newTree);
                     }
@@ -703,10 +705,7 @@ namespace ASC.Files.Core.Data
         private int GetFoldersCount(int parentId)
         {
             var count = FilesDbContext.Tree
-                .AsNoTracking()
-                .Where(r => r.ParentId == parentId)
-                .Where(r => r.Level > 0)
-                .Count();
+                .Count(r => r.ParentId == parentId && r.Level > 0);
 
             return count;
         }
@@ -714,9 +713,11 @@ namespace ASC.Files.Core.Data
         private int GetFilesCount(int folderId)
         {
             var count = Query(FilesDbContext.Files)
-                .AsNoTracking()
+                .Join(FilesDbContext.Tree, r => r.FolderId, r => r.FolderId, (file, tree) => new { tree, file })
+                .Where(r => r.tree.ParentId == folderId)
+                .Select(r => r.file.Id)
                 .Distinct()
-                .Count(r => FilesDbContext.Tree.Where(r => r.ParentId == folderId).Select(r => r.FolderId).Contains(r.FolderId));
+                .Count();
 
             return count;
         }
@@ -764,9 +765,9 @@ namespace ASC.Files.Core.Data
         private void RecalculateFoldersCount(int id)
         {
             var toUpdate = Query(FilesDbContext.Folders)
-                .Join(FilesDbContext.Tree, r=> r.Id, r=> r.ParentId,(file, tree) => new { file, tree })
+                .Join(FilesDbContext.Tree, r => r.Id, r => r.ParentId, (file, tree) => new { file, tree })
                 .Where(r => r.tree.FolderId == id)
-                .Select(r=> r.file)
+                .Select(r => r.file)
                 .ToList();
 
             foreach (var f in toUpdate)
@@ -1211,16 +1212,14 @@ namespace ASC.Files.Core.Data
         {
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
-                .Select(r => r.TenantId)
-                .GroupBy(r => r)
+                .GroupBy(r => r.TenantId)
                 .Where(r => r.Count() > 0)
                 .Select(r => r.Key)
                 .ToList();
 
             var q2 = FilesDbContext.Security
                 .Where(r => r.TimeStamp > fromTime)
-                .Select(r => r.TenantId)
-                .GroupBy(r => r)
+                .GroupBy(r => r.TenantId)
                 .Where(r => r.Count() > 0)
                 .Select(r => r.Key)
                 .ToList();

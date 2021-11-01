@@ -93,14 +93,23 @@ export function updateTempContent(isAuth = false) {
   }
 }
 
+let timer = null;
+
 export function hideLoader() {
   if (isMobile) return;
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
   TopLoaderService.end();
 }
 
 export function showLoader() {
   if (isMobile) return;
-  TopLoaderService.start();
+
+  hideLoader();
+
+  timer = setTimeout(() => TopLoaderService.start(), 500);
 }
 
 export { withLayoutSize } from "./withLayoutSize";
@@ -223,4 +232,78 @@ export function toCommunityHostname(hostname) {
   }
 
   return communityHostname;
+}
+
+export function getProviderTranslation(provider, t) {
+  switch (provider) {
+    case "google":
+      return t("Common:SignInWithGoogle");
+    case "facebook":
+      return t("Common:SignInWithFacebook");
+    case "twitter":
+      return t("Common:SignInWithTwitter");
+    case "linkedin":
+      return t("Common:SignInWithLinkedIn");
+  }
+}
+
+export function getLanguage(lng) {
+  try {
+    let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;
+
+    const splitted = lng.split("-");
+
+    if (splitted.length == 2 && splitted[0] == splitted[1].toLowerCase()) {
+      language = splitted[0];
+    }
+
+    return language;
+  } catch (error) {
+    console.error(error);
+  }
+
+  return lng;
+}
+
+export function loadLanguagePath(homepage, fixedNS = null) {
+  return (lng, ns) => {
+    const language = getLanguage(lng instanceof Array ? lng[0] : lng);
+
+    if (ns.length > 0 && ns[0] === "Common") {
+      return `/static/locales/${language}/Common.json`;
+    }
+    return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
+  };
+}
+
+export function loadScript(url, id, onLoad, onError) {
+  try {
+    const script = document.createElement("script");
+    script.setAttribute("type", "text/javascript");
+    script.setAttribute("id", id);
+
+    if (onLoad) script.onload = onLoad;
+    if (onError) script.onerror = onError;
+
+    script.src = url;
+    script.async = true;
+
+    document.body.appendChild(script);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export function isRetina() {
+  if (window.devicePixelRatio > 1) return true;
+
+  var mediaQuery =
+    "(-webkit-min-device-pixel-ratio: 1.5),\
+      (min--moz-device-pixel-ratio: 1.5),\
+      (-o-min-device-pixel-ratio: 3/2),\
+      (min-resolution: 1.5dppx),\
+      (min-device-pixel-ratio: 1.5)";
+
+  if (window.matchMedia && window.matchMedia(mediaQuery).matches) return true;
+  return false;
 }

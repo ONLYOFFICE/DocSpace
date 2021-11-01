@@ -12,13 +12,15 @@ import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import { withRouter } from "react-router";
-
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
+import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
+import NoUserSelect from "@appserver/components/utils/commonStyles";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
+  ${NoUserSelect}
 `;
 
 const InfoItem = styled.div`
@@ -147,7 +149,7 @@ class ProfileInfo extends React.PureComponent {
   onSentInviteAgain = (id) => {
     const { t } = this.props;
     resendUserInvites(new Array(id))
-      .then(() => toastr.success(t("SuccessSentInvitation")))
+      .then(() => toastr.success(t("Translations:SuccessSentInvitation")))
       .catch((error) =>
         toastr.error(error && error.message ? error.message : error)
       );
@@ -184,14 +186,27 @@ class ProfileInfo extends React.PureComponent {
   };
 
   getLanguages = () => {
-    const { cultures, t } = this.props;
+    const { cultureNames } = this.props;
 
-    return cultures.map((culture) => {
-      return { key: culture, label: t(`Culture_${culture}`) };
-    });
+    return cultureNames;
   };
 
   render() {
+    const {
+      t,
+      userPostCaption,
+      regDateCaption,
+      groupCaption,
+      userCaption,
+      guestCaption,
+      cultureNames,
+      profile,
+      isAdmin,
+      isSelf,
+      culture,
+      personal,
+    } = this.props;
+
     const {
       isVisitor,
       email,
@@ -206,33 +221,30 @@ class ProfileInfo extends React.PureComponent {
       location,
       cultureName,
       currentCulture,
-    } = this.props.profile;
-    const isAdmin = this.props.isAdmin;
-    const isSelf = this.props.isSelf;
-    const {
-      t,
-      userPostCaption,
-      regDateCaption,
-      groupCaption,
-      userCaption,
-      guestCaption,
-    } = this.props;
+    } = profile;
+
     const type = isVisitor ? guestCaption : userCaption;
-    const language = cultureName || currentCulture || this.props.culture;
-    const languages = this.getLanguages();
+    const language = cultureName || currentCulture || culture;
+    //const languages = this.getLanguages();
     const selectedLanguage =
-      languages.find((item) => item.key === language) ||
-      languages.find((item) => item.key === this.props.culture);
+      cultureNames.find((item) => item.key === language) ||
+      cultureNames.find((item) => item.key === culture);
+
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
+
     const formatedSex =
-      (sex === "male" && t("MaleSexStatus")) || t("FemaleSexStatus");
+      (sex === "male" && t("Translations:MaleSexStatus")) ||
+      t("Translations:FemaleSexStatus");
+
     const formatedDepartments =
       department && this.getFormattedDepartments(groups);
+
     const supportEmail = "documentation@onlyoffice.com";
+
     const tooltipLanguage = (
       <Text fontSize="13px">
-        <Trans t={t} i18nKey="NotFoundLanguage" ns="Profile">
+        <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
@@ -245,24 +257,29 @@ class ProfileInfo extends React.PureComponent {
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
           target="_blank"
         >
-          {t("LearnMore")}
+          {t("Common:LearnMore")}
         </Link>
       </Text>
     );
 
     return (
       <InfoContainer>
-        <InfoItem>
-          <InfoItemLabel>{t("UserType")}:</InfoItemLabel>
-          <InfoItemValue>{type}</InfoItemValue>
-        </InfoItem>
+        {!personal && (
+          <InfoItem>
+            <InfoItemLabel>{t("Common:Type")}:</InfoItemLabel>
+            <InfoItemValue>{type}</InfoItemValue>
+          </InfoItem>
+        )}
         {email && (
           <InfoItem>
-            <InfoItemLabel>{t("Email")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Email")}:</InfoItemLabel>
             <InfoItemValue>
               <>
                 {activationStatus === 2 && (isAdmin || isSelf) && (
-                  <IconButtonWrapper isBefore={true} title={t("PendingTitle")}>
+                  <IconButtonWrapper
+                    isBefore={true}
+                    title={t("Translations:PendingTitle")}
+                  >
                     <IconButton
                       color="#C96C27"
                       size={16}
@@ -294,23 +311,23 @@ class ProfileInfo extends React.PureComponent {
         )}
         {sex && (
           <InfoItem>
-            <InfoItemLabel>{t("Sex")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
             <InfoItemValue>{formatedSex}</InfoItemValue>
           </InfoItem>
         )}
         {birthday && (
           <InfoItem>
-            <InfoItemLabel>{t("Birthdate")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
             <InfoItemValue>{birthDayDate}</InfoItemValue>
           </InfoItem>
         )}
-        {title && (
+        {!personal && title && (
           <InfoItem>
             <InfoItemLabel>{userPostCaption}:</InfoItemLabel>
             <InfoItemValue>{title}</InfoItemValue>
           </InfoItem>
         )}
-        {department && (
+        {!personal && department && (
           <InfoItem>
             <InfoItemLabel>{groupCaption}:</InfoItemLabel>
             <InfoItemValue>{formatedDepartments}</InfoItemValue>
@@ -318,11 +335,11 @@ class ProfileInfo extends React.PureComponent {
         )}
         {location && (
           <InfoItem>
-            <InfoItemLabel>{t("Location")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
             <InfoItemValue>{location}</InfoItemValue>
           </InfoItem>
         )}
-        {workFrom && (
+        {!personal && workFrom && (
           <InfoItem>
             <InfoItemLabel>{regDateCaption}:</InfoItemLabel>
             <InfoItemValue>{workFromDate}</InfoItemValue>
@@ -330,12 +347,12 @@ class ProfileInfo extends React.PureComponent {
         )}
         {isSelf && (
           <InfoItem>
-            <InfoItemLabel>{t("Language")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
-              {languages && selectedLanguage ? (
+              {cultureNames && selectedLanguage ? (
                 <>
                   <ComboBox
-                    options={languages}
+                    options={cultureNames}
                     selectedOption={selectedLanguage}
                     onSelect={this.onLanguageSelect}
                     isDisabled={false}
@@ -351,7 +368,7 @@ class ProfileInfo extends React.PureComponent {
                     offsetLeft={50}
                     offsetRight={0}
                     tooltipContent={tooltipLanguage}
-                    helpButtonHeaderContent={t("Language")}
+                    helpButtonHeaderContent={t("Common:Language")}
                     className="help-icon"
                   />
                 </>
@@ -367,16 +384,45 @@ class ProfileInfo extends React.PureComponent {
 }
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
-    groupCaption: auth.settingsStore.customNames.groupCaption,
-    regDateCaption: auth.settingsStore.customNames.regDateCaption,
-    userPostCaption: auth.settingsStore.customNames.userPostCaption,
-    userCaption: auth.settingsStore.customNames.userCaption,
-    guestCaption: auth.settingsStore.customNames.guestCaption,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
-    setIsLoading: peopleStore.setIsLoading,
-    isLoading: peopleStore.isLoading,
-    updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-  }))(observer(withTranslation("Profile")(ProfileInfo)))
+  inject(({ auth, peopleStore }) => {
+    const { settingsStore } = auth;
+    const { culture, customNames } = settingsStore;
+    const {
+      groupCaption,
+      regDateCaption,
+      userPostCaption,
+      userCaption,
+      guestCaption,
+    } = customNames;
+    const {
+      usersStore,
+      filterStore,
+      loadingStore,
+      targetUserStore,
+    } = peopleStore;
+    const { getUsersList: fetchPeople } = usersStore;
+    const { filter } = filterStore;
+    const { setIsLoading, isLoading } = loadingStore;
+    const { updateProfileCulture } = targetUserStore;
+    return {
+      culture,
+      groupCaption,
+      regDateCaption,
+      userPostCaption,
+      userCaption,
+      guestCaption,
+      fetchPeople,
+      filter,
+      setIsLoading,
+      isLoading,
+      updateProfileCulture,
+      personal: auth.settingsStore.personal,
+    };
+  })(
+    observer(
+      withTranslation(["Profile", "Common", "Translations"])(
+        withCultureNames(ProfileInfo)
+      )
+    )
+  )
 );

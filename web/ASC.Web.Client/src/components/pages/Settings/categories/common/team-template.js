@@ -514,10 +514,10 @@ class TeamTemplate extends React.Component {
             <FieldContainer
               className="team-template_field-container"
               isVertical
-              labelText={t("User")}
+              labelText={t("Common:User")}
               place="top"
               hasError={formErrors.userCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"userCaption"}
@@ -538,7 +538,7 @@ class TeamTemplate extends React.Component {
               labelText={t("Users")}
               place="top"
               hasError={formErrors.usersCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"usersCaption"}
@@ -559,7 +559,7 @@ class TeamTemplate extends React.Component {
               labelText={t("Group")}
               place="top"
               hasError={formErrors.groupCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"groupCaption"}
@@ -580,7 +580,7 @@ class TeamTemplate extends React.Component {
               labelText={t("Groups")}
               place="top"
               hasError={formErrors.groupsCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"groupsCaption"}
@@ -601,7 +601,7 @@ class TeamTemplate extends React.Component {
               labelText={t("Job/Title")}
               place="top"
               hasError={formErrors.userPostCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"userPostCaption"}
@@ -622,7 +622,7 @@ class TeamTemplate extends React.Component {
               labelText={t("RegistrationDate")}
               place="top"
               hasError={formErrors.regDateCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"regDateCaption"}
@@ -643,7 +643,7 @@ class TeamTemplate extends React.Component {
               labelText={t("GroupLead")}
               place="top"
               hasError={formErrors.groupHeadCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"groupHeadCaption"}
@@ -661,10 +661,10 @@ class TeamTemplate extends React.Component {
             <FieldContainer
               className="team-template_field-container"
               isVertical
-              labelText={t("Guest")}
+              labelText={t("Common:Guest")}
               place="top"
               hasError={formErrors.guestCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"guestCaption"}
@@ -685,7 +685,7 @@ class TeamTemplate extends React.Component {
               labelText={t("Guests")}
               place="top"
               hasError={formErrors.guestsCaption}
-              errorMessage={t("EmptyFieldError")}
+              errorMessage={t("Common:EmptyFieldError")}
             >
               <TextInput
                 name={"guestsCaption"}
@@ -707,8 +707,8 @@ class TeamTemplate extends React.Component {
                 onCancelClick={this.onCancelClick}
                 showReminder={showReminder}
                 reminderTest={t("YouHaveUnsavedChanges")}
-                saveButtonLabel={t("SaveButton")}
-                cancelButtonLabel={t("CancelButton")}
+                saveButtonLabel={t("Common:SaveButton")}
+                cancelButtonLabel={t("Common:CancelButton")}
               />
             )}
           </StyledComponent>
@@ -745,4 +745,4 @@ export default inject(({ auth, setup }) => {
     setCustomSchema,
     setIsLoading,
   };
-})(withTranslation("Settings")(observer(TeamTemplate)));
+})(withTranslation(["Settings", "Common"])(observer(TeamTemplate)));

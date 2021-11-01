@@ -26,8 +26,6 @@ namespace ASC.Core.Common.EF.Model
         public DateTime StatusChangedHack { get { return StatusChanged ?? DateTime.MinValue; } set { StatusChanged = value; } }
         public DateTime CreationDateTime { get; set; }
         public Guid OwnerId { get; set; }
-        public bool Public { get; set; }
-        public string PublicVisibleProducts { get; set; }
         public string PaymentId { get; set; }
         public TenantIndustry? Industry { get; set; }
         public DateTime LastModified { get; set; }
@@ -85,7 +83,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("alias")
                     .HasColumnType("varchar(100)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Calls)
                     .HasColumnName("calls")
@@ -103,7 +101,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnType("char(10)")
                     .HasDefaultValueSql("'en-US'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
@@ -114,34 +112,26 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("mappeddomain")
                     .HasColumnType("varchar(100)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.OwnerId)
                     .HasColumnName("owner_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.PaymentId)
                     .HasColumnName("payment_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Public).HasColumnName("public");
-
-                entity.Property(e => e.PublicVisibleProducts)
-                    .HasColumnName("publicvisibleproducts")
-                    .HasColumnType("varchar(1024)")
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Spam)
                     .HasColumnName("spam")
@@ -157,13 +147,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("timezone")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TrustedDomains)
                     .HasColumnName("trusteddomains")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TrustedDomainsEnabled)
                     .HasColumnName("trusteddomainsenabled")
@@ -245,13 +235,6 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.PaymentId)
                     .HasColumnName("payment_id")
                     .HasMaxLength(38)
-                    .HasDefaultValueSql("NULL");
-
-                entity.Property(e => e.Public).HasColumnName("public");
-
-                entity.Property(e => e.PublicVisibleProducts)
-                    .HasColumnName("publicvisibleproducts")
-                    .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Spam)

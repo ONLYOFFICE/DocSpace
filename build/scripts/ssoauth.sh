@@ -1,0 +1,1 @@
+yarn install --cwd common/ASC.SsoAuth --frozen-lockfile

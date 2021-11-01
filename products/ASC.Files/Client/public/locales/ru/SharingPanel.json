@@ -1,35 +1,23 @@
 {
-  "Owner": "Владелец",
-  "SharingSettingsTitle": "Настройки совместного доступа",
-  "LinkText": "Добавить пользователей",
   "AddGroupsForSharingButton": "Добавить группы",
-  "AddButton": "Сохранить",
-  "AccessRightsFullAccess": "Полный доступ",
   "AddShareMessage": "Добавить сообщение",
-  "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
-
-  "Notify users": "Уведомить пользователей",
+  "Comment": "Комментирование",
   "CopyExternalLink": "Скопировать внешнюю ссылку",
   "CopyInternalLink": "Скопировать внутреннюю ссылку",
-  "ShareVia": "Отправить по",
-  "Embedding": "Встраивание",
-  "ExternalLink": "Внешняя ссылка",
-  "InternalLink": "Внутренняя ссылка",
-
-  "EncryptedFileSaving": "Сохранение зашифрованного файла",
-  "EncryptedFileSharing": "К файлу <strong>{{title}}</strong> успешно предоставлен доступ",
-
-  "FullAccess": "Полный доступ",
-  "ReadOnly": "Только чтение",
-  "Review": "Рецензирование",
-  "Comment": "Комментирование",
-  "FormFilling": "Заполнение форм",
-  "DenyAccess": "Доступ запрещён",
   "CustomFilter": "Пользовательский фильтр",
-
-  "ShareEveryone": "Все",
-  "ShareEmailSubject": "Вам предоставлен доступ к документу {{itemName}}",
+  "DenyAccess": "Доступ запрещён",
+  "Embedding": "Встраивание",
+  "EncryptedFileSharing": "К файлу <strong>{{title}}</strong> успешно предоставлен доступ",
+  "ExternalLink": "Внешняя ссылка",
+  "FormFilling": "Заполнение форм",
+  "InternalLink": "Внутренняя ссылка",
+  "LinkText": "Добавить пользователей",
+  "Notify users": "Уведомить пользователей",
+  "Owner": "Владелец",
+  "ReadOnly": "Только чтение",
   "ShareEmailBody": "Вам предоставлен доступ к документу {{itemName}}. Нажмите на ссылку ниже, чтобы открыть документ прямо сейчас: {{shareLink}}",
-
-  "LoadingLabel": "Загрузка... Пожалуйста подождите..."
+  "ShareEmailSubject": "Вам предоставлен доступ к документу {{itemName}}",
+  "ShareEveryone": "Все",
+  "ShareVia": "Отправить по",
+  "SharingSettingsTitle": "Настройки совместного доступа"
 }

@@ -1,17 +1,10 @@
 {
-  "RecoverProcessSending": "Отправка...",
-  "RecoverAccess": "Доступ к порталу",
-  "RecoverTitle": "Доступ к порталу",
-  "RecoverTextBody": "Если Вы уже зарегистрированы и у Вас есть проблемы с доступом к этому порталу, или Вы хотите зарегистрироваться как новый пользователь портала, пожалуйста, обратитесь к администратору портала, используя форму, расположенную ниже.",
-  "RecoverContactEmailPlaceholder": "Адрес email, по которому можно связаться с Вами",
-  "RecoverDescribeYourProblemPlaceholder": "Пожалуйста, опишите вашу проблему",
-  "RecoverErrorMessage": "Обязательное поле",
-  "RecoverSendButton": "Отправить",
-  "Profile": "Профиль",
   "AboutCompanyTitle": "О программе",
   "LogoutButton": "Выйти",
-  "Settings": "Настройки",
-  "Version": "Версия",
-  "AboutShort": "О программе",
+  "RecoverAccess": "Доступ к порталу",
+  "RecoverContactEmailPlaceholder": "Адрес email, по которому можно связаться с Вами",
+  "RecoverDescribeYourProblemPlaceholder": "Пожалуйста, опишите вашу проблему",
+  "RecoverTextBody": "Если Вы уже зарегистрированы и у Вас есть проблемы с доступом к этому порталу, или Вы хотите зарегистрироваться как новый пользователь портала, пожалуйста, обратитесь к администратору портала, используя форму, расположенную ниже.",
+  "RecoverTitle": "Доступ к порталу",
   "TurnOnDesktopVersion": "Включить версию для ПК"
 }

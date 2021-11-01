@@ -32,6 +32,7 @@ using System.Text.Json.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
+using ASC.Core.Users;
 using ASC.Web.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -74,6 +75,10 @@ namespace ASC.Web.Studio.Core.Quota
             set { throw new NotImplementedException(); }
         }
 
+        public long MaxVisitors { get; set; }
+
+        public long VisitorsCount { get; set; }
+
         [JsonIgnore]
         private TenantExtra TenantExtra { get; }
 
@@ -88,7 +93,16 @@ namespace ASC.Web.Studio.Core.Quota
 
         }
 
-        public QuotaWrapper(Tenant tenant, CoreBaseSettings coreBaseSettings, CoreConfiguration configuration, TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, SettingsManager settingsManager, WebItemManager webItemManager)
+        public QuotaWrapper(
+            Tenant tenant,
+            CoreBaseSettings coreBaseSettings,
+            CoreConfiguration configuration,
+            TenantExtra tenantExtra,
+            TenantStatisticsProvider tenantStatisticsProvider,
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            WebItemManager webItemManager,
+            Constants constants)
         {
             TenantExtra = tenantExtra;
             TenantStatisticsProvider = tenantStatisticsProvider;
@@ -100,6 +114,8 @@ namespace ASC.Web.Studio.Core.Quota
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));
             MaxUsersCount = TenantExtra.GetTenantQuota().ActiveUsers;
             UsersCount = coreBaseSettings.Personal ? 1 : TenantStatisticsProvider.GetUsersCount();
+            MaxVisitors = coreBaseSettings.Standalone ? -1 : constants.CoefficientOfVisitors * TenantExtra.GetTenantQuota().ActiveUsers;
+            VisitorsCount = coreBaseSettings.Personal ? 0 : TenantStatisticsProvider.GetVisitorsCount();
 
             StorageUsage = quotaRows
                     .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })

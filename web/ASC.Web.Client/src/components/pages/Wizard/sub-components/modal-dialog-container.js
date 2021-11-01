@@ -54,7 +54,7 @@ const ModalContainer = ({
         size="base"
         id="change-email"
         name="email-wizard"
-        placeholder={t("PlaceholderEmail")}
+        placeholder={t("Common:Email")}
         emailSettings={settings}
         value={emailOwner}
         onValidateInput={onEmailChangeHandler}
@@ -65,7 +65,7 @@ const ModalContainer = ({
       <BtnContainer>
         <Button
           key="saveBtn"
-          label={t("ChangeEmailBtn")}
+          label={t("Common:SaveButton")}
           primary={true}
           scale={true}
           size="big"
@@ -91,7 +91,7 @@ const ModalContainer = ({
       <BtnContainer>
         <Button
           key="saveBtn"
-          label={t("ErrorParamsFooter")}
+          label={t("Common:CloseButton")}
           primary={true}
           scale={true}
           size="big"

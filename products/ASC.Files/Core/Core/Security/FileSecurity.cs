@@ -548,16 +548,15 @@ namespace ASC.Files.Core.Security
                                     .FirstOrDefault();
                     }
 
-                    var defaultShare = e.RootFolderType == FolderType.USER
-                        ? DefaultMyShare
+                    var defaultShare = userId == FileConstant.ShareLinkId
+                            ? FileShare.Restrict
+                            : e.RootFolderType == FolderType.USER
+                            ? DefaultMyShare
                         : e.RootFolderType == FolderType.Privacy
                             ? DefaultPrivacyShare
                             : DefaultCommonShare;
-                    e.Access = ace != null
-                        ? ace.Share
-                        : userId == FileConstant.ShareLinkId
-                            ? FileShare.Restrict
-                            : defaultShare;
+
+                    e.Access = ace != null ? ace.Share : defaultShare;
 
                     if (action == FilesSecurityActions.Read && e.Access != FileShare.Restrict) result.Add(e);
                     else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite)) result.Add(e);

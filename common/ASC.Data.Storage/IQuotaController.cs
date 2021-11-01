@@ -28,7 +28,8 @@ namespace ASC.Data.Storage
 {
     public interface IQuotaController
     {
-        void QuotaUsedAdd(string module, string domain, string dataTag, long size);
+        //quotaCheckFileSize:hack for Backup bug 48873
+        void QuotaUsedAdd(string module, string domain, string dataTag, long size, bool quotaCheckFileSize = true);
 
         void QuotaUsedDelete(string module, string domain, string dataTag, long size);
 

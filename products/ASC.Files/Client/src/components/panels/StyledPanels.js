@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
+import { desktop, tablet } from "@appserver/components/utils/device";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -60,7 +61,7 @@ const StyledAsidePanel = styled.div`
     background-color: #fff;
   }
   .upload-panel_body {
-    padding: 64px 0;
+    padding-top: 64px;
   }
   .modal-dialog-aside {
     padding: 0;
@@ -91,11 +92,11 @@ const StyledVersionHistoryPanel = styled.div`
   ${PanelStyles}
   .version-history-modal-dialog {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
-    width: 720px;
+    width: 500px;
   }
   .version-history-aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
-    width: 720px;
+    width: 500px;
   }
   .version-history-panel-header {
     height: 53px;
@@ -204,6 +205,16 @@ const StyledContent = styled.div`
     display: inline;
     margin-right: 10px;
   }
+
+  .layout-progress-bar {
+    position: fixed;
+    right: 15px;
+    bottom: 21px;
+
+    @media ${tablet} {
+      bottom: 83px;
+    }
+  }
 `;
 
 const StyledHeaderContent = styled.div`
@@ -240,7 +251,16 @@ const StyledHeaderContent = styled.div`
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
-    margin-left: 16px;
+  }
+
+  padding-right: 0;
+
+  @media ${desktop} {
+    .files-operations-header,
+    .sharing_panel-header {
+      margin: 12px 0;
+      font-size: 18px;
+    }
   }
 `;
 
@@ -351,6 +371,21 @@ const StyledBody = styled.div`
 const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
+
+  width: calc(100% + 16px) !important;
+
+  .link-row__container {
+    height: 47px;
+  }
+
+  .link-row__container,
+  .sharing-row {
+    .styled-element {
+      margin-right: 0;
+      margin-left: 0;
+    }
+  }
+
   .row_content {
     overflow: visible;
     height: auto;
@@ -358,8 +393,11 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing-row {
     margin: 0 16px;
-    width: calc(100% - 16px);
+    //width: calc(100% - 16px);
     box-sizing: border-box;
+
+    padding-right: 15px;
+    border-bottom: none;
   }
 
   .nav-thumb-vertical {
@@ -444,6 +482,30 @@ const StyledSharingBody = styled(Scrollbar)`
     right: 0;
     margin: auto;
   }
+
+  @media ${desktop} {
+    .link-row__container {
+      height: 41px;
+
+      .link-row {
+        min-height: 41px;
+      }
+    }
+
+    .sharing-row {
+      min-height: 41px;
+      //padding-right: 15px;
+
+      .sharing_panel-remove-icon {
+        font-size: 12px;
+      }
+    }
+
+    .sharing_panel-text,
+    .sharing_panel-link span {
+      font-size: 13px;
+    }
+  }
 `;
 
 const StyledFooter = styled.div`
@@ -462,6 +524,7 @@ const StyledFooter = styled.div`
   .sharing_panel-checkbox {
     span {
       font-weight: 600;
+      font-size: 14px;
     }
 
     .checkbox {
@@ -474,6 +537,21 @@ const StyledFooter = styled.div`
   }
   .new_files_panel-button {
     margin-right: 8px;
+  }
+
+  @media ${desktop} {
+    padding: 10px 0;
+    min-height: 57px;
+
+    .sharing_panel-checkbox {
+      span {
+        font-size: 13px;
+      }
+    }
+
+    .sharing_panel-button {
+      margin-top: 2px;
+    }
   }
 `;
 
@@ -492,6 +570,11 @@ const StyledLinkRow = styled.div`
   .link-row {
     ${(props) => !props.withToggle && "border-bottom:none;"}
   }
+
+  .sharing-row__toggle-button {
+    margin-top: 1px;
+  }
+
   .row_content {
     display: grid;
     grid-template-columns: 1fr 28px;
@@ -500,6 +583,392 @@ const StyledLinkRow = styled.div`
 
   .combo-button {
     background: transparent;
+  }
+
+  @media ${desktop} {
+    .sharing-row__toggle-button {
+      margin-top: 0;
+    }
+  }
+`;
+
+const StyledSelectFolderPanel = styled.div`
+  ${(props) =>
+    props.displayType === "aside" &&
+    css`
+      height: 100%;
+    `}
+  .modal-dialog_header {
+    display: flex;
+    align-items: center;
+  }
+  .select-folder-modal-dialog-header {
+    margin-bottom: 16px;
+  }
+  .modal-dialog_header-title {
+    ${(props) => props.isNeedArrowIcon && `margin-left:16px;`}
+  }
+  .select-folder-dialog_tree-folder {
+    height: ${(props) =>
+      props.heightContent
+        ? props.heightContent
+        : props.isHeaderChildren
+        ? "284px"
+        : "300px"};
+  }
+  .rc-tree-child-tree-open {
+    width: fit-content;
+  }
+  .select-folder-dialog-buttons-save {
+    margin-right: 8px;
+  }
+  .select-folder-dialog-modal_buttons {
+    margin-top: 16px;
+  }
+
+  .select-folder-dialog_header {
+    display: flex;
+    align-items: center;
+  }
+  .select-folder-dialog_header-icon {
+    margin-right: 16px;
+  }
+  .select-folder-dialog_aside_body {
+    height: calc(100% - 64px);
+    width: 296px;
+  }
+  #folder-tree-scroll-bar {
+    .nav-thumb-horizontal {
+      height: 0px !important;
+    }
+  }
+  .tree-folder-Loader {
+    ${(props) =>
+      props.displayType === "aside"
+        ? css`
+            margin-top: 16px;
+          `
+        : css`
+            height: ${props.heightContent};
+          `}
+  }
+
+  span.rc-tree-title {
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "243px" : "466px"};
+  }
+`;
+const StyledSelectFilePanel = styled.div`
+  .select-file-dialog_empty-container {
+    .ec-header {
+      word-break: break-word;
+    }
+  }
+
+  ${(props) =>
+    props.displayType === "aside" &&
+    css`
+      height: 100%;
+      overflow: hidden;
+    `}
+
+  .select-file-dialog-modal_buttons {
+    ${(props) =>
+      props.isHeaderChildren ? "margin-top: 40px" : "margin-top:20px"};
+  }
+  .select-file-dialog_aside-body_wrapper {
+    height: ${(props) =>
+      props.isHeaderChildren ? "calc(100% - 260px);" : "calc(100% - 212px);"};
+  }
+  .select-file-dialog_aside-body_wrapper,
+  .select-folder-dialog_aside-body_wrapper {
+    width: 320px;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+  .select-folder-dialog_aside-body_wrapper {
+    height: 100%;
+  }
+  .select-file-dialog_aside-children {
+    ${(props) => props.isHeaderChildren && `padding-bottom: 16px;`}
+  }
+  .select-file-dialog_aside_body {
+    margin-top: 16px;
+    height: 100%;
+    width: 290px;
+  }
+  .select-file-dialog_aside-header_title {
+    margin: 0px;
+    line-height: 56px;
+    max-width: 474px;
+    width: 400px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .select-file-dialog_aside-header {
+    margin-bottom: 16px;
+  }
+  .select-file-dialog_aside-header,
+  .file-name {
+    border-bottom: 1px solid #eceef1;
+  }
+  .file-name {
+    display: flex;
+    padding: 7px 0px;
+  }
+  .panel-loader-wrapper {
+    margin-top: 8px;
+  }
+  .select-file-dialog_modal-loader {
+    height: 290px;
+    padding-top: 16px;
+    box-sizing: border-box;
+  }
+  .panel-loader {
+    display: inline;
+    margin-right: 10px;
+  }
+
+  .modal-dialog_children {
+    grid-area: children;
+    ${(props) => props.isHeaderChildren && `padding: 16px 0;`}
+  }
+  .modal-dialog_tree-body {
+    grid-area: tree;
+  }
+  .modal-dialog_files-body {
+    grid-area: files-list;
+  }
+
+  .modal-dialog_body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    height: 300px;
+    grid-column-gap: 8px;
+    grid-template-areas: "children children" "tree files-list";
+    .modal-dialog_tree-body {
+      ${(props) =>
+        props.isHeaderChildren ? `padding-top: 0;` : `padding-top: 16px;`}
+      border-right: 1px solid #dee2e6;
+      span.rc-tree-title {
+        max-width: ${(props) =>
+          props.displayType === "aside" ? "243px" : "181px"};
+      }
+    }
+  }
+  .select-file-dialog-aside_buttons {
+    position: fixed;
+    bottom: 0;
+    padding-top: 8px;
+    background-color: white;
+    height: 40px;
+    width: 100%;
+  }
+  .select-file-dialog-buttons-save {
+    margin-right: 8px;
+    margin-left: 16px;
+  }
+  .select-file-modal-dialog-buttons-save {
+    margin-right: 8px;
+  }
+  .select-folder-dialog-buttons-save {
+    margin-right: 8px;
+  }
+  .select-folder-dialog-modal_buttons {
+    margin-top: 8px;
+  }
+`;
+
+const StyledFilesList = styled.div`
+  .select-file-dialog_icon {
+    margin-right: 8px;
+  }
+  .entry-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: ${(props) =>
+      props.displayType === "aside" ? "240px" : "250px"};
+  }
+  .files-list_file-owner {
+    //margin-left: auto;
+    max-width: 207px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #a3a9ae;
+  }
+  .entry-title {
+    font-weight: 600;
+  }
+  .file-exst {
+    color: #a3a9ae;
+  }
+  .modal-dialog_file-name:hover {
+    background-color: #eceef1;
+  }
+  .files-list_full-name {
+    grid-area: full-name;
+    display: flex;
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        padding-top: 4px;
+      `}
+  }
+  .select-file-dialog_icon {
+    grid-area: icon-name;
+  }
+  .select-file-dialog_checked {
+    grid-area: checked-button;
+    padding-left: 6px;
+  }
+  .files-list_file-children_wrapper {
+    grid-area: owner-name;
+    margin-right: 16px;
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        margin-top: -17px;
+      `}
+  }
+  .modal-dialog_file-name {
+    border-radius: 3px;
+    ${(props) => props.isChecked && `background:#eceef1;`}
+    cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
+    border-bottom: 1px solid #eceef1;
+    align-items: center;
+    display: grid;
+    ${(props) =>
+      props.displayType === "aside"
+        ? css`
+            height: 56px;
+            grid-template-areas: "checked-button icon-name full-name full-name" "checked-button icon-name owner-name owner-name";
+          `
+        : css`
+            height: 36px;
+            grid-template-areas: "checked-button icon-name full-name owner-name";
+          `}
+    grid-template-columns: 22px 32px 1fr;
+  }
+`;
+
+const StyledModalRowContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 47px;
+
+  .link-row__container {
+    width: 100%;
+
+    .link-row {
+      border-bottom: none;
+    }
+
+    .link-row::after {
+      height: 0;
+    }
+  }
+
+  .panel_combo-box {
+    margin-left: 0px;
+
+    .combo-button {
+      height: 30px;
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+
+    .optionalBlock {
+      margin-right: 4px;
+      display: flex;
+    }
+
+    .combo-button-label {
+      margin: 0;
+    }
+
+    .sharing-access-combo-box-icon {
+      height: 16px;
+      path {
+        fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+      }
+
+      svg {
+        width: 16px;
+        min-width: 16px;
+        height: 16px;
+        min-height: 16px;
+      }
+    }
+  }
+
+  .embedding-panel_code-container {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .embedding-panel_text {
+    padding: 8px 0 4px 0;
+  }
+
+  .embedding-panel_copy-icon {
+    position: absolute;
+    z-index: 1;
+    margin: 8px;
+    right: 0px;
+  }
+
+  .embedding-panel_links-container {
+    display: flex;
+    .embedding-panel_link {
+      margin-right: 8px;
+      height: 32px;
+      background-color: #eceef1;
+      line-height: 30px;
+      padding: 0px 8px;
+    }
+  }
+
+  .embedding-panel_inputs-container {
+    display: flex;
+
+    .embedding-panel_input {
+      margin-right: 8px;
+      width: 94px;
+    }
+  }
+
+  .embedding-panel_code-container {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .embedding-panel_text {
+    padding: 8px 0 4px 0;
+  }
+
+  .embedding-panel_copy-icon {
+    position: absolute;
+    z-index: 1;
+    margin: 8px;
+    right: 0;
+  }
+
+  .panel-loader-wrapper {
+    margin-top: 8px;
+    padding-left: 32px;
+  }
+  .panel-loader {
+    display: inline;
+    margin-right: 10px;
+  }
+
+  @media (max-width: 1024px) {
+    .row_content {
+      height: 19px;
+      overflow: initial;
+    }
   }
 `;
 
@@ -515,4 +984,8 @@ export {
   StyledSharingBody,
   StyledFooter,
   StyledLinkRow,
+  StyledSelectFolderPanel,
+  StyledSelectFilePanel,
+  StyledFilesList,
+  StyledModalRowContainer,
 };

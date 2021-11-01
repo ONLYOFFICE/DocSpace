@@ -1,6 +1,5 @@
 {
+  "DataLossWarningBody": "Your changes may not be saved.",
   "DataLossWarningHeader": "Leave the page?",
-  "DataLossWarningBody": "Changes you made may not be saved.",
-  "DataLossWarningLeaveBtn": "Leave",
-  "DataLossWarningCancelBtn": "Cancel"
+  "DataLossWarningLeaveBtn": "Leave"
 }

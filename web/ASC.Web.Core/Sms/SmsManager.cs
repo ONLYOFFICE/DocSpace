@@ -26,6 +26,7 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Security;
 using ASC.Core.Tenants;
@@ -35,13 +36,14 @@ using ASC.Web.Core.Sms;
 
 namespace ASC.Web.Studio.Core.SMS
 {
+    [Scope]
     public class SmsManager
     {
         private UserManager UserManager { get; }
         private SecurityContext SecurityContext { get; }
         private TenantManager TenantManager { get; }
-        public SmsKeyStorage SmsKeyStorage { get; }
-        public SmsSender SmsSender { get; }
+        private SmsKeyStorage SmsKeyStorage { get; }
+        private SmsSender SmsSender { get; }
         private StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
 
         public SmsManager(
@@ -78,7 +80,7 @@ namespace ASC.Web.Studio.Core.SMS
             {
                 try
                 {
-                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
                     UserManager.SaveUserInfo(user);
                 }
                 finally

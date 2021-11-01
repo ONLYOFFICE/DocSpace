@@ -36,7 +36,7 @@ const EmptyFilterContainer = ({
         color="#657077"
       />
       <Link onClick={onResetFilter} {...linkStyles}>
-        {t("ClearButton")}
+        {t("Common:ClearButton")}
       </Link>
     </div>
   );
@@ -56,4 +56,4 @@ export default inject(({ filesStore, selectedFolderStore }) => ({
   fetchFiles: filesStore.fetchFiles,
   selectedFolderId: selectedFolderStore.id,
   setIsLoading: filesStore.setIsLoading,
-}))(withTranslation("Home")(observer(EmptyFilterContainer)));
+}))(withTranslation(["Home", "Common"])(observer(EmptyFilterContainer)));

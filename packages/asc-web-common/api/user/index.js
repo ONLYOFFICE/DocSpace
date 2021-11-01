@@ -46,3 +46,17 @@ export function checkIsAuthenticated() {
     return state;
   });
 }
+
+export function loginWithTfaCode(userName, passwordHash, code) {
+  const data = {
+    userName,
+    passwordHash,
+    code,
+  };
+
+  return request({
+    method: "post",
+    url: `/authentication/${code}`,
+    data,
+  });
+}

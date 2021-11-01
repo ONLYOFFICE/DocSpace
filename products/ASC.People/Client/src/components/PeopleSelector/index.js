@@ -22,16 +22,16 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { groupsCaption, groupList } = this.props;
+    const { t, groupsCaption, groupList, useFake } = this.props;
 
     if (!groupList) {
-      getGroupList(this.props.useFake)
+      getGroupList(useFake)
         .then((groups) =>
           this.setState({
             groups: [
               {
                 key: "all",
-                label: i18n.t("CustomAllGroups", { groupsCaption }),
+                label: t("CustomAllGroups", { groupsCaption }),
                 total: 0,
               },
             ].concat(this.convertGroups(groups)),
@@ -43,7 +43,7 @@ class PeopleSelector extends React.Component {
         groups: [
           {
             key: "all",
-            label: i18n.t("CustomAllGroups", { groupsCaption }),
+            label: t("CustomAllGroups", { groupsCaption }),
             total: 0,
           },
         ].concat(groupList),
@@ -231,7 +231,9 @@ class PeopleSelector extends React.Component {
       showCounter,
     } = this.props;
 
-    //console.log("PeopleSelector render");
+    console.log("CustomAllGroups", t("CustomAllGroups", { groupsCaption }));
+
+    console.log("PeopleSelector render");
     return (
       <AdvancedSelector
         id={id}
@@ -252,12 +254,14 @@ class PeopleSelector extends React.Component {
         searchPlaceHolderLabel={
           searchPlaceHolderLabel || t("SearchUsersPlaceholder")
         }
-        selectButtonLabel={t("AddMembersButtonLabel")}
-        selectAllLabel={t("SelectAllLabel")}
+        selectButtonLabel={t("Translations:AddMembers")}
+        selectAllLabel={t("Common:SelectAll")}
         groupsHeaderLabel={groupsCaption}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}
-        loadingLabel={t("LoadingLabel")}
+        loadingLabel={`${t("Common:LoadingProcessing")} ${t(
+          "Common:LoadingDescription"
+        )}`}
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onGroupChanged={this.onGroupChanged}
@@ -308,7 +312,11 @@ PeopleSelector.defaultProps = {
   withoutAside: false,
 };
 
-const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
+const ExtendedPeopleSelector = withTranslation([
+  "PeopleSelector",
+  "Translations",
+  "Common",
+])(PeopleSelector);
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

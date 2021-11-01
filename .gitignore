@@ -14,3 +14,5 @@ Data/
 Logs/
 **/.DS_Store
 .eslintcache
+build/deploy/
+/public/debuginfo.md

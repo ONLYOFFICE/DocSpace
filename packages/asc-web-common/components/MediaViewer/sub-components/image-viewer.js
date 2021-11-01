@@ -38,11 +38,11 @@ const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
 const StyledViewer = styled(Viewer)`
   .react-viewer-footer {
     bottom: 5px !important;
-    z-index: 4001 !important;
+    z-index: 301 !important;
     overflow: visible;
   }
   .react-viewer-canvas {
-    z-index: 4000 !important;
+    z-index: 300 !important;
     margin-top: 50px;
   }
   .react-viewer-navbar,
@@ -217,7 +217,14 @@ class ImageViewer extends React.Component {
   }
 
   render() {
-    const { className, visible, images, inactive, onClose } = this.props;
+    const {
+      className,
+      visible,
+      images,
+      inactive,
+      onClose,
+      userAccess,
+    } = this.props;
 
     customToolbar.forEach((button) => {
       switch (button.key) {
@@ -237,6 +244,11 @@ class ImageViewer extends React.Component {
           break;
       }
     });
+
+    const toolbars = userAccess
+      ? customToolbar
+      : customToolbar.filter((x) => x.key !== "delete");
+
     return (
       <div className={className}>
         <StyledViewer
@@ -244,9 +256,7 @@ class ImageViewer extends React.Component {
           visible={visible}
           zoomSpeed={0.1}
           onMaskClick={onClose}
-          customToolbar={(toolbars) => {
-            return customToolbar;
-          }}
+          customToolbar={() => toolbars}
           images={images}
           disableKeyboardSupport={true}
         />

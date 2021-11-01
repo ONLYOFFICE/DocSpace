@@ -157,6 +157,7 @@ namespace ASC.Web.Files.Utils
                 file.Version++;
                 file.VersionGroup++;
                 file.Encrypted = false;
+                file.ThumbnailStatus = Thumbnail.Waiting;
 
                 return file;
             }

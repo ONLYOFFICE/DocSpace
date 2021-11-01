@@ -19,7 +19,7 @@ const StyledControls = styled.div`
   height: ${(props) => props.height}px;
   display: block;
   position: fixed;
-  z-index: 4001;
+  z-index: 301;
   ${(props) => !props.isVideo && "background-color: rgba(11,11,11,0.7);"}
   top: calc(50% + ${(props) => props.top}px);
   left: ${(props) => props.left}px;
@@ -174,15 +174,28 @@ const StyledVideoViewer = styled.div`
     height: ${(props) => props.height}px;
     left: ${(props) => props.left}px;
     top: calc(50% - ${(props) => props.top / 2}px);
-    z-index: 4001;
+    z-index: 301;
     position: fixed;
     padding-bottom: 40px;
     background-color: rgba(11, 11, 11, 0.7);
 
     video {
-      z-index: 4000;
+      z-index: 300;
     }
   }
+`;
+
+const ErrorContainer = styled.div`
+  z-index: 301;
+  display: block;
+  position: fixed;
+  left: calc(50% - 110px);
+  top: calc(50% - 40px);
+  background-color: #000;
+  color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
 `;
 
 class ValumeBtn extends Component {
@@ -231,7 +244,7 @@ class VideoViewer extends Component {
   state = {
     url: this.props.url,
     pip: false,
-    playing: this.props.playing,
+    playing: false,
     controls: false,
     light: false,
     volume: 0.3,
@@ -241,30 +254,35 @@ class VideoViewer extends Component {
     duration: 0,
     playbackRate: 1.0,
     loop: false,
+    isNew: false,
+    error: false,
+    isLoaded: false,
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    let newUrl = prevState.url;
-    let newPlaying = prevState.playing;
-    if (
-      this.props.url !== prevProps.url ||
-      this.props.playing !== prevProps.playing
-    ) {
-      if (this.props.url !== prevProps.url) {
-        newUrl = this.props.url;
-      }
-      if (this.props.playing !== prevProps.playing) {
-        newPlaying = this.props.playing;
-      }
+  componentDidMount() {
+    document.addEventListener("keydown", this.onKeydown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeydown, false);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.url !== prevProps.url) {
       this.setState({
-        url: newUrl,
-        playing: newPlaying,
+        url: this.props.url,
+        isNew: true,
+        error: false,
       });
     }
   }
 
+  onKeydown = (e) => {
+    if (e.keyCode === 32) this.handlePlayPause();
+  };
+
   handlePlayPause = () => {
-    this.setState({ playing: !this.state.playing });
+    this.setState({ playing: !this.state.playing, isNew: false });
   };
 
   handleStop = () => {
@@ -356,6 +374,11 @@ class VideoViewer extends Component {
 
   onError = (e) => {
     console.log("onError", e);
+    this.setState({ error: true });
+  };
+
+  onPlay = () => {
+    this.setState({ playing: !this.state.isNew, isNew: false, isLoaded: true });
   };
 
   render() {
@@ -372,7 +395,11 @@ class VideoViewer extends Component {
       duration,
       playbackRate,
       pip,
+      error,
+      isLoaded,
     } = this.state;
+    const { errorLabel } = this.props;
+
     const parentOffset = this.props.getOffset() || 0;
     var screenSize = {
       w: window.innerWidth,
@@ -414,6 +441,14 @@ class VideoViewer extends Component {
       ? width - videoControlBtnWidth
       : width - audioControlBtnWidth;
 
+    if (error) {
+      return (
+        <ErrorContainer>
+          <p>{errorLabel}</p>
+        </ErrorContainer>
+      );
+    }
+
     return (
       <StyledVideoViewer
         isVideo={this.props.isVideo}
@@ -423,22 +458,24 @@ class VideoViewer extends Component {
         top={height + controlsHeight}
       >
         <div>
-          <div className="playerWrapper">
+          <div className="playerWrapper" onClick={this.handlePlayPause}>
             <ReactPlayer
               ref={this.ref}
               className="react-player"
+              style={{ opacity: isLoaded ? 1 : 0 }}
               width="100%"
               height="100%"
               url={url}
               pip={pip}
               playing={playing}
+              playsinline={true}
               controls={controls}
               light={light}
               loop={loop}
               playbackRate={playbackRate}
               volume={volume}
               muted={muted}
-              onPlay={this.handlePlay}
+              onPlay={this.onPlay}
               onEnablePIP={this.handleEnablePIP}
               onDisablePIP={this.handleDisablePIP}
               onPause={this.handlePause}
@@ -486,8 +523,8 @@ class VideoViewer extends Component {
 VideoViewer.propTypes = {
   isVideo: PropTypes.bool,
   url: PropTypes.string,
-  playing: PropTypes.bool,
   getOffset: PropTypes.func,
+  errorLabel: PropTypes.string,
 };
 
 export default VideoViewer;

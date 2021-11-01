@@ -5,6 +5,7 @@ import history from "../history";
 import ModuleStore from "./ModuleStore";
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
+import TfaStore from "./TfaStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
 import isEmpty from "lodash/isEmpty";
@@ -15,29 +16,38 @@ class AuthStore {
   userStore = null;
   moduleStore = null;
   settingsStore = null;
+  tfaStore = null;
 
   isLoading = false;
   isAuthenticated = false;
   version = null;
-
+  skipModules = false;
   providers = [];
+  isInit = false;
 
   constructor() {
     this.userStore = new UserStore();
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
+    this.tfaStore = new TfaStore();
 
     makeAutoObservable(this);
   }
 
-  init = async () => {
-    await this.getIsAuthenticated();
+  init = async (skipModules = false) => {
+    if (this.isInit) return;
+    this.isInit = true;
+
+    this.skipModules = skipModules;
+
+    await this.userStore.init();
+
+    if (this.userStore.user) this.setIsAuthenticated(true);
 
     const requests = [];
     requests.push(this.settingsStore.init());
 
-    if (this.isAuthenticated) {
-      requests.push(this.userStore.init());
+    if (this.isAuthenticated && !skipModules) {
       requests.push(this.moduleStore.init());
     }
 
@@ -54,10 +64,9 @@ class AuthStore {
   get isLoaded() {
     let success = false;
     if (this.isAuthenticated) {
-      success =
-        this.userStore.isLoaded &&
-        this.moduleStore.isLoaded &&
-        this.settingsStore.isLoaded;
+      success = this.userStore.isLoaded && this.settingsStore.isLoaded;
+
+      if (!this.skipModules) success = success && this.moduleStore.isLoaded;
 
       success && this.setLanguage();
     } else {
@@ -93,14 +102,12 @@ class AuthStore {
   }
 
   get availableModules() {
-    const { user } = this.userStore;
     const { modules } = this.moduleStore;
     if (isEmpty(modules) || isEmpty(this.userStore.user)) {
       return [];
     }
 
-    const isUserAdmin = user.isAdmin;
-    const customProducts = this.getCustomModules(isUserAdmin);
+    const customProducts = this.getCustomModules();
     const readyProducts = [];
     const inProgressProducts = [];
     modules.forEach((p) => {
@@ -127,8 +134,8 @@ class AuthStore {
     ];
   }
 
-  getCustomModules = (isAdmin) => {
-    if (!isAdmin) {
+  getCustomModules = () => {
+    if (!this.userStore.user.isAdmin) {
       return [];
     }
     const settingsModuleWrapper = this.moduleStore.toModuleWrapper({
@@ -144,36 +151,48 @@ class AuthStore {
     return [settingsModuleWrapper];
   };
 
-  getIsAuthenticated = async () => {
-    const isAuthenticated = await api.user.checkIsAuthenticated();
-    this.setIsAuthenticated(isAuthenticated);
-  };
-
   login = async (user, hash) => {
     try {
       const response = await api.user.login(user, hash);
 
-      if (!response || !response.token) throw "Empty API response";
+      if (!response || (!response.token && !response.tfa))
+        throw response.error.message;
+
+      if (response.tfa && response.confirmUrl) {
+        const url = response.confirmUrl.replace(window.location.origin, "");
+        return Promise.resolve({ url, user, hash });
+      }
 
       setWithCredentialsStatus(true);
 
-      await this.init();
+      this.reset();
 
-      return Promise.resolve(true);
+      this.init();
+
+      return Promise.resolve({ url: this.settingsStore.defaultPage });
     } catch (e) {
       return Promise.reject(e);
     }
+  };
+
+  loginWithCode = async (userName, passwordHash, code) => {
+    await this.tfaStore.loginWithCode(userName, passwordHash, code);
+    setWithCredentialsStatus(true);
+
+    this.init();
+
+    return Promise.resolve(this.settingsStore.defaultPage);
   };
 
   thirdPartyLogin = async (SerializedProfile) => {
     try {
       const response = await api.user.thirdPartyLogin(SerializedProfile);
 
-      if (!response || !response.token) throw "Empty API response";
+      if (!response || !response.token) throw new Error("Empty API response");
 
       setWithCredentialsStatus(true);
 
-      await this.init();
+      this.init();
 
       return Promise.resolve(true);
     } catch (e) {
@@ -182,19 +201,21 @@ class AuthStore {
   };
 
   reset = () => {
+    this.isInit = false;
+    this.skipModules = false;
     this.userStore = new UserStore();
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
   };
 
   logout = async (withoutRedirect) => {
-    const response = await api.user.logout();
+    await api.user.logout();
 
     //console.log("Logout response ", response);
 
     setWithCredentialsStatus(false);
 
-    const { isDesktopClient: isDesktop } = this.settingsStore;
+    const { isDesktopClient: isDesktop, personal } = this.settingsStore;
 
     isDesktop && logoutDesktop();
 
@@ -203,7 +224,11 @@ class AuthStore {
     this.init();
 
     if (!withoutRedirect) {
-      history.push(combineUrl(proxyURL, "/login"));
+      if (personal) {
+        window.location.replace("/");
+      } else {
+        history.push(combineUrl(proxyURL, "/login"));
+      }
     }
   };
 
@@ -226,30 +251,29 @@ class AuthStore {
 
   setEncryptionAccess = (file) => {
     return this.getEncryptionAccess(file.id).then((keys) => {
-      let promise = new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         try {
           window.AscDesktopEditor.cloudCryptoCommand(
             "share",
             {
-              cryptoEngineId: desktopConstants.guid,
+              cryptoEngineId: desktopConstants.cryptoEngineId,
               file: [file.viewUrl],
               keys: keys,
             },
             (obj) => {
-              let file = null;
+              let resFile = null;
               if (obj.isCrypto) {
                 let bytes = obj.bytes;
                 let filename = "temp_name";
-                file = new File([bytes], filename);
+                resFile = new File([bytes], filename);
               }
-              resolve(file);
+              resolve(resFile);
             }
           );
         } catch (e) {
           reject(e);
         }
       });
-      return promise;
     });
   };
 

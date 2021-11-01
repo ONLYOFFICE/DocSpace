@@ -218,13 +218,13 @@ namespace ASC.Web.Files.ThirdPartyApp
             var modifiedBy = jsonFile.Value<JObject>("modified_by");
             if (modifiedBy != null)
             {
-                file.ModifiedByString = modifiedBy.Value<string>("name");
+                file._modifiedByString = modifiedBy.Value<string>("name");
             }
 
             var createdBy = jsonFile.Value<JObject>("created_by");
             if (createdBy != null)
             {
-                file.CreateByString = createdBy.Value<string>("name");
+                file._createByString = createdBy.Value<string>("name");
             }
 
 
@@ -300,7 +300,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                     Logger.Debug("BoxApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                    DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, false, out downloadUrl);
+                    DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, null, null, false, out downloadUrl);
                     stream = null;
                 }
                 catch (Exception e)
@@ -573,7 +573,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 try
                 {
-                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
                     userInfo = UserManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
                 }
                 finally

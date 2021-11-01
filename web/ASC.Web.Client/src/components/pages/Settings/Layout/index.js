@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
-import { SectionHeaderContent } from "./Section";
+import { SectionHeaderContent, SectionPagingContent } from "./Section";
 import { inject, observer } from "mobx-react";
 import PageLayout from "@appserver/common/components/PageLayout";
 const Layout = ({
@@ -8,6 +8,7 @@ const Layout = ({
   setCurrentProductId,
   language,
   children,
+  addUsers,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
@@ -28,14 +29,21 @@ const Layout = ({
       </PageLayout.SectionHeader>
 
       <PageLayout.SectionBody>{children}</PageLayout.SectionBody>
+      {addUsers && (
+        <PageLayout.SectionPaging>
+          <SectionPagingContent />
+        </PageLayout.SectionPaging>
+      )}
     </PageLayout>
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { language, settingsStore } = auth;
+  const { addUsers } = setup.headerAction;
   return {
     language,
     setCurrentProductId: settingsStore.setCurrentProductId,
+    addUsers,
   };
 })(observer(Layout));

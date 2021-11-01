@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 using Amazon;
@@ -76,23 +77,15 @@ namespace ASC.Data.Storage.S3
         private bool _revalidateCloudFront;
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
-
+        
         public S3Storage(
-            TenantManager tenantManager,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
-        {
-        }
-
-        public S3Storage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }
 
@@ -193,8 +186,46 @@ namespace ASC.Data.Storage.S3
 
             if (0 < offset) request.ByteRange = new ByteRange(offset, int.MaxValue);
 
-            using var client = GetClient();
-            return new ResponseStreamWrapper(client.GetObjectAsync(request).Result);
+            try
+            {
+                using var client = GetClient();
+                return new ResponseStreamWrapper(client.GetObjectAsync(request).Result);
+            }
+            catch (AmazonS3Exception ex)
+            {
+                if (ex.ErrorCode == "NoSuchKey")
+                {
+                    throw new FileNotFoundException("File not found", path);
+                }
+
+                throw;
+            }
+        }
+
+        public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+        {
+            var request = new GetObjectRequest
+            {
+                BucketName = _bucket,
+                Key = MakePath(domain, path)
+            };
+
+            if (0 < offset) request.ByteRange = new ByteRange(offset, int.MaxValue);
+
+            try
+            {
+                using var client = GetClient();
+                return new ResponseStreamWrapper(await client.GetObjectAsync(request));
+            }
+            catch (AmazonS3Exception ex)
+            {
+                if (ex.ErrorCode == "NoSuchKey")
+                {
+                    throw new FileNotFoundException("File not found", path);
+                }
+
+                throw;
+            }
         }
 
         protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
@@ -218,7 +249,7 @@ namespace ASC.Data.Storage.S3
         public Uri Save(string domain, string path, Stream stream, string contentType,
                                  string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
         {
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
             if (QuotaController != null)
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);
@@ -572,7 +603,7 @@ namespace ASC.Data.Storage.S3
             }
         }
 
-        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath)
+        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
         {
             using var client = GetClient();
             var srcKey = MakePath(srcdomain, srcpath);
@@ -594,7 +625,7 @@ namespace ASC.Data.Storage.S3
             Delete(srcdomain, srcpath);
 
             QuotaUsedDelete(srcdomain, size);
-            QuotaUsedAdd(newdomain, size);
+            QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
 
             return GetUri(newdomain, newpath);
         }
@@ -618,7 +649,7 @@ namespace ASC.Data.Storage.S3
             using var client = GetClient();
             using var uploader = new TransferUtility(client);
             var objectKey = MakePath(domain, path);
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
             var request = new TransferUtilityUploadRequest
             {
                 BucketName = _bucket,
@@ -854,19 +885,81 @@ namespace ASC.Data.Storage.S3
         public override bool IsFile(string domain, string path)
         {
             using var client = GetClient();
-            var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
-            var response = client.ListObjectsAsync(request).Result;
-            return response.S3Objects.Count > 0;
+            try
+            {
+                var getObjectMetadataRequest = new GetObjectMetadataRequest
+                {
+                    BucketName = _bucket,
+                    Key = MakePath(domain, path)
+                };
+
+                client.GetObjectMetadataAsync(getObjectMetadataRequest).Wait();
+
+                return true;
+            }
+            catch (AggregateException agg)
+            {
+                if (agg.InnerException is AmazonS3Exception ex)
+                {
+                    if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
+                    {
+                        return false;
+                    }
+
+                    if (string.Equals(ex.ErrorCode, "NotFound"))
+                    {
+                        return false;
+                    }
+                }
+
+                throw;
+            }
+        }
+
+        public override async Task<bool> IsFileAsync(string domain, string path)
+        {
+            using var client = GetClient();
+            try
+            {
+                var getObjectMetadataRequest = new GetObjectMetadataRequest
+                {
+                    BucketName = _bucket,
+                    Key = MakePath(domain, path)
+                };
+
+                await client.GetObjectMetadataAsync(getObjectMetadataRequest);
+
+                return true;
+            }
+            catch (AmazonS3Exception ex)
+            {
+                if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
+                {
+                    return false;
+                }
+
+                if (string.Equals(ex.ErrorCode, "NotFound"))
+                {
+                    return false;
+                }
+
+                throw;
+            }
         }
 
         public override bool IsDirectory(string domain, string path)
         {
-            return IsFile(domain, path);
+            using (var client = GetClient())
+            {
+                var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
+                var response = client.ListObjectsAsync(request).Result;
+                return response.S3Objects.Count > 0;
+            }
         }
 
         public override void DeleteDirectory(string domain, string path)
         {
-            DeleteFiles(domain, path, "*.*", true);
+            DeleteFiles(domain, path, "*", true);
         }
 
         public override long GetFileSize(string domain, string path)

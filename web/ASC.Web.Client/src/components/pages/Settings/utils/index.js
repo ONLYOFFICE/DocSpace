@@ -8,3 +8,4 @@ export { checkPropertyByLink } from "./checkPropertyByLink";
 export { getFromSessionStorage } from "./getFromSessionStorage";
 export { saveToSessionStorage } from "./saveToSessionStorage";
 export { getSettingsIndex } from "./getSettingsIndex";
+export { getNewModulesList } from "./getNewModulesList";

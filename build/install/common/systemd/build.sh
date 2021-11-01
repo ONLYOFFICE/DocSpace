@@ -1,126 +1,190 @@
 #!/bin/bash
 
-PRODUCT="onlyoffice/appserver"
-BASE_DIR="/etc/${PRODUCT}"
-PATH_TO_CONF="${BASE_DIR}"
-STORAGE_ROOT="${BASE_DIR}/data"
-LOG_DIR="/var/log/${PRODUCT}"
+BASEDIR="$(cd $(dirname $0) && pwd)"
+BUILD_PATH="$BASEDIR/modules"
+
+while [ "$1" != "" ]; do
+    case $1 in
+	    
+        -bp | --buildpath )
+        	if [ "$2" != "" ]; then
+				    BUILD_PATH=$2
+				    shift
+			    fi
+		;;
+
+        -? | -h | --help )
+            echo " Usage: bash build.sh [PARAMETER] [[PARAMETER], ...]"
+            echo "    Parameters:"
+            echo "      -bp, --buildpath           output path"
+            echo "      -?, -h, --help             this help"
+            echo "  Examples"
+            echo "  bash build.sh -bp /etc/systemd/system/"
+            exit 0
+    ;;
+
+		* )
+			echo "Unknown parameter $1" 1>&2
+			exit 1
+		;;
+    esac
+  shift
+done
+
+PRODUCT="appserver"
+BASE_DIR="/var/www/${PRODUCT}"
+PATH_TO_CONF="/etc/onlyoffice/${PRODUCT}"
+STORAGE_ROOT="${PATH_TO_CONF}/data"
+LOG_DIR="/var/log/onlyoffice/${PRODUCT}"
 DOTNET_RUN="/usr/bin/dotnet"
 APP_URLS="http://0.0.0.0"
 ENVIRONMENT=" --ENVIRONMENT=production"
 
-service_name=(
+SERVICE_NAME=(
 	api
-	api_system
+	api-system
 	urlshortener
 	thumbnails
 	socket
-	studio_notify
+	studio-notify
 	notify 
-	people
+	people-server
 	files
-	files_service
+	files-services
 	studio
-	backup)
-
-SERVICE_PORT="" 
-SERVICE_NAME=""
-WORK_DIR=""
-EXEC_FILE=""
-CORE=""
+	backup
+	storage-encryption
+	storage-migration
+	projects-server
+	telegram-service
+	crm
+	calendar
+	mail
+	ssoauth
+	)
 
 reassign_values (){
   case $1 in
-	api )	
-		SERVICE_NAME="$1"
+	api )
 		SERVICE_PORT="5000"
-		WORK_DIR="/var/www/appserver/studio/api/"
+		WORK_DIR="${BASE_DIR}/studio/api/"
 		EXEC_FILE="ASC.Web.Api.dll"
 	;;
-	api_system )	
-		SERVICE_NAME="$1"
+	api-system )
 		SERVICE_PORT="5010"
-		WORK_DIR="/var/www/appserver/services/apisystem/"
+		WORK_DIR="${BASE_DIR}/services/ASC.ApiSystem/"
 		EXEC_FILE="ASC.ApiSystem.dll"
 	;;
 	urlshortener )
-		SERVICE_NAME="$1"
-		SERVICE_PORT="5015"
-		WORK_DIR="/services/ASC.UrlShortener/service/"
+		SERVICE_PORT="9998"
+		WORK_DIR="${BASE_DIR}/services/ASC.UrlShortener.Svc/"
 		EXEC_FILE="ASC.UrlShortener.Svc.dll"
 	;;
-	thumbnails )	
-		SERVICE_NAME="$1"
-		SERVICE_PORT="5016"
-		WORK_DIR="/services/ASC.Thumbnails/service/"
+	thumbnails )
+		SERVICE_PORT="9799"
+		WORK_DIR="${BASE_DIR}/services/ASC.Thumbnails.Svc/"
 		EXEC_FILE="ASC.Thumbnails.Svc.dll"
 	;;
-	socket )	
-		SERVICE_NAME="$1"
-		SERVICE_PORT="9999"
-		WORK_DIR="/services/ASC.Socket.IO/service/"
+	socket )
+		SERVICE_PORT="9898"
+		WORK_DIR="${BASE_DIR}/services/ASC.Socket.IO.Svc/"
 		EXEC_FILE="ASC.Socket.IO.Svc.dll"
 	;;
-	studio_notify )
-		SERVICE_NAME="$1"
+	studio-notify )
 		SERVICE_PORT="5006"
-		WORK_DIR="/var/www/appserver/services/studio.notify/"
+		WORK_DIR="${BASE_DIR}/services/ASC.Studio.Notify/"
 		EXEC_FILE="ASC.Studio.Notify.dll"
-		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server "
+		CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server "
 	;;
 	notify )
-		SERVICE_NAME="$1"
 		SERVICE_PORT="5005"
-		WORK_DIR="/var/www/appserver/services/notify/"
+		WORK_DIR="${BASE_DIR}/services/ASC.Notify/"
 		EXEC_FILE="ASC.Notify.dll"
-		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server "
+		CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server "
 	;;
-	people )
-		SERVICE_NAME="$1"
+	people-server )
 		SERVICE_PORT="5004"
-		WORK_DIR="/var/www/appserver/products/ASC.People/server/"
+		WORK_DIR="${BASE_DIR}/products/ASC.People/server/"
 		EXEC_FILE="ASC.People.dll"
 	;;
 	files )
-		SERVICE_NAME="$1"
 		SERVICE_PORT="5007"
-		WORK_DIR="/var/www/appserver/products/ASC.Files/server/"
+		WORK_DIR="${BASE_DIR}/products/ASC.Files/server/"
 		EXEC_FILE="ASC.Files.dll"
 	;;
-	files_service )
-		SERVICE_NAME="$1"
+	files-services )
 		SERVICE_PORT="5009"
-		WORK_DIR="/var/www/appserver/products/ASC.Files/service/"
+		WORK_DIR="${BASE_DIR}/products/ASC.Files/service/"
 		EXEC_FILE="ASC.Files.Service.dll"
-		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server"
+		CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server"
 	;;
 	studio )
-		SERVICE_NAME="$1"
 		SERVICE_PORT="5003"
-		WORK_DIR="/var/www/appserver/studio/server/"
+		WORK_DIR="${BASE_DIR}/studio/server/"
 		EXEC_FILE="ASC.Web.Studio.dll"
 	;;
 	backup )
-		SERVICE_NAME="$1"
 		SERVICE_PORT="5012"
-		WORK_DIR="/var/www/appserver/services/backup/"
+		WORK_DIR="${BASE_DIR}/services/ASC.Data.Backup/"
 		EXEC_FILE="ASC.Data.Backup.dll"
-		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server"
+		CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server"
+	;;
+	storage-migration )
+		SERVICE_PORT="5018"
+		WORK_DIR="${BASE_DIR}/services/ASC.Data.Storage.Migration/"
+		EXEC_FILE="ASC.Data.Storage.Migration.dll"
+	;;
+	storage-encryption )
+		SERVICE_PORT="5019"
+		WORK_DIR="${BASE_DIR}/services/ASC.Data.Storage.Encryption/"
+		EXEC_FILE="ASC.Data.Storage.Encryption.dll"
+	;;
+	projects-server )
+		SERVICE_PORT="5020"
+		WORK_DIR="${BASE_DIR}/products/ASC.Projects/server/"
+		EXEC_FILE="ASC.Projects.dll"
+	;;
+	telegram-service )
+		SERVICE_PORT="51702"
+		WORK_DIR="${BASE_DIR}/services/ASC.TelegramService/"
+		EXEC_FILE="ASC.TelegramService.dll"
+	;;
+	crm )
+		SERVICE_PORT="5021"
+		WORK_DIR="${BASE_DIR}/products/ASC.CRM/server/"
+		EXEC_FILE="ASC.CRM.dll"
+	;;
+	calendar )
+		SERVICE_PORT="5023"
+		WORK_DIR="${BASE_DIR}/products/ASC.Calendar/server/"
+		EXEC_FILE="ASC.Calendar.dll"
+	;;
+	mail )
+		SERVICE_PORT="5022"
+		WORK_DIR="${BASE_DIR}/products/ASC.Mail/server/"
+		EXEC_FILE="ASC.Mail.dll"
+	;;
+	ssoauth )
+		SERVICE_PORT="9833"
+		WORK_DIR="${BASE_DIR}/services/ASC.SsoAuth.Svc/"
+		EXEC_FILE="ASC.SsoAuth.Svc.dll"
 	;;
   esac
-  
-  EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} --'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
+  SERVICE_NAME="$1"
+  EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
+  --'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
+  CORE=""
 }
 
 write_to_file () {
   sed -i -e 's#${SERVICE_NAME}#'$SERVICE_NAME'#g' -e 's#${WORK_DIR}#'$WORK_DIR'#g' -e \
-  "s#\${EXEC_START}#$EXEC_START#g" modules/appserver-${service_name[$i]}.service
+  "s#\${EXEC_START}#$EXEC_START#g" $BUILD_PATH/${PRODUCT}-${SERVICE_NAME[$i]}.service
 }
 
-mkdir -p modules
+mkdir -p $BUILD_PATH
 
-for i in ${!service_name[@]}; do
-  cp service ./modules/appserver-${service_name[$i]}.service
-  reassign_values "${service_name[$i]}"
+for i in ${!SERVICE_NAME[@]}; do
+  cp $BASEDIR/service $BUILD_PATH/${PRODUCT}-${SERVICE_NAME[$i]}.service
+  reassign_values "${SERVICE_NAME[$i]}"
   write_to_file $i
 done

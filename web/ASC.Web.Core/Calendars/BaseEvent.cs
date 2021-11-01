@@ -31,7 +31,7 @@ namespace ASC.Web.Core.Calendars
 {
     public abstract class BaseEvent : IEvent, ICloneable
     {
-        internal TimeZoneInfo TimeZone { get; set; }
+        public virtual TimeZoneInfo TimeZone { get; set; }
 
         public BaseEvent()
         {

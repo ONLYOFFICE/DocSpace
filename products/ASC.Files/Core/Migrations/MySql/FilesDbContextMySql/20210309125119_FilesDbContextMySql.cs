@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -51,7 +52,8 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                     changes = table.Column<string>(type: "mediumtext", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     encrypted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    forcesave = table.Column<int>(type: "int", nullable: false)
+                    forcesave = table.Column<int>(type: "int", nullable: false),
+                    thumb = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -165,7 +167,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .Annotation("MySql:CharSet", "utf8"),
                     user_name = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    password = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
+                    password = table.Column<string>(type: "varchar(512)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     token = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),

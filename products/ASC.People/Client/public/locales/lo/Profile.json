@@ -1,0 +1,11 @@
+{
+  "ChangeEmailSuccess": "ອີເມວໄດ້ຖືກປ່ຽນແປງແລ້ວ",
+  "ChangesApplied": "ນຳໃຊ້ການປ່ຽນແປງ",
+  "ContactInformation": "ຂໍ້​ມູນ​ຕິດ​ຕໍ່",
+  "EditPhoto": "ແກ້ໄຂຮູບພາບ",
+  "EditSubscriptionsBtn": "ແກ້ໄຂການສະໝັກສະມາຊິກ",
+  "InviteAgainLbl": "ເຊີນອີກຄັ້ງ",
+  "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ <strong>{{ email }}</strong> ທີ່ຢູ່ອີເມວ",
+  "PhoneLbl": "ໂທລະສັບ",
+  "Subscriptions": "ການສະໝັກຮັບຂໍ້ມູນ"
+}

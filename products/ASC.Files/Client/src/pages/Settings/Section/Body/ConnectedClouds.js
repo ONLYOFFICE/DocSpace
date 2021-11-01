@@ -24,6 +24,8 @@ import combineUrl from "@appserver/common/utils/combineUrl";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 import config from "../../../../../package.json";
 import { withRouter } from "react-router";
+import { connectedCloudsTypeTitleTranslation } from "../../../../helpers/utils";
+import Loaders from "@appserver/common/components/Loaders";
 
 const StyledBoxIcon = styled(BoxIcon)`
   ${commonIconsStyles}
@@ -88,22 +90,22 @@ class ConnectClouds extends React.Component {
   };
 
   onChangeThirdPartyInfo = (e) => {
+    const { capabilities, providers } = this.props;
     const { dataset } = (e.originalEvent || e).currentTarget;
-    const { provider_key } = dataset;
-    const capabilitiesItem = this.props.capabilities.find(
-      (x) => x[0] === provider_key
-    );
-    const providerItem = this.props.providers.find(
-      (x) => x.provider_key === provider_key
-    );
-    const { corporate, provider_id, customer_title } = providerItem;
+    const { providerId } = dataset;
+
+    const providerItem = providers.find((x) => x.provider_id === providerId);
+
+    const { corporate, customer_title, provider_key } = providerItem;
+
+    const capabilitiesItem = capabilities.find((x) => x[0] === provider_key);
 
     const item = {
-      title: capabilitiesItem ? capabilitiesItem[0] : customer_title,
+      title: customer_title || (capabilitiesItem && capabilitiesItem[0]),
       link: capabilitiesItem ? capabilitiesItem[1] : " ",
-      corporate: corporate,
-      provider_id: provider_id,
-      provider_key: provider_key,
+      corporate,
+      provider_id: providerId,
+      provider_key,
     };
 
     this.props.setConnectItem(item);
@@ -142,33 +144,41 @@ class ConnectClouds extends React.Component {
 
   openLocation = (e) => {
     const {
-      myDirectoryFolders,
-      commonDirectoryFolders,
+      myFolderId,
+      commonFolderId,
       filter,
       providers,
       homepage,
       history,
+      getSubfolders,
+      setFirstLoad,
     } = this.props;
 
     const provider = e.currentTarget.dataset.providerKey;
+    const providerId = e.currentTarget.dataset.providerId;
+
     const isCorporate =
       !!providers.length &&
       providers.find((p) => p.provider_key === provider).corporate;
-    const dir = isCorporate ? commonDirectoryFolders : myDirectoryFolders;
-    const id = dir
-      .filter((f) => f.providerKey === provider)
-      .map((f) => f.id)
-      .join();
+    const dirId = isCorporate ? commonFolderId : myFolderId;
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.startIndex = 0;
-    newFilter.folder = id;
+    getSubfolders(dirId).then((subfolders) => {
+      const id = subfolders
+        .filter((f) => f.providerKey === provider && f.providerId == providerId)
+        .map((f) => f.id)
+        .join();
 
-    const urlFilter = newFilter.toUrlParams();
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-    );
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.startIndex = 0;
+      newFilter.folder = id;
+
+      const urlFilter = newFilter.toUrlParams();
+      setFirstLoad(true);
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
+    });
   };
 
   getContextOptions = (item, index) => {
@@ -176,22 +186,22 @@ class ConnectClouds extends React.Component {
     return [
       {
         key: `${index}_change`,
-        "data-provider_key": item.provider_key,
-        label: t("ThirdPartyInfo"),
+        "data-provider-id": item.provider_id,
+        label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
       {
         key: `${index}_delete`,
         "data-id": item.provider_id,
         "data-title": item.customer_title,
-        label: t("DeleteThirdParty"),
+        label: t("Translations:DeleteThirdParty"),
         onClick: this.onDeleteThirdParty,
       },
     ];
   };
 
   render() {
-    const { t, providers } = this.props;
+    const { t, providers, tReady } = this.props;
 
     return (
       <>
@@ -199,6 +209,7 @@ class ConnectClouds extends React.Component {
           <>
             <Button
               size="base"
+              style={{ marginBottom: "8px" }}
               onClick={this.onShowThirdPartyDialog}
               label={t("ConnectedCloud")}
               primary
@@ -206,6 +217,11 @@ class ConnectClouds extends React.Component {
             <RowContainer useReactWindow={false}>
               {providers.map((item, index) => {
                 const element = this.getThirdPartyIcon(item.provider_key);
+                const typeTitle = connectedCloudsTypeTitleTranslation(
+                  item.provider_key,
+                  t
+                );
+
                 return (
                   <Row
                     key={index}
@@ -229,8 +245,13 @@ class ConnectClouds extends React.Component {
                         fontWeight="600"
                         fontSize="15px"
                         color="#333"
+                        noSelect
                       >
-                        {item.provider_key}
+                        {tReady ? (
+                          typeTitle
+                        ) : (
+                          <Loaders.Rectangle width="90px" height="10px" />
+                        )}
                       </Text>
                       <Link
                         type="page"
@@ -240,6 +261,7 @@ class ConnectClouds extends React.Component {
                         fontWeight={400}
                         truncate={true}
                         data-provider-key={item.provider_key}
+                        data-provider-id={item.provider_id}
                         onClick={this.openLocation}
                       >
                         {item.customer_title}
@@ -254,7 +276,7 @@ class ConnectClouds extends React.Component {
           <EmptyFolderContainer
             headerText={t("ConnectAccounts")}
             subheadingText={t("ConnectAccountsSubTitle")}
-            imageSrc="images/empty_screen.png"
+            imageSrc="/static/images/empty_screen.png"
             buttons={
               <div className="empty-folder_container-links empty-connect_container-links">
                 <img
@@ -265,7 +287,7 @@ class ConnectClouds extends React.Component {
                 />
                 <Box className="flex-wrapper_container">
                   <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
-                    {t("AddAccount")},
+                    {t("Translations:AddAccount")}
                   </Link>
                 </Box>
               </div>
@@ -280,8 +302,8 @@ class ConnectClouds extends React.Component {
 export default inject(
   ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
-    const { filter } = filesStore;
-    const { myFolder, commonFolder } = treeFoldersStore;
+    const { filter, setFirstLoad } = filesStore;
+    const { myFolder, commonFolder, getSubfolders } = treeFoldersStore;
     const {
       setConnectItem,
       setThirdPartyDialogVisible,
@@ -294,16 +316,21 @@ export default inject(
       filter,
       providers,
       capabilities,
-      myDirectoryFolders: myFolder && myFolder.folders,
-      commonDirectoryFolders: commonFolder && commonFolder.folders,
-
+      myFolderId: myFolder && myFolder.id,
+      commonFolderId: commonFolder && commonFolder.id,
+      setFirstLoad,
       setThirdPartyDialogVisible,
       setConnectDialogVisible,
       setConnectItem,
       setDeleteThirdPartyDialogVisible,
       setRemoveItem,
+      getSubfolders,
 
       homepage: config.homepage,
     };
   }
-)(withTranslation("Settings")(observer(withRouter(ConnectClouds))));
+)(
+  withTranslation(["Settings", "Translations"])(
+    observer(withRouter(ConnectClouds))
+  )
+);

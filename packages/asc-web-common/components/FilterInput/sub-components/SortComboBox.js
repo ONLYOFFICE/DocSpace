@@ -1,6 +1,7 @@
 import React from "react";
 import equal from "fast-deep-equal/react";
 import PropTypes from "prop-types";
+import { isMobileOnly } from "react-device-detect";
 
 import ComboBox from "@appserver/components/combobox";
 import IconButton from "@appserver/components/icon-button";
@@ -82,13 +83,9 @@ class SortComboBox extends React.Component {
       isDisabled,
       selectedOption,
       viewAs,
+      viewSettings,
     } = this.props;
     const { sortDirection, opened } = this.state;
-
-    let settingsArray = options.filter((item) => {
-      item.value = item.key;
-      return item.isSetting === true;
-    });
 
     let sortArray = options.filter((item) => {
       item.value = item.key;
@@ -127,7 +124,7 @@ class SortComboBox extends React.Component {
             spacing="0px"
           />
         </DropDownItem>
-        {settingsArray.length !== 0 && viewAs && (
+        {viewSettings && viewSettings.length && viewAs && isMobileOnly && (
           <>
             <DropDownItem isSeparator />
             <DropDownItem noHover>
@@ -136,7 +133,7 @@ class SortComboBox extends React.Component {
                 isDisabled={isDisabled}
                 name={"view"}
                 onClick={this.onChangeView}
-                options={settingsArray}
+                options={viewSettings}
                 orientation="vertical"
                 selected={viewAs}
                 spacing="0px"
@@ -162,13 +159,11 @@ class SortComboBox extends React.Component {
       >
         <StyledIconButton sortDirection={!!sortDirection}>
           <IconButton
-            clickColor={"#333"}
             color={"#A3A9AE"}
-            hoverColor={"#333"}
             iconName="/static/images/z-a.sorting.react.svg"
             isDisabled={isDisabled}
             isFill={true}
-            onClick={this.onButtonClick}
+            onClick={this.onToggleAction}
             size={10}
           />
         </StyledIconButton>
@@ -186,7 +181,7 @@ SortComboBox.propTypes = {
   onChangeSortId: PropTypes.func,
   onChangeView: PropTypes.func,
   sortDirection: PropTypes.number,
-  viewAs: PropTypes.bool, // TODO: include viewSelector after adding method getThumbnail - PropTypes.string
+  viewAs: PropTypes.string,
 };
 
 SortComboBox.defaultProps = {

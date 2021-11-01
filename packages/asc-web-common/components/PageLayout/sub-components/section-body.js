@@ -8,17 +8,25 @@ import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@appserver/components/scrollbar";
 import DragAndDrop from "@appserver/components/drag-and-drop";
-import { tablet } from "@appserver/components/utils/device";
+import { tablet, desktop } from "@appserver/components/utils/device";
 
 const commonStyles = css`
   flex-grow: 1;
   height: 100%;
+  border-left: none;
+
+  -webkit-user-select: none;
 
   .section-wrapper-content {
     flex: 1 0 auto;
     padding: 17px 7px 16px 24px;
     outline: none;
-    ${(props) => props.viewAs == "tile" && "padding-right:0;"}
+    ${(props) =>
+      props.viewAs == "tile" &&
+      css`
+        padding-right: 0;
+        padding-left: 20px;
+      `}
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
@@ -33,6 +41,10 @@ const commonStyles = css`
     .people-row-container,
     .files-row-container {
       margin-top: -22px;
+
+      @media ${desktop} {
+        ${(props) => props.viewAs === "row" && `margin-top: -9px;`}
+      }
     }
   }
 `;
@@ -43,7 +55,6 @@ const StyledSectionBody = styled.div`
   ${(props) =>
     props.withScroll &&
     `
-
     margin-left: -24px;
   `}
 `;
@@ -77,7 +88,6 @@ class SectionBody extends React.Component {
     super(props);
 
     this.focusRef = React.createRef();
-    this.scrollRef = React.createRef();
   }
 
   // shouldComponentUpdate(nextProps) {
@@ -91,7 +101,6 @@ class SectionBody extends React.Component {
 
   componentWillUnmount() {
     this.focusRef = null;
-    this.scrollRef = null;
   }
 
   render() {
@@ -101,7 +110,6 @@ class SectionBody extends React.Component {
       children,
       onDrop,
       pinned,
-      setSelections,
       uploadFiles,
       viewAs,
       withScroll,
@@ -115,8 +123,6 @@ class SectionBody extends React.Component {
         }
       : {};
 
-    const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
-
     return uploadFiles ? (
       <StyledDropZoneBody
         isDropZone
@@ -125,10 +131,11 @@ class SectionBody extends React.Component {
         viewAs={viewAs}
         pinned={pinned}
         isLoaded={isLoaded}
+        className="section-body"
       >
         {withScroll ? (
           !isMobile ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
+            <Scrollbar scrollclass="section-scroll" stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -160,7 +167,7 @@ class SectionBody extends React.Component {
       >
         {withScroll ? (
           !isMobile ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
+            <Scrollbar stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -194,7 +201,6 @@ SectionBody.propTypes = {
   autoFocus: PropTypes.bool,
   pinned: PropTypes.bool,
   onDrop: PropTypes.func,
-  setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

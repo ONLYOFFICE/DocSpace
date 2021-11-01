@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -34,6 +35,7 @@ using System.Threading;
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -49,6 +51,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
+    [Scope]
     internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -68,8 +71,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             CrossDao crossDao,
             SharpBoxDaoSelector sharpBoxDaoSelector,
             IFileDao<int> fileDao,
-            IFolderDao<int> folderDao)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFolderDao<int> folderDao,
+            TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             SharpBoxDaoSelector = sharpBoxDaoSelector;

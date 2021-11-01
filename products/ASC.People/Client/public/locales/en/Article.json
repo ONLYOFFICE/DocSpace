@@ -1,8 +1,4 @@
 {
-  "People": "People",
-
-  "InviteLinkTitle": "Invitation link",
   "ImportPeople": "Import people",
-  "Actions": "Actions",
-  "LblInviteAgain": "Invite again"
+  "SendInvitesAgain": "Send invitations once again"
 }

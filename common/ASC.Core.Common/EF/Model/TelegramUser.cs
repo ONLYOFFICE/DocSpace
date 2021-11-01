@@ -41,7 +41,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("portal_user_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TelegramUserId).HasColumnName("telegram_user_id");
             });

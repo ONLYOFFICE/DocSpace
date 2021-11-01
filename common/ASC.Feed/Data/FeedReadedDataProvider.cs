@@ -41,13 +41,14 @@ namespace ASC.Feed.Data
 
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
-        private FeedDbContext FeedDbContext { get; }
+        private Lazy<FeedDbContext> LazyFeedDbContext { get; }
+        private FeedDbContext FeedDbContext { get => LazyFeedDbContext.Value; }
 
         public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager, DbContextManager<FeedDbContext> dbContextManager)
         {
             AuthContext = authContext;
             TenantManager = tenantManager;
-            FeedDbContext = dbContextManager.Get(dbId);
+            LazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(dbId));
         }
 
         public DateTime GetTimeReaded()

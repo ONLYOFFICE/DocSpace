@@ -29,8 +29,8 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Threading;
 //using System.Web;
-using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
@@ -48,38 +48,38 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
-    public class ReassignProgressItem : IProgressItem
+    [Transient]
+    public class ReassignProgressItem : DistributedTaskProgress
     {
         private readonly IDictionary<string, StringValues> _httpHeaders;
 
-        private readonly int _tenantId;
-        private readonly Guid _currentUserId;
-        private readonly bool _deleteProfile;
+        private int _tenantId;
+        private Guid _currentUserId;
+        private bool _deleteProfile;
 
         //private readonly IFileStorageService _docService;
         //private readonly ProjectsReassign _projectsReassign;
 
-        public object Id { get; set; }
-        public object Status { get; set; }
-        public object Error { get; set; }
-        public double Percentage { get; set; }
-        public bool IsCompleted { get; set; }
-        public Guid FromUser { get; }
-        public Guid ToUser { get; }
+        public Guid FromUser { get; private set; }
+        public Guid ToUser { get; private set; }
         private IServiceProvider ServiceProvider { get; }
         private QueueWorkerRemove QueueWorkerRemove { get; }
 
         public ReassignProgressItem(
             IServiceProvider serviceProvider,
-            HttpContext context,
-            QueueWorkerReassign queueWorkerReassign,
-            QueueWorkerRemove queueWorkerRemove,
-            int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+            IHttpContextAccessor httpContextAccessor,
+            QueueWorkerRemove queueWorkerRemove)
         {
             ServiceProvider = serviceProvider;
             QueueWorkerRemove = queueWorkerRemove;
-            _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
+            _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
 
+            //_docService = Web.Files.Classes.Global.FileStorageService;
+            //_projectsReassign = new ProjectsReassign();
+        }
+
+        public void Init(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+        {
             _tenantId = tenantId;
             FromUser = fromUserId;
             ToUser = toUserId;
@@ -89,14 +89,14 @@ namespace ASC.Data.Reassigns
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_projectsReassign = new ProjectsReassign();
 
-            Id = queueWorkerReassign.GetProgressItemId(tenantId, fromUserId);
-            Status = ProgressStatus.Queued;
-            Error = null;
+            Id = QueueWorkerReassign.GetProgressItemId(tenantId, fromUserId);
+            Status = DistributedTaskStatus.Created;
+            Exception = null;
             Percentage = 0;
             IsCompleted = false;
         }
 
-        public void RunJob()
+        protected override void DoJob()
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
@@ -107,27 +107,29 @@ namespace ASC.Data.Reassigns
             try
             {
                 Percentage = 0;
-                Status = ProgressStatus.Started;
+                Status = DistributedTaskStatus.Running;
 
-                securityContext.AuthenticateMe(_currentUserId);
+                securityContext.AuthenticateMeWithoutCookie(_currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
 
                 logger.Info("reassignment of data from documents");
 
-                Percentage = 33;
+
                 //_docService.ReassignStorage(_fromUserId, _toUserId);
+                Percentage = 33;
+                PublishChanges();
 
                 logger.Info("reassignment of data from projects");
 
-                Percentage = 66;
                 //_projectsReassign.Reassign(_fromUserId, _toUserId);
+                Percentage = 66;
+                PublishChanges();
 
                 if (!coreBaseSettings.CustomMode)
                 {
                     logger.Info("reassignment of data from crm");
 
-                    Percentage = 99;
                     //using (var scope = DIHelper.Resolve(_tenantId))
                     //{
                     //    var crmDaoFactory = scope.Resolve<CrmDaoFactory>();
@@ -136,12 +138,14 @@ namespace ASC.Data.Reassigns
                     //    crmDaoFactory.TaskDao.ReassignTasksResponsible(_fromUserId, _toUserId);
                     //    crmDaoFactory.CasesDao.ReassignCasesResponsible(_fromUserId, _toUserId);
                     //}
+                    Percentage = 99;
+                    PublishChanges();
                 }
 
                 SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
                 Percentage = 100;
-                Status = ProgressStatus.Done;
+                Status = DistributedTaskStatus.Completed;
 
                 if (_deleteProfile)
                 {
@@ -151,8 +155,8 @@ namespace ASC.Data.Reassigns
             catch (Exception ex)
             {
                 logger.Error(ex);
-                Status = ProgressStatus.Failed;
-                Error = ex.Message;
+                Status = DistributedTaskStatus.Failted;
+                Exception = ex;
                 SendErrorNotify(userManager, studioNotifyService, ex.Message);
             }
             finally
@@ -160,6 +164,7 @@ namespace ASC.Data.Reassigns
                 logger.Info("data reassignment is complete");
                 IsCompleted = true;
             }
+            PublishChanges();
         }
 
         public object Clone()
@@ -273,7 +278,7 @@ namespace ASC.Data.Reassigns
         public static void Register(DIHelper services)
         {
             services.TryAdd<ReassignProgressItemScope>();
-            services.AddProgressQueue<ReassignProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
+            services.AddDistributedTaskQueueService<ReassignProgressItem>(1);
         }
     }
 }

@@ -44,13 +44,14 @@ namespace ASC.AuditTrail.Data
     public class LoginEventsRepository
     {
         private UserFormatter UserFormatter { get; }
-        private AuditTrailContext AuditTrailContext { get; }
+        private Lazy<AuditTrailContext> LazyAuditTrailContext { get; }
+        private AuditTrailContext AuditTrailContext { get => LazyAuditTrailContext.Value; }
         private AuditActionMapper AuditActionMapper { get; }
 
         public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper)
         {
             UserFormatter = userFormatter;
-            AuditTrailContext = dbContextManager.Value;
+            LazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value);
             AuditActionMapper = auditActionMapper;
         }
 

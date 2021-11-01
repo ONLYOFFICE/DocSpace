@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Files.Core.Security;
@@ -99,7 +100,7 @@ namespace ASC.Files.Core
         /// <param name="searchText"></param>
         /// <param name="searchInContent"></param>
         /// <returns></returns>
-        List<File<T>> GetFilesFiltered(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+        List<File<T>> GetFilesFiltered(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false);
 
         /// <summary>
         /// 
@@ -131,6 +132,8 @@ namespace ASC.Files.Core
         /// <param name="file"></param>
         /// <returns>Stream</returns>
         Stream GetFileStream(File<T> file);
+
+        Task<Stream> GetFileStreamAsync(File<T> file);
 
         /// <summary>
         /// Get stream of file
@@ -255,7 +258,7 @@ namespace ASC.Files.Core
 
         ChunkedUploadSession<T> CreateUploadSession(File<T> file, long contentLength);
 
-        void UploadChunk(ChunkedUploadSession<T> uploadSession, Stream chunkStream, long chunkLength);
+        File<T> UploadChunk(ChunkedUploadSession<T> uploadSession, Stream chunkStream, long chunkLength);
 
         void AbortUploadSession(ChunkedUploadSession<T> uploadSession);
 
@@ -298,6 +301,8 @@ namespace ASC.Files.Core
         /// <returns></returns>
         bool IsExistOnStorage(File<T> file);
 
+        Task<bool> IsExistOnStorageAsync(File<T> file);
+
         void SaveEditHistory(File<T> file, string changes, Stream differenceStream);
 
         List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
@@ -305,6 +310,10 @@ namespace ASC.Files.Core
         Stream GetDifferenceStream(File<T> file);
 
         bool ContainChanges(T fileId, int fileVersion);
+
+        void SaveThumbnail(File<T> file, Stream thumbnail);
+
+        Stream GetThumbnail(File<T> file);
 
         IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to);
 

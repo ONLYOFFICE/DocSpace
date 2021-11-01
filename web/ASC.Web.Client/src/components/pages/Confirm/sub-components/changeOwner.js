@@ -8,6 +8,7 @@ import toastr from "@appserver/components/toast/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
+import withLoader from "../withLoader";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -56,7 +57,7 @@ class Form extends React.PureComponent {
 
   onAcceptClick = () => {
     this.setState({ showButtons: false });
-    toastr.success("Accept click");
+    toastr.success(t("ConfirmOwnerPortalSuccessMessage"));
     setTimeout(this.onRedirect, 10000);
   };
 
@@ -90,7 +91,7 @@ class Form extends React.PureComponent {
                   className="owner-button owner-buttons"
                   primary
                   size="big"
-                  label={t("SaveButton")}
+                  label={t("Common:SaveButton")}
                   tabIndex={2}
                   isDisabled={false}
                   onClick={this.onAcceptClick}
@@ -98,7 +99,7 @@ class Form extends React.PureComponent {
                 <Button
                   className="owner-buttons"
                   size="big"
-                  label={t("CancelButton")}
+                  label={t("Common:CancelButton")}
                   tabIndex={2}
                   isDisabled={false}
                   onClick={this.onCancelClick}
@@ -131,4 +132,10 @@ const ChangeOwnerForm = (props) => (
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   defaultPage: auth.settingsStore.defaultPage,
-}))(withRouter(withTranslation("Confirm")(observer(ChangeOwnerForm))));
+}))(
+  withRouter(
+    withTranslation(["Confirm", "Common"])(
+      withLoader(observer(ChangeOwnerForm))
+    )
+  )
+);

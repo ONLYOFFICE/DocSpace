@@ -33,13 +33,13 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("authorLogin")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CultureTitle)
                     .HasColumnName("cultureTitle")
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddResAuthorsLang(this ModelBuilder modelBuilder)

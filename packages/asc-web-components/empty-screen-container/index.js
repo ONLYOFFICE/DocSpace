@@ -25,19 +25,31 @@ const EmptyScreenContainer = (props) => {
       />
 
       {headerText && (
-        <Text as="span" fontSize="19px" fontWeight="600" className="ec-header">
+        <Text
+          as="span"
+          fontSize="19px"
+          fontWeight="600"
+          className="ec-header"
+          noSelect
+        >
           {headerText}
         </Text>
       )}
 
       {subheadingText && (
-        <Text as="span" fontWeight="600" className="ec-subheading">
+        <Text as="span" fontWeight="600" className="ec-subheading" noSelect>
           {subheadingText}
         </Text>
       )}
 
       {descriptionText && (
-        <Text as="span" color="#6A7378" fontSize="12px" className="ec-desc">
+        <Text
+          as="span"
+          color="#6A7378"
+          fontSize="12px"
+          className="ec-desc"
+          noSelect
+        >
           {descriptionText}
         </Text>
       )}

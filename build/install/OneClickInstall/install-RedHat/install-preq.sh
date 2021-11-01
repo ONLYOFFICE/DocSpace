@@ -15,12 +15,46 @@ ${package_manager} clean all
 
 ${package_manager} -y install yum-utils
 
+DIST=$(rpm -q --whatprovides redhat-release || rpm -q --whatprovides centos-release);
+DIST=$(echo $DIST | sed -n '/-.*/s///p');
 REV=$(cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//);
 REV_PARTS=(${REV//\./ });
 REV=${REV_PARTS[0]};
 
 if ! [[ "$REV" =~ ^[0-9]+$ ]]; then
 	REV=7;
+fi
+
+read_unsupported_installation () {
+	read -p "$RES_CHOICE_INSTALLATION " CHOICE_INSTALLATION
+	case "$CHOICE_INSTALLATION" in
+		y|Y ) yum -y install $DIST*-release
+		;;
+
+		n|N ) exit 0;
+		;;
+
+		* ) echo $RES_CHOICE;
+			read_unsupported_installation
+		;;
+	esac
+}
+
+{ yum check-update postgresql; PSQLExitCode=$?; } || true #Checking for postgresql update
+{ yum check-update $DIST*-release; exitCode=$?; } || true #Checking for distribution update
+
+UPDATE_AVAILABLE_CODE=100
+if [[ $exitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
+	res_unsupported_version
+	echo $RES_UNSPPORTED_VERSION
+	echo $RES_SELECT_INSTALLATION
+	echo $RES_ERROR_REMINDER
+	echo $RES_QUESTIONS
+	read_unsupported_installation
+fi
+
+if rpm -qa | grep mariadb.*config >/dev/null 2>&1; then
+   echo $RES_MARIADB && exit 0
 fi
 
 # add epel repo
@@ -50,11 +84,13 @@ if ! rpm -q mysql-community-server; then
 fi
 
 #add elasticsearch repo
+ELASTIC_VERSION="7.13.1"
+ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<END
 [elasticsearch]
-name=Elasticsearch repository for 7.x packages
-baseurl=https://artifacts.elastic.co/packages/7.x/yum
+name=Elasticsearch repository for ${ELASTIC_DIST}.x packages
+baseurl=https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/yum
 gpgcheck=1
 gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=0
@@ -63,41 +99,48 @@ type=rpm-md
 END
 
 #install kafka
-mkdir -p /var/www/appserver/services/
-getent passwd kafka >/dev/null || useradd -m -d /var/www/appserver/services/kafka -s /sbin/nologin -p kafka kafka
-cd /var/www/appserver/services/kafka
-wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
-tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
-chown -R kafka /var/www/appserver/services/kafka
-cd -
+PRODUCT_DIR="/var/www/${product}"
+if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
+	mkdir -p ${PRODUCT_DIR}/services/
+	getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
+	cd ${PRODUCT_DIR}/services/kafka
+	curl https://downloads.apache.org/kafka/2.7.1/kafka_2.13-2.7.1.tgz -O
+	tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
+	chown -R kafka ${PRODUCT_DIR}/services/kafka
+	cd -
+fi
 
-cat > /etc/systemd/system/zookeeper.service <<END
+if [ ! -e /lib/systemd/system/zookeeper.service ]; then
+cat > /lib/systemd/system/zookeeper.service <<END
 [Unit]
 Requires=network.target remote-fs.target
 After=network.target remote-fs.target
 [Service]
 Type=simple
 User=kafka
-ExecStart=/bin/sh -c '/var/www/appserver/services/kafka/bin/zookeeper-server-start.sh /var/www/appserver/services/kafka/config/zookeeper.properties > /var/www/appserver/services/kafka/zookeeper.log 2>&1'
-ExecStop=/var/www/appserver/services/kafka/bin/zookeeper-server-stop.sh
+ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-start.sh ${PRODUCT_DIR}/services/kafka/config/zookeeper.properties > ${PRODUCT_DIR}/services/kafka/zookeeper.log 2>&1'
+ExecStop=${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-stop.sh
 Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
 END
+fi
 
-cat > /etc/systemd/system/kafka.service <<END
+if [ ! -e /lib/systemd/system/kafka.service ]; then
+cat > /lib/systemd/system/kafka.service <<END
 [Unit]
 Requires=zookeeper.service
 After=zookeeper.service
 [Service]
 Type=simple
 User=kafka
-ExecStart=/bin/sh -c '/var/www/appserver/services/kafka/bin/kafka-server-start.sh /var/www/appserver/services/kafka/config/server.properties > /var/www/appserver/services/kafka/kafka.log 2>&1'
-ExecStop=/var/www/appserver/services/kafka/bin/kafka-server-stop.sh
+ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/kafka-server-start.sh ${PRODUCT_DIR}/services/kafka/config/server.properties > ${PRODUCT_DIR}/services/kafka/kafka.log 2>&1'
+ExecStop=${PRODUCT_DIR}/services/kafka/bin/kafka-server-stop.sh
 Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
 END
+fi
 
 # add nginx repo
 cat > /etc/yum.repos.d/nginx.repo <<END
@@ -111,8 +154,9 @@ module_hotfixes=true
 END
 
 if [ "$REV" = "8" ]; then
+	rabbitmq_version="-3.8.12"
 
-cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
+	cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
 [rabbitmq-server]
 name=rabbitmq-server
 baseurl=https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/\$basearch
@@ -126,7 +170,8 @@ metadata_expire=300
 END
 
 fi
-${package_manager} -y install yum-plugin-versionlock
+
+${package_manager} -y install python3-dnf-plugin-versionlock || ${package_manager} -y install yum-plugin-versionlock
 ${package_manager} versionlock clear
 
 ${package_manager} -y install epel-release \
@@ -136,20 +181,28 @@ ${package_manager} -y install epel-release \
 			gcc-c++ \
 			make \
 			yarn \
-			dotnet-sdk-3.1 \
-			elasticsearch-7.8.1 --enablerepo=elasticsearch \
+			dotnet-sdk-5.0 \
+			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
 			supervisor \
 			postgresql \
 			postgresql-server \
-			rabbitmq-server \
-			redis --enablerepo=remi
+			rabbitmq-server$rabbitmq_version \
+			redis --enablerepo=remi \
+			java
 	
+if [[ $PSQLExitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
+	yum -y install postgresql-upgrade
+	postgresql-setup --upgrade || true
+fi
 postgresql-setup initdb	|| true
 
 semanage permissive -a httpd_t
 
+if [ ! -e /usr/bin/json ]; then
+	npm i json -g >/dev/null 2>&1
+fi
+
 systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis supervisord nginx kafka"
-systemctl enable mysqld && systemctl start mysqld
+package_services="rabbitmq-server postgresql redis supervisord nginx kafka mysqld"

@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
+import ModalDialog from "@appserver/components/modal-dialog";
 
-const ModalDialogContainer = styled.div`
+const ModalDialogContainer = styled(ModalDialog)`
   .flex {
     display: flex;
     justify-content: space-between;

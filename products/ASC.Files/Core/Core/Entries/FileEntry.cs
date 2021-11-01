@@ -28,52 +28,47 @@ using System;
 using System.Text.Json.Serialization;
 
 using ASC.Files.Core.Security;
-using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
     [Serializable]
     public abstract class FileEntry : ICloneable
     {
-        public FileEntry(Global global)
+        [JsonIgnore]
+        public FileHelper FileHelper { get; set; }
+
+        protected FileEntry()
         {
-            Global = global;
+
+        }
+
+        public FileEntry(FileHelper fileHelper)
+        {
+            FileHelper = fileHelper;
         }
 
         public virtual string Title { get; set; }
 
-        [JsonPropertyName("create_by_id")]
         public Guid CreateBy { get; set; }
 
-        [JsonPropertyName("create_by")]
-        public string CreateByString
-        {
-            get { return !CreateBy.Equals(Guid.Empty) ? Global.GetUserName(CreateBy) : _createByString; }
-            set { _createByString = value; }
-        }
+        [JsonIgnore]
+        public string CreateByString { get => FileHelper.GetCreateByString(this); }
 
-        [JsonPropertyName("create_on")]
+        public Guid ModifiedBy { get; set; }
+
+        [JsonIgnore]
+        public string ModifiedByString { get => FileHelper.GetModifiedByString(this); }
+
+        [JsonIgnore]
         public string CreateOnString
         {
             get { return CreateOn.Equals(default) ? null : CreateOn.ToString("g"); }
-            set { throw new NotImplementedException(); }
         }
 
-        [JsonPropertyName("modified_on")]
+        [JsonIgnore]
         public string ModifiedOnString
         {
             get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
-            set { throw new NotImplementedException(); }
-        }
-
-        [JsonPropertyName("modified_by_id")]
-        public Guid ModifiedBy { get; set; }
-
-        [JsonPropertyName("modified_by")]
-        public string ModifiedByString
-        {
-            get { return !ModifiedBy.Equals(Guid.Empty) ? Global.GetUserName(ModifiedBy) : _modifiedByString; }
-            set { _modifiedByString = value; }
         }
 
         public string Error { get; set; }
@@ -82,11 +77,11 @@ namespace ASC.Files.Core
 
         public bool Shared { get; set; }
 
-        [JsonPropertyName("provider_id")]
         public int ProviderId { get; set; }
 
-        [JsonPropertyName("provider_key")]
         public string ProviderKey { get; set; }
+
+        [JsonIgnore]
         public bool ProviderEntry
         {
             get { return !string.IsNullOrEmpty(ProviderKey); }
@@ -104,12 +99,8 @@ namespace ASC.Files.Core
 
         public FileEntryType FileEntryType;
 
-        [NonSerialized]
-        protected Global Global;
-
-        private string _modifiedByString;
-        private string _createByString;
-
+        public string _modifiedByString;
+        public string _createByString;
 
         public override string ToString()
         {
@@ -125,17 +116,21 @@ namespace ASC.Files.Core
     [Serializable]
     public abstract class FileEntry<T> : FileEntry, ICloneable
     {
-        public FileEntry(Global global) : base(global)
-        {
-        }
-
         public T ID { get; set; }
 
         public T FolderID { get; set; }
 
         private T _folderIdDisplay;
 
-        [JsonPropertyName("folder_id")]
+        protected FileEntry()
+        {
+
+        }
+
+        protected FileEntry(FileHelper fileHelper) : base(fileHelper)
+        {
+        }
+
         public T FolderIdDisplay
         {
             get
@@ -148,9 +143,11 @@ namespace ASC.Files.Core
         }
 
         public T RootFolderId { get; set; }
-        public string UniqID
+
+        [JsonIgnore]
+        public virtual string UniqID
         {
-            get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
+            get { return $"{GetType().Name.ToLower()}_{ID}"; }
         }
 
         public override bool Equals(object obj)

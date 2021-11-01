@@ -53,21 +53,21 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("moduleName")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ProjectName)
                     .IsRequired()
                     .HasColumnName("projectName")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ResName)
                     .IsRequired()
                     .HasColumnName("resName")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddResFiles(this ModelBuilder modelBuilder)

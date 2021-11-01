@@ -71,11 +71,14 @@ class Row extends React.Component {
       this.cm.current.show(e);
     };
 
+    const { onRowClick, ...rest } = this.props;
+
     return (
-      <StyledRow ref={this.row} {...this.props} onContextMenu={onContextMenu}>
+      <StyledRow ref={this.row} {...rest} onContextMenu={onContextMenu}>
         {renderCheckbox && (
-          <StyledCheckbox>
+          <StyledCheckbox className="not-selectable">
             <Checkbox
+              className="checkbox"
               isChecked={checked}
               isIndeterminate={indeterminate}
               onChange={changeCheckbox}
@@ -83,9 +86,13 @@ class Row extends React.Component {
           </StyledCheckbox>
         )}
         {renderElement && (
-          <StyledElement className="styled-element">{element}</StyledElement>
+          <StyledElement onClick={onRowClick} className="styled-element">
+            {element}
+          </StyledElement>
         )}
-        <StyledContent className="row_content">{children}</StyledContent>
+        <StyledContent onClick={onRowClick} className="row_content">
+          {children}
+        </StyledContent>
         <StyledOptionButton
           className="row_context-menu-wrapper"
           spacerWidth={contextButtonSpacerWidth}
@@ -137,6 +144,8 @@ Row.propTypes = {
   indeterminate: PropTypes.bool,
   /** when selecting row element. Returns data value. */
   onSelect: PropTypes.func,
+  /** On click anywhere in the row, except the checkbox and context menu */
+  onRowClick: PropTypes.func,
   rowContextClick: PropTypes.func,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

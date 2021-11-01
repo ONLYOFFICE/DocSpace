@@ -76,7 +76,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("address")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.BeginDate)
                     .HasColumnName("begin_date")
@@ -114,7 +114,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("email_in_folder")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Enabled)
                     .HasColumnName("enabled")
@@ -129,7 +129,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("id_user")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Imap).HasColumnName("imap");
 
@@ -137,7 +137,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("imap_intervals")
                     .HasColumnType("mediumtext")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IsDefault).HasColumnName("is_default");
 
@@ -157,13 +157,13 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Pop3Password)
                     .HasColumnName("pop3_password")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.QuotaError).HasColumnName("quota_error");
 
@@ -173,7 +173,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("smtp_password")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
 
@@ -181,7 +181,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("token")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TokenType).HasColumnName("token_type");
 

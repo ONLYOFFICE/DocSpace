@@ -39,10 +39,11 @@ class Tooltip extends Component {
       reference,
       className,
       style,
+      color,
     } = this.props;
 
     return (
-      <StyledTooltip className={className} style={style}>
+      <StyledTooltip className={className} style={style} color={color}>
         <ReactTooltip
           id={id}
           ref={reference}
@@ -98,6 +99,7 @@ Tooltip.propTypes = {
   className: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  color: PropTypes.string,
 };
 
 Tooltip.defaultProps = {
@@ -107,6 +109,7 @@ Tooltip.defaultProps = {
   offsetRight: 0,
   offsetBottom: 0,
   offsetLeft: 0,
+  color: "#fff",
 };
 
 export default Tooltip;

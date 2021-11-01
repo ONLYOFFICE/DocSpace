@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Core;
@@ -172,7 +173,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 //}
 
                 tenantManager.SetCurrentTenant(TenantId);
-                securityContext.AuthenticateMe(UserId);
+                securityContext.AuthenticateMeWithoutCookie(UserId);
 
                 BuilderKey = documentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
 
@@ -250,7 +251,7 @@ namespace ASC.Web.Files.Services.DocumentService
             TaskInfo.SetProperty("exception", Exception);
         }
     }
-
+    [Scope]
     public class DocbuilderReportsUtility
     {
         private readonly DistributedTaskQueue tasks;
@@ -264,9 +265,9 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public DocbuilderReportsUtility(DistributedTaskCacheNotify distributedTaskCacheNotify)
+        public DocbuilderReportsUtility(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
         {
-            tasks = new DistributedTaskQueue(distributedTaskCacheNotify, "DocbuilderReportsUtility", 10);
+            tasks = distributedTaskQueueOptionsManager.Get("DocbuilderReportsUtility");
             Locker = new object();
         }
 
@@ -322,6 +323,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
     }
 
+    [Scope]
     public class DocbuilderReportsUtilityHelper
     {
         public DocbuilderReportsUtility DocbuilderReportsUtility { get; }

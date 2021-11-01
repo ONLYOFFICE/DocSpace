@@ -174,12 +174,76 @@ namespace ASC.Web.Files.Utils
     }
 
     [Scope]
+    public class EntryStatusManager
+    {
+        private IDaoFactory DaoFactory { get; }
+        private AuthContext AuthContext { get; }
+        private Global Global { get; }
+
+        public EntryStatusManager(IDaoFactory daoFactory, AuthContext authContext, Global global)
+        {
+            DaoFactory = daoFactory;
+            AuthContext = authContext;
+            Global = global;
+        }
+
+        public void SetFileStatus<T>(File<T> file)
+        {
+            if (file == null || file.ID == null) return;
+
+            SetFileStatus(new List<File<T>>(1) { file });
+        }
+
+        public void SetFileStatus(IEnumerable<FileEntry> files)
+        {
+            SetFileStatus(files.OfType<File<int>>().Where(r => r.ID != 0));
+            SetFileStatus(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.ID)));
+        }
+
+        public void SetFileStatus<T>(IEnumerable<File<T>> files)
+        {
+            var tagDao = DaoFactory.GetTagDao<T>();
+
+            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
+            var tagsNew = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, files);
+
+            foreach (var file in files)
+            {
+                foreach (var t in tags)
+                {
+                    if (!t.Key.Equals(file.ID)) continue;
+
+                    if (t.Value.Any(r => r.TagType == TagType.Favorite)) file.IsFavorite = true;
+                    if (t.Value.Any(r => r.TagType == TagType.Template)) file.IsTemplate = true;
+
+                    var lockedTag = t.Value.FirstOrDefault(r => r.TagType == TagType.Locked);
+                    if (lockedTag != null)
+                    {
+                        var lockedBy = lockedTag.Owner;
+                        file.Locked = lockedBy != Guid.Empty;
+                        file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
+                            ? Global.GetUserName(lockedBy)
+                            : null;
+                        continue;
+                    }
+                }
+
+                if (tagsNew.Any(r => r.EntryId.Equals(file.ID)))
+                {
+                    file.IsNew = true;
+                }
+            }
+        }
+    }
+
+    [Scope]
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
-        
+
         private ICache Cache { get; set; }
         private FileTrackerHelper FileTracker { get; }
+        private EntryStatusManager EntryStatusManager { get; }
         private IDaoFactory DaoFactory { get; }
         private FileSecurity FileSecurity { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
@@ -199,10 +263,10 @@ namespace ASC.Web.Files.Utils
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private LockerManager LockerManager { get; }
         private BreadCrumbsManager BreadCrumbsManager { get; }
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
         private IServiceProvider ServiceProvider { get; }
-        public ILog Logger { get; }
+        private ILog Logger { get; }
 
         public EntryManager(
             IDaoFactory daoFactory,
@@ -227,9 +291,10 @@ namespace ASC.Web.Files.Utils
             BreadCrumbsManager breadCrumbsManager,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ICache cache,
-            FileTrackerHelper fileTracker)
+            FileTrackerHelper fileTracker,
+            EntryStatusManager entryStatusManager)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -256,6 +321,7 @@ namespace ASC.Web.Files.Utils
             Logger = optionsMonitor.CurrentValue;
             Cache = cache;
             FileTracker = fileTracker;
+            EntryStatusManager = entryStatusManager;
         }
 
         public IEnumerable<FileEntry> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
@@ -398,7 +464,7 @@ namespace ASC.Web.Files.Utils
 
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
-                
+
                 CalculateTotal();
             }
             else if (parent.FolderType == FolderType.Templates)
@@ -471,7 +537,7 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            SetFileStatus(entries.Where(r => r != null && r.FileEntryType == FileEntryType.File).ToList());
+            EntryStatusManager.SetFileStatus(entries.Where(r => r != null && r.FileEntryType == FileEntryType.File).ToList());
             return entries;
 
             void CalculateTotal()
@@ -550,7 +616,7 @@ namespace ASC.Web.Files.Utils
 
             var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
-            List<FileEntry> files = GetRecentByIds(fileIds.Where(r => r.EntryId is int).Select(r=> (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
+            List<FileEntry> files = GetRecentByIds(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
             files.AddRange(GetRecentByIds(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
 
             var listFileIds = fileIds.Select(tag => tag.EntryId).ToList();
@@ -576,7 +642,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true);
                 files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
                 files = FileSecurity.FilterRead(files).ToList();
@@ -629,7 +695,7 @@ namespace ASC.Web.Files.Utils
 
                 if (filter != FilterType.FoldersOnly)
                 {
-                    files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
+                    files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true);
                     files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
                     files = fileSecurity.FilterRead(files).ToList();
@@ -711,7 +777,7 @@ namespace ASC.Web.Files.Utils
                 ,
                 SortedByType.Author => (x, y) =>
                 {
-                    var cmp = c * string.Compare(x.ModifiedByString, y.ModifiedByString);
+                    var cmp = c * string.Compare(x.CreateByString, y.CreateByString);
                     return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
                 }
                 ,
@@ -816,55 +882,6 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-
-        public void SetFileStatus<T>(File<T> file)
-        {
-            if (file == null || file.ID == null) return;
-
-            SetFileStatus(new List<File<T>>(1) { file });
-        }
-
-        public void SetFileStatus(IEnumerable<FileEntry> files)
-        {
-            SetFileStatus(files.OfType<File<int>>().Where(r=> r.ID != 0));
-            SetFileStatus(files.OfType<File<string>>().Where(r=> !string.IsNullOrEmpty(r.ID)));
-        }
-
-        public void SetFileStatus<T>(IEnumerable<File<T>> files)
-        {
-            var tagDao = DaoFactory.GetTagDao<T>();
-
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
-            var tagsNew = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, files);
-
-            foreach (var file in files)
-            {
-                foreach(var t in tags)
-                {
-                    if (!t.Key.Equals(file.ID)) continue;
-
-                    if(t.Value.Any(r => r.TagType == TagType.Favorite)) file.IsFavorite = true;
-                    if(t.Value.Any(r => r.TagType == TagType.Template)) file.IsTemplate = true;
-
-                    var lockedTag = t.Value.FirstOrDefault(r => r.TagType == TagType.Locked);
-                    if (lockedTag != null)
-                    {
-                        var lockedBy = lockedTag.Owner;
-                        file.Locked = lockedBy != Guid.Empty;
-                        file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
-                            ? Global.GetUserName(lockedBy)
-                            : null;
-                        continue;
-                    }
-                }
-
-                if (tagsNew.Any(r => r.EntryId.Equals(file.ID)))
-                {
-                    file.IsNew = true;
-                }
-            }
-        }
-
         public bool FileLockedForMe<T>(T fileId, Guid userId = default)
         {
             return LockerManager.FileLockedForMe(fileId, userId);
@@ -931,7 +948,7 @@ namespace ASC.Web.Files.Utils
                     var path = FileConstant.NewDocPath + Thread.CurrentThread.CurrentCulture + "/";
                     if (!storeTemplate.IsDirectory(path))
                     {
-                        path = FileConstant.NewDocPath + "default/";
+                        path = FileConstant.NewDocPath + "en-US/";
                     }
                     path += "new" + FileUtility.GetInternalExtension(file.Title);
 
@@ -951,6 +968,7 @@ namespace ASC.Web.Files.Utils
             file.Encrypted = encrypted;
 
             file.ConvertedType = FileUtility.GetFileExtension(file.Title) != newExtension ? newExtension : null;
+            file.ThumbnailStatus = encrypted ? Thumbnail.NotRequired : Thumbnail.Waiting;
 
             if (file.ProviderEntry && !newExtension.Equals(currentExt))
             {
@@ -964,7 +982,7 @@ namespace ASC.Web.Files.Utils
                     }
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUri);
-                    DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, false, out downloadUri);
+                    DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, null, null, false, out downloadUri);
 
                     stream = null;
                 }
@@ -1109,9 +1127,18 @@ namespace ASC.Web.Files.Utils
                     newFile = fileDao.SaveFile(newFile, stream);
                 }
 
+                if (fromFile.ThumbnailStatus == Thumbnail.Created)
+                {
+                    using (var thumb = fileDao.GetThumbnail(fromFile))
+                    {
+                        fileDao.SaveThumbnail(newFile, thumb);
+                    }
+                    newFile.ThumbnailStatus = Thumbnail.Created;
+                }
+
                 FileMarker.MarkAsNew(newFile);
 
-                SetFileStatus(newFile);
+                EntryStatusManager.SetFileStatus(newFile);
 
                 newFile.Access = fromFile.Access;
 
@@ -1174,7 +1201,7 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            SetFileStatus(lastVersionFile);
+            EntryStatusManager.SetFileStatus(lastVersionFile);
 
             return lastVersionFile;
         }
@@ -1213,7 +1240,7 @@ namespace ASC.Web.Files.Utils
                 renamed = true;
             }
 
-            SetFileStatus(file);
+            EntryStatusManager.SetFileStatus(file);
 
             return renamed;
         }

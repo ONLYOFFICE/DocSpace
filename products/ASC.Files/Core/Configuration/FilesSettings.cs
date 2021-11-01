@@ -31,6 +31,7 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Files.Core;
+using ASC.Web.Studio.Core;
 
 namespace ASC.Web.Files.Classes
 {
@@ -79,6 +80,8 @@ namespace ASC.Web.Files.Classes
         [JsonPropertyName("HideTemplates")]
         public bool HideTemplatesSetting { get; set; }
 
+        [JsonPropertyName("DownloadZip")]
+        public bool DownloadTarGzSetting { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
@@ -97,7 +100,8 @@ namespace ASC.Web.Files.Classes
                 StoreForcesaveSetting = false,
                 HideRecentSetting = false,
                 HideFavoritesSetting = false,
-                HideTemplatesSetting = false
+                HideTemplatesSetting = false,
+                DownloadTarGzSetting = false
             };
         }
 
@@ -112,11 +116,13 @@ namespace ASC.Web.Files.Classes
     {
         private SettingsManager SettingsManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
+        private SetupInfo SetupInfo { get; }
 
-        public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings)
+        public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings, SetupInfo setupInfo)
         {
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
+            SetupInfo = setupInfo;
         }
 
         public bool ConfirmDelete
@@ -201,9 +207,12 @@ namespace ASC.Web.Files.Classes
             set
             {
                 var setting = LoadForCurrentUser();
-                setting.DefaultSortedBySetting = value.SortedBy;
-                setting.DefaultSortedAscSetting = value.IsAsc;
-                SaveForCurrentUser(setting);
+                if (setting.DefaultSortedBySetting != value.SortedBy || setting.DefaultSortedAscSetting != value.IsAsc)
+                {
+                    setting.DefaultSortedBySetting = value.SortedBy;
+                    setting.DefaultSortedAscSetting = value.IsAsc;
+                    SaveForCurrentUser(setting);
+                }
             }
             get
             {
@@ -266,6 +275,22 @@ namespace ASC.Web.Files.Classes
                 SaveForCurrentUser(setting);
             }
             get { return !LoadForCurrentUser().HideTemplatesSetting; }
+        }
+
+        public bool DownloadTarGz
+        {
+            set
+            {
+                var setting = LoadForCurrentUser();
+                setting.DownloadTarGzSetting = value;
+                SaveForCurrentUser(setting);
+            }
+            get => LoadForCurrentUser().DownloadTarGzSetting;
+        }
+
+        public long ChunkUploadSize
+        {
+            get => SetupInfo.ChunkUploadSize;
         }
 
         private FilesSettings LoadForCurrentUser()

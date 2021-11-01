@@ -33,32 +33,34 @@ class DataLossWarningDialogComponent extends React.Component {
     }
   };
   render() {
-    const { t, isVisibleDataLossDialog } = this.props;
+    const { t, tReady, isVisibleDataLossDialog } = this.props;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={isVisibleDataLossDialog} onClose={this.onClose}>
-          <ModalDialog.Header>{t("DataLossWarningHeader")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text fontSize="13px">{t("DataLossWarningBody")}</Text>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              key="LeaveForm"
-              label={t("DataLossWarningLeaveBtn")}
-              size="medium"
-              primary={true}
-              onClick={this.onSubmit}
-            />
-            <Button
-              className="button-dialog"
-              key="StayOnPage"
-              label={t("DataLossWarningCancelBtn")}
-              size="medium"
-              onClick={this.onClose}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+      <ModalDialogContainer
+        visible={isVisibleDataLossDialog}
+        onClose={this.onClose}
+        isLoading={!tReady}
+      >
+        <ModalDialog.Header>{t("DataLossWarningHeader")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text fontSize="13px">{t("DataLossWarningBody")}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="LeaveForm"
+            label={t("DataLossWarningLeaveBtn")}
+            size="medium"
+            primary={true}
+            onClick={this.onSubmit}
+          />
+          <Button
+            className="button-dialog"
+            key="StayOnPage"
+            label={t("Common:CancelButton")}
+            size="medium"
+            onClick={this.onClose}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }

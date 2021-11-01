@@ -8,7 +8,7 @@ import FileInput from "@appserver/components/file-input";
 import PasswordInput from "@appserver/components/password-input";
 import Link from "@appserver/components/link";
 import Checkbox from "@appserver/components/checkbox";
-
+import { PasswordLimitSpecialCharacters } from "@appserver/common/constants";
 import { tablet } from "@appserver/components/utils/device";
 
 const StyledContainer = styled(Box)`
@@ -68,18 +68,21 @@ const InputContainer = ({
 }) => {
   const refPassInput = useRef(null);
 
-  const tooltipPassTitle = t("TooltipPasswordTitle");
-  const tooltipPassLength = `${settingsPassword.minLength}${t(
-    "TooltipPasswordLength"
-  )}`;
+  const tooltipPassTitle = `${t("Common:PasswordLimitMessage")}:`;
+  const tooltipPassLength = `${t("Common:PasswordLimitLength", {
+    fromNumber: settingsPassword ? settingsPassword.minLength : 8,
+    toNumber: 30,
+  })}`;
   const tooltipPassDigits = settingsPassword.digits
-    ? `${t("TooltipPasswordDigits")}`
+    ? `${t("Common:PasswordLimitDigits")}`
     : null;
   const tooltipPassCapital = settingsPassword.upperCase
-    ? `${t("TooltipPasswordCapital")}`
+    ? `${t("Common:PasswordLimitUpperCase")}`
     : null;
   const tooltipPassSpecial = settingsPassword.specSymbols
-    ? `${t("TooltipPasswordSpecial")}`
+    ? `${t(
+        "Common:PasswordLimitSpecialSymbols"
+      )} (${PasswordLimitSpecialCharacters})`
     : null;
 
   const inputEmail = emailNeeded ? (
@@ -88,7 +91,7 @@ const InputContainer = ({
       tabIndex={1}
       size="large"
       scale={true}
-      placeholder={t("PlaceholderEmail")}
+      placeholder={t("Common:Email")}
       emailSettings={settings}
       hasError={hasErrorEmail}
       onValidateInput={onEmailChangeHandler}
@@ -121,7 +124,7 @@ const InputContainer = ({
         inputValue={password}
         passwordSettings={settingsPassword}
         isDisabled={false}
-        placeholder={t("PlaceholderPass")}
+        placeholder={t("Common:Password")}
         hideNewPasswordButton={true}
         isDisableTooltip={true}
         isTextTooltipVisible={true}

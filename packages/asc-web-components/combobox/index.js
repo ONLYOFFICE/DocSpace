@@ -89,6 +89,7 @@ class ComboBox extends React.Component {
       toggleAction,
       textOverflow,
       showDisabledItems,
+      offsetDropDownY,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -135,10 +136,10 @@ class ComboBox extends React.Component {
         />
         {displayType !== "toggle" && (
           <DropDown
-            className="dropdown-container"
+            className="dropdown-container not-selectable"
             directionX={directionX}
             directionY={directionY}
-            manualY="102%"
+            manualY={offsetDropDownY}
             open={isOpen}
             clickOutsideAction={this.handleClickOutside}
             {...dropDownMaxHeightProp}
@@ -210,6 +211,8 @@ ComboBox.propTypes = {
   textOverflow: PropTypes.bool,
   /** Disables clicking on the icon */
   disableIconClick: PropTypes.bool,
+  /** Y offset */
+  offsetDropDownY: PropTypes.string,
 };
 
 ComboBox.defaultProps = {
@@ -221,6 +224,7 @@ ComboBox.defaultProps = {
   size: "base",
   disableIconClick: true,
   showDisabledItems: false,
+  offsetDropDownY: "102%",
 };
 
 export default ComboBox;
