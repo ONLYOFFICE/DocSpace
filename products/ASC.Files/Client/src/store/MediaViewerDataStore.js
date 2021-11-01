@@ -28,9 +28,9 @@ class MediaViewerDataStore {
 
   get playlist() {
     const { isMediaOrImage } = this.formatsStore.mediaViewersFormatsStore;
-    const { files, folders } = this.filesStore;
+    const { files } = this.filesStore;
 
-    const filesList = [...files, ...folders];
+    const filesList = [...files];
     const playlist = [];
     let id = 0;
 

@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -99,7 +100,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ProviderFolderDao providerFolderDao,
             CrossDao crossDao,
-            Settings settings)
+            ConfigurationExtension configurationExtension)
             : base(
                   dbContextManager,
                   dbContextManager1,
@@ -125,7 +126,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ProviderFolderDao = providerFolderDao;
             CrossDao = crossDao;
-            Settings = settings;
+            Settings = Settings.GetInstance(configurationExtension);
         }
 
         public void InvalidateCache(int fileId)

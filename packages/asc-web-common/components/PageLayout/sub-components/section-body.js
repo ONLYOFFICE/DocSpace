@@ -8,7 +8,7 @@ import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@appserver/components/scrollbar";
 import DragAndDrop from "@appserver/components/drag-and-drop";
-import { tablet } from "@appserver/components/utils/device";
+import { tablet, desktop } from "@appserver/components/utils/device";
 
 const paddingStyles = css`
   padding: 17px 7px 16px 20px;
@@ -51,6 +51,10 @@ const commonStyles = css`
     .people-row-container,
     .files-row-container {
       margin-top: -22px;
+
+      @media ${desktop} {
+        ${(props) => props.viewAs === "row" && `margin-top: -9px;`}
+      }
     }
   }
 `;
@@ -61,7 +65,6 @@ const StyledSectionBody = styled.div`
   ${(props) =>
     props.withScroll &&
     `
-
     margin-left: -24px;
   `} 
 
