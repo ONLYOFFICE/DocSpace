@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 using ASC.Api.Core.Auth;
@@ -11,6 +12,7 @@ using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Mapping;
 using ASC.Common.Utils;
+using ASC.Webhooks.Core;
 
 using Autofac;
 
@@ -43,7 +45,7 @@ namespace ASC.Api.Core
         public virtual bool ConfirmAddScheme { get; } = false;
         public virtual bool AddAndUseSession { get; } = false;
         protected DIHelper DIHelper { get; }
-        protected bool LoadProducts { get; } = true;
+        protected bool LoadProducts { get; set; } = true;
         protected bool LoadConsumers { get; } = true;
 
         public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
@@ -51,6 +53,10 @@ namespace ASC.Api.Core
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
             DIHelper = new DIHelper();
+            if (bool.TryParse(Configuration["core:products"], out var loadProducts))
+            {
+                LoadProducts = loadProducts;
+            }
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
@@ -64,22 +70,26 @@ namespace ASC.Api.Core
 
             DIHelper.Configure(services);
 
+            Action<JsonOptions> jsonOptions = options =>
+                               {
+                                   options.JsonSerializerOptions.WriteIndented = false;
+                                   options.JsonSerializerOptions.IgnoreNullValues = true;
+                                   options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+
+                                   if (Converters != null)
+                                   {
+                                       foreach (var c in Converters)
+                                       {
+                                           options.JsonSerializerOptions.Converters.Add(c);
+                                       }
+                                   }
+                               };
+
             services.AddControllers()
                 .AddXmlSerializerFormatters()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.WriteIndented = false;
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
-                    options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+                .AddJsonOptions(jsonOptions);
 
-                    if (Converters != null)
-                    {
-                        foreach (var c in Converters)
-                        {
-                            options.JsonSerializerOptions.Converters.Add(c);
-                        }
-                    }
-                });
+            services.AddSingleton(jsonOptions);
 
             DIHelper.TryAdd<DisposeMiddleware>();
             DIHelper.TryAdd<CultureMiddleware>();
@@ -89,8 +99,10 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<TenantStatusFilter>();
             DIHelper.TryAdd<ConfirmAuthHandler>();
             DIHelper.TryAdd<CookieAuthHandler>();
+            DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
             if (LoadProducts)
             {
@@ -111,6 +123,7 @@ namespace ASC.Api.Core
                 config.Filters.Add(new CustomResponseFilterAttribute());
                 config.Filters.Add(new CustomExceptionFilterAttribute());
                 config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
 
                 config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
                 config.OutputFormatters.Add(new XmlOutputFormatter());
@@ -177,7 +190,7 @@ namespace ASC.Api.Core
         {
             return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
             {
-                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration));
+                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
                 r.AddNLog(LogManager.Configuration);
             });
         }

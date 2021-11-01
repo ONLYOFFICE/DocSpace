@@ -1134,7 +1134,7 @@ class FilesStore {
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
+      const iconSize = this.viewAs === "table" ? 24 : 32;
       const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;

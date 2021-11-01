@@ -24,7 +24,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddAccountLinks, Provider.MySql)
-                .Add(PgSqlAddAccountLinks, Provider.Postgre);
+                .Add(PgSqlAddAccountLinks, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddAccountLinks(this ModelBuilder modelBuilder)

@@ -2,7 +2,6 @@ import React, { useCallback, useState, useMemo } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 
-import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import DropDownItem from "@appserver/components/drop-down-item";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import { tablet, desktop } from "@appserver/components/utils/device";
@@ -18,6 +17,7 @@ import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
+import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 
 const StyledContainer = styled.div`
   .group-button-menu-container {
@@ -114,7 +114,6 @@ const SectionHeaderContent = (props) => {
     resetFilter,
     getHeaderMenu,
     setInvitationDialogVisible,
-    viewAs,
   } = props;
 
   const {
@@ -126,57 +125,51 @@ const SectionHeaderContent = (props) => {
 
   //console.log("SectionHeaderContent render", props.isTabletView);
 
-  const onCheck = (checked) => {
-    setSelected(checked ? "all" : "close");
+  const onChange = (checked) => {
+    setSelected(checked ? "all" : "none");
   };
-  const onSelect = useCallback((selected) => setSelected(selected), [
-    setSelected,
-  ]);
-
-  const onClose = () => setSelected("none");
+  const onSelect = useCallback(
+    (e) => {
+      const key = e.currentTarget.dataset.key;
+      setSelected(key);
+    },
+    [setSelected]
+  );
 
   const onSelectorSelect = useCallback(
     (item) => {
-      onSelect && onSelect(item.key);
+      setSelected(item.key);
     },
     [onSelect]
   );
 
   let menuItems = useMemo(
-    () => [
-      ...[
-        {
-          label: t("Common:Select"),
-          isDropdown: true,
-          isSeparator: true,
-          isSelect: true,
-          fontWeight: "bold",
-          children: [
-            <DropDownItem
-              key="active"
-              label={t("Common:Active")}
-              data-index={0}
-            />,
-            <DropDownItem
-              key="disabled"
-              label={t("Translations:DisabledEmployeeStatus")}
-              data-index={1}
-            />,
-            <DropDownItem
-              key="invited"
-              label={t("LblInvited")}
-              data-index={2}
-            />,
-          ],
-          onSelect: onSelectorSelect,
-        },
-      ],
-    ],
+    () => (
+      <>
+        <DropDownItem
+          key="active"
+          label={t("Common:Active")}
+          data-key={"active"}
+          onClick={onSelect}
+        />
+        <DropDownItem
+          key="disabled"
+          label={t("Translations:DisabledEmployeeStatus")}
+          data-key={"disabled"}
+          onClick={onSelect}
+        />
+        <DropDownItem
+          key="invited"
+          label={t("LblInvited")}
+          data-key={"invited"}
+          onClick={onSelect}
+        />
+      </>
+    ),
     [t, onSelectorSelect]
   );
 
   const headerMenu = getHeaderMenu(t);
-  menuItems = [...menuItems, ...headerMenu];
 
   const onEditGroup = useCallback(
     () =>
@@ -281,19 +274,14 @@ const SectionHeaderContent = (props) => {
           width={context.sectionWidth}
           isTabletView={isTabletView}
         >
-          {isHeaderVisible && viewAs !== "table" ? (
+          {isHeaderVisible ? (
             <div className="group-button-menu-container">
-              <GroupButtonsMenu
-                checked={isHeaderChecked}
+              <TableGroupMenu
+                checkboxOptions={menuItems}
+                onChange={onChange}
+                isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
-                onChange={onCheck}
-                menuItems={menuItems}
-                visible={isHeaderVisible}
-                moreLabel={t("Common:More")}
-                closeTitle={t("Common:CloseButton")}
-                onClose={onClose}
-                selected={menuItems[0].label}
-                sectionWidth={context.sectionWidth}
+                headerMenu={headerMenu}
               />
             </div>
           ) : (
@@ -368,7 +356,6 @@ export default withRouter(
       selectedGroupStore,
       getHeaderMenu,
       dialogStore,
-      viewAs,
     } = peopleStore;
     const { getUsersList, removeUser, updateUserStatus } = usersStore;
     const {
@@ -408,7 +395,6 @@ export default withRouter(
       isTabletView,
       getHeaderMenu,
       setInvitationDialogVisible,
-      viewAs,
     };
   })(
     withTranslation(["Home", "Common", "Translations"])(

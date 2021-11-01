@@ -11,7 +11,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import { tablet } from "@appserver/components/utils/device";
 
 const paddingStyles = css`
-  padding: 17px 7px 16px 24px;
+  padding: 17px 7px 16px 20px;
   @media ${tablet} {
     padding: 16px 0 16px 24px;
   }

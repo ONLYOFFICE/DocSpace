@@ -29,7 +29,7 @@ using System;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Data.Storage.Configuration;
-using ASC.Migration;
+using ASC.Protos.Migration;
 
 namespace ASC.Data.Storage.Migration
 {
