@@ -45,28 +45,6 @@ const StyledFileRow = styled(Row)`
     padding-right: 12px;
   }
 
-  .__react_component_tooltip.type-light {
-    background-color: #f8f7bf !important;
-    box-shadow: none;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-  }
-  .__react_component_tooltip.place-left::after {
-    border-left: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-right::after {
-    border-right: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-top::after {
-    border-top: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-bottom::after {
-    border-bottom: 6px solid #f8f7bf !important;
-  }
-
   .upload-panel_file-row-link {
     ${(props) =>
       !props.isMediaActive &&
@@ -203,7 +181,7 @@ const FileRow = (props) => {
                 getContent={(dataTip) => <Text fontSize="13px">{dataTip}</Text>}
                 effect="float"
                 place="left"
-                maxWidth={320}
+                maxWidth="250px"
                 color="#f8f7bf"
               />
             </div>
