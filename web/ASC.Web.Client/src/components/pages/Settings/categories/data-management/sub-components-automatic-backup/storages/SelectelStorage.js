@@ -158,10 +158,9 @@ class SelectelStorage extends React.Component {
             />
 
             <Button
-              label={t("Common: CancelButton")}
+              label={t("Common:CancelButton")}
               onClick={this.onCancelSettings}
               primary
-              isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
             />

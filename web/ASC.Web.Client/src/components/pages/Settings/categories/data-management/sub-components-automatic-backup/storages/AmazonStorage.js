@@ -187,7 +187,6 @@ class AmazonStorage extends React.Component {
             <Button
               label={t("Common:CancelButton")}
               onClick={this.onCancelSettings}
-              isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
             />

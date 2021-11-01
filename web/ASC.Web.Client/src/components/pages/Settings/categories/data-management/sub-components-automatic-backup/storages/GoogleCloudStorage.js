@@ -147,9 +147,8 @@ class GoogleCloudStorage extends React.Component {
             />
 
             <Button
-              label={t("Common: CancelButton")}
+              label={t("Common:CancelButton")}
               onClick={this.onCancelSettings}
-              isDisabled={isCopyingToLocal}
               size="medium"
               tabIndex={10}
             />
