@@ -98,7 +98,7 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
-    this.selection = this.selection.filter((x) => !x.isThirdPartyFolder); // removed root thirdparty folders
+    this.selection = this.selection.filter((x) => !x.providerKey); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 

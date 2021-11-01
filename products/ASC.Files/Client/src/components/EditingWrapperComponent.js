@@ -156,7 +156,8 @@ const EditingWrapperComponent = (props) => {
 
   const onFocus = (e) => e.target.select();
   const onBlur = (e) => {
-    if (e.relatedTarget.classList.contains("edit-button")) return false;
+    if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
+      return false;
     onClickUpdateItem(e, false);
   };
 
@@ -171,7 +172,7 @@ const EditingWrapperComponent = (props) => {
         tabIndex={1}
         isAutoFocussed={true}
         onChange={renameTitle}
-        onKeyUp={onKeyUpUpdateItem}
+        onKeyPress={onKeyUpUpdateItem}
         onKeyDown={onEscapeKeyPress}
         onFocus={onFocus}
         onBlur={onBlur}

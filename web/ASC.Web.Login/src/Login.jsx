@@ -209,10 +209,10 @@ const Form = (props) => {
     thirdPartyLogin(profile.Serialized)
       .then(() => {
         setIsLoading(true);
-        const redirectPath = sessionStorage.getItem("redirectPath");
+        const redirectPath = localStorage.getItem("redirectPath");
 
         if (redirectPath) {
-          sessionStorage.removeItem("redirectPath");
+          localStorage.removeItem("redirectPath");
           window.location.href = redirectPath;
         } else history.push(defaultPage);
       })
@@ -312,10 +312,10 @@ const Form = (props) => {
     login(userName, hash)
       .then((res) => {
         const { url, user, hash } = res;
-        const redirectPath = sessionStorage.getItem("redirectPath");
+        const redirectPath = localStorage.getItem("redirectPath");
 
         if (redirectPath) {
-          sessionStorage.removeItem("redirectPath");
+          localStorage.removeItem("redirectPath");
           window.location.href = redirectPath;
         } else history.push(url, { user, hash });
       })
