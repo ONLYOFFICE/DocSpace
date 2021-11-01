@@ -151,7 +151,7 @@ class SelectelStorage extends React.Component {
               label={t("Common:SaveButton")}
               onClick={this.onSaveSettings}
               primary
-              isDisabled={isCopyingToLocal || this.isDisabled}
+              isDisabled={isCopyingToLocal || isLoadingData || this.isDisabled}
               size="medium"
               tabIndex={10}
               className="save-button"
@@ -159,6 +159,7 @@ class SelectelStorage extends React.Component {
 
             <Button
               label={t("Common:CancelButton")}
+              isDisabled={isLoadingData}
               onClick={this.onCancelSettings}
               primary
               size="medium"

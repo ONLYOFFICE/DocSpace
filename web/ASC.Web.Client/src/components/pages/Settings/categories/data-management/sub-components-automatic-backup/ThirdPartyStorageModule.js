@@ -58,7 +58,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
     let options = [];
     let availableStorage = {};
 
-    //debugger;
     for (let item = 0; item < storageBackup.length; item++) {
       let obj = {
         [storageBackup[item].id]: {
@@ -163,24 +162,18 @@ class ThirdPartyStorageModule extends React.PureComponent {
   };
 
   onSaveModuleSettings = async () => {
-    const {
-      onSaveModuleSettings,
-      onSetLoadingData,
-      setBackupScheduleOptions,
-    } = this.props;
+    const { onSaveModuleSettings, onSetLoadingData } = this.props;
 
     const { selectedId, availableStorage } = this.state;
 
     await onSaveModuleSettings(selectedId, inputValueArray);
-    await setBackupScheduleOptions();
     this.isSetDefaultIdStorage = true;
 
-    this._isMounted && onSetLoadingData && onSetLoadingData(false);
     this._isMounted &&
       this.setState({
-        isLoadingData: false,
         defaultSelectedId: selectedId,
         defaultSelectedStorage: availableStorage[selectedId].title,
+        isChangedThirdParty: false,
       });
   };
 

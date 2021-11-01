@@ -830,21 +830,21 @@ class AutomaticBackup extends React.PureComponent {
         }
       }
 
-      this.createSchedule(
-        storageType,
-        storageParams,
-        selectedMaxCopiesNumber,
-        period,
-        time,
-        day
+      this.setState(
+        {
+          isLoadingData: true,
+        },
+        function () {
+          this.createSchedule(
+            storageType,
+            storageParams,
+            selectedMaxCopiesNumber,
+            period,
+            time,
+            day
+          );
+        }
       );
-
-      this._isMounted &&
-        this.setState({
-          isLoadingData: false,
-          isChanged: false,
-          isError: false,
-        });
     });
   };
 
@@ -866,16 +866,6 @@ class AutomaticBackup extends React.PureComponent {
         time,
         day
       );
-      toastr.success(t("SuccessfullySaveSettingsMessage"));
-    } catch (e) {
-      console.error(e);
-    }
-
-    +storageType !== +STORAGES_MODULE_TYPE && this.setBackupScheduleOptions();
-  };
-
-  setBackupScheduleOptions = async () => {
-    try {
       const selectedSchedule = await getBackupSchedule();
       if (selectedSchedule) {
         this.selectedSchedule = true;
@@ -884,6 +874,9 @@ class AutomaticBackup extends React.PureComponent {
           defaultMonthlySchedule: false,
           defaultWeeklySchedule: false,
           defaultDailySchedule: false,
+          selectedMonthlySchedule: false,
+          selectedDailySchedule: false,
+          selectedWeeklySchedule: false,
         };
 
         if (selectedSchedule.storageType === DOCUMENT_MODULE_TYPE) {
@@ -907,9 +900,17 @@ class AutomaticBackup extends React.PureComponent {
         this.selectedSchedule = false;
         this.onSetDefaultOptions();
       }
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
     } catch (e) {
       console.error(e);
     }
+
+    this._isMounted &&
+      this.setState({
+        isLoadingData: false,
+        isChanged: false,
+        isError: false,
+      });
   };
 
   deleteSchedule = () => {
@@ -922,6 +923,15 @@ class AutomaticBackup extends React.PureComponent {
         })
         .then(() => getBackupSchedule())
         .then(() => {
+          this.setState({
+            defaultMonthlySchedule: false,
+            defaultWeeklySchedule: false,
+            defaultDailySchedule: false,
+
+            selectedMonthlySchedule: false,
+            selectedDailySchedule: false,
+            selectedWeeklySchedule: false,
+          });
           this.onSetDefaultOptions();
         })
         .catch((error) => toastr.error(error))
@@ -995,7 +1005,7 @@ class AutomaticBackup extends React.PureComponent {
     } = this.state;
 
     const resourcesModule = +defaultStorageTypeNumber === RESOURCES_MODULE_TYPE;
-    console.log("selectedMonthDay", selectedMonthDay);
+
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -1005,6 +1015,7 @@ class AutomaticBackup extends React.PureComponent {
           label={t("EnableAutomaticBackup")}
           onChange={this.onClickPermissions}
           isChecked={isEnable}
+          isDisabled={isLoadingData}
         />
         <Text className="backup_toggle-btn-description">
           {t("DocumentsModuleDescription")}
@@ -1153,7 +1164,6 @@ class AutomaticBackup extends React.PureComponent {
                   onCancelModuleSettings={this.onCancelModuleSettings}
                   checkChanges={this.checkChanges}
                   onSaveModuleSettings={this.onSaveModuleSettings}
-                  setBackupScheduleOptions={this.setBackupScheduleOptions}
                   isChanged={isChanged}
                   onCancelModuleSettings={this.onCancelModuleSettings}
                   isCopyingToLocal={isCopyingToLocal}
@@ -1169,7 +1179,7 @@ class AutomaticBackup extends React.PureComponent {
               label={t("Common:SaveButton")}
               onClick={this.onSaveModuleSettings}
               primary
-              isDisabled={isCopyingToLocal}
+              isDisabled={isCopyingToLocal || isLoadingData}
               size="medium"
               tabIndex={10}
               className="save-button"
@@ -1177,6 +1187,7 @@ class AutomaticBackup extends React.PureComponent {
 
             <Button
               label={t("Common:CancelButton")}
+              isDisabled={isLoadingData}
               onClick={this.onCancelModuleSettings}
               size="medium"
               tabIndex={10}
