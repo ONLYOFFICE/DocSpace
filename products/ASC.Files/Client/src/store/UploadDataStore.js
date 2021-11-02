@@ -2,7 +2,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import uniqueid from "lodash/uniqueId";
-import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@appserver/common/constants";
 import {
@@ -453,19 +452,18 @@ class UploadDataStore {
   };
 
   refreshFiles = (folderId, needUpdateTree = true, currentFile, folderInfo) => {
+    const {
+      files,
+      setFiles,
+      folders,
+      setFolders,
+      filter,
+      setFilter,
+    } = this.filesStore;
     if (
       this.selectedFolderStore.id === folderId &&
       window.location.pathname.indexOf("/history") === -1
     ) {
-      const {
-        files,
-        setFiles,
-        folders,
-        setFolders,
-        filter,
-        setFilter,
-      } = this.filesStore;
-
       const newFiles = files;
       const newFolders = folders;
 
@@ -523,14 +521,23 @@ class UploadDataStore {
         addNewFile();
       }
     } else if (needUpdateTree) {
-      const { expandedKeys, setExpandedKeys } = this.treeFoldersStore;
+      const {
+        expandedKeys,
+        setExpandedKeys,
+        treeFolders,
+      } = this.treeFoldersStore;
       const newExpandedKeys = expandedKeys.filter((x) => x !== folderId + "");
       setExpandedKeys(newExpandedKeys);
-    }
-  };
 
-  throttleRefreshFiles = (toFolderId, currentFile, folderInfo) => {
-    return this.refreshFiles(toFolderId, !!folderInfo, currentFile, folderInfo);
+      let path = this.selectedFolderStore.pathParts.slice(0);
+
+      loopTreeFolders(
+        path,
+        treeFolders,
+        this.filesStore.folders,
+        this.filesStore.folders.length
+      );
+    }
   };
 
   uploadFileChunks = async (
@@ -594,9 +601,10 @@ class UploadDataStore {
 
     const currentFile = this.files[indexOfFile];
     if (!currentFile) return Promise.resolve();
-    const { toFolderId, needConvert } = currentFile;
+    const { needConvert } = currentFile;
 
     let folderInfo = null;
+
     if (path[path.length - 2] === this.selectedFolderStore.id) {
       folderInfo = await getFolderInfo(path[path.length - 1]);
     }
@@ -620,7 +628,7 @@ class UploadDataStore {
             ? folderInfo.parentId
             : null;
 
-        return this.throttleRefreshFiles(toFolder, currentFile, folderInfo);
+        this.refreshFiles(toFolder, true, currentFile, folderInfo);
       }
       return Promise.resolve();
     }
