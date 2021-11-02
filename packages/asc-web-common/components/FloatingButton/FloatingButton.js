@@ -17,6 +17,8 @@ import ButtonMoveIcon from "../../../../public/images/button.move.react.svg";
 import ButtonDuplicateIcon from "../../../../public/images/button.duplicate.react.svg";
 import ButtonAlertIcon from "../../../../public/images/button.alert.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import ButtonPlusIcon from "../../../../public/images/actions.button.plus.react.svg";
+import ButtonMinusIcon from "../../../../public/images/actions.button.minus.react.svg";
 
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
@@ -50,6 +52,10 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
               <ButtonTrashIcon />
             ) : icon == "move" ? (
               <ButtonMoveIcon />
+            ) : icon == "plus" ? (
+              <ButtonPlusIcon />
+            ) : icon == "minus" ? (
+              <ButtonMinusIcon />
             ) : (
               <ButtonDuplicateIcon />
             )}
@@ -67,7 +73,15 @@ FloatingButton.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-  icon: PropTypes.oneOf(["upload", "file", "trash", "move", "duplicate"]),
+  icon: PropTypes.oneOf([
+    "upload",
+    "file",
+    "trash",
+    "move",
+    "duplicate",
+    "plus",
+    "minus",
+  ]),
   alert: PropTypes.bool,
   percent: PropTypes.number,
   onClick: PropTypes.func,
