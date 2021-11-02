@@ -32,7 +32,7 @@ const CampaignsBanner = (props) => {
           {subHeaderLabel}
         </Text>
 
-        {!imageLoad && <Loaders.Rectangle height="140px" borderRadius="5px" />}
+        {!imageLoad && <Loaders.Rectangle height="150px" borderRadius="5px" />}
         <img src={img} onMouseDown={onMouseDown} onLoad={handleImageLoaded} />
       </a>
 
