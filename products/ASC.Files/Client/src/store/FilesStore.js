@@ -223,6 +223,9 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
+    if (selected === "close" || selected === "none")
+      this.setBufferSelection(null);
+
     this.selected = selected;
     const files = this.files.concat(this.folders);
     this.selection = this.getFilesBySelected(files, selected);
@@ -402,6 +405,8 @@ class FilesStore {
     const { isDesktopClient } = this.authStore.settingsStore;
 
     if (isFile) {
+      const shouldEdit = canWebEdit(item.fileExst);
+      const shouldView = canViewedDocs(item.fileExst);
       let fileOptions = [
         //"open",
         'edit',
@@ -446,6 +451,7 @@ class FilesStore {
           'unsubscribe',
         ]);
 
+<<<<<<< HEAD
         if (!this.isWebEditSelected && !canViewedDocs(item.fileExst)) {
           fileOptions = this.removeOptions(fileOptions, ['sharing-settings']);
         }
@@ -453,6 +459,15 @@ class FilesStore {
 
       if (!this.isWebEditSelected) {
         fileOptions = this.removeOptions(fileOptions, ['download-as']);
+=======
+        if (!shouldEdit && !shouldView) {
+          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+        }
+      }
+
+      if (!this.canConvertSelected) {
+        fileOptions = this.removeOptions(fileOptions, ["download-as"]);
+>>>>>>> develop
       }
 
       if (!canConvert || isEncrypted) {
@@ -653,6 +668,7 @@ class FilesStore {
         );
       }
 
+<<<<<<< HEAD
       if (
         !canWebEdit(item.fileExst) &&
         !canViewedDocs(item.fileExst) &&
@@ -663,6 +679,18 @@ class FilesStore {
 
       if (!canWebEdit(item.fileExst) && canViewedDocs(item.fileExst)) {
         fileOptions = this.removeOptions(fileOptions, ['edit']);
+=======
+      if (!shouldEdit && !shouldView && !fileOptions.includes("view")) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "edit",
+          "preview",
+          "separator0",
+        ]);
+      }
+
+      if (!shouldEdit && shouldView) {
+        fileOptions = this.removeOptions(fileOptions, ["edit"]);
+>>>>>>> develop
       }
 
       return fileOptions;
@@ -1044,8 +1072,12 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
+<<<<<<< HEAD
       //const isCanWebEdit = canWebEdit(item.fileExst);
       const iconSize = this.viewAs === 'tile' && isMobile ? 32 : 24;
+=======
+      const iconSize = this.viewAs === "table" ? 24 : 32;
+>>>>>>> develop
       const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;
@@ -1110,7 +1142,6 @@ class FilesStore {
         webUrl,
         providerKey,
         canOpenPlayer,
-        //canWebEdit: isCanWebEdit,
         //canShare,
         canShare,
         canEdit,
@@ -1257,7 +1288,7 @@ class FilesStore {
     return !!withProvider;
   }
 
-  get isWebEditSelected() {
+  get canConvertSelected() {
     const { filesConverts } = this.formatsStore.docserviceStore;
 
     const selection = this.selection.length

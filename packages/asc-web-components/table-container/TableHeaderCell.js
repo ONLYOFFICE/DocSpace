@@ -16,7 +16,7 @@ const TableHeaderCell = ({
 }) => {
   const { title, enable, active, minWidth } = column;
 
-  const isActive = column.sortBy === sortBy || active;
+  const isActive = (sortBy && column.sortBy === sortBy) || active;
 
   const onClick = (e) => {
     column.onClick && column.onClick(column.sortBy, e);
@@ -33,7 +33,7 @@ const TableHeaderCell = ({
       isActive={isActive}
       showIcon={column.onClick}
       className="table-container_header-cell"
-      id={`column_${index + 1}`}
+      id={`column_${index}`}
       data-enable={enable}
       data-min-width={minWidth}
       data-default-size={defaultSize}
@@ -43,7 +43,7 @@ const TableHeaderCell = ({
         <div className="header-container-text-wrapper">
           <Text
             fontWeight={600}
-            color={globalColors.gray}
+            color={isActive ? globalColors.grayMain : globalColors.gray}
             className="header-container-text"
           >
             {enable ? title : ""}
@@ -51,14 +51,15 @@ const TableHeaderCell = ({
 
           <IconButton
             onClick={column.onIconClick ? onIconClick : onClick}
-            iconName="/static/images/folder arrow.react.svg"
+            iconName="/static/images/sort.desc.react.svg"
             className="header-container-text-icon"
             size="small"
+            color={isActive ? globalColors.grayMain : globalColors.gray}
           />
         </div>
         {resizable && (
           <div
-            data-column={`${index + 1}`}
+            data-column={`${index}`}
             className="resize-handle not-selectable"
             onMouseDown={onMouseDown}
           />

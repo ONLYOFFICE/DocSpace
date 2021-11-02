@@ -64,7 +64,12 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_element {
-    margin-left: ${(props) => (props.item.isFolder ? "-3px" : "-4px")};
+    /* margin-left: ${(props) => (props.isFolder ? "-3px" : "-4px")}; */
+  }
+
+  .table-container_row-checkbox {
+    padding-left: 4px;
+    width: 26px;
   }
 
   &:hover {
@@ -77,7 +82,7 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox-wrapper {
-    width: 50px;
+    min-width: 30px;
     margin-left: -24px;
     padding-left: 24px;
     border-bottom: 1px solid;
@@ -129,7 +134,8 @@ const StyledShare = styled.div`
     }
 
     .share-button-icon {
-      margin-right: 7px;
+      margin-right: 4px;
+      padding-top: 3px;
     }
   }
 `;
@@ -185,6 +191,7 @@ const FilesTableRow = (props) => {
         id={item.id}
         shared={item.shared}
         isFolder={item.isFolder}
+        isSmallIcon={true}
       />
     ) : null;
 
@@ -236,20 +243,24 @@ const FilesTableRow = (props) => {
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
         key={item.id}
-        item={item}
-        element={element}
         fileContextClick={fileContextClick}
-        onContentSelect={onContentFileSelect}
         onClick={onMouseClick}
         {...contextOptionsProps}
-        checked={checkedProps}
         isActive={isActive}
+        isFolder={item.isFolder}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
+        checked={checkedProps}
       >
         <TableCell {...dragStyles} {...selectionProp}>
-          <FileNameCell {...props} />
+          <FileNameCell
+            onContentSelect={onContentFileSelect}
+            checked={checkedProps}
+            element={element}
+            {...selectionProp}
+            {...props}
+          />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (

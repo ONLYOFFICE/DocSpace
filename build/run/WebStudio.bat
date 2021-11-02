@@ -1,2 +1,4 @@
-echo "RUN ASC.Web.Studio"
-call dotnet run --project ..\..\web\ASC.Web.Studio\ASC.Web.Studio.csproj --no-build --$STORAGE_ROOT=..\..\Data  --log__dir=..\..\Logs --log__name=studio
+@echo off
+
+PUSHD %~dp0..\..
+set servicepath=%cd%\web\ASC.Web.Studio\bin\Debug\ASC.Web.Studio.exe urls=http://0.0.0.0:5003 $STORAGE_ROOT=%cd%\Data  log:dir=%cd%\Logs log:name=studio pathToConf=%cd%\config core:products:folder=%cd%\products

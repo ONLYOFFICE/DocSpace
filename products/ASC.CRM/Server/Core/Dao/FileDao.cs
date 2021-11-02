@@ -33,6 +33,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.Files.Core;
 using ASC.Web.Files.Api;
@@ -49,12 +50,14 @@ namespace ASC.CRM.Core.Dao
         private FilesIntegration _filesIntegration;
         public FileDao(FilesIntegration filesIntegration,
                        DbContextManager<CrmDbContext> dbContextManager,
+                       DbContextManager<TenantDbContext> dbContextManager1,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        IOptionsMonitor<ILog> logger,
                        ICache ascCache,
                        IMapper mapper) :
             base(dbContextManager,
+                dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

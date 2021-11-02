@@ -120,7 +120,7 @@ namespace ASC.MessagingSystem.DbSender
             if (events == null) return;
 
             using var scope = ServiceProvider.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+            using var ef = scope.ServiceProvider.GetService<DbContextManager<Messages>>().Get("messages");
             using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
@@ -194,7 +194,7 @@ namespace ASC.MessagingSystem.DbSender
             dbContext.SaveChanges();
         }
 
-        private static void AddAuditEvent(EventMessage message, MessagesContext dbContext)
+        private static void AddAuditEvent(EventMessage message, Messages dbContext)
         {
             var ae = new AuditEvent
             {
@@ -270,6 +270,12 @@ namespace ASC.MessagingSystem.DbSender
         }
     }
 
+    public class Messages : MessagesContext
+    {
+        public DbSet<AuditEvent> AuditEvents { get; set; }
+        public DbSet<DbTenant> Tenants { get; set; }
+        public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
+    }
     public class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)

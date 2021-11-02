@@ -8,14 +8,18 @@ import { isMobile } from 'react-device-detect';
 import { tablet, desktop } from '@appserver/components/utils/device';
 import NoUserSelect from '@appserver/components/utils/commonStyles';
 const StyledSectionHeader = styled.div`
+<<<<<<< HEAD
   position: relative;
   height: 41px;
+=======
+  height: 42px;
+>>>>>>> develop
   margin-right: 24px;
-  margin-top: -1px;
   ${NoUserSelect}
   ${isMobile &&
   css`
     height: 20px;
+<<<<<<< HEAD
     /* height: 49px;
     min-height: 48px;
     max-height: 49px; */
@@ -24,6 +28,14 @@ const StyledSectionHeader = styled.div`
     /* @media ${tablet} {
       margin-top: 55px;
     } */
+=======
+    width: ${(props) => !props.isLoaded && "100%"};
+
+    margin-top: 62px;
+    @media ${tablet} {
+      margin-top: 48px;
+    }
+>>>>>>> develop
   `}
 
   @media ${desktop} {
@@ -52,6 +64,7 @@ const StyledSectionHeader = styled.div`
   }
 
   .section-header {
+    height: 50px;
     ${isMobile &&
     css`
       max-width: calc(100vw - 32px);

@@ -479,9 +479,17 @@ class FilesActionStore {
   };
 
   openLocationAction = (locationId, isFolder) => {
+    const { createNewExpandedKeys, setExpandedKeys } = this.treeFoldersStore;
+
     const locationFilter = isFolder ? this.filesStore.filter : null;
     this.filesStore.setBufferSelection(null);
-    return this.filesStore.fetchFiles(locationId, locationFilter);
+    return this.filesStore
+      .fetchFiles(locationId, locationFilter)
+      .then((data) => {
+        const pathParts = data.selectedFolder.pathParts;
+        const newExpandedKeys = createNewExpandedKeys(pathParts);
+        setExpandedKeys(newExpandedKeys);
+      });
     /*.then(() =>
       //isFolder ? null : this.selectRowAction(!checked, item)
     );*/
@@ -595,13 +603,14 @@ class FilesActionStore {
       setConflictResolveDialogVisible,
       setConflictResolveDialogItems,
     } = this.dialogsStore;
+    const { setBufferSelection } = this.filesStore;
 
     let conflicts;
 
     try {
       conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
     } catch (err) {
-      this.filesStore.setBufferSelection(null);
+      setBufferSelection(null);
       return toastr.error(err.message ? err.message : err);
     }
 
@@ -613,10 +622,12 @@ class FilesActionStore {
       try {
         await this.uploadDataStore.itemOperationToFolder(operationData);
       } catch (err) {
-        this.filesStore.setBufferSelection(null);
+        setBufferSelection(null);
         return toastr.error(err.message ? err.message : err);
       }
     }
+
+    setBufferSelection(null);
   };
 
   isAvailableOption = (option) => {
@@ -627,7 +638,7 @@ class FilesActionStore {
     } = this.treeFoldersStore;
     const {
       isAccessedSelected,
-      isWebEditSelected,
+      canConvertSelected,
       isThirdPartyRootSelection,
       hasSelection,
     } = this.filesStore;
@@ -641,7 +652,7 @@ class FilesActionStore {
       case "download":
         return hasSelection;
       case "downloadAs":
-        return isWebEditSelected && hasSelection;
+        return canConvertSelected;
       case "moveTo":
         return (
           !isThirdPartyRootSelection &&
@@ -685,6 +696,7 @@ class FilesActionStore {
           return {
             label: t("Share"),
             onClick: () => setSharingPanelVisible(true),
+            iconUrl: "/static/images/share.react.svg",
           };
 
       case "copy":
@@ -693,6 +705,7 @@ class FilesActionStore {
           return {
             label: t("Translations:Copy"),
             onClick: () => setCopyPanelVisible(true),
+            iconUrl: "/static/images/copyTo.react.svg",
           };
 
       case "download":
@@ -704,6 +717,7 @@ class FilesActionStore {
               this.downloadAction(
                 t("Translations:ArchivingData")
               ).catch((err) => toastr.error(err)),
+            iconUrl: "/static/images/download.react.svg",
           };
 
       case "downloadAs":
@@ -712,6 +726,7 @@ class FilesActionStore {
           return {
             label: t("Translations:DownloadAs"),
             onClick: () => setDownloadDialogVisible(true),
+            iconUrl: "/static/images/downloadAs.react.svg",
           };
 
       case "moveTo":
@@ -720,6 +735,7 @@ class FilesActionStore {
           return {
             label: t("MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
+            iconUrl: "/static/images/move.react.svg",
           };
 
       case "delete":
@@ -742,6 +758,7 @@ class FilesActionStore {
                 );
               }
             },
+            iconUrl: "/static/images/delete.react.svg",
           };
     }
   };
@@ -857,11 +874,13 @@ class FilesActionStore {
       .set("restore", {
         label: t("Translations:Restore"),
         onClick: () => setMoveToPanelVisible(true),
+        iconUrl: "/static/images/move.react.svg",
       })
       .set("delete", deleteOption)
       .set("emptyRecycleBin", {
         label: t("EmptyRecycleBin"),
         onClick: () => setEmptyTrashDialogVisible(true),
+        iconUrl: "/static/images/delete.react.svg",
       });
     return this.convertToArray(itemsCollection);
   };
