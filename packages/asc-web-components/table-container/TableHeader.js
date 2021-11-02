@@ -134,7 +134,12 @@ class TableHeader extends React.Component {
 
     const clearSize = gridTemplateColumns.map((c) => this.getSubstring(c));
     const maxSize = Math.max.apply(Math, clearSize);
-    const defaultColSize = containerWidth / filterColumns.length;
+
+    const defaultSize = columns[activeColumnIndex - 1].defaultSize;
+
+    const defaultColSize = defaultSize
+      ? defaultSize
+      : containerWidth / filterColumns.length;
     const indexOfMaxSize = clearSize.findIndex((s) => s === maxSize);
 
     const newSize = maxSize - defaultColSize;
@@ -231,8 +236,8 @@ class TableHeader extends React.Component {
     const storageSize =
       !resetColumnsSize && localStorage.getItem(columnStorageName);
 
-    const defaultSize = this.props.columns.find((col) => col.defaultSize)
-      ?.defaultSize;
+     const defaultSize = this.props.columns.find((col) => col.defaultSize)
+       ?.defaultSize;
 
     //TODO: Fixed columns size if something went wrong
     if (storageSize) {

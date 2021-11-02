@@ -15,7 +15,11 @@ const StyledSectionHeader = styled.div`
   css`
     height: 20px;
     width: ${(props) => !props.isLoaded && "100%"};
-    margin-top: 64px;
+
+    margin-top: 62px;
+    @media ${tablet} {
+      margin-top: 48px;
+    }
   `}
 
   @media ${desktop} {

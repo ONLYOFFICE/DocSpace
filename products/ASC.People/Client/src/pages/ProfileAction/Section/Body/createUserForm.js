@@ -451,6 +451,7 @@ class CreateUserForm extends React.Component {
       croppedAvatar,
       passwordSettings,
       language,
+      isTabletView,
     } = this.props;
     const { regDateCaption, userPostCaption, groupCaption } = customNames;
 
@@ -490,7 +491,10 @@ class CreateUserForm extends React.Component {
               saveButtonLabel={t("Common:SaveButton")}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
+          <MainFieldsContainer
+            ref={this.mainFieldsContainerRef}
+            {...(!isTabletView && { marginBottom: "32px" })}
+          >
             <TextField
               isRequired={true}
               hasError={errors.firstName}
@@ -638,7 +642,10 @@ class CreateUserForm extends React.Component {
             />
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("Translations:Comments")}>
+        <InfoFieldContainer
+          headerText={t("Translations:Comments")}
+          marginBottom={"42px"}
+        >
           <Textarea
             placeholder={t("WriteComment")}
             name="notes"
@@ -648,7 +655,10 @@ class CreateUserForm extends React.Component {
             tabIndex={9}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("ContactInformation")}>
+        <InfoFieldContainer
+          headerText={t("ContactInformation")}
+          marginBottom={"42px"}
+        >
           <ContactsField
             pattern={pattern.contact}
             contacts={contacts.contact}
@@ -660,7 +670,10 @@ class CreateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("Translations:SocialProfiles")}>
+        <InfoFieldContainer
+          headerText={t("Translations:SocialProfiles")}
+          {...(isTabletView && { marginBottom: "36px" })}
+        >
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -718,6 +731,7 @@ export default withRouter(
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
     userFormValidation: auth.settingsStore.userFormValidation,
+    isTabletView: auth.settingsStore.isTabletView,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(
