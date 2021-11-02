@@ -616,7 +616,9 @@ class UploadDataStore {
         const toFolder =
           currentFile.fileInfo.folderId === this.selectedFolderStore.id
             ? currentFile.fileInfo.folderId
-            : toFolderId;
+            : folderInfo
+            ? toFolderId
+            : null;
 
         return this.throttleRefreshFiles(toFolder, currentFile, folderInfo);
       }
