@@ -520,23 +520,25 @@ class UploadDataStore {
       } else {
         addNewFile();
       }
-    } else if (needUpdateTree) {
-      const {
-        expandedKeys,
-        setExpandedKeys,
-        treeFolders,
-      } = this.treeFoldersStore;
-      const newExpandedKeys = expandedKeys.filter((x) => x !== folderId + "");
-      setExpandedKeys(newExpandedKeys);
 
-      let path = this.selectedFolderStore.pathParts.slice(0);
+      if (needUpdateTree) {
+        const {
+          expandedKeys,
+          setExpandedKeys,
+          treeFolders,
+        } = this.treeFoldersStore;
+        const newExpandedKeys = expandedKeys.filter((x) => x !== folderId + "");
+        setExpandedKeys(newExpandedKeys);
 
-      loopTreeFolders(
-        path,
-        treeFolders,
-        this.filesStore.folders,
-        this.filesStore.folders.length
-      );
+        let path = this.selectedFolderStore.pathParts.slice(0);
+
+        loopTreeFolders(
+          path,
+          treeFolders,
+          this.filesStore.folders,
+          this.filesStore.folders.length
+        );
+      }
     }
   };
 
