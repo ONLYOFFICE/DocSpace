@@ -70,7 +70,7 @@ namespace ASC.FederatedLogin.Helpers
 
             var stateUriBuilder = new UriBuilder(u.Scheme, u.Host, u.Port, $"thirdparty/{loginProvider.Name.ToLower()}/code");
 
-            if (additionalStateArgs != null)
+            if (additionalStateArgs != null && additionalStateArgs.Any())
             {
                 var stateQuery = "";
                 stateQuery = additionalStateArgs.Keys
