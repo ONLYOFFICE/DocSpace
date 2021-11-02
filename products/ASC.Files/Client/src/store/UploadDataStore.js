@@ -337,7 +337,7 @@ class UploadDataStore {
             }
           });
 
-          this.refreshFiles(toFolderId, false, file);
+          this.refreshFiles(file.fileInfo.folderId, false, file);
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
         }
@@ -471,19 +471,26 @@ class UploadDataStore {
 
       const addNewFile = () => {
         if (folderInfo) {
-          folderInfo && newFolders.unshift(folderInfo);
-          setFolders(newFolders);
-          const newFilter = filter;
-          newFilter.total = newFilter.total += 1;
-          setFilter(newFilter);
+          const isFolderExist = newFolders.find((x) => x.id === folderInfo.id);
+          if (!isFolderExist && folderInfo) {
+            newFolders.unshift(folderInfo);
+            setFolders(newFolders);
+            const newFilter = filter;
+            newFilter.total = newFilter.total += 1;
+            setFilter(newFilter);
+          }
         } else {
-          currentFile &&
-            currentFile.fileInfo &&
+          const isFileExist = newFiles.find(
+            (x) => x.id === currentFile.fileInfo.id
+          );
+
+          if (!isFileExist && currentFile && currentFile.fileInfo) {
             newFiles.unshift(currentFile.fileInfo);
-          setFiles(newFiles);
-          const newFilter = filter;
-          newFilter.total = newFilter.total += 1;
-          setFilter(newFilter);
+            setFiles(newFiles);
+            const newFilter = filter;
+            newFilter.total = newFilter.total += 1;
+            setFilter(newFilter);
+          }
         }
       };
 
@@ -494,6 +501,7 @@ class UploadDataStore {
         filter.page !== 0;
 
       if ((!currentFile && !folderInfo) || isFiltered) return;
+      if (folderInfo && this.selectedFolderStore.id === folderInfo.id) return;
 
       if (folderInfo) {
         const folderIndex = folders.findIndex((f) => f.id === folderInfo.id);
@@ -522,7 +530,7 @@ class UploadDataStore {
   };
 
   throttleRefreshFiles = (toFolderId, currentFile, folderInfo) => {
-    return this.refreshFiles(toFolderId, true, currentFile, folderInfo);
+    return this.refreshFiles(toFolderId, !!folderInfo, currentFile, folderInfo);
   };
 
   uploadFileChunks = async (
@@ -605,9 +613,12 @@ class UploadDataStore {
     } else {
       //TODO:
       if (currentFile.action === "uploaded") {
-        const file =
-          toFolderId === this.selectedFolderStore.id ? currentFile : null;
-        return this.throttleRefreshFiles(toFolderId, file, folderInfo);
+        const toFolder =
+          currentFile.fileInfo.folderId === this.selectedFolderStore.id
+            ? currentFile.fileInfo.folderId
+            : toFolderId;
+
+        return this.throttleRefreshFiles(toFolder, currentFile, folderInfo);
       }
       return Promise.resolve();
     }
