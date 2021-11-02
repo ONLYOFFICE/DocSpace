@@ -187,6 +187,32 @@ const Form = (props) => {
 
   const { error, confirmedEmail } = match.params;
 
+  useEffect(() => {
+    const profile = localStorage.getItem("profile");
+
+    if (!profile) return;
+
+    thirdPartyLogin(profile)
+      .then(() => {
+        const redirectPath = localStorage.getItem("redirectPath");
+
+        if (redirectPath) {
+          localStorage.removeItem("redirectPath");
+          window.location.href = redirectPath;
+        } else history.push(defaultPage);
+      })
+      .catch(() => {
+        toastr.error(
+          t("Common:ProviderNotConnected"),
+          t("Common:ProviderLoginError")
+        );
+      })
+      .finally(() => {
+        localStorage.removeItem("profile");
+        localStorage.removeItem("code");
+      });
+  }, [t]);
+
   const onKeyDown = (e) => {
     //console.log("onKeyDown", e.key);
     if (e.key === "Enter") {
@@ -206,7 +232,7 @@ const Form = (props) => {
   //const throttledKeyPress = throttle(onKeyPress, 500);
 
   const authCallback = (profile) => {
-    thirdPartyLogin(profile.Serialized)
+    thirdPartyLogin(profile)
       .then(() => {
         setIsLoading(true);
         const redirectPath = localStorage.getItem("redirectPath");
@@ -335,11 +361,13 @@ const Form = (props) => {
     const { getOAuthToken, getLoginLink } = props;
 
     try {
-      const tokenGetterWin = window.open(
-        url,
-        "login",
-        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-      );
+      const tokenGetterWin = isDesktop
+        ? (window.location.href = url)
+        : window.open(
+            url,
+            "login",
+            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+          );
 
       getOAuthToken(tokenGetterWin).then((code) => {
         const token = window.btoa(
