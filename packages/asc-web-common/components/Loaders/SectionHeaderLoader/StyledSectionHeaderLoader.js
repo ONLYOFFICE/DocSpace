@@ -12,6 +12,7 @@ const StyledContainer = styled.div`
   margin-bottom: 18px;
 
   @media ${mobile}, ${tablet} {
+    margin-top: 23px;
     grid-template-columns: 100px 1fr 42px;
   }
 `;

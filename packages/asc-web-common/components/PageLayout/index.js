@@ -376,7 +376,8 @@ class PageLayout extends React.Component {
                     showText={showText}
                     widthProp={width}
                     unpinArticle={this.unpinArticle}
-                    pinned={isArticlePinned}>
+                    pinned={isArticlePinned}
+                    visible={isArticleVisible}>
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}

@@ -14,7 +14,7 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.TelegramUser", b =>
                 {
@@ -26,7 +26,7 @@ namespace ASC.Core.Common.Migrations.MySql.TelegramDbContextMySql
                         .HasColumnType("varchar(38)")
                         .HasColumnName("portal_user_id")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("TelegramUserId")
                         .HasColumnType("int")

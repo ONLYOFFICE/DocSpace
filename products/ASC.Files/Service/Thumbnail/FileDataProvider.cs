@@ -23,6 +23,7 @@ using System.Linq.Expressions;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
@@ -35,22 +36,26 @@ namespace ASC.Files.ThumbnailBuilder
     {
         private readonly ThumbnailSettings thumbnailSettings;
         private readonly ICache cache;
-        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
-        private FilesDbContext filesDbContext { get => LazyFilesDbContext.Value; }
+        private Lazy<Core.EF.FilesDbContext> LazyFilesDbContext { get; }
+        private Core.EF.FilesDbContext filesDbContext { get => LazyFilesDbContext.Value; }
+        private Lazy<TenantDbContext> LazyTenantDbContext { get; }
+        private TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
         private Lazy<CoreDbContext> LazyCoreDbContext { get; }
         private CoreDbContext coreDbContext { get => LazyCoreDbContext.Value; }
         private readonly string cacheKey;
 
         public FileDataProvider(
-            ThumbnailSettings thumbnailSettings,
+            Common.Utils.ConfigurationExtension configurationExtension,
             ICache ascCache,
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<Core.EF.FilesDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> tenantdbContextManager,
             DbContextManager<CoreDbContext> coredbContextManager
             )
         {
-            this.thumbnailSettings = thumbnailSettings;
+            thumbnailSettings = ThumbnailSettings.GetInstance(configurationExtension);
             cache = ascCache;
-            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
+            LazyFilesDbContext = new Lazy<Core.EF.FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
+            LazyTenantDbContext = new Lazy<TenantDbContext>(() => tenantdbContextManager.Get(thumbnailSettings.ConnectionStringName));
             LazyCoreDbContext = new Lazy<CoreDbContext>(() => coredbContextManager.Get(thumbnailSettings.ConnectionStringName));
             cacheKey = "PremiumTenants";
         }
@@ -112,13 +117,13 @@ namespace ASC.Files.ThumbnailBuilder
                 )
                 .GroupBy(r => r.tariff.Tenant)
                 .Select(r => new { tenant = r.Key, stamp = r.Max(b => b.tariff.Stamp) })
-                .Where(r=> r.stamp > DateTime.UtcNow);
+                .Where(r => r.stamp > DateTime.UtcNow);
 
-                result = search.Select(r=> r.tenant).ToArray();
+            result = search.Select(r => r.tenant).ToArray();
 
-                cache.Insert(cacheKey, result, DateTime.UtcNow.AddHours(1));
+            cache.Insert(cacheKey, result, DateTime.UtcNow.AddHours(1));
 
-                return result;
+            return result;
         }
 
         private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)
@@ -134,7 +139,7 @@ namespace ASC.Files.ThumbnailBuilder
             }
 
             return search
-                .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+                .Join(TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == TenantStatus.Active)
                 .Select(r => new FileData<int>(r.DbFile.TenantId, r.DbFile.Id, ""))
                 .ToList();

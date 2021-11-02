@@ -8,12 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    public class MySqlUserDbContext : UserDbContext
-    {
+    public class MySqlUserDbContext : UserDbContext { }
 
-    }
 
-    public class PostgreUserDbContext : UserDbContext
+    public class PostgreSqlUserDbContext : UserDbContext
     {
 
     }
@@ -36,7 +34,7 @@ namespace ASC.Core.Common.EF
                 return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlUserDbContext() } ,
-                    { Provider.Postgre, () => new PostgreUserDbContext() } ,
+                    { Provider.PostgreSql, () => new PostgreSqlUserDbContext() } ,
                 };
             }
         }

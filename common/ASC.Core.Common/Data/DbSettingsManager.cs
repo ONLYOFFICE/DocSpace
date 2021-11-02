@@ -119,8 +119,9 @@ namespace ASC.Core.Data
         internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }
         internal AuthContext AuthContext { get; set; }
         internal TenantManager TenantManager { get; set; }
-        internal WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
         internal Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; set; }
+        internal WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
+        
 
         public DbSettingsManager()
         {

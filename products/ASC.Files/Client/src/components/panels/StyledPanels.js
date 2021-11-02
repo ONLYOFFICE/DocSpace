@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
-import { tablet } from "@appserver/components/utils/device";
+import { desktop, tablet } from "@appserver/components/utils/device";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -256,7 +256,16 @@ const StyledHeaderContent = styled.div`
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
-    margin-left: 16px;
+  }
+
+  padding-right: 0;
+
+  @media ${desktop} {
+    .files-operations-header,
+    .sharing_panel-header {
+      margin: 12px 0;
+      font-size: 18px;
+    }
   }
 `;
 
@@ -367,6 +376,21 @@ const StyledBody = styled.div`
 const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
+
+  width: calc(100% + 16px) !important;
+
+  .link-row__container {
+    height: 47px;
+  }
+
+  .link-row__container,
+  .sharing-row {
+    .styled-element {
+      margin-right: 0;
+      margin-left: 0;
+    }
+  }
+
   .row_content {
     overflow: visible;
     height: auto;
@@ -374,8 +398,11 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing-row {
     margin: 0 16px;
-    width: calc(100% - 16px);
+    //width: calc(100% - 16px);
     box-sizing: border-box;
+
+    padding-right: 15px;
+    border-bottom: none;
   }
 
   .nav-thumb-vertical {
@@ -460,6 +487,30 @@ const StyledSharingBody = styled(Scrollbar)`
     right: 0;
     margin: auto;
   }
+
+  @media ${desktop} {
+    .link-row__container {
+      height: 41px;
+
+      .link-row {
+        min-height: 41px;
+      }
+    }
+
+    .sharing-row {
+      min-height: 41px;
+      //padding-right: 15px;
+
+      .sharing_panel-remove-icon {
+        font-size: 12px;
+      }
+    }
+
+    .sharing_panel-text,
+    .sharing_panel-link span {
+      font-size: 13px;
+    }
+  }
 `;
 
 const StyledFooter = styled.div`
@@ -478,6 +529,7 @@ const StyledFooter = styled.div`
   .sharing_panel-checkbox {
     span {
       font-weight: 600;
+      font-size: 14px;
     }
 
     .checkbox {
@@ -490,6 +542,21 @@ const StyledFooter = styled.div`
   }
   .new_files_panel-button {
     margin-right: 8px;
+  }
+
+  @media ${desktop} {
+    padding: 10px 0;
+    min-height: 57px;
+
+    .sharing_panel-checkbox {
+      span {
+        font-size: 13px;
+      }
+    }
+
+    .sharing_panel-button {
+      margin-top: 2px;
+    }
   }
 `;
 
@@ -508,6 +575,11 @@ const StyledLinkRow = styled.div`
   .link-row {
     ${(props) => !props.withToggle && "border-bottom:none;"}
   }
+
+  .sharing-row__toggle-button {
+    margin-top: 1px;
+  }
+
   .row_content {
     display: grid;
     grid-template-columns: 1fr 28px;
@@ -516,6 +588,12 @@ const StyledLinkRow = styled.div`
 
   .combo-button {
     background: transparent;
+  }
+
+  @media ${desktop} {
+    .sharing-row__toggle-button {
+      margin-top: 0;
+    }
   }
 `;
 

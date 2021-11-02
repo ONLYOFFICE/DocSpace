@@ -9,6 +9,7 @@ import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
 import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import withLoader from "../../../../HOCs/withLoader";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -333,20 +334,11 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const {
-      t,
-      sectionWidth,
-      tReady,
-      isFiltered,
-      viewAs,
-      personal,
-    } = this.props;
+    const { t, sectionWidth, isFiltered, viewAs, personal } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
 
-    return !isFiltered ? null : !tReady ? (
-      <Loaders.Filter />
-    ) : (
+    return !isFiltered ? null : (
       <FilterInput
         sectionWidth={sectionWidth}
         getFilterData={this.getData}
@@ -417,7 +409,7 @@ export default inject(
   withRouter(
     withLayoutSize(
       withTranslation(["Home", "Common", "Translations"])(
-        observer(SectionFilterContent)
+        withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
       )
     )
   )

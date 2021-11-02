@@ -45,7 +45,7 @@ namespace ASC.Api.Core.Middleware
                 StatusCode = (int)status
             };
 
-            context.Result = result; ;
+            context.Result = result;
         }
     }
 

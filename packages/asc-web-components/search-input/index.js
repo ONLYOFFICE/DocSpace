@@ -48,11 +48,11 @@ class SearchInput extends React.Component {
 
   render() {
     //console.log("Search input render");
-    let clearButtonSize = 15;
+    let clearButtonSize = 16;
     switch (this.props.size) {
       case "base":
         clearButtonSize =
-          !!this.state.inputValue || this.props.showClearButton ? 12 : 15;
+          !!this.state.inputValue || this.props.showClearButton ? 12 : 16;
         break;
       case "middle":
         clearButtonSize =
@@ -60,7 +60,7 @@ class SearchInput extends React.Component {
         break;
       case "big":
         clearButtonSize =
-          !!this.state.inputValue || this.props.showClearButton ? 19 : 21;
+          !!this.state.inputValue || this.props.showClearButton ? 18 : 22;
         break;
       case "huge":
         clearButtonSize =

@@ -33,9 +33,13 @@ const StyledSection = styled.section`
     right: 15px;
     bottom: 21px;
 
-    @media ${tablet} {
-      bottom: 83px;
-    }
+    ${(props) =>
+      !props.visible &&
+      css`
+        @media ${tablet} {
+          bottom: 83px;
+        }
+      `}
   }
 
   .layout-progress-second-bar {
@@ -43,9 +47,13 @@ const StyledSection = styled.section`
     right: 15px;
     bottom: 83px;
 
-    @media ${tablet} {
-      bottom: 145px;
-    }
+    ${(props) =>
+      !props.visible &&
+      css`
+        @media ${tablet} {
+          bottom: 145px;
+        }
+      `}
   }
 
   .section-header_filter {

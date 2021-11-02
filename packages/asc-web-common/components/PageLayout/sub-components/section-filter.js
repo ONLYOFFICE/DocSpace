@@ -4,7 +4,7 @@ import equal from "fast-deep-equal/react";
 import { tablet, desktop } from "@appserver/components/utils/device";
 
 const StyledSectionFilter = styled.div`
-  margin: 11px 24px 9px 0;
+  margin: 11px 24px 0 0;
 
   @media ${desktop} {
     ${(props) =>
@@ -12,6 +12,7 @@ const StyledSectionFilter = styled.div`
       css`
         margin-left: -4px;
         margin-right: 20px;
+        margin-bottom: 9px;
       `};
   }
 
