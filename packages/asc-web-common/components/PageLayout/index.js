@@ -335,6 +335,7 @@ class PageLayout extends React.Component {
                     widthProp={width}
                     unpinArticle={this.unpinArticle}
                     pinned={isArticlePinned}
+                    visible={isArticleVisible}
                   >
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
@@ -357,7 +358,10 @@ class PageLayout extends React.Component {
                             paddingRight: "20px",
                           }}
                         ></div>
-                        <SubSectionFilter className="section-header_filter">
+                        <SubSectionFilter
+                          className="section-header_filter"
+                          viewAs={viewAs}
+                        >
                           {sectionFilterContent
                             ? sectionFilterContent.props.children
                             : null}

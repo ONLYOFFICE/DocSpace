@@ -33,11 +33,10 @@ const StyledTableContainer = styled.div`
     border-right: 2px solid #d0d5da;
   }
 
-  .table-container_group-menu {
-    padding-left: 24px;
-    margin-left: -24px;
-    padding-right: 24px;
-    margin-right: -24px;
+  .table-container_group-menu,
+  .table-container_header {
+    padding: 0 24px;
+    margin: 0 -24px;
 
     border-bottom: 1px solid;
     border-image-slice: 1;
@@ -138,7 +137,10 @@ const StyledTableHeaderCell = styled.div`
   cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
 
   .header-container-text-icon {
-    padding: 16px 0 0 4px;
+    height: 8px;
+    width: 8px;
+
+    padding: 16px 0 16px 4px;
 
     display: ${(props) =>
       props.isActive && props.showIcon ? "block" : "none"};
@@ -146,7 +148,7 @@ const StyledTableHeaderCell = styled.div`
       props.sorted &&
       css`
         transform: scale(1, -1);
-        padding: 14px 0 0 4px;
+        padding: 14px 0 14px 4px;
       `}
   }
 

@@ -98,7 +98,7 @@ class FilesStore {
   };
 
   setStartDrag = (startDrag) => {
-    this.selection = this.selection.filter((x) => !x.isThirdPartyFolder); // removed root thirdparty folders
+    this.selection = this.selection.filter((x) => !x.providerKey); // removed root thirdparty folders
     this.startDrag = startDrag;
   };
 
@@ -227,6 +227,9 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
+    if (selected === "close" || selected === "none")
+      this.setBufferSelection(null);
+
     this.selected = selected;
     const files = this.files.concat(this.folders);
     this.selection = this.getFilesBySelected(files, selected);
@@ -426,6 +429,8 @@ class FilesStore {
     const { isDesktopClient } = this.authStore.settingsStore;
 
     if (isFile) {
+      const shouldEdit = canWebEdit(item.fileExst);
+      const shouldView = canViewedDocs(item.fileExst);
       let fileOptions = [
         //"open",
         "edit",
@@ -470,12 +475,12 @@ class FilesStore {
           "unsubscribe",
         ]);
 
-        if (!this.isWebEditSelected && !canViewedDocs(item.fileExst)) {
+        if (!shouldEdit && !shouldView) {
           fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
         }
       }
 
-      if (!this.isWebEditSelected) {
+      if (!this.canConvertSelected) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
       }
 
@@ -698,11 +703,7 @@ class FilesStore {
         );
       }
 
-      if (
-        !canWebEdit(item.fileExst) &&
-        !canViewedDocs(item.fileExst) &&
-        !fileOptions.includes("view")
-      ) {
+      if (!shouldEdit && !shouldView && !fileOptions.includes("view")) {
         fileOptions = this.removeOptions(fileOptions, [
           "edit",
           "preview",
@@ -710,7 +711,7 @@ class FilesStore {
         ]);
       }
 
-      if (!canWebEdit(item.fileExst) && canViewedDocs(item.fileExst)) {
+      if (!shouldEdit && shouldView) {
         fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
 
@@ -1062,7 +1063,7 @@ class FilesStore {
     const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
-    const iconSize = this.viewAs === "tile" ? 32 : 24;
+    const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
     const icon = this.fileActionStore.extension
       ? getFileIcon(`.${this.fileActionStore.extension}`, iconSize)
       : getFolderIcon(null, iconSize);
@@ -1133,8 +1134,7 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
-      //const isCanWebEdit = canWebEdit(item.fileExst);
-      const iconSize = this.viewAs === "tile" ? 32 : 24;
+      const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
       const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;
@@ -1203,7 +1203,6 @@ class FilesStore {
         webUrl,
         providerKey,
         canOpenPlayer,
-        //canWebEdit: isCanWebEdit,
         //canShare,
         canShare,
         canEdit,
@@ -1367,7 +1366,7 @@ class FilesStore {
     return !!withProvider;
   }
 
-  get isWebEditSelected() {
+  get canConvertSelected() {
     const { filesConverts } = this.formatsStore.docserviceStore;
 
     const selection = this.selection.length

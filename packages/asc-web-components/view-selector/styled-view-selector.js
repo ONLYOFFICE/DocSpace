@@ -40,9 +40,7 @@ const lastItemStyle = css`
 
 const IconWrapper = styled.div`
   position: relative;
-  width: 32px;
-  height: 100%;
-  padding: 8px;
+  padding: 7px;
   box-sizing: border-box;
   border: 1px solid;
 
@@ -80,8 +78,8 @@ const IconWrapper = styled.div`
           `}
   }
   svg {
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
 
     ${(props) =>
       !props.isDisabled

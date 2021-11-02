@@ -63,6 +63,10 @@ const StyledTableRow = styled(TableRow)`
       "url(images/cursor.palm.svg), auto"};
   }
 
+  .table-container_element {
+    margin-left: ${(props) => (props.item.isFolder ? "-3px" : "-4px")};
+  }
+
   &:hover {
     .table-container_row-checkbox-wrapper {
       ${(props) => props.dragging && rowCheckboxDraggingHoverStyle}
@@ -125,7 +129,8 @@ const StyledShare = styled.div`
     }
 
     .share-button-icon {
-      margin-right: 7px;
+      margin-right: 4px;
+      padding-top: 3px;
     }
   }
 `;
@@ -181,6 +186,7 @@ const FilesTableRow = (props) => {
         id={item.id}
         shared={item.shared}
         isFolder={item.isFolder}
+        isSmallIcon={true}
       />
     ) : null;
 

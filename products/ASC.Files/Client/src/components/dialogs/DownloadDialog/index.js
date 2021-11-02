@@ -52,7 +52,7 @@ class DownloadDialogComponent extends React.Component {
         if (item.checked) {
           if (item.fileExst) {
             const format =
-              item.format === this.props.t("OriginalFormat")
+              !item.format || item.format === this.props.t("OriginalFormat")
                 ? item.fileExst
                 : item.format;
             if (!singleFileUrl) {
