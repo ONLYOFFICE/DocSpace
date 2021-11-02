@@ -223,8 +223,7 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
-    if (selected === "close" || selected === "none")
-      this.setBufferSelection(null);
+    if (selected === 'close' || selected === 'none') this.setBufferSelection(null);
 
     this.selected = selected;
     const files = this.files.concat(this.folders);
@@ -451,23 +450,13 @@ class FilesStore {
           'unsubscribe',
         ]);
 
-<<<<<<< HEAD
-        if (!this.isWebEditSelected && !canViewedDocs(item.fileExst)) {
+        if (!shouldEdit && !shouldView) {
           fileOptions = this.removeOptions(fileOptions, ['sharing-settings']);
         }
       }
 
-      if (!this.isWebEditSelected) {
-        fileOptions = this.removeOptions(fileOptions, ['download-as']);
-=======
-        if (!shouldEdit && !shouldView) {
-          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
-        }
-      }
-
       if (!this.canConvertSelected) {
-        fileOptions = this.removeOptions(fileOptions, ["download-as"]);
->>>>>>> develop
+        fileOptions = this.removeOptions(fileOptions, ['download-as']);
       }
 
       if (!canConvert || isEncrypted) {
@@ -668,29 +657,12 @@ class FilesStore {
         );
       }
 
-<<<<<<< HEAD
-      if (
-        !canWebEdit(item.fileExst) &&
-        !canViewedDocs(item.fileExst) &&
-        !fileOptions.includes('view')
-      ) {
+      if (!shouldEdit && !shouldView && !fileOptions.includes('view')) {
         fileOptions = this.removeOptions(fileOptions, ['edit', 'preview', 'separator0']);
       }
 
-      if (!canWebEdit(item.fileExst) && canViewedDocs(item.fileExst)) {
-        fileOptions = this.removeOptions(fileOptions, ['edit']);
-=======
-      if (!shouldEdit && !shouldView && !fileOptions.includes("view")) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "edit",
-          "preview",
-          "separator0",
-        ]);
-      }
-
       if (!shouldEdit && shouldView) {
-        fileOptions = this.removeOptions(fileOptions, ["edit"]);
->>>>>>> develop
+        fileOptions = this.removeOptions(fileOptions, ['edit']);
       }
 
       return fileOptions;
@@ -1072,12 +1044,7 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
-<<<<<<< HEAD
-      //const isCanWebEdit = canWebEdit(item.fileExst);
-      const iconSize = this.viewAs === 'tile' && isMobile ? 32 : 24;
-=======
-      const iconSize = this.viewAs === "table" ? 24 : 32;
->>>>>>> develop
+      const iconSize = this.viewAs === 'table' ? 24 : 32;
       const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;

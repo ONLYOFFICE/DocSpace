@@ -8,40 +8,23 @@ import { isMobile } from 'react-device-detect';
 import { tablet, desktop } from '@appserver/components/utils/device';
 import NoUserSelect from '@appserver/components/utils/commonStyles';
 const StyledSectionHeader = styled.div`
-<<<<<<< HEAD
   position: relative;
-  height: 41px;
-=======
   height: 42px;
->>>>>>> develop
   margin-right: 24px;
   ${NoUserSelect}
   ${isMobile &&
   css`
     height: 20px;
-<<<<<<< HEAD
-    /* height: 49px;
-    min-height: 48px;
-    max-height: 49px; */
     width: ${(props) => !props.isLoaded && '100%'};
-    margin-top: 64px;
-    /* @media ${tablet} {
-      margin-top: 55px;
-    } */
-=======
-    width: ${(props) => !props.isLoaded && "100%"};
 
     margin-top: 62px;
     @media ${tablet} {
       margin-top: 48px;
     }
->>>>>>> develop
   `}
 
   @media ${desktop} {
-    ${(props) =>
-      (props.viewAs === "table" || props.viewAs === "tile") &&
-      "margin-left: -4px"};
+    ${(props) => (props.viewAs === 'table' || props.viewAs === 'tile') && 'margin-left: -4px'};
   }
 
   @media ${tablet} {
