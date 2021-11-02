@@ -157,6 +157,7 @@ namespace ASC.Files.Thirdparty
             try
             {
                 var thirdpartyAccounts = await FilesDbContext.ThirdpartyAccount
+                    .AsQueryable()
                     .Where(r => r.TenantId == TenantID)
                     .Where(r => r.UserId == userId)
                     .ToListAsync();
@@ -178,7 +179,7 @@ namespace ASC.Files.Thirdparty
 
         private async Task<List<IProviderInfo>> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
         {
-            var querySelect = FilesDbContext.ThirdpartyAccount.Where(r => r.TenantId == TenantID);
+            var querySelect = FilesDbContext.ThirdpartyAccount.AsQueryable().Where(r => r.TenantId == TenantID);
 
             if (folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1)
             {
@@ -270,6 +271,7 @@ namespace ASC.Files.Thirdparty
         public virtual async Task<int> UpdateProviderInfoAsync(int linkId, AuthData authData)
         {
             var forUpdate = await FilesDbContext.ThirdpartyAccount
+                .AsQueryable()
                 .Where(r => r.Id == linkId)
                 .Where(r => r.TenantId == TenantID)
                 .ToListAsync();
@@ -299,6 +301,7 @@ namespace ASC.Files.Thirdparty
             {
                 var querySelect =
                     FilesDbContext.ThirdpartyAccount
+                    .AsQueryable()
                     .Where(r => r.TenantId == TenantID)
                     .Where(r => r.Id == linkId);
 
@@ -334,6 +337,7 @@ namespace ASC.Files.Thirdparty
             }
 
             var toUpdate = await FilesDbContext.ThirdpartyAccount
+                .AsQueryable()
                 .Where(r => r.Id == linkId)
                 .Where(r => r.TenantId == TenantID)
                 .ToListAsync();
@@ -379,12 +383,14 @@ namespace ASC.Files.Thirdparty
             var folderId = GetProviderInfo(linkId).RootFolderId.ToString();
 
             var entryIDs = await FilesDbContext.ThirdpartyIdMapping
+                .AsQueryable()
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => r.Id.StartsWith(folderId))
                 .Select(r => r.HashId)
                 .ToListAsync();
 
             var forDelete = await FilesDbContext.Security
+                .AsQueryable()
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => entryIDs.Any(a => a == r.EntryId))
                 .ToListAsync();
@@ -393,6 +399,7 @@ namespace ASC.Files.Thirdparty
             await FilesDbContext.SaveChangesAsync();
 
             var linksForDelete = await FilesDbContext.TagLink
+                .AsQueryable()
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => entryIDs.Any(e => e == r.EntryId))
                 .ToListAsync();
@@ -401,6 +408,7 @@ namespace ASC.Files.Thirdparty
             await FilesDbContext.SaveChangesAsync();
 
             var accountsForDelete = await FilesDbContext.ThirdpartyAccount
+                .AsQueryable()
                 .Where(r => r.Id == linkId)
                 .Where(r => r.TenantId == TenantID)
                 .ToListAsync();

@@ -146,25 +146,24 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
-            return GetFilesAsync(fileIds).Result;
+            return GetFilesAsync(fileIds).ToListAsync().Result;
         }
 
-        public Task<List<File<string>>> GetFilesAsync(IEnumerable<string> fileIds)
+        public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
         {
-            return Task.FromResult(fileIds.Select(fileId => ToFile(GetFileById(fileId))).ToList());
+            return fileIds.Select(fileId => ToFile(GetFileById(fileId))).ToAsyncEnumerable();
         }
 
         public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
+            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<string>>();
 
-            var filesList = await GetFilesAsync(fileIds);
-            var files = filesList.AsEnumerable();
+            var files = GetFilesAsync(fileIds);
 
             //Filter
             if (subjectID != Guid.Empty)
@@ -177,7 +176,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             switch (filterType)
             {
                 case FilterType.FoldersOnly:
-                    return new List<File<string>>();
+                    return AsyncEnumerable.Empty<File<string>>();
                 case FilterType.DocumentsOnly:
                     files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                     break;
@@ -209,7 +208,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (!string.IsNullOrEmpty(searchText))
                 files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
 
-            return files.ToList();
+            return files;
         }
 
         public List<string> GetFiles(string parentId)

@@ -126,6 +126,7 @@ namespace ASC.Web.Files.Core.Search
             }
 
             IQueryable<FileTenant> GetBaseQuery(DateTime lastIndexed) => fileDao.FilesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.ModifiedOn >= lastIndexed)
                 .Where(r => r.CurrentVersion)
                 .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })

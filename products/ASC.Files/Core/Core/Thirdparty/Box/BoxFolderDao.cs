@@ -163,36 +163,18 @@ namespace ASC.Files.Thirdparty.Box
 
         public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
-            if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-                || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-                || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-                || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<string>>();
-
-            var folders = folderIds.Select(GetFolder);
-
-            if (subjectID.HasValue && subjectID != Guid.Empty)
-            {
-                folders = folders.Where(x => subjectGroup
-                                                 ? UserManager.IsUserInGroup(x.CreateBy, subjectID.Value)
-                                                 : x.CreateBy == subjectID);
-            }
-
-            if (!string.IsNullOrEmpty(searchText))
-                folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
-
-            return folders.ToList();
+            return GetFoldersAsync(folderIds, filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<string>>();
+                return AsyncEnumerable.Empty<Folder<string>>();
 
-            var folders = folderIds.Select(GetFolder);
+            var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e));
 
             if (subjectID.HasValue && subjectID != Guid.Empty)
             {
@@ -204,7 +186,7 @@ namespace ASC.Files.Thirdparty.Box
             if (!string.IsNullOrEmpty(searchText))
                 folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
 
-            return folders.ToList();
+            return folders;
         }
 
         public List<Folder<string>> GetParentFolders(string folderId)

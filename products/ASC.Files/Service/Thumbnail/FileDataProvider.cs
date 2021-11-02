@@ -93,7 +93,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var search =
                 coreDbContext.Tariffs
-                .Join(coreDbContext.Quotas.DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
+                .Join(coreDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
                 .Where(r =>
                         (
                             r.tariff.Comment == null ||
@@ -124,6 +124,7 @@ namespace ASC.Files.ThumbnailBuilder
         private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)
         {
             var search = filesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.CurrentVersion && r.Thumb == Thumbnail.Waiting && !r.Encrypted)
                 .OrderByDescending(r => r.ModifiedOn)
                 .Take(thumbnailSettings.SqlMaxResults);

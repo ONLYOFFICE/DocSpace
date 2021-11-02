@@ -79,6 +79,7 @@ namespace ASC.Web.Files
         public override List<UsageSpaceStatItem> GetStatData()
         {
             var myFiles = FilesDbContext.Files
+                .AsQueryable()
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
@@ -88,6 +89,7 @@ namespace ASC.Web.Files
                 .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
 
             var commonFiles = FilesDbContext.Files
+                .AsQueryable()
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
@@ -157,6 +159,7 @@ namespace ASC.Web.Files
             var trash = GlobalFolder.GetFolderTrash<int>(DaoFactory);
 
             return FilesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.TenantId == tenantId && (r.FolderId == my || r.FolderId == trash))
                 .Sum(r => r.ContentLength);
         }

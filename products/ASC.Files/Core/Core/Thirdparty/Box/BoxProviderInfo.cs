@@ -302,14 +302,7 @@ namespace ASC.Files.Thirdparty.Box
 
         internal BoxFolder GetBoxFolder(BoxStorage storage, int id, string boxFolderId)
         {
-            var folder = CacheFolder.Get<BoxFolder>("boxd-" + id + "-" + boxFolderId);
-            if (folder == null)
-            {
-                folder = storage.GetFolder(boxFolderId);
-                if (folder != null)
-                    CacheFolder.Insert("boxd-" + id + "-" + boxFolderId, folder, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return folder;
+            return GetBoxFolderAsync(storage, id, boxFolderId).Result;
         }
 
         internal async Task<BoxFolder> GetBoxFolderAsync(BoxStorage storage, int id, string boxFolderId)
@@ -326,14 +319,7 @@ namespace ASC.Files.Thirdparty.Box
 
         internal BoxFile GetBoxFile(BoxStorage storage, int id, string boxFileId)
         {
-            var file = CacheFile.Get<BoxFile>("boxf-" + id + "-" + boxFileId);
-            if (file == null)
-            {
-                file = storage.GetFile(boxFileId);
-                if (file != null)
-                    CacheFile.Insert("boxf-" + id + "-" + boxFileId, file, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return file;
+            return GetBoxFileAsync(storage, id, boxFileId).Result;
         }
 
         internal async Task<BoxFile> GetBoxFileAsync(BoxStorage storage, int id, string boxFileId)
@@ -350,14 +336,7 @@ namespace ASC.Files.Thirdparty.Box
 
         internal List<BoxItem> GetBoxItems(BoxStorage storage, int id, string boxFolderId)
         {
-            var items = CacheChildItems.Get<List<BoxItem>>("box-" + id + "-" + boxFolderId);
-
-            if (items == null)
-            {
-                items = storage.GetItems(boxFolderId);
-                CacheChildItems.Insert("box-" + id + "-" + boxFolderId, items, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return items;
+            return GetBoxItemsAsync(storage, id, boxFolderId).Result;
         }
 
         internal async Task<List<BoxItem>> GetBoxItemsAsync(BoxStorage storage, int id, string boxFolderId)
@@ -374,10 +353,7 @@ namespace ASC.Files.Thirdparty.Box
 
         internal void CacheReset(int id, BoxItem boxItem)
         {
-            if (boxItem != null)
-            {
-                CacheNotify.Publish(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, CacheNotifyAction.Remove);
-            }
+            CacheResetAsync(id, boxItem).Wait();
         }
 
         internal async Task CacheResetAsync(int id, BoxItem boxItem)
@@ -390,21 +366,7 @@ namespace ASC.Files.Thirdparty.Box
 
         internal void CacheReset(string boxRootId, int id, string boxId = null, bool? isFile = null)
         {
-            var key = id + "-";
-            if (boxId == null)
-            {
-                CacheNotify.Publish(new BoxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
-            }
-            else
-            {
-                if (boxId == boxRootId)
-                {
-                    boxId = "0";
-                }
-                key += boxId;
-
-                CacheNotify.Publish(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
-            }
+            CacheResetAsync(boxRootId, id, boxId, isFile).Wait();
         }
 
         internal async Task CacheResetAsync(string boxRootId, int id, string boxId = null, bool? isFile = null)

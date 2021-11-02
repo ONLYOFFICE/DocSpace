@@ -291,7 +291,7 @@ namespace ASC.CRM.Core.Dao
             CrmDbContext.RemoveRange(Query(CrmDbContext.Tasks)
                                     .Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
 
-            CrmDbContext.RemoveRange(CrmDbContext.EntityTags.Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
+            CrmDbContext.RemoveRange(CrmDbContext.EntityTags.AsQueryable().Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
 
             CrmDbContext.Cases.RemoveRange(caseses.ConvertAll(x => new DbCase
             {
@@ -436,6 +436,7 @@ namespace ASC.CRM.Core.Dao
             if (contactID > 0)
             {
                 var sqlQuery = CrmDbContext.EntityContact
+                    .AsQueryable()
                     .Where(x => x.ContactId == contactID && x.EntityType == EntityType.Case);
 
                 if (ids.Count > 0)

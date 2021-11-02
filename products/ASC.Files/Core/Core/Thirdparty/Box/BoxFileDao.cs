@@ -147,42 +147,30 @@ namespace ASC.Files.Thirdparty.Box
             //if (fileIds == null || !fileIds.Any()) return new List<File<string>>();
             //return fileIds.Select(GetBoxFile).Select(ToFile).ToList();
 
-            return GetFilesAsync(fileIds).Result;
+            return GetFilesAsync(fileIds).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesAsync(IEnumerable<string> fileIds)
+        public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
         {
             var list = new List<File<string>>();
 
-            if (fileIds == null || !fileIds.Any()) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<string>>();
 
-            await foreach (var file in FilesIterator(fileIds))
-            {
-                list.Add(file);
-            }
+            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetBoxFileAsync(e)));
 
-            return list;
-        }
-
-        public async IAsyncEnumerable<File<string>> FilesIterator(IEnumerable<string> fileIds)
-        {
-            foreach (var e in fileIds)
-            {
-                yield return ToFile(await GetBoxFileAsync(e));
-            }
+            return result;
         }
 
         public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
+            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<string>>();
 
-            var filesList = await GetFilesAsync(fileIds);
-            var files = filesList.AsEnumerable();
+            var files = GetFilesAsync(fileIds);
 
             //Filter
             if (subjectID != Guid.Empty)
@@ -195,7 +183,7 @@ namespace ASC.Files.Thirdparty.Box
             switch (filterType)
             {
                 case FilterType.FoldersOnly:
-                    return new List<File<string>>();
+                    return AsyncEnumerable.Empty<File<string>>();
                 case FilterType.DocumentsOnly:
                     files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                     break;
@@ -227,7 +215,7 @@ namespace ASC.Files.Thirdparty.Box
             if (!string.IsNullOrEmpty(searchText))
                 files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
 
-            return files.ToList();
+            return files;
         }
 
         public List<string> GetFiles(string parentId)
@@ -486,7 +474,7 @@ namespace ASC.Files.Thirdparty.Box
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -513,9 +501,9 @@ namespace ASC.Files.Thirdparty.Box
                 ProviderInfo.Storage.DeleteItem(boxFile);
             }
 
-            ProviderInfo.CacheReset(boxFile.Id, true);
+            await ProviderInfo.CacheResetAsync(boxFile.Id, true);
             var parentFolderId = GetParentFolderId(boxFile);
-            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
+            if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId);
         }
 
         public bool IsExist(string title, object folderId)

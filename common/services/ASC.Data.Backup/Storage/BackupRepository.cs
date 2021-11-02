@@ -64,17 +64,17 @@ namespace ASC.Data.Backup.Storage
 
         public List<BackupRecord> GetExpiredBackupRecords()
         {
-            return BackupContext.Backups.Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
+            return BackupContext.Backups.AsQueryable().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
         }
 
         public List<BackupRecord> GetScheduledBackupRecords()
         {
-            return BackupContext.Backups.Where(b => b.IsScheduled == true).ToList();
+            return BackupContext.Backups.AsQueryable().Where(b => b.IsScheduled == true).ToList();
         }
 
         public List<BackupRecord> GetBackupRecordsByTenantId(int tenantId)
         {
-            return BackupContext.Backups.Where(b => b.TenantId == tenantId).ToList();
+            return BackupContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId).ToList();
         }
 
         public void DeleteBackupRecord(Guid id)
@@ -96,14 +96,14 @@ namespace ASC.Data.Backup.Storage
 
         public void DeleteBackupSchedule(int tenantId)
         {
-            var shedule = BackupContext.Schedules.Where(s => s.TenantId == tenantId).ToList();
+            var shedule = BackupContext.Schedules.AsQueryable().Where(s => s.TenantId == tenantId).ToList();
             BackupContext.Schedules.RemoveRange(shedule);
             BackupContext.SaveChanges();
         }
 
         public List<BackupSchedule> GetBackupSchedules()
         {
-            var query = BackupContext.Schedules.Join(BackupContext.Tenants,
+            var query = BackupContext.Schedules.AsQueryable().Join(BackupContext.Tenants,
                 s => s.TenantId,
                 t => t.Id,
                 (s, t) => new { schedule = s, tenant = t })

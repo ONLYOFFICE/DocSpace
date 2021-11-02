@@ -215,6 +215,20 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Result;
         }
 
+        public async Task<Item> CreateFolderAsync(string title, string parentId)
+        {
+            var newFolderItem = new Item
+            {
+                Folder = new Folder(),
+                Name = title
+            };
+
+            return await GetItemRequest(parentId)
+                .Children
+                .Request()
+                .AddAsync(newFolderItem);
+        }
+
         public Item CreateFile(Stream fileStream, string title, string parentPath)
         {
             return OnedriveClient

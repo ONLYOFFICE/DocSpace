@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ASC.Common;
 
@@ -35,25 +36,29 @@ namespace ASC.Files.Core
     public interface ITagDao<T>
     {
         IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
-
+        Task<IEnumerable<Tag>> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
         IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch);
+        Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch);
 
         IEnumerable<Tag> GetTags(T entryID, FileEntryType entryType, TagType tagType);
+        Task<IEnumerable<Tag>> GetTagsAsync(T entryID, FileEntryType entryType, TagType tagType);
 
         IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
+        Task<IEnumerable<Tag>> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
 
         IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries);
-
+        Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries);
         IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<T>> fileEntries);
+        Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<T>> fileEntries);
 
         IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<T> fileEntry);
-
+        Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, FileEntry<T> fileEntry);
         IEnumerable<Tag> GetTags(Guid owner, TagType tagType);
-
+        Task<IEnumerable<Tag>> GetTagsAsync(Guid owner, TagType tagType);
         IEnumerable<Tag> GetTags(string name, TagType tagType);
-
+        Task<IEnumerable<Tag>> GetTagsAsync(string name, TagType tagType);
         IEnumerable<Tag> GetTags(string[] names, TagType tagType);
-
+        Task<IEnumerable<Tag>> GetTagsAsync(string[] names, TagType tagType);
         IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag);
 
         IEnumerable<Tag> SaveTags(Tag tag);

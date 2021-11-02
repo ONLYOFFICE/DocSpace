@@ -134,7 +134,7 @@ namespace ASC.CRM.Core.Dao
 
             if (!_crmSecurity.IsAdmin)
             {
-                var idsFromAcl = _coreDbContext.Acl.Where(x => x.Tenant == TenantID &&
+                var idsFromAcl = _coreDbContext.Acl.AsQueryable().Where(x => x.Tenant == TenantID &&
                                                      x.Action == _crmSecurity._actionRead.ID &&
                                                      x.Subject == _securityContext.CurrentAccount.ID &&
                                                      (Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Company).FullName + "%") ||
@@ -690,14 +690,14 @@ namespace ASC.CRM.Core.Dao
                 case ContactListViewType.WithOpportunity:
                     if (ids.Count > 0)
                     {
-                        ids = CrmDbContext.EntityContact.Where(x => ids.Contains(x.ContactId) && x.EntityType == EntityType.Opportunity)
+                        ids = CrmDbContext.EntityContact.AsQueryable().Where(x => ids.Contains(x.ContactId) && x.EntityType == EntityType.Opportunity)
                                                         .Select(x => x.ContactId)
                                                         .Distinct()
                                                         .ToList();
                     }
                     else
                     {
-                        ids = CrmDbContext.EntityContact.Where(x => x.EntityType == EntityType.Opportunity)
+                        ids = CrmDbContext.EntityContact.AsQueryable().Where(x => x.EntityType == EntityType.Opportunity)
                                                         .Select(x => x.ContactId)
                                                         .Distinct()
                                                         .ToList();
@@ -995,6 +995,7 @@ namespace ASC.CRM.Core.Dao
 
             CrmDbContext.EntityContact
                     .RemoveRange(CrmDbContext.EntityContact
+                    .AsQueryable()
                     .Where(x => x.EntityType == EntityType.Person && x.ContactId == companyID));
 
             var itemsToUpdate = Query(CrmDbContext.Contacts)
@@ -1080,6 +1081,7 @@ namespace ASC.CRM.Core.Dao
         public Dictionary<int, int> GetMembersCount(int[] companyID)
         {
             return CrmDbContext.EntityContact
+                .AsQueryable()
                 .Where(x => companyID.Contains(x.ContactId) && x.EntityType == EntityType.Person)
                 .GroupBy(x => x.ContactId)
                 .Select(x => new { GroupId = x.Key, Count = x.Count() })
@@ -1090,6 +1092,7 @@ namespace ASC.CRM.Core.Dao
         public int GetMembersCount(int companyID)
         {
             return CrmDbContext.EntityContact
+                        .AsQueryable()
                         .Where(x => x.ContactId == companyID && x.EntityType == EntityType.Person)
                         .Count();
         }
@@ -1097,6 +1100,7 @@ namespace ASC.CRM.Core.Dao
         public List<int> GetMembersIDs(int companyID)
         {
             return CrmDbContext.EntityContact
+                    .AsQueryable()
                     .Where(x => x.ContactId == companyID && x.EntityType == EntityType.Person)
                     .Select(x => x.EntityId)
                     .ToList();
@@ -1105,6 +1109,7 @@ namespace ASC.CRM.Core.Dao
         public Dictionary<int, ShareType?> GetMembersIDsAndShareType(int companyID)
         {
             return CrmDbContext.EntityContact
+                                .AsQueryable()
                                 .Where(x => x.ContactId == companyID && x.EntityType == EntityType.Person)
                                 .GroupJoin(CrmDbContext.Contacts,
                                             x => x.EntityId,
@@ -1593,11 +1598,12 @@ namespace ASC.CRM.Core.Dao
                                         .Where(x => contactID.Contains(x.ContactId)));
 
             CrmDbContext.RemoveRange(CrmDbContext.EntityTags
+                                                .AsQueryable()
                                                 .Where(x => contactID.Contains(x.EntityId) && x.EntityType == EntityType.Contact));
 
-            CrmDbContext.RemoveRange(CrmDbContext.RelationshipEvent.Where(x => contactID.Contains(x.ContactId)));
+            CrmDbContext.RemoveRange(CrmDbContext.RelationshipEvent.AsQueryable().Where(x => contactID.Contains(x.ContactId)));
 
-            var dealToUpdate = CrmDbContext.Deals.Where(x => contactID.Contains(x.ContactId)).ToList();
+            var dealToUpdate = CrmDbContext.Deals.AsQueryable().Where(x => contactID.Contains(x.ContactId)).ToList();
 
             dealToUpdate.ForEach(x => x.ContactId = 0);
 
@@ -1698,6 +1704,7 @@ namespace ASC.CRM.Core.Dao
                 // crm_entity_contact
                 CrmDbContext.EntityContact.RemoveRange(
                                                 CrmDbContext.EntityContact
+                                                    .AsQueryable()
                                                     .Join(CrmDbContext.EntityContact,
                                                           x => new { x.EntityId, x.EntityType },
                                                           y => new { y.EntityId, y.EntityType },
@@ -1705,7 +1712,7 @@ namespace ASC.CRM.Core.Dao
                                                     .Where(x => x.x.ContactId == fromContactID && x.y.ContactId == toContactID)
                                                     .Select(x => x.x));
 
-                var entityContactToUpdate = CrmDbContext.EntityContact.Where(x => x.ContactId == fromContactID).ToList();
+                var entityContactToUpdate = CrmDbContext.EntityContact.AsQueryable().Where(x => x.ContactId == fromContactID).ToList();
 
                 entityContactToUpdate.ForEach(x => x.ContactId = toContactID);
                 CrmDbContext.SaveChanges();
@@ -1761,7 +1768,7 @@ namespace ASC.CRM.Core.Dao
                 CrmDbContext.SaveChanges();
 
                 // crm_entity_tag
-                var dublicateTagsID = CrmDbContext.EntityTags.Join(CrmDbContext.EntityTags,
+                var dublicateTagsID = CrmDbContext.EntityTags.AsQueryable().Join(CrmDbContext.EntityTags,
                                                                    x => new { x.TagId, x.EntityType },
                                                                    y => new { y.TagId, y.EntityType },
                                                                    (x, y) => new { x, y }
@@ -1769,12 +1776,12 @@ namespace ASC.CRM.Core.Dao
                                                     .Where(x => x.x.EntityId == fromContactID && x.y.EntityId == toContactID)
                                                     .Select(x => x.x.TagId).ToList();
 
-                CrmDbContext.EntityTags.Where(x => x.EntityId == fromContactID &&
+                CrmDbContext.EntityTags.AsQueryable().Where(x => x.EntityId == fromContactID &&
                                                    x.EntityType == EntityType.Contact &&
                                                    dublicateTagsID.Contains(x.TagId));
 
 
-                var entityTagToUpdate = CrmDbContext.EntityTags.Where(x => x.EntityId == fromContactID && x.EntityType == EntityType.Contact).ToList();
+                var entityTagToUpdate = CrmDbContext.EntityTags.AsQueryable().Where(x => x.EntityId == fromContactID && x.EntityType == EntityType.Contact).ToList();
 
                 entityTagToUpdate.ForEach(x => x.EntityId = toContactID);
 
@@ -1789,7 +1796,7 @@ namespace ASC.CRM.Core.Dao
                                                         .Where(x => x.x.EntityId == fromContactID && x.y.EntityId == toContactID)
                                                         .Select(x => x.x.FieldId);
 
-                CrmDbContext.RemoveRange(CrmDbContext.FieldValue.Where(x => x.EntityId == fromContactID &&
+                CrmDbContext.RemoveRange(CrmDbContext.FieldValue.AsQueryable().Where(x => x.EntityId == fromContactID &&
                                                                             (new[] { EntityType.Contact, EntityType.Person, EntityType.Company }).Contains(x.EntityType) &&
                                                                               dublicateCustomFieldValueID.Contains(x.FieldId)));
 

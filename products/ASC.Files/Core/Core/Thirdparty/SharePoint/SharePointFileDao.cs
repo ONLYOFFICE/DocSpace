@@ -136,41 +136,30 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
-            return GetFilesAsync(fileIds).Result;
+            return GetFilesAsync(fileIds).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesAsync(IEnumerable<string> fileIds)
+        public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
         {
             var list = new List<File<string>>();
 
-            if (fileIds == null || !fileIds.Any()) return list;
+            if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<string>>();
 
-            await foreach (var file in FilesIterator(fileIds))
-            {
-                list.Add(file);
-            }
+            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileIds)));
 
-            return list;
-        }
-        public async IAsyncEnumerable<File<string>> FilesIterator(IEnumerable<string> fileIds)
-        {
-            foreach (var e in fileIds)
-            {
-                yield return ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileIds));
-            }
+            return result;
         }
 
         public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
+            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<string>>();
 
-            var filesList = await GetFilesAsync(fileIds);
-            var files = filesList.AsEnumerable();
+            var files = GetFilesAsync(fileIds);
 
             //Filter
             if (subjectID != Guid.Empty)
@@ -183,7 +172,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             switch (filterType)
             {
                 case FilterType.FoldersOnly:
-                    return new List<File<string>>();
+                    return AsyncEnumerable.Empty<File<string>>();
                 case FilterType.DocumentsOnly:
                     files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                     break;
@@ -215,7 +204,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (!string.IsNullOrEmpty(searchText))
                 files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
 
-            return files.ToList();
+            return files;
         }
 
         public List<string> GetFiles(string parentId)

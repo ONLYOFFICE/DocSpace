@@ -208,7 +208,7 @@ namespace ASC.Data.Backup.Tasks
         private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
         {
             var files = GetFilesToProcess(tenantId).ToList();
-            var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+            var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
             files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
             return files;
 
@@ -540,7 +540,7 @@ namespace ASC.Data.Backup.Tasks
         private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
         {
             var files = GetFilesToProcess(TenantId).ToList();
-            var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+            var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
 
             files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains(string.Format("/file_{0}/", e.StoragePath)))).ToList();
 

@@ -255,7 +255,7 @@ namespace ASC.Files.Thirdparty
 
         protected IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
         {
-            return set.Where(r => r.TenantId == TenantID);
+            return set.AsQueryable().Where(r => r.TenantId == TenantID);
         }
 
         protected string MappingID(string id, bool saveIfNotExist = false)
@@ -270,6 +270,7 @@ namespace ASC.Files.Thirdparty
             else
             {
                 result = FilesDbContext.ThirdpartyIdMapping
+                        .AsQueryable()
                         .Where(r => r.HashId == id)
                         .Select(r => r.Id)
                         .FirstOrDefault();
@@ -301,6 +302,7 @@ namespace ASC.Files.Thirdparty
             else
             {
                 result = await FilesDbContext.ThirdpartyIdMapping
+                        .AsQueryable()
                         .Where(r => r.HashId == id)
                         .Select(r => r.Id)
                         .FirstOrDefaultAsync();
@@ -441,9 +443,19 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
+        public Task<IEnumerable<Tag>> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+        }
+
         public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
             return new List<Tag>();
+        }
+
+        public Task<IEnumerable<Tag>> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
         }
 
         public IEnumerable<Tag> GetTags(Guid owner, TagType tagType)
@@ -451,9 +463,19 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
+        public Task<IEnumerable<Tag>> GetTagsAsync(Guid owner, TagType tagType)
+        {
+            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+        }
+
         public IEnumerable<Tag> GetTags(string name, TagType tagType)
         {
             return new List<Tag>();
+        }
+
+        public Task<IEnumerable<Tag>> GetTagsAsync(string name, TagType tagType)
+        {
+            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
         }
 
         public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
@@ -461,9 +483,19 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
+        public Task<IEnumerable<Tag>> GetTagsAsync(string[] names, TagType tagType)
+        {
+            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+        }
+
         public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
             return new Dictionary<object, IEnumerable<Tag>>();
+        }
+
+        public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return Task.FromResult((IDictionary<object, IEnumerable<Tag>>)new Dictionary<object, IEnumerable<Tag>>());
         }
 
 
@@ -472,9 +504,19 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
+        public Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+        }
+
         public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<string> fileEntry)
         {
             return new List<Tag>();
+        }
+
+        public Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
+        {
+            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
         }
 
         public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
@@ -508,6 +550,11 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
+        public Task<IEnumerable<Tag>> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
+        {
+            return Task.FromResult((IEnumerable<Tag>)new List<Tag>());
+        }
+
         public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
         {
         }
@@ -517,6 +564,7 @@ namespace ASC.Files.Thirdparty
             var folderId = DaoSelector.ConvertId(parentFolder.ID);
 
             var entryIDs = FilesDbContext.ThirdpartyIdMapping
+                       .AsQueryable()
                        .Where(r => r.Id.StartsWith(parentFolder.ID))
                        .Select(r => r.HashId)
                        .ToList();
@@ -524,7 +572,7 @@ namespace ASC.Files.Thirdparty
             if (!entryIDs.Any()) return new List<Tag>();
 
             var q = from r in FilesDbContext.Tag
-                    from l in FilesDbContext.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                    from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
                     where r.TenantId == TenantID && l.TenantId == TenantID && r.Flag == TagType.New && entryIDs.Contains(l.EntryId)
                     select new { tag = r, tagLink = l };
 
@@ -536,6 +584,53 @@ namespace ASC.Files.Thirdparty
             var tags = q
                 .Distinct()
                 .ToList()
+                .Select(r => new Tag
+                {
+                    TagName = r.tag.Name,
+                    TagType = r.tag.Flag,
+                    Owner = r.tag.Owner,
+                    EntryId = MappingID(r.tagLink.EntryId),
+                    EntryType = r.tagLink.EntryType,
+                    Count = r.tagLink.TagCount,
+                    Id = r.tag.Id
+                });
+
+
+            if (deepSearch) return tags;
+
+            var folderFileIds = new[] { parentFolder.ID }
+                .Concat(GetChildren(folderId));
+
+            return tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString()));
+        }
+
+        public async Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
+        {
+            var folderId = DaoSelector.ConvertId(parentFolder.ID);
+
+            var entryIDs = await FilesDbContext.ThirdpartyIdMapping
+                       .AsQueryable()
+                       .Where(r => r.Id.StartsWith(parentFolder.ID))
+                       .Select(r => r.HashId)
+                       .ToListAsync();
+
+            if (!entryIDs.Any()) return new List<Tag>();
+
+            var q = from r in FilesDbContext.Tag
+                    from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                    where r.TenantId == TenantID && l.TenantId == TenantID && r.Flag == TagType.New && entryIDs.Contains(l.EntryId)
+                    select new { tag = r, tagLink = l };
+
+            if (subject != Guid.Empty)
+            {
+                q = q.Where(r => r.tag.Owner == subject);
+            }
+
+            var qList = await q
+                .Distinct()
+                .ToListAsync();
+
+            var tags = qList
                 .Select(r => new Tag
                 {
                     TagName = r.tag.Name,

@@ -142,32 +142,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
-            var result = Enumerable.Empty<Folder<string>>();
-
-            foreach (var selector in GetSelectors())
-            {
-                var selectorLocal = selector;
-                var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
-
-                if (!matchedIds.Any()) continue;
-
-                result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
-                                                .SelectMany(matchedId =>
-                                                {
-                                                    var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
-                                                    return folderDao
-.GetFolders(matchedId.Select(selectorLocal.ConvertId).ToList(),
-filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
-                                                })
-                                                .Where(r => r != null));
-            }
-
-            return result.Distinct().ToList();
+            return GetFoldersAsync(folderIds, filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare).ToListAsync().Result;
         }
 
-        public async Task<List<Folder<string>>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
-            var result = Enumerable.Empty<Folder<string>>();
+            var result = AsyncEnumerable.Empty<Folder<string>>();
 
             foreach (var selector in GetSelectors())
             {
@@ -177,17 +157,18 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                 if (!matchedIds.Any()) continue;
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
+                                                .ToAsyncEnumerable()
                                                 .SelectMany(matchedId =>
                                                 {
                                                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
                                                     return folderDao
-.GetFolders(matchedId.Select(selectorLocal.ConvertId).ToList(),
-filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
+                                                        .GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
+                                                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                                                 })
                                                 .Where(r => r != null));
             }
 
-            return result.Distinct().ToList();
+            return result.Distinct();
         }
 
         public List<Folder<string>> GetParentFolders(string folderId)

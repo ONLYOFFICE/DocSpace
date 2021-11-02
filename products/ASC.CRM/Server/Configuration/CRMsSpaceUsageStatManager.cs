@@ -62,7 +62,7 @@ namespace ASC.Web.CRM.Configuration
 
         public override List<UsageSpaceStatItem> GetStatData()
         {
-            var spaceUsage = _filesDbContext.Files.Join(_filesDbContext.Tree,
+            var spaceUsage = _filesDbContext.Files.AsQueryable().Join(_filesDbContext.Tree,
                                      x => x.FolderId,
                                      y => y.FolderId,
                                      (x, y) => new { x, y }

@@ -92,7 +92,7 @@ namespace ASC.Files.Core
         /// <param name="fileIds">id file</param>
         /// <returns></returns>
         List<File<T>> GetFiles(IEnumerable<T> fileIds);
-        Task<List<File<T>>> GetFilesAsync(IEnumerable<T> fileIds);
+        IAsyncEnumerable<File<T>> GetFilesAsync(IEnumerable<T> fileIds);
 
         /// <summary>
         ///     Gets the file (s) by ID (s) for share
@@ -105,7 +105,7 @@ namespace ASC.Files.Core
         /// <param name="searchInContent"></param>
         /// <returns></returns>
         List<File<T>> GetFilesFiltered(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
-        Task<List<File<T>>> GetFilesFilteredAsync(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+        IAsyncEnumerable<File<T>> GetFilesFilteredAsync(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
 
         /// <summary>
         /// 

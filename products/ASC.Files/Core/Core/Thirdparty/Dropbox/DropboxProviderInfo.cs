@@ -261,14 +261,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         internal FolderMetadata GetDropboxFolder(DropboxStorage storage, int id, string dropboxFolderPath)
         {
-            var folder = CacheFolder.Get<FolderMetadata>("dropboxd-" + id + "-" + dropboxFolderPath);
-            if (folder == null)
-            {
-                folder = storage.GetFolder(dropboxFolderPath);
-                if (folder != null)
-                    CacheFolder.Insert("dropboxd-" + id + "-" + dropboxFolderPath, folder, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return folder;
+            return GetDropboxFolderAsync(storage, id, dropboxFolderPath).Result;
         }
 
         internal async Task<FolderMetadata> GetDropboxFolderAsync(DropboxStorage storage, int id, string dropboxFolderPath)
@@ -285,14 +278,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         internal FileMetadata GetDropboxFile(DropboxStorage storage, int id, string dropboxFilePath)
         {
-            var file = CacheFile.Get<FileMetadata>("dropboxf-" + id + "-" + dropboxFilePath);
-            if (file == null)
-            {
-                file = storage.GetFile(dropboxFilePath);
-                if (file != null)
-                    CacheFile.Insert("dropboxf-" + id + "-" + dropboxFilePath, file, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return file;
+            return GetDropboxFileAsync(storage, id, dropboxFilePath).Result;
         }
 
         internal async Task<FileMetadata> GetDropboxFileAsync(DropboxStorage storage, int id, string dropboxFilePath)

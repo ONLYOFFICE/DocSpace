@@ -261,6 +261,7 @@ namespace ASC.CRM.Core.Dao
         public List<string> GetMissingRates(string defaultCurrency)
         {
             var existingRatesQuery = CrmDbContext.CurrencyRate
+                                    .AsQueryable()
                                     .Where(x => x.ToCurrency == defaultCurrency)
                                     .Select(x => x.FromCurrency).Distinct().ToList();
 

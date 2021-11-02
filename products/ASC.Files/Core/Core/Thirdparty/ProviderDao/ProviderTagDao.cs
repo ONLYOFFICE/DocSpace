@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -50,47 +51,87 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return TagDao.GetTags(subject, tagType, fileEntries);
+            return GetTagsAsync(subject, tagType, fileEntries).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return await TagDao.GetTagsAsync(subject, tagType, fileEntries);
         }
 
 
         public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return TagDao.GetTags(tagType, fileEntries);
+            return GetTagsAsync(tagType, fileEntries).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return await TagDao.GetTagsAsync(tagType, fileEntries);
         }
 
         public IEnumerable<Tag> GetNewTags(Guid subject, Folder<string> parentFolder, bool deepSearch)
         {
-            return GetSelector(parentFolder.ID)
+            return GetNewTagsAsync(subject, parentFolder, deepSearch).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
+        {
+            return await GetSelector(parentFolder.ID)
                 .GetTagDao(parentFolder.ID)
-                .GetNewTags(subject, parentFolder, deepSearch);
+                .GetNewTagsAsync(subject, parentFolder, deepSearch);
         }
 
         #region Only for Teamlab Documents
 
         public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return TagDao.GetNewTags(subject, fileEntries);
+            return GetNewTagsAsync(subject, fileEntries).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return await TagDao.GetNewTagsAsync(subject, fileEntries);
         }
 
         public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<string> fileEntry)
         {
-            return TagDao.GetNewTags(subject, fileEntry);
+            return GetNewTagsAsync(subject, fileEntry).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
+        {
+            return await TagDao.GetNewTagsAsync(subject, fileEntry);
         }
 
         public IEnumerable<Tag> GetTags(Guid owner, TagType tagType)
         {
-            return TagDao.GetTags(owner, tagType);
+            return GetTagsAsync(owner, tagType).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAsync(Guid owner, TagType tagType)
+        {
+            return await TagDao.GetTagsAsync(owner, tagType);
         }
 
         public IEnumerable<Tag> GetTags(string name, TagType tagType)
         {
-            return TagDao.GetTags(name, tagType);
+            return GetTagsAsync(name, tagType).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAsync(string name, TagType tagType)
+        {
+            return await TagDao.GetTagsAsync(name, tagType);
         }
 
         public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
         {
-            return TagDao.GetTags(names, tagType);
+            return GetTagsAsync(names, tagType).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAsync(string[] names, TagType tagType)
+        {
+            return await TagDao.GetTagsAsync(names, tagType);
         }
 
 
@@ -126,12 +167,22 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public IEnumerable<Tag> GetTags(string entryID, FileEntryType entryType, TagType tagType)
         {
-            return TagDao.GetTags(entryID, entryType, tagType);
+            return GetTagsAsync(entryID, entryType, tagType).Result;
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
+        {
+            return await TagDao.GetTagsAsync(entryID, entryType, tagType);
         }
 
         public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return TagDao.GetTags(subject, tagType, fileEntries);
+            return GetTagsAsync(subject, tagType, fileEntries).Result;
+        }
+
+        public async Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return await TagDao.GetTagsAsync(subject, tagType, fileEntries);
         }
 
         #endregion

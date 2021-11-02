@@ -144,41 +144,28 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
-            return GetFilesAsync(fileIds).Result;
+            return GetFilesAsync(fileIds).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesAsync(IEnumerable<string> fileIds)
+        public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
         {
-            var list = new List<File<string>>();
+            if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<string>>();
 
-            if (fileIds == null || !fileIds.Any()) return list;
+            var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetDriveEntryAsync(e)));
 
-            await foreach (var file in FilesIterator(fileIds))
-            {
-                list.Add(file);
-            }
-
-            return list;
-        }
-        public async IAsyncEnumerable<File<string>> FilesIterator(IEnumerable<string> fileIds)
-        {
-            foreach (var e in fileIds)
-            {
-                yield return ToFile(await GetDriveEntryAsync(e));
-            }
+            return result;
         }
 
         public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).Result;
+            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<string>>();
 
-            var filesList = await GetFilesAsync(fileIds);
-            var files = filesList.AsEnumerable();
+            var files = GetFilesAsync(fileIds);
 
             //Filter
             if (subjectID != Guid.Empty)
@@ -191,7 +178,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             switch (filterType)
             {
                 case FilterType.FoldersOnly:
-                    return new List<File<string>>();
+                    return AsyncEnumerable.Empty<File<string>>();
                 case FilterType.DocumentsOnly:
                     files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                     break;
@@ -223,7 +210,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (!string.IsNullOrEmpty(searchText))
                 files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
 
-            return files.ToList();
+            return files;
         }
 
         public List<string> GetFiles(string parentId)
@@ -420,7 +407,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                     .ToListAsync();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -431,13 +418,13 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
                 tx.Commit();
             }

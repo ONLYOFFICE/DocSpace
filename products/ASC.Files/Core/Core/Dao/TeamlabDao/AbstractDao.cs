@@ -101,7 +101,7 @@ namespace ASC.Files.Core.Data
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
         {
             var tenantId = TenantID;
-            return set.Where(r => r.TenantId == tenantId);
+            return set.AsQueryable().Where(r => r.TenantId == tenantId);
         }
 
         protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
@@ -113,14 +113,16 @@ namespace ASC.Files.Core.Data
         protected void GetRecalculateFilesCountUpdate(int folderId)
         {
             var folders = FilesDbContext.Folders
+                .AsQueryable()
                 .Where(r => r.TenantId == TenantID)
-                .Where(r => FilesDbContext.Tree.Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
+                .Where(r => FilesDbContext.Tree.AsQueryable().Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
                 .ToList();
 
             foreach (var f in folders)
             {
                 var filesCount =
                     FilesDbContext.Files
+                    .AsQueryable()
                     .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.file.TenantId == f.TenantId)
                     .Where(r => r.tree.ParentId == f.Id)
@@ -137,14 +139,16 @@ namespace ASC.Files.Core.Data
         protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
         {
             var folders = await FilesDbContext.Folders
+                .AsQueryable()
                 .Where(r => r.TenantId == TenantID)
-                .Where(r => FilesDbContext.Tree.Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
+                .Where(r => FilesDbContext.Tree.AsQueryable().Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
                 .ToListAsync();
 
             foreach (var f in folders)
             {
                 var filesCount =
                     FilesDbContext.Files
+                    .AsQueryable()
                     .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.file.TenantId == f.TenantId)
                     .Where(r => r.tree.ParentId == f.Id)

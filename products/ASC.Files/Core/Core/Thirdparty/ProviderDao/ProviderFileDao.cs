@@ -159,12 +159,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
-            return GetFilesAsync(fileIds).Result;
+            return GetFilesAsync(fileIds).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesAsync(IEnumerable<string> fileIds)
+        public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
         {
-            var result = Enumerable.Empty<File<string>>();
+            var result = AsyncEnumerable.Empty<File<string>>();
 
             foreach (var selector in GetSelectors())
             {
@@ -174,45 +174,27 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 if (!matchedIds.Any()) continue;
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
+                                                .ToAsyncEnumerable()
                                                 .SelectMany(matchedId =>
                                                  {
                                                      var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-                                                     return fileDao.GetFiles(matchedId.Select(selectorLocal.ConvertId).ToList());
+                                                     return fileDao.GetFilesAsync(matchedId.Select(selectorLocal.ConvertId).ToList());
                                                  }
                     )
                     .Where(r => r != null));
             }
 
-            return result.ToList();
+            return result;
         }
 
         public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            var result = Enumerable.Empty<File<string>>();
-
-            foreach (var selector in GetSelectors())
-            {
-                var selectorLocal = selector;
-                var matchedIds = fileIds.Where(selectorLocal.IsMatch);
-
-                if (!matchedIds.Any()) continue;
-
-                result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
-                                        .SelectMany(matchedId =>
-                                        {
-                                            var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-                                            return fileDao.GetFilesFiltered(matchedId.Select(selectorLocal.ConvertId).ToArray(),
-                                                    filterType, subjectGroup, subjectID, searchText, searchInContent);
-                                        })
-                                        .Where(r => r != null));
-            }
-
-            return result.ToList();
+            return GetFilesFilteredAsync(fileIds, filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync().Result;
         }
 
-        public async Task<List<File<string>>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            var result = Enumerable.Empty<File<string>>();
+            var result = AsyncEnumerable.Empty<File<string>>();
 
             foreach (var selector in GetSelectors())
             {
@@ -222,16 +204,18 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 if (!matchedIds.Any()) continue;
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
-                                        .SelectMany(matchedId =>
-                                        {
-                                            var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-                                            return fileDao.GetFilesFiltered(matchedId.Select(selectorLocal.ConvertId).ToArray(),
-                                                    filterType, subjectGroup, subjectID, searchText, searchInContent);
-                                        })
-                                        .Where(r => r != null));
+                                       .ToAsyncEnumerable()
+                                       .SelectMany(matchedId =>
+                                       {
+                                           var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
+                                           var result = fileDao.GetFilesFilteredAsync(matchedId.Select(selectorLocal.ConvertId).ToArray(),
+                                                   filterType, subjectGroup, subjectID, searchText, searchInContent);
+                                           return result;
+                                       })
+                                       .Where(r => r != null));
             }
 
-            return result.ToList();
+            return result;
         }
 
         public List<string> GetFiles(string parentId)
