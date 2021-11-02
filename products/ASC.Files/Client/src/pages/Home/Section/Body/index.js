@@ -28,6 +28,9 @@ const SectionBodyContent = (props) => {
     moveDragItems,
     viewAs,
     setSelection,
+    setBufferSelection,
+    tooltipPageX,
+    tooltipPageY,
   } = props;
 
   useEffect(() => {
@@ -62,12 +65,22 @@ const SectionBodyContent = (props) => {
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable")
-    )
+      !e.target.closest(".not-selectable") &&
+      !e.target.closest(".table-container_group-menu")
+    ) {
       setSelection([]);
+      setBufferSelection(null);
+    }
   };
 
   const onMouseMove = (e) => {
+    if (
+      Math.abs(e.pageX - tooltipPageX) < 5 &&
+      Math.abs(e.pageY - tooltipPageY) < 5
+    ) {
+      return false;
+    }
+
     if (!dragging) {
       document.body.classList.add("drag-cursor");
       setDragging(true);
@@ -212,6 +225,9 @@ export default inject(
       startDrag,
       setStartDrag,
       setSelection,
+      tooltipPageX,
+      tooltipPageY,
+      setBufferSelection,
     } = filesStore;
 
     return {
@@ -229,6 +245,9 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
       viewAs,
       setSelection,
+      setBufferSelection,
+      tooltipPageX,
+      tooltipPageY,
     };
   }
 )(

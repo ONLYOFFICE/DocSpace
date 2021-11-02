@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
@@ -49,7 +50,7 @@ namespace ASC.Web.Files.Core.Search
     public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
     {
         private IDaoFactory DaoFactory { get; }
-        public Settings Settings { get; }
+        private Settings Settings { get; }
 
         public FactoryIndexerFolder(
             IOptionsMonitor<ILog> options,
@@ -60,11 +61,11 @@ namespace ASC.Web.Files.Core.Search
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
             ICache cache,
-            Settings settings)
+            ConfigurationExtension configurationExtension)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
-            Settings = settings;
+            Settings = Settings.GetInstance(configurationExtension);
         }
 
         public override void IndexAll()
@@ -101,7 +102,7 @@ namespace ASC.Web.Files.Core.Search
 
             List<int> getIds(DateTime lastIndexed)
             {
-                long start = 0;
+                var start = 0;
                 var result = new List<int>();
                 while (true)
                 {
@@ -128,7 +129,7 @@ namespace ASC.Web.Files.Core.Search
 
             IQueryable<FolderTenant> GetBaseQuery(DateTime lastIndexed) => folderDao.FilesDbContext.Folders
                     .Where(r => r.ModifiedOn >= lastIndexed)
-                    .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Join(folderDao.TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
                     .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
 
             try

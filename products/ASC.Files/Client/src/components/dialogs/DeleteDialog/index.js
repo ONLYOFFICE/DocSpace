@@ -42,16 +42,16 @@ class DeleteDialogComponent extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener("keydown", this.onKeydown, false);
+    document.addEventListener("keyup", this.onKeyUp, false);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.onKeydown, false);
+    document.removeEventListener("keyup", this.onKeyUp, false);
   }
 
-  onKeydown = (e) => {
+  onKeyUp = (e) => {
     if (e.keyCode === 27) this.onClose();
-    if (e.keyCode === 13) this.onDelete();
+    if (e.keyCode === 13 || e.which === 13) this.onDelete();
   };
 
   onDelete = () => {
@@ -67,7 +67,7 @@ class DeleteDialogComponent extends React.Component {
 
     if (!selection.length) return;
 
-    deleteAction(translations, selection).catch((err) => toastr.error(err));
+    deleteAction(translations, selection);
   };
 
   onUnsubscribe = () => {
@@ -107,6 +107,7 @@ class DeleteDialogComponent extends React.Component {
   };
 
   onClose = () => {
+    this.props.setBufferSelection(null);
     this.props.setRemoveMediaItem(null);
     this.props.setDeleteDialogVisible(false);
   };
@@ -254,7 +255,12 @@ export default inject(
     treeFoldersStore,
     auth,
   }) => {
-    const { selection, isLoading } = filesStore;
+    const {
+      selection,
+      isLoading,
+      bufferSelection,
+      setBufferSelection,
+    } = filesStore;
     const { deleteAction, unsubscribeAction } = filesActionsStore;
     const { isPrivacyFolder, isRecycleBinFolder } = treeFoldersStore;
 
@@ -269,7 +275,11 @@ export default inject(
     const { personal } = auth.settingsStore;
 
     return {
-      selection: removeMediaItem ? [removeMediaItem] : selection,
+      selection: removeMediaItem
+        ? [removeMediaItem]
+        : selection.length
+        ? selection
+        : [bufferSelection],
       isLoading,
       isRootFolder: selectedFolderStore.isRootFolder,
       visible,
@@ -284,6 +294,7 @@ export default inject(
       setRemoveMediaItem,
 
       personal,
+      setBufferSelection,
     };
   }
 )(withRouter(observer(DeleteDialog)));

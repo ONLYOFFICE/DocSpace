@@ -8,7 +8,7 @@ const StyledMain = styled.main`
       ? "calc(var(--vh, 1vh) * 100)"
       : props.isDesktop
       ? "100vh"
-      : "calc(100vh - 56px)"};
+      : "calc(100vh - 48px)"};
   width: 100vw;
   z-index: 0;
   display: flex;

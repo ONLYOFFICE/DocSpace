@@ -30,7 +30,7 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder
                 .Add(MySqlAddDbFilesSecurity, Provider.MySql)
-                .Add(PgSqlAddDbFilesSecurity, Provider.Postgre);
+                .Add(PgSqlAddDbFilesSecurity, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesSecurity(this ModelBuilder modelBuilder)

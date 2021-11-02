@@ -15,13 +15,14 @@ const StyledArticle = styled.article`
         z-index: 400;
       `}
   }
+
   .resizable-block {
     padding: 0 20px;
     background: #f8f9f9;
-    min-width: 265px;
+    min-width: 256px;
     height: 100% !important;
     max-width: ${(props) =>
-      props.firstLoad ? "265px" : "calc(100vw - 368px)"};
+      props.firstLoad ? "256px" : "calc(100vw - 368px)"};
     box-sizing: border-box;
     overflow: hidden auto;
     display: flex;
@@ -33,11 +34,11 @@ const StyledArticle = styled.article`
     }
     ${isMobile &&
     css`
-      margin-top: 56px;
-      height: calc(100% - 56px) !important;
+      margin-top: 48px;
+      height: calc(100% - 48px) !important;
       width: 240px !important;
       @media ${tablet} {
-        margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
+        margin-top: ${(props) => (props.pinned ? "48px;" : "0;")};
       }
     `}
     @media ${tablet} {

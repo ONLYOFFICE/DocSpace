@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
@@ -48,7 +49,7 @@ namespace ASC.Web.Files.Core.Search
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
         private IDaoFactory DaoFactory { get; }
-        public Settings Settings { get; }
+        private Settings Settings { get; }
 
         public FactoryIndexerFile(
             IOptionsMonitor<ILog> options,
@@ -59,11 +60,11 @@ namespace ASC.Web.Files.Core.Search
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
             ICache cache,
-            Settings settings)
+            ConfigurationExtension configurationExtension)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
-            Settings = settings;
+            Settings = Settings.GetInstance(configurationExtension);
         }
 
         public override void IndexAll()
@@ -73,39 +74,44 @@ namespace ASC.Web.Files.Core.Search
             (int, int, int) getCount(DateTime lastIndexed)
             {
                 var dataQuery = GetBaseQuery(lastIndexed)
-                    .OrderBy(r=> r.DbFile.Id)
-                    .Select(r=> r.DbFile.Id);
+                    .Where(r => r.DbFile.Version == 1)
+                    .OrderBy(r => r.DbFile.Id)
+                    .Select(r => r.DbFile.Id);
 
                 var minid = dataQuery.FirstOrDefault();
 
                 dataQuery = GetBaseQuery(lastIndexed)
+                    .Where(r => r.DbFile.Version == 1)
                     .OrderByDescending(r => r.DbFile.Id)
                     .Select(r => r.DbFile.Id);
 
                 var maxid = dataQuery.FirstOrDefault();
 
-                var count = GetBaseQuery(lastIndexed).Count();
+                var count = GetBaseQuery(lastIndexed)
+                    .Where(r => r.DbFile.Version == 1)
+                    .Count();
 
-                return new (count, maxid, minid);
+                return new(count, maxid, minid);
             }
 
             List<DbFile> getData(long start, long stop, DateTime lastIndexed)
             {
                 return GetBaseQuery(lastIndexed)
-                    .Where(r=> r.DbFile.Id >= start && r.DbFile.Id <= stop)
-                    .Select(r=> r.DbFile)
+                    .Where(r => r.DbFile.Id >= start && r.DbFile.Id <= stop && r.DbFile.CurrentVersion)
+                    .Select(r => r.DbFile)
                     .ToList();
 
             }
 
             List<int> getIds(DateTime lastIndexed)
             {
-                long start = 0;
+                var start = 0;
                 var result = new List<int>();
                 while (true)
                 {
                     var dataQuery = GetBaseQuery(lastIndexed)
                         .Where(r => r.DbFile.Id >= start)
+                        .Where(r => r.DbFile.Version == 1)
                         .OrderBy(r => r.DbFile.Id)
                         .Select(r => r.DbFile.Id)
                         .Skip(BaseIndexer<DbFile>.QueryLimit);
@@ -127,8 +133,7 @@ namespace ASC.Web.Files.Core.Search
 
             IQueryable<FileTenant> GetBaseQuery(DateTime lastIndexed) => fileDao.FilesDbContext.Files
                 .Where(r => r.ModifiedOn >= lastIndexed)
-                .Where(r => r.CurrentVersion)
-                .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+                .Join(fileDao.TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
 
             try
@@ -167,7 +172,7 @@ namespace ASC.Web.Files.Core.Search
                     }
                 }
 
-                if(tasks.Any())
+                if (tasks.Any())
                 {
                     Task.WaitAll(tasks.ToArray());
                 }

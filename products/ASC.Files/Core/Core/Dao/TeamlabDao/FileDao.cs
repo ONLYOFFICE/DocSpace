@@ -34,8 +34,10 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
@@ -77,7 +79,8 @@ namespace ASC.Files.Core.Data
         public FileDao(
             FactoryIndexerFile factoryIndexer,
             UserManager userManager,
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<EF.FilesDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -97,9 +100,10 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ProviderFolderDao providerFolderDao,
             CrossDao crossDao,
-            Settings settings)
+            ConfigurationExtension configurationExtension)
             : base(
                   dbContextManager,
+                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,
@@ -122,7 +126,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ProviderFolderDao = providerFolderDao;
             CrossDao = crossDao;
-            Settings = settings;
+            Settings = Settings.GetInstance(configurationExtension);
         }
 
         public void InvalidateCache(int fileId)
@@ -187,7 +191,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
-        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
         {
             if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
@@ -238,7 +242,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return FromQuery(query).Select(ToFile).ToList();
+            return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).Select(ToFile).ToList();
         }
 
 
@@ -374,7 +378,7 @@ namespace ASC.Files.Core.Data
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
 
-            if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+            if (checkQuota && CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
                 if (personalMaxSpace - GlobalSpace.GetUserUsedSpace(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
@@ -439,7 +443,7 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                FilesDbContext.Files.Add(toInsert);
+                FilesDbContext.AddOrUpdate(r => r.Files, toInsert);
                 FilesDbContext.SaveChanges();
 
                 tx.Commit();
@@ -1462,7 +1466,7 @@ namespace ASC.Files.Core.Data
 
         internal protected DbFile InitDocument(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {
@@ -1496,7 +1500,7 @@ namespace ASC.Files.Core.Data
 
         internal protected async Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent())
+            if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {

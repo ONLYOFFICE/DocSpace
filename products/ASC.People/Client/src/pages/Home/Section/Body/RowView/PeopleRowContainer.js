@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import RowContainer from "@appserver/components/row-container";
 import SimpleUserRow from "./SimpleUserRow";
 import EmptyScreen from "../EmptyScreen";
+import { isMobile } from "react-device-detect";
 
 const PeopleRowContainer = ({
   peopleList,
@@ -13,7 +14,7 @@ const PeopleRowContainer = ({
   useEffect(() => {
     if (viewAs !== "table" && viewAs !== "row") return;
 
-    if (sectionWidth < 1025) {
+    if (sectionWidth < 1025 || isMobile) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");

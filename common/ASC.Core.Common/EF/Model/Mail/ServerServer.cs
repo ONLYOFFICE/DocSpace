@@ -19,7 +19,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         {
             modelBuilder
                 .Add(MySqlAddServerServer, Provider.MySql)
-                .Add(PgSqlAddServerServer, Provider.Postgre);
+                .Add(PgSqlAddServerServer, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddServerServer(this ModelBuilder modelBuilder)

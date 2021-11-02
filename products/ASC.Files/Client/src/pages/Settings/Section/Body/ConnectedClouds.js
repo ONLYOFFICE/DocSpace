@@ -90,21 +90,21 @@ class ConnectClouds extends React.Component {
   };
 
   onChangeThirdPartyInfo = (e) => {
+    const { capabilities, providers } = this.props;
     const { dataset } = (e.originalEvent || e).currentTarget;
-    const { provider_id } = dataset;
-    const capabilitiesItem = this.props.capabilities.find(
-      (x) => x[0] === provider_id
-    );
-    const providerItem = this.props.providers.find(
-      (x) => x.provider_id === provider_id
-    );
+    const { providerId } = dataset;
+
+    const providerItem = providers.find((x) => x.provider_id === providerId);
+
     const { corporate, customer_title, provider_key } = providerItem;
 
+    const capabilitiesItem = capabilities.find((x) => x[0] === provider_key);
+
     const item = {
-      title: capabilitiesItem ? capabilitiesItem[0] : customer_title,
+      title: customer_title || (capabilitiesItem && capabilitiesItem[0]),
       link: capabilitiesItem ? capabilitiesItem[1] : " ",
       corporate,
-      provider_id,
+      provider_id: providerId,
       provider_key,
     };
 
@@ -155,6 +155,8 @@ class ConnectClouds extends React.Component {
     } = this.props;
 
     const provider = e.currentTarget.dataset.providerKey;
+    const providerId = e.currentTarget.dataset.providerId;
+
     const isCorporate =
       !!providers.length &&
       providers.find((p) => p.provider_key === provider).corporate;
@@ -162,7 +164,7 @@ class ConnectClouds extends React.Component {
 
     getSubfolders(dirId).then((subfolders) => {
       const id = subfolders
-        .filter((f) => f.providerKey === provider)
+        .filter((f) => f.providerKey === provider && f.providerId == providerId)
         .map((f) => f.id)
         .join();
 
@@ -184,7 +186,7 @@ class ConnectClouds extends React.Component {
     return [
       {
         key: `${index}_change`,
-        "data-provider_id": item.provider_id,
+        "data-provider-id": item.provider_id,
         label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
@@ -207,6 +209,7 @@ class ConnectClouds extends React.Component {
           <>
             <Button
               size="base"
+              style={{ marginBottom: "8px" }}
               onClick={this.onShowThirdPartyDialog}
               label={t("ConnectedCloud")}
               primary
@@ -218,6 +221,7 @@ class ConnectClouds extends React.Component {
                   item.provider_key,
                   t
                 );
+
                 return (
                   <Row
                     key={index}
@@ -257,6 +261,7 @@ class ConnectClouds extends React.Component {
                         fontWeight={400}
                         truncate={true}
                         data-provider-key={item.provider_key}
+                        data-provider-id={item.provider_id}
                         onClick={this.openLocation}
                       >
                         {item.customer_title}
@@ -282,7 +287,7 @@ class ConnectClouds extends React.Component {
                 />
                 <Box className="flex-wrapper_container">
                   <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
-                    {t("Translations:AddAccount")},
+                    {t("Translations:AddAccount")}
                   </Link>
                 </Box>
               </div>

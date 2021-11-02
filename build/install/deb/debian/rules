@@ -1,0 +1,48 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+export DH_OPTIONS=-v
+
+%:
+	dh $@ --with=systemd
+
+PRODUCT=appserver
+CURRENT_PATH=${CURDIR}
+BUILD_PATH=var/www
+SRC_PATH=$(shell cd ../../../; pwd)
+SCRIPT_PATH=build/install/common
+
+override_dh_auto_clean:
+	@echo "RULES.$@"
+	dh_testdir 
+	rm -rf ${CURRENT_PATH}/src
+	rm -rf ${CURRENT_PATH}/debian/*.service
+	rm -rf ${SRC_PATH}/build/install/${PRODUCT}*
+
+override_dh_auto_configure:
+	@echo "RULES.$@"
+	dh_testdir 
+	dh_auto_configure
+
+override_dh_auto_build:
+	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}
+	cd ${SRC_PATH}/${SCRIPT_PATH}/systemd; \
+	bash build.sh -bp "${CURRENT_PATH}/debian/"; \
+	cd ${SRC_PATH}/${SCRIPT_PATH}; \
+	bash build-frontend.sh -sp ${SRC_PATH}; \
+	bash build-backend.sh -sp ${SRC_PATH}; \
+	bash publish-backend.sh -sp ${SRC_PATH} -bp ${CURRENT_PATH}/src/${BUILD_PATH}
+
+	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/*.conf 
+	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/includes/*.conf
+	
+override_dh_auto_install:
+	dh_installinit
+
+override_dh_strip:
+#	dh_strip --exclude=/site-packages/
+
+override_dh_shlibdeps:
+#	dh_shlibdeps --exclude=/site-packages/

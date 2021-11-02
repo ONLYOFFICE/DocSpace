@@ -59,7 +59,7 @@ namespace ASC.Web.Core.PublicResources {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Blog was created at.
         /// </summary>
@@ -602,7 +602,7 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("pattern_dns_change", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
@@ -934,7 +934,7 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("pattern_enterprise_user_welcome_v10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
@@ -1258,7 +1258,7 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("pattern_migration_success_v115", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
@@ -1506,6 +1506,21 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_personal_after_registration7 {
             get {
                 return ResourceManager.GetString("pattern_personal_after_registration7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hi there!
+        ///There was an attempt to register a new ONLYOFFICE Personal account using this email. If it was you, we want to inform you that the account already exists — proceed to ONLYOFFICE Personal and log in.
+        ///If you lost your password, you can recover it on password recovery page.
+        ///If you didn’t attempt to register a new account, probably someone else did it by mistake. In this case, please ignore this email.
+        ///
+        ///Have a nice day!
+        ///ONLYOFFICE team.
+        /// </summary>
+        public static string pattern_personal_already_exist {
+            get {
+                return ResourceManager.GetString("pattern_personal_already_exist", resourceCulture);
             }
         }
         
@@ -1932,7 +1947,7 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("pattern_restore_started", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
@@ -3034,6 +3049,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_personal_after_registration7 {
             get {
                 return ResourceManager.GetString("subject_personal_after_registration7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log in to your ONLYOFFICE Personal account.
+        /// </summary>
+        public static string subject_personal_already_exist {
+            get {
+                return ResourceManager.GetString("subject_personal_already_exist", resourceCulture);
             }
         }
         

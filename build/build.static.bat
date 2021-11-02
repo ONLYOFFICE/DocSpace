@@ -1,25 +1,32 @@
+@echo off
+
 PUSHD %~dp0
 call runasadmin.bat "%~dpnx0"
+
 if %errorlevel% == 0 (
 PUSHD %~dp0..
 
-echo "mode=%1"
+IF "%2"=="personal" (
+   echo "mode=%2"
+) ELSE (
+   echo "mode="
+)
 
 REM call yarn wipe
 call yarn install
 
 REM call yarn build
-IF "%1"=="" (
-    call yarn build
-) ELSE (
+IF "%2"=="personal" (
     call yarn build:personal
+) ELSE (
+    call yarn build
 )
 
 REM call yarn wipe
-IF "%1"=="" (
-    call yarn deploy
-) ELSE (
+IF "%2"=="personal" (
     call yarn deploy:personal
+) ELSE (
+    call yarn deploy
 )
 
 REM copy nginx configurations to deploy folder
@@ -40,10 +47,16 @@ powershell -Command "(gc build\deploy\nginx\sites-enabled\onlyoffice-projects.co
 powershell -Command "(gc build\deploy\nginx\sites-enabled\onlyoffice-studio.conf) -replace 'ROOTPATH', '%~dp0deploy\studio\client' -replace '\\', '/' | Out-File -encoding ASCII build\deploy\nginx\sites-enabled\onlyoffice-studio.conf"
 
 REM restart nginx
+echo service nginx stop
 call sc stop nginx
 
 REM sleep 5 seconds
 call ping 127.0.0.1 -n 6 > nul
 
+echo service nginx start
 call sc start nginx
 )
+
+if "%1"=="nopause" goto start
+pause
+:start

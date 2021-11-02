@@ -5,6 +5,8 @@
   "workspaces": [
     "packages/asc-web-components",
     "packages/asc-web-common",
+    "packages/browserslist-config-asc",
+    "packages/debug-info",
     "web/ASC.Web.Login",
     "web/ASC.Web.Client",
     "web/ASC.Web.Editor",
@@ -16,15 +18,16 @@
     "products/ASC.Calendar/Client"
   ],
   "scripts": {
-    "build": "lerna run build --parallel --ignore @appserver/common --ignore @appserver/components",
+    "build": "lerna run build --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
     "build:personal": "lerna run build --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor}",
     "bump": "lerna version --no-push --no-git-tag-version",
     "clean": "lerna run clean --parallel",
-    "deploy": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --ignore @appserver/common --ignore @appserver/components && shx cp -r public build/deploy && yarn sw-build",
-    "deploy:personal": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor} && shx cp -r public build/deploy && yarn sw-build:personal",
-    "serve": "lerna run serve --parallel  --ignore @appserver/common --ignore @appserver/components",
-    "start": "lerna run start --parallel --ignore @appserver/common --ignore @appserver/components",
-    "start-prod": "lerna run start-prod --parallel --ignore @appserver/common --ignore @appserver/components",
+    "deploy": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info && shx cp -r public build/deploy",
+    "deploy:personal": "shx rm -rf build/deploy/products && shx rm -rf build/deploy/public && shx rm -rf build/deploy/studio && lerna run deploy --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor} && shx cp -r public build/deploy",
+    "serve": "lerna run serve --parallel  --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
+    "start": "lerna run start --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
+    "start:personal": "lerna run start --parallel --scope {@appserver/studio,@appserver/people,@appserver/files,@appserver/editor}",
+    "start-prod": "lerna run start-prod --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc --ignore @appserver/debug-info",
     "storybook": "yarn workspace @appserver/components storybook",
     "storybook-build": "yarn workspace @appserver/components run storybook-build",
     "sw-build": "workbox injectManifest config/workbox-config.js && yarn sw-modify && yarn sw-minimize",
@@ -43,13 +46,15 @@
     "sw-studio-login-replace": "replace-in-files --string='studio/login/' --replacement='login/' build/deploy/public/sw.js",
     "sw-studio-replace": "replace-in-files --string='studio/client/' --replacement='/' build/deploy/public/sw.js",
     "test": "yarn workspace @appserver/components test",
-    "wipe": "shx rm -rf node_modules yarn.lock web/**/node_modules products/**/node_modules"
+    "wipe": "shx rm -rf node_modules yarn.lock web/**/node_modules products/**/node_modules",
+    "debug-info": "node packages/debug-info --unreleased-only --template debuginfo --output public/debuginfo.md"
   },
   "devDependencies": {
-    "lerna": "^4.0.0",
+    "lerna": "3.22.1",
     "replace-in-files-cli": "^1.0.0",
     "shx": "^0.3.3",
     "terser": "^5.8.0",
     "workbox-cli": "^6.3.0"
-  }
+  },
+  "dependencies": {}
 }

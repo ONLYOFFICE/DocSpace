@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
@@ -137,7 +137,7 @@ const MyProfileRoute = (props) => (
   </React.Suspense>
 );
 
-let index = 0;
+const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -351,7 +351,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     const remoteEntryURL = combineUrl(
       window.location.origin,
       appURL,
-      `remoteEntry.js?__index=${++index}`
+      `remoteEntry.js`
     );
 
     const system = {
@@ -368,7 +368,16 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     return (
       <PrivateRoute
         key={m.id}
-        path={appURL}
+        path={
+          m.appName === "files"
+            ? [
+                "/Products/Files",
+                "/Products/Files/",
+                "/Products/Files/?desktop=true",
+                appURL,
+              ]
+            : appURL
+        }
         component={System}
         system={system}
       />
@@ -425,7 +434,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               />
               {dynamicRoutes}
               <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
-              <PrivateRoute component={Error404Route} />
+              <PrivateRoute
+                component={!personal ? Error404Route : RedirectToHome}
+              />
             </Switch>
           </Main>
         </>

@@ -5,7 +5,6 @@ import { withRouter } from "react-router";
 import queryString from "query-string";
 import history from "@appserver/common/history";
 import MediaViewer from "@appserver/common/components/MediaViewer";
-import FilesFilter from "@appserver/common/api/files/filter";
 import { createTreeFolders } from "../../../helpers/files-helpers";
 
 const FilesMediaViewer = (props) => {
@@ -21,7 +20,6 @@ const FilesMediaViewer = (props) => {
     mediaViewerImageFormats,
     location,
     setRemoveMediaItem,
-    selectedFolderId,
     userAccess,
     deleteDialogVisible,
     previewFile,
@@ -74,20 +72,14 @@ const FilesMediaViewer = (props) => {
       let file = files.find((file) => file.id === id);
       if (file) {
         setRemoveMediaItem(file);
-        deleteItemAction(
-          file.id,
-          selectedFolderId,
-          translations,
-          true,
-          file.providerKey
-        );
+        deleteItemAction(file.id, translations, true, file.providerKey);
       }
     }
   };
 
   const onDownloadMediaFile = (id) => {
-    if (files.length > 0) {
-      let viewUrlFile = files.find((file) => file.id === id).viewUrl;
+    if (playlist.length > 0) {
+      let viewUrlFile = playlist.find((file) => file.fileId === id).src;
       return window.open(viewUrlFile, "_self");
     }
   };
@@ -129,6 +121,7 @@ const FilesMediaViewer = (props) => {
         extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
         errorLabel={t("Translations:MediaLoadError")}
+        previewFile={previewFile}
       />
     )
   );
@@ -141,7 +134,6 @@ export default inject(
     filesActionsStore,
     formatsStore,
     dialogsStore,
-    selectedFolderStore,
     treeFoldersStore,
   }) => {
     const {
@@ -174,7 +166,6 @@ export default inject(
       mediaViewerMediaFormats: media,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
-      selectedFolderId: selectedFolderStore.id,
       fetchFiles,
       previewFile,
       setIsLoading,
