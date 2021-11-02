@@ -81,7 +81,7 @@ class SharingPanelComponent extends React.Component {
     this.setState({
       shareDataItems: newDataItems,
       showEmbeddingContent: false,
-      isUpdated: !isUpdated,
+      isUpdated: true,
     });
   };
 
@@ -215,8 +215,12 @@ class SharingPanelComponent extends React.Component {
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
+
   onNotifyUsersChange = () =>
-    this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
+    this.setState({
+      isNotifyUsers: !this.state.isNotifyUsers,
+      isUpdated: true,
+    });
 
   onShowUsersPanel = () =>
     this.setState({
@@ -232,7 +236,7 @@ class SharingPanelComponent extends React.Component {
 
     if (elem.access !== +access) {
       elem.access = +access;
-      this.setState({ shareDataItems: shareDataItems, isUpdated: true });
+      this.setState({ shareDataItems, isUpdated: true });
     }
   };
 
@@ -243,7 +247,7 @@ class SharingPanelComponent extends React.Component {
     const index = shareDataItems.findIndex((x) => x.sharedTo.id === id);
     if (index !== -1) {
       shareDataItems.splice(index, 1);
-      this.setState({ shareDataItems });
+      this.setState({ shareDataItems, isUpdated: true });
     }
   };
 
@@ -348,7 +352,8 @@ class SharingPanelComponent extends React.Component {
 
   onChangeMessage = (e) => this.setState({ message: e.target.value });
 
-  setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
+  setShareDataItems = (shareDataItems) =>
+    this.setState({ shareDataItems, isUpdated: true });
 
   onClose = () => {
     const {
