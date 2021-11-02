@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package ASC.Migration;
+package ASC.Protos.Migration;
 
 message MigrationProgress{
 	bool IsCompleted = 1;

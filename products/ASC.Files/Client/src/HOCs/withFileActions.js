@@ -96,7 +96,7 @@ export default function withFileActions(WrappedFileItem) {
       }
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
-      setStartDrag(true);
+      !isFileName && setStartDrag(true);
       !isActive && setBufferSelection(null);
     };
 
@@ -210,7 +210,7 @@ export default function withFileActions(WrappedFileItem) {
           return;
         }
 
-        return window.open(viewUrl, "_blank");
+        return window.open(viewUrl, "_self");
       }
     };
 

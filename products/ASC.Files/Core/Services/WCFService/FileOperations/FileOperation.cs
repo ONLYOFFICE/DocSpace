@@ -149,7 +149,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             base.FillDistributedTask();
         }
 
-        public void PublishChanges(DistributedTask task)
+        public virtual void PublishChanges(DistributedTask task)
         {
             var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
             var daoTask = DaoOperation.GetDistributedTask();

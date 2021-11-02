@@ -251,7 +251,7 @@ class ProfileInfo extends React.PureComponent {
             {{ supportEmail }}
           </Link>
           to take part in the translation and get up to 1 year free of charge."
-        </Trans>
+        </Trans>{" "}
         <Link
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"

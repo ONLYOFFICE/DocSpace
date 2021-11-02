@@ -35,6 +35,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
@@ -56,16 +57,17 @@ namespace ASC.CRM.Core.Dao
     public class ContactDao : AbstractDao
     {
         private readonly BundleSearch _bundleSearch;
-        private readonly CoreDbContext _coreDbContext;
         private readonly FactoryIndexerContact _factoryIndexerContact;
         private readonly FactoryIndexerContactInfo _factoryIndexerContactInfo;
         private readonly FilesIntegration _filesIntegration;
         private readonly AuthorizationManager _authorizationManager;
         private readonly TenantUtil _tenantUtil;
         private readonly CrmSecurity _crmSecurity;
+        private readonly UserDbContext _userDbContext;
 
         public ContactDao(
             DbContextManager<CrmDbContext> dbContextManager,
+            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             CrmSecurity crmSecurity,
@@ -76,24 +78,25 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexerContactInfo factoryIndexerContactInfo,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
-            DbContextManager<CoreDbContext> coreDbContext,
+            DbContextManager<UserDbContext> userDbContext,
             BundleSearch bundleSearch,
             IMapper mapper
             ) :
                  base(dbContextManager,
+                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,
                  ascCache,
                  mapper)
         {
+            _userDbContext = userDbContext.Value;
             _crmSecurity = crmSecurity;
             _tenantUtil = tenantUtil;
             _authorizationManager = authorizationManager;
             _filesIntegration = filesIntegration;
             _factoryIndexerContact = factoryIndexerContact;
             _factoryIndexerContactInfo = factoryIndexerContactInfo;
-            _coreDbContext = coreDbContext.Value;
             _bundleSearch = bundleSearch;
         }
 
@@ -134,7 +137,7 @@ namespace ASC.CRM.Core.Dao
 
             if (!_crmSecurity.IsAdmin)
             {
-                var idsFromAcl = _coreDbContext.Acl.Where(x => x.Tenant == TenantID &&
+                var idsFromAcl = _userDbContext.Acl.Where(x => x.Tenant == TenantID &&
                                                      x.Action == _crmSecurity._actionRead.ID &&
                                                      x.Subject == _securityContext.CurrentAccount.ID &&
                                                      (Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Company).FullName + "%") ||

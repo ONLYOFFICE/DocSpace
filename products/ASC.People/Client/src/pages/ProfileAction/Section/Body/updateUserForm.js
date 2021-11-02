@@ -499,7 +499,6 @@ class UpdateUserForm extends React.Component {
     this.setState({ isLoading: true });
     const { profile, setAvatarMax, personal } = this.props;
 
-    console.log("profile", profile);
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
@@ -622,6 +621,7 @@ class UpdateUserForm extends React.Component {
       isSelf,
       language,
       personal,
+      isTabletView,
     } = this.props;
     const {
       guestCaption,
@@ -727,7 +727,6 @@ class UpdateUserForm extends React.Component {
               source={this.props.avatarMax || profile.avatarMax}
               userName={profile.displayName}
               editing={true}
-              editLabel={t("Common:EditAvatar")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
@@ -752,7 +751,11 @@ class UpdateUserForm extends React.Component {
               saveButtonLoading={this.state.isLoading}
             />
           </AvatarContainer>
-          <MainFieldsContainer ref={this.mainFieldsContainerRef} noSelect>
+          <MainFieldsContainer
+            ref={this.mainFieldsContainerRef}
+            noSelect
+            {...(!isTabletView && { marginBottom: "32px" })}
+          >
             <TextChangeField
               labelText={`${t("Common:Email")}:`}
               inputName="email"
@@ -940,7 +943,10 @@ class UpdateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         {!personal && (
-          <InfoFieldContainer headerText={t("Translations:Comments")}>
+          <InfoFieldContainer
+            headerText={t("Translations:Comments")}
+            marginBottom={"42px"}
+          >
             <Textarea
               placeholder={t("WriteComment")}
               name="notes"
@@ -951,7 +957,10 @@ class UpdateUserForm extends React.Component {
             />
           </InfoFieldContainer>
         )}
-        <InfoFieldContainer headerText={t("ContactInformation")}>
+        <InfoFieldContainer
+          headerText={t("ContactInformation")}
+          marginBottom={"42px"}
+        >
           <ContactsField
             pattern={pattern.contact}
             contacts={contacts.contact}
@@ -963,7 +972,10 @@ class UpdateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("Translations:SocialProfiles")}>
+        <InfoFieldContainer
+          headerText={t("Translations:SocialProfiles")}
+          {...(isTabletView && { marginBottom: "36px" })}
+        >
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -1049,6 +1061,7 @@ export default withRouter(
     personal: auth.settingsStore.personal,
     setUserIsUpdate: auth.userStore.setUserIsUpdate,
     userFormValidation: auth.settingsStore.userFormValidation,
+    isTabletView: auth.settingsStore.isTabletView,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

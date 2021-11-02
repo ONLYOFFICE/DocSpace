@@ -4,7 +4,6 @@ import { StyledTableRow } from "./StyledTableContainer";
 import TableCell from "./TableCell";
 import ContextMenu from "../context-menu";
 import ContextMenuButton from "../context-menu-button";
-import Checkbox from "../checkbox";
 
 const TableRow = (props) => {
   const {
@@ -12,14 +11,9 @@ const TableRow = (props) => {
     onHideContextMenu,
     children,
     contextOptions,
-    checked,
-    element,
-    onContentSelect,
-    item,
     className,
     style,
     selectionProp,
-    hasAccess,
     ...rest
   } = props;
 
@@ -43,30 +37,12 @@ const TableRow = (props) => {
     return contextOptions;
   };
 
-  const onChange = (e) => {
-    onContentSelect && onContentSelect(e.target.checked, item);
-  };
-
   return (
     <StyledTableRow
       onContextMenu={onContextMenu}
       className={`${className} table-container_row`}
       {...rest}
     >
-      <TableCell
-        hasAccess={hasAccess}
-        checked={checked}
-        {...selectionProp}
-        style={style}
-        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
-      >
-        <div className="table-container_element">{element}</div>
-        <Checkbox
-          className="table-container_row-checkbox"
-          onChange={onChange}
-          isChecked={checked}
-        />
-      </TableCell>
       {children}
       <div>
         <TableCell

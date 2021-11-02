@@ -9,8 +9,6 @@ class EmailField extends React.Component {
   }
 
   render() {
-    console.log("EmailField render");
-
     const {
       isRequired,
       hasError,

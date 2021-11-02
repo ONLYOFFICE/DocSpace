@@ -65,7 +65,8 @@ const SectionBodyContent = (props) => {
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable")
+      !e.target.closest(".not-selectable") &&
+      !e.target.closest(".table-container_group-menu")
     ) {
       setSelection([]);
       setBufferSelection(null);
