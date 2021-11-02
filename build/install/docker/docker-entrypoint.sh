@@ -1,5 +1,5 @@
 #!/bin/bash
-
+PARAMETERS=${PARAMETERS:-""}
 # read parameters
 if [ -n "$1" ]; then
 	DOTNET_RUN="${1}";
@@ -22,7 +22,6 @@ echo "#-------------------------------------#"
     
 PRODUCT=${PRODUCT:-"onlyoffice"}
 BASE_DIR="/app/${PRODUCT}"
-PARAMETERS=""
 PROXY_HOST=${PROXY_HOST:-"proxy"}
 SHEME=${SHEME:-"http"}
 SERVICE_PORT=${SERVICE_PORT:-"5050"}
